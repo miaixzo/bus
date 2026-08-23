@@ -39,7 +39,7 @@ import org.miaixz.bus.health.unix.shared.hardware.UnixDisplay;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class AixHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
+public class AixHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
 
     /**
      * Constructs a new AixHardwareAbstractionLayer instance.

@@ -399,7 +399,7 @@ public class Device implements Serializable {
      *
      * @return A string containing the device name.
      */
-    public final String getDeviceName() {
+    public String getDeviceName() {
         return deviceName;
     }
 
@@ -408,7 +408,7 @@ public class Device implements Serializable {
      *
      * @param name A string containing the device name.
      */
-    public final void setDeviceName(String name) {
+    public void setDeviceName(String name) {
         checkNotEmpty("Device Name", name);
         this.deviceName = name;
     }
@@ -418,7 +418,7 @@ public class Device implements Serializable {
      *
      * @return A string containing the device description.
      */
-    public final String getDescription() {
+    public String getDescription() {
         return description;
     }
 
@@ -427,7 +427,7 @@ public class Device implements Serializable {
      *
      * @param description A string containing the device description.
      */
-    public final void setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -454,7 +454,7 @@ public class Device implements Serializable {
      *
      * @return A string containing the device manufacturer.
      */
-    public final String getManufacturer() {
+    public String getManufacturer() {
         return manufacturer;
     }
 
@@ -464,7 +464,7 @@ public class Device implements Serializable {
      *
      * @param manufacturer A string containing the device manufacturer.
      */
-    public final void setManufacturer(String manufacturer) {
+    public void setManufacturer(String manufacturer) {
         this.manufacturer = manufacturer;
     }
 
@@ -473,7 +473,7 @@ public class Device implements Serializable {
      *
      * @return A string containing the manufacturer's model name.
      */
-    public final String getManufacturerModelName() {
+    public String getManufacturerModelName() {
         return manufacturerModelName;
     }
 
@@ -483,7 +483,7 @@ public class Device implements Serializable {
      *
      * @param manufacturerModelName A string containing the manufacturer's model name.
      */
-    public final void setManufacturerModelName(String manufacturerModelName) {
+    public void setManufacturerModelName(String manufacturerModelName) {
         this.manufacturerModelName = manufacturerModelName;
     }
 
@@ -492,7 +492,7 @@ public class Device implements Serializable {
      *
      * @return An array of strings containing the software versions.
      */
-    public final String[] getSoftwareVersions() {
+    public String[] getSoftwareVersions() {
         return softwareVersions;
     }
 
@@ -502,7 +502,7 @@ public class Device implements Serializable {
      *
      * @param softwareVersions An array of strings containing the software versions.
      */
-    public final void setSoftwareVersions(String... softwareVersions) {
+    public void setSoftwareVersions(String... softwareVersions) {
         this.softwareVersions = softwareVersions;
     }
 
@@ -511,7 +511,7 @@ public class Device implements Serializable {
      *
      * @return A string containing the station name.
      */
-    public final String getStationName() {
+    public String getStationName() {
         return stationName;
     }
 
@@ -521,7 +521,7 @@ public class Device implements Serializable {
      *
      * @param stationName A string containing the station name.
      */
-    public final void setStationName(String stationName) {
+    public void setStationName(String stationName) {
         this.stationName = stationName;
     }
 
@@ -530,7 +530,7 @@ public class Device implements Serializable {
      *
      * @return A string containing the serial number.
      */
-    public final String getDeviceSerialNumber() {
+    public String getDeviceSerialNumber() {
         return deviceSerialNumber;
     }
 
@@ -540,7 +540,7 @@ public class Device implements Serializable {
      *
      * @param deviceSerialNumber A string containing the serial number.
      */
-    public final void setDeviceSerialNumber(String deviceSerialNumber) {
+    public void setDeviceSerialNumber(String deviceSerialNumber) {
         this.deviceSerialNumber = deviceSerialNumber;
     }
 
@@ -549,7 +549,7 @@ public class Device implements Serializable {
      *
      * @return An array of strings containing the primary device types.
      */
-    public final String[] getPrimaryDeviceTypes() {
+    public String[] getPrimaryDeviceTypes() {
         return primaryDeviceTypes;
     }
 
@@ -569,7 +569,7 @@ public class Device implements Serializable {
      *
      * @return An array of strings containing institution names.
      */
-    public final String[] getInstitutionNames() {
+    public String[] getInstitutionNames() {
         return institutionNames;
     }
 
@@ -588,7 +588,7 @@ public class Device implements Serializable {
      *
      * @return An array of institution codes.
      */
-    public final Code[] getInstitutionCodes() {
+    public Code[] getInstitutionCodes() {
         return institutionCodes;
     }
 
@@ -606,7 +606,7 @@ public class Device implements Serializable {
      *
      * @return An array of strings containing institution addresses.
      */
-    public final String[] getInstitutionAddresses() {
+    public String[] getInstitutionAddresses() {
         return institutionAddresses;
     }
 
@@ -625,7 +625,7 @@ public class Device implements Serializable {
      *
      * @return An array of strings containing department names.
      */
-    public final String[] getInstitutionalDepartmentNames() {
+    public String[] getInstitutionalDepartmentNames() {
         return institutionalDepartmentNames;
     }
 
@@ -644,7 +644,7 @@ public class Device implements Serializable {
      *
      * @return The issuer of Patient IDs.
      */
-    public final Issuer getIssuerOfPatientID() {
+    public Issuer getIssuerOfPatientID() {
         return issuerOfPatientID;
     }
 
@@ -653,7 +653,7 @@ public class Device implements Serializable {
      *
      * @param issuerOfPatientID The issuer of Patient IDs.
      */
-    public final void setIssuerOfPatientID(Issuer issuerOfPatientID) {
+    public void setIssuerOfPatientID(Issuer issuerOfPatientID) {
         this.issuerOfPatientID = issuerOfPatientID;
     }
 
@@ -662,7 +662,7 @@ public class Device implements Serializable {
      *
      * @return The issuer of Accession Numbers.
      */
-    public final Issuer getIssuerOfAccessionNumber() {
+    public Issuer getIssuerOfAccessionNumber() {
         return issuerOfAccessionNumber;
     }
 
@@ -671,7 +671,7 @@ public class Device implements Serializable {
      *
      * @param issuerOfAccessionNumber The issuer of Accession Numbers.
      */
-    public final void setIssuerOfAccessionNumber(Issuer issuerOfAccessionNumber) {
+    public void setIssuerOfAccessionNumber(Issuer issuerOfAccessionNumber) {
         this.issuerOfAccessionNumber = issuerOfAccessionNumber;
     }
 
@@ -680,7 +680,7 @@ public class Device implements Serializable {
      *
      * @return The Order Placer Identifier.
      */
-    public final Issuer getOrderPlacerIdentifier() {
+    public Issuer getOrderPlacerIdentifier() {
         return orderPlacerIdentifier;
     }
 
@@ -689,7 +689,7 @@ public class Device implements Serializable {
      *
      * @param orderPlacerIdentifier The Order Placer Identifier.
      */
-    public final void setOrderPlacerIdentifier(Issuer orderPlacerIdentifier) {
+    public void setOrderPlacerIdentifier(Issuer orderPlacerIdentifier) {
         this.orderPlacerIdentifier = orderPlacerIdentifier;
     }
 
@@ -698,7 +698,7 @@ public class Device implements Serializable {
      *
      * @return The Order Filler Identifier.
      */
-    public final Issuer getOrderFillerIdentifier() {
+    public Issuer getOrderFillerIdentifier() {
         return orderFillerIdentifier;
     }
 
@@ -707,7 +707,7 @@ public class Device implements Serializable {
      *
      * @param orderFillerIdentifier The Order Filler Identifier.
      */
-    public final void setOrderFillerIdentifier(Issuer orderFillerIdentifier) {
+    public void setOrderFillerIdentifier(Issuer orderFillerIdentifier) {
         this.orderFillerIdentifier = orderFillerIdentifier;
     }
 
@@ -716,7 +716,7 @@ public class Device implements Serializable {
      *
      * @return The issuer of Admission IDs.
      */
-    public final Issuer getIssuerOfAdmissionID() {
+    public Issuer getIssuerOfAdmissionID() {
         return issuerOfAdmissionID;
     }
 
@@ -725,7 +725,7 @@ public class Device implements Serializable {
      *
      * @param issuerOfAdmissionID The issuer of Admission IDs.
      */
-    public final void setIssuerOfAdmissionID(Issuer issuerOfAdmissionID) {
+    public void setIssuerOfAdmissionID(Issuer issuerOfAdmissionID) {
         this.issuerOfAdmissionID = issuerOfAdmissionID;
     }
 
@@ -734,7 +734,7 @@ public class Device implements Serializable {
      *
      * @return The issuer of Service Episode IDs.
      */
-    public final Issuer getIssuerOfServiceEpisodeID() {
+    public Issuer getIssuerOfServiceEpisodeID() {
         return issuerOfServiceEpisodeID;
     }
 
@@ -743,7 +743,7 @@ public class Device implements Serializable {
      *
      * @param issuerOfServiceEpisodeID The issuer of Service Episode IDs.
      */
-    public final void setIssuerOfServiceEpisodeID(Issuer issuerOfServiceEpisodeID) {
+    public void setIssuerOfServiceEpisodeID(Issuer issuerOfServiceEpisodeID) {
         this.issuerOfServiceEpisodeID = issuerOfServiceEpisodeID;
     }
 
@@ -752,7 +752,7 @@ public class Device implements Serializable {
      *
      * @return The issuer of Container Identifiers.
      */
-    public final Issuer getIssuerOfContainerIdentifier() {
+    public Issuer getIssuerOfContainerIdentifier() {
         return issuerOfContainerIdentifier;
     }
 
@@ -761,7 +761,7 @@ public class Device implements Serializable {
      *
      * @param issuerOfContainerIdentifier The issuer of Container Identifiers.
      */
-    public final void setIssuerOfContainerIdentifier(Issuer issuerOfContainerIdentifier) {
+    public void setIssuerOfContainerIdentifier(Issuer issuerOfContainerIdentifier) {
         this.issuerOfContainerIdentifier = issuerOfContainerIdentifier;
     }
 
@@ -770,7 +770,7 @@ public class Device implements Serializable {
      *
      * @return The issuer of Specimen Identifiers.
      */
-    public final Issuer getIssuerOfSpecimenIdentifier() {
+    public Issuer getIssuerOfSpecimenIdentifier() {
         return issuerOfSpecimenIdentifier;
     }
 
@@ -779,7 +779,7 @@ public class Device implements Serializable {
      *
      * @param issuerOfSpecimenIdentifier The issuer of Specimen Identifiers.
      */
-    public final void setIssuerOfSpecimenIdentifier(Issuer issuerOfSpecimenIdentifier) {
+    public void setIssuerOfSpecimenIdentifier(Issuer issuerOfSpecimenIdentifier) {
         this.issuerOfSpecimenIdentifier = issuerOfSpecimenIdentifier;
     }
 
@@ -847,7 +847,7 @@ public class Device implements Serializable {
      *
      * @return The Trust Store URL.
      */
-    public final String getTrustStoreURL() {
+    public String getTrustStoreURL() {
         return trustStoreURL;
     }
 
@@ -856,7 +856,7 @@ public class Device implements Serializable {
      *
      * @param trustStoreURL The Trust Store URL.
      */
-    public final void setTrustStoreURL(String trustStoreURL) {
+    public void setTrustStoreURL(String trustStoreURL) {
         checkNotEmpty("trustStoreURL", trustStoreURL);
         if (Objects.equals(trustStoreURL, this.trustStoreURL))
             return;
@@ -869,7 +869,7 @@ public class Device implements Serializable {
      *
      * @return The Trust Store type.
      */
-    public final String getTrustStoreType() {
+    public String getTrustStoreType() {
         return trustStoreType;
     }
 
@@ -878,7 +878,7 @@ public class Device implements Serializable {
      *
      * @param trustStoreType The Trust Store type.
      */
-    public final void setTrustStoreType(String trustStoreType) {
+    public void setTrustStoreType(String trustStoreType) {
         checkNotEmpty("trustStoreType", trustStoreType);
         this.trustStoreType = trustStoreType;
     }
@@ -888,7 +888,7 @@ public class Device implements Serializable {
      *
      * @return The Trust Store PIN.
      */
-    public final String getTrustStorePin() {
+    public String getTrustStorePin() {
         return trustStorePin;
     }
 
@@ -897,7 +897,7 @@ public class Device implements Serializable {
      *
      * @param trustStorePin The Trust Store PIN.
      */
-    public final void setTrustStorePin(String trustStorePin) {
+    public void setTrustStorePin(String trustStorePin) {
         checkNotEmpty("trustStorePin", trustStorePin);
         this.trustStorePin = trustStorePin;
     }
@@ -907,7 +907,7 @@ public class Device implements Serializable {
      *
      * @return The property name.
      */
-    public final String getTrustStorePinProperty() {
+    public String getTrustStorePinProperty() {
         return trustStorePinProperty;
     }
 
@@ -916,7 +916,7 @@ public class Device implements Serializable {
      *
      * @param trustStorePinProperty The property name.
      */
-    public final void setTrustStorePinProperty(String trustStorePinProperty) {
+    public void setTrustStorePinProperty(String trustStorePinProperty) {
         checkNotEmpty("trustStorePinProperty", trustStorePinProperty);
         this.trustStorePinProperty = trustStorePinProperty;
     }
@@ -956,7 +956,7 @@ public class Device implements Serializable {
      *
      * @return The Key Store URL.
      */
-    public final String getKeyStoreURL() {
+    public String getKeyStoreURL() {
         return keyStoreURL;
     }
 
@@ -965,7 +965,7 @@ public class Device implements Serializable {
      *
      * @param keyStoreURL The Key Store URL.
      */
-    public final void setKeyStoreURL(String keyStoreURL) {
+    public void setKeyStoreURL(String keyStoreURL) {
         checkNotEmpty("keyStoreURL", keyStoreURL);
         if (Objects.equals(keyStoreURL, this.keyStoreURL))
             return;
@@ -978,7 +978,7 @@ public class Device implements Serializable {
      *
      * @return The Key Store type.
      */
-    public final String getKeyStoreType() {
+    public String getKeyStoreType() {
         return keyStoreType;
     }
 
@@ -987,7 +987,7 @@ public class Device implements Serializable {
      *
      * @param keyStoreType The Key Store type.
      */
-    public final void setKeyStoreType(String keyStoreType) {
+    public void setKeyStoreType(String keyStoreType) {
         checkNotEmpty("keyStoreType", keyStoreType);
         this.keyStoreType = keyStoreType;
     }
@@ -997,7 +997,7 @@ public class Device implements Serializable {
      *
      * @return The Key Store PIN.
      */
-    public final String getKeyStorePin() {
+    public String getKeyStorePin() {
         return keyStorePin;
     }
 
@@ -1006,7 +1006,7 @@ public class Device implements Serializable {
      *
      * @param keyStorePin The Key Store PIN.
      */
-    public final void setKeyStorePin(String keyStorePin) {
+    public void setKeyStorePin(String keyStorePin) {
         checkNotEmpty("keyStorePin", keyStorePin);
         this.keyStorePin = keyStorePin;
     }
@@ -1016,7 +1016,7 @@ public class Device implements Serializable {
      *
      * @return The property name.
      */
-    public final String getKeyStorePinProperty() {
+    public String getKeyStorePinProperty() {
         return keyStorePinProperty;
     }
 
@@ -1025,7 +1025,7 @@ public class Device implements Serializable {
      *
      * @param keyStorePinProperty The property name.
      */
-    public final void setKeyStorePinProperty(String keyStorePinProperty) {
+    public void setKeyStorePinProperty(String keyStorePinProperty) {
         checkNotEmpty("keyStorePinProperty", keyStorePinProperty);
         this.keyStorePinProperty = keyStorePinProperty;
     }
@@ -1035,7 +1035,7 @@ public class Device implements Serializable {
      *
      * @return The key PIN.
      */
-    public final String getKeyStoreKeyPin() {
+    public String getKeyStoreKeyPin() {
         return keyStoreKeyPin;
     }
 
@@ -1044,7 +1044,7 @@ public class Device implements Serializable {
      *
      * @param keyStoreKeyPin The key PIN.
      */
-    public final void setKeyStoreKeyPin(String keyStoreKeyPin) {
+    public void setKeyStoreKeyPin(String keyStoreKeyPin) {
         checkNotEmpty("keyStoreKeyPin", keyStoreKeyPin);
         this.keyStoreKeyPin = keyStoreKeyPin;
     }
@@ -1054,7 +1054,7 @@ public class Device implements Serializable {
      *
      * @return The property name.
      */
-    public final String getKeyStoreKeyPinProperty() {
+    public String getKeyStoreKeyPinProperty() {
         return keyStoreKeyPinProperty;
     }
 
@@ -1063,7 +1063,7 @@ public class Device implements Serializable {
      *
      * @param keyStoreKeyPinProperty The property name.
      */
-    public final void setKeyStoreKeyPinProperty(String keyStoreKeyPinProperty) {
+    public void setKeyStoreKeyPinProperty(String keyStoreKeyPinProperty) {
         checkNotEmpty("keyStoreKeyPinProperty", keyStoreKeyPinProperty);
         this.keyStoreKeyPinProperty = keyStoreKeyPinProperty;
     }
@@ -1098,7 +1098,7 @@ public class Device implements Serializable {
      *
      * @return An array of related device references.
      */
-    public final String[] getRelatedDeviceRefs() {
+    public String[] getRelatedDeviceRefs() {
         return relatedDeviceRefs;
     }
 
@@ -1116,7 +1116,7 @@ public class Device implements Serializable {
      *
      * @return An array of byte arrays containing vendor data.
      */
-    public final byte[][] getVendorData() {
+    public byte[][] getVendorData() {
         return vendorData;
     }
 
@@ -1135,7 +1135,7 @@ public class Device implements Serializable {
      *
      * @return {@code true} if this device is installed.
      */
-    public final boolean isInstalled() {
+    public boolean isInstalled() {
         return installed;
     }
 
@@ -1144,7 +1144,7 @@ public class Device implements Serializable {
      *
      * @param installed {@code true} if this device is installed.
      */
-    public final void setInstalled(boolean installed) {
+    public void setInstalled(boolean installed) {
         if (this.installed == installed)
             return;
         this.installed = installed;
@@ -1192,7 +1192,7 @@ public class Device implements Serializable {
      *
      * @return The DIMSE-RQ handler.
      */
-    public final DimseRQHandler getDimseRQHandler() {
+    public DimseRQHandler getDimseRQHandler() {
         return dimseRQHandler;
     }
 
@@ -1201,7 +1201,7 @@ public class Device implements Serializable {
      *
      * @param dimseRQHandler The DIMSE-RQ handler.
      */
-    public final void setDimseRQHandler(DimseRQHandler dimseRQHandler) {
+    public void setDimseRQHandler(DimseRQHandler dimseRQHandler) {
         this.dimseRQHandler = dimseRQHandler;
     }
 
@@ -1228,7 +1228,7 @@ public class Device implements Serializable {
      *
      * @return The association handler.
      */
-    public final AssociationHandler getAssociationHandler() {
+    public AssociationHandler getAssociationHandler() {
         return associationHandler;
     }
 
@@ -1334,7 +1334,7 @@ public class Device implements Serializable {
      *
      * @return The executor.
      */
-    public final Executor getExecutor() {
+    public Executor getExecutor() {
         return executor;
     }
 
@@ -1343,7 +1343,7 @@ public class Device implements Serializable {
      *
      * @param executor The executor.
      */
-    public final void setExecutor(Executor executor) {
+    public void setExecutor(Executor executor) {
         this.executor = executor;
     }
 
@@ -1352,7 +1352,7 @@ public class Device implements Serializable {
      *
      * @return The scheduled executor service.
      */
-    public final ScheduledExecutorService getScheduledExecutor() {
+    public ScheduledExecutorService getScheduledExecutor() {
         return scheduledExecutor;
     }
 
@@ -1361,7 +1361,7 @@ public class Device implements Serializable {
      *
      * @param executor The scheduled executor service.
      */
-    public final void setScheduledExecutor(ScheduledExecutorService executor) {
+    public void setScheduledExecutor(ScheduledExecutorService executor) {
         this.scheduledExecutor = executor;
     }
 
@@ -1620,7 +1620,7 @@ public class Device implements Serializable {
      *
      * @return The maximum number of open associations, or 0 for unlimited.
      */
-    public final int getLimitOpenAssociations() {
+    public int getLimitOpenAssociations() {
         return limitOpenAssociations;
     }
 
@@ -1629,7 +1629,7 @@ public class Device implements Serializable {
      *
      * @param limit The maximum number of open associations, or 0 for unlimited.
      */
-    public final void setLimitOpenAssociations(int limit) {
+    public void setLimitOpenAssociations(int limit) {
         if (limit < 0)
             throw new IllegalArgumentException("limit: " + limit);
         this.limitOpenAssociations = limit;
@@ -1860,7 +1860,7 @@ public class Device implements Serializable {
      *
      * @return The KeyManager.
      */
-    public final KeyManager getKeyManager() {
+    public KeyManager getKeyManager() {
         return km;
     }
 
@@ -1869,7 +1869,7 @@ public class Device implements Serializable {
      *
      * @param km The KeyManager to set.
      */
-    public final void setKeyManager(KeyManager km) {
+    public void setKeyManager(KeyManager km) {
         this.km = km;
         needReconfigureTLS();
     }
@@ -1943,7 +1943,7 @@ public class Device implements Serializable {
      *
      * @return The TrustManager.
      */
-    public final TrustManager getTrustManager() {
+    public TrustManager getTrustManager() {
         return tm;
     }
 
@@ -1952,7 +1952,7 @@ public class Device implements Serializable {
      *
      * @param tm The TrustManager to set.
      */
-    public final void setTrustManager(TrustManager tm) {
+    public void setTrustManager(TrustManager tm) {
         this.tm = tm;
         needReconfigureTLS();
     }

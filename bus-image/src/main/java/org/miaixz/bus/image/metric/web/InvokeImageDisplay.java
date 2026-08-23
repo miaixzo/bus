@@ -24,7 +24,7 @@ package org.miaixz.bus.image.metric.web;
  *
  * @author Kimi Liu
  */
-public final class InvokeImageDisplay {
+public class InvokeImageDisplay {
 
     /**
      * The series uid value.
@@ -134,7 +134,7 @@ public final class InvokeImageDisplay {
     /**
      * Creates a new instance.
      */
-    private InvokeImageDisplay() {
+    public InvokeImageDisplay() {
         // No initialization required.
     }
 

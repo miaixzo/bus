@@ -29,7 +29,7 @@ import org.opencv.core.MatOfDouble;
  */
 public class BlockMeanHash extends ImgHashBase {
 
-    protected BlockMeanHash(long addr) {
+    public BlockMeanHash(long addr) {
         super(addr);
     }
 

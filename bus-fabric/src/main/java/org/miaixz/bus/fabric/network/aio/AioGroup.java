@@ -42,7 +42,7 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
  *
  * @author Kimi Liu
  */
-public final class AioGroup implements AutoCloseable {
+public class AioGroup implements AutoCloseable {
 
     /**
      * JDK asynchronous channel group.
@@ -76,7 +76,7 @@ public final class AioGroup implements AutoCloseable {
      * @param dispatcher     runtime dispatcher borrowed by channels
      * @param ownsDispatcher true when this group owns the dispatcher lifecycle
      */
-    private AioGroup(final AsynchronousChannelGroup channelGroup, final Dispatcher dispatcher,
+    public AioGroup(final AsynchronousChannelGroup channelGroup, final Dispatcher dispatcher,
             final boolean ownsDispatcher) {
         this.channelGroup = Assert
                 .notNull(channelGroup, () -> new ValidateException("AIO channel group must not be null"));

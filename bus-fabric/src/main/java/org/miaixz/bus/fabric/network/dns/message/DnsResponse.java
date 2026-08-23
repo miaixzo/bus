@@ -29,7 +29,7 @@ import org.miaixz.bus.fabric.network.dns.record.DnsRecord;
  *
  * @author Kimi Liu
  */
-public final class DnsResponse {
+public class DnsResponse {
 
     /**
      * Original query.

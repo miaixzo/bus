@@ -61,7 +61,7 @@ import org.miaixz.bus.fabric.protocol.http.cache.HttpCacheControl;
  *
  * @author Kimi Liu
  */
-public final class HttpResponse implements AutoCloseable {
+public class HttpResponse implements AutoCloseable {
 
     /**
      * Close CAS without a per-response atomic wrapper allocation.
@@ -173,7 +173,7 @@ public final class HttpResponse implements AutoCloseable {
      * @param sentRequestAtMillis      request send wall-clock timestamp
      * @param receivedResponseAtMillis response receive wall-clock timestamp
      */
-    private HttpResponse(final HttpRequest request, final int code, final String message, final Headers headers,
+    public HttpResponse(final HttpRequest request, final int code, final String message, final Headers headers,
             final PayloadBody body, final Protocol protocol, final TlsHandshake handshake,
             final Supplier<Headers> trailers, final HttpResponse networkResponse, final HttpResponse cacheResponse,
             final HttpResponse priorResponse, final long sentRequestAtMillis, final long receivedResponseAtMillis) {
@@ -933,7 +933,7 @@ public final class HttpResponse implements AutoCloseable {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Request candidate.
@@ -1003,7 +1003,7 @@ public final class HttpResponse implements AutoCloseable {
         /**
          * Creates a response builder.
          */
-        private Builder() {
+        public Builder() {
             // No initialization required.
         }
 

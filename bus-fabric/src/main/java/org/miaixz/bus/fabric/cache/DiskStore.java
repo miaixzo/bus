@@ -53,7 +53,7 @@ import org.miaixz.bus.fabric.Payload;
  *
  * @author Kimi Liu
  */
-public final class DiskStore implements CacheStore {
+public class DiskStore implements CacheStore {
 
     /**
      * Absolute directory containing journal and entry files.
@@ -76,7 +76,7 @@ public final class DiskStore implements CacheStore {
      * @param directory absolute cache directory
      * @param maxSize   maximum total stored bytes
      */
-    private DiskStore(final Path directory, final long maxSize) {
+    public DiskStore(final Path directory, final long maxSize) {
         this.directory = directory;
         this.cache = DiskLruCache.create(
                 DiskLruCache.DiskFile.SYSTEM,

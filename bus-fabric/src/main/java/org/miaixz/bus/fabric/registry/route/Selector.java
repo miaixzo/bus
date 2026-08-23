@@ -37,7 +37,7 @@ import org.miaixz.bus.fabric.observe.event.FabricEvent;
  *
  * @author Kimi Liu
  */
-public final class Selector {
+public class Selector {
 
     /**
      * Ready route candidates.

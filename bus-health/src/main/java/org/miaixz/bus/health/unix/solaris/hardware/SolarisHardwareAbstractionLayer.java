@@ -33,7 +33,7 @@ import org.miaixz.bus.health.unix.shared.hardware.UnixDisplay;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class SolarisHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
+public class SolarisHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
 
     /**
      * Creates a new SolarisHardwareAbstractionLayer instance.

@@ -36,7 +36,7 @@ import org.miaixz.bus.fabric.network.dns.message.DnsName;
  *
  * @author Kimi Liu
  */
-public final class DnsRecordSet {
+public class DnsRecordSet {
 
     /**
      * Canonical owner name.

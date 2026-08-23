@@ -131,7 +131,7 @@ public class Tpl2Xml {
      *
      * @param indent {@code true} to enable indentation.
      */
-    public final void setIndent(boolean indent) {
+    public void setIndent(boolean indent) {
         this.indent = indent;
     }
 
@@ -140,7 +140,7 @@ public class Tpl2Xml {
      *
      * @param xmlVersion The XML version string (e.g., "1.0" or "1.1").
      */
-    public final void setXMLVersion(String xmlVersion) {
+    public void setXMLVersion(String xmlVersion) {
         this.xmlVersion = xmlVersion;
     }
 
@@ -149,7 +149,7 @@ public class Tpl2Xml {
      *
      * @param outDir The path to the output directory.
      */
-    public final void setOutDir(String outDir) {
+    public void setOutDir(String outDir) {
         this.outDir = outDir;
     }
 

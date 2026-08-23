@@ -69,7 +69,7 @@ import org.miaixz.bus.mapper.Order;
  * @author Kimi Liu
  */
 @Getter
-public final class Sort implements Serializable, Iterable<Order> {
+public class Sort implements Serializable, Iterable<Order> {
 
     /**
      * Serialization version UID for compatibility.
@@ -88,7 +88,7 @@ public final class Sort implements Serializable, Iterable<Order> {
     /**
      * Creates an unsorted Sort instance.
      */
-    private Sort() {
+    public Sort() {
         this.orders = Collections.emptyList();
     }
 
@@ -243,7 +243,7 @@ public final class Sort implements Serializable, Iterable<Order> {
          *
          * @param property the property name to be sorted
          */
-        private SortBuilder(String property) {
+        public SortBuilder(String property) {
             this.property = property;
         }
 

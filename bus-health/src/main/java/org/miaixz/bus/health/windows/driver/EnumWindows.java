@@ -41,7 +41,7 @@ import org.miaixz.bus.health.builtin.software.OSDesktopWindow;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class EnumWindows {
+public class EnumWindows {
 
     /**
      * Constructs a new EnumWindows instance.

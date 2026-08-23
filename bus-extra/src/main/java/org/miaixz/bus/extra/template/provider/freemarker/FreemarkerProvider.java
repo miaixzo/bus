@@ -76,6 +76,16 @@ public class FreemarkerProvider implements TemplateProvider {
     }
 
     /**
+     * Returns the stable FreeMarker engine name used to identify this template provider.
+     *
+     * @return {@code freemarker}
+     */
+    @Override
+    public String type() {
+        return "freemarker";
+    }
+
+    /**
      * Creates a new FreeMarker {@link Configuration} instance based on the provided {@link TemplateConfig}. This method
      * sets up the template loader and default encoding according to the configuration.
      *

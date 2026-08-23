@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.sensitive.nimble;
 
+import org.miaixz.bus.core.lang.EnumValue;
+
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.sensitive.Context;
@@ -37,6 +39,16 @@ public class CnapsProvider extends AbstractProvider {
      */
     public CnapsProvider() {
         // No initialization required.
+    }
+
+    /**
+     * Returns the masking strategy used to register this CNAPS-code provider.
+     *
+     * @return {@link EnumValue.Masking#CNAPS_CODE}
+     */
+    @Override
+    public EnumValue.Masking type() {
+        return EnumValue.Masking.CNAPS_CODE;
     }
 
     /**

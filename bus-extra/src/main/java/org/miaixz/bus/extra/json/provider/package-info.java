@@ -18,8 +18,24 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides concrete implementations of the JSON provider interface, integrating with popular third-party JSON libraries
- * such as Jackson, Gson, and Fastjson.
+ * Adapts supported JSON engines to the exported provider-neutral JSON contracts.
+ * <p>
+ * {@link org.miaixz.bus.extra.json.provider.JacksonProvider}, {@link org.miaixz.bus.extra.json.provider.GsonProvider},
+ * and {@link org.miaixz.bus.extra.json.provider.FastJsonProvider} translate engine-specific parsing and mapping
+ * behavior to {@link org.miaixz.bus.extra.json.JsonProvider}. Their shared base centralizes conversion to the immutable
+ * {@link org.miaixz.bus.extra.json.JsonValue} model without making engine nodes part of that model.
+ * </p>
+ * <p>
+ * Dependencies flow from these adapters to the JSON root contracts and to their respective engines. The root package,
+ * authentication frameworks, and protocol codecs must not depend back on a concrete adapter, inspect the classpath, or
+ * select a provider through mutable global state. Applications choose and configure one adapter at composition time,
+ * then inject it through the consuming runtime boundary.
+ * </p>
+ * <p>
+ * Each adapter must preserve configured input-size and nesting limits, duplicate-member policy, exact numeric values,
+ * and deterministic UTF-8 output. Engine convenience features must not enable polymorphic type loading or weaken an
+ * untrusted caller's explicit read options, and adapter failures must not disclose complete secret-bearing payloads.
+ * </p>
  *
  * @author Kimi Liu
  */

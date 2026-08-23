@@ -34,9 +34,9 @@ public class NoneUpperBound<T extends Comparable<? super T>> implements Bound<T>
     static final NoneUpperBound INSTANCE = new NoneUpperBound();
 
     /**
-     * Private constructor to enforce singleton pattern.
+     * Creates an unbounded upper endpoint; the shared instance remains available.
      */
-    private NoneUpperBound() {
+    public NoneUpperBound() {
         // No initialization required.
     }
 

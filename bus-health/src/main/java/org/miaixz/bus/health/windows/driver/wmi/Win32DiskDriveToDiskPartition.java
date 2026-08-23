@@ -31,12 +31,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Win32DiskDriveToDiskPartition {
+public class Win32DiskDriveToDiskPartition {
 
     /**
      * Keeps Win32 disk drive to disk partition queries on the static API.
      */
-    private Win32DiskDriveToDiskPartition() {
+    public Win32DiskDriveToDiskPartition() {
         // No initialization required.
     }
 

@@ -33,12 +33,12 @@ import org.miaixz.bus.extra.json.JsonKit;
  *
  * @author Kimi Liu
  */
-public final class ItemBindingProjection {
+public class ItemBindingProjection {
 
     /**
      * Keeps configuration binding projection on the static API.
      */
-    private ItemBindingProjection() {
+    public ItemBindingProjection() {
         // No initialization required.
     }
 

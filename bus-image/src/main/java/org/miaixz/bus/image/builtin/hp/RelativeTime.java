@@ -30,7 +30,7 @@ import java.util.Objects;
  *
  * @author Kimi Liu
  */
-public final class RelativeTime {
+public class RelativeTime {
 
     /**
      * The values value.

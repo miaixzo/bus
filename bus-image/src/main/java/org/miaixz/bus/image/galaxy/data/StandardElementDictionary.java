@@ -36,7 +36,7 @@ public class StandardElementDictionary extends ElementDictionary {
     /**
      * Creates a new instance.
      */
-    private StandardElementDictionary() {
+    public StandardElementDictionary() {
         super(null, Tag.class);
     }
 

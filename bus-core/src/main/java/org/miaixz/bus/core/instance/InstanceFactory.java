@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  *
  * @author Kimi Liu
  */
-public final class InstanceFactory implements Instance {
+public class InstanceFactory implements Instance {
 
     /**
      * Process-wide singleton slots.
@@ -52,9 +52,9 @@ public final class InstanceFactory implements Instance {
     private final ThreadLocal<Map<String, Object>> mapThreadLocal = new ThreadLocal<>();
 
     /**
-     * Private constructor to prevent instantiation.
+     * Creates an instance factory with independent thread-local storage.
      */
-    private InstanceFactory() {
+    public InstanceFactory() {
         // No initialization required.
     }
 

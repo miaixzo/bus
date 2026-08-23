@@ -364,8 +364,7 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
      * @param children The child nodes to add.
      * @return this
      */
-    @SafeVarargs
-    public final MapTree<T> addChildren(final MapTree<T>... children) {
+    public MapTree<T> addChildren(final MapTree<T>... children) {
         if (ArrayKit.isNotEmpty(children)) {
             List<MapTree<T>> childrenList = this.getChildren();
             if (null == childrenList) {

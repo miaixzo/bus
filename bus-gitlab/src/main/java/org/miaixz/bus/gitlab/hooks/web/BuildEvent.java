@@ -43,7 +43,7 @@ public class BuildEvent extends AbstractEvent {
     /**
      * The serial version uid value.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2815283069125L;
     /**
      * The job hook x gitlab event value.
      */

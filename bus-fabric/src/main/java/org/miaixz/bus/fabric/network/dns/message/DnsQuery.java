@@ -27,7 +27,7 @@ import org.miaixz.bus.fabric.network.dns.provider.DnsUpdateCommand;
  *
  * @author Kimi Liu
  */
-public final class DnsQuery {
+public class DnsQuery {
 
     /**
      * Standard query opcode.

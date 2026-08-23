@@ -33,6 +33,7 @@ import org.miaixz.bus.sensitive.magic.annotation.Condition;
 import org.miaixz.bus.sensitive.magic.annotation.Entry;
 import org.miaixz.bus.sensitive.magic.annotation.Shield;
 import org.miaixz.bus.sensitive.nimble.ConditionProvider;
+import org.miaixz.bus.sensitive.nimble.DafaultProvider;
 import org.miaixz.bus.sensitive.nimble.StrategyProvider;
 
 /**
@@ -180,10 +181,9 @@ public class Filter {
             if (ObjectKit.isNotNull(sensitive)) {
                 ConditionProvider condition = ReflectKit.newInstance(sensitive.condition());
                 if (condition.valid(context)) {
-                    StrategyProvider strategy = Registry.require(sensitive.type());
-                    if (ObjectKit.isEmpty(strategy)) {
-                        strategy = ReflectKit.newInstance(sensitive.strategy());
-                    }
+                    StrategyProvider strategy = DafaultProvider.class.equals(sensitive.strategy())
+                            ? Registry.require(sensitive.type())
+                            : ReflectKit.newInstance(sensitive.strategy());
                     context.setEntry(null);
                     Logger.debug(
                             false,

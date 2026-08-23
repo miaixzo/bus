@@ -38,7 +38,7 @@ public abstract class AbstractSegment implements StringSegment {
      *
      * @param placeholder The placeholder string.
      */
-    protected AbstractSegment(final String placeholder) {
+    public AbstractSegment(final String placeholder) {
         this.placeholder = placeholder;
     }
 

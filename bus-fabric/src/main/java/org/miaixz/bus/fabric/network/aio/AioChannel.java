@@ -58,7 +58,7 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
  *
  * @author Kimi Liu
  */
-public final class AioChannel implements Conduit {
+public class AioChannel implements Conduit {
 
     /**
      * JDK socket channel.
@@ -151,7 +151,7 @@ public final class AioChannel implements Conduit {
      * @param channel    JDK channel
      * @param dispatcher runtime dispatcher
      */
-    AioChannel(final AsynchronousSocketChannel channel, final Dispatcher dispatcher) {
+    public AioChannel(final AsynchronousSocketChannel channel, final Dispatcher dispatcher) {
         this(channel, dispatcher, SocketOptions.defaults());
     }
 

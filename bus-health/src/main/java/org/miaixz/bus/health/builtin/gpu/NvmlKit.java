@@ -51,7 +51,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class NvmlKit {
+public class NvmlKit {
 
     // -------------------------------------------------------------------------
     // Library loading (holder pattern — loads the .dll/.so once)
@@ -106,7 +106,7 @@ public final class NvmlKit {
     /**
      * Creates a new NvmlKit instance.
      */
-    private NvmlKit() {
+    public NvmlKit() {
         // No initialization required.
     }
 

@@ -65,7 +65,7 @@ import org.miaixz.bus.mapper.runtime.MapperOptions;
  *
  * @author Kimi Liu
  */
-public final class IdentifierValidator {
+public class IdentifierValidator {
 
     /**
      * Portable unquoted SQL identifier syntax.

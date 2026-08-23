@@ -33,7 +33,7 @@ public class DocumentBuilder {
     /**
      * Keeps XML document-builder creation on the static API.
      */
-    private DocumentBuilder() {
+    public DocumentBuilder() {
         // No initialization required.
     }
 

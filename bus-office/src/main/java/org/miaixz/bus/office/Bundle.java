@@ -31,9 +31,9 @@ import lombok.experimental.SuperBuilder;
  *
  * @author Kimi Liu
  */
-public final class Bundle {
+public class Bundle {
 
-    private Bundle() {
+    public Bundle() {
         // No initialization required.
     }
 

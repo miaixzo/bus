@@ -47,7 +47,7 @@ import org.miaixz.bus.health.mac.CFKit;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class MacPowerSource extends AbstractPowerSource {
+public class MacPowerSource extends AbstractPowerSource {
 
     /**
      * CoreFoundation instance for JNA calls.

@@ -48,7 +48,7 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
  *
  * @author Kimi Liu
  */
-public final class Ingress implements Connection, Conduit {
+public class Ingress implements Connection, Conduit {
 
     /**
      * Ingress destination.
@@ -114,7 +114,7 @@ public final class Ingress implements Connection, Conduit {
      * @param channel     socket channel
      * @param prefix      prefetched bytes
      */
-    private Ingress(final Destination destination, final SocketChannel channel, final Buffer prefix) {
+    public Ingress(final Destination destination, final SocketChannel channel, final Buffer prefix) {
         this.destination = destination;
         this.channel = channel;
         this.prefix = prefix == null ? new Buffer() : prefix;

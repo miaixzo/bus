@@ -38,7 +38,7 @@ import org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatNetInterface;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class AixNetworkIF extends AbstractNetworkIF {
+public class AixNetworkIF extends AbstractNetworkIF {
 
     /**
      * The netstats value.
@@ -227,7 +227,7 @@ public final class AixNetworkIF extends AbstractNetworkIF {
      * @return the update attributes result
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         perfstat_netinterface_t[] stats = netstats.get();
         long now = System.currentTimeMillis();
         for (perfstat_netinterface_t stat : stats) {

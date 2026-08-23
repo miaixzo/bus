@@ -71,7 +71,7 @@ public class DicomModule {
      *
      * @return the attributes.
      */
-    public final Attributes getAttributes() {
+    public Attributes getAttributes() {
         return dcmItems;
     }
 
@@ -80,7 +80,7 @@ public class DicomModule {
      *
      * @param seqTag the seq tag.
      */
-    public final void removeAllSequenceItems(int seqTag) {
+    public void removeAllSequenceItems(int seqTag) {
         Sequence sequence = dcmItems.getSequence(seqTag);
         if (sequence != null) {
             sequence.clear();
@@ -93,7 +93,7 @@ public class DicomModule {
      * @param seqTag the seq tag.
      * @param index  the index.
      */
-    public final void removeSequenceItem(int seqTag, int index) {
+    public void removeSequenceItem(int seqTag, int index) {
         Sequence sequence = dcmItems.getSequence(seqTag);
         if (sequence != null && index >= 0 && index < sequence.size()) {
             sequence.remove(index);
@@ -106,7 +106,7 @@ public class DicomModule {
      * @param seqTag the seq tag.
      * @param item   the item.
      */
-    public final void removeSequenceItem(int seqTag, Attributes item) {
+    public void removeSequenceItem(int seqTag, Attributes item) {
         Sequence sequence = dcmItems.getSequence(seqTag);
         if (sequence != null) {
             sequence.remove(item);
@@ -119,7 +119,7 @@ public class DicomModule {
      * @param tag    the tag.
      * @param module the module.
      */
-    protected final void updateSequence(int tag, DicomModule module) {
+    protected void updateSequence(int tag, DicomModule module) {
         clearSequence(tag);
         if (module != null) {
             dcmItems.newSequence(tag, 1).add(detached(module.getAttributes()));
@@ -132,7 +132,7 @@ public class DicomModule {
      * @param tag     the tag.
      * @param modules the modules.
      */
-    protected final void updateSequence(int tag, Collection<? extends DicomModule> modules) {
+    protected void updateSequence(int tag, Collection<? extends DicomModule> modules) {
         clearSequence(tag);
         if (modules != null && !modules.isEmpty()) {
             Sequence sequence = dcmItems.newSequence(tag, modules.size());
@@ -150,7 +150,7 @@ public class DicomModule {
      * @param tag  the tag.
      * @param code the code.
      */
-    protected final void updateCodeSequence(int tag, Code code) {
+    protected void updateCodeSequence(int tag, Code code) {
         clearSequence(tag);
         if (code != null) {
             dcmItems.newSequence(tag, 1).add(code.toItem());

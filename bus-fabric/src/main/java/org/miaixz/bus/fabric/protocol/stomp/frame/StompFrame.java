@@ -36,7 +36,7 @@ import org.miaixz.bus.fabric.Payload;
  *
  * @author Kimi Liu
  */
-public final class StompFrame {
+public class StompFrame {
 
     /**
      * Unique heartbeat frame.

@@ -57,7 +57,7 @@ public abstract class ElementDictionary {
      * @param privateCreator The private creator ID, or {@code null} for the standard dictionary.
      * @param tagClass       The class containing static final fields for DICOM tags.
      */
-    protected ElementDictionary(String privateCreator, Class<?> tagClass) {
+    public ElementDictionary(String privateCreator, Class<?> tagClass) {
         this.privateCreator = privateCreator;
         this.tagClass = tagClass;
     }
@@ -144,7 +144,7 @@ public abstract class ElementDictionary {
      *
      * @return The private creator ID, or {@code null} if this is the standard dictionary.
      */
-    public final String getPrivateCreator() {
+    public String getPrivateCreator() {
         return privateCreator;
     }
 

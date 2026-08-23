@@ -20,18 +20,26 @@
 package org.miaixz.bus.health.builtin.software.common;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.software.NetworkParams;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Common NetworkParams implementation.
@@ -52,6 +60,12 @@ public abstract class AbstractNetworkParams implements NetworkParams {
      * The NAMESERVER constant.
      */
     private static final String NAMESERVER = "nameserver";
+
+    /**
+     * Memoized local host lookup.
+     */
+    private final SupplierX<InetAddress> localHost = Memoizer
+            .memoize(this::queryLocalHost, Memoizer.defaultExpiration());
 
     /**
      * Convenience method to parse the output of the `route` command. While the command arguments vary between OS's the
@@ -75,19 +89,55 @@ public abstract class AbstractNetworkParams implements NetworkParams {
     }
 
     /**
+     * Maps interface names to their indices.
+     *
+     * @return A map of interface name to interface index.
+     */
+    protected static Map<String, Integer> queryInterfaceIndexByName() {
+        Map<String, Integer> map = new HashMap<>();
+        for (NetworkInterface netIf : queryNetworkInterfaces()) {
+            map.put(netIf.getName(), netIf.getIndex());
+        }
+        return map;
+    }
+
+    /**
+     * Maps interface indices to their names.
+     *
+     * @return A map of interface index to interface name.
+     */
+    protected static Map<Integer, String> queryInterfaceNameByIndex() {
+        Map<Integer, String> map = new HashMap<>();
+        for (NetworkInterface netIf : queryNetworkInterfaces()) {
+            map.put(netIf.getIndex(), netIf.getName());
+        }
+        return map;
+    }
+
+    /**
+     * Queries available network interfaces.
+     *
+     * @return A list of network interfaces.
+     */
+    private static List<NetworkInterface> queryNetworkInterfaces() {
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            return interfaces == null ? Collections.emptyList() : Collections.list(interfaces);
+        } catch (Exception e) {
+            Logger.debug(false, "Health", "Socket exception when retrieving interfaces", e);
+            return Collections.emptyList();
+        }
+    }
+
+    /**
      * Returns the domain name.
      *
      * @return the get domain name result
      */
     @Override
     public String getDomainName() {
-        InetAddress localHost;
-        try {
-            localHost = InetAddress.getLocalHost();
-        } catch (UnknownHostException e) {
-            localHost = InetAddress.getLoopbackAddress();
-        }
-        return localHost.getCanonicalHostName();
+        InetAddress addr = this.localHost.get();
+        return addr == null ? Normal.EMPTY : addr.getCanonicalHostName();
     }
 
     /**
@@ -97,18 +147,30 @@ public abstract class AbstractNetworkParams implements NetworkParams {
      */
     @Override
     public String getHostName() {
-        InetAddress localHost;
-        try {
-            localHost = InetAddress.getLocalHost();
-        } catch (UnknownHostException e) {
-            localHost = InetAddress.getLoopbackAddress();
+        InetAddress addr = this.localHost.get();
+        if (addr == null) {
+            return Normal.EMPTY;
         }
-        String hn = localHost.getHostName();
+        String hn = addr.getHostName();
         int dot = hn.indexOf(Symbol.C_DOT);
         if (dot == -1) {
             return hn;
         }
         return hn.substring(0, dot);
+    }
+
+    /**
+     * Resolves the local host.
+     *
+     * @return The local host, or {@code null} if it does not resolve.
+     */
+    protected InetAddress queryLocalHost() {
+        try {
+            return InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            Logger.debug(false, "Health", "Unknown host exception when getting address of local host", e);
+            return null;
+        }
     }
 
     /**

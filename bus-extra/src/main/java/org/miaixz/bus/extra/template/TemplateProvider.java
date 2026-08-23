@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.extra.template;
 
+import org.miaixz.bus.core.Provider;
 import org.miaixz.bus.core.lang.Wrapper;
 
 /**
@@ -27,7 +28,15 @@ import org.miaixz.bus.core.lang.Wrapper;
  *
  * @author Kimi Liu
  */
-public interface TemplateProvider extends Wrapper<Object> {
+public interface TemplateProvider extends Wrapper<Object>, Provider<String> {
+
+    /**
+     * Returns the stable template-engine name used to identify this provider after SPI or configured-class discovery.
+     *
+     * @return non-blank template-engine name
+     */
+    @Override
+    String type();
 
     /**
      * Initializes the template engine with the specified configuration.

@@ -54,7 +54,7 @@ public class FileKit extends PathResolve {
     /**
      * Keeps file and path operations on the static API.
      */
-    private FileKit() {
+    public FileKit() {
         // No initialization required.
     }
 

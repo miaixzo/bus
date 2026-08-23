@@ -44,7 +44,7 @@ public abstract class WrappedDecryptorProvider implements DecryptorProvider {
      *
      * @param decryptorProvider The decryptor provider to wrap.
      */
-    protected WrappedDecryptorProvider(DecryptorProvider decryptorProvider) {
+    public WrappedDecryptorProvider(DecryptorProvider decryptorProvider) {
         this.decryptorProvider = decryptorProvider;
     }
 

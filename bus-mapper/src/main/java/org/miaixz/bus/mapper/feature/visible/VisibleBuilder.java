@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.Visible;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -118,7 +119,7 @@ public class VisibleBuilder {
      * @return true if has annotation, false otherwise
      */
     private boolean hasVisibleAnnotation(Class<?> entityClass) {
-        return entityClass.isAnnotationPresent(org.miaixz.bus.core.lang.annotation.Visible.class);
+        return entityClass.isAnnotationPresent(Visible.class);
     }
 
     /**

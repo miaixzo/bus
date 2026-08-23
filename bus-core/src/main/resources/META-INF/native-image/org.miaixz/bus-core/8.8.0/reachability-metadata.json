@@ -255,10 +255,10 @@
           "name": "x_duty_id"
         },
         {
-          "name": "x_namespace_id"
+          "name": "x_space_id"
         },
         {
-          "name": "x_namespace_name"
+          "name": "x_space_name"
         },
         {
           "name": "x_raw_data"
@@ -384,11 +384,11 @@
           "parameterTypes": []
         },
         {
-          "name": "getX_namespace_id",
+          "name": "getX_space_id",
           "parameterTypes": []
         },
         {
-          "name": "getX_namespace_name",
+          "name": "getX_space_name",
           "parameterTypes": []
         },
         {
@@ -549,13 +549,13 @@
           ]
         },
         {
-          "name": "setX_namespace_id",
+          "name": "setX_space_id",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "setX_namespace_name",
+          "name": "setX_space_name",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -932,10 +932,10 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.basic.entity.Namespace",
+      "type": "org.miaixz.bus.core.basic.entity.Space",
       "fields": [
         {
-          "name": "namespace_id"
+          "name": "space_id"
         }
       ],
       "methods": [
@@ -946,7 +946,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.core.basic.entity.Namespace$NamespaceBuilder"
+            "org.miaixz.bus.core.basic.entity.Space$SpaceBuilder"
           ]
         },
         {
@@ -988,7 +988,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getNamespace_id",
+          "name": "getSpace_id",
           "parameterTypes": []
         },
         {
@@ -1039,11 +1039,11 @@
           "parameterTypes": []
         },
         {
-          "name": "getX_namespace_id",
+          "name": "getX_space_id",
           "parameterTypes": []
         },
         {
-          "name": "getX_namespace_name",
+          "name": "getX_space_name",
           "parameterTypes": []
         },
         {
@@ -1127,7 +1127,7 @@
           "parameterTypes": []
         },
         {
-          "name": "inNamespace",
+          "name": "inSpace",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -1184,7 +1184,7 @@
           ]
         },
         {
-          "name": "setNamespace_id",
+          "name": "setSpace_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -1258,13 +1258,13 @@
           ]
         },
         {
-          "name": "setX_namespace_id",
+          "name": "setX_space_id",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "setX_namespace_name",
+          "name": "setX_space_name",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -1407,7 +1407,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.basic.entity.Namespace$NamespaceBuilder",
+      "type": "org.miaixz.bus.core.basic.entity.Space$SpaceBuilder",
       "methods": [
         {
           "name": "<init>",
@@ -1416,7 +1416,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.basic.entity.Namespace$NamespaceBuilderImpl",
+      "type": "org.miaixz.bus.core.basic.entity.Space$SpaceBuilderImpl",
       "methods": [
         {
           "name": "<init>",
@@ -1914,11 +1914,11 @@
           "parameterTypes": []
         },
         {
-          "name": "getX_namespace_id",
+          "name": "getX_space_id",
           "parameterTypes": []
         },
         {
-          "name": "getX_namespace_name",
+          "name": "getX_space_name",
           "parameterTypes": []
         },
         {
@@ -2127,13 +2127,13 @@
           ]
         },
         {
-          "name": "setX_namespace_id",
+          "name": "setX_space_id",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "setX_namespace_name",
+          "name": "setX_space_name",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -2427,11 +2427,11 @@
           "parameterTypes": []
         },
         {
-          "name": "getX_namespace_id",
+          "name": "getX_space_id",
           "parameterTypes": []
         },
         {
-          "name": "getX_namespace_name",
+          "name": "getX_space_name",
           "parameterTypes": []
         },
         {
@@ -2634,13 +2634,13 @@
           ]
         },
         {
-          "name": "setX_namespace_id",
+          "name": "setX_space_id",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "setX_namespace_name",
+          "name": "setX_space_name",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -12006,19 +12006,6 @@
           "parameterTypes": [
             "java.lang.String",
             "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Povider",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String"
           ]
         }
       ]

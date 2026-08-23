@@ -43,7 +43,7 @@ public class HexKit extends Hex {
     /**
      * Keeps hexadecimal encoding and decoding on the static API.
      */
-    private HexKit() {
+    public HexKit() {
         // No initialization required.
     }
 

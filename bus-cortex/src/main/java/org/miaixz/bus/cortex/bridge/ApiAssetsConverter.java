@@ -29,12 +29,12 @@ import org.miaixz.bus.cortex.registry.api.ApiAssets;
  *
  * @author Kimi Liu
  */
-public final class ApiAssetsConverter {
+public class ApiAssetsConverter {
 
     /**
      * Creates a new ApiAssetsConverter.
      */
-    private ApiAssetsConverter() {
+    public ApiAssetsConverter() {
         // No initialization required.
     }
 

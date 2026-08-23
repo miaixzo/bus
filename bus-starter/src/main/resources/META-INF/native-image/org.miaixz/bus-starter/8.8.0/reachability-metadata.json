@@ -18,8 +18,22 @@
           "name": "<init>",
           "parameterTypes": [
             "boolean",
-            "java.util.Map",
             "org.miaixz.bus.cache.Options"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.auth.AuthProperties$Client",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.List"
           ]
         }
       ]
@@ -30,8 +44,10 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.starter.auth.AuthProperties",
-            "org.miaixz.bus.cache.CacheX"
+            "org.springframework.core.env.Environment",
+            "org.miaixz.bus.cache.CacheX",
+            "java.util.concurrent.Executor",
+            "org.miaixz.bus.auth.source.SourceAggregate"
           ]
         }
       ]

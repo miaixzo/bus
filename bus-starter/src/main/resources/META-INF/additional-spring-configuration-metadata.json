@@ -3,8 +3,8 @@
     {
       "name": "bus.auth.enabled",
       "type": "java.lang.Boolean",
-      "description": "Whether Auth integration is enabled.",
-      "defaultValue": false
+      "description": "Whether bus-auth Source discovery, Vendor configuration, and Runtime integration are enabled.",
+      "defaultValue": true
     },
     {
       "name": "bus.cache.enabled",

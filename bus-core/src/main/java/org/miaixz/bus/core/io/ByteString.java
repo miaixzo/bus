@@ -637,7 +637,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
      * @param prefix The prefix to check.
      * @return True if this byte string starts with the prefix, false otherwise.
      */
-    public final boolean startsWith(ByteString prefix) {
+    public boolean startsWith(ByteString prefix) {
         return rangeEquals(0, prefix, 0, prefix.size());
     }
 
@@ -647,7 +647,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
      * @param prefix The byte array prefix to check.
      * @return True if this byte string starts with the prefix, false otherwise.
      */
-    public final boolean startsWith(byte[] prefix) {
+    public boolean startsWith(byte[] prefix) {
         return rangeEquals(0, prefix, 0, prefix.length);
     }
 
@@ -657,7 +657,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
      * @param suffix The suffix to check.
      * @return True if this byte string ends with the suffix, false otherwise.
      */
-    public final boolean endsWith(ByteString suffix) {
+    public boolean endsWith(ByteString suffix) {
         return rangeEquals(size() - suffix.size(), suffix, 0, suffix.size());
     }
 
@@ -667,7 +667,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
      * @param suffix The byte array suffix to check.
      * @return True if this byte string ends with the suffix, false otherwise.
      */
-    public final boolean endsWith(byte[] suffix) {
+    public boolean endsWith(byte[] suffix) {
         return rangeEquals(size() - suffix.length, suffix, 0, suffix.length);
     }
 
@@ -677,7 +677,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
      * @param other The byte string to search for.
      * @return The index of the first occurrence of the specified byte string, or -1 if not found.
      */
-    public final int indexOf(ByteString other) {
+    public int indexOf(ByteString other) {
         return indexOf(other.internalArray(), 0);
     }
 
@@ -689,7 +689,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
      * @param fromIndex The index from which to start the search.
      * @return The index of the first occurrence of the specified byte string, or -1 if not found.
      */
-    public final int indexOf(ByteString other, int fromIndex) {
+    public int indexOf(ByteString other, int fromIndex) {
         return indexOf(other.internalArray(), fromIndex);
     }
 
@@ -699,7 +699,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
      * @param other The byte array to search for.
      * @return The index of the first occurrence of the specified byte array, or -1 if not found.
      */
-    public final int indexOf(byte[] other) {
+    public int indexOf(byte[] other) {
         return indexOf(other, 0);
     }
 
@@ -727,7 +727,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
      * @param other The byte string to search for.
      * @return The index of the last occurrence of the specified byte string, or -1 if not found.
      */
-    public final int lastIndexOf(ByteString other) {
+    public int lastIndexOf(ByteString other) {
         return lastIndexOf(other.internalArray(), size());
     }
 
@@ -739,7 +739,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
      * @param fromIndex The index from which to start the search backward.
      * @return The index of the last occurrence of the specified byte string, or -1 if not found.
      */
-    public final int lastIndexOf(ByteString other, int fromIndex) {
+    public int lastIndexOf(ByteString other, int fromIndex) {
         return lastIndexOf(other.internalArray(), fromIndex);
     }
 
@@ -749,7 +749,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
      * @param other The byte array to search for.
      * @return The index of the last occurrence of the specified byte array, or -1 if not found.
      */
-    public final int lastIndexOf(byte[] other) {
+    public int lastIndexOf(byte[] other) {
         return lastIndexOf(other, size());
     }
 

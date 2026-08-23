@@ -42,7 +42,7 @@ import org.miaixz.bus.fabric.network.dns.observe.DnsMetrics;
  *
  * @author Kimi Liu
  */
-public final class DnsResponseCache {
+public class DnsResponseCache {
 
     /**
      * Default lower bound for positive non-zero DNS TTL values.
@@ -575,7 +575,7 @@ public final class DnsResponseCache {
      *
      * @author Kimi Liu
      */
-    public static final class CachedResponse {
+    public static class CachedResponse {
 
         /**
          * Response bytes with the active query identifier.
@@ -599,7 +599,7 @@ public final class DnsResponseCache {
          * @param stale         whether the response is outside the normal TTL and inside the stale window
          * @param prefetchEntry entry that may be refreshed asynchronously, or {@code null}
          */
-        private CachedResponse(final byte[] response, final boolean stale, final Entry prefetchEntry) {
+        public CachedResponse(final byte[] response, final boolean stale, final Entry prefetchEntry) {
             this.response = response;
             this.stale = stale;
             this.prefetchEntry = prefetchEntry;
@@ -874,7 +874,6 @@ public final class DnsResponseCache {
          *
          * @return timing wheel buckets
          */
-        @SuppressWarnings("unchecked")
         private ArrayDeque<DnsCacheKey>[] newTimingWheel() {
             final ArrayDeque<DnsCacheKey>[] wheel = new ArrayDeque[TIMING_WHEEL_SLOTS];
             for (int index = 0; index < wheel.length; index++) {

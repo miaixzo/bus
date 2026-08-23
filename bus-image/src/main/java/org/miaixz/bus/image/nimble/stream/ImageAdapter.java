@@ -66,7 +66,7 @@ public class ImageAdapter {
     /**
      * Creates a new instance.
      */
-    private ImageAdapter() {
+    public ImageAdapter() {
         // No initialization required.
     }
 

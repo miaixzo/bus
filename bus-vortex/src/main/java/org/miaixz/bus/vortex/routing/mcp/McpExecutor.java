@@ -58,6 +58,7 @@ import org.miaixz.bus.vortex.Octets;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.routing.Coordinator;
 import org.miaixz.bus.vortex.routing.StreamingRelay;
+import org.miaixz.bus.vortex.routing.rest.RestExecutor;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -65,9 +66,9 @@ import reactor.core.publisher.Mono;
 /**
  * The core executor for proxying MCP Streamable HTTP requests to registered downstream MCP services.
  * <p>
- * This executor follows the same WebClient execution shape as {@link org.miaixz.bus.vortex.routing.rest.RestExecutor}:
- * it validates the resolved runtime route asset, builds a downstream request, configures headers and body content, then
- * selects buffered, realtime-streaming or download response ownership from the strict route asset mode.
+ * This executor follows the same WebClient execution shape as {@link RestExecutor}: it validates the resolved runtime
+ * route asset, builds a downstream request, configures headers and body content, then selects buffered,
+ * realtime-streaming or download response ownership from the strict route asset mode.
  *
  * @author Kimi Liu
  */
@@ -630,8 +631,8 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * Handles an atomic MCP response under the bounded response-byte budget.
      * <p>
      * This path mirrors REST buffering behavior by consuming the downstream response body inside the WebClient exchange
-     * before the {@link ServerResponse} is returned. Content-Length is mandatory and the exact logical-byte lease is
-     * retained until the gateway response write terminates.
+     * before the {@link ServerResponse} is returned. Known lengths reserve their exact size; unknown lengths reserve
+     * the configured response maximum. The logical-byte lease is retained until the gateway response write terminates.
      *
      * @param bodySpec The request body specification.
      * @param context  qualified MCP request context
@@ -676,13 +677,12 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     }
 
                     long declaredLength = responseEntity.getHeaders().getContentLength();
-                    if (declaredLength < 0
-                            || declaredLength > Math.toIntExact(Holder.get().getMaxBufferedResponseSize())) {
+                    if (declaredLength > Math.toIntExact(Holder.get().getMaxBufferedResponseSize())) {
                         return Octets.discard(bodyFlux).then(
                                 Mono.error(
-                                        new DataBufferLimitException(
-                                                "Atomic MCP response requires Content-Length in range 0.."
-                                                        + Math.toIntExact(Holder.get().getMaxBufferedResponseSize()))));
+                                        new DataBufferLimitException("Atomic MCP response exceeds buffered limit of "
+                                                + Math.toIntExact(Holder.get().getMaxBufferedResponseSize())
+                                                + " bytes")));
                     }
                     return Octets.readForRelay(
                             bodyFlux,
@@ -690,15 +690,17 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                             Holder.responseBufferBudget(),
                             declaredLength).flatMap(bufferedBody -> {
                                 int bodyLength = bufferedBody.length();
-                                if (bodyLength != declaredLength) {
+                                if (declaredLength >= 0 && bodyLength != declaredLength) {
                                     bufferedBody.close();
                                     return Mono.error(
                                             new DataBufferLimitException(
                                                     "Atomic MCP response length mismatch: declared=" + declaredLength
                                                             + ", actual=" + bodyLength));
                                 }
-                                return responseBuilder.contentLength(bodyLength)
-                                        .body(BodyInserters.fromDataBuffers(Octets.chunksAndClose(bufferedBody)));
+                                return Octets.own(
+                                        responseBuilder.contentLength(bodyLength)
+                                                .body(BodyInserters.fromDataBuffers(Octets.chunks(bufferedBody))),
+                                        bufferedBody);
                             });
                 })
                 .doOnSubscribe(

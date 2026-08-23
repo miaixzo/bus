@@ -729,7 +729,7 @@ public interface Conduit extends AutoCloseable {
      * scattering bytes.
      * </p>
      */
-    final class BufferRange {
+    class BufferRange {
 
         /**
          * First buffer index in the caller array.
@@ -765,7 +765,7 @@ public interface Conduit extends AutoCloseable {
          * @param positions captured positions
          * @param limits    captured limits
          */
-        private BufferRange(final int offset, final int length, final long total, final int[] positions,
+        public BufferRange(final int offset, final int length, final long total, final int[] positions,
                 final int[] limits) {
             this.offset = offset;
             this.length = length;

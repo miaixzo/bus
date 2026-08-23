@@ -24,7 +24,7 @@ import org.miaixz.bus.cortex.setting.item.ItemQuery;
 import org.miaixz.bus.cortex.setting.item.ItemScope;
 
 /**
- * Centralized enforcer for namespace/app/profile relationship validation within the setting domain.
+ * Centralized enforcer for space/app/profile relationship validation within the setting domain.
  *
  * @author Kimi Liu
  */
@@ -61,14 +61,14 @@ public interface SettingEnforcer {
     }
 
     /**
-     * Returns whether a namespace, application, and profile relation is allowed.
+     * Returns whether a space, application, and profile relation is allowed.
      *
-     * @param namespace_id namespace identifier
-     * @param app_id       application identifier
-     * @param profile_id   profile identifier
+     * @param space_id   space identifier
+     * @param app_id     application identifier
+     * @param profile_id profile identifier
      * @return {@code true} when the relation is allowed
      */
-    default boolean allows(String namespace_id, String app_id, String profile_id) {
+    default boolean allows(String space_id, String app_id, String profile_id) {
         return true;
     }
 

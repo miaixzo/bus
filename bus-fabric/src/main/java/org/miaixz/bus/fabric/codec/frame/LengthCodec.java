@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class LengthCodec implements FrameCodec {
+public class LengthCodec implements FrameCodec {
 
     /**
      * Number of zero-prefixed header bytes before the length field.
@@ -68,7 +68,7 @@ public final class LengthCodec implements FrameCodec {
      *
      * @param builder builder containing length-field configuration
      */
-    private LengthCodec(final Builder builder) {
+    public LengthCodec(final Builder builder) {
         this.lengthFieldOffset = validateOffset(builder.lengthFieldOffset);
         this.lengthFieldSize = validateSize(builder.lengthFieldSize);
         this.lengthIncludesHeader = builder.lengthIncludesHeader;
@@ -315,7 +315,7 @@ public final class LengthCodec implements FrameCodec {
     /**
      * Length codec builder.
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Number of zero-prefixed bytes before the length field.
@@ -340,7 +340,7 @@ public final class LengthCodec implements FrameCodec {
         /**
          * Creates a builder.
          */
-        private Builder() {
+        public Builder() {
             // No initialization required.
         }
 

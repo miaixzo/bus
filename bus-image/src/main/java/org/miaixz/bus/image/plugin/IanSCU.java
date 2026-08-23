@@ -140,7 +140,7 @@ public class IanSCU {
      *
      * @param uidSuffix The UID suffix string.
      */
-    public final void setUIDSuffix(String uidSuffix) {
+    public void setUIDSuffix(String uidSuffix) {
         this.uidSuffix = uidSuffix;
     }
 

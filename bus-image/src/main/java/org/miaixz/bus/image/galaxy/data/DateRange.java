@@ -63,7 +63,7 @@ public class DateRange implements Serializable {
      *
      * @return the start date.
      */
-    public final Date getStartDate() {
+    public Date getStartDate() {
         return start;
     }
 
@@ -72,7 +72,7 @@ public class DateRange implements Serializable {
      *
      * @return the end date.
      */
-    public final Date getEndDate() {
+    public Date getEndDate() {
         return end;
     }
 

@@ -18,14 +18,20 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.sensitive
+ * Module: {@code bus.sensitive}
+ *
+ * <p>
+ * Provides configurable masking and desensitization of sensitive data.
+ *
+ * <p>
+ * Includes masking annotations, sanitization filters, strategy and provider registries, conditional processing, and
+ * built-in rules for names, addresses, identity numbers, bank cards, email addresses, phone numbers, and passwords.
  *
  * @author Kimi Liu
  */
 module bus.sensitive {
 
     requires bus.core;
-    requires bus.crypto;
     requires bus.extra;
     requires bus.logger;
 

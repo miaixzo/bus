@@ -26,6 +26,7 @@ import org.apache.ibatis.annotations.Lang;
 import org.apache.ibatis.annotations.Param;
 
 import org.miaixz.bus.mapper.Caching;
+import org.miaixz.bus.mapper.binding.list.ListMapper;
 import org.miaixz.bus.mapper.provider.BatchProvider;
 
 /**
@@ -37,7 +38,7 @@ import org.miaixz.bus.mapper.provider.BatchProvider;
  * </p>
  *
  * <p>
- * It is intentionally different from {@link org.miaixz.bus.mapper.binding.list.ListMapper}:
+ * It is intentionally different from {@link ListMapper}:
  * </p>
  * <ul>
  * <li><b>BatchMapper:</b> Native SQL first, stronger dialect dependency, best insert/upsert throughput.</li>
@@ -56,7 +57,7 @@ import org.miaixz.bus.mapper.provider.BatchProvider;
  *
  * <p>
  * Do not treat this interface as the default choice for every batch write. If batch updates are required, or native
- * UPSERT is not guaranteed across dialects, prefer {@link org.miaixz.bus.mapper.binding.list.ListMapper}.
+ * UPSERT is not guaranteed across dialects, prefer {@link ListMapper}.
  * </p>
  *
  * <p>

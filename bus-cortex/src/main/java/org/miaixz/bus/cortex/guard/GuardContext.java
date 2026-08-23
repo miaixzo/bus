@@ -44,9 +44,9 @@ public class GuardContext {
     }
 
     /**
-     * Namespace identifier of the protected asset.
+     * Space identifier of the protected asset.
      */
-    private String namespace_id;
+    private String space_id;
 
     /**
      * Protected domain such as registry, setting, or version.
@@ -114,12 +114,12 @@ public class GuardContext {
     private Map<String, Object> attributes;
 
     /**
-     * Sets the namespace identifier of the protected asset.
+     * Sets the space identifier of the protected asset.
      *
-     * @param namespace_id namespace identifier
+     * @param space_id space identifier
      */
-    public void namespace_id(String namespace_id) {
-        this.namespace_id = CortexIdentity.namespace(namespace_id);
+    public void space_id(String space_id) {
+        this.space_id = CortexIdentity.space(space_id);
     }
 
     /**

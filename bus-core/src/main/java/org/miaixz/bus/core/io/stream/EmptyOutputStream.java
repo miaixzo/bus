@@ -38,9 +38,9 @@ public class EmptyOutputStream extends OutputStream {
     public static final EmptyOutputStream INSTANCE = new EmptyOutputStream();
 
     /**
-     * Private constructor to enforce the singleton pattern.
+     * Creates an output stream that discards bytes; the shared instance remains available.
      */
-    private EmptyOutputStream() {
+    public EmptyOutputStream() {
         // No initialization required.
     }
 

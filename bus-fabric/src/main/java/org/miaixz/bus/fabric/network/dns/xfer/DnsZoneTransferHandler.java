@@ -48,7 +48,7 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsZoneMode;
  *
  * @author Kimi Liu
  */
-public final class DnsZoneTransferHandler {
+public class DnsZoneTransferHandler {
 
     /**
      * Fixed zone-transfer concurrency limit used until a dedicated transfer option is introduced.

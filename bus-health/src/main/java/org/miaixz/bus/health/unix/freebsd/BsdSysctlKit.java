@@ -36,7 +36,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class BsdSysctlKit {
+public class BsdSysctlKit {
 
     /**
      * The SYSCTL_FAIL constant.
@@ -46,7 +46,7 @@ public final class BsdSysctlKit {
     /**
      * Creates a new BsdSysctlKit instance.
      */
-    private BsdSysctlKit() {
+    public BsdSysctlKit() {
         // No initialization required.
     }
 

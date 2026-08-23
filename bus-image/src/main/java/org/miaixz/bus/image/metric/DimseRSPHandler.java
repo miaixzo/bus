@@ -72,7 +72,7 @@ public class DimseRSPHandler {
      *
      * @param pc the pc.
      */
-    public final void setPC(PresentationContext pc) {
+    public void setPC(PresentationContext pc) {
         this.pc = pc;
     }
 
@@ -81,7 +81,7 @@ public class DimseRSPHandler {
      *
      * @return the message id.
      */
-    public final int getMessageID() {
+    public int getMessageID() {
         return msgId;
     }
 
@@ -91,7 +91,7 @@ public class DimseRSPHandler {
      * @param timeout       the timeout.
      * @param stopOnPending the stop on pending.
      */
-    public final void setTimeout(Timeout timeout, boolean stopOnPending) {
+    public void setTimeout(Timeout timeout, boolean stopOnPending) {
         this.timeout = timeout;
         this.stopOnPending = stopOnPending;
     }

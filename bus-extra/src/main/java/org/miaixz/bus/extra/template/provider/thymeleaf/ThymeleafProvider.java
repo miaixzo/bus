@@ -79,6 +79,16 @@ public class ThymeleafProvider implements TemplateProvider {
     }
 
     /**
+     * Returns the stable Thymeleaf engine name used to identify this template provider.
+     *
+     * @return {@code thymeleaf}
+     */
+    @Override
+    public String type() {
+        return "thymeleaf";
+    }
+
+    /**
      * Creates a new Thymeleaf {@link TemplateEngine} instance based on the provided {@link TemplateConfig}. This method
      * sets up the appropriate {@link ITemplateResolver} based on the resource mode in the config.
      *

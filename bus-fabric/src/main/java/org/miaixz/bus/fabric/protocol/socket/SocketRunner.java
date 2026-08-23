@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric.protocol.socket;
 
+import java.net.InetAddress;
 import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -35,24 +36,18 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.*;
 import org.miaixz.bus.core.xyz.ThreadKit;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Builder;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
+import org.miaixz.bus.fabric.*;
+import org.miaixz.bus.fabric.guard.route.AddressGuard;
 import org.miaixz.bus.fabric.network.Conduit;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.network.Destination;
 import org.miaixz.bus.fabric.network.Transport;
 import org.miaixz.bus.fabric.network.aio.AioGroup;
 import org.miaixz.bus.fabric.network.aio.AioNetwork;
+import org.miaixz.bus.fabric.network.dns.DnsResult;
 import org.miaixz.bus.fabric.network.kcp.KcpNetwork;
 import org.miaixz.bus.fabric.network.kcp.KcpPolicy;
-import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
-import org.miaixz.bus.fabric.network.proxy.ProxyPolicyResolver;
-import org.miaixz.bus.fabric.network.proxy.ProxySelection;
-import org.miaixz.bus.fabric.network.proxy.Socks5UdpCodec;
-import org.miaixz.bus.fabric.network.proxy.StreamProxyConnector;
+import org.miaixz.bus.fabric.network.proxy.*;
 import org.miaixz.bus.fabric.network.tcp.TcpNetwork;
 import org.miaixz.bus.fabric.network.tls.TlsChannel;
 import org.miaixz.bus.fabric.network.tls.TlsEngine;
@@ -88,7 +83,6 @@ final class SocketRunner {
      * Creates a runner.
      *
      * @param spec immutable socket exchange specification
-     * @throws ValidateException if {@code spec} is {@code null}
      */
     SocketRunner(final SocketSpec spec) {
         this.spec = require(spec, "Socket exchange specification");
@@ -109,9 +103,6 @@ final class SocketRunner {
      *
      * @param cancellation scope shared by transport creation, connection setup, and the returned session
      * @return opened TCP, TLS, UDP, or KCP session
-     * @throws CancellationException if opening is cancelled
-     * @throws ProtocolException     if the address scheme does not select a supported socket transport
-     * @throws ValidateException     if {@code cancellation} is {@code null}
      */
     SocketSession open(final Cancellation cancellation) {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
@@ -216,7 +207,6 @@ final class SocketRunner {
      * @param transport    target transport selected from the logical address scheme
      * @param proxy        resolved direct, HTTP, or SOCKS route candidate
      * @return opened socket session
-     * @throws ProtocolException if the selected transport and route combination is unsupported
      */
     private SocketSession open(
             final Message opening,
@@ -261,7 +251,7 @@ final class SocketRunner {
      * @return session
      */
     private SocketSession openTcp(final Message opening, final Cancellation cancellation, final ProxyPlan proxy) {
-        if (spec.pooled() && proxy.isDirect()) {
+        if (spec.pooled() && proxy.isDirect() && spec.addressPolicy() == null) {
             return openPooledTcp(opening, cancellation);
         }
         Logger.debug(
@@ -278,9 +268,10 @@ final class SocketRunner {
                     spec.context().reactor().dispatcher(),
                     spec.socketOptions());
             final TcpNetwork network = TcpNetwork.create(aio);
-            final Address connectAddress = proxy.proxy().orElse(spec.address());
+            final Address targetAddress = guardedTarget(spec.address());
+            final Address connectAddress = proxy.proxy().map(this::guardedRoute).orElse(targetAddress);
             final Connection connection = await(network.connect(connectAddress, spec.timeout()), cancellation);
-            new StreamProxyConnector().connect(connection, spec.address(), proxy, spec.timeout(), cancellation);
+            new StreamProxyConnector().connect(connection, targetAddress, proxy, spec.timeout(), cancellation);
             Logger.debug(
                     false,
                     "Fabric",
@@ -319,9 +310,10 @@ final class SocketRunner {
                     spec.context().reactor().dispatcher(),
                     spec.socketOptions());
             final TcpNetwork network = TcpNetwork.create(aio);
-            final Address connectAddress = proxy.proxy().orElse(spec.address());
+            final Address targetAddress = guardedTarget(spec.address());
+            final Address connectAddress = proxy.proxy().map(this::guardedRoute).orElse(targetAddress);
             final Connection raw = await(network.connect(connectAddress, spec.timeout()), cancellation);
-            new StreamProxyConnector().connect(raw, spec.address(), proxy, spec.timeout(), cancellation);
+            new StreamProxyConnector().connect(raw, targetAddress, proxy, spec.timeout(), cancellation);
             final TlsChannel tls = TlsChannel.wrap(
                     raw.conduit(),
                     TlsEngine.create(spec.tlsContext(), spec.address(), spec.tlsSettings()),
@@ -409,7 +401,6 @@ final class SocketRunner {
      * @param cancellation cancellation scope governing UDP setup
      * @param proxy        resolved direct or SOCKS datagram route
      * @return session
-     * @throws ProtocolException if an HTTP proxy is selected for UDP
      */
     private SocketSession openUdp(final Message opening, final Cancellation cancellation, final ProxyPlan proxy) {
         if (proxy.isHttp()) {
@@ -424,7 +415,7 @@ final class SocketRunner {
         final DatagramOwner owner = proxy.isSocks() ? socksDatagramOwner(proxy, cancellation)
                 : DatagramOwner.open(spec.context().listener(), spec.context().reactor().dispatcher());
         try {
-            final UdpSession session = owner.udp().connect(spec.address());
+            final UdpSession session = owner.udp().connect(guardedTarget(spec.address()));
             Logger.debug(
                     false,
                     "Fabric",
@@ -445,7 +436,6 @@ final class SocketRunner {
      * @param cancellation cancellation scope governing KCP setup
      * @param proxy        resolved direct or SOCKS datagram route
      * @return session
-     * @throws ProtocolException if an HTTP proxy is selected for KCP
      */
     private SocketSession openKcp(final Message opening, final Cancellation cancellation, final ProxyPlan proxy) {
         if (proxy.isHttp()) {
@@ -465,7 +455,7 @@ final class SocketRunner {
                     ? KcpPolicy.builder().wireVersion(spec.socketOptions().kcpWireVersion()).build()
                     : configured;
             final KcpNetwork kcp = KcpNetwork.create(owner.udp(), spec.context().clock(), policy);
-            final UdpSession session = kcp.open(spec.address());
+            final UdpSession session = kcp.open(guardedTarget(spec.address()));
             Logger.debug(
                     false,
                     "Fabric",
@@ -498,7 +488,7 @@ final class SocketRunner {
                     spec.context().reactor().dispatcher(),
                     spec.socketOptions());
             final TcpNetwork network = TcpNetwork.create(aio);
-            control = await(network.connect(proxy.proxy().orElseThrow(), spec.timeout()), cancellation);
+            control = await(network.connect(guardedRoute(proxy.proxy().orElseThrow()), spec.timeout()), cancellation);
             final Connection ownedControl = control;
             final AioNetwork ownedAio = aio;
             final Address relay = new StreamProxyConnector().udpAssociate(control, proxy, spec.timeout(), cancellation);
@@ -520,13 +510,43 @@ final class SocketRunner {
     }
 
     /**
+     * Resolves and validates a complete DNS snapshot, then returns a destination containing only the selected numeric
+     * host. Unguarded exchanges return the original address and retain the original transport resolution path.
+     *
+     * @param address logical target
+     * @return original unguarded address or validated numeric destination
+     */
+    private Address guardedTarget(final Address address) {
+        if (spec.addressPolicy() == null) {
+            return address;
+        }
+        final DnsResult result = spec.context().reactor().resolver().resolve(address.host());
+        final InetAddress numeric = new AddressGuard(spec.addressPolicy()).checkTarget(address, result);
+        return new Address(address.scheme(), numeric.getHostAddress(), address.port(), address.path());
+    }
+
+    /**
+     * Resolves and validates a physical intermediary without applying logical target scheme and port rules.
+     *
+     * @param address physical proxy destination
+     * @return original unguarded address or validated numeric route destination
+     */
+    private Address guardedRoute(final Address address) {
+        if (spec.addressPolicy() == null) {
+            return address;
+        }
+        final DnsResult result = spec.context().reactor().resolver().resolve(address.host());
+        final InetAddress numeric = new AddressGuard(spec.addressPolicy()).checkRoute(result);
+        return new Address(address.scheme(), numeric.getHostAddress(), address.port(), address.path());
+    }
+
+    /**
      * Waits for connect completion.
      *
      * @param future       non-null asynchronous transport operation
      * @param cancellation cancellation scope allowed to abort the wait
+     * @param <T>          operation result type
      * @return non-null operation result
-     * @throws TimeoutException      if the configured connect timeout expires
-     * @throws CancellationException if the cancellation scope is cancelled
      */
     private <T> T await(final CompletableFuture<T> future, final Cancellation cancellation) {
         final CompletableFuture<T> operation = require(future, "Socket operation");
@@ -690,7 +710,6 @@ final class SocketRunner {
      * @param name  logical field name included in the validation error
      * @param <T>   reference type
      * @return validated non-null reference
-     * @throws ValidateException if {@code value} is {@code null}
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

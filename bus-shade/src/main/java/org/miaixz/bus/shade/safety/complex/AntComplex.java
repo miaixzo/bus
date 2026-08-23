@@ -37,7 +37,7 @@ public abstract class AntComplex<E> extends RegexComplex<E> implements Complex<E
      *
      * @param ant The Ant-style pattern to use for filtering.
      */
-    protected AntComplex(String ant) {
+    public AntComplex(String ant) {
         super(convert(ant));
     }
 

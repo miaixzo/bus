@@ -34,7 +34,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class DnsQueryLog {
+public class DnsQueryLog {
 
     /**
      * Logger group used by DNS Server query log entries.
@@ -61,7 +61,7 @@ public final class DnsQueryLog {
      *
      * @param enabled whether query logging is enabled
      */
-    private DnsQueryLog(final boolean enabled) {
+    public DnsQueryLog(final boolean enabled) {
         this.enabled = enabled;
     }
 

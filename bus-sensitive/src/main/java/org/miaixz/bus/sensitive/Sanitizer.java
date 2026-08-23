@@ -37,7 +37,7 @@ import org.miaixz.bus.logger.Operator;
  *
  * @author Kimi Liu
  */
-public final class Sanitizer implements Operator {
+public class Sanitizer implements Operator {
 
     /**
      * Stable replacement used for every protected value.

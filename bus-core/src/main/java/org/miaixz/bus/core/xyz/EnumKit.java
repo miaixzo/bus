@@ -38,7 +38,7 @@ public class EnumKit {
     /**
      * Keeps enum lookup and conversion on the static API.
      */
-    private EnumKit() {
+    public EnumKit() {
         // No initialization required.
     }
 
@@ -171,7 +171,9 @@ public class EnumKit {
         String fieldName;
         for (final Field field : fields) {
             fieldName = field.getName();
-            if (field.getType().isEnum() || StringKit.equalsAny("ENUM$VALUES", "ordinal", fieldName)) {
+            if (field.getType().isEnum() || fieldName.contains("$VALUES")
+                    || (field.getDeclaringClass().equals(Enum.class)
+                            && StringKit.equalsAny(fieldName, "name", "hash", "ordinal"))) {
                 continue;
             }
             for (final E enumObj : enums) {
@@ -180,7 +182,7 @@ public class EnumKit {
                 }
             }
         }
-        return null;
+        return fromStringQuietly(enumClass, value.toString());
     }
 
     /**

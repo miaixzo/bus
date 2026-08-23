@@ -172,7 +172,7 @@ public interface OSThread {
      *
      * @author Kimi Liu
      */
-    final class ThreadFiltering {
+    class ThreadFiltering {
 
         /**
          * Exclude processes with {@link OSProcess.State#INVALID} process state.
@@ -182,7 +182,7 @@ public interface OSThread {
         /**
          * Creates a new ThreadFiltering instance.
          */
-        private ThreadFiltering() {
+        public ThreadFiltering() {
             // No initialization required.
         }
 

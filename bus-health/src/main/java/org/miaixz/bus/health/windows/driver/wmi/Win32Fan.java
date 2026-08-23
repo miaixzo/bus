@@ -33,12 +33,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Win32Fan {
+public class Win32Fan {
 
     /**
      * Keeps Win32 fan queries on the static API.
      */
-    private Win32Fan() {
+    public Win32Fan() {
         // No initialization required.
     }
 

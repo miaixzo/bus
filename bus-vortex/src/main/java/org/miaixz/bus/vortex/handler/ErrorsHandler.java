@@ -42,6 +42,7 @@ import org.springframework.web.server.WebExceptionHandler;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.UncheckedException;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
@@ -174,9 +175,7 @@ public class ErrorsHandler implements WebExceptionHandler {
         if (findCause(error, DataBufferLimitException.class) != null) {
             return HttpStatus.BAD_GATEWAY;
         }
-        org.miaixz.bus.core.lang.exception.ValidateException validate = findCause(
-                error,
-                org.miaixz.bus.core.lang.exception.ValidateException.class);
+        ValidateException validate = findCause(error, ValidateException.class);
         if (validate != null && ErrorCode._100530.getKey().equals(validate.getErrcode())) {
             return HttpStatus.PAYLOAD_TOO_LARGE;
         }

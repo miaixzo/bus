@@ -45,12 +45,12 @@ import tools.jackson.databind.JsonNode;
  *
  * @author Kimi Liu
  */
-public final class GitLabFailure {
+public class GitLabFailure {
 
     /**
-     * Restricts the class to static operations.
+     * Creates a stateless GitLab failure-mapping entry point.
      */
-    private GitLabFailure() {
+    public GitLabFailure() {
         // No initialization required.
     }
 

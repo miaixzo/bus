@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class SmcSensorValues {
+public class SmcSensorValues {
 
     /**
      * SMC data type reporting a fixed-point value with two fractional bits.
@@ -42,7 +42,7 @@ public final class SmcSensorValues {
     /**
      * Creates a new SmcSensorValues instance.
      */
-    private SmcSensorValues() {
+    public SmcSensorValues() {
         // No initialization required.
     }
 

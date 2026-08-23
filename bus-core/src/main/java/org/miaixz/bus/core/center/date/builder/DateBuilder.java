@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.ZoneKit;
  *
  * @author Kimi Liu
  */
-public final class DateBuilder {
+public class DateBuilder {
 
     private static final ZoneOffset DEFAULT_OFFSET = OffsetDateTime.now().getOffset();
 

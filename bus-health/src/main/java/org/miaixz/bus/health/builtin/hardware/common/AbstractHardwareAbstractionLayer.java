@@ -21,10 +21,12 @@ package org.miaixz.bus.health.builtin.hardware.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
+import org.miaixz.bus.health.Virtuality;
 import org.miaixz.bus.health.builtin.hardware.*;
 
 /**
@@ -86,6 +88,11 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
             .memoize(this::createUsbDevices, Memoizer.slowExpiration());
 
     /**
+     * The virtualization platform supplier.
+     */
+    private final SupplierX<Optional<String>> virtualization = Memoizer.memoize(() -> Virtuality.identify(this));
+
+    /**
      * Returns the computer system.
      *
      * @return the get computer system result
@@ -93,6 +100,16 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
     @Override
     public ComputerSystem getComputerSystem() {
         return computerSystem.get();
+    }
+
+    /**
+     * Returns the detected virtualization platform.
+     *
+     * @return the detected virtualization platform
+     */
+    @Override
+    public Optional<String> getVirtualization() {
+        return virtualization.get();
     }
 
     /**

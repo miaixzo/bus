@@ -162,7 +162,7 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
      *
      * @return the command.
      */
-    public final Attributes getCommand() {
+    public Attributes getCommand() {
         return entry.command;
     }
 
@@ -171,7 +171,7 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
      *
      * @return the dataset.
      */
-    public final Attributes getDataset() {
+    public Attributes getDataset() {
         return entry.dataset;
     }
 

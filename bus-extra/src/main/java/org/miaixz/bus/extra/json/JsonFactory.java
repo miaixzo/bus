@@ -125,15 +125,15 @@ public class JsonFactory {
                 continue;
             }
 
-            String currentName = normalize(current.name());
-            String providerName = normalize(provider.name());
+            String currentName = providerType(current);
+            String providerName = providerType(provider);
             if (!currentName.equals(providerName)) {
-                throw new IllegalStateException("JSON provider is already initialized with " + current.name()
-                        + " and cannot be replaced by " + provider.name());
+                throw new IllegalStateException("JSON provider is already initialized with " + current.type()
+                        + " and cannot be replaced by " + provider.type());
             }
             if (state.bound()) {
-                throw new IllegalStateException("JSON provider is already bound with " + current.name()
-                        + " and cannot be replaced by another " + provider.name() + " instance");
+                throw new IllegalStateException("JSON provider is already bound with " + current.type()
+                        + " and cannot be replaced by another " + provider.type() + " instance");
             }
             if (DEFAULT_PROVIDER.compareAndSet(state, new ProviderState(provider, true))) {
                 return;
@@ -176,7 +176,7 @@ public class JsonFactory {
                     "No JSON provider is available. Add Fastjson2, Gson, or Jackson 3 to the project.");
         }
         if (!"auto".equals(requested)) {
-            return providers.stream().filter(provider -> normalize(provider.name()).equals(requested)).findFirst()
+            return providers.stream().filter(provider -> providerType(provider).equals(requested)).findFirst()
                     .orElseThrow(
                             () -> new InternalException("JSON provider '" + requested
                                     + "' is not available. Available providers: " + providerNames(providers)));
@@ -203,13 +203,29 @@ public class JsonFactory {
     }
 
     /**
+     * Validates and normalizes the stable selection key declared by a JSON provider.
+     *
+     * @param provider provider whose selection key is required
+     * @return canonical lower-case provider key
+     * @throws InternalException if the provider returns a null or blank key
+     */
+    private static String providerType(JsonProvider provider) {
+        final String type = provider.type();
+        if (type == null || type.isBlank()) {
+            throw new InternalException(
+                    "JSON provider type must not be null or blank: " + provider.getClass().getName());
+        }
+        return normalize(type);
+    }
+
+    /**
      * Returns provider names in deterministic alphabetical order for diagnostics.
      *
      * @param providers available providers
      * @return sorted provider names
      */
     private static List<String> providerNames(List<JsonProvider> providers) {
-        return providers.stream().map(JsonProvider::name).sorted().toList();
+        return providers.stream().map(JsonFactory::providerType).sorted().toList();
     }
 
     /**
@@ -222,13 +238,20 @@ public class JsonFactory {
         ServiceLoader<JsonProvider> loader = NormalSpiLoader.loadList(JsonProvider.class);
         Map<String, JsonProvider> providers = new LinkedHashMap<>();
         for (String serviceName : loader.getServiceNames()) {
+            JsonProvider provider;
             try {
-                JsonProvider provider = loader.getService(serviceName);
-                if (provider != null) {
-                    providers.putIfAbsent(normalize(provider.name()), provider);
-                }
+                provider = loader.getService(serviceName);
             } catch (RuntimeException | ServiceConfigurationError | LinkageError unavailable) {
                 // An optional engine is not installed or the third-party provider is incompatible.
+                continue;
+            }
+            if (provider != null) {
+                final String type = providerType(provider);
+                final JsonProvider previous = providers.putIfAbsent(type, provider);
+                if (previous != null) {
+                    throw new InternalException("Duplicate JSON provider type '" + type + "': "
+                            + previous.getClass().getName() + " and " + provider.getClass().getName());
+                }
             }
         }
         return new ArrayList<>(providers.values());

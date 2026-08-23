@@ -43,7 +43,7 @@ public class Calculator {
     /**
      * Creates an expression calculator used by the static calculation entry point.
      */
-    private Calculator() {
+    public Calculator() {
         // No initialization required.
     }
 

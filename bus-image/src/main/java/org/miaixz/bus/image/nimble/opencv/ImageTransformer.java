@@ -57,12 +57,12 @@ import org.opencv.imgproc.Imgproc;
  *
  * @author Kimi Liu
  */
-public final class ImageTransformer {
+public class ImageTransformer {
 
     /**
      * Creates a new instance.
      */
-    private ImageTransformer() {
+    public ImageTransformer() {
         // No initialization required.
     }
 

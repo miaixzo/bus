@@ -81,9 +81,9 @@ public class Args {
     public static final String TIMESTAMP = Http.Param.TIMESTAMP;
 
     /**
-     * The parameter name for selecting the logical namespace used to resolve registry assets.
+     * The parameter name for selecting the logical space used to resolve registry assets.
      */
-    public static final String NAMESPACE = "x_namespace_id";
+    public static final String SPACE = "x_space_id";
 
     /**
      * The parameter name for selecting the application-specific route scope.

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.vortex;
 
+import org.miaixz.bus.vortex.routing.Coordinator;
+
 import reactor.core.publisher.Mono;
 
 /**
@@ -43,9 +45,9 @@ import reactor.core.publisher.Mono;
  * </ul>
  * <p>
  * <b>Implementation Architecture:</b><br>
- * Most implementations should extend {@link org.miaixz.bus.vortex.routing.Coordinator} rather than implementing this
- * interface directly. The {@code Coordinator} abstract class provides default implementations for common functionality
- * such as URL building, JSON encoding fixes, and logging utilities.
+ * Most implementations should extend {@link Coordinator} rather than implementing this interface directly. The
+ * {@code Coordinator} abstract class provides default implementations for common functionality such as URL building,
+ * JSON encoding fixes, and logging utilities.
  *
  * @param <I> The input type expected by this executor
  * @param <O> The output type produced by this executor

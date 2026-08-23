@@ -64,7 +64,7 @@ public abstract class StreamSegment {
      * @param length          the length.
      * @param imageDescriptor the image descriptor.
      */
-    StreamSegment(long[] startPos, long[] length, ImageDescriptor imageDescriptor) {
+    public StreamSegment(long[] startPos, long[] length, ImageDescriptor imageDescriptor) {
         this.segPosition = startPos;
         this.segLength = length;
         this.imageDescriptor = imageDescriptor;

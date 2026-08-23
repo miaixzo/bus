@@ -131,7 +131,7 @@ public class DataSourceHolder {
          *
          * @param key routing key for the scope; {@code null} clears the explicit selection within the scope
          */
-        private Scope(String key) {
+        public Scope(String key) {
             this.previous = currentKey.get();
             setKey(key);
         }

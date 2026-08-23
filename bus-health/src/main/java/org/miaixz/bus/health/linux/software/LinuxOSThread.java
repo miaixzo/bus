@@ -250,7 +250,7 @@ public class LinuxOSThread extends AbstractOSThread {
      * @return the update attributes result
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         this.name = Builder.getStringFromFile(
                 String.format(Locale.ROOT, ProcPath.TASK_COMM, this.getOwningProcessId(), this.threadId));
         Map<String, String> status = Builder.getKeyValueMapFromFile(

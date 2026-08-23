@@ -251,7 +251,7 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
             instance.setHealthy(newHealthy);
             instance.setStateChangedAt(System.currentTimeMillis());
             ApiAssets service = apiRegistry.refreshByMethodVersion(
-                    instance.getNamespace_id(),
+                    instance.getSpace_id(),
                     instance.getApp_id(),
                     instance.getMethod(),
                     instance.getVersion());

@@ -36,7 +36,7 @@ import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class ProcessorInformation {
+public class ProcessorInformation {
 
     /**
      * The IS_WIN7_OR_GREATER constant.
@@ -46,7 +46,7 @@ public final class ProcessorInformation {
     /**
      * Creates a new ProcessorInformation instance.
      */
-    private ProcessorInformation() {
+    public ProcessorInformation() {
         // No initialization required.
     }
 

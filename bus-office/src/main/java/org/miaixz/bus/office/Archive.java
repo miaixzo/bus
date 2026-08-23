@@ -37,7 +37,7 @@ import org.miaixz.bus.core.lang.Normal;
  */
 public class Archive {
 
-    private Archive() {
+    public Archive() {
         // No initialization required.
     }
 

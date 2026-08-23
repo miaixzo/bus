@@ -45,7 +45,7 @@ public class ArrayValidator {
     /**
      * Creates a new {@code ArrayValidator} instance.
      */
-    ArrayValidator() {
+    public ArrayValidator() {
         // No initialization required.
     }
 

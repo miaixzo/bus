@@ -35,12 +35,12 @@ import org.miaixz.bus.health.Builder;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class ProcPath {
+public class ProcPath {
 
     /**
      * Keeps Linux procfs path resolution on the static API.
      */
-    private ProcPath() {
+    public ProcPath() {
         // No initialization required.
     }
 
@@ -93,6 +93,16 @@ public final class ProcPath {
      * The NET constant.
      */
     public static final String NET = PROC + "/net";
+
+    /**
+     * The IPv6 route table path.
+     */
+    public static final String IPV6_ROUTE = NET + "/ipv6_route";
+
+    /**
+     * The IPv4 route table path.
+     */
+    public static final String ROUTE = NET + "/route";
 
     /**
      * The PID_CMDLINE constant.
@@ -158,6 +168,11 @@ public final class ProcPath {
      * The STAT constant.
      */
     public static final String STAT = PROC + "/stat";
+
+    /**
+     * The kernel hostname path.
+     */
+    public static final String SYS_KERNEL_HOSTNAME = PROC + "/sys/kernel/hostname";
 
     /**
      * The SYS_FS_FILE_NR constant.

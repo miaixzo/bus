@@ -29,12 +29,12 @@ import org.miaixz.bus.health.windows.driver.registry.InstalledAppsData;
  *
  * @author Kimi Liu
  */
-public final class WindowsInstalledApps {
+public class WindowsInstalledApps {
 
     /**
      * Creates a new WindowsInstalledApps instance.
      */
-    private WindowsInstalledApps() {
+    public WindowsInstalledApps() {
         // No initialization required.
     }
 

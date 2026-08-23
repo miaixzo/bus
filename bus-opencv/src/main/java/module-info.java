@@ -18,13 +18,18 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.opencv
+ * Module: {@code bus.opencv}
+ *
+ * <p>
+ * Provides Java bindings for native OpenCV image-processing functionality.
+ *
+ * <p>
+ * Includes core matrix and geometry types, image codecs, image processing operations, perceptual image hashing, native
+ * resource management, conversion utilities, and OSGi integration.
  *
  * @author Kimi Liu
  */
 module bus.opencv {
-
-    requires java.desktop;
 
     exports org.opencv.core;
     exports org.opencv.img_hash;

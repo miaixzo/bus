@@ -19,15 +19,13 @@
 */
 package org.miaixz.bus.core.lang;
 
-import org.miaixz.bus.core.Provider;
-
 /**
  * Generic wrapper interface for encapsulating an original object.
  *
  * @param <T> The type of the original object being wrapped.
  * @author Kimi Liu
  */
-public interface Wrapper<T> extends Provider {
+public interface Wrapper<T> {
 
     /**
      * Retrieves the raw, unwrapped object.
@@ -35,15 +33,5 @@ public interface Wrapper<T> extends Provider {
      * @return The original object.
      */
     T getRaw();
-
-    /**
-     * Type method.
-     *
-     * @return the Object value
-     */
-    @Override
-    default Object type() {
-        return EnumValue.Povider.TEMPLATE;
-    }
 
 }

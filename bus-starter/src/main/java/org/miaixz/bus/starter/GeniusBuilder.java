@@ -24,7 +24,7 @@ package org.miaixz.bus.starter;
  *
  * @author Kimi Liu
  */
-public final class GeniusBuilder {
+public class GeniusBuilder {
 
     /**
      * Configuration prefix for auth.
@@ -160,9 +160,9 @@ public final class GeniusBuilder {
     public static final String ZOOKEEPER = "bus.zookeeper";
 
     /**
-     * Prevents instantiation of this constants holder.
+     * Creates a starter configuration-key namespace instance with no retained state.
      */
-    private GeniusBuilder() {
+    public GeniusBuilder() {
         // No initialization required.
     }
 

@@ -51,7 +51,7 @@ import org.miaixz.bus.fabric.protocol.socket.SocketOptions;
  *
  * @author Kimi Liu
  */
-public final class DnsTcpEndpoint implements AutoCloseable, Lifecycle {
+public class DnsTcpEndpoint implements AutoCloseable, Lifecycle {
 
     /**
      * PROXY protocol v1 maximum line length.

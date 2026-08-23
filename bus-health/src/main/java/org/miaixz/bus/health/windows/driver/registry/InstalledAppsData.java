@@ -39,12 +39,12 @@ import org.miaixz.bus.health.windows.RegistryKit;
  *
  * @author Kimi Liu
  */
-public final class InstalledAppsData {
+public class InstalledAppsData {
 
     /**
      * Creates a new InstalledAppsData instance.
      */
-    private InstalledAppsData() {
+    public InstalledAppsData() {
         // No initialization required.
     }
 

@@ -40,7 +40,7 @@ public class Base64Decoder implements Decoder<byte[], byte[]>, Serializable {
     /**
      * Creates the shared Base64 decoder.
      */
-    private Base64Decoder() {
+    public Base64Decoder() {
         // No initialization required.
     }
 

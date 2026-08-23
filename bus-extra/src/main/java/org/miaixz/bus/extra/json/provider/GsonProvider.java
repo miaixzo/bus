@@ -20,47 +20,91 @@
 package org.miaixz.bus.extra.json.provider;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.Strictness;
+import com.google.gson.TypeAdapter;
+import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.json.JsonPropertyFilter;
+import org.miaixz.bus.extra.json.JsonValue;
 import org.miaixz.bus.extra.json.JsonWriteOptions;
 
 /**
- * A {@link org.miaixz.bus.extra.json.JsonProvider} implementation based on Google's Gson library. This class provides
- * JSON serialization and deserialization functionalities using Gson.
+ * Provides Bus JSON operations through Gson while confining {@link JsonElement} instances to this provider.
+ * <p>
+ * A caller may inject a preconfigured Gson engine. Per-call write options derive a new engine and therefore do not
+ * mutate the shared instance. Provider-neutral JSON values are parsed with RFC 8259 strictness independently of the
+ * compatibility behavior retained by the legacy object-mapping methods.
+ * </p>
  *
  * @author Kimi Liu
  */
 public class GsonProvider extends AbstractJsonProvider {
 
     /**
-     * The underlying Gson instance used for JSON operations. It is configured with custom type adapters.
+     * Application-supplied or default Gson engine shared by provider operations.
      */
     private final Gson gson;
 
     /**
-     * Constructs a new {@code GsonProvider} instance. Initializes a {@link Gson} instance with custom type adapters to
-     * handle potential issues, such as integers being converted to floating-point numbers during deserialization.
+     * Derived Gson engine that preserves explicit JSON null object members for provider-neutral value serialization.
+     */
+    private final Gson valueGson;
+
+    /**
+     * Creates a provider with Bus-compatible map and mixed-array adapters.
      */
     public GsonProvider() {
         this(createDefaultGson());
     }
 
     /**
-     * Constructs a provider backed by an application-configured Gson instance.
+     * Creates a provider backed by an application-configured Gson instance.
      *
-     * @param gson Gson instance
+     * @param gson non-null Gson engine whose registered adapters remain available to legacy object mapping
+     * @throws NullPointerException if the Gson engine is {@code null}
      */
     public GsonProvider(Gson gson) {
         this.gson = Objects.requireNonNull(gson, "gson");
+        this.valueGson = gson.newBuilder().serializeNulls().create();
+    }
+
+    /**
+     * Returns the canonical Gson provider name used for configuration and discovery.
+     *
+     * @return {@code gson}
+     */
+    @Override
+    public String type() {
+        return "gson";
     }
 
     /**
@@ -114,31 +158,142 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * Returns the canonical configuration name of this provider.
+     * Parses one complete RFC 8259 document with Gson's strict reader and converts its tree recursively.
      *
-     * @return {@code gson}
+     * @param document complete non-empty JSON document
+     * @return immutable provider-neutral JSON value
+     * @throws InternalException if Gson rejects the syntax, trailing data remains, or a value cannot be mapped exactly
      */
     @Override
-    public String name() {
-        return "gson";
+    protected JsonValue decodeValue(final String document) {
+        try (JsonReader reader = new JsonReader(new StringReader(document))) {
+            reader.setStrictness(Strictness.STRICT);
+            final JsonElement element = JsonParser.parseReader(reader);
+            if (reader.peek() != JsonToken.END_DOCUMENT) {
+                throw new JsonSyntaxException("JSON document contains trailing data");
+            }
+            return fromGsonElement(element);
+        } catch (IOException | JsonParseException | IllegalStateException | NumberFormatException cause) {
+            throw new InternalException("Gson cannot parse the RFC 8259 document", cause);
+        }
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Converts the provider-neutral JSON model to a Gson tree and serializes one complete document.
+     *
+     * @param value immutable provider-neutral JSON value
+     * @return complete JSON document
+     * @throws InternalException if Gson cannot serialize the mapped tree
+     */
+    @Override
+    protected String encodeValue(final JsonValue value) {
+        try {
+            return valueGson.toJson(toGsonElement(value));
+        } catch (JsonParseException | IllegalStateException cause) {
+            throw new InternalException("Gson cannot serialize the provider-neutral JSON value", cause);
+        }
+    }
+
+    /**
+     * Recursively maps a Gson tree into immutable provider-neutral values.
+     *
+     * @param element Gson tree element representing one JSON value
+     * @return immutable provider-neutral JSON value
+     * @throws InternalException if Gson exposes an unsupported primitive or tree element
+     */
+    private JsonValue fromGsonElement(final JsonElement element) {
+        if (element == null || element.isJsonNull()) {
+            return JsonValue.NullValue.instance();
+        }
+        if (element.isJsonObject()) {
+            final Map<String, JsonValue> values = new LinkedHashMap<>();
+            for (Map.Entry<String, JsonElement> property : element.getAsJsonObject().entrySet()) {
+                values.put(property.getKey(), fromGsonElement(property.getValue()));
+            }
+            return new JsonValue.ObjectValue(values);
+        }
+        if (element.isJsonArray()) {
+            final JsonArray array = element.getAsJsonArray();
+            final List<JsonValue> values = new ArrayList<>(array.size());
+            for (JsonElement item : array) {
+                values.add(fromGsonElement(item));
+            }
+            return new JsonValue.ArrayValue(values);
+        }
+        if (element.isJsonPrimitive()) {
+            final JsonPrimitive primitive = element.getAsJsonPrimitive();
+            if (primitive.isString()) {
+                return new JsonValue.StringValue(primitive.getAsString());
+            }
+            if (primitive.isBoolean()) {
+                return new JsonValue.BooleanValue(primitive.getAsBoolean());
+            }
+            if (primitive.isNumber()) {
+                return new JsonValue.NumberValue(primitive.getAsBigDecimal());
+            }
+            throw new InternalException("Gson tree contains an unsupported primitive");
+        }
+        throw new InternalException("Gson tree contains a non-JSON element: " + element.getClass().getName());
+    }
+
+    /**
+     * Recursively maps immutable provider-neutral values into Gson tree elements.
+     *
+     * @param value immutable provider-neutral JSON value
+     * @return Gson tree element owned by this provider
+     * @throws InternalException if an unknown JsonValue implementation reaches the provider boundary
+     */
+    private JsonElement toGsonElement(final JsonValue value) {
+        if (value instanceof JsonValue.ObjectValue objectValue) {
+            final JsonObject object = new JsonObject();
+            objectValue.values().forEach((name, member) -> object.add(name, toGsonElement(member)));
+            return object;
+        }
+        if (value instanceof JsonValue.ArrayValue arrayValue) {
+            final JsonArray array = new JsonArray(arrayValue.values().size());
+            arrayValue.values().forEach(element -> array.add(toGsonElement(element)));
+            return array;
+        }
+        if (value instanceof JsonValue.StringValue stringValue) {
+            return new JsonPrimitive(stringValue.value());
+        }
+        if (value instanceof JsonValue.NumberValue numberValue) {
+            return new JsonPrimitive(numberValue.value());
+        }
+        if (value instanceof JsonValue.BooleanValue booleanValue) {
+            return new JsonPrimitive(booleanValue.value());
+        }
+        if (value instanceof JsonValue.NullValue) {
+            return JsonNull.INSTANCE;
+        }
+        throw new InternalException("Unsupported provider-neutral JSON value: " + value.getClass().getName());
+    }
+
+    /**
+     * Serializes an object with Gson while omitting null-valued properties.
+     *
+     * @param object object accepted by Gson
+     * @return JSON document produced by Gson
+     * @throws JsonParseException if a registered adapter cannot serialize the object
      */
     @Override
     public String toJsonString(Object object) {
-        return new String(write(object, new JsonWriteOptions(null, false, JsonPropertyFilter.always())),
-                StandardCharsets.UTF_8);
+        return new String(write(object, new JsonWriteOptions(null, false, JsonPropertyFilter.always())), Charset.UTF_8);
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Serializes an object with the requested date format while omitting null-valued properties.
+     *
+     * @param object object accepted by Gson
+     * @param format date format pattern accepted by {@link GsonBuilder#setDateFormat(String)}
+     * @return JSON document produced by Gson
+     * @throws IllegalArgumentException if the date format is invalid
+     * @throws JsonParseException       if a registered adapter cannot serialize the object
      */
     @Override
     public String toJsonString(Object object, String format) {
         return new String(write(object, new JsonWriteOptions(format, false, JsonPropertyFilter.always())),
-                StandardCharsets.UTF_8);
+                Charset.UTF_8);
     }
 
     /**
@@ -147,6 +302,8 @@ public class GsonProvider extends AbstractJsonProvider {
      * @param object  value to serialize
      * @param options framework-independent serialization options
      * @return UTF-8 JSON bytes
+     * @throws IllegalArgumentException if a requested date format is invalid
+     * @throws JsonParseException       if a registered adapter cannot serialize the value
      */
     @Override
     public byte[] write(Object object, JsonWriteOptions options) {
@@ -158,11 +315,17 @@ public class GsonProvider extends AbstractJsonProvider {
         if (resolved.dateFormat() != null) {
             builder.setDateFormat(resolved.dateFormat());
         }
-        return builder.create().toJson(object).getBytes(StandardCharsets.UTF_8);
+        return builder.create().toJson(object).getBytes(Charset.UTF_8);
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Deserializes a JSON document into a concrete Java class through the configured Gson adapters.
+     *
+     * @param <T>   requested Java value type
+     * @param json  JSON document
+     * @param clazz target Java class
+     * @return value produced by Gson
+     * @throws JsonParseException if Gson cannot parse or bind the document
      */
     @Override
     public <T> T toPojo(String json, Class<T> clazz) {
@@ -176,6 +339,7 @@ public class GsonProvider extends AbstractJsonProvider {
      * @param json JSON document
      * @param type target Java type
      * @return deserialized value
+     * @throws JsonParseException if Gson cannot parse or bind the document
      */
     @Override
     public <T> T toPojo(String json, Type type) {
@@ -183,7 +347,13 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Converts map entries into a target Java object through Gson's configured adapters.
+     *
+     * @param <T>   target value type
+     * @param map   source map
+     * @param clazz target Java class
+     * @return converted Java value
+     * @throws JsonParseException if Gson cannot serialize or bind the map
      */
     @Override
     public <T> T toPojo(Map map, Class<T> clazz) {
@@ -191,7 +361,12 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Deserializes a JSON array using the default mixed-value list adapter.
+     *
+     * @param <T>  inferred list element type
+     * @param json JSON array document
+     * @return list populated in wire order
+     * @throws JsonParseException if Gson cannot parse the array
      */
     @Override
     public <T> List<T> toList(String json) {
@@ -201,7 +376,13 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Deserializes a JSON array whose element class is explicitly supplied.
+     *
+     * @param <T>   list element type
+     * @param json  JSON array document
+     * @param clazz element Java class
+     * @return list populated in wire order
+     * @throws JsonParseException if Gson cannot parse or bind an element
      */
     @Override
     public <T> List<T> toList(String json, Class<T> clazz) {
@@ -209,7 +390,13 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Deserializes a JSON array using the caller's reflective type token.
+     *
+     * @param <T>  list element type
+     * @param json JSON array document
+     * @param type reflective list type consumed by Gson
+     * @return list populated in wire order
+     * @throws JsonParseException if Gson cannot parse or bind the array
      */
     @Override
     public <T> List<T> toList(String json, Type type) {
@@ -217,7 +404,13 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Deserializes a JSON object with the default ordered map adapter.
+     *
+     * @param <K>  inferred map key type
+     * @param <V>  inferred map value type
+     * @param json JSON object document
+     * @return insertion-ordered map of the object's properties
+     * @throws JsonParseException if Gson cannot parse the object
      */
     @Override
     public <K, V> Map<K, V> toMap(String json) {
@@ -227,7 +420,13 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Converts an object into a map through a Gson JSON round trip.
+     *
+     * @param <K>    inferred map key type
+     * @param <V>    inferred map value type
+     * @param object source object
+     * @return map produced by the default ordered map adapter
+     * @throws JsonParseException if Gson cannot serialize or bind the object
      */
     @Override
     public <K, V> Map<K, V> toMap(Object object) {
@@ -237,7 +436,14 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Reads one top-level member from a JSON object through Gson's tree model.
+     *
+     * @param <T>   caller-selected return type
+     * @param json  JSON object document
+     * @param field top-level member name
+     * @return Gson tree element for the member, or {@code null} when absent
+     * @throws JsonParseException    if Gson cannot parse the document
+     * @throws IllegalStateException if the document's root is not an object
      */
     @Override
     public <T> T getValue(String json, String field) {
@@ -245,7 +451,10 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Determines whether Gson's compatibility parser accepts the supplied text.
+     *
+     * @param json candidate JSON document
+     * @return {@code true} when Gson parses the document; otherwise {@code false}
      */
     @Override
     public boolean isJson(String json) {

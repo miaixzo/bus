@@ -52,7 +52,7 @@ public class Item extends Setting {
     private String data_id;
 
     /**
-     * Setting group name within the namespace.
+     * Setting group name within the space.
      */
     private String group;
 

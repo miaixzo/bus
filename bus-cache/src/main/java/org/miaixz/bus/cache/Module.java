@@ -84,9 +84,9 @@ public class Module {
     private boolean initialized;
 
     /**
-     * Private constructor to enforce the singleton pattern.
+     * Creates a cache module descriptor; the shared instance remains available to existing callers.
      */
-    private Module() {
+    public Module() {
         this.initialized = false;
     }
 

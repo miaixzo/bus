@@ -70,7 +70,7 @@ public class IoKit {
     /**
      * Keeps stream and resource I/O on the static API.
      */
-    private IoKit() {
+    public IoKit() {
         // No initialization required.
     }
 

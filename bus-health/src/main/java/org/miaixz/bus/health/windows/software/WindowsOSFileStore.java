@@ -102,9 +102,10 @@ public class WindowsOSFileStore extends AbstractOSFileStore {
         this.logicalVolume = logicalVolume;
         this.description = description;
         this.fsType = fsType;
-        this.freeSpace = freeSpace;
-        this.usableSpace = usableSpace;
-        this.totalSpace = totalSpace;
+        long[] space = clampSpace(freeSpace, usableSpace, totalSpace);
+        this.freeSpace = space[0];
+        this.usableSpace = space[1];
+        this.totalSpace = space[2];
         this.freeInodes = freeInodes;
         this.totalInodes = totalInodes;
     }
@@ -195,14 +196,15 @@ public class WindowsOSFileStore extends AbstractOSFileStore {
      * @return the update attributes result
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         WinNT.LARGE_INTEGER userFreeBytes = new WinNT.LARGE_INTEGER(0L);
         WinNT.LARGE_INTEGER totalBytes = new WinNT.LARGE_INTEGER(0L);
         WinNT.LARGE_INTEGER systemFreeBytes = new WinNT.LARGE_INTEGER(0L);
         if (Kernel32.INSTANCE.GetDiskFreeSpaceEx(getVolume(), userFreeBytes, totalBytes, systemFreeBytes)) {
-            this.freeSpace = systemFreeBytes.getValue();
-            this.usableSpace = userFreeBytes.getValue();
-            this.totalSpace = totalBytes.getValue();
+            long[] space = clampSpace(systemFreeBytes.getValue(), userFreeBytes.getValue(), totalBytes.getValue());
+            this.freeSpace = space[0];
+            this.usableSpace = space[1];
+            this.totalSpace = space[2];
             return true;
         }
         // Check if we have the volume locally
@@ -219,9 +221,13 @@ public class WindowsOSFileStore extends AbstractOSFileStore {
                 this.logicalVolume = fileStore.getLogicalVolume();
                 this.description = fileStore.getDescription();
                 this.fsType = fileStore.getType();
-                this.freeSpace = fileStore.getFreeSpace();
-                this.usableSpace = fileStore.getUsableSpace();
-                this.totalSpace = fileStore.getTotalSpace();
+                long[] space = clampSpace(
+                        fileStore.getFreeSpace(),
+                        fileStore.getUsableSpace(),
+                        fileStore.getTotalSpace());
+                this.freeSpace = space[0];
+                this.usableSpace = space[1];
+                this.totalSpace = space[2];
                 this.freeInodes = fileStore.getFreeInodes();
                 this.totalInodes = fileStore.getTotalInodes();
                 return true;

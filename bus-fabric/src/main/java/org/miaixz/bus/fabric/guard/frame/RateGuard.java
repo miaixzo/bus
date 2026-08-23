@@ -38,7 +38,7 @@ import org.miaixz.bus.fabric.guard.GuardRule;
  *
  * @author Kimi Liu
  */
-public final class RateGuard implements GuardRule {
+public class RateGuard implements GuardRule {
 
     /**
      * Token-bucket capacity and whole-second refill amount.
@@ -60,7 +60,7 @@ public final class RateGuard implements GuardRule {
      *
      * @param bytesPerSecond positive bucket capacity and refill rate in bytes per second
      */
-    private RateGuard(final long bytesPerSecond) {
+    public RateGuard(final long bytesPerSecond) {
         this.bytesPerSecond = validateBytesPerSecond(bytesPerSecond);
         this.available = new AtomicLong(bytesPerSecond);
         this.lastRefillNanos = new AtomicLong(Clock.system().nanos());

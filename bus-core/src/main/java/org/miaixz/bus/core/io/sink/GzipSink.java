@@ -164,7 +164,7 @@ public class GzipSink implements Sink {
      *
      * @return The {@link Deflater} object.
      */
-    public final Deflater deflater() {
+    public Deflater deflater() {
         return deflater;
     }
 

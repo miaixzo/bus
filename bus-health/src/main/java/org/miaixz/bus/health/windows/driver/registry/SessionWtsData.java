@@ -42,7 +42,7 @@ import org.miaixz.bus.health.builtin.software.OSSession;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class SessionWtsData {
+public class SessionWtsData {
 
     /**
      * The WTS_ACTIVE constant.
@@ -77,7 +77,7 @@ public final class SessionWtsData {
     /**
      * Creates a new SessionWtsData instance.
      */
-    private SessionWtsData() {
+    public SessionWtsData() {
         // No initialization required.
     }
 

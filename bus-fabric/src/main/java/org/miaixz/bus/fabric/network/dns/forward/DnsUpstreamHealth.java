@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class DnsUpstreamHealth {
+public class DnsUpstreamHealth {
 
     /**
      * Consecutive failures required to open a circuit.
@@ -250,7 +250,7 @@ public final class DnsUpstreamHealth {
      *
      * @author Kimi Liu
      */
-    public static final class Snapshot {
+    public static class Snapshot {
 
         /**
          * Whether the upstream is in the healthy group.
@@ -286,7 +286,7 @@ public final class DnsUpstreamHealth {
          * @param consecutiveFailures consecutive failure count
          * @param rttNanos            EWMA round-trip time
          */
-        private Snapshot(final boolean healthy, final boolean circuitOpen, final boolean halfOpen,
+        public Snapshot(final boolean healthy, final boolean circuitOpen, final boolean halfOpen,
                 final int consecutiveFailures, final long rttNanos) {
             this.healthy = healthy;
             this.circuitOpen = circuitOpen;

@@ -45,7 +45,7 @@ import org.miaixz.bus.health.unix.aix.driver.Lspv;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class AixHWDiskStore extends AbstractHWDiskStore {
+public class AixHWDiskStore extends AbstractHWDiskStore {
 
     /**
      * The diskStats value.
@@ -101,8 +101,7 @@ public final class AixHWDiskStore extends AbstractHWDiskStore {
      * @param size      the size
      * @param diskStats the disk stats
      */
-    private AixHWDiskStore(String name, String model, String serial, long size,
-            SupplierX<perfstat_disk_t[]> diskStats) {
+    public AixHWDiskStore(String name, String model, String serial, long size, SupplierX<perfstat_disk_t[]> diskStats) {
         super(name, model, serial, size);
         this.diskStats = diskStats;
     }

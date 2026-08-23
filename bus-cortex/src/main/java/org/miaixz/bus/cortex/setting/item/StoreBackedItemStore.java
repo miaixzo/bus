@@ -127,43 +127,43 @@ public class StoreBackedItemStore {
     /**
      * Deletes from durable storage and evicts the cache projection.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional profile
      * @return deleted entry snapshot, or {@code null} when absent
      */
-    public Item delete(String namespace, String group, String data_id, String profile) {
-        Item existing = find(namespace, group, data_id, profile);
+    public Item delete(String space, String group, String data_id, String profile) {
+        Item existing = find(space, group, data_id, profile);
         if (StringKit.isNotEmpty(profile) && !matchesExactProfile(existing, profile)) {
             existing = null;
         }
-        Item deleted = durable() ? store.delete(namespace, group, data_id, profile) : existing;
+        Item deleted = durable() ? store.delete(space, group, data_id, profile) : existing;
         if (store != null && !durable()) {
             capabilityFallback("delete", Trait.DURABLE, "cache evict");
         }
-        evict(namespace, group, data_id, profile);
+        evict(space, group, data_id, profile);
         return deleted == null ? existing : deleted;
     }
 
     /**
      * Finds from cache first and falls back to durable storage.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional profile
      * @return current entry or {@code null}
      */
-    public Item find(String namespace, String group, String data_id, String profile) {
-        Item cached = cached(namespace, group, data_id, profile);
+    public Item find(String space, String group, String data_id, String profile) {
+        Item cached = cached(space, group, data_id, profile);
         if (cached != null || store == null || !durable()) {
             if (cached == null && store != null && !durable()) {
                 capabilityFallback("find", Trait.DURABLE, "cache query");
             }
-            return cached != null ? cached : first(queryByCoordinates(namespace, group, data_id, profile));
+            return cached != null ? cached : first(queryByCoordinates(space, group, data_id, profile));
         }
-        Item loaded = store.find(namespace, group, data_id, profile);
+        Item loaded = store.find(space, group, data_id, profile);
         if (loaded == null) {
             return null;
         }
@@ -209,22 +209,22 @@ public class StoreBackedItemStore {
     /**
      * Reloads one entry from durable storage into cache.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional profile
      * @return refreshed entry or {@code null}
      */
-    public Item refresh(String namespace, String group, String data_id, String profile) {
+    public Item refresh(String space, String group, String data_id, String profile) {
         if (store == null || !durable()) {
             if (store != null) {
                 capabilityFallback("refresh", Trait.DURABLE, "cache read");
             }
-            return cached(namespace, group, data_id, profile);
+            return cached(space, group, data_id, profile);
         }
-        Item loaded = store.find(namespace, group, data_id, profile);
+        Item loaded = store.find(space, group, data_id, profile);
         if (loaded == null) {
-            evict(namespace, group, data_id, profile);
+            evict(space, group, data_id, profile);
             return null;
         }
         return cache(loaded);
@@ -261,18 +261,18 @@ public class StoreBackedItemStore {
     /**
      * Evicts one setting entry from cache without touching durable state.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional profile
      */
-    public void evict(String namespace, String group, String data_id, String profile) {
+    public void evict(String space, String group, String data_id, String profile) {
         if (StringKit.isNotEmpty(profile)) {
-            cacheX.remove(entryKey(namespace, group, data_id, profile));
+            cacheX.remove(entryKey(space, group, data_id, profile));
             return;
         }
         List<String> keys = new ArrayList<>();
-        String sharedKey = entryKey(namespace, group, data_id, null);
+        String sharedKey = entryKey(space, group, data_id, null);
         keys.add(sharedKey);
         Map<String, Object> profileEntries = cacheX.scan(sharedKey + Symbol.COLON);
         if (profileEntries != null && !profileEntries.isEmpty()) {
@@ -321,20 +321,20 @@ public class StoreBackedItemStore {
     /**
      * Loads one current-state setting entry from the cache projection.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional profile
      * @return cached setting entry or {@code null}
      */
-    private Item cached(String namespace, String group, String data_id, String profile) {
+    private Item cached(String space, String group, String data_id, String profile) {
         if (StringKit.isNotEmpty(profile)) {
-            Item scoped = readCached(entryKey(namespace, group, data_id, profile));
+            Item scoped = readCached(entryKey(space, group, data_id, profile));
             if (matchesExactProfile(scoped, profile)) {
                 return scoped;
             }
         }
-        Item shared = readCached(entryKey(namespace, group, data_id, null));
+        Item shared = readCached(entryKey(space, group, data_id, null));
         return ItemBindingProjection.matchesProfileBinding(shared, profile) ? shared : null;
     }
 
@@ -346,8 +346,8 @@ public class StoreBackedItemStore {
      */
     private List<Item> queryCache(ItemQuery query) {
         ItemQuery criteria = query != null ? query : new ItemQuery();
-        String namespace = CortexIdentity.namespace(criteria.getNamespace_id());
-        Map<String, Object> entries = cacheX.scan(entryPrefix(namespace));
+        String space = CortexIdentity.space(criteria.getSpace_id());
+        Map<String, Object> entries = cacheX.scan(entryPrefix(space));
         Map<String, Item> result = new LinkedHashMap<>();
         for (Object value : entries.values()) {
             if (!(value instanceof String json)) {
@@ -376,9 +376,9 @@ public class StoreBackedItemStore {
      */
     private void evict(ItemScope scope) {
         ItemQuery query = toQuery(scope);
-        String namespace = CortexIdentity.namespace(query.getNamespace_id());
+        String space = CortexIdentity.space(query.getSpace_id());
         if (StringKit.isNotEmpty(query.getData_id())) {
-            evict(namespace, query.getGroup(), query.getData_id(), query.getProfile_id());
+            evict(space, query.getGroup(), query.getData_id(), query.getProfile_id());
             return;
         }
         List<Item> entries = queryCache(query);
@@ -403,7 +403,7 @@ public class StoreBackedItemStore {
         if (scope == null) {
             return query;
         }
-        query.setNamespace_id(CortexIdentity.namespace(scope.getNamespace_id()));
+        query.setSpace_id(CortexIdentity.space(scope.getSpace_id()));
         query.setGroup(scope.getGroup());
         query.setApp_id(scope.getApp_id());
         query.setProfile_id(scope.getProfile_id());
@@ -432,8 +432,8 @@ public class StoreBackedItemStore {
         if (!criteria.isIncludeDeleted() && entry.getStatus() != null && entry.getStatus() < 0) {
             return false;
         }
-        if (StringKit.isNotEmpty(criteria.getNamespace_id())
-                && !Objects.equals(CortexIdentity.namespace(criteria.getNamespace_id()), entry.getNamespace_id())) {
+        if (StringKit.isNotEmpty(criteria.getSpace_id())
+                && !Objects.equals(CortexIdentity.space(criteria.getSpace_id()), entry.getSpace_id())) {
             return false;
         }
         if (StringKit.isNotEmpty(criteria.getGroup()) && !Objects.equals(criteria.getGroup(), entry.getGroup())) {
@@ -455,15 +455,15 @@ public class StoreBackedItemStore {
     /**
      * Queries setting items by their storage coordinates.
      *
-     * @param namespace namespace identifier
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   profile identifier
+     * @param space   space identifier
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile profile identifier
      * @return matching setting items
      */
-    private List<Item> queryByCoordinates(String namespace, String group, String data_id, String profile) {
+    private List<Item> queryByCoordinates(String space, String group, String data_id, String profile) {
         ItemQuery query = new ItemQuery();
-        query.setNamespace_id(namespace);
+        query.setSpace_id(space);
         query.setGroup(group);
         query.setData_id(data_id);
         query.setProfile_id(profile);
@@ -489,11 +489,11 @@ public class StoreBackedItemStore {
     private List<String> cacheKeys(Item entry) {
         List<String> profiles = ItemBindingProjection.normalizedProfileIds(entry);
         if (profiles == null || profiles.isEmpty()) {
-            return List.of(entryKey(entry.getNamespace_id(), entry.getGroup(), entry.getData_id(), null));
+            return List.of(entryKey(entry.getSpace_id(), entry.getGroup(), entry.getData_id(), null));
         }
         List<String> keys = new ArrayList<>(profiles.size());
         for (String profile : profiles) {
-            String key = entryKey(entry.getNamespace_id(), entry.getGroup(), entry.getData_id(), profile);
+            String key = entryKey(entry.getSpace_id(), entry.getGroup(), entry.getData_id(), profile);
             if (!keys.contains(key)) {
                 keys.add(key);
             }
@@ -521,7 +521,7 @@ public class StoreBackedItemStore {
     private String cacheIdentity(Item entry) {
         List<String> profiles = ItemBindingProjection.normalizedProfileIds(entry);
         return profileScope(
-                entry.getNamespace_id(),
+                entry.getSpace_id(),
                 entry.getGroup(),
                 entry.getData_id(),
                 profiles == null || profiles.isEmpty() ? null : String.join(Symbol.COMMA, profiles));
@@ -530,37 +530,37 @@ public class StoreBackedItemStore {
     /**
      * Builds one current-state entry cache key.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param dataId    setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param dataId  setting data identifier
+     * @param profile optional profile
      * @return cache key
      */
-    private String entryKey(String namespace, String group, String dataId, String profile) {
-        return keying.key(SettingSpec.entry(namespace, group, dataId, profile));
+    private String entryKey(String space, String group, String dataId, String profile) {
+        return keying.key(SettingSpec.entry(space, group, dataId, profile));
     }
 
     /**
-     * Builds the current-state entry prefix for one namespace.
+     * Builds the current-state entry prefix for one space.
      *
-     * @param namespace namespace
+     * @param space space
      * @return cache prefix
      */
-    private String entryPrefix(String namespace) {
-        return keying.prefix(SettingSpec.entry(namespace, null, null, null));
+    private String entryPrefix(String space) {
+        return keying.prefix(SettingSpec.entry(space, null, null, null));
     }
 
     /**
      * Builds the logical profile scope used for diagnostics and change events.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param dataId    setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param dataId  setting data identifier
+     * @param profile optional profile
      * @return profile scope key
      */
-    private String profileScope(String namespace, String group, String dataId, String profile) {
-        return keying.key(SettingSpec.profileScope(namespace, group, dataId, profile));
+    private String profileScope(String space, String group, String dataId, String profile) {
+        return keying.key(SettingSpec.profileScope(space, group, dataId, profile));
     }
 
     /**

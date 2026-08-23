@@ -37,7 +37,7 @@ public class Base58Provider implements Encoder<byte[], String>, Decoder<CharSequ
     /**
      * Creates the shared Base58 codec provider.
      */
-    private Base58Provider() {
+    public Base58Provider() {
         // No initialization required.
     }
 

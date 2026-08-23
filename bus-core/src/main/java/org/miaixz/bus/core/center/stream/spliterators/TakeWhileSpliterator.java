@@ -57,7 +57,7 @@ public class TakeWhileSpliterator<T> implements Spliterator<T> {
      * @param source    the source {@link Spliterator}
      * @param predicate the predicate to determine which elements to take
      */
-    TakeWhileSpliterator(final Spliterator<T> source, final Predicate<? super T> predicate) {
+    public TakeWhileSpliterator(final Spliterator<T> source, final Predicate<? super T> predicate) {
         this.source = source;
         this.predicate = predicate;
     }

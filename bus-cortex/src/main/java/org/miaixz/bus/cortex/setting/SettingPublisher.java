@@ -172,15 +172,15 @@ public class SettingPublisher {
     /**
      * Publishes a plain inline setting value.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param content   inline content
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param content inline content
      * @return stored setting entry
      */
-    public Item publish(String namespace, String group, String data_id, String content) {
+    public Item publish(String space, String group, String data_id, String content) {
         Item entry = new Item();
-        entry.setNamespace_id(CortexIdentity.namespace(namespace));
+        entry.setSpace_id(CortexIdentity.space(space));
         entry.setGroup(group);
         entry.setData_id(data_id);
         entry.setContent(content);
@@ -214,14 +214,14 @@ public class SettingPublisher {
         Logger.info(
                 true,
                 "Cortex",
-                "Setting publish started: namespace={}, group={}, dataId={}, profile={}, forceRevision={}, contentChars={}",
-                prepared.getNamespace_id(),
+                "Setting publish started: space={}, group={}, dataId={}, profile={}, forceRevision={}, contentChars={}",
+                prepared.getSpace_id(),
                 prepared.getGroup(),
                 prepared.getData_id(),
                 profile,
                 forceRevision,
                 prepared.getContent() == null ? 0 : prepared.getContent().length());
-        Item current = entryStore.find(prepared.getNamespace_id(), prepared.getGroup(), prepared.getData_id(), profile);
+        Item current = entryStore.find(prepared.getSpace_id(), prepared.getGroup(), prepared.getData_id(), profile);
         if (!matchesExactProfile(current, profile)) {
             current = null;
         }
@@ -230,8 +230,8 @@ public class SettingPublisher {
             Logger.info(
                     false,
                     "Cortex",
-                    "Setting publish skipped: namespace={}, group={}, dataId={}, profile={}, reason={}, revision={}",
-                    prepared.getNamespace_id(),
+                    "Setting publish skipped: space={}, group={}, dataId={}, profile={}, reason={}, revision={}",
+                    prepared.getSpace_id(),
                     prepared.getGroup(),
                     prepared.getData_id(),
                     profile,
@@ -246,23 +246,19 @@ public class SettingPublisher {
         }
         Item stored = entryStore.save(prepared);
         ItemRevision previous = current == null ? null
-                : revisionStore.latest(current.getNamespace_id(), current.getGroup(), current.getData_id(), profile);
+                : revisionStore.latest(current.getSpace_id(), current.getGroup(), current.getData_id(), profile);
         ItemRevision revision = toRevision(stored, previous);
         try {
             revisionStore.save(revision);
-            revisionStore.retainLatest(
-                    stored.getNamespace_id(),
-                    stored.getGroup(),
-                    stored.getData_id(),
-                    profile,
-                    maxRevisions);
+            revisionStore
+                    .retainLatest(stored.getSpace_id(), stored.getGroup(), stored.getData_id(), profile, maxRevisions);
         } catch (RuntimeException | Error e) {
             Logger.error(
                     false,
                     "Cortex",
                     e,
-                    "Setting revision persistence failed: namespace={}, group={}, dataId={}, profile={}, revision={}, exception={}",
-                    stored.getNamespace_id(),
+                    "Setting revision persistence failed: space={}, group={}, dataId={}, profile={}, revision={}, exception={}",
+                    stored.getSpace_id(),
                     stored.getGroup(),
                     stored.getData_id(),
                     profile,
@@ -275,7 +271,7 @@ public class SettingPublisher {
         List<String> profiles = ItemBindingProjection.normalizedProfileIds(stored);
         if (profiles == null || profiles.isEmpty()) {
             watchManager.notifySetting(
-                    watchKey(stored.getNamespace_id(), stored.getGroup(), stored.getData_id(), null),
+                    watchKey(stored.getSpace_id(), stored.getGroup(), stored.getData_id(), null),
                     notifyContent,
                     source,
                     eventType,
@@ -283,7 +279,7 @@ public class SettingPublisher {
         } else {
             for (String profileId : profiles) {
                 watchManager.notifySetting(
-                        watchKey(stored.getNamespace_id(), stored.getGroup(), stored.getData_id(), profileId),
+                        watchKey(stored.getSpace_id(), stored.getGroup(), stored.getData_id(), profileId),
                         notifyContent,
                         source,
                         eventType,
@@ -293,8 +289,8 @@ public class SettingPublisher {
         Logger.info(
                 false,
                 "Cortex",
-                "Setting publish completed: namespace={}, group={}, dataId={}, profileCount={}, revision={}, encrypted={}",
-                stored.getNamespace_id(),
+                "Setting publish completed: space={}, group={}, dataId={}, profileCount={}, revision={}, encrypted={}",
+                stored.getSpace_id(),
                 stored.getGroup(),
                 stored.getData_id(),
                 profiles == null ? 0 : profiles.size(),
@@ -306,26 +302,26 @@ public class SettingPublisher {
     /**
      * Deletes one setting entry and notifies watchers.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional profile
      * @return deleted entry or {@code null}
      */
-    public Item delete(String namespace, String group, String data_id, String profile) {
+    public Item delete(String space, String group, String data_id, String profile) {
         Logger.info(
                 true,
                 "Cortex",
-                "Setting delete started: namespace={}, group={}, dataId={}, profile={}",
-                namespace,
+                "Setting delete started: space={}, group={}, dataId={}, profile={}",
+                space,
                 group,
                 data_id,
                 profile);
-        Item deleted = entryStore.delete(namespace, group, data_id, profile);
+        Item deleted = entryStore.delete(space, group, data_id, profile);
         if (deleted != null) {
             appendChangeLog("delete", deleted, null);
             watchManager.notifySetting(
-                    watchKey(namespace, group, data_id, profile),
+                    watchKey(space, group, data_id, profile),
                     null,
                     SETTING_DURABLE_SOURCE,
                     DURABLE_DELETE_EVENT,
@@ -334,8 +330,8 @@ public class SettingPublisher {
         Logger.info(
                 false,
                 "Cortex",
-                "Setting delete completed: namespace={}, group={}, dataId={}, profile={}, deleted={}",
-                namespace,
+                "Setting delete completed: space={}, group={}, dataId={}, profile={}, deleted={}",
+                space,
                 group,
                 data_id,
                 profile,
@@ -346,30 +342,30 @@ public class SettingPublisher {
     /**
      * Re-publishes the contents of a historical revision as the latest current state.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
-     * @param revision  historical revision
+     * @param space    space
+     * @param group    setting group
+     * @param data_id  setting data identifier
+     * @param profile  optional profile
+     * @param revision historical revision
      * @return newly stored current entry or {@code null} when the revision does not exist
      */
-    public Item rollback(String namespace, String group, String data_id, String profile, String revision) {
+    public Item rollback(String space, String group, String data_id, String profile, String revision) {
         Logger.info(
                 true,
                 "Cortex",
-                "Setting rollback started: namespace={}, group={}, dataId={}, profile={}, revision={}",
-                namespace,
+                "Setting rollback started: space={}, group={}, dataId={}, profile={}, revision={}",
+                space,
                 group,
                 data_id,
                 profile,
                 revision);
-        ItemRevision snapshot = revisionStore.find(namespace, group, data_id, profile, revision);
+        ItemRevision snapshot = revisionStore.find(space, group, data_id, profile, revision);
         if (snapshot == null) {
             Logger.warn(
                     false,
                     "Cortex",
-                    "Setting rollback skipped: namespace={}, group={}, dataId={}, profile={}, revision={}, reason={}",
-                    namespace,
+                    "Setting rollback skipped: space={}, group={}, dataId={}, profile={}, revision={}, reason={}",
+                    space,
                     group,
                     data_id,
                     profile,
@@ -378,7 +374,7 @@ public class SettingPublisher {
             return null;
         }
         Item entry = new Item();
-        entry.setNamespace_id(snapshot.getNamespace_id());
+        entry.setSpace_id(snapshot.getSpace_id());
         entry.setGroup(snapshot.getGroup());
         entry.setData_id(snapshot.getData_id());
         ItemBindingProjection.normalizeProfileIdsInto(entry, ItemBindingProjection.normalizedProfileIds(snapshot));
@@ -398,16 +394,16 @@ public class SettingPublisher {
         Item prepared = ItemNormalizer.normalize(entry);
         Item published = publish(prepared, true, SETTING_DURABLE_SOURCE, ROLLBACK_EVENT, "Setting rolled back");
         if (published != null) {
-            ItemRevision latest = revisionStore.latest(namespace, group, data_id, profile);
+            ItemRevision latest = revisionStore.latest(space, group, data_id, profile);
             if (latest != null) {
-                revisionStore.markRollback(namespace, group, data_id, profile, latest.getRevision(), revision);
+                revisionStore.markRollback(space, group, data_id, profile, latest.getRevision(), revision);
             }
         }
         Logger.info(
                 false,
                 "Cortex",
-                "Setting rollback completed: namespace={}, group={}, dataId={}, profile={}, fromRevision={}, newRevision={}",
-                namespace,
+                "Setting rollback completed: space={}, group={}, dataId={}, profile={}, fromRevision={}, newRevision={}",
+                space,
                 group,
                 data_id,
                 profile,
@@ -428,7 +424,7 @@ public class SettingPublisher {
         try {
             if (stored != null && revision != null) {
                 revisionStore.delete(
-                        revision.getNamespace_id(),
+                        revision.getSpace_id(),
                         revision.getGroup(),
                         revision.getData_id(),
                         ItemBindingProjection.firstProfileId(revision),
@@ -438,7 +434,7 @@ public class SettingPublisher {
                 entryStore.save(previous);
             } else if (stored != null) {
                 entryStore.delete(
-                        stored.getNamespace_id(),
+                        stored.getSpace_id(),
                         stored.getGroup(),
                         stored.getData_id(),
                         ItemBindingProjection.firstProfileId(stored));
@@ -448,8 +444,8 @@ public class SettingPublisher {
                     false,
                     "Cortex",
                     compensationFailure,
-                    "Setting publish compensation failed: namespace={}, group={}, dataId={}, profile={}, exception={}",
-                    stored == null ? null : stored.getNamespace_id(),
+                    "Setting publish compensation failed: space={}, group={}, dataId={}, profile={}, exception={}",
+                    stored == null ? null : stored.getSpace_id(),
                     stored == null ? null : stored.getGroup(),
                     stored == null ? null : stored.getData_id(),
                     stored == null ? null : ItemBindingProjection.firstProfileId(stored),
@@ -476,7 +472,7 @@ public class SettingPublisher {
      * @return revision snapshot recorded for history and rollback
      */
     private ItemRevision toRevision(Item entry, ItemRevision previous) {
-        ItemRevision revision = ItemRevision.builder().item_id(entry.getId()).namespace_id(entry.getNamespace_id())
+        ItemRevision revision = ItemRevision.builder().item_id(entry.getId()).space_id(entry.getSpace_id())
                 .group(entry.getGroup()).data_id(entry.getData_id())
                 .profile_ids(ItemBindingProjection.normalizedProfileIds(entry))
                 .app_ids(ItemBindingProjection.normalizedAppIds(entry)).content(entry.getContent())
@@ -529,11 +525,11 @@ public class SettingPublisher {
         record.setResourceType("ITEM");
         record.setResourceId(
                 profileScope(
-                        item.getNamespace_id(),
+                        item.getSpace_id(),
                         item.getGroup(),
                         item.getData_id(),
                         ItemBindingProjection.firstProfileId(item)));
-        record.setNamespace_id(item.getNamespace_id());
+        record.setSpace_id(item.getSpace_id());
         record.setPayload(JsonKit.toJsonString(revision == null ? item : revision));
         record.setSequence(ItemRevisionNumbers.sortKey(item.getRevision()));
         record.setIdempotencyKey(
@@ -562,27 +558,27 @@ public class SettingPublisher {
     /**
      * Builds one watch key.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param dataId    setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param dataId  setting data identifier
+     * @param profile optional profile
      * @return watch key
      */
-    private String watchKey(String namespace, String group, String dataId, String profile) {
-        return keying.key(SettingSpec.watch(namespace, group, dataId, profile));
+    private String watchKey(String space, String group, String dataId, String profile) {
+        return keying.key(SettingSpec.watch(space, group, dataId, profile));
     }
 
     /**
      * Builds one logical profile scope.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param dataId    setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param dataId  setting data identifier
+     * @param profile optional profile
      * @return profile scope key
      */
-    private String profileScope(String namespace, String group, String dataId, String profile) {
-        return keying.key(SettingSpec.profileScope(namespace, group, dataId, profile));
+    private String profileScope(String space, String group, String dataId, String profile) {
+        return keying.key(SettingSpec.profileScope(space, group, dataId, profile));
     }
 
 }

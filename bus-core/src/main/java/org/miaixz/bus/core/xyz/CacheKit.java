@@ -31,7 +31,7 @@ public class CacheKit {
     /**
      * Keeps cache construction and access on the static API.
      */
-    private CacheKit() {
+    public CacheKit() {
         // No initialization required.
     }
 

@@ -1976,7 +1976,7 @@ public class Builder {
      * @throws CryptoException if encryption fails.
      */
     public static byte[] encrypt(String algorithm, String key, byte[] content) {
-        final org.miaixz.bus.crypto.Provider provider = Registry.require(algorithm);
+        final Provider provider = Registry.require(algorithm);
         return provider.encrypt(key, content);
     }
 
@@ -2006,7 +2006,7 @@ public class Builder {
      * @throws CryptoException if encryption fails.
      */
     public static InputStream encrypt(String algorithm, String key, InputStream inputStream) {
-        final org.miaixz.bus.crypto.Provider provider = Registry.require(algorithm);
+        final Provider provider = Registry.require(algorithm);
         return new ByteArrayInputStream(provider.encrypt(key, IoKit.readBytes(inputStream)));
     }
 

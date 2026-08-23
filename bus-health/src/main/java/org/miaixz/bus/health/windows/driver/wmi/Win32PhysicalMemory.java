@@ -33,12 +33,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Win32PhysicalMemory {
+public class Win32PhysicalMemory {
 
     /**
      * Keeps Win32 physical memory queries on the static API.
      */
-    private Win32PhysicalMemory() {
+    public Win32PhysicalMemory() {
         // No initialization required.
     }
 

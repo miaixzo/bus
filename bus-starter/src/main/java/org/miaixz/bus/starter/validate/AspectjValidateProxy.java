@@ -25,6 +25,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.core.annotation.Order;
 
+import org.miaixz.bus.validate.magic.annotation.Valid;
+
 /**
  * An AOP aspect that provides a proxy for automatic validation of controller method parameters.
  * <p>
@@ -90,7 +92,7 @@ public class AspectjValidateProxy {
      * <li>{@code @GetMapping}</li>
      * <li>{@code @DeleteMapping}</li>
      * <li>{@code @CrossOrigin}</li>
-     * <li>Methods with a parameter annotated with {@code @org.miaixz.bus.validate.magic.annotation.Valid}</li>
+     * <li>Methods with a parameter annotated with {@link Valid}</li>
      * </ul>
      */
     @Pointcut("@annotation(org.springframework.web.bind.annotation.RequestMapping)"

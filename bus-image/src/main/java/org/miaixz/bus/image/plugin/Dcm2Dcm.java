@@ -120,7 +120,7 @@ public class Dcm2Dcm {
      * @param uid the Transfer Syntax UID string.
      * @throws IllegalArgumentException if the UID is not a supported Transfer Syntax.
      */
-    public final void setTransferSyntax(String uid) {
+    public void setTransferSyntax(String uid) {
         this.tsuid = uid;
         this.tstype = TransferSyntaxType.forUID(uid);
         if (tstype == null) {
@@ -134,7 +134,7 @@ public class Dcm2Dcm {
      *
      * @param retainfmi true to retain and update FMI, false otherwise.
      */
-    public final void setRetainFileMetaInformation(boolean retainfmi) {
+    public void setRetainFileMetaInformation(boolean retainfmi) {
         this.retainfmi = retainfmi;
     }
 
@@ -143,7 +143,7 @@ public class Dcm2Dcm {
      *
      * @param nofmi true to exclude FMI, false otherwise.
      */
-    public final void setWithoutFileMetaInformation(boolean nofmi) {
+    public void setWithoutFileMetaInformation(boolean nofmi) {
         this.nofmi = nofmi;
     }
 
@@ -161,7 +161,7 @@ public class Dcm2Dcm {
      *
      * @param encOpts the encoding options.
      */
-    public final void setEncodingOptions(ImageEncodingOptions encOpts) {
+    public void setEncodingOptions(ImageEncodingOptions encOpts) {
         this.encOpts = encOpts;
     }
 

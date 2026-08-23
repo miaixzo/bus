@@ -77,7 +77,7 @@ public abstract class AbstractBluetoothDevice implements BluetoothDevice {
      * @param batteryLevel     the battery level, or {@code -1} if unavailable
      * @param adapterName      the adapter name
      */
-    protected AbstractBluetoothDevice(String name, String address, String majorDeviceClass, boolean connected,
+    public AbstractBluetoothDevice(String name, String address, String majorDeviceClass, boolean connected,
             boolean paired, int batteryLevel, String adapterName) {
         this.name = name;
         this.address = address;

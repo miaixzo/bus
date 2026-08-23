@@ -95,7 +95,7 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
              */
             @Override
             public String name() {
-                return provider.name();
+                return provider.type();
             }
 
             /**

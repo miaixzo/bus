@@ -35,6 +35,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.vortex.magic.Performance;
 
 import io.netty.channel.ChannelOption;
 import reactor.core.publisher.Mono;
@@ -55,12 +56,12 @@ import reactor.util.retry.Retry;
  *
  * @author Kimi Liu
  */
-public final class Egress {
+public class Egress {
 
     /**
      * Keeps outbound HTTP request creation on the static egress API.
      */
-    private Egress() {
+    public Egress() {
         throw new UnsupportedOperationException("Egress class cannot be instantiated");
     }
 
@@ -316,8 +317,8 @@ public final class Egress {
      * Lazy holder for the outbound HTTP client.
      * <p>
      * The holder uses double-checked locking so the connection provider is not touched during class loading. This
-     * avoids creating HTTP resources before {@link Holder#of(org.miaixz.bus.vortex.magic.Performance)} has applied the
-     * runtime performance configuration.
+     * avoids creating HTTP resources before {@link Holder#of(Performance)} has applied the runtime performance
+     * configuration.
      *
      * @author Kimi Liu
      */

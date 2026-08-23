@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.BeanKit;
  *
  * @author Kimi Liu
  */
-public final class JsonAnnotationFilter implements JsonPropertyFilter {
+public class JsonAnnotationFilter implements JsonPropertyFilter {
 
     /**
      * Caller-supplied filter applied after mandatory annotation rules.

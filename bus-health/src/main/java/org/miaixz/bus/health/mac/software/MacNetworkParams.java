@@ -32,8 +32,12 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.jna.ByRef;
+import org.miaixz.bus.health.builtin.software.NetworkParams;
 import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
+import org.miaixz.bus.health.mac.driver.net.RouteDump;
 import org.miaixz.bus.health.mac.jna.SystemB;
+import org.miaixz.bus.health.unix.shared.driver.NetstatRoute;
+import org.miaixz.bus.health.unix.shared.driver.RouteTableDump;
 import org.miaixz.bus.health.unix.shared.jna.CLibrary;
 import org.miaixz.bus.logger.Logger;
 
@@ -144,6 +148,34 @@ final class MacNetworkParams extends AbstractNetworkParams {
             }
         }
         return Normal.EMPTY;
+    }
+
+    /**
+     * Returns the routing table.
+     *
+     * @return the routing table
+     */
+    @Override
+    public List<NetworkParams.IPRoute> getRoutes() {
+        byte[] dump = queryRouteDump();
+        if (dump.length > 0) {
+            List<NetworkParams.IPRoute> routes = RouteTableDump
+                    .parse(dump, RouteTableDump.Layout.MACOS, queryInterfaceNameByIndex());
+            if (!routes.isEmpty()) {
+                return routes;
+            }
+        }
+        return NetstatRoute
+                .queryRoutes("netstat -rn -f inet", "netstat -rn -f inet6", Normal._3, queryInterfaceIndexByName());
+    }
+
+    /**
+     * Fetches the kernel routing table dump.
+     *
+     * @return The routing table dump, or an empty array.
+     */
+    protected byte[] queryRouteDump() {
+        return RouteDump.queryRouteDump();
     }
 
 }

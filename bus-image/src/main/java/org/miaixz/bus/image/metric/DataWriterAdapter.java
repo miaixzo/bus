@@ -77,7 +77,7 @@ public class DataWriterAdapter implements DataWriter {
      *
      * @return the dataset.
      */
-    public final Attributes getDataset() {
+    public Attributes getDataset() {
         return data;
     }
 

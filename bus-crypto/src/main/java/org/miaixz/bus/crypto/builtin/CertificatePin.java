@@ -35,7 +35,7 @@ import org.miaixz.bus.crypto.builtin.digest.DigesterFactory;
  *
  * @author Kimi Liu
  */
-public final class CertificatePin {
+public class CertificatePin {
 
     /**
      * SHA-256 pin prefix.
@@ -60,7 +60,7 @@ public final class CertificatePin {
     /**
      * Restricts construction to the static certificate pin operations defined by this class.
      */
-    private CertificatePin() {
+    public CertificatePin() {
         // No initialization required.
     }
 

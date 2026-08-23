@@ -165,7 +165,7 @@ public class Xml2Dcm {
      *
      * @param includeBulkData The bulk data inclusion mode.
      */
-    public final void setIncludeBulkData(ImageInputStream.IncludeBulkData includeBulkData) {
+    public void setIncludeBulkData(ImageInputStream.IncludeBulkData includeBulkData) {
         this.includeBulkData = includeBulkData;
     }
 
@@ -174,7 +174,7 @@ public class Xml2Dcm {
      *
      * @param catBlkFiles {@code true} to concatenate.
      */
-    public final void setConcatenateBulkDataFiles(boolean catBlkFiles) {
+    public void setConcatenateBulkDataFiles(boolean catBlkFiles) {
         this.catBlkFiles = catBlkFiles;
     }
 
@@ -183,7 +183,7 @@ public class Xml2Dcm {
      *
      * @param blkFilePrefix The file prefix.
      */
-    public final void setBulkDataFilePrefix(String blkFilePrefix) {
+    public void setBulkDataFilePrefix(String blkFilePrefix) {
         this.blkFilePrefix = blkFilePrefix;
     }
 
@@ -192,7 +192,7 @@ public class Xml2Dcm {
      *
      * @param blkFileSuffix The file suffix.
      */
-    public final void setBulkDataFileSuffix(String blkFileSuffix) {
+    public void setBulkDataFileSuffix(String blkFileSuffix) {
         this.blkFileSuffix = blkFileSuffix;
     }
 
@@ -201,7 +201,7 @@ public class Xml2Dcm {
      *
      * @param blkDirectory The bulk data directory.
      */
-    public final void setBulkDataDirectory(File blkDirectory) {
+    public void setBulkDataDirectory(File blkDirectory) {
         this.blkDirectory = blkDirectory;
     }
 
@@ -228,7 +228,7 @@ public class Xml2Dcm {
      *
      * @param uid The Transfer Syntax UID.
      */
-    public final void setTransferSyntax(String uid) {
+    public void setTransferSyntax(String uid) {
         this.tsuid = uid;
     }
 
@@ -237,7 +237,7 @@ public class Xml2Dcm {
      *
      * @param withfmi {@code true} to create FMI if absent.
      */
-    public final void setWithFileMetaInformation(boolean withfmi) {
+    public void setWithFileMetaInformation(boolean withfmi) {
         this.withfmi = withfmi;
     }
 
@@ -246,7 +246,7 @@ public class Xml2Dcm {
      *
      * @param nofmi {@code true} to exclude FMI.
      */
-    public final void setNoFileMetaInformation(boolean nofmi) {
+    public void setNoFileMetaInformation(boolean nofmi) {
         this.nofmi = nofmi;
     }
 
@@ -255,7 +255,7 @@ public class Xml2Dcm {
      *
      * @param encOpts The encoding options.
      */
-    public final void setEncodingOptions(ImageEncodingOptions encOpts) {
+    public void setEncodingOptions(ImageEncodingOptions encOpts) {
         this.encOpts = encOpts;
     }
 

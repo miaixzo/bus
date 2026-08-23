@@ -34,12 +34,12 @@ import org.miaixz.bus.health.Parsing;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Lscfg {
+public class Lscfg {
 
     /**
      * Creates a new Lscfg instance.
      */
-    private Lscfg() {
+    public Lscfg() {
         // No initialization required.
     }
 

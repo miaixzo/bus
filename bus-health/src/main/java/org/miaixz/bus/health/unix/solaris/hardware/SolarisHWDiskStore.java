@@ -46,7 +46,7 @@ import org.miaixz.bus.health.unix.solaris.software.SolarisOperatingSystem;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class SolarisHWDiskStore extends AbstractHWDiskStore {
+public class SolarisHWDiskStore extends AbstractHWDiskStore {
 
     /**
      * The reads value.
@@ -96,7 +96,7 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
      * @param serial the serial
      * @param size   the size
      */
-    private SolarisHWDiskStore(String name, String model, String serial, long size) {
+    public SolarisHWDiskStore(String name, String model, String serial, long size) {
         super(name, model, serial, size);
     }
 
@@ -255,7 +255,7 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
      * @return the update attributes result
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         this.timeStamp = System.currentTimeMillis();
         if (SolarisOperatingSystem.HAS_KSTAT2) {
             // Use Kstat2 implementation

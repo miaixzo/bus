@@ -38,7 +38,7 @@ import org.miaixz.bus.health.unix.solaris.KstatKit.KstatChain;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class SolarisPowerSource extends AbstractPowerSource {
+public class SolarisPowerSource extends AbstractPowerSource {
 
     // One-time lookup to see which kstat module to use
     /**

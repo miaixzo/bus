@@ -31,7 +31,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -44,6 +43,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
@@ -68,7 +68,7 @@ import org.miaixz.bus.fabric.protocol.http.http2.Http2Header;
  *
  * @author Kimi Liu
  */
-public final class DnsDohServer implements AutoCloseable, Lifecycle {
+public class DnsDohServer implements AutoCloseable, Lifecycle {
 
     /**
      * DNS-over-HTTPS request path.
@@ -78,7 +78,7 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
     /**
      * HTTP/2 client connection preface.
      */
-    private static final byte[] HTTP2_PREFACE = Builder.HTTP2_CONNECTION_PREFACE.getBytes(StandardCharsets.US_ASCII);
+    private static final byte[] HTTP2_PREFACE = Builder.HTTP2_CONNECTION_PREFACE.getBytes(Charset.US_ASCII);
 
     /**
      * Maximum HTTP/1.1 request-line bytes.
@@ -679,15 +679,12 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
             final int status,
             final String contentType,
             final byte[] body) throws IOException {
-        output.write(
-                ("HTTP/1.1 " + status + Symbol.SPACE + reason(status) + Symbol.CRLF)
-                        .getBytes(StandardCharsets.US_ASCII));
-        output.write((Http.Header.CONTENT_TYPE + ": " + contentType + Symbol.CRLF).getBytes(StandardCharsets.US_ASCII));
-        output.write(
-                (Http.Header.CONTENT_LENGTH + ": " + body.length + Symbol.CRLF).getBytes(StandardCharsets.US_ASCII));
+        output.write(("HTTP/1.1 " + status + Symbol.SPACE + reason(status) + Symbol.CRLF).getBytes(Charset.US_ASCII));
+        output.write((Http.Header.CONTENT_TYPE + ": " + contentType + Symbol.CRLF).getBytes(Charset.US_ASCII));
+        output.write((Http.Header.CONTENT_LENGTH + ": " + body.length + Symbol.CRLF).getBytes(Charset.US_ASCII));
         output.write(
                 (Http.Header.CONNECTION + ": " + Http.Header.CONNECTION_CLOSE + Symbol.CRLF + Symbol.CRLF)
-                        .getBytes(StandardCharsets.US_ASCII));
+                        .getBytes(Charset.US_ASCII));
         output.write(body);
         output.flush();
     }
@@ -742,7 +739,7 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
                 final int length = line.length > Normal._0 && line[line.length - Normal._1] == Symbol.C_CR
                         ? line.length - Normal._1
                         : line.length;
-                return new String(line, Normal._0, length, StandardCharsets.US_ASCII);
+                return new String(line, Normal._0, length, Charset.US_ASCII);
             }
             bytes.write(value);
         }
@@ -961,7 +958,7 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
         for (final String parameter : rawQuery.split(Symbol.AND)) {
             final int separator = parameter.indexOf(Symbol.C_EQUAL);
             final String parameterName = separator < 0 ? parameter : parameter.substring(0, separator);
-            if (name.equals(URLDecoder.decode(parameterName, StandardCharsets.UTF_8))) {
+            if (name.equals(URLDecoder.decode(parameterName, Charset.UTF_8))) {
                 return separator < 0 ? Normal.EMPTY : parameter.substring(separator + 1);
             }
         }
@@ -975,7 +972,7 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
      * @return response body
      */
     private static byte[] httpStatusBody(final int status) {
-        return ("HTTP " + status).getBytes(StandardCharsets.US_ASCII);
+        return ("HTTP " + status).getBytes(Charset.US_ASCII);
     }
 
     /**

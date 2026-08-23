@@ -21,24 +21,24 @@ package org.miaixz.bus.limiter;
 
 import java.lang.reflect.Method;
 
-import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.limiter.magic.StrategyMode;
 
 /**
  * Defines the contract for a limiter provider, which is responsible for executing limiting rules. This interface
- * extends {@link org.miaixz.bus.core.Provider} and specifies methods for retrieving the limiting strategy and
- * processing method invocations under limiting rules.
+ * extends the shared provider contract and specifies methods for retrieving the limiting strategy and processing method
+ * invocations under limiting rules.
  *
  * @author Kimi Liu
  */
-public interface Provider extends org.miaixz.bus.core.Provider {
+public interface Provider extends org.miaixz.bus.core.Provider<StrategyMode> {
 
     /**
-     * Retrieves the limiting strategy associated with this provider.
+     * Returns the non-null limiter strategy used to register and select this provider.
      *
-     * @return The {@link StrategyMode} representing the limiting strategy.
+     * @return limiter strategy implemented by this provider
      */
-    StrategyMode get();
+    @Override
+    StrategyMode type();
 
     /**
      * Processes a method invocation according to the limiting rules defined by this provider. This method is typically
@@ -50,15 +50,5 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @return The result of the method invocation after applying limiting rules, or a fallback value.
      */
     Object process(Object bean, Method method, Object[] args);
-
-    /**
-     * Returns the type of this provider, which is {@link EnumValue.Povider#LIMITER}.
-     *
-     * @return The provider type.
-     */
-    @Override
-    default Object type() {
-        return EnumValue.Povider.LIMITER;
-    }
 
 }

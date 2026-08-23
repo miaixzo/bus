@@ -41,7 +41,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  *
  * @author Kimi Liu
  */
-public final class HttpChain {
+public class HttpChain {
 
     /**
      * Most recently compiled immutable stage list identity.
@@ -82,7 +82,7 @@ public final class HttpChain {
      * @param connection   network connection
      * @param cancellation cancellation scope shared by all stages
      */
-    private HttpChain(final HttpStage[] stages, final int index, final ConnectionLease lease,
+    public HttpChain(final HttpStage[] stages, final int index, final ConnectionLease lease,
             final Connection connection, final Cancellation cancellation) {
         this.stages = stages;
         this.index = validateIndex(index, this.stages.length);
@@ -363,7 +363,7 @@ public final class HttpChain {
     /**
      * Structured exchange failure state carrying authoritative delivery and ownership facts.
      */
-    public static final class ExchangeFailure {
+    public static class ExchangeFailure {
 
         /**
          * Authoritative request delivery state at the failure boundary.

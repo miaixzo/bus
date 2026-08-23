@@ -139,6 +139,22 @@ public class BCCipher implements Cipher, Wrapper<Object> {
     }
 
     /**
+     * Supplies additional authenticated data to an initialized Bouncy Castle AEAD cipher.
+     *
+     * @param aad additional authenticated data; an empty array is permitted
+     * @throws IllegalArgumentException if {@code aad} is {@code null}
+     * @throws CryptoException          if this wrapper does not contain an AEAD cipher
+     */
+    @Override
+    public void updateAad(final byte[] aad) {
+        Assert.notNull(aad, "Additional authenticated data must not be null");
+        if (aeadBlockCipher == null) {
+            throw new CryptoException("Additional authenticated data requires an AEAD cipher");
+        }
+        aeadBlockCipher.processAADBytes(aad, 0, aad.length);
+    }
+
+    /**
      * Gets the block size of the cipher.
      *
      * @return The block size, or -1 for stream ciphers.

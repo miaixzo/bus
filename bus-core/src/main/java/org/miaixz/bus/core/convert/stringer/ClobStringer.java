@@ -37,7 +37,7 @@ public class ClobStringer implements FunctionX<Object, String> {
     /**
      * Creates the shared CLOB-to-string converter.
      */
-    private ClobStringer() {
+    public ClobStringer() {
         // No initialization required.
     }
 

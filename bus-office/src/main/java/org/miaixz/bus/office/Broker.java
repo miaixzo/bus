@@ -625,7 +625,7 @@ public interface Broker<T> {
          * @param <T> item type
          * @author Kimi Liu
          */
-        public static final class Session<T> {
+        public static class Session<T> {
 
             /**
              * Handle identifier.
@@ -685,7 +685,7 @@ public interface Broker<T> {
              * @param writtenBytes written payload bytes
              * @param finished     completion flag
              */
-            private Session(final String handleId, final File handleDir, final long expiresAt, final int previewRows,
+            public Session(final String handleId, final File handleDir, final long expiresAt, final int previewRows,
                     final Archive.Writer writer, final Map<Integer, SessionSegmentState> segments,
                     final long writtenItems, final long writtenBytes, final boolean finished) {
                 this.handleId = handleId;

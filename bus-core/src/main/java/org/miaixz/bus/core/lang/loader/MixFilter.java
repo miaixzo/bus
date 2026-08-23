@@ -42,7 +42,7 @@ public abstract class MixFilter implements Filter {
      *
      * @param filters An array of {@link Filter} instances to initialize the composite filter.
      */
-    protected MixFilter(Filter... filters) {
+    public MixFilter(Filter... filters) {
         this(Arrays.asList(filters));
     }
 

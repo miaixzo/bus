@@ -101,7 +101,7 @@ public class Tuple implements Iterable<Object>, Serializable, Cloneable {
      *
      * @return a new {@link List} containing the elements of this tuple.
      */
-    public final List<Object> toList() {
+    public List<Object> toList() {
         return ListKit.of(this.members);
     }
 
@@ -142,7 +142,7 @@ public class Tuple implements Iterable<Object>, Serializable, Cloneable {
      *
      * @return a sequential {@link Stream} over the elements in this tuple.
      */
-    public final Stream<Object> stream() {
+    public Stream<Object> stream() {
         return Arrays.stream(this.members);
     }
 
@@ -151,7 +151,7 @@ public class Tuple implements Iterable<Object>, Serializable, Cloneable {
      *
      * @return a parallel {@link Stream} over the elements in this tuple.
      */
-    public final Stream<Object> parallelStream() {
+    public Stream<Object> parallelStream() {
         return StreamSupport.stream(spliterator(), true);
     }
 
@@ -162,7 +162,7 @@ public class Tuple implements Iterable<Object>, Serializable, Cloneable {
      * @param end   the ending index (exclusive).
      * @return a new {@code Tuple} containing the specified sub-range.
      */
-    public final Tuple sub(final int start, final int end) {
+    public Tuple sub(final int start, final int end) {
         return new Tuple(ArrayKit.sub(this.members, start, end));
     }
 
@@ -234,7 +234,7 @@ public class Tuple implements Iterable<Object>, Serializable, Cloneable {
      * @return a {@code Spliterator} over the elements in this tuple.
      */
     @Override
-    public final Spliterator<Object> spliterator() {
+    public Spliterator<Object> spliterator() {
         return Spliterators.spliterator(this.members, Spliterator.ORDERED);
     }
 

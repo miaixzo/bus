@@ -42,7 +42,7 @@ public class ID {
     /**
      * Keeps identifier generation on the static API.
      */
-    private ID() {
+    public ID() {
         // No initialization required.
     }
 

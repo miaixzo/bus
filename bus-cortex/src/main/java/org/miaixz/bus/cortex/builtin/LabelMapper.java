@@ -29,12 +29,12 @@ import java.util.Map;
  *
  * @author Kimi Liu
  */
-public final class LabelMapper {
+public class LabelMapper {
 
     /**
      * Creates a new mapper.
      */
-    private LabelMapper() {
+    public LabelMapper() {
         // No initialization required.
     }
 

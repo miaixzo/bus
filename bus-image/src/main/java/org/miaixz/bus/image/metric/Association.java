@@ -331,7 +331,7 @@ public class Association {
      *
      * @return the socket.
      */
-    public final Socket getSocket() {
+    public Socket getSocket() {
         return sock;
     }
 
@@ -358,7 +358,7 @@ public class Association {
      *
      * @return the connection.
      */
-    public final Connection getConnection() {
+    public Connection getConnection() {
         return conn;
     }
 
@@ -367,7 +367,7 @@ public class Association {
      *
      * @return the a associate rq.
      */
-    public final AAssociateRQ getAAssociateRQ() {
+    public AAssociateRQ getAAssociateRQ() {
         return rq;
     }
 
@@ -376,7 +376,7 @@ public class Association {
      *
      * @return the a associate ac.
      */
-    public final AAssociateAC getAAssociateAC() {
+    public AAssociateAC getAAssociateAC() {
         return ac;
     }
 
@@ -385,7 +385,7 @@ public class Association {
      *
      * @return the exception.
      */
-    public final IOException getException() {
+    public IOException getException() {
         return ex;
     }
 
@@ -394,7 +394,7 @@ public class Association {
      *
      * @return the application entity.
      */
-    public final ApplicationEntity getApplicationEntity() {
+    public ApplicationEntity getApplicationEntity() {
         return ae;
     }
 
@@ -495,7 +495,7 @@ public class Association {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isRequestor() {
+    public boolean isRequestor() {
         return requestor;
     }
 
@@ -668,7 +668,7 @@ public class Association {
      *
      * @return the max pdu length send.
      */
-    public final int getMaxPDULengthSend() {
+    public int getMaxPDULengthSend() {
         return maxPDULength;
     }
 
@@ -1011,7 +1011,7 @@ public class Association {
      *
      * @return the state.
      */
-    public final State getState() {
+    public State getState() {
         return state;
     }
 

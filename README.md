@@ -9,7 +9,7 @@
     <img src="https://img.shields.io/badge/Java-25+-green.svg">
   </a>
   <a target="_blank" href="https://spring.io/projects/spring-boot">
-    <img src="https://img.shields.io/badge/Spring Boot-4.1.0-brightgreen.svg">
+    <img src="https://img.shields.io/badge/Spring Boot-4.1.1-brightgreen.svg">
   </a>
   <a target="_blank" href="https://www.postgresql.org">
     <img src="https://img.shields.io/badge/postgresql-17.x-blue.svg">
@@ -60,7 +60,7 @@ Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
 | [√]    | [bus-bom](bus-bom)             | Dependency management module, unified version control, supporting on-demand component loading                                    |
 | [√]    | [bus-cache](bus-cache)         | Distributed caching service, supporting Redis/Memcached/Hessian multi-level caching solutions                                    |
 | [√]    | [bus-core](bus-core)           | Core utility library, containing 20+ common utility classes for concurrency/reflection/date/collections                          |
-| [√]    | [bus-cortex](bus-cortex)       | Unified registry and configuration center for API/MCP/Prompt entries, with health probing and namespace isolation                |
+| [√]    | [bus-cortex](bus-cortex)       | Unified registry and configuration center for API/MCP/Prompt entries, with health probing and space isolation                    |
 | [√]    | [bus-crypto](bus-crypto)       | Encryption/decryption component, supporting AES/DES/SM4/MD5 algorithms and national cipher suites                                |
 | [√]    | [bus-extra](bus-extra)         | Extended functionality package, integrating peripheral services like FTP/QR code/MQ/file processing                              |
 | [√]    | [bus-gitlab](bus-gitlab)       | Deep GitLab integration, providing full lifecycle management for CI/CD/repositories/issues                                       |

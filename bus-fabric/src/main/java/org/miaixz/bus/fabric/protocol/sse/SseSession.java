@@ -45,7 +45,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class SseSession implements Session {
+public class SseSession implements Session {
 
     /**
      * Session address.
@@ -130,7 +130,7 @@ public final class SseSession implements Session {
      * @param operationId  stable identifier attached to all session events
      * @throws ValidateException if a required argument is {@code null}
      */
-    SseSession(final Address address, final SseRetry retry, final Cancellation cancellation,
+    public SseSession(final Address address, final SseRetry retry, final Cancellation cancellation,
             final CompletableFuture<Void> stream, final Listener<? super SseSession> listener,
             final EventObserver observer, final Clock clock, final String operationId) {
         this.address = require(address, "SSE address");

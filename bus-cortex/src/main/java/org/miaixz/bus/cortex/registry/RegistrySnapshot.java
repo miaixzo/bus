@@ -44,9 +44,9 @@ public class RegistrySnapshot {
     }
 
     /**
-     * Namespace included in this snapshot.
+     * Space included in this snapshot.
      */
-    private String namespace_id;
+    private String space_id;
 
     /**
      * Type scopes included in this snapshot.

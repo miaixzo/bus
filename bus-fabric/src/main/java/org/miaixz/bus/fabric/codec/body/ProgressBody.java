@@ -132,7 +132,7 @@ public interface ProgressBody extends Body {
     /**
      * Shared progress tracker used by concrete body implementations.
      */
-    final class Tracker implements TransferObserver {
+    class Tracker implements TransferObserver {
 
         /**
          * Original payload whose opened sources are observed.
@@ -175,7 +175,7 @@ public interface ProgressBody extends Body {
          * @param original non-null payload to observe
          * @param listener non-null cumulative progress callback
          */
-        private Tracker(final Payload original, final BiConsumer<Long, Long> listener) {
+        public Tracker(final Payload original, final BiConsumer<Long, Long> listener) {
             this.original = require(original, "Progress payload");
             this.listener = require(listener, "Progress listener");
             this.payload = new ProgressPayload();

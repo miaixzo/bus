@@ -83,7 +83,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
      * @param locale   The date locale.
      * @throws NullPointerException if pattern, timeZone, or locale is null.
      */
-    protected FormatBuilder(final String pattern, final TimeZone timeZone, final Locale locale) {
+    public FormatBuilder(final String pattern, final TimeZone timeZone, final Locale locale) {
         this(pattern, timeZone, locale, null);
     }
 

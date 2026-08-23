@@ -57,7 +57,7 @@ public class DateKit extends Calendar {
     /**
      * Keeps date and time operations on the static API.
      */
-    private DateKit() {
+    public DateKit() {
         // No initialization required.
     }
 
@@ -1730,7 +1730,7 @@ public class DateKit extends Calendar {
         /**
          * Keeps SQL date and time conversion on the static API.
          */
-        private SQL() {
+        public SQL() {
             // No initialization required.
         }
 

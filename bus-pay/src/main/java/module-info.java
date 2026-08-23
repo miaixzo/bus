@@ -18,13 +18,18 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.pay
+ * Module: {@code bus.pay}
+ *
+ * <p>
+ * Provides a unified integration layer for online payment services.
+ *
+ * <p>
+ * Includes payment contracts, request signing, configuration and caching, transaction, refund, transfer, and settlement
+ * operations, and adapters for Alipay, JD Pay, PayPal, Tenpay, UnionPay, and WeChat Pay versions 2 and 3.
  *
  * @author Kimi Liu
  */
 module bus.pay {
-
-    requires java.xml;
 
     requires bus.cache;
     requires bus.core;

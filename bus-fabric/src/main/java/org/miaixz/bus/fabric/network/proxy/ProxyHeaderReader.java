@@ -42,7 +42,7 @@ import org.miaixz.bus.fabric.network.Conduit;
  *
  * @author Kimi Liu
  */
-public final class ProxyHeaderReader {
+public class ProxyHeaderReader {
 
     /**
      * ASCII signature used to distinguish a PROXY protocol v1 line from application payload.
@@ -52,7 +52,7 @@ public final class ProxyHeaderReader {
     /**
      * Keeps proxy-header decoding on the static API.
      */
-    private ProxyHeaderReader() {
+    public ProxyHeaderReader() {
         // No initialization required.
     }
 

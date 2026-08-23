@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.core
+ * Module: {@code bus.core}
+ *
+ * <p>
+ * Provides the foundational APIs and general-purpose utilities used throughout the Bus ecosystem.
+ *
+ * <p>
+ * Includes collections, beans, builders, codecs, type conversion, date and time handling, I/O, reflection, concurrency,
+ * networking, text processing, trees, XML, and common language contracts.
  *
  * @author Kimi Liu
  */
@@ -29,9 +36,10 @@ module bus.core {
     requires java.management;
     requires java.naming;
     requires java.sql;
+    requires java.xml;
 
-    requires static lombok;
     requires static jakarta.persistence;
+    requires static lombok;
 
     exports org.miaixz.bus.core;
     exports org.miaixz.bus.core.basic.advice;
@@ -126,7 +134,11 @@ module bus.core {
     exports org.miaixz.bus.core.lang.annotation;
     exports org.miaixz.bus.core.lang.annotation.env;
     exports org.miaixz.bus.core.lang.annotation.resolve;
+    exports org.miaixz.bus.core.lang.annotation.resolve.attribute;
     exports org.miaixz.bus.core.lang.annotation.resolve.elements;
+    exports org.miaixz.bus.core.lang.annotation.resolve.processor;
+    exports org.miaixz.bus.core.lang.annotation.resolve.scanner;
+    exports org.miaixz.bus.core.lang.annotation.resolve.synthesize;
     exports org.miaixz.bus.core.lang.ansi;
     exports org.miaixz.bus.core.lang.caller;
     exports org.miaixz.bus.core.lang.copier;

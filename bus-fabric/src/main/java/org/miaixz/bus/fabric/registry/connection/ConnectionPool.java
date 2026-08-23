@@ -55,7 +55,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class ConnectionPool implements AutoCloseable {
+public class ConnectionPool implements AutoCloseable {
 
     /**
      * Shared unregister action for synchronous callers that cannot be cancelled.
@@ -212,7 +212,7 @@ public final class ConnectionPool implements AutoCloseable {
      * @param meter      meter recording physical and logical lease activity
      * @param dispatcher dispatcher used for scheduled eviction, or {@code null}
      */
-    private ConnectionPool(final PoolPolicy policy, final Clock clock, final FabricMeter meter,
+    public ConnectionPool(final PoolPolicy policy, final Clock clock, final FabricMeter meter,
             final Dispatcher dispatcher) {
         this.policy = policy;
         this.clock = clock;

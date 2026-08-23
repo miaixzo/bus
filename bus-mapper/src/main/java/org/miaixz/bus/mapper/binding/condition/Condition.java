@@ -194,8 +194,7 @@ public class Condition<T> {
      * @param fns An array of method references representing the columns to select.
      * @return The current {@link Condition} object.
      */
-    @SafeVarargs
-    public final Condition<T> selectColumns(Fn<T, Object>... fns) {
+    public Condition<T> selectColumns(Fn<T, Object>... fns) {
         selectColumns = Normal.EMPTY;
         simpleSelectColumns = Normal.EMPTY;
         if (fns == null || fns.length == 0) {
@@ -243,8 +242,7 @@ public class Condition<T> {
      * @param fns An array of method references representing the columns to exclude.
      * @return The current {@link Condition} object.
      */
-    @SafeVarargs
-    public final Condition<T> excludeColumns(Fn<T, Object>... fns) {
+    public Condition<T> excludeColumns(Fn<T, Object>... fns) {
         selectColumns = Normal.EMPTY;
         simpleSelectColumns = Normal.EMPTY;
         if (fns == null || fns.length == 0) {
@@ -353,8 +351,7 @@ public class Condition<T> {
      * @param fns An array of method references to the columns.
      * @return The current {@link Condition} object.
      */
-    @SafeVarargs
-    public final Condition<T> orderByAsc(Fn<T, Object>... fns) {
+    public Condition<T> orderByAsc(Fn<T, Object>... fns) {
         if (fns != null && fns.length > 0) {
             for (Fn<T, Object> fn : fns) {
                 orderBy(fn, Order.ASC);
@@ -369,8 +366,7 @@ public class Condition<T> {
      * @param fns An array of method references to the columns.
      * @return The current {@link Condition} object.
      */
-    @SafeVarargs
-    public final Condition<T> orderByDesc(Fn<T, Object>... fns) {
+    public Condition<T> orderByDesc(Fn<T, Object>... fns) {
         if (fns != null && fns.length > 0) {
             for (Fn<T, Object> fn : fns) {
                 orderBy(fn, Order.DESC);

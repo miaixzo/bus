@@ -38,12 +38,12 @@ import org.miaixz.bus.health.builtin.software.OSProcess;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class ThreadInfo {
+public class ThreadInfo {
 
     /**
      * Keeps macOS thread metadata queries on the static API.
      */
-    private ThreadInfo() {
+    public ThreadInfo() {
         // No initialization required.
     }
 

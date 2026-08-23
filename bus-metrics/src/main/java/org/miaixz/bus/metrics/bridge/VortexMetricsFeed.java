@@ -36,7 +36,7 @@ public class VortexMetricsFeed {
     /**
      * Keeps Vortex metric publication on the static API.
      */
-    private VortexMetricsFeed() {
+    public VortexMetricsFeed() {
         // No initialization required.
     }
 

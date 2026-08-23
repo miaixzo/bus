@@ -33,12 +33,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Win32VideoController {
+public class Win32VideoController {
 
     /**
      * Keeps Win32 video controller queries on the static API.
      */
-    private Win32VideoController() {
+    public Win32VideoController() {
         // No initialization required.
     }
 

@@ -32,7 +32,7 @@ import org.miaixz.bus.health.Executor;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class FstatKit {
+public class FstatKit {
 
     /**
      * Constructs a new FstatKit instance.

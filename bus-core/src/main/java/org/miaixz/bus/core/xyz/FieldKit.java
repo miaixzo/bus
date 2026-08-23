@@ -44,7 +44,7 @@ public class FieldKit {
     /**
      * Keeps reflected field access on the static API.
      */
-    private FieldKit() {
+    public FieldKit() {
         // No initialization required.
     }
 

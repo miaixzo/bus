@@ -52,6 +52,7 @@ import org.miaixz.bus.health.windows.driver.registry.ThreadPerformanceData;
 import org.miaixz.bus.health.windows.driver.wmi.Win32Process;
 import org.miaixz.bus.health.windows.driver.wmi.Win32Process.CommandLineProperty;
 import org.miaixz.bus.health.windows.driver.wmi.Win32ProcessCached;
+import org.miaixz.bus.health.windows.jna.NtDll;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -252,7 +253,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
      * @param s the s
      * @return the read unicode string result
      */
-    private static String readUnicodeString(HANDLE h, org.miaixz.bus.health.windows.jna.NtDll.UNICODE_STRING s) {
+    private static String readUnicodeString(HANDLE h, NtDll.UNICODE_STRING s) {
         if (s.Length > 0) {
             // Add space for null terminator
             try (Memory m = new Memory(s.Length + 2L);
@@ -770,7 +771,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
      * @param wts the wts
      * @return the update attributes result
      */
-    private boolean updateAttributes(ProcessPerformanceData.PerfCounterBlock pcb, WtsInfo wts) {
+    private synchronized boolean updateAttributes(ProcessPerformanceData.PerfCounterBlock pcb, WtsInfo wts) {
         if (pcb == null) {
             this.state = OSProcess.State.INVALID;
             return false;
@@ -881,10 +882,10 @@ public class WindowsOSProcess extends AbstractOSProcess {
                 if (WindowsOperatingSystem.isX86() == WindowsOperatingSystem.isWow(h)) {
                     try (ByRef.CloseableIntByReference nRead = new ByRef.CloseableIntByReference()) {
                         // Start by getting the address of the PEB
-                        org.miaixz.bus.health.windows.jna.NtDll.PROCESS_BASIC_INFORMATION pbi = new org.miaixz.bus.health.windows.jna.NtDll.PROCESS_BASIC_INFORMATION();
-                        int ret = org.miaixz.bus.health.windows.jna.NtDll.INSTANCE.NtQueryInformationProcess(
+                        NtDll.PROCESS_BASIC_INFORMATION pbi = new NtDll.PROCESS_BASIC_INFORMATION();
+                        int ret = NtDll.INSTANCE.NtQueryInformationProcess(
                                 h,
-                                org.miaixz.bus.health.windows.jna.NtDll.PROCESS_BASIC_INFORMATION,
+                                NtDll.PROCESS_BASIC_INFORMATION,
                                 pbi.getPointer(),
                                 pbi.size(),
                                 nRead);
@@ -894,7 +895,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
                         pbi.read();
 
                         // Now fetch the PEB
-                        org.miaixz.bus.health.windows.jna.NtDll.PEB peb = new org.miaixz.bus.health.windows.jna.NtDll.PEB();
+                        NtDll.PEB peb = new NtDll.PEB();
                         Kernel32.INSTANCE.ReadProcessMemory(h, pbi.PebBaseAddress, peb.getPointer(), peb.size(), nRead);
                         if (nRead.getValue() == 0) {
                             return defaultCwdCommandlineEnvironment();
@@ -902,7 +903,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
                         peb.read();
 
                         // Now fetch the Process Parameters structure containing our data
-                        org.miaixz.bus.health.windows.jna.NtDll.RTL_USER_PROCESS_PARAMETERS upp = new org.miaixz.bus.health.windows.jna.NtDll.RTL_USER_PROCESS_PARAMETERS();
+                        NtDll.RTL_USER_PROCESS_PARAMETERS upp = new NtDll.RTL_USER_PROCESS_PARAMETERS();
                         Kernel32.INSTANCE
                                 .ReadProcessMemory(h, peb.ProcessParameters, upp.getPointer(), upp.size(), nRead);
                         if (nRead.getValue() == 0) {

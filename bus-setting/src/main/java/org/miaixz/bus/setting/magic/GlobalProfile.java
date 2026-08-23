@@ -32,9 +32,9 @@ import org.miaixz.bus.setting.Setting;
 public class GlobalProfile {
 
     /**
-     * Private constructor to prevent instantiation.
+     * Creates a profile facade over the shared configuration state.
      */
-    private GlobalProfile() {
+    public GlobalProfile() {
         // No initialization required.
     }
 

@@ -40,7 +40,7 @@ import org.miaixz.bus.crypto.Keeper;
  *
  * @author Kimi Liu
  */
-public final class CertificateChainCleaner {
+public class CertificateChainCleaner {
 
     /**
      * Maximum signer depth accepted while building a chain.
@@ -57,7 +57,7 @@ public final class CertificateChainCleaner {
      *
      * @param trustRootIndex trust root index
      */
-    private CertificateChainCleaner(final TrustRootIndex trustRootIndex) {
+    public CertificateChainCleaner(final TrustRootIndex trustRootIndex) {
         this.trustRootIndex = Assert
                 .notNull(trustRootIndex, () -> new ValidateException("Trust root index must not be null"));
     }

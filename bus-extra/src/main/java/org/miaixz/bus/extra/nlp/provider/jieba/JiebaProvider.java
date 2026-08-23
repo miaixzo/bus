@@ -69,6 +69,16 @@ public class JiebaProvider implements NLPProvider {
     }
 
     /**
+     * Returns the stable Jieba engine name used for named NLP provider selection.
+     *
+     * @return {@code jieba}
+     */
+    @Override
+    public String type() {
+        return "jieba";
+    }
+
+    /**
      * Performs word segmentation on the given text using the configured Jieba {@link JiebaSegmenter} instance. The
      * result is wrapped in a {@link JiebaResult} to conform to the {@link NLPResult} interface.
      *

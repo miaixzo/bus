@@ -39,7 +39,7 @@ import org.miaixz.bus.fabric.network.tls.TlsPolicy;
  *
  * @author Kimi Liu
  */
-public final class DnsServerOptions {
+public class DnsServerOptions {
 
     /**
      * Default UDP payload size that avoids common fragmentation.
@@ -244,7 +244,7 @@ public final class DnsServerOptions {
      * @param metrics                   DNS Server metrics facade
      * @param queryLog                  DNS query logger
      */
-    private DnsServerOptions(final List<DnsEndpoint> endpoints, final DnsSnapshot snapshot,
+    public DnsServerOptions(final List<DnsEndpoint> endpoints, final DnsSnapshot snapshot,
             final DnsSnapshotProvider provider, final int maxUdpPayloadBytes, final int cacheMaxEntries,
             final Duration cacheTtl, final Duration cacheServeStaleTtl, final Duration cachePrefetchBeforeExpiry,
             final List<DnsSnapshotListener> snapshotListeners, final List<CidrBlock> recursionAllowedCidrs,

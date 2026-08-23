@@ -42,7 +42,7 @@ import org.miaixz.bus.core.net.MediaType;
  *
  * @author Kimi Liu
  */
-public final class MultipartBody {
+public class MultipartBody {
 
     /**
      * The boundary value.

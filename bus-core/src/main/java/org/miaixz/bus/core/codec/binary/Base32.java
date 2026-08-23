@@ -42,7 +42,7 @@ public class Base32 {
     /**
      * Keeps Base32 encoding and decoding on the static API.
      */
-    private Base32() {
+    public Base32() {
         // No initialization required.
     }
 

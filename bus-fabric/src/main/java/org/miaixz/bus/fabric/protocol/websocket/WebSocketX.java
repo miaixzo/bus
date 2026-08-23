@@ -21,7 +21,6 @@ package org.miaixz.bus.fabric.protocol.websocket;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +28,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -50,7 +50,7 @@ import org.miaixz.bus.fabric.protocol.websocket.calls.WebSocketCall;
  *
  * @author Kimi Liu
  */
-public final class WebSocketX {
+public class WebSocketX {
 
     /**
      * Immutable execution specification.
@@ -72,7 +72,7 @@ public final class WebSocketX {
      *
      * @param builder configuration source used to create the immutable exchange specification
      */
-    private WebSocketX(final Builder builder) {
+    public WebSocketX(final Builder builder) {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
         this.spec = new WebSocketSpec(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
@@ -261,7 +261,7 @@ public final class WebSocketX {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Shared context.
@@ -338,7 +338,7 @@ public final class WebSocketX {
          *
          * @param context shared context
          */
-        private Builder(final Context context) {
+        public Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
             final Timeout configured = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT);
@@ -606,7 +606,7 @@ public final class WebSocketX {
             if (handler == null) {
                 this.handler = Demuxer.noop();
             } else {
-                this.handler = (session, message) -> handler.accept(message.payload().text(StandardCharsets.UTF_8));
+                this.handler = (session, message) -> handler.accept(message.payload().text(Charset.UTF_8));
             }
             return this;
         }

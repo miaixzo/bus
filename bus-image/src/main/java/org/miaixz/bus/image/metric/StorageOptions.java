@@ -90,7 +90,7 @@ public class StorageOptions implements Serializable {
      *
      * @return the level of support.
      */
-    public final LevelOfSupport getLevelOfSupport() {
+    public LevelOfSupport getLevelOfSupport() {
         return levelOfSupport;
     }
 
@@ -99,7 +99,7 @@ public class StorageOptions implements Serializable {
      *
      * @param levelOfSupport the level of support.
      */
-    public final void setLevelOfSupport(LevelOfSupport levelOfSupport) {
+    public void setLevelOfSupport(LevelOfSupport levelOfSupport) {
         this.levelOfSupport = levelOfSupport;
     }
 
@@ -108,7 +108,7 @@ public class StorageOptions implements Serializable {
      *
      * @return the digital signature support.
      */
-    public final DigitalSignatureSupport getDigitalSignatureSupport() {
+    public DigitalSignatureSupport getDigitalSignatureSupport() {
         return digitalSignatureSupport;
     }
 
@@ -117,7 +117,7 @@ public class StorageOptions implements Serializable {
      *
      * @param digitalSignatureSupport the digital signature support.
      */
-    public final void setDigitalSignatureSupport(DigitalSignatureSupport digitalSignatureSupport) {
+    public void setDigitalSignatureSupport(DigitalSignatureSupport digitalSignatureSupport) {
         this.digitalSignatureSupport = digitalSignatureSupport;
     }
 
@@ -126,7 +126,7 @@ public class StorageOptions implements Serializable {
      *
      * @return the element coercion.
      */
-    public final ElementCoercion getElementCoercion() {
+    public ElementCoercion getElementCoercion() {
         return elementCoercion;
     }
 
@@ -135,7 +135,7 @@ public class StorageOptions implements Serializable {
      *
      * @param elementCoercion the element coercion.
      */
-    public final void setElementCoercion(ElementCoercion elementCoercion) {
+    public void setElementCoercion(ElementCoercion elementCoercion) {
         this.elementCoercion = elementCoercion;
     }
 

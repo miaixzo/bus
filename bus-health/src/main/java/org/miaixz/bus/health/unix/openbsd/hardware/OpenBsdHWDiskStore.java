@@ -44,7 +44,7 @@ import org.miaixz.bus.health.unix.openbsd.driver.disk.Disklabel;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
+public class OpenBsdHWDiskStore extends AbstractHWDiskStore {
 
     /**
      * The iostat value.
@@ -100,7 +100,7 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
      * @param size   the size
      * @param iostat the iostat supplier
      */
-    private OpenBsdHWDiskStore(String name, String model, String serial, long size, SupplierX<List<String>> iostat) {
+    public OpenBsdHWDiskStore(String name, String model, String serial, long size, SupplierX<List<String>> iostat) {
         super(name, model, serial, size);
         this.iostat = iostat;
     }
@@ -267,7 +267,7 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
      * @return the update attributes result
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         /*-
         └─ $ ▶ systat -b iostat
                 0 users Load 2.04 4.02 3.96                          thinkpad.local 00:14:35

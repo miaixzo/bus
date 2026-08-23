@@ -51,7 +51,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class WebSocketRunner {
+public class WebSocketRunner {
 
     /**
      * Immutable exchange configuration used by every open attempt.
@@ -63,7 +63,7 @@ public final class WebSocketRunner {
      *
      * @param spec immutable WebSocket exchange configuration
      */
-    WebSocketRunner(final WebSocketSpec spec) {
+    public WebSocketRunner(final WebSocketSpec spec) {
         this.spec = require(spec, "WebSocket exchange specification");
     }
 

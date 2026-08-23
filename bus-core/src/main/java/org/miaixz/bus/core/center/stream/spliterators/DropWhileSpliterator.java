@@ -57,7 +57,7 @@ public class DropWhileSpliterator<T> implements Spliterator<T> {
      * @param source    the source {@link Spliterator}
      * @param predicate the predicate to determine which elements to drop
      */
-    private DropWhileSpliterator(final Spliterator<T> source, final Predicate<? super T> predicate) {
+    public DropWhileSpliterator(final Spliterator<T> source, final Predicate<? super T> predicate) {
         this.source = source;
         this.predicate = predicate;
     }

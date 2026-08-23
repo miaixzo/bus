@@ -194,7 +194,7 @@ public class AsyncTimeout extends Timeout {
      *
      * @throws IllegalStateException If this timeout is already in the queue (unbalanced enter/exit calls).
      */
-    public final void enter() {
+    public void enter() {
         if (inQueue)
             throw new IllegalStateException("Unbalanced enter/exit");
         long timeoutNanos = timeoutNanos();
@@ -213,7 +213,7 @@ public class AsyncTimeout extends Timeout {
      *
      * @return {@code true} if the timeout elapsed before the operation completed, {@code false} otherwise.
      */
-    public final boolean exit() {
+    public boolean exit() {
         if (!inQueue)
             return false;
         inQueue = false;
@@ -246,7 +246,7 @@ public class AsyncTimeout extends Timeout {
      * @param sink The underlying {@link Sink} to wrap.
      * @return A new {@link Sink} that applies this timeout.
      */
-    public final Sink sink(final Sink sink) {
+    public Sink sink(final Sink sink) {
         return new Sink() {
 
             /**
@@ -351,7 +351,7 @@ public class AsyncTimeout extends Timeout {
      * @param source The underlying {@link Source} to wrap.
      * @return A new {@link Source} that applies this timeout.
      */
-    public final Source source(final Source source) {
+    public Source source(final Source source) {
         return new Source() {
 
             /**

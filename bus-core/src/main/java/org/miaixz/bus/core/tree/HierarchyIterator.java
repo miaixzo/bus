@@ -82,7 +82,8 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
      * @param filter            A predicate to filter elements. Non-matching elements and their children will be
      *                          skipped.
      */
-    HierarchyIterator(final T root, final FunctionX<T, Collection<T>> elementDiscoverer, final PredicateX<T> filter) {
+    public HierarchyIterator(final T root, final FunctionX<T, Collection<T>> elementDiscoverer,
+            final PredicateX<T> filter) {
         // The root node cannot be filtered out.
         Assert.isTrue(filter.test(root), "root node cannot be filtered!");
         queue.add(root);

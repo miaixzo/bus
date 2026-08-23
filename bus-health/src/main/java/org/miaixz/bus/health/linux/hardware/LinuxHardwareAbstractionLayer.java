@@ -20,9 +20,9 @@
 package org.miaixz.bus.health.linux.hardware;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.builtin.hardware.*;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
 import org.miaixz.bus.health.linux.driver.DrmEdid;
@@ -35,7 +35,7 @@ import org.miaixz.bus.health.unix.shared.hardware.UnixDisplay;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
+public class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
 
     /**
      * Constructs a new {@code LinuxHardwareAbstractionLayer} instance.
@@ -121,11 +121,8 @@ public final class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstrac
      */
     @Override
     protected List<Display> createDisplays() {
-        List<byte[]> edids = DrmEdid.getEdidArrays();
-        if (!edids.isEmpty()) {
-            return edids.stream().map(UnixDisplay::new).collect(Collectors.toList());
-        }
-        return UnixDisplay.getDisplays();
+        List<Triplet<String, Integer, byte[]>> drmData = DrmEdid.getDisplayData();
+        return drmData.isEmpty() ? UnixDisplay.getDisplays() : UnixDisplay.getDisplays(drmData);
     }
 
     /**

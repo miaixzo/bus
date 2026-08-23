@@ -29,12 +29,12 @@ import org.miaixz.bus.image.nimble.geometry.Vector3;
  *
  * @author Kimi Liu
  */
-public final class ImagePlaneSelector {
+public class ImagePlaneSelector {
 
     /**
      * Creates a new instance.
      */
-    private ImagePlaneSelector() {
+    public ImagePlaneSelector() {
         // No initialization required.
     }
 

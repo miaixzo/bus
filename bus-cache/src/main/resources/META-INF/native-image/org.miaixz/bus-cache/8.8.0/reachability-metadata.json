@@ -1722,11 +1722,43 @@
           ]
         },
         {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "long",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.function.LongSupplier"
+          ]
+        },
+        {
           "name": "clear",
           "parameterTypes": []
         },
         {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
           "name": "containsKey",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "create",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object",
+            "long"
+          ]
+        },
+        {
+          "name": "delete",
           "parameterTypes": [
             "java.lang.Object"
           ]
@@ -1742,6 +1774,12 @@
         {
           "name": "getNativeCache",
           "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
         },
         {
           "name": "getStats",
@@ -1772,6 +1810,15 @@
           ]
         },
         {
+          "name": "replace",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object",
+            "java.lang.Object",
+            "long"
+          ]
+        },
+        {
           "name": "scan",
           "parameterTypes": [
             "java.lang.Object"
@@ -1781,6 +1828,12 @@
           "name": "schedulePrune",
           "parameterTypes": [
             "long"
+          ]
+        },
+        {
+          "name": "take",
+          "parameterTypes": [
+            "java.lang.Object"
           ]
         },
         {
@@ -1804,7 +1857,7 @@
       "type": "org.miaixz.bus.cache.nimble.MemoryCache$CacheScheduler",
       "fields": [
         {
-          "name": "cacheTaskNumber"
+          "name": "taskNumber"
         },
         {
           "name": "INSTANCE"
@@ -1819,19 +1872,11 @@
           ]
         },
         {
-          "name": "of",
-          "parameterTypes": []
-        },
-        {
           "name": "schedule",
           "parameterTypes": [
             "java.lang.Runnable",
             "long"
           ]
-        },
-        {
-          "name": "shutdown",
-          "parameterTypes": []
         },
         {
           "name": "valueOf",
@@ -1846,10 +1891,10 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cache.nimble.MemoryCache$CacheState",
+      "type": "org.miaixz.bus.cache.nimble.MemoryCache$Entry",
       "fields": [
         {
-          "name": "expireAfterWrite"
+          "name": "deadline"
         },
         {
           "name": "forever"
@@ -1858,7 +1903,10 @@
           "name": "lastAccessTime"
         },
         {
-          "name": "state"
+          "name": "sequence"
+        },
+        {
+          "name": "value"
         },
         {
           "name": "writeTime"
@@ -1869,45 +1917,10 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.Object",
-            "long"
-          ]
-        },
-        {
-          "name": "getExpireAfterWrite",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLastAccessTime",
-          "parameterTypes": []
-        },
-        {
-          "name": "getState",
-          "parameterTypes": []
-        },
-        {
-          "name": "getWriteTime",
-          "parameterTypes": []
-        },
-        {
-          "name": "isExpired",
-          "parameterTypes": [
+            "long",
             "long",
             "long"
           ]
-        },
-        {
-          "name": "isForever",
-          "parameterTypes": []
-        },
-        {
-          "name": "setLastAccessTime",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "updateAccessTime",
-          "parameterTypes": []
         }
       ]
     },

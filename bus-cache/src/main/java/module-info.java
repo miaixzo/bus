@@ -18,16 +18,19 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.cache
+ * Module: {@code bus.cache}
+ *
+ * <p>
+ * Provides unified cache abstractions and commonly used cache implementations.
+ *
+ * <p>
+ * Includes cache interfaces, local and distributed cache adapters, annotation-driven caching, single-key and multi-key
+ * read-through handling, serialization support, statistics collection, and cache expiration management.
  *
  * @author Kimi Liu
  */
 module bus.cache {
 
-    requires java.compiler;
-    requires java.desktop;
-    requires java.management;
-    requires java.naming;
     requires java.sql;
 
     requires bus.core;
@@ -36,12 +39,12 @@ module bus.cache {
     requires bus.proxy;
     requires bus.setting;
 
-    requires static lombok;
-    requires static jakarta.annotation;
     requires static com.github.benmanes.caffeine;
     requires static com.google.common;
     requires static com.zaxxer.hikari;
     requires static hessian;
+    requires static jakarta.annotation;
+    requires static lombok;
     requires static redis.clients.jedis;
     requires static xmemcached;
 
@@ -51,6 +54,7 @@ module bus.cache {
     exports org.miaixz.bus.cache.magic;
     exports org.miaixz.bus.cache.magic.annotation;
     exports org.miaixz.bus.cache.nimble;
+    exports org.miaixz.bus.cache.nimble.internal;
     exports org.miaixz.bus.cache.reader;
     exports org.miaixz.bus.cache.serialize;
 

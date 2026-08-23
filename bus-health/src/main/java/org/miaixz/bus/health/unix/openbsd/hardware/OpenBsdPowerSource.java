@@ -38,7 +38,7 @@ import org.miaixz.bus.health.unix.bsd.Systat.BatteryFields;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class OpenBsdPowerSource extends AbstractPowerSource {
+public class OpenBsdPowerSource extends AbstractPowerSource {
 
     /**
      * Creates a new OpenBsdPowerSource instance.

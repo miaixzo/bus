@@ -32,7 +32,7 @@ public abstract class Tradition implements Culture {
     /**
      * Constructs a traditional culture item.
      */
-    protected Tradition() {
+    public Tradition() {
         // No initialization required.
     }
 

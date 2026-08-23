@@ -52,7 +52,7 @@ import org.miaixz.bus.fabric.protocol.sse.retry.SseRetryPolicy;
  *
  * @author Kimi Liu
  */
-public final class SseX {
+public class SseX {
 
     /**
      * Immutable execution specification.
@@ -74,7 +74,7 @@ public final class SseX {
      *
      * @param builder configuration source used to create the immutable exchange specification
      */
-    private SseX(final Builder builder) {
+    public SseX(final Builder builder) {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
         this.spec = new SseSpec(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
@@ -287,7 +287,7 @@ public final class SseX {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Shared context.
@@ -379,7 +379,7 @@ public final class SseX {
          *
          * @param context shared context
          */
-        private Builder(final Context context) {
+        public Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
             final Timeout configured = context.options().get(OPTION_TIMEOUT);

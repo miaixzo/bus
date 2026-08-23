@@ -18,13 +18,18 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.storage
+ * Module: {@code bus.storage}
+ *
+ * <p>
+ * Provides a unified abstraction for object and file storage services.
+ *
+ * <p>
+ * Includes storage contracts, configuration and caching, provider selection, object operations, and adapters for
+ * S3-compatible services, cloud buckets, WebDAV, SMB, FTP and SFTP, GitLab, and local filesystems.
  *
  * @author Kimi Liu
  */
 module bus.storage {
-
-    requires java.net.http;
 
     requires bus.cache;
     requires bus.core;
@@ -34,18 +39,14 @@ module bus.storage {
     requires bus.gitlab;
     requires bus.logger;
 
-    requires static lombok;
     requires static com.github.sardine;
     requires static com.hierynomus.smbj;
-    requires static org.reactivestreams;
+    requires static lombok;
     requires static software.amazon.awssdk.auth;
     requires static software.amazon.awssdk.awscore;
     requires static software.amazon.awssdk.core;
-    requires static software.amazon.awssdk.http;
-    requires static software.amazon.awssdk.http.auth;
     requires static software.amazon.awssdk.regions;
     requires static software.amazon.awssdk.services.s3;
-    requires static software.amazon.awssdk.utils;
 
     exports org.miaixz.bus.storage;
     exports org.miaixz.bus.storage.cache;

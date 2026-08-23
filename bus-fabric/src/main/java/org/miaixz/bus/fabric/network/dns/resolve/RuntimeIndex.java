@@ -48,7 +48,7 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsZone;
  *
  * @author Kimi Liu
  */
-public final class RuntimeIndex {
+public class RuntimeIndex {
 
     /**
      * Source snapshot.
@@ -100,7 +100,7 @@ public final class RuntimeIndex {
      *
      * @param snapshot source DNS snapshot
      */
-    private RuntimeIndex(final DnsSnapshot snapshot) {
+    public RuntimeIndex(final DnsSnapshot snapshot) {
         if (snapshot == null) {
             throw new ValidateException("DNS snapshot must not be null");
         }

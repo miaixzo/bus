@@ -44,7 +44,7 @@ public class EngineConfig implements Serializable {
     }
 
     @Serial
-    private static final long serialVersionUID = -1L;
+    private static final long serialVersionUID = 2869182035691L;
 
     /**
      * Whether to automatically open the output directory after generation is complete.

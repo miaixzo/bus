@@ -34,7 +34,7 @@ public class CallerKit {
     /**
      * Keeps call-stack inspection on the static API.
      */
-    private CallerKit() {
+    public CallerKit() {
         // No initialization required.
     }
 

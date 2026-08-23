@@ -39,7 +39,7 @@ public class DefaultDatePrinter implements DatePrinter, Serializable {
     /**
      * Creates the default date-printer settings.
      */
-    private DefaultDatePrinter() {
+    public DefaultDatePrinter() {
         // No initialization required.
     }
 

@@ -18,7 +18,13 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.tracer
+ * Module: {@code bus.tracer}
+ *
+ * <p>
+ * Provides a minimal entry point for distributed call-chain tracing.
+ *
+ * <p>
+ * Currently exposes the {@code Tracer} type as the public module surface for future tracing integrations.
  *
  * @author Kimi Liu
  */

@@ -32,7 +32,7 @@ import org.miaixz.bus.health.Parsing;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Lshw {
+public class Lshw {
 
     /**
      * The MODEL constant.
@@ -86,7 +86,7 @@ public final class Lshw {
     /**
      * Creates a new Lshw instance.
      */
-    private Lshw() {
+    public Lshw() {
         // No initialization required.
     }
 

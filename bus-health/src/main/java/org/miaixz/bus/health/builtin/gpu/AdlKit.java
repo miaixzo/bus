@@ -52,7 +52,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class AdlKit {
+public class AdlKit {
 
     // -------------------------------------------------------------------------
     // Library loading (holder pattern — loads the .dll once)
@@ -114,7 +114,7 @@ public final class AdlKit {
     /**
      * Creates a new AdlKit instance.
      */
-    private AdlKit() {
+    public AdlKit() {
         // No initialization required.
     }
 

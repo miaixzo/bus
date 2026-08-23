@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.sensitive.nimble;
 
+import org.miaixz.bus.core.lang.EnumValue;
+
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.sensitive.Context;
 
@@ -34,6 +36,16 @@ public class NoneProvider extends AbstractProvider {
      */
     public NoneProvider() {
         // No initialization required.
+    }
+
+    /**
+     * Returns the masking strategy used to register this pass-through provider.
+     *
+     * @return {@link EnumValue.Masking#NONE}
+     */
+    @Override
+    public EnumValue.Masking type() {
+        return EnumValue.Masking.NONE;
     }
 
     /**

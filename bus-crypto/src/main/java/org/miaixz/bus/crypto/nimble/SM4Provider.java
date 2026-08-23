@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.crypto.nimble;
 
+import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -40,6 +41,16 @@ public class SM4Provider implements Provider {
      */
     public SM4Provider() {
         // No initialization required.
+    }
+
+    /**
+     * Returns the stable SM4 algorithm name used to register this provider.
+     *
+     * @return {@link Algorithm#SM4} algorithm value
+     */
+    @Override
+    public String type() {
+        return Algorithm.SM4.getValue();
     }
 
     /**

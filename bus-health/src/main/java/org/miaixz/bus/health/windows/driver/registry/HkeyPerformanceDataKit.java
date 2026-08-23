@@ -39,7 +39,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class HkeyPerformanceDataKit {
+public class HkeyPerformanceDataKit {
 
     /**
      * Constructs a new HkeyPerformanceDataKit instance.

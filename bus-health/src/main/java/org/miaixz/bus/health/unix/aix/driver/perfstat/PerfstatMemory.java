@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class PerfstatMemory {
+public class PerfstatMemory {
 
     /**
      * The PERF constant.
@@ -40,7 +40,7 @@ public final class PerfstatMemory {
     /**
      * Creates a new PerfstatMemory instance.
      */
-    private PerfstatMemory() {
+    public PerfstatMemory() {
         // No initialization required.
     }
 

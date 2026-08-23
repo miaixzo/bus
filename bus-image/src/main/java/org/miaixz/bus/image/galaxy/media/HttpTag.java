@@ -31,7 +31,7 @@ import org.miaixz.bus.core.net.Http;
  *
  * @author Kimi Liu
  */
-public final class HttpTag {
+public class HttpTag {
 
     /**
      * The valid header name value.

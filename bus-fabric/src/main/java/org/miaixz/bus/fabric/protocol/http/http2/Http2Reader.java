@@ -41,7 +41,7 @@ import org.miaixz.bus.fabric.network.Connection;
  *
  * @author Kimi Liu
  */
-public final class Http2Reader implements AutoCloseable {
+public class Http2Reader implements AutoCloseable {
 
     /**
      * Buffered network source borrowed from the owning connection.

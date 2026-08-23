@@ -35,7 +35,7 @@ public enum GuardPolicy {
     MOCK(-1, false, false, false, false),
 
     /**
-     * Anonymous access. No credential is required.
+     * Public or authentication-bootstrap access. No user credential is required.
      */
     ANONYMOUS(0, false, false, false, false),
 

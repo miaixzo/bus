@@ -36,7 +36,7 @@ import org.miaixz.bus.fabric.Builder;
  *
  * @author Kimi Liu
  */
-public final class FixedCodec implements FrameCodec {
+public class FixedCodec implements FrameCodec {
 
     /**
      * Required payload size for every encoded and decoded frame.
@@ -53,7 +53,7 @@ public final class FixedCodec implements FrameCodec {
      *
      * @param length validated frame size from 1 byte through 16 MiB
      */
-    private FixedCodec(final int length) {
+    public FixedCodec(final int length) {
         this.length = validateLength(length);
     }
 

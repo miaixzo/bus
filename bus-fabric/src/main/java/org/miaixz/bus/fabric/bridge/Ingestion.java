@@ -36,7 +36,7 @@ import org.miaixz.bus.fabric.Payload;
  *
  * @author Kimi Liu
  */
-public final class Ingestion {
+public class Ingestion {
 
     /**
      * Normalized non-empty ingestion path beginning with {@code /}.
@@ -72,7 +72,7 @@ public final class Ingestion {
      * @param payload    external payload, or {@code null} for an empty payload
      * @param attributes attributes copied into an immutable snapshot
      */
-    private Ingestion(final String path, final String method, final Headers headers, final Payload payload,
+    public Ingestion(final String path, final String method, final Headers headers, final Payload payload,
             final Map<String, Object> attributes) {
         this.path = normalizePath(path);
         this.method = normalizeOptionalMethod(method);
@@ -229,7 +229,7 @@ public final class Ingestion {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Validated ingestion path, initially the root path.
@@ -259,7 +259,7 @@ public final class Ingestion {
         /**
          * Creates a builder with default lightweight values.
          */
-        private Builder() {
+        public Builder() {
             // No initialization required.
         }
 

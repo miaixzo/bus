@@ -33,7 +33,7 @@ import org.miaixz.bus.fabric.Message;
  *
  * @author Kimi Liu
  */
-public final class GuardChain implements GuardRule {
+public class GuardChain implements GuardRule {
 
     /**
      * Immutable rules evaluated in insertion order.
@@ -45,7 +45,7 @@ public final class GuardChain implements GuardRule {
      *
      * @param rules ordered non-null rule list containing no null elements
      */
-    private GuardChain(final List<GuardRule> rules) {
+    public GuardChain(final List<GuardRule> rules) {
         this.rules = List.copyOf(validateRules(rules));
     }
 

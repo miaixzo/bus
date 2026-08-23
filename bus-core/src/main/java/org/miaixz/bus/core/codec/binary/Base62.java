@@ -50,7 +50,7 @@ public class Base62 {
     /**
      * Keeps Base62 encoding and decoding on the static API.
      */
-    private Base62() {
+    public Base62() {
         // No initialization required.
     }
 

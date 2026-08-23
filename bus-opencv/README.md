@@ -76,6 +76,7 @@ import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
 public class ImageExample {
+    
     public void processImage(String inputPath, String outputPath) {
         // Load image
         Mat image = Imgcodecs.imread(inputPath);
@@ -98,6 +99,7 @@ public class ImageExample {
         blurred.release();
         edges.release();
     }
+    
 }
 ```
 
@@ -143,7 +145,7 @@ public class FaceDetectionExample {
 
 ```java
 public class ImageFilterExample {
-    
+
     public void applyFilters(String inputPath) {
         Mat image = Imgcodecs.imread(inputPath);
 
@@ -155,7 +157,7 @@ public class ImageFilterExample {
         // Display or save results
         // ...
     }
-    
+
 }
 ```
 

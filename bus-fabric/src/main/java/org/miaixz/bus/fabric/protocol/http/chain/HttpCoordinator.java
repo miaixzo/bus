@@ -38,7 +38,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class HttpCoordinator implements HttpStage {
+public class HttpCoordinator implements HttpStage {
 
     /**
      * Normalized identifier exposed to the HTTP stage chain.
@@ -61,7 +61,7 @@ public final class HttpCoordinator implements HttpStage {
      * @param cache cache implementation, or {@code null} for transparent disabled behavior
      * @param clock runtime time source used for freshness calculations
      */
-    private HttpCoordinator(final HttpCache cache, final Clock clock) {
+    public HttpCoordinator(final HttpCache cache, final Clock clock) {
         this.name = normalizeName("http-cache");
         this.cache = cache;
         this.clock = require(clock, "Runtime clock");

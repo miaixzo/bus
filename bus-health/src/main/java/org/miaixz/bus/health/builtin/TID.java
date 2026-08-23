@@ -30,12 +30,12 @@ import java.util.List;
  *
  * @author Kimi Liu
  */
-public final class TID {
+public class TID {
 
     /**
      * Keeps native thread-ID lookup on the static API.
      */
-    private TID() {
+    public TID() {
         // No initialization required.
     }
 

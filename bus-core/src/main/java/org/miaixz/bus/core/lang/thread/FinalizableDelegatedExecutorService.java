@@ -35,7 +35,7 @@ public class FinalizableDelegatedExecutorService extends DelegatedExecutorServic
      *
      * @param executor The {@link ExecutorService} to be wrapped.
      */
-    FinalizableDelegatedExecutorService(final ExecutorService executor) {
+    public FinalizableDelegatedExecutorService(final ExecutorService executor) {
         super(executor);
     }
 

@@ -21,10 +21,10 @@ package org.miaixz.bus.fabric.network.dns.record;
 
 import java.io.ByteArrayOutputStream;
 import java.net.InetAddress;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
@@ -41,7 +41,7 @@ import org.miaixz.bus.fabric.network.dns.message.DnsName;
  *
  * @author Kimi Liu
  */
-public sealed interface DnsRecordData permits DnsRecordData.Wire {
+public interface DnsRecordData {
 
     /**
      * Returns the known DNS record type.
@@ -215,7 +215,7 @@ public sealed interface DnsRecordData permits DnsRecordData.Wire {
             if (chunk == null) {
                 throw new ValidateException("TXT record chunk must not be null");
             }
-            final byte[] data = chunk.getBytes(StandardCharsets.UTF_8);
+            final byte[] data = chunk.getBytes(Charset.UTF_8);
             if (data.length > 255) {
                 throw new ValidateException("TXT record chunk exceeds 255 bytes");
             }
@@ -395,7 +395,7 @@ public sealed interface DnsRecordData permits DnsRecordData.Wire {
      *
      * @author Kimi Liu
      */
-    final class Wire implements DnsRecordData {
+    class Wire implements DnsRecordData {
 
         /**
          * Numeric DNS record type.
@@ -413,7 +413,7 @@ public sealed interface DnsRecordData permits DnsRecordData.Wire {
          * @param typeCode unsigned 16-bit DNS record type code
          * @param wireData wire-format RDATA bytes
          */
-        private Wire(final int typeCode, final byte[] wireData) {
+        public Wire(final int typeCode, final byte[] wireData) {
             this.typeCode = DnsCodec.validateUnsignedShort(typeCode, "DNS record type");
             this.wireData = copyWireData(wireData);
         }

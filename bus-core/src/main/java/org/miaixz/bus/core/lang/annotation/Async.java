@@ -50,7 +50,7 @@ public @interface Async {
         /**
          * Constructs a new MethodNameTransformer.
          */
-        private MethodNameTransformer() {
+        public MethodNameTransformer() {
             // No initialization required.
         }
 

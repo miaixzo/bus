@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.base
+ * Module: {@code bus.base}
+ *
+ * <p>
+ * Provides reusable foundations for enterprise application models and services.
+ *
+ * <p>
+ * Includes base entities, persistence mappers, service abstractions, exception advice, and shared Spring integration
+ * support.
  *
  * @author Kimi Liu
  */
@@ -30,8 +37,6 @@ module bus.base {
     requires bus.validate;
 
     requires static lombok;
-    requires static jakarta.persistence;
-    requires static jakarta.servlet;
     requires static spring.beans;
     requires static spring.boot.autoconfigure;
     requires static spring.context;

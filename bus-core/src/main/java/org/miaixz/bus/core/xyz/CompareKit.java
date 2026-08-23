@@ -36,7 +36,7 @@ public class CompareKit {
     /**
      * Keeps comparator construction and comparison on the static API.
      */
-    private CompareKit() {
+    public CompareKit() {
         // No initialization required.
     }
 

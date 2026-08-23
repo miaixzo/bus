@@ -125,7 +125,7 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Marker from which default module, protocol, phase, and result tags are derived.
@@ -153,7 +153,7 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
          * @param marker validated observation marker
          * @param clock  validated runtime time source
          */
-        private Builder(final ObservationMarker marker, final Clock clock) {
+        public Builder(final ObservationMarker marker, final Clock clock) {
             this.marker = marker;
             this.clock = clock;
             this.tags = new LinkedHashMap<>();

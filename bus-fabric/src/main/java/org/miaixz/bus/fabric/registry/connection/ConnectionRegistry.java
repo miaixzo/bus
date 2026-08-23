@@ -42,7 +42,7 @@ import org.miaixz.bus.fabric.observe.metrics.FabricMeter.Counter;
  *
  * @author Kimi Liu
  */
-public final class ConnectionRegistry implements AutoCloseable {
+public class ConnectionRegistry implements AutoCloseable {
 
     /**
      * Active connections grouped by destination.

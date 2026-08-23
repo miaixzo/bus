@@ -30,7 +30,7 @@ public class ASCIIStrCache {
     /**
      * Keeps ASCII string-cache lookup on the static API.
      */
-    private ASCIIStrCache() {
+    public ASCIIStrCache() {
         // No initialization required.
     }
 

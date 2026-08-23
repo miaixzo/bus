@@ -39,7 +39,7 @@ import org.miaixz.bus.fabric.observe.tags.Tags;
  *
  * @author Kimi Liu
  */
-public final class ProxyPlan {
+public class ProxyPlan {
 
     /**
      * Typed option for the process-independent network proxy policy.
@@ -88,7 +88,7 @@ public final class ProxyPlan {
      * @param proxy         proxy address
      * @param authorization proxy authorization headers
      */
-    private ProxyPlan(final Type type, final Address proxy, final Headers authorization) {
+    public ProxyPlan(final Type type, final Address proxy, final Headers authorization) {
         this.type = Assert.notNull(type, () -> new ValidateException("Proxy type must not be null"));
         this.proxy = proxy;
         this.authorization = Assert

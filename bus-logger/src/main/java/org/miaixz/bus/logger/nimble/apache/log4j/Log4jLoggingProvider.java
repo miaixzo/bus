@@ -251,7 +251,7 @@ public class Log4jLoggingProvider extends AbstractProvider {
     /**
      * Gets the current logging level.
      *
-     * @return the current logging level, or {@link org.miaixz.bus.logger.Level#OFF} if it cannot be determined
+     * @return the current logging level, or {@code OFF} if it cannot be determined
      */
     @Override
     public org.miaixz.bus.logger.Level getLevel() {

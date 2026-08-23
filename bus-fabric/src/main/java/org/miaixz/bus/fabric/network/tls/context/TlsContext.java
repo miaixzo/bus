@@ -43,7 +43,7 @@ import org.miaixz.bus.fabric.network.tls.TlsSettings;
  *
  * @author Kimi Liu
  */
-public final class TlsContext {
+public class TlsContext {
 
     /**
      * Shared empty protocol array.
@@ -85,7 +85,7 @@ public final class TlsContext {
      *
      * @param context SSL context
      */
-    private TlsContext(final SSLContext context) {
+    public TlsContext(final SSLContext context) {
         this.context = Assert.notNull(context, () -> new ValidateException("SSL context must not be null"));
         this.socketFactory = this.context.getSocketFactory();
         final SSLParameters defaults = this.context.getDefaultSSLParameters();

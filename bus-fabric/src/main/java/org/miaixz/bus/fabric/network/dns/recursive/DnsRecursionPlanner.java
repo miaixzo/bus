@@ -41,7 +41,7 @@ import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
  *
  * @author Kimi Liu
  */
-public final class DnsRecursionPlanner {
+public class DnsRecursionPlanner {
 
     /**
      * Root-hint upstreams used by the first minimized step.
@@ -150,7 +150,7 @@ public final class DnsRecursionPlanner {
      *
      * @author Kimi Liu
      */
-    public static final class DnsRecursionPlan {
+    public static class DnsRecursionPlan {
 
         /**
          * Client-visible original question.
@@ -185,7 +185,7 @@ public final class DnsRecursionPlanner {
          * @param rootHints        root-hint upstreams
          * @param aliases          alias transitions already followed
          */
-        private DnsRecursionPlan(final DnsQuestion originalQuestion, final DnsQuestion activeQuestion,
+        public DnsRecursionPlan(final DnsQuestion originalQuestion, final DnsQuestion activeQuestion,
                 final List<DnsUpstream> rootHints, final List<DnsAliasStep> aliases) {
             if (originalQuestion == null) {
                 throw new ValidateException("DNS recursion original question must not be null");
@@ -347,7 +347,7 @@ public final class DnsRecursionPlanner {
      *
      * @author Kimi Liu
      */
-    public static final class DnsRecursionStep {
+    public static class DnsRecursionStep {
 
         /**
          * Zero-based step order.
@@ -383,7 +383,7 @@ public final class DnsRecursionPlanner {
          * @param recordClass  numeric query class code
          * @param rootHintStep whether this step is sent to root hints
          */
-        private DnsRecursionStep(final int index, final String queryName, final int typeCode, final int recordClass,
+        public DnsRecursionStep(final int index, final String queryName, final int typeCode, final int recordClass,
                 final boolean rootHintStep) {
             if (index < 0) {
                 throw new ValidateException("DNS recursion step index must be non-negative");
@@ -447,7 +447,7 @@ public final class DnsRecursionPlanner {
      *
      * @author Kimi Liu
      */
-    public static final class DnsAliasStep {
+    public static class DnsAliasStep {
 
         /**
          * Alias source owner name.
@@ -471,7 +471,7 @@ public final class DnsRecursionPlanner {
          * @param targetName alias target owner name
          * @param typeCode   alias record type code
          */
-        private DnsAliasStep(final String sourceName, final String targetName, final int typeCode) {
+        public DnsAliasStep(final String sourceName, final String targetName, final int typeCode) {
             this.sourceName = DnsName.normalize(sourceName);
             this.targetName = DnsName.normalize(targetName);
             this.typeCode = DnsCodec.validateUnsignedShort(typeCode, "DNS recursion alias type");

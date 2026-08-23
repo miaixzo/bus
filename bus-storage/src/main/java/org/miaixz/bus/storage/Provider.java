@@ -25,7 +25,6 @@ import java.nio.file.Path;
 import java.util.List;
 
 import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.storage.magic.Blob;
 import org.miaixz.bus.storage.magic.ErrorCode;
 
@@ -34,7 +33,7 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  *
  * @author Kimi Liu
  */
-public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
+public interface Provider extends AutoCloseable {
 
     /**
      * Downloads a file as a stream.
@@ -282,16 +281,6 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @return A {@link Message} containing the result of the operation.
      */
     Message<Void> remove(String bucket, Path path);
-
-    /**
-     * Returns the type of this provider.
-     *
-     * @return The provider type, which is {@link EnumValue.Povider#STORAGE}.
-     */
-    @Override
-    default Object type() {
-        return EnumValue.Povider.STORAGE;
-    }
 
     /**
      * Releases provider-level resources.

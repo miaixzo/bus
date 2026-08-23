@@ -51,16 +51,20 @@ public interface Payload {
     /**
      * Lazily initialized holder for the shared empty payload.
      */
-    final class EmptyHolder {
+    class EmptyHolder {
 
         /**
          * Shared immutable empty payload.
          */
         private static final Payload EMPTY = Payload.owned(ByteString.EMPTY);
 
-        private EmptyHolder() {
+        /**
+         * Creates an instance without per-instance state; the empty payload remains shared at the class level.
+         */
+        public EmptyHolder() {
             // No initialization required.
         }
+
     }
 
     /**
@@ -537,7 +541,7 @@ public interface Payload {
      * @param sink    destination receiving payload bytes and a final flush
      * @return copied byte count
      */
-    static long copyTo(final Payload payload, final Sink sink) {
+    public static long copyTo(final Payload payload, final Sink sink) {
         if (payload == null) {
             throw new ValidateException("Payload must not be null");
         }
@@ -555,6 +559,9 @@ public interface Payload {
                     throw new InternalException("Streaming payload exceeded declared length at Payload.copyTo");
                 }
                 sink.write(buffer, read);
+            }
+            if (length >= 0 && total < length) {
+                throw new InternalException("Streaming payload ended before declared length at Payload.copyTo");
             }
             sink.flush();
             return total;

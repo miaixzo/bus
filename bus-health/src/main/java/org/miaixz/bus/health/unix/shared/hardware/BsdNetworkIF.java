@@ -35,7 +35,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class BsdNetworkIF extends AbstractNetworkIF {
+public class BsdNetworkIF extends AbstractNetworkIF {
 
     /**
      * The bytesRecv value.
@@ -209,7 +209,7 @@ public final class BsdNetworkIF extends AbstractNetworkIF {
      * @return the update attributes result
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         String stats = Executor.getAnswerAt("netstat -bI " + getName(), 1);
         this.timeStamp = System.currentTimeMillis();
         String[] split = Pattern.SPACES_PATTERN.split(stats);

@@ -44,7 +44,7 @@ import org.miaixz.bus.health.builtin.software.OperatingSystem;
  *
  * @author Kimi Liu
  */
-public class Collector implements org.miaixz.bus.core.Provider {
+public class Collector {
 
     /**
      * Creates a new Collector instance.
@@ -476,7 +476,6 @@ public class Collector implements org.miaixz.bus.core.Provider {
      *
      * @return The OS type from {@link Platform}.
      */
-    @Override
     public Object type() {
         return Platform.INSTANCE.getOSType();
     }

@@ -40,6 +40,7 @@ import org.miaixz.bus.extra.mq.Producer;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Delivery;
+import org.miaixz.bus.vortex.Executor;
 import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.magic.Performance;
 import org.miaixz.bus.vortex.routing.Coordinator;
@@ -144,9 +145,9 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
     /**
      * Executes an MQ request using the provided context and String payload.
      * <p>
-     * This method is required by the {@link org.miaixz.bus.vortex.Executor} interface. It sends the message to the MQ
-     * broker and selects the configured acknowledgment branch. MQ acknowledgments are always small, single JSON
-     * documents; they do not hold a long-lived response stream.
+     * This method is required by the {@link Executor} interface. It sends the message to the MQ broker and selects the
+     * configured acknowledgment branch. MQ acknowledgments are always small, single JSON documents; they do not hold a
+     * long-lived response stream.
      *
      * @param context The request context containing the assets configuration
      * @param input   The String payload to send to the message queue

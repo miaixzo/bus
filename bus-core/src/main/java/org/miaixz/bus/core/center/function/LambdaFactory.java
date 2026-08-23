@@ -25,7 +25,7 @@ import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
+import org.miaixz.bus.core.center.map.reference.SoftConcurrentMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
@@ -44,15 +44,13 @@ public class LambdaFactory {
      * containing the function interface type and the executable (method or constructor). The value is the generated
      * Lambda object.
      */
-    private static final Map<MutableEntry<Class<?>, Executable>, Object> CACHE = new WeakConcurrentMap<>();
+    private static final Map<MutableEntry<Class<?>, Executable>, Object> CACHE = new SoftConcurrentMap<>();
 
     /**
-     * Private constructor to prevent instantiation.
-     *
-     * @throws IllegalAccessException if this constructor is called.
+     * Creates a lambda factory backed by the shared executable cache.
      */
-    private LambdaFactory() throws IllegalAccessException {
-        throw new IllegalAccessException();
+    public LambdaFactory() {
+        // No initialization required.
     }
 
     /**

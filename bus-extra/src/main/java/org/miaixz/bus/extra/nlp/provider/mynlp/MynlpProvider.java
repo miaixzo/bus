@@ -67,6 +67,16 @@ public class MynlpProvider implements NLPProvider {
     }
 
     /**
+     * Returns the stable Mynlp engine name used for named NLP provider selection.
+     *
+     * @return {@code mynlp}
+     */
+    @Override
+    public String type() {
+        return "mynlp";
+    }
+
+    /**
      * Performs word segmentation on the given text using the configured Mynlp {@link Lexer} instance. The result is
      * wrapped in a {@link MynlpResult} to conform to the {@link NLPResult} interface.
      *

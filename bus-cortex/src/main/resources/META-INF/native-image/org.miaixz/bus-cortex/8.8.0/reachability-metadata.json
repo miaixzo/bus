@@ -61,7 +61,7 @@
           "name": "scope"
         },
         {
-          "name": "sign"
+          "name": "signing"
         },
         {
           "name": "sort"
@@ -191,7 +191,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getSign",
+          "name": "getSigning",
           "parameterTypes": []
         },
         {
@@ -380,7 +380,7 @@
           ]
         },
         {
-          "name": "setSign",
+          "name": "setSigning",
           "parameterTypes": [
             "java.lang.Integer"
           ]
@@ -567,7 +567,7 @@
           ]
         },
         {
-          "name": "sign",
+          "name": "signing",
           "parameterTypes": [
             "java.lang.Integer"
           ]
@@ -898,7 +898,7 @@
           "name": "entries"
         },
         {
-          "name": "namespace_id"
+          "name": "space_id"
         },
         {
           "name": "operationType"
@@ -930,7 +930,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getNamespace_id",
+          "name": "getSpace_id",
           "parameterTypes": []
         },
         {
@@ -986,7 +986,7 @@
           ]
         },
         {
-          "name": "setNamespace_id",
+          "name": "setSpace_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -1274,7 +1274,7 @@
           "name": "method"
         },
         {
-          "name": "namespace_id"
+          "name": "space_id"
         },
         {
           "name": "type"
@@ -1301,7 +1301,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getNamespace_id",
+          "name": "getSpace_id",
           "parameterTypes": []
         },
         {
@@ -1342,7 +1342,7 @@
           ]
         },
         {
-          "name": "setNamespace_id",
+          "name": "setSpace_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -2295,7 +2295,7 @@
           "name": "domain"
         },
         {
-          "name": "namespace_id"
+          "name": "space_id"
         },
         {
           "name": "policy"
@@ -2355,7 +2355,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getNamespace_id",
+          "name": "getSpace_id",
           "parameterTypes": []
         },
         {
@@ -2387,7 +2387,7 @@
           "parameterTypes": []
         },
         {
-          "name": "namespace_id",
+          "name": "space_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -2436,7 +2436,7 @@
           ]
         },
         {
-          "name": "setNamespace_id",
+          "name": "setSpace_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -3115,7 +3115,7 @@
           "name": "method"
         },
         {
-          "name": "namespace_id"
+          "name": "space_id"
         },
         {
           "name": "pid"
@@ -3222,7 +3222,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getNamespace_id",
+          "name": "getSpace_id",
           "parameterTypes": []
         },
         {
@@ -3340,7 +3340,7 @@
           ]
         },
         {
-          "name": "setNamespace_id",
+          "name": "setSpace_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -3481,7 +3481,7 @@
           ]
         },
         {
-          "name": "namespace_id",
+          "name": "space_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -3639,11 +3639,11 @@
           "parameterTypes": []
         },
         {
-          "name": "namespace",
+          "name": "space",
           "parameterTypes": []
         },
         {
-          "name": "namespacePart",
+          "name": "spacePart",
           "parameterTypes": []
         },
         {
@@ -3772,7 +3772,7 @@
           "parameterTypes": []
         },
         {
-          "name": "namespace",
+          "name": "space",
           "parameterTypes": []
         },
         {
@@ -4052,7 +4052,7 @@
           "name": "modified"
         },
         {
-          "name": "namespace_id"
+          "name": "space_id"
         },
         {
           "name": "nextRetryAt"
@@ -4122,7 +4122,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getNamespace_id",
+          "name": "getSpace_id",
           "parameterTypes": []
         },
         {
@@ -4214,7 +4214,7 @@
           ]
         },
         {
-          "name": "setNamespace_id",
+          "name": "setSpace_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -4316,7 +4316,7 @@
           ]
         },
         {
-          "name": "namespace",
+          "name": "space",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -4503,7 +4503,7 @@
           "name": "method"
         },
         {
-          "name": "namespace_id"
+          "name": "space_id"
         },
         {
           "name": "operator"
@@ -4542,7 +4542,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getNamespace_id",
+          "name": "getSpace_id",
           "parameterTypes": []
         },
         {
@@ -4588,7 +4588,7 @@
           ]
         },
         {
-          "name": "setNamespace_id",
+          "name": "setSpace_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -4700,7 +4700,7 @@
           ]
         },
         {
-          "name": "decrementNamespaceCount",
+          "name": "decrementSpaceCount",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -4777,7 +4777,7 @@
           ]
         },
         {
-          "name": "namespaceOf",
+          "name": "spaceOf",
           "parameterTypes": [
             "org.miaixz.bus.cortex.Vector"
           ]
@@ -4971,7 +4971,7 @@
           "name": "listener"
         },
         {
-          "name": "namespace_id"
+          "name": "space_id"
         },
         {
           "name": "peakPendingCount"
@@ -5059,7 +5059,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getNamespace_id",
+          "name": "getSpace_id",
           "parameterTypes": []
         },
         {
@@ -5170,7 +5170,7 @@
           ]
         },
         {
-          "name": "setNamespace_id",
+          "name": "setSpace_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -5454,7 +5454,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getNamespace_id",
+          "name": "getSpace_id",
           "parameterTypes": []
         },
         {
@@ -5502,7 +5502,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getSign",
+          "name": "getSigning",
           "parameterTypes": []
         },
         {
@@ -5577,11 +5577,11 @@
           "parameterTypes": []
         },
         {
-          "name": "getX_namespace_id",
+          "name": "getX_space_id",
           "parameterTypes": []
         },
         {
-          "name": "getX_namespace_name",
+          "name": "getX_space_name",
           "parameterTypes": []
         },
         {
@@ -5672,7 +5672,7 @@
           ]
         },
         {
-          "name": "inNamespace",
+          "name": "inSpace",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -5875,7 +5875,7 @@
           ]
         },
         {
-          "name": "setNamespace_id",
+          "name": "setSpace_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -5947,7 +5947,7 @@
           ]
         },
         {
-          "name": "setSign",
+          "name": "setSigning",
           "parameterTypes": [
             "java.lang.Integer"
           ]
@@ -6057,13 +6057,13 @@
           ]
         },
         {
-          "name": "setX_namespace_id",
+          "name": "setX_space_id",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "setX_namespace_name",
+          "name": "setX_space_name",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -6741,7 +6741,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getNamespace_id",
+          "name": "getSpace_id",
           "parameterTypes": []
         },
         {
@@ -6789,7 +6789,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getSign",
+          "name": "getSigning",
           "parameterTypes": []
         },
         {
@@ -6864,11 +6864,11 @@
           "parameterTypes": []
         },
         {
-          "name": "getX_namespace_id",
+          "name": "getX_space_id",
           "parameterTypes": []
         },
         {
-          "name": "getX_namespace_name",
+          "name": "getX_space_name",
           "parameterTypes": []
         },
         {
@@ -6959,7 +6959,7 @@
           ]
         },
         {
-          "name": "inNamespace",
+          "name": "inSpace",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -7146,7 +7146,7 @@
           ]
         },
         {
-          "name": "setNamespace_id",
+          "name": "setSpace_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -7218,7 +7218,7 @@
           ]
         },
         {
-          "name": "setSign",
+          "name": "setSigning",
           "parameterTypes": [
             "java.lang.Integer"
           ]
@@ -7328,13 +7328,13 @@
           ]
         },
         {
-          "name": "setX_namespace_id",
+          "name": "setX_space_id",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "setX_namespace_name",
+          "name": "setX_space_name",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -7896,7 +7896,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getNamespace_id",
+          "name": "getSpace_id",
           "parameterTypes": []
         },
         {
@@ -7944,7 +7944,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getSign",
+          "name": "getSigning",
           "parameterTypes": []
         },
         {
@@ -8019,11 +8019,11 @@
           "parameterTypes": []
         },
         {
-          "name": "getX_namespace_id",
+          "name": "getX_space_id",
           "parameterTypes": []
         },
         {
-          "name": "getX_namespace_name",
+          "name": "getX_space_name",
           "parameterTypes": []
         },
         {
@@ -8114,7 +8114,7 @@
           ]
         },
         {
-          "name": "inNamespace",
+          "name": "inSpace",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -8291,7 +8291,7 @@
           ]
         },
         {
-          "name": "setNamespace_id",
+          "name": "setSpace_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -8363,7 +8363,7 @@
           ]
         },
         {
-          "name": "setSign",
+          "name": "setSigning",
           "parameterTypes": [
             "java.lang.Integer"
           ]
@@ -8473,13 +8473,13 @@
           ]
         },
         {
-          "name": "setX_namespace_id",
+          "name": "setX_space_id",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "setX_namespace_name",
+          "name": "setX_space_name",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -8975,7 +8975,7 @@
           "name": "method"
         },
         {
-          "name": "namespace_id"
+          "name": "space_id"
         },
         {
           "name": "previousAsset"
@@ -9055,7 +9055,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getNamespace_id",
+          "name": "getSpace_id",
           "parameterTypes": []
         },
         {
@@ -9159,7 +9159,7 @@
           ]
         },
         {
-          "name": "setNamespace_id",
+          "name": "setSpace_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -9790,7 +9790,7 @@
           ]
         },
         {
-          "name": "namespace",
+          "name": "space",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -9838,7 +9838,7 @@
           "name": "method"
         },
         {
-          "name": "namespace_id"
+          "name": "space_id"
         },
         {
           "name": "offset"
@@ -9882,7 +9882,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getNamespace_id",
+          "name": "getSpace_id",
           "parameterTypes": []
         },
         {
@@ -9946,7 +9946,7 @@
           ]
         },
         {
-          "name": "setNamespace_id",
+          "name": "setSpace_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -9993,7 +9993,7 @@
           "name": "includeDisabled"
         },
         {
-          "name": "namespace_id"
+          "name": "space_id"
         },
         {
           "name": "refreshMode"
@@ -10015,7 +10015,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getNamespace_id",
+          "name": "getSpace_id",
           "parameterTypes": []
         },
         {
@@ -10047,7 +10047,7 @@
           ]
         },
         {
-          "name": "setNamespace_id",
+          "name": "setSpace_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -10178,7 +10178,7 @@
           "parameterTypes": []
         },
         {
-          "name": "namespace_id",
+          "name": "space_id",
           "parameterTypes": []
         },
         {
@@ -10271,7 +10271,7 @@
           "name": "checksum"
         },
         {
-          "name": "namespace_id"
+          "name": "space_id"
         },
         {
           "name": "since"
@@ -10309,7 +10309,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getNamespace_id",
+          "name": "getSpace_id",
           "parameterTypes": []
         },
         {
@@ -10353,7 +10353,7 @@
           ]
         },
         {
-          "name": "setNamespace_id",
+          "name": "setSpace_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -10594,7 +10594,7 @@
           ]
         },
         {
-          "name": "normalizeNamespace",
+          "name": "normalizeSpace",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -13066,7 +13066,7 @@
           "name": "limit"
         },
         {
-          "name": "namespace_id"
+          "name": "space_id"
         },
         {
           "name": "offset"
@@ -13117,7 +13117,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getNamespace_id",
+          "name": "getSpace_id",
           "parameterTypes": []
         },
         {
@@ -13181,7 +13181,7 @@
           ]
         },
         {
-          "name": "setNamespace_id",
+          "name": "setSpace_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -13250,7 +13250,7 @@
           ]
         },
         {
-          "name": "namespace_id",
+          "name": "space_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -13640,7 +13640,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.namespace.Namespace",
+      "type": "org.miaixz.bus.cortex.setting.space.Space",
       "fields": [
         {
           "name": "code"
@@ -13657,7 +13657,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.cortex.setting.namespace.Namespace$NamespaceBuilder"
+            "org.miaixz.bus.cortex.setting.space.Space$SpaceBuilder"
           ]
         },
         {
@@ -13687,7 +13687,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.namespace.Namespace$NamespaceBuilder",
+      "type": "org.miaixz.bus.cortex.setting.space.Space$SpaceBuilder",
       "methods": [
         {
           "name": "<init>",
@@ -13712,7 +13712,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.namespace.Namespace$NamespaceBuilderImpl",
+      "type": "org.miaixz.bus.cortex.setting.space.Space$SpaceBuilderImpl",
       "methods": [
         {
           "name": "<init>",
@@ -14436,7 +14436,7 @@
           "name": "MCP"
         },
         {
-          "name": "NAMESPACE"
+          "name": "SPACE"
         },
         {
           "name": "PROFILE"
@@ -14874,7 +14874,7 @@
           ]
         },
         {
-          "name": "namespace_id",
+          "name": "space_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -15988,7 +15988,7 @@
           "name": "eventType"
         },
         {
-          "name": "namespace_id"
+          "name": "space_id"
         },
         {
           "name": "previousSequence"
@@ -16060,7 +16060,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getNamespace_id",
+          "name": "getSpace_id",
           "parameterTypes": []
         },
         {
@@ -16126,7 +16126,7 @@
           ]
         },
         {
-          "name": "setNamespace_id",
+          "name": "setSpace_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -16225,7 +16225,7 @@
           ]
         },
         {
-          "name": "namespace_id",
+          "name": "space_id",
           "parameterTypes": [
             "java.lang.String"
           ]

@@ -79,8 +79,8 @@ final class WindowsPrinter extends AbstractPrinter {
             String description = WmiKit.getString(result, Win32Printer.PrinterProperty.DESCRIPTION, i);
             int statusCode = WmiKit.getUint16(result, Win32Printer.PrinterProperty.PRINTERSTATUS, i);
             int errorState = WmiKit.getUint16(result, Win32Printer.PrinterProperty.DETECTEDERRORSTATE, i);
-            boolean isDefault = getBooleanValue(result, Win32Printer.PrinterProperty.DEFAULT, i);
-            boolean isLocal = getBooleanValue(result, Win32Printer.PrinterProperty.LOCAL, i);
+            boolean isDefault = WmiKit.getBoolean(result, Win32Printer.PrinterProperty.DEFAULT, i);
+            boolean isLocal = WmiKit.getBoolean(result, Win32Printer.PrinterProperty.LOCAL, i);
             String portName = WmiKit.getString(result, Win32Printer.PrinterProperty.PORTNAME, i);
 
             printers.add(
@@ -88,25 +88,6 @@ final class WindowsPrinter extends AbstractPrinter {
                             parseErrorState(errorState), isDefault, isLocal, portName));
         }
         return printers;
-    }
-
-    /**
-     * Returns the boolean value.
-     *
-     * @param result   the result
-     * @param property the property
-     * @param index    the index
-     * @return the get boolean value result
-     */
-    private static boolean getBooleanValue(
-            WmiResult<Win32Printer.PrinterProperty> result,
-            Win32Printer.PrinterProperty property,
-            int index) {
-        Object o = result.getValue(property, index);
-        if (o instanceof Boolean) {
-            return (Boolean) o;
-        }
-        return false;
     }
 
     /**

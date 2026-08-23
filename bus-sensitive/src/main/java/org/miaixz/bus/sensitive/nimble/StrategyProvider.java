@@ -28,7 +28,15 @@ import org.miaixz.bus.sensitive.Context;
  *
  * @author Kimi Liu
  */
-public interface StrategyProvider extends Provider {
+public interface StrategyProvider extends Provider<EnumValue.Masking> {
+
+    /**
+     * Returns the non-null masking strategy used to register and select this provider.
+     *
+     * @return masking strategy implemented by this provider
+     */
+    @Override
+    EnumValue.Masking type();
 
     /**
      * Applies the desensitization logic to the given object.
@@ -38,17 +46,5 @@ public interface StrategyProvider extends Provider {
      * @return The desensitized value, typically a string.
      */
     Object build(final Object object, final Context context);
-
-    /**
-     * Returns an identifier for the type or strategy that this provider supports.
-     * <p>
-     * Description inherited from parent interface.
-     *
-     * @return the provider type, which is always {@link EnumValue.Povider#SENSITIVE}
-     */
-    @Override
-    default Object type() {
-        return EnumValue.Povider.SENSITIVE;
-    }
 
 }

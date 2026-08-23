@@ -34,7 +34,7 @@ import org.miaixz.bus.fabric.network.Destination;
  *
  * @author Kimi Liu
  */
-public final class ConnectionLease {
+public class ConnectionLease {
 
     /**
      * Lease-state CAS without a per-lease atomic wrapper.
@@ -123,7 +123,7 @@ public final class ConnectionLease {
      * @param acquiredAt  wall-clock acquisition time
      * @throws ValidateException if any component is {@code null}
      */
-    ConnectionLease(final ConnectionPool pool, final Destination destination, final Connection connection,
+    public ConnectionLease(final ConnectionPool pool, final Destination destination, final Connection connection,
             final Instant acquiredAt) {
         this(pool, destination, connection, require(acquiredAt, "Acquired time").toEpochMilli());
     }

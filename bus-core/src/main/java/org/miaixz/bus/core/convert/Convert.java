@@ -45,7 +45,7 @@ public class Convert {
     /**
      * Keeps general-purpose type conversion on the static API.
      */
-    private Convert() {
+    public Convert() {
         // No initialization required.
     }
 

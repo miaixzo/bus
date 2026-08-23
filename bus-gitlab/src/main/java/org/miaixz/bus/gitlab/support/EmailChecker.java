@@ -55,7 +55,7 @@ public class EmailChecker {
      * @param email the email address to check for validity
      * @return true if the provided String is a valid email address, otherwise return false
      */
-    public static final boolean isValidEmail(final String email) {
+    public static boolean isValidEmail(final String email) {
         return (email == null ? false : EMAIL_REGEX_PATTERN.matcher(email).matches());
     }
 

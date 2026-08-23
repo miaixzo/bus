@@ -28,7 +28,7 @@ import org.opencv.core.Mat;
  */
 public class ImgHashBase extends Algorithm {
 
-    protected ImgHashBase(long addr) {
+    public ImgHashBase(long addr) {
         super(addr);
     }
 

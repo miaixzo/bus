@@ -38,7 +38,7 @@ public class Console {
     /**
      * Keeps console input and output on the static API.
      */
-    private Console() {
+    public Console() {
         // No initialization required.
     }
 

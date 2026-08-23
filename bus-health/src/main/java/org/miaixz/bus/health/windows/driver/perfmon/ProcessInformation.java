@@ -34,12 +34,12 @@ import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class ProcessInformation {
+public class ProcessInformation {
 
     /**
      * Keeps Windows process information performance-counter queries on the static API.
      */
-    private ProcessInformation() {
+    public ProcessInformation() {
         // No initialization required.
     }
 

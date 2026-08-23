@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol.socket.body;
 
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -36,7 +35,7 @@ import org.miaixz.bus.fabric.codec.body.ProgressBody;
  *
  * @author Kimi Liu
  */
-public final class SocketBody implements MessageBody, ProgressBody {
+public class SocketBody implements MessageBody, ProgressBody {
 
     /**
      * Original socket message payload.
@@ -59,7 +58,7 @@ public final class SocketBody implements MessageBody, ProgressBody {
      * @param payload socket message content source
      * @param media   media type
      */
-    private SocketBody(final Payload payload, final MediaType media) {
+    public SocketBody(final Payload payload, final MediaType media) {
         this(payload, media, null);
     }
 
@@ -114,7 +113,7 @@ public final class SocketBody implements MessageBody, ProgressBody {
      * @return socket body
      */
     public static SocketBody text(final String text) {
-        return text(text, StandardCharsets.UTF_8);
+        return text(text, org.miaixz.bus.core.lang.Charset.UTF_8);
     }
 
     /**

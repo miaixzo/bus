@@ -22,9 +22,9 @@ package org.miaixz.bus.fabric.protocol.http.codec;
 import java.net.URI;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
@@ -39,12 +39,12 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
  *
  * @author Kimi Liu
  */
-public final class HttpLine {
+public class HttpLine {
 
     /**
      * Keeps HTTP start-line parsing on the static API.
      */
-    private HttpLine() {
+    public HttpLine() {
         // No initialization required.
     }
 
@@ -274,7 +274,7 @@ public final class HttpLine {
     /**
      * Bounded incremental CRLF line parser. A parser instance is reusable and retains only the unfinished line.
      */
-    public static final class Parser {
+    public static class Parser {
 
         /**
          * Fixed-capacity storage for the current line, excluding its CRLF terminator.
@@ -321,7 +321,7 @@ public final class HttpLine {
                         reset();
                         throw new ProtocolException("HTTP line contains a bare carriage return");
                     }
-                    final String completed = new String(line, Normal._0, length, StandardCharsets.US_ASCII);
+                    final String completed = new String(line, Normal._0, length, Charset.US_ASCII);
                     reset();
                     return completed;
                 }

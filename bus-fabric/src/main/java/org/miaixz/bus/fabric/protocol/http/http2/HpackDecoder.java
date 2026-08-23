@@ -21,7 +21,6 @@ package org.miaixz.bus.fabric.protocol.http.http2;
 
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -605,7 +604,7 @@ final class HpackDecoder {
      * @param value  text to encode as UTF-8
      */
     private static void writeString(final ByteWriter output, final String value) {
-        final byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
+        final byte[] bytes = value.getBytes(Charset.UTF_8);
         final int huffmanLength = huffmanLength(bytes);
         if (huffmanLength < bytes.length) {
             writeInteger(output, huffmanLength, Normal._128, Normal._7);

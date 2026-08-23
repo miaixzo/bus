@@ -22,6 +22,7 @@ package org.miaixz.bus.crypto;
 import java.util.Arrays;
 
 import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.exception.CryptoException;
 
 /**
  * Represents a cryptographic cipher, providing a unified API for various implementations like JCE and Bouncy Castle.
@@ -66,6 +67,20 @@ public interface Cipher {
      * @param parameters The parameters required by the cipher, including Key, IV, etc.
      */
     void init(Algorithm.Type mode, Parameters parameters);
+
+    /**
+     * Supplies additional authenticated data to an initialized authenticated cipher before payload processing.
+     * <p>
+     * Implementations that do not represent an authenticated cipher reject this operation with the shared Bus crypto
+     * exception. Callers must provide all AAD before the first {@link #process(byte[], int, int, byte[], int)} or
+     * {@link #processFinal(byte[])} invocation.
+     * </p>
+     *
+     * @param aad additional authenticated data; an empty array is permitted
+     * @throws IllegalArgumentException if {@code aad} is {@code null}
+     * @throws CryptoException          if the underlying cipher does not support AAD
+     */
+    void updateAad(byte[] aad);
 
     /**
      * Returns the required size of the output buffer to store the result of the next {@code process} or {@code doFinal}

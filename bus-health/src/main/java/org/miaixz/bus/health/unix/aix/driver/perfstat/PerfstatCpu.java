@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class PerfstatCpu {
+public class PerfstatCpu {
 
     /**
      * The PERF constant.
@@ -42,7 +42,7 @@ public final class PerfstatCpu {
     /**
      * Creates a new PerfstatCpu instance.
      */
-    private PerfstatCpu() {
+    public PerfstatCpu() {
         // No initialization required.
     }
 

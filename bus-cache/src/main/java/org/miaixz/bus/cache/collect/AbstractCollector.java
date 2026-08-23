@@ -407,12 +407,12 @@ public abstract class AbstractCollector implements Collector, AutoCloseable {
      *
      * @author Kimi Liu
      */
-    protected static final class Tally {
+    protected static class Tally {
 
         /**
          * Constructs a new Tally instance.
          */
-        protected Tally() {
+        public Tally() {
             // No initialization required.
         }
 

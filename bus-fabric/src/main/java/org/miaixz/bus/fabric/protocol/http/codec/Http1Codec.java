@@ -53,7 +53,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  *
  * @author Kimi Liu
  */
-public final class Http1Codec implements HttpCodec {
+public class Http1Codec implements HttpCodec {
 
     /**
      * Connection-local codec activity independent from the public connection lifecycle.

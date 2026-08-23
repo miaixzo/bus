@@ -27,9 +27,9 @@
  * The {@link org.miaixz.bus.vortex.strategy.StrategyFactory} is a key component in this package, responsible for
  * assembling the appropriate chain of strategies for a given request.
  * <p>
- * MCP requests use one fixed chain. Signature validation always passes through the MCP vetting strategy and is decided
- * by the resolved asset's {@code sign} flag, while response formatting remains a no-op unless the request context asks
- * for a non-default format.
+ * MCP requests use one fixed chain. Protocol qualifier strategies delegate all cryptographic signature verification to
+ * the internal {@code SignatureVerifier} after resolving the asset's {@code signing} mode, while response formatting
+ * remains a no-op unless the request context asks for a non-default format.
  *
  * @author Kimi Liu
  */

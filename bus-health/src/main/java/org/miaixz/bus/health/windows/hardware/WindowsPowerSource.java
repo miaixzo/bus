@@ -46,7 +46,7 @@ import org.miaixz.bus.health.windows.jna.PowrProf;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class WindowsPowerSource extends AbstractPowerSource {
+public class WindowsPowerSource extends AbstractPowerSource {
 
     /**
      * The GUID_DEVCLASS_BATTERY constant.

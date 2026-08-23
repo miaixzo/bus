@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.lang.StackWalker.Option;
 import java.util.Set;
 
+import org.miaixz.bus.core.xyz.CallerKit;
+
 /**
  * Implementation of the {@link Caller} interface that retrieves caller information by analyzing the current thread's
  * stack trace. This method is generally less efficient compared to other caller retrieval mechanisms and should be used
@@ -71,19 +73,19 @@ public class StackTraceCaller implements Caller, Serializable {
 
     /**
      * Retrieves the calling class at a specific depth in the call stack. The depth is relative to the public
-     * {@link org.miaixz.bus.core.xyz.CallerKit} entry point.
+     * {@link CallerKit} entry point.
      *
      * <p>
      * Call stack depth explanation:
      *
      * <pre>
-     * 0: {@link org.miaixz.bus.core.xyz.CallerKit}
-     * 1: The class that calls a method within {@link org.miaixz.bus.core.xyz.CallerKit}
+     * 0: {@link CallerKit}
+     * 1: The class that calls a method within {@link CallerKit}
      * 2: The caller of the class at depth 1
      * ... and so on.
      * </pre>
      *
-     * @param depth The depth in the call stack, where 0 refers to {@link org.miaixz.bus.core.xyz.CallerKit}.
+     * @param depth The depth in the call stack, where 0 refers to {@link CallerKit}.
      * @return The {@link Class} object at the specified call stack depth, or {@code null} if the depth is out of
      *         bounds.
      */

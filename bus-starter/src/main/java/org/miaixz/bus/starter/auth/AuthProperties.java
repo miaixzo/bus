@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.starter.auth;
 
-import java.util.Map;
+import java.util.List;
 
 import lombok.Getter;
 
@@ -27,16 +27,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.cache.Options;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Authorization configuration properties.
+ * Binds the root settings of the Spring Boot authentication integration.
  * <p>
- * This class binds properties from the configuration file (e.g., {@code application.yml}) by default. It can also be
- * configured dynamically through setter methods (e.g., from a database).
+ * Vendor clients use the direct {@code bus.auth.<vendor>} layout. {@link AuthService} binds those entries dynamically
+ * from the Vendor identifiers registered in bus-auth, so this class does not duplicate the platform catalog.
  * </p>
  *
  * @author Kimi Liu
@@ -46,47 +45,68 @@ import org.miaixz.bus.starter.GeniusBuilder;
 public class AuthProperties {
 
     /**
-     * Binds immutable authorization provider and cache settings from {@code bus.auth}.
-     *
-     * @param enabled whether authorization integration is enabled
-     * @param type    provider configuration grouped by authorization registry type
-     * @param cache   cache backend settings used by authorization services
-     */
-    public AuthProperties(@DefaultValue("false") boolean enabled, Map<Registry, Context> type, Options cache) {
-        this.enabled = enabled;
-        this.type = type == null ? Map.of() : Map.copyOf(type);
-        this.cache = cache;
-    }
-
-    /**
-     * Whether the auth integration is enabled.
+     * Whether the complete authentication integration is enabled.
      */
     private final boolean enabled;
 
     /**
-     * A map of authorization provider configurations, where the key is the provider {@link Registry} type and the value
-     * is the {@link Context} containing the specific configuration for that provider.
-     */
-    private final Map<Registry, Context> type;
-
-    /**
-     * Nested cache backend options for the authorization module.
-     * <p>
-     * When present, these options initialize an auth-specific cache instance. When absent, auth falls back to the
-     * shared default cache configuration or the legacy in-memory singleton.
-     * </p>
+     * Optional authentication-specific atomic cache backend settings.
      */
     @NestedConfigurationProperty
     private final Options cache;
 
     /**
-     * Returns a diagnostic representation without exposing cache credentials or backend secrets.
+     * Creates immutable root authentication settings.
      *
-     * @return safe property summary
+     * @param enabled whether the complete authentication integration is enabled
+     * @param cache   optional authentication-specific atomic cache backend settings
+     */
+    public AuthProperties(@DefaultValue(Normal.TRUE) boolean enabled, Options cache) {
+        this.enabled = enabled;
+        this.cache = cache;
+    }
+
+    /**
+     * Returns a diagnostic representation without exposing cache credentials.
+     *
+     * @return safe root authentication setting summary
      */
     @Override
     public String toString() {
-        return "AuthProperties[enabled=" + this.enabled + ", providerCount=" + this.type.size() + ", cache=<masked>]";
+        return "AuthProperties[enabled=" + enabled + ", cache=<masked>]";
+    }
+
+    /**
+     * Carries the standard client fields bound from one {@code bus.auth.<vendor>} block.
+     *
+     * @param enabled      whether this Vendor client is enabled
+     * @param clientId     public client identifier issued by the external platform
+     * @param clientSecret client secret supplied by the protected configuration source
+     * @param redirectUri  exact callback URI registered with the external platform
+     * @param scopes       ordered explicit scopes, or an empty list for manifest defaults
+     * @author Kimi Liu
+     */
+    public record Client(boolean enabled, String clientId, String clientSecret, String redirectUri,
+            List<String> scopes) {
+
+        /**
+         * Normalizes the optional scope collection without exposing or transforming secret material.
+         */
+        public Client {
+            scopes = scopes == null ? List.of() : List.copyOf(scopes);
+        }
+
+        /**
+         * Returns a diagnostic representation that never exposes the client secret.
+         *
+         * @return safe Vendor client setting summary
+         */
+        @Override
+        public String toString() {
+            return "Client[enabled=" + enabled + ", clientId=" + clientId + ", clientSecret=<masked>, redirectUri="
+                    + redirectUri + ", scopeCount=" + scopes.size() + "]";
+        }
+
     }
 
 }

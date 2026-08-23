@@ -33,7 +33,7 @@ import org.miaixz.bus.fabric.observe.event.FabricEvent;
  *
  * @author Kimi Liu
  */
-public final class EventListenerBridge implements EventObserver {
+public class EventListenerBridge implements EventObserver {
 
     /**
      * Callback names mapped to current observation markers.
@@ -87,7 +87,7 @@ public final class EventListenerBridge implements EventObserver {
      *
      * @param listener non-null callback receiver
      */
-    private EventListenerBridge(final Listener listener) {
+    public EventListenerBridge(final Listener listener) {
         this.listener = Assert.notNull(listener, () -> new ValidateException("Event listener must not be null"));
     }
 

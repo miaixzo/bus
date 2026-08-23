@@ -33,12 +33,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Win32BaseBoard {
+public class Win32BaseBoard {
 
     /**
      * Keeps Win32 base board queries on the static API.
      */
-    private Win32BaseBoard() {
+    public Win32BaseBoard() {
         // No initialization required.
     }
 

@@ -96,7 +96,7 @@ public class QualifierStrategy extends AbstractStrategy {
             final Context context = contextView.get(Context.class);
 
             Keying.RegistrySpec requestRoute = route(exchange, context);
-            String namespace = requestRoute.namespacePart();
+            String space = requestRoute.spacePart();
             String type = requestRoute.typeKeyPart();
             String appId = requestRoute.appIdPart();
             String method = requestRoute.methodPart();
@@ -107,9 +107,9 @@ public class QualifierStrategy extends AbstractStrategy {
                 Logger.warn(
                         false,
                         "Vortex",
-                        "Asset not found: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}",
+                        "Asset not found: strategy=qualifier, clientIp={}, space={}, type={}, appId={}, method={}, version={}, verb={}",
                         context.getX_request_ip(),
-                        namespace,
+                        space,
                         type,
                         appId,
                         method,
@@ -123,16 +123,16 @@ public class QualifierStrategy extends AbstractStrategy {
                 Logger.info(
                         true,
                         "Vortex",
-                        "Asset resolved: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, sign={}, mode={}, host={}, port={}, path={}, url={}",
+                        "Asset resolved: strategy=qualifier, clientIp={}, space={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, signing={}, mode={}, host={}, port={}, path={}, url={}",
                         context.getX_request_ip(),
-                        assets.getNamespace_id(),
+                        assets.getSpace_id(),
                         assets.getType(),
                         assets.getApp_id(),
                         assets.getMethod(),
                         assets.getVersion(),
                         assets.getVerb(),
                         assets.getPolicy(),
-                        assets.getSign(),
+                        assets.getSigning(),
                         assets.getProtocol(),
                         assets.getHost(),
                         assets.getPort(),
@@ -146,9 +146,9 @@ public class QualifierStrategy extends AbstractStrategy {
                             () -> Logger.info(
                                     true,
                                     "Vortex",
-                                    "Qualifier completed: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}",
+                                    "Qualifier completed: strategy=qualifier, clientIp={}, space={}, type={}, appId={}, method={}, version={}",
                                     context.getX_request_ip(),
-                                    namespace,
+                                    space,
                                     type,
                                     appId,
                                     method,
@@ -170,7 +170,7 @@ public class QualifierStrategy extends AbstractStrategy {
         context.setFormat(Formats.get(this.value(context, Args.FORMAT)));
         context.setChannel(Channel.get(this.value(context, Args.X_REMOTE_CHANNEL)));
 
-        String namespace = this.value(context, Args.NAMESPACE);
+        String space = this.value(context, Args.SPACE);
         String appId = this.value(context, Args.APP_ID);
         if (StringKit.isBlank(appId)) {
             appId = exchange.getRequest().getHeaders().getFirst(Args.APP_ID);
@@ -182,7 +182,7 @@ public class QualifierStrategy extends AbstractStrategy {
         }
         String version = this.version(exchange, context);
         Integer verb = context.getHttpMethod() == null ? null : context.getHttpMethod().verb();
-        return Keying.RegistrySpec.route(namespace, type, appId, method, version, verb);
+        return Keying.RegistrySpec.route(space, type, appId, method, version, verb);
     }
 
     /**

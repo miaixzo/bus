@@ -23,12 +23,14 @@ import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.Status;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
+import org.miaixz.bus.image.galaxy.CancelListener;
 import org.miaixz.bus.image.galaxy.ImageProgress;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -123,6 +125,21 @@ public class MoveSCU extends Device implements AutoCloseable {
     private boolean releaseEager;
 
     /**
+     * The handler for DIMSE responses.
+     */
+    private DimseRSPHandler rspHandler;
+
+    /**
+     * Ensures that only one C-CANCEL request is sent.
+     */
+    private final AtomicBoolean cancelSent = new AtomicBoolean();
+
+    /**
+     * The cancel listener registered with the progress object.
+     */
+    private final CancelListener cancelListener = this::handleCancel;
+
+    /**
      * Constructs a new {@code MoveSCU} instance with no progress handler.
      */
     public MoveSCU() {
@@ -147,7 +164,7 @@ public class MoveSCU extends Device implements AutoCloseable {
      *
      * @param priority The priority value (0=Medium, 1=High, 2=Low).
      */
-    public final void setPriority(int priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
@@ -176,7 +193,7 @@ public class MoveSCU extends Device implements AutoCloseable {
      * @param tss        An array of transfer syntax UIDs to propose.
      * @param relational A flag indicating if relational queries are requested.
      */
-    public final void setInformationModel(InformationModel model, String[] tss, boolean relational) {
+    public void setInformationModel(InformationModel model, String[] tss, boolean relational) {
         this.model = model;
         rq.addPresentationContext(new PresentationContext(1, model.cuid, tss));
         if (relational) {
@@ -201,7 +218,7 @@ public class MoveSCU extends Device implements AutoCloseable {
      *
      * @param destination The destination AE Title.
      */
-    public final void setDestination(String destination) {
+    public void setDestination(String destination) {
         this.destination = destination;
     }
 
@@ -221,7 +238,7 @@ public class MoveSCU extends Device implements AutoCloseable {
      *
      * @param inFilter An array of attribute tags to include.
      */
-    public final void setInputFilter(int[] inFilter) {
+    public void setInputFilter(int[] inFilter) {
         this.inFilter = inFilter;
     }
 
@@ -290,6 +307,10 @@ public class MoveSCU extends Device implements AutoCloseable {
      */
     @Override
     public void close() throws IOException, InterruptedException {
+        ImageProgress progress = state.getProgress();
+        if (progress != null) {
+            progress.removeCancelListener(cancelListener);
+        }
         if (as != null && as.isReadyForDataTransfer()) {
             as.waitForOutstandingRSP();
             as.release();
@@ -330,36 +351,103 @@ public class MoveSCU extends Device implements AutoCloseable {
      * @throws InterruptedException if the operation is interrupted.
      */
     private void retrieve(Attributes keys) throws IOException, InterruptedException {
-        DimseRSPHandler rspHandler = new DimseRSPHandler(as.nextMessageID()) {
+        rspHandler = createResponseHandler();
+        cancelSent.set(false);
+        ImageProgress progress = state.getProgress();
+        if (progress != null) {
+            progress.addCancelListener(cancelListener);
+            if (progress.isCancelled()) {
+                return;
+            }
+        }
+        as.cmove(model.cuid, priority, keys, null, destination, rspHandler);
+        scheduleCancellationIfNeeded();
+    }
+
+    /**
+     * Creates the default DIMSE response handler.
+     *
+     * @return the DIMSE response handler.
+     */
+    private DimseRSPHandler createResponseHandler() {
+        return new DimseRSPHandler(as.nextMessageID()) {
 
             @Override
             public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
                 super.onDimseRSP(as, cmd, data);
-                ImageProgress p = state.getProgress();
-                if (p != null) {
-                    p.setAttributes(cmd);
-                    if (p.isCancel()) {
-                        try {
-                            this.cancel(as);
-                        } catch (IOException e) {
-                            Logger.error(false, "Image", "Cancel C-MOVE", e);
-                        }
-                    }
-                }
+                updateProgress(cmd);
             }
         };
-        as.cmove(model.cuid, priority, keys, null, destination, rspHandler);
+    }
+
+    /**
+     * Schedules a timeout cancellation when configured.
+     */
+    private void scheduleCancellationIfNeeded() {
         if (cancelAfter > 0) {
             schedule(() -> {
-                try {
-                    rspHandler.cancel(as);
-                    if (releaseEager) {
+                cancelRetrieve();
+                if (releaseEager && as != null && as.isReadyForDataTransfer()) {
+                    try {
                         as.release();
+                    } catch (IOException e) {
+                        Logger.error(false, "Image", "Release association after cancelling C-MOVE", e);
                     }
-                } catch (IOException e) {
-                    Logger.error(false, "Image", "Cancel after C-MOVE", e);
                 }
             }, cancelAfter, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    /**
+     * Updates the progress handler with the latest command attributes.
+     *
+     * @param cmd the DIMSE command attributes.
+     */
+    private void updateProgress(Attributes cmd) {
+        ImageProgress progress = state.getProgress();
+        if (progress != null) {
+            progress.setAttributes(cmd);
+            if (progress.isCancel()) {
+                handleCancel();
+            }
+        }
+    }
+
+    /**
+     * Cancels or aborts the retrieve operation according to the progress state.
+     */
+    private void handleCancel() {
+        ImageProgress progress = state.getProgress();
+        if (progress != null && progress.isAborted()) {
+            abortRetrieve();
+        } else {
+            cancelRetrieve();
+        }
+    }
+
+    /**
+     * Aborts the active C-MOVE association immediately.
+     */
+    public void abortRetrieve() {
+        if (as != null && as.isReadyForDataTransfer()) {
+            Logger.info(false, "Image", "Aborting the C-MOVE association of {}", rq.getCalledAET());
+            as.abort();
+        }
+    }
+
+    /**
+     * Sends a C-CANCEL request for the current C-MOVE operation.
+     */
+    public void cancelRetrieve() {
+        if (rspHandler == null || as == null || !as.isReadyForDataTransfer()) {
+            return;
+        }
+        if (cancelSent.compareAndSet(false, true)) {
+            try {
+                rspHandler.cancel(as);
+            } catch (IOException e) {
+                Logger.error(false, "Image", "Cancel C-MOVE", e);
+            }
         }
     }
 

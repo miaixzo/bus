@@ -32,7 +32,7 @@ import org.miaixz.bus.fabric.runtime.Reactor;
  *
  * @author Kimi Liu
  */
-public final class Context implements AutoCloseable {
+public class Context implements AutoCloseable {
 
     /**
      * Reactor borrowed from the shared runtime lease.
@@ -72,7 +72,7 @@ public final class Context implements AutoCloseable {
      * @param listener lifecycle listener, or {@code null} when disabled
      * @param filter   protocol-neutral message filter, or {@code null} when disabled
      */
-    private Context(final RuntimeLease runtime, final Options options, final Listener<Object> listener,
+    public Context(final RuntimeLease runtime, final Options options, final Listener<Object> listener,
             final Filter filter) {
         this.runtime = require(runtime, "Runtime lease");
         this.reactor = runtime.reactor;
@@ -187,7 +187,7 @@ public final class Context implements AutoCloseable {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Reactor transferred to the context, or {@code null} to create one during {@link #build()}.
@@ -212,7 +212,7 @@ public final class Context implements AutoCloseable {
         /**
          * Creates an inert builder without allocating a reactor or resolver.
          */
-        private Builder() {
+        public Builder() {
             // No initialization required.
         }
 

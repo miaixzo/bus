@@ -49,7 +49,7 @@ public class Base32Provider implements Encoder<byte[], String>, Decoder<CharSequ
     /**
      * Creates the shared Base32 codec provider.
      */
-    private Base32Provider() {
+    public Base32Provider() {
         // No initialization required.
     }
 

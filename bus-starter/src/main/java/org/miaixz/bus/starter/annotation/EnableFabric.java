@@ -24,13 +24,14 @@ import java.lang.annotation.*;
 import org.springframework.context.annotation.Import;
 
 import org.miaixz.bus.starter.fabric.FabricConfiguration;
+import org.miaixz.bus.starter.fabric.SocketQuickService;
+import org.miaixz.bus.starter.fabric.WebSocketQuickService;
 
 /**
  * Enables fabric communication server features.
  * <p>
  * This annotation imports {@link FabricConfiguration}, which sets up fabric protocol quick services such as
- * {@link org.miaixz.bus.starter.fabric.SocketQuickService} and
- * {@link org.miaixz.bus.starter.fabric.WebSocketQuickService}.
+ * {@link SocketQuickService} and {@link WebSocketQuickService}.
  *
  * @author Kimi Liu
  */

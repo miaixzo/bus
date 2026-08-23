@@ -36,12 +36,12 @@ import org.miaixz.bus.health.builtin.hardware.HWPartition;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Prtvtoc {
+public class Prtvtoc {
 
     /**
      * Keeps Solaris disk-table queries on the static API.
      */
-    private Prtvtoc() {
+    public Prtvtoc() {
         // No initialization required.
     }
 

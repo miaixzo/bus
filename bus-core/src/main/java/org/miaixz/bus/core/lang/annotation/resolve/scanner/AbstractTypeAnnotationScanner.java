@@ -82,7 +82,7 @@ public abstract class AbstractTypeAnnotationScanner<T extends AbstractTypeAnnota
      * @param filter            The filter predicate
      * @param excludeTypes      Types to exclude from scanning
      */
-    protected AbstractTypeAnnotationScanner(final boolean includeSuperClass, final boolean includeInterfaces,
+    public AbstractTypeAnnotationScanner(final boolean includeSuperClass, final boolean includeInterfaces,
             final PredicateX<Class<?>> filter, final Set<Class<?>> excludeTypes) {
         Assert.notNull(filter, "filter must not null");
         Assert.notNull(excludeTypes, "excludeTypes must not null");

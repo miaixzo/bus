@@ -122,7 +122,7 @@ public class ImageDirWriter extends ImageDirReader {
      * @param file The DICOMDIR file to write to.
      * @throws IOException if an I/O error occurs.
      */
-    private ImageDirWriter(File file) throws IOException {
+    public ImageDirWriter(File file) throws IOException {
         super(file, "rw");
         out = new ImageOutputStream(new RAFOutputStreamAdapter(raf), super.getTransferSyntaxUID());
         int seqLen = in.length();

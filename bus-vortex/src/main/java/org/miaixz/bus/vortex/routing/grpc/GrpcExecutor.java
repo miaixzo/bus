@@ -42,6 +42,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Delivery;
 import org.miaixz.bus.vortex.Egress;
+import org.miaixz.bus.vortex.Executor;
 import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.Octets;
 import org.miaixz.bus.vortex.routing.Coordinator;
@@ -76,8 +77,8 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
     /**
      * Executes a gRPC request using the provided context and String payload.
      * <p>
-     * This method is required by the {@link org.miaixz.bus.vortex.Executor} interface. It invokes the gRPC method and
-     * selects the strict response delivery from the route asset.
+     * This method is required by the {@link Executor} interface. It invokes the gRPC method and selects the strict
+     * response delivery from the route asset.
      *
      * @param context The request context containing the assets configuration
      * @param input   The String payload to send to the gRPC service
@@ -130,8 +131,8 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
     /**
      * Executes the gRPC call in atomic/buffering mode.
      * <p>
-     * Requires a bounded Content-Length, reserves its exact logical size, and retains the response lease until the
-     * network write terminates.
+     * Reserves either the declared Content-Length or the configured unknown-length maximum and retains the response
+     * lease until the network write terminates.
      *
      * @param context request context retained for response processing
      * @param assets  The asset configuration
@@ -158,13 +159,12 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
                         return Octets.discard(bodyFlux).then(responseBuilder.build());
                     }
                     long declaredLength = responseEntity.getHeaders().getContentLength();
-                    if (declaredLength < 0
-                            || declaredLength > Math.toIntExact(Holder.get().getMaxBufferedResponseSize())) {
+                    if (declaredLength > Math.toIntExact(Holder.get().getMaxBufferedResponseSize())) {
                         return Octets.discard(bodyFlux).then(
                                 Mono.error(
-                                        new DataBufferLimitException(
-                                                "Atomic gRPC response requires Content-Length in range 0.."
-                                                        + Math.toIntExact(Holder.get().getMaxBufferedResponseSize()))));
+                                        new DataBufferLimitException("Atomic gRPC response exceeds buffered limit of "
+                                                + Math.toIntExact(Holder.get().getMaxBufferedResponseSize())
+                                                + " bytes")));
                     }
                     return Octets.readForRelay(
                             bodyFlux,
@@ -172,15 +172,17 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
                             Holder.responseBufferBudget(),
                             declaredLength).flatMap(bufferedBody -> {
                                 int bodyLength = bufferedBody.length();
-                                if (bodyLength != declaredLength) {
+                                if (declaredLength >= 0 && bodyLength != declaredLength) {
                                     bufferedBody.close();
                                     return Mono.error(
                                             new DataBufferLimitException(
                                                     "Atomic gRPC response length mismatch: declared=" + declaredLength
                                                             + ", actual=" + bodyLength));
                                 }
-                                return responseBuilder.contentLength(bodyLength)
-                                        .body(BodyInserters.fromDataBuffers(Octets.chunksAndClose(bufferedBody)));
+                                return Octets.own(
+                                        responseBuilder.contentLength(bodyLength)
+                                                .body(BodyInserters.fromDataBuffers(Octets.chunks(bufferedBody))),
+                                        bufferedBody);
                             });
                 });
     }
@@ -189,8 +191,8 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
      * Invokes a gRPC method via HTTP gateway.
      * <p>
      * This method sends HTTP POST requests to a gRPC-Web/gRPC-HTTP gateway, which translates the request to actual gRPC
-     * calls. The JSON response requires Content-Length and retains an exact response-byte lease until conversion to the
-     * returned string completes.
+     * calls. The bounded JSON response may use either Content-Length or chunked transfer encoding and retains its
+     * response-byte lease until conversion to the returned string completes.
      *
      * @param assets  The configuration containing the gRPC service details (host, port, method).
      * @param payload The JSON string content of the request message.

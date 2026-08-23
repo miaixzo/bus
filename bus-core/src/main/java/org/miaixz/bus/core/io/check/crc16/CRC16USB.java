@@ -33,7 +33,7 @@ public class CRC16USB extends CRC16Checksum {
     /**
      * Creates a CRC-16/USB checksum implementation.
      */
-    private CRC16USB() {
+    public CRC16USB() {
         // No initialization required.
     }
 

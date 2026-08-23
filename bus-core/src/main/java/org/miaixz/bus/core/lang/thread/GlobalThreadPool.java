@@ -46,7 +46,7 @@ public class GlobalThreadPool {
     /**
      * Keeps global executor lifecycle management on the static API.
      */
-    private GlobalThreadPool() {
+    public GlobalThreadPool() {
         // No initialization required.
     }
 

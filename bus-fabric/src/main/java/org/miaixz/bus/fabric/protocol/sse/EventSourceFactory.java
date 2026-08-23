@@ -41,7 +41,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  *
  * @author Kimi Liu
  */
-public final class EventSourceFactory implements EventSource.Factory, AutoCloseable {
+public class EventSourceFactory implements EventSource.Factory, AutoCloseable {
 
     /**
      * Runtime context used to open all managed SSE exchanges.
@@ -69,7 +69,7 @@ public final class EventSourceFactory implements EventSource.Factory, AutoClosea
      * @param context     runtime context used for managed SSE exchanges
      * @param ownsContext whether close releases the context
      */
-    private EventSourceFactory(final Context context, final boolean ownsContext) {
+    public EventSourceFactory(final Context context, final boolean ownsContext) {
         this.context = require(context, "Context");
         this.ownsContext = ownsContext;
         this.sources = Collections.newSetFromMap(new IdentityHashMap<>());

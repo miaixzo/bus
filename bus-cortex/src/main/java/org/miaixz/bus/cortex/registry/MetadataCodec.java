@@ -37,7 +37,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class MetadataCodec {
+public class MetadataCodec {
 
     /**
      * Root metadata object reserved for cortex-specific fields.
@@ -57,7 +57,7 @@ public final class MetadataCodec {
     /**
      * Keeps registry metadata encoding and decoding on the static API.
      */
-    private MetadataCodec() {
+    public MetadataCodec() {
         // No initialization required.
     }
 

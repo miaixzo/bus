@@ -85,31 +85,31 @@ public interface RegistryStore<T extends Assets> {
     }
 
     /**
-     * Deletes an entry by type, namespace and ID.
+     * Deletes an entry by type, space and ID.
      *
-     * @param type      asset type
-     * @param namespace namespace
-     * @param id        entry identifier
+     * @param type  asset type
+     * @param space space
+     * @param id    entry identifier
      */
-    void delete(Type type, String namespace, String id);
+    void delete(Type type, String space, String id);
 
     /**
      * Deletes one entry using an existing snapshot supplied by the mutation coordinator.
      *
-     * @param type      asset type
-     * @param namespace namespace
-     * @param id        entry identifier
-     * @param existing  existing snapshot
+     * @param type     asset type
+     * @param space    space
+     * @param id       entry identifier
+     * @param existing existing snapshot
      */
-    default void delete(Type type, String namespace, String id, T existing) {
-        delete(type, namespace, id);
+    default void delete(Type type, String space, String id, T existing) {
+        delete(type, space, id);
     }
 
     /**
      * Deletes a runtime instance by method/version/fingerprint.
      *
      * @param type        asset type
-     * @param namespace   namespace
+     * @param space       space
      * @param app_id      application identifier
      * @param method      method
      * @param version     version
@@ -117,7 +117,7 @@ public interface RegistryStore<T extends Assets> {
      */
     default void deleteInstance(
             Type type,
-            String namespace,
+            String space,
             String app_id,
             String method,
             String version,
@@ -126,26 +126,26 @@ public interface RegistryStore<T extends Assets> {
     }
 
     /**
-     * Finds an entry by type, namespace and ID.
+     * Finds an entry by type, space and ID.
      *
-     * @param type      asset type
-     * @param namespace namespace
-     * @param id        entry identifier
+     * @param type  asset type
+     * @param space space
+     * @param id    entry identifier
      * @return persisted entry or {@code null}
      */
-    T find(Type type, String namespace, String id);
+    T find(Type type, String space, String id);
 
     /**
      * Finds an entry by method and version.
      *
-     * @param type      asset type
-     * @param namespace namespace
-     * @param app_id    application identifier
-     * @param method    method
-     * @param version   version
+     * @param type    asset type
+     * @param space   space
+     * @param app_id  application identifier
+     * @param method  method
+     * @param version version
      * @return persisted entry or {@code null}
      */
-    default T findByMethodVersion(Type type, String namespace, String app_id, String method, String version) {
+    default T findByMethodVersion(Type type, String space, String app_id, String method, String version) {
         return null;
     }
 
@@ -183,16 +183,16 @@ public interface RegistryStore<T extends Assets> {
     /**
      * Queries entries by exact route identity.
      *
-     * @param type      asset type
-     * @param namespace namespace
-     * @param app_id    application identifier
-     * @param method    method
-     * @param version   version
+     * @param type    asset type
+     * @param space   space
+     * @param app_id  application identifier
+     * @param method  method
+     * @param version version
      * @return matching entries
      */
-    default List<T> queryByRoute(Type type, String namespace, String app_id, String method, String version) {
+    default List<T> queryByRoute(Type type, String space, String app_id, String method, String version) {
         Vector vector = new Vector();
-        vector.setNamespace_id(namespace);
+        vector.setSpace_id(space);
         vector.setApp_id(app_id);
         vector.setType(type == null ? null : type.key());
         vector.setMethod(method);
@@ -203,14 +203,14 @@ public interface RegistryStore<T extends Assets> {
     /**
      * Queries runtime instances for the given service identity.
      *
-     * @param type      asset type
-     * @param namespace namespace
-     * @param app_id    application identifier
-     * @param method    method
-     * @param version   version
+     * @param type    asset type
+     * @param space   space
+     * @param app_id  application identifier
+     * @param method  method
+     * @param version version
      * @return matching runtime instances
      */
-    default List<Instance> queryInstances(Type type, String namespace, String app_id, String method, String version) {
+    default List<Instance> queryInstances(Type type, String space, String app_id, String method, String version) {
         return List.of();
     }
 

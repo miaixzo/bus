@@ -39,12 +39,12 @@ import org.miaixz.bus.health.Parsing;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class WmiKit {
+public class WmiKit {
 
     /**
      * Keeps WMI queries on the static API.
      */
-    private WmiKit() {
+    public WmiKit() {
         // No initialization required.
     }
 
@@ -66,6 +66,16 @@ public final class WmiKit {
      * The CLASS_CAST_MSG constant.
      */
     private static final String CLASS_CAST_MSG = "%s is not a %s type. CIM Type is %d and VT type is %d";
+
+    /**
+     * CIM type code for boolean values.
+     */
+    private static final int CIM_BOOLEAN = 11;
+
+    /**
+     * Variant type code for boolean values.
+     */
+    private static final int VT_BOOL = 11;
 
     /**
      * Translate a WmiQuery to the actual query string
@@ -340,6 +350,32 @@ public final class WmiKit {
                 CLASS_CAST_MSG,
                 property.name(),
                 "32-bit integer",
+                result.getCIMType(property),
+                result.getVtType(property)));
+    }
+
+    /**
+     * Gets a Boolean value from a WmiResult.
+     *
+     * @param <T>      WMI queries use an Enum to identify the fields to query, and use the enum values as keys to
+     *                 retrieve the results.
+     * @param result   The WmiResult from which to fetch the value
+     * @param property The property (column) to fetch
+     * @param index    The index (row) to fetch
+     * @return The stored value if non-null, {@code false} otherwise
+     */
+    public static <T extends Enum<T>> boolean getBoolean(WmiResult<T> result, T property, int index) {
+        Object o = result.getValue(property, index);
+        if (o == null) {
+            return false;
+        } else if (result.getCIMType(property) == CIM_BOOLEAN && result.getVtType(property) == VT_BOOL) {
+            return (boolean) o;
+        }
+        throw new ClassCastException(String.format(
+                Locale.ROOT,
+                CLASS_CAST_MSG,
+                property.name(),
+                "Boolean",
                 result.getCIMType(property),
                 result.getVtType(property)));
     }

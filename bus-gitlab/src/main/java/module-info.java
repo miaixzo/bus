@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.gitlab
+ * Module: {@code bus.gitlab}
+ *
+ * <p>
+ * Provides a Java client abstraction for GitLab services and resources.
+ *
+ * <p>
+ * Includes service clients, request support, domain models, system hooks, web hooks, and APIs for repositories,
+ * pipelines, issues, merge requests, users, groups, and project administration.
  *
  * @author Kimi Liu
  */
@@ -29,10 +36,11 @@ module bus.gitlab {
     requires bus.core;
     requires bus.logger;
 
-    requires static lombok;
+    requires static com.fasterxml.jackson.annotation;
     requires static jakarta.annotation;
     requires static jakarta.servlet;
     requires static jakarta.ws.rs;
+    requires static lombok;
     requires static org.glassfish.jersey.core.client;
     requires static org.glassfish.jersey.core.common;
     requires static org.glassfish.jersey.media.multipart;

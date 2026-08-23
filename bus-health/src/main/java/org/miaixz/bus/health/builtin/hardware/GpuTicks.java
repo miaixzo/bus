@@ -44,7 +44,7 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  * @author Kimi Liu
  */
 @Immutable
-public final class GpuTicks {
+public class GpuTicks {
 
     /**
      * The activeTicks value.

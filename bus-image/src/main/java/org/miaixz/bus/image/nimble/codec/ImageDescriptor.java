@@ -29,7 +29,7 @@ import org.miaixz.bus.image.nimble.Photometric;
  *
  * @author Kimi Liu
  */
-public final class ImageDescriptor {
+public class ImageDescriptor {
 
     /**
      * The rows value.

@@ -22,12 +22,13 @@ package org.miaixz.bus.gitlab.models;
 import java.io.Serial;
 import java.io.Serializable;
 
+import org.miaixz.bus.gitlab.TopicsApi;
+
 /**
- * This class is utilized by the <code>org.miaixz.bus.gitlab.TopicsApi#createTopic(TopicParams)</code> and
- * <code>org.miaixz.bus.gitlab.TopicsApi#updateTopic(Integer, TopicParams)</code> methods to set the parameters for the
- * call to the GitLab API.
+ * This class is utilized by the {@link TopicsApi#createTopic(TopicParams)} and
+ * {@link TopicsApi#updateTopic(Integer, TopicParams)} methods to set the parameters for the call to the GitLab API.
  *
- * Avatar Upload has its own Upload in <code>org.miaixz.bus.gitlab.TopicsApi#updateTopicAvatar(Integer,File)</code>
+ * Avatar Upload has its own Upload in {@link TopicsApi#updateTopicAvatar(Integer, File)}.
  *
  * @author Kimi Liu
  */

@@ -46,7 +46,7 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsZone;
  *
  * @author Kimi Liu
  */
-public final class DnsAuthoritativeSigner {
+public class DnsAuthoritativeSigner {
 
     /**
      * RSA/SHA-1 DNSSEC algorithm.

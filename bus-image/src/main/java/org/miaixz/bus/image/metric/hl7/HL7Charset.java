@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.image.metric.hl7;
 
-import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
@@ -42,7 +42,7 @@ public class HL7Charset {
     /**
      * Creates a new instance.
      */
-    private HL7Charset() {
+    public HL7Charset() {
         // No initialization required.
     }
 
@@ -61,7 +61,7 @@ public class HL7Charset {
      *                                     virtual machine
      */
     public static void setCharsetNameMapping(String code, String charsetName) {
-        if (!Charset.isSupported(charsetName))
+        if (!java.nio.charset.Charset.isSupported(charsetName))
             throw new UnsupportedCharsetException(charsetName);
         CHARSET_NAMES_MAP.put(code, charsetName);
     }
@@ -88,7 +88,7 @@ public class HL7Charset {
             return value;
         switch (code) {
             case "8859/1":
-                return "ISO-8859-1";
+                return Charset.DEFAULT_ISO_8859_1;
 
             case "8859/2":
                 return "ISO-8859-2";
@@ -124,7 +124,7 @@ public class HL7Charset {
                 return "JIS_X0212-1990";
 
             case "GB 18030-2000":
-                return "GB18030";
+                return Charset.DEFAULT_GB_18030;
 
             case "KS X 1001":
                 return "EUC-KR";
@@ -134,9 +134,9 @@ public class HL7Charset {
 
             case "UNICODE":
             case "UNICODE UTF-8":
-                return org.miaixz.bus.core.lang.Charset.DEFAULT_UTF_8;
+                return Charset.DEFAULT_UTF_8;
         }
-        return "US-ASCII";
+        return Charset.DEFAULT_US_ASCII;
     }
 
     /**
@@ -185,7 +185,7 @@ public class HL7Charset {
                     return "ISO 2022 IR 159";
 
                 case "GB 18030-2000":
-                    return "GB18030";
+                    return Charset.DEFAULT_GB_18030;
 
                 case "KS X 1001":
                     return "ISO 2022 IR 149";

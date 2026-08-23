@@ -42,7 +42,7 @@ import io.temporal.common.converter.DataConverterException;
  *
  * @author Kimi Liu
  */
-public final class JsonPayloadConverter implements InvocationHandler {
+public class JsonPayloadConverter implements InvocationHandler {
 
     /**
      * Temporal payload encoding identifier for ordinary JSON documents.
@@ -114,7 +114,7 @@ public final class JsonPayloadConverter implements InvocationHandler {
                 case "toData" -> toData(arguments[0]);
                 case "fromData" -> fromData(arguments);
                 case "withContext" -> proxy;
-                case "toString" -> "BusJsonPayloadConverter[" + provider.name() + Symbol.BRACKET_RIGHT;
+                case "toString" -> "BusJsonPayloadConverter[" + provider.type() + Symbol.BRACKET_RIGHT;
                 case "hashCode" -> System.identityHashCode(proxy);
                 case "equals" -> proxy == arguments[0];
                 default -> throw new UnsupportedOperationException("Unsupported Temporal converter method: " + method);
@@ -141,7 +141,7 @@ public final class JsonPayloadConverter implements InvocationHandler {
         Method setData = builder.getClass().getMethod("setData", byteStringType);
 
         putMetadata.invoke(builder, ENCODING_METADATA, copyFromUtf8.invoke(null, ENCODING));
-        putMetadata.invoke(builder, PROVIDER_METADATA, copyFromUtf8.invoke(null, provider.name()));
+        putMetadata.invoke(builder, PROVIDER_METADATA, copyFromUtf8.invoke(null, provider.type()));
         setData.invoke(builder, copyFrom.invoke(null, (Object) provider.write(value)));
         return Optional.of(builder.getClass().getMethod("build").invoke(builder));
     }

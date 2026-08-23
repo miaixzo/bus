@@ -38,7 +38,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  *
  * @author Kimi Liu
  */
-public final class SocketCall extends MonoCall<SocketSession> {
+public class SocketCall extends MonoCall<SocketSession> {
 
     /**
      * Single socket-open operation receiving the call lifecycle's cancellation scope.
@@ -65,7 +65,7 @@ public final class SocketCall extends MonoCall<SocketSession> {
      * @param operation  function that opens a session within the lifecycle cancellation scope
      * @param key        dispatch key used for asynchronous submission
      */
-    private SocketCall(final Dispatcher dispatcher, final Callback<? super SocketSession> callback,
+    public SocketCall(final Dispatcher dispatcher, final Callback<? super SocketSession> callback,
             final EventObserver observer, final Timeout timeout, final Function<Cancellation, SocketSession> operation,
             final String key) {
         super(Builder.SOCKET_TAG_OPEN, dispatcher, observer, callback, timeout);

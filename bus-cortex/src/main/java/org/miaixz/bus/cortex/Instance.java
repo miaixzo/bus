@@ -44,9 +44,9 @@ public class Instance {
     }
 
     /**
-     * Namespace containing the runtime instance.
+     * Space containing the runtime instance.
      */
-    private String namespace_id;
+    private String space_id;
 
     /**
      * Application identifier to which the runtime instance belongs.

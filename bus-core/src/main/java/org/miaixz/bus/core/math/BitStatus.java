@@ -29,7 +29,7 @@ public class BitStatus {
     /**
      * Keeps bit-mask status operations on the static API.
      */
-    private BitStatus() {
+    public BitStatus() {
         // No initialization required.
     }
 

@@ -26,7 +26,7 @@ import java.util.Arrays;
  *
  * @author Kimi Liu
  */
-public final class VolumeInt extends Volume<Integer> {
+public class VolumeInt extends Volume<Integer> {
 
     /**
      * The data value.

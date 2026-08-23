@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.Symbol;
  *
  * @author Kimi Liu
  */
-public final class HeaderFieldValues {
+public class HeaderFieldValues {
 
     /**
      * The parsed values value.

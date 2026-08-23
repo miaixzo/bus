@@ -75,9 +75,9 @@ public class MqRouter implements Router<ServerRequest, ServerResponse> {
     /**
      * Routes a client request by sending its body as a message to a message queue.
      * <p>
-     * The request requires Content-Length and is read directly into one bounded array. Its request-byte lease remains
-     * active while the equivalent payload string is submitted to the broker and until acknowledgment processing
-     * terminates.
+     * The request may use Content-Length or chunked transfer encoding and is read under the bounded request budget. Its
+     * request-byte lease remains active while the equivalent payload string is submitted to the broker and until
+     * acknowledgment processing terminates.
      *
      * @param input The ServerRequest object (strongly typed)
      * @return A {@code Mono<ServerResponse>} containing the acknowledgment response

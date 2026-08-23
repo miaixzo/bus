@@ -38,6 +38,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Formats;
 import org.miaixz.bus.health.Memoizer;
@@ -47,6 +48,8 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractCentralProcessor;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.health.mac.SysctlKit;
+import org.miaixz.bus.health.mac.driver.CpuFrequencyResidency;
+import org.miaixz.bus.health.mac.driver.IOReportClient;
 import org.miaixz.bus.health.mac.jna.SystemB;
 import org.miaixz.bus.logger.Logger;
 
@@ -87,6 +90,26 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     private static final String MICROARCH_PREFIX = "ARM64 SoC: ";
 
     /**
+     * The Apple power-manager cluster table property.
+     */
+    private static final String ACC_CLUSTERS = "acc-clusters";
+
+    /**
+     * The legacy efficiency-cluster voltage state table.
+     */
+    private static final String LEGACY_EFFICIENCY_TABLE = "voltage-states1-sram";
+
+    /**
+     * The legacy performance-cluster voltage state table.
+     */
+    private static final String LEGACY_PERFORMANCE_TABLE = "voltage-states5-sram";
+
+    /**
+     * The lower bound of a plausible CPU frequency in hertz.
+     */
+    private static final long MIN_PLAUSIBLE_HZ = 100_000_000L;
+
+    /**
      * The vendor value.
      */
     private final SupplierX<String> vendor = Memoizer.memoize(MacCentralProcessor::platformExpert);
@@ -96,17 +119,20 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
      */
     private final boolean isArmCpu = isArmCpu();
 
-    // Equivalents of hw.cpufrequency on Apple Silicon, defaulting to Rosetta value
-    // Will update during initialization
     /**
-     * The performanceCoreFrequency value.
+     * The nominal frequency table for each efficiency class.
      */
-    private volatile long performanceCoreFrequency = DEFAULT_FREQUENCY;
+    private final SupplierX<long[][]> nominalFrequencyTables = Memoizer.memoize(this::queryNominalFrequencyTables);
 
     /**
-     * The efficiencyCoreFrequency value.
+     * The nominal maximum frequency for each efficiency class.
      */
-    private volatile long efficiencyCoreFrequency = DEFAULT_FREQUENCY;
+    private final SupplierX<long[]> nominalFrequencies = Memoizer.memoize(this::queryNominalFrequencies);
+
+    /**
+     * The IOReport CPU frequency sampler.
+     */
+    private final SupplierX<IOReportCpuSampler> cpuSampler = Memoizer.memoize(this::cpuFrequencySampler);
 
     /**
      * Queries the platform expert device for the CPU manufacturer.
@@ -171,41 +197,63 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     /**
      * Derives an efficiency class for each physical core.
      *
-     * @param coreKeys          the physical core keys
-     * @param coreProperties    the per-core compatible and cluster-type properties
-     * @param topPerfLevelCores the number of cores in the highest performance level
+     * @param coreKeys       the physical core keys
+     * @param coreProperties the per-core compatible and cluster-type properties
+     * @param perfLevelCores the physical core count for each performance level
      * @return a map from core key to efficiency class
      */
     static Map<Integer, Integer> deriveEfficiencyClasses(
             List<Integer> coreKeys,
             Map<Integer, Pair<String, String>> coreProperties,
-            int topPerfLevelCores) {
-        Map<Integer, Integer> efficiencyMap = new HashMap<>();
-        Map<String, Integer> classByCodename = new HashMap<>();
+            int[] perfLevelCores) {
+        Map<Integer, Integer> efficiencyMap = perfLevelClasses(coreKeys, perfLevelCores);
+        if (!efficiencyMap.isEmpty()) {
+            return efficiencyMap;
+        }
+        Map<Integer, Integer> rankByKey = new HashMap<>();
+        Map<String, Integer> rankByCodename = new HashMap<>();
+        boolean unrankedClusterType = false;
         for (Integer key : coreKeys) {
-            Integer efficiency = clusterTypeClass(coreProperties.get(key));
-            if (efficiency != null) {
-                efficiencyMap.put(key, efficiency);
+            String clusterType = clusterType(coreProperties.get(key));
+            Integer rank = clusterType == null ? null : clusterTypeRank(clusterType);
+            if (rank != null) {
+                rankByKey.put(key, rank);
                 String codename = codename(coreProperties.get(key));
                 if (codename != null) {
-                    classByCodename.put(codename, efficiency);
+                    rankByCodename.put(codename, rank);
+                }
+            } else if (clusterType != null) {
+                unrankedClusterType = true;
+            }
+        }
+        if (unrankedClusterType) {
+            rankByKey.clear();
+            rankByCodename.clear();
+        }
+        if (!rankByKey.isEmpty() && rankByKey.size() < coreKeys.size()) {
+            for (Integer key : coreKeys) {
+                if (rankByKey.containsKey(key)) {
+                    continue;
+                }
+                String codename = codename(coreProperties.get(key));
+                Integer rank = codename == null ? null : rankByCodename.get(codename);
+                if (rank != null) {
+                    rankByKey.put(key, rank);
                 }
             }
         }
-        if (!efficiencyMap.isEmpty() && efficiencyMap.size() < coreKeys.size()) {
-            for (Integer key : coreKeys) {
-                if (!efficiencyMap.containsKey(key)) {
-                    String codename = codename(coreProperties.get(key));
-                    Integer efficiency = codename == null ? null : classByCodename.get(codename);
-                    if (efficiency != null) {
-                        efficiencyMap.put(key, efficiency);
-                    }
-                }
-            }
+        Set<Integer> ranks = new TreeSet<>(rankByKey.values());
+        if (rankByKey.size() < coreKeys.size()) {
+            ranks.add(0);
+        }
+        List<Integer> presentRanks = new ArrayList<>(ranks);
+        for (Map.Entry<Integer, Integer> rank : rankByKey.entrySet()) {
+            efficiencyMap.put(rank.getKey(), presentRanks.indexOf(rank.getValue()));
         }
         if (efficiencyMap.size() == coreKeys.size()) {
             return efficiencyMap;
         }
+        int topPerfLevelCores = perfLevelCores.length > 0 ? perfLevelCores[0] : 0;
         Map<String, List<Integer>> groups = new LinkedHashMap<>();
         if (efficiencyMap.isEmpty()) {
             for (Integer key : coreKeys) {
@@ -234,21 +282,68 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * Maps a core's cluster type to an efficiency class.
+     * Assigns efficiency classes from macOS performance-level core counts.
+     *
+     * @param coreKeys       the physical core keys
+     * @param perfLevelCores the core count for each performance level
+     * @return a map from core key to efficiency class, or empty if the counts cannot be trusted
+     */
+    private static Map<Integer, Integer> perfLevelClasses(List<Integer> coreKeys, int[] perfLevelCores) {
+        Map<Integer, Integer> efficiencyMap = new HashMap<>();
+        if (perfLevelCores.length < 2) {
+            return efficiencyMap;
+        }
+        int total = 0;
+        for (int levelCores : perfLevelCores) {
+            if (levelCores < 1) {
+                return efficiencyMap;
+            }
+            total += levelCores;
+        }
+        if (total != coreKeys.size()) {
+            return efficiencyMap;
+        }
+        int index = coreKeys.size();
+        for (int level = 0; level < perfLevelCores.length; level++) {
+            int efficiency = perfLevelCores.length - 1 - level;
+            for (int i = 0; i < perfLevelCores[level]; i++) {
+                efficiencyMap.put(coreKeys.get(--index), efficiency);
+            }
+        }
+        return efficiencyMap;
+    }
+
+    /**
+     * Extracts a core's cluster-type value.
      *
      * @param properties the core properties
-     * @return the efficiency class, or {@code null} if unknown
+     * @return the cluster-type value, or {@code null} if absent
      */
-    private static Integer clusterTypeClass(Pair<String, String> properties) {
+    private static String clusterType(Pair<String, String> properties) {
         String clusterType = properties == null ? null : properties.getRight();
-        if (clusterType == null || clusterType.isEmpty()) {
-            return null;
+        return clusterType == null || clusterType.isEmpty() ? null : clusterType;
+    }
+
+    /**
+     * Ranks a core cluster type against other cluster types.
+     *
+     * @param clusterType the cluster-type value
+     * @return the rank, or {@code null} if the value is unknown
+     */
+    private static Integer clusterTypeRank(String clusterType) {
+        switch (Character.toUpperCase(clusterType.charAt(0))) {
+            case 'E':
+                return 0;
+
+            case 'P':
+                return 1;
+
+            case 'S':
+                return 2;
+
+            default:
+                return null;
         }
-        char c = Character.toUpperCase(clusterType.charAt(0));
-        if (c == 'P') {
-            return 1;
-        }
-        return c == 'E' ? 0 : null;
     }
 
     /**
@@ -348,10 +443,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
             processorIdBits |= (SysctlKit.sysctl("machdep.cpu.feature_bits", 0L) & 0xffffffff) << 32;
             processorID = String.format(Locale.ROOT, "%016x", processorIdBits);
         }
-        if (isArmCpu) {
-            calculateNominalFrequencies();
-        }
-        long cpuFreq = isArmCpu ? performanceCoreFrequency : SysctlKit.sysctl("hw.cpufrequency", 0L);
+        long cpuFreq = isArmCpu ? getPerformanceCoreFrequency() : SysctlKit.sysctl("hw.cpufrequency", 0L);
         boolean cpu64bit = SysctlKit.sysctl("hw.cpu64bit_capable", 0) != 0;
 
         return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping,
@@ -375,10 +467,13 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
             pkgCoreKeys.add((pkgId << 16) + coreId);
         }
         Map<Integer, Pair<String, String>> coreProps = queryCoreProperties();
-        int perflevels = SysctlKit.sysctl("hw.nperflevels", 1, false);
-        int topPerfLevelCores = SysctlKit.sysctl("hw.perflevel0.physicalcpu", 0, false);
+        int perflevels = Math.max(1, SysctlKit.sysctl("hw.nperflevels", 1, false));
+        int[] perfLevelCores = new int[perflevels];
+        for (int i = 0; i < perflevels; i++) {
+            perfLevelCores[i] = SysctlKit.sysctl("hw.perflevel" + i + ".physicalcpu", 0, false);
+        }
         List<Integer> coreKeys = pkgCoreKeys.stream().sorted().collect(Collectors.toList());
-        Map<Integer, Integer> efficiencyMap = deriveEfficiencyClasses(coreKeys, coreProps, topPerfLevelCores);
+        Map<Integer, Integer> efficiencyMap = deriveEfficiencyClasses(coreKeys, coreProps, perfLevelCores);
         List<CentralProcessor.PhysicalProcessor> physProcs = new ArrayList<>(coreKeys.size());
         for (Integer key : coreKeys) {
             Pair<String, String> props = coreProps.get(key);
@@ -507,15 +602,148 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     @Override
     public long[] queryCurrentFreq() {
         if (isArmCpu) {
+            long[] byClass = nominalFrequencies.get();
+            long topFreq = byClass[byClass.length - 1];
             Map<Integer, Long> physFreqMap = new HashMap<>();
-            getPhysicalProcessors().stream().forEach(
-                    p -> physFreqMap.put(
-                            p.getPhysicalProcessorNumber(),
-                            p.getEfficiency() > 0 ? performanceCoreFrequency : efficiencyCoreFrequency));
+            getPhysicalProcessors().forEach(
+                    processor -> physFreqMap.put(
+                            processor.getPhysicalProcessorNumber(),
+                            byClass[Math.min(Math.max(processor.getEfficiency(), 0), byClass.length - 1)]));
+            applyLiveFrequencies(physFreqMap);
             return getLogicalProcessors().stream().map(CentralProcessor.LogicalProcessor::getPhysicalProcessorNumber)
-                    .map(p -> physFreqMap.getOrDefault(p, performanceCoreFrequency)).mapToLong(f -> f).toArray();
+                    .map(processor -> physFreqMap.getOrDefault(processor, topFreq)).mapToLong(frequency -> frequency)
+                    .toArray();
         }
         return new long[] { getProcessorIdentifier().getVendorFreq() };
+    }
+
+    /**
+     * Applies live IOReport frequencies to the nominal physical-processor frequency map.
+     *
+     * @param physFreqMap the physical processor frequency map to update
+     */
+    private void applyLiveFrequencies(Map<Integer, Long> physFreqMap) {
+        IOReportCpuSampler sampler = cpuSampler.get();
+        if (sampler == null) {
+            return;
+        }
+        CpuResidencySample sample = sampler.sampleResidencyDelta();
+        if (sample == null) {
+            return;
+        }
+        Map<String, Map<String, Long>> residency = sample.getCoreStates();
+        if (residency.isEmpty()) {
+            return;
+        }
+        Map<Integer, List<String>> channelGroups = groupChannelsByCoreType(residency.keySet());
+        Map<Integer, List<CentralProcessor.PhysicalProcessor>> coreGroups = groupCoresByEfficiencyClass();
+        if (channelGroups.containsKey(Normal._4)) {
+            Logger.debug(
+                    false,
+                    "Health",
+                    "IOReport reports a CPU core type this release does not recognize: {}",
+                    channelGroups.get(Normal._4));
+            return;
+        }
+        if (channelGroups.size() != coreGroups.size()) {
+            Logger.debug(
+                    false,
+                    "Health",
+                    "IOReport reports {} core types but this processor has {} efficiency classes.",
+                    channelGroups.size(),
+                    coreGroups.size());
+            return;
+        }
+        Iterator<List<String>> channelIterator = channelGroups.values().iterator();
+        for (Map.Entry<Integer, List<CentralProcessor.PhysicalProcessor>> cores : coreGroups.entrySet()) {
+            List<String> channels = channelIterator.next();
+            if (channels.size() != cores.getValue().size()) {
+                Logger.debug(
+                        false,
+                        "Health",
+                        "IOReport reports {} cores of one type but efficiency class {} has {}.",
+                        channels.size(),
+                        cores.getKey(),
+                        cores.getValue().size());
+                return;
+            }
+        }
+        Map<Integer, Map<String, Long>> complexByRank = CpuFrequencyResidency
+                .realizedComplexStates(sample.getComplexStates());
+        boolean complexMatchesCores = complexByRank.keySet().equals(channelGroups.keySet());
+        long[][] tables = nominalFrequencyTables.get();
+        Iterator<Map.Entry<Integer, List<String>>> channelEntries = channelGroups.entrySet().iterator();
+        for (Map.Entry<Integer, List<CentralProcessor.PhysicalProcessor>> cores : coreGroups.entrySet()) {
+            Map.Entry<Integer, List<String>> channelEntry = channelEntries.next();
+            List<String> channels = channelEntry.getValue();
+            long[] table = tables[Math.min(Math.max(cores.getKey(), 0), tables.length - 1)];
+            Map<String, Long> cluster = complexMatchesCores ? complexByRank.get(channelEntry.getKey()) : null;
+            long realized = cluster == null ? 0L : CpuFrequencyResidency.activeWeightedFrequency(cluster, table);
+            for (int i = 0; i < channels.size(); i++) {
+                Map<String, Long> states = residency.get(channels.get(i));
+                long frequency = states == null ? 0L : CpuFrequencyResidency.activeWeightedFrequency(states, table);
+                if (frequency == 0L) {
+                    continue;
+                }
+                if (realized > 0 && frequency != table[0]) {
+                    frequency = realized;
+                }
+                physFreqMap.put(cores.getValue().get(i).getPhysicalProcessorNumber(), frequency);
+            }
+        }
+    }
+
+    /**
+     * Groups IOReport channel names by CPU core type.
+     *
+     * @param channelNames the channel names sampled
+     * @return the grouped channel names
+     */
+    private static Map<Integer, List<String>> groupChannelsByCoreType(Collection<String> channelNames) {
+        Map<Integer, List<String>> groups = new TreeMap<>();
+        for (String channel : CpuFrequencyResidency.orderChannels(channelNames)) {
+            int rank = CpuFrequencyResidency.prefixRank(channel);
+            groups.computeIfAbsent(rank, ignored -> new ArrayList<>()).add(channel);
+        }
+        return groups;
+    }
+
+    /**
+     * Groups physical cores by efficiency class.
+     *
+     * @return the grouped physical processors
+     */
+    private Map<Integer, List<CentralProcessor.PhysicalProcessor>> groupCoresByEfficiencyClass() {
+        Map<Integer, List<CentralProcessor.PhysicalProcessor>> groups = new TreeMap<>();
+        for (CentralProcessor.PhysicalProcessor processor : getPhysicalProcessors()) {
+            int efficiency = Math.max(processor.getEfficiency(), 0);
+            groups.computeIfAbsent(efficiency, ignored -> new ArrayList<>()).add(processor);
+        }
+        for (List<CentralProcessor.PhysicalProcessor> group : groups.values()) {
+            group.sort(
+                    (left, right) -> Integer
+                            .compare(left.getPhysicalProcessorNumber(), right.getPhysicalProcessorNumber()));
+        }
+        return groups;
+    }
+
+    /**
+     * Creates the IOReport CPU frequency sampler when live frequency reporting is enabled.
+     *
+     * @return the sampler, or {@code null} when live frequency reporting is unavailable
+     */
+    private IOReportCpuSampler cpuFrequencySampler() {
+        if (!isArmCpu || !Builder.get(Builder._MAC_CPU_FREQUENCY_IOREPORT, false)) {
+            return null;
+        }
+        IOReportCpuSampler sampler = IOReportClient.createForCpu();
+        if (sampler == null) {
+            Logger.warn(
+                    false,
+                    "Health",
+                    "Unable to subscribe to the IOReport CPU performance states. Reporting nominal cluster frequencies instead.");
+        }
+        return sampler;
     }
 
     /**
@@ -546,7 +774,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     @Override
     public long queryMaxFreq() {
         if (isArmCpu) {
-            return performanceCoreFrequency;
+            return getPerformanceCoreFrequency();
         }
         return SysctlKit.sysctl("hw.cpufrequency_max", getProcessorIdentifier().getVendorFreq());
     }
@@ -575,7 +803,17 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
 
             try {
                 int[] cpuTicks = procCpuLoadInfo.getValue().getIntArray(0, procInfoCount.getValue());
-                for (int cpu = 0; cpu < procCount.getValue(); cpu++) {
+                int returnedCpuCount = cpuTicks.length / SystemB.CPU_STATE_MAX;
+                if (returnedCpuCount > ticks.length) {
+                    Logger.warn(
+                            false,
+                            "Health",
+                            "processor_cpu_load_info returned {} CPUs but expected {}; capping iteration",
+                            returnedCpuCount,
+                            ticks.length);
+                }
+                int cpuLimit = Math.min(returnedCpuCount, ticks.length);
+                for (int cpu = 0; cpu < cpuLimit; cpu++) {
                     int offset = cpu * SystemB.CPU_STATE_MAX;
                     ticks[cpu][CentralProcessor.TickType.USER.getIndex()] = Formats
                             .getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_USER]);
@@ -611,22 +849,64 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * Calculates the nominal frequencies for performance and efficiency cores on Apple Silicon. This method queries the
-     * I/O Registry for specific properties related to CPU voltage states.
+     * Queries nominal maximum frequency for each efficiency class.
+     *
+     * @return the nominal frequencies in hertz
      */
-    private void calculateNominalFrequencies() {
+    protected long[] queryNominalFrequencies() {
+        long[][] tables = nominalFrequencyTables.get();
+        long[] byClass = new long[tables.length];
+        for (int i = 0; i < tables.length; i++) {
+            byClass[i] = tables[i].length == 0 ? DEFAULT_FREQUENCY : tables[i][tables[i].length - 1];
+        }
+        return byClass;
+    }
+
+    /**
+     * Queries nominal frequency tables for each efficiency class.
+     *
+     * @return the nominal frequency tables in hertz
+     */
+    protected long[][] queryNominalFrequencyTables() {
+        return mapClusterTables(queryClusterFrequencyTables(), efficiencyClassCount());
+    }
+
+    /**
+     * Reads the maximum frequency of each CPU cluster.
+     *
+     * @return the distinct cluster frequencies in hertz
+     */
+    protected long[] queryClusterFrequencies() {
+        long[][] tables = queryClusterFrequencyTables();
+        long[] maxima = new long[tables.length];
+        for (int i = 0; i < tables.length; i++) {
+            maxima[i] = tables[i][tables[i].length - 1];
+        }
+        return maxima;
+    }
+
+    /**
+     * Reads the complete voltage-state table of each CPU cluster.
+     *
+     * @return the distinct cluster frequency tables in hertz
+     */
+    protected long[][] queryClusterFrequencyTables() {
+        List<long[]> tables = new ArrayList<>();
         IOIterator iter = IOKitUtil.getMatchingServices("AppleARMIODevice");
         if (iter != null) {
             try {
                 IORegistryEntry device = iter.next();
                 try {
                     while (device != null) {
-                        if (device.getName().equalsIgnoreCase("pmgr")) {
-                            performanceCoreFrequency = getMaxFreqFromByteArray(
-                                    device.getByteArrayProperty("voltage-states5-sram"));
-                            efficiencyCoreFrequency = getMaxFreqFromByteArray(
-                                    device.getByteArrayProperty("voltage-states1-sram"));
-                            return;
+                        if ("pmgr".equalsIgnoreCase(device.getName())) {
+                            for (int table : parseClusterTables(device.getByteArrayProperty(ACC_CLUSTERS))) {
+                                addTable(tables, device, "voltage-states" + table + "-sram");
+                            }
+                            if (tables.isEmpty()) {
+                                addTable(tables, device, LEGACY_EFFICIENCY_TABLE);
+                                addTable(tables, device, LEGACY_PERFORMANCE_TABLE);
+                            }
+                            break;
                         }
                         device.release();
                         device = iter.next();
@@ -640,21 +920,163 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
                 iter.release();
             }
         }
+        tables.sort((left, right) -> Long.compare(left[left.length - 1], right[right.length - 1]));
+        List<long[]> distinct = new ArrayList<>(tables.size());
+        for (long[] table : tables) {
+            long[] previous = distinct.isEmpty() ? null : distinct.get(distinct.size() - 1);
+            if (previous == null || previous[previous.length - 1] != table[table.length - 1]) {
+                distinct.add(table);
+            }
+        }
+        return distinct.toArray(new long[0][]);
     }
 
     /**
-     * Extracts the maximum frequency from a byte array property.
+     * Adds one voltage-state table to a list when it contains a positive maximum frequency.
      *
-     * @param data The byte array containing frequency data.
-     * @return The maximum frequency in Hz, or {@link #DEFAULT_FREQUENCY} if extraction fails.
+     * @param tables the target table list
+     * @param entry  the power-manager registry entry
+     * @param key    the property key
      */
-    private long getMaxFreqFromByteArray(byte[] data) {
-        // Max freq is 8 bytes from the end of the array
-        if (data != null && data.length >= 8) {
-            byte[] freqData = Arrays.copyOfRange(data, data.length - 8, data.length - 4);
-            return Parsing.byteArrayToLong(freqData, 4, false);
+    private void addTable(List<long[]> tables, IORegistryEntry entry, String key) {
+        long[] table = parseFrequencyTable(entry.getByteArrayProperty(key));
+        if (table.length > 0 && table[table.length - 1] > 0) {
+            tables.add(table);
         }
-        return DEFAULT_FREQUENCY;
+    }
+
+    /**
+     * Parses a voltage-state table property.
+     *
+     * @param data the raw property value
+     * @return the frequencies in hertz, in ascending order
+     */
+    static long[] parseFrequencyTable(byte[] data) {
+        if (data == null || data.length < Normal._8) {
+            return new long[0];
+        }
+        long[] frequencies = new long[data.length / Normal._8];
+        for (int i = 0; i < frequencies.length; i++) {
+            frequencies[i] = toHz(
+                    Parsing.byteArrayToLong(
+                            Arrays.copyOfRange(data, i * Normal._8, i * Normal._8 + Normal._4),
+                            Normal._4,
+                            false));
+        }
+        return frequencies;
+    }
+
+    /**
+     * Parses the Apple power-manager {@code acc-clusters} property.
+     *
+     * @param data the raw property value
+     * @return voltage-state table numbers in ascending tier order
+     */
+    static int[] parseClusterTables(byte[] data) {
+        if (data == null || data.length < Normal._8) {
+            return new int[0];
+        }
+        int clusters = data.length / Normal._8;
+        int[] tables = new int[clusters];
+        Integer[] order = new Integer[clusters];
+        for (int i = 0; i < clusters; i++) {
+            order[i] = i;
+        }
+        Arrays.sort(
+                order,
+                (left, right) -> Integer.compare(
+                        data[left * Normal._8 + Normal._1] & 0xff,
+                        data[right * Normal._8 + Normal._1] & 0xff));
+        for (int i = 0; i < clusters; i++) {
+            tables[i] = data[order[i] * Normal._8] & 0xff;
+        }
+        return tables;
+    }
+
+    /**
+     * Maps cluster frequencies to efficiency classes.
+     *
+     * @param clusterFrequencies the cluster frequencies in ascending order
+     * @param classCount         the number of efficiency classes
+     * @return the frequency for each efficiency class
+     */
+    static long[] mapClusterFrequencies(long[] clusterFrequencies, int classCount) {
+        int[] indices = CpuFrequencyResidency.alignAtTop(clusterFrequencies.length, classCount);
+        if (indices.length == 0) {
+            long[] byClass = new long[Math.max(classCount, 1)];
+            Arrays.fill(byClass, DEFAULT_FREQUENCY);
+            return byClass;
+        }
+        long[] byClass = new long[indices.length];
+        for (int i = 0; i < indices.length; i++) {
+            byClass[i] = clusterFrequencies[indices[i]];
+        }
+        return byClass;
+    }
+
+    /**
+     * Maps cluster frequency tables to efficiency classes.
+     *
+     * @param clusterTables the cluster tables ordered by maximum frequency
+     * @param classCount    the number of efficiency classes
+     * @return the table for each efficiency class
+     */
+    static long[][] mapClusterTables(long[][] clusterTables, int classCount) {
+        int[] indices = CpuFrequencyResidency.alignAtTop(clusterTables.length, classCount);
+        if (indices.length == 0) {
+            long[][] byClass = new long[Math.max(classCount, 1)][];
+            Arrays.fill(byClass, new long[0]);
+            return byClass;
+        }
+        long[][] byClass = new long[indices.length][];
+        for (int i = 0; i < indices.length; i++) {
+            byClass[i] = clusterTables[indices[i]];
+        }
+        return byClass;
+    }
+
+    /**
+     * Counts the efficiency classes reported by physical processors.
+     *
+     * @return the efficiency class count
+     */
+    private int efficiencyClassCount() {
+        int highest = 0;
+        for (CentralProcessor.PhysicalProcessor processor : getPhysicalProcessors()) {
+            highest = Math.max(highest, processor.getEfficiency());
+        }
+        return highest + 1;
+    }
+
+    /**
+     * Gets the nominal frequency of the highest-performing cores.
+     *
+     * @return the nominal performance-core frequency in hertz
+     */
+    protected long getPerformanceCoreFrequency() {
+        long[] byClass = nominalFrequencies.get();
+        return byClass[byClass.length - 1];
+    }
+
+    /**
+     * Extracts the maximum frequency from a voltage-state table property.
+     *
+     * @param data the byte array from IOKit
+     * @return the frequency in hertz, or {@link #DEFAULT_FREQUENCY} if unavailable
+     */
+    protected long getMaxFreqFromByteArray(byte[] data) {
+        long[] table = parseFrequencyTable(data);
+        return table.length == 0 ? DEFAULT_FREQUENCY : table[table.length - 1];
+    }
+
+    /**
+     * Converts a voltage-state table frequency to hertz.
+     *
+     * @param frequency the raw table value
+     * @return the frequency in hertz
+     */
+    static long toHz(long frequency) {
+        return frequency > 0 && frequency < MIN_PLAUSIBLE_HZ ? frequency * 1000L : frequency;
     }
 
 }

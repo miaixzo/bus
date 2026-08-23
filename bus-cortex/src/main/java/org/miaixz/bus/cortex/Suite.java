@@ -28,7 +28,7 @@ import java.util.Map;
  *
  * @author Kimi Liu
  */
-public final class Suite {
+public class Suite {
 
     /**
      * Traits explicitly declared by the backing store.
@@ -46,7 +46,7 @@ public final class Suite {
      * @param declared  declared traits
      * @param supported supported traits
      */
-    private Suite(EnumSet<Trait> declared, EnumSet<Trait> supported) {
+    public Suite(EnumSet<Trait> declared, EnumSet<Trait> supported) {
         this.declared = declared.isEmpty() ? EnumSet.noneOf(Trait.class) : EnumSet.copyOf(declared);
         this.supported = supported.isEmpty() ? EnumSet.noneOf(Trait.class) : EnumSet.copyOf(supported);
     }

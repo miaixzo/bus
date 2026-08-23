@@ -42,7 +42,7 @@ public class AsyncKit {
     /**
      * Keeps asynchronous task coordination on the static API.
      */
-    private AsyncKit() {
+    public AsyncKit() {
         // No initialization required.
     }
 
