@@ -40,7 +40,7 @@ public class NumberCellSetter implements CellSetter {
      *
      * @param value The {@link Number} value to set in the cell.
      */
-    NumberCellSetter(final Number value) {
+    public NumberCellSetter(final Number value) {
         this.value = value;
     }
 

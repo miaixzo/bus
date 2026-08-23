@@ -39,7 +39,7 @@ import org.miaixz.bus.fabric.runtime.Activity;
  *
  * @author Kimi Liu
  */
-public final class DispatchWorker implements AutoCloseable {
+public class DispatchWorker implements AutoCloseable {
 
     /**
      * Maximum entries accepted by one dispatcher-to-worker batch.
@@ -72,7 +72,7 @@ public final class DispatchWorker implements AutoCloseable {
      * @param executor     executor used for activity submissions
      * @param ownsExecutor whether closing the worker also closes the executor
      */
-    private DispatchWorker(final ExecutorService executor, final boolean ownsExecutor) {
+    public DispatchWorker(final ExecutorService executor, final boolean ownsExecutor) {
         this.executor = require(executor, "Executor");
         this.ownsExecutor = ownsExecutor;
         this.closed = new AtomicBoolean();

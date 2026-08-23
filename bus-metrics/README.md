@@ -322,7 +322,7 @@ slo_compliance_ratio{slo="checkout.latency",target="0.999"} 0.9987
 ### bus-cortex Integration (CortexExporter)
 
 Periodically pushes local metric snapshots to bus-cortex via CacheX. Key pattern:
-`metrics:{namespace}:{serviceId}:{metricName}`. Cortex aggregates across instances for cluster-level `/metricz`.
+`metrics:{space}:{serviceId}:{metricName}`. Cortex aggregates across instances for cluster-level `/metricz`.
 
 ```yaml
 bus:
@@ -330,6 +330,7 @@ bus:
     cortex:
       enabled: true
       interval-seconds: 15
+      space: default
 ```
 
 ### bus-vortex Integration (VortexMetricsFeed)
@@ -404,6 +405,7 @@ bus:
       enabled: false
       interval-seconds: 15
       server-addr: ""
+      space: default
 ```
 
 ### Configuration Properties
@@ -422,6 +424,7 @@ bus:
 | `bus.metrics.cardinality.deny-list`   | List    | —          | Always-denied tag keys                          |
 | `bus.metrics.cortex.enabled`          | boolean | `false`    | Enable CortexExporter                           |
 | `bus.metrics.cortex.interval-seconds` | int     | `15`       | Push interval                                   |
+| `bus.metrics.cortex.space`            | String  | `default`  | Cortex space used to scope exported metrics     |
 
 -----
 

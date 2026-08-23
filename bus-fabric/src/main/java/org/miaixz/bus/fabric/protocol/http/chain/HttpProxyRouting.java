@@ -37,7 +37,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class HttpProxyRouting implements HttpStage {
+public class HttpProxyRouting implements HttpStage {
 
     /**
      * Immutable context options consulted when a request inherits its proxy policy.

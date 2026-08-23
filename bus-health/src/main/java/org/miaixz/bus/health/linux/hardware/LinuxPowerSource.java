@@ -45,7 +45,7 @@ import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class LinuxPowerSource extends AbstractPowerSource {
+public class LinuxPowerSource extends AbstractPowerSource {
 
     /**
      * The Prop enum.

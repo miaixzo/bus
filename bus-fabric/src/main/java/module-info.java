@@ -18,13 +18,21 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines the bus fabric module.
+ * Module: {@code bus.fabric}
+ *
+ * <p>
+ * Provides reusable networking transports, protocols, and runtime infrastructure.
+ *
+ * <p>
+ * Includes codecs and guards; DNS, TCP, UDP, KCP, proxy, and TLS support; HTTP, SSE, STOMP, and WebSocket protocols;
+ * connection pooling and caching; route registries; runtime dispatch; servlet bridges; and network observability.
  *
  * @author Kimi Liu
  */
 module bus.fabric {
 
     requires java.net.http;
+    requires java.xml;
 
     requires bus.core;
     requires bus.crypto;
@@ -47,13 +55,22 @@ module bus.fabric {
     exports org.miaixz.bus.fabric.network;
     exports org.miaixz.bus.fabric.network.aio;
     exports org.miaixz.bus.fabric.network.dns;
+    exports org.miaixz.bus.fabric.network.dns.cache;
+    exports org.miaixz.bus.fabric.network.dns.dnssec;
     exports org.miaixz.bus.fabric.network.dns.forward;
+    exports org.miaixz.bus.fabric.network.dns.message;
     exports org.miaixz.bus.fabric.network.dns.observe;
     exports org.miaixz.bus.fabric.network.dns.policy;
     exports org.miaixz.bus.fabric.network.dns.provider;
     exports org.miaixz.bus.fabric.network.dns.record;
+    exports org.miaixz.bus.fabric.network.dns.recursive;
+    exports org.miaixz.bus.fabric.network.dns.resolve;
+    exports org.miaixz.bus.fabric.network.dns.secure;
+    exports org.miaixz.bus.fabric.network.dns.secure.quic;
     exports org.miaixz.bus.fabric.network.dns.server;
     exports org.miaixz.bus.fabric.network.dns.suffix;
+    exports org.miaixz.bus.fabric.network.dns.update;
+    exports org.miaixz.bus.fabric.network.dns.xfer;
     exports org.miaixz.bus.fabric.network.dns.zone;
     exports org.miaixz.bus.fabric.network.kcp;
     exports org.miaixz.bus.fabric.network.proxy;
@@ -74,25 +91,38 @@ module bus.fabric {
     exports org.miaixz.bus.fabric.protocol.http.auth;
     exports org.miaixz.bus.fabric.protocol.http.body;
     exports org.miaixz.bus.fabric.protocol.http.cache;
+    exports org.miaixz.bus.fabric.protocol.http.calls;
+    exports org.miaixz.bus.fabric.protocol.http.chain;
+    exports org.miaixz.bus.fabric.protocol.http.codec;
     exports org.miaixz.bus.fabric.protocol.http.http2;
     exports org.miaixz.bus.fabric.protocol.http.retry;
     exports org.miaixz.bus.fabric.protocol.socket;
     exports org.miaixz.bus.fabric.protocol.socket.body;
+    exports org.miaixz.bus.fabric.protocol.socket.calls;
     exports org.miaixz.bus.fabric.protocol.socket.frame;
+    exports org.miaixz.bus.fabric.protocol.socket.session;
     exports org.miaixz.bus.fabric.protocol.sse;
     exports org.miaixz.bus.fabric.protocol.sse.body;
+    exports org.miaixz.bus.fabric.protocol.sse.calls;
     exports org.miaixz.bus.fabric.protocol.sse.event;
     exports org.miaixz.bus.fabric.protocol.sse.retry;
     exports org.miaixz.bus.fabric.protocol.stomp;
     exports org.miaixz.bus.fabric.protocol.stomp.body;
     exports org.miaixz.bus.fabric.protocol.stomp.broker;
+    exports org.miaixz.bus.fabric.protocol.stomp.calls;
     exports org.miaixz.bus.fabric.protocol.stomp.frame;
     exports org.miaixz.bus.fabric.protocol.websocket;
     exports org.miaixz.bus.fabric.protocol.websocket.body;
+    exports org.miaixz.bus.fabric.protocol.websocket.calls;
     exports org.miaixz.bus.fabric.protocol.websocket.frame;
     exports org.miaixz.bus.fabric.protocol.websocket.upgrade;
     exports org.miaixz.bus.fabric.registry;
+    exports org.miaixz.bus.fabric.registry.connection;
     exports org.miaixz.bus.fabric.registry.policy;
     exports org.miaixz.bus.fabric.registry.route;
+    exports org.miaixz.bus.fabric.runtime;
+    exports org.miaixz.bus.fabric.runtime.dispatch;
+    exports org.miaixz.bus.fabric.runtime.lifecycle;
+    exports org.miaixz.bus.fabric.runtime.resource;
 
 }

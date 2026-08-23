@@ -132,8 +132,8 @@ public class OpenAIProvider implements LlmProvider {
      * Sends a non-streaming chat completion request to the LLM service.
      * <p>
      * This method sends a POST request to the {@code /v1/chat/completions} endpoint with the provided request
-     * parameters. The response requires Content-Length, is read directly into an exact bounded array, and retains its
-     * response-byte lease until parsing completes.
+     * parameters. The response may use either Content-Length or chunked transfer encoding, is read under the bounded
+     * response budget, and retains its response-byte lease until parsing completes.
      * </p>
      *
      * @param request The LLM request containing messages, model, and optional parameters (temperature, max_tokens,

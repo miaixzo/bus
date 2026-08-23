@@ -31,12 +31,12 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class PerfstatProtocol {
+public class PerfstatProtocol {
 
     /**
      * Keeps AIX perfstat protocol queries on the static API.
      */
-    private PerfstatProtocol() {
+    public PerfstatProtocol() {
         // No initialization required.
     }
 

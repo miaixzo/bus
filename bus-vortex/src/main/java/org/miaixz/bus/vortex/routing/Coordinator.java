@@ -24,6 +24,11 @@ import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Executor;
+import org.miaixz.bus.vortex.routing.grpc.GrpcExecutor;
+import org.miaixz.bus.vortex.routing.mcp.McpExecutor;
+import org.miaixz.bus.vortex.routing.mq.MqExecutor;
+import org.miaixz.bus.vortex.routing.rest.RestExecutor;
+import org.miaixz.bus.vortex.routing.ws.WsExecutor;
 
 import reactor.core.publisher.Mono;
 
@@ -54,11 +59,11 @@ import reactor.core.publisher.Mono;
  * @param <I> The input type expected by this coordinator
  * @param <O> The output type produced by this coordinator
  * @see Executor
- * @see org.miaixz.bus.vortex.routing.rest.RestExecutor
- * @see org.miaixz.bus.vortex.routing.ws.WsExecutor
- * @see org.miaixz.bus.vortex.routing.grpc.GrpcExecutor
- * @see org.miaixz.bus.vortex.routing.mq.MqExecutor
- * @see org.miaixz.bus.vortex.routing.mcp.McpExecutor
+ * @see RestExecutor
+ * @see WsExecutor
+ * @see GrpcExecutor
+ * @see MqExecutor
+ * @see McpExecutor
  * @author Kimi Liu
  */
 public abstract class Coordinator<I, O> implements Executor<I, O> {
@@ -66,7 +71,7 @@ public abstract class Coordinator<I, O> implements Executor<I, O> {
     /**
      * Creates an abstract coordinator.
      */
-    protected Coordinator() {
+    public Coordinator() {
         // No initialization required.
     }
 

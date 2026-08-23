@@ -33,12 +33,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Win32ComputerSystemProduct {
+public class Win32ComputerSystemProduct {
 
     /**
      * Keeps Win32 computer system product queries on the static API.
      */
-    private Win32ComputerSystemProduct() {
+    public Win32ComputerSystemProduct() {
         // No initialization required.
     }
 

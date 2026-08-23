@@ -162,16 +162,16 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
             return;
         }
         ApiAssets prepared = normalizeService(service, instance);
-        String ns = prepared.getNamespace_id();
+        String resolvedSpace = prepared.getSpace_id();
         String appId = prepared.getApp_id();
         String fingerprint = ensureFingerprint(instance);
         String method = prepared.getMethod();
         String version = prepared.getVersion();
-        Instance previous = findInstance(ns, appId, method, version, fingerprint);
+        Instance previous = findInstance(resolvedSpace, appId, method, version, fingerprint);
         fillInstanceIdentity(prepared, instance);
 
         long ttl = prepared.getTtl() > 0 ? prepared.getTtl() : 3600_000L;
-        String instKey = keying.key(Keying.RegistrySpec.instance(ns, appId, method, version, fingerprint));
+        String instKey = keying.key(Keying.RegistrySpec.instance(resolvedSpace, appId, method, version, fingerprint));
         cacheX.write(instKey, JsonKit.toJsonString(instance), ttl);
         ApiAssets existing = loadExisting(prepared);
         persistEntry(prepared, instance, existing);
@@ -186,27 +186,27 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
     /**
      * Removes a specific runtime instance from the registry.
      *
-     * @param namespace   service namespace
+     * @param space       service space
      * @param app_id      application identifier
      * @param method      service method identifier
      * @param version     service version
      * @param fingerprint instance fingerprint
      */
     @Override
-    public void deregisterInstance(String namespace, String app_id, String method, String version, String fingerprint) {
-        String ns = normalizeNamespace(namespace);
-        String instKey = keying.key(Keying.RegistrySpec.instance(ns, app_id, method, version, fingerprint));
-        ApiAssets service = findServiceByRoute(ns, app_id, method, version);
-        Instance current = findInstance(ns, app_id, method, version, fingerprint);
+    public void deregisterInstance(String space, String app_id, String method, String version, String fingerprint) {
+        String resolvedSpace = normalizeSpace(space);
+        String instKey = keying.key(Keying.RegistrySpec.instance(resolvedSpace, app_id, method, version, fingerprint));
+        ApiAssets service = findServiceByRoute(resolvedSpace, app_id, method, version);
+        Instance current = findInstance(resolvedSpace, app_id, method, version, fingerprint);
         if (store != null && storeSupports(Trait.DURABLE) && storeSupports(Trait.INSTANCES)) {
-            store.deleteInstance(registryType, ns, app_id, method, version, fingerprint);
+            store.deleteInstance(registryType, resolvedSpace, app_id, method, version, fingerprint);
         } else if (store != null) {
             capabilityFallback("deleteInstance", Trait.INSTANCES, "cache remove");
         }
         cacheX.remove(instKey);
         if (current != null) {
             ApiAssets prepared = normalizeService(
-                    service == null ? synthesizeService(ns, app_id, method, version, current) : service,
+                    service == null ? synthesizeService(resolvedSpace, app_id, method, version, current) : service,
                     current);
             publishChange(RegistryChange.Action.DEREGISTER, prepared, prepared, null, current);
         }
@@ -215,19 +215,19 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
     /**
      * Queries runtime instances matching the given criteria.
      *
-     * @param namespace target namespace (blank uses {@code Normal.DEFAULT})
-     * @param app_id    application identifier filter (null matches all)
-     * @param method    service method filter (null matches all)
-     * @param version   service version filter (null matches all)
+     * @param space   target space (blank uses {@code Normal.DEFAULT})
+     * @param app_id  application identifier filter (null matches all)
+     * @param method  service method filter (null matches all)
+     * @param version service version filter (null matches all)
      * @return list of matching instances
      */
     @Override
-    public List<Instance> queryInstances(String namespace, String app_id, String method, String version) {
-        String ns = normalizeNamespace(namespace);
+    public List<Instance> queryInstances(String space, String app_id, String method, String version) {
+        String resolvedSpace = normalizeSpace(space);
         if (store != null && storeSupports(Trait.INSTANCES)) {
-            List<Instance> persisted = store.queryInstances(registryType, ns, app_id, method, version);
+            List<Instance> persisted = store.queryInstances(registryType, resolvedSpace, app_id, method, version);
             if (!persisted.isEmpty()) {
-                warmInstanceCache(ns, app_id, method, version, persisted);
+                warmInstanceCache(resolvedSpace, app_id, method, version, persisted);
                 return persisted;
             }
         } else if (store != null) {
@@ -235,13 +235,13 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
         }
         String prefix;
         if (app_id == null) {
-            prefix = keying.prefix(Keying.RegistrySpec.instance(ns, null, null, null, null));
+            prefix = keying.prefix(Keying.RegistrySpec.instance(resolvedSpace, null, null, null, null));
         } else if (method == null) {
-            prefix = keying.prefix(Keying.RegistrySpec.instance(ns, app_id, null, null, null));
+            prefix = keying.prefix(Keying.RegistrySpec.instance(resolvedSpace, app_id, null, null, null));
         } else if (version == null) {
-            prefix = keying.prefix(Keying.RegistrySpec.instance(ns, app_id, method, null, null));
+            prefix = keying.prefix(Keying.RegistrySpec.instance(resolvedSpace, app_id, method, null, null));
         } else {
-            prefix = keying.prefix(Keying.RegistrySpec.instance(ns, app_id, method, version, null));
+            prefix = keying.prefix(Keying.RegistrySpec.instance(resolvedSpace, app_id, method, version, null));
         }
         Map<String, Object> raw = cacheX.scan(prefix);
         List<Instance> result = new ArrayList<>();
@@ -316,8 +316,8 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
      * @param instance runtime instance
      */
     private void fillInstanceIdentity(ApiAssets service, Instance instance) {
-        if (instance.getNamespace_id() == null) {
-            instance.setNamespace_id(service.getNamespace_id());
+        if (instance.getSpace_id() == null) {
+            instance.setSpace_id(service.getSpace_id());
         }
         if (StringKit.isEmpty(instance.getApp_id())) {
             instance.setApp_id(service.getApp_id());
@@ -336,40 +336,40 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
     /**
      * Finds a runtime instance by route identity and fingerprint.
      *
-     * @param namespace   namespace
+     * @param space       space
      * @param app_id      application identifier
      * @param method      method name
      * @param version     service version
      * @param fingerprint runtime instance fingerprint
      * @return matching runtime instance or {@code null}
      */
-    private Instance findInstance(String namespace, String app_id, String method, String version, String fingerprint) {
+    private Instance findInstance(String space, String app_id, String method, String version, String fingerprint) {
         if (StringKit.isEmpty(fingerprint)) {
             return null;
         }
-        return queryInstances(namespace, app_id, method, version).stream()
+        return queryInstances(space, app_id, method, version).stream()
                 .filter(item -> fingerprint.equals(item.getFingerprint())).findFirst().orElse(null);
     }
 
     /**
      * Finds a service definition by route identity.
      *
-     * @param namespace namespace
-     * @param app_id    application identifier
-     * @param method    method name
-     * @param version   service version
+     * @param space   space
+     * @param app_id  application identifier
+     * @param method  method name
+     * @param version service version
      * @return matching service definition or {@code null}
      */
-    private ApiAssets findServiceByRoute(String namespace, String app_id, String method, String version) {
+    private ApiAssets findServiceByRoute(String space, String app_id, String method, String version) {
         if (store != null && storeSupports(Trait.ROUTE_QUERY)) {
-            ApiAssets persisted = store.findByMethodVersion(registryType, namespace, app_id, method, version);
+            ApiAssets persisted = store.findByMethodVersion(registryType, space, app_id, method, version);
             if (persisted != null) {
                 return persisted;
             }
         } else if (store != null) {
             capabilityFallback("findServiceByRoute", Trait.ROUTE_QUERY, "cache route scan");
         }
-        Map<String, Object> raw = cacheX.scan(keying.prefix(Keying.RegistrySpec.entry(namespace, registryType, null)));
+        Map<String, Object> raw = cacheX.scan(keying.prefix(Keying.RegistrySpec.entry(space, registryType, null)));
         if (raw == null || raw.isEmpty()) {
             return null;
         }
@@ -386,21 +386,16 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
     /**
      * Builds a synthetic service definition from a runtime instance.
      *
-     * @param namespace namespace
-     * @param app_id    application identifier
-     * @param method    method name
-     * @param version   service version
-     * @param instance  runtime instance
+     * @param space    space
+     * @param app_id   application identifier
+     * @param method   method name
+     * @param version  service version
+     * @param instance runtime instance
      * @return synthetic service definition
      */
-    private ApiAssets synthesizeService(
-            String namespace,
-            String app_id,
-            String method,
-            String version,
-            Instance instance) {
+    private ApiAssets synthesizeService(String space, String app_id, String method, String version, Instance instance) {
         ApiAssets service = new ApiAssets();
-        service.setNamespace_id(namespace);
+        service.setSpace_id(space);
         service.setApp_id(app_id);
         service.setMethod(method);
         service.setVersion(version);
@@ -425,14 +420,14 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
     /**
      * Warms the runtime-instance cache projection after durable reads.
      *
-     * @param namespace namespace override
+     * @param space     space override
      * @param app_id    application identifier override
      * @param method    method override
      * @param version   version override
      * @param instances runtime instances to cache
      */
     private void warmInstanceCache(
-            String namespace,
+            String space,
             String app_id,
             String method,
             String version,
@@ -441,13 +436,13 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
             if (instance == null || instance.getFingerprint() == null) {
                 continue;
             }
-            String instNamespace = namespace != null ? namespace : instance.getNamespace_id();
+            String instSpace = space != null ? space : instance.getSpace_id();
             String instAppId = app_id != null ? app_id : instance.getApp_id();
             String instMethod = method != null ? method : instance.getMethod();
             String instVersion = version != null ? version : instance.getVersion();
             String instKey = keying.key(
                     Keying.RegistrySpec
-                            .instance(instNamespace, instAppId, instMethod, instVersion, instance.getFingerprint()));
+                            .instance(instSpace, instAppId, instMethod, instVersion, instance.getFingerprint()));
             cacheX.write(instKey, JsonKit.toJsonString(instance), Builder.DEFAULT_HEALTH_INTERVAL_MS * 120);
         }
     }

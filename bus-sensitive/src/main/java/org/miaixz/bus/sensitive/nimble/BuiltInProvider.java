@@ -22,18 +22,18 @@ package org.miaixz.bus.sensitive.nimble;
 import org.miaixz.bus.sensitive.Context;
 
 /**
- * A marker class used to indicate that a built-in desensitization strategy should be used, based on the
- * {@code Builder.Type} specified in the {@code @Shield} annotation.
+ * Non-instantiable marker used by strategy metadata to indicate an unresolved built-in desensitization strategy.
  * <p>
- * This class itself does not perform any desensitization; it acts as a placeholder to trigger the framework's internal
- * logic for selecting a pre-defined strategy. Do not use this for custom strategies.
+ * This marker has no masking type and cannot be registered or executed. Custom annotations must reference a concrete
+ * {@link StrategyProvider}; built-in {@code Shield} processing selects providers directly by its masking type.
+ * </p>
  *
  * @author Kimi Liu
  */
-public class BuiltInProvider extends AbstractProvider {
+public abstract class BuiltInProvider extends AbstractProvider {
 
     /**
-     * Constructs a new BuiltInProvider instance.
+     * Constructor available only to marker subclasses.
      */
     public BuiltInProvider() {
         // No initialization required.

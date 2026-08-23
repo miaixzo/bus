@@ -575,7 +575,6 @@ public class RequestContext {
      * @param map source map to cast
      * @return an object-valued map created by this accessor
      */
-    @SuppressWarnings("unchecked")
     private static Map<String, Object> objectMap(Map<?, ?> map) {
         return (Map<String, Object>) map;
     }

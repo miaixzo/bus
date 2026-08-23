@@ -18,48 +18,66 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.starter
+ * Module: {@code bus.starter}
+ *
+ * <p>
+ * Provides Spring Boot auto-configuration for the Bus ecosystem.
+ *
+ * <p>
+ * Includes conditional configuration, configuration properties, default beans, startup conventions, and integration
+ * wiring for the optional Bus modules and their supported third-party services.
  *
  * @author Kimi Liu
  */
 module bus.starter {
 
-    requires java.datatransfer;
-    requires java.desktop;
-    requires java.management;
     requires java.sql;
 
+    requires bus.auth;
+    requires bus.base;
+    requires bus.cache;
     requires bus.core;
+    requires bus.cortex;
+    requires bus.crypto;
     requires bus.extra;
+    requires bus.fabric;
+    requires bus.health;
+    requires bus.image;
+    requires bus.limiter;
     requires bus.logger;
+    requires bus.mapper;
+    requires bus.metrics;
+    requires bus.notify;
+    requires bus.office;
+    requires bus.pay;
+    requires bus.proxy;
+    requires bus.sensitive;
     requires bus.spring;
-    requires static bus.auth;
-    requires static bus.base;
-    requires static bus.cache;
-    requires static bus.cortex;
-    requires static bus.crypto;
-    requires static bus.fabric;
-    requires static bus.health;
-    requires static bus.image;
-    requires static bus.limiter;
-    requires static bus.mapper;
-    requires static bus.metrics;
-    requires static bus.notify;
-    requires static bus.office;
-    requires static bus.pay;
-    requires static bus.proxy;
-    requires static bus.sensitive;
-    requires static bus.storage;
-    requires static bus.tempus;
-    requires static bus.tracer;
-    requires static bus.validate;
-    requires static bus.vortex;
+    requires bus.storage;
+    requires bus.tempus;
+    requires bus.tracer;
+    requires bus.validate;
+    requires bus.vortex;
 
-    requires static lombok;
+    requires static com.zaxxer.hikari;
+    requires static curator.client;
+    requires static curator.framework;
+    requires static dubbo;
+    requires static elasticsearch.java;
+    requires static elasticsearch.rest5.client;
+    requires static io.netty.transport;
     requires static jakarta.annotation;
     requires static jakarta.persistence;
     requires static jakarta.servlet;
-    requires static spring.aop;
+    requires static lombok;
+    requires static micrometer.core;
+    requires static org.aspectj.weaver;
+    requires static org.apache.httpcomponents.client5.httpclient5;
+    requires static org.mongodb.driver.core;
+    requires static org.mybatis;
+    requires static org.mybatis.spring;
+    requires static reactor.core;
+    requires static reactor.netty.http;
     requires static spring.beans;
     requires static spring.boot;
     requires static spring.boot.autoconfigure;
@@ -69,33 +87,46 @@ module bus.starter {
     requires static spring.boot.webmvc;
     requires static spring.context;
     requires static spring.core;
-    requires static spring.expression;
     requires static spring.jdbc;
     requires static spring.web;
     requires static spring.webflux;
     requires static spring.webmvc;
-    requires static com.zaxxer.hikari;
-    requires static curator.client;
-    requires static curator.framework;
-    requires static dubbo;
-    requires static elasticsearch.java;
-    requires static elasticsearch.rest5.client;
-    requires static io.vertx.core;
-    requires static io.vertx.web;
-    requires static io.netty.transport;
-    requires static micrometer.core;
-    requires static org.apache.httpcomponents.client5.httpclient5;
-    requires static org.apache.httpcomponents.core5.httpcore5;
-    requires static org.aspectj.weaver;
-    requires static org.mongodb.driver.core;
-    requires static org.mybatis;
-    requires static org.mybatis.spring;
-    requires static org.slf4j;
-    requires static reactor.core;
-    requires static reactor.netty.core;
-    requires static reactor.netty.http;
 
+    exports org.miaixz.bus.starter;
     exports org.miaixz.bus.starter.annotation;
+    exports org.miaixz.bus.starter.auth;
+    exports org.miaixz.bus.starter.cache;
+    exports org.miaixz.bus.starter.context;
+    exports org.miaixz.bus.starter.cors;
+    exports org.miaixz.bus.starter.cortex;
+    exports org.miaixz.bus.starter.dubbo;
+    exports org.miaixz.bus.starter.elastic;
+    exports org.miaixz.bus.starter.fabric;
+    exports org.miaixz.bus.starter.health;
+    exports org.miaixz.bus.starter.i18n;
+    exports org.miaixz.bus.starter.image;
+    exports org.miaixz.bus.starter.jdbc;
+    exports org.miaixz.bus.starter.json;
+    exports org.miaixz.bus.starter.limiter;
+    exports org.miaixz.bus.starter.mapper;
+    exports org.miaixz.bus.starter.metrics;
+    exports org.miaixz.bus.starter.mongo;
+    exports org.miaixz.bus.starter.notify;
+    exports org.miaixz.bus.starter.office;
+    exports org.miaixz.bus.starter.pay;
+    exports org.miaixz.bus.starter.sensitive;
+    exports org.miaixz.bus.starter.storage;
+    exports org.miaixz.bus.starter.tempus;
+    exports org.miaixz.bus.starter.tracer;
+    exports org.miaixz.bus.starter.validate;
+    exports org.miaixz.bus.starter.vortex;
+    exports org.miaixz.bus.starter.wrapper;
+    exports org.miaixz.bus.starter.wrapper.advice;
+    exports org.miaixz.bus.starter.wrapper.binding;
+    exports org.miaixz.bus.starter.wrapper.body;
+    exports org.miaixz.bus.starter.wrapper.converter;
+    exports org.miaixz.bus.starter.wrapper.routing;
+    exports org.miaixz.bus.starter.zookeeper;
 
     opens org.miaixz.bus.starter to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.auth to spring.beans, spring.boot, spring.context, spring.core;

@@ -26,6 +26,7 @@ import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.basic.entity.Authorize;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
+import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 
 /**
  * A standard response wrapper for service providers, encapsulating the result of an operation like authorization.
@@ -34,7 +35,7 @@ import org.miaixz.bus.core.basic.normal.Consts;
  * error message (in the {@link #message} field). It provides a consistent return type for provider methods, simplifying
  * error handling for the caller.
  *
- * @see org.miaixz.bus.vortex.provider.AuthorizeProvider
+ * @see AuthorizeProvider
  * @author Kimi Liu
  */
 @Getter

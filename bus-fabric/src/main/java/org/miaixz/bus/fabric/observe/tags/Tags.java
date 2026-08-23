@@ -39,7 +39,7 @@ import org.miaixz.bus.crypto.Builder;
  *
  * @author Kimi Liu
  */
-public final class Tags {
+public class Tags {
 
     /**
      * Small cache for repeated tag keys and short values.
@@ -56,7 +56,7 @@ public final class Tags {
      *
      * @param values validated and sanitized values copied into an immutable map
      */
-    private Tags(final Map<String, String> values) {
+    public Tags(final Map<String, String> values) {
         this.values = Map.copyOf(values);
     }
 

@@ -33,7 +33,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  *
  * @author Kimi Liu
  */
-public final class DispatchQueue implements AutoCloseable {
+public class DispatchQueue implements AutoCloseable {
 
     /**
      * Maximum number of short tasks retained in the ready partition.
@@ -85,7 +85,7 @@ public final class DispatchQueue implements AutoCloseable {
      *
      * @param limit global and per-key dispatch limits
      */
-    DispatchQueue(final DispatchLimit limit) {
+    public DispatchQueue(final DispatchLimit limit) {
         this.limit = require(limit, "Dispatch limit");
         this.buckets = new HashMap<>();
         this.ready = new ArrayDeque<>();

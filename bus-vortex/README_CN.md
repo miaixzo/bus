@@ -55,7 +55,7 @@ Spring 生态系统的肩膀上,提供企业级 API 路由和管理能力。
 ```java
 public class Assets {
     private String id;             // 唯一路由资产 ID
-    private String namespace_id;   // 所属 namespace
+    private String space_id;       // 所属 space
     private Integer type;          // 可选类型过滤条件，使用 Type.key()
     private String app_id;         // 应用标识
     private String method;         // 逻辑 API 方法名
@@ -73,29 +73,29 @@ public class Assets {
 
 ### 请求参数
 
-| 参数      | 描述                                                     |
-|:----------|:---------------------------------------------------------|
-| method    | API 方法名称(例如 xxx.xxx.xxx)                           |
-| v         | API 版本号,与 method 一起使用(例如 1.1, 1.2)             |
-| namespace | 可选的 namespace 路由范围                                |
-| app_id    | 可选的应用级路由范围                                     |
-| type      | 可选的注册表类型范围；支持数字 `Type.key()` 和历史枚举名 |
-| format    | 返回格式(支持 json、xml)                                 |
-| sign      | 如果配置中启用 decrypt 且请求包含 sign 字段,则解密请求   |
+| 参数   | 描述                                                     |
+|:-------|:---------------------------------------------------------|
+| method | API 方法名称(例如 xxx.xxx.xxx)                           |
+| v      | API 版本号,与 method 一起使用(例如 1.1, 1.2)             |
+| space  | 可选的 space 路由范围                                    |
+| app_id | 可选的应用级路由范围                                     |
+| type   | 可选的注册表类型范围；支持数字 `Type.key()` 和历史枚举名 |
+| format | 返回格式(支持 json、xml)                                 |
+| sign   | 如果配置中启用 decrypt 且请求包含 sign 字段,则解密请求   |
 
 ### 公开路由解析规则
 
 - 运行时候选链：
-    - `namespace:type:app_id:method:version:verb`
-    - `namespace:type:method:version:verb`
-    - `namespace:app_id:method:version:verb`
-    - `namespace:method:version:verb`
+    - `space:type:app_id:method:version:verb`
+    - `space:type:method:version:verb`
+    - `space:app_id:method:version:verb`
+    - `space:method:version:verb`
     - `type:app_id:method:version:verb`
     - `type:method:version:verb`
     - `app_id:method:version:verb`
     - `method:version:verb`
 - `method`、`version`、`verb` 是运行时必填维度
-- `namespace`、`type`、`app_id` 是可选路由范围；缺失时只跳过对应层级
+- `space`、`type`、`app_id` 是可选路由范围；缺失时只跳过对应层级
 - `type` 在 route key 中统一使用数字 `Type.key()`
 - `verb` 在 route key 中统一使用数字 verb code，而不是 `GET` / `POST` 文本
 - `ApiAssets.key` 继续保留为轻量公开别名 `method:version:verbCode`
@@ -140,6 +140,7 @@ bus:
 #### 1. 在 Spring Boot 主类上添加 `@EnableVortex` 注解
 
 ```java
+
 @EnableVortex
 @SpringBootApplication
 public class TunnelApplication {
@@ -160,6 +161,7 @@ public class TunnelApplication {
 #### 3. 可选：覆盖路由键策略
 
 ```java
+
 @Bean
 public Keying<Keying.RegistrySpec> registryKeying() {
     return RegistryGenerator.INSTANCE;
@@ -169,6 +171,7 @@ public Keying<Keying.RegistrySpec> registryKeying() {
 #### 4. 实现 `AuthorizeProvider` Bean 进行身份验证
 
 ```java
+
 @Component
 public class AuthProviderImpl implements AuthorizeProvider {
     // 按需覆写 token / apiKey / license
@@ -182,6 +185,7 @@ public class AuthProviderImpl implements AuthorizeProvider {
 实现 `WebFilter` 来扩展网关功能,如限流、日志、黑名单、熔断 (尚未实现)等。
 
 ```java
+
 @Component
 @Order("123")
 public class CustomFilter implements WebFilter {
@@ -278,6 +282,7 @@ public class TController {
 ### Maven 依赖
 
 ```xml
+
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-starter</artifactId>
@@ -288,6 +293,7 @@ public class TController {
 ### 启用网关
 
 ```java
+
 @EnableVortex
 @SpringBootApplication
 public class Application {
@@ -320,9 +326,17 @@ Java `null`、`"null"`、`"undefined"`。
 `remove` 仍然会统一经过净化规则。query 参数仍保持只读。
 
 ```java
-context.getParameters().put("status", status);
-context.getParameters().putAll(payload);
-context.putQueryParameter("lang", "en");
+context.getParameters().
+
+put("status",status);
+context.
+
+getParameters().
+
+putAll(payload);
+context.
+
+putQueryParameter("lang","en");
 ```
 
 -----
@@ -379,6 +393,7 @@ context.putQueryParameter("lang", "en");
 实现 `WebFilter` 进行自定义请求/响应处理:
 
 ```java
+
 @Component
 @Order(1)
 public class LoggingFilter implements WebFilter {

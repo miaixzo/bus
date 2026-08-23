@@ -225,7 +225,7 @@ public class Dcm2Jpg {
      *
      * @param frame The 1-based frame number.
      */
-    public final void setFrame(int frame) {
+    public void setFrame(int frame) {
         this.frame = frame;
     }
 
@@ -234,7 +234,7 @@ public class Dcm2Jpg {
      *
      * @param windowCenter The window center value.
      */
-    public final void setWindowCenter(float windowCenter) {
+    public void setWindowCenter(float windowCenter) {
         this.windowCenter = windowCenter;
     }
 
@@ -243,7 +243,7 @@ public class Dcm2Jpg {
      *
      * @param windowWidth The window width value.
      */
-    public final void setWindowWidth(float windowWidth) {
+    public void setWindowWidth(float windowWidth) {
         this.windowWidth = windowWidth;
     }
 
@@ -252,7 +252,7 @@ public class Dcm2Jpg {
      *
      * @param windowIndex The 0-based index of the window.
      */
-    public final void setWindowIndex(int windowIndex) {
+    public void setWindowIndex(int windowIndex) {
         this.windowIndex = windowIndex;
     }
 
@@ -261,7 +261,7 @@ public class Dcm2Jpg {
      *
      * @param voiLUTIndex The 0-based index of the VOI LUT.
      */
-    public final void setVOILUTIndex(int voiLUTIndex) {
+    public void setVOILUTIndex(int voiLUTIndex) {
         this.voiLUTIndex = voiLUTIndex;
     }
 
@@ -270,7 +270,7 @@ public class Dcm2Jpg {
      *
      * @param preferWindow True to prefer windowing, false otherwise.
      */
-    public final void setPreferWindow(boolean preferWindow) {
+    public void setPreferWindow(boolean preferWindow) {
         this.preferWindow = preferWindow;
     }
 
@@ -279,7 +279,7 @@ public class Dcm2Jpg {
      *
      * @param autoWindowing True to enable auto-windowing, false to disable.
      */
-    public final void setAutoWindowing(boolean autoWindowing) {
+    public void setAutoWindowing(boolean autoWindowing) {
         this.autoWindowing = autoWindowing;
     }
 
@@ -306,7 +306,7 @@ public class Dcm2Jpg {
      *
      * @param prState The DICOM attributes of the Presentation State object.
      */
-    public final void setPresentationState(Attributes prState) {
+    public void setPresentationState(Attributes prState) {
         this.prState = prState;
     }
 
@@ -342,7 +342,7 @@ public class Dcm2Jpg {
      *
      * @param iccProfile The ICC Profile option.
      */
-    public final void setICCProfile(ICCProfile.Option iccProfile) {
+    public void setICCProfile(ICCProfile.Option iccProfile) {
         this.iccProfile = Objects.requireNonNull(iccProfile);
     }
 
@@ -351,7 +351,7 @@ public class Dcm2Jpg {
      *
      * @param readImage The functional interface implementation for reading the image.
      */
-    public final void setReadImage(ReadImage readImage) {
+    public void setReadImage(ReadImage readImage) {
         this.readImage = readImage;
     }
 
@@ -427,7 +427,7 @@ public class Dcm2Jpg {
     }
 
     /**
-     * Reads a {@link BufferedImage} from a DICOM file using a {@link org.miaixz.bus.image.galaxy.io.ImageInputStream}.
+     * Reads a {@link BufferedImage} from a DICOM file using an {@link ImageInputStream}.
      *
      * @param file The DICOM file.
      * @return The read image.

@@ -1,77 +1,17 @@
-# 🔐 Bus Auth：企业级身份验证与授权框架
+# Bus Auth
 
-<p align="center">
-<strong>统一身份验证和授权解决方案，支持多种协议和身份提供程序</strong>
-</p>
+[English](README.md) | 简体中文
 
------
+Bus Auth 是面向标准认证协议、第三方身份平台和协议中立身份资源访问的模块化认证框架。所有可配置实现都统一作为
+`Source` 暴露，作为 `SourceModule` 装配，由 `SourceDriver` 编译，并通过唯一的 `Dispatcher` 链路调用。
 
-## 📖 项目简介
+Bus Auth 提供认证协议实现和连接能力。接入项目继续负责 HTTP 端点、管理 CRUD、持久化、凭据、账户绑定、业务授权、
+组织架构同步、任务调度、事务和用户会话。
 
-**Bus Auth** 是一个企业级身份验证和授权框架，旨在简化与第三方身份提供程序的集成。它提供统一的 API 来实现 OAuth2、SAML、LDAP
-和自定义身份验证协议，支持全球 **40+** 主流平台。
+## 环境与依赖
 
-该框架抽象了协议复杂性，使开发人员能够专注于业务逻辑而非身份验证实现细节。无论是社交登录、企业 SSO 还是自定义身份提供程序，Bus
-Auth 都提供一致、类型安全和可扩展的方法。
-
------
-
-## ✨ 核心功能
-
-### 🎯 统一身份验证接口
-
-* **协议无关**：OAuth2、SAML、LDAP 和自定义协议的单一 API
-* **提供程序抽象**：40+ 身份提供程序的一致接口
-* **构建器模式**：流畅的 API 用于配置身份验证流程
-* **类型安全**：强类型配置和响应对象
-
-### 🔐 安全优先
-
-| 功能                                            | 描述                                                |
-|:------------------------------------------------|:----------------------------------------------------|
-| **PKCE 支持**                                   | 符合 RFC 7636 的代码交换证明密钥，用于移动/SPA 应用 |
-| **状态验证**：内置 CSRF 保护，带状态参数验证    |
-| **令牌管理**：安全令牌存储、刷新和撤销          |
-| **签名验证**：OAuth1.0a 的 HMAC-SHA256 签名支持 |
-| **缓存集成**：分布式状态缓存支持                |
-
-### 🌍 平台覆盖
-
-**社交平台**（15+）
-
-- GitHub、Google、Facebook、Twitter、LinkedIn、Microsoft
-- 微信、QQ、微博、抖音、TikTok
-- Apple、Amazon、Slack、Line、VK
-
-**企业平台**（10+）
-
-- 钉钉、飞书、Lark、企业微信
-- Okta、GitLab、Gitee、Teambition
-- 华为、阿里云、百度云
-
-**电商平台**（8+）
-
-- 支付宝、淘宝、京东、美团、饿了么
-- 酷家乐、小米、小红书
-
-**国内平台**（中国）
-
-- 喜马拉雅、人人、开源中国、Coding、Programmer
-- Stack Overflow、Pinterest、Figma
-
-### ⚡ 开发体验
-
-* **零样板代码**：最少代码实现身份验证
-* **自动配置**：约定优于配置，具有合理的默认值
-* **灵活作用域**：通过 OAuth 作用域进行细粒度权限控制
-* **丰富的元数据**：来自提供程序的综合用户配置文件数据
-* **可扩展**：易于添加自定义提供程序或扩展现有提供程序
-
------
-
-## 🚀 快速开始
-
-### Maven 依赖
+Bus 8.x 以 Java 21 字节码为目标，项目 CI 使用 JDK 25 构建。应用还必须在使用依赖 JSON 的功能前，通过
+`bus.json.provider` 或 `JsonFactory.install(...)` 选择一个 `JsonKit` 实现。
 
 ```xml
 <dependency>
@@ -81,805 +21,337 @@ Auth 都提供一致、类型安全和可扩展的方法。
 </dependency>
 ```
 
-### 基础用法
-
-#### 1. 配置身份验证上下文
+JPMS 应用需要声明：
 
 ```java
-// 创建身份验证上下文
-Context context = Context.builder()
-                .clientId("your_client_id")
-                .clientSecret("your_client_secret")
-                .redirectUri("https://yourapp.com/callback")
-                .scopes(Arrays.asList("user", "repo"))
-                .build();
+requires bus.auth;
 ```
 
-#### 2. 创建身份验证提供程序
+Protocol 和 Vendor 实现统一通过 `SourceConnector` 服务发现。Bus Auth 同时发布 `module-info.java` Provider 和
+`META-INF/services` 元数据，因此模块路径和类路径使用相同的扩展模型。
+
+## 领域模型
+
+持久化管理层级固定为：
+
+```text
+Library
+└── Provider
+    └── Source
+```
+
+- `Library` 是顶层认证管理分组。
+- `Provider` 聚合项目拥有的 Source 配置，不表示 OAuth、OpenID Connect 或 SAML 服务端角色。
+- `Source` 是唯一的持久化路由和运行单元。
+- `Blueprint` 是项目加载的完整 Library/Provider/Source 期望配置。
+- `Roster` 是当前已经提交的只读 Blueprint 快照。
+- `Scheme` 描述一个实现及其强类型 `Scheme.Options`。
+- `SourceDescriptor` 向管理端暴露一个可选实现，但不会创建运行 Worker。
+- `Capability` 定义强类型请求/响应操作，`Dispatcher` 是唯一运行时执行边界。
+- `Outcome` 区分成功、预期拒绝和运行故障，普通认证失败不会变成异常完成的 Stage。
+- `Realm` 定义协议中立的上游资源与关系，不是持久化实体，也不会形成第二套 Runtime。
+
+## 架构
+
+Protocol 和 Vendor 都是 Source 的特化分支：
+
+```text
+org.miaixz.bus.auth.source
+├── protocol   LDAP、OAuth 2.x、OpenID Connect、RADIUS、SAML、SCIM
+└── vendor     具名第三方平台、Variant 和可选 Realm Adapter
+```
+
+两个分支在 Runtime 装配前完成统一：
+
+```text
+                         SourceConnector SPI
+                                  │
+                      SourceDiscovery -> SourceSuite
+                                  │
+               ┌──────────────────┴──────────────────┐
+ProtocolConnector -> ProtocolRegistry -> ProtocolModule
+VendorConnector   -> VendorRegistry   -> VendorModule
+               └──────────────────┬──────────────────┘
+                                  │
+                           SourceAggregate
+                                  │
+RuntimeBuilder -> SourceLookup -> SourceDriver -> SourceWorker -> Dispatcher
+                                  │
+                         RuntimeManager / Roster
+```
+
+`Registry` 和 `Registry.Connector` 是构建期注册契约。`registry` 包在注册冻结后负责 Blueprint 校验和 Roster 投影，
+它不是另一套 Connector Registry。
+
+`ProtocolModule` 和 `VendorModule` 是 `SourceAggregate` 持有的两个内置 `SourceModule` 实现。`SourceLookup` 冻结 Driver、
+Descriptor 和反向路由索引。Runtime 编译时为每个 Source 创建最小权限的 `ScopedSourceServices`，Driver 不会获得完整的
+`RuntimeServices` 容器。
+
+## 内置实现
+
+标准协议分支包括：
+
+- LDAP Client 和 Server；
+- OAuth 2.x Client 和 Authorization Server；
+- OpenID Connect Client 和 Provider；
+- RADIUS Server；
+- SAML Client 和 Identity Provider；
+- SCIM Server。
+
+已注册的 Vendor 平台包括：
+
+Afdian、Alipay、Aliyun、Amazon、Apple、Baidu、Coding、DingTalk、Douyin、Eleme、Facebook、Feishu、Figma、Gitee、
+GitHub、GitLab、Google、Huawei、JD、Kujiale、LINE、LinkedIn、Meituan、Mi、Microsoft、Okta、OSChina、Pinterest、
+Proginn、QQ、RedNote、Slack、Stack Overflow、Taobao、Teambition、Toutiao、Twitter、VK、WeChat、Weibo 和 Ximalaya。
+
+当前为 Aliyun、DingTalk、Feishu、Figma、GitHub、GitLab、Google、Microsoft、Okta、Slack 和企业微信提供 Realm Adapter。
+每个精确 Variant 自行声明可用 Capability；仅凭平台名称不能推断其支持 Realm、增量变更或单资源查询。
+
+## Runtime 装配
+
+项目必须显式提供全部外部基础设施：
+
+- 为每个选中协议提供不可放宽规则的 `Policies`；
+- 调用方拥有的 `Executor`；
+- 原子 `CacheX<String, Object>` 后端和部署隔离标识；
+- 只包含所选 SourceDriver 所需项目端口的 `WorkerSet`；
+- 返回完整期望 Blueprint 修订的 `BlueprintLoader`；
+- 可选的 `RosterListener`。
 
 ```java
-// 方法 1：直接实例化
-Provider github = new GithubProvider(context);
-
-// 方法 2：使用 Authorizer 构建器（推荐）
-Provider github = Authorizer.builder()
-        .source("GITHUB")
-        .context(context)
+WorkerSet workers = WorkerSet.builder()
+        .secretLoader(secretLoader)
+        .credentialStore(credentialStore)
+        .keyLoader(keyLoader)
+        .certificateLoader(certificateLoader)
         .build();
+
+RuntimeServices services = new RuntimeServices(
+        policies,
+        executor,
+        workers,
+        authenticationCache,
+        "production");
+
+RuntimeManager runtime = Authorize.standard(services, blueprintLoader)
+        .listener(rosterListener)
+        .build(startupContext, startupTimeout)
+        .toCompletableFuture()
+        .join();
 ```
 
-#### 3. 生成授权 URL
+只配置所选 Driver 实际需要的 Worker 端口。候选编译时发现缺少必要端口会立即失败；Bus Auth 不会安装宽松的空实现。
+`build(...)` 在暴露 Runtime 前加载、校验、编译并原子提交初始 Blueprint。`buildEmpty()` 仅用于明确需要从 revision zero、
+无 Source 状态启动的管理进程。
+
+## Source 发现
+
+管理应用通过一个与具体实现无关的入口获得全部可选 Protocol 或 Vendor Variant：
 
 ```java
-// 为 CSRF 保护生成状态参数
-String state = UUID.randomUUID().toString();
+List<SourceDescriptor> choices = runtime.descriptor().sources();
 
-// 获取授权 URL
-Message message = github.build(state);
-String authUrl = message.getData();
-
-// 重定向用户到 authUrl
-// 身份验证后，用户将使用 code 和 state 重定向到 redirectUri
+SourceDescriptor selected = runtime.descriptor()
+        .source("vendor/github/enterprise")
+        .getOrNull();
 ```
 
-#### 4. 处理回调和登录
+每个 Descriptor 都提供稳定选择 ID、持久化 Source type、真实协议、展示元数据、配置表单、Capability Manifest、
+Conformance 信息，以及无副作用的持久化 Source 匹配能力。Descriptor 不解析凭据、不创建 Worker、不读取 Roster，
+也不发起网络请求。
+
+## 调用、重载与生命周期
+
+Source 认证、协议操作和 Realm 访问全部经过同一条显式路由：
+
+### Source 认证
+
+浏览器流程从已登记的回调目标开始：
 
 ```java
-// 提取回调参数
-Callback callback = Callback.builder()
-                .code(request.getParameter("code"))
-                .state(request.getParameter("state"))
-                .build();
+Roster.Reference reference = Roster.Reference.source(sourceId);
+Callback.Target target = new Callback.Target(sourceId, registeredRedirectUri);
+SourceWorkflow.Request.BrowserStart start =
+        new SourceWorkflow.Request.BrowserStart(sourceId, target);
 
-// 执行身份验证
-Message result = github.authorize(callback);
+CompletionStage<Outcome<SourceWorkflow.Stage>> initiation = runtime.dispatcher().invoke(
+        reference,
+        SourceWorkflow.INITIATE,
+        start,
+        trustedContext,
+        timeout);
+```
 
-if(result.
+成功结果为 `SourceWorkflow.Stage.Redirect` 时，项目负责重定向用户代理。项目回调端点随后把原始请求保存为
+`Callback.Inbound`，并完成同一个 Source 交互：
 
-isSuccess()){
-Claims claims = result.getData(Claims.class);
-String uuid = claims.getUuid();
-String username = claims.getUsername();
-String email = claims.getEmail();
+```java
+SourceWorkflow.Request.BrowserCallback completion =
+        new SourceWorkflow.Request.BrowserCallback(sourceId, inboundCallback);
 
-// 登录用户或创建账户
-// 存储 claims.getToken() 用于未来的 API 调用
+CompletionStage<Outcome<Identity>> identity = runtime.dispatcher().invoke(
+        reference,
+        SourceWorkflow.COMPLETE,
+        completion,
+        trustedContext,
+        timeout);
+```
+
+Device 流程使用 `DeviceStart` 和 `DevicePoll`，直接流程使用 `Direct` 或 `OneTimeCode`。所有成功路径最终统一为经过验证的
+`Identity`。Bus Auth 不负责把该 Identity 绑定到本地账户，这个决定属于接入项目。
+
+### Realm 与协议操作
+
+```java
+Roster.Reference reference = Roster.Reference.source(sourceId);
+
+CompletionStage<Outcome<Realm.Description>> result = runtime.dispatcher().invoke(
+        reference,
+        Realm.DESCRIBE,
+        new Realm.Describe(),
+        trustedContext,
+        timeout);
+```
+
+调用方显式选择 Source 和 Capability；`Dispatcher` 不会根据不可信请求路径推断任何一个值。它统一校验生命周期、Roster
+路由、Capability 声明、请求类型、认证边界和响应类型。项目传输层继续负责将正式协议请求和响应映射到自己的 HTTP、TCP
+或 UDP 服务。
+
+按照封闭结果族处理 `Outcome`：
+
+```java
+switch (outcome) {
+    case Outcome.Succeeded<Realm.Description> success -> use(success.value());
+    case Outcome.Rejected<Realm.Description> rejected -> reject(rejected.failure());
+    case Outcome.Failed<Realm.Description> failed -> retryOrReport(failed.failure());
+    default -> throw new IllegalStateException("Unsupported outcome");
 }
 ```
 
------
+`runtime.reload(context, timeout)` 每次都加载完整 Blueprint 候选。校验和编译全部完成后才会进行一次原子发布；任何失败都
+不会改变当前 Roster 和 Worker。Revision 必须严格递增，并作为框架 Cache 的 generation，防止重载后继续使用旧协议状态。
 
-## 📝 使用示例
+应通过 `try`/`finally` 或 try-with-resources 确定性管理 `RuntimeManager` 生命周期。`close()` 拒绝新的 Dispatch 和 Reload，
+并退役已编译 Worker，但不会关闭调用方拥有的 Executor、Cache、Loader、Store 或网络资源。最后一次成功提交的 Roster
+仍然可以读取。
 
-### 1. GitHub OAuth2 身份验证
+## 选择性装配与 Vendor 配置
 
-```java
-// 配置
-Context context = Context.builder()
-                .clientId("github_client_id")
-                .clientSecret("github_client_secret")
-                .redirectUri("http://localhost:8080/auth/github/callback")
-                .build();
-
-Provider github = new GithubProvider(context);
-
-// 步骤 1：重定向到 GitHub
-@GetMapping("/auth/github")
-public void githubLogin(HttpServletResponse response) throws IOException {
-    String state = UUID.randomUUID().toString();
-    cache.set(state, "true", 10, TimeUnit.MINUTES); // 在缓存中存储状态
-
-    Message message = github.build(state);
-    response.sendRedirect(message.getData());
-}
-
-// 步骤 2：处理回调
-@GetMapping("/auth/github/callback")
-public Message githubCallback(@RequestParam String code, @RequestParam String state) {
-    Callback callback = Callback.builder()
-            .code(code)
-            .state(state)
-            .build();
-
-    Message result = github.authorize(callback);
-
-    if (result.isSuccess()) {
-        Claims user = result.getData(Claims.class);
-        // 处理用户信息
-        return Message.success(user);
-    }
-    return Message.error("身份验证失败");
-}
-```
-
-### 2. 企业微信身份验证
+`Authorize.standard(...)` 安装所有内置 Protocol 和 Vendor Connector。项目也可以保留全部 Protocol，只选择需要的 Vendor
+平台：
 
 ```java
-// 企业微信需要额外的 agentId
-Context context = Context.builder()
-                .clientId("corp_id")
-                .clientSecret("corp_secret")
-                .unionId("agent_id")
-                .redirectUri("https://yourapp.com/callback/wechat")
-                .build();
+SourceAggregate aggregate = SourceSuite
+        .load(GitHubManifest.ID, MicrosoftManifest.ID)
+        .freeze();
 
-Provider wechatWork = new WeChatEeWebProvider(context);
+RuntimeBuilder builder = Authorize.custom(services, blueprintLoader)
+        .modules(aggregate.modules());
 
-// 身份验证流程与 GitHub 相同
-Message result = wechatWork.authorize(callback);
-Claims user = result.getData(Claims.class);
+VendorConfigurer configurer = Authorize.clients(
+        aggregate.vendorModule(),
+        credentialWriter);
 ```
 
-### 3. 移动/SPA 应用的 PKCE 模式
+Runtime 装配和客户端 Vendor 配置必须使用同一个已经冻结的 `VendorModule`。`VendorConfigurer` 校验精确 Variant 表单，
+通过短生命周期 `SecretLease` 传递明文，并且只交给项目拥有的 `VendorCredentialWriter` 保存。持久化 `VendorOptions`
+只包含 `Credential.Reference`，绝不包含明文秘密材料。
+
+## Realm 资源访问
+
+`Realm` 是描述和读取上游身份与关系的共享协议中立契约。它提供 `DESCRIBE`、`SNAPSHOT`、可选 `CHANGES` 和可选
+`RETRIEVE` Capability。调用方必须检查返回的 description、coverage、operations、limitations、resource types 和
+continuation mode，不能假设所有 Adapter 行为一致。
+
+Bus Auth 只执行经过认证的上游访问。接入项目负责同步调度、检查点持久化、字段映射、差异协调、删除策略、事务、重试，
+以及本地组织、用户和用户组模型。
+
+上游 API 没有分页时，Adapter 按原始接口完整读取，不得人为增加 page size 或总量限制；存在分页时，必须保留平台真实的
+Cursor、Token、Offset 或 Link continuation 语义。
+
+## JWT
+
+常见签名、签发、验签和校验直接使用静态 `JWT` 门面。HS256 Secret 必须至少包含 256 bit 密钥材料。
 
 ```java
-// 启用 PKCE 模式
-Context context = Context.builder()
-                .clientId("client_id")
-                .clientSecret("")  // 公共客户端无客户端密钥
-                .redirectUri("myapp://callback")
-                .pkce(true)  // 启用 PKCE
-                .build();
+byte[] secret = secretBytes;
 
-Provider google = new GoogleProvider(context);
+String compact = JWT.issue(
+        Map.of("sub", "user-42", "role", "admin"),
+        secret,
+        "https://issuer.example",
+        "bus-application",
+        Duration.ofMinutes(15));
 
-// 生成代码验证器和挑战
-String codeVerifier = Builder.codeVerifier();
-String codeChallenge = Builder.codeChallenge("S256", codeVerifier);
+JWT.Requirements requirements = JWT.Requirements.of(
+        "https://issuer.example",
+        "bus-application",
+        Duration.ofSeconds(30));
 
-// 存储 codeVerifier 供稍后使用
-cache.
-
-set(state, codeVerifier, 10,TimeUnit.MINUTES);
-
-// 在授权 URL 中包含 code_challenge
+JWT verified = JWT.validate(compact, secret, requirements);
+String subject = verified.claims().subject().getOrNull();
 ```
 
-### 4. 自定义 OAuth2 提供程序
+`verify(...)` 使用显式可信算法和密钥检查签名；`validate(...)` 还会校验时间声明以及可选的 Issuer/Audience 要求；
+`isValid(...)` 是返回 boolean 的便捷形式。重复调用、非对称算法或显式 Clock 使用 `JwtService`；各协议包继续负责自己的
+专用 JWT Claim 策略。
 
-```java
-// 方法 1：扩展 AbstractProvider
-public class CustomProvider extends AbstractProvider {
+## 扩展 SPI
 
-    public CustomProvider(Context context) {
-        super(context, Complex.custom("CUSTOM", Protocol.OIDC));
-    }
+扩展一个标准协议需要提供：
 
-    @Override
-    public Map<Endpoint, String> getEndpoint() {
-        Map<Endpoint, String> endpoints = new HashMap<>();
-        endpoints.put(Endpoint.AUTHORIZE, "https://api.custom.com/oauth/authorize");
-        endpoints.put(Endpoint.TOKEN, "https://api.custom.com/oauth/token");
-        endpoints.put(Endpoint.USERINFO, "https://api.custom.com/oauth/userinfo");
-        return endpoints;
-    }
+- 一个或多个 `ProtocolScheme` 与 `ProtocolDriver` 配对；
+- 一个原子绑定该协议全部 Driver 的 `ProtocolConnector`；
+- 根 `SourceConnector` 服务的一条 `provides` 或 `META-INF/services` 声明。
 
-    @Override
-    public Message token(Callback callback) {
-        // 自定义令牌交换逻辑
-    }
+扩展一个第三方平台需要提供：
 
-    @Override
-    public Message userInfo(Authorization authorization) {
-        // 自定义用户信息检索
-    }
-}
+- 一个 `VendorManifest` 和强类型 `VendorOptions` 实现；
+- 每个精确 Variant 对应的 Adapter；
+- 一个原子绑定完整平台注册内容的 `VendorConnector`；
+- 根 `SourceConnector` 服务的一条 `provides` 或 `META-INF/services` 声明。
 
-// 方法 2：使用 Registry 和自定义 Complex
-Complex customComplex = new Complex() {
-    @Override
-    public String getName() {
-        return "CUSTOM";
-    }
+`SourceConnector` 是唯一发现服务。sealed 根接口只接纳 Protocol 和 Vendor 两个家族，两个 non-sealed 子接口继续允许外部
+实现。`connect(registry)` 是同步构建期声明回调：它不建立远程连接、不保留 Registry、不访问项目数据，也不修改运行中的
+Roster。
 
-    @Override
-    public Protocol getProtocol() {
-        return Protocol.OIDC;
-    }
+`Registry`、`ProtocolRegistry` 和 `VendorRegistry` 在 Freeze 前支持单个注册、原子批量注册、单个卸载和原子批量卸载。
+不希望使用服务发现时，可以通过 `SourceSuite.register(...)` 和 `registerAll(...)` 走统一显式扩展链路。
 
-    @Override
-    public Class<? extends AbstractProvider> getTargetClass() {
-        return CustomProvider.class;
-    }
+## 安全与所有权规则
 
-    @Override
-    public Map<Endpoint, String> endpoint() {
-        // 返回端点映射
-    }
-};
+- `Policies` 包含显式且不可放宽的算法、熵、时钟偏移、重放、消息大小、地址和安全传输规则，不提供宽松默认值。
+- `FabricX` 是静态传输边界；SourceServices 不再提供第二套 Fabric 门面。
+- `JsonKit` 是应用级静态 JSON 边界；Driver 和 Codec 不再接收或转发 `JsonProvider`。
+- `Context` 只保存可信、非敏感调用元数据，禁止放入凭据、Code、Token、Assertion 或 Secret。
+- Loader 返回项目拥有的 Record；Resolver 负责校验并转换为不可变认证值。
+- `WorkerSlots` 声明所需项目数据端口；`SourceDriver.Dependencies` 声明所需框架服务。
+- 稳定 Source ID、Vendor ID、Variant ID、Capability Key、Endpoint Target、Scope、Cursor 和 Wire 行为共同构成对外兼容边界。
+- 诊断值和 `Roster.Fault` 禁止暴露 Options Body、Token、Credential、Exception、Stack Trace 或平台 Payload。
 
-Provider provider = Authorizer.builder()
-        .source("CUSTOM")
-        .context(context)
-        .complex(customComplex)
-        .build();
+## Package 职责
+
+| Package | 职责 |
+|:--|:--|
+| `org.miaixz.bus.auth` | 领域值、`Authorize`、`Registry`、`Roster`、`Dispatcher`、`Policies` 和 `Realm` |
+| `org.miaixz.bus.auth.source` | Source 发现、Descriptor、Module、Driver、Workflow 和最小权限服务契约 |
+| `org.miaixz.bus.auth.source.protocol` | 正式协议注册及各协议专用子包 |
+| `org.miaixz.bus.auth.source.vendor` | Vendor Manifest、Options、Connector、Adapter、Lookup 和配置 |
+| `org.miaixz.bus.auth.registry` | 完整 Blueprint 校验和不可变 Roster 投影 |
+| `org.miaixz.bus.auth.runtime` | Runtime 装配、最小权限服务、原子重载、Dispatch 和生命周期 |
+| `org.miaixz.bus.auth.worker` | 项目 Action Port、Worker Slot、Listener、Session 和已编译 SourceWorker |
+| `org.miaixz.bus.auth.worker.loader` | 项目拥有的异步数据加载端口 |
+| `org.miaixz.bus.auth.resolver` | 对项目加载 Record 进行纯校验和解析 |
+| `org.miaixz.bus.auth.shared` | 跨协议 JOSE、JWT、PKCE、DPoP、Claim 及相关安全组件 |
+
+## 构建
+
+仓库 CI 使用 JDK 25，并按 Java 21 Release 兼容级别编译 Bus 8.x：
+
+```bash
+mvn -f bus-auth/pom.xml -Dmaven.compiler.release=21 clean package
 ```
 
-### 5. 令牌管理
+## 许可证
 
-```java
-// 获取访问令牌
-Message tokenMsg = provider.token(callback);
-Authorization token = tokenMsg.getData(Authorization.class);
-
-// 访问令牌详情
-String accessToken = token.getToken();
-int expiresIn = token.getExpireIn();
-String refreshToken = token.getRefresh();
-
-// 刷新令牌（如果支持）
-Message refreshMsg = provider.refresh(token);
-Authorization newToken = refreshMsg.getData(Authorization.class);
-
-// 撤销授权（登出）
-Message revokeMsg = provider.revoke(token);
-```
-
-### 6. 多提供程序支持
-
-```java
-// 提供程序注册表
-Map<String, Provider> providers = new HashMap<>();
-
-// 配置多个提供程序
-providers.put("github", new GithubProvider(githubContext));
-providers.put("google", new GoogleProvider(googleContext));
-providers.put("wechat", new WeChatMpProvider(wechatContext));
-
-// 统一身份验证端点
-@PostMapping("/auth/{provider}")
-public Message authenticate(@PathVariable String provider,
-                            @RequestBody Callback callback) {
-    Provider authProvider = providers.get(provider);
-    if (authProvider == null) {
-        return Message.error("不支持的提供程序：" + provider);
-    }
-
-    return authProvider.authorize(callback);
-}
-```
-
-### 7. 自定义缓存实现
-
-```java
-// 使用 Redis 进行分布式状态缓存
-public class RedisAuthCache implements CacheX {
-
-    private final RedisTemplate<String, String> redisTemplate;
-
-    @Override
-    public void set(String key, Object value, long timeout, TimeUnit unit) {
-        redisTemplate.opsForValue().set(key, value.toString(), timeout, unit);
-    }
-
-    @Override
-    public String get(String key) {
-        return redisTemplate.opsForValue().get(key);
-    }
-
-    @Override
-    public boolean containsKey(String key) {
-        return Boolean.TRUE.equals(redisTemplate.hasKey(key));
-    }
-
-    @Override
-    public void remove(String key) {
-        redisTemplate.delete(key);
-    }
-}
-
-// 使用自定义缓存
-RedisAuthCache cache = new RedisAuthCache(redisTemplate);
-Provider github = new GithubProvider(context, cache);
-```
-
-### 8. 动态端点配置
-
-```java
-// 覆盖默认端点
-Map<Endpoint, String> customEndpoints = new HashMap<>();
-customEndpoints.
-
-put(Endpoint.AUTHORIZE, "https://custom.auth.com/authorize");
-customEndpoints.
-
-put(Endpoint.TOKEN, "https://custom.auth.com/token");
-customEndpoints.
-
-put(Endpoint.USERINFO, "https://custom.auth.com/userinfo");
-customEndpoints.
-
-put(Endpoint.REFRESH, "https://custom.auth.com/refresh");
-
-Context context = Context.builder()
-        .clientId("client_id")
-        .clientSecret("client_secret")
-        .redirectUri("https://yourapp.com/callback")
-        .endpoint(customEndpoints)  // 自定义端点
-        .build();
-```
-
------
-
-## 📋 配置参考
-
-### 上下文参数
-
-| 参数                | 类型                  | 必需 | 描述                                 |
-|:--------------------|:----------------------|:-----|:-------------------------------------|
-| `clientId`          | String                | ✅   | OAuth2 客户端 ID 或 API 密钥         |
-| `clientSecret`      | String                | ✅   | OAuth2 客户端密钥                    |
-| `unionId`           | String                | ❌   | 平台特定标识符（例如，微信 agentId） |
-| `extId`             | String                | ❌   | 扩展标识符                           |
-| `deviceId`          | String                | ❌   | 某些平台的设备 ID                    |
-| `type`              | String                | ❌   | 平台特定类型                         |
-| `flag`              | boolean               | ❌   | 平台特定标志                         |
-| `pkce`              | boolean               | ❌   | 启用 PKCE 模式（默认：false）        |
-| `prefix`            | String                | ❌   | 域前缀（用于 Okta、Coding）          |
-| `redirectUri`       | String                | ✅   | OAuth2 回调 URL                      |
-| `scopes`            | List<String>          | ❌   | OAuth2 作用域（权限）                |
-| `ignoreState`       | boolean               | ❌   | 跳过状态验证（不推荐）               |
-| `ignoreRedirectUri` | boolean               | ❌   | 跳过重定向 URI 验证                  |
-| `kid`               | String                | ❌   | Apple 密钥 ID                        |
-| `teamId`            | String                | ❌   | Apple 团队 ID                        |
-| `loginType`         | String                | ❌   | 企业微信登录类型                     |
-| `lang`              | String                | ❌   | 语言代码（默认：zh）                 |
-| `extension`         | String                | ❌   | 扩展属性                             |
-| `endpoint`          | Map<Endpoint, String> | ❌   | 自定义 OAuth 端点                    |
-
-### 支持的端点
-
-| 端点        | 描述             |
-|:------------|:-----------------|
-| `AUTHORIZE` | 授权端点 URL     |
-| `TOKEN`     | 令牌端点 URL     |
-| `USERINFO`  | 用户信息端点 URL |
-| `REFRESH`   | 令牌刷新端点 URL |
-| `REVOKE`    | 令牌撤销端点 URL |
-
-### 提供程序注册表
-
-所有内置提供程序都在 `Registry` 枚举中注册：
-
-```java
-// 访问注册表
-Registry.GITHUB
-Registry.GOOGLE
-Registry.WECHAT_MP
-Registry.DINGTALK
-// ... 40+ 提供程序
-
-// 与 Authorizer 一起使用
-Provider provider = Authorizer.builder()
-        .source(Registry.GITHUB.getName())
-        .context(context)
-        .build();
-```
-
------
-
-## 🔧 高级配置
-
-### 1. 自定义作用域配置
-
-```java
-// 每个提供程序提供默认作用域
-// 可以为特定需求自定义作用域
-
-Context context = Context.builder()
-        .clientId("client_id")
-        .clientSecret("client_secret")
-        .redirectUri("https://yourapp.com/callback")
-        .scopes(Arrays.asList("read", "write", "email"))  // 自定义作用域
-        .build();
-```
-
-### 2. 状态验证
-
-```java
-// 默认启用状态验证
-// 禁用（生产环境不推荐）：
-
-Context context = Context.builder()
-        .clientId("client_id")
-        .clientSecret("client_secret")
-        .redirectUri("https://yourapp.com/callback")
-        .ignoreState(true)  // ⚠️ 禁用状态验证
-        .build();
-```
-
-### 3. 自定义用户信息映射
-
-```java
-// 扩展 AbstractProvider 以自定义用户信息解析
-
-public class CustomGithubProvider extends GithubProvider {
-
-    @Override
-    public Message userInfo(Authorization authorization) {
-        // 获取原始用户数据
-        Message response = super.userInfo(authorization);
-
-        // 自定义映射逻辑
-        Map<String, Object> rawData = response.getData();
-        Claims claims = Claims.builder()
-                .uuid(rawData.get("id").toString())
-                .username(rawData.get("login").toString())
-                .email(rawData.get("email").toString())
-                .avatar(rawData.get("avatar_url").toString())
-                .source("GITHUB")
-                .token(authorization)
-                .rawJson(JsonKit.toJsonString(rawData))
-                .build();
-
-        return Message.success(claims);
-    }
-}
-```
-
-### 4. 错误处理
-
-```java
-try {
-    Message result = provider.authorize(callback);
-
-    if (result.isSuccess()) {
-        Claims user = result.getData(Claims.class);
-        // 成功处理
-    } else {
-        // 错误处理
-        String errorCode = result.getErrcode();
-        String errorMsg = result.getErrmsg();
-    }
-} catch (AuthorizedException e) {
-    // 处理身份验证异常
-    log.error("身份验证失败", e);
-
-    // 常见错误代码：
-    // 110001 - 不支持的提供程序或配置无效
-    // 110002 - 配置不完整
-    // 110005 - 无效的重定向 URI
-    // 110007 - 缺少授权代码
-    // 110008 - 状态无效或已过期
-}
-```
-
------
-
-## 💡 最佳实践
-
-### 1. 始终使用 HTTPS
-
-```java
-// ❌ 不推荐
-Context context = Context.builder()
-                .redirectUri("http://yourapp.com/callback")
-                .build();
-
-// ✅ 推荐
-Context context = Context.builder()
-        .redirectUri("https://yourapp.com/callback")
-        .build();
-```
-
-### 2. 启用状态验证
-
-```java
-// ✅ 始终在生产环境启用状态验证
-Context context = Context.builder()
-                .ignoreState(false)  // 默认：false
-                .build();
-```
-
-### 3. 使用分布式缓存
-
-```java
-// ✅ 使用 Redis 或其他分布式缓存存储状态
-RedisAuthCache cache = new RedisAuthCache(redisTemplate);
-Provider provider = new GithubProvider(context, cache);
-```
-
-### 4. 实现适当的错误处理
-
-```java
-// ✅ 全面的错误处理
-try {
-    Message result = provider.authorize(callback);
-    // 处理结果
-} catch (AuthorizedException e) {
-    // 记录错误详情
-    log.error("身份验证失败：code={}, message={}",
-        e.getCode(), e.getMessage());
-
-    // 返回用户友好的错误消息
-    return Message.error("登录失败，请重试");
-}
-```
-
-### 5. 验证重定向 URI
-
-```java
-// ✅ 始终验证重定向 URI 与配置匹配
-String redirectUri = request.getParameter("redirect_uri");
-if (!context.getRedirectUri().equals(redirectUri)) {
-    throw new SecurityException("无效的重定向 URI");
-}
-```
-
-### 6. 安全存储令牌
-
-```java
-// ✅ 在存储到数据库之前加密令牌
-String encryptedToken = crypto.encrypt(claims.getToken().getToken());
-
-User user = new User();
-user.setAccessToken(encryptedToken);
-user.setRefreshToken(crypto.encrypt(claims.getToken().getRefresh()));
-user.setTokenExpiry(LocalDateTime.now().plusSeconds(claims.getToken().getExpireIn()));
-```
-
-### 7. 实现令牌刷新
-
-```java
-// ✅ 自动刷新过期令牌
-if (user.isTokenExpired()) {
-    Message refreshMsg = provider.refresh(claims.getToken());
-    Authorization newToken = refreshMsg.getData(Authorization.class);
-
-    // 更新存储的令牌
-    user.setAccessToken(crypto.encrypt(newToken.getToken()));
-    user.setTokenExpiry(LocalDateTime.now().plusSeconds(newToken.getExpireIn()));
-}
-```
-
-### 8. 处理速率限制
-
-```java
-// ✅ 为身份验证端点实现速率限制
-@RateLimit(requests = 10, period = 1, timeUnit = TimeUnit.MINUTES)
-@PostMapping("/auth/github")
-public Message authenticate(@RequestBody Callback callback) {
-    return githubProvider.authorize(callback);
-}
-```
-
------
-
-## ❓ 常见问题
-
-### Q1: 如何添加自定义 OAuth 提供程序？
-
-```java
-// 方法 1：扩展 AbstractProvider
-public class MyProvider extends AbstractProvider {
-    public MyProvider(Context context) {
-        super(context, new Complex() {
-            @Override public String getName() { return "MYPROVIDER"; }
-            @Override public Protocol getProtocol() { return Protocol.OIDC; }
-            @Override public Class<? extends AbstractProvider> getTargetClass() {
-                return MyProvider.class;
-            }
-            @Override public Map<Endpoint, String> endpoint() {
-                // 返回端点映射
-            }
-        });
-    }
-
-    @Override
-    public Message token(Callback callback) { /* 实现 */ }
-
-    @Override
-    public Message userInfo(Authorization authorization) { /* 实现 */ }
-}
-```
-
-### Q2: 如何为移动应用处理 PKCE？
-
-```java
-// 客户端（移动应用）：
-String codeVerifier = Builder.codeVerifier();
-String codeChallenge = Builder.codeChallenge("S256", codeVerifier);
-
-// 在授权 URL 中包含 code_challenge
-
-// 服务器端：
-// 从回调中提取 code_verifier 并使用它交换令牌
-```
-
-### Q3: 如何为 Spring Boot 应用实现"使用 GitHub 登录"？
-
-```java
-
-@Controller
-public class AuthController {
-
-    @Autowired
-    private Provider githubProvider;
-
-    @GetMapping("/login/github")
-    public String loginGithub(HttpSession session) {
-        String state = UUID.randomUUID().toString();
-        session.setAttribute("oauth_state", state);
-
-        Message message = githubProvider.build(state);
-        return "redirect:" + message.getData();
-    }
-
-    @GetMapping("/auth/github/callback")
-    public String callback(@RequestParam String code,
-                           @RequestParam String state,
-                           HttpSession session) {
-        // 验证状态
-        String savedState = (String) session.getAttribute("oauth_state");
-        if (!state.equals(savedState)) {
-            throw new SecurityException("无效状态");
-        }
-
-        // 身份验证
-        Callback callback = Callback.builder()
-                .code(code)
-                .state(state)
-                .build();
-
-        Message result = githubProvider.authorize(callback);
-        Claims user = result.getData(Claims.class);
-
-        // 创建用户会话
-        session.setAttribute("user", user);
-
-        return "redirect:/dashboard";
-    }
-}
-```
-
-### Q4: 如何调试身份验证问题？
-
-```java
-// 启用调试日志
-logging.level.org.miaixz.bus.auth=DEBUG
-
-// 检查配置
-Checker.check(context, Registry.GITHUB);
-
-// 验证回调
-Checker.check(Registry.GITHUB, callback);
-
-// 记录令牌响应
-Message tokenMsg = provider.token(callback);
-log.debug("令牌响应：{}", tokenMsg);
-```
-
-### Q5: 如何支持多个重定向 URI？
-
-```java
-// 根据请求动态上下文
-Context getContextForRequest(HttpServletRequest request) {
-    String redirectUri = determineRedirectUri(request);
-
-    return Context.builder()
-            .clientId(clientId)
-            .clientSecret(clientSecret)
-            .redirectUri(redirectUri)
-            .build();
-}
-```
-
-### Q6: 如何实现单点登出？
-
-```java
-@PostMapping("/logout")
-public Message logout(HttpSession session) {
-    Claims user = (Claims) session.getAttribute("user");
-
-    // 撤销令牌
-    provider.revoke(user.getToken());
-
-    // 清除会话
-    session.invalidate();
-
-    return Message.success("登出成功");
-}
-```
-
-### Q7: 如何处理令牌过期？
-
-```java
-// 在 API 调用前检查令牌过期
-public void callApi(Claims user) {
-    Authorization token = user.getToken();
-
-    if (isTokenExpired(token)) {
-        // 刷新令牌
-        Message refreshMsg = provider.refresh(token);
-        Authorization newToken = refreshMsg.getData(Authorization.class);
-        user.setToken(newToken);
-    }
-
-    // 使用新令牌
-    callApiWithToken(newToken.getToken());
-}
-```
-
-### Q8: 支持哪些提供程序？
-
-Bus Auth 支持 **40+** 提供程序，包括：
-
-- 社交：GitHub、Google、Facebook、Twitter、LinkedIn、Microsoft、Apple
-- 中国：微信、QQ、微博、抖音、钉钉、飞书
-- 企业：Okta、GitLab、Gitee、企业微信
-- 更多！查看 `Registry` 枚举获取完整列表。
-
------
-
-## 🔄 版本兼容性
-
-| Bus Auth 版本 | JDK 版本 | Spring Boot | 说明         |
-|:--------------|:---------|:------------|:-------------|
-| 8.x           | 17+      | 3.x         | 当前稳定版本 |
-| 7.x           | 11+      | 2.x         | 旧版本       |
-
------
-
-## 🚀 路线图
-
-- [ ] 其他 OAuth2 提供程序
-- [ ] OpenID Connect 发现支持
-- [ ] JWT 令牌验证工具
-- [ ] 增强的令牌缓存策略
-- [ ] 多租户身份验证支持
-- [ ] 身份验证事件钩子
-- [ ] 全面的测试覆盖
-
------
-
-## 📊 支持的提供程序
-
-### 社交登录
-
-- GitHub、GitLab、Gitee
-- Google、Facebook、Twitter、LinkedIn、Microsoft
-- Apple、Amazon、Slack、Line、VK
-- Stack Overflow、Pinterest、Figma
-
-### 中国平台
-
-- 微信（公众号、开放平台、小程序、企业）
-- QQ、微博、抖音、今日头条
-- 钉钉、飞书、百度、小米
-- 支付宝、淘宝、京东、美团
-
-### 企业
-
-- Okta、GitLab、Coding
-- 企业微信
-- 阿里云、华为云
-
-### 国内（中国）
-
-- 喜马拉雅、人人、开源中国
-- 酷家乐、程序员客栈、小红书
-- Teambition、饿了么
-
-完整列表请参见 `Registry` 枚举。
-
------
-
-## 🤝 贡献
-
-欢迎贡献！请随时提交拉取请求。
-
------
-
-## 📄 许可证
-
-[Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
-
-版权所有 (c) 2015-2026 miaixz.org 及其他贡献者。
-
------
-
-## 🔗 链接
-
-- [GitHub 仓库](https://github.com/818000/bus)
-- [问题追踪](https://github.com/818000/bus/issues)
-- [Maven Central](https://central.sonatype.com/artifact/org.miaixz/bus-auth)
+Bus Auth 使用 [Apache License 2.0](../LICENSE) 发布。

@@ -41,12 +41,12 @@ import org.miaixz.bus.fabric.Payload;
  *
  * @author Kimi Liu
  */
-public final class BodyCodec {
+public class BodyCodec {
 
     /**
      * Creates a body codec.
      */
-    private BodyCodec() {
+    public BodyCodec() {
         // No initialization required.
     }
 

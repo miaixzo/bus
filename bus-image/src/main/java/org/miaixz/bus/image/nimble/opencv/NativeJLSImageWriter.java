@@ -44,7 +44,7 @@ public class NativeJLSImageWriter extends AbstractNativeImageWriter {
      *
      * @param originatingProvider the originating provider.
      */
-    NativeJLSImageWriter(ImageWriterSpi originatingProvider) {
+    public NativeJLSImageWriter(ImageWriterSpi originatingProvider) {
         super(originatingProvider);
     }
 

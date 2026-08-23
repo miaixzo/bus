@@ -50,7 +50,7 @@ public class ContextScope implements AutoCloseable {
      * @param manager  state manager owning the current application context
      * @param snapshot snapshot to install; {@code null} installs the empty snapshot
      */
-    ContextScope(ContextManager manager, ContextState snapshot) {
+    public ContextScope(ContextManager manager, ContextState snapshot) {
         this.manager = manager;
         this.previous = manager.install(snapshot);
     }

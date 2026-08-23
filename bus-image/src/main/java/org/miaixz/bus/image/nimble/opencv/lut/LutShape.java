@@ -43,7 +43,7 @@ import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
  *
  * @author Kimi Liu
  */
-public final class LutShape {
+public class LutShape {
 
     /**
      * The linear value.

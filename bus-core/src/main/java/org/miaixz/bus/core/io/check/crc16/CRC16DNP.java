@@ -33,7 +33,7 @@ public class CRC16DNP extends CRC16Checksum {
     /**
      * Creates a CRC-16/DNP checksum implementation.
      */
-    private CRC16DNP() {
+    public CRC16DNP() {
         // No initialization required.
     }
 

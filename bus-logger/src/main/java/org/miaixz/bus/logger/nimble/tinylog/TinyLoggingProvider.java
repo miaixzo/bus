@@ -275,7 +275,7 @@ public class TinyLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * Converts a {@link org.miaixz.bus.logger.Level} to a {@link org.tinylog.Level}.
+     * Converts a bus logging level to a tinylog level.
      *
      * @param level the level to convert.
      * @return the corresponding tinylog level.
@@ -295,7 +295,7 @@ public class TinyLoggingProvider extends AbstractProvider {
     /**
      * Gets the current logging level.
      *
-     * @return the current logging level, or {@link org.miaixz.bus.logger.Level#OFF} if it cannot be determined
+     * @return the current logging level, or {@code OFF} if it cannot be determined
      */
     @Override
     public org.miaixz.bus.logger.Level getLevel() {

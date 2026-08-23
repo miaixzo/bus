@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.sensitive.nimble;
 
+import org.miaixz.bus.core.lang.EnumValue;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -42,6 +44,16 @@ public class NameProvider extends AbstractProvider {
      */
     public NameProvider() {
         // No initialization required.
+    }
+
+    /**
+     * Returns the masking strategy used to register this name provider.
+     *
+     * @return {@link EnumValue.Masking#NAME}
+     */
+    @Override
+    public EnumValue.Masking type() {
+        return EnumValue.Masking.NAME;
     }
 
     /**

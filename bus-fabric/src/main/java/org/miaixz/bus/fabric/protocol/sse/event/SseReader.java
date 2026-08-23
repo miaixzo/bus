@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol.sse.event;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -29,6 +28,7 @@ import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class SseReader implements AutoCloseable {
+public class SseReader implements AutoCloseable {
 
     /**
      * Reader-local parsing state independent from the owning session lifecycle.
@@ -598,9 +598,9 @@ public final class SseReader implements AutoCloseable {
             }
         }
         if (ascii) {
-            return new String(line, start, end - start, StandardCharsets.ISO_8859_1);
+            return new String(line, start, end - start, Charset.ISO_8859_1);
         }
-        return ByteString.of(line, start, end - start).string(StandardCharsets.UTF_8);
+        return ByteString.of(line, start, end - start).string(Charset.UTF_8);
     }
 
     /**

@@ -49,7 +49,7 @@ public class HL7SAXTransformer {
     /**
      * Creates a new instance.
      */
-    private HL7SAXTransformer() {
+    public HL7SAXTransformer() {
         // No initialization required.
     }
 

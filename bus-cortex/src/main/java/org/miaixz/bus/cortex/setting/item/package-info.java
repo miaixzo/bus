@@ -23,8 +23,8 @@
  * This package now holds the current-state item model, item lookup scope, query criteria, gray-routing operations,
  * revision operations, cache key operations, normalization policy, delivery exposure and format enums, request context,
  * and the lightweight item watcher used by diagnostics and demos. These types underpin the formal {@code setting.item}
- * resource within the canonical relationship {@code namespace -> app -> item}. Durable app/profile bindings are stored
- * in {@code setting_item_binding} and aggregated back into the runtime-only fields {@code app_ids} and
+ * resource within the canonical relationship {@code space -> app -> item}. Durable app/profile bindings are stored in
+ * {@code setting_item_binding} and aggregated back into the runtime-only fields {@code app_ids} and
  * {@code profile_ids}. ItemRevision history is nested one level deeper under {@code setting.item.revision}.
  *
  * @author Kimi Liu

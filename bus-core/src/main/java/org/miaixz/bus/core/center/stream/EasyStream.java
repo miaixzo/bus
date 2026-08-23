@@ -88,7 +88,7 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
      *
      * @param stream the {@link Stream} to wrap
      */
-    EasyStream(final Stream<T> stream) {
+    public EasyStream(final Stream<T> stream) {
         super(ObjectKit.isNull(stream) ? Stream.empty() : stream);
     }
 

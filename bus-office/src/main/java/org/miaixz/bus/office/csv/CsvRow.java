@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.BeanKit;
  *
  * @author Kimi Liu
  */
-public final class CsvRow extends ListWrapper<String> {
+public class CsvRow extends ListWrapper<String> {
 
     /**
      * Header map, mapping header names to their column indices.

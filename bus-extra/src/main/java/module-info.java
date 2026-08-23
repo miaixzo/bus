@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines the bus.extra module, providing extended utilities and integrations.
+ * Module: {@code bus.extra}
+ *
+ * <p>
+ * Provides optional utilities and integrations that extend the core Bus libraries.
+ *
+ * <p>
+ * Includes captchas, archive processing, emoji handling, FTP and SSH clients, image helpers, JSON adapters, mail,
+ * message queues, natural-language processing, pinyin conversion, QR codes, and template engines.
  *
  * @author Kimi Liu
  */
@@ -30,16 +37,12 @@ module bus.extra {
     requires bus.logger;
     requires bus.setting;
 
-    requires static lombok;
-    requires static jakarta.mail;
-    requires static jakarta.messaging;
-    requires static TinyPinyin;
     requires static activemq.client;
     requires static ansj.seg;
-    requires static beetl;
     requires static beetl.core;
     requires static bopomofo4j;
     requires static com.alibaba.fastjson2;
+    requires static com.fasterxml.jackson.annotation;
     requires static com.google.gson;
     requires static com.google.zxing;
     requires static com.hierynomus.sshj;
@@ -50,10 +53,14 @@ module bus.extra {
     requires static ftplet.api;
     requires static ftpserver.core;
     requires static hanlp.portable;
+    requires static jakarta.activation;
+    requires static jakarta.mail;
+    requires static jakarta.messaging;
     requires static jcseg.core;
     requires static jieba.analysis;
     requires static jpinyin;
     requires static kafka.clients;
+    requires static lombok;
     requires static lucene.analyzers.smartcn;
     requires static lucene.core;
     requires static mmseg4j.core;
@@ -67,6 +74,7 @@ module bus.extra {
     requires static rocketmq.client;
     requires static rocketmq.common;
     requires static thymeleaf;
+    requires static TinyPinyin;
     requires static tools.jackson.core;
     requires static tools.jackson.databind;
     requires static word;
@@ -85,6 +93,11 @@ module bus.extra {
     exports org.miaixz.bus.extra.json.provider;
     exports org.miaixz.bus.extra.mail;
     exports org.miaixz.bus.extra.mq;
+    exports org.miaixz.bus.extra.mq.provider.activemq;
+    exports org.miaixz.bus.extra.mq.provider.jms;
+    exports org.miaixz.bus.extra.mq.provider.kafka;
+    exports org.miaixz.bus.extra.mq.provider.rabbitmq;
+    exports org.miaixz.bus.extra.mq.provider.rocketmq;
     exports org.miaixz.bus.extra.nlp;
     exports org.miaixz.bus.extra.nlp.provider.analysis;
     exports org.miaixz.bus.extra.nlp.provider.ansj;

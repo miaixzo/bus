@@ -24,7 +24,7 @@ package org.miaixz.bus.spring.web.resolver;
  *
  * @author Kimi Liu
  */
-public final class BindingDefaults {
+public class BindingDefaults {
 
     /**
      * Built-in rule allowing Bus framework types.
@@ -32,9 +32,9 @@ public final class BindingDefaults {
     public static final String BUS_TYPE_RULE = "org.miaixz.bus.**";
 
     /**
-     * Prevents instantiation of this constants holder.
+     * Creates a binding-default namespace instance with no retained state.
      */
-    private BindingDefaults() {
+    public BindingDefaults() {
         // No initialization required.
     }
 

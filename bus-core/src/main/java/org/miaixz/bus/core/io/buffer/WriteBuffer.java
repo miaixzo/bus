@@ -34,7 +34,7 @@ import org.miaixz.bus.core.io.source.Source;
  *
  * @author Kimi Liu
  */
-public final class WriteBuffer extends OutputStream {
+public class WriteBuffer extends OutputStream {
 
     /**
      * Pending write slices.

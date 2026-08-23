@@ -37,6 +37,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
@@ -76,18 +77,17 @@ public class CtyunSmsProvider extends AbstractProvider<CtyunNotice, Context> {
         // Construct request serial number
         String uuid = UUID.randomUUID().toString();
 
-        String calculateContentHash = org.miaixz.bus.crypto.Builder.sha256(body);
+        String calculateContentHash = Builder.sha256(body);
 
-        byte[] kTime = org.miaixz.bus.crypto.Builder.hmacSha256(secret.getBytes()).digest(signatureTime.getBytes());
-        byte[] kAk = org.miaixz.bus.crypto.Builder.hmacSha256(key.getBytes()).digest(kTime);
-        byte[] kDate = org.miaixz.bus.crypto.Builder.hmacSha256(signatureDate.getBytes()).digest(kAk);
+        byte[] kTime = Builder.hmacSha256(secret.getBytes()).digest(signatureTime.getBytes());
+        byte[] kAk = Builder.hmacSha256(key.getBytes()).digest(kTime);
+        byte[] kDate = Builder.hmacSha256(signatureDate.getBytes()).digest(kAk);
 
         // SHA256 digest of the original message body
         String signatureStr = String.format("ctyun-eop-request-id:%s\neop-date:%s\n", uuid, signatureTime) + "\n\n"
                 + calculateContentHash;
         // Construct signature
-        String signature = Base64
-                .encode(org.miaixz.bus.crypto.Builder.hmacSha256(signatureStr.getBytes(Charset.UTF_8)).digest(kDate));
+        String signature = Base64.encode(Builder.hmacSha256(signatureStr.getBytes(Charset.UTF_8)).digest(kDate));
         String signHeader = String.format("%s Headers=ctyun-eop-request-id;eop-date Signature=%s", key, signature);
         map.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         map.put("ctyun-eop-request-id", uuid);

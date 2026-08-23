@@ -57,11 +57,11 @@ public class AnnotationWrapper<A extends Annotation> {
     private Environment environment;
 
     /**
-     * Private constructor to enforce factory method usage.
+     * Creates an annotation wrapper initialized by the supplied annotation source.
      *
      * @param clazz The class of the annotation to wrap.
      */
-    private AnnotationWrapper(Class<A> clazz) {
+    public AnnotationWrapper(Class<A> clazz) {
         this.clazz = clazz;
     }
 

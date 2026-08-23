@@ -19,250 +19,261 @@
 */
 package org.miaixz.bus.auth;
 
-import java.security.InvalidKeyException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.time.Duration;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
-import lombok.Getter;
-import lombok.Setter;
-
-import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.url.UrlDecoder;
-import org.miaixz.bus.core.net.url.UrlEncoder;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.MapKit;
-import org.miaixz.bus.core.xyz.RandomKit;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.Logger;
 
 /**
- * Builds OAuth URLs with query parameters, handle OAuth signatures, generate PKCE verification codes, and other
- * authentication flow features.
+ * Defines constants shared across bus-auth packages.
  *
  * @author Kimi Liu
  */
-@Getter
-@Setter
 public class Builder {
 
     /**
-     * Query parameter map.
+     * Limitation stating that returned contacts follow the application's configured visibility scope.
      */
-    private final Map<String, String> params = new LinkedHashMap<>(7);
+    public static final String REALM_LIMITATION_APPLICATION_VISIBLE_CONTACT_SCOPE = "application-visible-contact-scope";
+    /**
+     * Limitation stating that hierarchical continuation pages replay traversal from the root.
+     */
+    public static final String REALM_LIMITATION_HIERARCHY_PAGES_REPLAY_FROM_ROOT = "hierarchy-pages-replay-from-root";
+    /**
+     * Limitation stating that an upstream unpaged endpoint is fully reread for each continuation page.
+     */
+    public static final String REALM_LIMITATION_UNPAGED_REPLAY = "unpaged-endpoint-requires-full-response-replay";
+    /**
+     * Limitation stating that a changed replay projection invalidates the current snapshot continuation.
+     */
+    public static final String REALM_LIMITATION_REPLAY_CHANGE_FAILURE = "snapshot-replay-fails-when-source-projection-changes";
+    /**
+     * Limitation stating that a Variant provides snapshots without a recoverable change feed.
+     */
+    public static final String REALM_LIMITATION_SNAPSHOT_ONLY = "snapshot-only-no-change-feed";
+    /**
+     * Limitation stating that an identical resource key may be emitted again on later snapshot pages.
+     */
+    public static final String REALM_LIMITATION_REPEATED_RESOURCES = "snapshot-may-repeat-identical-resource-keys-across-pages";
+    /**
+     * Management target key for listing Realm users.
+     */
+    public static final String REALM_USERS = "users";
+    /**
+     * Management target key for retrieving one Realm user.
+     */
+    public static final String REALM_USER = "user";
+    /**
+     * Management target key for listing Realm organizations.
+     */
+    public static final String REALM_ORGANIZATIONS = "organizations";
+    /**
+     * Management target key for retrieving one Realm organization.
+     */
+    public static final String REALM_ORGANIZATION = "organization";
+    /**
+     * Management target key for listing users belonging to an organization.
+     */
+    public static final String REALM_ORGANIZATION_USERS = "organization-users";
+    /**
+     * Management target key for listing Realm groups.
+     */
+    public static final String REALM_GROUPS = "groups";
+    /**
+     * Management target key for retrieving one Realm group.
+     */
+    public static final String REALM_GROUP = "group";
+    /**
+     * Management target key for listing members of a Realm group.
+     */
+    public static final String REALM_GROUP_MEMBERS = "group-members";
+    /**
+     * Management target key for listing Realm roles.
+     */
+    public static final String REALM_ROLES = "roles";
+    /**
+     * Management target key for retrieving one Realm role.
+     */
+    public static final String REALM_ROLE = "role";
+    /**
+     * Management target key for listing members assigned to a role.
+     */
+    public static final String REALM_ROLE_MEMBERS = "role-members";
+    /**
+     * Management target key for listing role-assignment resources.
+     */
+    public static final String REALM_ROLE_ASSIGNMENTS = "role-assignments";
+    /**
+     * Management target key for listing service accounts or service principals.
+     */
+    public static final String REALM_SERVICE_ACCOUNTS = "service-accounts";
+    /**
+     * Management target key for reading a recoverable Realm change feed.
+     */
+    public static final String REALM_CHANGES = "changes";
+    /**
+     * Management target key for listing organization assignments.
+     */
+    public static final String REALM_ORGANIZATION_ASSIGNMENTS = "organization-assignments";
+    /**
+     * Cursor envelope field carrying the stable Vendor identifier.
+     */
+    public static final String VENDOR_FIELD = "vendor";
+    /**
+     * Cursor envelope field carrying the stable Variant identifier.
+     */
+    public static final String VARIANT_FIELD = "variant";
+    /**
+     * Cursor envelope field carrying the Realm operation identifier.
+     */
+    public static final String OPERATION_FIELD = "operation";
+    /**
+     * Cursor envelope field carrying the current finite pagination phase.
+     */
+    public static final String CURSOR_PHASE_FIELD = "phase";
+    /**
+     * Cursor envelope field carrying the resource kind selected for the phase.
+     */
+    public static final String CURSOR_KIND_FIELD = "kind";
+    /**
+     * Cursor envelope field containing the operation-specific continuation position.
+     */
+    public static final String CURSOR_POSITION_FIELD = "position";
+    /**
+     * Cursor position field containing a validated upstream token, offset, page index, marker, or next URL.
+     */
+    public static final String CURSOR_NEXT_FIELD = "next";
+    /**
+     * Replay cursor position field containing the next stable object offset.
+     */
+    public static final String CURSOR_OFFSET_FIELD = "offset";
+    /**
+     * Replay cursor position field containing the next relation offset within the current object.
+     */
+    public static final String CURSOR_RELATION_OFFSET_FIELD = "relation_offset";
+    /**
+     * Replay cursor position field binding continuation to the current stable parent identifier.
+     */
+    public static final String CURSOR_PARENT_ID_FIELD = "parent_id";
+    /**
+     * Replay cursor position field carrying the lowercase SHA-256 projection fingerprint.
+     */
+    public static final String CURSOR_FINGERPRINT_FIELD = "fingerprint";
+    /**
+     * Stable outcome-detail field carrying an upstream HTTP status.
+     */
+    public static final String HTTP_STATUS_FIELD = "http_status";
+    /**
+     * Stable outcome-detail field carrying a non-sensitive upstream error code.
+     */
+    public static final String ERROR_CODE_FIELD = "error_code";
+    /**
+     * Stable outcome-detail field carrying a parsed retry delay in seconds.
+     */
+    public static final String RETRY_AFTER_SECONDS_FIELD = "retry_after_seconds";
+    /**
+     * Maximum number of resources or relations returned in one Realm page collection.
+     */
+    public static final int MAXIMUM_REALM_PAGE_SIZE = Normal._500;
+    /**
+     * Maximum encoded character length accepted for an opaque Realm cursor.
+     */
+    public static final int MAXIMUM_REALM_CURSOR_LENGTH = Normal._8192;
+    /**
+     * Maximum JSON nesting depth accepted from Realm management APIs.
+     */
+    public static final int MAXIMUM_REALM_JSON_DEPTH = Normal._64;
+    /**
+     * Lifetime assigned to locally constructed upstream JWT assertions.
+     */
+    public static final Duration UPSTREAM_ASSERTION_LIFETIME = Duration.ofHours(Normal._1);
+    /**
+     * Source-private cache key used for one upstream access token.
+     */
+    public static final String UPSTREAM_ACCESS_TOKEN_CACHE_KEY = "upstream-access-token";
+    /**
+     * Maximum safety interval subtracted from an upstream access-token lifetime before caching.
+     */
+    public static final Duration UPSTREAM_ACCESS_TOKEN_MAXIMUM_SKEW = Duration.ofSeconds(Normal._60);
+    /**
+     * Divisor used to derive the proportional access-token expiration safety interval.
+     */
+    public static final int UPSTREAM_ACCESS_TOKEN_SKEW_DIVISOR = Normal._10;
+    /**
+     * Maximum size accepted for a bounded JSON or remote response document.
+     */
+    public static final long MAXIMUM_DOCUMENT_BYTES = Normal.MEBI;
+    /**
+     * Maximum retry count for optimistic create, update, and state transitions.
+     */
+    public static final int MAXIMUM_RETRY_ATTEMPTS = Normal._3;
+    /**
+     * Stable failure-detail key carrying an OAuth error code.
+     */
+    public static final String OAUTH_ERROR = "oauth_error";
+    /**
+     * Stable failure-detail key recording that redirect validation has completed.
+     */
+    public static final String REDIRECT_VALIDATED = "redirect_validated";
+    /**
+     * Registered JOSE public-key use for signatures.
+     */
+    public static final String SIGNATURE = "sig";
+    /**
+     * Framework key-material purpose for signing operations.
+     */
+    public static final String SIGNING = "signing";
+    /**
+     * Registered JOSE key operation for signature verification.
+     */
+    public static final String VERIFY = "verify";
+    /**
+     * Stable capability key for beginning external Source authentication.
+     */
+    public static final String SOURCE_AUTHENTICATION_INITIATE = "source_authentication.initiate";
+    /**
+     * Stable capability key for completing external Source authentication.
+     */
+    public static final String SOURCE_AUTHENTICATION_COMPLETE = "source_authentication.complete";
+    /**
+     * Diagnostic marker for an absent value.
+     */
+    public static final String ABSENT_VALUE = "[ABSENT]";
+    /**
+     * Diagnostic marker for a configured value whose material must not be rendered.
+     */
+    public static final String CONFIGURED_VALUE = "[CONFIGURED]";
+    /**
+     * Diagnostic marker for redacted sensitive material.
+     */
+    public static final String REDACTED_VALUE = "[REDACTED]";
+    /**
+     * Shared diagnostic fragment for Source option values whose secrets must not be rendered.
+     */
+    public static final String REDACTED_SOURCE_OPTIONS = ", clientId=[REDACTED], credential=[REDACTED], redirectUri=[REDACTED], scopes=";
+    /**
+     * Shared diagnostic fragment preceding a Vendor variant identifier.
+     */
+    public static final String VARIANT = ", variant=";
+    /**
+     * Shared diagnostic prefix for access-token results.
+     */
+    public static final String REDACTED_ACCESS_TOKEN = "Access[accessToken=[REDACTED], expiresIn=";
 
     /**
-     * Base URL.
+     * Creates an authentication constant holder with no retained state.
      */
-    private String baseUrl;
-
-    /**
-     * Private constructor to prevent direct instantiation.
-     */
-    private Builder() {
+    public Builder() {
         // No initialization required.
     }
 
     /**
-     * Creates a Builder instance from a base URL.
+     * Derives the common lowercase SHA-256 hexadecimal representation used for irreversible protocol indexes.
      *
-     * @param baseUrl the base URL
-     * @return a new Builder instance
+     * @param value non-secret or opaque protocol value
+     * @return lowercase SHA-256 hexadecimal digest
      */
-    public static Builder fromUrl(String baseUrl) {
-        Builder builder = new Builder();
-        builder.setBaseUrl(baseUrl);
-        return builder;
-    }
-
-    /**
-     * Parses a string into a key-value map. The string format is {@code key=value&key=value}.
-     *
-     * @param text the string to parse
-     * @return a key-value map
-     */
-    public static Map<String, String> parseStringToMap(String text) {
-        Map<String, String> res;
-        if (text.contains(Symbol.AND)) {
-            String[] fields = text.split(Symbol.AND);
-            res = new HashMap<>((int) (fields.length / 0.75 + 1));
-            for (String field : fields) {
-                if (field.contains(Symbol.EQUAL)) {
-                    String[] keyValue = field.split(Symbol.EQUAL);
-                    res.put(
-                            UrlDecoder.decode(keyValue[0]),
-                            keyValue.length == 2 ? UrlDecoder.decode(keyValue[1]) : null);
-                }
-            }
-        } else {
-            res = new HashMap<>(0);
-        }
-        return res;
-    }
-
-    /**
-     * Converts a key-value map to a string. The format is {@code key=value&key=value}.
-     *
-     * @param map    the map to convert
-     * @param encode whether to URL-encode the values
-     * @return the converted string, or an empty string if the map is null or empty
-     */
-    public static String parseMapToString(Map<String, String> map, boolean encode) {
-        if (null == map || map.isEmpty()) {
-            return Normal.EMPTY;
-        }
-        List<String> paramList = new ArrayList<>();
-        map.forEach((k, v) -> {
-            if (null == v) {
-                paramList.add(k + Symbol.EQUAL);
-            } else {
-                paramList.add(k + Symbol.EQUAL + (encode ? UrlEncoder.encodeAll(v) : v));
-            }
-        });
-        return String.join(Symbol.AND, paramList);
-    }
-
-    /**
-     * Generates an HMAC signature.
-     *
-     * @param key       the signing key
-     * @param data      the data to be signed
-     * @param algorithm the signing algorithm (e.g., HMAC-SHA1)
-     * @return the signature as a byte array
-     * @throws AuthorizedException if the algorithm is not supported or the key is invalid
-     */
-    public static byte[] sign(byte[] key, byte[] data, String algorithm) {
-        try {
-            Mac mac = Mac.getInstance(algorithm);
-            mac.init(new SecretKeySpec(key, algorithm));
-            return mac.doFinal(data);
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.warn(
-                    false,
-                    "Auth",
-                    ex,
-                    "OAuth signature failed: reason=unsupportedAlgorithm, algorithm={}, dataBytes={}",
-                    algorithm,
-                    data == null ? 0 : data.length);
-            throw new AuthorizedException("Unsupported algorithm: " + algorithm, ex);
-        } catch (InvalidKeyException ex) {
-            Logger.warn(
-                    false,
-                    "Auth",
-                    ex,
-                    "OAuth signature failed: reason=invalidKey, algorithm={}, keyBytes={}, dataBytes={}",
-                    algorithm,
-                    key == null ? 0 : key.length,
-                    data == null ? 0 : data.length);
-            throw new AuthorizedException("Invalid key: " + ArrayKit.toString(key), ex);
-        }
-    }
-
-    /**
-     * Generates a Code Verifier for OAuth 2.0 PKCE (Proof Key for Code Exchange).
-     *
-     * @return a Base64 URL-safe random string
-     */
-    public static String codeVerifier() {
-        return Base64.encodeUrlSafe(RandomKit.randomString(50));
-    }
-
-    /**
-     * Generates a Code Challenge for OAuth 2.0 PKCE. Reference: https://tools.ietf.org/html/rfc7636#section-4.2
-     *
-     * @param codeChallengeMethod the code challenge method (e.g., "S256" or "plain")
-     * @param codeVerifier        the code verifier generated by the client
-     * @return the code challenge
-     */
-    public static String codeChallenge(String codeChallengeMethod, String codeVerifier) {
-        if (Algorithm.SHA256.getValue().equalsIgnoreCase(codeChallengeMethod)) {
-            // code_challenge = BASE64URL-ENCODE(SHA256(ASCII(code_verifier)))
-            return new String(Base64.encode(digest(codeVerifier), true), Charset.US_ASCII);
-        } else {
-            return codeVerifier;
-        }
-    }
-
-    /**
-     * Digests a string using the SHA-256 algorithm.
-     *
-     * @param str the string to digest
-     * @return the digested byte array, or null if the algorithm is unavailable
-     */
-    public static byte[] digest(String str) {
-        MessageDigest messageDigest;
-        try {
-            messageDigest = MessageDigest.getInstance(Algorithm.SHA256.getValue());
-            messageDigest.update(str.getBytes(Charset.UTF_8));
-            return messageDigest.digest();
-        } catch (NoSuchAlgorithmException e) {
-            Logger.warn(
-                    false,
-                    "Auth",
-                    e,
-                    "SHA256 digest failed: inputPresent={}, exception={}",
-                    str != null,
-                    e.getClass().getSimpleName());
-        }
-        return null;
-    }
-
-    /**
-     * Builds the URL without encoding parameter values.
-     *
-     * @return the constructed URL
-     */
-    public String build() {
-        return this.build(false);
-    }
-
-    /**
-     * Builds the URL, with an option to URL-encode parameter values.
-     *
-     * @param encode whether to URL-encode the parameter values
-     * @return the constructed URL
-     */
-    public String build(boolean encode) {
-        if (MapKit.isEmpty(this.params)) {
-            return this.baseUrl;
-        }
-        String baseUrl = StringKit.appendIfMissing(this.baseUrl, Symbol.QUESTION_MARK, Symbol.AND);
-        String paramString = parseMapToString(this.params, encode);
-        return baseUrl + paramString;
-    }
-
-    /**
-     * Retrieves a read-only map of query parameters.
-     *
-     * @return an unmodifiable map of parameters
-     */
-    public Map<String, Object> getReadOnlyParams() {
-        return Collections.unmodifiableMap(params);
-    }
-
-    /**
-     * Adds a query parameter to the URL.
-     *
-     * @param key   the parameter name
-     * @param value the parameter value
-     * @return the current Builder instance
-     * @throws RuntimeException if the parameter name is empty
-     */
-    public Builder queryParam(String key, Object value) {
-        if (StringKit.isEmpty(key)) {
-            throw new RuntimeException("Parameter name cannot be empty");
-        }
-        String valueAsString = (value != null ? value.toString() : null);
-        this.params.put(key, valueAsString);
-        return this;
+    public static String sha256Hex(final String value) {
+        return org.miaixz.bus.crypto.Builder.sha256Hex(value);
     }
 
 }

@@ -43,7 +43,7 @@ import org.miaixz.bus.fabric.runtime.resource.ResourceScope;
  *
  * @author Kimi Liu
  */
-public final class LifecycleScope {
+public class LifecycleScope {
 
     /**
      * Current lifecycle state.
@@ -140,7 +140,7 @@ public final class LifecycleScope {
      * @param cancelMarker  marker emitted for cancellation, or {@code null}
      * @param failureMarker marker emitted for failure, or {@code null}
      */
-    private LifecycleScope(final State initial, final Object source, final String name, final Listener<Object> listener,
+    public LifecycleScope(final State initial, final Object source, final String name, final Listener<Object> listener,
             final EventObserver observer, final Clock clock, final ObservationMarker startMarker,
             final ObservationMarker openMarker, final ObservationMarker closeMarker,
             final ObservationMarker cancelMarker, final ObservationMarker failureMarker) {

@@ -79,7 +79,7 @@ public class Registry {
     }
 
     /**
-     * Private constructor to prevent direct instantiation.
+     * Creates an independent validation registry.
      */
     public Registry() {
         // No initialization required.

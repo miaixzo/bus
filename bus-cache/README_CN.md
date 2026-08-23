@@ -1024,12 +1024,13 @@ public class CacheWarmupService implements ApplicationRunner {
 
 ### MemoryCache 属性
 
-| 属性                | 类型   | 默认值   | 描述                  |
-|:--------------------|:-------|:---------|:----------------------|
-| `maximumSize`       | `long` | `1000`   | 最大条目数            |
-| `expireAfterWrite`  | `long` | `180000` | TTL（毫秒）           |
-| `expireAfterAccess` | `long` | `0`      | TTI（毫秒，0 = 禁用） |
-| `initialCapacity`   | `int`  | `16`     | 初始映射容量          |
+| 属性                | 类型      | 默认值   | 描述                  |
+|:--------------------|:----------|:---------|:----------------------|
+| `maximumSize`       | `long`    | `1000`   | 最大条目数            |
+| `expireAfterWrite`  | `long`    | `180000` | TTL（毫秒）           |
+| `expireAfterAccess` | `long`    | `0`      | TTI（毫秒，0 = 禁用） |
+| `initialCapacity`   | `int`     | `16`     | 初始映射容量          |
+| `schedulePrune`     | `boolean` | `true`   | 启用定期过期清理      |
 
 ### CaffeineCache 属性
 

@@ -485,7 +485,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @return the transfer syntax.
      */
-    public final String getTransferSyntax() {
+    public String getTransferSyntax() {
         return tsuid;
     }
 
@@ -497,7 +497,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      * @return Limit of initial allocated memory for value or -1 for no limit
      * @see #setAllocateLimit(int)
      */
-    public final int getAllocateLimit() {
+    public int getAllocateLimit() {
         return allocateLimit;
     }
 
@@ -520,7 +520,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @param allocateLimit limit of initial allocated memory or -1 for no limit
      */
-    public final void setAllocateLimit(int allocateLimit) {
+    public void setAllocateLimit(int allocateLimit) {
         if (!(allocateLimit > 0 || allocateLimit == -1))
             throw new IllegalArgumentException("allocateLimit must be a positive number or -1");
 
@@ -532,7 +532,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @return the uri.
      */
-    public final String getURI() {
+    public String getURI() {
         return uri;
     }
 
@@ -541,7 +541,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @param uri the uri.
      */
-    public final void setURI(String uri) {
+    public void setURI(String uri) {
         this.uri = uri;
     }
 
@@ -550,7 +550,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @return the include bulk data.
      */
-    public final IncludeBulkData getIncludeBulkData() {
+    public IncludeBulkData getIncludeBulkData() {
         return includeBulkData;
     }
 
@@ -559,7 +559,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @param includeBulkData the include bulk data.
      */
-    public final void setIncludeBulkData(IncludeBulkData includeBulkData) {
+    public void setIncludeBulkData(IncludeBulkData includeBulkData) {
         if (includeBulkData == null)
             throw new NullPointerException();
         this.includeBulkData = includeBulkData;
@@ -570,7 +570,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @return the bulk data descriptor.
      */
-    public final BulkDataDescriptor getBulkDataDescriptor() {
+    public BulkDataDescriptor getBulkDataDescriptor() {
         return bulkDataDescriptor;
     }
 
@@ -579,7 +579,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @param bulkDataDescriptor the bulk data descriptor.
      */
-    public final void setBulkDataDescriptor(BulkDataDescriptor bulkDataDescriptor) {
+    public void setBulkDataDescriptor(BulkDataDescriptor bulkDataDescriptor) {
         this.bulkDataDescriptor = bulkDataDescriptor;
     }
 
@@ -588,7 +588,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @return the bulk data file prefix.
      */
-    public final String getBulkDataFilePrefix() {
+    public String getBulkDataFilePrefix() {
         return blkFilePrefix;
     }
 
@@ -597,7 +597,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @param blkFilePrefix the blk file prefix.
      */
-    public final void setBulkDataFilePrefix(String blkFilePrefix) {
+    public void setBulkDataFilePrefix(String blkFilePrefix) {
         this.blkFilePrefix = blkFilePrefix;
     }
 
@@ -606,7 +606,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @return the bulk data file suffix.
      */
-    public final String getBulkDataFileSuffix() {
+    public String getBulkDataFileSuffix() {
         return blkFileSuffix;
     }
 
@@ -615,7 +615,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @param blkFileSuffix the blk file suffix.
      */
-    public final void setBulkDataFileSuffix(String blkFileSuffix) {
+    public void setBulkDataFileSuffix(String blkFileSuffix) {
         this.blkFileSuffix = blkFileSuffix;
     }
 
@@ -624,7 +624,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @return the bulk data directory.
      */
-    public final File getBulkDataDirectory() {
+    public File getBulkDataDirectory() {
         return blkDirectory;
     }
 
@@ -633,7 +633,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @param blkDirectory the blk directory.
      */
-    public final void setBulkDataDirectory(File blkDirectory) {
+    public void setBulkDataDirectory(File blkDirectory) {
         this.blkDirectory = blkDirectory;
     }
 
@@ -642,7 +642,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isConcatenateBulkDataFiles() {
+    public boolean isConcatenateBulkDataFiles() {
         return catBlkFiles;
     }
 
@@ -651,7 +651,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @param catBlkFiles the cat blk files.
      */
-    public final void setConcatenateBulkDataFiles(boolean catBlkFiles) {
+    public void setConcatenateBulkDataFiles(boolean catBlkFiles) {
         this.catBlkFiles = catBlkFiles;
     }
 
@@ -660,7 +660,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @return the bulk data files.
      */
-    public final List<File> getBulkDataFiles() {
+    public List<File> getBulkDataFiles() {
         if (blkFiles != null)
             return blkFiles;
         else
@@ -672,7 +672,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @param handler the handler.
      */
-    public final void setDicomInputHandler(ImageInputHandler handler) {
+    public void setDicomInputHandler(ImageInputHandler handler) {
         if (handler == null)
             throw new NullPointerException("handler");
         this.handler = handler;
@@ -681,7 +681,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     /**
      * Set {@code DicomInputHandler} to parse Datasets without accumulating read attributes in {@code Attributes}.
      */
-    public final void setSkipAllDicomInputHandler() {
+    public void setSkipAllDicomInputHandler() {
         this.handler = new ImageInputHandler() {
 
             @Override
@@ -731,7 +731,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @param val the val.
      */
-    public final void setFileMetaInformationGroupLength(byte[] val) {
+    public void setFileMetaInformationGroupLength(byte[] val) {
         fmiEndPos = pos + ByteKit.bytesToInt(val, 0, bigEndian);
     }
 
@@ -740,7 +740,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @return the preamble.
      */
-    public final byte[] getPreamble() {
+    public byte[] getPreamble() {
         return preamble;
     }
 
@@ -760,7 +760,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @return the operation result.
      */
-    public final int level() {
+    public int level() {
         return itemPointers.size();
     }
 
@@ -769,7 +769,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @return the operation result.
      */
-    public final int tag() {
+    public int tag() {
         return tag;
     }
 
@@ -778,7 +778,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @return the operation result.
      */
-    public final VR vr() {
+    public VR vr() {
         return vr;
     }
 
@@ -788,7 +788,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @return value length of last parsed data element header.
      */
-    public final int length() {
+    public int length() {
         return (int) length;
     }
 
@@ -806,7 +806,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @return the position.
      */
-    public final long getPosition() {
+    public long getPosition() {
         return pos;
     }
 
@@ -833,7 +833,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean bigEndian() {
+    public boolean bigEndian() {
         return bigEndian;
     }
 
@@ -842,7 +842,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean explicitVR() {
+    public boolean explicitVR() {
         return explicitVR;
     }
 
@@ -916,7 +916,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      * @throws IOException if the operation cannot be completed.
      */
     @Override
-    public final int read() throws IOException {
+    public int read() throws IOException {
         int read = super.read();
         if (read >= 0)
             pos++;
@@ -933,7 +933,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      * @throws IOException if the operation cannot be completed.
      */
     @Override
-    public final int read(byte[] b, int off, int len) throws IOException {
+    public int read(byte[] b, int off, int len) throws IOException {
         int read = super.read(b, off, len);
         if (read > 0)
             pos += read;
@@ -948,7 +948,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      * @throws IOException if the operation cannot be completed.
      */
     @Override
-    public final int read(byte[] b) throws IOException {
+    public int read(byte[] b) throws IOException {
         return read(b, 0, b.length);
     }
 
@@ -960,7 +960,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      * @throws IOException if the operation cannot be completed.
      */
     @Override
-    public final long skip(long n) throws IOException {
+    public long skip(long n) throws IOException {
         long skip = super.skip(n);
         pos += skip;
         return skip;

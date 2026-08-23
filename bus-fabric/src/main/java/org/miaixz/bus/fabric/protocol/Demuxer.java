@@ -40,7 +40,7 @@ import org.miaixz.bus.fabric.Session;
  *
  * @author Kimi Liu
  */
-public final class Demuxer implements Handler {
+public class Demuxer implements Handler {
 
     /**
      * Immutable handlers indexed by channel identifier.
@@ -70,7 +70,7 @@ public final class Demuxer implements Handler {
      * @param channelHeader header name inspected when the resolver does not provide a channel
      * @param resolver      optional function that resolves a channel directly from a message
      */
-    private Demuxer(final Map<String, Handler> handlers, final Handler fallback, final String channelHeader,
+    public Demuxer(final Map<String, Handler> handlers, final Handler fallback, final String channelHeader,
             final Function<Message, String> resolver) {
         this.handlers = Collections.unmodifiableMap(new LinkedHashMap<>(require(handlers, "Handlers")));
         this.fallback = fallback;
@@ -233,7 +233,7 @@ public final class Demuxer implements Handler {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Mutable channel registrations in insertion order.
@@ -258,7 +258,7 @@ public final class Demuxer implements Handler {
         /**
          * Creates a builder.
          */
-        private Builder() {
+        public Builder() {
             // No initialization required.
         }
 

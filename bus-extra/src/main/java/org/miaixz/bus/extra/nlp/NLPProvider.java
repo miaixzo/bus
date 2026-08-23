@@ -20,7 +20,6 @@
 package org.miaixz.bus.extra.nlp;
 
 import org.miaixz.bus.core.Provider;
-import org.miaixz.bus.core.lang.EnumValue;
 
 /**
  * Interface definition for Natural Language Processing (NLP) word segmentation engines. Users implement this interface
@@ -29,7 +28,15 @@ import org.miaixz.bus.core.lang.EnumValue;
  *
  * @author Kimi Liu
  */
-public interface NLPProvider extends Provider {
+public interface NLPProvider extends Provider<String> {
+
+    /**
+     * Returns the stable, case-insensitive engine name used for named SPI selection.
+     *
+     * @return non-blank NLP engine name without an {@code Engine} suffix
+     */
+    @Override
+    String type();
 
     /**
      * Performs word segmentation on the given text and returns the result. Implementations should process the input
@@ -39,15 +46,5 @@ public interface NLPProvider extends Provider {
      * @return An {@link NLPResult} implementation containing the segmented words.
      */
     NLPResult parse(CharSequence text);
-
-    /**
-     * Returns the type of this NLP provider. By default, it returns {@link EnumValue.Povider#NLP}.
-     *
-     * @return The type of the provider, typically {@link EnumValue.Povider#NLP}.
-     */
-    @Override
-    default Object type() {
-        return EnumValue.Povider.NLP;
-    }
 
 }

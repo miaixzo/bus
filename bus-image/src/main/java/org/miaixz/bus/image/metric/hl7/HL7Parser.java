@@ -82,7 +82,7 @@ public class HL7Parser {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isIncludeNamespaceDeclaration() {
+    public boolean isIncludeNamespaceDeclaration() {
         return namespace == NAMESPACE;
     }
 
@@ -91,7 +91,7 @@ public class HL7Parser {
      *
      * @param includeNameSpaceDeclaration the include name space declaration.
      */
-    public final void setIncludeNamespaceDeclaration(boolean includeNameSpaceDeclaration) {
+    public void setIncludeNamespaceDeclaration(boolean includeNameSpaceDeclaration) {
         this.namespace = includeNameSpaceDeclaration ? NAMESPACE : Normal.EMPTY;
     }
 

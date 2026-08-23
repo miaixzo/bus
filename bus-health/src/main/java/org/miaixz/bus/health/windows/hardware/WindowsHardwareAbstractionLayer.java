@@ -31,7 +31,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstraction
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class WindowsHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
+public class WindowsHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
 
     /**
      * Creates a new WindowsHardwareAbstractionLayer instance.

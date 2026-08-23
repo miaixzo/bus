@@ -39,12 +39,12 @@ import org.miaixz.bus.health.builtin.software.OSDesktopWindow;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Xwininfo {
+public class Xwininfo {
 
     /**
      * Keeps X11 desktop-window queries on the static API.
      */
-    private Xwininfo() {
+    public Xwininfo() {
         // No initialization required.
     }
 

@@ -63,7 +63,7 @@ public class TransIterator<F, T> implements Iterator<T> {
      * @return {@code true} if the iteration has more elements
      */
     @Override
-    public final boolean hasNext() {
+    public boolean hasNext() {
         return backingIterator.hasNext();
     }
 
@@ -75,7 +75,7 @@ public class TransIterator<F, T> implements Iterator<T> {
      * @throws java.util.NoSuchElementException if the iteration has no more elements
      */
     @Override
-    public final T next() {
+    public T next() {
         return func.apply(backingIterator.next());
     }
 
@@ -89,7 +89,7 @@ public class TransIterator<F, T> implements Iterator<T> {
      * @throws UnsupportedOperationException if the {@code remove} operation is not supported by the backing iterator.
      */
     @Override
-    public final void remove() {
+    public void remove() {
         backingIterator.remove();
     }
 

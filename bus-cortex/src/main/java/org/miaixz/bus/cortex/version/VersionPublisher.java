@@ -169,10 +169,9 @@ public class VersionPublisher {
     public VersionRecord publish(VersionRecord record) {
         VersionRecord prepared = prepare(record, VersionStatus.ACTIVE, true);
         enforce("publish", prepared);
-        VersionRecord previous = store.current(prepared.getNamespace_id(), prepared.getTrack());
+        VersionRecord previous = store.current(prepared.getSpace_id(), prepared.getTrack());
         store.save(prepared);
-        VersionRecord current = store
-                .setCurrent(prepared.getNamespace_id(), prepared.getTrack(), prepared.getVersion());
+        VersionRecord current = store.setCurrent(prepared.getSpace_id(), prepared.getTrack(), prepared.getVersion());
         VersionRecord saved = current == null ? prepared : current;
         emitDeprecated(previous, saved);
         emit(VERSION_PUBLISH_EVENT, saved);
@@ -182,22 +181,22 @@ public class VersionPublisher {
     /**
      * Rolls the current release pointer back to a prior version on the same track.
      *
-     * @param namespace release namespace
-     * @param track     release track
-     * @param version   target release version
+     * @param space   release space
+     * @param track   release track
+     * @param version target release version
      * @return persisted rollback target or {@code null}
      */
-    public VersionRecord rollback(String namespace, String track, String version) {
+    public VersionRecord rollback(String space, String track, String version) {
         String normalizedTrack = ReleaseTrack.normalize(track);
-        VersionRecord target = store.find(namespace, version, normalizedTrack);
-        enforce("rollback", namespace, normalizedTrack, version, target == null ? null : target.getVersionStatus());
+        VersionRecord target = store.find(space, version, normalizedTrack);
+        enforce("rollback", space, normalizedTrack, version, target == null ? null : target.getVersionStatus());
         if (target == null) {
             return null;
         }
-        VersionRecord previous = store.current(namespace, normalizedTrack);
+        VersionRecord previous = store.current(space, normalizedTrack);
         attachRollbackMetadata(target, previous);
         store.save(target);
-        VersionRecord saved = store.setCurrent(namespace, normalizedTrack, version);
+        VersionRecord saved = store.setCurrent(space, normalizedTrack, version);
         emitDeprecated(previous, saved);
         emit(VERSION_ROLLBACK_EVENT, saved);
         return saved;
@@ -206,27 +205,27 @@ public class VersionPublisher {
     /**
      * Deletes a release record.
      *
-     * @param namespace release namespace
-     * @param track     release track
-     * @param version   release version
+     * @param space   release space
+     * @param track   release track
+     * @param version release version
      * @return deleted release record or {@code null}
      */
-    public VersionRecord delete(String namespace, String track, String version) {
-        enforce("delete", namespace, track, version, null);
-        VersionRecord deleted = store.delete(namespace, version, track);
+    public VersionRecord delete(String space, String track, String version) {
+        enforce("delete", space, track, version, null);
+        VersionRecord deleted = store.delete(space, version, track);
         emit(VERSION_DELETE_EVENT, deleted);
         return deleted;
     }
 
     /**
-     * Resolves the current release for a namespace and track.
+     * Resolves the current release for a space and track.
      *
-     * @param namespace release namespace
-     * @param track     release track
+     * @param space release space
+     * @param track release track
      * @return current release record or {@code null}
      */
-    public VersionRecord resolveCurrent(String namespace, String track) {
-        return store.current(namespace, track);
+    public VersionRecord resolveCurrent(String space, String track) {
+        return store.current(space, track);
     }
 
     /**
@@ -273,13 +272,13 @@ public class VersionPublisher {
         change.setAction(action);
         change.setResourceType("VERSION");
         change.setResourceId(ReleaseTrack.normalize(record.getTrack()) + Symbol.COLON + record.getVersion());
-        change.setNamespace_id(record.getNamespace_id());
+        change.setSpace_id(record.getSpace_id());
         change.setPayload(JsonKit.toJsonString(record));
         change.setSequence(
                 record.getPublished() == null ? record.getCreated() == null ? 0L : record.getCreated()
                         : record.getPublished());
         change.setIdempotencyKey(
-                "version:" + action + Symbol.COLON + change.getNamespace_id() + Symbol.COLON + change.getResourceId());
+                "version:" + action + Symbol.COLON + change.getSpace_id() + Symbol.COLON + change.getResourceId());
         changeLogStore.append(change);
     }
 
@@ -313,7 +312,7 @@ public class VersionPublisher {
             return;
         }
         VersionRecord deprecated = store
-                .find(previous.getNamespace_id(), previous.getVersion(), ReleaseTrack.normalize(previous.getTrack()));
+                .find(previous.getSpace_id(), previous.getVersion(), ReleaseTrack.normalize(previous.getTrack()));
         if (deprecated != null && deprecated.getVersionStatus() == VersionStatus.DEPRECATED) {
             emit(VERSION_DEPRECATE_EVENT, deprecated);
         }
@@ -371,7 +370,7 @@ public class VersionPublisher {
     private VersionAssets toAssets(VersionRecord record) {
         VersionAssets asset = new VersionAssets();
         asset.setId(record.getId() == null || record.getId().isBlank() ? record.getVersion() : record.getId());
-        asset.setNamespace_id(record.getNamespace_id());
+        asset.setSpace_id(record.getSpace_id());
         asset.setVersion(record.getVersion());
         asset.setName(record.getTitle());
         asset.setDescription(record.getDescription());
@@ -389,7 +388,7 @@ public class VersionPublisher {
      * @return watch key
      */
     private String watchKey(VersionRecord record) {
-        return "version:" + record.getNamespace_id() + Symbol.COLON + ReleaseTrack.normalize(record.getTrack())
+        return "version:" + record.getSpace_id() + Symbol.COLON + ReleaseTrack.normalize(record.getTrack())
                 + Symbol.COLON + record.getVersion();
     }
 
@@ -434,19 +433,19 @@ public class VersionPublisher {
             enforce(action, null, null, null, null);
             return;
         }
-        enforce(action, record.getNamespace_id(), record.getTrack(), record.getVersion(), record.getVersionStatus());
+        enforce(action, record.getSpace_id(), record.getTrack(), record.getVersion(), record.getVersionStatus());
     }
 
     /**
      * Applies guard policy to one version-domain action.
      *
-     * @param action    guarded action
-     * @param namespace release namespace
-     * @param track     release track
-     * @param version   release version
-     * @param status    release status
+     * @param action  guarded action
+     * @param space   release space
+     * @param track   release track
+     * @param version release version
+     * @param status  release status
      */
-    private void enforce(String action, String namespace, String track, String version, VersionStatus status) {
+    private void enforce(String action, String space, String track, String version, VersionStatus status) {
         if (cortexGuard == null) {
             return;
         }
@@ -455,7 +454,7 @@ public class VersionPublisher {
         context.setAction(action);
         context.setResourceType("VERSION");
         context.setResourceId(ReleaseTrack.normalize(track) + Symbol.COLON + version);
-        context.namespace_id(namespace);
+        context.space_id(space);
         context.putAttribute("track", ReleaseTrack.normalize(track));
         context.putAttribute("version", version);
         context.putAttribute("status", status == null ? null : status.name());

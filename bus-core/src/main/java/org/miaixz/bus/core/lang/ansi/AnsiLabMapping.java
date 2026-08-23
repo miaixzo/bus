@@ -33,7 +33,7 @@ public abstract class AnsiLabMapping {
     /**
      * Creates a new {@code AnsiLabMapping} instance.
      */
-    AnsiLabMapping() {
+    public AnsiLabMapping() {
         // No initialization required.
     }
 

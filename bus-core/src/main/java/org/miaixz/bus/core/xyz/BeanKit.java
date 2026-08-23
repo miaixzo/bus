@@ -62,7 +62,7 @@ public class BeanKit {
     /**
      * Keeps bean inspection, copying, and property access on the static API.
      */
-    private BeanKit() {
+    public BeanKit() {
         // No initialization required.
     }
 

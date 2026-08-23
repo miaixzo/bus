@@ -34,7 +34,7 @@ import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
  *
  * @author Kimi Liu
  */
-public final class DnsSigningKey {
+public class DnsSigningKey {
 
     /**
      * DNSKEY RDATA byte length before the public key.

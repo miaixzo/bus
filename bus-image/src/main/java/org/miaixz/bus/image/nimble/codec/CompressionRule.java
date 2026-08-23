@@ -87,7 +87,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
      *
      * @return the common name.
      */
-    public final String getCommonName() {
+    public String getCommonName() {
         return commonName;
     }
 
@@ -114,7 +114,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
      *
      * @return the pixel representation.
      */
-    public final int getPixelRepresentation() {
+    public int getPixelRepresentation() {
         return condition.pixelRepresentation;
     }
 
@@ -123,7 +123,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
      *
      * @return the ae titles.
      */
-    public final String[] getAETitles() {
+    public String[] getAETitles() {
         return condition.aeTitles;
     }
 
@@ -132,7 +132,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
      *
      * @return the sop classes.
      */
-    public final String[] getSOPClasses() {
+    public String[] getSOPClasses() {
         return condition.sopClasses;
     }
 
@@ -141,7 +141,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
      *
      * @return the body part examined.
      */
-    public final String[] getBodyPartExamined() {
+    public String[] getBodyPartExamined() {
         return condition.bodyPartExamined;
     }
 
@@ -150,7 +150,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
      *
      * @return the transfer syntax.
      */
-    public final String getTransferSyntax() {
+    public String getTransferSyntax() {
         return tsuid;
     }
 

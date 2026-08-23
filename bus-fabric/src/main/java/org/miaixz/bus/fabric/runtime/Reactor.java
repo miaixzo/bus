@@ -40,7 +40,7 @@ import org.miaixz.bus.fabric.runtime.resource.ResourceScope;
  *
  * @author Kimi Liu
  */
-public final class Reactor implements AutoCloseable {
+public class Reactor implements AutoCloseable {
 
     /**
      * Dispatcher component.
@@ -93,7 +93,7 @@ public final class Reactor implements AutoCloseable {
      * @param directory  runtime registry and connection directory
      * @param resolver   runtime-bound DNS resolver
      */
-    private Reactor(final Clock clock, final EventObserver observer, final FabricMeter meter,
+    public Reactor(final Clock clock, final EventObserver observer, final FabricMeter meter,
             final Dispatcher dispatcher, final ResourceScope scope, final Directory directory,
             final DnsResolver resolver) {
         this.clock = require(clock, "Clock");
@@ -253,7 +253,7 @@ public final class Reactor implements AutoCloseable {
      *
      * @author Kimi Liu
      */
-    public static final class Builder implements org.miaixz.bus.core.Builder<Reactor> {
+    public static class Builder implements org.miaixz.bus.core.Builder<Reactor> {
 
         /**
          * Clock candidate.
@@ -293,7 +293,7 @@ public final class Reactor implements AutoCloseable {
         /**
          * Creates a runtime builder.
          */
-        private Builder() {
+        public Builder() {
             // No initialization required.
         }
 

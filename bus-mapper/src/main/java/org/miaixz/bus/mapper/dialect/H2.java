@@ -23,6 +23,7 @@ import java.util.EnumSet;
 
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.feature.paging.Pageable;
+import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
 import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
@@ -98,10 +99,7 @@ public class H2 extends AbstractDialect {
      * @return the generated nullable modification SQL
      */
     @Override
-    public String modifyColumnNullable(
-            TableMeta table,
-            ColumnMeta column,
-            org.miaixz.bus.mapper.feature.schema.ColumnSnapshot actualColumn) {
+    public String modifyColumnNullable(TableMeta table, ColumnMeta column, ColumnSnapshot actualColumn) {
         return alterColumnNullable(table, column);
     }
 

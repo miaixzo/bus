@@ -43,6 +43,7 @@ import org.miaixz.bus.mapper.behavior.SchemaBehavior;
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.dialect.DialectRegistry;
 import org.miaixz.bus.mapper.feature.affix.AffixRuleConfig;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
 import org.miaixz.bus.mapper.parsing.IndexMeta;
 import org.miaixz.bus.mapper.parsing.MapperFactory;
@@ -563,7 +564,7 @@ public class EntitySchemaInitializer {
      * @param column the column metadata
      * @return {@code true} when a default clause is present
      */
-    private boolean hasDefault(org.miaixz.bus.mapper.parsing.ColumnMeta column) {
+    private boolean hasDefault(ColumnMeta column) {
         return column.columnDefinition() != null
                 && column.columnDefinition().toUpperCase(Locale.ROOT).contains(" DEFAULT ");
     }

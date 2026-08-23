@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Fsstat {
+public class Fsstat {
 
     /**
      * Constructs a new Fsstat instance.

@@ -199,7 +199,7 @@ public class AAssociateRJ extends IOException {
      *
      * @return the result.
      */
-    public final int getResult() {
+    public int getResult() {
         return result;
     }
 
@@ -208,7 +208,7 @@ public class AAssociateRJ extends IOException {
      *
      * @return the source.
      */
-    public final int getSource() {
+    public int getSource() {
         return source;
     }
 
@@ -217,7 +217,7 @@ public class AAssociateRJ extends IOException {
      *
      * @return the reason.
      */
-    public final int getReason() {
+    public int getReason() {
         return reason;
     }
 

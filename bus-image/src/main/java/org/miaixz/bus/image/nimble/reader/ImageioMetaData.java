@@ -59,7 +59,7 @@ public class ImageioMetaData extends IIOMetadata {
      *
      * @return the file meta information.
      */
-    public final Attributes getFileMetaInformation() {
+    public Attributes getFileMetaInformation() {
         return fileMetaInformation;
     }
 
@@ -68,7 +68,7 @@ public class ImageioMetaData extends IIOMetadata {
      *
      * @return the attributes.
      */
-    public final Attributes getAttributes() {
+    public Attributes getAttributes() {
         return attributes;
     }
 

@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author Kimi Liu
  */
-public final class AdmissionGate {
+public class AdmissionGate {
 
     /**
      * Permits for complete inbound request lifecycles.
@@ -163,7 +163,7 @@ public final class AdmissionGate {
     /**
      * Idempotent ownership token for one or more admission permits.
      */
-    public static final class Lease implements AutoCloseable {
+    public static class Lease implements AutoCloseable {
 
         /**
          * Semaphores whose permits are jointly owned by this lease.
@@ -180,7 +180,7 @@ public final class AdmissionGate {
          *
          * @param permits semaphores whose permits this lease must return
          */
-        private Lease(Semaphore... permits) {
+        public Lease(Semaphore... permits) {
             this.permits = permits;
         }
 

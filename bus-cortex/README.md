@@ -1,7 +1,7 @@
 # 🧠 Bus Cortex: Unified Registry & Configuration Center
 
 <p align="center">
-<strong>Service Registry · Config Center · Health Probing · Namespace Isolation · bus Ecosystem Integration</strong>
+<strong>Service Registry · Config Center · Health Probing · Space Isolation · bus Ecosystem Integration</strong>
 </p>
 
 -----
@@ -9,14 +9,14 @@
 ## 📖 Project Introduction
 
 **Bus Cortex** is the registry and configuration center for the bus framework. It provides unified service registration,
-configuration management, health probing, and namespace-based multi-tenant isolation — all backed by a single `CacheX`
+configuration management, health probing, and space-based multi-tenant isolation — all backed by a single `CacheX`
 storage abstraction (Memory / Redis / JDBC) with zero extra infrastructure.
 
 - **Unified Registry**: API / MCP / Prompt / Version — four registries behind one `Registry<T>` interface
 - **Service + Instance Model**: `ApiAssets` (definition) + `Instance` (runtime), following Nacos-style separation
 - **Configuration Center**: Versioned publish, gray release routing, `@ConfigChange` callback annotations
 - **Health Probing**: Pluggable `Prober` (HTTP / TCP / MCP Ping / Process PID), server-side active probing
-- **Namespace Isolation**: Dynamic namespace resolution (Token / Header / context), `NamespaceGuard` enforced write
+- **Space Isolation**: Dynamic space resolution (Token / Header / context), `SpaceGuard` enforced write
   isolation
 - **Security**: HMAC-SHA256 Token + RBAC (ADMIN / PROVIDER / CONSUMER), rate limiting, circuit breaking
 - **bus Ecosystem**: VortexBridge auto-syncs to bus-vortex; bus-metrics instrumentation built-in; bus-cache as the sole
@@ -50,18 +50,18 @@ mcpRegistry().
 register(mcpAssets);
 
 List<ApiAssets> services = Cortex.query(
-        Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(), ApiAssets.class);
+        Vector.newBuilder().space_id("production").method("vortex.user.get").build(), ApiAssets.class);
 ```
 
 ### ⚡ Service + Instance Separation
 
 ```
-ApiAssets (definition, canonical identity = namespace + type + method + version[:verb])
-    └── Instance (runtime, unique by namespace + app_id + method + version + fingerprint)
+ApiAssets (definition, canonical identity = space + type + method + version[:verb])
+    └── Instance (runtime, unique by space + app_id + method + version + fingerprint)
 ```
 
 **Instance Identity**: Multiple runtime instances may coexist for the same API definition. Runtime uniqueness is scoped
-by `namespace + app_id + method + version + fingerprint`.
+by `space + app_id + method + version + fingerprint`.
 
 Same-fingerprint re-registration is treated as an **idempotent TTL refresh**, not a conflict.
 
@@ -69,16 +69,16 @@ Same-fingerprint re-registration is treated as an **idempotent TTL refresh**, no
 `method:version:verbCode`, for example `dp.license.get:1.0:1`. Runtime lookup candidates are generated separately by
 `Keying` in this order:
 
-1. `namespace:type:app_id:method:version:verb`
-2. `namespace:type:method:version:verb`
-3. `namespace:app_id:method:version:verb`
-4. `namespace:method:version:verb`
+1. `space:type:app_id:method:version:verb`
+2. `space:type:method:version:verb`
+3. `space:app_id:method:version:verb`
+4. `space:method:version:verb`
 5. `type:app_id:method:version:verb`
 6. `type:method:version:verb`
 7. `app_id:method:version:verb`
 8. `method:version:verb`
 
-`method` / `version` / `verb` are required runtime dimensions; `namespace`, `type`, and `app_id` participate only when
+`method` / `version` / `verb` are required runtime dimensions; `space`, `type`, and `app_id` participate only when
 present.
 
 `Keying` is now a generic key-strategy interface. Registry/runtime routing uses `Keying<Keying.RegistrySpec>` with the
@@ -133,8 +133,8 @@ registered instances. Healthy instances get TTL refreshed; unhealthy instances e
 | `AccessTokenStore`    | HMAC-SHA256 token issuance with CacheX-backed revocation                              |
 | `AccessTokenResolver` | Two-step validation: HMAC verify (anti-forgery) + CacheX blacklist check (revocation) |
 | `AccessGuard`         | RBAC enforcement (ADMIN / PROVIDER / CONSUMER)                                        |
-| `NamespaceGuard`      | Cross-namespace write prevention                                                      |
-| `RateLimiter`         | Token bucket rate limiting per namespace/method (CacheX counters)                     |
+| `SpaceGuard`      | Cross-space write prevention                                                      |
+| `RateLimiter`         | Token bucket rate limiting per space/method (CacheX counters)                     |
 | `CircuitBreaker`      | State machine: CLOSED → OPEN → HALF_OPEN                                              |
 | `ParamValidator`      | Input validation (regex `^[a-zA-Z0-9._-]{1,128}$`) preventing CacheX key injection    |
 
@@ -192,7 +192,7 @@ bus:
     server-addr: 127.0.0.1:8766   # The only required field
 ```
 
-> **Namespace**: Not a fixed YAML config. Resolved dynamically at runtime from Token / request Header (`X-Namespace`) /
+> **Space**: Not a fixed YAML config. Resolved dynamically at runtime from Token / request Header (`X-Space`) /
 > management context. Falls back to `public` if unspecified.
 
 ### Step 3: Enable
@@ -226,7 +226,7 @@ import org.miaixz.bus.cortex.registry.api.Instance;
 ApiAssets service = new ApiAssets();
 service.
 
-        setNamespace_id("production");
+        setSpace_id("production");
 service.
 
         setApp_id("order-service");
@@ -249,7 +249,7 @@ service.
         Instance instance = new Instance();
 instance.
 
-        setNamespace_id("production");
+        setSpace_id("production");
 instance.
 
         setApp_id("order-service");
@@ -277,7 +277,7 @@ Cortex.
 
         // Query API definitions
         List<ApiAssets> results = Cortex.query(
-                Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(),
+                Vector.newBuilder().space_id("production").method("vortex.user.get").build(),
                 ApiAssets.class
         );
 
@@ -329,7 +329,7 @@ public class OrderService {
 ```java
 // Watch for instance changes
 String watchId = Cortex.apiRegistry().watch(
-                Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(),
+                Vector.newBuilder().space_id("production").method("vortex.user.get").build(),
                 (added, removed, updated) -> {
                     log.info("Instances changed: +{} -{} ~{}", added.size(), removed.size(), updated.size());
                 }
@@ -348,14 +348,14 @@ unwatch(watchId);
 ```java
 // Register MCP tool
 McpAssets mcp = new McpAssets();
-mcp.setNamespace_id("ai");
+mcp.setSpace_id("ai");
 mcp.setToolName("code-search");
 mcp.setTransport("stdio");
 Cortex.mcpRegistry().register(mcp);
 
 // Register prompt template
 PromptAssets prompt = new PromptAssets();
-prompt.setNamespace_id("ai");
+prompt.setSpace_id("ai");
 prompt.setTemplate("Summarize the following: {{content}}");
 Cortex.promptRegistry().register(prompt);
 ```
@@ -460,7 +460,7 @@ org.miaixz.bus.cortex
 │   └── depend/    DependencyGraph + ImpactAnalysis
 ├── config/        Configuration center (ConfigPublisher, ConfigWatcher, GrayRouter, DefaultConfig)
 ├── bridge/        bus-vortex sync (VortexBridge, SyncEvent, ApiAssetsConverter)
-├── guard/         Security & protection (RateLimiter, CircuitBreaker, AccessTokenStore, AccessGuard, NamespaceGuard)
+├── guard/         Security & protection (RateLimiter, CircuitBreaker, AccessTokenStore, AccessGuard, SpaceGuard)
 ├── builtin/       Default implementations (CompositeProber, DefaultPublisher, DefaultNotifier)
 └── magic/         Utilities (IdGenerator, Sequence, Fingerprint, AuditLogger, InstanceState)
 ```

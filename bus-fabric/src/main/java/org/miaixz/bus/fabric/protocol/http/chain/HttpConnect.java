@@ -59,6 +59,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.builtin.TlsHandshake;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.guard.route.AddressGuard;
+import org.miaixz.bus.fabric.guard.route.AddressPolicy;
 import org.miaixz.bus.fabric.network.*;
 import org.miaixz.bus.fabric.network.dns.DnsResolver;
 import org.miaixz.bus.fabric.network.dns.DnsResult;
@@ -84,7 +86,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class HttpConnect implements HttpStage, AutoCloseable {
+public class HttpConnect implements HttpStage, AutoCloseable {
 
     /**
      * Debug state captured once; Logger level discovery performs caller inspection and is not a hot-path probe.
@@ -432,6 +434,31 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
                 .computeIfAbsent(target, ignored -> routePlanner.plan(target, proxy, connector.supports(Transport.TLS)))
                 : routePlanner.plan(target, proxy, connector.supports(Transport.TLS));
         final Destination destination = route.destination();
+        final AddressPolicy addressPolicy = current.tag(AddressPolicy.class);
+        final AddressGuard addressGuard = addressPolicy == null ? null : new AddressGuard(addressPolicy);
+        final Address guardedAddress;
+        final DnsResult guardedResult;
+        final Address pinnedTarget;
+        if (addressGuard == null) {
+            guardedAddress = null;
+            guardedResult = null;
+            pinnedTarget = target;
+        } else {
+            final DnsResult targetResult = resolver.resolve(target.host());
+            final InetAddress targetAddress = addressGuard.checkTarget(target, targetResult);
+            pinnedTarget = numericAddress(target, targetAddress);
+            if (proxy.isHttp() && !route.tunnel()) {
+                throw new ProtocolException("Guarded HTTP requests require a pinned tunnel through an HTTP proxy");
+            }
+            if (proxy.isDirect()) {
+                guardedAddress = target;
+                guardedResult = targetResult;
+            } else {
+                guardedAddress = null;
+                guardedResult = resolver.resolve(route.connectAddress().host());
+                addressGuard.checkRoute(guardedResult);
+            }
+        }
         final boolean debug = DEBUG_ENABLED;
         if (debug) {
             Logger.debug(
@@ -444,15 +471,19 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
                     route.proxyMode(),
                     route.tunnel());
         }
-        final boolean transientConnection = Http.Header.CONNECTION_CLOSE
-                .equalsIgnoreCase(current.headers().get(Http.Header.CONNECTION));
+        final boolean transientConnection = addressGuard != null
+                || Http.Header.CONNECTION_CLOSE.equalsIgnoreCase(current.headers().get(Http.Header.CONNECTION));
         final Supplier<Connection> factory = () -> open(
                 route,
                 target,
                 proxy,
                 current.timeout(),
                 scope,
-                transientConnection);
+                transientConnection,
+                addressGuard,
+                guardedAddress,
+                guardedResult,
+                pinnedTarget);
         final ConnectionLease lease = acquirer.acquire(destination, factory, scope, transientConnection);
         if (debug) {
             Logger.debug(
@@ -547,6 +578,10 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
      * @param timeout             maximum duration allowed for connection establishment
      * @param cancellation        cancellation scope governing route establishment
      * @param transientConnection whether the physical connection must bypass reusable pooling
+     * @param addressGuard        optional address guard installed by the request
+     * @param guardedAddress      logical destination for a direct route, or {@code null} for an intermediary route
+     * @param guardedResult       complete DNS snapshot validated for this request attempt
+     * @param pinnedTarget        numeric target used during proxy route negotiation
      * @return network connection
      */
     private Connection open(
@@ -555,7 +590,11 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             final ProxyPlan proxy,
             final Timeout timeout,
             final Cancellation cancellation,
-            final boolean transientConnection) {
+            final boolean transientConnection,
+            final AddressGuard addressGuard,
+            final Address guardedAddress,
+            final DnsResult guardedResult,
+            final Address pinnedTarget) {
         final Cancellation scope = require(cancellation, "Cancellation");
         scope.throwIfCancelled();
         final boolean tunnel = route.tunnel();
@@ -576,17 +615,34 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
                     tunnel,
                     connector.supports(Transport.TLS));
         }
-        final Connection raw = connector instanceof SocketConnector socket ? socket
-                .open(connectAddress, timeout, transientConnection && target.secure() && !tunnel && !proxy.isSocks())
-                : awaitConnection(connector.connect(connectAddress, timeout), timeout, scope);
+        final Connection raw;
+        if (addressGuard == null) {
+            raw = connector instanceof SocketConnector socket
+                    ? socket.open(
+                            connectAddress,
+                            timeout,
+                            transientConnection && target.secure() && !tunnel && !proxy.isSocks())
+                    : awaitConnection(connector.connect(connectAddress, timeout), timeout, scope);
+        } else {
+            if (!(connector instanceof SocketConnector socket)) {
+                throw new ProtocolException("Address policy requires a connector that verifies the connected peer");
+            }
+            raw = socket.open(
+                    connectAddress,
+                    timeout,
+                    transientConnection && target.secure() && !tunnel && !proxy.isSocks(),
+                    guardedAddress,
+                    guardedResult,
+                    addressGuard);
+        }
         final Runnable unregisterRaw = scope.cancellable() ? scope.onCancel(raw::close) : NOOP_UNREGISTER;
         try {
             scope.throwIfCancelled();
             if (proxy.isSocks()) {
-                proxyConnector.connect(raw, target, proxy, timeout, scope);
+                proxyConnector.connect(raw, pinnedTarget, proxy, timeout, scope);
             }
             if (tunnel) {
-                proxyConnector.connect(raw, target, proxy, timeout, scope);
+                proxyConnector.connect(raw, pinnedTarget, proxy, timeout, scope);
             }
             scope.throwIfCancelled();
             if (target.secure() && (tunnel || !connector.supports(Transport.TLS))) {
@@ -1731,10 +1787,31 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
          * @return first successfully connected transport
          */
         private Connection open(final Address address, final Timeout timeout, final boolean socketStream) {
+            return open(address, timeout, socketStream, address, null, null);
+        }
+
+        /**
+         * Opens a guarded socket connection using one caller-supplied DNS snapshot.
+         *
+         * @param address        physical destination opened by the socket
+         * @param timeout        shared connection timeout policy
+         * @param socketStream   whether to create a blocking Socket transport for direct JSSE layering
+         * @param guardedAddress logical target whose scheme and port are enforced
+         * @param resolved       complete DNS snapshot validated before the connection attempt
+         * @param addressGuard   guard that validates the connected numeric address
+         * @return first successfully connected transport
+         */
+        private Connection open(
+                final Address address,
+                final Timeout timeout,
+                final boolean socketStream,
+                final Address guardedAddress,
+                final DnsResult resolved,
+                final AddressGuard addressGuard) {
             if (closed.get()) {
                 throw new StatefulException("HTTP socket connector is closed");
             }
-            final DnsResult result = resolver.resolve(address.host());
+            final DnsResult result = resolved == null ? resolver.resolve(address.host()) : resolved;
             if (result.addresses().isEmpty()) {
                 final SocketException failure = new SocketException("DNS returned no address for " + address.host());
                 listener.failure(this, failure);
@@ -1747,7 +1824,15 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
                     : preferredAddresses.get(address);
             if (preferred != null && result.addresses().contains(preferred)) {
                 try {
-                    return connectCandidate(address, timeout, preferred, deadline, socketStream);
+                    return connectCandidate(
+                            address,
+                            timeout,
+                            preferred,
+                            deadline,
+                            socketStream,
+                            guardedAddress,
+                            result,
+                            addressGuard);
                 } catch (final RuntimeException ignored) {
                     preferredAddresses.remove(address, preferred);
                     if (preferred == preferredCandidate) {
@@ -1765,7 +1850,10 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
                             result.addresses(),
                             index,
                             deadline,
-                            socketStream);
+                            socketStream,
+                            guardedAddress,
+                            result,
+                            addressGuard);
                     return connection;
                 } catch (final RuntimeException e) {
                     failure = e;
@@ -1778,12 +1866,15 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         /**
          * Races at most two stable-order address candidates with a 250 ms stagger.
          *
-         * @param address      unresolved destination retaining the logical host and port
-         * @param timeout      connection timeout policy
-         * @param candidates   stable-order resolved address candidates
-         * @param offset       index of the first candidate in this race
-         * @param deadline     shared monotonic connection deadline
-         * @param socketStream whether candidates must use the blocking Socket transport
+         * @param address        unresolved destination retaining the logical host and port
+         * @param timeout        connection timeout policy
+         * @param candidates     stable-order resolved address candidates
+         * @param offset         index of the first candidate in this race
+         * @param deadline       shared monotonic connection deadline
+         * @param socketStream   whether candidates must use the blocking Socket transport
+         * @param guardedAddress logical target whose policy is enforced
+         * @param resolved       complete DNS snapshot for the connection attempt
+         * @param addressGuard   optional address guard
          * @return first successfully established connection
          */
         private Connection race(
@@ -1792,7 +1883,10 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
                 final List<InetAddress> candidates,
                 final int offset,
                 final long deadline,
-                final boolean socketStream) {
+                final boolean socketStream,
+                final Address guardedAddress,
+                final DnsResult resolved,
+                final AddressGuard addressGuard) {
             final int count = Math.min(Normal._2, candidates.size() - offset);
             final HappyEyeballsConnector.Result result = happyEyeballs.race(
                     candidates,
@@ -1804,7 +1898,10 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
                             timeout,
                             candidate,
                             sharedDeadline,
-                            socketStream));
+                            socketStream,
+                            guardedAddress,
+                            resolved,
+                            addressGuard));
             preferredAddresses.put(address, result.candidate());
             preferredCandidate = result.candidate();
             preferredAddress = address;
@@ -1814,11 +1911,14 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         /**
          * Connects one resolved address within the shared connect deadline.
          *
-         * @param address      logical destination
-         * @param timeout      timeout policy
-         * @param candidate    resolved address
-         * @param deadline     shared connect deadline
-         * @param socketStream whether to create a blocking Socket instead of a SocketChannel
+         * @param address        logical destination
+         * @param timeout        timeout policy
+         * @param candidate      resolved address
+         * @param deadline       shared connect deadline
+         * @param socketStream   whether to create a blocking Socket instead of a SocketChannel
+         * @param guardedAddress logical target whose policy is enforced
+         * @param resolved       complete DNS snapshot for the connection attempt
+         * @param addressGuard   optional address guard
          * @return connected socket connection
          */
         private Connection connectCandidate(
@@ -1826,9 +1926,19 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
                 final Timeout timeout,
                 final InetAddress candidate,
                 final long deadline,
-                final boolean socketStream) {
+                final boolean socketStream,
+                final Address guardedAddress,
+                final DnsResult resolved,
+                final AddressGuard addressGuard) {
             if (socketStream) {
-                return connectSecureCandidate(address, timeout, candidate, deadline);
+                return connectSecureCandidate(
+                        address,
+                        timeout,
+                        candidate,
+                        deadline,
+                        guardedAddress,
+                        resolved,
+                        addressGuard);
             }
             SocketChannel channel = null;
             try {
@@ -1841,6 +1951,14 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
                         : Duration.ofNanos(remaining);
                 channel.socket()
                         .connect(new InetSocketAddress(candidate, address.port()), timeoutMillis(candidateTimeout));
+                if (addressGuard != null) {
+                    final InetAddress connected = ((InetSocketAddress) channel.getRemoteAddress()).getAddress();
+                    if (guardedAddress == null) {
+                        addressGuard.checkConnectedRoute(resolved, connected);
+                    } else {
+                        addressGuard.checkConnectedTarget(guardedAddress, resolved, connected);
+                    }
+                }
                 final Connection connection = new SocketConnection(address, channel, listener, dispatcher, timeout);
                 channel = null;
                 return connection;
@@ -1856,17 +1974,23 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         /**
          * Connects direct HTTPS using the plain Socket shape expected by JSSE.
          *
-         * @param address   logical secure destination
-         * @param timeout   shared connection timeout policy
-         * @param candidate resolved network address
-         * @param deadline  shared monotonic connection deadline
+         * @param address        logical secure destination
+         * @param timeout        shared connection timeout policy
+         * @param candidate      resolved network address
+         * @param deadline       shared monotonic connection deadline
+         * @param guardedAddress logical target whose policy is enforced
+         * @param resolved       complete DNS snapshot for the connection attempt
+         * @param addressGuard   optional address guard
          * @return connected plain-socket transport ready for TLS layering
          */
         private Connection connectSecureCandidate(
                 final Address address,
                 final Timeout timeout,
                 final InetAddress candidate,
-                final long deadline) {
+                final long deadline,
+                final Address guardedAddress,
+                final DnsResult resolved,
+                final AddressGuard addressGuard) {
             Socket socket = null;
             try {
                 socket = new Socket();
@@ -1876,6 +2000,14 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
                 final Duration candidateTimeout = remaining == Long.MAX_VALUE ? timeout.connect()
                         : Duration.ofNanos(remaining);
                 socket.connect(new InetSocketAddress(candidate, address.port()), timeoutMillis(candidateTimeout));
+                if (addressGuard != null) {
+                    final InetAddress connected = ((InetSocketAddress) socket.getRemoteSocketAddress()).getAddress();
+                    if (guardedAddress == null) {
+                        addressGuard.checkConnectedRoute(resolved, connected);
+                    } else {
+                        addressGuard.checkConnectedTarget(guardedAddress, resolved, connected);
+                    }
+                }
                 final Connection connection = new SocketConnection(address, socket, listener, dispatcher, timeout);
                 socket = null;
                 return connection;
@@ -1901,6 +2033,17 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             return Math.toIntExact(Math.min(Integer.MAX_VALUE, Math.max(1L, timeout.toMillis())));
         }
 
+    }
+
+    /**
+     * Creates an address that retains logical protocol identity while pinning one validated numeric host.
+     *
+     * @param logical logical target
+     * @param numeric validated numeric address
+     * @return address retaining the logical scheme, port, and path
+     */
+    private static Address numericAddress(final Address logical, final InetAddress numeric) {
+        return new Address(logical.scheme(), numeric.getHostAddress(), logical.port(), logical.path());
     }
 
     /**
@@ -2442,6 +2585,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
          *
          * @param target writable destination
          * @return bytes read or EOF
+         * @throws IOException when the socket cannot complete the read
          */
         @Override
         public int readSynchronously(final ByteBuffer target) throws IOException {
@@ -2454,6 +2598,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
          *
          * @param source source buffer
          * @return number of bytes written
+         * @throws IOException when the socket cannot complete the write
          */
         @Override
         public int writeSynchronously(final ByteBuffer source) throws IOException {
@@ -2503,6 +2648,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
          * @param target    non-null core buffer receiving any bytes read
          * @param byteCount non-negative requested maximum; each channel read is additionally capped at 8192 bytes
          * @return number of bytes read, zero when the channel makes no progress, or -1 at end-of-stream
+         * @throws IOException when the socket cannot complete the read
          */
         @Override
         public long readSynchronously(final Buffer target, final long byteCount) throws IOException {
@@ -2551,6 +2697,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
          * @param source    non-null core buffer consumed as bytes are accepted by the channel
          * @param byteCount number of bytes to write, from zero through the current source size
          * @return requested byte count after all bytes have been written
+         * @throws IOException when the socket cannot complete the write
          */
         @Override
         public long writeSynchronously(final Buffer source, final long byteCount) throws IOException {
@@ -2719,6 +2866,9 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
 
             /**
              * Creates the checked timeout while retaining a close-induced socket failure.
+             *
+             * @param cause socket failure caused by closing the timed-out operation, possibly {@code null}
+             * @return socket timeout exception retaining the supplied cause
              */
             @Override
             protected IOException newTimeoutException(final IOException cause) {
@@ -2805,6 +2955,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
              * @param sink      target buffer
              * @param byteCount maximum byte count
              * @return read byte count
+             * @throws IOException when the socket cannot complete the read
              */
             @Override
             public long read(final Buffer sink, final long byteCount) throws IOException {
@@ -2813,6 +2964,8 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
 
             /**
              * Returns the physical socket read timeout.
+             *
+             * @return timeout controlling physical socket reads
              */
             @Override
             public org.miaixz.bus.core.io.timout.Timeout timeout() {
@@ -2839,6 +2992,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
              *
              * @param source    source buffer
              * @param byteCount byte count
+             * @throws IOException when the socket cannot complete the write
              */
             @Override
             public void write(final Buffer source, final long byteCount) throws IOException {
@@ -2855,6 +3009,8 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
 
             /**
              * Returns the physical socket write timeout.
+             *
+             * @return timeout controlling physical socket writes
              */
             @Override
             public org.miaixz.bus.core.io.timout.Timeout timeout() {

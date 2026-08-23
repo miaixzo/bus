@@ -37,8 +37,10 @@ import com.sun.jna.platform.mac.IOKitUtil;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Edid;
 import org.miaixz.bus.health.builtin.hardware.Display;
 import org.miaixz.bus.health.builtin.hardware.DisplayInfo;
@@ -68,12 +70,28 @@ final class MacDisplay extends AbstractDisplay {
     private static final CFIndex K_CF_NUMBER_SINT64 = new CFIndex(4);
 
     /**
+     * The platform-specific device port name.
+     */
+    private final String devicePort;
+
+    /**
      * Constructor for MacDisplay.
      *
      * @param edid A byte array representing a display EDID (Extended Display Identification Data).
      */
     MacDisplay(byte[] edid) {
+        this(edid, Normal.UNKNOWN);
+    }
+
+    /**
+     * Constructor for MacDisplay with a device port.
+     *
+     * @param edid       A byte array representing a display EDID (Extended Display Identification Data).
+     * @param devicePort The device port this display is attached to.
+     */
+    MacDisplay(byte[] edid, String devicePort) {
         super(edid);
+        this.devicePort = devicePort;
         Logger.debug(false, "Health", "Initialized MacDisplay");
     }
 
@@ -83,8 +101,29 @@ final class MacDisplay extends AbstractDisplay {
      * @param displayInfo The synthesized display information.
      */
     MacDisplay(DisplayInfo displayInfo) {
+        this(displayInfo, Normal.UNKNOWN);
+    }
+
+    /**
+     * Constructor for MacDisplay from synthetic display information with a device port.
+     *
+     * @param displayInfo The synthesized display information.
+     * @param devicePort  The device port this display is attached to.
+     */
+    MacDisplay(DisplayInfo displayInfo, String devicePort) {
         super(displayInfo);
+        this.devicePort = devicePort;
         Logger.debug(false, "Health", "Initialized MacDisplay (synthetic)");
+    }
+
+    /**
+     * Gets the platform-specific device port name.
+     *
+     * @return The platform-specific device port name.
+     */
+    @Override
+    public String getDevicePort() {
+        return this.devicePort;
     }
 
     /**
@@ -96,9 +135,10 @@ final class MacDisplay extends AbstractDisplay {
     public static List<Display> getDisplays() {
         List<Display> displays = new ArrayList<>();
         // Intel-based Macs
-        displays.addAll(getDisplaysFromService("IODisplayConnect", "IODisplayEDID", "IOService"));
+        displays.addAll(getDisplaysFromService("IODisplayConnect", "IODisplayEDID", "IOService", null));
         // Apple Silicon-based Macs
-        displays.addAll(getDisplaysFromService("IOPortTransportStateDisplayPort", "EDID", null));
+        displays.addAll(
+                getDisplaysFromService("IOPortTransportStateDisplayPort", "EDID", null, "TransportDescription"));
         // Apple Silicon built-in panel without a physical EDID.
         displays.addAll(getAppleSiliconBuiltInDisplay());
 
@@ -112,9 +152,14 @@ final class MacDisplay extends AbstractDisplay {
      * @param edidKeyName    The key name for the EDID property within the service (e.g., "IODisplayEDID").
      * @param childEntryName The name of the child entry to search in, or {@code null} to search directly in the
      *                       service.
+     * @param portKeyName    The key name for the port property, or {@code null} when unavailable.
      * @return A list of {@link Display} objects found using this service.
      */
-    private static List<Display> getDisplaysFromService(String serviceName, String edidKeyName, String childEntryName) {
+    private static List<Display> getDisplaysFromService(
+            String serviceName,
+            String edidKeyName,
+            String childEntryName,
+            String portKeyName) {
         List<Display> displays = new ArrayList<>();
 
         IOIterator serviceIterator = IOKitUtil.getMatchingServices(serviceName);
@@ -136,7 +181,11 @@ final class MacDisplay extends AbstractDisplay {
                                 int length = edid.getLength();
                                 Pointer p = edid.getBytePtr();
                                 if (length > 0) {
-                                    displays.add(new MacDisplay(p.getByteArray(0, length)));
+                                    String transport = portKeyName == null ? null
+                                            : cfRegistryEntryGetString(propertySource, portKeyName);
+                                    displays.add(
+                                            new MacDisplay(p.getByteArray(0, length), getStringValueOrUnknown(
+                                                    StringKit.subBefore(transport, Symbol.C_SLASH, false))));
                                 }
                             } finally {
                                 edid.release();
@@ -227,10 +276,12 @@ final class MacDisplay extends AbstractDisplay {
         if (attrsRaw == null) {
             return;
         }
+        String devicePort = getStringValueOrUnknown(
+                StringKit.subBefore(cfRegistryEntryGetString(fb, "IONameMatched"), Symbol.C_COMMA, false));
         try {
-            DisplayInfo info = synthesize(fb, new CFDictionaryRef(attrsRaw.getPointer()));
+            DisplayInfo info = synthesize(fb, new CFDictionaryRef(attrsRaw.getPointer()), devicePort);
             if (info != null) {
-                displays.add(new MacDisplay(info));
+                displays.add(new MacDisplay(info, devicePort));
             }
         } finally {
             attrsRaw.release();
@@ -240,11 +291,12 @@ final class MacDisplay extends AbstractDisplay {
     /**
      * Synthesizes display information from an Apple Silicon display attributes dictionary.
      *
-     * @param fb    The framebuffer registry entry.
-     * @param attrs The display attributes dictionary.
+     * @param fb         The framebuffer registry entry.
+     * @param attrs      The display attributes dictionary.
+     * @param devicePort The device port this display is attached to.
      * @return Synthesized display information, or {@code null} if required attributes are unavailable.
      */
-    private static DisplayInfo synthesize(IORegistryEntry fb, CFDictionaryRef attrs) {
+    private static DisplayInfo synthesize(IORegistryEntry fb, CFDictionaryRef attrs, String devicePort) {
         CFDictionaryRef product = cfDictGetDictionary(attrs, "ProductAttributes");
         if (product == null) {
             return null;
@@ -258,14 +310,7 @@ final class MacDisplay extends AbstractDisplay {
         Long displayWidth = cfRegistryEntryGetLong(fb, "DisplayWidth");
         Long displayHeight = cfRegistryEntryGetLong(fb, "DisplayHeight");
 
-        String fallbackName = null;
-        String ioNameMatched = cfRegistryEntryGetString(fb, "IONameMatched");
-        if (ioNameMatched != null) {
-            String shortName = ioNameMatched.contains(Symbol.COMMA)
-                    ? ioNameMatched.substring(0, ioNameMatched.indexOf(Symbol.C_COMMA))
-                    : ioNameMatched;
-            fallbackName = shortName + " (Built-in Display)";
-        }
+        String fallbackName = Normal.UNKNOWN.equals(devicePort) ? null : devicePort + " (Built-in Display)";
 
         Integer cgModel = null;
         Integer cgSerial = null;
@@ -510,6 +555,16 @@ final class MacDisplay extends AbstractDisplay {
         } finally {
             k.release();
         }
+    }
+
+    /**
+     * Normalizes a string value to the standard unknown sentinel when it is blank.
+     *
+     * @param value The value to normalize.
+     * @return The value, or {@link Normal#UNKNOWN} when blank.
+     */
+    private static String getStringValueOrUnknown(String value) {
+        return StringKit.isBlank(value) ? Normal.UNKNOWN : value;
     }
 
 }

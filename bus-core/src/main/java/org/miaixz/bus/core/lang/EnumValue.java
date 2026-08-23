@@ -214,7 +214,32 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
         /**
          * API key credential.
          */
-        API_KEY
+        API_KEY,
+
+        /**
+         * Password credential presented directly by a user or trusted client.
+         */
+        PASSWORD,
+
+        /**
+         * Short-lived authorization code exchanged for tokens or other credentials.
+         */
+        AUTHORIZATION_CODE,
+
+        /**
+         * Signed or otherwise verifiable assertion presented as a credential.
+         */
+        ASSERTION,
+
+        /**
+         * Certificate credential used to authenticate a peer or bind a cryptographic identity.
+         */
+        CERTIFICATE,
+
+        /**
+         * One-time password credential whose value is valid for a single authentication attempt.
+         */
+        OTP
 
     }
 
@@ -671,87 +696,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          * Context).
          */
         ALL
-
-    }
-
-    /**
-     * Enumeration for strategy patterns.
-     *
-     * @author Kimi Liu
-     */
-    @Getter
-    enum Povider {
-
-        /**
-         * Encryption and decryption strategy.
-         */
-        CRYPTO("CRYPTO"),
-        /**
-         * Captcha strategy.
-         */
-        CAPTCHA("CAPTCHA"),
-        /**
-         * Natural Language Processing (NLP) strategy.
-         */
-        NLP("NLP"),
-        /**
-         * Pinyin conversion strategy.
-         */
-        PINYIN("PINYIN"),
-        /**
-         * Template processing strategy.
-         */
-        TEMPLATE("TEMPLATE"),
-        /**
-         * JSON processing strategy.
-         */
-        JSON("JSON"),
-        /**
-         * Logging strategy.
-         */
-        LOGGING("LOGGING"),
-        /**
-         * Hotspot/Degradation strategy.
-         */
-        LIMITER("LIMITER"),
-        /**
-         * Notification strategy.
-         */
-        NOTIFY("NOTIFY"),
-        /**
-         * Authorization strategy.
-         */
-        AUTH("AUTH"),
-        /**
-         * Payment strategy.
-         */
-        PAY("PAY"),
-        /**
-         * Data anonymization/desensitization strategy.
-         */
-        SENSITIVE("SENSITIVE"),
-        /**
-         * Storage strategy.
-         */
-        STORAGE("STORAGE"),
-        /**
-         * Validation strategy.
-         */
-        VALIDATE("VALIDATE");
-
-        /**
-         * The code value of the provider.
-         */
-        String code;
-
-        /**
-         * Constructs a provider value.
-         *
-         * @param code the provider code
-         */
-        Povider(String code) {
-            this.code = code;
-        }
 
     }
 

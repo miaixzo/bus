@@ -33,7 +33,7 @@ public class China95ChildLimitProvider extends AbstractChildLimitProvider {
     /**
      * Creates a new {@code China95ChildLimitProvider} instance.
      */
-    protected China95ChildLimitProvider() {
+    public China95ChildLimitProvider() {
         // No initialization required.
     }
 

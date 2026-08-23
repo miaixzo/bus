@@ -38,7 +38,7 @@ import org.miaixz.bus.health.linux.ProcPath;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class CpuInfo {
+public class CpuInfo {
 
     /**
      * Constructs a new CpuInfo instance.

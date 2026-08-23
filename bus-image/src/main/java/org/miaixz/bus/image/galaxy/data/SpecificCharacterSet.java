@@ -27,6 +27,7 @@ import java.nio.charset.*;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Builder;
@@ -76,7 +77,7 @@ public class SpecificCharacterSet {
      * @param codecs the codecs.
      * @param codes  the codes.
      */
-    protected SpecificCharacterSet(Codec[] codecs, String... codes) {
+    public SpecificCharacterSet(Codec[] codecs, String... codes) {
         this.codecs = codecs;
         this.dicomCodes = codes;
     }
@@ -146,7 +147,7 @@ public class SpecificCharacterSet {
      * @throws UnsupportedCharsetException if the operation cannot be completed.
      */
     public static String checkCharsetName(String charsetName) {
-        if (!Charset.isSupported(charsetName))
+        if (!java.nio.charset.Charset.isSupported(charsetName))
             throw new UnsupportedCharsetException(charsetName);
         return charsetName;
     }
@@ -597,8 +598,8 @@ public class SpecificCharacterSet {
          * @return the result.
          */
         private static String[] resetCharsetNames(String[] charsetNames) {
-            charsetNames[0] = "US-ASCII";
-            charsetNames[1] = "ISO-8859-1";
+            charsetNames[0] = Charset.DEFAULT_US_ASCII;
+            charsetNames[1] = Charset.DEFAULT_ISO_8859_1;
             charsetNames[2] = "ISO-8859-2";
             charsetNames[3] = "ISO-8859-3";
             charsetNames[4] = "ISO-8859-4";
@@ -612,9 +613,9 @@ public class SpecificCharacterSet {
             charsetNames[12] = "x-JIS0208";
             charsetNames[13] = "JIS_X0212-1990";
             charsetNames[14] = "EUC-KR";
-            charsetNames[15] = "GB2312";
-            charsetNames[16] = org.miaixz.bus.core.lang.Charset.DEFAULT_UTF_8;
-            charsetNames[17] = "GB18030";
+            charsetNames[15] = Charset.DEFAULT_GB_2312;
+            charsetNames[16] = Charset.DEFAULT_UTF_8;
+            charsetNames[17] = Charset.DEFAULT_GB_18030;
             return charsetNames;
         }
 
@@ -712,8 +713,8 @@ public class SpecificCharacterSet {
                 case "ISO_IR 192":
                     return Codec.UTF_8;
 
-                case "GB18030":
-                case "GBK":
+                case Charset.DEFAULT_GB_18030:
+                case Charset.DEFAULT_GBK:
                     return Codec.GB18030;
             }
             if (!lenient)
@@ -862,7 +863,7 @@ public class SpecificCharacterSet {
          */
         public Encoder(Codec codec) {
             this.codec = codec;
-            this.encoder = Charset.forName(codec.charsetName()).newEncoder();
+            this.encoder = java.nio.charset.Charset.forName(codec.charsetName()).newEncoder();
         }
 
         /**

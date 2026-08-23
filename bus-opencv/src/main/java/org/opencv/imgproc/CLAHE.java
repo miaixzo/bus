@@ -29,7 +29,7 @@ import org.opencv.core.Size;
  */
 public class CLAHE extends Algorithm {
 
-    protected CLAHE(long addr) {
+    public CLAHE(long addr) {
         super(addr);
     }
 

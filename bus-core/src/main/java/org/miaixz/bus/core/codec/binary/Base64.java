@@ -45,7 +45,7 @@ public class Base64 {
     /**
      * Keeps Base64 encoding and decoding on the static API.
      */
-    private Base64() {
+    public Base64() {
         // No initialization required.
     }
 

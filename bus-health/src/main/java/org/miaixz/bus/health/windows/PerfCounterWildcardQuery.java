@@ -42,12 +42,12 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class PerfCounterWildcardQuery {
+public class PerfCounterWildcardQuery {
 
     /**
      * Keeps wildcard Windows performance-counter queries on the static API.
      */
-    private PerfCounterWildcardQuery() {
+    public PerfCounterWildcardQuery() {
         // No initialization required.
     }
 

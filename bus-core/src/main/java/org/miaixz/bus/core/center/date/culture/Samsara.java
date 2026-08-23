@@ -43,7 +43,7 @@ public abstract class Samsara extends Loops {
      * @param names A list of names for the cycle.
      * @param index The initial index (supports negative numbers for reverse indexing).
      */
-    protected Samsara(String[] names, int index) {
+    public Samsara(String[] names, int index) {
         this.names = names;
         this.index = indexOf(index);
     }

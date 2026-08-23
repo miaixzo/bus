@@ -37,12 +37,12 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Instances {
+public class Instances {
 
     /**
-     * Private constructor to prevent instantiation.
+     * Creates an instance-access facade over the shared factory.
      */
-    private Instances() {
+    public Instances() {
         // No initialization required.
     }
 

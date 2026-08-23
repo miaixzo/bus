@@ -30,7 +30,7 @@ public class EmptyNode implements Node {
     /**
      * Creates the shared empty bean-path node.
      */
-    private EmptyNode() {
+    public EmptyNode() {
         // No initialization required.
     }
 

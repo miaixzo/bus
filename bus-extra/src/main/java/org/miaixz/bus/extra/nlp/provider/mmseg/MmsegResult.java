@@ -25,12 +25,13 @@ import com.chenlb.mmseg4j.MMSeg;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.nlp.AbstractResult;
+import org.miaixz.bus.extra.nlp.NLPResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
 import org.miaixz.bus.logger.Logger;
 
 /**
  * mmseg4j word segmentation result implementation. This class adapts the mmseg4j {@link MMSeg} result to the common
- * {@link org.miaixz.bus.extra.nlp.NLPResult} interface. Project homepage:
+ * {@link NLPResult} interface. Project homepage:
  * <a href="https://github.com/chenlb/mmseg4j-core">https://github.com/chenlb/mmseg4j-core</a>
  *
  * @author Kimi Liu

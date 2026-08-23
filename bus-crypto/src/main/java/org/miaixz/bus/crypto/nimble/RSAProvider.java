@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.crypto.nimble;
 
+import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -39,6 +40,16 @@ public class RSAProvider implements Provider {
      */
     public RSAProvider() {
         // No initialization required.
+    }
+
+    /**
+     * Returns the stable RSA algorithm name used to register this provider.
+     *
+     * @return {@link Algorithm#RSA} algorithm value
+     */
+    @Override
+    public String type() {
+        return Algorithm.RSA.getValue();
     }
 
     /**

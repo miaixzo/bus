@@ -33,12 +33,12 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class RawCodec implements FrameCodec {
+public class RawCodec implements FrameCodec {
 
     /**
      * Creates a raw codec.
      */
-    private RawCodec() {
+    public RawCodec() {
         // No initialization required.
     }
 

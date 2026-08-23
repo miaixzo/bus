@@ -37,12 +37,12 @@ import org.miaixz.bus.health.Parsing;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Lssrad {
+public class Lssrad {
 
     /**
      * Creates a new Lssrad instance.
      */
-    private Lssrad() {
+    public Lssrad() {
         // No initialization required.
     }
 

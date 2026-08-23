@@ -51,12 +51,12 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class SmcKit {
+public class SmcKit {
 
     /**
      * Keeps macOS SMC queries on the static API.
      */
-    private SmcKit() {
+    public SmcKit() {
         // No initialization required.
     }
 

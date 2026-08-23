@@ -39,9 +39,12 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Edid {
+public class Edid {
 
-    private Edid() {
+    /**
+     * Creates a new EDID parser instance.
+     */
+    public Edid() {
         // No initialization required.
     }
 

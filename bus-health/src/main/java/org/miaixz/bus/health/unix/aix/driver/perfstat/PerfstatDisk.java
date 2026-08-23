@@ -31,12 +31,12 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class PerfstatDisk {
+public class PerfstatDisk {
 
     /**
      * Keeps AIX perfstat disk queries on the static API.
      */
-    private PerfstatDisk() {
+    public PerfstatDisk() {
         // No initialization required.
     }
 

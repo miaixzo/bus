@@ -37,7 +37,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
  *
  * @author Kimi Liu
  */
-public final class HttpAuth {
+public class HttpAuth {
 
     /**
      * HTTP authentication scheme emitted before the credential token.
@@ -55,7 +55,7 @@ public final class HttpAuth {
      * @param scheme authentication scheme
      * @param token  encoded credential token
      */
-    private HttpAuth(final String scheme, final String token) {
+    public HttpAuth(final String scheme, final String token) {
         this.scheme = scheme;
         this.token = token;
     }

@@ -28,7 +28,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractBaseboard;
  * @author Kimi Liu
  */
 @Immutable
-public final class UnixBaseboard extends AbstractBaseboard {
+public class UnixBaseboard extends AbstractBaseboard {
 
     /**
      * The manufacturer value.

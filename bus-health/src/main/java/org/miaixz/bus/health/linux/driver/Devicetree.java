@@ -30,7 +30,7 @@ import org.miaixz.bus.health.linux.SysPath;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Devicetree {
+public class Devicetree {
 
     /**
      * Constructs a new Devicetree instance.

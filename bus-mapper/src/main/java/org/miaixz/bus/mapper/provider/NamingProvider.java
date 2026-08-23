@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.mapper.provider;
 
+import java.util.Locale;
+
 import lombok.Getter;
 
 import org.miaixz.bus.core.Context;
@@ -75,7 +77,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * @author Kimi Liu
  */
 @Getter
-public class NamingProvider implements Provider {
+public class NamingProvider implements Provider<String> {
 
     /**
      * Naming strategy represented by this provider.
@@ -83,12 +85,22 @@ public class NamingProvider implements Provider {
     private final EnumValue.Naming naming;
 
     /**
-     * Private constructor using specific naming convention.
+     * Creates a provider using the specified naming convention.
      *
      * @param naming the naming convention to use
      */
-    private NamingProvider(EnumValue.Naming naming) {
+    public NamingProvider(EnumValue.Naming naming) {
         this.naming = naming != null ? naming : EnumValue.Naming.getDefault();
+    }
+
+    /**
+     * Returns the stable lower-case naming strategy key represented by this provider.
+     *
+     * @return naming strategy key used to select this provider
+     */
+    @Override
+    public String type() {
+        return naming.name().toLowerCase(Locale.ROOT);
     }
 
     /**
@@ -175,14 +187,6 @@ public class NamingProvider implements Provider {
             case UPPER_SNAKE_CASE -> StringKit.toUnderlineCase(input).toUpperCase();
             default -> input; // NORMAL, BOLD, FAINT, ITALIC - no transformation
         };
-    }
-
-    /**
-     * The type method.
-     */
-    @Override
-    public String type() {
-        return naming.name().toLowerCase();
     }
 
     /**

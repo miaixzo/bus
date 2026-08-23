@@ -48,9 +48,9 @@ public enum Type {
     PROMPT(Normal._3, "Prompt entry"),
 
     /**
-     * Setting namespace directory resource.
+     * Setting space directory resource.
      */
-    NAMESPACE(4, "Setting namespace", Domain.SETTING),
+    SPACE(4, "Setting space", Domain.SETTING),
 
     /**
      * Setting application directory resource.
@@ -328,7 +328,7 @@ public enum Type {
      * @return setting-domain resource types
      */
     public static List<Type> settingTypes() {
-        return List.of(NAMESPACE, APP, PROFILE, ITEM, ITEM_REVISION, BINDING);
+        return List.of(SPACE, APP, PROFILE, ITEM, ITEM_REVISION, BINDING);
     }
 
     /**

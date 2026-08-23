@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @author Kimi Liu
  */
-public final class UnoUrl {
+public class UnoUrl {
 
     /**
      * Most recently parsed canonical target. High-throughput clients commonly repeat one endpoint across workers.
@@ -108,7 +108,7 @@ public final class UnoUrl {
      * @param path    normalized path
      * @param query   decoded query values
      */
-    UnoUrl(final Address address, final String path, final Map<String, List<String>> query) {
+    public UnoUrl(final Address address, final String path, final Map<String, List<String>> query) {
         this(address, path, parametersFromMap(query), Normal.EMPTY, Normal.EMPTY, null, null);
     }
 
@@ -1060,7 +1060,7 @@ public final class UnoUrl {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Scheme candidate.
@@ -1110,7 +1110,7 @@ public final class UnoUrl {
         /**
          * Creates a URL builder.
          */
-        private Builder() {
+        public Builder() {
             // No initialization required.
         }
 

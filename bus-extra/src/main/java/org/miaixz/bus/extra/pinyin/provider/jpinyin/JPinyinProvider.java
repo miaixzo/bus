@@ -58,6 +58,16 @@ public class JPinyinProvider implements PinyinProvider {
     }
 
     /**
+     * Returns the stable JPinyin provider name used for named Pinyin provider selection.
+     *
+     * @return {@code jpinyin}
+     */
+    @Override
+    public String type() {
+        return "jpinyin";
+    }
+
+    /**
      * Gets the pinyin of a single character. This method is designed to be overridden by subclasses for custom pinyin
      * conversion.
      * <p>

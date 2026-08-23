@@ -33,7 +33,7 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class MSAcpiThermalZoneTemperature {
+public class MSAcpiThermalZoneTemperature {
 
     /**
      * Constructs a new {@code MSAcpiThermalZoneTemperature} instance.

@@ -40,7 +40,7 @@ import org.miaixz.bus.health.unix.freebsd.BsdSysctlKit;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class FreeBsdPowerSource extends AbstractPowerSource {
+public class FreeBsdPowerSource extends AbstractPowerSource {
 
     /**
      * Creates a new FreeBsdPowerSource instance.

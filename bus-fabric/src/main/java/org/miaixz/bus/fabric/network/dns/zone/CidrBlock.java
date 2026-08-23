@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class CidrBlock {
+public class CidrBlock {
 
     /**
      * IPv4 address byte length.

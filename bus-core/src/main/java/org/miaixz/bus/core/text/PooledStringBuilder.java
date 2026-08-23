@@ -54,7 +54,7 @@ import java.io.IOException;
  *
  * @author Kimi Liu
  */
-public final class PooledStringBuilder implements Appendable, CharSequence, AutoCloseable {
+public class PooledStringBuilder implements Appendable, CharSequence, AutoCloseable {
 
     /**
      * The underlying StringBuilder instance.
@@ -71,7 +71,7 @@ public final class PooledStringBuilder implements Appendable, CharSequence, Auto
      *
      * @param delegate the underlying StringBuilder instance
      */
-    PooledStringBuilder(StringBuilder delegate) {
+    public PooledStringBuilder(StringBuilder delegate) {
         this.delegate = delegate;
     }
 

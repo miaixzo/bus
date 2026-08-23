@@ -38,7 +38,7 @@ import org.miaixz.bus.fabric.network.dns.message.DnsQuestion;
  *
  * @author Kimi Liu
  */
-public final class DnsCacheKey {
+public class DnsCacheKey {
 
     /**
      * Lowercase fully-qualified query name.

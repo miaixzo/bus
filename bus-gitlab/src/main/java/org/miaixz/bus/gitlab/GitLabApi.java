@@ -739,7 +739,7 @@ public class GitLabApi implements AutoCloseable {
      *
      * @return the GitLab4J shared Logger instance
      */
-    public static final java.util.logging.Logger getLogger() {
+    public static java.util.logging.Logger getLogger() {
         return (LOGGER);
     }
 
@@ -750,7 +750,7 @@ public class GitLabApi implements AutoCloseable {
      * @param glae the RelevantException that was the result of a call to the GitLab API
      * @return the created Optional instance
      */
-    protected static final <T> Optional<T> createOptionalFromException(RelevantException glae) {
+    protected static <T> Optional<T> createOptionalFromException(RelevantException glae) {
         Optional<T> optional = Optional.empty();
         optionalExceptionMap.put(System.identityHashCode(optional), glae);
         return (optional);
@@ -762,7 +762,7 @@ public class GitLabApi implements AutoCloseable {
      * @return a new GitLabApi instance that is logically a duplicate of this instance, with the exception of sudo
      *         state.
      */
-    public final GitLabApi duplicate() {
+    public GitLabApi duplicate() {
 
         Long sudoUserId = this.getSudoAsId();
         GitLabApi gitLabApi = new GitLabApi(apiVersion, gitLabServerUrl, getTokenType(), getAuthToken(),
@@ -1035,7 +1035,7 @@ public class GitLabApi implements AutoCloseable {
      * @return the exception associated with the provided Optional instance, or null if no exception is associated with
      *         the Optional instance
      */
-    public static final RelevantException getOptionalException(Optional<?> optional) {
+    public static RelevantException getOptionalException(Optional<?> optional) {
         return (optionalExceptionMap.get(System.identityHashCode(optional)));
     }
 
@@ -1057,7 +1057,7 @@ public class GitLabApi implements AutoCloseable {
      * @return the value of the Optional instance if no exception is associated with it
      * @throws RelevantException if there was an exception associated with the Optional instance
      */
-    public static final <T> T orElseThrow(Optional<T> optional) throws RelevantException {
+    public static <T> T orElseThrow(Optional<T> optional) throws RelevantException {
 
         RelevantException glea = getOptionalException(optional);
         if (glea != null) {

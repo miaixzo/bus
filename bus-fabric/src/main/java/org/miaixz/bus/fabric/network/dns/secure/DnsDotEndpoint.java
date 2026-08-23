@@ -62,7 +62,7 @@ import org.miaixz.bus.fabric.protocol.socket.SocketOptions;
  *
  * @author Kimi Liu
  */
-public final class DnsDotEndpoint implements AutoCloseable, Lifecycle {
+public class DnsDotEndpoint implements AutoCloseable, Lifecycle {
 
     /**
      * DNS-over-TLS ALPN identifier.

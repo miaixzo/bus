@@ -25,12 +25,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.core.basic.entity.Namespace;
+import org.miaixz.bus.core.basic.entity.Space;
 
 /**
  * Minimal common base for all Cortex domain objects.
  * <p>
- * Extends {@link Namespace} for the shared identifier, request context and namespace scope, then adds the Cortex-level
+ * Extends {@link Space} for the shared identifier, request context and space scope, then adds the Cortex-level
  * {@code type}. The type stores the stable numeric key of {@link Type} for persistence and business routing.
  * </p>
  *
@@ -39,7 +39,7 @@ import org.miaixz.bus.core.basic.entity.Namespace;
 @Getter
 @Setter
 @SuperBuilder
-public class Nature extends Namespace {
+public class Nature extends Space {
 
     /**
      * Constructs a new {@code Nature} instance.

@@ -34,7 +34,7 @@ import org.miaixz.bus.health.unix.shared.hardware.UnixDisplay;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class FreeBsdHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
+public class FreeBsdHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
 
     /**
      * Constructs a new FreeBsdHardwareAbstractionLayer instance.

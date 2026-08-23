@@ -24,7 +24,6 @@ import static org.miaixz.bus.fabric.Builder.*;
 import java.net.SocketOption;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +31,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
@@ -42,6 +42,7 @@ import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 import org.miaixz.bus.fabric.codec.frame.LineCodec;
 import org.miaixz.bus.fabric.guard.GuardRule;
+import org.miaixz.bus.fabric.guard.route.AddressPolicy;
 import org.miaixz.bus.fabric.network.proxy.ProxyHeader;
 import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
 import org.miaixz.bus.fabric.network.tls.TlsPolicy;
@@ -53,11 +54,11 @@ import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.protocol.socket.calls.SocketCall;
 
 /**
- * Immutable socket exchange.
+ * Socket exchange backed by an immutable execution specification.
  *
  * @author Kimi Liu
  */
-public final class SocketX {
+public class SocketX {
 
     /**
      * Immutable execution specification.
@@ -75,17 +76,17 @@ public final class SocketX {
     private final Callback<SocketSession> callback;
 
     /**
-     * Creates an exchange.
+     * Creates a socket exchange from a validated builder snapshot.
      *
      * @param builder configuration source used to create the immutable exchange specification
      */
-    private SocketX(final Builder builder) {
+    public SocketX(final Builder builder) {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
         final TlsPolicy tlsPolicy = tlsPolicy(current);
-        this.spec = new SocketSpec(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
-                builder.timeout, tlsPolicy.context(), tlsPolicy.settings(), builder.frameCodec, builder.handler(),
-                builder.guard, builder.filter, currentObserver, builder.proxy, builder.proxyHeader,
+        this.spec = new SocketSpec(current, builder.uri, Address.from(builder.uri), builder.addressPolicy,
+                builder.headers.build(), builder.timeout, tlsPolicy.context(), tlsPolicy.settings(), builder.frameCodec,
+                builder.handler(), builder.guard, builder.filter, currentObserver, builder.proxy, builder.proxyHeader,
                 builder.socketOptions, builder.listener, builder.pooled);
         this.runner = new SocketRunner(spec);
         this.callback = builder.callback;
@@ -327,7 +328,7 @@ public final class SocketX {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Shared context.
@@ -338,6 +339,11 @@ public final class SocketX {
          * URI.
          */
         private URI uri;
+
+        /**
+         * Optional client destination policy explicitly installed by the caller.
+         */
+        private AddressPolicy addressPolicy;
 
         /**
          * Headers builder.
@@ -424,7 +430,7 @@ public final class SocketX {
          *
          * @param context shared context
          */
-        private Builder(final Context context) {
+        public Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
             final Timeout configured = context.options().get(OPTION_TIMEOUT);
@@ -555,6 +561,17 @@ public final class SocketX {
          */
         public Builder timeout(final Timeout timeout) {
             this.timeout = require(timeout, "Timeout");
+            return this;
+        }
+
+        /**
+         * Installs the client destination policy enforced during DNS resolution and connection establishment.
+         *
+         * @param addressPolicy non-null immutable address policy
+         * @return this builder
+         */
+        public Builder addressPolicy(final AddressPolicy addressPolicy) {
+            this.addressPolicy = require(addressPolicy, "Address policy");
             return this;
         }
 
@@ -777,7 +794,7 @@ public final class SocketX {
             if (handler == null) {
                 this.handler = Demuxer.noop();
             } else {
-                this.handler = (session, message) -> handler.accept(message.payload().text(StandardCharsets.UTF_8));
+                this.handler = (session, message) -> handler.accept(message.payload().text(Charset.UTF_8));
             }
             return this;
         }
@@ -1013,29 +1030,56 @@ public final class SocketX {
          * @return this builder
          */
         private Builder composeCallback() {
-            this.callback = new Callback<>() {
-
-                /**
-                 * Forwards a successful open session to the configured open handler.
-                 *
-                 * @param value opened socket session
-                 */
-                @Override
-                public void success(final SocketSession value) {
-                    openHandler.accept(value);
-                }
-
-                /**
-                 * Forwards an open failure to the configured error handler.
-                 *
-                 * @param cause failure cause
-                 */
-                @Override
-                public void failure(final Throwable cause) {
-                    errorHandler.accept(cause);
-                }
-            };
+            this.callback = new HandlerCallback(openHandler, errorHandler);
             return this;
+        }
+
+        /**
+         * Named callback that preserves the builder's success and failure forwarding order.
+         */
+        private static final class HandlerCallback implements Callback<SocketSession> {
+
+            /**
+             * Success handler captured when the callback is composed.
+             */
+            private final Consumer<SocketSession> openHandler;
+
+            /**
+             * Failure handler captured when the callback is composed.
+             */
+            private final Consumer<Throwable> errorHandler;
+
+            /**
+             * Creates a callback from the builder's current handlers.
+             *
+             * @param openHandler  success handler
+             * @param errorHandler failure handler
+             */
+            private HandlerCallback(final Consumer<SocketSession> openHandler, final Consumer<Throwable> errorHandler) {
+                this.openHandler = openHandler;
+                this.errorHandler = errorHandler;
+            }
+
+            /**
+             * Forwards a successful open session to the configured open handler.
+             *
+             * @param value opened socket session
+             */
+            @Override
+            public void success(final SocketSession value) {
+                openHandler.accept(value);
+            }
+
+            /**
+             * Forwards an open failure to the configured error handler.
+             *
+             * @param cause failure cause
+             */
+            @Override
+            public void failure(final Throwable cause) {
+                errorHandler.accept(cause);
+            }
+
         }
 
         /**

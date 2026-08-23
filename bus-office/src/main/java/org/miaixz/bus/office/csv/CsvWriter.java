@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.*;
  *
  * @author Kimi Liu
  */
-public final class CsvWriter implements Closeable, Flushable, Serializable {
+public class CsvWriter implements Closeable, Flushable, Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852283622258L;

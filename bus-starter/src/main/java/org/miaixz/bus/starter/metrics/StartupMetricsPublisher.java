@@ -32,7 +32,7 @@ import org.miaixz.bus.spring.boot.startup.SpringStartupSummary;
  *
  * @author Kimi Liu
  */
-public final class StartupMetricsPublisher implements SpringStartupPublisher {
+public class StartupMetricsPublisher implements SpringStartupPublisher {
 
     /**
      * Metrics provider receiving startup measurements.

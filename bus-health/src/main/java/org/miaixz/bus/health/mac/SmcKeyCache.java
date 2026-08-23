@@ -33,7 +33,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class SmcKeyCache {
+public class SmcKeyCache {
 
     /**
      * Configuration property that names the keys explicitly.

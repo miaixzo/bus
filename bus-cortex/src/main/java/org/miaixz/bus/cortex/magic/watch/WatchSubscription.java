@@ -45,9 +45,9 @@ public class WatchSubscription<T> {
     private Vector vector;
 
     /**
-     * Canonical namespace identifier used for quota accounting and event envelopes.
+     * Canonical space identifier used for quota accounting and event envelopes.
      */
-    private String namespace_id;
+    private String space_id;
 
     /**
      * Listener to invoke when the watched values change.
@@ -129,14 +129,14 @@ public class WatchSubscription<T> {
     /**
      * Creates one watch subscription with common lifecycle timestamps initialized.
      *
-     * @param vector       watch vector
-     * @param namespace_id canonical namespace identifier for quota accounting
-     * @param listener     listener to invoke
-     * @param now          current timestamp
+     * @param vector   watch vector
+     * @param space_id canonical space identifier for quota accounting
+     * @param listener listener to invoke
+     * @param now      current timestamp
      */
-    public WatchSubscription(Vector vector, String namespace_id, Listener<Watch<T>> listener, long now) {
+    public WatchSubscription(Vector vector, String space_id, Listener<Watch<T>> listener, long now) {
         this.vector = vector;
-        this.namespace_id = namespace_id;
+        this.space_id = space_id;
         this.listener = listener;
         this.createdAt = now;
         this.lastAccess = now;

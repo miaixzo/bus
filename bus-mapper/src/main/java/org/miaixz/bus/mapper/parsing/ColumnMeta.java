@@ -192,7 +192,7 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
      *
      * @param fieldMeta The entity class field.
      */
-    protected ColumnMeta(FieldMeta fieldMeta) {
+    public ColumnMeta(FieldMeta fieldMeta) {
         this.fieldMeta = fieldMeta;
     }
 

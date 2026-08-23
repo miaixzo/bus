@@ -35,7 +35,7 @@ public abstract class ResourceLoader implements Loader {
     /**
      * Constructs a resource loader.
      */
-    protected ResourceLoader() {
+    public ResourceLoader() {
         // No initialization required.
     }
 

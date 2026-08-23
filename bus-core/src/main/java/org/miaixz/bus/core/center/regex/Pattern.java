@@ -19,7 +19,8 @@
 */
 package org.miaixz.bus.core.center.regex;
 
-import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
+import org.miaixz.bus.core.center.map.reference.ReferenceConcurrentMap;
+import org.miaixz.bus.core.center.map.reference.SoftConcurrentMap;
 import org.miaixz.bus.core.lang.Regex;
 
 /**
@@ -326,10 +327,10 @@ public class Pattern {
             .compile("[\\\\/:*?\"<>|\r\n]");
 
     /**
-     * A cache pool for compiled {@link java.util.regex.Pattern} objects. Uses {@link WeakConcurrentMap} to allow
-     * patterns to be garbage collected if no longer strongly referenced.
+     * A cache pool for compiled {@link java.util.regex.Pattern} objects. Uses soft references so cached patterns can be
+     * reclaimed under memory pressure while remaining stable during normal lookup.
      */
-    private static final WeakConcurrentMap<RegexWithFlag, java.util.regex.Pattern> POOL = new WeakConcurrentMap<>();
+    private static final ReferenceConcurrentMap<RegexWithFlag, java.util.regex.Pattern> POOL = new SoftConcurrentMap<>();
 
     /**
      * Retrieves a compiled {@link java.util.regex.Pattern} from the pool based on the regular expression string. If the

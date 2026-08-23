@@ -35,7 +35,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class PerfmonDisabled {
+public class PerfmonDisabled {
 
     /**
      * The PERF_OS_DISABLED constant.
@@ -55,7 +55,7 @@ public final class PerfmonDisabled {
     /**
      * Everything in this class is static, never instantiate it
      */
-    private PerfmonDisabled() {
+    public PerfmonDisabled() {
         throw new AssertionError();
     }
 

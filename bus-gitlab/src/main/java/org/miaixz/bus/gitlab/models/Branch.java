@@ -268,7 +268,7 @@ public class Branch implements Serializable {
      * @return the result
      */
 
-    public static final boolean isValid(Branch branch) {
+    public static boolean isValid(Branch branch) {
         return (branch != null && branch.getName() != null);
     }
 

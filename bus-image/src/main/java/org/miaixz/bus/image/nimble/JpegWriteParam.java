@@ -82,7 +82,7 @@ public class JpegWriteParam {
      * @param type              the type.
      * @param transferSyntaxUid the transfer syntax uid.
      */
-    JpegWriteParam(TransferSyntaxType type, String transferSyntaxUid) {
+    public JpegWriteParam(TransferSyntaxType type, String transferSyntaxUid) {
         this.type = type;
         this.transferSyntaxUid = transferSyntaxUid;
         this.prediction = 1;

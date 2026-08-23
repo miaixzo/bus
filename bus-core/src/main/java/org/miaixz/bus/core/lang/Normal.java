@@ -723,9 +723,19 @@ public class Normal {
     public static final int _900 = 900;
 
     /**
+     * The number 1000.
+     */
+    public static final int _1000 = 1000;
+
+    /**
      * The number 2048.
      */
     public static final int _2048 = 2048;
+
+    /**
+     * The number 3000.
+     */
+    public static final int _3000 = 3000;
 
     /**
      * The number 4096.
@@ -751,6 +761,11 @@ public class Normal {
      * The number 65535.
      */
     public static final int _65535 = 0xFFFF;
+
+    /**
+     * The number 65536.
+     */
+    public static final int _65536 = 1 << 16;
 
     /**
      * Reusable Long constant for zero.

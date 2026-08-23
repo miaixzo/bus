@@ -126,9 +126,9 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     private final Map<String, WatchSubscription<?>> entries = new ConcurrentHashMap<>();
 
     /**
-     * Maximum number of watch subscriptions allowed per namespace.
+     * Maximum number of watch subscriptions allowed per space.
      */
-    private final int maxWatchesPerNamespace;
+    private final int maxWatchesPerSpace;
 
     /**
      * Maximum idle time in milliseconds before a watch subscription expires.
@@ -151,9 +151,9 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     private final Sequence sequence;
 
     /**
-     * Namespace watch counters used to enforce per-namespace subscription limits without full scans.
+     * Space watch counters used to enforce per-space subscription limits without full scans.
      */
-    private final Map<String, AtomicInteger> namespaceCounts = new ConcurrentHashMap<>();
+    private final Map<String, AtomicInteger> spaceCounts = new ConcurrentHashMap<>();
 
     /**
      * Global watch listeners used for diagnostics and side-channel observation.
@@ -171,7 +171,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     private volatile boolean closed;
 
     /**
-     * Creates a WatchManager with default limits (1000 watches per namespace, 24 h expiry).
+     * Creates a WatchManager with default limits (1000 watches per space, 24 h expiry).
      *
      * @param cacheX shared cache used by the backing sequence generator
      */
@@ -182,39 +182,39 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     /**
      * Creates a WatchManager with explicit limits.
      *
-     * @param cacheX                 shared cache used by the backing sequence generator
-     * @param maxWatchesPerNamespace maximum concurrent watches per namespace
-     * @param watchExpireMs          milliseconds of inactivity after which a watch is removed
+     * @param cacheX             shared cache used by the backing sequence generator
+     * @param maxWatchesPerSpace maximum concurrent watches per space
+     * @param watchExpireMs      milliseconds of inactivity after which a watch is removed
      */
-    public WatchManager(CacheX<String, Object> cacheX, int maxWatchesPerNamespace, long watchExpireMs) {
-        this(cacheX, maxWatchesPerNamespace, watchExpireMs, 1024, OverflowStrategy.DROP_LATEST);
+    public WatchManager(CacheX<String, Object> cacheX, int maxWatchesPerSpace, long watchExpireMs) {
+        this(cacheX, maxWatchesPerSpace, watchExpireMs, 1024, OverflowStrategy.DROP_LATEST);
     }
 
     /**
      * Creates a WatchManager with explicit limits and backlog capacity.
      *
-     * @param cacheX                 shared cache used by the backing sequence generator
-     * @param maxWatchesPerNamespace maximum concurrent watches per namespace
-     * @param watchExpireMs          milliseconds of inactivity after which a watch is removed
-     * @param maxPendingPerWatch     maximum queued-but-not-delivered events per watch
+     * @param cacheX             shared cache used by the backing sequence generator
+     * @param maxWatchesPerSpace maximum concurrent watches per space
+     * @param watchExpireMs      milliseconds of inactivity after which a watch is removed
+     * @param maxPendingPerWatch maximum queued-but-not-delivered events per watch
      */
-    public WatchManager(CacheX<String, Object> cacheX, int maxWatchesPerNamespace, long watchExpireMs,
+    public WatchManager(CacheX<String, Object> cacheX, int maxWatchesPerSpace, long watchExpireMs,
             int maxPendingPerWatch) {
-        this(cacheX, maxWatchesPerNamespace, watchExpireMs, maxPendingPerWatch, OverflowStrategy.DROP_LATEST);
+        this(cacheX, maxWatchesPerSpace, watchExpireMs, maxPendingPerWatch, OverflowStrategy.DROP_LATEST);
     }
 
     /**
      * Creates a WatchManager with explicit limits, backlog capacity and overflow strategy.
      *
-     * @param cacheX                 shared cache used by the backing sequence generator
-     * @param maxWatchesPerNamespace maximum concurrent watches per namespace
-     * @param watchExpireMs          milliseconds of inactivity after which a watch is removed
-     * @param maxPendingPerWatch     maximum queued-but-not-delivered events per watch
-     * @param overflowStrategy       overflow strategy when the backlog is full
+     * @param cacheX             shared cache used by the backing sequence generator
+     * @param maxWatchesPerSpace maximum concurrent watches per space
+     * @param watchExpireMs      milliseconds of inactivity after which a watch is removed
+     * @param maxPendingPerWatch maximum queued-but-not-delivered events per watch
+     * @param overflowStrategy   overflow strategy when the backlog is full
      */
-    public WatchManager(CacheX<String, Object> cacheX, int maxWatchesPerNamespace, long watchExpireMs,
+    public WatchManager(CacheX<String, Object> cacheX, int maxWatchesPerSpace, long watchExpireMs,
             int maxPendingPerWatch, OverflowStrategy overflowStrategy) {
-        this.maxWatchesPerNamespace = maxWatchesPerNamespace;
+        this.maxWatchesPerSpace = maxWatchesPerSpace;
         this.watchExpireMs = watchExpireMs;
         this.maxPendingPerWatch = maxPendingPerWatch;
         this.overflowStrategy = overflowStrategy == null ? OverflowStrategy.DROP_LATEST : overflowStrategy;
@@ -235,15 +235,15 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
         }
         Objects.requireNonNull(listener, "watch listener must not be null");
         Vector normalized = normalizeVector(vector);
-        String ns = namespaceOf(normalized);
-        AtomicInteger counter = namespaceCounts.computeIfAbsent(ns, key -> new AtomicInteger());
-        if (counter.incrementAndGet() > maxWatchesPerNamespace) {
+        String resolvedSpace = spaceOf(normalized);
+        AtomicInteger counter = spaceCounts.computeIfAbsent(resolvedSpace, key -> new AtomicInteger());
+        if (counter.incrementAndGet() > maxWatchesPerSpace) {
             counter.decrementAndGet();
-            throw new IllegalStateException("Max watches per namespace exceeded: " + ns);
+            throw new IllegalStateException("Max watches per space exceeded: " + resolvedSpace);
         }
         String watchId = ID.fastSimpleUUID();
         long now = System.currentTimeMillis();
-        WatchSubscription<T> entry = new WatchSubscription<>(normalized, ns, listener, now);
+        WatchSubscription<T> entry = new WatchSubscription<>(normalized, resolvedSpace, listener, now);
         entry.touch(now, watchExpireMs);
         entries.put(watchId, entry);
         return watchId;
@@ -257,7 +257,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     public void remove(String watchId) {
         WatchSubscription<?> removed = entries.remove(watchId);
         if (removed != null) {
-            decrementNamespaceCount(removed.getNamespace_id());
+            decrementSpaceCount(removed.getSpace_id());
         }
     }
 
@@ -334,7 +334,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
                     source == null || source.isBlank() ? "WatchManager" : source,
                     now);
             if (newValue instanceof Assets asset) {
-                event.setNamespace_id(asset.getNamespace_id());
+                event.setSpace_id(asset.getSpace_id());
                 event.setType(Type.tryFromKey(asset.getType()).orElse(event.getType()));
             }
             event.setUpdated(newValue != null ? List.of(newValue) : List.of());
@@ -455,7 +455,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             item.getValue().touch(now, watchExpireMs);
             WatchSubscription<T> typed = (WatchSubscription<T>) item.getValue();
             Watch<T> event = createEvent(item.getKey(), typed, effectiveEventType, sequenceKey, REGISTRY_SOURCE, now);
-            event.setNamespace_id(asset.getNamespace_id());
+            event.setSpace_id(asset.getSpace_id());
             event.setType(assetType);
             fillRegistryPayload(event, action, effectiveEventType, asset, previousAsset);
             event.setSummary(registrySummary(effectiveEventType));
@@ -471,7 +471,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
         entries.entrySet().removeIf(e -> {
             boolean expired = e.getValue().getExpiresAt() > 0L && now > e.getValue().getExpiresAt();
             if (expired) {
-                decrementNamespaceCount(e.getValue().getNamespace_id());
+                decrementSpaceCount(e.getValue().getSpace_id());
             }
             return expired;
         });
@@ -525,8 +525,8 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
                 Map.of(
                         "entries",
                         entries.size(),
-                        "namespaces",
-                        namespaceCounts.size(),
+                        "spaces",
+                        spaceCounts.size(),
                         "dropped",
                         entries.values().stream().mapToLong(WatchSubscription::getDroppedCount).sum(),
                         "failed",
@@ -542,7 +542,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     public void close() {
         closed = true;
         entries.clear();
-        namespaceCounts.clear();
+        spaceCounts.clear();
         globalListeners.clear();
         dispatcher.shutdownNow();
     }
@@ -583,8 +583,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             return true;
         }
         if (value instanceof Assets asset) {
-            if (vector.getNamespace_id() != null
-                    && !Objects.equals(vector.getNamespace_id(), asset.getNamespace_id())) {
+            if (vector.getSpace_id() != null && !Objects.equals(vector.getSpace_id(), asset.getSpace_id())) {
                 return false;
             }
             if (vector.getType() != null && !Objects.equals(vector.getType(), asset.getType())) {
@@ -605,8 +604,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             return true;
         }
         if (value instanceof Instance instance) {
-            if (vector.getNamespace_id() != null
-                    && !Objects.equals(vector.getNamespace_id(), instance.getNamespace_id())) {
+            if (vector.getSpace_id() != null && !Objects.equals(vector.getSpace_id(), instance.getSpace_id())) {
                 return false;
             }
             if (vector.getId() != null && !Objects.equals(vector.getId(), instance.getServiceId())
@@ -665,7 +663,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
         subscription.setLastSequence(sequence);
         event.setWatchId(watchId);
         event.setVector(subscription.getVector());
-        event.setNamespace_id(subscription.getNamespace_id());
+        event.setSpace_id(subscription.getSpace_id());
         event.setType(
                 subscription.getVector() == null ? null
                         : Type.tryFromKey(subscription.getVector().getType()).orElse(null));
@@ -768,16 +766,16 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      * Copies and normalizes the selector vector used by one subscription.
      *
      * @param vector incoming watch vector
-     * @return copied vector with canonical namespace
+     * @return copied vector with canonical space
      */
     private Vector normalizeVector(Vector vector) {
         Vector copy = new Vector();
         if (vector == null) {
-            copy.setNamespace_id(CortexIdentity.namespace(null));
+            copy.setSpace_id(CortexIdentity.space(null));
             return copy;
         }
         copy.setId(vector.getId());
-        copy.setNamespace_id(namespaceOf(vector));
+        copy.setSpace_id(spaceOf(vector));
         copy.setType(vector.getType());
         copy.setApp_id(vector.getApp_id());
         copy.setMethod(vector.getMethod());
@@ -796,13 +794,13 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     }
 
     /**
-     * Resolves the canonical namespace of one vector.
+     * Resolves the canonical space of one vector.
      *
      * @param vector watch vector
-     * @return namespace key
+     * @return space key
      */
-    private String namespaceOf(Vector vector) {
-        return CortexIdentity.namespace(vector == null ? null : vector.getNamespace_id());
+    private String spaceOf(Vector vector) {
+        return CortexIdentity.space(vector == null ? null : vector.getSpace_id());
     }
 
     /**
@@ -909,7 +907,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             return null;
         }
         Instance copy = new Instance();
-        copy.setNamespace_id(instance.getNamespace_id() != null ? instance.getNamespace_id() : asset.getNamespace_id());
+        copy.setSpace_id(instance.getSpace_id() != null ? instance.getSpace_id() : asset.getSpace_id());
         copy.setApp_id(instance.getApp_id() != null ? instance.getApp_id() : asset.getApp_id());
         copy.setServiceId(instance.getServiceId() != null ? instance.getServiceId() : asset.getId());
         copy.setMethod(instance.getMethod() != null ? instance.getMethod() : asset.getMethod());
@@ -953,18 +951,18 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     }
 
     /**
-     * Decrements the namespace watch counter and clears empty counters.
+     * Decrements the space watch counter and clears empty counters.
      *
-     * @param namespace namespace key
+     * @param space space key
      */
-    private void decrementNamespaceCount(String namespace) {
-        String ns = CortexIdentity.namespace(namespace);
-        AtomicInteger counter = namespaceCounts.get(ns);
+    private void decrementSpaceCount(String space) {
+        String resolvedSpace = CortexIdentity.space(space);
+        AtomicInteger counter = spaceCounts.get(resolvedSpace);
         if (counter == null) {
             return;
         }
         if (counter.decrementAndGet() <= 0) {
-            namespaceCounts.remove(ns, counter);
+            spaceCounts.remove(resolvedSpace, counter);
         }
     }
 

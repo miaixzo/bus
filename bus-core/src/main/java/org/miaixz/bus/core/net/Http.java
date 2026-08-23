@@ -41,12 +41,12 @@ import org.miaixz.bus.core.lang.Symbol;
  *
  * @author Kimi Liu
  */
-public final class Http {
+public class Http {
 
     /**
      * Keeps all HTTP definitions and operations on the static API.
      */
-    private Http() {
+    public Http() {
         // No initialization required.
     }
 
@@ -135,12 +135,12 @@ public final class Http {
     /**
      * HTTP response status codes.
      */
-    public static final class Status {
+    public static class Status {
 
         /**
-         * Prevents instantiation.
+         * Creates an HTTP status-code namespace instance.
          */
-        private Status() {
+        public Status() {
             // No initialization required.
         }
 
@@ -492,12 +492,12 @@ public final class Http {
     /**
      * HTTP/2 SETTINGS identifiers and shared initial values defined by RFC 9113.
      */
-    public static final class Setting {
+    public static class Setting {
 
         /**
-         * Prevents instantiation.
+         * Creates an HTTP setting namespace instance.
          */
-        private Setting() {
+        public Setting() {
             // No initialization required.
         }
 
@@ -543,12 +543,12 @@ public final class Http {
     /**
      * HTTP header names and standard header values.
      */
-    public static final class Header {
+    public static class Header {
 
         /**
-         * Prevents instantiation.
+         * Creates an HTTP header-name namespace instance.
          */
-        private Header() {
+        public Header() {
             // No initialization required.
         }
 
@@ -952,12 +952,12 @@ public final class Http {
     /**
      * HTTP request parameter names used by Bus API contracts.
      */
-    public static final class Param {
+    public static class Param {
 
         /**
-         * Prevents instantiation.
+         * Creates an HTTP parameter-name namespace instance.
          */
-        private Param() {
+        public Param() {
             // No initialization required.
         }
 
@@ -991,12 +991,12 @@ public final class Http {
     /**
      * Conventional HTTP endpoint paths used by Bus APIs.
      */
-    public static final class Path {
+    public static class Path {
 
         /**
-         * Prevents instantiation.
+         * Creates an HTTP endpoint-path namespace instance.
          */
-        private Path() {
+        public Path() {
             // No initialization required.
         }
 
@@ -1256,6 +1256,11 @@ public final class Http {
          * OpenID Connect discovery path.
          */
         public static final String OPENID_CONFIGURATION = "/.well-known/openid-configuration";
+
+        /**
+         * OAuth 2.0 Authorization Server Metadata well-known path defined by RFC 8414.
+         */
+        public static final String AUTHORIZATION_SERVER_METADATA = "/.well-known/oauth-authorization-server";
         /**
          * Security policy discovery path.
          */
@@ -1273,17 +1278,46 @@ public final class Http {
          */
         public static final String FAVICON_ICO = "/favicon.ico";
 
+        /**
+         * JSON Web Key Set endpoint path.
+         *
+         */
+        public static final String JWKS = "/jwks";
+
+        /**
+         * OpenID Connect UserInfo endpoint path.
+         */
+        public static final String USERINFO = "/userinfo";
+
+        /**
+         * OAuth 2.0 device authorization endpoint path.
+         *
+         */
+        public static final String DEVICE_AUTHORIZATION = "/device_authorization";
+
+        /**
+         * OAuth 2.0 pushed authorization request endpoint path.
+         *
+         */
+        public static final String PUSHED_AUTHORIZATION_REQUEST = "/par";
+
+        /**
+         * Session logout endpoint path.
+         *
+         */
+        public static final String LOGOUT = "/logout";
+
     }
 
     /**
      * HTTP authentication values and credential extraction operations.
      */
-    public static final class Auth {
+    public static class Auth {
 
         /**
-         * Prevents instantiation.
+         * Creates an HTTP authentication namespace instance.
          */
-        private Auth() {
+        public Auth() {
             // No initialization required.
         }
 
@@ -1540,12 +1574,12 @@ public final class Http {
     /**
      * HTTP cache directives.
      */
-    public static final class Cache {
+    public static class Cache {
 
         /**
-         * Prevents instantiation.
+         * Creates an HTTP cache-directive namespace instance.
          */
-        private Cache() {
+        public Cache() {
             // No initialization required.
         }
 
@@ -1614,12 +1648,12 @@ public final class Http {
     /**
      * WebSocket opening-handshake constants.
      */
-    public static final class WebSocket {
+    public static class WebSocket {
 
         /**
-         * Prevents instantiation.
+         * Creates a WebSocket handshake namespace instance.
          */
-        private WebSocket() {
+        public WebSocket() {
             // No initialization required.
         }
 

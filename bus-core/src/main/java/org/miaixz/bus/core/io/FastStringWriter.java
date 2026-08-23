@@ -27,7 +27,7 @@ import java.io.Writer;
  *
  * @author Kimi Liu
  */
-public final class FastStringWriter extends Writer {
+public class FastStringWriter extends Writer {
 
     /**
      * The default initial capacity.

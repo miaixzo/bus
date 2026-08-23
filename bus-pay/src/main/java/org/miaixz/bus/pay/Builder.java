@@ -52,6 +52,7 @@ import org.miaixz.bus.core.xyz.CompareKit;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.crypto.Holder;
 import org.miaixz.bus.crypto.builtin.Certificate;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pay.nimble.wechat.AuthType;
@@ -611,7 +612,7 @@ public class Builder {
      * @return Bouncy Castle provider
      */
     private static java.security.Provider bouncyCastleProvider() {
-        java.security.Provider provider = org.miaixz.bus.crypto.Holder.getProvider();
+        java.security.Provider provider = Holder.getProvider();
         if (null != provider) {
             return provider;
         }

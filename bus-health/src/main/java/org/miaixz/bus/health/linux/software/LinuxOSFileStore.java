@@ -131,9 +131,10 @@ public class LinuxOSFileStore extends AbstractOSFileStore {
         this.logicalVolume = logicalVolume;
         this.description = description;
         this.fsType = fsType;
-        this.freeSpace = freeSpace;
-        this.usableSpace = usableSpace;
-        this.totalSpace = totalSpace;
+        long[] space = clampSpace(freeSpace, usableSpace, totalSpace);
+        this.freeSpace = space[0];
+        this.usableSpace = space[1];
+        this.totalSpace = space[2];
         this.freeInodes = freeInodes;
         this.totalInodes = totalInodes;
         this.unreachable = unreachable;
@@ -225,7 +226,7 @@ public class LinuxOSFileStore extends AbstractOSFileStore {
      * @return the update attributes result
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         if (this.unreachable) {
             for (OSFileStore fileStore : LinuxFileSystem
                     .getFileStoreMatching(getName(), LinuxFileSystem.buildUuidMap(), isLocal())) {
@@ -247,9 +248,10 @@ public class LinuxOSFileStore extends AbstractOSFileStore {
                 usable = f.getUsableSpace();
                 free = f.getFreeSpace();
             }
-            this.freeSpace = free;
-            this.usableSpace = usable;
-            this.totalSpace = total;
+            long[] space = clampSpace(free, usable, total);
+            this.freeSpace = space[0];
+            this.usableSpace = space[1];
+            this.totalSpace = space[2];
             this.freeInodes = vfs[1];
             this.totalInodes = vfs[0];
             return true;
@@ -273,9 +275,10 @@ public class LinuxOSFileStore extends AbstractOSFileStore {
         this.logicalVolume = fileStore.getLogicalVolume();
         this.description = fileStore.getDescription();
         this.fsType = fileStore.getType();
-        this.freeSpace = fileStore.getFreeSpace();
-        this.usableSpace = fileStore.getUsableSpace();
-        this.totalSpace = fileStore.getTotalSpace();
+        long[] space = clampSpace(fileStore.getFreeSpace(), fileStore.getUsableSpace(), fileStore.getTotalSpace());
+        this.freeSpace = space[0];
+        this.usableSpace = space[1];
+        this.totalSpace = space[2];
         this.freeInodes = fileStore.getFreeInodes();
         this.totalInodes = fileStore.getTotalInodes();
     }

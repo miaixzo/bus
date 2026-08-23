@@ -19,101 +19,80 @@
 */
 package org.miaixz.bus.auth;
 
-import org.miaixz.bus.auth.magic.Authorization;
-import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.Claims;
-import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.nimble.AbstractProvider;
-import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.lang.EnumValue;
-import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.core.basic.entity.Tracer;
 
 /**
- * Common interface for all authentication providers. All platform providers must implement this interface. This
- * interface defines core authentication operations such as authorization, login, token revocation, and token
- * refreshing. Methods include:
- * <ul>
- * <li>{@link Provider#build(String)}</li>
- * <li>{@link Provider#authorize(Callback)}</li>
- * <li>{@link Provider#revoke(Authorization)}</li>
- * <li>{@link Provider#refresh(Authorization)}</li>
- * </ul>
+ * Represents one protocol-neutral authentication provider group owned by a Library.
+ * <p>
+ * A provider belongs to exactly one {@link Library} through {@link #library_id} and groups one or more authentication
+ * {@link Source Sources}. It stores only provider-level presentation, selection, and management configuration; protocol
+ * selection and protocol options belong exclusively to each Source.
+ * </p>
+ * <p>
+ * Provider has no second persistent {@code space_id}: its resource space is resolved through
+ * {@code library_id -> Library.space_id}. The inherited Tracer {@code x_space_id} remains transient request context and
+ * must not be used as configuration ownership.
+ * </p>
+ * <p>
+ * This mutable persistence model is intended for external projects to extend and map to their storage model. It has no
+ * reverse collection, protocol identifier, protocol Discovery document, or runtime settings object.
+ * </p>
  *
  * @author Kimi Liu
  */
-public interface Provider extends org.miaixz.bus.core.Provider {
+@Getter
+@Setter
+@SuperBuilder
+public class Provider extends Tracer {
 
     /**
-     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
-     * authorization callback.
-     *
-     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
-     * @return the authorization URL
-     * @throws AuthorizedException if the method is not implemented by the specific provider
+     * Required non-blank identifier of the owning Library. The referenced Library must exist; when this Provider is
+     * enabled, the Library must also be enabled. Multiple Providers may reference the same Library.
      */
-    default Message<String> build(String state) {
-        throw new AuthorizedException(ErrorCode._110000);
-    }
+    private String library_id;
 
     /**
-     * Performs third-party login.
-     *
-     * @param callback the entity used to receive callback parameters after authorization
-     * @return a {@link Message} containing the user information upon successful login
-     * @throws AuthorizedException if the method is not implemented by the specific provider
+     * Project-managed stable Provider code used only by external management interfaces.
      */
-    default Message<Claims> authorize(Callback callback) {
-        throw new AuthorizedException(ErrorCode._110000);
-    }
+    private String code;
 
     /**
-     * Retrieves the access token.
-     *
-     * @param callback the callback parameters after successful authorization
-     * @return the {@link Authorization} containing access token details
-     * @see AbstractProvider#build(String)
+     * Project-managed human-readable Provider name displayed by external interfaces.
      */
-    Message<Authorization> token(Callback callback);
+    private String name;
 
     /**
-     * Exchanges the token for user information.
-     *
-     * @param authorization the token information
-     * @return {@link Claims} containing the user's information
-     * @see AbstractProvider#token(Callback)
+     * Optional external media reference for the Provider icon. {@code null} or blank means no Provider-level icon; a
+     * value may be a relative path, storage identifier, or HTTP(S) URL as interpreted by the external project.
      */
-    Message<Claims> userInfo(Authorization authorization);
+    private String icon;
 
     /**
-     * Refreshes the access token (renews its validity).
-     *
-     * @param authorization the token information returned after successful login
-     * @return a {@link Message} containing the refreshed token information
-     * @throws AuthorizedException if the method is not implemented by the specific provider
+     * Optional project-managed presentation order within the owning Library.
      */
-    default Message<Authorization> refresh(Authorization authorization) {
-        throw new AuthorizedException(ErrorCode._110000);
-    }
+    private Integer sort;
 
     /**
-     * Revokes the authorization.
-     *
-     * @param authorization the token information returned after successful login
-     * @return a {@link Message} indicating the result of the revocation
-     * @throws AuthorizedException if the method is not implemented by the specific provider
+     * Optional JSON object encoded as text for external management extensions. {@code null} or blank means no metadata;
+     * its members must not affect Source selection, protocol execution, authorization, or security decisions.
      */
-    default Message<Void> revoke(Authorization authorization) {
-        throw new AuthorizedException(ErrorCode._110000);
-    }
+    private String metadata;
 
     /**
-     * Returns the provider type identifier.
-     *
-     * @return the provider type identifier, which is {@link EnumValue.Povider#AUTH}
+     * Optional human-readable Provider description. {@code null} means that no description is supplied; the value is
+     * presentation-only and must not be interpreted as authentication policy.
      */
-    @Override
-    default Object type() {
-        return EnumValue.Povider.AUTH;
+    private String description;
+
+    /**
+     * Creates an empty project-owned Provider grouping model for persistence-framework population.
+     */
+    public Provider() {
+        // No initialization required.
     }
 
 }

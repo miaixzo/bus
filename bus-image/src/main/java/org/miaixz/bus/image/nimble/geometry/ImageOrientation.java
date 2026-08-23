@@ -27,7 +27,7 @@ import java.util.Objects;
  *
  * @author Kimi Liu
  */
-public final class ImageOrientation {
+public class ImageOrientation {
 
     /**
      * The default obliquity threshold value.
@@ -37,7 +37,7 @@ public final class ImageOrientation {
     /**
      * Creates a new instance.
      */
-    private ImageOrientation() {
+    public ImageOrientation() {
         // No initialization required.
     }
 

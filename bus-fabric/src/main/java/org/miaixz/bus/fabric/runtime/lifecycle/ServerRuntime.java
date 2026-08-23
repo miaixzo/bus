@@ -39,7 +39,7 @@ import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
  * @param <S> accepted session type
  * @author Kimi Liu
  */
-public final class ServerRuntime<S> {
+public class ServerRuntime<S> {
 
     /**
      * Public server lifecycle.
@@ -66,7 +66,7 @@ public final class ServerRuntime<S> {
      *
      * @param lifecycle public lifecycle scope
      */
-    private ServerRuntime(final LifecycleScope lifecycle) {
+    public ServerRuntime(final LifecycleScope lifecycle) {
         this.lifecycle = require(lifecycle, "Lifecycle");
         this.sessions = new ConcurrentLinkedQueue<>();
         this.handles = new ConcurrentLinkedQueue<>();
@@ -80,7 +80,8 @@ public final class ServerRuntime<S> {
      * @param name     lifecycle name
      * @param listener server listener
      * @param observer observer
-     * @param <T>      source type
+     * @param <S>      accepted session type
+     * @param <T>      server callback source type
      * @return server runtime
      */
     public static <S, T> ServerRuntime<S> create(

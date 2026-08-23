@@ -114,7 +114,7 @@ public abstract class StringTemplate {
      * @param defaultValueHandler A handler for providing default values.
      * @param features            The feature flags.
      */
-    protected StringTemplate(final String template, final char escape, final String defaultValue,
+    public StringTemplate(final String template, final char escape, final String defaultValue,
             final UnaryOperatorX<String> defaultValueHandler, final int features) {
         Assert.notNull(template, "String template cannot be null");
         this.template = template;

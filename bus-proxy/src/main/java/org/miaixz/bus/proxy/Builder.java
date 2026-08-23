@@ -31,7 +31,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class Builder {
+public class Builder {
 
     /**
      * Constructs a new Builder instance.

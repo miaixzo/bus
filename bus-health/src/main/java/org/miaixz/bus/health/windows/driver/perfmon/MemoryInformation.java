@@ -31,7 +31,7 @@ import org.miaixz.bus.health.windows.PerfCounterQuery;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class MemoryInformation {
+public class MemoryInformation {
 
     /**
      * Constructs a new {@code MemoryInformation} instance.

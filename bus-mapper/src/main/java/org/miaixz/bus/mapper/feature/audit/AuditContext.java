@@ -73,9 +73,9 @@ public class AuditContext {
     private static final ThreadLocal<Boolean> IGNORE = ThreadLocal.withInitial(() -> false);
 
     /**
-     * Private constructor to prevent instantiation
+     * Creates an audit context facade over the current thread state.
      */
-    private AuditContext() {
+    public AuditContext() {
         // No initialization required.
     }
 

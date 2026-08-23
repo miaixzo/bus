@@ -27,7 +27,7 @@ import java.io.Serial;
  *
  * @author Kimi Liu
  */
-public final class YBRColorSpace extends ColorSpace {
+public class YBRColorSpace extends ColorSpace {
 
     /**
      * The serial version uid value.

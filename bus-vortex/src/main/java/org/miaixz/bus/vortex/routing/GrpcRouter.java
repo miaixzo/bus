@@ -74,9 +74,9 @@ public class GrpcRouter implements Router<ServerRequest, ServerResponse> {
     /**
      * Routes a client request by invoking a gRPC method on the target service.
      * <p>
-     * The request requires Content-Length and is read directly into one bounded array. After conversion to the payload
-     * string, the request-byte lease remains owned until executor completion so the equivalent parsed representation is
-     * still included in process-wide memory accounting.
+     * The request may use Content-Length or chunked transfer encoding and is read under the bounded request budget.
+     * After conversion to the payload string, the request-byte lease remains owned until executor completion so the
+     * equivalent parsed representation is still included in process-wide memory accounting.
      *
      * @param input The ServerRequest object (strongly typed)
      * @return A {@code Mono<ServerResponse>} containing the response from the gRPC service

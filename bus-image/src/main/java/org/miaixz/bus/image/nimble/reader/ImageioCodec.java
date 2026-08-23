@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Symbol;
  *
  * @author Kimi Liu
  */
-public final class ImageioCodec {
+public class ImageioCodec {
 
     /**
      * The name value.
@@ -45,7 +45,7 @@ public final class ImageioCodec {
     /**
      * Creates a new instance.
      */
-    private ImageioCodec() {
+    public ImageioCodec() {
         // No initialization required.
     }
 

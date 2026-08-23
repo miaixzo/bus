@@ -36,7 +36,7 @@ public class DeleteVisitor extends SimpleFileVisitor<Path> {
     /**
      * Creates the shared file-tree deletion visitor.
      */
-    private DeleteVisitor() {
+    public DeleteVisitor() {
         // No initialization required.
     }
 

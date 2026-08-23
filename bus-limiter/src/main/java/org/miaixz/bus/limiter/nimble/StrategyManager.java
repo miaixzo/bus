@@ -19,8 +19,8 @@
 */
 package org.miaixz.bus.limiter.nimble;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.limiter.Provider;
 import org.miaixz.bus.limiter.magic.StrategyMode;
@@ -46,7 +46,7 @@ public class StrategyManager {
      * A static map to cache {@link Provider} instances, keyed by their {@link StrategyMode}. This allows for quick
      * retrieval of the appropriate strategy executor.
      */
-    private static final Map<StrategyMode, Provider> map = new HashMap<>();
+    private static final Map<StrategyMode, Provider> map = new ConcurrentHashMap<>();
 
     /**
      * Adds a {@link Provider} to the strategy manager. The provider is registered under its associated
@@ -55,12 +55,24 @@ public class StrategyManager {
      * @param provider The {@link Provider} instance to be added.
      */
     public static void add(Provider provider) {
-        map.put(provider.get(), provider);
+        if (provider == null) {
+            throw new IllegalArgumentException("Limiter provider must not be null");
+        }
+        final StrategyMode type = provider.type();
+        if (type == null) {
+            throw new IllegalArgumentException(
+                    "Limiter provider type must not be null: " + provider.getClass().getName());
+        }
+        final Provider previous = map.putIfAbsent(type, provider);
+        if (previous != null) {
+            throw new IllegalStateException("Duplicate limiter Provider type " + type + ": "
+                    + previous.getClass().getName() + " and " + provider.getClass().getName());
+        }
         Logger.info(
                 false,
                 "Limiter",
                 "Limiter strategy provider registered: strategy={}, provider={}, providerCount={}",
-                provider.get().name(),
+                type.name(),
                 provider.getClass().getName(),
                 map.size());
     }

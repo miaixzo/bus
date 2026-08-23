@@ -29,7 +29,7 @@ import org.opencv.core.Point;
  */
 public class GeneralizedHough extends Algorithm {
 
-    protected GeneralizedHough(long addr) {
+    public GeneralizedHough(long addr) {
         super(addr);
     }
 

@@ -20,10 +20,14 @@
 package org.miaixz.bus.health.windows.software;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.Structure;
 import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.IPHlpAPI.FIXED_INFO;
 import com.sun.jna.platform.win32.IPHlpAPI.IP_ADDR_STRING;
@@ -33,8 +37,12 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef;
+import org.miaixz.bus.health.builtin.software.NetworkParams;
 import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
+import org.miaixz.bus.health.windows.jna.IPHlpAPI.MIB_IPFORWARD_ROW2;
+import org.miaixz.bus.health.windows.jna.IPHlpAPI.SOCKADDR_INET;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -46,9 +54,35 @@ import org.miaixz.bus.logger.Logger;
 final class WindowsNetworkParams extends AbstractNetworkParams {
 
     /**
-     * The COMPUTER_NAME_DNS_DOMAIN_FULLY_QUALIFIED constant.
+     * A route row read from the IP Helper API.
      */
-    private static final int COMPUTER_NAME_DNS_DOMAIN_FULLY_QUALIFIED = 3;
+    public static final class RouteRow {
+
+        /**
+         * Destination prefix address bytes.
+         */
+        public byte[] destination = Normal.EMPTY_BYTE_ARRAY;
+
+        /**
+         * Destination prefix length.
+         */
+        public int prefixLength = -1;
+
+        /**
+         * Next hop address bytes.
+         */
+        public byte[] nextHop = Normal.EMPTY_BYTE_ARRAY;
+
+        /**
+         * Outgoing interface index.
+         */
+        public int interfaceIndex = -1;
+
+        /**
+         * Route metric.
+         */
+        public long metric = -1L;
+    }
 
     /**
      * Parses the ipv4 route.
@@ -117,6 +151,115 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
     }
 
     /**
+     * Returns the routing table.
+     *
+     * @return the routing table
+     */
+    @Override
+    public List<NetworkParams.IPRoute> getRoutes() {
+        List<RouteRow> rows = queryRouteRows();
+        List<NetworkParams.IPRoute> routes = new ArrayList<>(rows.size());
+        if (rows.isEmpty()) {
+            return routes;
+        }
+        Map<Integer, String> namesByIndex = queryInterfaceNameByIndex();
+        for (RouteRow row : rows) {
+            int addressBits = row.destination.length * 8;
+            if (addressBits != 32 && addressBits != 128) {
+                continue;
+            }
+            boolean isGateway = !isUnspecified(row.nextHop);
+            String interfaceName = namesByIndex.get(row.interfaceIndex);
+            routes.add(
+                    new NetworkParams.IPRoute(row.destination, row.prefixLength,
+                            isGateway ? row.nextHop : Normal.EMPTY_BYTE_ARRAY,
+                            interfaceName == null ? Normal.EMPTY : interfaceName, row.interfaceIndex, row.metric,
+                            isGateway, row.prefixLength == addressBits));
+        }
+        return routes;
+    }
+
+    /**
+     * Tests whether an address is unspecified.
+     *
+     * @param address The address bytes.
+     * @return {@code true} if all bytes are zero.
+     */
+    private static boolean isUnspecified(byte[] address) {
+        for (byte b : address) {
+            if (b != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Queries route rows from the IP Helper API.
+     *
+     * @return The route rows.
+     */
+    protected List<RouteRow> queryRouteRows() {
+        try (ByRef.CloseablePointerByReference tableRef = new ByRef.CloseablePointerByReference()) {
+            int ret = org.miaixz.bus.health.windows.jna.IPHlpAPI.INSTANCE
+                    .GetIpForwardTable2((short) IPHlpAPI.AF_UNSPEC, tableRef);
+            if (ret != WinError.NO_ERROR) {
+                Logger.error(false, "Health", "Failed to get the IP forward table. Error code: {}", ret);
+                return new ArrayList<>();
+            }
+            Pointer table = tableRef.getValue();
+            try {
+                return readRows(table);
+            } finally {
+                org.miaixz.bus.health.windows.jna.IPHlpAPI.INSTANCE.FreeMibTable(table);
+            }
+        }
+    }
+
+    /**
+     * Reads route rows from a native routing table.
+     *
+     * @param table The native routing table pointer.
+     * @return The route rows.
+     */
+    private static List<RouteRow> readRows(Pointer table) {
+        int numEntries = table.getInt(0);
+        if (numEntries <= 0) {
+            return new ArrayList<>();
+        }
+        int rowSize = new MIB_IPFORWARD_ROW2().size();
+        List<RouteRow> rows = new ArrayList<>(numEntries);
+        for (int i = 0; i < numEntries; i++) {
+            MIB_IPFORWARD_ROW2 row = Structure
+                    .newInstance(MIB_IPFORWARD_ROW2.class, table.share(8L + (long) i * rowSize));
+            row.read();
+            RouteRow out = new RouteRow();
+            out.destination = addressBytes(row.DestinationPrefix.Prefix);
+            out.prefixLength = row.DestinationPrefix.PrefixLength & 0xff;
+            out.nextHop = addressBytes(row.NextHop);
+            out.interfaceIndex = row.InterfaceIndex;
+            out.metric = Parsing.unsignedIntToLong(row.Metric);
+            rows.add(out);
+        }
+        return rows;
+    }
+
+    /**
+     * Reads address bytes from a socket address.
+     *
+     * @param address The socket address.
+     * @return The address bytes.
+     */
+    private static byte[] addressBytes(SOCKADDR_INET address) {
+        if (address.si_family == IPHlpAPI.AF_INET) {
+            return Parsing.parseIntToIP(address.ipv4AddrOrFlowInfo);
+        } else if (address.si_family == IPHlpAPI.AF_INET6) {
+            return Arrays.copyOf(address.ipv6Addr, 16);
+        }
+        return Normal.EMPTY_BYTE_ARRAY;
+    }
+
+    /**
      * Returns the domain name.
      *
      * @return the get domain name result
@@ -125,7 +268,7 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
     public String getDomainName() {
         char[] buffer = new char[256];
         try (ByRef.CloseableIntByReference bufferSize = new ByRef.CloseableIntByReference(buffer.length)) {
-            if (!Kernel32.INSTANCE.GetComputerNameEx(COMPUTER_NAME_DNS_DOMAIN_FULLY_QUALIFIED, buffer, bufferSize)) {
+            if (!Kernel32.INSTANCE.GetComputerNameEx(Normal._3, buffer, bufferSize)) {
                 Logger.error(
                         false,
                         "Health",

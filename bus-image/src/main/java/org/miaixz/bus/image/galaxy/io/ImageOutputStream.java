@@ -104,7 +104,7 @@ public class ImageOutputStream extends FilterOutputStream {
      *
      * @param preamble the preamble.
      */
-    public final void setPreamble(byte[] preamble) {
+    public void setPreamble(byte[] preamble) {
         if (preamble.length != Normal._128)
             throw new IllegalArgumentException("preamble.length=" + preamble.length);
         this.preamble = preamble.clone();
@@ -115,7 +115,7 @@ public class ImageOutputStream extends FilterOutputStream {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isExplicitVR() {
+    public boolean isExplicitVR() {
         return explicitVR;
     }
 
@@ -124,7 +124,7 @@ public class ImageOutputStream extends FilterOutputStream {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isBigEndian() {
+    public boolean isBigEndian() {
         return bigEndian;
     }
 
@@ -133,7 +133,7 @@ public class ImageOutputStream extends FilterOutputStream {
      *
      * @return the encoding options.
      */
-    public final ImageEncodingOptions getEncodingOptions() {
+    public ImageEncodingOptions getEncodingOptions() {
         return encOpts;
     }
 
@@ -142,7 +142,7 @@ public class ImageOutputStream extends FilterOutputStream {
      *
      * @param encOpts the enc opts.
      */
-    public final void setEncodingOptions(ImageEncodingOptions encOpts) {
+    public void setEncodingOptions(ImageEncodingOptions encOpts) {
         if (encOpts == null)
             throw new NullPointerException();
         this.encOpts = encOpts;

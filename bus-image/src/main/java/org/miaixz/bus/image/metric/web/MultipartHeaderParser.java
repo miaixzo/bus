@@ -30,12 +30,12 @@ import org.miaixz.bus.core.lang.Symbol;
  *
  * @author Kimi Liu
  */
-public final class MultipartHeaderParser {
+public class MultipartHeaderParser {
 
     /**
      * Creates a new instance.
      */
-    private MultipartHeaderParser() {
+    public MultipartHeaderParser() {
         // No initialization required.
     }
 

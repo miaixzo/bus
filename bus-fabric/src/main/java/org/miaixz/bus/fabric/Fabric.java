@@ -36,12 +36,12 @@ import org.miaixz.bus.fabric.protocol.websocket.WebSocketX;
  *
  * @author Kimi Liu
  */
-public final class Fabric {
+public class Fabric {
 
     /**
-     * Creates an entry point around an already validated context.
+     * Creates a protocol-neutral entry point that subclasses may extend with additional protocol operations.
      */
-    private Fabric() {
+    public Fabric() {
         // No initialization required.
     }
 

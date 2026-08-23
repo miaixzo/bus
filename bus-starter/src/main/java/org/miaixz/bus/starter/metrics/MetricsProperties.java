@@ -318,10 +318,10 @@ public class MetricsProperties {
      * @param enabled    whether the feature is enabled
      * @param interval   metric export interval
      * @param serverAddr server addr
-     * @param namespace  logical registry namespace
+     * @param space      logical Cortex space
      * @param serviceId  service id
      */
-    public record Cortex(boolean enabled, Duration interval, String serverAddr, String namespace, String serviceId) {
+    public record Cortex(boolean enabled, Duration interval, String serverAddr, String space, String serviceId) {
 
         /**
          * Creates Cortex export defaults.

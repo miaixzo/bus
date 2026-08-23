@@ -286,7 +286,7 @@ public class ImageServiceException extends IOException {
      *
      * @return the dataset.
      */
-    public final Attributes getDataset() {
+    public Attributes getDataset() {
         return data;
     }
 
@@ -296,7 +296,7 @@ public class ImageServiceException extends IOException {
      * @param data the data.
      * @return the operation result.
      */
-    public final ImageServiceException setDataset(Attributes data) {
+    public ImageServiceException setDataset(Attributes data) {
         this.data = data;
         return this;
     }

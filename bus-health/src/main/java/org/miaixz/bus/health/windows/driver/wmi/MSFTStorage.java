@@ -31,7 +31,7 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class MSFTStorage {
+public class MSFTStorage {
 
     /**
      * Constructs a new {@code MSFTStorage} instance.

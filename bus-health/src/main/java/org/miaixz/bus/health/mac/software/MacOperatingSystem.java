@@ -88,7 +88,7 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
      *
      * @param maxproc the maxproc
      */
-    protected MacOperatingSystem(int maxproc) {
+    public MacOperatingSystem(int maxproc) {
         String version = System.getProperty("os.version");
         int verMajor = Parsing.getFirstIntValue(version);
         int verMinor = Parsing.getNthIntValue(version, 2);

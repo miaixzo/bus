@@ -363,7 +363,7 @@ public interface Fn<T, R> extends FunctionX<T, R>, Serializable {
          * @param table       The table name.
          * @param columns     A list of column metadata.
          */
-        private FnArray(Class<E> entityClass, String table, List<ColumnMeta> columns) {
+        public FnArray(Class<E> entityClass, String table, List<ColumnMeta> columns) {
             super(entityClass);
             this.table = table;
             this.columns = columns;

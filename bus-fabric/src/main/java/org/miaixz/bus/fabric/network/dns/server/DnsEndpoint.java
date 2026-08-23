@@ -32,7 +32,7 @@ import org.miaixz.bus.fabric.Address;
  *
  * @author Kimi Liu
  */
-public final class DnsEndpoint {
+public class DnsEndpoint {
 
     /**
      * Listener transport.

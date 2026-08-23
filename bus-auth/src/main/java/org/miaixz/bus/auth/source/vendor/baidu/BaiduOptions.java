@@ -1,0 +1,121 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.auth.source.vendor.baidu;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.Credential;
+import org.miaixz.bus.auth.source.vendor.Vendor;
+import org.miaixz.bus.auth.source.vendor.VendorOptions;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+
+/**
+ * Carries externally managed Baidu OAuth client configuration values.
+ * <p>
+ * Fixed Baidu endpoints remain manifest-owned. This record stores only public configuration values and an external
+ * client-secret reference; it never contains resolved secret material.
+ * </p>
+ *
+ * @param vendor      exact Baidu platform identifier
+ * @param variant     exact default variant
+ * @param clientId    registered Baidu client identifier
+ * @param credential  external client-secret reference
+ * @param redirectUri exact registered callback URI
+ * @param scopes      ordered requested Baidu scopes, or empty to use the basic default
+ * @author Kimi Liu
+ */
+public record BaiduOptions(Vendor.Id vendor, Vendor.Variant variant, String clientId, Credential.Reference credential,
+        Optional<String> redirectUri, List<String> scopes) implements VendorOptions<BaiduOptions> {
+
+    /**
+     * Validates and freezes one Baidu registration without resolving its client secret.
+     *
+     * @throws IllegalArgumentException if a required component, optional container, or scope is null or blank
+     * @throws ValidateException        if routing, credential type, scope vocabulary, or uniqueness differs from the
+     *                                  frozen manifest
+     */
+    public BaiduOptions {
+        if (!BaiduManifest.ID.equals(vendor) || !BaiduManifest.DEFAULT.equals(variant)) {
+            throw new ValidateException("Baidu options must select baidu/default");
+        }
+        Assert.notBlank(clientId, "Baidu client id must not be blank");
+        Assert.notNull(credential, "Baidu credential reference must not be null");
+        if (credential.type() != Credential.Type.CLIENT_SECRET) {
+            throw new ValidateException("Baidu credential must reference a client secret");
+        }
+        Assert.notNull(redirectUri, "Baidu redirect URI container must not be null");
+        redirectUri = Optional.ofNullable(redirectUri.getOrNull());
+        if (redirectUri.isEmpty()) {
+            throw new ValidateException("Baidu browser options require a registered redirect URI");
+        }
+        Assert.notBlank(redirectUri.getOrNull(), "Baidu redirect URI must not be blank");
+        Assert.notNull(scopes, "Baidu scopes must not be null");
+        final List<String> copy = new ArrayList<>(scopes.size());
+        for (String scope : scopes) {
+            final String checked = Assert.notBlank(scope, "Baidu scope must not be blank");
+            if (!scope(checked) || copy.contains(checked)) {
+                throw new ValidateException(
+                        "Baidu scopes must be unique basic, super_msg, netdisk, public, or hao123 values");
+            }
+            copy.add(checked);
+        }
+        scopes = List.copyOf(copy);
+    }
+
+    /**
+     * Tests one value against the historical Baidu authorization scope vocabulary.
+     *
+     * @param value scope value
+     * @return whether Baidu accepts the scope
+     */
+    private static boolean scope(final String value) {
+        return switch (value) {
+            case "basic", "super_msg", "netdisk", "public", "hao123" -> true;
+            default -> false;
+        };
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<BaiduOptions> type() {
+        return BaiduOptions.class;
+    }
+
+    /**
+     * Returns a diagnostic representation without client, credential, or callback data.
+     *
+     * @return redacted options description
+     */
+    @Override
+    public String toString() {
+        return "BaiduOptions[vendor=" + vendor + Builder.VARIANT + variant + Builder.REDACTED_SOURCE_OPTIONS + scopes
+                + Symbol.BRACKET_RIGHT;
+    }
+
+}

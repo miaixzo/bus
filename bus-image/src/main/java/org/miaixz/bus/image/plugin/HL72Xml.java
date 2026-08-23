@@ -76,7 +76,7 @@ public class HL72Xml {
      *
      * @param xslt The URL of the XSLT stylesheet.
      */
-    public final void setXSLT(URL xslt) {
+    public void setXSLT(URL xslt) {
         this.xslt = xslt;
     }
 
@@ -85,7 +85,7 @@ public class HL72Xml {
      *
      * @param indent {@code true} to enable indentation, {@code false} otherwise.
      */
-    public final void setIndent(boolean indent) {
+    public void setIndent(boolean indent) {
         this.indent = indent;
     }
 
@@ -94,7 +94,7 @@ public class HL72Xml {
      *
      * @param includeNamespaceDeclaration {@code true} to include the namespace, {@code false} otherwise.
      */
-    public final void setIncludeNamespaceDeclaration(boolean includeNamespaceDeclaration) {
+    public void setIncludeNamespaceDeclaration(boolean includeNamespaceDeclaration) {
         this.includeNamespaceDeclaration = includeNamespaceDeclaration;
     }
 

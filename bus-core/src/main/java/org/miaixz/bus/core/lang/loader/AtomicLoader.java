@@ -46,7 +46,7 @@ public abstract class AtomicLoader<T> implements Loader<T>, Serializable {
     /**
      * Keeps atomic lazy-loading coordination on the static API.
      */
-    private AtomicLoader() {
+    public AtomicLoader() {
         // No initialization required.
     }
 

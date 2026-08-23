@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.validate
+ * Module: {@code bus.validate}
+ *
+ * <p>
+ * Provides composable validation rules for application and domain data.
+ *
+ * <p>
+ * Includes validation annotations, matchers, criteria, rule groups, contextual validation, error collection, range and
+ * comparison checks, and built-in rules for common text, number, date, network, and identity formats.
  *
  * @author Kimi Liu
  */

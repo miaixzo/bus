@@ -35,6 +35,7 @@ import org.apache.commons.net.ftp.FTPReply;
 import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -961,7 +962,7 @@ public class CommonsFtp extends AbstractFtp {
         }
 
         if (null != fileNameCharset) {
-            fileName = new String(fileName.getBytes(fileNameCharset), org.miaixz.bus.core.lang.Charset.ISO_8859_1);
+            fileName = new String(fileName.getBytes(fileNameCharset), Charset.ISO_8859_1);
         }
         try {
             client.setFileType(FTPClient.BINARY_FILE_TYPE);

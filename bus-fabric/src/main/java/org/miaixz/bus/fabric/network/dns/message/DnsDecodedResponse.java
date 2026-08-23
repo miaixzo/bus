@@ -36,7 +36,7 @@ import org.miaixz.bus.fabric.network.dns.record.DnsRecord;
  *
  * @author Kimi Liu
  */
-public final class DnsDecodedResponse {
+public class DnsDecodedResponse {
 
     /**
      * DNS message identifier.

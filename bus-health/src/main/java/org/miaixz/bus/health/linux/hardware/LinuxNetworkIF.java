@@ -44,7 +44,7 @@ import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class LinuxNetworkIF extends AbstractNetworkIF {
+public class LinuxNetworkIF extends AbstractNetworkIF {
 
     /**
      * The ifType value.
@@ -375,7 +375,7 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
      * @return the update attributes result
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         String name = SysPath.NET + getName();
         try {
             File ifDir = new File(name + "/statistics");

@@ -29,6 +29,7 @@ import com.sun.jna.platform.mac.SystemB.IFmsgHdr;
 import com.sun.jna.platform.mac.SystemB.IFmsgHdr2;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.jna.ByRef.CloseableSizeTByReference;
@@ -40,7 +41,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class NetStat {
+public class NetStat {
 
     /**
      * Constructs a new {@code NetStat} instance.
@@ -48,26 +49,6 @@ public final class NetStat {
     public NetStat() {
         // No initialization required.
     }
-
-    /**
-     * Control Network (CTL_NET) MIB value.
-     */
-    private static final int CTL_NET = 4;
-
-    /**
-     * Protocol Family Route (PF_ROUTE) MIB value.
-     */
-    private static final int PF_ROUTE = 17;
-
-    /**
-     * Net Route Interface List 2 (NET_RT_IFLIST2) MIB value.
-     */
-    private static final int NET_RT_IFLIST2 = 6;
-
-    /**
-     * Routing Message Interface Info 2 (RTM_IFINFO2) message type.
-     */
-    private static final int RTM_IFINFO2 = 0x12;
 
     /**
      * Retrieves network interface data.
@@ -81,14 +62,14 @@ public final class NetStat {
         // https://opensource.apple.com/source/network_cmds/network_cmds-457/netstat.tproj/if.c
         Map<Integer, IFdata> data = new HashMap<>();
         // Get buffer of all interface information
-        int[] mib = { CTL_NET, PF_ROUTE, 0, 0, NET_RT_IFLIST2, 0 };
+        int[] mib = { Normal._4, Normal._17, Normal._0, Normal._0, Normal._6, Normal._0 };
         try (CloseableSizeTByReference len = new CloseableSizeTByReference()) {
-            if (0 != SystemB.INSTANCE.sysctl(mib, 6, null, len, null, size_t.ZERO)) {
+            if (Normal._0 != SystemB.INSTANCE.sysctl(mib, Normal._6, null, len, null, size_t.ZERO)) {
                 Logger.error(false, "Health", "Didn't get buffer length for IFLIST2");
                 return data;
             }
             try (Memory buf = new Memory(len.longValue())) {
-                if (0 != SystemB.INSTANCE.sysctl(mib, 6, buf, len, null, size_t.ZERO)) {
+                if (Normal._0 != SystemB.INSTANCE.sysctl(mib, Normal._6, buf, len, null, size_t.ZERO)) {
                     Logger.error(false, "Health", "Didn't get buffer for IFLIST2");
                     return data;
                 }
@@ -96,7 +77,7 @@ public final class NetStat {
 
                 // Iterate offset from buf's pointer up to limit of buf
                 int lim = (int) (buf.size() - new IFmsgHdr().size());
-                int offset = 0;
+                int offset = Normal._0;
                 while (offset < lim) {
                     // Get pointer to current native part of buf
                     Pointer p = buf.share(offset);
@@ -106,11 +87,11 @@ public final class NetStat {
                     // Advance next
                     offset += ifm.ifm_msglen;
                     // Skip messages which are not the right format
-                    if (ifm.ifm_type == RTM_IFINFO2) {
+                    if (ifm.ifm_type == Normal._18) {
                         // Cast pointer to if_msghdr2
                         IFmsgHdr2 if2m = new IFmsgHdr2(p);
                         if2m.read();
-                        if (index < 0 || index == if2m.ifm_index) {
+                        if (index < Normal._0 || index == if2m.ifm_index) {
                             data.put(
                                     (int) if2m.ifm_index,
                                     new IFdata(0xff & if2m.ifm_data.ifi_type, if2m.ifm_data.ifi_opackets,
@@ -118,7 +99,7 @@ public final class NetStat {
                                             if2m.ifm_data.ifi_ibytes, if2m.ifm_data.ifi_oerrors,
                                             if2m.ifm_data.ifi_ierrors, if2m.ifm_data.ifi_collisions,
                                             if2m.ifm_data.ifi_iqdrops, if2m.ifm_data.ifi_baudrate, now));
-                            if (index >= 0) {
+                            if (index >= Normal._0) {
                                 return data;
                             }
                         }
@@ -207,7 +188,7 @@ public final class NetStat {
          * @param speed      The interface speed.
          * @param timeStamp  The timestamp when this data was captured.
          */
-        IFdata(int ifType, // NOSONAR squid:S00107
+        public IFdata(int ifType, // NOSONAR squid:S00107
                 long oPackets, long iPackets, long oBytes, long iBytes, long oErrors, long iErrors, long collisions,
                 long iDrops, long speed, long timeStamp) {
             this.ifType = ifType;

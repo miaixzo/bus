@@ -42,7 +42,7 @@ public class NativeJ2kImageWriter extends AbstractNativeImageWriter {
      *
      * @param originatingProvider the originating provider.
      */
-    NativeJ2kImageWriter(ImageWriterSpi originatingProvider) {
+    public NativeJ2kImageWriter(ImageWriterSpi originatingProvider) {
         super(originatingProvider);
     }
 

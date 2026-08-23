@@ -41,7 +41,7 @@ import org.miaixz.bus.image.nimble.KernelData;
  *
  * @author Kimi Liu
  */
-public final class ImageCV extends Mat implements PlanarImage {
+public class ImageCV extends Mat implements PlanarImage {
 
     /**
      * The min stack size value.

@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.stomp;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -31,6 +30,7 @@ import java.util.function.Supplier;
 import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.*;
@@ -61,7 +61,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class StompSession implements Session {
+public class StompSession implements Session {
 
     /**
      * Frame sender.
@@ -196,7 +196,7 @@ public final class StompSession implements Session {
      * @param cancelHook cancel hook
      * @param handler    default message handler
      */
-    StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
+    public StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
             final Consumer<StompMessage> handler) {
         this(sender, closeHook, cancelHook, handler, null, null, EventObserver.noop(), null, null, Normal.MEBI_64);
     }
@@ -406,7 +406,7 @@ public final class StompSession implements Session {
      * @return send call
      */
     public Call<Void> sendTo(final String destination, final String data) {
-        return send(destination, Payload.of(data == null ? Normal.EMPTY : data, StandardCharsets.UTF_8));
+        return send(destination, Payload.of(data == null ? Normal.EMPTY : data, Charset.UTF_8));
     }
 
     /**
@@ -763,7 +763,7 @@ public final class StompSession implements Session {
             return;
         }
         if (Builder.STOMP_COMMAND_ERROR.equals(current.command())) {
-            final ProtocolException failure = new ProtocolException(current.body().text(StandardCharsets.UTF_8));
+            final ProtocolException failure = new ProtocolException(current.body().text(Charset.UTF_8));
             emit(ObservationMarker.STOMP_MESSAGE, frameBytes, null);
             fail(failure);
             Logger.warn(

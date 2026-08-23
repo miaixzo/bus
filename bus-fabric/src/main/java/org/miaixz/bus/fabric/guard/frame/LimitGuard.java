@@ -32,7 +32,7 @@ import org.miaixz.bus.fabric.guard.GuardResult;
  *
  * @author Kimi Liu
  */
-public final class LimitGuard {
+public class LimitGuard {
 
     /**
      * Inclusive upper bound applied independently to a frame and to queued frame bytes.
@@ -44,7 +44,7 @@ public final class LimitGuard {
      *
      * @param maxBytes validated inclusive limit from 1 byte through 16 MiB
      */
-    private LimitGuard(final long maxBytes) {
+    public LimitGuard(final long maxBytes) {
         this.maxBytes = validateMaxBytes(maxBytes);
     }
 

@@ -39,7 +39,7 @@ public abstract class StringReplacer implements UnaryOperatorX<CharSequence>, Se
     /**
      * Constructs a string replacer.
      */
-    protected StringReplacer() {
+    public StringReplacer() {
         // No initialization required.
     }
 

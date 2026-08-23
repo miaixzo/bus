@@ -19,15 +19,21 @@
 */
 package org.miaixz.bus.crypto;
 
-import org.miaixz.bus.core.lang.EnumValue;
-
 /**
- * Represents a cryptographic service provider that extends the core {@link org.miaixz.bus.core.Provider} interface.
- * This interface defines methods for encrypting and decrypting data using various cryptographic keys.
+ * Represents a cryptographic service provider that extends the shared provider contract. This interface defines methods
+ * for encrypting and decrypting data using various cryptographic keys.
  *
  * @author Kimi Liu
  */
-public interface Provider extends org.miaixz.bus.core.Provider {
+public interface Provider extends org.miaixz.bus.core.Provider<String> {
+
+    /**
+     * Returns the stable cryptographic algorithm name used by {@link Registry} to register and resolve this provider.
+     *
+     * @return non-blank algorithm name
+     */
+    @Override
+    String type();
 
     /**
      * Encrypts data using the specified key. This method supports two main scenarios for encryption:
@@ -57,15 +63,5 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @return The decrypted data as a byte array.
      */
     byte[] decrypt(String key, byte[] content);
-
-    /**
-     * Returns the provider type identifier.
-     *
-     * @return the provider type identifier, which is {@link EnumValue.Povider#CRYPTO}
-     */
-    @Override
-    default Object type() {
-        return EnumValue.Povider.CRYPTO;
-    }
 
 }

@@ -41,7 +41,7 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
     /**
      * Creates the shared CityHash implementation.
      */
-    private CityHash() {
+    public CityHash() {
         // No initialization required.
     }
 

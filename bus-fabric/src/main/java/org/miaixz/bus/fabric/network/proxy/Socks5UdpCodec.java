@@ -39,7 +39,7 @@ import org.miaixz.bus.fabric.network.udp.UdpDatagramCodec;
  *
  * @author Kimi Liu
  */
-public final class Socks5UdpCodec implements UdpDatagramCodec {
+public class Socks5UdpCodec implements UdpDatagramCodec {
 
     /**
      * Physical UDP relay address returned by SOCKS5 UDP ASSOCIATE.

@@ -35,7 +35,7 @@ public abstract class AbstractChildLimitProvider implements ChildLimitProvider {
     /**
      * Creates a new {@code AbstractChildLimitProvider} instance.
      */
-    protected AbstractChildLimitProvider() {
+    public AbstractChildLimitProvider() {
         // No initialization required.
     }
 

@@ -31,7 +31,7 @@ import java.io.Serializable;
 public abstract class SecureKey implements Key, Serializable {
 
     @Serial
-    private static final long serialVersionUID = -1L;
+    private static final long serialVersionUID = 2835089216305L;
 
     /**
      * The name of the cryptographic algorithm used with this key.
@@ -61,7 +61,7 @@ public abstract class SecureKey implements Key, Serializable {
      * @param ivsize    The size of the initialization vector (IV) in bits.
      * @param password  The password associated with the key, if any.
      */
-    protected SecureKey(String algorithm, int keysize, int ivsize, String password) {
+    public SecureKey(String algorithm, int keysize, int ivsize, String password) {
         this.algorithm = algorithm;
         this.keysize = keysize;
         this.ivsize = ivsize;

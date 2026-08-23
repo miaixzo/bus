@@ -38,7 +38,7 @@ public class BufferKit {
     /**
      * Keeps byte-buffer and character-buffer operations on the static API.
      */
-    private BufferKit() {
+    public BufferKit() {
         // No initialization required.
     }
 

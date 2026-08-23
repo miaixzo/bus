@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class OsFamily {
+public class OsFamily {
 
     /**
      * Shared unknown operating-system family classifier.

@@ -95,7 +95,7 @@ public class ImageMetaData extends IIOMetadata {
      *
      * @return the file meta information.
      */
-    public final Attributes getFileMetaInformation() {
+    public Attributes getFileMetaInformation() {
         return fileMetaInformation;
     }
 
@@ -104,7 +104,7 @@ public class ImageMetaData extends IIOMetadata {
      *
      * @return the dicom object.
      */
-    public final Attributes getDicomObject() {
+    public Attributes getDicomObject() {
         return dcm;
     }
 
@@ -113,7 +113,7 @@ public class ImageMetaData extends IIOMetadata {
      *
      * @return the image descriptor.
      */
-    public final ImageDescriptor getImageDescriptor() {
+    public ImageDescriptor getImageDescriptor() {
         return desc;
     }
 

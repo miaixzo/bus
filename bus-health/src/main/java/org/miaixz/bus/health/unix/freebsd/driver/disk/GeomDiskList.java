@@ -37,7 +37,7 @@ import org.miaixz.bus.health.Parsing;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class GeomDiskList {
+public class GeomDiskList {
 
     /**
      * Constructs a new GeomDiskList instance.

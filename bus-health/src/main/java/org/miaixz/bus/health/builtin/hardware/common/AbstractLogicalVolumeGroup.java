@@ -55,7 +55,7 @@ public class AbstractLogicalVolumeGroup implements LogicalVolumeGroup {
      * @param lvMap Logical volumes derived from this volume group and the physical volumes its mapped to.
      * @param pvSet Set of physical volumes this volume group consists of.
      */
-    protected AbstractLogicalVolumeGroup(String name, Map<String, Set<String>> lvMap, Set<String> pvSet) {
+    public AbstractLogicalVolumeGroup(String name, Map<String, Set<String>> lvMap, Set<String> pvSet) {
         this.name = name;
         for (Entry<String, Set<String>> entry : lvMap.entrySet()) {
             lvMap.put(entry.getKey(), Collections.unmodifiableSet(entry.getValue()));

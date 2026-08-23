@@ -117,7 +117,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     /**
      * Create a Processor
      */
-    protected AbstractCentralProcessor() {
+    public AbstractCentralProcessor() {
         Tuple processorLists = initProcessorCounts();
         // Populate logical processor lists.
         this.logicalProcessors = Collections.unmodifiableList(processorLists.get(0));

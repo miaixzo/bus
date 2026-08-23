@@ -2114,7 +2114,7 @@ public enum Setting {
      * @param value the value to validate
      * @return true if the value is of the correct type or null
      */
-    public final boolean isValid(Object value) {
+    public boolean isValid(Object value) {
 
         if (value == null) {
             return (true);
@@ -2141,7 +2141,7 @@ public enum Setting {
      * @param value the value to validate
      * @throws IllegalStateException if the provided value is not a valid type for the ApplicationSetting
      */
-    public final void validate(Object value) {
+    public void validate(Object value) {
 
         if (isValid(value)) {
             return;

@@ -200,11 +200,11 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
         private final PercentCodec codec;
 
         /**
-         * Private constructor to create a Builder for a given {@link PercentCodec}.
+         * Creates a builder initialized from the supplied {@link PercentCodec}.
          *
          * @param codec The {@link PercentCodec} instance to build upon.
          */
-        private Builder(final PercentCodec codec) {
+        public Builder(final PercentCodec codec) {
             this.codec = codec;
         }
 

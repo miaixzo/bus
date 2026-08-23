@@ -47,7 +47,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class ImageIOHandler {
+public class ImageIOHandler {
 
     /**
      * The png compression level value.
@@ -67,7 +67,7 @@ public final class ImageIOHandler {
     /**
      * Creates a new instance.
      */
-    private ImageIOHandler() {
+    public ImageIOHandler() {
         // No initialization required.
     }
 

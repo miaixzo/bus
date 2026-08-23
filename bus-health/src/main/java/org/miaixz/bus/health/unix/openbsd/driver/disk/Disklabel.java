@@ -38,12 +38,12 @@ import org.miaixz.bus.health.builtin.hardware.HWPartition;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Disklabel {
+public class Disklabel {
 
     /**
      * Creates a new Disklabel instance.
      */
-    private Disklabel() {
+    public Disklabel() {
         // No initialization required.
     }
 

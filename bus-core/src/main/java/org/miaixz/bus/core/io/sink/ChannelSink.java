@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  *
  * @author Kimi Liu
  */
-public final class ChannelSink implements Sink {
+public class ChannelSink implements Sink {
 
     /**
      * Number of segment views used for gathering writes.

@@ -271,7 +271,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
     /**
      * Builder for current socket runtime options.
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Mutable read buffer size candidate.
@@ -321,7 +321,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         /**
          * Creates a builder seeded with socket defaults.
          */
-        private Builder() {
+        public Builder() {
             // No initialization required.
         }
 

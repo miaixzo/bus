@@ -181,7 +181,7 @@ public class ProtectedBranch implements Serializable {
      * @return the result
      */
 
-    public static final boolean isValid(ProtectedBranch branch) {
+    public static boolean isValid(ProtectedBranch branch) {
         return (branch != null && branch.getName() != null);
     }
 

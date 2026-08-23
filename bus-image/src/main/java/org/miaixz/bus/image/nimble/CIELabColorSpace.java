@@ -58,7 +58,7 @@ public class CIELabColorSpace extends ColorSpace {
      *
      * @param ciexyz the ciexyz.
      */
-    CIELabColorSpace(ColorSpace ciexyz) {
+    public CIELabColorSpace(ColorSpace ciexyz) {
         super(ColorSpace.TYPE_Lab, 3);
         CIEXYZ = ciexyz;
     }

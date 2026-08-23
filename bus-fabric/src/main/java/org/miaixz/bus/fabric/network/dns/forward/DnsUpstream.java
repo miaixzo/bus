@@ -37,7 +37,7 @@ import org.miaixz.bus.fabric.network.tls.TlsPolicy;
  *
  * @author Kimi Liu
  */
-public final class DnsUpstream {
+public class DnsUpstream {
 
     /**
      * Upstream host.

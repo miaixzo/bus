@@ -45,7 +45,7 @@ import org.miaixz.bus.health.linux.SysPath;
  * @author Kimi Liu
  */
 @Immutable
-public final class LinuxBluetoothDevice extends AbstractBluetoothDevice {
+public class LinuxBluetoothDevice extends AbstractBluetoothDevice {
 
     /**
      * The SYS_BLUETOOTH constant.
@@ -73,8 +73,8 @@ public final class LinuxBluetoothDevice extends AbstractBluetoothDevice {
      * @param batteryLevel     the battery level
      * @param adapterName      the adapter name
      */
-    private LinuxBluetoothDevice(String name, String address, String majorDeviceClass, boolean connected,
-            boolean paired, int batteryLevel, String adapterName) {
+    public LinuxBluetoothDevice(String name, String address, String majorDeviceClass, boolean connected, boolean paired,
+            int batteryLevel, String adapterName) {
         super(name, address, majorDeviceClass, connected, paired, batteryLevel, adapterName);
     }
 

@@ -33,12 +33,12 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class PerfstatProcess {
+public class PerfstatProcess {
 
     /**
      * Keeps AIX perfstat process queries on the static API.
      */
-    private PerfstatProcess() {
+    public PerfstatProcess() {
         // No initialization required.
     }
 

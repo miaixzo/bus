@@ -78,7 +78,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class DialectRegistry {
+public class DialectRegistry {
 
     /**
      * Registered dialects (in registration order for priority)
@@ -147,9 +147,9 @@ public final class DialectRegistry {
     }
 
     /**
-     * Prevents instantiation of this global database dialect lookup registry.
+     * Creates a database dialect lookup registry backed by the shared registrations.
      */
-    private DialectRegistry() {
+    public DialectRegistry() {
         // No initialization required.
     }
 

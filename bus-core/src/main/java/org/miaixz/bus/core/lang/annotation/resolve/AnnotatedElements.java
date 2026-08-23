@@ -96,7 +96,7 @@ public class AnnotatedElements {
     /**
      * Keeps merged-annotation traversal on the static API.
      */
-    private AnnotatedElements() {
+    public AnnotatedElements() {
         // No initialization required.
     }
 

@@ -87,7 +87,7 @@ public class AnatomicRegion {
      *
      * @author Kimi Liu
      */
-    public static final class OtherCategory implements CategoryBuilder {
+    public static class OtherCategory implements CategoryBuilder {
 
         /**
          * The context UID value.
@@ -177,6 +177,124 @@ public class AnatomicRegion {
         @Override
         public int hashCode() {
             return Objects.hashCode(contextUID);
+        }
+
+    }
+
+    /**
+     * Represents a private extension of a standard anatomic category.
+     *
+     * @author Kimi Liu
+     */
+    public static final class ExtendedCategory implements CategoryBuilder {
+
+        /**
+         * The base category value.
+         */
+        private final Category baseCategory;
+
+        /**
+         * The extension creator UID value.
+         */
+        private final String extensionCreatorUID;
+
+        /**
+         * The title value.
+         */
+        private final String title;
+
+        /**
+         * Creates a new extended anatomic category.
+         *
+         * @param baseCategory        the base category.
+         * @param extensionCreatorUID the extension creator UID.
+         * @param title               the display title.
+         */
+        public ExtendedCategory(Category baseCategory, String extensionCreatorUID, String title) {
+            this.baseCategory = Objects.requireNonNull(baseCategory, "baseCategory must not be null");
+            this.extensionCreatorUID = Objects
+                    .requireNonNull(extensionCreatorUID, "extensionCreatorUID must not be null");
+            this.title = Objects.requireNonNull(title, "title must not be null");
+        }
+
+        /**
+         * Returns the DICOM context UID for the category.
+         *
+         * @return the DICOM context UID.
+         */
+        @Override
+        public String getContextUID() {
+            return baseCategory.getContextUID();
+        }
+
+        /**
+         * Returns the DICOM context identifier for the category.
+         *
+         * @return the DICOM context identifier.
+         */
+        @Override
+        public String getIdentifier() {
+            return baseCategory.getIdentifier();
+        }
+
+        /**
+         * Returns the display title for the category.
+         *
+         * @return the display title.
+         */
+        @Override
+        public String getTitle() {
+            return title;
+        }
+
+        /**
+         * Returns the standard category extended by this category.
+         *
+         * @return the standard category.
+         */
+        public Category getBaseCategory() {
+            return baseCategory;
+        }
+
+        /**
+         * Returns the extension creator UID.
+         *
+         * @return the extension creator UID.
+         */
+        public String getExtensionCreatorUID() {
+            return extensionCreatorUID;
+        }
+
+        /**
+         * Returns the string representation.
+         *
+         * @return the string representation.
+         */
+        @Override
+        public String toString() {
+            return getTitle();
+        }
+
+        /**
+         * Compares this category with another object for equality.
+         *
+         * @param object the object.
+         * @return true if the base category and extension creator UID are equal.
+         */
+        @Override
+        public boolean equals(Object object) {
+            return object instanceof ExtendedCategory other && baseCategory == other.baseCategory
+                    && Objects.equals(extensionCreatorUID, other.extensionCreatorUID);
+        }
+
+        /**
+         * Returns the hash code.
+         *
+         * @return the hash code.
+         */
+        @Override
+        public int hashCode() {
+            return Objects.hash(baseCategory, extensionCreatorUID);
         }
 
     }
@@ -2511,10 +2629,23 @@ public class AnatomicRegion {
      * @param modifiers  the modifiers.
      */
     public static void writeRegion(Attributes attributes, Code region, Code... modifiers) {
+        writeRegion(attributes, null, region, modifiers);
+    }
+
+    /**
+     * Writes the region with category context.
+     *
+     * @param attributes the attributes.
+     * @param category   the category.
+     * @param region     the region.
+     * @param modifiers  the modifiers.
+     */
+    public static void writeRegion(Attributes attributes, CategoryBuilder category, Code region, Code... modifiers) {
         if (attributes == null || region == null) {
             return;
         }
         Attributes item = region.toItem();
+        writeRegionContext(item, category);
         List<Code> modifierList = modifiers == null ? List.of()
                 : Arrays.stream(modifiers).filter(code -> code != null).toList();
         if (!modifierList.isEmpty()) {
@@ -2526,6 +2657,24 @@ public class AnatomicRegion {
         String legacyBodyPart = bodyPartOf(region);
         if (legacyBodyPart != null) {
             attributes.setString(Tag.BodyPartExamined, VR.CS, legacyBodyPart);
+        }
+    }
+
+    /**
+     * Writes category context attributes.
+     *
+     * @param item     the item.
+     * @param category the category.
+     */
+    private static void writeRegionContext(Attributes item, CategoryBuilder category) {
+        if (item == null || category == null) {
+            return;
+        }
+        item.setString(Tag.ContextUID, VR.UI, category.getContextUID());
+        item.setString(Tag.ContextIdentifier, VR.CS, category.getIdentifier());
+        if (category instanceof ExtendedCategory extended) {
+            item.setString(Tag.ContextGroupExtensionFlag, VR.CS, "Y");
+            item.setString(Tag.ContextGroupExtensionCreatorUID, VR.UI, extended.getExtensionCreatorUID());
         }
     }
 
@@ -2554,11 +2703,11 @@ public class AnatomicRegion {
         if (category == null) {
             return List.of();
         }
-        return getCategoryMap().entrySet().stream()
-                .filter(
-                        entry -> Objects.equals(entry.getKey(), category)
-                                || Objects.equals(entry.getKey().getContextUID(), category.getContextUID()))
-                .map(Map.Entry::getValue).findFirst().orElse(List.of());
+        List<Code> items = STANDARD_CATEGORIES.get(category);
+        if (items == null) {
+            items = EXTENSION_CATEGORIES.get().get(category);
+        }
+        return items == null ? List.of() : items;
     }
 
     /**
@@ -2580,6 +2729,38 @@ public class AnatomicRegion {
     }
 
     /**
+     * Finds an extended category by extension creator UID.
+     *
+     * @param extensionCreatorUID the extension creator UID.
+     * @return the matching extended category.
+     */
+    public static Optional<ExtendedCategory> getExtendedCategory(String extensionCreatorUID) {
+        if (extensionCreatorUID == null || extensionCreatorUID.isBlank()) {
+            return Optional.empty();
+        }
+        return EXTENSION_CATEGORIES.get().keySet().stream().filter(ExtendedCategory.class::isInstance)
+                .map(ExtendedCategory.class::cast)
+                .filter(category -> Objects.equals(category.getExtensionCreatorUID(), extensionCreatorUID)).findFirst();
+    }
+
+    /**
+     * Finds a category referenced by a DICOM code.
+     *
+     * @param code the DICOM code.
+     * @return the matching category.
+     */
+    public static Optional<CategoryBuilder> categoryOf(Code code) {
+        if (code == null) {
+            return Optional.empty();
+        }
+        Optional<ExtendedCategory> extended = getExtendedCategory(code.getContextGroupExtensionCreatorUID());
+        if (extended.isPresent()) {
+            return Optional.of(extended.get());
+        }
+        return getCategoryFromContextUID(code.getContextUID());
+    }
+
+    /**
      * Registers a custom category and its region codes.
      *
      * @param category the category.
@@ -2592,13 +2773,13 @@ public class AnatomicRegion {
         if (contextUID == null || contextUID.isBlank()) {
             throw new IllegalArgumentException("Category context UID must not be blank");
         }
-        if (Category.fromContextUID(contextUID).isPresent()) {
+        if (!(category instanceof ExtendedCategory) && Category.fromContextUID(contextUID).isPresent()) {
             throw new IllegalArgumentException("Standard categories cannot be overridden: " + contextUID);
         }
         List<Code> copy = List.copyOf(items);
         EXTENSION_CATEGORIES.updateAndGet(current -> {
             Map<CategoryBuilder, List<Code>> updated = new LinkedHashMap<>(current);
-            updated.keySet().removeIf(existing -> Objects.equals(existing.getContextUID(), contextUID));
+            updated.remove(category);
             updated.put(category, copy);
             return Collections.unmodifiableMap(updated);
         });
@@ -2611,7 +2792,18 @@ public class AnatomicRegion {
      * @return true if a category was removed.
      */
     public static boolean unregisterCategory(CategoryBuilder category) {
-        return category != null && unregisterCategory(category.getContextUID());
+        if (category == null) {
+            return false;
+        }
+        Map<CategoryBuilder, List<Code>> previous = EXTENSION_CATEGORIES.getAndUpdate(current -> {
+            if (!current.containsKey(category)) {
+                return current;
+            }
+            Map<CategoryBuilder, List<Code>> updated = new LinkedHashMap<>(current);
+            updated.remove(category);
+            return Collections.unmodifiableMap(updated);
+        });
+        return previous.containsKey(category);
     }
 
     /**

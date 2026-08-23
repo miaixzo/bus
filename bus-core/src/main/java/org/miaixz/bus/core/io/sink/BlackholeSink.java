@@ -29,7 +29,7 @@ import org.miaixz.bus.core.io.timout.Timeout;
  *
  * @author Kimi Liu
  */
-public final class BlackholeSink implements Sink {
+public class BlackholeSink implements Sink {
 
     /**
      * Shared stateless blackhole sink.
@@ -39,7 +39,7 @@ public final class BlackholeSink implements Sink {
     /**
      * Creates a blackhole sink.
      */
-    private BlackholeSink() {
+    public BlackholeSink() {
         // No initialization required.
     }
 

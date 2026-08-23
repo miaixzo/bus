@@ -618,7 +618,7 @@ public class MergeRequest implements Serializable {
      * @return the result
      */
 
-    public static final boolean isValid(MergeRequest mergeRequest) {
+    public static boolean isValid(MergeRequest mergeRequest) {
         return (mergeRequest != null && mergeRequest.getId() != null);
     }
 

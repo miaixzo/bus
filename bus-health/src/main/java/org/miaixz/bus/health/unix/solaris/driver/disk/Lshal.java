@@ -34,7 +34,7 @@ import org.miaixz.bus.health.Parsing;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Lshal {
+public class Lshal {
 
     /**
      * Constructs a new {@code Lshal} instance.

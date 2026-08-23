@@ -23,7 +23,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.core.basic.entity.Namespace;
+import org.miaixz.bus.core.basic.entity.Space;
 
 /**
  * Relation row between one setting resource and an application or profile target.
@@ -33,7 +33,7 @@ import org.miaixz.bus.core.basic.entity.Namespace;
 @Getter
 @Setter
 @SuperBuilder
-public class Binding extends Namespace {
+public class Binding extends Space {
 
     /**
      * Creates an empty setting binding.

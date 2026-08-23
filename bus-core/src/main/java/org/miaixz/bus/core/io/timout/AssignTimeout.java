@@ -53,7 +53,7 @@ public class AssignTimeout extends Timeout {
      *
      * @return The current delegate {@link Timeout}.
      */
-    public final Timeout delegate() {
+    public Timeout delegate() {
         return delegate;
     }
 
@@ -64,7 +64,7 @@ public class AssignTimeout extends Timeout {
      * @return This {@code AssignTimeout} instance for method chaining.
      * @throws IllegalArgumentException If the {@code delegate} is {@code null}.
      */
-    public final AssignTimeout setDelegate(Timeout delegate) {
+    public AssignTimeout setDelegate(Timeout delegate) {
         if (null == delegate) {
             throw new IllegalArgumentException("delegate == null");
         }

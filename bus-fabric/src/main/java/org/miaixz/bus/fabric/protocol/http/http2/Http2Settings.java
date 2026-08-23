@@ -31,7 +31,7 @@ import org.miaixz.bus.fabric.Builder;
  *
  * @author Kimi Liu
  */
-public final class Http2Settings {
+public class Http2Settings {
 
     /**
      * Unsigned wire values indexed by standard setting identifier.
@@ -46,7 +46,7 @@ public final class Http2Settings {
     /**
      * Creates default settings.
      */
-    private Http2Settings() {
+    public Http2Settings() {
         this.values = new long[Normal._7];
     }
 

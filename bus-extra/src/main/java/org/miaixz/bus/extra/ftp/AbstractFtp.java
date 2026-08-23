@@ -49,7 +49,7 @@ public abstract class AbstractFtp implements Ftp {
      *
      * @param config The {@link FtpConfig} containing connection and operational settings.
      */
-    protected AbstractFtp(final FtpConfig config) {
+    public AbstractFtp(final FtpConfig config) {
         this.ftpConfig = config;
     }
 

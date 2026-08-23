@@ -56,7 +56,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class AccessToken {
+public class AccessToken {
 
     /**
      * Constructs a new AccessToken instance.
@@ -215,7 +215,7 @@ public final class AccessToken {
      * @return the created personal access token
      * @throws RelevantException if any exception occurs
      */
-    public static final String createPersonalAccessToken(
+    public static String createPersonalAccessToken(
             final String baseUrl,
             final String username,
             final String password,
@@ -240,7 +240,7 @@ public final class AccessToken {
      * @return the created personal access token
      * @throws RelevantException if any exception occurs
      */
-    public static final String createPersonalAccessToken(
+    public static String createPersonalAccessToken(
             final String baseUrl,
             final String username,
             final String password,
@@ -396,7 +396,7 @@ public final class AccessToken {
      * @param scopes    an array of scopes of the personal access token to revoke
      * @throws RelevantException if any exception occurs
      */
-    public static final void revokePersonalAccessToken(
+    public static void revokePersonalAccessToken(
             final String baseUrl,
             final String username,
             final String password,
@@ -420,7 +420,7 @@ public final class AccessToken {
      * @param scopes    a List of scopes of the personal access token to revoke
      * @throws RelevantException if any exception occurs
      */
-    public static final void revokePersonalAccessToken(
+    public static void revokePersonalAccessToken(
             final String baseUrl,
             final String username,
             final String password,
@@ -587,7 +587,7 @@ public final class AccessToken {
      * @return the fetched Feed token
      * @throws RelevantException if any exception occurs
      */
-    public static final String getFeedToken(final String baseUrl, final String username, final String password)
+    public static String getFeedToken(final String baseUrl, final String username, final String password)
             throws RelevantException {
 
         // Save the follow redirect state so it can be restored later
@@ -675,10 +675,8 @@ public final class AccessToken {
      * @return the fetched health check access token
      * @throws RelevantException if any exception occurs
      */
-    public static final String getHealthCheckAccessToken(
-            final String baseUrl,
-            final String username,
-            final String password) throws RelevantException {
+    public static String getHealthCheckAccessToken(final String baseUrl, final String username, final String password)
+            throws RelevantException {
 
         // Save the follow redirect state so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -765,7 +763,7 @@ public final class AccessToken {
      * @return the GitLab seesion token as a cookie value
      * @throws RelevantException if any error occurs
      */
-    protected static final String login(final String baseUrl, final String username, final String password)
+    protected static String login(final String baseUrl, final String username, final String password)
             throws RelevantException {
 
         // Save the follow redirect state so it can be restored later
@@ -887,7 +885,7 @@ public final class AccessToken {
      * @param cookies the GitLab session cookie to logout
      * @throws RelevantException if any error occurs
      */
-    protected static final void logout(final String baseUrl, final String cookies) throws RelevantException {
+    protected static void logout(final String baseUrl, final String cookies) throws RelevantException {
 
         // Save so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -941,7 +939,7 @@ public final class AccessToken {
      * @return the form data StringBuilder
      * @throws RelevantException if any error occurs.
      */
-    public static final StringBuilder addFormData(StringBuilder formData, String name, String value)
+    public static StringBuilder addFormData(StringBuilder formData, String name, String value)
             throws RelevantException {
 
         if (formData == null) {

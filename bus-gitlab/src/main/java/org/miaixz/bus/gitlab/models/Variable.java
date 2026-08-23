@@ -51,7 +51,7 @@ public class Variable implements Serializable {
      * @param variables the Map to convert to a List of Variable
      * @return the List of Variable containing the keys and values from the Map, or null if the Map is null
      */
-    public static final List<Variable> convertMapToList(Map<String, String> variables) {
+    public static List<Variable> convertMapToList(Map<String, String> variables) {
 
         if (variables == null) {
             return null;

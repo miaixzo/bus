@@ -752,7 +752,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
      * @return {@code true} if the process attributes were successfully updated, {@code false} otherwise
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         boolean result = updateAttributesFromProc();
         if (result && getProcessID() == this.os.getProcessId()) {
             long[] contextSwitches = queryContextSwitches();

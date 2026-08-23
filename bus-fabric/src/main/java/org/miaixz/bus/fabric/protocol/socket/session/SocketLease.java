@@ -53,7 +53,7 @@ import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
  *
  * @author Kimi Liu
  */
-public final class SocketLease {
+public class SocketLease {
 
     /**
      * Underlying connection-pool lease owned by this wrapper.
@@ -75,7 +75,7 @@ public final class SocketLease {
      *
      * @param lease pooled connection lease owned by this socket lease
      */
-    private SocketLease(final ConnectionLease lease) {
+    public SocketLease(final ConnectionLease lease) {
         this.lease = require(lease, "Connection lease");
         this.released = new AtomicBoolean();
     }
@@ -569,7 +569,7 @@ public final class SocketLease {
     /**
      * Auto-closeable owner handle used by socket sessions.
      */
-    public static final class Owner implements AutoCloseable {
+    public static class Owner implements AutoCloseable {
 
         /**
          * Socket lease controlled by this owner handle.
@@ -581,7 +581,7 @@ public final class SocketLease {
          *
          * @param lease socket lease controlled by the handle
          */
-        private Owner(final SocketLease lease) {
+        public Owner(final SocketLease lease) {
             this.lease = require(lease, "Socket lease");
         }
 

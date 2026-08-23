@@ -156,15 +156,15 @@ public class ItemCuratorService {
     /**
      * Publishes a plain inline setting item.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param content   inline content
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param content inline content
      * @return stored entry
      */
-    public Item publishInline(String namespace, String group, String data_id, String content) {
+    public Item publishInline(String space, String group, String data_id, String content) {
         Item entry = new Item();
-        entry.setNamespace_id(CortexIdentity.namespace(namespace));
+        entry.setSpace_id(CortexIdentity.space(space));
         entry.setGroup(group);
         entry.setData_id(data_id);
         entry.setContent(content);
@@ -174,43 +174,43 @@ public class ItemCuratorService {
     /**
      * Deletes one setting entry from the current state store.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional profile
      * @return deleted entry or {@code null}
      */
-    public Item delete(String namespace, String group, String data_id, String profile) {
-        requireAllowed("delete", namespace, null, profile, profileScope(namespace, group, data_id, profile));
-        return publisher.delete(namespace, group, data_id, profile);
+    public Item delete(String space, String group, String data_id, String profile) {
+        requireAllowed("delete", space, null, profile, profileScope(space, group, data_id, profile));
+        return publisher.delete(space, group, data_id, profile);
     }
 
     /**
      * Rolls back the current setting entry to a previous revision.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
-     * @param revision  historical revision
+     * @param space    space
+     * @param group    setting group
+     * @param data_id  setting data identifier
+     * @param profile  optional profile
+     * @param revision historical revision
      * @return newly published current entry after rollback, or {@code null}
      */
-    public Item rollback(String namespace, String group, String data_id, String profile, String revision) {
-        requireAllowed("rollback", namespace, null, profile, profileScope(namespace, group, data_id, profile));
-        return publisher.rollback(namespace, group, data_id, profile, revision);
+    public Item rollback(String space, String group, String data_id, String profile, String revision) {
+        requireAllowed("rollback", space, null, profile, profileScope(space, group, data_id, profile));
+        return publisher.rollback(space, group, data_id, profile, revision);
     }
 
     /**
      * Finds the current setting entry.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional profile
      * @return current entry
      */
-    public Item find(String namespace, String group, String data_id, String profile) {
-        return entryStore.find(namespace, group, data_id, profile);
+    public Item find(String space, String group, String data_id, String profile) {
+        return entryStore.find(space, group, data_id, profile);
     }
 
     /**
@@ -252,8 +252,7 @@ public class ItemCuratorService {
         if (!allows(query)) {
             return query.getFallbackValue();
         }
-        Item entry = entryStore
-                .find(query.getNamespace_id(), query.getGroup(), query.getData_id(), query.getProfile_id());
+        Item entry = entryStore.find(query.getSpace_id(), query.getGroup(), query.getData_id(), query.getProfile_id());
         if (entry != null && !ItemBindingProjection.bindsToApp(entry, query.getApp_id())) {
             return query.getFallbackValue();
         }
@@ -287,14 +286,14 @@ public class ItemCuratorService {
     public Map<String, String> export(ItemScope scope, ItemExposure requiredExposure) {
         scope = prepare(scope);
         if (!allows(
-                scope == null ? null : scope.getNamespace_id(),
+                scope == null ? null : scope.getSpace_id(),
                 scope == null ? null : scope.getApp_id(),
                 scope == null ? null : scope.getProfile_id())) {
             return Map.of();
         }
         ItemQuery query = new ItemQuery();
         if (scope != null) {
-            query.setNamespace_id(scope.getNamespace_id());
+            query.setSpace_id(scope.getSpace_id());
             query.setGroup(scope.getGroup());
             query.setProfile_id(scope.getProfile_id());
             query.setApp_id(scope.getApp_id());
@@ -348,11 +347,11 @@ public class ItemCuratorService {
         if (validated != null) {
             requireAllowed(
                     "publish",
-                    validated.getNamespace_id(),
+                    validated.getSpace_id(),
                     first(ItemBindingProjection.normalizedAppIds(validated)),
                     first(ItemBindingProjection.normalizedProfileIds(validated)),
                     profileScope(
-                            validated.getNamespace_id(),
+                            validated.getSpace_id(),
                             validated.getGroup(),
                             validated.getData_id(),
                             first(ItemBindingProjection.normalizedProfileIds(validated))));
@@ -368,7 +367,7 @@ public class ItemCuratorService {
      */
     public boolean allows(ItemQuery query) {
         return allows(
-                query == null ? null : query.getNamespace_id(),
+                query == null ? null : query.getSpace_id(),
                 query == null ? null : query.getApp_id(),
                 query == null ? null : query.getProfile_id());
     }
@@ -376,43 +375,38 @@ public class ItemCuratorService {
     /**
      * Returns whether the supplied app/profile relation is allowed.
      *
-     * @param namespace_id namespace identifier
-     * @param app_id       application identifier
-     * @param profile_id   profile identifier
+     * @param space_id   space identifier
+     * @param app_id     application identifier
+     * @param profile_id profile identifier
      * @return {@code true} when the relation is allowed
      */
-    public boolean allows(String namespace_id, String app_id, String profile_id) {
-        return enforcer == null || enforcer.allows(namespace_id, app_id, profile_id);
+    public boolean allows(String space_id, String app_id, String profile_id) {
+        return enforcer == null || enforcer.allows(space_id, app_id, profile_id);
     }
 
     /**
      * Enforces setting scope access for one curator action.
      *
-     * @param action       guarded action
-     * @param namespace_id namespace identifier
-     * @param app_id       application identifier
-     * @param profile_id   profile identifier
-     * @param resourceId   guarded resource identifier
+     * @param action     guarded action
+     * @param space_id   space identifier
+     * @param app_id     application identifier
+     * @param profile_id profile identifier
+     * @param resourceId guarded resource identifier
      */
-    private void requireAllowed(
-            String action,
-            String namespace_id,
-            String app_id,
-            String profile_id,
-            String resourceId) {
+    private void requireAllowed(String action, String space_id, String app_id, String profile_id, String resourceId) {
         if (cortexGuard != null) {
             GuardContext context = new GuardContext();
             context.setDomain("setting");
             context.setAction(action);
             context.setResourceType("ITEM");
             context.setResourceId(resourceId);
-            context.namespace_id(namespace_id);
+            context.space_id(space_id);
             context.setApp_id(app_id);
             context.setProfile_id(profile_id);
             cortexGuard.enforce(context);
             return;
         }
-        if (!allows(namespace_id, app_id, profile_id)) {
+        if (!allows(space_id, app_id, profile_id)) {
             throw new IllegalArgumentException("Setting scope is not allowed");
         }
     }
@@ -430,41 +424,41 @@ public class ItemCuratorService {
     /**
      * Loads a historical revision.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
-     * @param revision  historical revision
+     * @param space    space
+     * @param group    setting group
+     * @param data_id  setting data identifier
+     * @param profile  optional profile
+     * @param revision historical revision
      * @return matching revision or {@code null}
      */
-    public ItemRevision revision(String namespace, String group, String data_id, String profile, String revision) {
-        return revisionStore.find(namespace, group, data_id, profile, revision);
+    public ItemRevision revision(String space, String group, String data_id, String profile, String revision) {
+        return revisionStore.find(space, group, data_id, profile, revision);
     }
 
     /**
      * Lists {@code setting.item.revision} snapshots for one entry.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional profile
      * @return revisions from newest to oldest
      */
-    public List<ItemRevision> revisions(String namespace, String group, String data_id, String profile) {
-        return revisionStore.query(namespace, group, data_id, profile);
+    public List<ItemRevision> revisions(String space, String group, String data_id, String profile) {
+        return revisionStore.query(space, group, data_id, profile);
     }
 
     /**
      * Refreshes one current entry from durable state.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional profile
      * @return refreshed entry
      */
-    public Item refresh(String namespace, String group, String data_id, String profile) {
-        return entryStore.refresh(namespace, group, data_id, profile);
+    public Item refresh(String space, String group, String data_id, String profile) {
+        return entryStore.refresh(space, group, data_id, profile);
     }
 
     /**
@@ -487,20 +481,20 @@ public class ItemCuratorService {
         if (query == null) {
             return null;
         }
-        Item entry = find(query.getNamespace_id(), query.getGroup(), query.getData_id(), query.getProfile_id());
+        Item entry = find(query.getSpace_id(), query.getGroup(), query.getData_id(), query.getProfile_id());
         return resolver.preview(entry);
     }
 
     /**
      * Evicts one current entry from cache.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional profile
      */
-    public void evict(String namespace, String group, String data_id, String profile) {
-        entryStore.evict(namespace, group, data_id, profile);
+    public void evict(String space, String group, String data_id, String profile) {
+        entryStore.evict(space, group, data_id, profile);
     }
 
     /**
@@ -513,21 +507,21 @@ public class ItemCuratorService {
         List<String> profiles = ItemBindingProjection.normalizedProfileIds(entry);
         String resolvedProfile = StringKit.isNotEmpty(profile) ? profile
                 : profiles == null || profiles.isEmpty() ? null : profiles.getFirst();
-        return keying.key(
-                SettingSpec.export(entry.getNamespace_id(), entry.getGroup(), entry.getData_id(), resolvedProfile));
+        return keying
+                .key(SettingSpec.export(entry.getSpace_id(), entry.getGroup(), entry.getData_id(), resolvedProfile));
     }
 
     /**
      * Returns the logical watch key used for setting notifications.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional profile
      * @return logical watch key
      */
-    public String watchKey(String namespace, String group, String data_id, String profile) {
-        return keying.key(SettingSpec.watch(namespace, group, data_id, profile));
+    public String watchKey(String space, String group, String data_id, String profile) {
+        return keying.key(SettingSpec.watch(space, group, data_id, profile));
     }
 
     /**
@@ -556,14 +550,14 @@ public class ItemCuratorService {
     /**
      * Builds the logical profile scope used by permission and audit checks.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param dataId    setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param dataId  setting data identifier
+     * @param profile optional profile
      * @return profile scope
      */
-    private String profileScope(String namespace, String group, String dataId, String profile) {
-        return keying.key(SettingSpec.profileScope(namespace, group, dataId, profile));
+    private String profileScope(String space, String group, String dataId, String profile) {
+        return keying.key(SettingSpec.profileScope(space, group, dataId, profile));
     }
 
 }

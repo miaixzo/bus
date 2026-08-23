@@ -565,7 +565,7 @@ public class CGetForward implements AutoCloseable {
      *
      * @param priority the priority.
      */
-    public final void setPriority(int priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
@@ -576,7 +576,7 @@ public class CGetForward implements AutoCloseable {
      * @param tss        the transfer syntaxes.
      * @param relational whether to use relational queries.
      */
-    public final void setInformationModel(InformationModel model, String[] tss, boolean relational) {
+    public void setInformationModel(InformationModel model, String[] tss, boolean relational) {
         this.model = model;
         rq.addPresentationContext(new PresentationContext(1, model.cuid, tss));
         if (relational) {

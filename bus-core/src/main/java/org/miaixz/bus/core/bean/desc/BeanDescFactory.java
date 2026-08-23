@@ -41,7 +41,7 @@ public class BeanDescFactory {
     /**
      * Keeps bean-description factory selection on the static API.
      */
-    private BeanDescFactory() {
+    public BeanDescFactory() {
         // No initialization required.
     }
 

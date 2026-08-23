@@ -18,14 +18,21 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.office
+ * Module: {@code bus.office}
+ *
+ * <p>
+ * Provides APIs for reading, writing, and transforming common office document formats.
+ *
+ * <p>
+ * Includes CSV processing, Excel readers and writers, streaming spreadsheet parsing, cell and style utilities, Word
+ * documents, presentations, OFD documents, and tabular import and export workflows.
  *
  * @author Kimi Liu
  */
 module bus.office {
 
     requires java.desktop;
-    requires java.sql;
+    requires java.xml;
 
     requires bus.core;
     requires bus.logger;

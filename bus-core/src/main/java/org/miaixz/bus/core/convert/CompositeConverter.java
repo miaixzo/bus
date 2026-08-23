@@ -62,9 +62,9 @@ public class CompositeConverter implements Converter, Serializable {
     private SpecialConverter specialConverter;
 
     /**
-     * Private constructor to prevent direct instantiation.
+     * Creates a composite converter using the registered conversion chain.
      */
-    private CompositeConverter() {
+    public CompositeConverter() {
         // No initialization required.
     }
 

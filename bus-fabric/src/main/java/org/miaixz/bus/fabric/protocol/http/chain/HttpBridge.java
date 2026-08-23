@@ -48,7 +48,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  *
  * @author Kimi Liu
  */
-public final class HttpBridge implements HttpStage {
+public class HttpBridge implements HttpStage {
 
     /**
      * Stable identifier exposed to the HTTP stage chain.

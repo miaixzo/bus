@@ -27,7 +27,7 @@ package org.opencv.img_hash;
  */
 public class RadialVarianceHash extends ImgHashBase {
 
-    protected RadialVarianceHash(long addr) {
+    public RadialVarianceHash(long addr) {
         super(addr);
     }
 

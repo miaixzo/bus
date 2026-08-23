@@ -46,7 +46,7 @@ public class ArrayKit extends PrimitiveArray {
     /**
      * Keeps array creation and transformation on the static API.
      */
-    private ArrayKit() {
+    public ArrayKit() {
         // No initialization required.
     }
 

@@ -45,7 +45,7 @@ public class ProcessConfig implements Serializable {
     }
 
     @Serial
-    private static final long serialVersionUID = -1L;
+    private static final long serialVersionUID = 2830692518360L;
 
     /**
      * A list of table names to ignore during processing.

@@ -24,7 +24,7 @@ package org.miaixz.bus.core.io.buffer;
  *
  * @author Kimi Liu
  */
-public final class NioBuffer implements AutoCloseable {
+public class NioBuffer implements AutoCloseable {
 
     /**
      * Allocator that owns this lease, or {@code null} when the buffer is one-off.
@@ -53,7 +53,7 @@ public final class NioBuffer implements AutoCloseable {
      * @param buffer    the leased NIO buffer
      * @param reusable  whether the buffer should be returned to the allocator
      */
-    NioBuffer(NioBufferAllocator allocator, java.nio.ByteBuffer buffer, boolean reusable) {
+    public NioBuffer(NioBufferAllocator allocator, java.nio.ByteBuffer buffer, boolean reusable) {
         this.allocator = allocator;
         this.buffer = buffer;
         this.reusable = reusable;

@@ -236,7 +236,7 @@ public class IniSetting extends ArrayList<IniElement> {
      * @throws IOException if an I/O error occurs.
      */
     public void write(File file, boolean withComment) throws IOException {
-        write(file, org.miaixz.bus.core.lang.Charset.UTF_8, withComment);
+        write(file, Charset.UTF_8, withComment);
     }
 
     /**

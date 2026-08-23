@@ -53,6 +53,7 @@ import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Delivery;
 import org.miaixz.bus.vortex.Egress;
+import org.miaixz.bus.vortex.Executor;
 import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.Octets;
 import org.miaixz.bus.vortex.routing.Coordinator;
@@ -69,8 +70,9 @@ import reactor.core.publisher.Mono;
  * downstream response back into a {@link ServerResponse} for the original client.
  * <p>
  * The route asset explicitly selects bounded atomic relay, realtime streaming or protected file download. Atomic
- * responses require Content-Length and retain an exact logical-byte lease through the network write; streaming modes
- * preserve downstream backpressure and never aggregate the body.
+ * responses retain a bounded logical-byte lease through the network write; streaming modes preserve downstream
+ * backpressure and never aggregate the body. Atomic responses without Content-Length reserve their maximum permitted
+ * size before source subscription and release unused capacity after aggregation.
  * <p>
  * Generic type parameters: {@code Executor<ServerRequest, ServerResponse>}
  *
@@ -88,8 +90,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
     /**
      * Executes the HTTP request using the provided context and ServerRequest.
      * <p>
-     * This method is required by the {@link org.miaixz.bus.vortex.Executor} interface. For REST executors, the
-     * {@code input} parameter is typed as {@link ServerRequest} for compile-time type safety.
+     * This method is required by the {@link Executor} interface. For REST executors, the {@code input} parameter is
+     * typed as {@link ServerRequest} for compile-time type safety.
      *
      * @param context The request context
      * @param request The ServerRequest object (strongly typed)
@@ -578,9 +580,10 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
     /**
      * Handles the execution for an ATOMIC request using buffered downstream response passthrough.
      * <p>
-     * The downstream response requires Content-Length, acquires that exact logical capacity, and is materialized into
-     * bounded segments before the {@link ServerResponse} is returned. Ownership remains active through the gateway
-     * network write, including cancellation.
+     * A downstream response with Content-Length acquires that exact logical capacity. A response without it acquires
+     * the configured buffered-response maximum before source subscription. Both are materialized into bounded segments
+     * before the {@link ServerResponse} is returned, and ownership remains active through the gateway network write,
+     * including cancellation.
      * </p>
      *
      * @param bodySpec  the downstream request specification
@@ -691,11 +694,11 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         }
 
         long declaredLength = responseEntity.getHeaders().getContentLength();
-        if (declaredLength < 0 || declaredLength > Math.toIntExact(Holder.get().getMaxBufferedResponseSize())) {
+        if (declaredLength > Math.toIntExact(Holder.get().getMaxBufferedResponseSize())) {
             return discardResponseBody(bodyFlux).then(
                     Mono.error(
-                            new DataBufferLimitException("Atomic response requires Content-Length in range 0.."
-                                    + Math.toIntExact(Holder.get().getMaxBufferedResponseSize()))));
+                            new DataBufferLimitException("Atomic response exceeds buffered limit of "
+                                    + Math.toIntExact(Holder.get().getMaxBufferedResponseSize()) + " bytes")));
         }
 
         return collectBufferedBody(bodyFlux, declaredLength).flatMap(body -> Mono.deferContextual(contextView -> {
@@ -705,7 +708,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 return Mono.error(new IllegalStateException("Vortex request context is missing"));
             }
             int bodyLength = body.length();
-            if (bodyLength != declaredLength) {
+            if (declaredLength >= 0 && bodyLength != declaredLength) {
+                body.close();
                 return Mono.error(
                         new DataBufferLimitException("Atomic response length mismatch: declared=" + declaredLength
                                 + ", actual=" + bodyLength));
@@ -719,8 +723,10 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                         method,
                         path,
                         bodyLength);
-                return responseBuilder.contentLength(bodyLength)
-                        .body(BodyInserters.fromDataBuffers(Octets.chunksAndClose(body)));
+                return Octets.own(
+                        responseBuilder.contentLength(bodyLength)
+                                .body(BodyInserters.fromDataBuffers(Octets.chunks(body))),
+                        body);
             }
             body.close();
             return buildEmptyBufferedResponse(responseBuilder, ip, method, path);
@@ -731,7 +737,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * Collects a downstream response body while enforcing the buffered-response size limit.
      *
      * @param bodyFlux       downstream response buffers
-     * @param declaredLength validated downstream Content-Length
+     * @param declaredLength validated downstream Content-Length, or {@code -1} when absent
      * @return buffered body with an attached response-byte lease
      */
     private Mono<Octets.BufferedBody> collectBufferedBody(Flux<DataBuffer> bodyFlux, long declaredLength) {

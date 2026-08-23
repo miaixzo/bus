@@ -57,7 +57,7 @@ public abstract class AssignSource implements Source {
      *
      * @return The delegate {@link Source}.
      */
-    public final Source delegate() {
+    public Source delegate() {
         return delegate;
     }
 

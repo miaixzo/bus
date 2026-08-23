@@ -21,189 +21,199 @@ package org.miaixz.bus.cache.nimble;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Lock;
+import java.util.concurrent.atomic.LongAdder;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import lombok.Getter;
-import lombok.Setter;
+import java.util.function.LongSupplier;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.magic.CacheExpire;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * An in-memory cache implementation based on {@link ConcurrentHashMap} and {@link ReentrantReadWriteLock}.
+ * A concurrent in-memory cache with per-entry TTL, optional TTI, bounded capacity, atomic operations, and cancellable
+ * periodic pruning.
  * <p>
- * This class provides a thread-safe, in-memory caching solution that supports various eviction policies, including
- * maximum size, time-to-live (expire after write), and time-to-idle (expire after access). It also features a periodic
- * cleanup task to prune expired entries.
+ * Ordinary reads use {@link ConcurrentHashMap} without a global read lock. Ordinary writes are serialized only while
+ * updating the entry map and FIFO write-order metadata. Capacity eviction removes the oldest current write, not the
+ * least recently read entry. Instances created with {@link #MemoryCache(LongSupplier)} additionally expose the atomic
+ * asynchronous methods and coordinate those methods with terminal close.
  * </p>
  *
- * @param <K> The type of keys.
- * @param <V> The type of values.
+ * @param <K> key type
+ * @param <V> value type
  * @author Kimi Liu
  */
 public class MemoryCache<K, V> implements CacheX<K, V> {
 
     /**
-     * The default cache expiration time: 3 minutes (in milliseconds).
-     * <p>
-     * This default is chosen to accommodate processes that may take a few minutes, such as user authorization flows.
-     * </p>
-     */
-    public static long timeout = 180_000;
-
-    /**
-     * A global flag to enable or disable the scheduled task for pruning expired cache entries.
-     */
-    public static boolean schedulePrune = true;
-
-    /**
-     * The underlying map for storing cache entries.
-     */
-    private final Map<K, CacheState> map;
-
-    /**
-     * Independent counter map for {@link #increment(Object)} operations.
-     * <p>
-     * Kept separate from {@link #map} because the value type is generic {@code V} and cannot hold {@link AtomicLong}.
-     * Counters are not subject to TTL expiry: they persist until {@link #remove(Object[])} is called explicitly.
-     * </p>
-     */
-    private final ConcurrentHashMap<K, AtomicLong> counters = new ConcurrentHashMap<>();
-
-    /**
-     * A read-write lock to ensure thread-safe access to the cache.
-     */
-    private final ReentrantReadWriteLock cacheLock = new ReentrantReadWriteLock(true);
-
-    /**
-     * The lock for write operations.
-     */
-    private final Lock writeLock = cacheLock.writeLock();
-
-    /**
-     * The lock for read operations.
-     */
-    private final Lock readLock = cacheLock.readLock();
-
-    /**
-     * The maximum number of entries the cache can hold.
+     * Maximum live entry count.
      */
     private final long maximumSize;
-
     /**
-     * The expiration time in milliseconds after the last access.
-     */
-    private final long expireAfterAccess;
-
-    /**
-     * The expiration time in milliseconds after the last write.
+     * Global expire-after-write duration in milliseconds.
      */
     private final long expireAfterWrite;
-
     /**
-     * A counter for the total number of cache requests.
+     * Global expire-after-access duration in milliseconds.
      */
-    private final AtomicLong requestCount = new AtomicLong();
-
+    private final long expireAfterAccess;
     /**
-     * A counter for the number of cache hits.
+     * Millisecond time source.
      */
-    private final AtomicLong hitCount = new AtomicLong();
+    private final LongSupplier clock;
+    /**
+     * Whether asynchronous atomic operations are enabled.
+     */
+    private final boolean atomicMode;
+    /**
+     * Current periodic prune task.
+     */
+    private ScheduledFuture<?> pruneFuture;
+    /**
+     * Atomic-mode terminal state.
+     */
+    private boolean closed;
+    /**
+     * Approximate number of queued write tokens.
+     */
+    private long writeTokenCount;
+    /**
+     * Total read request count.
+     */
+    private final LongAdder requestCount = new LongAdder();
+    /**
+     * Successful read count.
+     */
+    private final LongAdder hitCount = new LongAdder();
+    /**
+     * Monotonic sequence assigned to write tokens.
+     */
+    private final AtomicLong writeSequence = new AtomicLong();
+    /**
+     * Monitor protecting the per-instance prune future.
+     */
+    private final Object pruneMonitor = new Object();
+    /**
+     * Stored cache entries.
+     */
+    private final ConcurrentHashMap<K, Entry<V>> cache;
+    /**
+     * Independent numeric counters.
+     */
+    private final ConcurrentHashMap<K, AtomicLong> counters = new ConcurrentHashMap<>();
+    /**
+     * Write-order tokens used for bounded eviction.
+     */
+    private final Queue<WriteToken<K, V>> writeOrder = new ConcurrentLinkedQueue<>();
+    /**
+     * Serializes mutations that update entry and eviction state together.
+     */
+    private final ReentrantLock mutationLock = new ReentrantLock();
+    /**
+     * Coordinates atomic operations with atomic-mode close.
+     */
+    private final ReentrantReadWriteLock lifecycleLock = new ReentrantReadWriteLock();
 
     /**
-     * Constructs a {@code MemoryCache} with default settings.
-     * <p>
-     * Default configuration:
-     * <ul>
-     * <li>Maximum size: 1000 entries</li>
-     * <li>Expire after write: 3 minutes</li>
-     * <li>Expire after access: Disabled</li>
-     * </ul>
-     * If {@link #schedulePrune} is enabled, a cleanup task is scheduled.
+     * Constructs a cache with 1000 entries, a three-minute write lifetime, and periodic pruning. Expire-after-access is
+     * disabled and the initial map capacity is 16.
      */
     public MemoryCache() {
-        this.map = new ConcurrentHashMap<>(16);
-        this.maximumSize = 1000;
-        this.expireAfterWrite = timeout;
-        this.expireAfterAccess = 0;
-        if (schedulePrune) {
-            this.schedulePrune(timeout);
-        }
-        Logger.info(
-                false,
-                "Cache",
-                "Memory cache initialized: maximumSize={}, expireAfterWriteMs={}, expireAfterAccessMs={}, schedulePrune={}",
-                maximumSize,
-                expireAfterWrite,
-                expireAfterAccess,
-                schedulePrune);
+        this(1000L, 180_000L, 0L, 16, true, System::currentTimeMillis, false);
     }
 
     /**
-     * Constructs a {@code MemoryCache} with a specified maximum size and expiration time.
+     * Constructs a cache with a maximum size and global write lifetime.
      *
-     * @param size   The maximum number of entries the cache can hold.
-     * @param expire The expiration time in milliseconds after the last write.
+     * @param size   maximum number of entries
+     * @param expire non-negative global write lifetime in milliseconds; zero disables the global write limit
+     * @throws IllegalArgumentException when {@code size} is not positive or {@code expire} is negative
      */
     public MemoryCache(long size, long expire) {
-        this.map = new ConcurrentHashMap<>(16);
-        this.maximumSize = size;
-        this.expireAfterWrite = expire;
-        this.expireAfterAccess = 0;
-        if (schedulePrune) {
-            this.schedulePrune(expire);
-        }
-        Logger.info(
-                false,
-                "Cache",
-                "Memory cache initialized: maximumSize={}, expireAfterWriteMs={}, expireAfterAccessMs={}, schedulePrune={}",
-                maximumSize,
-                expireAfterWrite,
-                expireAfterAccess,
-                schedulePrune);
+        this(size, expire, 0L, 16, true, System::currentTimeMillis, false);
     }
 
     /**
-     * Constructs a {@code MemoryCache} from a {@link Properties} object.
-     * <p>
-     * Supported properties:
-     * <ul>
-     * <li>`maximumSize`: Max entries (default: 1000).</li>
-     * <li>`expireAfterWrite`: TTL in ms (default: 3 minutes).</li>
-     * <li>`expireAfterAccess`: TTI in ms (default: 0, disabled).</li>
-     * <li>`initialCapacity`: Initial map size (default: 16).</li>
-     * </ul>
+     * Constructs a cache with explicit periodic pruning behavior.
      *
-     * @param properties The configuration properties.
+     * @param size         maximum number of entries
+     * @param expire       non-negative global write lifetime in milliseconds; zero disables the global write limit
+     * @param pruneEnabled whether periodic pruning is enabled
+     * @throws IllegalArgumentException when {@code size} is not positive or {@code expire} is negative
+     */
+    public MemoryCache(long size, long expire, boolean pruneEnabled) {
+        this(size, expire, 0L, 16, pruneEnabled, System::currentTimeMillis, false);
+    }
+
+    /**
+     * Constructs a cache from properties. The optional {@code prefix} property is prepended to {@code maximumSize},
+     * {@code expireAfterWrite}, {@code expireAfterAccess}, {@code initialCapacity}, and {@code schedulePrune}. Defaults
+     * are respectively 1000, 180000, 0, 16, and {@code true}.
+     *
+     * @param properties non-null cache properties
+     * @throws NullPointerException     when {@code properties} is {@code null}
+     * @throws NumberFormatException    when a numeric property is malformed
+     * @throws IllegalArgumentException when a parsed size or capacity is not positive, or an expiration is negative
      */
     public MemoryCache(Properties properties) {
-        String prefix = properties.getProperty("prefix", Normal.EMPTY);
-        String maximumSize = properties.getProperty(prefix + "maximumSize");
-        String expireAfterAccess = properties.getProperty(prefix + "expireAfterAccess");
-        String expireAfterWrite = properties.getProperty(prefix + "expireAfterWrite");
-        String initialCapacity = properties.getProperty(prefix + "initialCapacity");
+        this(configuration(properties));
+    }
 
-        this.maximumSize = StringKit.isNotEmpty(maximumSize) ? Long.parseLong(maximumSize) : 1000;
-        this.expireAfterWrite = StringKit.isNotEmpty(expireAfterWrite) ? Long.parseLong(expireAfterWrite) : timeout;
-        this.expireAfterAccess = StringKit.isNotEmpty(expireAfterAccess) ? Long.parseLong(expireAfterAccess) : 0;
-        int initCapacity = StringKit.isNotEmpty(initialCapacity) ? Integer.parseInt(initialCapacity) : 16;
+    /**
+     * Constructs an unbounded atomic cache with a caller-controlled millisecond clock. Periodic pruning, global TTL,
+     * and TTI are disabled; atomic methods require their own positive per-entry TTL.
+     *
+     * @param clock non-null millisecond time source
+     * @throws NullPointerException when {@code clock} is {@code null}
+     */
+    public MemoryCache(LongSupplier clock) {
+        this(Long.MAX_VALUE, 0L, 0L, 16, false, clock, true);
+    }
 
-        this.map = new ConcurrentHashMap<>(initCapacity);
-        if (schedulePrune) {
-            long effectiveExpire = Math
-                    .min(this.expireAfterWrite, this.expireAfterAccess > 0 ? this.expireAfterAccess : Long.MAX_VALUE);
-            this.schedulePrune(effectiveExpire);
+    /**
+     * Constructs a cache from validated configuration.
+     *
+     * @param configuration validated configuration
+     */
+    private MemoryCache(Configuration configuration) {
+        this(configuration.maximumSize, configuration.expireAfterWrite, configuration.expireAfterAccess,
+                configuration.initialCapacity, configuration.pruneEnabled, System::currentTimeMillis, false);
+    }
+
+    /**
+     * Constructs a fully specified cache.
+     *
+     * @param maximumSize       positive maximum entry count
+     * @param expireAfterWrite  non-negative global write expiration in milliseconds
+     * @param expireAfterAccess non-negative global access expiration in milliseconds
+     * @param initialCapacity   positive initial map capacity
+     * @param pruneEnabled      periodic prune flag
+     * @param clock             non-null millisecond time source
+     * @param atomicMode        atomic-operation flag
+     * @throws NullPointerException     when {@code clock} is {@code null}
+     * @throws IllegalArgumentException when a size or capacity is not positive, or an expiration is negative
+     */
+    MemoryCache(long maximumSize, long expireAfterWrite, long expireAfterAccess, int initialCapacity,
+            boolean pruneEnabled, LongSupplier clock, boolean atomicMode) {
+        requirePositive(maximumSize, "maximumSize");
+        requireNonNegative(expireAfterWrite, "expireAfterWrite");
+        requireNonNegative(expireAfterAccess, "expireAfterAccess");
+        requirePositive(initialCapacity, "initialCapacity");
+        this.maximumSize = maximumSize;
+        this.expireAfterWrite = expireAfterWrite;
+        this.expireAfterAccess = expireAfterAccess;
+        this.clock = Objects.requireNonNull(clock, "clock");
+        this.atomicMode = atomicMode;
+        this.cache = new ConcurrentHashMap<>(initialCapacity);
+        if (pruneEnabled) {
+            schedulePrune(pruneDelay(expireAfterWrite, expireAfterAccess));
         }
         Logger.info(
                 false,
@@ -212,458 +222,985 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
                 maximumSize,
                 expireAfterWrite,
                 expireAfterAccess,
-                initCapacity,
-                schedulePrune);
+                initialCapacity,
+                pruneEnabled);
     }
 
     /**
-     * Reads a single value from the cache.
-     * <p>
-     * Returns the value associated with the key if it exists and has not expired. Accessing the key updates its last
-     * access time, relevant for the `expireAfterAccess` policy.
-     * </p>
+     * Reads one live value and refreshes its last-access time when expire-after-access is enabled. An expired entry is
+     * removed lazily before this method returns.
      *
-     * @param key The key whose value to retrieve.
-     * @return The value, or {@code null} if the key is not found or has expired.
+     * @param key non-null cache key
+     * @return cached value, or {@code null} when the key is absent or expired
+     * @throws NullPointerException when {@code key} is {@code null}
      */
     @Override
     public V read(K key) {
-        readLock.lock();
-        try {
-            requestCount.incrementAndGet();
-            CacheState cacheState = map.get(key);
-            if (cacheState == null) {
-                return null;
-            }
-            if (cacheState.isExpired(expireAfterWrite, expireAfterAccess)) {
-                // Lazy eviction: remove the stale entry on first access rather than waiting for the background pruner.
-                // Upgrade to write lock is not supported by ReentrantReadWriteLock, so release read lock first.
-                readLock.unlock();
-                writeLock.lock();
-                try {
-                    // Re-check under write lock to avoid race with another thread that may have already evicted.
-                    CacheState recheck = map.get(key);
-                    if (recheck != null && recheck.isExpired(expireAfterWrite, expireAfterAccess)) {
-                        map.remove(key);
-                        Logger.debug(
-                                false,
-                                "Cache",
-                                "Memory cache expired entry evicted: mode=single, keyPresent={}, cacheSize={}",
-                                key != null,
-                                map.size());
-                    }
-                } finally {
-                    // Downgrade: re-acquire read lock before releasing write lock so caller stays within a lock.
-                    readLock.lock();
-                    writeLock.unlock();
-                }
-                return null;
-            }
-            cacheState.updateAccessTime();
-            hitCount.incrementAndGet();
-            return (V) cacheState.getState();
-        } finally {
-            readLock.unlock();
+        requestCount.increment();
+        Entry<V> entry = liveEntry(Objects.requireNonNull(key, "key"), clock.getAsLong(), true, false);
+        if (entry == null) {
+            return null;
         }
+        hitCount.increment();
+        return entry.value;
     }
 
     /**
-     * Reads multiple values from the cache in a batch.
-     * <p>
-     * Acquires the read lock once for the entire batch to avoid N repeated lock/unlock cycles that would occur if each
-     * key were looked up via the single-key {@link #read(Object)} method. Expired keys detected during the scan are
-     * collected and lazily removed under a write lock after the read phase completes.
-     * </p>
+     * Reads all live values associated with the supplied keys using one time snapshot. Missing and expired entries are
+     * omitted, expired entries are removed lazily, and live entries refresh their last-access time when
+     * expire-after-access is enabled. Each supplied key contributes one request to the statistics, including duplicate
+     * keys.
      *
-     * @param keys A collection of keys to retrieve.
-     * @return A map of keys to their corresponding values. Missing or expired entries are omitted.
+     * @param keys non-null collection of non-null cache keys
+     * @return map containing every requested key that had a live value; an empty map when {@code keys} is empty
+     * @throws NullPointerException when the collection or one of its keys is {@code null}
      */
     @Override
     public Map<K, V> read(Collection<K> keys) {
-        Map<K, V> subCache = new HashMap<>(keys.size());
-        List<K> expiredKeys = null;
-        readLock.lock();
-        try {
-            for (K key : keys) {
-                requestCount.incrementAndGet();
-                CacheState cacheState = map.get(key);
-                if (cacheState == null) {
-                    continue;
-                }
-                if (cacheState.isExpired(expireAfterWrite, expireAfterAccess)) {
-                    if (expiredKeys == null) {
-                        expiredKeys = new ArrayList<>();
-                    }
-                    expiredKeys.add(key);
-                } else {
-                    cacheState.updateAccessTime();
-                    hitCount.incrementAndGet();
-                    subCache.put(key, (V) cacheState.getState());
-                }
-            }
-        } finally {
-            readLock.unlock();
+        Objects.requireNonNull(keys, "keys");
+        if (keys.isEmpty()) {
+            return Collections.emptyMap();
         }
-        // Lazily evict expired keys collected during the read pass.
-        if (expiredKeys != null) {
-            writeLock.lock();
-            try {
-                int removedCount = 0;
-                for (K key : expiredKeys) {
-                    CacheState recheck = map.get(key);
-                    if (recheck != null && recheck.isExpired(expireAfterWrite, expireAfterAccess)) {
-                        map.remove(key);
-                        removedCount++;
-                    }
-                }
-                Logger.debug(
-                        false,
-                        "Cache",
-                        "Memory cache expired entries evicted: mode=batch, expiredCount={}, removedCount={}, cacheSize={}",
-                        expiredKeys.size(),
-                        removedCount,
-                        map.size());
-            } finally {
-                writeLock.unlock();
+        long now = clock.getAsLong();
+        long hits = 0L;
+        Map<K, V> result = new HashMap<>(keys.size());
+        for (K key : keys) {
+            Entry<V> entry = liveEntry(Objects.requireNonNull(key, "key"), now, true, false);
+            if (entry != null) {
+                result.put(key, entry.value);
+                hits++;
             }
         }
-        return subCache;
+        requestCount.add(keys.size());
+        hitCount.add(hits);
+        return result;
     }
 
     /**
-     * Writes multiple key-value pairs to the cache.
+     * Writes all entries with the same per-entry lifetime. The batch is serialized with other ordinary writes, uses one
+     * write timestamp, and restores the configured capacity after all entries have been installed. When {@code expire}
+     * is {@link CacheExpire#NO}, existing values and numeric counters for the supplied keys are removed instead. A
+     * {@code null} or empty map is ignored.
      *
-     * @param keyValueMap A map of key-value pairs to store.
-     * @param expire      The expiration time in milliseconds. This is ignored by this implementation, as expiration is
-     *                    set globally.
+     * @param keyValueMap key-value pairs to write; keys and values must not be {@code null}
+     * @param expire      per-entry lifetime in milliseconds; {@link CacheExpire#NO} removes the keys and
+     *                    {@link CacheExpire#FOREVER} creates entries exempt from expiration
+     * @throws NullPointerException     when a supplied key or value is {@code null}
+     * @throws IllegalArgumentException when {@code expire} is less than {@link CacheExpire#NO}
      */
     @Override
     public void write(Map<K, V> keyValueMap, long expire) {
-        if (MapKit.isNotEmpty(keyValueMap)) {
-            keyValueMap.forEach((key, value) -> write(key, value, expire));
+        if (keyValueMap == null || keyValueMap.isEmpty()) {
+            return;
+        }
+        validateEntryExpire(expire);
+        keyValueMap.forEach((key, value) -> {
+            Objects.requireNonNull(key, "key");
+            Objects.requireNonNull(value, "value");
+        });
+        if (expire == CacheExpire.NO) {
+            keyValueMap.keySet().forEach(key -> {
+                cache.remove(key);
+                counters.remove(key);
+            });
+            return;
+        }
+        long now = clock.getAsLong();
+        mutationLock.lock();
+        try {
+            keyValueMap.forEach((key, value) -> writeLocked(key, value, expire, now));
+            evictOverflow();
+            compactWriteOrderIfNeeded();
+        } finally {
+            mutationLock.unlock();
         }
     }
 
     /**
-     * Writes a single key-value pair to the cache.
-     * <p>
-     * If the cache is full (i.e., at `maximumSize`), the oldest entry is evicted to make space.
-     * </p>
+     * Writes or replaces one value and records the write as the newest capacity-eviction candidate. When the insertion
+     * exceeds {@code maximumSize}, the oldest current write is evicted. When {@code expire} is {@link CacheExpire#NO},
+     * the cached value and independent numeric counter are removed instead.
      *
-     * @param key    The key to write.
-     * @param value  The value to associate with the key.
-     * @param expire The expiration time in milliseconds. This is used to calculate the entry's expiry.
+     * @param key    non-null cache key
+     * @param value  non-null value to cache
+     * @param expire per-entry lifetime in milliseconds; {@link CacheExpire#NO} removes the key and
+     *               {@link CacheExpire#FOREVER} creates an entry exempt from expiration
+     * @throws NullPointerException     when {@code key} or {@code value} is {@code null}
+     * @throws IllegalArgumentException when {@code expire} is less than {@link CacheExpire#NO}
      */
     @Override
     public void write(K key, V value, long expire) {
-        writeLock.lock();
+        K checkedKey = Objects.requireNonNull(key, "key");
+        V checkedValue = Objects.requireNonNull(value, "value");
+        validateEntryExpire(expire);
+        if (expire == CacheExpire.NO) {
+            cache.remove(checkedKey);
+            counters.remove(checkedKey);
+            return;
+        }
+        mutationLock.lock();
         try {
-            if (map.size() >= maximumSize && !map.containsKey(key)) {
-                evictOldest();
-            }
-            map.put(key, new CacheState(value, expire));
+            writeLocked(checkedKey, checkedValue, expire, clock.getAsLong());
+            evictOverflow();
+            compactWriteOrderIfNeeded();
         } finally {
-            writeLock.unlock();
+            mutationLock.unlock();
         }
     }
 
     /**
-     * Checks if a key exists in the cache and has not expired.
+     * Tests whether a key currently has a live entry without refreshing its last-access time. An expired entry is
+     * removed lazily.
      *
-     * @param key The key to check.
-     * @return {@code true} if the key exists and is not expired, otherwise {@code false}.
+     * @param key non-null cache key
+     * @return {@code true} when the key maps to a live entry; otherwise {@code false}
+     * @throws NullPointerException when {@code key} is {@code null}
      */
     @Override
     public boolean containsKey(K key) {
-        readLock.lock();
-        try {
-            CacheState cacheState = map.get(key);
-            return cacheState != null && !cacheState.isExpired(expireAfterWrite, expireAfterAccess);
-        } finally {
-            readLock.unlock();
-        }
+        return liveEntry(Objects.requireNonNull(key, "key"), clock.getAsLong(), false, false) != null;
     }
 
     /**
-     * Removes all expired entries from the cache.
-     * <p>
-     * <strong>Note:</strong> This method does not clear all entries. It only prunes entries that have expired based on
-     * the `expireAfterWrite` or `expireAfterAccess` policies.
-     * </p>
+     * Scans the cache once and removes entries that are expired at the scan's time snapshot. Unlike the conventional
+     * meaning of {@code clear}, this compatibility method preserves all live entries and does not remove numeric
+     * counters. The scan does not refresh expire-after-access timestamps.
      */
     @Override
     public void clear() {
-        writeLock.lock();
-        try {
-            int before = map.size();
-            map.entrySet().removeIf(entry -> entry.getValue().isExpired(expireAfterWrite, expireAfterAccess));
-            Logger.info(
-                    false,
-                    "Cache",
-                    "Memory cache prune completed: beforeSize={}, afterSize={}, removedCount={}",
-                    before,
-                    map.size(),
-                    before - map.size());
-        } finally {
-            writeLock.unlock();
-        }
+        long now = clock.getAsLong();
+        int before = cache.size();
+        cache.forEach((key, ignored) -> liveEntry(key, now, false, false));
+        Logger.debug(
+                false,
+                "Cache",
+                "Memory cache prune completed: beforeSize={}, afterSize={}, removedCount={}",
+                before,
+                cache.size(),
+                before - cache.size());
     }
 
     /**
-     * Removes one or more entries from the cache.
+     * Removes the cached value and independent numeric counter for every supplied key. Missing keys are ignored. Stale
+     * write-order tokens are retained temporarily and skipped or compacted by later writes.
      *
-     * @param keys The keys of the entries to remove.
+     * @param keys non-null array of non-null keys to remove
+     * @throws NullPointerException when the array or one of its keys is {@code null}
      */
     @Override
     public void remove(K... keys) {
-        writeLock.lock();
-        try {
-            int removedCount = 0;
-            for (K key : keys) {
-                if (map.remove(key) != null) {
-                    removedCount++;
-                }
-                counters.remove(key);
-            }
-            Logger.debug(
-                    false,
-                    "Cache",
-                    "Memory cache remove completed: keyCount={}, removedCount={}, cacheSize={}, counterSize={}",
-                    keys.length,
-                    removedCount,
-                    map.size(),
-                    counters.size());
-        } finally {
-            writeLock.unlock();
+        Objects.requireNonNull(keys, "keys");
+        for (K key : keys) {
+            K checkedKey = Objects.requireNonNull(key, "key");
+            cache.remove(checkedKey);
+            counters.remove(checkedKey);
         }
     }
 
     /**
-     * Scans and returns all non-expired entries whose keys start with the given prefix.
+     * Returns live entries whose key string begins with the supplied prefix string. This operation uses one time
+     * snapshot, lazily removes matching expired entries, and does not refresh last-access timestamps. Expired entries
+     * outside the requested prefix are not inspected.
      *
-     * @param prefix the key prefix to match
-     * @return a map of matching key-value pairs
+     * @param prefix non-null key-like prefix; matching uses {@link Object#toString()}
+     * @return mutable map containing the matching live entries
+     * @throws NullPointerException when {@code prefix} is {@code null}
      */
     @Override
     public Map<K, V> scan(K prefix) {
-        readLock.lock();
-        try {
-            Logger.debug(
-                    true,
-                    "Cache",
-                    "Memory cache scan started: prefixPresent={}, cacheSize={}",
-                    prefix != null,
-                    map.size());
-            Map<K, V> result = new HashMap<>();
-            map.forEach((k, state) -> {
-                if (k.toString().startsWith(prefix.toString())
-                        && !state.isExpired(expireAfterWrite, expireAfterAccess)) {
-                    result.put(k, (V) state.getState());
+        String prefixText = Objects.requireNonNull(prefix, "prefix").toString();
+        long now = clock.getAsLong();
+        Map<K, V> result = new HashMap<>();
+        cache.forEach((key, ignored) -> {
+            if (key.toString().startsWith(prefixText)) {
+                Entry<V> entry = liveEntry(key, now, false, false);
+                if (entry != null) {
+                    result.put(key, entry.value);
                 }
+            }
+        });
+        return result;
+    }
+
+    /**
+     * Atomically increments the independent numeric counter associated with a key. A missing counter starts at zero, so
+     * its first increment returns one. Counters are separate from cached values and do not expire automatically.
+     *
+     * @param key non-null counter key
+     * @return counter value after the increment
+     * @throws NullPointerException when {@code key} is {@code null}
+     */
+    @Override
+    public long increment(K key) {
+        return counters.computeIfAbsent(Objects.requireNonNull(key, "key"), ignored -> new AtomicLong())
+                .incrementAndGet();
+    }
+
+    /**
+     * Atomically creates an entry when the key has no entry or its current entry has reached its deadline. This
+     * operation is available only to instances created with the {@link #MemoryCache(LongSupplier)} constructor. Mutable
+     * byte-array values are copied before storage.
+     *
+     * @param key       non-null cache key
+     * @param value     non-null value to create
+     * @param ttlMillis positive per-entry lifetime in milliseconds
+     * @return completed stage containing {@code true} when the value was created; a failed unsupported-operation stage
+     *         for ordinary cache instances; or a failed stage after an atomic cache is closed
+     * @throws NullPointerException     when {@code key} or {@code value} is {@code null}
+     * @throws IllegalArgumentException when {@code ttlMillis} is not positive
+     */
+    @Override
+    public CompletionStage<Boolean> create(K key, V value, long ttlMillis) {
+        if (!atomicMode) {
+            return CacheX.super.create(key, value, ttlMillis);
+        }
+        requirePositiveTtl(ttlMillis);
+        K checkedKey = Objects.requireNonNull(key, "key");
+        V checkedValue = Objects.requireNonNull(value, "value");
+        return atomicOperation(() -> {
+            long now = clock.getAsLong();
+            Entry<V> replacement = newEntry(copyValue(checkedValue), ttlMillis, now);
+            Entry<V> result = cache.compute(
+                    checkedKey,
+                    (ignored, current) -> current == null || current.isAtomicExpired(now) ? replacement : current);
+            return result == replacement;
+        });
+    }
+
+    /**
+     * Reports whether this instance was constructed in atomic mode.
+     *
+     * @return {@code true} only for the explicit clock-based atomic configuration
+     */
+    @Override
+    public boolean supports() {
+        return atomicMode;
+    }
+
+    /**
+     * Reads one entry at the atomic cache's deadline boundary and lazily removes it when expired. Mutable byte-array
+     * values are copied before being returned. This operation is available only to instances created with the
+     * {@link #MemoryCache(LongSupplier)} constructor.
+     *
+     * @param key non-null cache key
+     * @return completed stage containing a defensive value copy or {@code null}; a failed unsupported-operation stage
+     *         for ordinary cache instances; or a failed stage after an atomic cache is closed
+     * @throws NullPointerException when {@code key} is {@code null}
+     */
+    @Override
+    public CompletionStage<V> get(K key) {
+        if (!atomicMode) {
+            return CacheX.super.get(key);
+        }
+        K checkedKey = Objects.requireNonNull(key, "key");
+        return atomicOperation(() -> {
+            Entry<V> entry = liveEntry(checkedKey, clock.getAsLong(), false, true);
+            return entry == null ? null : copyValue(entry.value);
+        });
+    }
+
+    /**
+     * Atomically removes and returns one entry when it is still live at the atomic deadline boundary. An expired entry
+     * is removed but produces {@code null}. Mutable byte-array values are copied before being returned. This operation
+     * is available only to instances created with the {@link #MemoryCache(LongSupplier)} constructor.
+     *
+     * @param key non-null cache key
+     * @return completed stage containing the removed value or {@code null}; a failed unsupported-operation stage for
+     *         ordinary cache instances; or a failed stage after an atomic cache is closed
+     * @throws NullPointerException when {@code key} is {@code null}
+     */
+    @Override
+    public CompletionStage<V> take(K key) {
+        if (!atomicMode) {
+            return CacheX.super.take(key);
+        }
+        K checkedKey = Objects.requireNonNull(key, "key");
+        return atomicOperation(() -> {
+            long now = clock.getAsLong();
+            Entry<V> entry = cache.remove(checkedKey);
+            return entry == null || entry.isAtomicExpired(now) ? null : copyValue(entry.value);
+        });
+    }
+
+    /**
+     * Atomically replaces a live entry when its value equals the expected value. Byte arrays are compared by content,
+     * and the replacement byte array is copied before storage. An expired current entry is removed. This operation is
+     * available only to instances created with the {@link #MemoryCache(LongSupplier)} constructor.
+     *
+     * @param key       non-null cache key
+     * @param expected  non-null expected current value
+     * @param update    non-null replacement value
+     * @param ttlMillis positive replacement lifetime in milliseconds
+     * @return completed stage containing {@code true} when replacement occurred; a failed unsupported-operation stage
+     *         for ordinary cache instances; or a failed stage after an atomic cache is closed
+     * @throws NullPointerException     when {@code key}, {@code expected}, or {@code update} is {@code null}
+     * @throws IllegalArgumentException when {@code ttlMillis} is not positive
+     */
+    @Override
+    public CompletionStage<Boolean> replace(K key, V expected, V update, long ttlMillis) {
+        if (!atomicMode) {
+            return CacheX.super.replace(key, expected, update, ttlMillis);
+        }
+        requirePositiveTtl(ttlMillis);
+        K checkedKey = Objects.requireNonNull(key, "key");
+        V checkedExpected = Objects.requireNonNull(expected, "expected");
+        V checkedUpdate = Objects.requireNonNull(update, "update");
+        return atomicOperation(() -> {
+            long now = clock.getAsLong();
+            Entry<V> replacement = newEntry(copyValue(checkedUpdate), ttlMillis, now);
+            Entry<V> result = cache.compute(checkedKey, (ignored, current) -> {
+                if (current == null || current.isAtomicExpired(now)) {
+                    return null;
+                }
+                return valuesEqual(current.value, checkedExpected) ? replacement : current;
             });
-            Logger.debug(
-                    false,
-                    "Cache",
-                    "Memory cache scan completed: prefixPresent={}, resultCount={}, cacheSize={}",
-                    prefix != null,
-                    result.size(),
-                    map.size());
-            return result;
-        } finally {
-            readLock.unlock();
+            return result == replacement;
+        });
+    }
+
+    /**
+     * Atomically removes one entry and reports whether it was live at the atomic deadline boundary. An expired entry is
+     * still removed but produces {@code false}. This operation is available only to instances created with the
+     * {@link #MemoryCache(LongSupplier)} constructor.
+     *
+     * @param key non-null cache key
+     * @return completed stage containing {@code true} when a live entry was deleted; a failed unsupported-operation
+     *         stage for ordinary cache instances; or a failed stage after an atomic cache is closed
+     * @throws NullPointerException when {@code key} is {@code null}
+     */
+    @Override
+    public CompletionStage<Boolean> delete(K key) {
+        if (!atomicMode) {
+            return CacheX.super.delete(key);
+        }
+        K checkedKey = Objects.requireNonNull(key, "key");
+        return atomicOperation(() -> {
+            long now = clock.getAsLong();
+            Entry<V> entry = cache.remove(checkedKey);
+            return entry != null && !entry.isAtomicExpired(now);
+        });
+    }
+
+    /**
+     * Replaces this instance's periodic expiry-pruning schedule. A positive delay schedules fixed-delay executions;
+     * zero or a negative value only cancels the existing task. Scheduled pruning invokes {@link #clear()} and therefore
+     * preserves live entries and numeric counters.
+     *
+     * @param delay delay between prune runs in milliseconds; non-positive values disable periodic pruning
+     */
+    public void schedulePrune(long delay) {
+        synchronized (pruneMonitor) {
+            cancelPruneLocked();
+            if (delay > 0L) {
+                pruneFuture = CacheScheduler.INSTANCE.schedule(this::clear, delay);
+            }
         }
     }
 
     /**
-     * Atomically increments the counter stored at the given key and returns the new value.
-     * <p>
-     * The counter is maintained in a separate {@link ConcurrentHashMap} of {@link AtomicLong} values and is not subject
-     * to TTL expiry. If the key does not exist the counter is initialised to {@code 0} and then incremented, returning
-     * {@code 1}.
-     * </p>
+     * Returns a high-concurrency statistics snapshot. The request and hit values come from independent
+     * {@link LongAdder} snapshots and may be momentarily inconsistent with each other while operations are concurrent.
+     * Only {@link #read(Object)} and {@link #read(Collection)} contribute to these statistics.
      *
-     * @param key the counter key
-     * @return the new counter value after increment
-     */
-    @Override
-    public long increment(K key) {
-        return counters.computeIfAbsent(key, k -> new AtomicLong(0)).incrementAndGet();
-    }
-
-    /**
-     * Schedules a periodic task to prune expired entries from the cache.
-     *
-     * @param delay delay in milliseconds before the prune task runs
-     */
-    public void schedulePrune(long delay) {
-        Logger.info(false, "Cache", "Memory cache prune scheduled: delayMs={}", delay);
-        CacheScheduler.INSTANCE.schedule(this::clear, delay);
-    }
-
-    /**
-     * Gets a string representation of the current cache statistics.
-     *
-     * @return A string containing statistics like request count, hit count, hit rate, and current size.
+     * @return formatted cache statistics
      */
     public String getStats() {
-        long requests = requestCount.get();
-        long hits = hitCount.get();
-        double hitRate = requests == 0 ? 0.0 : (double) hits / requests;
+        long requests = requestCount.sum();
+        long hits = hitCount.sum();
+        double hitRate = requests == 0L ? 0.0 : (double) hits / requests;
         return String.format(
                 "MemoryCacheStats[requests=%d, hits=%d, hitRate=%.2f%%, size=%d]",
                 requests,
                 hits,
                 hitRate * 100,
-                map.size());
+                cache.size());
     }
 
     /**
-     * Returns the approximate number of entries in this cache.
+     * Returns the approximate number of physically stored entries. The count can include expired entries that have not
+     * yet been pruned and can change concurrently while this method executes.
      *
-     * @return The number of entries.
+     * @return approximate entry count
      */
     public long estimatedSize() {
-        return map.size();
+        return cache.mappingCount();
     }
 
     /**
-     * Returns the underlying {@link Map} instance used by the cache.
+     * Returns an immutable snapshot containing only entries that are live at one time snapshot. Building the snapshot
+     * lazily removes expired entries, does not refresh TTI access times, and does not expose internal entry or eviction
+     * metadata. Subsequent cache changes are not reflected in the returned map.
      *
-     * @return The native cache map.
+     * @return live value snapshot
      */
-    public Map<K, CacheState> getNativeCache() {
-        return map;
+    public Map<K, V> getNativeCache() {
+        long now = clock.getAsLong();
+        Map<K, V> snapshot = new HashMap<>();
+        cache.forEach((key, ignored) -> {
+            Entry<V> entry = liveEntry(key, now, false, atomicMode);
+            if (entry != null) {
+                snapshot.put(key, entry.value);
+            }
+        });
+        return Collections.unmodifiableMap(snapshot);
     }
 
     /**
-     * Evicts the oldest entry from the cache, determined by its write time.
-     * <p>
-     * Must be called while the caller already holds {@link #writeLock}.
-     * </p>
+     * Cancels this instance's periodic maintenance task. For an ordinary cache, existing values remain available and
+     * later reads and writes are still permitted. For an atomic cache, this method additionally waits for admitted
+     * atomic operations, marks the instance terminally closed, clears entries and counters, and causes later atomic
+     * operations to return failed stages. Repeated calls are safe.
      */
-    private void evictOldest() {
-        map.entrySet().stream().min(Comparator.comparingLong(entry -> entry.getValue().getWriteTime()))
-                .ifPresent(oldest -> {
-                    map.remove(oldest.getKey());
-                    Logger.debug(
-                            false,
-                            "Cache",
-                            "Memory cache capacity eviction completed: maximumSize={}, cacheSize={}",
-                            maximumSize,
-                            map.size());
-                });
+    @Override
+    public void close() {
+        cancelPrune();
+        if (!atomicMode) {
+            return;
+        }
+        lifecycleLock.writeLock().lock();
+        try {
+            if (!closed) {
+                closed = true;
+                mutationLock.lock();
+                try {
+                    cache.clear();
+                    counters.clear();
+                    writeOrder.clear();
+                    writeTokenCount = 0L;
+                } finally {
+                    mutationLock.unlock();
+                }
+            }
+        } finally {
+            lifecycleLock.writeLock().unlock();
+        }
     }
 
     /**
-     * A singleton scheduler for handling periodic cache maintenance tasks.
+     * Resolves one live entry and performs lazy expiration. Standard TTI checks use
+     * {@link ConcurrentHashMap#computeIfPresent(Object, java.util.function.BiFunction)} so expiration and an optional
+     * access-time refresh are atomic for the key. Other paths use identity-based conditional removal to avoid deleting
+     * a replacement installed concurrently.
      *
-     * @author Kimi Liu
+     * @param key            non-null cache key
+     * @param now            current time in milliseconds
+     * @param touch          whether a live standard entry refreshes its last-access time
+     * @param atomicBoundary whether expiration uses the inclusive atomic deadline instead of standard TTL and TTI
+     * @return current live entry, or {@code null} when absent or expired
+     */
+    private Entry<V> liveEntry(K key, long now, boolean touch, boolean atomicBoundary) {
+        if (expireAfterAccess > 0L && !atomicBoundary) {
+            return cache.computeIfPresent(key, (ignored, current) -> {
+                if (current.isStandardExpired(now, expireAfterWrite, expireAfterAccess)) {
+                    return null;
+                }
+                if (touch) {
+                    current.lastAccessTime = now;
+                }
+                return current;
+            });
+        }
+        Entry<V> entry = cache.get(key);
+        if (entry == null) {
+            return null;
+        }
+        boolean expired = atomicBoundary ? entry.isAtomicExpired(now)
+                : entry.isStandardExpired(now, expireAfterWrite, expireAfterAccess);
+        if (expired) {
+            cache.remove(key, entry);
+            return null;
+        }
+        if (touch) {
+            entry.lastAccessTime = now;
+        }
+        return entry;
+    }
+
+    /**
+     * Installs one entry and appends its exact version to the write-order queue. The caller must hold
+     * {@link #mutationLock}; this method does not enforce the capacity limit itself.
+     *
+     * @param key    non-null cache key
+     * @param value  non-null cache value
+     * @param expire validated per-entry lifetime in milliseconds
+     * @param now    write time in milliseconds
+     */
+    private void writeLocked(K key, V value, long expire, long now) {
+        Entry<V> entry = newEntry(value, expire, now);
+        cache.put(key, entry);
+        writeOrder.offer(new WriteToken<>(key, entry));
+        writeTokenCount++;
+    }
+
+    /**
+     * Creates an entry with a globally monotonic write sequence used to reconstruct FIFO eviction order.
+     *
+     * @param value  non-null cache value
+     * @param expire per-entry lifetime in milliseconds
+     * @param now    write time in milliseconds
+     * @return newly allocated entry
+     */
+    private Entry<V> newEntry(V value, long expire, long now) {
+        return new Entry<>(value, expire, now, writeSequence.getAndIncrement());
+    }
+
+    /**
+     * Repeatedly evicts the oldest current writes until the physical entry count is at most {@link #maximumSize}. The
+     * caller must hold {@link #mutationLock}. Batch writes can require several iterations; stale tokens do not count as
+     * successful evictions.
+     */
+    private void evictOverflow() {
+        while (cache.mappingCount() > maximumSize && evictOldest()) {
+            // Continue until the configured capacity is restored.
+        }
+    }
+
+    /**
+     * Polls FIFO write tokens until one still identifies the current entry for its key, then removes that entry using
+     * identity-based conditional removal. Tokens for overwritten or explicitly removed entries are discarded without
+     * affecting their newer replacements. The caller must hold {@link #mutationLock}.
+     *
+     * @return {@code true} when one current entry was removed; {@code false} when no token remains
+     */
+    private boolean evictOldest() {
+        WriteToken<K, V> token;
+        while ((token = writeOrder.poll()) != null) {
+            writeTokenCount--;
+            if (cache.remove(token.key, token.entry)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Rebuilds FIFO write-order metadata when queued token count exceeds four times the physical entry count, with a
+     * minimum threshold of 64. Current entries are sorted by their monotonic write sequence, so compaction preserves
+     * eviction order. The caller must hold {@link #mutationLock}.
+     */
+    private void compactWriteOrderIfNeeded() {
+        long threshold = Math.max(64L, cache.mappingCount() * 4L);
+        if (writeTokenCount <= threshold) {
+            return;
+        }
+        List<Map.Entry<K, Entry<V>>> entries = new ArrayList<>(cache.entrySet());
+        entries.sort(Comparator.comparingLong(entry -> entry.getValue().sequence));
+        writeOrder.clear();
+        for (Map.Entry<K, Entry<V>> entry : entries) {
+            writeOrder.offer(new WriteToken<>(entry.getKey(), entry.getValue()));
+        }
+        writeTokenCount = entries.size();
+    }
+
+    /**
+     * Executes one atomic operation synchronously while holding the lifecycle read lock. The returned stage is already
+     * completed when this method returns; thrown failures and closed-state rejection are converted to failed stages.
+     * Holding the read lock prevents atomic-mode {@link #close()} from clearing state during an admitted operation.
+     *
+     * @param command non-null atomic cache command
+     * @param <T>     result type
+     * @return already completed or exceptionally completed operation stage
+     */
+    private <T> CompletionStage<T> atomicOperation(SupplierX<T> command) {
+        lifecycleLock.readLock().lock();
+        try {
+            if (closed) {
+                return CompletableFuture.failedFuture(new IllegalStateException("Atomic cache is closed"));
+            }
+            return CompletableFuture.completedFuture(command.get());
+        } catch (Throwable failure) {
+            return CompletableFuture.failedFuture(failure);
+        } finally {
+            lifecycleLock.readLock().unlock();
+        }
+    }
+
+    /**
+     * Cancels this instance's prune task while acquiring {@link #pruneMonitor}. An executing prune is allowed to
+     * finish.
+     */
+    private void cancelPrune() {
+        synchronized (pruneMonitor) {
+            cancelPruneLocked();
+        }
+    }
+
+    /**
+     * Cancels and clears this instance's scheduled prune future. The caller must hold {@link #pruneMonitor}; an
+     * executing prune is not interrupted.
+     */
+    private void cancelPruneLocked() {
+        if (pruneFuture != null) {
+            pruneFuture.cancel(false);
+            pruneFuture = null;
+        }
+    }
+
+    /**
+     * Parses prefixed cache properties without mutating the supplied object.
+     *
+     * @param properties non-null cache properties
+     * @return parsed configuration; numeric range validation occurs in the full constructor
+     * @throws NullPointerException  when {@code properties} is {@code null}
+     * @throws NumberFormatException when a numeric property is malformed
+     */
+    private static Configuration configuration(Properties properties) {
+        Objects.requireNonNull(properties, "properties");
+        String prefix = properties.getProperty("prefix", Normal.EMPTY);
+        long maximumSize = longProperty(properties, prefix + "maximumSize", 1000L);
+        long expireAfterWrite = longProperty(properties, prefix + "expireAfterWrite", 180_000L);
+        long expireAfterAccess = longProperty(properties, prefix + "expireAfterAccess", 0L);
+        int initialCapacity = intProperty(properties, prefix + "initialCapacity", 16);
+        String prune = properties.getProperty(prefix + "schedulePrune");
+        boolean pruneEnabled = StringKit.isEmpty(prune) || Boolean.parseBoolean(prune);
+        return new Configuration(maximumSize, expireAfterWrite, expireAfterAccess, initialCapacity, pruneEnabled);
+    }
+
+    /**
+     * Reads one long property, returning its default when absent or empty.
+     *
+     * @param properties   cache properties
+     * @param key          property key
+     * @param defaultValue default value
+     * @return parsed property value or {@code defaultValue}
+     * @throws NumberFormatException when a non-empty value is not a valid {@code long}
+     */
+    private static long longProperty(Properties properties, String key, long defaultValue) {
+        String value = properties.getProperty(key);
+        return StringKit.isEmpty(value) ? defaultValue : Long.parseLong(value);
+    }
+
+    /**
+     * Reads one integer property, returning its default when absent or empty.
+     *
+     * @param properties   cache properties
+     * @param key          property key
+     * @param defaultValue default value
+     * @return parsed property value or {@code defaultValue}
+     * @throws NumberFormatException when a non-empty value is not a valid {@code int}
+     */
+    private static int intProperty(Properties properties, String key, int defaultValue) {
+        String value = properties.getProperty(key);
+        return StringKit.isEmpty(value) ? defaultValue : Integer.parseInt(value);
+    }
+
+    /**
+     * Chooses the shortest positive global expiration as the prune delay.
+     *
+     * @param writeExpire  non-negative write expiration in milliseconds
+     * @param accessExpire non-negative access expiration in milliseconds
+     * @return shortest positive expiration, or zero when both policies are disabled
+     */
+    private static long pruneDelay(long writeExpire, long accessExpire) {
+        if (writeExpire <= 0L) {
+            return accessExpire;
+        }
+        if (accessExpire <= 0L) {
+            return writeExpire;
+        }
+        return Math.min(writeExpire, accessExpire);
+    }
+
+    /**
+     * Validates a per-entry expiration value accepted by ordinary writes.
+     *
+     * @param expire lifetime in milliseconds, {@link CacheExpire#NO}, or {@link CacheExpire#FOREVER}
+     * @throws IllegalArgumentException when the value is below the no-cache sentinel
+     */
+    private static void validateEntryExpire(long expire) {
+        if (expire < CacheExpire.NO) {
+            throw new IllegalArgumentException("expire must be -1, 0, or greater than zero");
+        }
+    }
+
+    /**
+     * Validates the positive TTL required by atomic create and replace operations.
+     *
+     * @param ttlMillis time to live in milliseconds
+     * @throws IllegalArgumentException when {@code ttlMillis} is not positive
+     */
+    private static void requirePositiveTtl(long ttlMillis) {
+        if (ttlMillis <= 0L) {
+            throw new IllegalArgumentException("ttlMillis must be greater than zero");
+        }
+    }
+
+    /**
+     * Requires one positive numeric value.
+     *
+     * @param value value
+     * @param name  value name
+     * @throws IllegalArgumentException when the value is not positive
+     */
+    private static void requirePositive(long value, String name) {
+        if (value <= 0L) {
+            throw new IllegalArgumentException(name + " must be greater than zero");
+        }
+    }
+
+    /**
+     * Requires one non-negative numeric value.
+     *
+     * @param value value
+     * @param name  value name
+     * @throws IllegalArgumentException when the value is negative
+     */
+    private static void requireNonNegative(long value, String name) {
+        if (value < 0L) {
+            throw new IllegalArgumentException(name + " must not be negative");
+        }
+    }
+
+    /**
+     * Adds a positive duration to a time value and saturates at {@link Long#MAX_VALUE} instead of overflowing.
+     *
+     * @param value     base time in milliseconds
+     * @param increment non-negative duration in milliseconds
+     * @return mathematical sum or {@link Long#MAX_VALUE} when the sum would overflow
+     */
+    private static long safeAdd(long value, long increment) {
+        return increment > 0L && value > Long.MAX_VALUE - increment ? Long.MAX_VALUE : value + increment;
+    }
+
+    /**
+     * Defensively copies mutable byte-array values and preserves all other value references.
+     *
+     * @param value source value
+     * @param <T>   value type
+     * @return copied byte array or the original non-array value
+     */
+    private static <T> T copyValue(T value) {
+        if (value instanceof byte[] bytes) {
+            return (T) Arrays.copyOf(bytes, bytes.length);
+        }
+        return value;
+    }
+
+    /**
+     * Compares byte arrays by content and all other values through {@link Objects#equals(Object, Object)}.
+     *
+     * @param current  current value
+     * @param expected expected value
+     * @return equality result
+     */
+    private static boolean valuesEqual(Object current, Object expected) {
+        if (current instanceof byte[] currentBytes && expected instanceof byte[] expectedBytes) {
+            return Arrays.equals(currentBytes, expectedBytes);
+        }
+        return Objects.equals(current, expected);
+    }
+
+    /**
+     * Immutable property-derived configuration passed to the validating full constructor.
+     */
+    private static final class Configuration {
+
+        /**
+         * Maximum entry count.
+         */
+        private final long maximumSize;
+        /**
+         * Global write expiration.
+         */
+        private final long expireAfterWrite;
+        /**
+         * Global access expiration.
+         */
+        private final long expireAfterAccess;
+        /**
+         * Initial map capacity.
+         */
+        private final int initialCapacity;
+        /**
+         * Periodic prune flag.
+         */
+        private final boolean pruneEnabled;
+
+        /**
+         * Creates one property-derived configuration value.
+         *
+         * @param maximumSize       maximum entry count
+         * @param expireAfterWrite  write expiration in milliseconds
+         * @param expireAfterAccess access expiration in milliseconds
+         * @param initialCapacity   initial backing-map capacity
+         * @param pruneEnabled      periodic prune flag
+         */
+        private Configuration(long maximumSize, long expireAfterWrite, long expireAfterAccess, int initialCapacity,
+                boolean pruneEnabled) {
+            this.maximumSize = maximumSize;
+            this.expireAfterWrite = expireAfterWrite;
+            this.expireAfterAccess = expireAfterAccess;
+            this.initialCapacity = initialCapacity;
+            this.pruneEnabled = pruneEnabled;
+        }
+
+    }
+
+    /**
+     * Cache entry whose value, write metadata, and deadline are immutable while its TTI access timestamp is volatile.
+     *
+     * @param <V> value type
+     */
+    private static final class Entry<V> implements Serializable {
+
+        /**
+         * Serialization identifier.
+         */
+        private static final long serialVersionUID = 2801356892053L;
+        /**
+         * Stored value.
+         */
+        private final V value;
+        /**
+         * Entry creation time.
+         */
+        private final long writeTime;
+        /**
+         * Per-entry atomic deadline.
+         */
+        private final long deadline;
+        /**
+         * Forever-entry flag.
+         */
+        private final boolean forever;
+        /**
+         * Write ordering sequence.
+         */
+        private final long sequence;
+        /**
+         * Most recent standard-cache access time.
+         */
+        private volatile long lastAccessTime;
+
+        /**
+         * Creates one cache entry and computes its saturated absolute per-entry deadline. A {@link CacheExpire#FOREVER}
+         * entry receives {@link Long#MAX_VALUE} and is exempt from all standard expiration policies.
+         *
+         * @param value    stored value
+         * @param expire   per-entry lifetime in milliseconds
+         * @param now      creation time in milliseconds
+         * @param sequence monotonic write sequence
+         */
+        private Entry(V value, long expire, long now, long sequence) {
+            this.value = value;
+            this.writeTime = now;
+            this.lastAccessTime = now;
+            this.forever = expire == CacheExpire.FOREVER;
+            this.deadline = forever ? Long.MAX_VALUE : safeAdd(now, expire);
+            this.sequence = sequence;
+        }
+
+        /**
+         * Tests per-entry TTL, global write TTL, and global access TTI using the standard cache's exclusive boundary:
+         * an entry expires only when {@code now} is greater than a deadline. Forever entries always remain live.
+         *
+         * @param now                current time in milliseconds
+         * @param globalWriteExpire  non-negative global write lifetime in milliseconds
+         * @param globalAccessExpire non-negative global access lifetime in milliseconds
+         * @return {@code true} when any enabled expiration policy has elapsed
+         */
+        private boolean isStandardExpired(long now, long globalWriteExpire, long globalAccessExpire) {
+            if (forever) {
+                return false;
+            }
+            if (now > deadline) {
+                return true;
+            }
+            if (globalWriteExpire > 0L && now > safeAdd(writeTime, globalWriteExpire)) {
+                return true;
+            }
+            return globalAccessExpire > 0L && now > safeAdd(lastAccessTime, globalAccessExpire);
+        }
+
+        /**
+         * Tests the per-entry atomic deadline using an inclusive boundary. Global standard-cache TTL and TTI policies
+         * are intentionally not applied to atomic-mode entries.
+         *
+         * @param now current time in milliseconds
+         * @return {@code true} when a non-forever entry has reached or passed its deadline
+         */
+        private boolean isAtomicExpired(long now) {
+            return !forever && now >= deadline;
+        }
+
+    }
+
+    /**
+     * Immutable association between a key and one exact entry version in FIFO write order. Identity-based removal makes
+     * a token harmless after its key is overwritten.
+     *
+     * @param <K> key type
+     * @param <V> value type
+     */
+    private static final class WriteToken<K, V> {
+
+        /**
+         * Cache key.
+         */
+        private final K key;
+        /**
+         * Exact entry written for the key.
+         */
+        private final Entry<V> entry;
+
+        /**
+         * Creates one version-specific write-order token.
+         *
+         * @param key   cache key
+         * @param entry written entry
+         */
+        private WriteToken(K key, Entry<V> entry) {
+            this.key = key;
+            this.entry = entry;
+        }
+
+    }
+
+    /**
+     * Shared bounded daemon scheduler used for periodic ordinary-cache pruning. Each cache instance owns and can cancel
+     * only its own returned {@link ScheduledFuture}.
      */
     private enum CacheScheduler {
 
         /**
-         * The singleton instance of the cache scheduler.
+         * Shared scheduler instance.
          */
         INSTANCE;
 
         /**
-         * A counter for generating unique cache task numbers.
+         * Worker name sequence.
          */
-        private final AtomicInteger cacheTaskNumber = new AtomicInteger(1);
+        private final AtomicInteger taskNumber = new AtomicInteger(1);
+        /**
+         * Bounded scheduled executor.
+         */
+        private final ScheduledThreadPoolExecutor executor;
 
         /**
-         * The scheduled executor service for running periodic tasks.
+         * Creates a one- or two-thread daemon scheduler based on available processors and configures canceled tasks for
+         * immediate queue removal.
          */
-        private ScheduledExecutorService scheduler;
-
         CacheScheduler() {
-            of();
+            int threads = Math.max(1, Math.min(2, Runtime.getRuntime().availableProcessors()));
+            this.executor = new ScheduledThreadPoolExecutor(threads, runnable -> {
+                Thread thread = new Thread(runnable, "MemoryCache-Prune-" + taskNumber.getAndIncrement());
+                thread.setDaemon(true);
+                return thread;
+            });
+            this.executor.setRemoveOnCancelPolicy(true);
+            this.executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
         }
-
-        private void of() {
-            this.shutdown();
-            this.scheduler = new ScheduledThreadPoolExecutor(1,
-                    r -> new Thread(r, String.format("Cache-Task-%s", cacheTaskNumber.getAndIncrement())));
-        }
-
-        public void shutdown() {
-            if (scheduler != null) {
-                scheduler.shutdown();
-                try {
-                    if (!scheduler.awaitTermination(2, TimeUnit.SECONDS)) {
-                        scheduler.shutdownNow();
-                    }
-                } catch (InterruptedException e) {
-                    scheduler.shutdownNow();
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-
-        public void schedule(Runnable task, long delay) {
-            this.scheduler.scheduleAtFixedRate(task, delay, delay, TimeUnit.MILLISECONDS);
-        }
-
-    }
-
-    /**
-     * An internal class to hold the cached value along with its metadata.
-     *
-     * @author Kimi Liu
-     */
-    @Getter
-    @Setter
-    private static class CacheState implements Serializable {
 
         /**
-         * The cached value.
+         * Schedules one fixed-delay prune task. Fixed delay prevents a slow full-cache scan from accumulating catch-up
+         * executions.
+         *
+         * @param task  non-null prune task
+         * @param delay positive initial and recurring delay in milliseconds
+         * @return future that controls the scheduled task
          */
-        private final Object state;
-
-        /**
-         * The timestamp when the entry was written.
-         */
-        private final long writeTime;
-
-        /**
-         * The timestamp of the last access to this entry.
-         */
-        private long lastAccessTime;
-
-        /**
-         * The absolute expiration timestamp. Set to {@link Long#MAX_VALUE} for FOREVER entries.
-         */
-        private final long expireAfterWrite;
-
-        /**
-         * True when the entry was written with {@code expire == CacheExpire.FOREVER} and must never be evicted.
-         */
-        private final boolean forever;
-
-        CacheState(Object state, long expire) {
-            this.state = state;
-            this.writeTime = System.currentTimeMillis();
-            this.lastAccessTime = this.writeTime;
-            this.forever = (expire == CacheExpire.FOREVER);
-            this.expireAfterWrite = forever ? Long.MAX_VALUE : this.writeTime + expire;
-        }
-
-        void updateAccessTime() {
-            this.lastAccessTime = System.currentTimeMillis();
-        }
-
-        boolean isExpired(long globalExpireAfterWrite, long globalExpireAfterAccess) {
-            if (this.forever) {
-                return false;
-            }
-            long currentTime = System.currentTimeMillis();
-            if (currentTime > this.expireAfterWrite) {
-                return true;
-            }
-            if (globalExpireAfterWrite > 0 && currentTime > this.writeTime + globalExpireAfterWrite) {
-                return true;
-            }
-            return globalExpireAfterAccess > 0 && currentTime > this.lastAccessTime + globalExpireAfterAccess;
+        private ScheduledFuture<?> schedule(Runnable task, long delay) {
+            return executor.scheduleWithFixedDelay(task, delay, delay, TimeUnit.MILLISECONDS);
         }
 
     }

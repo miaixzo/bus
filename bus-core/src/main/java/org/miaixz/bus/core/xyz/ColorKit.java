@@ -42,7 +42,7 @@ public class ColorKit {
     /**
      * Keeps color parsing and conversion on the static API.
      */
-    private ColorKit() {
+    public ColorKit() {
         // No initialization required.
     }
 

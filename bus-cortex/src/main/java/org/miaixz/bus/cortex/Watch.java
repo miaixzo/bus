@@ -44,9 +44,9 @@ public class Watch<T> implements Change<T> {
     }
 
     /**
-     * Namespace of the subscription that produced this event.
+     * Space of the subscription that produced this event.
      */
-    private String namespace_id;
+    private String space_id;
 
     /**
      * Asset type scope of the subscription that produced this event, when restricted to one type.

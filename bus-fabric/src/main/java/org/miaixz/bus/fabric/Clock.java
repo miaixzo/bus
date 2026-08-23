@@ -77,12 +77,12 @@ public interface Clock {
     /**
      * System clock implementation.
      */
-    final class SystemClock implements Clock {
+    class SystemClock implements Clock {
 
         /**
          * Creates a system clock.
          */
-        private SystemClock() {
+        public SystemClock() {
             // No initialization required.
         }
 

@@ -32,7 +32,7 @@ import org.miaixz.bus.fabric.Clock;
  *
  * @author Kimi Liu
  */
-public final class StopWatch {
+public class StopWatch {
 
     /**
      * Runtime clock.
@@ -55,7 +55,7 @@ public final class StopWatch {
      * @param clock      runtime clock
      * @param startNanos start nanoseconds
      */
-    private StopWatch(final Clock clock, final long startNanos) {
+    public StopWatch(final Clock clock, final long startNanos) {
         this.clock = clock;
         this.startNanos = startNanos;
         this.stopNanos = new AtomicLong(-1L);

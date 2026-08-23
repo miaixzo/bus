@@ -32,12 +32,12 @@ import org.miaixz.bus.mapper.binding.basic.ClassMapper;
  *
  * @author Kimi Liu
  */
-public final class MapperEntityResolver {
+public class MapperEntityResolver {
 
     /**
      * Keeps mapper entity resolution on the static API.
      */
-    private MapperEntityResolver() {
+    public MapperEntityResolver() {
         // No initialization required.
     }
 

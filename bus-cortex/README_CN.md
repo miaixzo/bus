@@ -1,21 +1,21 @@
 # 🧠 Bus Cortex：统一注册与配置中心
 
 <p align="center">
-<strong>服务注册 · 配置中心 · 健康探测 · 命名空间隔离 · bus 生态联动</strong>
+<strong>服务注册 · 配置中心 · 健康探测 · 空间隔离 · bus 生态联动</strong>
 </p>
 
 -----
 
 ## 📖 项目介绍
 
-**Bus Cortex** 是 bus 框架的注册与配置中心模块。它提供统一的服务注册、配置管理、健康探测和基于命名空间的多租户隔离——所有数据通过单一
+**Bus Cortex** 是 bus 框架的注册与配置中心模块。它提供统一的服务注册、配置管理、健康探测和基于空间的多租户隔离——所有数据通过单一
 `CacheX` 存储抽象（Memory / Redis / JDBC）读写，无需额外基础设施。
 
 - **统一注册表**：API / MCP / Prompt / Version 四类注册表，统一 `Registry<T>` 接口
 - **服务+实例分离模型**：`ApiAssets`（服务定义）+ `Instance`（运行时实例），参考 Nacos 设计
 - **配置中心**：带版本号的发布、灰度路由、`@ConfigChange` 回调注解
 - **健康探测**：可插拔 `Prober`（HTTP / TCP / MCP Ping / 进程 PID），服务端主动探测
-- **命名空间隔离**：运行时动态解析命名空间（Token / Header / 上下文），`NamespaceGuard` 强制写隔离
+- **命名空间隔离**：运行时动态解析空间（Token / Header / 上下文），`SpaceGuard` 强制写隔离
 - **安全防护**：HMAC-SHA256 Token + RBAC（ADMIN / PROVIDER / CONSUMER），限流，熔断
 - **bus 生态联动**：VortexBridge 自动同步到 bus-vortex；内置 bus-metrics 埋点；bus-cache 是唯一存储依赖
 - **三步接入**：一个依赖 + 一行配置 + 一个注解
@@ -47,34 +47,34 @@ mcpRegistry().
 register(mcpAssets);
 
 List<ApiAssets> services = Cortex.query(
-        Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(), ApiAssets.class);
+        Vector.newBuilder().space_id("production").method("vortex.user.get").build(), ApiAssets.class);
 ```
 
 ### ⚡ 服务与实例分离
 
 ```
-ApiAssets（服务定义，canonical identity = namespace + type + method + version[:verb]）
-    └── Instance（运行时实例，唯一性由 namespace + app_id + method + version + fingerprint 决定）
+ApiAssets（服务定义，canonical identity = space + type + method + version[:verb]）
+    └── Instance（运行时实例，唯一性由 space + app_id + method + version + fingerprint 决定）
 ```
 
 **实例标识规则**：同一 API 定义下允许存在多个运行时实例。运行时唯一性按
-`namespace + app_id + method + version + fingerprint` 约束。
+`space + app_id + method + version + fingerprint` 约束。
 
 相同 fingerprint 重复注册视为 **幂等刷新 TTL**，不视为冲突。
 
 **网关路由语义**：同步到 bus-vortex 时，`ApiAssets.key` 继续保留为轻量公开别名
 `method:version:verbCode`，例如 `dp.license.get:1.0:1`。真正的运行时候选链由 `Keying` 单独生成，顺序为：
 
-1. `namespace:type:app_id:method:version:verb`
-2. `namespace:type:method:version:verb`
-3. `namespace:app_id:method:version:verb`
-4. `namespace:method:version:verb`
+1. `space:type:app_id:method:version:verb`
+2. `space:type:method:version:verb`
+3. `space:app_id:method:version:verb`
+4. `space:method:version:verb`
 5. `type:app_id:method:version:verb`
 6. `type:method:version:verb`
 7. `app_id:method:version:verb`
 8. `method:version:verb`
 
-其中 `method` / `version` / `verb` 为运行时必填维度；`namespace`、`type`、`app_id` 仅在有值时参与。
+其中 `method` / `version` / `verb` 为运行时必填维度；`space`、`type`、`app_id` 仅在有值时参与。
 
 `Keying` 现在是泛型键策略接口。注册表与运行时路由使用 `Keying<Keying.RegistrySpec>`，内置实现为
 `RegistryGenerator`；setting 领域使用 `Keying<Keying.SettingSpec>`，内置实现为 `SettingGenerator`。
@@ -127,8 +127,8 @@ TTL；不健康实例不续期，TTL 到期后由 CacheX 自动清理。
 | `AccessTokenStore`    | HMAC-SHA256 签发 Token，CacheX 支持主动吊销                      |
 | `AccessTokenResolver` | 两步校验：HMAC 重新验签（防伪造）+ CacheX 黑名单检查（支持吊销） |
 | `AccessGuard`         | RBAC 权限校验（ADMIN / PROVIDER / CONSUMER）                     |
-| `NamespaceGuard`      | 阻止跨 namespace 写操作                                          |
-| `RateLimiter`         | 令牌桶限流，按 namespace/method 维度（CacheX 计数）              |
+| `SpaceGuard`      | 阻止跨 space 写操作                                          |
+| `RateLimiter`         | 令牌桶限流，按 space/method 维度（CacheX 计数）              |
 | `CircuitBreaker`      | 状态机：CLOSED → OPEN → HALF_OPEN                                |
 | `ParamValidator`      | 入参校验（正则 `^[a-zA-Z0-9._-]{1,128}$`），防 CacheX key 注入   |
 
@@ -186,8 +186,8 @@ bus:
     server-addr: 127.0.0.1:8766   # 唯一必填项
 ```
 
-> **命名空间说明**：`namespace` 不作为应用侧固定 YAML 配置项。运行时由上层系统动态决定（Token 中的 namespace 声明 / 请求
-> Header `X-Namespace` / 管理后台上下文），未提供时回落到 `public`。
+> **空间说明**：`space` 不作为应用侧固定 YAML 配置项。运行时由上层系统动态决定（Token 中的 space 声明 / 请求
+> Header `X-Space` / 管理后台上下文），未提供时回落到 `public`。
 
 ### 第三步：启用注解
 
@@ -219,7 +219,7 @@ import org.miaixz.bus.cortex.registry.api.Instance;
 ApiAssets service = new ApiAssets();
 service.
 
-        setNamespace_id("production");
+        setSpace_id("production");
 service.
 
         setApp_id("order-service");
@@ -242,7 +242,7 @@ service.
         Instance instance = new Instance();
 instance.
 
-        setNamespace_id("production");
+        setSpace_id("production");
 instance.
 
         setApp_id("order-service");
@@ -270,7 +270,7 @@ Cortex.
 
         // 查询 API 定义
         List<ApiAssets> results = Cortex.query(
-                Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(),
+                Vector.newBuilder().space_id("production").method("vortex.user.get").build(),
                 ApiAssets.class
         );
 
@@ -322,7 +322,7 @@ public class OrderService {
 ```java
 // 订阅实例变化
 String watchId = Cortex.apiRegistry().watch(
-                Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(),
+                Vector.newBuilder().space_id("production").method("vortex.user.get").build(),
                 (added, removed, updated) -> {
                     log.info("实例变更: 新增 {} 下线 {} 更新 {}",
                             added.size(), removed.size(), updated.size());
@@ -342,14 +342,14 @@ unwatch(watchId);
 ```java
 // 注册 MCP 工具
 McpAssets mcp = new McpAssets();
-mcp.setNamespace_id("ai");
+mcp.setSpace_id("ai");
 mcp.setToolName("code-search");
 mcp.setTransport("stdio");
 Cortex.mcpRegistry().register(mcp);
 
 // 注册 Prompt 模板
 PromptAssets prompt = new PromptAssets();
-prompt.setNamespace_id("ai");
+prompt.setSpace_id("ai");
 prompt.setTemplate("请总结以下内容：{{content}}");
 Cortex.promptRegistry().register(prompt);
 ```
@@ -454,7 +454,7 @@ org.miaixz.bus.cortex
 │   └── depend/    DependencyGraph + ImpactAnalysis（依赖拓扑）
 ├── config/        配置中心（ConfigPublisher, ConfigWatcher, GrayRouter, DefaultConfig）
 ├── bridge/        bus-vortex 同步（VortexBridge, SyncEvent, ApiAssetsConverter）
-├── guard/         安全防护（RateLimiter, CircuitBreaker, AccessTokenStore, AccessGuard, NamespaceGuard）
+├── guard/         安全防护（RateLimiter, CircuitBreaker, AccessTokenStore, AccessGuard, SpaceGuard）
 ├── builtin/       默认实现（CompositeProber, DefaultPublisher, DefaultNotifier）
 └── magic/         工具类（IdGenerator, Sequence, Fingerprint, AuditLogger, InstanceState）
 ```

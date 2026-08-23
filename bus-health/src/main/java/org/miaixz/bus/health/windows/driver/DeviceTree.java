@@ -40,7 +40,7 @@ import org.miaixz.bus.health.builtin.jna.Struct;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class DeviceTree {
+public class DeviceTree {
 
     /**
      * Constructs a new DeviceTree instance.

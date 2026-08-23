@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.MathKit;
  *
  * @author Kimi Liu
  */
-public final class Fraction extends Number implements Comparable<Fraction> {
+public class Fraction extends Number implements Comparable<Fraction> {
 
     @Serial
     private static final long serialVersionUID = 2852228119600L;

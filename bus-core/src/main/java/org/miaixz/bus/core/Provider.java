@@ -19,24 +19,25 @@
 */
 package org.miaixz.bus.core;
 
-import java.io.Serializable;
-
 /**
- * A generic interface representing the Strategy Pattern, where each implementation provides a specific strategy or
- * capability. This is often used to select an appropriate implementation at runtime based on a given type or context.
+ * Identifies one selectable implementation by the key used by its own provider contract.
+ * <p>
+ * The key identifies an implementation within one contract, not the component category shared by every implementation.
+ * Implementations must return a non-null, stable value whose equality semantics match the registry or discovery
+ * mechanism that selects the provider.
+ * </p>
  *
- * @param <T> The type of object this provider produces or handles.
+ * @param <T> exact selection-key type
  * @author Kimi Liu
  */
-public interface Provider<T> extends Serializable {
+public interface Provider<T> {
 
     /**
-     * Returns an identifier for the type or strategy that this provider supports. This identifier is used to look up
-     * and select the correct provider from a collection of available providers.
+     * Returns the non-null, stable key used to register and select this implementation among providers of the same
+     * contract. The returned value must not change during the lifetime of the provider.
      *
-     * @return An object that uniquely identifies the supported type or strategy (e.g., a {@code String}, {@code Enum},
-     *         or {@code Class}).
+     * @return non-null implementation selection key
      */
-    Object type();
+    T type();
 
 }

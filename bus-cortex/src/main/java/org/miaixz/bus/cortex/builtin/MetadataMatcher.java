@@ -37,7 +37,7 @@ public class MetadataMatcher {
     /**
      * Creates a new MetadataMatcher.
      */
-    private MetadataMatcher() {
+    public MetadataMatcher() {
         // No initialization required.
     }
 

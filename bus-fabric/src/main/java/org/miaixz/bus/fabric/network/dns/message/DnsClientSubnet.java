@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class DnsClientSubnet {
+public class DnsClientSubnet {
 
     /**
      * EDNS Client Subnet address family code for IPv4.

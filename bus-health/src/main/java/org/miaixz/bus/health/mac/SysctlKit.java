@@ -36,12 +36,12 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class SysctlKit {
+public class SysctlKit {
 
     /**
      * Keeps macOS sysctl queries on the static API.
      */
-    private SysctlKit() {
+    public SysctlKit() {
         // No initialization required.
     }
 

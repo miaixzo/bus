@@ -38,7 +38,7 @@ import org.miaixz.bus.health.builtin.hardware.PowerSource;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Systat {
+public class Systat {
 
     /**
      * The command used to query BSD sensor information.
@@ -48,7 +48,7 @@ public final class Systat {
     /**
      * Creates a new Systat instance.
      */
-    private Systat() {
+    public Systat() {
         // No initialization required.
     }
 
@@ -206,7 +206,7 @@ public final class Systat {
      * @author Kimi Liu
      */
     @ThreadSafe
-    public static final class BatteryFields {
+    public static class BatteryFields {
 
         /**
          * The voltage value.
@@ -254,7 +254,7 @@ public final class Systat {
          * @param maxCapacity     the maximum capacity
          * @param designCapacity  the design capacity
          */
-        private BatteryFields(double voltage, double amperage, double temperature,
+        public BatteryFields(double voltage, double amperage, double temperature,
                 PowerSource.CapacityUnits capacityUnits, int currentCapacity, int maxCapacity, int designCapacity) {
             this.voltage = voltage;
             this.amperage = amperage;

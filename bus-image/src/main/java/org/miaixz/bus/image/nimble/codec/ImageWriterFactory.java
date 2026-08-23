@@ -242,7 +242,7 @@ public class ImageWriterFactory implements Serializable {
      *
      * @return the patch jpegls.
      */
-    public final PatchJPEGLS getPatchJPEGLS() {
+    public PatchJPEGLS getPatchJPEGLS() {
         return patchJPEGLS;
     }
 
@@ -251,7 +251,7 @@ public class ImageWriterFactory implements Serializable {
      *
      * @param patchJPEGLS the patch jpegls.
      */
-    public final void setPatchJPEGLS(PatchJPEGLS patchJPEGLS) {
+    public void setPatchJPEGLS(PatchJPEGLS patchJPEGLS) {
         this.patchJPEGLS = patchJPEGLS;
     }
 

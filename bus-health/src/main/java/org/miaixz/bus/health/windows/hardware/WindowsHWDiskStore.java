@@ -56,7 +56,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class WindowsHWDiskStore extends AbstractHWDiskStore {
+public class WindowsHWDiskStore extends AbstractHWDiskStore {
 
     /**
      * The PHYSICALDRIVE_PREFIX constant.
@@ -129,7 +129,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
      * @param size     the size
      * @param diskType the disk type
      */
-    private WindowsHWDiskStore(String name, String model, String serial, long size, String diskType) {
+    public WindowsHWDiskStore(String name, String model, String serial, long size, String diskType) {
         super(name, model, serial, size, diskType);
     }
 
@@ -458,7 +458,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
      * @return the update attributes result
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         String index;
         List<HWPartition> partitions = getPartitions();
         if (!partitions.isEmpty()) {

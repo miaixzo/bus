@@ -39,7 +39,7 @@ public class ChineseNumberParser {
     /**
      * Keeps Chinese-number parsing on the static API.
      */
-    private ChineseNumberParser() {
+    public ChineseNumberParser() {
         // No initialization required.
     }
 

@@ -37,7 +37,7 @@ import org.miaixz.bus.vortex.Holder;
  *
  * @author Kimi Liu
  */
-public final class Parameter extends AbstractMap<String, Object> {
+public class Parameter extends AbstractMap<String, Object> {
 
     /**
      * Internal mutable storage for request parameters.

@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class PerfmonConsts {
+public class PerfmonConsts {
 
     /*
      * Instance filter constants used by enums implementing PdhCounterProperty or PdhCounterWildcardProperty
@@ -185,7 +185,7 @@ public final class PerfmonConsts {
     /**
      * Everything in this class is static, never instantiate it
      */
-    private PerfmonConsts() {
+    public PerfmonConsts() {
         throw new AssertionError();
     }
 

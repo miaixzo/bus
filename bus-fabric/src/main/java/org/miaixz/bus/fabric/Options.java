@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class Options {
+public class Options {
 
     /**
      * Shared immutable empty snapshot.
@@ -61,7 +61,7 @@ public final class Options {
      *
      * @param values owned backing values
      */
-    private Options(final Map<Key<?>, Object> values) {
+    public Options(final Map<Key<?>, Object> values) {
         this.values = Collections.unmodifiableMap(values);
     }
 

@@ -1212,6 +1212,10 @@
           "parameterTypes": []
         },
         {
+          "name": "receiveDatagram",
+          "parameterTypes": []
+        },
+        {
           "name": "releasePending",
           "parameterTypes": [
             "java.util.concurrent.atomic.AtomicBoolean"
@@ -1271,6 +1275,31 @@
           ]
         },
         {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Address",
+            "org.miaixz.bus.fabric.Address",
+            "org.miaixz.bus.fabric.guard.route.AddressPolicy",
+            "org.miaixz.bus.fabric.network.udp.UdpChannel",
+            "org.miaixz.bus.fabric.Listener",
+            "org.miaixz.bus.fabric.runtime.dispatch.Dispatcher",
+            "java.lang.Runnable"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Address",
+            "org.miaixz.bus.fabric.Address",
+            "org.miaixz.bus.fabric.guard.route.AddressPolicy",
+            "org.miaixz.bus.fabric.network.udp.UdpChannel",
+            "org.miaixz.bus.fabric.Listener",
+            "org.miaixz.bus.fabric.runtime.dispatch.Dispatcher",
+            "java.lang.Runnable",
+            "org.miaixz.bus.fabric.network.udp.UdpDatagramCodec"
+          ]
+        },
+        {
           "name": "active",
           "parameterTypes": []
         },
@@ -1304,6 +1333,14 @@
         {
           "name": "pendingSends",
           "parameterTypes": []
+        },
+        {
+          "name": "pinPeer",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Address",
+            "org.miaixz.bus.fabric.Address",
+            "org.miaixz.bus.fabric.guard.route.AddressPolicy"
+          ]
         },
         {
           "name": "receive",
@@ -4027,6 +4064,12 @@
           ]
         },
         {
+          "name": "readTimeout",
+          "parameterTypes": [
+            "java.time.Duration"
+          ]
+        },
+        {
           "name": "receiveData",
           "parameterTypes": [
             "org.miaixz.bus.core.io.buffer.Buffer",
@@ -4361,6 +4404,12 @@
           "name": "absolute",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "addressPolicy",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.guard.route.AddressPolicy"
           ]
         },
         {
@@ -5414,6 +5463,12 @@
           "parameterTypes": []
         },
         {
+          "name": "enterTransportOperation",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "filter",
           "parameterTypes": [
             "org.miaixz.bus.fabric.Payload",
@@ -5497,6 +5552,12 @@
           ]
         },
         {
+          "name": "rejectTlsUpgrade",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "require",
           "parameterTypes": [
             "java.lang.Object",
@@ -5505,6 +5566,10 @@
         },
         {
           "name": "retransmitKcp",
+          "parameterTypes": []
+        },
+        {
+          "name": "requirePlaintextBoundary",
           "parameterTypes": []
         },
         {
@@ -5591,6 +5656,10 @@
           "parameterTypes": []
         },
         {
+          "name": "streamConduit",
+          "parameterTypes": []
+        },
+        {
           "name": "terminate",
           "parameterTypes": [
             "org.miaixz.bus.fabric.protocol.socket.SocketSession$Termination",
@@ -5600,6 +5669,18 @@
         {
           "name": "touch",
           "parameterTypes": []
+        },
+        {
+          "name": "upgradeTls",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.network.tls.TlsPolicy"
+          ]
+        },
+        {
+          "name": "upgradeTlsNow",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.network.tls.TlsPolicy"
+          ]
         },
         {
           "name": "withTrafficBytes",

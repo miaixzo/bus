@@ -38,12 +38,12 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  *
  * @author Kimi Liu
  */
-public final class ServletBridge implements Translator<HttpRequest> {
+public class ServletBridge implements Translator<HttpRequest> {
 
     /**
      * Creates a servlet bridge.
      */
-    private ServletBridge() {
+    public ServletBridge() {
         // No initialization required.
     }
 

@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.proxy
+ * Module: {@code bus.proxy}
+ *
+ * <p>
+ * Provides abstractions for creating and invoking dynamic proxies.
+ *
+ * <p>
+ * Includes proxy factories, invocation and interceptor contracts, chained interception, JDK dynamic proxy support, and
+ * Spring CGLIB integration.
  *
  * @author Kimi Liu
  */
@@ -27,8 +34,8 @@ module bus.proxy {
     requires bus.core;
     requires bus.logger;
 
-    requires static spring.core;
     requires static org.aspectj.weaver;
+    requires static spring.core;
 
     exports org.miaixz.bus.proxy;
     exports org.miaixz.bus.proxy.invoker;

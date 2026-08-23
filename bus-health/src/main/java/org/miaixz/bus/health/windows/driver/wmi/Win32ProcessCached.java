@@ -39,7 +39,7 @@ import org.miaixz.bus.health.windows.WmiKit;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Win32ProcessCached {
+public class Win32ProcessCached {
 
     /**
      * The INSTANCE constant.
@@ -61,7 +61,7 @@ public final class Win32ProcessCached {
     /**
      * Creates a new Win32ProcessCached instance.
      */
-    private Win32ProcessCached() {
+    public Win32ProcessCached() {
         // No initialization required.
     }
 

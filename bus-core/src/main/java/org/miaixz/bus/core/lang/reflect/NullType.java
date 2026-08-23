@@ -35,9 +35,9 @@ public class NullType implements Type {
     public static NullType INSTANCE = new NullType();
 
     /**
-     * Private constructor to enforce the singleton pattern.
+     * Creates a null-type marker; the shared instance remains available.
      */
-    private NullType() {
+    public NullType() {
         // No initialization required.
     }
 

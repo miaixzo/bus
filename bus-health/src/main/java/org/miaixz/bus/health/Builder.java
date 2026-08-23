@@ -49,7 +49,7 @@ import org.miaixz.bus.setting.nimble.props.Props;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Builder {
+public class Builder {
 
     /**
      * Constructs a new Builder instance.
@@ -92,6 +92,11 @@ public final class Builder {
      * Virtual machine MAC address configuration file path.
      */
     public static final String _VM_MAC_ADDR_PROPERTIES = "bus.health.vmmacaddr.properties";
+
+    /**
+     * Virtual machine signature configuration file path.
+     */
+    public static final String _VM_PROPERTIES = "bus.health.vm.properties";
 
     /**
      * General configuration: process path.
@@ -167,6 +172,11 @@ public final class Builder {
      * macOS configuration: comma-separated SMC keys for CPU voltage readings.
      */
     public static final String _MAC_SENSORS_CPUVOLTAGE_KEYS = "bus.health.mac.sensors.cpuvoltage.keys";
+
+    /**
+     * macOS configuration: whether Apple Silicon current CPU frequency is sampled from IOReport.
+     */
+    public static final String _MAC_CPU_FREQUENCY_IOREPORT = "bus.health.mac.cpu.frequency.ioreport";
 
     /**
      * Linux configuration: filesystem path exclusion list.

@@ -33,7 +33,7 @@ import org.miaixz.bus.fabric.network.dns.server.DnsTsigKey;
  *
  * @author Kimi Liu
  */
-public final class DnsSnapshot {
+public class DnsSnapshot {
 
     /**
      * Snapshot identifier.

@@ -35,7 +35,7 @@ public class HashKit {
     /**
      * Keeps hash calculation on the static API.
      */
-    private HashKit() {
+    public HashKit() {
         // No initialization required.
     }
 

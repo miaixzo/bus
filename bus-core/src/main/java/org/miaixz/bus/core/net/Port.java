@@ -530,7 +530,37 @@ public enum Port {
      * <p>
      * The OpenWire protocol port for the Apache ActiveMQ message queue.
      */
-    _61616(61616, "Apache ActiveMQ", "The OpenWire protocol port for the Apache ActiveMQ message queue.");
+    _61616(61616, "Apache ActiveMQ", "The OpenWire protocol port for the Apache ActiveMQ message queue."),
+
+    /**
+     * <b>LDAP</b>: 389
+     * <p>
+     * The registered port for Lightweight Directory Access Protocol traffic without implicit TLS.
+     */
+    _389(389, "LDAP", "The registered port for Lightweight Directory Access Protocol traffic without implicit TLS."),
+
+    /**
+     * <b>LDAPS</b>: 636
+     * <p>
+     * The registered port for Lightweight Directory Access Protocol traffic over implicit TLS.
+     */
+    _636(636, "LDAPS", "The registered port for Lightweight Directory Access Protocol traffic over implicit TLS."),
+
+    /**
+     * <b>RADIUS Authentication</b>: 1812
+     * <p>
+     * The registered UDP port for Remote Authentication Dial-In User Service authentication traffic.
+     */
+    _1812(1812, "RADIUS Authentication",
+            "The registered UDP port for Remote Authentication Dial-In User Service authentication traffic."),
+
+    /**
+     * <b>RADIUS Accounting</b>: 1813
+     * <p>
+     * The registered UDP port for Remote Authentication Dial-In User Service accounting traffic.
+     */
+    _1813(1813, "RADIUS Accounting",
+            "The registered UDP port for Remote Authentication Dial-In User Service accounting traffic.");
 
     /**
      * Stores the integer port number (e.g., 22, 8080).

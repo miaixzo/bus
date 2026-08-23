@@ -27,10 +27,10 @@ import java.io.Serial;
  *
  * @author Kimi Liu
  */
-public final class SymmetricSecureKey extends SecureKey implements SymmetricKey {
+public class SymmetricSecureKey extends SecureKey implements SymmetricKey {
 
     @Serial
-    private static final long serialVersionUID = -1L;
+    private static final long serialVersionUID = 2858302691583L;
 
     /**
      * Encoded symmetric secret key bytes.

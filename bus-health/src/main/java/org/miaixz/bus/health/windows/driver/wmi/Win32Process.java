@@ -36,12 +36,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Win32Process {
+public class Win32Process {
 
     /**
      * Keeps Win32 process queries on the static API.
      */
-    private Win32Process() {
+    public Win32Process() {
         // No initialization required.
     }
 

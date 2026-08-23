@@ -52,9 +52,9 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
     private final Map<RenderingHints.Key, Object> hintsMap;
 
     /**
-     * Private constructor.
+     * Creates an empty rendering-hints builder.
      */
-    private RenderHintsBuilder() {
+    public RenderHintsBuilder() {
         // A total of 10 configuration items
         hintsMap = new HashMap<>(10, 1);
     }

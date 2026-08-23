@@ -26,7 +26,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class DnsExtendedError {
+public class DnsExtendedError {
 
     /**
      * EDE code for a response blocked by policy.

@@ -48,7 +48,7 @@ import org.miaixz.bus.fabric.protocol.http.cache.HttpCacheControl;
  *
  * @author Kimi Liu
  */
-public final class HttpRequest {
+public class HttpRequest {
 
     /**
      * HTTP method.
@@ -121,7 +121,7 @@ public final class HttpRequest {
      * @param proxy   proxy plan
      * @param timeout request timeout policy
      */
-    private HttpRequest(final Http.Method method, final UnoUrl url, final Headers headers, final PayloadBody body,
+    public HttpRequest(final Http.Method method, final UnoUrl url, final Headers headers, final PayloadBody body,
             final Map<Class<?>, Object> tags, final ProxyPlan proxy, final Timeout timeout) {
         this(method, url, headers, body, tags, false, proxy, timeout);
     }
@@ -393,7 +393,7 @@ public final class HttpRequest {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Candidate method.
@@ -438,7 +438,7 @@ public final class HttpRequest {
         /**
          * Creates a builder with default snapshots.
          */
-        private Builder() {
+        public Builder() {
             // No initialization required.
         }
 

@@ -27,7 +27,7 @@ import java.util.concurrent.Semaphore;
  *
  * @author Kimi Liu
  */
-public final class SliceBuffer {
+public class SliceBuffer {
 
     /**
      * Parent slab, or {@code null} for wrapped external buffers.
@@ -67,7 +67,7 @@ public final class SliceBuffer {
      * @param parentPosition the start offset in the parent slab
      * @param parentLimit    the end offset in the parent slab
      */
-    SliceBuffer(SlabBuffer slabBuffer, ByteBuffer buffer, int parentPosition, int parentLimit) {
+    public SliceBuffer(SlabBuffer slabBuffer, ByteBuffer buffer, int parentPosition, int parentLimit) {
         this.slabBuffer = slabBuffer;
         this.buffer = buffer;
         this.parentPosition = parentPosition;

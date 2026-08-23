@@ -35,7 +35,7 @@ import org.opencv.core.Size;
  */
 public class LineSegmentDetector extends Algorithm {
 
-    protected LineSegmentDetector(long addr) {
+    public LineSegmentDetector(long addr) {
         super(addr);
     }
 

@@ -70,7 +70,7 @@ public class CacheObject<K, V> implements Serializable {
      * @param object The value.
      * @param ttl    The Time-To-Live (TTL) in milliseconds.
      */
-    protected CacheObject(final K key, final V object, final long ttl) {
+    public CacheObject(final K key, final V object, final long ttl) {
         this.key = key;
         this.object = object;
         this.ttl = ttl;

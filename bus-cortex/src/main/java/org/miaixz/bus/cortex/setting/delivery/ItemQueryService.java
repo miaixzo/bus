@@ -92,7 +92,7 @@ public class ItemQueryService {
             return query.getFallbackValue();
         }
         Item entry = settingCuratorService
-                .find(query.getNamespace_id(), query.getGroup(), query.getData_id(), query.getProfile_id());
+                .find(query.getSpace_id(), query.getGroup(), query.getData_id(), query.getProfile_id());
         if (entry != null && !ItemBindingProjection.bindsToApp(entry, query.getApp_id())) {
             return query.getFallbackValue();
         }
@@ -142,7 +142,7 @@ public class ItemQueryService {
             return null;
         }
         Item entry = settingCuratorService
-                .find(query.getNamespace_id(), query.getGroup(), query.getData_id(), query.getProfile_id());
+                .find(query.getSpace_id(), query.getGroup(), query.getData_id(), query.getProfile_id());
         if (entry != null && !ItemBindingProjection.bindsToApp(entry, query.getApp_id())) {
             return null;
         }
@@ -175,7 +175,7 @@ public class ItemQueryService {
                 "watchKey",
                 query == null ? null
                         : settingCuratorService.watchKey(
-                                query.getNamespace_id(),
+                                query.getSpace_id(),
                                 query.getGroup(),
                                 query.getData_id(),
                                 query.getProfile_id()));
@@ -198,7 +198,7 @@ public class ItemQueryService {
             return null;
         }
         return runtimeSettingOverlayService.resolveRuntimeOverlay(
-                query.getNamespace_id(),
+                query.getSpace_id(),
                 query.getGroup(),
                 query.getData_id(),
                 query.getProfile_id());

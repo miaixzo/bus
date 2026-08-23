@@ -84,7 +84,7 @@ public abstract class AbstractUsbDevice implements UsbDevice {
      * @param uniqueDeviceId   the unique device id
      * @param connectedDevices the connected devices
      */
-    protected AbstractUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
+    public AbstractUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
             String uniqueDeviceId, List<UsbDevice> connectedDevices) {
         this.name = name;
         this.vendor = vendor;

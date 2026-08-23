@@ -35,6 +35,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.dns.dnssec.DnsDnssecValidator;
+import org.miaixz.bus.fabric.network.dns.forward.DnsForwarder;
 import org.miaixz.bus.fabric.network.dns.forward.DnsUpstream;
 import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
 import org.miaixz.bus.fabric.network.dns.message.DnsDecodedResponse;
@@ -59,7 +60,7 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsTrustAnchor;
  *
  * @author Kimi Liu
  */
-public final class DnsRecursiveResolver {
+public class DnsRecursiveResolver {
 
     /**
      * Maximum referral depth followed for one query.

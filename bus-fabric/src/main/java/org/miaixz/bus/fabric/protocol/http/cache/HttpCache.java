@@ -55,7 +55,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class HttpCache implements AutoCloseable {
+public class HttpCache implements AutoCloseable {
 
     /**
      * Typed option for the HTTP cache runtime.
@@ -137,7 +137,7 @@ public final class HttpCache implements AutoCloseable {
      * @param observer observer receiving cache events
      * @param clock    event timestamp source, or {@code null} to disable event emission
      */
-    private HttpCache(final CacheStore store, final CachePolicy policy, final EventObserver observer,
+    public HttpCache(final CacheStore store, final CachePolicy policy, final EventObserver observer,
             final Clock clock) {
         this.store = require(store, "Cache store");
         this.policy = require(policy, "Cache policy");

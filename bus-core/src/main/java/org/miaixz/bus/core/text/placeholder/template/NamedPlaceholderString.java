@@ -81,9 +81,8 @@ public class NamedPlaceholderString extends StringTemplate {
      * @param defaultValue        The default value to use when a placeholder cannot be resolved.
      * @param defaultValueHandler The handler for default values.
      */
-    protected NamedPlaceholderString(final String template, final int features, final String prefix,
-            final String suffix, final char escape, final String defaultValue,
-            final UnaryOperatorX<String> defaultValueHandler) {
+    public NamedPlaceholderString(final String template, final int features, final String prefix, final String suffix,
+            final char escape, final String defaultValue, final UnaryOperatorX<String> defaultValueHandler) {
         super(template, escape, defaultValue, defaultValueHandler, features);
 
         Assert.notEmpty(prefix);
@@ -598,7 +597,7 @@ public class NamedPlaceholderString extends StringTemplate {
          *
          * @param template The template string.
          */
-        protected Builder(final String template) {
+        public Builder(final String template) {
             super(template);
         }
 

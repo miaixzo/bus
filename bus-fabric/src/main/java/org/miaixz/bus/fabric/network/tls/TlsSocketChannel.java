@@ -54,7 +54,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  *
  * @author Kimi Liu
  */
-public final class TlsSocketChannel implements Conduit {
+public class TlsSocketChannel implements Conduit {
 
     /**
      * Bounded staging pool shared by blocking reads and writes. A borrowed array belongs exclusively to one operation
@@ -133,7 +133,18 @@ public final class TlsSocketChannel implements Conduit {
      */
     private volatile CompletableFuture<TlsHandshake> handshakeFuture;
 
-    private TlsSocketChannel(final SSLSocket socket, final Address address, final TlsSettings settings,
+    /**
+     * Creates a TLS conduit over a connected socket and opens the socket streams used for subsequent reads and writes.
+     *
+     * @param socket       connected TLS socket owned by this channel
+     * @param address      logical peer address used for endpoint verification
+     * @param settings     TLS policy applied before the handshake
+     * @param timeout      read and write deadlines for socket operations
+     * @param dispatcher   dispatcher used to execute asynchronous handshakes
+     * @param cancellation connection cancellation scope
+     * @throws SocketException if the socket input or output stream cannot be opened
+     */
+    public TlsSocketChannel(final SSLSocket socket, final Address address, final TlsSettings settings,
             final Timeout timeout, final Dispatcher dispatcher, final Cancellation cancellation) {
         this.socket = socket;
         this.address = address;

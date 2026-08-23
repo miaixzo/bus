@@ -646,7 +646,7 @@ public class Project implements Serializable {
      * @param path      the project path
      * @return a fully qualified project path based on the provided namespace and project path
      */
-    public static final String getPathWithNammespace(String namespace, String path) {
+    public static String getPathWithNammespace(String namespace, String path) {
         return (namespace.trim() + Symbol.SLASH + path.trim());
     }
 

@@ -28,6 +28,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.miaixz.bus.cache.Collector;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.bridge.HealthMetrics;
 import org.miaixz.bus.metrics.builtin.CacheMetricsAdapter;
@@ -46,7 +47,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 
 /**
  * Configures bus-metrics providers, guards, collectors, and management endpoint. It is imported through
- * {@link org.miaixz.bus.starter.annotation.EnableMetrics}.
+ * {@link EnableMetrics}.
  * <p>
  * When {@code bus-health} is on the classpath, {@link HealthMetrics} is used for system/JVM metrics (JNA-backed,
  * hardware-accurate). Otherwise falls back to {@link JvmMetrics} and {@link SystemMetrics} (JVM MXBean-backed).
@@ -122,13 +123,13 @@ public class MetricsConfiguration {
      * <p>
      * Inject this bean into the bus-cache {@code Context} via {@code Context.newBuilder().hitting(adapter)} to activate
      * automatic hit-rate tracking for all {@code @Cached} methods. Skipped when the application provides its own
-     * {@link org.miaixz.bus.cache.Collector} bean.
+     * {@link Collector} bean.
      *
      * @return cache metrics adapter
      */
     @Bean
     @ConditionalOnClass(name = "org.miaixz.bus.cache.Collector")
-    @ConditionalOnMissingBean(org.miaixz.bus.cache.Collector.class)
+    @ConditionalOnMissingBean(Collector.class)
     public CacheMetricsAdapter cacheMetricsAdapter() {
         return new CacheMetricsAdapter();
     }

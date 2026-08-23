@@ -678,7 +678,7 @@ public class AixOSProcess extends AbstractOSProcess {
      * @param cpuMem the cpu mem
      * @return the update attributes result
      */
-    private boolean updateAttributes(Tuple cpuMem) {
+    private synchronized boolean updateAttributes(Tuple cpuMem) {
         AixLibc.AixPsInfo info = psinfo.get();
         if (info == null) {
             this.state = OSProcess.State.INVALID;

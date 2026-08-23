@@ -35,7 +35,7 @@ import org.miaixz.bus.health.Builder;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class DevPath {
+public class DevPath {
 
     /**
      * Constructs a new DevPath instance.

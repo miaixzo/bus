@@ -89,7 +89,7 @@ public class FilesetInfo {
      *
      * @return The fileset UID.
      */
-    public final String getFilesetUID() {
+    public String getFilesetUID() {
         return uid;
     }
 
@@ -99,7 +99,7 @@ public class FilesetInfo {
      * @param uid The new fileset UID.
      * @return This fileset information instance.
      */
-    public final FilesetInfo setFilesetUID(String uid) {
+    public FilesetInfo setFilesetUID(String uid) {
         this.uid = uid;
         return this;
     }
@@ -109,7 +109,7 @@ public class FilesetInfo {
      *
      * @return The fileset ID.
      */
-    public final String getFilesetID() {
+    public String getFilesetID() {
         return id;
     }
 
@@ -119,7 +119,7 @@ public class FilesetInfo {
      * @param id The new fileset ID.
      * @return This fileset information instance.
      */
-    public final FilesetInfo setFilesetID(String id) {
+    public FilesetInfo setFilesetID(String id) {
         this.id = id;
         return this;
     }
@@ -129,7 +129,7 @@ public class FilesetInfo {
      *
      * @return The descriptor file.
      */
-    public final Optional<Path> getDescriptorFile() {
+    public Optional<Path> getDescriptorFile() {
         return Optional.ofNullable(descriptorFile);
     }
 
@@ -139,7 +139,7 @@ public class FilesetInfo {
      * @param descriptorFile The new descriptor file.
      * @return This fileset information instance.
      */
-    public final FilesetInfo setDescriptorFile(Path descriptorFile) {
+    public FilesetInfo setDescriptorFile(Path descriptorFile) {
         this.descriptorFile = descriptorFile;
         return this;
     }
@@ -149,7 +149,7 @@ public class FilesetInfo {
      *
      * @return The descriptor file character set.
      */
-    public final Optional<String> getDescriptorFileCharset() {
+    public Optional<String> getDescriptorFileCharset() {
         return Optional.ofNullable(descriptorFileCharset);
     }
 
@@ -159,7 +159,7 @@ public class FilesetInfo {
      * @param descriptorFileCharset the descriptor file character set.
      * @return This fileset information instance.
      */
-    public final FilesetInfo setDescriptorFileCharset(String descriptorFileCharset) {
+    public FilesetInfo setDescriptorFileCharset(String descriptorFileCharset) {
         this.descriptorFileCharset = descriptorFileCharset;
         return this;
     }

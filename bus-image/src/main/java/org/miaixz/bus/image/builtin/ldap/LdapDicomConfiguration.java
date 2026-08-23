@@ -53,7 +53,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class LdapDicomConfiguration implements DicomConfiguration {
+public class LdapDicomConfiguration implements DicomConfiguration {
 
     /**
      * The ae attrs value.

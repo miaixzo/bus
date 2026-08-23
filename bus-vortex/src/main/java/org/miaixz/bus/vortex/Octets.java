@@ -21,6 +21,7 @@ package org.miaixz.bus.vortex;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.core.io.buffer.DataBuffer;
@@ -28,8 +29,14 @@ import org.springframework.core.io.buffer.DataBufferLimitException;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.io.buffer.NettyDataBufferFactory;
 import org.springframework.core.io.buffer.PooledDataBuffer;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseCookie;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.vortex.guard.AsyncByteBudget;
 
@@ -49,7 +56,7 @@ import reactor.core.publisher.Mono;
  *
  * @author Kimi Liu
  */
-public final class Octets {
+public class Octets {
 
     /**
      * Maximum heap-backed chunk exposed to one downstream write operation.
@@ -62,17 +69,21 @@ public final class Octets {
     private static final NettyDataBufferFactory WRITE_BUFFER_FACTORY = new NettyDataBufferFactory(Holder.allocator());
 
     /**
-     * Restricts the class to static lifecycle operations.
+     * Creates a stateless byte-budget lifecycle entry point.
      */
-    private Octets() {
+    public Octets() {
         throw new UnsupportedOperationException("Octets class cannot be instantiated");
     }
 
     /**
      * Reads a bounded response into exact-sized heap segments for later atomic relay.
      * <p>
-     * A non-negative Content-Length is mandatory. Its exact logical size is acquired before source subscription and
-     * remains owned by the returned body until that body is closed.
+     * A known Content-Length acquires its exact logical size before source subscription. A response without
+     * Content-Length grows its reservation one bounded segment at a time before allocating the corresponding heap
+     * storage. This prevents a small chunked response from monopolizing its complete {@code maxBytes} allowance while
+     * ensuring that no copied byte is ever uncharged. When the global budget is genuinely saturated, the existing
+     * bounded acquisition timeout cancels the current body and returns all of its partial reservation. In both cases
+     * the retained logical size remains owned by the returned body until that body is closed.
      *
      * @param body           source response buffers
      * @param maxBytes       per-body materialization limit
@@ -85,24 +96,29 @@ public final class Octets {
             int maxBytes,
             AsyncByteBudget budget,
             long expectedLength) {
-        Mono<Void> validation = validateKnownLength(body, maxBytes, budget, expectedLength);
-        if (validation != null) {
-            return validation.then(Mono.empty());
+        if (body == null || budget == null || maxBytes <= 0) {
+            return Mono.error(new IllegalArgumentException("body, positive maxBytes and budget are required"));
         }
-        return awaitBufferingCapacity().then(budget.acquire(expectedLength))
-                .timeout(Duration.ofSeconds(Holder.get().getBufferAcquireTimeoutSeconds()))
-                .onErrorMap(
-                        java.util.concurrent.TimeoutException.class,
-                        error -> new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
-                                "Buffered-byte capacity wait timed out", error))
+        if (expectedLength < -1) {
+            return Mono.error(new IllegalArgumentException("expectedLength must be -1 or non-negative"));
+        }
+        if (expectedLength > maxBytes) {
+            return Mono.error(new DataBufferLimitException("Exceeded buffered body limit of " + maxBytes + " bytes"));
+        }
+        if (expectedLength < 0) {
+            return awaitBufferingCapacity().then(readIncrementalSegmented(body, maxBytes, budget));
+        }
+        return awaitBufferingCapacity().then(acquire(budget, expectedLength))
                 .flatMap(lease -> readReservedSegmented(body, maxBytes, expectedLength, lease));
     }
 
     /**
      * Reads a bounded body directly into one exact-sized array for parsing or transformation.
      * <p>
-     * A non-negative Content-Length is mandatory. The exact logical size is acquired before source subscription, and
-     * every source buffer is released immediately after its bytes have been copied.
+     * A known Content-Length acquires its exact logical size before source subscription. When Content-Length is absent,
+     * the complete {@code maxBytes} allowance is retained until parsing finishes so materializing a contiguous parser
+     * array cannot escape the process-wide budget. Every source buffer is released immediately after its bytes have
+     * been copied.
      *
      * @param body           source body buffers
      * @param maxBytes       per-body materialization limit
@@ -115,43 +131,48 @@ public final class Octets {
             int maxBytes,
             AsyncByteBudget budget,
             long expectedLength) {
-        Mono<Void> validation = validateKnownLength(body, maxBytes, budget, expectedLength);
+        Mono<Void> validation = validateLength(body, maxBytes, budget, expectedLength);
         if (validation != null) {
             return validation.then(Mono.empty());
         }
-        return awaitBufferingCapacity().then(budget.acquire(expectedLength))
-                .timeout(
-                        Duration.ofSeconds(Holder.get().getBufferAcquireTimeoutSeconds()))
+        long reservationBytes = expectedLength >= 0 ? expectedLength : maxBytes;
+        return awaitBufferingCapacity().then(budget.acquire(reservationBytes))
+                .timeout(Duration.ofSeconds(Holder.get().getBufferAcquireTimeoutSeconds()))
                 .onErrorMap(
                         java.util.concurrent.TimeoutException.class,
                         error -> new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
                                 "Buffered-byte capacity wait timed out", error))
-                .flatMap(lease -> Mono.defer(() -> {
-                    byte[] bytes = new byte[Math.toIntExact(expectedLength)];
-                    int[] offset = new int[1];
-                    return body.<Integer>handle((buffer, sink) -> {
-                        try {
-                            int readable = buffer.readableByteCount();
-                            if (readable > bytes.length - offset[0]) {
-                                sink.error(new DataBufferLimitException("Body exceeds declared Content-Length"));
-                                return;
-                            }
-                            buffer.read(bytes, offset[0], readable);
-                            offset[0] += readable;
-                            sink.next(readable);
-                        } finally {
-                            release(buffer);
-                        }
-                    }).then(Mono.defer(() -> {
-                        if (offset[0] != bytes.length) {
-                            return Mono
-                                    .error(new DataBufferLimitException("Body length does not match Content-Length"));
-                        }
-                        return Mono.just(new BufferedBody(bytes, lease));
-                    })).doOnError(error -> lease.close()).doOnCancel(lease::close)
-                            .doOnDiscard(BufferedBody.class, BufferedBody::close)
-                            .doOnDiscard(PooledDataBuffer.class, DataBufferUtils::release);
-                }));
+                .flatMap(
+                        lease -> expectedLength < 0 ? readReservedSegmented(body, maxBytes, expectedLength, lease)
+                                : Mono.defer(() -> {
+                                    byte[] bytes = new byte[Math.toIntExact(expectedLength)];
+                                    int[] offset = new int[1];
+                                    return body.<Integer>handle((buffer, sink) -> {
+                                        try {
+                                            int readable = buffer.readableByteCount();
+                                            if (readable > bytes.length - offset[0]) {
+                                                sink.error(
+                                                        new DataBufferLimitException(
+                                                                "Body exceeds declared Content-Length"));
+                                                return;
+                                            }
+                                            buffer.read(bytes, offset[0], readable);
+                                            offset[0] += readable;
+                                            sink.next(readable);
+                                        } finally {
+                                            release(buffer);
+                                        }
+                                    }).then(Mono.defer(() -> {
+                                        if (offset[0] != bytes.length) {
+                                            return Mono.error(
+                                                    new DataBufferLimitException(
+                                                            "Body length does not match Content-Length"));
+                                        }
+                                        return Mono.just(new BufferedBody(bytes, lease));
+                                    })).doOnError(error -> lease.close()).doOnCancel(lease::close)
+                                            .doOnDiscard(BufferedBody.class, BufferedBody::close)
+                                            .doOnDiscard(PooledDataBuffer.class, DataBufferUtils::release);
+                                }));
     }
 
     /**
@@ -163,7 +184,7 @@ public final class Octets {
      * @param expectedLength declared Content-Length
      * @return an error publisher when validation fails, or {@code null} when validation succeeds
      */
-    private static Mono<Void> validateKnownLength(
+    private static Mono<Void> validateLength(
             Flux<? extends DataBuffer> body,
             int maxBytes,
             AsyncByteBudget budget,
@@ -171,9 +192,8 @@ public final class Octets {
         if (body == null || budget == null || maxBytes <= 0) {
             return Mono.error(new IllegalArgumentException("body, positive maxBytes and budget are required"));
         }
-        if (expectedLength < 0) {
-            return Mono.error(
-                    new ResponseStatusException(HttpStatus.LENGTH_REQUIRED, "Buffered bodies require Content-Length"));
+        if (expectedLength < -1) {
+            return Mono.error(new IllegalArgumentException("expectedLength must be -1 or non-negative"));
         }
         if (expectedLength > maxBytes) {
             return Mono.error(new DataBufferLimitException("Exceeded buffered body limit of " + maxBytes + " bytes"));
@@ -199,7 +219,7 @@ public final class Octets {
      *
      * @param body           source response buffers
      * @param maxBytes       per-body materialization limit
-     * @param expectedLength declared and reserved Content-Length
+     * @param expectedLength declared Content-Length, or {@code -1} when it is unknown
      * @param lease          exact response-byte lease
      * @return segmented buffered body that assumes ownership of the lease
      */
@@ -208,13 +228,17 @@ public final class Octets {
             int maxBytes,
             long expectedLength,
             AsyncByteBudget.Lease lease) {
-        SegmentAccumulator accumulator = new SegmentAccumulator(expectedLength);
+        boolean lengthKnown = expectedLength >= 0;
+        int accumulationLimit = lengthKnown ? Math.toIntExact(expectedLength) : maxBytes;
+        SegmentAccumulator accumulator = new SegmentAccumulator(accumulationLimit);
         return body.<Integer>handle((buffer, sink) -> {
             try {
                 int bytes = buffer.readableByteCount();
-                if ((long) accumulator.length() + bytes > expectedLength
-                        || (long) accumulator.length() + bytes > maxBytes) {
-                    sink.error(new DataBufferLimitException("Body exceeds declared Content-Length"));
+                long nextLength = (long) accumulator.length() + bytes;
+                if (nextLength > accumulationLimit || nextLength > maxBytes) {
+                    String message = lengthKnown ? "Body exceeds declared Content-Length"
+                            : "Exceeded buffered body limit of " + maxBytes + " bytes";
+                    sink.error(new DataBufferLimitException(message));
                     return;
                 }
                 accumulator.append(buffer);
@@ -223,13 +247,114 @@ public final class Octets {
                 release(buffer);
             }
         }).then(Mono.defer(() -> {
-            if (accumulator.length() != expectedLength) {
+            if (lengthKnown && accumulator.length() != expectedLength) {
                 return Mono.error(new DataBufferLimitException("Body length does not match Content-Length"));
             }
             return Mono.just(accumulator.body(lease));
         })).doOnError(error -> lease.close()).doOnCancel(lease::close)
                 .doOnDiscard(BufferedBody.class, BufferedBody::close)
                 .doOnDiscard(PooledDataBuffer.class, DataBufferUtils::release);
+    }
+
+    /**
+     * Consumes an unknown-length relay body while acquiring capacity only as heap segments are needed.
+     *
+     * @param body     source response buffers
+     * @param maxBytes per-body materialization limit
+     * @param budget   process-wide response-byte budget
+     * @return segmented buffered body owning all incremental leases
+     */
+    private static Mono<BufferedBody> readIncrementalSegmented(
+            Flux<? extends DataBuffer> body,
+            int maxBytes,
+            AsyncByteBudget budget) {
+        SegmentAccumulator accumulator = new SegmentAccumulator(maxBytes);
+        SegmentedReservation reservation = new SegmentedReservation();
+        return body.concatMap(buffer -> Mono.defer(() -> {
+            int readable = buffer.readableByteCount();
+            long nextLength = (long) accumulator.length() + readable;
+            if (nextLength > maxBytes) {
+                return Mono
+                        .error(new DataBufferLimitException("Exceeded buffered body limit of " + maxBytes + " bytes"));
+            }
+            long reservedBytes = reservation.bytes();
+            long requiredCapacity = Math
+                    .min(maxBytes, ((nextLength + WRITE_CHUNK_SIZE - 1) / WRITE_CHUNK_SIZE) * WRITE_CHUNK_SIZE);
+            long additional = requiredCapacity - reservedBytes;
+            Mono<Void> capacity = additional == 0 ? Mono.empty()
+                    : acquire(budget, additional).doOnNext(reservation::add).then();
+            return capacity.then(Mono.fromRunnable(() -> accumulator.append(buffer)));
+        }).doFinally(signal -> release(buffer)), 1).then(Mono.fromCallable(() -> {
+            reservation.shrinkTo(accumulator.length());
+            return accumulator.body(reservation);
+        })).doOnError(error -> reservation.close()).doOnCancel(reservation::close)
+                .doOnDiscard(BufferedBody.class, BufferedBody::close)
+                .doOnDiscard(PooledDataBuffer.class, DataBufferUtils::release);
+    }
+
+    /**
+     * Acquires logical buffering capacity using the configured bounded wait.
+     *
+     * @param budget byte budget
+     * @param bytes  exact bytes to acquire
+     * @return acquired lease
+     */
+    private static Mono<AsyncByteBudget.Lease> acquire(AsyncByteBudget budget, long bytes) {
+        return budget.acquire(bytes).timeout(Duration.ofSeconds(Holder.get().getBufferAcquireTimeoutSeconds()))
+                .onErrorMap(
+                        java.util.concurrent.TimeoutException.class,
+                        error -> new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
+                                "Buffered-byte capacity wait timed out", error));
+    }
+
+    /**
+     * Owns the leases acquired while an unknown-length response grows across heap segments.
+     */
+    private static final class SegmentedReservation implements AutoCloseable {
+
+        private final List<AsyncByteBudget.Lease> leases = new ArrayList<>();
+        private long bytes;
+        private boolean closed;
+
+        private synchronized long bytes() {
+            return this.bytes;
+        }
+
+        private synchronized void add(AsyncByteBudget.Lease lease) {
+            if (this.closed) {
+                lease.close();
+                return;
+            }
+            this.leases.add(lease);
+            this.bytes += lease.bytes();
+        }
+
+        private synchronized void shrinkTo(long retainedBytes) {
+            if (this.closed || retainedBytes < 0 || retainedBytes > this.bytes) {
+                throw new IllegalStateException("incremental byte reservation cannot be resized");
+            }
+            long unused = this.bytes - retainedBytes;
+            if (unused > 0) {
+                AsyncByteBudget.Lease last = this.leases.get(this.leases.size() - 1);
+                last.shrinkTo(last.bytes() - unused);
+                this.bytes = retainedBytes;
+            }
+        }
+
+        @Override
+        public void close() {
+            List<AsyncByteBudget.Lease> owned;
+            synchronized (this) {
+                if (this.closed) {
+                    return;
+                }
+                this.closed = true;
+                this.bytes = 0;
+                owned = List.copyOf(this.leases);
+                this.leases.clear();
+            }
+            owned.forEach(AsyncByteBudget.Lease::close);
+        }
     }
 
     /**
@@ -243,9 +368,9 @@ public final class Octets {
         private final List<byte[]> segments;
 
         /**
-         * Declared body length used to size the final segment without over-allocation.
+         * Maximum body length used to bound segment allocation.
          */
-        private final int expectedLength;
+        private final int capacityLimit;
 
         /**
          * Number of source bytes copied so far.
@@ -255,12 +380,12 @@ public final class Octets {
         /**
          * Creates an empty accumulator sized from a previously validated Content-Length.
          *
-         * @param expectedLength exact number of bytes expected from the source
+         * @param capacityLimit maximum number of bytes accepted from the source
          */
-        private SegmentAccumulator(long expectedLength) {
-            this.expectedLength = Math.toIntExact(expectedLength);
-            int capacity = expectedLength <= 0 ? 0
-                    : Math.toIntExact((expectedLength + WRITE_CHUNK_SIZE - 1) / WRITE_CHUNK_SIZE);
+        private SegmentAccumulator(long capacityLimit) {
+            this.capacityLimit = Math.toIntExact(capacityLimit);
+            int capacity = capacityLimit <= 0 ? 0
+                    : Math.toIntExact((capacityLimit + WRITE_CHUNK_SIZE - 1) / WRITE_CHUNK_SIZE);
             this.segments = new ArrayList<>(capacity);
         }
 
@@ -274,7 +399,7 @@ public final class Octets {
             while (remaining > 0) {
                 int offset = this.length % WRITE_CHUNK_SIZE;
                 if (offset == 0) {
-                    this.segments.add(new byte[Math.min(WRITE_CHUNK_SIZE, this.expectedLength - this.length)]);
+                    this.segments.add(new byte[Math.min(WRITE_CHUNK_SIZE, this.capacityLimit - this.length)]);
                 }
                 byte[] segment = this.segments.get(this.segments.size() - 1);
                 int count = Math.min(remaining, segment.length - offset);
@@ -300,6 +425,14 @@ public final class Octets {
          * @return buffered body owning both segments and lease
          */
         private BufferedBody body(AutoCloseable reservation) {
+            if (!this.segments.isEmpty()) {
+                int lastIndex = this.segments.size() - 1;
+                byte[] last = this.segments.get(lastIndex);
+                int used = this.length - lastIndex * WRITE_CHUNK_SIZE;
+                if (used < last.length) {
+                    this.segments.set(lastIndex, Arrays.copyOf(last, used));
+                }
+            }
             return new BufferedBody(this.segments.toArray(byte[][]::new), this.length, reservation);
         }
     }
@@ -375,9 +508,90 @@ public final class Octets {
     }
 
     /**
+     * Attaches a buffered body's ownership to the complete server-response write lifecycle.
+     * <p>
+     * The wrapper also supports explicit cleanup when a response is abandoned before its body publisher is subscribed.
+     *
+     * @param response built server response
+     * @param body     buffered body retained by that response
+     * @return response that closes the body after writing or explicit abandonment
+     */
+    public static ServerResponse own(ServerResponse response, BufferedBody body) {
+        if (response == null || body == null) {
+            throw new IllegalArgumentException("response and body are required");
+        }
+        return new OwnedServerResponse(response, body);
+    }
+
+    /**
+     * Builds an owned response while closing the body if response construction fails or is cancelled.
+     *
+     * @param response response construction publisher
+     * @param body     buffered body retained by the response
+     * @return safely owned response publisher
+     */
+    public static Mono<ServerResponse> own(Mono<ServerResponse> response, BufferedBody body) {
+        if (response == null || body == null) {
+            return Mono.error(new IllegalArgumentException("response and body are required"));
+        }
+        return response.map(value -> own(value, body)).doOnError(error -> body.close()).doOnCancel(body::close)
+                .doOnDiscard(ServerResponse.class, Octets::closeOwnedResponse);
+    }
+
+    /**
+     * Releases a response-owned buffered body when the response will never be written.
+     *
+     * @param response potentially owned response
+     */
+    public static void closeOwnedResponse(ServerResponse response) {
+        if (response instanceof OwnedServerResponse owned) {
+            owned.close();
+        }
+    }
+
+    /**
+     * Delegating response that makes buffered-body ownership span the actual network write.
+     */
+    private static final class OwnedServerResponse implements ServerResponse, AutoCloseable {
+
+        private final ServerResponse delegate;
+        private final BufferedBody body;
+
+        private OwnedServerResponse(ServerResponse delegate, BufferedBody body) {
+            this.delegate = delegate;
+            this.body = body;
+        }
+
+        @Override
+        public HttpStatusCode statusCode() {
+            return this.delegate.statusCode();
+        }
+
+        @Override
+        public HttpHeaders headers() {
+            return this.delegate.headers();
+        }
+
+        @Override
+        public MultiValueMap<String, ResponseCookie> cookies() {
+            return this.delegate.cookies();
+        }
+
+        @Override
+        public Mono<Void> writeTo(ServerWebExchange exchange, ServerResponse.Context context) {
+            return Mono.defer(() -> this.delegate.writeTo(exchange, context)).doFinally(signal -> close());
+        }
+
+        @Override
+        public void close() {
+            this.body.close();
+        }
+    }
+
+    /**
      * Owns buffered bytes and their process-wide logical-byte lease until {@link #close()}.
      */
-    public static final class BufferedBody implements AutoCloseable {
+    public static class BufferedBody implements AutoCloseable {
 
         /**
          * Current segmented representation; cleared after discard or close.

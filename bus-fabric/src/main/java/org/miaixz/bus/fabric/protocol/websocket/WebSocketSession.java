@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CodingErrorAction;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayDeque;
 import java.util.LinkedHashMap;
@@ -69,7 +68,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class WebSocketSession implements Session {
+public class WebSocketSession implements Session {
 
     /**
      * Milliseconds between non-blocking completion checks.
@@ -257,7 +256,7 @@ public final class WebSocketSession implements Session {
      *
      * @param address session address
      */
-    WebSocketSession(final Address address) {
+    public WebSocketSession(final Address address) {
         this(address, null, null, null, null, null, null, null, false, defaultDispatchKey(address), Clock.system(),
                 Timeout.defaults(), null, WebSocketRole.CLIENT, defaultAttributes(EventObserver.noop()), null,
                 EventObserver.noop(), null, Cancellation.create(), Normal.MEBI_64);
@@ -1182,7 +1181,7 @@ public final class WebSocketSession implements Session {
         }
         final Payload source;
         if (opcode == Normal._1) {
-            source = Payload.of(decodeUtf8(payload), StandardCharsets.UTF_8);
+            source = Payload.of(decodeUtf8(payload), Charset.UTF_8);
         } else if (opcode == Builder.WEBSOCKET_OPCODE_BINARY) {
             source = Payload.of(payload);
         } else {
@@ -1617,7 +1616,7 @@ public final class WebSocketSession implements Session {
      */
     private static String decodeUtf8(final byte[] value, final int offset, final int length) {
         try {
-            return StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
+            return Charset.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
                     .onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(value, offset, length))
                     .toString();
         } catch (final CharacterCodingException e) {

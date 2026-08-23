@@ -28,7 +28,7 @@ import java.io.InputStream;
  *
  * @author Kimi Liu
  */
-public final class EmptyInputStream extends InputStream {
+public class EmptyInputStream extends InputStream {
 
     /**
      * The singleton instance of {@code EmptyInputStream}.
@@ -36,9 +36,9 @@ public final class EmptyInputStream extends InputStream {
     public static final EmptyInputStream INSTANCE = new EmptyInputStream();
 
     /**
-     * Private constructor to enforce the singleton pattern.
+     * Creates an empty input stream; the shared instance remains available.
      */
-    private EmptyInputStream() {
+    public EmptyInputStream() {
         // No initialization required.
     }
 

@@ -68,6 +68,16 @@ public class AnsjProvider implements NLPProvider {
     }
 
     /**
+     * Returns the stable Ansj engine name used for named NLP provider selection.
+     *
+     * @return {@code ansj}
+     */
+    @Override
+    public String type() {
+        return "ansj";
+    }
+
+    /**
      * Performs word segmentation on the given text using the configured Ansj {@link Analysis} instance. The result is
      * wrapped in an {@link AnsjResult} to conform to the {@link NLPResult} interface.
      *

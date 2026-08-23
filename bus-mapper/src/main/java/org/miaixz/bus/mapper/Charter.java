@@ -27,12 +27,12 @@ import lombok.experimental.Accessors;
  *
  * @author Kimi Liu
  */
-public final class Charter {
+public class Charter {
 
     /**
      * Creates no instances.
      */
-    private Charter() {
+    public Charter() {
         // No initialization required.
     }
 

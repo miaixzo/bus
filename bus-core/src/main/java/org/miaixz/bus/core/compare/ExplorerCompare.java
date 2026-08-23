@@ -51,7 +51,7 @@ public class ExplorerCompare implements Comparator<CharSequence> {
     /**
      * Creates the shared Windows Explorer-style string comparator.
      */
-    private ExplorerCompare() {
+    public ExplorerCompare() {
         // No initialization required.
     }
 

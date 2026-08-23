@@ -21,16 +21,13 @@ package org.miaixz.bus.extra.captcha;
 
 import java.io.OutputStream;
 
-import org.miaixz.bus.core.Provider;
-import org.miaixz.bus.core.lang.EnumValue;
-
 /**
  * CAPTCHA interface, defining the contract for CAPTCHA objects. Implementations of this interface are responsible for
  * generating CAPTCHA images and their corresponding text.
  *
  * @author Kimi Liu
  */
-public interface CaptchaProvider extends Provider {
+public interface CaptchaProvider {
 
     /**
      * Creates a CAPTCHA. Implementations should generate both a random CAPTCHA string and a CAPTCHA image.
@@ -59,13 +56,5 @@ public interface CaptchaProvider extends Provider {
      * @param out The target output stream to which the CAPTCHA image will be written.
      */
     void write(OutputStream out);
-
-    /**
-     * The type method.
-     */
-    @Override
-    default Object type() {
-        return EnumValue.Povider.CAPTCHA;
-    }
 
 }

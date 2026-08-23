@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.NetKit;
  *
  * @author Kimi Liu
  */
-public final class DnsResolverAdapter implements Resolver {
+public class DnsResolverAdapter implements Resolver {
 
     /**
      * Caller-supplied lookup function that receives a host name and returns resolved addresses.
@@ -44,7 +44,7 @@ public final class DnsResolverAdapter implements Resolver {
      *
      * @param lookup lookup function
      */
-    private DnsResolverAdapter(final Function<String, List<InetAddress>> lookup) {
+    public DnsResolverAdapter(final Function<String, List<InetAddress>> lookup) {
         this.lookup = Assert.notNull(lookup, () -> new ValidateException("DNS lookup must not be null"));
     }
 

@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class Http2Frame implements AutoCloseable {
+public class Http2Frame implements AutoCloseable {
 
     /**
      * Frame type.
@@ -130,7 +130,7 @@ public final class Http2Frame implements AutoCloseable {
      * @param errorCode        error code
      * @param promisedStreamId promised stream id
      */
-    private Http2Frame(final int type, final int streamId, final int flags, final ByteString payload,
+    public Http2Frame(final int type, final int streamId, final int flags, final ByteString payload,
             final List<Http2Header> headers, final Http2Settings settings, final long windowDelta, final int errorCode,
             final int promisedStreamId) {
         this(type, streamId, flags, payload, headers, settings, windowDelta, errorCode, promisedStreamId, null, null,

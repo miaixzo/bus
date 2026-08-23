@@ -42,7 +42,7 @@ public abstract class AbstractDisplay implements Display {
      *
      * @param edid a byte array representing a display EDID
      */
-    protected AbstractDisplay(byte[] edid) {
+    public AbstractDisplay(byte[] edid) {
         this.displayInfo = new DisplayInfoImpl(edid);
     }
 

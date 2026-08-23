@@ -32,7 +32,7 @@ import org.miaixz.bus.fabric.network.dns.server.DnsTransport;
  *
  * @author Kimi Liu
  */
-public final class DnsQuicRuntime {
+public class DnsQuicRuntime {
 
     /**
      * Netty Incubator QUIC marker class.
@@ -50,9 +50,9 @@ public final class DnsQuicRuntime {
     public static final String ALPN = DnsTransport.DOQ.alpn();
 
     /**
-     * Restricts the class to static operations.
+     * Creates a stateless DNS-over-QUIC runtime entry point.
      */
-    private DnsQuicRuntime() {
+    public DnsQuicRuntime() {
         // No initialization required.
     }
 

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.extra.pinyin;
 
+import java.util.ServiceConfigurationError;
+
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
@@ -87,40 +89,67 @@ public class PinyinFactory {
      * @param name The name of the engine (case-insensitive), e.g., `Bopomofo4j`, `Houbb`, `JPinyin`, `Pinyin4j`,
      *             `TinyPinyin`.
      * @return The {@link PinyinProvider} instance corresponding to the given name.
-     * @throws InternalException if no engine with the specified name is found.
+     * @throws IllegalArgumentException if the provider name is null or blank
+     * @throws InternalException        if no provider with the specified name is available via SPI, a provider declares
+     *                                  an invalid type, or duplicate types are discovered
      */
     public static PinyinProvider of(String name) throws InternalException {
         Logger.debug(true, "Extra", "Named pinyin provider lookup started: requestedProvider={}", name);
-        if (!StringKit.endWithIgnoreCase(name, "Provider")) {
-            name = name + "Provider";
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Pinyin provider name must not be null or blank");
         }
+        final String candidate = name.trim();
+        final String requested = StringKit.endWithIgnoreCase(candidate, "Provider")
+                ? candidate.substring(0, candidate.length() - "Provider".length())
+                : candidate;
         final ServiceLoader<PinyinProvider> list = NormalSpiLoader.loadList(PinyinProvider.class);
         Logger.debug(
                 true,
                 "Extra",
                 "Named pinyin provider candidates loaded: normalizedProvider={}, candidateCount={}",
-                name,
+                requested,
                 list.getServiceNames().size());
+        PinyinProvider match = null;
         for (final String serviceName : list.getServiceNames()) {
-            if (StringKit.endWithIgnoreCase(serviceName, name)) {
-                final PinyinProvider provider = list.getService(serviceName);
+            final PinyinProvider provider;
+            try {
+                provider = list.getService(serviceName);
+            } catch (RuntimeException | ServiceConfigurationError | LinkageError unavailable) {
+                continue;
+            }
+            if (provider != null) {
+                final String type = provider.type();
+                if (type == null || type.isBlank()) {
+                    throw new InternalException(
+                            "Pinyin provider type must not be null or blank: " + provider.getClass().getName());
+                }
+                if (!type.equalsIgnoreCase(requested)) {
+                    continue;
+                }
+                if (match != null) {
+                    throw new InternalException("Duplicate Pinyin provider type '" + requested + "': "
+                            + match.getClass().getName() + " and " + provider.getClass().getName());
+                }
+                match = provider;
                 Logger.debug(
                         false,
                         "Extra",
                         "Named pinyin provider selected: normalizedProvider={}, serviceName={}, provider={}",
-                        name,
+                        requested,
                         serviceName,
-                        provider == null ? "null" : provider.getClass().getSimpleName());
-                return provider;
+                        provider.getClass().getSimpleName());
             }
+        }
+        if (match != null) {
+            return match;
         }
         Logger.warn(
                 false,
                 "Extra",
                 "Named pinyin provider lookup failed: normalizedProvider={}, candidateCount={}",
-                name,
+                requested,
                 list.getServiceNames().size());
-        throw new InternalException("No such provider named: " + name);
+        throw new InternalException("No such provider named: " + requested);
     }
 
 }

@@ -22,11 +22,11 @@ package org.miaixz.bus.fabric.network.dns.message;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -39,7 +39,7 @@ import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
  *
  * @author Kimi Liu
  */
-public final class DnsCodec {
+public class DnsCodec {
 
     /**
      * Maximum unsigned 16-bit DNS wire value.
@@ -132,9 +132,9 @@ public final class DnsCodec {
     private static final int EDNS_OPTION_EXTENDED_DNS_ERROR = 15;
 
     /**
-     * Restricts the class to static operations.
+     * Creates a stateless DNS message codec entry point.
      */
-    private DnsCodec() {
+    public DnsCodec() {
         // No initialization required.
     }
 
@@ -806,7 +806,7 @@ public final class DnsCodec {
             return;
         }
         final byte[] text = extendedError.text() == null ? Normal.EMPTY_BYTE_ARRAY
-                : extendedError.text().getBytes(StandardCharsets.UTF_8);
+                : extendedError.text().getBytes(Charset.UTF_8);
         output.writeShort(EDNS_OPTION_EXTENDED_DNS_ERROR);
         output.writeShort(Short.BYTES + text.length);
         output.writeShort(extendedError.code());

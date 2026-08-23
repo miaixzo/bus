@@ -34,7 +34,7 @@ import org.miaixz.bus.health.Executor;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Dmidecode {
+public class Dmidecode {
 
     /**
      * Constructs a new Dmidecode instance.

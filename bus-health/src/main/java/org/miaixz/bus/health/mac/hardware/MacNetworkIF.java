@@ -41,7 +41,7 @@ import org.miaixz.bus.health.mac.jna.SystemConfiguration;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class MacNetworkIF extends AbstractNetworkIF {
+public class MacNetworkIF extends AbstractNetworkIF {
 
     /**
      * The ifType value.
@@ -246,7 +246,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
      * Description inherited from parent class or interface.
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         int index = queryNetworkInterface().getIndex();
         return updateNetworkStats(NetStat.queryIFdata(index));
     }

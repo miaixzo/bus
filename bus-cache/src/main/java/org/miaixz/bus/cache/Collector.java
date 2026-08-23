@@ -163,7 +163,7 @@ public interface Collector {
          * @param required The total number of cache requests.
          * @param rate     The pre-formatted hit rate string.
          */
-        private Snapshot(long hit, long required, String rate) {
+        public Snapshot(long hit, long required, String rate) {
             this.hit = hit;
             this.required = required;
             this.rate = rate;

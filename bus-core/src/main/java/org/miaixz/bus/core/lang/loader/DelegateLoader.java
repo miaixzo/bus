@@ -38,7 +38,7 @@ public abstract class DelegateLoader extends ResourceLoader implements Loader {
      * @param delegate The {@link Loader} instance to delegate to. Must not be {@code null}.
      * @throws IllegalArgumentException If the provided delegate is {@code null}.
      */
-    protected DelegateLoader(Loader delegate) {
+    public DelegateLoader(Loader delegate) {
         if (null == delegate) {
             throw new IllegalArgumentException("delegate must not be null");
         }

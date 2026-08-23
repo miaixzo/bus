@@ -37,12 +37,12 @@ import org.miaixz.bus.core.xyz.IteratorKit;
  * @see <a href="http://code.google.com/p/concurrentlinkedhashmap/">ConcurrentLinkedHashMap Project</a>
  * @author Kimi Liu
  */
-public final class Weighers {
+public class Weighers {
 
     /**
      * Keeps cache-entry weigher selection on the static API.
      */
-    private Weighers() {
+    public Weighers() {
         throw new AssertionError("No " + Weighers.class.getName() + " instances for you!");
     }
 

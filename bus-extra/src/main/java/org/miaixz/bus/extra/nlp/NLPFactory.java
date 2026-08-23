@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.extra.nlp;
 
+import java.util.ServiceConfigurationError;
+
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
@@ -73,45 +75,72 @@ public class NLPFactory {
 
     /**
      * Creates a custom word segmentation engine object by its name. The engine name is case-insensitive and can
-     * optionally include the "Engine" suffix. Supported engine names include, but are not limited to: `Analysis`,
-     * `Ansj`, `HanLP`, `IKAnalyzer`, `Jcseg`, `Jieba`, `Mmseg`, `Mynlp`, `Word`.
+     * optionally include the "Engine" suffix. Built-in engine names are {@code ansj}, {@code hanlp}, {@code jcseg},
+     * {@code jieba}, {@code mmseg}, {@code mynlp}, {@code smartcn}, and {@code word}.
      *
-     * @param engineName The name of the engine to create (e.g., `Analysis`, `Ansj`).
+     * @param engineName The name of the engine to create, optionally ending in {@code Engine}.
      * @return An {@link NLPProvider} instance corresponding to the given engine name.
-     * @throws InternalException if no engine with the corresponding name is found via SPI.
+     * @throws IllegalArgumentException if the engine name is null or blank
+     * @throws InternalException        if no engine with the corresponding name is available via SPI, a provider
+     *                                  declares an invalid type, or duplicate types are discovered
      */
     public static NLPProvider createEngine(String engineName) throws InternalException {
         Logger.debug(true, "Extra", "Named segmentation engine lookup started: requestedEngine={}", engineName);
-        if (!StringKit.endWithIgnoreCase(engineName, "Engine")) {
-            engineName = engineName + "Engine";
+        if (engineName == null || engineName.isBlank()) {
+            throw new IllegalArgumentException("NLP engine name must not be null or blank");
         }
+        final String candidate = engineName.trim();
+        final String requested = StringKit.endWithIgnoreCase(candidate, "Engine")
+                ? candidate.substring(0, candidate.length() - "Engine".length())
+                : candidate;
         final ServiceLoader<NLPProvider> list = NormalSpiLoader.loadList(NLPProvider.class);
         Logger.debug(
                 true,
                 "Extra",
                 "Named segmentation engine candidates loaded: normalizedEngine={}, candidateCount={}",
-                engineName,
+                requested,
                 list.getServiceNames().size());
+        NLPProvider match = null;
         for (final String serviceName : list.getServiceNames()) {
-            if (StringKit.endWithIgnoreCase(serviceName, engineName)) {
-                final NLPProvider provider = list.getService(serviceName);
+            final NLPProvider provider;
+            try {
+                provider = list.getService(serviceName);
+            } catch (RuntimeException | ServiceConfigurationError | LinkageError unavailable) {
+                continue;
+            }
+            if (provider != null) {
+                final String type = provider.type();
+                if (type == null || type.isBlank()) {
+                    throw new InternalException(
+                            "NLP provider type must not be null or blank: " + provider.getClass().getName());
+                }
+                if (!type.equalsIgnoreCase(requested)) {
+                    continue;
+                }
+                if (match != null) {
+                    throw new InternalException("Duplicate NLP provider type '" + requested + "': "
+                            + match.getClass().getName() + " and " + provider.getClass().getName());
+                }
+                match = provider;
                 Logger.debug(
                         false,
                         "Extra",
                         "Named segmentation engine selected: normalizedEngine={}, serviceName={}, provider={}",
-                        engineName,
+                        requested,
                         serviceName,
-                        provider == null ? "null" : provider.getClass().getSimpleName());
-                return provider;
+                        provider.getClass().getSimpleName());
             }
+        }
+        if (match != null) {
+            return match;
         }
         Logger.warn(
                 false,
                 "Extra",
                 "Named segmentation engine lookup failed: normalizedEngine={}, candidateCount={}",
-                engineName,
+                requested,
                 list.getServiceNames().size());
-        throw new InternalException("No such provider named: " + engineName);
+        throw new InternalException("No such provider named: " + requested);
     }
 
     /**

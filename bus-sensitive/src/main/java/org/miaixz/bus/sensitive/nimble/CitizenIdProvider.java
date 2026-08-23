@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.sensitive.nimble;
 
+import org.miaixz.bus.core.lang.EnumValue;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -38,6 +40,16 @@ public class CitizenIdProvider extends AbstractProvider {
      */
     public CitizenIdProvider() {
         // No initialization required.
+    }
+
+    /**
+     * Returns the masking strategy used to register this citizen-ID provider.
+     *
+     * @return {@link EnumValue.Masking#CITIZENID}
+     */
+    @Override
+    public EnumValue.Masking type() {
+        return EnumValue.Masking.CITIZENID;
     }
 
     /**

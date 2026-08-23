@@ -21,6 +21,9 @@ package org.miaixz.bus.core.net.url;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
 import java.util.*;
 
 import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
@@ -352,7 +355,13 @@ public class UrlDecoder implements Serializable {
             bytes[count++] = (byte) ((hexDigit(value.charAt(index + 1)) << 4) + hexDigit(value.charAt(index + 2)));
             index += 3;
         }
-        builder.append(new String(bytes, 0, count, charset));
+        try {
+            builder.append(
+                    charset.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
+                            .onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(bytes, 0, count)));
+        } catch (final CharacterCodingException cause) {
+            throw new IllegalArgumentException("Invalid URL percent-encoded character sequence", cause);
+        }
         return index;
     }
 

@@ -24,7 +24,7 @@
  * {@code AbstractRegistry} provides the low-level cache-backed implementation of the
  * {@link org.miaixz.bus.cortex.Registry} contract. {@code StoreBackedRegistry} builds on that foundation to coordinate
  * optional {@code RegistryStore} persistence, cache warming and rebuild, and ordered post-commit {@code RegistryChange}
- * events. Shared watch lifecycles, async event fan-out, namespace limits, and per-watch backlog handling live in
+ * events. Shared watch lifecycles, async event fan-out, space limits, and per-watch backlog handling live in
  * {@code org.miaixz.bus.cortex.magic.watch}. {@code HealthProbeScheduler} runs fixed-rate probe submission with a
  * virtual-thread worker pool, republishes refreshed API instance health through {@code ApiRegistry}, and emits watch
  * updates when instance state changes.

@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.logger
+ * Module: {@code bus.logger}
+ *
+ * <p>
+ * Provides a logging facade independent of any specific logging framework.
+ *
+ * <p>
+ * Includes common logger contracts, severity levels, message formatting, console logging, and adapters for Apache
+ * Commons Logging, Log4j, JBoss Logging, JDK logging, SLF4J, and tinylog.
  *
  * @author Kimi Liu
  */

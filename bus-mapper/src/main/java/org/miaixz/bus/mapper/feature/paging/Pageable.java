@@ -202,7 +202,7 @@ public interface Pageable extends Serializable {
      * @author Kimi Liu
      */
     @Getter
-    final class PageRequest implements Pageable {
+    class PageRequest implements Pageable {
 
         /**
          * Serialization version for {@link PageRequest}.
@@ -232,7 +232,7 @@ public interface Pageable extends Serializable {
          * @param pageSize the requested page size
          * @param sort     the sort definition
          */
-        private PageRequest(int pageNo, int pageSize, Sort sort) {
+        public PageRequest(int pageNo, int pageSize, Sort sort) {
             this.pageNo = Math.max(1, pageNo);
             this.pageSize = Math.max(1, pageSize);
             this.sort = sort != null ? sort : Sort.unsorted();

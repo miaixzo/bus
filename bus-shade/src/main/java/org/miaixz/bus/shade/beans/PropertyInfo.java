@@ -43,7 +43,7 @@ public class PropertyInfo implements Serializable {
     }
 
     @Serial
-    private static final long serialVersionUID = -1L;
+    private static final long serialVersionUID = 2812590683152L;
 
     /**
      * The name of the database column.

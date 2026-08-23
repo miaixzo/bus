@@ -32,8 +32,7 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  * @author Kimi Liu
  */
-public sealed interface CardinalityPolicy
-        permits CardinalityPolicy.FirstN, CardinalityPolicy.TopN, CardinalityPolicy.Deny {
+public interface CardinalityPolicy {
 
     /**
      * Evaluate a tag value. Returns the value that should be used (original, "__overflow__", "__other__", or empty for
@@ -82,7 +81,7 @@ public sealed interface CardinalityPolicy
      *
      * @author Kimi Liu
      */
-    final class FirstN implements CardinalityPolicy {
+    class FirstN implements CardinalityPolicy {
 
         /**
          * Maximum number of distinct values to allow before overflowing.
@@ -99,7 +98,7 @@ public sealed interface CardinalityPolicy
          *
          * @param max maximum number of distinct values to allow before overflowing
          */
-        FirstN(int max) {
+        public FirstN(int max) {
             this.max = max;
         }
 
@@ -129,7 +128,7 @@ public sealed interface CardinalityPolicy
      *
      * @author Kimi Liu
      */
-    final class TopN implements CardinalityPolicy {
+    class TopN implements CardinalityPolicy {
 
         /**
          * Maximum number of top-frequency values to retain.
@@ -146,7 +145,7 @@ public sealed interface CardinalityPolicy
          *
          * @param max number of top-frequency values to retain
          */
-        TopN(int max) {
+        public TopN(int max) {
             this.max = max;
         }
 
@@ -197,7 +196,7 @@ public sealed interface CardinalityPolicy
      *
      * @author Kimi Liu
      */
-    final class Deny implements CardinalityPolicy {
+    class Deny implements CardinalityPolicy {
 
         /**
          * Singleton instance; this policy has no state.
@@ -205,9 +204,9 @@ public sealed interface CardinalityPolicy
         static final Deny INSTANCE = new Deny();
 
         /**
-         * Private constructor; use {@link #INSTANCE} singleton.
+         * Creates a deny policy; {@link #INSTANCE} remains available as the shared form.
          */
-        private Deny() {
+        public Deny() {
             // No initialization required.
         }
 

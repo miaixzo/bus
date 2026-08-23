@@ -26,12 +26,13 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.nlp.AbstractResult;
+import org.miaixz.bus.extra.nlp.NLPResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
 import org.miaixz.bus.logger.Logger;
 
 /**
  * Abstract result wrapper for Lucene-analysis word segmentation. This class adapts the Lucene {@link TokenStream} to
- * the common {@link org.miaixz.bus.extra.nlp.NLPResult} interface. Project homepage: <a href=
+ * the common {@link NLPResult} interface. Project homepage: <a href=
  * "https://github.com/apache/lucene-solr/tree/master/lucene/analysis">https://github.com/apache/lucene-solr/tree/master/lucene/analysis</a>
  *
  * @author Kimi Liu

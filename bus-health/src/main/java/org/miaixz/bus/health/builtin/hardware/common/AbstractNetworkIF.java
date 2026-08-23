@@ -106,7 +106,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
      * @param netint The core java {@link NetworkInterface} backing this object.
      * @throws InstantiationException If a socket exception prevents access to the backing interface.
      */
-    protected AbstractNetworkIF(NetworkInterface netint) throws InstantiationException {
+    public AbstractNetworkIF(NetworkInterface netint) throws InstantiationException {
         this(netint, netint.getDisplayName());
     }
 

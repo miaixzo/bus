@@ -445,7 +445,7 @@ public class Connection implements Serializable {
      *
      * @return the result.
      */
-    public final Device getDevice() {
+    public Device getDevice() {
         return device;
     }
 
@@ -454,7 +454,7 @@ public class Connection implements Serializable {
      *
      * @param device the device.
      */
-    public final void setDevice(Device device) {
+    public void setDevice(Device device) {
         if (device != null && this.device != null)
             throw new IllegalStateException("already owned by " + device);
         this.device = device;
@@ -465,7 +465,7 @@ public class Connection implements Serializable {
      *
      * @return the result.
      */
-    public final String getHostname() {
+    public String getHostname() {
         return hostname;
     }
 
@@ -474,7 +474,7 @@ public class Connection implements Serializable {
      *
      * @param hostname the hostname.
      */
-    public final void setHostname(String hostname) {
+    public void setHostname(String hostname) {
         if (Objects.equals(hostname, this.hostname))
             return;
 
@@ -487,7 +487,7 @@ public class Connection implements Serializable {
      *
      * @return the result.
      */
-    public final String getBindAddress() {
+    public String getBindAddress() {
         return bindAddress;
     }
 
@@ -496,7 +496,7 @@ public class Connection implements Serializable {
      *
      * @param bindAddress the bind address.
      */
-    public final void setBindAddress(String bindAddress) {
+    public void setBindAddress(String bindAddress) {
         if (Objects.equals(bindAddress, this.bindAddress))
             return;
 
@@ -592,7 +592,7 @@ public class Connection implements Serializable {
      *
      * @return the result.
      */
-    public final String getCommonName() {
+    public String getCommonName() {
         return commonName;
     }
 
@@ -601,7 +601,7 @@ public class Connection implements Serializable {
      *
      * @param name the name.
      */
-    public final void setCommonName(String name) {
+    public void setCommonName(String name) {
         this.commonName = name;
     }
 
@@ -610,7 +610,7 @@ public class Connection implements Serializable {
      *
      * @return the result.
      */
-    public final int getPort() {
+    public int getPort() {
         return port;
     }
 
@@ -619,7 +619,7 @@ public class Connection implements Serializable {
      *
      * @param port the port.
      */
-    public final void setPort(int port) {
+    public void setPort(int port) {
         if (this.port == port)
             return;
 
@@ -635,7 +635,7 @@ public class Connection implements Serializable {
      *
      * @return the http proxy.
      */
-    public final String getHttpProxy() {
+    public String getHttpProxy() {
         return httpProxy;
     }
 
@@ -644,7 +644,7 @@ public class Connection implements Serializable {
      *
      * @param proxy the proxy.
      */
-    public final void setHttpProxy(String proxy) {
+    public void setHttpProxy(String proxy) {
         this.httpProxy = proxy;
     }
 
@@ -653,7 +653,7 @@ public class Connection implements Serializable {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean useHttpProxy() {
+    public boolean useHttpProxy() {
         return httpProxy != null;
     }
 
@@ -662,7 +662,7 @@ public class Connection implements Serializable {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isServer() {
+    public boolean isServer() {
         return port > 0;
     }
 
@@ -671,7 +671,7 @@ public class Connection implements Serializable {
      *
      * @return the backlog.
      */
-    public final int getBacklog() {
+    public int getBacklog() {
         return backlog;
     }
 
@@ -680,7 +680,7 @@ public class Connection implements Serializable {
      *
      * @param backlog the backlog.
      */
-    public final void setBacklog(int backlog) {
+    public void setBacklog(int backlog) {
         if (this.backlog == backlog)
             return;
 
@@ -696,7 +696,7 @@ public class Connection implements Serializable {
      *
      * @return the connect timeout.
      */
-    public final int getConnectTimeout() {
+    public int getConnectTimeout() {
         return connectTimeout;
     }
 
@@ -705,7 +705,7 @@ public class Connection implements Serializable {
      *
      * @param timeout the timeout.
      */
-    public final void setConnectTimeout(int timeout) {
+    public void setConnectTimeout(int timeout) {
         if (timeout < 0)
             throw new IllegalArgumentException("timeout: " + timeout);
         this.connectTimeout = timeout;
@@ -716,7 +716,7 @@ public class Connection implements Serializable {
      *
      * @return the int
      */
-    public final int getRequestTimeout() {
+    public int getRequestTimeout() {
         return requestTimeout;
     }
 
@@ -725,7 +725,7 @@ public class Connection implements Serializable {
      *
      * @param timeout the timeout.
      */
-    public final void setRequestTimeout(int timeout) {
+    public void setRequestTimeout(int timeout) {
         if (timeout < 0)
             throw new IllegalArgumentException("timeout: " + timeout);
         this.requestTimeout = timeout;
@@ -736,7 +736,7 @@ public class Connection implements Serializable {
      *
      * @return the accept timeout.
      */
-    public final int getAcceptTimeout() {
+    public int getAcceptTimeout() {
         return acceptTimeout;
     }
 
@@ -745,7 +745,7 @@ public class Connection implements Serializable {
      *
      * @param timeout the timeout.
      */
-    public final void setAcceptTimeout(int timeout) {
+    public void setAcceptTimeout(int timeout) {
         if (timeout < 0)
             throw new IllegalArgumentException("timeout: " + timeout);
         this.acceptTimeout = timeout;
@@ -756,7 +756,7 @@ public class Connection implements Serializable {
      *
      * @return the result.
      */
-    public final int getReleaseTimeout() {
+    public int getReleaseTimeout() {
         return releaseTimeout;
     }
 
@@ -765,7 +765,7 @@ public class Connection implements Serializable {
      *
      * @param timeout the timeout.
      */
-    public final void setReleaseTimeout(int timeout) {
+    public void setReleaseTimeout(int timeout) {
         if (timeout < 0)
             throw new IllegalArgumentException("timeout: " + timeout);
         this.releaseTimeout = timeout;
@@ -796,7 +796,7 @@ public class Connection implements Serializable {
      *
      * @return the result.
      */
-    public final int getSocketCloseDelay() {
+    public int getSocketCloseDelay() {
         return socketCloseDelay;
     }
 
@@ -805,7 +805,7 @@ public class Connection implements Serializable {
      *
      * @param delay the delay.
      */
-    public final void setSocketCloseDelay(int delay) {
+    public void setSocketCloseDelay(int delay) {
         if (delay < 0)
             throw new IllegalArgumentException("delay: " + delay);
         this.socketCloseDelay = delay;
@@ -852,7 +852,7 @@ public class Connection implements Serializable {
      *
      * @return Timeout in ms or {@code 0} (= no timeout).
      */
-    public final int getResponseTimeout() {
+    public int getResponseTimeout() {
         return responseTimeout;
     }
 
@@ -861,7 +861,7 @@ public class Connection implements Serializable {
      *
      * @param timeout Timeout in ms or {@code 0} (= no timeout).
      */
-    public final void setResponseTimeout(int timeout) {
+    public void setResponseTimeout(int timeout) {
         this.responseTimeout = timeout;
     }
 
@@ -870,7 +870,7 @@ public class Connection implements Serializable {
      *
      * @return Timeout in ms or {@code 0} (= no timeout).
      */
-    public final int getRetrieveTimeout() {
+    public int getRetrieveTimeout() {
         return retrieveTimeout;
     }
 
@@ -879,7 +879,7 @@ public class Connection implements Serializable {
      *
      * @param timeout Timeout in ms or {@code 0} (= no timeout).
      */
-    public final void setRetrieveTimeout(int timeout) {
+    public void setRetrieveTimeout(int timeout) {
         this.retrieveTimeout = timeout;
     }
 
@@ -890,7 +890,7 @@ public class Connection implements Serializable {
      * @return if {@code false}, restart the timer with the specified timeout for outstanding C-GET and C-MOVE RSPs on
      *         receive of pending RSPs, otherwise not.
      */
-    public final boolean isRetrieveTimeoutTotal() {
+    public boolean isRetrieveTimeoutTotal() {
         return retrieveTimeoutTotal;
     }
 
@@ -901,7 +901,7 @@ public class Connection implements Serializable {
      * @param total if {@code false}, restart the timer with the specified timeout for outstanding C-GET and C-MOVE RSPs
      *              on receive of pending RSPs, otherwise not.
      */
-    public final void setRetrieveTimeoutTotal(boolean total) {
+    public void setRetrieveTimeoutTotal(boolean total) {
         this.retrieveTimeoutTotal = total;
     }
 
@@ -910,7 +910,7 @@ public class Connection implements Serializable {
      *
      * @return Timeout in ms or {@code 0} (= no timeout).
      */
-    public final int getIdleTimeout() {
+    public int getIdleTimeout() {
         return idleTimeout;
     }
 
@@ -919,7 +919,7 @@ public class Connection implements Serializable {
      *
      * @param timeout Timeout in ms or {@code 0} (= no timeout).
      */
-    public final void setIdleTimeout(int timeout) {
+    public void setIdleTimeout(int timeout) {
         this.idleTimeout = timeout;
     }
 
@@ -950,7 +950,7 @@ public class Connection implements Serializable {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isTls() {
+    public boolean isTls() {
         return tlsCipherSuites.length > 0;
     }
 
@@ -959,7 +959,7 @@ public class Connection implements Serializable {
      *
      * @return the tls protocols.
      */
-    public final String[] getTlsProtocols() {
+    public String[] getTlsProtocols() {
         return tlsProtocols;
     }
 
@@ -968,7 +968,7 @@ public class Connection implements Serializable {
      *
      * @param tlsProtocols the tls protocols.
      */
-    public final void setTlsProtocols(String... tlsProtocols) {
+    public void setTlsProtocols(String... tlsProtocols) {
         if (Arrays.equals(this.tlsProtocols, tlsProtocols))
             return;
 
@@ -981,7 +981,7 @@ public class Connection implements Serializable {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isTlsNeedClientAuth() {
+    public boolean isTlsNeedClientAuth() {
         return tlsNeedClientAuth;
     }
 
@@ -990,7 +990,7 @@ public class Connection implements Serializable {
      *
      * @param tlsNeedClientAuth the tls need client auth.
      */
-    public final void setTlsNeedClientAuth(boolean tlsNeedClientAuth) {
+    public void setTlsNeedClientAuth(boolean tlsNeedClientAuth) {
         if (this.tlsNeedClientAuth == tlsNeedClientAuth)
             return;
 
@@ -1003,7 +1003,7 @@ public class Connection implements Serializable {
      *
      * @return the result.
      */
-    public final int getReceiveBufferSize() {
+    public int getReceiveBufferSize() {
         return receiveBufferSize;
     }
 
@@ -1012,7 +1012,7 @@ public class Connection implements Serializable {
      *
      * @param size the size.
      */
-    public final void setReceiveBufferSize(int size) {
+    public void setReceiveBufferSize(int size) {
         if (size < 0)
             throw new IllegalArgumentException("size: " + size);
         this.receiveBufferSize = size;
@@ -1071,7 +1071,7 @@ public class Connection implements Serializable {
      *
      * @return the result.
      */
-    public final int getSendBufferSize() {
+    public int getSendBufferSize() {
         return sendBufferSize;
     }
 
@@ -1080,7 +1080,7 @@ public class Connection implements Serializable {
      *
      * @param size the size.
      */
-    public final void setSendBufferSize(int size) {
+    public void setSendBufferSize(int size) {
         if (size < 0)
             throw new IllegalArgumentException("size: " + size);
         this.sendBufferSize = size;
@@ -1091,7 +1091,7 @@ public class Connection implements Serializable {
      *
      * @return the send pdu length.
      */
-    public final int getSendPDULength() {
+    public int getSendPDULength() {
         return sendPDULength;
     }
 
@@ -1100,7 +1100,7 @@ public class Connection implements Serializable {
      *
      * @param sendPDULength the send pdu length.
      */
-    public final void setSendPDULength(int sendPDULength) {
+    public void setSendPDULength(int sendPDULength) {
         this.sendPDULength = sendPDULength;
     }
 
@@ -1109,7 +1109,7 @@ public class Connection implements Serializable {
      *
      * @return the receive pdu length.
      */
-    public final int getReceivePDULength() {
+    public int getReceivePDULength() {
         return receivePDULength;
     }
 
@@ -1118,7 +1118,7 @@ public class Connection implements Serializable {
      *
      * @param receivePDULength the receive pdu length.
      */
-    public final void setReceivePDULength(int receivePDULength) {
+    public void setReceivePDULength(int receivePDULength) {
         this.receivePDULength = receivePDULength;
     }
 
@@ -1127,7 +1127,7 @@ public class Connection implements Serializable {
      *
      * @return the max ops performed.
      */
-    public final int getMaxOpsPerformed() {
+    public int getMaxOpsPerformed() {
         return maxOpsPerformed;
     }
 
@@ -1136,7 +1136,7 @@ public class Connection implements Serializable {
      *
      * @param maxOpsPerformed the max ops performed.
      */
-    public final void setMaxOpsPerformed(int maxOpsPerformed) {
+    public void setMaxOpsPerformed(int maxOpsPerformed) {
         this.maxOpsPerformed = maxOpsPerformed;
     }
 
@@ -1145,7 +1145,7 @@ public class Connection implements Serializable {
      *
      * @return the max ops invoked.
      */
-    public final int getMaxOpsInvoked() {
+    public int getMaxOpsInvoked() {
         return maxOpsInvoked;
     }
 
@@ -1154,7 +1154,7 @@ public class Connection implements Serializable {
      *
      * @param maxOpsInvoked the max ops invoked.
      */
-    public final void setMaxOpsInvoked(int maxOpsInvoked) {
+    public void setMaxOpsInvoked(int maxOpsInvoked) {
         this.maxOpsInvoked = maxOpsInvoked;
     }
 
@@ -1163,7 +1163,7 @@ public class Connection implements Serializable {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isPackPDV() {
+    public boolean isPackPDV() {
         return packPDV;
     }
 
@@ -1172,7 +1172,7 @@ public class Connection implements Serializable {
      *
      * @param packPDV the pack pdv.
      */
-    public final void setPackPDV(boolean packPDV) {
+    public void setPackPDV(boolean packPDV) {
         this.packPDV = packPDV;
     }
 
@@ -1181,7 +1181,7 @@ public class Connection implements Serializable {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isTcpNoDelay() {
+    public boolean isTcpNoDelay() {
         return tcpNoDelay;
     }
 
@@ -1190,7 +1190,7 @@ public class Connection implements Serializable {
      *
      * @param tcpNoDelay the tcp no delay.
      */
-    public final void setTcpNoDelay(boolean tcpNoDelay) {
+    public void setTcpNoDelay(boolean tcpNoDelay) {
         this.tcpNoDelay = tcpNoDelay;
     }
 
@@ -1243,7 +1243,7 @@ public class Connection implements Serializable {
      *
      * @return the result.
      */
-    public final String[] getBlacklist() {
+    public String[] getBlacklist() {
         return blacklist;
     }
 
@@ -1252,7 +1252,7 @@ public class Connection implements Serializable {
      *
      * @param blacklist the blacklist.
      */
-    public final void setBlacklist(String[] blacklist) {
+    public void setBlacklist(String[] blacklist) {
         this.blacklist = blacklist;
         this.blacklistAddrs = null;
     }
@@ -1455,7 +1455,7 @@ public class Connection implements Serializable {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isListening() {
+    public boolean isListening() {
         return listener != null;
     }
 

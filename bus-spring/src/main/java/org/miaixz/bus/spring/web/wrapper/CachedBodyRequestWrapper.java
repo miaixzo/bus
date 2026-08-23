@@ -20,8 +20,6 @@
 package org.miaixz.bus.spring.web.wrapper;
 
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;
@@ -29,6 +27,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 
 import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.RelevantException;
 
 /**
@@ -102,15 +101,15 @@ public class CachedBodyRequestWrapper extends HttpServletRequestWrapper {
      *
      * @return request charset
      */
-    private Charset requestCharset() {
+    private java.nio.charset.Charset requestCharset() {
         String encoding = getCharacterEncoding();
         if (encoding == null || encoding.isBlank()) {
-            return StandardCharsets.UTF_8;
+            return Charset.UTF_8;
         }
         try {
-            return Charset.forName(encoding);
+            return java.nio.charset.Charset.forName(encoding);
         } catch (RuntimeException ignored) {
-            return StandardCharsets.UTF_8;
+            return Charset.UTF_8;
         }
     }
 

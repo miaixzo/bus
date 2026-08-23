@@ -37,12 +37,12 @@ import org.miaixz.bus.cortex.registry.prompt.PromptAssets;
  *
  * @author Kimi Liu
  */
-public final class RegistryAssets {
+public class RegistryAssets {
 
     /**
      * Keeps registry asset lookup on the static API.
      */
-    private RegistryAssets() {
+    public RegistryAssets() {
         // No initialization required.
     }
 
@@ -194,7 +194,7 @@ public final class RegistryAssets {
      */
     private static void copyBase(Assets target, Assets source) {
         target.setId(source.getId());
-        target.setNamespace_id(source.getNamespace_id());
+        target.setSpace_id(source.getSpace_id());
         target.setApp_id(source.getApp_id());
         target.setType(source.getType());
         target.setStatus(source.getStatus());
@@ -213,7 +213,7 @@ public final class RegistryAssets {
         target.setStream(source.getStream());
         target.setVerb(source.getVerb());
         target.setPolicy(source.getPolicy());
-        target.setSign(source.getSign());
+        target.setSigning(source.getSigning());
         target.setScope(source.getScope());
         target.setRetries(source.getRetries());
         target.setTimeout(source.getTimeout());

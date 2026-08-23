@@ -26,6 +26,7 @@ import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -37,7 +38,7 @@ import org.miaixz.bus.fabric.network.dns.message.DnsName;
  *
  * @author Kimi Liu
  */
-public final class DnsRecord {
+public class DnsRecord {
 
     /**
      * Internet DNS class code.
@@ -78,7 +79,7 @@ public final class DnsRecord {
      * @param ttl         unsigned 32-bit TTL
      * @param wireData    RDATA wire bytes
      */
-    private DnsRecord(final String name, final int typeCode, final int recordClass, final long ttl,
+    public DnsRecord(final String name, final int typeCode, final int recordClass, final long ttl,
             final byte[] wireData) {
         this.name = DnsName.normalize(name);
         this.typeCode = DnsCodec.validateUnsignedShort(typeCode, "DNS type");
@@ -213,7 +214,7 @@ public final class DnsRecord {
             if (text == null) {
                 throw new ValidateException("TXT chunk must not be null");
             }
-            final byte[] bytes = text.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+            final byte[] bytes = text.getBytes(Charset.UTF_8);
             if (bytes.length > 255) {
                 throw new ValidateException("TXT chunk exceeds 255 bytes");
             }
@@ -705,7 +706,7 @@ public final class DnsRecord {
         if (value == null) {
             throw new ValidateException(name + " must not be null");
         }
-        return value.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        return value.getBytes(Charset.UTF_8);
     }
 
 }

@@ -24,7 +24,7 @@ package org.miaixz.bus.spring.boot.banner;
  *
  * @author Kimi Liu
  */
-public final class BannerKeys {
+public class BannerKeys {
 
     /**
      * Default Bus ASCII banner lines.
@@ -59,9 +59,9 @@ public final class BannerKeys {
     public static final String BUS_BANNER_ENABLED = "bus.banner.enabled";
 
     /**
-     * Prevents instantiation of this constants holder.
+     * Creates a banner-key namespace instance with no retained state.
      */
-    private BannerKeys() {
+    public BannerKeys() {
         // No initialization required.
     }
 

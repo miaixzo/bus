@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.sse;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
@@ -384,7 +384,7 @@ final class SseRunner {
         if (event.id() != null) {
             eventId.set(event.id());
         }
-        final Payload payload = Payload.of(event.data(), StandardCharsets.UTF_8);
+        final Payload payload = Payload.of(event.data(), Charset.UTF_8);
         final Message received = filter(
                 Message.of(Protocol.HTTP, spec.address(), Headers.empty(), payload, Builder.SSE_TAG_EVENT));
         checkGuard(received);
@@ -392,7 +392,7 @@ final class SseRunner {
         final SseEvent filteredEvent = SseEvent.of(
                 event.id(),
                 event.event(),
-                filteredPayload.text(StandardCharsets.UTF_8, spec.context().options().materializeMaxBytes()),
+                filteredPayload.text(Charset.UTF_8, spec.context().options().materializeMaxBytes()),
                 event.retry());
         emit(ObservationMarker.SSE_EVENT, null, filteredPayload, operationId);
         Logger.debug(

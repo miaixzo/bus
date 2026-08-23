@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.shade
+ * Module: {@code bus.shade}
+ *
+ * <p>
+ * Provides build-time packaging protection and database documentation generation.
+ *
+ * <p>
+ * Includes archive and executable JAR protection, safety algorithms and providers, protected stream processing,
+ * database metadata extraction, documentation engines, schema mappings, and database-specific dialects.
  *
  * @author Kimi Liu
  */
@@ -30,10 +37,10 @@ module bus.shade {
     requires bus.core;
     requires bus.logger;
 
-    requires static lombok;
-    requires static spring.boot.loader;
     requires static freemarker;
+    requires static lombok;
     requires static org.apache.commons.compress;
+    requires static spring.boot.loader;
 
     exports org.miaixz.bus.shade.beans;
     exports org.miaixz.bus.shade.safety;

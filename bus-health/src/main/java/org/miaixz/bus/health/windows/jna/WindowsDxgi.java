@@ -63,7 +63,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class WindowsDxgi {
+public class WindowsDxgi {
 
     // IID for IDXGIFactory {7B7166EC-21C7-44AE-B21A-C9AE321AE369}
 
@@ -82,7 +82,7 @@ public final class WindowsDxgi {
     /**
      * Creates a new WindowsDxgi instance.
      */
-    private WindowsDxgi() {
+    public WindowsDxgi() {
         // No initialization required.
     }
 

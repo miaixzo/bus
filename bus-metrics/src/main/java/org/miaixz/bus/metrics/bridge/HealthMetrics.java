@@ -33,13 +33,14 @@ import org.miaixz.bus.health.builtin.hardware.NetworkIF;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Metrics;
+import org.miaixz.bus.metrics.builtin.JvmMetrics;
+import org.miaixz.bus.metrics.builtin.SystemMetrics;
 
 /**
  * Bridges bus-health's rich hardware/OS metrics into bus-metrics gauges.
  * <p>
- * Provides significantly more accurate and detailed metrics than the JVM-only
- * {@link org.miaixz.bus.metrics.builtin.JvmMetrics} and {@link org.miaixz.bus.metrics.builtin.SystemMetrics},
- * including:
+ * Provides significantly more accurate and detailed metrics than the JVM-only {@link JvmMetrics} and
+ * {@link SystemMetrics}, including:
  * <ul>
  * <li>Physical CPU usage (sys/user/iowait/total) via JNA, not JVM estimation</li>
  * <li>Physical RAM (total/used/free/usage%) via OS memory map</li>
@@ -49,9 +50,8 @@ import org.miaixz.bus.metrics.Metrics;
  * <li>Hardware load average (1m/5m/15m) from the OS kernel</li>
  * </ul>
  * <p>
- * Conditional on {@code bus-health} being on the classpath. When absent, the fallback
- * {@link org.miaixz.bus.metrics.builtin.JvmMetrics} and {@link org.miaixz.bus.metrics.builtin.SystemMetrics} are used
- * instead.
+ * Conditional on {@code bus-health} being on the classpath. When absent, the fallback {@link JvmMetrics} and
+ * {@link SystemMetrics} are used instead.
  * <p>
  * CPU ticks require a sampling interval; metrics are refreshed every {@code refreshIntervalSeconds} seconds by a
  * background daemon thread.

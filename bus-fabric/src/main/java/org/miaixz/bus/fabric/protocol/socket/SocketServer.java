@@ -22,8 +22,10 @@ package org.miaixz.bus.fabric.protocol.socket;
 import static org.miaixz.bus.fabric.Builder.*;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.net.UnknownHostException;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.time.Duration;
@@ -54,6 +56,8 @@ import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 import org.miaixz.bus.fabric.codec.frame.LineCodec;
 import org.miaixz.bus.fabric.guard.GuardRule;
+import org.miaixz.bus.fabric.guard.route.AddressGuard;
+import org.miaixz.bus.fabric.guard.route.AddressPolicy;
 import org.miaixz.bus.fabric.network.Conduit;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.network.Destination;
@@ -84,7 +88,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  *
  * @author Kimi Liu
  */
-public final class SocketServer implements Lifecycle {
+public class SocketServer implements Lifecycle {
 
     /**
      * Shared context.
@@ -95,6 +99,11 @@ public final class SocketServer implements Lifecycle {
      * Bind address.
      */
     private final Address address;
+
+    /**
+     * Optional policy applied to every accepted transport peer.
+     */
+    private final AddressPolicy addressPolicy;
 
     /**
      * Socket options.
@@ -216,9 +225,10 @@ public final class SocketServer implements Lifecycle {
      *
      * @param builder validated configuration source for the server
      */
-    private SocketServer(final Builder builder) {
+    public SocketServer(final Builder builder) {
         this.context = require(builder.context, "Context");
         this.address = require(builder.address, "Socket bind address");
+        this.addressPolicy = builder.addressPolicy;
         this.socketOptions = builder.socketOptions == null ? SocketOptions.defaults() : builder.socketOptions;
         this.timeout = require(builder.timeout, "Socket server timeout");
         this.tlsContext = builder.tlsContext;
@@ -433,7 +443,9 @@ public final class SocketServer implements Lifecycle {
             if (runtime.shuttingDown()) {
                 return;
             }
+            checkPeer(channel);
             final ProxyHeaderReader.Result proxy = ProxyHeaderReader.read(channel);
+            checkProxyPeer(channel, proxy.header());
             if (runtime.shuttingDown()) {
                 return;
             }
@@ -514,6 +526,7 @@ public final class SocketServer implements Lifecycle {
      */
     private void handleAccepted(final AioChannel channel) {
         try {
+            checkPeer(channel.remote());
             ProxyHeaderReader.read(channel, (proxy, cause) -> {
                 if (cause != null) {
                     channel.close();
@@ -522,7 +535,15 @@ public final class SocketServer implements Lifecycle {
                     }
                     return;
                 }
-                establishAccepted(channel, proxy);
+                try {
+                    checkProxyPeer(channel.remote(), proxy.header());
+                    establishAccepted(channel, proxy);
+                } catch (final RuntimeException exception) {
+                    channel.close();
+                    if (!runtime.shuttingDown()) {
+                        notifySetupFailure(exception);
+                    }
+                }
             });
         } catch (final RuntimeException e) {
             channel.close();
@@ -638,53 +659,7 @@ public final class SocketServer implements Lifecycle {
      * @return lifecycle listener owning the accepted connection registry entry
      */
     private Listener<SocketSession> registryListener(final Connection connection) {
-        return new Listener<>() {
-
-            /**
-             * Registers the opened session before forwarding the lifecycle callback.
-             *
-             * @param source newly opened session
-             */
-            @Override
-            public void open(final SocketSession source) {
-                runtime.register(source);
-                notifySessionOpen(source);
-            }
-
-            /**
-             * Removes terminal ownership before forwarding the normal-close callback.
-             *
-             * @param source normally closed session
-             */
-            @Override
-            public void close(final SocketSession source) {
-                remove(source);
-                notifySessionClose(source);
-            }
-
-            /**
-             * Removes terminal ownership before forwarding the failure callback.
-             *
-             * @param source failed session
-             * @param cause  terminal session failure
-             */
-            @Override
-            public void failure(final SocketSession source, final Throwable cause) {
-                remove(source);
-                notifySessionFailure(source, cause);
-            }
-
-            /**
-             * Removes the session and transport registries before any user callback.
-             *
-             * @param source terminal session
-             */
-            private void remove(final SocketSession source) {
-                latencyReader.compareAndSet(source, null);
-                runtime.remove(source);
-                connections.remove(connection);
-            }
-        };
+        return new RegistryListener(this, connection);
     }
 
     /**
@@ -1068,6 +1043,75 @@ public final class SocketServer implements Lifecycle {
     }
 
     /**
+     * Reads and validates the numeric peer of a blocking accepted channel.
+     *
+     * @param channel accepted channel supplying the transport peer
+     */
+    private void checkPeer(final SocketChannel channel) {
+        try {
+            checkPeer(channel.getRemoteAddress());
+        } catch (final IOException exception) {
+            throw new ProtocolException("Unable to inspect accepted socket peer address", exception);
+        }
+    }
+
+    /**
+     * Reads the transport peer of a blocking channel before validating forwarded client metadata.
+     *
+     * @param channel accepted channel
+     * @param header  parsed PROXY protocol header, or {@code null}
+     */
+    private void checkProxyPeer(final SocketChannel channel, final ProxyHeader header) {
+        try {
+            checkProxyPeer(channel.getRemoteAddress(), header);
+        } catch (final IOException exception) {
+            throw new ProtocolException("Unable to inspect PROXY transport peer address", exception);
+        }
+    }
+
+    /**
+     * Validates an accepted transport peer before TLS setup, framing, or a user handler can run.
+     *
+     * @param remote numeric remote socket address reported by the accepted channel
+     */
+    private void checkPeer(final SocketAddress remote) {
+        if (addressPolicy == null) {
+            return;
+        }
+        if (!(remote instanceof InetSocketAddress socket) || socket.getAddress() == null) {
+            throw new ProtocolException("Accepted socket peer must provide a numeric internet address");
+        }
+        new AddressGuard(addressPolicy).checkPeer(socket.getAddress());
+    }
+
+    /**
+     * Validates a forwarded client address only when the transport peer belongs to an explicitly configured peer
+     * network.
+     *
+     * @param remote numeric transport peer
+     * @param header parsed PROXY protocol header, or {@code null}
+     */
+    private void checkProxyPeer(final SocketAddress remote, final ProxyHeader header) {
+        if (addressPolicy == null || header == null) {
+            return;
+        }
+        if (!(remote instanceof InetSocketAddress socket) || socket.getAddress() == null) {
+            throw new ProtocolException("PROXY transport peer must provide a numeric internet address");
+        }
+        final AddressGuard addressGuard = new AddressGuard(addressPolicy);
+        addressGuard.checkTrustedPeer(socket.getAddress());
+        if (header.sourceAddress() == null) {
+            return;
+        }
+        try {
+            final InetAddress source = InetAddress.getByName(header.sourceAddress().host());
+            addressGuard.checkPeer(source);
+        } catch (final UnknownHostException exception) {
+            throw new ProtocolException("PROXY source address must be numeric", exception);
+        }
+    }
+
+    /**
      * Notifies the user listener after a session enters the registry.
      *
      * @param session newly registered session reported to the listener
@@ -1434,11 +1478,148 @@ public final class SocketServer implements Lifecycle {
     }
 
     /**
+     * Named listener that owns accepted-session registry ordering and transport removal.
+     */
+    private static final class RegistryListener implements Listener<SocketSession> {
+
+        /**
+         * Server whose runtime and callbacks receive lifecycle events.
+         */
+        private final SocketServer server;
+
+        /**
+         * Accepted transport removed when the session becomes terminal.
+         */
+        private final Connection connection;
+
+        /**
+         * Creates a registry listener for one accepted transport.
+         *
+         * @param server     owning socket server
+         * @param connection accepted transport
+         */
+        private RegistryListener(final SocketServer server, final Connection connection) {
+            this.server = require(server, "Socket server");
+            this.connection = require(connection, "Accepted connection");
+        }
+
+        /**
+         * Registers the opened session before forwarding the lifecycle callback.
+         *
+         * @param source newly opened session
+         */
+        @Override
+        public void open(final SocketSession source) {
+            server.runtime.register(source);
+            server.notifySessionOpen(source);
+        }
+
+        /**
+         * Removes terminal ownership before forwarding the normal-close callback.
+         *
+         * @param source normally closed session
+         */
+        @Override
+        public void close(final SocketSession source) {
+            remove(source);
+            server.notifySessionClose(source);
+        }
+
+        /**
+         * Removes terminal ownership before forwarding the failure callback.
+         *
+         * @param source failed session
+         * @param cause  terminal session failure
+         */
+        @Override
+        public void failure(final SocketSession source, final Throwable cause) {
+            remove(source);
+            server.notifySessionFailure(source, cause);
+        }
+
+        /**
+         * Removes the session and transport registries before any user callback.
+         *
+         * @param source terminal session
+         */
+        private void remove(final SocketSession source) {
+            server.latencyReader.compareAndSet(source, null);
+            server.runtime.remove(source);
+            server.connections.remove(connection);
+        }
+
+    }
+
+    /**
+     * Named no-op accepted-session listener used by the original builder path.
+     */
+    private static final class NoopSessionListener implements Listener<SocketSession> {
+
+        /**
+         * Creates a no-op listener.
+         */
+        private NoopSessionListener() {
+            // No initialization required.
+        }
+
+    }
+
+    /**
+     * Named listener that forwards session open and failure callbacks to builder consumers.
+     */
+    private static final class HandlerSessionListener implements Listener<SocketSession> {
+
+        /**
+         * Open callback captured when the listener is composed.
+         */
+        private final Consumer<SocketSession> openHandler;
+
+        /**
+         * Failure callback captured when the listener is composed.
+         */
+        private final Consumer<Throwable> errorHandler;
+
+        /**
+         * Creates a forwarding listener.
+         *
+         * @param openHandler  open callback
+         * @param errorHandler failure callback
+         */
+        private HandlerSessionListener(final Consumer<SocketSession> openHandler,
+                final Consumer<Throwable> errorHandler) {
+            this.openHandler = require(openHandler, "Session open handler");
+            this.errorHandler = require(errorHandler, "Session error handler");
+        }
+
+        /**
+         * Forwards an opened session to the configured consumer.
+         *
+         * @param source newly opened session
+         */
+        @Override
+        public void open(final SocketSession source) {
+            openHandler.accept(source);
+        }
+
+        /**
+         * Forwards a session failure to the configured error consumer.
+         *
+         * @param source failed session
+         * @param cause  terminal session failure
+         */
+        @Override
+        public void failure(final SocketSession source, final Throwable cause) {
+            errorHandler.accept(cause);
+        }
+
+    }
+
+    /**
      * Builder for socket servers.
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Shared context.
@@ -1449,6 +1630,11 @@ public final class SocketServer implements Lifecycle {
          * Bind address.
          */
         private Address address;
+
+        /**
+         * Optional policy applied to accepted transport peers.
+         */
+        private AddressPolicy addressPolicy;
 
         /**
          * Socket options.
@@ -1530,7 +1716,7 @@ public final class SocketServer implements Lifecycle {
          *
          * @param context shared context
          */
-        private Builder(final Context context) {
+        public Builder(final Context context) {
             this.context = context;
             this.socketOptions = SocketOptions.defaults();
             this.timeout = Timeout.defaults();
@@ -1610,6 +1796,17 @@ public final class SocketServer implements Lifecycle {
          */
         public Builder timeout(final Timeout timeout) {
             this.timeout = require(timeout, "Socket server timeout");
+            return this;
+        }
+
+        /**
+         * Installs the server peer policy enforced immediately after every accept operation.
+         *
+         * @param addressPolicy non-null immutable peer policy
+         * @return this builder
+         */
+        public Builder addressPolicy(final AddressPolicy addressPolicy) {
+            this.addressPolicy = require(addressPolicy, "Address policy");
             return this;
         }
 
@@ -1933,8 +2130,7 @@ public final class SocketServer implements Lifecycle {
          * @return configured session listener or a no-op listener
          */
         private Listener<? super SocketSession> sessionListener() {
-            return sessionListener == null ? new Listener<>() {
-            } : sessionListener;
+            return sessionListener == null ? new NoopSessionListener() : sessionListener;
         }
 
         /**
@@ -1943,29 +2139,7 @@ public final class SocketServer implements Lifecycle {
          * @return this builder
          */
         private Builder composeSessionListener() {
-            this.sessionListener = new Listener<>() {
-
-                /**
-                 * Forwards an opened session to the configured consumer.
-                 *
-                 * @param source newly opened session
-                 */
-                @Override
-                public void open(final SocketSession source) {
-                    openHandler.accept(source);
-                }
-
-                /**
-                 * Forwards a session failure to the configured error consumer.
-                 *
-                 * @param source failed session
-                 * @param cause  terminal session failure
-                 */
-                @Override
-                public void failure(final SocketSession source, final Throwable cause) {
-                    errorHandler.accept(cause);
-                }
-            };
+            this.sessionListener = new HandlerSessionListener(openHandler, errorHandler);
             return this;
         }
 

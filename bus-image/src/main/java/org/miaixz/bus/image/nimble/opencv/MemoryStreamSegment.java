@@ -41,7 +41,7 @@ public class MemoryStreamSegment extends StreamSegment {
      * @param b               the b.
      * @param imageDescriptor the image descriptor.
      */
-    MemoryStreamSegment(ByteBuffer b, ImageDescriptor imageDescriptor) {
+    public MemoryStreamSegment(ByteBuffer b, ImageDescriptor imageDescriptor) {
         super(new long[] { 0 }, new long[] { b.limit() }, imageDescriptor);
         this.cache = b;
     }

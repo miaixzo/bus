@@ -48,7 +48,7 @@ public class IdentityAC {
      *
      * @return the server response.
      */
-    public final byte[] getServerResponse() {
+    public byte[] getServerResponse() {
         return serverResponse.clone();
     }
 

@@ -18,11 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Bus Cortex — unified registry and configuration center platform.
+ * Module: {@code bus.cortex}
+ *
  * <p>
- * Plugin-based architecture with core abstraction layer supporting API/MCP/Prompt/Config registration types. Zero
- * third-party dependencies — uses only bus ecosystem modules (bus-cache, bus-extra, bus-logger). Storage via bus-cache
- * CacheX abstraction (Memory/Redis/JDBC).
+ * Provides a unified registry and configuration center for service governance metadata.
+ *
+ * <p>
+ * Includes API, MCP, and prompt registries; application settings; spaces and profiles; secret and revision management;
+ * delivery and watch mechanisms; health information; and cache-backed storage bridges.
  *
  * @author Kimi Liu
  */
@@ -30,14 +33,12 @@ module bus.cortex {
 
     requires bus.cache;
     requires bus.core;
-    requires bus.crypto;
     requires bus.extra;
     requires bus.fabric;
-    requires bus.health;
     requires bus.logger;
 
-    requires static lombok;
     requires static jakarta.persistence;
+    requires static lombok;
 
     exports org.miaixz.bus.cortex;
     exports org.miaixz.bus.cortex.bridge;
@@ -65,9 +66,9 @@ module bus.cortex {
     exports org.miaixz.bus.cortex.setting.delivery;
     exports org.miaixz.bus.cortex.setting.item;
     exports org.miaixz.bus.cortex.setting.item.revision;
-    exports org.miaixz.bus.cortex.setting.namespace;
     exports org.miaixz.bus.cortex.setting.profile;
     exports org.miaixz.bus.cortex.setting.secret;
+    exports org.miaixz.bus.cortex.setting.space;
     exports org.miaixz.bus.cortex.version;
 
 }

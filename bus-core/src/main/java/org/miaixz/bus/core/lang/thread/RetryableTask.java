@@ -84,7 +84,7 @@ public class RetryableTask<T> {
      * @param predicate The {@link BiPredicateX} defining the retry strategy. Returns {@code true} to retry.
      * @throws IllegalArgumentException if {@code supplier} or {@code predicate} is {@code null}.
      */
-    private RetryableTask(final SupplierX<T> supplier, final BiPredicateX<T, Throwable> predicate) {
+    public RetryableTask(final SupplierX<T> supplier, final BiPredicateX<T, Throwable> predicate) {
         Assert.notNull(supplier, "task parameter cannot be null");
         Assert.notNull(predicate, "predicate parameter cannot be null");
 

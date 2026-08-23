@@ -34,6 +34,7 @@ import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.office.Builder;
+import org.miaixz.bus.office.excel.cell.editors.CellEditor;
 import org.miaixz.bus.office.excel.reader.BigExcelReader;
 import org.miaixz.bus.office.excel.reader.ExcelReadConfig;
 import org.miaixz.bus.office.excel.reader.ExcelReadConfig.ReadMode;
@@ -1150,7 +1151,7 @@ public class ExcelKit {
 
         long globalRowIndex = 0;
         boolean reachedEnd = false;
-        final org.miaixz.bus.office.excel.cell.editors.CellEditor cellEditor = reader.getConfig().getCellEditor();
+        final CellEditor cellEditor = reader.getConfig().getCellEditor();
         for (int sheetIndex = 0; sheetIndex < sheetCount; sheetIndex++) {
             reader.setSheet(sheetIndex);
             final org.apache.poi.ss.usermodel.Sheet sheet = reader.getSheet();

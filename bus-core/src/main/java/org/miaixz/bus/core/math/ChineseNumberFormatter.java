@@ -44,7 +44,7 @@ public class ChineseNumberFormatter {
     /**
      * Creates a configurable Chinese-number formatter.
      */
-    private ChineseNumberFormatter() {
+    public ChineseNumberFormatter() {
         // No initialization required.
     }
 

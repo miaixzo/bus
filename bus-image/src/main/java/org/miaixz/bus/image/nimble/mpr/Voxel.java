@@ -27,7 +27,7 @@ import java.util.Arrays;
  * @param <T> numeric sample type
  * @author Kimi Liu
  */
-public final class Voxel<T extends Number> {
+public class Voxel<T extends Number> {
 
     /**
      * The values value.

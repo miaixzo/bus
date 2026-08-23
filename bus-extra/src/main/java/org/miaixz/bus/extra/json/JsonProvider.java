@@ -19,14 +19,16 @@
 */
 package org.miaixz.bus.extra.json;
 
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.Provider;
-import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * Defines the contract for a JSON service provider. This interface specifies a set of common methods for JSON
@@ -35,14 +37,16 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  *
  * @author Kimi Liu
  */
-public interface JsonProvider extends Provider {
+public interface JsonProvider extends Provider<String> {
 
     /**
-     * Returns the stable provider name used by configuration and diagnostics.
+     * Returns the stable, non-blank provider name used by configuration, discovery and diagnostics. Implementations
+     * should override this default with a short canonical name when they participate in named selection.
      *
-     * @return provider name
+     * @return fully qualified implementation class name by default
      */
-    default String name() {
+    @Override
+    default String type() {
         return getClass().getName();
     }
 
@@ -85,7 +89,7 @@ public interface JsonProvider extends Provider {
         if (type instanceof Class<?> clazz) {
             return (T) toPojo(json, clazz);
         }
-        throw new InternalException("JSON provider does not support generic type: " + name() + ", type=" + type);
+        throw new InternalException("JSON provider does not support generic type: " + type() + ", type=" + type);
     }
 
     /**
@@ -95,8 +99,22 @@ public interface JsonProvider extends Provider {
      * @return UTF-8 JSON bytes
      */
     default byte[] write(Object object) {
-        return toJsonString(object).getBytes(StandardCharsets.UTF_8);
+        return toJsonString(object).getBytes(Charset.UTF_8);
     }
+
+    /**
+     * Serializes a provider-neutral JSON value as an RFC 8259 document encoded with UTF-8.
+     * <p>
+     * Implementations must preserve object member order, array order, JSON null, booleans, strings, and arbitrary
+     * decimal precision. The returned bytes must not contain a provider-specific type envelope.
+     * </p>
+     *
+     * @param value provider-neutral JSON value
+     * @return newly allocated UTF-8 JSON document
+     * @throws IllegalArgumentException if the value is {@code null}
+     * @throws InternalException        if the provider cannot serialize the value
+     */
+    byte[] writeValue(JsonValue value);
 
     /**
      * Serializes a value to UTF-8 JSON bytes using framework-independent options. Third-party providers inherit a
@@ -111,11 +129,11 @@ public interface JsonProvider extends Provider {
     default byte[] write(Object object, JsonWriteOptions options) {
         JsonWriteOptions resolved = options == null ? JsonWriteOptions.defaults() : options;
         if (!resolved.writeNulls() || resolved.hasPropertyFilter()) {
-            throw new InternalException("JSON provider does not support write options: " + name());
+            throw new InternalException("JSON provider does not support write options: " + type());
         }
         String json = resolved.dateFormat() == null ? toJsonString(object)
                 : toJsonString(object, resolved.dateFormat());
-        return json.getBytes(StandardCharsets.UTF_8);
+        return json.getBytes(Charset.UTF_8);
     }
 
     /**
@@ -127,7 +145,105 @@ public interface JsonProvider extends Provider {
      * @return deserialized value
      */
     default <T> T read(byte[] json, Type type) {
-        return toPojo(new String(json, StandardCharsets.UTF_8), type);
+        return toPojo(new String(json, Charset.UTF_8), type);
+    }
+
+    /**
+     * Parses one complete RFC 8259 document from UTF-8 bytes into the provider-neutral JSON value model.
+     * <p>
+     * Implementations must reject malformed input and trailing non-whitespace content. JSON {@code null} is returned as
+     * {@link JsonValue.NullValue}, never as Java {@code null}; JSON numbers retain arbitrary decimal precision.
+     * </p>
+     *
+     * @param json complete UTF-8 JSON document
+     * @return immutable provider-neutral JSON value
+     * @throws IllegalArgumentException if the input byte array is {@code null}
+     * @throws InternalException        if the input is empty, malformed, not valid UTF-8, or cannot be mapped
+     *                                  losslessly
+     */
+    JsonValue readValue(byte[] json);
+
+    /**
+     * Parses one complete RFC 8259 document with an explicit nesting limit and duplicate-member policy.
+     * <p>
+     * The default implementation validates tree depth after parsing. Implementations that can prove duplicate member
+     * names must override this method; requesting duplicate rejection from an implementation that has not done so fails
+     * closed.
+     * </p>
+     *
+     * @param json                 complete UTF-8 JSON document
+     * @param maximumDepth         positive maximum object/array nesting depth
+     * @param rejectDuplicateNames whether duplicate object member names must be rejected
+     * @return immutable provider-neutral JSON value
+     * @throws IllegalArgumentException if the bytes are {@code null} or the depth is not positive
+     * @throws InternalException        if duplicate rejection is requested but unsupported
+     * @throws ValidateException        if the parsed value exceeds the maximum depth
+     */
+    default JsonValue readValue(final byte[] json, final int maximumDepth, final boolean rejectDuplicateNames) {
+        if (maximumDepth <= 0) {
+            throw new IllegalArgumentException("JSON maximum depth must be positive");
+        }
+        if (rejectDuplicateNames) {
+            throw new InternalException("JSON provider does not support duplicate member rejection: " + type());
+        }
+        final JsonValue value = readValue(json);
+        validateDepth(value, 0, maximumDepth);
+        return value;
+    }
+
+    /**
+     * Extracts the original UTF-8 bytes of one top-level object member value without reserialization.
+     * <p>
+     * Implementations must validate the complete RFC 8259 document, require an object root, compare the decoded member
+     * name exactly, enforce the requested nesting and duplicate-name policy, and return a newly allocated byte array.
+     * The returned bytes begin at the member value's first token and end at its last token, excluding surrounding
+     * whitespace. This operation does not interpret JSON Pointer or JSONPath expressions.
+     * </p>
+     *
+     * @param json                 complete UTF-8 JSON object
+     * @param member               exact decoded top-level member name
+     * @param maximumDepth         positive maximum object/array nesting depth
+     * @param rejectDuplicateNames whether duplicate object member names must be rejected
+     * @return newly allocated original member-value bytes
+     * @throws IllegalArgumentException if an argument is invalid
+     * @throws InternalException        if strict extraction is unsupported or the document/member is invalid
+     */
+    default byte[] extractValue(
+            final byte[] json,
+            final String member,
+            final int maximumDepth,
+            final boolean rejectDuplicateNames) {
+        if (json == null) {
+            throw new IllegalArgumentException("JSON document must not be null");
+        }
+        if (member == null || member.isBlank()) {
+            throw new IllegalArgumentException("JSON member name must not be blank");
+        }
+        if (maximumDepth <= 0) {
+            throw new IllegalArgumentException("JSON maximum depth must be positive");
+        }
+        throw new InternalException("JSON provider does not support raw member extraction: " + type());
+    }
+
+    /**
+     * Recursively checks provider-neutral JSON container depth.
+     *
+     * @param value        current JSON value
+     * @param depth        current container depth
+     * @param maximumDepth maximum permitted container depth
+     * @throws ValidateException if the maximum depth is exceeded
+     */
+    private static void validateDepth(final JsonValue value, final int depth, final int maximumDepth) {
+        final int nested = value instanceof JsonValue.ObjectValue || value instanceof JsonValue.ArrayValue ? depth + 1
+                : depth;
+        if (nested > maximumDepth) {
+            throw new ValidateException("JSON document exceeds the maximum nesting depth");
+        }
+        if (value instanceof JsonValue.ObjectValue object) {
+            object.values().values().forEach(item -> validateDepth(item, nested, maximumDepth));
+        } else if (value instanceof JsonValue.ArrayValue array) {
+            array.values().forEach(item -> validateDepth(item, nested, maximumDepth));
+        }
     }
 
     /**
@@ -144,6 +260,73 @@ public interface JsonProvider extends Provider {
         JsonReadOptions resolved = options == null ? JsonReadOptions.defaults() : options;
         resolved.validate(type);
         return read(json, type);
+    }
+
+    /**
+     * Converts one provider-neutral JSON object into a public record after validating its exact component-derived
+     * member vocabulary.
+     * <p>
+     * The record class must be publicly accessible to this provider module. Private Vendor wire records deliberately
+     * fail this boundary and must decode inside their owning adapter without reflective access overrides.
+     * </p>
+     *
+     * @param value JSON object whose members must match the target record components
+     * @param type  public record class to instantiate
+     * @param <T>   target record type
+     * @return non-null record decoded by this provider
+     * @throws IllegalArgumentException if either argument is null or the class is not a public accessible record
+     * @throws ValidateException        if the object contains a member not declared by the record
+     * @throws InternalException        if this provider cannot encode or decode the validated value
+     */
+    default <T extends Record> T toRecord(final JsonValue.ObjectValue value, final Class<T> type) {
+        final JsonValue.ObjectValue object = Assert.notNull(value, "JSON record source must not be null");
+        final Class<T> recordType = Assert.notNull(type, "JSON record type must not be null");
+        Assert.isTrue(recordType.isRecord(), "JSON record type must declare a record: {}", recordType.getName());
+        Assert.isTrue(
+                Modifier.isPublic(recordType.getModifiers()),
+                "JSON record type must be public: {}",
+                recordType.getName());
+        final Module owner = recordType.getModule();
+        Assert.isTrue(
+                !owner.isNamed() || owner.isExported(recordType.getPackageName(), JsonProvider.class.getModule()),
+                "JSON record package must be exported to the provider module: {}",
+                recordType.getName());
+        JsonRecordVerifier.of(recordType).validate(object);
+        return Assert.notNull(read(writeValue(object), recordType), "JSON provider returned a null record");
+    }
+
+    /**
+     * Converts one public record into a provider-neutral JSON object and verifies that the resulting member vocabulary
+     * exactly belongs to the record components.
+     * <p>
+     * The conversion rejects private records instead of opening modules or overriding Java access checks. This keeps
+     * platform-private wire models inside their owning adapters.
+     * </p>
+     *
+     * @param record public record to encode
+     * @param <T>    source record type
+     * @return immutable provider-neutral JSON object
+     * @throws IllegalArgumentException if the value is null or its class is not a public accessible record
+     * @throws ValidateException        if the encoded value is not an object or contains an undeclared member
+     * @throws InternalException        if this provider cannot encode or parse the record
+     */
+    default <T extends Record> JsonValue.ObjectValue toObject(final T record) {
+        final T value = Assert.notNull(record, "JSON record value must not be null");
+        final Class<T> recordType = (Class<T>) value.getClass();
+        Assert.isTrue(
+                Modifier.isPublic(recordType.getModifiers()),
+                "JSON record type must be public: {}",
+                recordType.getName());
+        final Module owner = recordType.getModule();
+        Assert.isTrue(
+                !owner.isNamed() || owner.isExported(recordType.getPackageName(), JsonProvider.class.getModule()),
+                "JSON record package must be exported to the provider module: {}",
+                recordType.getName());
+        final JsonValue encoded = readValue(write(value));
+        if (!(encoded instanceof JsonValue.ObjectValue object)) {
+            throw new ValidateException("JSON record must encode as an object: " + recordType.getName());
+        }
+        return JsonRecordVerifier.of(recordType).validate(object);
     }
 
     /**
@@ -222,15 +405,5 @@ public interface JsonProvider extends Provider {
      * @return {@code true} if the string is a valid JSON, {@code false} otherwise.
      */
     boolean isJson(String json);
-
-    /**
-     * Returns the provider type.
-     *
-     * @return the provider type identifier
-     */
-    @Override
-    default Object type() {
-        return EnumValue.Povider.JSON;
-    }
 
 }

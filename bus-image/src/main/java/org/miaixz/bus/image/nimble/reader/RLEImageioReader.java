@@ -109,7 +109,7 @@ public class RLEImageioReader extends ImageReader {
      *
      * @param originatingProvider the originating provider.
      */
-    protected RLEImageioReader(ImageReaderSpi originatingProvider) {
+    public RLEImageioReader(ImageReaderSpi originatingProvider) {
         super(originatingProvider);
     }
 

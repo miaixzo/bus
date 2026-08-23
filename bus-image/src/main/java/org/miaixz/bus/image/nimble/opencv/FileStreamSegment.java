@@ -43,7 +43,7 @@ public class FileStreamSegment extends StreamSegment {
      * @param length          the length.
      * @param imageDescriptor the image descriptor.
      */
-    FileStreamSegment(File file, long[] startPos, long[] length, ImageDescriptor imageDescriptor) {
+    public FileStreamSegment(File file, long[] startPos, long[] length, ImageDescriptor imageDescriptor) {
         super(startPos, length, imageDescriptor);
         this.filePath = file.getAbsolutePath();
     }

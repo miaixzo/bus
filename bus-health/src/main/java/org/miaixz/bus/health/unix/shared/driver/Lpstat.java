@@ -36,7 +36,7 @@ import org.miaixz.bus.health.builtin.hardware.Printer.PrinterStatus;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Lpstat {
+public class Lpstat {
 
     /**
      * Local URI schemes for directly attached or local printers.
@@ -47,7 +47,7 @@ public final class Lpstat {
     /**
      * Creates a new Lpstat instance.
      */
-    private Lpstat() {
+    public Lpstat() {
         // No initialization required.
     }
 
