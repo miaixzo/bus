@@ -37,20 +37,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public interface SourceModule {
 
     /**
-     * Returns drivers in deterministic assembly order.
-     *
-     * @return immutable non-empty driver list
-     */
-    List<SourceDriver<?>> drivers();
-
-    /**
-     * Returns exact Source choices in deterministic management order.
-     *
-     * @return immutable non-empty descriptor list
-     */
-    List<SourceDescriptor> descriptors();
-
-    /**
      * Creates an explicit module for one custom driver and its complete descriptor set.
      *
      * @param driver      custom Source driver
@@ -64,6 +50,20 @@ public interface SourceModule {
                 .map(descriptor -> Assert.notNull(descriptor, "Source module descriptor must not be null")).toList();
         return new Fixed(List.of(checked), selections);
     }
+
+    /**
+     * Returns drivers in deterministic assembly order.
+     *
+     * @return immutable non-empty driver list
+     */
+    List<SourceDriver<?>> drivers();
+
+    /**
+     * Returns exact Source choices in deterministic management order.
+     *
+     * @return immutable non-empty descriptor list
+     */
+    List<SourceDescriptor> descriptors();
 
     /**
      * Stores the explicitly supplied custom driver and descriptors without adding inferred facts.

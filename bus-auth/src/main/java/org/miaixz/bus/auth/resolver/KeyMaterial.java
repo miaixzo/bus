@@ -33,6 +33,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @param key       parsed JCA key material
  * @param notBefore first instant at which the key is valid
  * @param notAfter  exclusive upper validity boundary
+ * @author Kimi Liu
  */
 public record KeyMaterial(String keyId, String algorithm, Key key, Instant notBefore, Instant notAfter) {
 

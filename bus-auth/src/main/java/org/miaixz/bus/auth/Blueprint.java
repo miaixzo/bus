@@ -134,7 +134,7 @@ public class Blueprint {
     public enum Kind implements Enumers<Kind> {
 
         /**
-         * Authentication application catalog entry.
+         * Managed authentication Library entry.
          */
         LIBRARY(1),
 

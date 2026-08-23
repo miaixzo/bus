@@ -24,10 +24,9 @@ import java.util.Set;
 
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Scheme.Conformance;
 import org.miaixz.bus.auth.shared.jose.JwkSet;
 import org.miaixz.bus.auth.source.protocol.ProtocolScheme;
-import org.miaixz.bus.auth.source.protocol.oauth2.*;
+import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.protocol.oidc.*;
 import org.miaixz.bus.core.Version;

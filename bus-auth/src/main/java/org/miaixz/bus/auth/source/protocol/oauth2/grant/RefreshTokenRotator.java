@@ -36,7 +36,7 @@ import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.cache.RefreshTokenCache;
 import org.miaixz.bus.auth.guard.ScopeValidator;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -69,7 +69,7 @@ public class RefreshTokenRotator {
     /**
      * Externally implemented client, token, and replay ports.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Standard scope validator used to enforce non-expanding rotation.
@@ -91,13 +91,13 @@ public class RefreshTokenRotator {
      *
      * @param sourceId       compiled server-role Source identifier
      * @param options        validated authorization-server options
-     * @param services       caller-owned runtime dependencies
+     * @param services       capability-limited Source services
      * @param scopeValidator standard scope validator
      * @param issuer         common internal access-token issuer
      * @param tokenMaterial  shared opaque token material service
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public RefreshTokenRotator(final String sourceId, final GrantPolicy options, final DriverServices services,
+    public RefreshTokenRotator(final String sourceId, final GrantPolicy options, final SourceServices services,
             final ScopeValidator scopeValidator, final AccessTokenIssuer issuer, final TokenMaterial tokenMaterial) {
         this.sourceId = Assert.notBlank(sourceId, "OAuth 2.x Source id must not be blank");
         this.options = Assert.notNull(options, "OAuth 2.x authorization server options must not be null");

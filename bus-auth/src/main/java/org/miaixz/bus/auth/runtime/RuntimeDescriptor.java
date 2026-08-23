@@ -22,8 +22,8 @@ package org.miaixz.bus.auth.runtime;
 import java.util.List;
 
 import org.miaixz.bus.auth.Source;
-import org.miaixz.bus.auth.source.DriverDirectory;
 import org.miaixz.bus.auth.source.SourceDescriptor;
+import org.miaixz.bus.auth.source.SourceLookup;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 
@@ -31,8 +31,8 @@ import org.miaixz.bus.core.lang.Optional;
  * Exposes the exact Source choices assembled into one runtime through a single implementation-neutral discovery
  * surface.
  * <p>
- * This projection delegates identity and reverse routing to the runtime's shared frozen DriverDirectory. It does not
- * read Roster state, create Options, expose implementation factories, compile workers, or execute capabilities.
+ * This projection delegates identity and reverse routing to the runtime's shared frozen {@link SourceLookup}. It does
+ * not read Roster state, create Options, expose implementation factories, compile workers, or execute capabilities.
  * </p>
  *
  * @author Kimi Liu
@@ -40,17 +40,17 @@ import org.miaixz.bus.core.lang.Optional;
 public class RuntimeDescriptor {
 
     /**
-     * Shared immutable driver and descriptor directory used by validation and compilation.
+     * Shared immutable Source lookup used by validation and compilation.
      */
-    private final DriverDirectory directory;
+    private final SourceLookup sourceLookup;
 
     /**
-     * Creates a read-only Source discovery projection over one frozen directory.
+     * Creates a read-only Source discovery projection over one frozen lookup.
      *
-     * @param directory runtime's shared driver and descriptor directory
+     * @param sourceLookup runtime's shared Source lookup
      */
-    public RuntimeDescriptor(final DriverDirectory directory) {
-        this.directory = Assert.notNull(directory, "Runtime descriptor directory must not be null");
+    public RuntimeDescriptor(final SourceLookup sourceLookup) {
+        this.sourceLookup = Assert.notNull(sourceLookup, "Runtime descriptor Source lookup must not be null");
     }
 
     /**
@@ -59,7 +59,7 @@ public class RuntimeDescriptor {
      * @return immutable Source descriptor list
      */
     public List<SourceDescriptor> sources() {
-        return directory.descriptors();
+        return sourceLookup.descriptors();
     }
 
     /**
@@ -69,7 +69,7 @@ public class RuntimeDescriptor {
      * @return matching descriptor or empty
      */
     public Optional<SourceDescriptor> source(final String id) {
-        return directory.source(id);
+        return sourceLookup.descriptor(id);
     }
 
     /**
@@ -79,7 +79,7 @@ public class RuntimeDescriptor {
      * @return matching descriptor or empty
      */
     public Optional<SourceDescriptor> source(final Source source) {
-        return directory.descriptor(Assert.notNull(source, "Runtime descriptor Source must not be null"));
+        return sourceLookup.descriptor(Assert.notNull(source, "Runtime descriptor Source must not be null"));
     }
 
     /**
@@ -90,7 +90,7 @@ public class RuntimeDescriptor {
      */
     public List<SourceDescriptor> sources(final String type) {
         Assert.notBlank(type, "Runtime descriptor Source type must not be blank");
-        return directory.descriptors().stream().filter(descriptor -> type.equals(descriptor.type())).toList();
+        return sourceLookup.descriptors().stream().filter(descriptor -> type.equals(descriptor.type())).toList();
     }
 
     /**
@@ -101,7 +101,7 @@ public class RuntimeDescriptor {
      */
     public List<SourceDescriptor> sources(final SourceDescriptor.Kind kind) {
         Assert.notNull(kind, "Runtime descriptor Source kind must not be null");
-        return directory.descriptors().stream().filter(descriptor -> kind == descriptor.kind()).toList();
+        return sourceLookup.descriptors().stream().filter(descriptor -> kind == descriptor.kind()).toList();
     }
 
 }

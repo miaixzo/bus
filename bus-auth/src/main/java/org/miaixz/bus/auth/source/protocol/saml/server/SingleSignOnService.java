@@ -29,7 +29,7 @@ import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Session;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.saml.AuthnRequest;
 import org.miaixz.bus.auth.source.protocol.saml.Response;
 import org.miaixz.bus.auth.source.protocol.saml.Saml;
@@ -61,7 +61,7 @@ public class SingleSignOnService {
     /**
      * External loaders and framework-owned parsers used by this service.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Internal standard assertion and response issuer.
@@ -81,13 +81,13 @@ public class SingleSignOnService {
      * Creates a SingleSignOnService from its policy, execution services, issuer, and error mapper.
      *
      * @param options         validated SAML identity-provider options
-     * @param services        external loaders and pure parsers
+     * @param services        capability-limited Source services
      * @param assertionIssuer internal SAML assertion issuer
      * @param errorMapper     standard SAML error-response mapper
      * @param sessions        Source-isolated Session lifecycle coordinator
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public SingleSignOnService(final SamlServerOptions options, final DriverServices services,
+    public SingleSignOnService(final SamlServerOptions options, final SourceServices services,
             final AssertionIssuer assertionIssuer, final SamlErrorMapper errorMapper,
             final SessionCoordinator sessions) {
         this.options = Assert.notNull(options, "SAML identity-provider options must not be null");

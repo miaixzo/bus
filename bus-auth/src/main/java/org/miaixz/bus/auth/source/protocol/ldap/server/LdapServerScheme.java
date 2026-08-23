@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.Scheme.Conformance;
 import org.miaixz.bus.auth.source.protocol.ProtocolScheme;
 import org.miaixz.bus.auth.source.protocol.ldap.Ldap;
 import org.miaixz.bus.auth.source.protocol.ldap.LdapMessage;

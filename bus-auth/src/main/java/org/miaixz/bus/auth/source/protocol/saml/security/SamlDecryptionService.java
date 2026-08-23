@@ -44,7 +44,7 @@ import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Policies;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.saml.Assertion;
 import org.miaixz.bus.auth.source.protocol.saml.Response;
 import org.miaixz.bus.auth.source.protocol.saml.Saml;
@@ -110,7 +110,7 @@ public class SamlDecryptionService {
     /**
      * External private-key loader and framework-owned key parser.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Strict plaintext SAML XML codec.
@@ -130,13 +130,13 @@ public class SamlDecryptionService {
     /**
      * Creates an EncryptedAssertion decryption service.
      *
-     * @param services           external loaders and pure parsers
+     * @param services           capability-limited Source services
      * @param messageCodec       strict SAML plaintext codec
      * @param signatureValidator trusted assertion signature validator
      * @param policies           shared SAML security policies
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public SamlDecryptionService(final DriverServices services, final SamlMessageCodec messageCodec,
+    public SamlDecryptionService(final SourceServices services, final SamlMessageCodec messageCodec,
             final SamlSignatureValidator signatureValidator, final Policies policies) {
         this.services = Assert.notNull(services, "SAML execution services must not be null");
         this.messageCodec = Assert.notNull(messageCodec, "SAML message codec must not be null");

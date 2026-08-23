@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.auth.source.vendor;
 
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.worker.SourceWorker;
 
 /**
@@ -51,7 +51,7 @@ public interface VendorAdapter extends SourceWorker {
          * @param manifest exact platform manifest
          * @param variant  exact variant selected from that manifest
          * @param options  validated immutable deployment options
-         * @param services complete externally supplied runtime dependency set
+         * @param services capability-limited Source services
          * @return non-null adapter whose capability manifest equals the selected variant's capability manifest
          */
         VendorAdapter create(
@@ -60,7 +60,7 @@ public interface VendorAdapter extends SourceWorker {
                 VendorManifest<O> manifest,
                 VendorManifest.Variant variant,
                 O options,
-                DriverServices services);
+                SourceServices services);
 
     }
 

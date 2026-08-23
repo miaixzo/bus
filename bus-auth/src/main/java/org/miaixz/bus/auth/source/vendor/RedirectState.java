@@ -28,7 +28,7 @@ import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.shared.pkce.CodeVerifier;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.worker.CredentialStore;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
@@ -69,7 +69,7 @@ final class RedirectState {
     /**
      * Source-scoped cache and credential services.
      */
-    private final DriverServices services;
+    private final SourceServices services;
     /**
      * Whether this selected Vendor flow persists a PKCE verifier.
      */
@@ -80,10 +80,10 @@ final class RedirectState {
      *
      * @param spaceId     Source space identifier
      * @param sourceId    Source identifier
-     * @param services    Source-scoped runtime services
+     * @param services    capability-limited Source services
      * @param pkceEnabled whether verifier persistence is required
      */
-    RedirectState(final String spaceId, final String sourceId, final DriverServices services,
+    RedirectState(final String spaceId, final String sourceId, final SourceServices services,
             final boolean pkceEnabled) {
         this.spaceId = Assert.notBlank(spaceId, "Vendor redirect space id must not be blank");
         this.sourceId = Assert.notBlank(sourceId, "Vendor redirect Source id must not be blank");

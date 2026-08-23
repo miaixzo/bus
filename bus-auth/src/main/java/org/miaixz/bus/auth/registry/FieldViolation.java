@@ -28,6 +28,7 @@ import org.miaixz.bus.core.lang.Assert;
  * @param field       violated Blueprint field name
  * @param error       stable validation error classification
  * @param description safe human-readable violation description
+ * @author Kimi Liu
  */
 record FieldViolation(String field, Errors error, String description) {
 

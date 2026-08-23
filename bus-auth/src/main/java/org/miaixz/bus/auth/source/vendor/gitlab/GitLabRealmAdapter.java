@@ -31,9 +31,8 @@ import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.FabricX.UrlBuilder;
-import org.miaixz.bus.auth.Realm;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.vendor.VendorAdapter;
 import org.miaixz.bus.auth.source.vendor.VendorManifest;
 import org.miaixz.bus.auth.source.vendor.VendorTargets;
@@ -111,7 +110,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
     /**
      * Caller-owned execution services.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Resolved official GitLab Enterprise resource targets.
@@ -126,12 +125,12 @@ public class GitLabRealmAdapter implements VendorAdapter {
      * @param manifest exact GitLab manifest
      * @param variant  selected Enterprise Variant
      * @param options  validated Enterprise options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or collaborator is {@code null}
      * @throws ValidateException        if the manifest, Variant, options, protocol, or targets are inconsistent
      */
     public GitLabRealmAdapter(final String spaceId, final String sourceId, final GitLabManifest manifest,
-            final VendorManifest.Variant variant, final GitLabOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final GitLabOptions options, final SourceServices services) {
         Assert.notBlank(spaceId, "GitLab Enterprise space id must not be blank");
         Assert.notBlank(sourceId, "GitLab Enterprise Source id must not be blank");
         final GitLabManifest selectedManifest = Assert.notNull(manifest, "GitLab manifest must not be null");

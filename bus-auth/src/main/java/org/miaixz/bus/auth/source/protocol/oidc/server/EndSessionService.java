@@ -31,7 +31,7 @@ import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.cache.IdTokenCache;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oidc.EndSessionRequest;
 import org.miaixz.bus.auth.worker.SessionCoordinator;
 import org.miaixz.bus.auth.worker.loader.ConsumerLoader;
@@ -57,7 +57,7 @@ public class EndSessionService {
     /**
      * External key, client, session, clock, and security dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Compiled Source identifier used to isolate irreversible ID Token indexes.
@@ -73,11 +73,11 @@ public class EndSessionService {
      * Creates an end-session service for one compiled OpenID Provider.
      *
      * @param options  validated OpenID Provider options
-     * @param services externally implemented runtime dependencies
+     * @param services capability-limited Source services
      * @param sessions Source-isolated Session lifecycle coordinator
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public EndSessionService(final OpenIdServerOptions options, final DriverServices services,
+    public EndSessionService(final OpenIdServerOptions options, final SourceServices services,
             final SessionCoordinator sessions) {
         Assert.notNull(options, "OpenID Connect end-session options must not be null");
         this.services = Assert.notNull(services, "OpenID Connect end-session execution services must not be null");

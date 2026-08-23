@@ -30,7 +30,7 @@ import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.source.protocol.oauth2.TokenEndpointResponse;
 import org.miaixz.bus.auth.source.protocol.oauth2.TokenRequest;
@@ -62,7 +62,7 @@ public class TokenClient {
     /**
      * Capability-limited Source services supplying security policies and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Strict standard token request encoder.
@@ -88,7 +88,7 @@ public class TokenClient {
      * @param responseDecoder standard token response decoder
      * @throws IllegalArgumentException if a collaborator is {@code null} or no token endpoint is configured
      */
-    public TokenClient(final OAuth2ClientOptions options, final DriverServices services,
+    public TokenClient(final OAuth2ClientOptions options, final SourceServices services,
             final TokenRequestEncoder requestEncoder, final TokenResponseDecoder responseDecoder) {
         this.options = Assert.notNull(options, "OAuth 2.x client options must not be null");
         Assert.notNull(options.tokenEndpoint().getOrNull(), "OAuth 2.x token endpoint must be configured");

@@ -25,13 +25,12 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.GrantType;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
@@ -87,7 +86,7 @@ public class CodingSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime, loaders, parsers, JSON, network, and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Shared one-time state lifecycle for the browser operation.
@@ -112,12 +111,12 @@ public class CodingSourceAdapter implements VendorAdapter {
      * @param manifest selected CODING manifest
      * @param variant  selected default variant manifest
      * @param options  decoded externally loaded CODING options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, or options differ from the frozen manifest
      */
     public CodingSourceAdapter(final String spaceId, final String sourceId, final CodingManifest manifest,
-            final VendorManifest.Variant variant, final CodingOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final CodingOptions options, final SourceServices services) {
         Assert.notNull(manifest, "CODING manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "CODING Source id must not be blank");
         this.variant = Assert.notNull(variant, "CODING manifest must not be null");

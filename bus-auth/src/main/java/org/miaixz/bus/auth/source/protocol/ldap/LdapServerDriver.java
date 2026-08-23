@@ -25,7 +25,7 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Scheme.Options;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.ProtocolDriver;
 import org.miaixz.bus.auth.source.protocol.ldap.server.*;
 import org.miaixz.bus.auth.worker.BindingResolver;
@@ -108,13 +108,13 @@ public class LdapServerDriver implements ProtocolDriver<LdapServerOptions> {
      * Validates typed options, enforces the shared message rule, resolves DirectoryStore, and assembles all services.
      *
      * @param prepared one-time validated Source graph, Options and dependency declaration
-     * @param services dependency-scoped runtime services
+     * @param services capability-limited Source services
      * @return immutable executable LDAP server-role Source runtime
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if Source configuration, options, security-rule, or binding validation fails
      */
     @Override
-    public SourceWorker compile(final Prepared<LdapServerOptions> prepared, final DriverServices services) {
+    public SourceWorker compile(final Prepared<LdapServerOptions> prepared, final SourceServices services) {
         Assert.notNull(prepared, "LDAP server preparation must not be null");
         Assert.notNull(services, "LDAP server execution services must not be null");
         final Blueprint.SourceEntry entry = prepared.entry();

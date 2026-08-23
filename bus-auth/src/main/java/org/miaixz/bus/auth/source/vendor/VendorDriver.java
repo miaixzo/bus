@@ -22,15 +22,10 @@ package org.miaixz.bus.auth.source.vendor;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.miaixz.bus.auth.Blueprint;
-import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.Library;
-import org.miaixz.bus.auth.Provider;
-import org.miaixz.bus.auth.Realm;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Scheme.Options;
-import org.miaixz.bus.auth.Source;
-import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.SourceDriver;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.worker.SourceWorker;
 import org.miaixz.bus.auth.worker.WorkerSlots;
@@ -172,11 +167,11 @@ public class VendorDriver implements SourceDriver<VendorOptions<?>> {
             }
             if (protocol == null) {
                 final String operation = capability.key().operation();
-                final boolean sourceAuthentication = operation.equals(SourceWorkflow.INITIATE.key().operation())
+                final boolean sourceWorkflow = operation.equals(SourceWorkflow.INITIATE.key().operation())
                         || operation.equals(SourceWorkflow.COMPLETE.key().operation());
                 final boolean realm = realm(capability.key());
                 final boolean platform = operation.startsWith("vendor." + manifest.vendor().value() + Symbol.DOT);
-                if (!sourceAuthentication && !realm && !platform) {
+                if (!sourceWorkflow && !realm && !platform) {
                     throw new ValidateException("Vendor application capability belongs to another platform");
                 }
             }
@@ -293,19 +288,19 @@ public class VendorDriver implements SourceDriver<VendorOptions<?>> {
      * Compiles one validated Source configuration into a Source worker.
      *
      * @param prepared one-time validated Source graph, Options and dependency declaration
-     * @param services dependency-scoped runtime services
+     * @param services capability-limited Source services
      * @return immutable executable entry wrapping the exact selected adapter
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if the Source graph, routing, options, manifest, or selected variant is
      *                                  inconsistent
      */
     @Override
-    public SourceWorker compile(final Prepared<VendorOptions<?>> prepared, final DriverServices services) {
+    public SourceWorker compile(final Prepared<VendorOptions<?>> prepared, final SourceServices services) {
         Assert.notNull(prepared, "Vendor Source preparation must not be null");
         final Blueprint.SourceEntry entry = prepared.entry();
         final Provider provider = prepared.provider();
         final Library library = prepared.library();
-        final DriverServices runtime = Assert.notNull(services, "Vendor execution services must not be null");
+        final SourceServices runtime = Assert.notNull(services, "Vendor execution services must not be null");
         final Source source = entry.resource();
         requireSourceGraph(source, provider, library);
         final VendorOptions<?> options = prepared.options();

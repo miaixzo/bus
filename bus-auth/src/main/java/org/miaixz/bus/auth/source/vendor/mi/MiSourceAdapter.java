@@ -29,10 +29,9 @@ import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.FabricX.UrlBuilder;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2ClientScheme;
@@ -104,7 +103,7 @@ public class MiSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime, JSON, network, secret, and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Unified router for Xiaomi's public standard authorization and token capabilities.
@@ -129,12 +128,12 @@ public class MiSourceAdapter implements VendorAdapter {
      * @param manifest selected Xiaomi manifest
      * @param variant  exact default manifest
      * @param options  decoded externally loaded Xiaomi options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, or callback options are inconsistent
      */
     public MiSourceAdapter(final String spaceId, final String sourceId, final MiManifest manifest,
-            final VendorManifest.Variant variant, final MiOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final MiOptions options, final SourceServices services) {
         final MiManifest selected = Assert.notNull(manifest, "Xiaomi manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Xiaomi Source id must not be blank");
         this.variant = Assert.notNull(variant, "Xiaomi manifest must not be null");

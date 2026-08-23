@@ -20,8 +20,12 @@
 package org.miaixz.bus.extra.json;
 
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * Serializes and deserializes JSON values, which automatically identifies the underlying JSON provider via SPI. This
@@ -135,6 +139,46 @@ public class JsonKit {
      */
     public static <T extends Record> JsonValue.ObjectValue toObject(final T record) {
         return getProvider().toObject(record);
+    }
+
+    /**
+     * Converts one provider-supported Java value into the implementation-neutral JSON value model.
+     * <p>
+     * Conversion deliberately crosses the existing provider serialization boundary so maps, records, collections,
+     * arrays, enums, temporal values, numbers, booleans, strings, and JSON null retain the same semantics as every
+     * other {@code JsonKit} operation. No provider-specific tree type escapes this method.
+     * </p>
+     *
+     * @param value provider-supported Java value, including {@code null}
+     * @return immutable implementation-neutral JSON value
+     * @throws ValidateException if the selected provider returns no JSON document
+     */
+    public static JsonValue toValue(final Object value) {
+        final String json = toJsonString(value);
+        if (json == null) {
+            throw new ValidateException("JSON provider returned no serialized value");
+        }
+        return readValue(json.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Converts a string-keyed Java map into an implementation-neutral JSON object.
+     *
+     * @param values Java map whose keys become exact JSON member names
+     * @return immutable implementation-neutral JSON object
+     * @throws IllegalArgumentException if the map, a key, or a converted member is invalid
+     * @throws ValidateException        if the provider does not produce a JSON object
+     */
+    public static JsonValue.ObjectValue toObject(final Map<String, ?> values) {
+        Assert.notNull(values, "JSON object source map must not be null");
+        for (String name : values.keySet()) {
+            Assert.notNull(name, "JSON object member name must not be null");
+        }
+        final JsonValue converted = toValue(values);
+        if (!(converted instanceof JsonValue.ObjectValue object)) {
+            throw new ValidateException("JSON source map must produce an object value");
+        }
+        return object;
     }
 
     /**

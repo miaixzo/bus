@@ -30,7 +30,7 @@ import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.IntrospectionRequest;
 import org.miaixz.bus.auth.source.protocol.oauth2.IntrospectionResponse;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
@@ -61,7 +61,7 @@ public class IntrospectionClient {
     /**
      * Capability-limited Source services supplying security policies and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Strict RFC 7662 request and response codec.
@@ -81,7 +81,7 @@ public class IntrospectionClient {
      * @param codec    strict RFC 7662 codec
      * @throws IllegalArgumentException if a collaborator is {@code null} or no introspection endpoint is configured
      */
-    public IntrospectionClient(final OAuth2ClientOptions options, final DriverServices services,
+    public IntrospectionClient(final OAuth2ClientOptions options, final SourceServices services,
             final IntrospectionCodec codec) {
         this.options = Assert.notNull(options, "OAuth 2.x client options must not be null");
         Assert.notNull(

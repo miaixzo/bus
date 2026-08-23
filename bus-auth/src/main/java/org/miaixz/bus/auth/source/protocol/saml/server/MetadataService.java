@@ -29,7 +29,7 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.resolver.CertificateMaterial;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.saml.*;
 import org.miaixz.bus.auth.source.protocol.saml.codec.MetadataCodec;
 import org.miaixz.bus.auth.worker.loader.CertificateLoader;
@@ -58,7 +58,7 @@ public class MetadataService {
     /**
      * External certificate loader and framework-owned certificate parser.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Strict SAML Metadata codec and KeyInfo encoder.
@@ -69,11 +69,11 @@ public class MetadataService {
      * Creates a Metadata publication service.
      *
      * @param options       validated SAML identity-provider options
-     * @param services      external loaders and pure parsers
+     * @param services      capability-limited Source services
      * @param metadataCodec strict SAML Metadata codec
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public MetadataService(final SamlServerOptions options, final DriverServices services,
+    public MetadataService(final SamlServerOptions options, final SourceServices services,
             final MetadataCodec metadataCodec) {
         this.options = Assert.notNull(options, "SAML identity-provider options must not be null");
         this.services = Assert.notNull(services, "SAML execution services must not be null");

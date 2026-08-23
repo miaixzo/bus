@@ -163,7 +163,7 @@ public class LineManifest implements VendorManifest<LineOptions> {
                             false)));
 
     /**
-     * Creates the stateless LINE manifest used by Vendor directory assembly.
+     * Creates the stateless LINE manifest used by Vendor module assembly.
      */
     public LineManifest() {
         // No initialization required.
@@ -220,7 +220,7 @@ public class LineManifest implements VendorManifest<LineOptions> {
     }
 
     /**
-     * Returns non-sensitive LINE catalog metadata.
+     * Returns non-sensitive LINE management metadata.
      *
      * @return immutable presentation metadata
      */

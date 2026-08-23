@@ -27,12 +27,11 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.*;
@@ -105,7 +104,7 @@ public class ElemeSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned secret, JSON, network, clock, and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Shared standard OAuth 2.0 authorization and token implementation.
@@ -145,12 +144,12 @@ public class ElemeSourceAdapter implements VendorAdapter {
      * @param manifest selected Eleme manifest
      * @param variant  exact selected default manifest
      * @param options  decoded externally loaded Eleme options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, variant, protocol, manifest, or options routing is inconsistent
      */
     public ElemeSourceAdapter(final String spaceId, final String sourceId, final ElemeManifest manifest,
-            final VendorManifest.Variant variant, final ElemeOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final ElemeOptions options, final SourceServices services) {
         final ElemeManifest selectedProfile = Assert.notNull(manifest, "Eleme manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Eleme Source id must not be blank");
         this.variant = Assert.notNull(variant, "Eleme manifest must not be null");
@@ -176,14 +175,14 @@ public class ElemeSourceAdapter implements VendorAdapter {
      *
      * @param variant         selected Eleme variant
      * @param options         validated Source options
-     * @param services        caller-owned execution services
+     * @param services        capability-limited Source services
      * @param redirectManager shared browser correlation lifecycle
      * @return standard authorization and token adapter
      */
     private static StandardAdapter standardAdapter(
             final VendorManifest.Variant variant,
             final ElemeOptions options,
-            final DriverServices services,
+            final SourceServices services,
             final RedirectManager redirectManager) {
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), targets.token(),

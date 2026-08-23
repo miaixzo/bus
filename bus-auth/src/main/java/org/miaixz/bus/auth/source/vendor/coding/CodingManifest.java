@@ -50,7 +50,7 @@ import org.miaixz.bus.core.net.tls.TlsClientAuth;
 public class CodingManifest implements VendorManifest<CodingOptions> {
 
     /**
-     * Stable platform routing identifier shared by catalog and runtime compilation.
+     * Stable platform routing identifier shared by Source lookup and runtime compilation.
      */
     public static final Vendor.Id ID = new Vendor.Id("coding");
 
@@ -129,7 +129,7 @@ public class CodingManifest implements VendorManifest<CodingOptions> {
             CAPABILITIES, DEVIATIONS);
 
     /**
-     * Creates the stateless CODING manifest used by Vendor directory assembly.
+     * Creates the stateless CODING manifest used by Vendor module assembly.
      */
     public CodingManifest() {
         // No initialization required.

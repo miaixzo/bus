@@ -16,6 +16,15 @@
 #                                                                           #
 #############################################################################
 
+# Protocol Source connectors register standards-based protocol drivers.
+org.miaixz.bus.auth.source.protocol.ldap.LdapConnector
+org.miaixz.bus.auth.source.protocol.oauth2.OAuth2Connector
+org.miaixz.bus.auth.source.protocol.oidc.OpenIdConnector
+org.miaixz.bus.auth.source.protocol.radius.RadiusConnector
+org.miaixz.bus.auth.source.protocol.saml.SamlConnector
+org.miaixz.bus.auth.source.protocol.scim.ScimConnector
+
+# Vendor Source connectors register platform manifests, options, and adapters.
 org.miaixz.bus.auth.source.vendor.afdian.AfdianConnector
 org.miaixz.bus.auth.source.vendor.alipay.AlipayConnector
 org.miaixz.bus.auth.source.vendor.aliyun.AliyunConnector

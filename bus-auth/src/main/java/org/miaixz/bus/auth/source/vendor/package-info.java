@@ -30,14 +30,14 @@
  * <p>
  * {@link org.miaixz.bus.auth.source.vendor.VendorConnector} keeps declarations in each platform package and binds its
  * manifest, Options factory, and exact per-variant adapter factories through
- * {@link org.miaixz.bus.auth.source.vendor.VendorRegistry}. Standard and external connectors use the same SPI and
- * atomic build-time registration path. {@link org.miaixz.bus.auth.source.vendor.VendorBinding} is the immutable
- * programmatic binding form, while {@link org.miaixz.bus.auth.source.vendor.VendorModule} freezes the resulting
- * bindings into one immutable module and aggregate driver. {@link org.miaixz.bus.auth.source.vendor.VendorLocator}
- * provides read-only manifest lookup, and the aggregate Vendor driver creates the selected
- * {@link org.miaixz.bus.auth.source.vendor.VendorAdapter}. Manifests describe, options carry deployment input,
- * connectors register, bindings retain factories, the module assembles, the locator indexes, the driver compiles, and
- * adapters execute.
+ * {@link org.miaixz.bus.auth.source.vendor.VendorRegistry}. Standard and external connectors use the single root
+ * {@link org.miaixz.bus.auth.source.SourceConnector} SPI and the same atomic build-time registration path.
+ * {@link org.miaixz.bus.auth.source.vendor.VendorBinding} is the immutable programmatic binding form, while
+ * {@link org.miaixz.bus.auth.source.vendor.VendorModule} freezes the resulting bindings into one immutable module and
+ * aggregate driver. {@link org.miaixz.bus.auth.source.vendor.VendorLocator} provides read-only manifest lookup, and the
+ * aggregate Vendor driver creates the selected {@link org.miaixz.bus.auth.source.vendor.VendorAdapter}. Manifests
+ * describe, options carry deployment input, connectors register, bindings retain factories, the module assembles, the
+ * locator indexes, the driver compiles, and adapters execute.
  * </p>
  * <p>
  * The root {@link Realm} type is the optional Source-neutral contract implemented only by declared Realm-capable

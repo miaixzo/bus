@@ -166,7 +166,7 @@ public class XimalayaManifest implements VendorManifest<XimalayaOptions> {
             CAPABILITIES, DEVIATIONS);
 
     /**
-     * Creates the stateless Ximalaya manifest used by Vendor directory assembly.
+     * Creates the stateless Ximalaya manifest used by Vendor module assembly.
      */
     public XimalayaManifest() {
         // No initialization required.

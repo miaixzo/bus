@@ -21,7 +21,7 @@ package org.miaixz.bus.auth.source.protocol.oauth2.grant;
 
 import java.util.Arrays;
 
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -55,9 +55,9 @@ public class TokenMaterial {
      * Creates a Source-isolated token generator using the runtime security rules.
      *
      * @param sourceId exact Source identifier
-     * @param services Source-scoped runtime services
+     * @param services capability-limited Source services
      */
-    public TokenMaterial(final String sourceId, final DriverServices services) {
+    public TokenMaterial(final String sourceId, final SourceServices services) {
         this.sourceId = Assert.notBlank(sourceId, "OAuth 2.x Source id must not be blank");
         final int entropyBits = Math.max(
                 Normal._256,

@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.auth.source.vendor.wechat;
 
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.vendor.VendorManifest;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
@@ -38,11 +38,11 @@ public class WeChatEeAdapter extends WeChatAdapterSupport {
      * @param manifest selected WeChat manifest
      * @param variant  selected enterprise variant manifest
      * @param options  validated enterprise options
-     * @param services externally supplied execution services
+     * @param services capability-limited Source services
      * @throws ValidateException if the selected variant is not an EE product
      */
     public WeChatEeAdapter(final String spaceId, final String sourceId, final WeChatManifest manifest,
-            final VendorManifest.Variant variant, final WeChatOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final WeChatOptions options, final SourceServices services) {
         super(spaceId, sourceId, manifest, variant, options, services);
         if (!WeChatManifest.EE.equals(options.variant()) && !WeChatManifest.EE_QRCODE.equals(options.variant())
                 && !WeChatManifest.EE_WEB.equals(options.variant())) {

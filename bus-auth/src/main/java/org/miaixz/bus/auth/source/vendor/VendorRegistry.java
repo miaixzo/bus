@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -41,64 +41,6 @@ import org.miaixz.bus.extra.json.JsonValue;
  * @author Kimi Liu
  */
 public interface VendorRegistry extends Registry<Vendor.Id, VendorConnector> {
-
-    /**
-     * Binds one complete typed Vendor binding to the currently active registration.
-     *
-     * @param binding complete typed Vendor binding
-     * @return this registry
-     */
-    VendorRegistry bind(VendorBinding<?> binding);
-
-    /**
-     * Binds one manifest and its exact Options and adapter factories to the active registration.
-     *
-     * @param manifest       immutable platform manifest
-     * @param optionsFactory Options factory shared by the manifest variants
-     * @param adapters       adapter factory declarations covering every manifest variant
-     * @param <O>            exact immutable Vendor options type
-     * @return this registry
-     */
-    <O extends VendorOptions<?>> VendorRegistry bind(
-            VendorManifest<O> manifest,
-            VendorOptions.Factory<O> optionsFactory,
-            Collection<? extends Adapter<O>> adapters);
-
-    /**
-     * Registers one complete Vendor registration.
-     *
-     * @param connector Vendor connector to register
-     * @return this registry
-     */
-    @Override
-    VendorRegistry register(VendorConnector connector);
-
-    /**
-     * Atomically registers all supplied Vendor registrations.
-     *
-     * @param connectors Vendor connectors to register
-     * @return this registry
-     */
-    @Override
-    VendorRegistry registerAll(Collection<? extends VendorConnector> connectors);
-
-    /**
-     * Removes the complete Vendor registration owned by one platform key.
-     *
-     * @param key Vendor platform key
-     * @return this registry
-     */
-    @Override
-    VendorRegistry unregister(Vendor.Id key);
-
-    /**
-     * Atomically removes all Vendor registrations owned by the supplied platform keys.
-     *
-     * @param keys Vendor platform keys
-     * @return this registry
-     */
-    @Override
-    VendorRegistry unregisterAll(Collection<? extends Vendor.Id> keys);
 
     /**
      * Adapts one common six-component immutable Options constructor to the complete Options factory contract.
@@ -209,34 +151,62 @@ public interface VendorRegistry extends Registry<Vendor.Id, VendorConnector> {
     }
 
     /**
-     * Declares one immutable adapter factory and the exact variants it serves.
+     * Binds one complete typed Vendor binding to the currently active registration.
      *
-     * @param variants exact non-empty variant list
-     * @param factory  typed adapter factory
-     * @param <O>      concrete immutable Vendor options type
-     * @author Kimi Liu
+     * @param binding complete typed Vendor binding
+     * @return this registry
      */
-    record Adapter<O extends VendorOptions<?>>(List<Vendor.Variant> variants, VendorAdapter.Factory<O> factory) {
+    VendorRegistry bind(VendorBinding<?> binding);
 
-        /**
-         * Validates and freezes one typed adapter declaration.
-         */
-        public Adapter {
-            Assert.notNull(variants, "Vendor adapter variants must not be null");
-            variants = List.copyOf(variants);
-            if (variants.isEmpty()) {
-                throw new ValidateException("Vendor adapter declaration must contain at least one variant");
-            }
-            if (variants.stream().distinct().count() != variants.size()) {
-                throw new ValidateException("Vendor adapter declaration must not contain duplicate variants");
-            }
-            for (Vendor.Variant variant : variants) {
-                Assert.notNull(variant, "Vendor adapter variant must not be null");
-            }
-            factory = Assert.notNull(factory, "Vendor adapter factory must not be null");
-        }
+    /**
+     * Binds one manifest and its exact Options and adapter factories to the active registration.
+     *
+     * @param manifest       immutable platform manifest
+     * @param optionsFactory Options factory shared by the manifest variants
+     * @param adapters       adapter factory declarations covering every manifest variant
+     * @param <O>            exact immutable Vendor options type
+     * @return this registry
+     */
+    <O extends VendorOptions<?>> VendorRegistry bind(
+            VendorManifest<O> manifest,
+            VendorOptions.Factory<O> optionsFactory,
+            Collection<? extends Adapter<O>> adapters);
 
-    }
+    /**
+     * Registers one complete Vendor registration.
+     *
+     * @param connector Vendor connector to register
+     * @return this registry
+     */
+    @Override
+    VendorRegistry register(VendorConnector connector);
+
+    /**
+     * Atomically registers all supplied Vendor registrations.
+     *
+     * @param connectors Vendor connectors to register
+     * @return this registry
+     */
+    @Override
+    VendorRegistry registerAll(Collection<? extends VendorConnector> connectors);
+
+    /**
+     * Removes the complete Vendor registration owned by one platform key.
+     *
+     * @param key Vendor platform key
+     * @return this registry
+     */
+    @Override
+    VendorRegistry unregister(Vendor.Id key);
+
+    /**
+     * Atomically removes all Vendor registrations owned by the supplied platform keys.
+     *
+     * @param keys Vendor platform keys
+     * @return this registry
+     */
+    @Override
+    VendorRegistry unregisterAll(Collection<? extends Vendor.Id> keys);
 
     /**
      * Represents one concrete immutable Options constructor with the common six components.
@@ -286,7 +256,7 @@ public interface VendorRegistry extends Registry<Vendor.Id, VendorConnector> {
          * @param manifest exact concrete platform manifest
          * @param variant  exact selected variant
          * @param options  decoded concrete platform options
-         * @param services complete caller-owned runtime dependencies
+         * @param services capability-limited Source services
          * @return non-null concrete adapter
          */
         VendorAdapter create(
@@ -295,7 +265,37 @@ public interface VendorRegistry extends Registry<Vendor.Id, VendorConnector> {
                 M manifest,
                 VendorManifest.Variant variant,
                 O options,
-                DriverServices services);
+                SourceServices services);
+
+    }
+
+    /**
+     * Declares one immutable adapter factory and the exact variants it serves.
+     *
+     * @param variants exact non-empty variant list
+     * @param factory  typed adapter factory
+     * @param <O>      concrete immutable Vendor options type
+     * @author Kimi Liu
+     */
+    record Adapter<O extends VendorOptions<?>>(List<Vendor.Variant> variants, VendorAdapter.Factory<O> factory) {
+
+        /**
+         * Validates and freezes one typed adapter declaration.
+         */
+        public Adapter {
+            Assert.notNull(variants, "Vendor adapter variants must not be null");
+            variants = List.copyOf(variants);
+            if (variants.isEmpty()) {
+                throw new ValidateException("Vendor adapter declaration must contain at least one variant");
+            }
+            if (variants.stream().distinct().count() != variants.size()) {
+                throw new ValidateException("Vendor adapter declaration must not contain duplicate variants");
+            }
+            for (Vendor.Variant variant : variants) {
+                Assert.notNull(variant, "Vendor adapter variant must not be null");
+            }
+            factory = Assert.notNull(factory, "Vendor adapter factory must not be null");
+        }
 
     }
 

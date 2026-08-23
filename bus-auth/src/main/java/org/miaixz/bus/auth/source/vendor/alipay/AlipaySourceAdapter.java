@@ -31,13 +31,12 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.GrantType;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
@@ -88,7 +87,7 @@ public class AlipaySourceAdapter implements VendorAdapter {
     /**
      * External runtime dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
     /**
      * Shared browser security lifecycle.
      */
@@ -110,10 +109,10 @@ public class AlipaySourceAdapter implements VendorAdapter {
      * @param manifest selected Alipay manifest
      * @param variant  selected manifest
      * @param options  decoded options
-     * @param services external runtime dependencies
+     * @param services capability-limited Source services
      */
     public AlipaySourceAdapter(final String spaceId, final String sourceId, final AlipayManifest manifest,
-            final VendorManifest.Variant variant, final AlipayOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final AlipayOptions options, final SourceServices services) {
         Assert.notNull(manifest, "Alipay manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Alipay Source id must not be blank");
         this.variant = Assert.notNull(variant, "Alipay manifest must not be null");
@@ -657,6 +656,8 @@ public class AlipaySourceAdapter implements VendorAdapter {
      *
      * @param authorizationCode Alipay auth_code value
      * @param state             correlated state value
+     *
+     * @author Kimi Liu
      */
     private record CallbackWire(String authorizationCode, String state) {
 

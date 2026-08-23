@@ -52,7 +52,17 @@ public class JwtVerifier {
     /**
      * Profile-scoped JWE service.
      */
-    private final JweService jweService;
+    private final Optional<JweService> jweService;
+
+    /**
+     * Creates a signed-JWT verifier without an unrelated JWE dependency.
+     *
+     * @param jwsService profile-scoped JWS service
+     */
+    public JwtVerifier(final JwsService jwsService) {
+        this.jwsService = Assert.notNull(jwsService, "JWT verifier JWS service must not be null");
+        this.jweService = Optional.empty();
+    }
 
     /**
      * Creates a verifier with explicit JOSE services and no key-discovery fallback.
@@ -62,7 +72,7 @@ public class JwtVerifier {
      */
     public JwtVerifier(final JwsService jwsService, final JweService jweService) {
         this.jwsService = Assert.notNull(jwsService, "JWT verifier JWS service must not be null");
-        this.jweService = Assert.notNull(jweService, "JWT verifier JWE service must not be null");
+        this.jweService = Optional.of(Assert.notNull(jweService, "JWT verifier JWE service must not be null"));
     }
 
     /**
@@ -92,7 +102,7 @@ public class JwtVerifier {
      * @param verification explicit key and critical-extension inputs
      * @return immutable cryptographically verified JWT
      */
-    public Jwt verify(final String compact, final Verification verification) {
+    public JWT verify(final String compact, final Verification verification) {
         Assert.notBlank(compact, "JWT compact value must not be blank");
         Assert.notNull(verification, "JWT verification input must not be null");
         return switch (verification) {
@@ -109,14 +119,14 @@ public class JwtVerifier {
      * @param verification signing key and critical extensions
      * @return verified JWT
      */
-    private Jwt verifySigned(final String compact, final Signed verification) {
+    private JWT verifySigned(final String compact, final Signed verification) {
         if (segments(compact) != 3) {
             throw new ValidateException("Signed JWT must contain three compact segments");
         }
         final JwsService.Jws jws = jwsService.parseCompact(compact, verification.critical());
         final JwsService.Signature signature = jws.signatures().get(0);
         jwsService.verify(signature, jws.payload(), verification.key(), verification.critical());
-        return new Jwt(compact, signature.header(), claims(jws.payload()));
+        return new JWT(compact, signature.header(), claims(jws.payload()));
     }
 
     /**
@@ -126,12 +136,14 @@ public class JwtVerifier {
      * @param verification decryption and optional nested-signature inputs
      * @return verified outer JWT carrying final claims
      */
-    private Jwt verifyEncrypted(final String compact, final Encrypted verification) {
+    private JWT verifyEncrypted(final String compact, final Encrypted verification) {
         if (segments(compact) != 5) {
             throw new ValidateException("Encrypted JWT must contain five compact segments");
         }
-        final JweService.Jwe jwe = jweService.parseCompact(compact, verification.outerCritical());
-        final byte[] plaintext = jweService.decrypt(jwe, 0, verification.decryptionKey(), verification.outerCritical());
+        final JweService encryption = jweService
+                .orElseThrow(() -> new ValidateException("Encrypted JWT verification requires a JWE service"));
+        final JweService.Jwe jwe = encryption.parseCompact(compact, verification.outerCritical());
+        final byte[] plaintext = encryption.decrypt(jwe, 0, verification.decryptionKey(), verification.outerCritical());
         final JoseHeader outerHeader = new JoseHeader(jwe.protectedHeader(), new JsonValue.ObjectValue(Map.of()));
         final boolean nested = outerHeader.contentType().filter(JwtVerifier::jwtMediaType).isPresent();
         final JwtClaims claims;
@@ -146,7 +158,7 @@ public class JwtVerifier {
         } else {
             claims = claims(plaintext);
         }
-        return new Jwt(compact, outerHeader, claims);
+        return new JWT(compact, outerHeader, claims);
     }
 
     /**

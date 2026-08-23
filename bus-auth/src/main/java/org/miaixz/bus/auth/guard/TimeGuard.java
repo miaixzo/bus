@@ -90,6 +90,18 @@ public class TimeGuard {
      */
     public void validateIssuedAt(final Instant issuedAt, final Timeout timeout) {
         validateTimeout(timeout);
+        validateIssuedAt(issuedAt);
+    }
+
+    /**
+     * Validates that an issued-at timestamp is not unacceptably far in the future without requiring an operation
+     * timeout.
+     *
+     * @param issuedAt issued-at timestamp from the protocol object
+     * @throws IllegalArgumentException if {@code issuedAt} is {@code null}
+     * @throws ValidateException        if the timestamp exceeds the skew allowance
+     */
+    public void validateIssuedAt(final Instant issuedAt) {
         Assert.notNull(issuedAt, "Issued-at timestamp must not be null");
         if (issuedAt.isAfter(clock.now().plus(maximumSkew))) {
             throw new ValidateException("Issued-at timestamp is later than the permitted clock skew");
@@ -106,6 +118,17 @@ public class TimeGuard {
      */
     public void validateNotBefore(final Instant notBefore, final Timeout timeout) {
         validateTimeout(timeout);
+        validateNotBefore(notBefore);
+    }
+
+    /**
+     * Validates that a not-before timestamp has become active without requiring an operation timeout.
+     *
+     * @param notBefore not-before timestamp from the protocol object
+     * @throws IllegalArgumentException if {@code notBefore} is {@code null}
+     * @throws ValidateException        if the timestamp is still in the future beyond the skew allowance
+     */
+    public void validateNotBefore(final Instant notBefore) {
         Assert.notNull(notBefore, "Not-before timestamp must not be null");
         if (notBefore.isAfter(clock.now().plus(maximumSkew))) {
             throw new ValidateException("Not-before timestamp has not become active within the permitted clock skew");
@@ -122,6 +145,17 @@ public class TimeGuard {
      */
     public void validateExpiration(final Instant expiresAt, final Timeout timeout) {
         validateTimeout(timeout);
+        validateExpiration(expiresAt);
+    }
+
+    /**
+     * Validates that an expiration timestamp remains valid without requiring an operation timeout.
+     *
+     * @param expiresAt expiration timestamp from the protocol object
+     * @throws IllegalArgumentException if {@code expiresAt} is {@code null}
+     * @throws ValidateException        if the timestamp has expired beyond the skew allowance
+     */
+    public void validateExpiration(final Instant expiresAt) {
         Assert.notNull(expiresAt, "Expiration timestamp must not be null");
         if (!expiresAt.isAfter(clock.now().minus(maximumSkew))) {
             throw new ValidateException("Expiration timestamp is outside the permitted clock skew");
@@ -143,18 +177,56 @@ public class TimeGuard {
             final Optional<Instant> notBefore,
             final Instant expiresAt,
             final Timeout timeout) {
+        validateTimeout(timeout);
+        validateWindow(issuedAt, notBefore, expiresAt);
+    }
+
+    /**
+     * Validates a complete issued-at, optional not-before, and expiration window without requiring an operation
+     * timeout.
+     *
+     * @param issuedAt  issued-at timestamp
+     * @param notBefore optional not-before timestamp
+     * @param expiresAt expiration timestamp
+     * @throws IllegalArgumentException if an argument or optional container is {@code null}
+     * @throws ValidateException        if a temporal check fails or the declared window has no valid ordering
+     */
+    public void validateWindow(final Instant issuedAt, final Optional<Instant> notBefore, final Instant expiresAt) {
         Assert.notNull(notBefore, "Not-before timestamp container must not be null");
-        validateIssuedAt(issuedAt, timeout);
+        validateIssuedAt(issuedAt);
         final Instant lowerBound = notBefore.getOrNull();
         if (lowerBound != null) {
-            validateNotBefore(lowerBound, timeout);
+            validateNotBefore(lowerBound);
         }
-        validateExpiration(expiresAt, timeout);
+        validateExpiration(expiresAt);
         if (!issuedAt.isBefore(expiresAt)) {
             throw new ValidateException("Issued-at timestamp must precede expiration");
         }
         if (lowerBound != null && !lowerBound.isBefore(expiresAt)) {
             throw new ValidateException("Not-before timestamp must precede expiration");
+        }
+    }
+
+    /**
+     * Validates that a token age measured from one issued-at timestamp remains below an explicit maximum.
+     *
+     * @param issuedAt   issued-at timestamp
+     * @param maximumAge positive maximum accepted age
+     * @throws IllegalArgumentException if an argument is {@code null}
+     * @throws ValidateException        if the maximum is not positive or the token is too old
+     */
+    public void validateMaximumAge(final Instant issuedAt, final Duration maximumAge) {
+        Assert.notNull(issuedAt, "Issued-at timestamp must not be null");
+        Assert.notNull(maximumAge, "Maximum age must not be null");
+        if (maximumAge.isZero() || maximumAge.isNegative()) {
+            throw new ValidateException("Maximum age must be positive");
+        }
+        try {
+            if (!issuedAt.plus(maximumAge).isAfter(clock.now())) {
+                throw new ValidateException("Issued-at timestamp exceeds the permitted maximum age");
+            }
+        } catch (ArithmeticException cause) {
+            throw new ValidateException("Maximum-age calculation exceeds the supported Instant range", cause);
         }
     }
 

@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 /**
  * Holds exact platform-variant bindings to immutable Vendor Options factories.
  * <p>
- * This package-private directory performs only assembly-time validation and exact-key lookup. It never constructs
+ * This package-private binding index performs only assembly-time validation and exact-key lookup. It never constructs
  * Options, accesses credential material, writes project data, or compiles a Source.
  * </p>
  *
@@ -38,12 +38,12 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 final class OptionsBindings {
 
     /**
-     * Immutable exact-key Options factory directory.
+     * Immutable exact-key Options factory index.
      */
     private final Map<Key, Binding> values;
 
     /**
-     * Validates and freezes one exact Options factory directory.
+     * Validates and freezes one exact Options factory index.
      *
      * @param values complete platform-variant bindings
      */

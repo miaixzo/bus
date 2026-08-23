@@ -31,7 +31,7 @@ import org.miaixz.bus.auth.cache.AccessTokenCache;
 import org.miaixz.bus.auth.cache.AuthorizationCache;
 import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.IntrospectionRequest;
 import org.miaixz.bus.auth.source.protocol.oauth2.IntrospectionResponse;
 import org.miaixz.bus.auth.source.protocol.oauth2.Scope;
@@ -64,18 +64,18 @@ public class IntrospectionService {
     /**
      * Runtime dependencies including the access-token cache.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Creates a token introspection service for one compiled server-role Source runtime.
      *
      * @param sourceId compiled server-role Source identifier
      * @param options  validated authorization-server options
-     * @param services externally owned runtime dependencies
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
     public IntrospectionService(final String sourceId, final OAuth2ServerOptions options,
-            final DriverServices services) {
+            final SourceServices services) {
         this.sourceId = Assert.notBlank(sourceId, "OAuth 2.x Source id must not be blank");
         this.options = Assert.notNull(options, "OAuth 2.x authorization server options must not be null");
         this.services = Assert.notNull(services, "OAuth 2.x execution services must not be null");

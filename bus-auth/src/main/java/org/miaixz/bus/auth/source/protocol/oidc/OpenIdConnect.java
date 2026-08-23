@@ -80,6 +80,8 @@ public class OpenIdConnect {
 
     /**
      * Defines OpenID Connect authentication and logout request parameter names.
+     *
+     * @author Kimi Liu
      */
     public static class Parameters {
 
@@ -159,6 +161,8 @@ public class OpenIdConnect {
 
     /**
      * Defines OpenID Connect ID Token and UserInfo claim names beyond the registered JWT claims.
+     *
+     * @author Kimi Liu
      */
     public static class Claims {
 
@@ -326,6 +330,8 @@ public class OpenIdConnect {
 
     /**
      * Defines OpenID Connect scope values introduced beyond OAuth 2.x.
+     *
+     * @author Kimi Liu
      */
     public static class Scopes {
 
@@ -361,6 +367,8 @@ public class OpenIdConnect {
 
     /**
      * Defines response mode values used by OpenID Connect authorization responses.
+     *
+     * @author Kimi Liu
      */
     public static class ResponseModes {
 
@@ -388,6 +396,8 @@ public class OpenIdConnect {
 
     /**
      * Defines OpenID Provider metadata member names introduced by OpenID Connect Discovery.
+     *
+     * @author Kimi Liu
      */
     public static class Metadata {
 

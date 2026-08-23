@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.auth.shared.jwt.Jwt;
+import org.miaixz.bus.auth.shared.jwt.JWT;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
 import org.miaixz.bus.auth.source.protocol.oidc.IdToken;
@@ -195,7 +195,7 @@ public class IdTokenCodec {
     public Decoded decode(final IdToken token, final JwtVerifier.Verification verification) {
         Assert.notNull(token, "OpenID Connect ID Token must not be null");
         Assert.notNull(verification, "OpenID Connect ID Token verification input must not be null");
-        final Jwt jwt = verifier.verify(token.compact(), verification);
+        final JWT jwt = verifier.verify(token.compact(), verification);
         final JwtClaims claims = jwt.claims();
         final String issuer = claims.issuer()
                 .orElseThrow(() -> new ValidateException("OpenID Connect ID Token requires iss"));
@@ -235,9 +235,9 @@ public class IdTokenCodec {
      * @throws IllegalArgumentException if {@code jwt} is {@code null}
      * @throws ValidateException        if the JWT is not a three-segment signed compact JWT
      */
-    public IdToken encode(final Jwt jwt) {
+    public IdToken encode(final JWT jwt) {
         Assert.notNull(jwt, "OpenID Connect issued JWT must not be null");
-        if (jwt.kind() != Jwt.Kind.SIGNED) {
+        if (jwt.kind() != JWT.Kind.SIGNED) {
             throw new ValidateException(
                     "OpenID Connect ID Token codec supports signed tokens but not encrypted tokens");
         }
@@ -251,7 +251,7 @@ public class IdTokenCodec {
      * @param claims typed OpenID Connect ID Token claims
      * @author Kimi Liu
      */
-    public record Decoded(Jwt jwt, IdTokenClaims claims) {
+    public record Decoded(JWT jwt, IdTokenClaims claims) {
 
         /**
          * Creates an immutable decoded ID Token result.

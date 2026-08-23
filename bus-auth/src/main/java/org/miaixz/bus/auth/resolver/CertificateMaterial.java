@@ -29,6 +29,7 @@ import org.miaixz.bus.crypto.builtin.TrustRootIndex;
  *
  * @param chain      ordered certificate chain beginning with the leaf certificate
  * @param trustRoots explicit trust anchors used to validate the chain
+ * @author Kimi Liu
  */
 public record CertificateMaterial(CertificateChain chain, TrustRootIndex trustRoots) {
 

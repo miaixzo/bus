@@ -128,15 +128,15 @@ public interface SourceDriver<O extends Options<?>> {
     default Prepared<O> prepare(final Blueprint.SourceEntry entry, final Provider provider, final Library library) {
         final Blueprint.SourceEntry sourceEntry = Assert.notNull(entry, "Source Blueprint entry must not be null");
         final Provider owner = Assert.notNull(provider, "Owning Provider must not be null");
-        final Library application = Assert.notNull(library, "Source Library must not be null");
+        final Library sourceLibrary = Assert.notNull(library, "Source Library must not be null");
         final Source source = Assert.notNull(sourceEntry.resource(), "Blueprint Source must not be null");
         if (!scheme().id().equals(source.getType()) || !supports(source.getProtocol())
                 || !owner.getId().equals(source.getProvider_id())
-                || !application.getId().equals(owner.getLibrary_id())) {
+                || !sourceLibrary.getId().equals(owner.getLibrary_id())) {
             throw new ValidateException("Source Blueprint entry does not match its driver, Provider, or Library");
         }
         final O options = Assert.notNull(validate(source), "Validated Source options must not be null");
-        return new Prepared<>(sourceEntry, owner, application, options,
+        return new Prepared<>(sourceEntry, owner, sourceLibrary, options,
                 Assert.notNull(slots(source, options), "Source Worker slots must not be null"),
                 Assert.notNull(dependencies(source, options), "Source framework dependencies must not be null"));
     }
@@ -145,11 +145,11 @@ public interface SourceDriver<O extends Options<?>> {
      * Compiles one prepared Source Blueprint entry with its exact retained requirements.
      *
      * @param prepared immutable preparation produced by this driver
-     * @param services scoped externally supplied execution services
-     * @return immutable executable Roster entry
+     * @param services capability-limited Source services
+     * @return compiled executable Source worker
      * @throws IllegalArgumentException if an argument does not match this driver
      */
-    SourceWorker compile(Prepared<O> prepared, DriverServices services);
+    SourceWorker compile(Prepared<O> prepared, SourceServices services);
 
     /**
      * Freezes one driver's exact Blueprint graph, narrowed options, and project integration requirements.
@@ -208,7 +208,7 @@ public interface SourceDriver<O extends Options<?>> {
         /**
          * Creates an immutable dependency set from exact services.
          *
-         * @param services exact framework services
+         * @param services capability-limited Source services
          * @return immutable dependency set
          */
         public static Dependencies of(final Service... services) {
@@ -229,8 +229,8 @@ public interface SourceDriver<O extends Options<?>> {
         /**
          * Identifies one framework-owned infrastructure or protocol-state service.
          * <p>
-         * Application-wide {@link FabricX} and {@link JsonKit} facilities
-         * are static boundaries and therefore are not declared as scoped driver services.
+         * Application-wide {@link FabricX} and {@link JsonKit} facilities are static boundaries and therefore are not
+         * declared as scoped Source services.
          * </p>
          *
          * @author Kimi Liu

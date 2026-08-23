@@ -27,14 +27,13 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.guard.IssuerValidator;
 import org.miaixz.bus.auth.shared.jose.*;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.*;
@@ -92,7 +91,7 @@ public class AliyunSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime dependencies and network resources.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Existing standard OIDC client operations used without wire adaptation.
@@ -142,13 +141,13 @@ public class AliyunSourceAdapter implements VendorAdapter {
      * @param manifest selected Alibaba Cloud manifest
      * @param variant  selected default variant manifest
      * @param options  decoded externally loaded Alibaba Cloud options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a required collaborator is {@code null}
      * @throws ValidateException        if the supplied profile, manifest, options, or security rules do not represent
      *                                  the frozen Alibaba Cloud OIDC variant
      */
     public AliyunSourceAdapter(final String spaceId, final String sourceId, final AliyunManifest manifest,
-            final VendorManifest.Variant variant, final AliyunOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final AliyunOptions options, final SourceServices services) {
         Assert.notNull(manifest, "Alibaba Cloud manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Alibaba Cloud Source id must not be blank");
         this.variant = Assert.notNull(variant, "Alibaba Cloud manifest must not be null");
@@ -184,14 +183,14 @@ public class AliyunSourceAdapter implements VendorAdapter {
      *
      * @param variant         selected Alibaba Cloud variant
      * @param options         validated Alibaba Cloud Source options
-     * @param services        caller-owned execution services
+     * @param services        capability-limited Source services
      * @param redirectManager shared browser correlation lifecycle
      * @return adapter containing only standard protocol operation bindings
      */
     private static StandardAdapter standardAdapter(
             final VendorManifest.Variant variant,
             final AliyunOptions options,
-            final DriverServices services,
+            final SourceServices services,
             final RedirectManager redirectManager) {
         final var targets = variant.targets().resolve(options);
         final String redirectUri = options.redirectUri().orElseThrow(

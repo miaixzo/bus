@@ -19,20 +19,31 @@
 */
 package org.miaixz.bus.auth.source.protocol;
 
-import org.miaixz.bus.auth.Registry.Connector;
+import org.miaixz.bus.auth.source.SourceConnector;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
  * Connects every client-role or server-role Source driver owned by one protocol to a build-scoped registry.
  * <p>
- * Implementations are discovered through the Bus SPI loader and must expose a public no-argument constructor. One
- * connector may bind multiple role-specific drivers, but every driver must use the protocol returned by {@link #key()}
- * as its primary classification. Connection is declarative assembly only and must not open a protocol connection, load
- * external data, execute a Source, or access the runtime Roster.
+ * Implementations are discovered through the unified {@link SourceConnector} SPI and must expose a public no-argument
+ * constructor. One connector may bind multiple role-specific drivers, but every driver must use the protocol returned
+ * by {@link #key()} as its primary classification. The connect callback performs declarative assembly only and must not
+ * open a protocol connection, load external data, execute a Source, or access the runtime Roster.
  * </p>
  *
  * @author Kimi Liu
  */
-public interface ProtocolConnector extends Connector<Protocol, ProtocolRegistry> {
+public non-sealed interface ProtocolConnector extends SourceConnector<Protocol, ProtocolRegistry> {
+
+    /**
+     * Dispatches this connector to the protocol registration branch.
+     *
+     * @param visitor unified Source connector visitor
+     */
+    @Override
+    default void accept(final Visitor visitor) {
+        Assert.notNull(visitor, "Source connector visitor must not be null").visit(this);
+    }
 
 }

@@ -109,6 +109,8 @@ public class Radius {
 
     /**
      * Defines the packet Codes implemented by the Access and Accounting profile.
+     *
+     * @author Kimi Liu
      */
     public static class Codes {
 
@@ -148,6 +150,8 @@ public class Radius {
 
     /**
      * Defines the registered Attribute Types used by the implemented profile.
+     *
+     * @author Kimi Liu
      */
     public static class Attributes {
 

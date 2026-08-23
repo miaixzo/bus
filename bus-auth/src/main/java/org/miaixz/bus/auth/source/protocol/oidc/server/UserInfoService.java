@@ -36,7 +36,7 @@ import org.miaixz.bus.auth.cache.AuthorizationCache;
 import org.miaixz.bus.auth.cache.AuthorizationCodeCache;
 import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2ErrorCode;
 import org.miaixz.bus.auth.source.protocol.oidc.OpenIdConnect;
 import org.miaixz.bus.auth.source.protocol.oidc.UserInfoRequest;
@@ -75,7 +75,7 @@ public class UserInfoService {
     /**
      * Access-token cache, external attribute loader, and pure attribute parser.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Standard Claims object decoder used after authorization filtering.
@@ -87,10 +87,10 @@ public class UserInfoService {
      *
      * @param sourceId compiled server-role Source identifier
      * @param options  validated OpenID Provider options
-     * @param services externally implemented runtime dependencies
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public UserInfoService(final String sourceId, final OpenIdServerOptions options, final DriverServices services) {
+    public UserInfoService(final String sourceId, final OpenIdServerOptions options, final SourceServices services) {
         this.sourceId = Assert.notBlank(sourceId, "OpenID Provider Source id must not be blank");
         this.options = Assert.notNull(options, "OpenID Provider UserInfo options must not be null");
         this.services = Assert.notNull(services, "OpenID Connect UserInfo execution services must not be null");

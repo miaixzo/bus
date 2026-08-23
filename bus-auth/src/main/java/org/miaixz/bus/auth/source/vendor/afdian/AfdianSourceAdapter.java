@@ -28,13 +28,12 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.AuthorizationCodeResponse;
 import org.miaixz.bus.auth.source.protocol.oauth2.GrantType;
@@ -77,7 +76,7 @@ public class AfdianSourceAdapter implements VendorAdapter {
     /**
      * External runtime dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
     /**
      * Shared browser security lifecycle.
      */
@@ -103,10 +102,10 @@ public class AfdianSourceAdapter implements VendorAdapter {
      * @param manifest selected Afdian manifest
      * @param variant  selected default manifest
      * @param options  decoded Afdian options
-     * @param services external runtime dependencies
+     * @param services capability-limited Source services
      */
     public AfdianSourceAdapter(final String spaceId, final String sourceId, final AfdianManifest manifest,
-            final VendorManifest.Variant variant, final AfdianOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final AfdianOptions options, final SourceServices services) {
         Assert.notNull(manifest, "Afdian manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Afdian Source id must not be blank");
         this.variant = Assert.notNull(variant, "Afdian manifest must not be null");

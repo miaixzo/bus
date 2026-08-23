@@ -22,12 +22,8 @@ package org.miaixz.bus.auth.source.vendor.toutiao;
 import java.util.List;
 import java.util.Set;
 
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.Credential;
-import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2ClientScheme;
@@ -149,7 +145,7 @@ public class ToutiaoManifest implements VendorManifest<ToutiaoOptions> {
             CAPABILITIES, DEVIATIONS);
 
     /**
-     * Creates the stateless Toutiao manifest used by Vendor directory assembly.
+     * Creates the stateless Toutiao manifest used by Vendor module assembly.
      */
     public ToutiaoManifest() {
         // No initialization required.

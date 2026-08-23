@@ -29,7 +29,6 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
@@ -39,14 +38,10 @@ import org.miaixz.bus.auth.shared.jose.*;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
-import org.miaixz.bus.auth.source.protocol.oauth2.client.AuthorizationClient;
-import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2Client;
-import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2ClientOptions;
-import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2ClientScheme;
-import org.miaixz.bus.auth.source.protocol.oauth2.client.TokenClient;
+import org.miaixz.bus.auth.source.protocol.oauth2.client.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.codec.AuthorizationRequestEncoder;
 import org.miaixz.bus.auth.source.protocol.oauth2.codec.TokenRequestEncoder;
 import org.miaixz.bus.auth.source.protocol.oauth2.codec.TokenResponseDecoder;
@@ -122,7 +117,7 @@ public class GoogleSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime dependencies and network resources.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Existing standard OIDC client operations used without wire adaptation.
@@ -172,13 +167,13 @@ public class GoogleSourceAdapter implements VendorAdapter {
      * @param manifest selected Google manifest
      * @param variant  selected default variant manifest
      * @param options  decoded externally loaded Google options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a required collaborator is {@code null}
      * @throws ValidateException        if the supplied profile, manifest, options, or security rules do not represent
      *                                  the frozen Google OIDC variant
      */
     public GoogleSourceAdapter(final String spaceId, final String sourceId, final GoogleManifest manifest,
-            final VendorManifest.Variant variant, final GoogleOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final GoogleOptions options, final SourceServices services) {
         Assert.notNull(manifest, "Google manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Google Source id must not be blank");
         this.variant = Assert.notNull(variant, "Google manifest must not be null");

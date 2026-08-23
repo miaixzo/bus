@@ -26,26 +26,26 @@ import org.miaixz.bus.auth.FabricX;
 import org.miaixz.bus.auth.Policies;
 import org.miaixz.bus.auth.cache.*;
 import org.miaixz.bus.auth.resolver.*;
-import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.SourceDriver;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.worker.*;
 import org.miaixz.bus.auth.worker.loader.*;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * Immutable root container for all protocol-execution dependencies.
+ * Immutable root container for all Source-execution dependencies.
  * <p>
  * This class owns the complete framework infrastructure, project data ports, pure parsers, authentication caches, and
- * non-relaxable security policies assembled for one runtime. It deliberately does not implement {@link DriverServices}
+ * non-relaxable security policies assembled for one runtime. It deliberately does not implement {@link SourceServices}
  * and must never be passed directly to a Source driver.
  * {@link #scope(Blueprint.SourceEntry, WorkerSlots, SourceDriver.Dependencies, long)} creates the only
  * capability-limited view accepted by driver compilation.
  * </p>
  * <p>
  * Blueprint loading, Roster observation, identity completion, audit, parsing execution, and project business services
- * remain outside this class. Application-wide JSON selection also remains outside this container; protocol code uses
- * {@link org.miaixz.bus.extra.json.JsonKit} directly.
+ * remain outside this class. Application-wide JSON selection also remains outside this container; Source
+ * implementations use {@link org.miaixz.bus.extra.json.JsonKit} directly.
  * </p>
  *
  * @author Kimi Liu
@@ -107,11 +107,11 @@ public class RuntimeServices {
     private final Policies policies;
 
     /**
-     * Creates the immutable protocol dependency set and framework-owned stateless parsers and cache views.
+     * Creates the immutable runtime Source dependency set and framework-owned stateless parsers and cache views.
      *
      * @param policies        immutable non-relaxable authentication transport and protocol policies
      * @param executor        caller-owned executor
-     * @param workers         selected project protocol data ports
+     * @param workers         selected project Source data ports
      * @param cache           shared atomic authentication cache backend whose serializer can round-trip the immutable
      *                        AuthCache envelope graph and deterministically re-encode equal expected values
      * @param cacheDeployment deployment identifier used to isolate authentication cache keys
@@ -392,27 +392,28 @@ public class RuntimeServices {
     }
 
     /**
-     * Creates the only Driver-visible service view after validating every declared project data port.
+     * Creates the only Source-scoped service view after validating every declared project data port.
      *
      * @param entry        exact Source Blueprint entry owning the scoped view
      * @param slots        exact project data ports required by one prepared Source
      * @param dependencies exact framework services required by the same prepared Source
      * @param generation   security-state generation assigned by snapshot compilation
-     * @return capability-limited Driver service view
+     * @return capability-limited Source service view
      * @throws IllegalArgumentException if an argument is {@code null} or a required project port is unavailable
      */
-    DriverServices scope(
+    SourceServices scope(
             final Blueprint.SourceEntry entry,
             final WorkerSlots slots,
             final SourceDriver.Dependencies dependencies,
             final long generation) {
-        final Blueprint.SourceEntry source = Assert.notNull(entry, "Scoped Source Blueprint entry must not be null");
+        final Blueprint.SourceEntry sourceEntry = Assert
+                .notNull(entry, "Scoped Source Blueprint entry must not be null");
         final WorkerSlots selected = Assert.notNull(slots, "Source Worker slots must not be null");
         final SourceDriver.Dependencies required = Assert
                 .notNull(dependencies, "Source framework dependencies must not be null");
         workers.require(selected);
         Assert.isTrue(generation >= 0L, "Source security-state generation must not be negative");
-        return new ScopedDriverServices(this, source, selected, required, generation);
+        return new ScopedSourceServices(this, sourceEntry, selected, required, generation);
     }
 
 }

@@ -19,18 +19,11 @@
 */
 package org.miaixz.bus.auth.source.protocol;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import org.miaixz.bus.auth.source.SourceDiscovery;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
@@ -72,7 +65,7 @@ public class ProtocolSuite implements ProtocolRegistry {
     private boolean frozen;
 
     /**
-     * Creates an empty mutable Source configuration suite.
+     * Creates an empty mutable protocol registration suite.
      */
     public ProtocolSuite() {
         this(new LinkedHashMap<>(), new LinkedHashSet<>());
@@ -90,21 +83,13 @@ public class ProtocolSuite implements ProtocolRegistry {
     }
 
     /**
-     * Loads every visible Source connector through the Bus SPI loader in stable protocol order.
+     * Loads every visible protocol connector from the unified Source SPI in stable protocol order.
      *
      * @return mutable suite containing all visible protocol registrations
      * @throws ValidateException if no connector is visible or registrations conflict
      */
     public static ProtocolSuite load() {
-        final List<ProtocolConnector> connectors = new ArrayList<>();
-        for (ProtocolConnector connector : NormalSpiLoader.loadList(ProtocolConnector.class)) {
-            connectors.add(Assert.notNull(connector, "Source connector must not be null"));
-        }
-        if (connectors.isEmpty()) {
-            throw new ValidateException("No Source connectors were discovered");
-        }
-        connectors.sort(Comparator.comparing(connector -> connector.key().name()));
-        return (ProtocolSuite) new ProtocolSuite().registerAll(connectors);
+        return (ProtocolSuite) new ProtocolSuite().registerAll(SourceDiscovery.load().requireProtocols());
     }
 
     /**
@@ -128,7 +113,7 @@ public class ProtocolSuite implements ProtocolRegistry {
     public synchronized ProtocolRegistry bindAll(final Collection<? extends ProtocolDriver<?>> drivers) {
         mutable();
         if (active == null || emitted == null) {
-            throw new ValidateException("Source drivers may be bound only during Source connector connection");
+            throw new ValidateException("Protocol drivers may be bound only during a protocol connector callback");
         }
         Assert.notNull(drivers, "Source driver collection must not be null");
         for (ProtocolDriver<?> candidate : drivers) {
@@ -153,7 +138,7 @@ public class ProtocolSuite implements ProtocolRegistry {
      */
     @Override
     public synchronized ProtocolRegistry register(final ProtocolConnector connector) {
-        return registerAll(List.of(Assert.notNull(connector, "Source connector must not be null")));
+        return registerAll(List.of(Assert.notNull(connector, "Protocol connector must not be null")));
     }
 
     /**
@@ -165,10 +150,10 @@ public class ProtocolSuite implements ProtocolRegistry {
     @Override
     public synchronized ProtocolRegistry registerAll(final Collection<? extends ProtocolConnector> connectors) {
         mutable();
-        Assert.notNull(connectors, "Source connector collection must not be null");
+        Assert.notNull(connectors, "Protocol connector collection must not be null");
         final ProtocolSuite staged = copy();
         for (ProtocolConnector candidate : connectors) {
-            staged.apply(Assert.notNull(candidate, "Source connector must not be null"));
+            staged.apply(Assert.notNull(candidate, "Protocol connector must not be null"));
         }
         replace(staged);
         return this;
@@ -182,7 +167,7 @@ public class ProtocolSuite implements ProtocolRegistry {
      */
     @Override
     public synchronized ProtocolRegistry unregister(final Protocol key) {
-        return unregisterAll(List.of(Assert.notNull(key, "Source connector key must not be null")));
+        return unregisterAll(List.of(Assert.notNull(key, "Protocol connector key must not be null")));
     }
 
     /**
@@ -194,17 +179,17 @@ public class ProtocolSuite implements ProtocolRegistry {
     @Override
     public synchronized ProtocolRegistry unregisterAll(final Collection<? extends Protocol> keys) {
         mutable();
-        Assert.notNull(keys, "Source connector key collection must not be null");
+        Assert.notNull(keys, "Protocol connector key collection must not be null");
         final ProtocolSuite staged = copy();
         final Set<Protocol> requested = new LinkedHashSet<>();
         for (Protocol candidate : keys) {
-            final Protocol key = Assert.notNull(candidate, "Source connector key must not be null");
+            final Protocol key = Assert.notNull(candidate, "Protocol connector key must not be null");
             if (!requested.add(key)) {
-                throw new ValidateException("Duplicate Source connector removal key: " + key.name());
+                throw new ValidateException("Duplicate protocol connector removal key: " + key.name());
             }
             final List<ProtocolDriver<?>> removed = staged.registrations.remove(key);
             if (removed == null) {
-                throw new ValidateException("Source connector is not registered: " + key.name());
+                throw new ValidateException("Protocol connector is not registered: " + key.name());
             }
             for (ProtocolDriver<?> driver : removed) {
                 staged.schemes.remove(driver.scheme().id());
@@ -222,7 +207,7 @@ public class ProtocolSuite implements ProtocolRegistry {
      */
     @Override
     public synchronized boolean contains(final Protocol key) {
-        return registrations.containsKey(Assert.notNull(key, "Source connector key must not be null"));
+        return registrations.containsKey(Assert.notNull(key, "Protocol connector key must not be null"));
     }
 
     /**
@@ -246,16 +231,16 @@ public class ProtocolSuite implements ProtocolRegistry {
      * @param connector checked connector
      */
     private void apply(final ProtocolConnector connector) {
-        final Protocol key = Assert.notNull(connector.key(), "Source connector key must not be null");
+        final Protocol key = Assert.notNull(connector.key(), "Protocol connector key must not be null");
         if (registrations.containsKey(key)) {
-            throw new ValidateException("Duplicate Source connector: " + key.name());
+            throw new ValidateException("Duplicate protocol connector: " + key.name());
         }
         active = key;
         emitted = new ArrayList<>();
         try {
             connector.connect(this);
             if (emitted.isEmpty()) {
-                throw new ValidateException("Source connector must bind at least one driver: " + key.name());
+                throw new ValidateException("Protocol connector must bind at least one driver: " + key.name());
             }
             registrations.put(key, List.copyOf(emitted));
         } finally {
@@ -290,7 +275,7 @@ public class ProtocolSuite implements ProtocolRegistry {
      */
     private void mutable() {
         if (frozen) {
-            throw new ValidateException("Source registry is already frozen");
+            throw new ValidateException("Protocol registry is already frozen");
         }
     }
 

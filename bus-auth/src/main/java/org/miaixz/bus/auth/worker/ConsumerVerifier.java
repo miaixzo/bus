@@ -21,11 +21,7 @@ package org.miaixz.bus.auth.worker;
 
 import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.auth.Blueprint;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Endpoint;
-import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.shared.SecretLease;
 
 /**

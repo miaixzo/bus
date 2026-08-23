@@ -270,6 +270,8 @@ public abstract class AuthCache<V> {
      * @param purpose   complete purpose prefix that owns the entry
      * @param valueType fully qualified immutable value type name
      * @param value     expiring authentication value serialized by bus-cache
+     *
+     * @author Kimi Liu
      */
     public record Envelope(int version, String purpose, String valueType, Object value) implements Serializable {
 

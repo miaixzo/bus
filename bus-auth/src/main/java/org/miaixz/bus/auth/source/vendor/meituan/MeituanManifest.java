@@ -221,7 +221,7 @@ public class MeituanManifest implements VendorManifest<MeituanOptions> {
                             true)));
 
     /**
-     * Creates the stateless Meituan manifest used by Vendor directory assembly.
+     * Creates the stateless Meituan manifest used by Vendor module assembly.
      */
     public MeituanManifest() {
         // No initialization required.
@@ -279,7 +279,7 @@ public class MeituanManifest implements VendorManifest<MeituanOptions> {
     }
 
     /**
-     * Returns non-sensitive Meituan catalog metadata.
+     * Returns non-sensitive Meituan management metadata.
      *
      * @return immutable presentation metadata
      */

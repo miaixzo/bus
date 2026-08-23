@@ -66,7 +66,19 @@ public class JwtValidator {
     /**
      * Shared atomic replay registration primitive.
      */
-    private final ReplayGuard replayGuard;
+    private final Optional<ReplayGuard> replayGuard;
+
+    /**
+     * Creates a synchronous JWT validator without replay-cache requirements.
+     *
+     * @param issuerValidator   exact issuer validator
+     * @param audienceValidator audience allow-list validator
+     * @param timeGuard         shared-clock temporal validator
+     */
+    public JwtValidator(final IssuerValidator issuerValidator, final AudienceValidator audienceValidator,
+            final TimeGuard timeGuard) {
+        this(issuerValidator, audienceValidator, timeGuard, Optional.empty());
+    }
 
     /**
      * Creates a JWT validator from existing framework guard primitives.
@@ -78,10 +90,24 @@ public class JwtValidator {
      */
     public JwtValidator(final IssuerValidator issuerValidator, final AudienceValidator audienceValidator,
             final TimeGuard timeGuard, final ReplayGuard replayGuard) {
+        this(issuerValidator, audienceValidator, timeGuard,
+                Optional.of(Assert.notNull(replayGuard, "JWT replay guard must not be null")));
+    }
+
+    /**
+     * Creates a JWT validator with an explicit optional replay capability.
+     *
+     * @param issuerValidator   exact issuer validator
+     * @param audienceValidator audience allow-list validator
+     * @param timeGuard         shared-clock temporal validator
+     * @param replayGuard       optional atomic replay validator
+     */
+    private JwtValidator(final IssuerValidator issuerValidator, final AudienceValidator audienceValidator,
+            final TimeGuard timeGuard, final Optional<ReplayGuard> replayGuard) {
         this.issuerValidator = Assert.notNull(issuerValidator, "JWT issuer validator must not be null");
         this.audienceValidator = Assert.notNull(audienceValidator, "JWT audience validator must not be null");
         this.timeGuard = Assert.notNull(timeGuard, "JWT time guard must not be null");
-        this.replayGuard = Assert.notNull(replayGuard, "JWT replay guard must not be null");
+        this.replayGuard = Assert.notNull(replayGuard, "JWT replay guard container must not be null");
     }
 
     /**
@@ -95,6 +121,36 @@ public class JwtValidator {
     }
 
     /**
+     * Validates every registered temporal claim that is present without imposing issuer or audience requirements.
+     *
+     * @param jwt cryptographically verified JWT
+     * @return the same immutable JWT after successful temporal validation
+     */
+    public JWT validate(final JWT jwt) {
+        Assert.notNull(jwt, "JWT must not be null");
+        validatePresentTimes(jwt.claims());
+        return jwt;
+    }
+
+    /**
+     * Synchronously validates common JWT claims when replay registration is not requested.
+     *
+     * @param jwt          cryptographically verified JWT
+     * @param requirements explicit common-claim requirements without replay registration
+     * @return the same immutable JWT after successful common-claim validation
+     * @throws ValidateException if replay registration is requested or a claim requirement fails
+     */
+    public JWT validate(final JWT jwt, final Requirements requirements) {
+        Assert.notNull(jwt, "JWT must not be null");
+        Assert.notNull(requirements, "JWT validation requirements must not be null");
+        if (requirements.replay().isPresent()) {
+            throw new ValidateException("Synchronous JWT validation does not perform replay registration");
+        }
+        validateClaims(jwt.claims(), requirements);
+        return jwt;
+    }
+
+    /**
      * Validates common JWT claims and atomically records jti when replay policy is enabled.
      *
      * @param jwt          cryptographically verified JWT
@@ -103,8 +159,8 @@ public class JwtValidator {
      * @param timeout      shared end-to-end operation timeout
      * @return stage containing the accepted JWT, expected rejection, or replay-cache failure
      */
-    public CompletionStage<Outcome<Jwt>> validate(
-            final Jwt jwt,
+    public CompletionStage<Outcome<JWT>> validate(
+            final JWT jwt,
             final Requirements requirements,
             final Context context,
             final Timeout timeout) {
@@ -113,7 +169,8 @@ public class JwtValidator {
         Assert.notNull(context, "JWT validation context must not be null");
         Assert.notNull(timeout, "JWT validation timeout must not be null");
         try {
-            validateClaims(jwt.claims(), requirements, timeout);
+            timeGuard.validateTimeout(timeout);
+            validateClaims(jwt.claims(), requirements);
         } catch (ValidateException cause) {
             return CompletableFuture.completedFuture(Outcome.rejected(failure("JWT common claim validation failed")));
         }
@@ -121,7 +178,9 @@ public class JwtValidator {
             return CompletableFuture.completedFuture(Outcome.succeeded(jwt));
         }
         final Replay replay = requirements.replay().getOrThrow();
-        return replayGuard.register(
+        final ReplayGuard guard = replayGuard
+                .orElseThrow(() -> new ValidateException("JWT replay validation requires a replay guard"));
+        return guard.register(
                 replay.space(),
                 replay.protocol(),
                 replay.authority(),
@@ -141,9 +200,8 @@ public class JwtValidator {
      *
      * @param claims       verified JWT Claims Set
      * @param requirements validation requirements
-     * @param timeout      shared operation timeout
      */
-    private void validateClaims(final JwtClaims claims, final Requirements requirements, final Timeout timeout) {
+    private void validateClaims(final JwtClaims claims, final Requirements requirements) {
         final String issuer = claims.issuer().orElseThrow(() -> new ValidateException("JWT issuer claim is required"));
         issuerValidator.validate(requirements.issuer(), issuer);
         if (claims.audiences().isEmpty()) {
@@ -156,7 +214,7 @@ public class JwtValidator {
         if (requirements.jwtIdRequired() && claims.jwtId().isEmpty()) {
             throw new ValidateException("JWT identifier claim is required");
         }
-        validateTimes(claims, requirements, timeout);
+        validateTimes(claims, requirements);
         for (Map.Entry<String, JsonValue> requirement : requirements.requiredClaims().values().entrySet()) {
             if (!claims.claim(requirement.getKey()).filter(requirement.getValue()::equals).isPresent()) {
                 throw new ValidateException("JWT required claim is absent or has a different JSON value");
@@ -169,9 +227,8 @@ public class JwtValidator {
      *
      * @param claims       verified JWT Claims Set
      * @param requirements validation requirements
-     * @param timeout      shared operation timeout
      */
-    private void validateTimes(final JwtClaims claims, final Requirements requirements, final Timeout timeout) {
+    private void validateTimes(final JwtClaims claims, final Requirements requirements) {
         final Optional<Instant> expiration = claims.expiration();
         final Optional<Instant> issuedAt = claims.issuedAt();
         if (requirements.expirationRequired() && expiration.isEmpty()) {
@@ -180,9 +237,9 @@ public class JwtValidator {
         if (requirements.issuedAtRequired() && issuedAt.isEmpty()) {
             throw new ValidateException("JWT issued-at claim is required");
         }
-        expiration.ifPresent(value -> timeGuard.validateExpiration(value, timeout));
-        issuedAt.ifPresent(value -> timeGuard.validateIssuedAt(value, timeout));
-        claims.notBefore().ifPresent(value -> timeGuard.validateNotBefore(value, timeout));
+        expiration.ifPresent(timeGuard::validateExpiration);
+        issuedAt.ifPresent(timeGuard::validateIssuedAt);
+        claims.notBefore().ifPresent(timeGuard::validateNotBefore);
         if (issuedAt.isPresent() && expiration.isPresent()
                 && !issuedAt.getOrThrow().isBefore(expiration.getOrThrow())) {
             throw new ValidateException("JWT issued-at claim must precede expiration");
@@ -194,13 +251,28 @@ public class JwtValidator {
         if (requirements.maximumAge().isPresent()) {
             final Instant issued = issuedAt
                     .orElseThrow(() -> new ValidateException("JWT maximum age requires issued-at"));
-            try {
-                if (!issued.plus(requirements.maximumAge().getOrThrow()).isAfter(timeout.clock().now())) {
-                    throw new ValidateException("JWT exceeds the permitted maximum age");
-                }
-            } catch (ArithmeticException cause) {
-                throw new ValidateException("JWT maximum-age calculation exceeds the supported time range", cause);
-            }
+            timeGuard.validateMaximumAge(issued, requirements.maximumAge().getOrThrow());
+        }
+    }
+
+    /**
+     * Validates present registered temporal claims and their relative ordering.
+     *
+     * @param claims verified JWT Claims Set
+     */
+    private void validatePresentTimes(final JwtClaims claims) {
+        final Optional<Instant> expiration = claims.expiration();
+        final Optional<Instant> issuedAt = claims.issuedAt();
+        expiration.ifPresent(timeGuard::validateExpiration);
+        issuedAt.ifPresent(timeGuard::validateIssuedAt);
+        claims.notBefore().ifPresent(timeGuard::validateNotBefore);
+        if (issuedAt.isPresent() && expiration.isPresent()
+                && !issuedAt.getOrThrow().isBefore(expiration.getOrThrow())) {
+            throw new ValidateException("JWT issued-at claim must precede expiration");
+        }
+        if (claims.notBefore().isPresent() && expiration.isPresent()
+                && !claims.notBefore().getOrThrow().isBefore(expiration.getOrThrow())) {
+            throw new ValidateException("JWT not-before claim must precede expiration");
         }
     }
 

@@ -26,13 +26,12 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.AuthorizationRequest;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
@@ -105,7 +104,7 @@ public class GitHubSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned execution services.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Shared standard OAuth authorization implementation.
@@ -130,12 +129,12 @@ public class GitHubSourceAdapter implements VendorAdapter {
      * @param manifest selected GitHub manifest
      * @param variant  exact selected default manifest
      * @param options  decoded externally loaded GitHub options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, callback, or authorization is inconsistent
      */
     public GitHubSourceAdapter(final String spaceId, final String sourceId, final GitHubManifest manifest,
-            final VendorManifest.Variant variant, final GitHubOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final GitHubOptions options, final SourceServices services) {
         final GitHubManifest selected = Assert.notNull(manifest, "GitHub manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "GitHub Source id must not be blank");
         this.variant = Assert.notNull(variant, "GitHub manifest must not be null");

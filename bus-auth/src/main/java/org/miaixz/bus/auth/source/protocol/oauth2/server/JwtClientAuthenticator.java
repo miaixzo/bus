@@ -25,13 +25,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Endpoint;
-import org.miaixz.bus.auth.FabricX;
-import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Policies;
-import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.guard.ReplayGuard;
 import org.miaixz.bus.auth.guard.TimeGuard;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
@@ -40,7 +34,7 @@ import org.miaixz.bus.auth.resolver.KeyMaterial;
 import org.miaixz.bus.auth.shared.jose.JoseHeader;
 import org.miaixz.bus.auth.shared.jose.JwsService;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.ClientAuthenticationMethod;
 import org.miaixz.bus.auth.source.protocol.oauth2.GrantType;
 import org.miaixz.bus.auth.worker.loader.FederationLoader;
@@ -79,7 +73,7 @@ public class JwtClientAuthenticator {
     /**
      * Source-scoped project loaders and framework services.
      */
-    private final DriverServices services;
+    private final SourceServices services;
     /**
      * Exact Source identifier used to isolate replay records.
      */
@@ -109,9 +103,9 @@ public class JwtClientAuthenticator {
      * Creates one Source-scoped JWT client assertion verifier.
      *
      * @param options  frozen OAuth authorization server options
-     * @param services dependency-scoped runtime services
+     * @param services capability-limited Source services
      */
-    public JwtClientAuthenticator(final OAuth2ServerOptions options, final DriverServices services) {
+    public JwtClientAuthenticator(final OAuth2ServerOptions options, final SourceServices services) {
         this.options = Assert.notNull(options, "OAuth 2.x JWT client options must not be null");
         this.services = Assert.notNull(services, "OAuth 2.x JWT client services must not be null");
         this.sourceId = services.entry().resource().getId();

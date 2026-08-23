@@ -412,6 +412,8 @@ public class SamlMessageCodec {
      *
      * @param <S> source type
      * @param <T> target type
+     *
+     * @author Kimi Liu
      */
     @FunctionalInterface
     private interface Mapper<S, T> {
@@ -430,6 +432,8 @@ public class SamlMessageCodec {
      * Converts one exact root element into its typed SAML message.
      *
      * @param <T> decoded message type
+     *
+     * @author Kimi Liu
      */
     @FunctionalInterface
     private interface Reader<T> {
@@ -490,6 +494,8 @@ public class SamlMessageCodec {
 
     /**
      * Writes immutable SAML models into namespace-correct DOM trees in schema order.
+     *
+     * @author Kimi Liu
      */
     private static final class SamlXmlWriter {
 
@@ -1236,6 +1242,8 @@ public class SamlMessageCodec {
 
     /**
      * Converts validated namespace-aware DOM trees into immutable SAML models without normalizing retained XML.
+     *
+     * @author Kimi Liu
      */
     private static final class SamlXmlReader {
 

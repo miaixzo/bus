@@ -32,7 +32,10 @@ import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.protocol.oidc.OpenIdConnect;
 import org.miaixz.bus.auth.source.protocol.oidc.client.OpenIdClientScheme;
-import org.miaixz.bus.auth.source.vendor.*;
+import org.miaixz.bus.auth.source.vendor.Vendor;
+import org.miaixz.bus.auth.source.vendor.VendorDeviation;
+import org.miaixz.bus.auth.source.vendor.VendorManifest;
+import org.miaixz.bus.auth.source.vendor.VendorTargets;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -53,7 +56,7 @@ import org.miaixz.bus.core.net.tls.TlsClientAuth;
 public class GoogleManifest implements VendorManifest<GoogleOptions> {
 
     /**
-     * Stable platform routing identifier shared by registration, catalog, and runtime compilation.
+     * Stable platform routing identifier shared by registration, Source lookup, and runtime compilation.
      */
     public static final Vendor.Id ID = new Vendor.Id("google");
 

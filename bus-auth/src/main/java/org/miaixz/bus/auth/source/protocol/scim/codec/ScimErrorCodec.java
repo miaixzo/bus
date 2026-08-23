@@ -147,6 +147,8 @@ public class ScimErrorCodec {
      * @param status   decimal HTTP status string
      * @param scimType optional registered SCIM error keyword
      * @param detail   optional human-readable detail
+     *
+     * @author Kimi Liu
      */
     private record ErrorDocument(JsonValue schemas, JsonValue status, JsonValue scimType, JsonValue detail) {
 

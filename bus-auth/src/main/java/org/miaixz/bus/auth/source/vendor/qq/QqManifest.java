@@ -206,7 +206,7 @@ public class QqManifest implements VendorManifest<QqOptions> {
             MINI_CAPABILITIES, MINI_DEVIATIONS);
 
     /**
-     * Creates the stateless QQ manifest used by Vendor directory assembly.
+     * Creates the stateless QQ manifest used by Vendor module assembly.
      */
     public QqManifest() {
         // No initialization required.

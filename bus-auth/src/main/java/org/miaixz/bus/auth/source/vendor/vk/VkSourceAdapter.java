@@ -27,12 +27,11 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.AuthorizationClient;
@@ -93,7 +92,7 @@ public class VkSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime, JSON, network, clock, and state dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Shared standard OAuth authorization implementation.
@@ -123,12 +122,12 @@ public class VkSourceAdapter implements VendorAdapter {
      * @param manifest selected VK Source manifest
      * @param variant  exact selected default manifest
      * @param options  decoded externally loaded VK options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, callback, or PKCE options are inconsistent
      */
     public VkSourceAdapter(final String spaceId, final String sourceId, final VkManifest manifest,
-            final VendorManifest.Variant variant, final VkOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final VkOptions options, final SourceServices services) {
         final VkManifest selected = Assert.notNull(manifest, "VK manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "VK Source id must not be blank");
         this.variant = Assert.notNull(variant, "VK manifest must not be null");
@@ -934,6 +933,8 @@ public class VkSourceAdapter implements VendorAdapter {
 
     /**
      * Identifies each private VK JSON document whose members have distinct semantics.
+     *
+     * @author Kimi Liu
      */
     private enum WireKind {
 
@@ -969,6 +970,8 @@ public class VkSourceAdapter implements VendorAdapter {
      *
      * @param state    browser correlation value
      * @param deviceId VK device binding identifier
+     *
+     * @author Kimi Liu
      */
     private record TokenBinding(String state, String deviceId) {
 
@@ -1003,6 +1006,8 @@ public class VkSourceAdapter implements VendorAdapter {
      * @param deviceId         mandatory VK device binding for success
      * @param error            OAuth error for failure
      * @param errorDescription mandatory VK error description for failure
+     *
+     * @author Kimi Liu
      */
     private record CallbackWire(String code, String state, String deviceId, String error, String errorDescription) {
 
@@ -1039,6 +1044,8 @@ public class VkSourceAdapter implements VendorAdapter {
      * @param lastName  optional family name
      * @param avatar    optional avatar URL
      * @param email     optional email address
+     *
+     * @author Kimi Liu
      */
     private record ProfileWire(String firstName, String lastName, String avatar, String email) {
 

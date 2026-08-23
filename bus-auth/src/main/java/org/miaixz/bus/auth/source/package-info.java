@@ -29,10 +29,14 @@
  * owns its private mapping code and cannot use this package as an account-linking layer.
  * </p>
  * <p>
- * {@link org.miaixz.bus.auth.source.protocol.ProtocolConnector} groups every role-specific driver owned by one
- * protocol, and {@link org.miaixz.bus.auth.source.protocol.ProtocolRegistry} applies that group atomically before
- * runtime assembly. Standard connectors are discovered through the Bus SPI loader; a protocol package therefore owns
- * its registration and can be added or removed without modifying RuntimeBuilder.
+ * {@link org.miaixz.bus.auth.source.SourceConnector} is the single sealed SPI boundary for protocol and Vendor
+ * registrations. {@link org.miaixz.bus.auth.source.SourceDiscovery} is the sole discovery boundary, and
+ * {@link org.miaixz.bus.auth.source.SourceSuite} uses visitor dispatch to assemble the two exact registry families
+ * without runtime type inspection. Its frozen {@link org.miaixz.bus.auth.source.SourceAggregate} retains the exact
+ * {@link org.miaixz.bus.auth.source.protocol.ProtocolModule} and
+ * {@link org.miaixz.bus.auth.source.vendor.VendorModule}. {@link org.miaixz.bus.auth.source.protocol.ProtocolConnector}
+ * groups every role-specific driver owned by one protocol, while
+ * {@link org.miaixz.bus.auth.source.protocol.ProtocolRegistry} applies that group atomically before runtime assembly.
  * </p>
  * <p>
  * Protocol clients, protocol servers, and Vendor adapters depend on these contracts. RuntimeDescriptor exposes only
@@ -42,7 +46,7 @@
  * management descriptors for runtime assembly.
  * </p>
  * <p>
- * This package owns driver selection, one-time preparation, dependency declarations, and the Driver-visible service
+ * This package owns driver selection, one-time preparation, dependency declarations, and the Source-scoped service
  * contract. The runtime package owns enforcement of each scoped service view, while the worker package owns session
  * coordination. The compiled executable remains {@link org.miaixz.bus.auth.worker.SourceWorker} in {@code worker};
  * moving it here would merge the compilation contract with its execution result and invert the project-port boundary.

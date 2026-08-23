@@ -33,7 +33,7 @@ import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
 import org.miaixz.bus.auth.shared.jose.JwaAlgorithm;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oidc.SubjectType;
 import org.miaixz.bus.auth.worker.loader.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
@@ -66,19 +66,19 @@ public class SubjectIssuer {
     /**
      * Source-scoped key loader and parser services.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Creates a Source-scoped subject issuer.
      *
      * @param sourceId exact Source identifier
      * @param options  frozen OpenID Provider options
-     * @param services Source-scoped project loaders and framework services
+     * @param services capability-limited Source services
      */
-    public SubjectIssuer(final String sourceId, final OpenIdServerOptions options, final DriverServices services) {
+    public SubjectIssuer(final String sourceId, final OpenIdServerOptions options, final SourceServices services) {
         this.sourceId = Assert.notBlank(sourceId, "OpenID Connect Source id must not be blank");
         this.options = Assert.notNull(options, "OpenID Provider options must not be null");
-        this.services = Assert.notNull(services, "OpenID Connect Driver services must not be null");
+        this.services = Assert.notNull(services, "OpenID Connect Source services must not be null");
     }
 
     /**

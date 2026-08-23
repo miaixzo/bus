@@ -31,7 +31,7 @@ import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2ErrorCode;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2ErrorResponse;
@@ -66,7 +66,7 @@ public class RevocationClient {
     /**
      * Capability-limited Source services supplying security policies and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Strict RFC 7009 request encoder.
@@ -86,7 +86,7 @@ public class RevocationClient {
      * @param encoder  strict RFC 7009 request encoder
      * @throws IllegalArgumentException if a collaborator is {@code null} or no revocation endpoint is configured
      */
-    public RevocationClient(final OAuth2ClientOptions options, final DriverServices services,
+    public RevocationClient(final OAuth2ClientOptions options, final SourceServices services,
             final RevocationRequestEncoder encoder) {
         this.options = Assert.notNull(options, "OAuth 2.x client options must not be null");
         Assert.notNull(options.revocationEndpoint().getOrNull(), "OAuth 2.x revocation endpoint must be configured");

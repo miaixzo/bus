@@ -29,9 +29,8 @@ import java.util.function.Function;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Realm;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.vendor.VendorAdapter;
 import org.miaixz.bus.auth.source.vendor.VendorManifest;
 import org.miaixz.bus.auth.source.vendor.VendorTargets;
@@ -98,7 +97,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
     /**
      * Caller-owned execution services.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Resolved official SCIM resource targets.
@@ -113,12 +112,12 @@ public class FigmaRealmAdapter implements VendorAdapter {
      * @param manifest exact Figma manifest
      * @param variant  selected SCIM Variant
      * @param options  validated SCIM options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or collaborator is {@code null}
      * @throws ValidateException        if the manifest, Variant, options, protocol, or targets are inconsistent
      */
     public FigmaRealmAdapter(final String spaceId, final String sourceId, final FigmaManifest manifest,
-            final VendorManifest.Variant variant, final FigmaOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final FigmaOptions options, final SourceServices services) {
         Assert.notBlank(spaceId, "Figma SCIM space id must not be blank");
         Assert.notBlank(sourceId, "Figma SCIM Source id must not be blank");
         final FigmaManifest selectedManifest = Assert.notNull(manifest, "Figma manifest must not be null");

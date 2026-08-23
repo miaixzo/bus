@@ -28,7 +28,7 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Scheme.Options;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.ProtocolDriver;
 import org.miaixz.bus.auth.source.protocol.scim.server.*;
 import org.miaixz.bus.auth.worker.BindingResolver;
@@ -136,13 +136,13 @@ public class ScimServerDriver implements ProtocolDriver<ScimServerOptions> {
      * Consumes typed options, resolves the external store, and assembles an immutable SCIM runtime.
      *
      * @param prepared one-time validated Source graph, Options and dependency declaration
-     * @param services dependency-scoped runtime services
+     * @param services capability-limited Source services
      * @return executable immutable SCIM Source worker
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if routing, options, security-rule, or external binding validation fails
      */
     @Override
-    public SourceWorker compile(final Prepared<ScimServerOptions> prepared, final DriverServices services) {
+    public SourceWorker compile(final Prepared<ScimServerOptions> prepared, final SourceServices services) {
         Assert.notNull(prepared, "SCIM Service Provider Source preparation must not be null");
         Assert.notNull(services, "SCIM Service Provider execution services must not be null");
         final Blueprint.SourceEntry entry = prepared.entry();

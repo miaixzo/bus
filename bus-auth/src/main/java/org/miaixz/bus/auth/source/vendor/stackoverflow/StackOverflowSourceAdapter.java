@@ -29,12 +29,11 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2ClientScheme;
@@ -92,7 +91,7 @@ public class StackOverflowSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned secret, JSON, network, clock, and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Shared one-time browser-state lifecycle.
@@ -122,12 +121,12 @@ public class StackOverflowSourceAdapter implements VendorAdapter {
      * @param manifest selected Stack Overflow manifest
      * @param variant  exact selected default manifest
      * @param options  decoded externally loaded Stack Overflow options
-     * @param services caller-owned runtime dependencies
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, manifest, options, or routing differ from the frozen variant
      */
     public StackOverflowSourceAdapter(final String spaceId, final String sourceId, final StackOverflowManifest manifest,
-            final VendorManifest.Variant variant, final StackOverflowOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final StackOverflowOptions options, final SourceServices services) {
         final StackOverflowManifest selected = Assert.notNull(manifest, "Stack Overflow manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Stack Overflow Source id must not be blank");
         this.variant = Assert.notNull(variant, "Stack Overflow manifest must not be null");
@@ -770,6 +769,8 @@ public class StackOverflowSourceAdapter implements VendorAdapter {
 
     /**
      * Identifies each private Stack Overflow or Stack Exchange response document validated by this adapter.
+     *
+     * @author Kimi Liu
      */
     private enum WireKind {
 
@@ -799,6 +800,8 @@ public class StackOverflowSourceAdapter implements VendorAdapter {
      * @param location     optional location text
      * @param link         optional Stack Exchange profile URL
      * @param userType     optional Stack Exchange user classification
+     *
+     * @author Kimi Liu
      */
     private record ProfileWire(String displayName, String profileImage, String websiteUrl, String location, String link,
             String userType) {

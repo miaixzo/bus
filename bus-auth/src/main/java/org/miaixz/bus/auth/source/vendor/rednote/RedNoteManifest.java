@@ -174,7 +174,7 @@ public class RedNoteManifest implements VendorManifest<RedNoteOptions> {
                             true)));
 
     /**
-     * Creates the stateless RedNote manifest used by Vendor directory assembly.
+     * Creates the stateless RedNote manifest used by Vendor module assembly.
      */
     public RedNoteManifest() {
         // No initialization required.

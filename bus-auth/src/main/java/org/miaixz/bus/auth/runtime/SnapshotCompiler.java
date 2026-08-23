@@ -25,8 +25,8 @@ import java.util.Map;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Scheme.Options;
 import org.miaixz.bus.auth.registry.SnapshotRoster;
-import org.miaixz.bus.auth.source.DriverDirectory;
 import org.miaixz.bus.auth.source.SourceDriver;
+import org.miaixz.bus.auth.source.SourceLookup;
 import org.miaixz.bus.auth.worker.SourceWorker;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
@@ -51,6 +51,27 @@ import org.miaixz.bus.core.xyz.StringKit;
 final class SnapshotCompiler {
 
     /**
+     * Frozen Source driver index keyed by stable Source scheme identifier.
+     */
+    private final SourceLookup sourceLookup;
+    /**
+     * Externally supplied runtime services used to create each capability-limited Source service view.
+     */
+    private final RuntimeServices runtimeServices;
+
+    /**
+     * Creates a pure snapshot compiler.
+     *
+     * @param sourceLookup    frozen Source lookup
+     * @param runtimeServices externally owned runtime services
+     * @throws IllegalArgumentException if a dependency is {@code null}
+     */
+    SnapshotCompiler(final SourceLookup sourceLookup, final RuntimeServices runtimeServices) {
+        this.sourceLookup = Assert.notNull(sourceLookup, "Source lookup must not be null");
+        this.runtimeServices = Assert.notNull(runtimeServices, "Runtime services must not be null");
+    }
+
+    /**
      * Retains an explicitly safe validation description while hiding operational exception details.
      *
      * @param cause Source compilation failure
@@ -61,28 +82,6 @@ final class SnapshotCompiler {
             return "Enabled Source worker could not be compiled: " + cause.getMessage();
         }
         return "Enabled Source worker could not be compiled";
-    }
-
-    /**
-     * Frozen Source driver index keyed by stable Source scheme identifier.
-     */
-    private final DriverDirectory sources;
-
-    /**
-     * Externally supplied execution services passed unchanged to selected drivers.
-     */
-    private final RuntimeServices services;
-
-    /**
-     * Creates a pure snapshot compiler.
-     *
-     * @param sources  frozen Source driver directory
-     * @param services externally owned execution services
-     * @throws IllegalArgumentException if a dependency is {@code null}
-     */
-    SnapshotCompiler(final DriverDirectory sources, final RuntimeServices services) {
-        this.sources = Assert.notNull(sources, "Source driver directory must not be null");
-        this.services = Assert.notNull(services, "Execution services must not be null");
     }
 
     /**
@@ -185,7 +184,7 @@ final class SnapshotCompiler {
             final Blueprint.SourceEntry entry = (Blueprint.SourceEntry) candidate;
             final Source source = entry.resource();
             try {
-                final SourceDriver<?> driver = sources.require(source.getType());
+                final SourceDriver<?> driver = sourceLookup.requireDriver(source.getType());
                 final Blueprint.ProviderEntry providerEntry = providerEntries.get(source.getProvider_id());
                 if (providerEntry == null) {
                     throw new NotFoundException("Owning Provider for enabled Source was not indexed");
@@ -228,7 +227,7 @@ final class SnapshotCompiler {
         return Assert.notNull(
                 driver.compile(
                         prepared,
-                        services.scope(prepared.entry(), prepared.slots(), prepared.dependencies(), generation)),
+                        runtimeServices.scope(prepared.entry(), prepared.slots(), prepared.dependencies(), generation)),
                 "Source driver result must not be null");
     }
 

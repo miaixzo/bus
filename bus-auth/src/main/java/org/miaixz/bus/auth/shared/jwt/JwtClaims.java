@@ -19,10 +19,13 @@
 */
 package org.miaixz.bus.auth.shared.jwt;
 
+import java.lang.reflect.Modifier;
+import java.lang.reflect.RecordComponent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
 
@@ -30,6 +33,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -119,6 +123,77 @@ public class JwtClaims {
      */
     private JwtClaims(final Decoded decoded) {
         this(decoded.registered(), decoded.extensions());
+    }
+
+    /**
+     * Creates a validated JWT Claims Set from ordinary Java map values.
+     * <p>
+     * Registered NumericDate values supplied as {@link Instant} or {@link Date} are normalized to epoch seconds before
+     * the remaining object graph is converted through {@link JsonKit}. Other values retain the selected JSON provider's
+     * documented conversion semantics.
+     * </p>
+     *
+     * @param claims string-keyed Java claim values
+     * @return validated implementation-neutral JWT Claims Set
+     */
+    public static JwtClaims of(final Map<String, ?> claims) {
+        Assert.notNull(claims, "JWT claim map must not be null");
+        final Map<String, Object> normalized = new LinkedHashMap<>(claims.size());
+        claims.forEach((name, value) -> {
+            Assert.notBlank(name, "JWT claim name must not be blank");
+            normalized.put(name, numericDate(name, value));
+        });
+        return new JwtClaims(JsonKit.toObject(normalized));
+    }
+
+    /**
+     * Creates a validated JWT Claims Set from one public record.
+     * <p>
+     * Record component accessors are evaluated in declaration order before the resulting map follows the same
+     * NumericDate normalization and JSON conversion path as {@link #of(Map)}.
+     * </p>
+     *
+     * @param claims public record containing claim components
+     * @param <T>    public record type
+     * @return validated implementation-neutral JWT Claims Set
+     * @throws ValidateException if the record type is not public or a component cannot be read
+     */
+    public static <T extends Record> JwtClaims of(final T claims) {
+        Assert.notNull(claims, "JWT claim record must not be null");
+        final Class<?> type = claims.getClass();
+        if (!Modifier.isPublic(type.getModifiers())) {
+            throw new ValidateException("JWT claim record type must be public");
+        }
+        final RecordComponent[] components = type.getRecordComponents();
+        final Map<String, Object> values = new LinkedHashMap<>(components.length);
+        try {
+            for (RecordComponent component : components) {
+                values.put(component.getName(), component.getAccessor().invoke(claims));
+            }
+        } catch (ReflectiveOperationException cause) {
+            throw new ValidateException("JWT claim record component cannot be read", cause);
+        }
+        return of(values);
+    }
+
+    /**
+     * Normalizes Java temporal values used by registered NumericDate claims.
+     *
+     * @param name  exact claim name
+     * @param value caller-supplied Java value
+     * @return epoch seconds for supported registered temporal values, otherwise the original value
+     */
+    private static Object numericDate(final String name, final Object value) {
+        if (!EXPIRATION.equals(name) && !NOT_BEFORE.equals(name) && !ISSUED_AT.equals(name)) {
+            return value;
+        }
+        if (value instanceof Instant instant) {
+            return instant.getEpochSecond();
+        }
+        if (value instanceof Date date) {
+            return date.toInstant().getEpochSecond();
+        }
+        return value;
     }
 
     /**
@@ -299,6 +374,30 @@ public class JwtClaims {
     public Optional<JsonValue> claim(final String name) {
         Assert.notBlank(name, "JWT claim name must not be blank");
         return Optional.ofNullable(values().values().get(name));
+    }
+
+    /**
+     * Converts one exact claim to a caller-selected Java type through the shared JSON provider.
+     * <p>
+     * Registered typed accessors such as {@link #issuer()} and {@link #expiration()} remain preferred for standard
+     * claims. This method provides a compact application-facing path for extension strings, numbers, booleans,
+     * collections, maps, and public records without exposing a provider-specific JSON tree.
+     * </p>
+     *
+     * @param name exact case-sensitive claim name
+     * @param type requested Java result type
+     * @param <T>  requested result type
+     * @return converted value when the claim is present and not JSON null
+     */
+    public <T> Optional<T> claim(final String name, final Class<T> type) {
+        Assert.notNull(type, "JWT claim result type must not be null");
+        return claim(name).map(value -> {
+            if (type.isInstance(value)) {
+                return type.cast(value);
+            }
+            final String json = new String(JsonKit.writeValue(value), StandardCharsets.UTF_8);
+            return JsonKit.toPojo(json, type);
+        });
     }
 
     /**

@@ -213,7 +213,7 @@ public class HuaweiManifest implements VendorManifest<HuaweiOptions> {
                             false)));
 
     /**
-     * Creates the stateless Huawei manifest used by Vendor directory assembly.
+     * Creates the stateless Huawei manifest used by Vendor module assembly.
      */
     public HuaweiManifest() {
         // No initialization required.
@@ -270,7 +270,7 @@ public class HuaweiManifest implements VendorManifest<HuaweiOptions> {
     }
 
     /**
-     * Returns non-sensitive Huawei catalog presentation metadata.
+     * Returns non-sensitive Huawei management presentation metadata.
      *
      * @return immutable presentation metadata
      */

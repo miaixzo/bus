@@ -243,6 +243,8 @@ public class ClaimMapper {
      *
      * @param entry     resolved entry when present
      * @param ambiguous whether distinct evidence values conflicted
+     *
+     * @author Kimi Liu
      */
     private record Resolution(Optional<ClaimSet.Entry> entry, boolean ambiguous) {
 

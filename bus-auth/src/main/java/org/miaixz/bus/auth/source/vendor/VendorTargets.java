@@ -21,15 +21,12 @@ package org.miaixz.bus.auth.source.vendor;
 
 import java.net.IDN;
 import java.net.URI;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;

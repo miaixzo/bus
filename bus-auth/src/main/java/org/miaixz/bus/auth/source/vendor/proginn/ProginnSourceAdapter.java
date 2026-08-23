@@ -28,9 +28,8 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.*;
@@ -88,7 +87,7 @@ public class ProginnSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned JSON, network, clock, and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Shared standard OAuth authorization and token implementation.
@@ -113,12 +112,12 @@ public class ProginnSourceAdapter implements VendorAdapter {
      * @param manifest selected Proginn manifest
      * @param variant  selected default variant manifest
      * @param options  decoded externally loaded Proginn options
-     * @param services caller-owned runtime dependencies
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, manifest, options, or routing differ from the frozen variant
      */
     public ProginnSourceAdapter(final String spaceId, final String sourceId, final ProginnManifest manifest,
-            final VendorManifest.Variant variant, final ProginnOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final ProginnOptions options, final SourceServices services) {
         final ProginnManifest selected = Assert.notNull(manifest, "Proginn manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Proginn Source id must not be blank");
         this.variant = Assert.notNull(variant, "Proginn manifest must not be null");
@@ -139,14 +138,14 @@ public class ProginnSourceAdapter implements VendorAdapter {
      *
      * @param variant         selected Proginn variant
      * @param options         validated Source deployment options
-     * @param services        caller-owned execution services
+     * @param services        capability-limited Source services
      * @param redirectManager shared browser correlation lifecycle
      * @return adapter containing standard authorization and token bindings
      */
     private static StandardAdapter standardAdapter(
             final VendorManifest.Variant variant,
             final ProginnOptions options,
-            final DriverServices services,
+            final SourceServices services,
             final RedirectManager redirectManager) {
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), targets.token(),
@@ -585,6 +584,8 @@ public class ProginnSourceAdapter implements VendorAdapter {
      * @param nickname optional display name
      * @param avatar   optional avatar URL
      * @param email    optional email address
+     *
+     * @author Kimi Liu
      */
     private record ProfileWire(String uid, String nickname, String avatar, String email) {
 
