@@ -60,7 +60,7 @@ public class IdTokenCache extends AuthCache<IdTokenCache.Entry> {
      *
      * @param cache      shared bus-cache backend
      * @param deployment deployment-unique cache scope
-     * @param sourceId   exact Source registration identifier
+     * @param sourceId   exact Source identifier
      * @param generation non-negative Source configuration generation
      * @param clock      shared runtime clock used to derive entry lifetimes
      */
@@ -72,7 +72,7 @@ public class IdTokenCache extends AuthCache<IdTokenCache.Entry> {
     /**
      * Derives a Source-isolated SHA-256 key without retaining the compact token.
      *
-     * @param sourceId       exact Source registration identifier
+     * @param sourceId       exact Source identifier
      * @param compactIdToken compact serialized ID Token
      * @return irreversible Source-isolated token digest
      */
@@ -127,6 +127,9 @@ public class IdTokenCache extends AuthCache<IdTokenCache.Entry> {
     public record Entry(String sourceId, String consumerId, String subject, Optional<String> sessionId)
             implements Serializable {
 
+        /**
+         * Stable serialization version for cached ID Token bindings.
+         */
         @Serial
         private static final long serialVersionUID = 2868923612053L;
 

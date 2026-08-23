@@ -19,17 +19,18 @@
 */
 package org.miaixz.bus.auth;
 
+import org.miaixz.bus.auth.Scheme.Options;
 import org.miaixz.bus.core.basic.entity.Audit;
 import org.miaixz.bus.core.basic.entity.Entity;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Enumers;
 
 /**
- * Defines the provider-neutral blueprint model used to assemble Library, Provider, and Source registrations.
+ * Defines the protocol-neutral project Blueprint used to assemble Library, Provider, and Source entries.
  * <p>
  * External projects create complete records from databases, files, or remote services. The framework validates and
  * compiles one complete snapshot; this container performs no loading, persistence, protocol option materialization, or
- * Registry access. Each record detaches the framework-owned fields of the complete managed entity so project mutation
+ * Roster access. Each record detaches the framework-owned fields of the complete managed entity so project mutation
  * cannot change a published runtime container.
  * </p>
  *
@@ -61,7 +62,7 @@ public class Blueprint {
     /**
      * Creates a detached Library copy.
      *
-     * @param source registered Library
+     * @param source Blueprint Library
      * @return detached Library
      */
     private static Library copy(final Library source) {
@@ -84,7 +85,7 @@ public class Blueprint {
     /**
      * Creates a detached Provider copy.
      *
-     * @param source registered Provider
+     * @param source Blueprint Provider
      * @return detached Provider
      */
     private static Provider copy(final Provider source) {
@@ -103,7 +104,7 @@ public class Blueprint {
     /**
      * Creates a detached Source copy including detached typed options.
      *
-     * @param source registered Source
+     * @param source configured Source
      * @return detached Source
      */
     private static Source copy(final Source source) {
@@ -126,7 +127,7 @@ public class Blueprint {
     }
 
     /**
-     * Identifies the managed resource represented by a registration record.
+     * Identifies the managed resource represented by a Blueprint entry.
      *
      * @author Kimi Liu
      */
@@ -143,7 +144,7 @@ public class Blueprint {
         PROVIDER(2),
 
         /**
-         * Protocol or Vendor Source, including both client-role and server-role registrations.
+         * Protocol or Vendor Source, including both client-role and server-role configurations.
          */
         SOURCE(3);
 
@@ -174,7 +175,7 @@ public class Blueprint {
     }
 
     /**
-     * Represents one type-safe registration entry accepted by the framework boundary.
+     * Represents one type-safe Blueprint entry accepted by the framework boundary.
      * <p>
      * Projects may load subclasses of the three framework entities, but an entry always projects them to their exact
      * framework base type. This prevents a project subtype from being advertised after its project-owned fields have
@@ -188,7 +189,7 @@ public class Blueprint {
         /**
          * Returns the exact resource category.
          *
-         * @return registration kind
+         * @return Blueprint kind
          */
         Kind kind();
 
@@ -209,7 +210,7 @@ public class Blueprint {
     }
 
     /**
-     * Carries one detached Library registration.
+     * Carries one detached Library Blueprint entry.
      *
      * @param enabled  whether the Library participates in the compiled view
      * @param resource project-supplied Library or subclass
@@ -218,17 +219,27 @@ public class Blueprint {
     public record LibraryEntry(boolean enabled, Library resource) implements Entry {
 
         /**
-         * Validates and detaches one Library registration.
+         * Validates and detaches one Library Blueprint entry.
          */
         public LibraryEntry {
-            resource = copy(Assert.notNull(resource, "Library registration must not be null"));
+            resource = copy(Assert.notNull(resource, "Library Blueprint entry must not be null"));
         }
 
+        /**
+         * Returns the Library Blueprint category.
+         *
+         * @return Library Blueprint category
+         */
         @Override
         public Kind kind() {
             return Kind.LIBRARY;
         }
 
+        /**
+         * Returns a detached Library copy for safe caller inspection.
+         *
+         * @return detached Library
+         */
         @Override
         public Library resource() {
             return copy(resource);
@@ -237,7 +248,7 @@ public class Blueprint {
     }
 
     /**
-     * Carries one detached Provider registration.
+     * Carries one detached Provider Blueprint entry.
      *
      * @param enabled  whether the Provider participates in the compiled view
      * @param resource project-supplied Provider or subclass
@@ -246,17 +257,27 @@ public class Blueprint {
     public record ProviderEntry(boolean enabled, Provider resource) implements Entry {
 
         /**
-         * Validates and detaches one Provider registration.
+         * Validates and detaches one Provider Blueprint entry.
          */
         public ProviderEntry {
-            resource = copy(Assert.notNull(resource, "Provider registration must not be null"));
+            resource = copy(Assert.notNull(resource, "Provider Blueprint entry must not be null"));
         }
 
+        /**
+         * Returns the Provider Blueprint category.
+         *
+         * @return Provider Blueprint category
+         */
         @Override
         public Kind kind() {
             return Kind.PROVIDER;
         }
 
+        /**
+         * Returns a detached Provider copy for safe caller inspection.
+         *
+         * @return detached Provider
+         */
         @Override
         public Provider resource() {
             return copy(resource);
@@ -265,7 +286,7 @@ public class Blueprint {
     }
 
     /**
-     * Carries one detached Source registration.
+     * Carries one detached Source Blueprint entry.
      *
      * @param enabled  whether the Source participates in the compiled view
      * @param resource project-supplied Source or subclass
@@ -274,17 +295,27 @@ public class Blueprint {
     public record SourceEntry(boolean enabled, Source resource) implements Entry {
 
         /**
-         * Validates and detaches one Source registration.
+         * Validates and detaches one Source Blueprint entry.
          */
         public SourceEntry {
-            resource = copy(Assert.notNull(resource, "Source registration must not be null"));
+            resource = copy(Assert.notNull(resource, "Source Blueprint entry must not be null"));
         }
 
+        /**
+         * Returns the Source Blueprint category.
+         *
+         * @return Source Blueprint category
+         */
         @Override
         public Kind kind() {
             return Kind.SOURCE;
         }
 
+        /**
+         * Returns a detached Source copy for safe caller inspection.
+         *
+         * @return detached Source
+         */
         @Override
         public Source resource() {
             return copy(resource);

@@ -91,7 +91,7 @@ public class Jwk {
     /**
      * Decodes one complete JWK JSON object into explicit common and key-material components.
      *
-     * @param parameters complete provider-neutral JWK object
+     * @param parameters complete implementation-neutral JWK object
      * @throws IllegalArgumentException if {@code parameters} is {@code null}
      * @throws ValidateException        if a registered or understood key-type parameter violates RFC 7517
      */
@@ -458,7 +458,7 @@ public class Jwk {
      * Looks up one exact case-sensitive JWK wire member without coercing its JSON type.
      *
      * @param name exact member name
-     * @return provider-neutral member value when present
+     * @return implementation-neutral member value when present
      */
     public Optional<JsonValue> parameter(final String name) {
         Assert.notBlank(name, "JWK parameter name must not be blank");
@@ -769,7 +769,9 @@ public class Jwk {
         }
 
         /**
-         * {@inheritDoc}
+         * Returns the RFC 7518 RSA key-type identifier.
+         *
+         * @return {@code RSA}
          */
         @Override
         public String keyType() {
@@ -777,7 +779,9 @@ public class Jwk {
         }
 
         /**
-         * {@inheritDoc}
+         * Encodes the complete RSA public and available private parameters.
+         *
+         * @return immutable RSA parameter object
          */
         @Override
         public JsonValue.ObjectValue parameters() {
@@ -800,7 +804,9 @@ public class Jwk {
         }
 
         /**
-         * {@inheritDoc}
+         * Reports whether any RSA private exponent or CRT material is present.
+         *
+         * @return {@code true} when this RSA key contains private material
          */
         @Override
         public boolean privateMaterial() {
@@ -810,7 +816,9 @@ public class Jwk {
         }
 
         /**
-         * {@inheritDoc}
+         * Creates an RSA value retaining only the modulus and public exponent.
+         *
+         * @return public-only RSA key material
          */
         @Override
         public Material publicOnly() {
@@ -874,7 +882,9 @@ public class Jwk {
         }
 
         /**
-         * {@inheritDoc}
+         * Returns the RFC 7518 elliptic-curve key-type identifier.
+         *
+         * @return {@code EC}
          */
         @Override
         public String keyType() {
@@ -882,7 +892,9 @@ public class Jwk {
         }
 
         /**
-         * {@inheritDoc}
+         * Encodes the curve, public coordinates and available private scalar.
+         *
+         * @return immutable elliptic-curve parameter object
          */
         @Override
         public JsonValue.ObjectValue parameters() {
@@ -895,7 +907,9 @@ public class Jwk {
         }
 
         /**
-         * {@inheritDoc}
+         * Reports whether the elliptic-curve private scalar is present.
+         *
+         * @return {@code true} when this key contains private material
          */
         @Override
         public boolean privateMaterial() {
@@ -903,7 +917,9 @@ public class Jwk {
         }
 
         /**
-         * {@inheritDoc}
+         * Creates an elliptic-curve value retaining only public coordinates.
+         *
+         * @return public-only elliptic-curve key material
          */
         @Override
         public Material publicOnly() {
@@ -928,7 +944,9 @@ public class Jwk {
         }
 
         /**
-         * {@inheritDoc}
+         * Returns the RFC 7518 symmetric-key type identifier.
+         *
+         * @return {@code oct}
          */
         @Override
         public String keyType() {
@@ -936,7 +954,9 @@ public class Jwk {
         }
 
         /**
-         * {@inheritDoc}
+         * Encodes the symmetric key bytes as an octet-key parameter object.
+         *
+         * @return immutable symmetric-key parameter object
          */
         @Override
         public JsonValue.ObjectValue parameters() {
@@ -944,7 +964,9 @@ public class Jwk {
         }
 
         /**
-         * {@inheritDoc}
+         * Reports that symmetric key bytes are always private material.
+         *
+         * @return always {@code true}
          */
         @Override
         public boolean privateMaterial() {
@@ -985,7 +1007,9 @@ public class Jwk {
         }
 
         /**
-         * {@inheritDoc}
+         * Returns the RFC 8037 octet-key-pair type identifier.
+         *
+         * @return {@code OKP}
          */
         @Override
         public String keyType() {
@@ -993,7 +1017,9 @@ public class Jwk {
         }
 
         /**
-         * {@inheritDoc}
+         * Encodes the curve, public key and available private key bytes.
+         *
+         * @return immutable octet-key-pair parameter object
          */
         @Override
         public JsonValue.ObjectValue parameters() {
@@ -1005,7 +1031,9 @@ public class Jwk {
         }
 
         /**
-         * {@inheritDoc}
+         * Reports whether octet-key-pair private bytes are present.
+         *
+         * @return {@code true} when this key contains private material
          */
         @Override
         public boolean privateMaterial() {
@@ -1013,7 +1041,9 @@ public class Jwk {
         }
 
         /**
-         * {@inheritDoc}
+         * Creates an octet-key-pair value retaining only the public key bytes.
+         *
+         * @return public-only octet-key-pair material
          */
         @Override
         public Material publicOnly() {

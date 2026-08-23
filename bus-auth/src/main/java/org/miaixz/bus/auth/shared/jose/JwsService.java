@@ -40,7 +40,7 @@ import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.builtin.asymmetric.KeyType;
 import org.miaixz.bus.crypto.center.HMac;
 import org.miaixz.bus.crypto.center.Sign;
-import org.miaixz.bus.extra.json.JsonProvider;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -81,10 +81,6 @@ public class JwsService {
     private static final String SIGNATURES = "signatures";
 
     /**
-     * Provider-neutral JSON codec supplied by the runtime.
-     */
-    private final JsonProvider jsonProvider;
-    /**
      * Shared algorithm/key-direction validation primitive.
      */
     private final AlgorithmGuard algorithmGuard;
@@ -96,13 +92,10 @@ public class JwsService {
     /**
      * Creates a profile-scoped JWS service.
      *
-     * @param jsonProvider      provider-neutral JSON codec
      * @param algorithmGuard    shared algorithm validation primitive
      * @param allowedAlgorithms exact case-sensitive JWS algorithm allow-list
      */
-    public JwsService(final JsonProvider jsonProvider, final AlgorithmGuard algorithmGuard,
-            final Set<String> allowedAlgorithms) {
-        this.jsonProvider = Assert.notNull(jsonProvider, "JWS JSON provider must not be null");
+    public JwsService(final AlgorithmGuard algorithmGuard, final Set<String> allowedAlgorithms) {
         this.algorithmGuard = Assert.notNull(algorithmGuard, "JWS algorithm guard must not be null");
         Assert.notNull(allowedAlgorithms, "JWS algorithm allowlist must not be null");
         this.allowedAlgorithms = Set.copyOf(allowedAlgorithms);
@@ -537,7 +530,7 @@ public class JwsService {
         final JwaAlgorithm algorithm = JwaAlgorithm.of(header.algorithm());
         final JwaAlgorithm.Registration registration = algorithm.require(JwaAlgorithm.Kind.SIGNATURE);
         validateKey(algorithm, registration, key, true);
-        final String encodedProtected = Base64.encodeUrlSafe(jsonProvider.writeValue(header.protectedParameters()));
+        final String encodedProtected = Base64.encodeUrlSafe(JsonKit.writeValue(header.protectedParameters()));
         final byte[] input = signingInput(encodedProtected, payload);
         byte[] signature = createSignature(algorithm, registration, key, input);
         if (isEc(algorithm)) {
@@ -623,7 +616,7 @@ public class JwsService {
      *
      * @param jws           immutable JWS payload and signatures
      * @param serialization requested RFC 7515 JSON form
-     * @return provider-neutral JSON object
+     * @return implementation-neutral JSON object
      */
     public JsonValue.ObjectValue json(final Jws jws, final Serialization serialization) {
         Assert.notNull(jws, "JWS value must not be null");
@@ -648,7 +641,7 @@ public class JwsService {
     /**
      * Parses Flattened or General JWS JSON Serialization without selecting or validating keys.
      *
-     * @param value              complete provider-neutral JSON object
+     * @param value              complete implementation-neutral JSON object
      * @param understoodCritical critical extension names already processed by the calling application
      * @return immutable parsed JWS preserving every protected segment
      */
@@ -734,7 +727,7 @@ public class JwsService {
         if (encodedProtected.isEmpty()) {
             protectedValues = new JsonValue.ObjectValue(Map.of());
         } else {
-            final JsonValue parsed = jsonProvider.readValue(decodeBase64Url(encodedProtected, false));
+            final JsonValue parsed = JsonKit.readValue(decodeBase64Url(encodedProtected, false));
             if (!(parsed instanceof JsonValue.ObjectValue object)) {
                 throw new ValidateException("JWS protected header must decode to a JSON object");
             }
@@ -755,7 +748,7 @@ public class JwsService {
             }
             return;
         }
-        final JsonValue decoded = jsonProvider.readValue(decodeBase64Url(signature.encodedProtected(), false));
+        final JsonValue decoded = JsonKit.readValue(decodeBase64Url(signature.encodedProtected(), false));
         if (!signature.header().protectedParameters().equals(decoded)) {
             throw new ValidateException("JWS protected representation does not match its header");
         }

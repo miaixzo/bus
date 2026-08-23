@@ -69,7 +69,7 @@ public class AuthorizationCodeCache extends AuthCache<AuthorizationCodeCache.Ent
      *
      * @param cache      shared bus-cache backend
      * @param deployment deployment-unique cache scope
-     * @param sourceId   exact Source registration identifier
+     * @param sourceId   exact Source identifier
      * @param generation non-negative Source configuration generation
      * @param clock      shared runtime clock used to derive entry lifetimes
      */
@@ -102,7 +102,7 @@ public class AuthorizationCodeCache extends AuthCache<AuthorizationCodeCache.Ent
     /**
      * Carries the immutable security binding of one issued authorization code.
      *
-     * @param providerId          server-side OAuth Provider identifier
+     * @param sourceId            server-side OAuth Source identifier
      * @param clientId            authenticated OAuth client identifier
      * @param subjectId           authorized internal subject identifier
      * @param redirectUri         exact redirect URI used by the authorization request
@@ -114,14 +114,14 @@ public class AuthorizationCodeCache extends AuthCache<AuthorizationCodeCache.Ent
      * @param openIdBinding       optional OpenID Connect authorization context atomically bound to this code
      * @author Kimi Liu
      */
-    public record Entry(String providerId, String clientId, String subjectId, String redirectUri,
+    public record Entry(String sourceId, String clientId, String subjectId, String redirectUri,
             boolean redirectUriRequired, List<String> scope, List<String> resource, Optional<String> codeChallenge,
             Optional<String> codeChallengeMethod, Optional<OpenIdBinding> openIdBinding) implements Serializable {
 
         /**
          * Creates an immutable authorization-code binding.
          *
-         * @param providerId          OAuth Provider identifier
+         * @param sourceId            OAuth authorization-server Source identifier
          * @param clientId            OAuth client identifier
          * @param subjectId           authorized subject identifier
          * @param redirectUri         exact registered redirect URI
@@ -135,7 +135,7 @@ public class AuthorizationCodeCache extends AuthCache<AuthorizationCodeCache.Ent
          *                                  method is present without a challenge
          */
         public Entry {
-            Assert.notBlank(providerId, "Authorization code Provider id must not be blank");
+            Assert.notBlank(sourceId, "Authorization code Source id must not be blank");
             Assert.notBlank(clientId, "Authorization code client id must not be blank");
             Assert.notBlank(subjectId, "Authorization code subject id must not be blank");
             Assert.notBlank(redirectUri, "Authorization code redirect URI must not be blank");

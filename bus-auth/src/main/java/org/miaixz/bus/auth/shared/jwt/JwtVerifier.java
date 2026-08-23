@@ -31,11 +31,11 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
-import org.miaixz.bus.extra.json.JsonProvider;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Verifies compact JWT structure and JOSE protection before parsing a provider-neutral Claims Set.
+ * Verifies compact JWT structure and JOSE protection before parsing a implementation-neutral Claims Set.
  * <p>
  * Key resolution is deliberately outside this service. Successful cryptographic verification does not perform issuer,
  * audience, temporal, replay, or protocol-specific claim validation.
@@ -45,10 +45,6 @@ import org.miaixz.bus.extra.json.JsonValue;
  */
 public class JwtVerifier {
 
-    /**
-     * Runtime-supplied provider-neutral JSON codec.
-     */
-    private final JsonProvider jsonProvider;
     /**
      * Profile-scoped JWS service.
      */
@@ -61,12 +57,10 @@ public class JwtVerifier {
     /**
      * Creates a verifier with explicit JOSE services and no key-discovery fallback.
      *
-     * @param jsonProvider runtime JSON provider
-     * @param jwsService   profile-scoped JWS service
-     * @param jweService   profile-scoped JWE service
+     * @param jwsService profile-scoped JWS service
+     * @param jweService profile-scoped JWE service
      */
-    public JwtVerifier(final JsonProvider jsonProvider, final JwsService jwsService, final JweService jweService) {
-        this.jsonProvider = Assert.notNull(jsonProvider, "JWT verifier JSON provider must not be null");
+    public JwtVerifier(final JwsService jwsService, final JweService jweService) {
         this.jwsService = Assert.notNull(jwsService, "JWT verifier JWS service must not be null");
         this.jweService = Assert.notNull(jweService, "JWT verifier JWE service must not be null");
     }
@@ -162,7 +156,7 @@ public class JwtVerifier {
      * @return validated claims
      */
     private JwtClaims claims(final byte[] payload) {
-        final JsonValue value = jsonProvider.readValue(payload);
+        final JsonValue value = JsonKit.readValue(payload);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("JWT Claims Set must be a JSON object");
         }

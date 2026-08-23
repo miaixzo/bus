@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.crypto.builtin.asymmetric.KeyType;
 import org.miaixz.bus.crypto.cipher.JceCipher;
-import org.miaixz.bus.extra.json.JsonProvider;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -91,10 +91,6 @@ public class JweService {
      */
     private static final String RECIPIENTS = "recipients";
     /**
-     * Runtime-supplied provider-neutral JSON codec.
-     */
-    private final JsonProvider jsonProvider;
-    /**
      * Shared algorithm and key-direction guard.
      */
     private final AlgorithmGuard algorithmGuard;
@@ -110,14 +106,12 @@ public class JweService {
     /**
      * Creates a profile-scoped JWE service.
      *
-     * @param jsonProvider             provider-neutral JSON codec
      * @param algorithmGuard           shared algorithm validation primitive
      * @param allowedKeyAlgorithms     exact case-sensitive key-management allow-list
      * @param allowedContentAlgorithms exact case-sensitive content-encryption allow-list
      */
-    public JweService(final JsonProvider jsonProvider, final AlgorithmGuard algorithmGuard,
-            final Set<String> allowedKeyAlgorithms, final Set<String> allowedContentAlgorithms) {
-        this.jsonProvider = Assert.notNull(jsonProvider, "JWE JSON provider must not be null");
+    public JweService(final AlgorithmGuard algorithmGuard, final Set<String> allowedKeyAlgorithms,
+            final Set<String> allowedContentAlgorithms) {
         this.algorithmGuard = Assert.notNull(algorithmGuard, "JWE algorithm guard must not be null");
         Assert.notNull(allowedKeyAlgorithms, "JWE key algorithm allowlist must not be null");
         Assert.notNull(allowedContentAlgorithms, "JWE content algorithm allowlist must not be null");
@@ -424,7 +418,7 @@ public class JweService {
     }
 
     /**
-     * Requires one provider-neutral JSON value to be an object.
+     * Requires one implementation-neutral JSON value to be an object.
      *
      * @param value candidate value
      * @param name  semantic member name used for diagnostics
@@ -445,7 +439,7 @@ public class JweService {
      */
     public Jwe encrypt(final Encryption encryption) {
         Assert.notNull(encryption, "JWE encryption request must not be null");
-        final String encodedProtected = Base64.encodeUrlSafe(jsonProvider.writeValue(encryption.protectedHeader()));
+        final String encodedProtected = Base64.encodeUrlSafe(JsonKit.writeValue(encryption.protectedHeader()));
         final List<JoseHeader> headers = headers(
                 encryption.protectedHeader(),
                 encryption.unprotectedHeader(),
@@ -557,7 +551,7 @@ public class JweService {
         if (segments.length != 5 || segments[0].isEmpty() || segments[2].isEmpty() || segments[4].isEmpty()) {
             throw new ValidateException("JWE Compact Serialization must contain five structurally valid segments");
         }
-        final JsonValue protectedValue = jsonProvider.readValue(decodeBase64Url(segments[0], false));
+        final JsonValue protectedValue = JsonKit.readValue(decodeBase64Url(segments[0], false));
         if (!(protectedValue instanceof JsonValue.ObjectValue protectedHeader)) {
             throw new ValidateException("JWE protected Header must decode to a JSON object");
         }
@@ -574,7 +568,7 @@ public class JweService {
      *
      * @param jwe           immutable JWE value
      * @param serialization requested RFC 7516 JSON form
-     * @return provider-neutral JWE JSON object
+     * @return implementation-neutral JWE JSON object
      */
     public JsonValue.ObjectValue json(final Jwe jwe, final Serialization serialization) {
         Assert.notNull(jwe, "JWE value must not be null");
@@ -611,7 +605,7 @@ public class JweService {
     /**
      * Parses Flattened or General JWE JSON Serialization without selecting or using a recipient key.
      *
-     * @param value              complete provider-neutral JWE JSON object
+     * @param value              complete implementation-neutral JWE JSON object
      * @param understoodCritical critical extension names already processed by the caller
      * @return immutable parsed JWE preserving protected, shared, and recipient sections
      */
@@ -619,7 +613,7 @@ public class JweService {
         Assert.notNull(value, "JWE JSON Serialization must not be null");
         final String encodedProtected = optionalString(value, PROTECTED, Normal.EMPTY);
         final JsonValue.ObjectValue protectedHeader = encodedProtected.isEmpty() ? new JsonValue.ObjectValue(Map.of())
-                : object(jsonProvider.readValue(decodeBase64Url(encodedProtected, false)), PROTECTED);
+                : object(JsonKit.readValue(decodeBase64Url(encodedProtected, false)), PROTECTED);
         final JsonValue.ObjectValue unprotected = optionalObject(value, UNPROTECTED);
         final byte[] aad = decodeBase64Url(optionalString(value, AAD, Normal.EMPTY), true);
         final List<Recipient> recipients = new ArrayList<>();
@@ -813,7 +807,7 @@ public class JweService {
             }
             return;
         }
-        final JsonValue decoded = jsonProvider.readValue(decodeBase64Url(jwe.encodedProtected(), false));
+        final JsonValue decoded = JsonKit.readValue(decodeBase64Url(jwe.encodedProtected(), false));
         if (!jwe.protectedHeader().equals(decoded)) {
             throw new ValidateException("JWE protected representation does not match its Header");
         }

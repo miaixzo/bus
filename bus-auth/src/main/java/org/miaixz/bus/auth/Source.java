@@ -23,23 +23,25 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import org.miaixz.bus.auth.Scheme.Options;
 import org.miaixz.bus.core.basic.entity.Tracer;
 
 /**
- * Represents one registered authentication protocol source owned by a Provider.
+ * Represents one configured authentication Source owned by a Provider.
  * <p>
- * Every source belongs to exactly one {@link Provider} through {@link #provider_id}. A Provider may own multiple
- * Sources, each independently selecting its adapter type, actual protocol, and typed protocol options.
+ * Every Source belongs to exactly one {@link Provider} through {@link #provider_id}. A Provider may own multiple
+ * Sources, each independently selecting its Driver type, actual protocol, and typed protocol options.
  * </p>
  * <p>
  * A Source does not own a persistent {@code space_id}. Its resource space is resolved only through
  * {@code provider_id -> Provider.library_id -> Library.space_id}; inherited Tracer fields are transient request context
- * and are not registration ownership.
+ * and do not define configuration ownership.
  * </p>
  * <p>
- * This mutable registration model exposes no runtime operation, protocol implementation, vendor-specific field, or
+ * This mutable configuration model exposes no runtime operation, protocol implementation, vendor-specific field, or
  * reverse collection. The external project remains responsible for persistence mapping and materializes the typed
- * options value before loading the registration. Runtime access is available only through the Registry.
+ * options value before loading the Blueprint. Configuration inspection is available through Roster, while capability
+ * execution is available only through Dispatcher.
  * </p>
  *
  * @author Kimi Liu
@@ -69,7 +71,7 @@ public class Source extends Tracer {
      * Required exact {@link Scheme} identifier used to select a registered Driver. Built-in values include
      * {@code oauth2}, {@code oidc}, {@code saml}, {@code ldap}, {@code vendor}, and server-role values such as
      * {@code oauth2-server}, {@code oidc-server}, {@code saml-server}, {@code scim-server}, {@code ldap-server}, and
-     * {@code radius-server}. Custom Drivers may contribute additional stable identifiers.
+     * {@code radius-server}. Custom Drivers may connect additional stable identifiers.
      */
     private String type;
 
@@ -114,7 +116,7 @@ public class Source extends Tracer {
     private String description;
 
     /**
-     * Creates an empty registration model for an external project integration.
+     * Creates an empty Source configuration model for an external project integration.
      */
     public Source() {
         // No initialization required.

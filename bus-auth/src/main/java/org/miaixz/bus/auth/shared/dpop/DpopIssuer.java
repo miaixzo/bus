@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.crypto.Builder;
-import org.miaixz.bus.extra.json.JsonProvider;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -56,10 +56,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class DpopIssuer {
 
     /**
-     * Provider-neutral JSON codec used for protected header and Claims Set octets.
-     */
-    private final JsonProvider jsonProvider;
-    /**
      * Profile-scoped shared JWS execution service.
      */
     private final JwsService jwsService;
@@ -71,12 +67,10 @@ public class DpopIssuer {
     /**
      * Creates a DPoP issuer with explicit JSON, signing, and time dependencies.
      *
-     * @param jsonProvider provider-neutral JSON codec
-     * @param jwsService   profile-scoped JWS service
-     * @param clock        shared Fabric clock
+     * @param jwsService profile-scoped JWS service
+     * @param clock      shared Fabric clock
      */
-    public DpopIssuer(final JsonProvider jsonProvider, final JwsService jwsService, final Clock clock) {
-        this.jsonProvider = Assert.notNull(jsonProvider, "DPoP issuer JSON provider must not be null");
+    public DpopIssuer(final JwsService jwsService, final Clock clock) {
         this.jwsService = Assert.notNull(jwsService, "DPoP issuer JWS service must not be null");
         this.clock = Assert.notNull(clock, "DPoP issuer clock must not be null");
     }
@@ -174,7 +168,7 @@ public class DpopIssuer {
         final Instant issuedAt = clock.now();
         final JoseHeader header = header(request);
         final JwtClaims claims = claims(request, issuedAt);
-        final byte[] payload = jsonProvider.writeValue(claims.values());
+        final byte[] payload = JsonKit.writeValue(claims.values());
         final JwsService.Signature signature = jwsService.sign(header, payload, signingKey);
         final String compact = jwsService.compact(new JwsService.Jws(payload, List.of(signature)));
         return new DpopProof(compact, header, claims);

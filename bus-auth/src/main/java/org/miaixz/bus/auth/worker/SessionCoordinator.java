@@ -89,7 +89,7 @@ public class SessionCoordinator {
      * Wraps an outcome in a completed stage.
      *
      * @param <T>     value type
-     * @param outcome outcome
+     * @param outcome completed session outcome to expose asynchronously
      * @return completed stage
      */
     private static <T> CompletionStage<Outcome<T>> completed(final Outcome<T> outcome) {

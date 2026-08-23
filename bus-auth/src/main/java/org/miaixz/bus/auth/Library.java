@@ -77,8 +77,9 @@ public class Library extends Space {
      */
     private String category;
     /**
-     * Optional JSON object encoded as text for provider-neutral presentation and management extensions. {@code null} or
-     * blank means no extensions. Its members must not affect protocol execution, authorization, or security decisions.
+     * Optional JSON object encoded as text for implementation-neutral presentation and management extensions.
+     * {@code null} or blank means no extensions. Its members must not affect protocol execution, authorization, or
+     * security decisions.
      */
     private String metadata;
     /**

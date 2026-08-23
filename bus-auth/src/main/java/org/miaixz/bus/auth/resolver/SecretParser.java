@@ -43,16 +43,16 @@ public class SecretParser {
     /**
      * Validates Source and credential-reference ownership of a loaded secret lease.
      *
-     * @param registration exact Source registration that requested the secret
-     * @param expected     exact requested credential reference
-     * @param record       project-loaded secret record
+     * @param source   exact Source Blueprint entry that requested the secret
+     * @param expected exact requested credential reference
+     * @param record   project-loaded secret record
      * @return validated fresh secret lease
      */
     public SecretLease parse(
-            final Blueprint.SourceEntry registration,
+            final Blueprint.SourceEntry source,
             final Credential.Reference expected,
             final SecretLoader.Record record) {
-        final String sourceId = Assert.notNull(registration, "Secret Source registration must not be null").resource()
+        final String sourceId = Assert.notNull(source, "Secret Source Blueprint entry must not be null").resource()
                 .getId();
         final Credential.Reference reference = Assert.notNull(expected, "Expected secret reference must not be null");
         final SecretLoader.Record loaded = Assert.notNull(record, "Loaded secret record must not be null");

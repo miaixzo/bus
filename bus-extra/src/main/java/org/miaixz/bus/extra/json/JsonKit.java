@@ -48,6 +48,96 @@ public class JsonKit {
     }
 
     /**
+     * Serializes one implementation-neutral JSON value as a complete UTF-8 RFC 8259 document.
+     * <p>
+     * The selected provider must preserve member order, array order, JSON null, booleans, strings, and arbitrary
+     * decimal precision without adding a provider-specific type envelope.
+     * </p>
+     *
+     * @param value immutable JSON value
+     * @return newly allocated UTF-8 JSON document
+     * @throws IllegalArgumentException if {@code value} is {@code null}
+     */
+    public static byte[] writeValue(final JsonValue value) {
+        return getProvider().writeValue(value);
+    }
+
+    /**
+     * Parses one complete UTF-8 RFC 8259 document into the implementation-neutral JSON value model.
+     * <p>
+     * The selected provider rejects malformed input and trailing non-whitespace content, preserves arbitrary decimal
+     * precision, and represents JSON {@code null} with {@link JsonValue.NullValue}.
+     * </p>
+     *
+     * @param json complete UTF-8 JSON document
+     * @return immutable JSON value
+     * @throws IllegalArgumentException if {@code json} is {@code null}
+     */
+    public static JsonValue readValue(final byte[] json) {
+        return getProvider().readValue(json);
+    }
+
+    /**
+     * Strictly parses one complete UTF-8 RFC 8259 document with explicit structural security limits.
+     *
+     * @param json                 complete UTF-8 JSON document
+     * @param maximumDepth         positive maximum object or array nesting depth
+     * @param rejectDuplicateNames whether duplicate object member names must be rejected
+     * @return immutable JSON value
+     * @throws IllegalArgumentException if {@code json} is {@code null} or {@code maximumDepth} is not positive
+     */
+    public static JsonValue readValue(final byte[] json, final int maximumDepth, final boolean rejectDuplicateNames) {
+        return getProvider().readValue(json, maximumDepth, rejectDuplicateNames);
+    }
+
+    /**
+     * Extracts the original UTF-8 bytes of one top-level object member without reserializing its value.
+     * <p>
+     * This operation preserves the exact signed representation required by security protocols while still validating
+     * the complete document, root type, requested member, nesting depth, and duplicate-name policy.
+     * </p>
+     *
+     * @param json                 complete UTF-8 JSON object
+     * @param member               exact decoded top-level member name
+     * @param maximumDepth         positive maximum object or array nesting depth
+     * @param rejectDuplicateNames whether duplicate object member names must be rejected
+     * @return newly allocated original member-value bytes
+     * @throws IllegalArgumentException if an argument is invalid
+     */
+    public static byte[] extractValue(
+            final byte[] json,
+            final String member,
+            final int maximumDepth,
+            final boolean rejectDuplicateNames) {
+        return getProvider().extractValue(json, member, maximumDepth, rejectDuplicateNames);
+    }
+
+    /**
+     * Converts an implementation-neutral JSON object into a public record after exact member-vocabulary validation.
+     *
+     * @param value JSON object whose members must match the record components
+     * @param type  public record class to instantiate
+     * @param <T>   target record type
+     * @return non-null decoded record
+     * @throws IllegalArgumentException if an argument is invalid
+     */
+    public static <T extends Record> T toRecord(final JsonValue.ObjectValue value, final Class<T> type) {
+        return getProvider().toRecord(value, type);
+    }
+
+    /**
+     * Converts one public record into an implementation-neutral JSON object after exact member-vocabulary validation.
+     *
+     * @param record public record to encode
+     * @param <T>    source record type
+     * @return immutable JSON object
+     * @throws IllegalArgumentException if {@code record} is invalid
+     */
+    public static <T extends Record> JsonValue.ObjectValue toObject(final T record) {
+        return getProvider().toObject(record);
+    }
+
+    /**
      * Converts an object into its JSON string representation.
      *
      * @param object The object to be converted.

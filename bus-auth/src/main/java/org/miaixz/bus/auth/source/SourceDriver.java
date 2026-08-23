@@ -22,17 +22,19 @@ package org.miaixz.bus.auth.source;
 import java.util.Set;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Scheme.Options;
 import org.miaixz.bus.auth.worker.SourceWorker;
 import org.miaixz.bus.auth.worker.WorkerSlots;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.extra.json.JsonKit;
 
 /**
- * Binds one protocol or Vendor scheme to the only factory capable of compiling matching Source registrations.
+ * Binds one protocol or Vendor scheme to the only factory capable of compiling matching Source Blueprint entries.
  * <p>
  * A driver is an immutable startup input. It does not register itself, call runtime assembly, load external data, or
- * access published Registry state.
+ * access published Roster state.
  * </p>
  *
  * @param <O> exact immutable Source options type
@@ -46,15 +48,6 @@ public interface SourceDriver<O extends Options<?>> {
      * @return exact Source scheme
      */
     Scheme<O> scheme();
-
-    /**
-     * Returns the Bus protocol owned by this driver.
-     *
-     * @return exact protocol or Vendor classification for the Source registration
-     */
-    default Protocol protocol() {
-        return scheme().protocol();
-    }
 
     /**
      * Reports whether this driver supports the actual protocol declared by a Source.
@@ -86,15 +79,15 @@ public interface SourceDriver<O extends Options<?>> {
     /**
      * Validates Source-specific options and routing and returns the exact value accepted by this driver.
      * <p>
-     * Registry validation may ignore the returned value, while {@link #prepare} retains it. Combining validation and
+     * Roster validation may ignore the returned value, while {@link #prepare} retains it. Combining validation and
      * narrowing prevents one preparation from independently narrowing the same mutable boundary twice.
      * </p>
      *
-     * @param source complete Source registration
+     * @param source complete Source entity
      * @return exact validated options value
      */
     default O validate(final Source source) {
-        return require(Assert.notNull(source, "Source registration must not be null").getOptions());
+        return require(Assert.notNull(source, "Source entity must not be null").getOptions());
     }
 
     /**
@@ -102,7 +95,7 @@ public interface SourceDriver<O extends Options<?>> {
      * <p>
      * Runtime calls this method only from {@link #prepare(Blueprint.SourceEntry, Provider, Library)} and retains the
      * result with the exact options instance. Compilation therefore cannot independently select another requirement set
-     * for the same registration.
+     * for the same Source entry.
      * </p>
      *
      * @param source  validated Source entity
@@ -127,44 +120,41 @@ public interface SourceDriver<O extends Options<?>> {
     /**
      * Validates and freezes all common Source compilation inputs and project-port requirements exactly once.
      *
-     * @param registration complete Source registration
-     * @param provider     resolved owning Provider
-     * @param library      Library resolved through the owning Provider
+     * @param entry    complete Source Blueprint entry
+     * @param provider resolved owning Provider
+     * @param library  Library resolved through the owning Provider
      * @return immutable preparation consumed by compilation
      */
-    default Prepared<O> prepare(
-            final Blueprint.SourceEntry registration,
-            final Provider provider,
-            final Library library) {
-        final Blueprint.SourceEntry record = Assert.notNull(registration, "Source registration must not be null");
-        final Provider owner = Assert.notNull(provider, "Source Provider must not be null");
+    default Prepared<O> prepare(final Blueprint.SourceEntry entry, final Provider provider, final Library library) {
+        final Blueprint.SourceEntry sourceEntry = Assert.notNull(entry, "Source Blueprint entry must not be null");
+        final Provider owner = Assert.notNull(provider, "Owning Provider must not be null");
         final Library application = Assert.notNull(library, "Source Library must not be null");
-        final Source source = Assert.notNull(record.resource(), "Registered Source must not be null");
+        final Source source = Assert.notNull(sourceEntry.resource(), "Blueprint Source must not be null");
         if (!scheme().id().equals(source.getType()) || !supports(source.getProtocol())
                 || !owner.getId().equals(source.getProvider_id())
                 || !application.getId().equals(owner.getLibrary_id())) {
-            throw new ValidateException("Source registration does not match its driver, Provider, or Library");
+            throw new ValidateException("Source Blueprint entry does not match its driver, Provider, or Library");
         }
         final O options = Assert.notNull(validate(source), "Validated Source options must not be null");
-        return new Prepared<>(record, owner, application, options,
+        return new Prepared<>(sourceEntry, owner, application, options,
                 Assert.notNull(slots(source, options), "Source Worker slots must not be null"),
                 Assert.notNull(dependencies(source, options), "Source framework dependencies must not be null"));
     }
 
     /**
-     * Compiles one prepared complete Source registration with its exact retained requirements.
+     * Compiles one prepared Source Blueprint entry with its exact retained requirements.
      *
      * @param prepared immutable preparation produced by this driver
      * @param services scoped externally supplied execution services
-     * @return immutable executable Registry entry
+     * @return immutable executable Roster entry
      * @throws IllegalArgumentException if an argument does not match this driver
      */
     SourceWorker compile(Prepared<O> prepared, DriverServices services);
 
     /**
-     * Freezes one driver's exact registration graph, narrowed options, and project integration requirements.
+     * Freezes one driver's exact Blueprint graph, narrowed options, and project integration requirements.
      *
-     * @param registration complete registered Source
+     * @param entry        complete Source Blueprint entry
      * @param provider     resolved owning Provider
      * @param library      resolved owning Library
      * @param options      exact immutable narrowed options
@@ -173,15 +163,15 @@ public interface SourceDriver<O extends Options<?>> {
      * @param <O>          options type
      * @author Kimi Liu
      */
-    record Prepared<O extends Options<?>>(Blueprint.SourceEntry registration, Provider provider, Library library,
-            O options, WorkerSlots slots, Dependencies dependencies) {
+    record Prepared<O extends Options<?>>(Blueprint.SourceEntry entry, Provider provider, Library library, O options,
+            WorkerSlots slots, Dependencies dependencies) {
 
         /**
          * Creates a complete immutable driver preparation.
          */
         public Prepared {
-            Assert.notNull(registration, "Prepared Source registration must not be null");
-            Assert.notNull(provider, "Prepared Source Provider must not be null");
+            Assert.notNull(entry, "Prepared Source Blueprint entry must not be null");
+            Assert.notNull(provider, "Prepared Source owning Provider must not be null");
             Assert.notNull(library, "Prepared Source Library must not be null");
             Assert.notNull(options, "Prepared Source options must not be null");
             Assert.notNull(slots, "Prepared Source Worker slots must not be null");
@@ -238,18 +228,14 @@ public interface SourceDriver<O extends Options<?>> {
 
         /**
          * Identifies one framework-owned infrastructure or protocol-state service.
+         * <p>
+         * Application-wide {@link FabricX} and {@link JsonKit} facilities
+         * are static boundaries and therefore are not declared as scoped driver services.
+         * </p>
          *
          * @author Kimi Liu
          */
         public enum Service {
-            /**
-             * Runtime-scoped facade for every Fabric protocol used by bus-auth.
-             */
-            FABRIC,
-            /**
-             * Provider-neutral JSON implementation.
-             */
-            JSON_PROVIDER,
             /**
              * Asynchronous Source executor.
              */
@@ -295,9 +281,9 @@ public interface SourceDriver<O extends Options<?>> {
              */
             REPLAY_CACHE,
             /**
-             * Runtime security baseline.
+             * Runtime protocol security policies.
              */
-            SECURITY_BASELINE
+            POLICIES
 
         }
 

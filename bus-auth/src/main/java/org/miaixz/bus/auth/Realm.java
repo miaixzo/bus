@@ -22,7 +22,6 @@ package org.miaixz.bus.auth;
 import java.time.Instant;
 import java.util.*;
 
-import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Enumers;
 import org.miaixz.bus.core.lang.Optional;
@@ -30,11 +29,12 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Defines the provider-neutral enterprise directory model exposed by Vendor workers.
+ * Defines the protocol-neutral Realm resource model exposed by compiled Source workers.
  * <p>
  * The model represents stable resources, relations, snapshots, recoverable changes, and direct retrieval without
- * leaking any platform wire representation. Every value validates and detaches caller-owned mutable state at its
- * construction boundary.
+ * leaking any platform wire representation. Vendor adapters, standard protocol drivers, and custom Source drivers may
+ * expose the same immutable Capability family. Every value validates and detaches caller-owned mutable state at its
+ * construction boundary; this class is not a persistence entity, runtime service, or storage container.
  * </p>
  *
  * @author Kimi Liu
@@ -42,72 +42,88 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class Realm {
 
     /**
-     * Prevents construction of the enterprise model container.
+     * Describes the resource and operation surface implemented by one compiled Source.
+     */
+    public static final Capability<Describe, Description> DESCRIBE = capability(
+            "realm.describe",
+            Describe.class,
+            Description.class);
+
+    /**
+     * Reads one recoverable page from the full Realm resource snapshot.
+     */
+    public static final Capability<Snapshot, Page> SNAPSHOT = capability("realm.snapshot", Snapshot.class, Page.class);
+
+    /**
+     * Reads one recoverable page from an upstream Realm change feed.
+     */
+    public static final Capability<Changes, ChangePage> CHANGES = capability(
+            "realm.changes",
+            Changes.class,
+            ChangePage.class);
+
+    /**
+     * Retrieves one Realm resource by its stable Source-scoped key.
+     */
+    public static final Capability<Retrieve, Retrieved> RETRIEVE = capability(
+            "realm.retrieve",
+            Retrieve.class,
+            Retrieved.class);
+
+    /**
+     * Creates an extensible Realm contract container base without retained instance state.
+     * <p>
+     * The protected visibility permits framework integrations to derive a specialized contract namespace while the
+     * shared static Capability and value-model definitions remain implementation-neutral.
+     * </p>
      */
     public Realm() {
         // No initialization required.
     }
 
     /**
-     * Creates the local capability that describes one Vendor enterprise surface.
+     * Derives an exact immutable Capability manifest from one Realm description.
      *
-     * @param vendor stable Vendor platform identifier
-     * @return strongly typed enterprise description capability
+     * @param description immutable Realm surface description
+     * @return capabilities declared by the description in stable operation-code order
+     * @throws IllegalArgumentException if the description is {@code null} or omits {@link Operation#DESCRIBE}
      */
-    public static Capability<Describe, Description> describe(final Vendor.Id vendor) {
-        return capability(vendor, Builder.ENTERPRISE_DESCRIBE_SUFFIX, Describe.class, Description.class);
+    public static Capability.Manifest manifest(final Description description) {
+        final Description declared = Assert.notNull(description, "Realm description must not be null");
+        if (!declared.operations().contains(Operation.DESCRIBE)) {
+            throw new ValidateException("Realm description must declare the describe operation");
+        }
+        final List<Capability<?, ?>> capabilities = new ArrayList<>(declared.operations().size());
+        for (Operation operation : Operation.values()) {
+            if (!declared.operations().contains(operation)) {
+                continue;
+            }
+            capabilities.add(switch (operation) {
+                case DESCRIBE -> DESCRIBE;
+                case SNAPSHOT -> SNAPSHOT;
+                case CHANGES -> CHANGES;
+                case RETRIEVE -> RETRIEVE;
+            });
+        }
+        return new Capability.Manifest(capabilities);
     }
 
     /**
-     * Creates the capability that reads one recoverable enterprise snapshot page.
+     * Builds one protocol-neutral Realm application capability.
      *
-     * @param vendor stable Vendor platform identifier
-     * @return strongly typed enterprise snapshot capability
-     */
-    public static Capability<Snapshot, Page> snapshot(final Vendor.Id vendor) {
-        return capability(vendor, Builder.ENTERPRISE_SNAPSHOT_SUFFIX, Snapshot.class, Page.class);
-    }
-
-    /**
-     * Creates the capability that reads one recoverable enterprise change page.
-     *
-     * @param vendor stable Vendor platform identifier
-     * @return strongly typed enterprise change capability
-     */
-    public static Capability<Changes, ChangePage> changes(final Vendor.Id vendor) {
-        return capability(vendor, Builder.ENTERPRISE_CHANGES_SUFFIX, Changes.class, ChangePage.class);
-    }
-
-    /**
-     * Creates the capability that retrieves one enterprise resource by stable key.
-     *
-     * @param vendor stable Vendor platform identifier
-     * @return strongly typed enterprise retrieval capability
-     */
-    public static Capability<Retrieve, Retrieved> retrieve(final Vendor.Id vendor) {
-        return capability(vendor, Builder.ENTERPRISE_RETRIEVE_SUFFIX, Retrieve.class, Retrieved.class);
-    }
-
-    /**
-     * Builds one enterprise application capability with the common invocation boundary.
-     *
-     * @param vendor       stable Vendor platform identifier
-     * @param suffix       operation suffix defined by the authentication root constants
+     * @param operation    globally stable Realm operation key
      * @param requestType  exact request value type
      * @param responseType exact success value type
      * @param <Q>          request value type
      * @param <S>          success value type
-     * @return immutable enterprise capability declaration
+     * @return immutable Realm capability declaration
      */
     private static <Q, S> Capability<Q, S> capability(
-            final Vendor.Id vendor,
-            final String suffix,
+            final String operation,
             final Class<Q> requestType,
             final Class<S> responseType) {
-        final Vendor.Id platform = Assert.notNull(vendor, "Enterprise capability Vendor must not be null");
-        final String vendorId = requireText(platform.value(), "Enterprise capability Vendor id");
-        return new Capability<>(Capability.Key.application(Builder.VENDOR_OPERATION_PREFIX + vendorId + suffix),
-                requestType, responseType, Capability.Direction.SOURCE, Set.of(Capability.Interaction.DIRECT),
+        return new Capability<>(Capability.Key.application(operation), requestType, responseType,
+                Capability.Direction.CLIENT, Set.of(Capability.Interaction.DIRECT),
                 Capability.Security.CLIENT_AUTHENTICATED);
     }
 
@@ -133,17 +149,16 @@ public class Realm {
      * @return insertion-ordered immutable identifier map
      */
     private static Map<String, String> identifiers(final Map<String, String> values) {
-        Assert.notNull(values, "Enterprise resource identifiers must not be null");
+        Assert.notNull(values, "Realm resource identifiers must not be null");
         final Map<String, String> copy = new LinkedHashMap<>(values.size());
         values.forEach(
-                (name, value) -> copy.put(
-                        requireText(name, "Enterprise identifier name"),
-                        requireText(value, "Enterprise identifier value")));
+                (name, value) -> copy
+                        .put(requireText(name, "Realm identifier name"), requireText(value, "Realm identifier value")));
         return Collections.unmodifiableMap(copy);
     }
 
     /**
-     * Rebuilds a provider-neutral JSON object so it cannot share caller-owned map state.
+     * Rebuilds a implementation-neutral JSON object so it cannot share caller-owned map state.
      *
      * @param value caller-supplied JSON object
      * @param label semantic field label used by validation failures
@@ -179,14 +194,14 @@ public class Realm {
     }
 
     /**
-     * Validates one enterprise request limit against the shared framework boundary.
+     * Validates one Realm request limit against the shared framework boundary.
      *
      * @param value caller-supplied request limit
      * @param label semantic field label used by validation failures
      * @return validated request limit
      */
     private static int limit(final int value, final String label) {
-        if (value < 1 || value > Builder.MAXIMUM_ENTERPRISE_PAGE_SIZE) {
+        if (value < 1 || value > Builder.MAXIMUM_REALM_PAGE_SIZE) {
             throw new ValidateException(label + " must be within the supported page range");
         }
         return value;
@@ -212,16 +227,16 @@ public class Realm {
      * @return insertion-ordered immutable limitation list
      */
     private static List<String> limitations(final List<String> values) {
-        Assert.notNull(values, "Enterprise description limitations must not be null");
+        Assert.notNull(values, "Realm description limitations must not be null");
         if (values.isEmpty()) {
-            throw new ValidateException("Enterprise description limitations must not be empty");
+            throw new ValidateException("Realm description limitations must not be empty");
         }
         final List<String> copy = new ArrayList<>(values.size());
         final Set<String> unique = new LinkedHashSet<>(values.size());
         for (String value : values) {
-            final String limitation = requireText(value, "Enterprise description limitation");
+            final String limitation = requireText(value, "Realm description limitation");
             if (!unique.add(limitation)) {
-                throw new ValidateException("Enterprise description limitations must be unique");
+                throw new ValidateException("Realm description limitations must be unique");
             }
             copy.add(limitation);
         }
@@ -235,13 +250,13 @@ public class Realm {
      * @return insertion-ordered immutable resource list
      */
     private static List<Resource> resources(final List<Resource> values) {
-        Assert.notNull(values, "Enterprise page resources must not be null");
+        Assert.notNull(values, "Realm page resources must not be null");
         final Map<Key, Resource> unique = new LinkedHashMap<>(values.size());
         for (Resource value : values) {
-            final Resource resource = Assert.notNull(value, "Enterprise page resource must not be null");
+            final Resource resource = Assert.notNull(value, "Realm page resource must not be null");
             final Resource previous = unique.putIfAbsent(resource.key(), resource);
             if (previous != null && !previous.equals(resource)) {
-                throw new ValidateException("Enterprise page contains conflicting resources for one key");
+                throw new ValidateException("Realm page contains conflicting resources for one key");
             }
         }
         return List.copyOf(unique.values());
@@ -254,13 +269,13 @@ public class Realm {
      * @return insertion-ordered immutable relation list
      */
     private static List<Relation> relations(final List<Relation> values) {
-        Assert.notNull(values, "Enterprise page relations must not be null");
+        Assert.notNull(values, "Realm page relations must not be null");
         final Map<RelationKey, Relation> unique = new LinkedHashMap<>(values.size());
         for (Relation value : values) {
-            final Relation relation = Assert.notNull(value, "Enterprise page relation must not be null");
+            final Relation relation = Assert.notNull(value, "Realm page relation must not be null");
             final Relation previous = unique.putIfAbsent(relation.key(), relation);
             if (previous != null && !previous.equals(relation)) {
-                throw new ValidateException("Enterprise page contains conflicting relations for one key");
+                throw new ValidateException("Realm page contains conflicting relations for one key");
             }
         }
         return List.copyOf(unique.values());
@@ -273,12 +288,12 @@ public class Realm {
      * @return insertion-ordered immutable change list
      */
     private static List<Change> changes(final List<Change> values) {
-        Assert.notNull(values, "Enterprise change page entries must not be null");
+        Assert.notNull(values, "Realm change page entries must not be null");
         final List<Change> copy = new ArrayList<>(values.size());
         final Map<Key, Change> resourceChanges = new LinkedHashMap<>();
         final Map<RelationKey, Change> relationChanges = new LinkedHashMap<>();
         for (Change value : values) {
-            final Change change = Assert.notNull(value, "Enterprise change page entry must not be null");
+            final Change change = Assert.notNull(value, "Realm change page entry must not be null");
             final Change previous;
             if (change instanceof ResourceUpsert upsert) {
                 previous = resourceChanges.putIfAbsent(upsert.resource().key(), change);
@@ -289,26 +304,26 @@ public class Realm {
             } else if (change instanceof RelationDelete delete) {
                 previous = relationChanges.putIfAbsent(delete.key(), change);
             } else {
-                throw new ValidateException("Enterprise change page contains an unsupported change type");
+                throw new ValidateException("Realm change page contains an unsupported change type");
             }
             if (previous == null) {
                 copy.add(change);
             } else if (!previous.equals(change)) {
-                throw new ValidateException("Enterprise change page contains conflicting changes for one key");
+                throw new ValidateException("Realm change page contains conflicting changes for one key");
             }
         }
         return List.copyOf(copy);
     }
 
     /**
-     * Identifies the provider-neutral category of an enterprise resource.
+     * Identifies the implementation-neutral category of a Realm resource.
      *
      * @author Kimi Liu
      */
     public enum Kind implements Enumers<Kind> {
 
         /**
-         * Human identity managed by the enterprise platform.
+         * Human identity managed by an upstream identity platform.
          */
         USER(1),
 
@@ -318,7 +333,7 @@ public class Realm {
         ORGANIZATION(2),
 
         /**
-         * Explicit group of enterprise identities.
+         * Explicit group of managed identities.
          */
         GROUP(3),
 
@@ -358,7 +373,7 @@ public class Realm {
     }
 
     /**
-     * Identifies the provider-neutral semantic of an enterprise relation.
+     * Identifies the implementation-neutral semantic of a Realm relation.
      *
      * @author Kimi Liu
      */
@@ -420,7 +435,7 @@ public class Realm {
     }
 
     /**
-     * Describes the normalized lifecycle state of an enterprise resource.
+     * Describes the normalized lifecycle state of a Realm resource.
      *
      * @author Kimi Liu
      */
@@ -467,7 +482,7 @@ public class Realm {
     }
 
     /**
-     * Declares how completely one Variant exposes its documented enterprise surface.
+     * Declares how completely one Variant exposes its documented Realm surface.
      *
      * @author Kimi Liu
      */
@@ -514,7 +529,7 @@ public class Realm {
     }
 
     /**
-     * Identifies one operation in the enterprise capability family.
+     * Identifies one operation in the Realm capability family.
      *
      * @author Kimi Liu
      */
@@ -546,7 +561,7 @@ public class Realm {
         private final int code;
 
         /**
-         * Creates one enterprise operation with its stable persisted code.
+         * Creates one Realm operation with its stable persisted code.
          *
          * @param code stable persisted code
          */
@@ -566,7 +581,7 @@ public class Realm {
     }
 
     /**
-     * Marks one immutable resource or relation mutation in an enterprise change feed.
+     * Marks one immutable resource or relation mutation in a Realm change feed.
      *
      * @author Kimi Liu
      */
@@ -574,7 +589,7 @@ public class Realm {
     }
 
     /**
-     * Identifies one enterprise resource independently of platform-specific wire structure.
+     * Identifies one Realm resource independently of platform-specific wire structure.
      *
      * @param kind       normalized resource category
      * @param externalId stable upstream identifier within the resource category
@@ -583,19 +598,19 @@ public class Realm {
     public record Key(Kind kind, String externalId) {
 
         /**
-         * Validates one stable enterprise resource key.
+         * Validates one stable Realm resource key.
          *
          * @param kind       normalized resource category
          * @param externalId stable upstream identifier
          */
         public Key {
-            kind = Assert.notNull(kind, "Enterprise key kind must not be null");
-            externalId = requireText(externalId, "Enterprise key external id");
+            kind = Assert.notNull(kind, "Realm key kind must not be null");
+            externalId = requireText(externalId, "Realm key external id");
         }
     }
 
     /**
-     * Identifies one directed enterprise relation by semantic kind and endpoints.
+     * Identifies one directed Realm relation by semantic kind and endpoints.
      *
      * @param kind normalized relation semantic
      * @param from relation source resource
@@ -605,24 +620,24 @@ public class Realm {
     public record RelationKey(RelationKind kind, Key from, Key to) {
 
         /**
-         * Validates one directed non-self enterprise relation key.
+         * Validates one directed non-self Realm relation key.
          *
          * @param kind normalized relation semantic
          * @param from relation source resource
          * @param to   relation target resource
          */
         public RelationKey {
-            kind = Assert.notNull(kind, "Enterprise relation kind must not be null");
-            from = Assert.notNull(from, "Enterprise relation source must not be null");
-            to = Assert.notNull(to, "Enterprise relation target must not be null");
+            kind = Assert.notNull(kind, "Realm relation kind must not be null");
+            from = Assert.notNull(from, "Realm relation source must not be null");
+            to = Assert.notNull(to, "Realm relation target must not be null");
             if (from.equals(to)) {
-                throw new ValidateException("Enterprise relation must not form a self-loop");
+                throw new ValidateException("Realm relation must not form a self-loop");
             }
         }
     }
 
     /**
-     * Carries one immutable provider-neutral enterprise resource observation.
+     * Carries one immutable implementation-neutral Realm resource observation.
      *
      * @param key         stable resource key
      * @param identifiers ordered non-sensitive alternate identifiers
@@ -636,7 +651,7 @@ public class Realm {
             JsonValue.ObjectValue attributes, Instant observedAt) {
 
         /**
-         * Validates and freezes one enterprise resource observation.
+         * Validates and freezes one Realm resource observation.
          *
          * @param key         stable resource key
          * @param identifiers ordered non-sensitive alternate identifiers
@@ -646,17 +661,17 @@ public class Realm {
          * @param observedAt  invocation observation time
          */
         public Resource {
-            key = Assert.notNull(key, "Enterprise resource key must not be null");
+            key = Assert.notNull(key, "Realm resource key must not be null");
             identifiers = Realm.identifiers(identifiers);
-            displayName = requireText(displayName, "Enterprise resource display name");
-            state = Assert.notNull(state, "Enterprise resource state must not be null");
-            attributes = object(attributes, "Enterprise resource attributes");
-            observedAt = Assert.notNull(observedAt, "Enterprise resource observation time must not be null");
+            displayName = requireText(displayName, "Realm resource display name");
+            state = Assert.notNull(state, "Realm resource state must not be null");
+            attributes = object(attributes, "Realm resource attributes");
+            observedAt = Assert.notNull(observedAt, "Realm resource observation time must not be null");
         }
     }
 
     /**
-     * Carries one immutable provider-neutral enterprise relation observation.
+     * Carries one immutable implementation-neutral Realm relation observation.
      *
      * @param key        stable relation key
      * @param attributes allow-listed non-sensitive extension attributes
@@ -666,21 +681,21 @@ public class Realm {
     public record Relation(RelationKey key, JsonValue.ObjectValue attributes, Instant observedAt) {
 
         /**
-         * Validates and freezes one enterprise relation observation.
+         * Validates and freezes one Realm relation observation.
          *
          * @param key        stable relation key
          * @param attributes allow-listed non-sensitive extension attributes
          * @param observedAt invocation observation time
          */
         public Relation {
-            key = Assert.notNull(key, "Enterprise relation key must not be null");
-            attributes = object(attributes, "Enterprise relation attributes");
-            observedAt = Assert.notNull(observedAt, "Enterprise relation observation time must not be null");
+            key = Assert.notNull(key, "Realm relation key must not be null");
+            attributes = object(attributes, "Realm relation attributes");
+            observedAt = Assert.notNull(observedAt, "Realm relation observation time must not be null");
         }
     }
 
     /**
-     * Carries one opaque recoverable enterprise pagination position.
+     * Carries one opaque recoverable Realm pagination position.
      *
      * @param value canonical unpadded Base64 URL-safe cursor envelope
      * @author Kimi Liu
@@ -693,9 +708,9 @@ public class Realm {
          * @param value canonical unpadded Base64 URL-safe cursor envelope
          */
         public Cursor {
-            value = requireText(value, "Enterprise cursor");
-            if (value.length() > Builder.MAXIMUM_ENTERPRISE_CURSOR_LENGTH) {
-                throw new ValidateException("Enterprise cursor exceeds the maximum length");
+            value = requireText(value, "Realm cursor");
+            if (value.length() > Builder.MAXIMUM_REALM_CURSOR_LENGTH) {
+                throw new ValidateException("Realm cursor exceeds the maximum length");
             }
         }
 
@@ -711,11 +726,11 @@ public class Realm {
     }
 
     /**
-     * Describes the exact enterprise surface exposed by one compiled Vendor Variant.
+     * Describes the exact Realm surface exposed by one compiled Source.
      *
      * @param kinds           supported resource categories in stable code order
      * @param relations       supported relation semantics in stable code order
-     * @param operations      supported enterprise operations in stable code order
+     * @param operations      supported Realm operations in stable code order
      * @param coverage        documented coverage level
      * @param maximumPageSize framework-wide maximum page size
      * @param limitations     ordered explicit coverage limitations
@@ -725,43 +740,43 @@ public class Realm {
             Coverage coverage, int maximumPageSize, List<String> limitations) {
 
         /**
-         * Validates and normalizes one immutable enterprise surface description.
+         * Validates and normalizes one immutable Realm surface description.
          *
          * @param kinds           supported resource categories
          * @param relations       supported relation semantics
-         * @param operations      supported enterprise operations
+         * @param operations      supported Realm operations
          * @param coverage        documented coverage level
          * @param maximumPageSize framework-wide maximum page size
          * @param limitations     ordered explicit coverage limitations
          */
         public Description {
-            kinds = enumSet(kinds, true, "Enterprise description resource kinds");
-            relations = enumSet(relations, false, "Enterprise description relation kinds");
-            operations = enumSet(operations, true, "Enterprise description operations");
-            coverage = Assert.notNull(coverage, "Enterprise description coverage must not be null");
-            if (maximumPageSize != Builder.MAXIMUM_ENTERPRISE_PAGE_SIZE) {
-                throw new ValidateException("Enterprise description maximum page size must equal the framework limit");
+            kinds = enumSet(kinds, true, "Realm description resource kinds");
+            relations = enumSet(relations, false, "Realm description relation kinds");
+            operations = enumSet(operations, true, "Realm description operations");
+            coverage = Assert.notNull(coverage, "Realm description coverage must not be null");
+            if (maximumPageSize != Builder.MAXIMUM_REALM_PAGE_SIZE) {
+                throw new ValidateException("Realm description maximum page size must equal the framework limit");
             }
             limitations = Realm.limitations(limitations);
         }
     }
 
     /**
-     * Requests the local description of a compiled enterprise Variant.
+     * Requests the local Realm description of a compiled Source.
      *
      * @author Kimi Liu
      */
     public record Describe() {
 
         /**
-         * Creates the stateless enterprise description request.
+         * Creates the stateless Realm description request.
          */
         public Describe {
         }
     }
 
     /**
-     * Requests one bounded page from a recoverable enterprise snapshot.
+     * Requests one bounded page from a recoverable Realm snapshot.
      *
      * @param kinds  non-empty requested resource categories
      * @param limit  separate maximum count for resources and relations
@@ -771,21 +786,21 @@ public class Realm {
     public record Snapshot(Set<Kind> kinds, int limit, Optional<Cursor> cursor) {
 
         /**
-         * Validates and normalizes one enterprise snapshot request.
+         * Validates and normalizes one Realm snapshot request.
          *
          * @param kinds  non-empty requested resource categories
          * @param limit  separate maximum count for resources and relations
          * @param cursor opaque continuation position
          */
         public Snapshot {
-            kinds = enumSet(kinds, true, "Enterprise snapshot resource kinds");
-            limit = Realm.limit(limit, "Enterprise snapshot limit");
-            cursor = optional(cursor, "Enterprise snapshot cursor");
+            kinds = enumSet(kinds, true, "Realm snapshot resource kinds");
+            limit = Realm.limit(limit, "Realm snapshot limit");
+            cursor = optional(cursor, "Realm snapshot cursor");
         }
     }
 
     /**
-     * Requests one bounded page from a recoverable enterprise change feed.
+     * Requests one bounded page from a recoverable Realm change feed.
      *
      * @param kinds  non-empty requested resource categories
      * @param limit  maximum number of returned changes
@@ -795,21 +810,21 @@ public class Realm {
     public record Changes(Set<Kind> kinds, int limit, Optional<Cursor> cursor) {
 
         /**
-         * Validates and normalizes one enterprise change request.
+         * Validates and normalizes one Realm change request.
          *
          * @param kinds  non-empty requested resource categories
          * @param limit  maximum number of returned changes
          * @param cursor opaque continuation position
          */
         public Changes {
-            kinds = enumSet(kinds, true, "Enterprise change resource kinds");
-            limit = Realm.limit(limit, "Enterprise change limit");
-            cursor = optional(cursor, "Enterprise change cursor");
+            kinds = enumSet(kinds, true, "Realm change resource kinds");
+            limit = Realm.limit(limit, "Realm change limit");
+            cursor = optional(cursor, "Realm change cursor");
         }
     }
 
     /**
-     * Requests direct retrieval of one enterprise resource.
+     * Requests direct retrieval of one Realm resource.
      *
      * @param key stable resource key
      * @author Kimi Liu
@@ -817,17 +832,17 @@ public class Realm {
     public record Retrieve(Key key) {
 
         /**
-         * Validates one enterprise resource retrieval request.
+         * Validates one Realm resource retrieval request.
          *
          * @param key stable resource key
          */
         public Retrieve {
-            key = Assert.notNull(key, "Enterprise retrieve key must not be null");
+            key = Assert.notNull(key, "Realm retrieve key must not be null");
         }
     }
 
     /**
-     * Returns one normalized enterprise snapshot page.
+     * Returns one normalized Realm snapshot page.
      *
      * @param resources resources in stable output order
      * @param relations relations in stable output order
@@ -837,7 +852,7 @@ public class Realm {
     public record Page(List<Resource> resources, List<Relation> relations, Optional<Cursor> next) {
 
         /**
-         * Validates, de-duplicates, and freezes one enterprise snapshot page.
+         * Validates, de-duplicates, and freezes one Realm snapshot page.
          *
          * @param resources resources in stable output order
          * @param relations relations in stable output order
@@ -846,13 +861,13 @@ public class Realm {
         public Page {
             resources = Realm.resources(resources);
             relations = Realm.relations(relations);
-            if (resources.size() > Builder.MAXIMUM_ENTERPRISE_PAGE_SIZE) {
-                throw new ValidateException("Enterprise page contains too many resources");
+            if (resources.size() > Builder.MAXIMUM_REALM_PAGE_SIZE) {
+                throw new ValidateException("Realm page contains too many resources");
             }
-            if (relations.size() > Builder.MAXIMUM_ENTERPRISE_PAGE_SIZE) {
-                throw new ValidateException("Enterprise page contains too many relations");
+            if (relations.size() > Builder.MAXIMUM_REALM_PAGE_SIZE) {
+                throw new ValidateException("Realm page contains too many relations");
             }
-            next = optional(next, "Enterprise page next cursor");
+            next = optional(next, "Realm page next cursor");
         }
     }
 
@@ -870,12 +885,12 @@ public class Realm {
          * @param resource retrieved resource or empty
          */
         public Retrieved {
-            resource = optional(resource, "Enterprise retrieved resource");
+            resource = optional(resource, "Realm retrieved resource");
         }
     }
 
     /**
-     * Upserts the complete normalized projection of one enterprise resource.
+     * Upserts the complete normalized projection of one Realm resource.
      *
      * @param resource current resource observation
      * @author Kimi Liu
@@ -888,12 +903,12 @@ public class Realm {
          * @param resource current resource observation
          */
         public ResourceUpsert {
-            resource = Assert.notNull(resource, "Enterprise resource upsert must not be null");
+            resource = Assert.notNull(resource, "Realm resource upsert must not be null");
         }
     }
 
     /**
-     * Deletes one enterprise resource identified by its stable key.
+     * Deletes one Realm resource identified by its stable key.
      *
      * @param key        stable resource key
      * @param observedAt time at which the invocation observed the deletion
@@ -908,13 +923,13 @@ public class Realm {
          * @param observedAt invocation observation time
          */
         public ResourceDelete {
-            key = Assert.notNull(key, "Enterprise resource delete key must not be null");
-            observedAt = Assert.notNull(observedAt, "Enterprise resource delete observation time must not be null");
+            key = Assert.notNull(key, "Realm resource delete key must not be null");
+            observedAt = Assert.notNull(observedAt, "Realm resource delete observation time must not be null");
         }
     }
 
     /**
-     * Upserts the complete normalized projection of one enterprise relation.
+     * Upserts the complete normalized projection of one Realm relation.
      *
      * @param relation current relation observation
      * @author Kimi Liu
@@ -927,12 +942,12 @@ public class Realm {
          * @param relation current relation observation
          */
         public RelationUpsert {
-            relation = Assert.notNull(relation, "Enterprise relation upsert must not be null");
+            relation = Assert.notNull(relation, "Realm relation upsert must not be null");
         }
     }
 
     /**
-     * Deletes one enterprise relation identified by its stable key.
+     * Deletes one Realm relation identified by its stable key.
      *
      * @param key        stable relation key
      * @param observedAt time at which the invocation observed the deletion
@@ -947,13 +962,13 @@ public class Realm {
          * @param observedAt invocation observation time
          */
         public RelationDelete {
-            key = Assert.notNull(key, "Enterprise relation delete key must not be null");
-            observedAt = Assert.notNull(observedAt, "Enterprise relation delete observation time must not be null");
+            key = Assert.notNull(key, "Realm relation delete key must not be null");
+            observedAt = Assert.notNull(observedAt, "Realm relation delete observation time must not be null");
         }
     }
 
     /**
-     * Returns one normalized enterprise change-feed page.
+     * Returns one normalized Realm change-feed page.
      *
      * @param changes changes in stable output order
      * @param next    opaque next position, or empty when complete
@@ -962,17 +977,17 @@ public class Realm {
     public record ChangePage(List<Change> changes, Optional<Cursor> next) {
 
         /**
-         * Validates, de-duplicates, and freezes one enterprise change page.
+         * Validates, de-duplicates, and freezes one Realm change page.
          *
          * @param changes changes in stable output order
          * @param next    opaque next position
          */
         public ChangePage {
             changes = Realm.changes(changes);
-            if (changes.size() > Builder.MAXIMUM_ENTERPRISE_PAGE_SIZE) {
-                throw new ValidateException("Enterprise change page contains too many changes");
+            if (changes.size() > Builder.MAXIMUM_REALM_PAGE_SIZE) {
+                throw new ValidateException("Realm change page contains too many changes");
             }
-            next = optional(next, "Enterprise change page next cursor");
+            next = optional(next, "Realm change page next cursor");
         }
     }
 

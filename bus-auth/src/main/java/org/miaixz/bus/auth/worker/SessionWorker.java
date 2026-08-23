@@ -71,7 +71,7 @@ public interface SessionWorker {
      * login state. This value is an integration coordinate only; it does not define a project business Session model.
      * </p>
      *
-     * @param sourceId exact registered Source identifier
+     * @param sourceId exact Source identifier
      * @param session  immutable framework Session state
      */
     record Binding(String sourceId, Session session) {

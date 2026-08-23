@@ -25,10 +25,10 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.resolver.ClaimParser;
 import org.miaixz.bus.auth.resolver.SubjectParser;
 import org.miaixz.bus.auth.shared.claim.ClaimSet;
-import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.worker.loader.ClaimLoader;
 import org.miaixz.bus.auth.worker.loader.IdentityLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
@@ -39,7 +39,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  * Completes one verified Source authentication as a protocol-neutral framework identity.
  * <p>
  * This worker is the concrete framework consumer of {@link IdentityLoader} and {@link ClaimLoader}. It owns only
- * validation, ordered composition, timeout enforcement, Principal construction, and typed failure propagation. The
+ * validation, ordered composition, timeout enforcement, result construction, and typed failure propagation. The
  * external project remains responsible for both loader implementations and for every business-session action after this
  * worker succeeds.
  * </p>
@@ -74,11 +74,6 @@ public class AuthenticationWorker {
     private final ExternalIdentityVerifier identityVerifier;
 
     /**
-     * Framework-owned Principal constructor.
-     */
-    private final PrincipalFactory principalFactory;
-
-    /**
      * Creates one identity-completion worker with its two project extension ports.
      *
      * @param identityLoader project external-account and Subject loader
@@ -91,7 +86,6 @@ public class AuthenticationWorker {
         this.subjectParser = new SubjectParser();
         this.claimParser = new ClaimParser();
         this.identityVerifier = new ExternalIdentityVerifier();
-        this.principalFactory = new PrincipalFactory();
     }
 
     /**
@@ -184,9 +178,9 @@ public class AuthenticationWorker {
     }
 
     /**
-     * Completes one Source result through identity loading, claim loading, parsing, and Principal construction.
+     * Completes one Source result through identity loading, claim loading, parsing, and immutable result construction.
      *
-     * @param sourceId selected registered Source identifier
+     * @param sourceId selected Source identifier
      * @param identity completed verified external identity
      * @param context  immutable non-secret invocation context
      * @param timeout  shared end-to-end operation timeout
@@ -194,7 +188,7 @@ public class AuthenticationWorker {
      */
     public CompletionStage<Outcome<AuthenticationResult>> complete(
             final String sourceId,
-            final ExternalIdentity identity,
+            final Identity identity,
             final Context context,
             final Timeout timeout) {
         Assert.notBlank(sourceId, "Authentication worker Source id must not be blank");
@@ -205,7 +199,7 @@ public class AuthenticationWorker {
             return completed(expired());
         }
 
-        final ExternalIdentity verified;
+        final Identity verified;
         try {
             verified = identityVerifier.verify(sourceId, identity);
         } catch (RuntimeException cause) {
@@ -222,12 +216,12 @@ public class AuthenticationWorker {
                                             .load(new ClaimLoader.Request(subject, verified), context, timeout),
                                     timeout,
                                     "Claim loading failed"),
-                            claims -> principal(subject, verified, claimParser.parse(claims), timeout));
+                            claims -> completeResult(subject, verified, claimParser.parse(claims), timeout));
                 });
     }
 
     /**
-     * Completes framework-owned Principal and result construction.
+     * Completes framework-owned authentication result construction.
      *
      * @param subject  parsed stable subject
      * @param identity verified external identity
@@ -235,9 +229,9 @@ public class AuthenticationWorker {
      * @param timeout  shared end-to-end operation timeout
      * @return stage containing the completed authentication result or a safe failure
      */
-    private CompletionStage<Outcome<AuthenticationResult>> principal(
+    private CompletionStage<Outcome<AuthenticationResult>> completeResult(
             final Subject subject,
-            final ExternalIdentity identity,
+            final Identity identity,
             final ClaimSet claims,
             final Timeout timeout) {
         if (timeout.expired()) {
@@ -246,8 +240,7 @@ public class AuthenticationWorker {
         try {
             final Subject checked = Assert.notNull(subject, "Identity parser returned no Subject");
             final ClaimSet verified = Assert.notNull(claims, "Claim parser returned no ClaimSet");
-            final Principal principal = principalFactory.create(checked, verified);
-            return completed(Outcome.succeeded(new AuthenticationResult(checked, principal, identity, verified)));
+            return completed(Outcome.succeeded(new AuthenticationResult(checked, identity, verified)));
         } catch (RuntimeException cause) {
             return completed(failed("Authentication result construction failed"));
         }

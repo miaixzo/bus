@@ -26,6 +26,7 @@ import java.util.Set;
 import org.miaixz.bus.auth.Callback;
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Credential;
+import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
@@ -51,7 +52,7 @@ public class SourceWorkflow {
     /**
      * Completes a correlated browser callback or device polling interaction and returns a verified external identity.
      */
-    public static final Capability<Request.Completion, ExternalIdentity> COMPLETE = complete(
+    public static final Capability<Request.Completion, Identity> COMPLETE = complete(
             Set.of(Capability.Interaction.REDIRECT, Capability.Interaction.DEVICE));
 
     /**
@@ -74,7 +75,7 @@ public class SourceWorkflow {
      */
     public static Capability<Request.Start, Stage> initiate(final Set<Capability.Interaction> interactions) {
         return new Capability<>(Capability.Key.application("source-authentication.initiate"), Request.Start.class,
-                Stage.class, Capability.Direction.SOURCE, interactions, Capability.Security.PUBLIC);
+                Stage.class, Capability.Direction.CLIENT, interactions, Capability.Security.PUBLIC);
     }
 
     /**
@@ -88,21 +89,20 @@ public class SourceWorkflow {
      * @return immutable profile-specific completion capability
      * @throws IllegalArgumentException if the set is null, empty, or contains a direct interaction
      */
-    public static Capability<Request.Completion, ExternalIdentity> complete(
-            final Set<Capability.Interaction> interactions) {
+    public static Capability<Request.Completion, Identity> complete(final Set<Capability.Interaction> interactions) {
         if (interactions != null && interactions.contains(Capability.Interaction.DIRECT)) {
             throw new IllegalArgumentException("Source authentication completion does not support direct interaction");
         }
         return new Capability<>(Capability.Key.application("source-authentication.complete"), Request.Completion.class,
-                ExternalIdentity.class, Capability.Direction.SOURCE, interactions, Capability.Security.PUBLIC);
+                Identity.class, Capability.Direction.CLIENT, interactions, Capability.Security.PUBLIC);
     }
 
     /**
      * Defines the closed application-level requests accepted by external Source authentication.
      * <p>
-     * The request family identifies an interaction and its registered Source but intentionally excludes OAuth, OpenID
+     * The request family identifies an interaction and its configured Source but intentionally excludes OAuth, OpenID
      * Connect, SAML, LDAP, and Vendor wire fields. The selected Source adapter translates the request into its actual
-     * protocol operation after Registry routing.
+     * protocol operation after Roster routing.
      * </p>
      *
      * @author Kimi Liu
@@ -130,7 +130,7 @@ public class SourceWorkflow {
         /**
          * Starts an authentication flow that redirects a user agent and later receives a callback.
          *
-         * @param sourceId       registered Source identifier
+         * @param sourceId       Source identifier
          * @param callbackTarget registered callback target bound to the same Source
          * @author Kimi Liu
          */
@@ -152,9 +152,9 @@ public class SourceWorkflow {
         }
 
         /**
-         * Starts an OAuth device authorization interaction for a registered Source.
+         * Starts an OAuth device authorization interaction for a configured Source.
          *
-         * @param sourceId registered Source identifier
+         * @param sourceId Source identifier
          * @author Kimi Liu
          */
         record DeviceStart(String sourceId) implements Start {
@@ -171,7 +171,7 @@ public class SourceWorkflow {
         /**
          * Starts direct authentication using an externally stored credential reference.
          *
-         * @param sourceId      registered Source identifier
+         * @param sourceId      Source identifier
          * @param principalHint non-secret principal identifier supplied to the Source
          * @param credential    reference to secret material managed by the external credential store
          * @author Kimi Liu
@@ -196,7 +196,7 @@ public class SourceWorkflow {
          * OAuth authorization code. The selected Source adapter owns platform validation and replay protection.
          * </p>
          *
-         * @param sourceId registered Source identifier
+         * @param sourceId Source identifier
          * @param code     opaque single-use code issued for the current Source interaction
          * @author Kimi Liu
          */
@@ -216,6 +216,8 @@ public class SourceWorkflow {
 
             /**
              * Returns a diagnostic representation that never reveals the single-use code.
+             *
+             * @return redacted diagnostic representation
              */
             @Override
             public String toString() {
@@ -227,7 +229,7 @@ public class SourceWorkflow {
         /**
          * Completes a browser interaction from an inbound callback captured by an external endpoint.
          *
-         * @param sourceId registered Source identifier selected by the route
+         * @param sourceId Source identifier selected by the route
          * @param callback raw callback transport bound to the same Source
          * @author Kimi Liu
          */
@@ -247,7 +249,7 @@ public class SourceWorkflow {
         /**
          * Polls completion of an OAuth device authorization interaction.
          *
-         * @param sourceId   registered Source identifier
+         * @param sourceId   Source identifier
          * @param deviceCode opaque device code returned by the initiation stage
          * @author Kimi Liu
          */
@@ -337,7 +339,7 @@ public class SourceWorkflow {
          * @param identity verified external identity
          * @author Kimi Liu
          */
-        record Completed(ExternalIdentity identity) implements Stage {
+        record Completed(Identity identity) implements Stage {
 
             /**
              * Creates a completed direct-authentication stage.

@@ -18,24 +18,31 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines registration validation, immutable indexes, fault reporting, and the read-only Registry query boundary.
+ * Defines the Blueprint control plane that validates complete snapshots and materializes read-only Roster views.
  * <p>
- * External projects implement {@link org.miaixz.bus.auth.worker.loader.RegistrationLoader} to supply complete
- * registration snapshots. CRUD and management data access remain project responsibilities. Registration entries detach
- * the framework-owned Library, Provider, and Source fields on entry and return detached copies, while snapshot record
- * lists are structurally frozen. The loader converts persisted Source configuration into typed Options before this
- * boundary. {@link org.miaixz.bus.auth.registry.SnapshotValidator} applies only framework-required identity,
- * Library-to-Provider-to-Source ownership, enabled-parent, and Source routing rules before compilation. Presentation,
- * launch, code, name, icon, ordering, CRUD, and project uniqueness policies remain outside bus-auth.
- * {@link org.miaixz.bus.auth.worker.RegistryListener} observes publication lifecycle, while
- * {@link org.miaixz.bus.auth.registry.SnapshotFault} reports non-secret reload failures.
+ * The root {@link org.miaixz.bus.auth.Registry} accepts build-time {@link org.miaixz.bus.auth.Registry.Connector}
+ * declarations; this package does not implement Source or Vendor connector registries. It begins after the
+ * implementation set is frozen and processes externally loaded Library, Provider, and Source Blueprint snapshots into
+ * immutable {@link org.miaixz.bus.auth.Roster} revisions.
  * </p>
  * <p>
- * Runtime assembly supplies immutable registration views while retaining compiled workers, container leases, atomic
- * publication, retirement, and worker lifecycle in the runtime package. No concrete protocol service, platform adapter,
- * Driver, persistence implementation, security decision, audit operation, or capability execution belongs to this
- * package. {@link org.miaixz.bus.auth.Dispatcher} consumes a Registry reference without adding execution duties to
- * Registry.
+ * External projects implement {@link org.miaixz.bus.auth.worker.loader.BlueprintLoader} to supply complete Blueprint
+ * snapshots. CRUD and management data access remain project responsibilities. Blueprint entries detach the
+ * framework-owned Library, Provider, and Source fields on entry and return detached copies, while snapshot entry lists
+ * are structurally frozen. The loader converts persisted Source configuration into typed
+ * {@link org.miaixz.bus.auth.Scheme.Options} before this boundary.
+ * {@link org.miaixz.bus.auth.registry.SnapshotValidator} applies only framework-required identity,
+ * Library-to-Provider-to-Source ownership, enabled-parent, and Source routing rules before compilation. Presentation,
+ * launch, code, name, icon, ordering, CRUD, and project uniqueness policies remain outside bus-auth.
+ * {@link org.miaixz.bus.auth.worker.RosterListener} observes publication lifecycle, while
+ * {@link org.miaixz.bus.auth.Roster.Fault} reports non-secret reload failures.
+ * </p>
+ * <p>
+ * {@link org.miaixz.bus.auth.registry.SnapshotRoster} indexes one validated fixed revision, while
+ * {@link org.miaixz.bus.auth.registry.CurrentRoster} exposes the currently published revision without owning runtime
+ * publication. Runtime assembly retains compiled workers, container leases, atomic publication, retirement, and worker
+ * lifecycle in the runtime package. No concrete protocol service, platform adapter, Driver, persistence implementation,
+ * security decision, audit operation, or capability execution belongs to this package.
  * </p>
  * <p>
  * A reload validates and compiles the complete candidate before one atomic publication; partial views and fallback to

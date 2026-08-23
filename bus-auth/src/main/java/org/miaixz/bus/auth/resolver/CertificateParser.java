@@ -43,17 +43,17 @@ public class CertificateParser {
     /**
      * Validates Source ownership, lookup coordinates, and validity interval.
      *
-     * @param registration exact Source registration that requested the data
-     * @param request      exact certificate lookup request
-     * @param record       project-loaded certificate record
+     * @param source  exact Source Blueprint entry that requested the data
+     * @param request exact certificate lookup request
+     * @param record  project-loaded certificate record
      * @return validated certificate material
      */
     public CertificateMaterial parse(
-            final Blueprint.SourceEntry registration,
+            final Blueprint.SourceEntry source,
             final CertificateLoader.Request request,
             final CertificateLoader.Record record) {
-        final String sourceId = Assert.notNull(registration, "Certificate Source registration must not be null")
-                .resource().getId();
+        final String sourceId = Assert.notNull(source, "Certificate Source Blueprint entry must not be null").resource()
+                .getId();
         final CertificateLoader.Request expected = Assert.notNull(request, "Certificate request must not be null");
         final CertificateLoader.Record loaded = Assert.notNull(record, "Loaded certificate record must not be null");
         if (!sourceId.equals(loaded.sourceId())) {

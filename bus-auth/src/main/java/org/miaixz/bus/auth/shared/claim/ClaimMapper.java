@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.miaixz.bus.auth.Evidence;
+import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -168,7 +168,7 @@ public class ClaimMapper {
     public record Request(JsonValue.ObjectValue attributes, List<Evidence> evidence, List<ClaimMapping> mappings) {
 
         /**
-         * Detaches and freezes input collections and provider-neutral JSON values.
+         * Detaches and freezes input collections and implementation-neutral JSON values.
          *
          * @throws IllegalArgumentException if a component or collection entry is {@code null}
          */

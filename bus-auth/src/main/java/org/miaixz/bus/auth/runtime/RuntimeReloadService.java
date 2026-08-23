@@ -27,18 +27,17 @@ import java.util.function.Function;
 
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Registry;
+import org.miaixz.bus.auth.Roster;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.registry.SnapshotFault;
 import org.miaixz.bus.auth.registry.SnapshotValidator;
-import org.miaixz.bus.auth.worker.loader.RegistrationLoader;
+import org.miaixz.bus.auth.worker.loader.BlueprintLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 
 /**
- * Loads, validates, compiles, and atomically publishes complete external registration snapshots.
+ * Loads, validates, compiles, and atomically publishes complete external Blueprint snapshots.
  * <p>
  * Every call captures one expected runtime container before loading. A candidate becomes visible only through a
  * successful compare-and-set replacement, so validation, compilation, timeout, revision, and concurrency failures
@@ -52,9 +51,9 @@ import org.miaixz.bus.core.lang.Optional;
 final class RuntimeReloadService {
 
     /**
-     * External complete registration batch loader.
+     * External complete Blueprint snapshot loader.
      */
-    private final RegistrationLoader loader;
+    private final BlueprintLoader loader;
 
     /**
      * Framework candidate Snapshot validator.
@@ -72,9 +71,9 @@ final class RuntimeReloadService {
     private final RuntimeContainer.Cell containers;
 
     /**
-     * Immutable Registry listener list in registration order.
+     * Immutable Roster listener list in declaration order.
      */
-    private final RegistryNotifier notifier;
+    private final RosterNotifier notifier;
 
     /**
      * Single lifecycle gate shared by the complete runtime.
@@ -84,22 +83,22 @@ final class RuntimeReloadService {
     /**
      * Creates the single complete-snapshot reload orchestrator.
      *
-     * @param loader     external complete registration batch loader
+     * @param loader     external complete Blueprint snapshot loader
      * @param validator  candidate Snapshot validator
      * @param compiler   validated snapshot compiler
      * @param containers atomic committed-container cell
-     * @param notifier   ordered Registry observation dispatcher
+     * @param notifier   ordered Roster observation dispatcher
      * @param lifecycle  shared runtime lifecycle gate
      * @throws IllegalArgumentException if a dependency, list, or listener is {@code null}
      */
-    RuntimeReloadService(final RegistrationLoader loader, final SnapshotValidator validator,
-            final SnapshotCompiler compiler, final RuntimeContainer.Cell containers, final RegistryNotifier notifier,
+    RuntimeReloadService(final BlueprintLoader loader, final SnapshotValidator validator,
+            final SnapshotCompiler compiler, final RuntimeContainer.Cell containers, final RosterNotifier notifier,
             final RuntimeLifecycle lifecycle) {
         this.loader = Assert.notNull(loader, "Runtime reload loader must not be null");
         this.validator = Assert.notNull(validator, "Runtime reload validator must not be null");
         this.compiler = Assert.notNull(compiler, "Runtime reload compiler must not be null");
         this.containers = Assert.notNull(containers, "Runtime reload containers must not be null");
-        this.notifier = Assert.notNull(notifier, "Runtime reload Registry notifier must not be null");
+        this.notifier = Assert.notNull(notifier, "Runtime reload Roster notifier must not be null");
         this.lifecycle = Assert.notNull(lifecycle, "Runtime lifecycle must not be null");
     }
 
@@ -113,33 +112,33 @@ final class RuntimeReloadService {
      * @param description safe non-sensitive failure description
      * @return immutable rejection report
      */
-    private static Registry.Report report(
+    private static Roster.Report report(
             final long revision,
-            final SnapshotFault.Stage stage,
+            final Roster.Fault.Stage stage,
             final String field,
             final Errors error,
             final String description) {
-        return new Registry.Report(new Registry.Revision(Math.max(0L, revision)),
-                List.of(SnapshotFault.snapshot(stage, Optional.ofNullable(field), error, description)));
+        return new Roster.Report(new Roster.Revision(Math.max(0L, revision)),
+                List.of(Roster.Fault.snapshot(stage, Optional.ofNullable(field), error, description)));
     }
 
     /**
-     * Attempts to publish one complete desired registration snapshot.
+     * Attempts to publish one complete desired Blueprint snapshot.
      *
      * @param context immutable non-secret invocation context
      * @param timeout shared end-to-end operation timeout
      * @return stage containing the candidate validation report after rejection or successful commit
      * @throws IllegalArgumentException if an argument is {@code null}
      */
-    public CompletionStage<Registry.Report> reload(final Context context, final Timeout timeout) {
+    public CompletionStage<Roster.Report> reload(final Context context, final Timeout timeout) {
         Assert.notNull(context, "Runtime reload context must not be null");
         Assert.notNull(timeout, "Runtime reload timeout must not be null");
         final RuntimeLifecycle.Lease lease = lifecycle.enter();
         if (lease == null) {
             return CompletableFuture.completedFuture(
                     report(
-                            containers.current().registry().revision().value(),
-                            SnapshotFault.Stage.COMMIT,
+                            containers.current().roster().revision().value(),
+                            Roster.Fault.Stage.COMMIT,
                             "lifecycle",
                             ErrorCode._503,
                             "Authentication runtime is not running"));
@@ -148,35 +147,34 @@ final class RuntimeReloadService {
             lease.close();
             return reject(
                     report(
-                            containers.current().registry().revision().value(),
-                            SnapshotFault.Stage.LOAD,
+                            containers.current().roster().revision().value(),
+                            Roster.Fault.Stage.LOAD,
                             "timeout",
                             ErrorCode._408,
                             "Runtime reload timeout has expired"));
         }
         final RuntimeContainer expected = containers.current();
-        final CompletionStage<Outcome<RegistrationLoader.Batch>> loading;
+        final CompletionStage<Outcome<BlueprintLoader.Snapshot>> loading;
         try {
-            loading = loader
-                    .load(new RegistrationLoader.Request(expected.registry().revision().value()), context, timeout);
+            loading = loader.load(new BlueprintLoader.Request(expected.roster().revision().value()), context, timeout);
         } catch (RuntimeException cause) {
-            final Registry.Report report = report(
-                    expected.registry().revision().value() + 1L,
-                    SnapshotFault.Stage.LOAD,
+            final Roster.Report report = report(
+                    expected.roster().revision().value() + 1L,
+                    Roster.Fault.Stage.LOAD,
                     "loader",
                     ErrorCode._500,
-                    "Registration loader failed before returning a stage");
+                    "Blueprint loader failed before returning a stage");
             rejected(report);
             lease.close();
             return CompletableFuture.completedFuture(report);
         }
         if (loading == null) {
-            final Registry.Report report = report(
-                    expected.registry().revision().value() + 1L,
-                    SnapshotFault.Stage.LOAD,
+            final Roster.Report report = report(
+                    expected.roster().revision().value() + 1L,
+                    Roster.Fault.Stage.LOAD,
                     "loader",
                     ErrorCode._500,
-                    "Registration loader returned no stage");
+                    "Blueprint loader returned no stage");
             rejected(report);
             lease.close();
             return CompletableFuture.completedFuture(report);
@@ -186,113 +184,112 @@ final class RuntimeReloadService {
                         (outcome, cause) -> cause == null ? process(outcome, expected, timeout)
                                 : reject(
                                         report(
-                                                expected.registry().revision().value() + 1L,
-                                                SnapshotFault.Stage.LOAD,
+                                                expected.roster().revision().value() + 1L,
+                                                Roster.Fault.Stage.LOAD,
                                                 "loader",
                                                 ErrorCode._500,
-                                                "Registration loader stage failed")))
+                                                "Blueprint loader stage failed")))
                 .thenCompose(Function.identity()).whenComplete((ignored, cause) -> lease.close());
     }
 
     /**
-     * Converts one closed registration-loading outcome into reload processing or a safe rejection report.
+     * Converts one closed Blueprint-loading outcome into reload processing or a safe rejection report.
      *
-     * @param outcome  external registration-loading outcome
+     * @param outcome  external Blueprint-loading outcome
      * @param expected runtime container captured before loading
      * @param timeout  shared operation timeout
      * @return stage containing rejection or candidate processing report
      */
-    private CompletionStage<Registry.Report> process(
-            final Outcome<RegistrationLoader.Batch> outcome,
+    private CompletionStage<Roster.Report> process(
+            final Outcome<BlueprintLoader.Snapshot> outcome,
             final RuntimeContainer expected,
             final Timeout timeout) {
         if (outcome == null) {
             return reject(
                     report(
-                            expected.registry().revision().value() + 1L,
-                            SnapshotFault.Stage.LOAD,
+                            expected.roster().revision().value() + 1L,
+                            Roster.Fault.Stage.LOAD,
                             "loader",
                             ErrorCode._500,
-                            "Registration loader returned no outcome"));
+                            "Blueprint loader returned no outcome"));
         }
         return switch (outcome) {
-            case Outcome.Succeeded<RegistrationLoader.Batch> succeeded -> process(succeeded.value(), expected, timeout);
-            case Outcome.Rejected<RegistrationLoader.Batch> rejected -> reject(
+            case Outcome.Succeeded<BlueprintLoader.Snapshot> succeeded -> process(succeeded.value(), expected, timeout);
+            case Outcome.Rejected<BlueprintLoader.Snapshot> rejected -> reject(
                     report(
-                            expected.registry().revision().value() + 1L,
-                            SnapshotFault.Stage.LOAD,
+                            expected.roster().revision().value() + 1L,
+                            Roster.Fault.Stage.LOAD,
                             "loader",
                             rejected.failure().error(),
                             rejected.failure().safeDescription()));
-            case Outcome.Failed<RegistrationLoader.Batch> failed -> reject(
+            case Outcome.Failed<BlueprintLoader.Snapshot> failed -> reject(
                     report(
-                            expected.registry().revision().value() + 1L,
-                            SnapshotFault.Stage.LOAD,
+                            expected.roster().revision().value() + 1L,
+                            Roster.Fault.Stage.LOAD,
                             "loader",
                             failed.failure().error(),
                             failed.failure().safeDescription()));
             default -> reject(
                     report(
-                            expected.registry().revision().value() + 1L,
-                            SnapshotFault.Stage.LOAD,
+                            expected.roster().revision().value() + 1L,
+                            Roster.Fault.Stage.LOAD,
                             "loader",
                             ErrorCode._500,
-                            "Registration loader returned an unsupported outcome"));
+                            "Blueprint loader returned an unsupported outcome"));
         };
     }
 
     /**
      * Validates, compiles, and atomically commits one loaded snapshot.
      *
-     * @param batch    externally loaded complete candidate batch
+     * @param loaded   externally loaded complete Blueprint snapshot
      * @param expected runtime container captured before loading
      * @param timeout  shared operation timeout
      * @return stage containing validation or successful commit report
      */
-    private CompletionStage<Registry.Report> process(
-            final RegistrationLoader.Batch batch,
+    private CompletionStage<Roster.Report> process(
+            final BlueprintLoader.Snapshot loaded,
             final RuntimeContainer expected,
             final Timeout timeout) {
-        if (batch == null) {
+        if (loaded == null) {
             return reject(
                     report(
-                            expected.registry().revision().value() + 1L,
-                            SnapshotFault.Stage.LOAD,
-                            "batch",
+                            expected.roster().revision().value() + 1L,
+                            Roster.Fault.Stage.LOAD,
+                            "snapshot",
                             ErrorCode._500,
-                            "Registration loader returned no batch"));
+                            "Blueprint loader returned no snapshot"));
         }
-        final Registry.Snapshot snapshot = new Registry.Snapshot(new Registry.Revision(batch.revision()),
-                batch.registrations());
-        if (snapshot.revision().value() <= expected.registry().revision().value()) {
+        final Roster.Snapshot snapshot = new Roster.Snapshot(new Roster.Revision(loaded.revision()), loaded.entries());
+        if (snapshot.revision().value() <= expected.roster().revision().value()) {
             return reject(
                     report(
                             snapshot.revision().value(),
-                            SnapshotFault.Stage.VALIDATE,
+                            Roster.Fault.Stage.VALIDATE,
                             "revision",
                             ErrorCode._409,
-                            "Registry snapshot revision must increase monotonically"));
+                            "Roster snapshot revision must increase monotonically"));
         }
         if (timeout.expired()) {
             return reject(
                     report(
                             snapshot.revision().value(),
-                            SnapshotFault.Stage.VALIDATE,
+                            Roster.Fault.Stage.VALIDATE,
                             "timeout",
                             ErrorCode._408,
                             "Runtime reload timeout expired after loading"));
         }
-        final Registry.Report report;
+        final Roster.Report report;
         try {
             report = validator.validate(snapshot);
         } catch (RuntimeException cause) {
             return reject(
                     report(
                             snapshot.revision().value(),
-                            SnapshotFault.Stage.VALIDATE,
+                            Roster.Fault.Stage.VALIDATE,
                             "validator",
                             ErrorCode._500,
-                            "Registry snapshot validation failed operationally"));
+                            "Roster snapshot validation failed operationally"));
         }
         if (!report.faults().isEmpty()) {
             rejected(report);
@@ -302,22 +299,22 @@ final class RuntimeReloadService {
         try {
             replacement = compiler.compile(snapshot);
         } catch (SnapshotCompiler.CompilationFailure failure) {
-            return reject(new Registry.Report(snapshot.revision(), List.of(failure.fault())));
+            return reject(new Roster.Report(snapshot.revision(), List.of(failure.fault())));
         } catch (RuntimeException cause) {
             return reject(
                     report(
                             snapshot.revision().value(),
-                            SnapshotFault.Stage.COMPILE,
+                            Roster.Fault.Stage.COMPILE,
                             "snapshot",
                             ErrorCode._500,
-                            "Registry snapshot compilation failed"));
+                            "Roster snapshot compilation failed"));
         }
         if (timeout.expired()) {
             replacement.retire();
             return reject(
                     report(
                             snapshot.revision().value(),
-                            SnapshotFault.Stage.COMMIT,
+                            Roster.Fault.Stage.COMMIT,
                             "timeout",
                             ErrorCode._408,
                             "Runtime reload timeout expired before commit"));
@@ -334,7 +331,7 @@ final class RuntimeReloadService {
             return CompletableFuture.completedFuture(
                     report(
                             snapshot.revision().value(),
-                            SnapshotFault.Stage.COMMIT,
+                            Roster.Fault.Stage.COMMIT,
                             "lifecycle",
                             ErrorCode._503,
                             "Authentication runtime closed before commit"));
@@ -344,10 +341,10 @@ final class RuntimeReloadService {
             return reject(
                     report(
                             snapshot.revision().value(),
-                            SnapshotFault.Stage.COMMIT,
+                            Roster.Fault.Stage.COMMIT,
                             "revision",
                             ErrorCode._409,
-                            "Concurrent Registry reload prevented atomic commit"));
+                            "Concurrent Roster reload prevented atomic commit"));
         }
         expected.retire();
         notifier.dispatch();
@@ -360,7 +357,7 @@ final class RuntimeReloadService {
      * @param report rejection report
      * @return completed report stage
      */
-    private CompletionStage<Registry.Report> reject(final Registry.Report report) {
+    private CompletionStage<Roster.Report> reject(final Roster.Report report) {
         rejected(report);
         return CompletableFuture.completedFuture(report);
     }
@@ -370,12 +367,12 @@ final class RuntimeReloadService {
      *
      * @param report rejection report
      */
-    private void rejected(final Registry.Report report) {
+    private void rejected(final Roster.Report report) {
         notifier.rejected(report);
     }
 
     /**
-     * Closes Registry notification delivery owned by this reload service.
+     * Closes Roster notification delivery owned by this reload service.
      */
     void close() {
         notifier.close();

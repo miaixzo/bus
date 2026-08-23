@@ -23,9 +23,9 @@ import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * Carries one field-level invariant violation without assigning registration ownership or processing stage.
+ * Carries one field-level Blueprint invariant violation without assigning processing-stage ownership.
  *
- * @param field       violated registration field name
+ * @param field       violated Blueprint field name
  * @param error       stable validation error classification
  * @param description safe human-readable violation description
  */

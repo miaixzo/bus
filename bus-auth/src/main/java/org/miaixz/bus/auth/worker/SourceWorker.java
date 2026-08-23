@@ -27,7 +27,7 @@ import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 
 /**
- * Defines the executable capability worker produced for one compiled Source registration.
+ * Defines the executable capability worker produced for one compiled Source Blueprint entry.
  * <p>
  * Protocol and Vendor {@code SourceDriver} implementations return this contract to runtime compilation. The runtime
  * retains each instance in one runtime container and invokes it only after reference lookup, lifecycle, timeout,
@@ -36,8 +36,8 @@ import org.miaixz.bus.auth.Timeout;
  * </p>
  * <p>
  * This interface owns only the immutable capability declaration and typed execution entry. It does not load or mutate
- * registrations, select a Source, manage lifecycle, perform project authorization, create sessions, or expose protocol
- * implementation details.
+ * Blueprint entries, select a Source, manage lifecycle, perform project authorization, create sessions, or expose
+ * protocol implementation details.
  * </p>
  *
  * @author Kimi Liu
@@ -45,7 +45,7 @@ import org.miaixz.bus.auth.Timeout;
 public interface SourceWorker extends AutoCloseable {
 
     /**
-     * Returns the immutable capabilities implemented by this compiled registration.
+     * Returns the immutable capabilities implemented by this compiled Source entry.
      *
      * @return exact immutable capability manifest
      */

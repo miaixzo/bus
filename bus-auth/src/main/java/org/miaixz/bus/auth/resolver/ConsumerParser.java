@@ -22,14 +22,11 @@ package org.miaixz.bus.auth.resolver;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.auth.Blueprint;
-import org.miaixz.bus.auth.protocol.oauth2.ClientAuthenticationMethod;
-import org.miaixz.bus.auth.protocol.oauth2.GrantType;
-import org.miaixz.bus.auth.protocol.oidc.SubjectType;
+import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.worker.loader.ConsumerLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -73,16 +70,16 @@ public class ConsumerParser {
     /**
      * Validates Source and consumer ownership without performing data access.
      *
-     * @param registration exact Source registration that requested the data
-     * @param expectedId   exact requested consumer identifier
-     * @param record       project-loaded consumer record
+     * @param source     exact Source Blueprint entry that requested the data
+     * @param expectedId exact requested consumer identifier
+     * @param record     project-loaded consumer record
      * @return validated immutable consumer metadata
      */
     public ConsumerMetadata parse(
-            final Blueprint.SourceEntry registration,
+            final Blueprint.SourceEntry source,
             final String expectedId,
             final ConsumerLoader.Record record) {
-        final String sourceId = Assert.notNull(registration, "Consumer Source registration must not be null").resource()
+        final String sourceId = Assert.notNull(source, "Consumer Source Blueprint entry must not be null").resource()
                 .getId();
         final String expected = Assert.notBlank(expectedId, "Expected consumer identifier must not be blank");
         final ConsumerLoader.Record loaded = Assert.notNull(record, "Loaded consumer record must not be null");
@@ -92,30 +89,17 @@ public class ConsumerParser {
         if (!expected.equals(loaded.id())) {
             throw new ValidateException("Loaded consumer identifier does not match the requested identifier");
         }
-        final ConsumerMetadata.ApplicationType applicationType;
-        try {
-            applicationType = ConsumerMetadata.ApplicationType.valueOf(
-                    Assert.notBlank(loaded.applicationType(), "Consumer application type must not be blank")
-                            .toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException cause) {
-            throw new ValidateException("Consumer application type is unsupported", cause);
-        }
         final List<String> redirectUris = uris(loaded.redirectUris(), "Consumer redirect URI");
         final List<String> postLogoutRedirectUris = uris(
                 loaded.postLogoutRedirectUris(),
                 "Consumer post logout redirect URI");
-        final Set<GrantType> grantTypes = loaded.grantTypes().stream().map(GrantType::new)
-                .collect(Collectors.toUnmodifiableSet());
-        final Set<ClientAuthenticationMethod> authenticationMethods = loaded.authenticationMethods().stream()
-                .map(ClientAuthenticationMethod::new).collect(Collectors.toUnmodifiableSet());
-        if (!Set.of("code").containsAll(loaded.responseTypes())) {
-            throw new ValidateException("Consumer response type is unsupported");
-        }
-        return new ConsumerMetadata(loaded.id(), loaded.name(), applicationType, redirectUris, postLogoutRedirectUris,
-                grantTypes, loaded.responseTypes(), loaded.scopes(), authenticationMethods,
-                loaded.clientAssertionKeyId(), new SubjectType(loaded.subjectType()), loaded.sectorIdentifier(),
-                loaded.idTokenEncryptionKeyId(), loaded.idTokenEncryptionAlgorithm().map(algorithm -> algorithm.name()),
-                loaded.idTokenEncryptionMethod().map(method -> method.name()), loaded.metadata());
+        final Set<Endpoint.Authentication> authenticationMethods = loaded.authenticationMethods().stream()
+                .map(Endpoint.Authentication::new).collect(Collectors.toUnmodifiableSet());
+        return new ConsumerMetadata(loaded.id(), loaded.name(), loaded.applicationType(), redirectUris,
+                postLogoutRedirectUris, loaded.grantTypes(), loaded.responseTypes(), loaded.scopes(),
+                authenticationMethods, loaded.clientAssertionKeyId(), loaded.subjectType(), loaded.sectorIdentifier(),
+                loaded.idTokenEncryptionKeyId(), loaded.idTokenEncryptionAlgorithm(), loaded.idTokenEncryptionMethod(),
+                loaded.metadata());
     }
 
 }

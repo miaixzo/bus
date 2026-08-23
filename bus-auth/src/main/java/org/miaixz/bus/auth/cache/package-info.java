@@ -28,7 +28,7 @@
  * <p>
  * Protocol, Vendor, identity, and guard code call these wrappers. The runtime supplies one bus-cache backend; this
  * package contains no in-memory, database, distributed-cache, serialization, connection, or persistence implementation
- * and does not call Registry or protocol services.
+ * and does not call Roster or protocol services.
  * </p>
  * <p>
  * The selected bus-cache backend must support the atomic operations used by authentication. bus-auth never emulates an

@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.auth.worker.identity;
 
-import org.miaixz.bus.auth.source.ExternalIdentity;
+import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -40,7 +40,7 @@ final class ExternalIdentityVerifier {
     }
 
     /**
-     * Validates one bounded provider-neutral JSON value tree.
+     * Validates one bounded implementation-neutral JSON value tree.
      *
      * @param value current non-null JSON value
      * @param depth current nesting depth below the attribute root
@@ -79,9 +79,9 @@ final class ExternalIdentityVerifier {
      * @throws IllegalArgumentException if an input is {@code null} or the expected identifier is blank
      * @throws ValidateException        if Source binding, evidence, or attribute bounds are invalid
      */
-    ExternalIdentity verify(final String expectedSourceId, final ExternalIdentity identity) {
+    Identity verify(final String expectedSourceId, final Identity identity) {
         final String expected = Assert.notBlank(expectedSourceId, "Expected Source id must not be blank");
-        final ExternalIdentity verified = Assert.notNull(identity, "Source authentication identity must not be null");
+        final Identity verified = Assert.notNull(identity, "Source authentication identity must not be null");
         if (!expected.equals(verified.sourceId())) {
             throw new ValidateException("Completed external identity does not belong to the selected Source");
         }

@@ -23,7 +23,7 @@
  * Every type in this package is an interface implemented by an integrating project. Implementations may read project
  * databases, files, directories, key stores, remote services, or configuration systems and return the immutable public
  * contracts declared by the matching Loader interface. They do not parse authentication-domain records, enforce
- * protocol policy, mutate Registry state, manage caches, or execute unrelated security responsibilities.
+ * protocol policy, mutate Roster state, manage caches, or execute unrelated security responsibilities.
  * </p>
  *
  * @author Kimi Liu

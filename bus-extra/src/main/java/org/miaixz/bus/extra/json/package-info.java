@@ -20,16 +20,16 @@
 /**
  * Defines the exported, provider-neutral JSON value model and processing contract.
  * <p>
- * Callers use {@link org.miaixz.bus.extra.json.JsonValue} when a stable immutable JSON tree is required and inject a
- * {@link org.miaixz.bus.extra.json.JsonProvider} when object mapping, bounded parsing, duplicate-member rejection, or
- * serialization is required. Read and write options describe operation-scoped limits and representation behavior;
- * filters and annotations remain optional mapping concerns rather than dependencies of the value model.
+ * Callers use {@link JsonValue} when a stable immutable JSON tree is required and inject a {@link JsonProvider} when
+ * object mapping, bounded parsing, duplicate-member rejection, or serialization is required. Read and write options
+ * describe operation-scoped limits and representation behavior; filters and annotations remain optional mapping
+ * concerns rather than dependencies of the value model.
  * </p>
  * <p>
  * Engine adapters depend on this package and implement its contracts. This package may depend on Bus core language,
  * reflection, and codec primitives, but its public signatures never expose Jackson, Gson, Fastjson, or another engine
  * type. Frameworks that require deterministic provider selection receive a {@code JsonProvider} from their runtime
- * dependency boundary instead of consulting a global provider or {@link org.miaixz.bus.extra.json.JsonKit}.
+ * dependency boundary instead of consulting a global provider or {@link JsonKit}.
  * </p>
  * <p>
  * Untrusted input must be parsed with explicit byte, depth, and duplicate-name policy. A JSON tree is data, not an

@@ -84,7 +84,7 @@ public class JwtClaims {
     /**
      * Decodes a complete JSON Claims Set into registered components and isolated extensions.
      *
-     * @param values complete provider-neutral JWT Claims Set
+     * @param values complete implementation-neutral JWT Claims Set
      * @throws IllegalArgumentException if {@code values} is {@code null}
      * @throws ValidateException        if a registered claim has an invalid JSON type or value
      */
@@ -294,7 +294,7 @@ public class JwtClaims {
      * Looks up one exact claim without type coercion.
      *
      * @param name exact case-sensitive claim name
-     * @return provider-neutral claim value when present
+     * @return implementation-neutral claim value when present
      */
     public Optional<JsonValue> claim(final String name) {
         Assert.notBlank(name, "JWT claim name must not be blank");

@@ -25,8 +25,8 @@ import java.util.concurrent.CompletionStage;
  * Defines one asynchronous project-owned data input port.
  * <p>
  * A request contains only the validated coordinates required by one loading operation. Implementations obtain raw
- * project data but do not parse authentication-domain records, apply protocol policy, mutate Registry state, or reset
- * the caller's timeout.
+ * project data but do not parse authentication-domain records, apply protocol policy, mutate Roster state, or reset the
+ * caller's timeout.
  * </p>
  *
  * @param <Q> validated loading request type

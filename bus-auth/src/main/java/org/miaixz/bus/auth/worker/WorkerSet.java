@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.Assert;
  * <p>
  * A project supplies only ports required by its selected Source drivers. Accessing an absent port fails immediately
  * during compilation of the Source that requires it; this class never installs permissive or silent no-op behavior.
- * Registration loading, Registry listeners, identity completion, parsing, security, and auditing are outside this
+ * Blueprint loading, Roster listeners, identity completion, parsing, security, and auditing are outside this
  * aggregation.
  * </p>
  *

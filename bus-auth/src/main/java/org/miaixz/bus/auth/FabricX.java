@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.miaixz.bus.auth.shared.SecurityBaseline;
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
@@ -51,12 +50,13 @@ import org.miaixz.bus.fabric.protocol.socket.SocketSession;
 import org.miaixz.bus.fabric.protocol.socket.SocketX;
 
 /**
- * Provides the runtime-scoped Fabric entry used by authentication protocols and Vendor Sources.
+ * Provides the guarded static Fabric entry used by authentication protocols and Vendor Sources.
  * <p>
- * This class is the only bus-auth type allowed to create or operate Fabric transports and access Fabric runtime
- * services. HTTP callers receive a policy-bound builder because the exact HTTP message belongs to the calling
- * authentication protocol. Socket callers receive the authentication-owned {@link Socket} facade and therefore never
- * handle Fabric calls, sessions, messages, payloads, or TLS policies directly.
+ * This class is the only bus-auth type allowed to create or operate Fabric transports. Every operation uses the shared
+ * Fabric context exclusively through {@code FabricX.xxx} entry points; no runtime service exposes a Fabric instance.
+ * HTTP callers must also supply the exact immutable authentication policies that guard the selected protocol. Socket
+ * callers receive the authentication-owned {@link Socket} facade and therefore never handle Fabric calls, sessions,
+ * messages, payloads, or TLS policies directly.
  * </p>
  * <p>
  * This class does not encode protocol messages, select credentials, parse responses, map protocol errors, load project
@@ -68,35 +68,14 @@ import org.miaixz.bus.fabric.protocol.socket.SocketX;
 public class FabricX {
 
     /**
-     * Fabric execution context created and owned by this authentication Runtime facade.
+     * Shared Fabric execution context used by every static authentication transport entry point.
      */
-    private final org.miaixz.bus.fabric.Context context;
+    private static final org.miaixz.bus.fabric.Context CONTEXT = org.miaixz.bus.fabric.Context.create();
 
     /**
-     * Immutable non-relaxable security policy applied to outbound authentication requests.
+     * Prevents construction because every supported operation is exposed through a static entry point.
      */
-    private final SecurityBaseline securityBaseline;
-
-    /**
-     * Creates a validated immutable Runtime facade from one completed builder.
-     *
-     * @param builder completed FabricX builder
-     * @throws IllegalArgumentException if the security baseline is {@code null}
-     */
-    public FabricX(final Builder builder) {
-        final Builder source = Assert.notNull(builder, "FabricX builder must not be null");
-        this.context = org.miaixz.bus.fabric.Context.create();
-        this.securityBaseline = Assert
-                .notNull(source.securityBaseline, "Authentication security baseline must not be null");
-    }
-
-    /**
-     * Creates an empty builder for one Runtime-scoped authentication Fabric facade.
-     *
-     * @return new mutable builder
-     */
-    public static Builder builder() {
-        return new Builder();
+    private FabricX() {
     }
 
     /**
@@ -107,40 +86,38 @@ public class FabricX {
      * Runtime or Source state.
      * </p>
      *
-     * @param fabric   Runtime-scoped authentication Fabric facade
      * @param protocol actual authentication protocol governing the remote endpoint
      * @param timeout  remaining end-to-end operation timeout
+     * @param policies non-relaxable authentication transport policies
      * @return fresh Fabric HTTP builder with timeout and address policy already applied
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws TimeoutException         if the operation timeout has already expired
      */
-    public static Http http(final FabricX fabric, final Protocol protocol, final Timeout timeout) {
-        final FabricX runtime = Assert.notNull(fabric, "Authentication Fabric facade must not be null");
+    public static Http http(final Protocol protocol, final Timeout timeout, final Policies policies) {
         final Protocol selected = Assert.notNull(protocol, "Authentication HTTP protocol must not be null");
         final Timeout remaining = Assert.notNull(timeout, "Authentication HTTP timeout must not be null");
+        final Policies rules = Assert.notNull(policies, "Authentication transport policies must not be null");
         if (remaining.expired()) {
             throw new TimeoutException("Authentication HTTP timeout has expired");
         }
-        return new Http(Fabric.http(runtime.context).timeout(transportTimeout(remaining))
-                .addressPolicy(runtime.securityBaseline.require(selected).addressPolicy().unwrap()));
+        return new Http(Fabric.http(CONTEXT).timeout(transportTimeout(remaining))
+                .addressPolicy(rules.require(selected).addressPolicy().unwrap()));
     }
 
     /**
      * Creates one internal timeout-bound Fabric socket builder.
      *
-     * @param fabric  Runtime-scoped authentication Fabric facade
      * @param timeout remaining end-to-end operation timeout
      * @return internal Fabric socket builder with the remaining timeout already applied
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws TimeoutException         if the operation timeout has already expired
      */
-    private static SocketX.Builder socketBuilder(final FabricX fabric, final Timeout timeout) {
-        final FabricX runtime = Assert.notNull(fabric, "Authentication Fabric facade must not be null");
+    private static SocketX.Builder socketBuilder(final Timeout timeout) {
         final Timeout remaining = Assert.notNull(timeout, "Authentication socket timeout must not be null");
         if (remaining.expired()) {
             throw new TimeoutException("Authentication socket timeout has expired");
         }
-        return Fabric.socket(runtime.context).timeout(transportTimeout(remaining));
+        return Fabric.socket(CONTEXT).timeout(transportTimeout(remaining));
     }
 
     /**
@@ -163,7 +140,6 @@ public class FabricX {
      * Fabric call execution, session lifecycle, payload conversion, and any later TLS upgrade.
      * </p>
      *
-     * @param fabric  Runtime-scoped authentication Fabric facade
      * @param timeout remaining end-to-end operation timeout
      * @param framer  authentication protocol stream framer
      * @param host    remote host
@@ -174,52 +150,38 @@ public class FabricX {
      * @throws TimeoutException         if the operation timeout has already expired
      */
     public static Socket socket(
-            final FabricX fabric,
             final Timeout timeout,
             final Framer framer,
             final String host,
             final int port,
             final boolean secure) {
-        final SocketX.Builder builder = socketBuilder(fabric, timeout)
+        final SocketX.Builder builder = socketBuilder(timeout)
                 .frame(new FrameCodecAdapter(Assert.notNull(framer, "Authentication socket framer must not be null")));
         if (secure) {
             builder.tls(Assert.notBlank(host, "Authentication socket host must not be blank"), port);
         } else {
             builder.tcp(Assert.notBlank(host, "Authentication socket host must not be blank"), port);
         }
-        return new Socket(await(builder.build().call(), timeout), fabric);
+        return new Socket(await(builder.build().call(), timeout));
     }
 
     /**
-     * Returns the Fabric Runtime clock shared by every protocol in this authentication runtime.
+     * Returns the Fabric clock shared by every static authentication transport entry point.
      *
-     * @param fabric Runtime-scoped authentication Fabric facade
-     * @return shared monotonic-aware Runtime clock
+     * @return shared monotonic-aware Fabric clock
      */
-    public static Clock clock(final FabricX fabric) {
-        return new Clock(Assert.notNull(fabric, "Authentication Fabric facade must not be null").context.clock());
-    }
-
-    /**
-     * Returns the immutable security baseline bound to this Runtime-scoped Fabric facade.
-     *
-     * @param fabric Runtime-scoped authentication Fabric facade
-     * @return non-relaxable authentication security baseline
-     */
-    public static SecurityBaseline securityBaseline(final FabricX fabric) {
-        return Assert.notNull(fabric, "Authentication Fabric facade must not be null").securityBaseline;
+    public static Clock clock() {
+        return new Clock(CONTEXT.clock());
     }
 
     /**
      * Resolves the TLS policy inherited by socket authentication protocols.
      *
-     * @param fabric Runtime-scoped authentication Fabric facade
-     * @return explicit socket TLS policy or the policy resolved from the Runtime options
+     * @return explicit socket TLS policy or the policy resolved from the shared Fabric context
      */
-    private static TlsPolicy socketTlsPolicy(final FabricX fabric) {
-        final FabricX runtime = Assert.notNull(fabric, "Authentication Fabric facade must not be null");
-        final TlsPolicy policy = runtime.context.options().get(SocketOptions.TLS_POLICY);
-        return policy == null ? TlsPolicy.resolve(runtime.context.options()) : policy;
+    private static TlsPolicy socketTlsPolicy() {
+        final TlsPolicy policy = CONTEXT.options().get(SocketOptions.TLS_POLICY);
+        return policy == null ? TlsPolicy.resolve(CONTEXT.options()) : policy;
     }
 
     /**
@@ -255,7 +217,6 @@ public class FabricX {
      * <p>
      * Protocol packages implement this contract without depending on Fabric frame or socket APIs. FabricX adapts each
      * implementation to the transport-specific codec internally when opening the connection.
-     * </p>
      *
      * @author Kimi Liu
      */
@@ -309,19 +270,12 @@ public class FabricX {
         private final SocketSession session;
 
         /**
-         * Runtime facade providing the socket TLS policy.
-         */
-        private final FabricX fabric;
-
-        /**
          * Creates an authentication-owned wrapper for one open Fabric session.
          *
          * @param session backing Fabric socket session
-         * @param fabric  Runtime-scoped authentication Fabric facade
          */
-        public Socket(final SocketSession session, final FabricX fabric) {
+        public Socket(final SocketSession session) {
             this.session = Assert.notNull(session, "Fabric socket session must not be null");
-            this.fabric = Assert.notNull(fabric, "Authentication Fabric facade must not be null");
         }
 
         /**
@@ -353,7 +307,7 @@ public class FabricX {
          * @param timeout remaining end-to-end operation timeout
          */
         public void upgradeTls(final Timeout timeout) {
-            await(session.upgradeTls(socketTlsPolicy(fabric)), timeout);
+            await(session.upgradeTls(socketTlsPolicy()), timeout);
         }
 
         /**
@@ -2350,53 +2304,6 @@ public class FabricX {
          */
         public Response build() {
             return new Response(delegate.build());
-        }
-
-    }
-
-    /**
-     * Builds one immutable Runtime-scoped authentication Fabric facade.
-     * <p>
-     * The builder only assembles Fabric infrastructure and the non-relaxable authentication transport policy. It does
-     * not configure Sources, credentials, protocol endpoints, workers, registries, or application routes.
-     * </p>
-     *
-     * @author Kimi Liu
-     */
-    public static class Builder {
-
-        /**
-         * Immutable non-relaxable authentication transport policy.
-         */
-        private SecurityBaseline securityBaseline;
-
-        /**
-         * Creates an empty FabricX builder.
-         */
-        public Builder() {
-            // No initialization required.
-        }
-
-        /**
-         * Sets the non-relaxable authentication transport policy.
-         *
-         * @param securityBaseline immutable authentication security baseline
-         * @return this builder
-         */
-        public Builder securityBaseline(final SecurityBaseline securityBaseline) {
-            this.securityBaseline = Assert
-                    .notNull(securityBaseline, "Authentication security baseline must not be null");
-            return this;
-        }
-
-        /**
-         * Validates the required dependencies and creates one immutable FabricX facade.
-         *
-         * @return immutable Runtime-scoped authentication Fabric facade
-         * @throws IllegalArgumentException if a required dependency was not configured
-         */
-        public FabricX build() {
-            return new FabricX(this);
         }
 
     }

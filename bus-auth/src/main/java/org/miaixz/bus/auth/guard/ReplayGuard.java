@@ -102,7 +102,7 @@ public class ReplayGuard {
     /**
      * Atomically registers one authentication artifact until its effective expiration.
      *
-     * @param space     external registration space
+     * @param space     external Source space
      * @param protocol  industry protocol that owns the artifact
      * @param authority stable Provider or Source authority identifier
      * @param purpose   non-sensitive artifact purpose such as JWT jti or SAML assertion identifier

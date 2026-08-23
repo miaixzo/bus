@@ -21,9 +21,9 @@
  * Defines the protocol-neutral identity-completion worker boundary.
  * <p>
  * This package may coordinate a verified Source authentication result through framework-owned external-identity
- * validation, project-supplied identity and claim loaders, pure parsing, Principal construction, and an immutable
- * authentication result. Every worker must preserve the invocation context, shared timeout, and typed Outcome without
- * exposing protocol tokens or Vendor-private payloads.
+ * validation, project-supplied identity and claim loaders, pure parsing, and immutable authentication-result
+ * construction. Every worker must preserve the invocation context, shared timeout, and typed Outcome without exposing
+ * protocol tokens or Vendor-private payloads.
  * </p>
  * <p>
  * The package does not implement account persistence, automatic registration, account merging, user CRUD, roles,

@@ -62,7 +62,7 @@ public class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
      *
      * @param cache      shared bus-cache backend
      * @param deployment deployment-unique cache scope
-     * @param sourceId   exact Source registration identifier
+     * @param sourceId   exact Source identifier
      * @param generation non-negative Source configuration generation
      * @param clock      shared runtime clock used to derive entry lifetimes
      */
@@ -149,7 +149,7 @@ public class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
     /**
      * Carries immutable refresh-token family and sender-binding state.
      *
-     * @param providerId    OAuth Provider identifier
+     * @param sourceId      OAuth authorization-server Source identifier
      * @param clientId      OAuth client identifier
      * @param subjectId     authorized subject identifier
      * @param familyId      stable identifier shared by all rotations in one family
@@ -161,14 +161,14 @@ public class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
      * @param status        current token lifecycle status
      * @author Kimi Liu
      */
-    public record Entry(String providerId, String clientId, String subjectId, String familyId, long generation,
+    public record Entry(String sourceId, String clientId, String subjectId, String familyId, long generation,
             List<String> scope, List<String> audience, Optional<String> confirmation,
             Optional<AuthorizationCodeCache.OpenIdBinding> openIdBinding, Status status) implements Serializable {
 
         /**
          * Creates immutable refresh-token state.
          *
-         * @param providerId    OAuth Provider identifier
+         * @param sourceId      OAuth authorization-server Source identifier
          * @param clientId      OAuth client identifier
          * @param subjectId     authorized subject identifier
          * @param familyId      rotation family identifier
@@ -182,7 +182,7 @@ public class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
          *                                  container is {@code null}
          */
         public Entry {
-            Assert.notBlank(providerId, "Refresh token Provider id must not be blank");
+            Assert.notBlank(sourceId, "Refresh token Source id must not be blank");
             Assert.notBlank(clientId, "Refresh token client id must not be blank");
             Assert.notBlank(subjectId, "Refresh token subject id must not be blank");
             Assert.notBlank(familyId, "Refresh token family id must not be blank");

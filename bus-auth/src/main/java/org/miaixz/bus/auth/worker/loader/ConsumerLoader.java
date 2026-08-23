@@ -24,7 +24,6 @@ import java.util.Set;
 
 import org.miaixz.bus.auth.Blueprint;
 import org.miaixz.bus.auth.Loader;
-import org.miaixz.bus.auth.shared.jose.JwaAlgorithm;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -38,19 +37,19 @@ import org.miaixz.bus.extra.json.JsonValue;
 public interface ConsumerLoader extends Loader<ConsumerLoader.Request, ConsumerLoader.Record> {
 
     /**
-     * Identifies one consumer requested within an exact Source registration.
+     * Identifies one consumer requested within an exact Source Blueprint entry.
      *
-     * @param registration exact Source registration requesting the data
-     * @param consumerId   exact external consumer identifier
+     * @param source     exact Source Blueprint entry requesting the data
+     * @param consumerId exact external consumer identifier
      * @author Kimi Liu
      */
-    record Request(Blueprint.SourceEntry registration, String consumerId) {
+    record Request(Blueprint.SourceEntry source, String consumerId) {
 
         /**
          * Validates one complete consumer-loading request.
          */
         public Request {
-            Assert.notNull(registration, "Consumer registration must not be null");
+            Assert.notNull(source, "Consumer source must not be null");
             Assert.notBlank(consumerId, "Consumer identifier must not be blank");
         }
 
@@ -75,14 +74,14 @@ public interface ConsumerLoader extends Loader<ConsumerLoader.Request, ConsumerL
      * @param idTokenEncryptionKeyId     optional ID Token encryption key identifier
      * @param idTokenEncryptionAlgorithm optional ID Token JWE key-management algorithm
      * @param idTokenEncryptionMethod    optional ID Token JWE content-encryption method
-     * @param metadata                   protocol-specific non-secret registration metadata
+     * @param metadata                   protocol-specific non-secret consumer registration metadata
      * @author Kimi Liu
      */
-    record Record(String sourceId, String id, String name, String applicationType, List<String> redirectUris,
+    record Record(String sourceId, String id, String name, Optional<String> applicationType, List<String> redirectUris,
             List<String> postLogoutRedirectUris, Set<String> grantTypes, Set<String> responseTypes, Set<String> scopes,
-            Set<String> authenticationMethods, Optional<String> clientAssertionKeyId, String subjectType,
+            Set<String> authenticationMethods, Optional<String> clientAssertionKeyId, Optional<String> subjectType,
             Optional<String> sectorIdentifier, Optional<String> idTokenEncryptionKeyId,
-            Optional<JwaAlgorithm> idTokenEncryptionAlgorithm, Optional<JwaAlgorithm> idTokenEncryptionMethod,
+            Optional<String> idTokenEncryptionAlgorithm, Optional<String> idTokenEncryptionMethod,
             JsonValue.ObjectValue metadata) {
 
     }

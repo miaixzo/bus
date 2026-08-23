@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines provider-neutral JWT values, issuance, signature verification, and registered-claim validation.
+ * Defines implementation-neutral JWT values, issuance, signature verification, and registered-claim validation.
  * <p>
  * {@link org.miaixz.bus.auth.shared.jwt.Jwt} retains the encoded JOSE header, claims, and signature relationship;
  * {@link org.miaixz.bus.auth.shared.jwt.JwtClaims} preserves typed JSON claim values.
@@ -29,8 +29,8 @@
  * </p>
  * <p>
  * Formal protocols and shared DPoP compose these operations under their own token purpose and wire contract. This
- * package depends on JOSE, provider-neutral JSON, the Timeout clock, and key loaders; it is not a Provider, Source,
- * protocol dispatcher, token endpoint, session service, or remote validation client.
+ * package depends on JOSE, implementation-neutral JSON, the Timeout clock, and key loaders; it is not a Provider,
+ * Source, protocol dispatcher, token endpoint, session service, or remote validation client.
  * </p>
  * <p>
  * Verification precedes trust in every claim and binds an explicit algorithm, key, issuer, audience, purpose, and time

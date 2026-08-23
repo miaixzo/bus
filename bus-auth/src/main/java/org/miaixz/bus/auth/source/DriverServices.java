@@ -23,12 +23,12 @@ import java.util.concurrent.Executor;
 
 import org.miaixz.bus.auth.Blueprint;
 import org.miaixz.bus.auth.FabricX;
+import org.miaixz.bus.auth.Policies;
 import org.miaixz.bus.auth.cache.*;
 import org.miaixz.bus.auth.resolver.*;
-import org.miaixz.bus.auth.shared.SecurityBaseline;
 import org.miaixz.bus.auth.worker.*;
 import org.miaixz.bus.auth.worker.loader.*;
-import org.miaixz.bus.extra.json.JsonProvider;
+import org.miaixz.bus.extra.json.JsonKit;
 
 /**
  * Defines the protocol execution services visible to a compiled Source driver.
@@ -36,31 +36,22 @@ import org.miaixz.bus.extra.json.JsonProvider;
  * Runtime assembly owns the implementation. Protocol and Vendor packages depend only on this lower-level contract and
  * therefore never import the runtime assembly package.
  * </p>
+ * <p>
+ * Application-wide stateless facilities are deliberately absent from this capability view. Drivers use
+ * {@link JsonKit} and {@link FabricX} directly instead of receiving
+ * secondary runtime aliases.
+ * </p>
  *
  * @author Kimi Liu
  */
 public interface DriverServices {
 
     /**
-     * Returns the exact immutable registration bound to this Source service view.
+     * Returns the exact immutable Blueprint entry bound to this Source service view.
      *
-     * @return current Source registration
+     * @return current Source Blueprint entry
      */
-    Blueprint.SourceEntry registration();
-
-    /**
-     * Returns the Runtime-scoped facade for every Fabric protocol used by bus-auth.
-     *
-     * @return guarded Fabric protocol facade
-     */
-    FabricX fabric();
-
-    /**
-     * Returns the selected provider-neutral JSON implementation.
-     *
-     * @return selected JSON implementation
-     */
-    JsonProvider jsonProvider();
+    Blueprint.SourceEntry entry();
 
     /**
      * Returns the executor assigned to asynchronous Source work.
@@ -275,8 +266,8 @@ public interface DriverServices {
     /**
      * Returns immutable security limits applied to Source execution.
      *
-     * @return security baseline
+     * @return immutable protocol security policies
      */
-    SecurityBaseline securityBaseline();
+    Policies policies();
 
 }

@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Retains an ordered provider-neutral claim collection with exact JSON types, provenance, and sensitivity labels.
+ * Retains an ordered implementation-neutral claim collection with exact JSON types, provenance, and sensitivity labels.
  *
  * @param claims ordered entries whose target claim names are unique
  * @author Kimi Liu
@@ -67,7 +67,7 @@ public record ClaimSet(List<Entry> claims) {
     }
 
     /**
-     * Projects entries to a provider-neutral JSON object without changing value types or order.
+     * Projects entries to a implementation-neutral JSON object without changing value types or order.
      *
      * @return immutable target-name to exact JsonValue object
      */
@@ -81,7 +81,7 @@ public record ClaimSet(List<Entry> claims) {
      * Represents one mapped claim and its security-relevant provenance.
      *
      * @param name      exact target claim name
-     * @param value     exact provider-neutral JSON value
+     * @param value     exact implementation-neutral JSON value
      * @param origin    source attribute or evidence provenance
      * @param sensitive whether callers must suppress the value from logs and general display
      * @author Kimi Liu
