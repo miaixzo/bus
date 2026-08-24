@@ -39,6 +39,7 @@ import org.miaixz.bus.auth.shared.jose.JwaAlgorithm;
 import org.miaixz.bus.auth.shared.jose.JwsService;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -103,11 +104,30 @@ public class JwtService {
      * @param clock     shared or deterministic Fabric clock
      */
     public JwtService(final JwaAlgorithm algorithm, final Key key, final Clock clock) {
+        this(algorithm, key, clock, true);
+    }
+
+    /**
+     * Creates an immutable signed-JWT service with an explicit minimum-key-strength policy.
+     *
+     * @param algorithm                  exact trusted JWS algorithm
+     * @param key                        explicit private, public, or symmetric operation key
+     * @param clock                      shared or deterministic Fabric clock
+     * @param minimumKeyStrengthEnforced whether registered JWA minimum key sizes are enforced
+     */
+    private JwtService(
+            final JwaAlgorithm algorithm,
+            final Key key,
+            final Clock clock,
+            final boolean minimumKeyStrengthEnforced) {
         this.algorithm = Assert.notNull(algorithm, "JWT service algorithm must not be null");
         this.algorithm.require(JwaAlgorithm.Kind.SIGNATURE);
         this.key = Assert.notNull(key, "JWT service key must not be null");
         this.clock = Assert.notNull(clock, "JWT service clock must not be null");
-        this.jwsService = new JwsService(new AlgorithmGuard(), Set.of(algorithm.name()));
+        this.jwsService = new JwsService(
+                new AlgorithmGuard(),
+                Set.of(algorithm.name()),
+                minimumKeyStrengthEnforced);
         this.issuer = new JwtIssuer(jwsService, clock);
         this.verifier = new JwtVerifier(jwsService);
     }
@@ -144,7 +164,39 @@ public class JwtService {
      * @return immutable HS256 JWT service
      */
     public static JwtService hs256(final String secret) {
-        return new JwtService(JwaAlgorithm.HS256, HkdfJwtKeyDeriver.INSTANCE.derive(JwaAlgorithm.HS256, secret));
+        return hs256(secret, JWT.Mode.HKDF_SHA256_V1);
+    }
+
+    /**
+     * Creates an HS256 service from arbitrary non-empty String key material under an explicit conversion strategy.
+     * <p>
+     * {@link JWT.Mode#HKDF_SHA256_V1} applies the deterministic framework derivation profile. {@link JWT.Mode#RAW}
+     * preserves the legacy cross-system contract by using the exact UTF-8 bytes of the String.
+     * Neither strategy trims, normalizes, or otherwise rewrites caller material.
+     * </p>
+     *
+     * @param secret   non-empty String key material preserved exactly as supplied
+     * @param mode   explicit String-to-key mode
+     * @return immutable HS256 JWT service
+     */
+    public static JwtService hs256(final String secret, final JWT.Mode mode) {
+        final JWT.Mode selected = Assert.notNull(mode, "JWT String key mode must not be null");
+        if (JWT.Mode.HKDF_SHA256_V1 == selected) {
+            return new JwtService(
+                    JwaAlgorithm.HS256,
+                    HkdfJwtKeyDeriver.INSTANCE.derive(JwaAlgorithm.HS256, secret));
+        }
+
+        final byte[] material = Assert.notEmpty(secret, "JWT String secret must not be empty").getBytes(Charset.UTF_8);
+        try {
+            return new JwtService(
+                    JwaAlgorithm.HS256,
+                    new SecretKeySpec(material, Algorithm.HMACSHA256.getValue()),
+                    FabricX.clock(),
+                    false);
+        } finally {
+            Arrays.fill(material, (byte) 0);
+        }
     }
 
     /**

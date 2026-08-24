@@ -37,9 +37,11 @@
  * </p>
  * <p>
  * Verification precedes trust in every claim and binds an explicit algorithm, key, issuer, audience, purpose, and time
- * policy. String-key entry points preserve exact non-empty input and deterministically derive a 256-bit HS256 key
- * through the frozen HKDF version-one profile; raw byte and {@link java.security.Key} entry points retain their strict
- * cryptographic semantics. Validators reject duplicate or mistyped registered claims, unsigned or algorithm-confused
+ * policy. Default String-key entry points preserve exact non-empty input and deterministically derive a 256-bit HS256
+ * key through the frozen HKDF version-one profile; explicitly selected {@link
+ * org.miaixz.bus.auth.shared.jwt.JWT.Mode#RAW} uses the exact UTF-8 bytes for legacy interoperability without fallback.
+ * Raw byte and {@link java.security.Key} entry points retain their strict cryptographic semantics. Validators reject
+ * duplicate or mistyped registered claims, unsigned or algorithm-confused
  * input, expired or premature tokens, and unbounded payloads. Compact JWTs, keys, sensitive claims, and complete
  * validation failures must not be logged or reused across token purposes.
  * </p>
