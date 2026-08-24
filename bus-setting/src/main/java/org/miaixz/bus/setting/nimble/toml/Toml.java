@@ -35,19 +35,19 @@ import org.miaixz.bus.logger.Logger;
 public class Toml {
 
     /**
-     * Constructs a new Toml instance.
-     */
-    public Toml() {
-        // No initialization required.
-    }
-
-    /**
      * A {@link DateTimeFormatter} that parses and formats dates and times according to the TOML specification.
      */
     public static final DateTimeFormatter DATE_FORMATTER = new DateTimeFormatterBuilder()
             .append(DateTimeFormatter.ISO_LOCAL_DATE).optionalStart().appendLiteral('T')
             .append(DateTimeFormatter.ISO_LOCAL_TIME).optionalStart().appendOffsetId().optionalEnd().optionalEnd()
             .toFormatter();
+
+    /**
+     * Constructs a new Toml instance.
+     */
+    public Toml() {
+        // No initialization required.
+    }
 
     /**
      * Reads and parses TOML data from a given {@link Resource}.

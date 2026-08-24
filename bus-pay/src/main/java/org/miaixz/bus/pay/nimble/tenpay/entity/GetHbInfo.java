@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class GetHbInfo extends Voucher {
 
     /**
-     * Constructs a new {@code GetHbInfo} instance.
-     */
-    public GetHbInfo() {
-        // No initialization required.
-    }
-
-    /**
      * Send type.
      */
     private String send_type;
@@ -76,5 +69,12 @@ public class GetHbInfo extends Voucher {
      * Signature.
      */
     private String sign;
+
+    /**
+     * Constructs a new {@code GetHbInfo} instance.
+     */
+    public GetHbInfo() {
+        // No initialization required.
+    }
 
 }

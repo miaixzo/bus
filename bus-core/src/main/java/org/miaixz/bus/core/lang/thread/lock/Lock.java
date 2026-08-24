@@ -33,16 +33,16 @@ import java.util.concurrent.locks.StampedLock;
 public class Lock {
 
     /**
+     * A singleton instance of {@link NoLock} representing a no-operation lock.
+     */
+    private static final NoLock NO_LOCK = new NoLock();
+
+    /**
      * Constructs a new Lock instance.
      */
     public Lock() {
         // No initialization required.
     }
-
-    /**
-     * A singleton instance of {@link NoLock} representing a no-operation lock.
-     */
-    private static final NoLock NO_LOCK = new NoLock();
 
     /**
      * Creates a new {@link StampedLock} instance. {@link StampedLock} is a capability-based lock with three modes for

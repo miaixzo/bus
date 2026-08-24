@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_CSA_ENVELOPE;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS CSA ENVELOPE";
@@ -47,5 +40,12 @@ public class PrivateTag {
      * (0029,xx11) VR=OB VM=1 syngo Report Presentation
      */
     public static final int syngoReportPresentation = 0x00290011;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -76,13 +76,6 @@ import org.miaixz.bus.mapper.parsing.ClassField;
 public class OGNL {
 
     /**
-     * Initializes the expression evaluator used to inspect mapper parameters and evaluate dynamic conditions.
-     */
-    public OGNL() {
-        // No initialization required.
-    }
-
-    /**
      * Regular expression for getter methods.
      */
     public static final Pattern GET_PATTERN = Pattern.compile("^get[A-Z].*");
@@ -204,6 +197,13 @@ public class OGNL {
      * common SQL injection blacklist characters and whitespace characters.
      */
     public static final Pattern REPLACE_BLANK = Pattern.compile("'|\"|\\<|\\>|&|\\*|\\+|=|#|-|;|\\s*|\t|\r|\n");
+
+    /**
+     * Initializes the expression evaluator used to inspect mapper parameters and evaluate dynamic conditions.
+     */
+    public OGNL() {
+        // No initialization required.
+    }
 
     /**
      * Registers a new class as a "simple type" for the mapper.

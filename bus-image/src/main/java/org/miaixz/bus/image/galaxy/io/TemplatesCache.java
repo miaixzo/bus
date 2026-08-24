@@ -33,13 +33,6 @@ import javax.xml.transform.stream.StreamSource;
 public class TemplatesCache {
 
     /**
-     * Constructs a new {@code TemplatesCache} instance.
-     */
-    public TemplatesCache() {
-        // No initialization required.
-    }
-
-    /**
      * The default cache value.
      */
     private static TemplatesCache defaultCache;
@@ -48,6 +41,13 @@ public class TemplatesCache {
      * The map value.
      */
     private final HashMap<String, Templates> map = new HashMap<>();
+
+    /**
+     * Constructs a new {@code TemplatesCache} instance.
+     */
+    public TemplatesCache() {
+        // No initialization required.
+    }
 
     /**
      * Gets the default.

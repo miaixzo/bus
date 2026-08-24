@@ -38,13 +38,6 @@ import org.miaixz.bus.health.Builder;
 public class DevPath {
 
     /**
-     * Constructs a new DevPath instance.
-     */
-    public DevPath() {
-        // No initialization required.
-    }
-
-    /**
      * The /dev filesystem location.
      */
     public static final String DEV = queryDevConfig() + Symbol.SLASH;
@@ -73,6 +66,13 @@ public class DevPath {
      * The RAM constant.
      */
     public static final String RAM = DEV + "ram";
+
+    /**
+     * Constructs a new DevPath instance.
+     */
+    public DevPath() {
+        // No initialization required.
+    }
 
     /**
      * Queries the dev config.

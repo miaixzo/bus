@@ -36,13 +36,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class ExternalStatusCheckStatus implements Serializable {
 
     /**
-     * Constructs a new {@code ExternalStatusCheckStatus} instance.
-     */
-    public ExternalStatusCheckStatus() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -64,6 +57,13 @@ public class ExternalStatusCheckStatus implements Serializable {
      * The status value.
      */
     private Status status;
+
+    /**
+     * Constructs a new {@code ExternalStatusCheckStatus} instance.
+     */
+    public ExternalStatusCheckStatus() {
+        // No initialization required.
+    }
 
     /**
      * The status enum.

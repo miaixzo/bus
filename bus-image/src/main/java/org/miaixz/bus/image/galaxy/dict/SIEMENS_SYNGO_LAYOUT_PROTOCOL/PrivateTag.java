@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_LAYOUT_PROTOCOL;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS SYNGO LAYOUT PROTOCOL";
@@ -567,5 +560,12 @@ public class PrivateTag {
      * (0073,xxFF) VR=LO VM=1 VRT Preset
      */
     public static final int VRTPreset = 0x007300FF;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

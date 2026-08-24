@@ -37,17 +37,17 @@ import org.miaixz.bus.logger.Logger;
 public class MethodManager {
 
     /**
+     * A static map to store method information. The key is the method name (String), and the value is a {@link Pair}
+     * containing the {@link StrategyMode} and the associated {@link Annotation}.
+     */
+    private static final Map<String, Pair<StrategyMode, Annotation>> map = new HashMap<>();
+
+    /**
      * Initializes the manager that records limiter strategy metadata for intercepted methods.
      */
     public MethodManager() {
         // No initialization required.
     }
-
-    /**
-     * A static map to store method information. The key is the method name (String), and the value is a {@link Pair}
-     * containing the {@link StrategyMode} and the associated {@link Annotation}.
-     */
-    private static final Map<String, Pair<StrategyMode, Annotation>> map = new HashMap<>();
 
     /**
      * Adds a method and its associated limiting strategy and annotation to the manager. This method logs the

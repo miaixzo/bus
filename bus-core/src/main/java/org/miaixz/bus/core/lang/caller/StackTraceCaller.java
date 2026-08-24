@@ -39,17 +39,17 @@ public class StackTraceCaller implements Caller, Serializable {
     private static final long serialVersionUID = 2852251293153L;
 
     /**
+     * Retains declaring classes directly so caller resolution does not require loading stack-trace class names.
+     */
+    private static final StackWalker STACK_WALKER = StackWalker
+            .getInstance(Set.of(Option.RETAIN_CLASS_REFERENCE, Option.SHOW_REFLECT_FRAMES));
+
+    /**
      * Constructs a stack-trace-based caller resolver.
      */
     public StackTraceCaller() {
         // No initialization required.
     }
-
-    /**
-     * Retains declaring classes directly so caller resolution does not require loading stack-trace class names.
-     */
-    private static final StackWalker STACK_WALKER = StackWalker
-            .getInstance(Set.of(Option.RETAIN_CLASS_REFERENCE, Option.SHOW_REFLECT_FRAMES));
 
     /**
      * Retrieves the immediate calling class from the current thread's stack trace.

@@ -32,13 +32,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class ProjectApprovalsConfig implements Serializable {
 
     /**
-     * Constructs a new {@code ProjectApprovalsConfig} instance.
-     */
-    public ProjectApprovalsConfig() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -72,6 +65,13 @@ public class ProjectApprovalsConfig implements Serializable {
      * The require password to approve value.
      */
     private Boolean requirePasswordToApprove;
+
+    /**
+     * Constructs a new {@code ProjectApprovalsConfig} instance.
+     */
+    public ProjectApprovalsConfig() {
+        // No initialization required.
+    }
 
     /**
      * Returns the approvals before merge.

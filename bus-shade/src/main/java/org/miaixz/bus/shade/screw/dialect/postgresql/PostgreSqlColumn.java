@@ -35,13 +35,6 @@ import org.miaixz.bus.shade.screw.metadata.Column;
 public class PostgreSqlColumn implements Column {
 
     /**
-     * Constructs a new PostgreSqlColumn instance.
-     */
-    public PostgreSqlColumn() {
-        // No initialization required.
-    }
-
-    /**
      * The table name that is the scope of a REFERENCE attribute (may be {@code null}).
      */
     @MappingField(value = "SCOPE_TABLE")
@@ -204,5 +197,12 @@ public class PostgreSqlColumn implements Column {
      */
     @MappingField(value = "COLUMN_LENGTH")
     private String columnLength;
+
+    /**
+     * Constructs a new PostgreSqlColumn instance.
+     */
+    public PostgreSqlColumn() {
+        // No initialization required.
+    }
 
 }

@@ -37,13 +37,6 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  */
 public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], byte[]>, Serializable {
 
-    /**
-     * Creates the shared Base62 codec provider.
-     */
-    public Base62Provider() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852259077806L;
 
@@ -51,6 +44,13 @@ public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], 
      * Singleton instance of the Base62Provider.
      */
     public static Base62Provider INSTANCE = new Base62Provider();
+
+    /**
+     * Creates the shared Base62 codec provider.
+     */
+    public Base62Provider() {
+        // No initialization required.
+    }
 
     /**
      * Translates a byte array of indices into a byte array of characters from a dictionary.

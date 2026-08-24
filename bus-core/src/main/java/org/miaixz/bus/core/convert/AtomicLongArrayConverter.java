@@ -29,15 +29,15 @@ import java.util.concurrent.atomic.AtomicLongArray;
  */
 public class AtomicLongArrayConverter extends AbstractConverter {
 
+    @Serial
+    private static final long serialVersionUID = 2852265081792L;
+
     /**
      * Creates a new {@code AtomicLongArrayConverter} instance.
      */
     public AtomicLongArrayConverter() {
         // No initialization required.
     }
-
-    @Serial
-    private static final long serialVersionUID = 2852265081792L;
 
     /**
      * Internally converts the given value to an {@link AtomicLongArray}.

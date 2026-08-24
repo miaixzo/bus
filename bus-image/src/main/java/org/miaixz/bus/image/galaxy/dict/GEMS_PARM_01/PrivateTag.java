@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_PARM_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_PARM_01";
@@ -672,5 +665,12 @@ public class PrivateTag {
      * (0043,xx9A) VR=IS VM=1 Rx Stack Identification
      */
     public static final int RxStackIdentification = 0x0043009A;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

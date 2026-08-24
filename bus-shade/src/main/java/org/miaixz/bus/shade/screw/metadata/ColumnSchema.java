@@ -33,13 +33,6 @@ import lombok.Setter;
 public class ColumnSchema {
 
     /**
-     * Constructs a new ColumnSchema instance.
-     */
-    public ColumnSchema() {
-        // No initialization required.
-    }
-
-    /**
      * The 1-based index of the column within the table.
      */
     private String ordinalPosition;
@@ -93,5 +86,12 @@ public class ColumnSchema {
      * The comment or description of the column.
      */
     private String remarks;
+
+    /**
+     * Constructs a new ColumnSchema instance.
+     */
+    public ColumnSchema() {
+        // No initialization required.
+    }
 
 }

@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ReleaseEvent extends AbstractEvent {
 
     /**
-     * Constructs a new {@code ReleaseEvent} instance.
-     */
-    public ReleaseEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -97,6 +90,13 @@ public class ReleaseEvent extends AbstractEvent {
      * The commit value.
      */
     private EventCommit commit;
+
+    /**
+     * Constructs a new {@code ReleaseEvent} instance.
+     */
+    public ReleaseEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the object kind.

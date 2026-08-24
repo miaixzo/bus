@@ -33,13 +33,6 @@ import org.miaixz.bus.image.Device;
 public class DeviceService implements DeviceServiceInterface {
 
     /**
-     * Constructs a new DeviceService instance.
-     */
-    public DeviceService() {
-        // No initialization required.
-    }
-
-    /**
      * The device value.
      */
     protected Device device;
@@ -53,6 +46,13 @@ public class DeviceService implements DeviceServiceInterface {
      * The scheduled executor value.
      */
     protected ScheduledExecutorService scheduledExecutor;
+
+    /**
+     * Constructs a new DeviceService instance.
+     */
+    public DeviceService() {
+        // No initialization required.
+    }
 
     /**
      * Executes the init operation.

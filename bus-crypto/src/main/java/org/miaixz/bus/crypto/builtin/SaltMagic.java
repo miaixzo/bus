@@ -39,13 +39,6 @@ import org.miaixz.bus.logger.Logger;
 public class SaltMagic {
 
     /**
-     * Constructs a new SaltMagic instance.
-     */
-    public SaltMagic() {
-        // No initialization required.
-    }
-
-    /**
      * The length of the salt value in bytes.
      */
     public static final byte SALT_LEN = 8;
@@ -59,6 +52,13 @@ public class SaltMagic {
      * The combined length of the magic bytes and the salt, which is 16 bytes (128 bits).
      */
     public static final int MAGIC_SALT_LENGTH = SALTED_MAGIC.length + SALT_LEN;
+
+    /**
+     * Constructs a new SaltMagic instance.
+     */
+    public SaltMagic() {
+        // No initialization required.
+    }
 
     /**
      * Retrieves the actual encrypted data by removing the leading salt header, if present. If the data does not start

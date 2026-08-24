@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.mitra_object_document_1_0;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "MITRA OBJECT DOCUMENT 1.0";
@@ -47,5 +40,12 @@ public class PrivateTag {
      * (0029,xx01) VR=OB VM=1 IMPAX Markup XML Stored
      */
     public static final int IMPAXMarkupXMLStored = 0x00290001;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

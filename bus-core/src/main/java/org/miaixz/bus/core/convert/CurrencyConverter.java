@@ -29,15 +29,15 @@ import java.util.Currency;
  */
 public class CurrencyConverter extends AbstractConverter {
 
+    @Serial
+    private static final long serialVersionUID = 2852267872622L;
+
     /**
      * Creates a new {@code CurrencyConverter} instance.
      */
     public CurrencyConverter() {
         // No initialization required.
     }
-
-    @Serial
-    private static final long serialVersionUID = 2852267872622L;
 
     /**
      * Converts the given value to a Currency.

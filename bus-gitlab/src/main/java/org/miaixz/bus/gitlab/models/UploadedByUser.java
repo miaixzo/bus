@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class UploadedByUser implements Serializable {
 
     /**
-     * Constructs a new {@code UploadedByUser} instance.
-     */
-    public UploadedByUser() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -56,6 +49,13 @@ public class UploadedByUser implements Serializable {
      * The name value.
      */
     private String name;
+
+    /**
+     * Constructs a new {@code UploadedByUser} instance.
+     */
+    public UploadedByUser() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

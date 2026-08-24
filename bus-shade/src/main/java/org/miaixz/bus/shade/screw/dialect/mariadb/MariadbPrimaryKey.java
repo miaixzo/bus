@@ -35,13 +35,6 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 public class MariadbPrimaryKey implements PrimaryKey {
 
     /**
-     * Constructs a new MariadbPrimaryKey instance.
-     */
-    public MariadbPrimaryKey() {
-        // No initialization required.
-    }
-
-    /**
      * Table catalog.
      */
     @MappingField(value = "TABLE_CAT")
@@ -76,5 +69,12 @@ public class MariadbPrimaryKey implements PrimaryKey {
      */
     @MappingField(value = "KEY_SEQ")
     private String keySeq;
+
+    /**
+     * Constructs a new MariadbPrimaryKey instance.
+     */
+    public MariadbPrimaryKey() {
+        // No initialization required.
+    }
 
 }

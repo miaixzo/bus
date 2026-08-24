@@ -43,13 +43,6 @@ import org.miaixz.bus.core.lang.tuple.Triplet;
 public class CollectorKit {
 
     /**
-     * Keeps stream collector construction on the static API.
-     */
-    public CollectorKit() {
-        // No initialization required.
-    }
-
-    /**
      * Collector characteristics indicating IDENTITY_FINISH.
      */
     public static final Set<Collector.Characteristics> CH_ID = Collections
@@ -59,6 +52,13 @@ public class CollectorKit {
      * Collector characteristics indicating no IDENTITY_FINISH.
      */
     public static final Set<Collector.Characteristics> CH_NOID = Collections.emptySet();
+
+    /**
+     * Keeps stream collector construction on the static API.
+     */
+    public CollectorKit() {
+        // No initialization required.
+    }
 
     /**
      * Provides a {@link Collector} that joins any object by calling its {@code toString()} method.

@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ProjectTemplate implements Serializable {
 
     /**
-     * Constructs a new {@code ProjectTemplate} instance.
-     */
-    public ProjectTemplate() {
-        // No initialization required.
-    }
-
-    /**
      * Serialization version identifier.
      */
     @Serial
@@ -53,6 +46,13 @@ public class ProjectTemplate implements Serializable {
      * Human-readable template name.
      */
     private String name;
+
+    /**
+     * Constructs a new {@code ProjectTemplate} instance.
+     */
+    public ProjectTemplate() {
+        // No initialization required.
+    }
 
     /**
      * Gets the unique template key.

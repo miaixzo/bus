@@ -32,18 +32,18 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class CharacterConverter extends AbstractConverter {
 
     /**
-     * Creates a new {@code CharacterConverter} instance.
-     */
-    public CharacterConverter() {
-        // No initialization required.
-    }
-
-    /**
      * Singleton instance.
      */
     public static final CharacterConverter INSTANCE = new CharacterConverter();
     @Serial
     private static final long serialVersionUID = 2852266250201L;
+
+    /**
+     * Creates a new {@code CharacterConverter} instance.
+     */
+    public CharacterConverter() {
+        // No initialization required.
+    }
 
     /**
      * Internally converts the given value to a {@link Character}.

@@ -45,13 +45,6 @@ import org.miaixz.bus.health.builtin.software.common.AbstractInternetProtocolSta
 public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats {
 
     /**
-     * Creates a new WindowsInternetProtocolStats instance.
-     */
-    public WindowsInternetProtocolStats() {
-        // No initialization required.
-    }
-
-    /**
      * The IPHLP constant.
      */
     private static final IPHlpAPI IPHLP = IPHlpAPI.INSTANCE;
@@ -60,6 +53,13 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
      * The IS_VISTA_OR_GREATER constant.
      */
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
+
+    /**
+     * Creates a new WindowsInternetProtocolStats instance.
+     */
+    public WindowsInternetProtocolStats() {
+        // No initialization required.
+    }
 
     /**
      * Queries the tc pv4 connections.

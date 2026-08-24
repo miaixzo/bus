@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.Applicare_RadWorks_Version_6_0;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "Applicare/RadWorks/Version 6.0";
@@ -132,5 +125,12 @@ public class PrivateTag {
      * (4107,xx01) VR=SQ VM=1 Requested Palette Color LUT
      */
     public static final int RequestedPaletteColorLUT = 0x41070001;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

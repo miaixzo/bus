@@ -33,13 +33,6 @@ import org.miaixz.bus.image.metric.Connection;
 public class ApplicationEntityInfo implements Serializable {
 
     /**
-     * Constructs a new ApplicationEntityInfo instance.
-     */
-    public ApplicationEntityInfo() {
-        // No initialization required.
-    }
-
-    /**
      * The conns value.
      */
     private final List<Connection> conns = new ArrayList<>(1);
@@ -88,6 +81,13 @@ public class ApplicationEntityInfo implements Serializable {
      * The hl7 application name value.
      */
     private String hl7ApplicationName;
+
+    /**
+     * Constructs a new ApplicationEntityInfo instance.
+     */
+    public ApplicationEntityInfo() {
+        // No initialization required.
+    }
 
     /**
      * Gets the installed.

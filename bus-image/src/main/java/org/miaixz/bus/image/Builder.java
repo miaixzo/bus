@@ -70,13 +70,6 @@ import org.miaixz.bus.logger.Logger;
 public class Builder {
 
     /**
-     * Constructs a new Builder instance.
-     */
-    public Builder() {
-        // No initialization required.
-    }
-
-    /**
      * Characters for Base64 encoding.
      */
     private static final char[] BASE64 = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', Symbol.C_L, 'M', 'N',
@@ -98,6 +91,13 @@ public class Builder {
      * The system-dependent line separator string.
      */
     public static String LINE_SEPARATOR = System.getProperty(Keys.LINE_SEPARATOR);
+
+    /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
 
     /**
      * Prepares a file for writing by creating its parent directories if they do not exist.

@@ -39,18 +39,18 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class StringFormatter {
 
     /**
-     * Constructs a new string formatter.
-     */
-    public StringFormatter() {
-        // No initialization required.
-    }
-
-    /**
      * Cache for compiled {@link StringTemplate} instances. The cache uses a weak-concurrent map to store templates,
      * preventing memory leaks when templates are no longer referenced. The key is a combination of the template pattern
      * and the placeholder (for single placeholder templates) or a flag for named placeholders.
      */
     private static final WeakConcurrentMap<Map.Entry<CharSequence, Object>, StringTemplate> CACHE = new WeakConcurrentMap<>();
+
+    /**
+     * Constructs a new string formatter.
+     */
+    public StringFormatter() {
+        // No initialization required.
+    }
 
     /**
      * Formats a string by replacing placeholders `{}` with provided arguments in order. To output `{}` literally,

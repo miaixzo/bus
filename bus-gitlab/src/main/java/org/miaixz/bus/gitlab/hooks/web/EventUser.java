@@ -29,13 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class EventUser {
 
     /**
-     * Constructs a new {@code EventUser} instance.
-     */
-    public EventUser() {
-        // No initialization required.
-    }
-
-    /**
      * The id value.
      */
     private Long id;
@@ -55,6 +48,13 @@ public class EventUser {
      * The email value.
      */
     private String email;
+
+    /**
+     * Constructs a new {@code EventUser} instance.
+     */
+    public EventUser() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

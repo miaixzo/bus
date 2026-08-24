@@ -41,13 +41,6 @@ import org.miaixz.bus.cortex.Type;
 public class App extends Setting {
 
     /**
-     * Creates an empty application directory entry.
-     */
-    public App() {
-        setType(Type.APP.key());
-    }
-
-    /**
      * Legacy application code kept only for compatibility and display. {@code id} remains the authoritative identifier.
      */
     private String code;
@@ -62,5 +55,12 @@ public class App extends Setting {
      */
     @Transient
     private List<String> profile_ids;
+
+    /**
+     * Creates an empty application directory entry.
+     */
+    public App() {
+        setType(Type.APP.key());
+    }
 
 }

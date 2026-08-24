@@ -45,13 +45,6 @@ public class Holder implements org.miaixz.bus.core.Holder {
     private static final String BOUNCY_CASTLE_PROVIDER_NAME = "BC";
 
     /**
-     * Constructs a new Holder instance.
-     */
-    public Holder() {
-        // No initialization required.
-    }
-
-    /**
      * The globally held {@link java.security.Provider} instance, initialized via SPI. If no custom provider is found or
      * configured, this might be {@code null}.
      */
@@ -61,6 +54,13 @@ public class Holder implements org.miaixz.bus.core.Holder {
      * Flag indicating whether to use the custom {@link java.security.Provider}. Defaults to {@code true}.
      */
     private static boolean useCustomProvider = true;
+
+    /**
+     * Constructs a new Holder instance.
+     */
+    public Holder() {
+        // No initialization required.
+    }
 
     /**
      * Retrieves the {@link java.security.Provider} instance.

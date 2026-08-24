@@ -58,13 +58,6 @@ import org.miaixz.bus.core.xyz.*;
 public class ImageKit {
 
     /**
-     * Constructs a new ImageKit instance.
-     */
-    public ImageKit() {
-        // No initialization required.
-    }
-
-    /**
      * Graphics Interchange Format: GIF.
      */
     public static final String IMAGE_TYPE_GIF = "gif";
@@ -93,6 +86,13 @@ public class ImageKit {
      * Photoshop's proprietary format: PSD.
      */
     public static final String IMAGE_TYPE_PSD = "psd";
+
+    /**
+     * Constructs a new ImageKit instance.
+     */
+    public ImageKit() {
+        // No initialization required.
+    }
 
     /**
      * Scales an image by a given ratio. The target file type is determined by the extension of the destination file.

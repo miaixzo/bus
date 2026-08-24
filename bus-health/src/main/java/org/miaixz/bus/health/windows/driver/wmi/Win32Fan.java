@@ -36,16 +36,16 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public class Win32Fan {
 
     /**
+     * The WMI class name.
+     */
+    public static final String WIN32_FAN = "Win32_Fan";
+
+    /**
      * Keeps Win32 fan queries on the static API.
      */
     public Win32Fan() {
         // No initialization required.
     }
-
-    /**
-     * The WMI class name.
-     */
-    public static final String WIN32_FAN = "Win32_Fan";
 
     /**
      * Queries the fan speed.

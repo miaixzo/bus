@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class Reverse extends Voucher {
 
     /**
-     * Constructs a new {@code Reverse} instance.
-     */
-    public Reverse() {
-        // No initialization required.
-    }
-
-    /**
      * Sub-merchant App ID.
      */
     private String sub_appid;
@@ -81,5 +74,12 @@ public class Reverse extends Voucher {
      * Signature type.
      */
     private String sign_type;
+
+    /**
+     * Constructs a new {@code Reverse} instance.
+     */
+    public Reverse() {
+        // No initialization required.
+    }
 
 }

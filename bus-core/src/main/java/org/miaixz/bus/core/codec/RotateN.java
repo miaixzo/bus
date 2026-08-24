@@ -32,13 +32,6 @@ import org.miaixz.bus.core.lang.Symbol;
 public class RotateN {
 
     /**
-     * Constructs a new RotN codec.
-     */
-    public RotateN() {
-        // No initialization required.
-    }
-
-    /**
      * Represents the character 'a', used as a reference for lowercase letters.
      */
     private static final char aCHAR = 'a';
@@ -67,6 +60,13 @@ public class RotateN {
      * Represents the character '9', used as a reference for digits.
      */
     private static final char CHAR9 = Symbol.C_NINE;
+
+    /**
+     * Constructs a new RotN codec.
+     */
+    public RotateN() {
+        // No initialization required.
+    }
 
     /**
      * Encodes the given message using the RotateN-13 cipher, including digits. This is a specific case of the

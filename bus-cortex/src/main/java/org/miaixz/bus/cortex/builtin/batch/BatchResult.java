@@ -37,13 +37,6 @@ import org.miaixz.bus.cortex.Type;
 public class BatchResult {
 
     /**
-     * Creates an empty batch result aggregate.
-     */
-    public BatchResult() {
-        // No initialization required.
-    }
-
-    /**
      * Total number of processed entries.
      */
     private int total;
@@ -92,6 +85,13 @@ public class BatchResult {
      * Error items for failed entries.
      */
     private List<Failure> errors = new ArrayList<>();
+
+    /**
+     * Creates an empty batch result aggregate.
+     */
+    public BatchResult() {
+        // No initialization required.
+    }
 
     /**
      * Records one inserted entry.
@@ -177,13 +177,6 @@ public class BatchResult {
     public static class Failure {
 
         /**
-         * Creates an empty failure descriptor.
-         */
-        public Failure() {
-            // No initialization required.
-        }
-
-        /**
          * Target registry type.
          */
         private Type type;
@@ -212,6 +205,13 @@ public class BatchResult {
          * Failure message.
          */
         private String errorMessage;
+
+        /**
+         * Creates an empty failure descriptor.
+         */
+        public Failure() {
+            // No initialization required.
+        }
 
         /**
          * Creates one failure item.

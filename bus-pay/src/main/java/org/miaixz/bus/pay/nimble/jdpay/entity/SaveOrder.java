@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class SaveOrder extends Voucher {
 
     /**
-     * Constructs a new {@code SaveOrder} instance.
-     */
-    public SaveOrder() {
-        // No initialization required.
-    }
-
-    /**
      * Version number.
      */
     private String version;
@@ -206,5 +199,12 @@ public class SaveOrder extends Voucher {
      * Business type.
      */
     private String bizTp;
+
+    /**
+     * Constructs a new {@code SaveOrder} instance.
+     */
+    public SaveOrder() {
+        // No initialization required.
+    }
 
 }

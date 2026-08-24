@@ -29,13 +29,6 @@ import java.io.Serializable;
  */
 public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializable {
 
-    /**
-     * Constructs a new CsvReadConfig instance.
-     */
-    public CsvReadConfig() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852283116503L;
 
@@ -69,6 +62,13 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
      * Whether to trim whitespace from each field.
      */
     protected boolean trimField;
+
+    /**
+     * Constructs a new CsvReadConfig instance.
+     */
+    public CsvReadConfig() {
+        // No initialization required.
+    }
 
     /**
      * Creates a new default {@code CsvReadConfig} instance.

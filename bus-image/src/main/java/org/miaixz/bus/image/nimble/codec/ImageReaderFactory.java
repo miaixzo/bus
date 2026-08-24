@@ -46,13 +46,6 @@ import org.miaixz.bus.logger.Logger;
 public class ImageReaderFactory implements Serializable {
 
     /**
-     * Constructs a new ImageReaderFactory instance.
-     */
-    public ImageReaderFactory() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -67,6 +60,13 @@ public class ImageReaderFactory implements Serializable {
      * The map value.
      */
     private final TreeMap<String, ImageReaderParam> map = new TreeMap<>();
+
+    /**
+     * Constructs a new ImageReaderFactory instance.
+     */
+    public ImageReaderFactory() {
+        // No initialization required.
+    }
 
     /**
      * Executes the nullify operation.

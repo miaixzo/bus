@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class EpicIssueLink implements Serializable {
 
     /**
-     * Constructs a new {@code EpicIssueLink} instance.
-     */
-    public EpicIssueLink() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -60,6 +53,13 @@ public class EpicIssueLink implements Serializable {
      * The issue value.
      */
     private Issue issue;
+
+    /**
+     * Constructs a new {@code EpicIssueLink} instance.
+     */
+    public EpicIssueLink() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

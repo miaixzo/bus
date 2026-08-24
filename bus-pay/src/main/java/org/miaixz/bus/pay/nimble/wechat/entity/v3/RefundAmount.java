@@ -34,13 +34,6 @@ import lombok.experimental.SuperBuilder;
 public class RefundAmount {
 
     /**
-     * Constructs a new {@code RefundAmount} instance.
-     */
-    public RefundAmount() {
-        // No initialization required.
-    }
-
-    /**
      * Total amount.
      */
     private int total;
@@ -54,5 +47,12 @@ public class RefundAmount {
      * Refund amount.
      */
     private int refund;
+
+    /**
+     * Constructs a new {@code RefundAmount} instance.
+     */
+    public RefundAmount() {
+        // No initialization required.
+    }
 
 }

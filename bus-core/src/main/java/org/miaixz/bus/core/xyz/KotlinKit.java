@@ -38,13 +38,6 @@ import org.miaixz.bus.core.lang.reflect.kotlin.KParameter;
 public class KotlinKit {
 
     /**
-     * Constructs a new KotlinKit instance.
-     */
-    public KotlinKit() {
-        // No initialization required.
-    }
-
-    /**
      * The Kotlin Metadata annotation class.
      */
     private static final Class<? extends Annotation> META_DATA_CLASS = (Class<? extends Annotation>) Optional
@@ -54,6 +47,13 @@ public class KotlinKit {
      * Whether the Kotlin environment is provided or enabled.
      */
     public static final boolean IS_KOTLIN_ENABLE = null != META_DATA_CLASS;
+
+    /**
+     * Constructs a new KotlinKit instance.
+     */
+    public KotlinKit() {
+        // No initialization required.
+    }
 
     /**
      * Checks if the given class is a Kotlin class. Kotlin classes are annotated with @kotlin.Metadata.

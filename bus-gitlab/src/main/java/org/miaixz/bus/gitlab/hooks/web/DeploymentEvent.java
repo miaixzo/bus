@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class DeploymentEvent extends AbstractEvent {
 
     /**
-     * Constructs a new {@code DeploymentEvent} instance.
-     */
-    public DeploymentEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -101,6 +94,13 @@ public class DeploymentEvent extends AbstractEvent {
      * The commit title value.
      */
     private String commitTitle;
+
+    /**
+     * Constructs a new {@code DeploymentEvent} instance.
+     */
+    public DeploymentEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the object kind.

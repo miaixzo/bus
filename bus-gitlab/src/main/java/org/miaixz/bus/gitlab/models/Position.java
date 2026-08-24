@@ -36,13 +36,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class Position implements Serializable {
 
     /**
-     * Constructs a new {@code Position} instance.
-     */
-    public Position() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -160,6 +153,13 @@ public class Position implements Serializable {
      * The y value.
      */
     private Double y;
+
+    /**
+     * Constructs a new {@code Position} instance.
+     */
+    public Position() {
+        // No initialization required.
+    }
 
     /**
      * Returns the base sha.

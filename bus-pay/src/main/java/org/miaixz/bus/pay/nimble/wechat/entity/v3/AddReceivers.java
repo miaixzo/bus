@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class AddReceivers extends Voucher {
 
     /**
-     * Constructs a new {@code AddReceivers} instance.
-     */
-    public AddReceivers() {
-        // No initialization required.
-    }
-
-    /**
      * Sub-merchant ID assigned by WeChat Pay, which is the contributing merchant for profit sharing. (Not required for
      * direct merchants, but required for service providers).
      */
@@ -88,5 +81,12 @@ public class AddReceivers extends Voucher {
      * relation_type is CUSTOM and should be at most 10 characters.
      */
     private String custom_relation;
+
+    /**
+     * Constructs a new {@code AddReceivers} instance.
+     */
+    public AddReceivers() {
+        // No initialization required.
+    }
 
 }

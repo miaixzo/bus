@@ -32,13 +32,6 @@ import lombok.Setter;
 public class TokenCredential {
 
     /**
-     * Creates an empty parsed token credential.
-     */
-    public TokenCredential() {
-        // No initialization required.
-    }
-
-    /**
      * Raw token value after trimming and optional bearer-prefix removal.
      */
     private String value;
@@ -57,5 +50,12 @@ public class TokenCredential {
      * Whether the original carrier used a bearer-style format.
      */
     private boolean bearer;
+
+    /**
+     * Creates an empty parsed token credential.
+     */
+    public TokenCredential() {
+        // No initialization required.
+    }
 
 }

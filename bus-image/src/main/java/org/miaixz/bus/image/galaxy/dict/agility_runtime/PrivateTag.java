@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.agility_runtime;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "AgilityRuntime";
@@ -77,5 +70,12 @@ public class PrivateTag {
      * (0029,xx1F) VR=US VM=1 ?
      */
     public static final int _0029_xx1F_ = 0x0029001F;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

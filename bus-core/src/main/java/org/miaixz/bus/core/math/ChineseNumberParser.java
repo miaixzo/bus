@@ -37,13 +37,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ChineseNumberParser {
 
     /**
-     * Keeps Chinese-number parsing on the static API.
-     */
-    public ChineseNumberParser() {
-        // No initialization required.
-    }
-
-    /**
      * Mapping of Chinese characters to their numeric values and unit properties.
      */
     private static final ChineseUnit[] CHINESE_NAME_VALUE = { new ChineseUnit(Symbol.C_SPACE, 1, false),
@@ -53,6 +46,13 @@ public class ChineseNumberParser {
             new ChineseUnit(Symbol.C_U_ONE_THOUSAND, 1000, false),
             new ChineseUnit(Symbol.C_L_TEN_THOUSAND, 1_0000, true),
             new ChineseUnit(Symbol.C_L_ONE_HUNDRED_MILLION, 1_0000_0000, true), };
+
+    /**
+     * Keeps Chinese-number parsing on the static API.
+     */
+    public ChineseNumberParser() {
+        // No initialization required.
+    }
 
     /**
      * Converts a Chinese numeral string to a BigDecimal. For example, "二百二十" becomes 220.

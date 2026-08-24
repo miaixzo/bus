@@ -54,13 +54,6 @@ import org.miaixz.bus.logger.Logger;
 public class Dcm2Dcm {
 
     /**
-     * Constructs a new Dcm2Dcm instance.
-     */
-    public Dcm2Dcm() {
-        // No initialization required.
-    }
-
-    /**
      * List of compression parameters.
      */
     private final List<Property> params = new ArrayList<>();
@@ -99,6 +92,13 @@ public class Dcm2Dcm {
      * The maximum number of threads to use for transcoding.
      */
     private int maxThreads = 1;
+
+    /**
+     * Constructs a new Dcm2Dcm instance.
+     */
+    public Dcm2Dcm() {
+        // No initialization required.
+    }
 
     /**
      * Converts a string to a more specific type (Double, Boolean, or String).

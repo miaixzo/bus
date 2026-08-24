@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class QueryOrder extends Voucher {
 
     /**
-     * Constructs a new {@code QueryOrder} instance.
-     */
-    public QueryOrder() {
-        // No initialization required.
-    }
-
-    /**
      * Version number.
      */
     private String version;
@@ -71,5 +64,12 @@ public class QueryOrder extends Voucher {
      * Signature.
      */
     private String sign;
+
+    /**
+     * Constructs a new {@code QueryOrder} instance.
+     */
+    public QueryOrder() {
+        // No initialization required.
+    }
 
 }

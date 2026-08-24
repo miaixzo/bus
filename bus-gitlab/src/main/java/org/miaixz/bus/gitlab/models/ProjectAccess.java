@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ProjectAccess implements Serializable {
 
     /**
-     * Constructs a new {@code ProjectAccess} instance.
-     */
-    public ProjectAccess() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -52,6 +45,13 @@ public class ProjectAccess implements Serializable {
      * The notification level value.
      */
     private int notificationLevel;
+
+    /**
+     * Constructs a new {@code ProjectAccess} instance.
+     */
+    public ProjectAccess() {
+        // No initialization required.
+    }
 
     /**
      * Returns the access level.

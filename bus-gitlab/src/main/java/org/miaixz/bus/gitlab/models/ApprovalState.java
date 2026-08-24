@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ApprovalState implements Serializable {
 
     /**
-     * Constructs a new {@code ApprovalState} instance.
-     */
-    public ApprovalState() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -53,6 +46,13 @@ public class ApprovalState implements Serializable {
      * The rules value.
      */
     private List<ApprovalRule> rules;
+
+    /**
+     * Constructs a new {@code ApprovalState} instance.
+     */
+    public ApprovalState() {
+        // No initialization required.
+    }
 
     /**
      * Returns the approval rules overwritten.

@@ -46,13 +46,6 @@ import org.miaixz.bus.core.codec.binary.encoder.Base32Encoder;
  */
 public class Base32Provider implements Encoder<byte[], String>, Decoder<CharSequence, byte[]>, Serializable {
 
-    /**
-     * Creates the shared Base32 codec provider.
-     */
-    public Base32Provider() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852258698190L;
 
@@ -60,6 +53,13 @@ public class Base32Provider implements Encoder<byte[], String>, Decoder<CharSequ
      * Singleton instance of the Base32Provider.
      */
     public static Base32Provider INSTANCE = new Base32Provider();
+
+    /**
+     * Creates the shared Base32 codec provider.
+     */
+    public Base32Provider() {
+        // No initialization required.
+    }
 
     /**
      * Encodes a byte array into a Base32 string using the default alphabet.

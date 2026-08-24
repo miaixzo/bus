@@ -43,16 +43,16 @@ import org.miaixz.bus.core.lang.selector.WeightRandomSelector;
 public class RandomKit {
 
     /**
+     * A string of characters and numbers (uppercase and lowercase) for random selection.
+     */
+    public static final String BASE_CHAR_NUMBER = Normal.ALPHABET.toUpperCase() + Normal.LOWER_ALPHABET_NUMBER;
+
+    /**
      * Constructs a new RandomKit instance.
      */
     public RandomKit() {
         // No initialization required.
     }
-
-    /**
-     * A string of characters and numbers (uppercase and lowercase) for random selection.
-     */
-    public static final String BASE_CHAR_NUMBER = Normal.ALPHABET.toUpperCase() + Normal.LOWER_ALPHABET_NUMBER;
 
     /**
      * Gets a `ThreadLocalRandom` instance. This is the preferred method for generating random numbers in a concurrent

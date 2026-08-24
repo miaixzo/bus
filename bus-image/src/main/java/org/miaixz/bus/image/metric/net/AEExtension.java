@@ -30,13 +30,6 @@ import java.io.Serializable;
 public class AEExtension implements Serializable {
 
     /**
-     * Constructs a new AEExtension instance.
-     */
-    public AEExtension() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -46,6 +39,13 @@ public class AEExtension implements Serializable {
      * The ae value.
      */
     protected ApplicationEntity ae;
+
+    /**
+     * Constructs a new AEExtension instance.
+     */
+    public AEExtension() {
+        // No initialization required.
+    }
 
     /**
      * Gets the application entity.

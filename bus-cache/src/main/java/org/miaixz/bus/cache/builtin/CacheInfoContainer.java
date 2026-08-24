@@ -52,16 +52,16 @@ import org.miaixz.bus.logger.Logger;
 public class CacheInfoContainer {
 
     /**
+     * An internal cache mapping a {@link Method} to its parsed caching information.
+     */
+    private static final ConcurrentMap<Method, CachePair<AnnoHolder, MethodHolder>> cacheMap = new ConcurrentHashMap<>();
+
+    /**
      * Constructs a new CacheInfoContainer instance.
      */
     public CacheInfoContainer() {
         // No initialization required.
     }
-
-    /**
-     * An internal cache mapping a {@link Method} to its parsed caching information.
-     */
-    private static final ConcurrentMap<Method, CachePair<AnnoHolder, MethodHolder>> cacheMap = new ConcurrentHashMap<>();
 
     /**
      * Retrieves the combined cache information for a given method.

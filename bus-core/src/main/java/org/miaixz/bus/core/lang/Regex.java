@@ -29,13 +29,6 @@ import java.util.regex.Pattern;
 public class Regex {
 
     /**
-     * Constructs a new regular expression constants holder.
-     */
-    public Regex() {
-        // No initialization required.
-    }
-
-    /**
      * Matches English letters, numbers, and underscores.
      */
     public static final String GENERAL = "^\\w+$";
@@ -280,5 +273,12 @@ public class Regex {
      * 12-digit hexadecimal.
      */
     public static String MAC_ADDRESS = "((?:[a-fA-F0-9]{1,2}[:-]){5}[a-fA-F0-9]{1,2})|((?:[a-fA-F0-9]{1,4}[.]){2}[a-fA-F0-9]{1,4})|[a-fA-F0-9]{12}|0x(\\d{12}).+ETHER";
+
+    /**
+     * Constructs a new regular expression constants holder.
+     */
+    public Regex() {
+        // No initialization required.
+    }
 
 }

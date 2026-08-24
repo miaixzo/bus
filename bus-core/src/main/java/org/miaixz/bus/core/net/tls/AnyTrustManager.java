@@ -43,13 +43,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class AnyTrustManager extends X509ExtendedTrustManager {
 
     /**
-     * Creates the shared trust manager that accepts every certificate.
-     */
-    public AnyTrustManager() {
-        // No initialization required.
-    }
-
-    /**
      * A global singleton trust manager that trusts all client and server certificates.
      */
     public static final AnyTrustManager INSTANCE = new AnyTrustManager();
@@ -63,6 +56,13 @@ public class AnyTrustManager extends X509ExtendedTrustManager {
      * An empty array of {@link X509Certificate}s.
      */
     private static final X509Certificate[] EMPTY_X509_CERTIFICATE_ARRAY = {};
+
+    /**
+     * Creates the shared trust manager that accepts every certificate.
+     */
+    public AnyTrustManager() {
+        // No initialization required.
+    }
 
     /**
      * Gets the default {@link X509TrustManager} (SunX509). This method is mainly used to get the

@@ -37,16 +37,16 @@ import org.miaixz.bus.core.xyz.*;
 public class DefaultNodeBeanFactory implements NodeBeanFactory<Object> {
 
     /**
+     * The singleton instance of {@code DefaultNodeBeanFactory}.
+     */
+    public static final DefaultNodeBeanFactory INSTANCE = new DefaultNodeBeanFactory();
+
+    /**
      * Creates the default factory used to materialize bean-path nodes.
      */
     public DefaultNodeBeanFactory() {
         // No initialization required.
     }
-
-    /**
-     * The singleton instance of {@code DefaultNodeBeanFactory}.
-     */
-    public static final DefaultNodeBeanFactory INSTANCE = new DefaultNodeBeanFactory();
 
     /**
      * Retrieves values from a Bean, Collection, or Array based on a list of names or indices. If it's a list of names,

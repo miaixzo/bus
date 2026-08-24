@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.Applicare_RadStore_Version_1_0;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "Applicare/RadStore/Version 1.0";
@@ -237,5 +230,12 @@ public class PrivateTag {
      * (3113,xx69) VR=AT VM=1-n Deleted Tags
      */
     public static final int DeletedTags = 0x31130069;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

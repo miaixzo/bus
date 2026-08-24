@@ -42,13 +42,6 @@ import org.miaixz.bus.core.xyz.FieldKit;
 @SuperBuilder
 public class Entity implements Serializable {
 
-    /**
-     * Constructs a new {@code Entity} instance.
-     */
-    public Entity() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852290719680L;
 
@@ -58,6 +51,13 @@ public class Entity implements Serializable {
     @Id
     @Column(length = 24, nullable = false)
     protected String id;
+
+    /**
+     * Constructs a new {@code Entity} instance.
+     */
+    public Entity() {
+        // No initialization required.
+    }
 
     /**
      * Checks if the primary key value is not null or empty based on the specified field name.

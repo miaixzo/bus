@@ -55,13 +55,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public abstract class BasicProvider {
 
     /**
-     * Constructs a new BasicProvider instance.
-     */
-    public BasicProvider() {
-        // No initialization required.
-    }
-
-    /**
      * MyBatis dynamic {@code <set>} template that renders assignments from {@code condition.setValues}.
      */
     protected static final String CONDITION_SET_VALUES = "<set>"
@@ -123,6 +116,13 @@ public abstract class BasicProvider {
             + "                    </foreach>\n" + "                  </trim>\n" + "                </if>\n"
             + "              </foreach>\n" + "            </when>\n" + "          </choose>\n" + "        </foreach>\n"
             + "      </trim>\n" + "    </if>\n" + "  </foreach>\n" + "</where>\n";
+
+    /**
+     * Constructs a new BasicProvider instance.
+     */
+    public BasicProvider() {
+        // No initialization required.
+    }
 
     /**
      * Template method for caching SQL scripts.

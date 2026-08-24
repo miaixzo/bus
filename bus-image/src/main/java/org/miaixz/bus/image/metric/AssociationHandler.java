@@ -36,17 +36,17 @@ import org.miaixz.bus.image.metric.pdu.*;
 public class AssociationHandler {
 
     /**
+     * The user id negotiator value.
+     */
+    private IdentityNegotiator userIdNegotiator = new IdentityNegotiator() {
+    };
+
+    /**
      * Constructs a new AssociationHandler instance.
      */
     public AssociationHandler() {
         // No initialization required.
     }
-
-    /**
-     * The user id negotiator value.
-     */
-    private IdentityNegotiator userIdNegotiator = new IdentityNegotiator() {
-    };
 
     /**
      * Gets the user id negotiator.

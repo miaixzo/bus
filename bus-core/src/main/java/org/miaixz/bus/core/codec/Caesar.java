@@ -32,17 +32,17 @@ import org.miaixz.bus.core.lang.Assert;
 public class Caesar {
 
     /**
+     * The alphabet table used for Caesar cipher, containing both lowercase and uppercase English letters. The order is
+     * important for shifting operations.
+     */
+    public static final String TABLE = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
+
+    /**
      * Keeps Caesar-cipher encoding and decoding on the static API.
      */
     public Caesar() {
         // No initialization required.
     }
-
-    /**
-     * The alphabet table used for Caesar cipher, containing both lowercase and uppercase English letters. The order is
-     * important for shifting operations.
-     */
-    public static final String TABLE = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
 
     /**
      * Encodes the given message using the Caesar cipher with a specified offset. Only letter characters are shifted;

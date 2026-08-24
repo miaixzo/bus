@@ -34,13 +34,6 @@ import org.miaixz.bus.cortex.Type;
 public class RegistryRefreshScope {
 
     /**
-     * Creates an empty registry refresh scope.
-     */
-    public RegistryRefreshScope() {
-        // No initialization required.
-    }
-
-    /**
      * Registry space identifier.
      */
     private String space_id;
@@ -69,5 +62,12 @@ public class RegistryRefreshScope {
      * Whether disabled entries should be included.
      */
     private boolean includeDisabled;
+
+    /**
+     * Creates an empty registry refresh scope.
+     */
+    public RegistryRefreshScope() {
+        // No initialization required.
+    }
 
 }

@@ -36,16 +36,16 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public class Win32VideoController {
 
     /**
+     * The WMI class name.
+     */
+    public static final String WIN32_VIDEO_CONTROLLER = "Win32_VideoController";
+
+    /**
      * Keeps Win32 video controller queries on the static API.
      */
     public Win32VideoController() {
         // No initialization required.
     }
-
-    /**
-     * The WMI class name.
-     */
-    public static final String WIN32_VIDEO_CONTROLLER = "Win32_VideoController";
 
     /**
      * Queries video controller info for Vista and later.

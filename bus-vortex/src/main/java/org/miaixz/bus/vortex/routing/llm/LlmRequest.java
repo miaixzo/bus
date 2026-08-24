@@ -39,13 +39,6 @@ import lombok.experimental.SuperBuilder;
 public class LlmRequest {
 
     /**
-     * Creates an empty LLM request.
-     */
-    public LlmRequest() {
-        // No initialization required.
-    }
-
-    /**
      * The model to use for completion (e.g., "gpt-4", "llama3-70b").
      */
     private String model;
@@ -97,6 +90,13 @@ public class LlmRequest {
     private String user;
 
     /**
+     * Creates an empty LLM request.
+     */
+    public LlmRequest() {
+        // No initialization required.
+    }
+
+    /**
      * Represents a single message in the conversation.
      *
      * @author Kimi Liu
@@ -104,13 +104,6 @@ public class LlmRequest {
     @Getter
     @Setter
     public static class Message {
-
-        /**
-         * Creates an empty LLM request message.
-         */
-        public Message() {
-            // No initialization required.
-        }
 
         /**
          * The role of the message author (system, user, assistant).
@@ -126,6 +119,13 @@ public class LlmRequest {
          * Optional name of the author.
          */
         private String name;
+
+        /**
+         * Creates an empty LLM request message.
+         */
+        public Message() {
+            // No initialization required.
+        }
 
     }
 

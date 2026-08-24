@@ -29,13 +29,6 @@ import java.util.regex.Pattern;
 public class Args {
 
     /**
-     * Initializes the mapper argument resolver that normalizes and normalize statement parameters.
-     */
-    public Args() {
-        // No initialization required.
-    }
-
-    /**
      * Parser pattern used to unwrap common delimiters when comparing mapped columns and properties.
      * <p>
      * This pattern normalizes already-declared mappings; it does not validate identifier syntax or quote legality.
@@ -238,5 +231,12 @@ public class Args {
      * Default name for the base result map.
      */
     public static final String RESULT_MAP_NAME = "SuperResultMap";
+
+    /**
+     * Initializes the mapper argument resolver that normalizes and normalize statement parameters.
+     */
+    public Args() {
+        // No initialization required.
+    }
 
 }

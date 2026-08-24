@@ -40,13 +40,6 @@ import org.miaixz.bus.logger.Logger;
 public class OpenBsdSysctlKit {
 
     /**
-     * Keeps OpenBSD sysctl queries on the static API.
-     */
-    public OpenBsdSysctlKit() {
-        // No initialization required.
-    }
-
-    /**
      * The SYSCTL_N constant.
      */
     private static final String SYSCTL_N = "sysctl -n ";
@@ -55,6 +48,13 @@ public class OpenBsdSysctlKit {
      * The SYSCTL_FAIL constant.
      */
     private static final String SYSCTL_FAIL = "Failed sysctl call: {}, Error code: {}";
+
+    /**
+     * Keeps OpenBSD sysctl queries on the static API.
+     */
+    public OpenBsdSysctlKit() {
+        // No initialization required.
+    }
 
     /**
      * Executes a sysctl call with an int result

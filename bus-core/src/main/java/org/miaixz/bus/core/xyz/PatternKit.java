@@ -44,13 +44,6 @@ import org.miaixz.bus.core.lang.mutable.MutableObject;
 public class PatternKit extends RegexValidator {
 
     /**
-     * Constructs a new PatternKit instance.
-     */
-    public PatternKit() {
-        // No initialization required.
-    }
-
-    /**
      * Keywords in regular expressions that need to be escaped.
      */
     public static final Set<Character> RE_KEYS = SetKit.of(
@@ -68,6 +61,13 @@ public class PatternKit extends RegexValidator {
             Symbol.C_BRACE_LEFT,
             Symbol.C_BRACE_RIGHT,
             Symbol.C_OR);
+
+    /**
+     * Constructs a new PatternKit instance.
+     */
+    public PatternKit() {
+        // No initialization required.
+    }
 
     /**
      * Gets the matched string for group 0.

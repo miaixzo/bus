@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class DownloadFundFlow extends Voucher {
 
     /**
-     * Constructs a new {@code DownloadFundFlow} instance.
-     */
-    public DownloadFundFlow() {
-        // No initialization required.
-    }
-
-    /**
      * Merchant ID.
      */
     private String mch_id;
@@ -76,5 +69,12 @@ public class DownloadFundFlow extends Voucher {
      * Tar type.
      */
     private String tar_type;
+
+    /**
+     * Constructs a new {@code DownloadFundFlow} instance.
+     */
+    public DownloadFundFlow() {
+        // No initialization required.
+    }
 
 }

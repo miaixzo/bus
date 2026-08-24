@@ -48,13 +48,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpX;
 public abstract class FabricX {
 
     /**
-     * Constructs a new {@code FabricX} instance.
-     */
-    public FabricX() {
-        // No initialization required.
-    }
-
-    /**
      * Shared Fabric contexts keyed by the public storage timeout policy to preserve connection pooling.
      */
     private static final ConcurrentHashMap<Timeout, org.miaixz.bus.fabric.Context> FABRIC_CONTEXTS = new ConcurrentHashMap<>();
@@ -63,6 +56,13 @@ public abstract class FabricX {
      * The context containing configuration details for the storage provider.
      */
     protected Context context;
+
+    /**
+     * Constructs a new {@code FabricX} instance.
+     */
+    public FabricX() {
+        // No initialization required.
+    }
 
     /**
      * Sends a GET request.

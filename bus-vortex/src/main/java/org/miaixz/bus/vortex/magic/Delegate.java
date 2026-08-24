@@ -44,13 +44,6 @@ import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 public class Delegate {
 
     /**
-     * Creates an empty provider response wrapper.
-     */
-    public Delegate() {
-        // No initialization required.
-    }
-
-    /**
      * The message object containing the result status. On failure, it holds the error code and error message. On
      * success, it typically holds a success code (e.g., "0").
      */
@@ -61,6 +54,13 @@ public class Delegate {
      * authenticated principal, such as user ID, roles, and permissions.
      */
     private Authorize authorize;
+
+    /**
+     * Creates an empty provider response wrapper.
+     */
+    public Delegate() {
+        // No initialization required.
+    }
 
     /**
      * A convenience method to check if the operation was successful.

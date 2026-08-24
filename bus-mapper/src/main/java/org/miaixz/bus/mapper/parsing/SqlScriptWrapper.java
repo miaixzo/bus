@@ -66,16 +66,16 @@ public interface SqlScriptWrapper extends Order {
     class Holder {
 
         /**
+         * A list of {@link SqlScriptWrapper} implementations loaded via SPI.
+         */
+        static final List<SqlScriptWrapper> sqlScriptWrappers = NormalSpiLoader.loadList(false, SqlScriptWrapper.class);
+
+        /**
          * Constructs a new Holder instance.
          */
         public Holder() {
             // No initialization required.
         }
-
-        /**
-         * A list of {@link SqlScriptWrapper} implementations loaded via SPI.
-         */
-        static final List<SqlScriptWrapper> sqlScriptWrappers = NormalSpiLoader.loadList(false, SqlScriptWrapper.class);
 
     }
 

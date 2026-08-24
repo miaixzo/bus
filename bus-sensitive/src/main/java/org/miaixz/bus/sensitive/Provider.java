@@ -48,16 +48,16 @@ import org.miaixz.bus.sensitive.nimble.StrategyProvider;
 public class Provider<T> {
 
     /**
+     * An array of specific field names to desensitize. If not null, only these fields are considered.
+     */
+    private String[] value;
+
+    /**
      * Constructs a new Provider instance.
      */
     public Provider() {
         // No initialization required.
     }
-
-    /**
-     * An array of specific field names to desensitize. If not null, only these fields are considered.
-     */
-    private String[] value;
 
     /**
      * Performs a deep copy of a serializable object.

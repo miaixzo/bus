@@ -36,13 +36,6 @@ import org.miaixz.bus.core.basic.entity.Space;
 public class Binding extends Space {
 
     /**
-     * Creates an empty setting binding.
-     */
-    public Binding() {
-        // No initialization required.
-    }
-
-    /**
      * Owning setting resource identifier. The physical column remains {@code item_id} for the existing item binding
      * table, while service-level code may treat it as the owner id.
      */
@@ -57,6 +50,13 @@ public class Binding extends Space {
      * Referenced target identifier.
      */
     private String ref_id;
+
+    /**
+     * Creates an empty setting binding.
+     */
+    public Binding() {
+        // No initialization required.
+    }
 
     /**
      * Semantic alias for callers that bind non-item setting resources.

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_XR3DCAL_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_XR3DCAL_01";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (0021,xx20) VR=LT VM=1 Generalized Calibration
      */
     public static final int GeneralizedCalibration = 0x00210020;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

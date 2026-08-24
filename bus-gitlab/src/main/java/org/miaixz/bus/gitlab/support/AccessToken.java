@@ -59,13 +59,6 @@ import org.miaixz.bus.logger.Logger;
 public class AccessToken {
 
     /**
-     * Constructs a new AccessToken instance.
-     */
-    public AccessToken() {
-        // No initialization required.
-    }
-
-    /**
      * This enum defines the available scopes for a personal access token.
      *
      * @author Kimi Liu
@@ -203,6 +196,13 @@ public class AccessToken {
      * Compiled pattern for {@link #HEALTH_CHECK_ACCESS_TOKEN_REGEX}.
      */
     protected static final Pattern HEALTH_CHECK_ACCESS_TOKEN_PATTERN = Pattern.compile(HEALTH_CHECK_ACCESS_TOKEN_REGEX);
+
+    /**
+     * Constructs a new AccessToken instance.
+     */
+    public AccessToken() {
+        // No initialization required.
+    }
 
     /**
      * Create a GitLab personal access token with the provided configuration.

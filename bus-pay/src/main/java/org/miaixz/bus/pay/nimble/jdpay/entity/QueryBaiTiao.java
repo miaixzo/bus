@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class QueryBaiTiao extends Voucher {
 
     /**
-     * Constructs a new {@code QueryBaiTiao} instance.
-     */
-    public QueryBaiTiao() {
-        // No initialization required.
-    }
-
-    /**
      * Version number.
      */
     private String version;
@@ -66,5 +59,12 @@ public class QueryBaiTiao extends Voucher {
      * Signature.
      */
     private String sign;
+
+    /**
+     * Constructs a new {@code QueryBaiTiao} instance.
+     */
+    public QueryBaiTiao() {
+        // No initialization required.
+    }
 
 }

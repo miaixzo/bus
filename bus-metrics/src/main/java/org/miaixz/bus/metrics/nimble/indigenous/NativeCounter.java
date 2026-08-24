@@ -31,16 +31,16 @@ import org.miaixz.bus.metrics.nimble.Counter;
 public class NativeCounter implements Counter {
 
     /**
+     * Lock-free accumulator for the cumulative event count.
+     */
+    private final LongAdder adder = new LongAdder();
+
+    /**
      * Constructs a new NativeCounter instance.
      */
     public NativeCounter() {
         // No initialization required.
     }
-
-    /**
-     * Lock-free accumulator for the cumulative event count.
-     */
-    private final LongAdder adder = new LongAdder();
 
     /**
      * Increment by one.

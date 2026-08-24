@@ -59,13 +59,6 @@ import org.miaixz.bus.core.xyz.*;
 public class IPv4 {
 
     /**
-     * Creates a new {@code IPv4} instance.
-     */
-    public IPv4() {
-        // No initialization required.
-    }
-
-    /**
      * The numeric value of the default localhost IP address (127.0.0.1).
      */
     public static final long LOCAL_IP_NUM = IPv4.ipv4ToLong(Protocol.HOST_IPV4);
@@ -481,6 +474,13 @@ public class IPv4 {
      * Cached local hostname.
      */
     private static volatile String localhostName;
+
+    /**
+     * Creates a new {@code IPv4} instance.
+     */
+    public IPv4() {
+        // No initialization required.
+    }
 
     /**
      * Gets the cached hostname of the local machine. Note: This method can trigger a reverse DNS lookup, which may

@@ -46,13 +46,6 @@ import org.miaixz.bus.image.metric.api.ConfigurationChanges;
 public class LdapBuilder {
 
     /**
-     * Constructs a new LdapBuilder instance.
-     */
-    public LdapBuilder() {
-        // No initialization required.
-    }
-
-    /**
      * An empty array of {@link Code} objects, used as a default or placeholder.
      */
     private static final Code[] EMPTY_CODES = {};
@@ -65,6 +58,13 @@ public class LdapBuilder {
             Symbol.C_FIVE, Symbol.C_SIX, Symbol.C_SEVEN, Symbol.C_EIGHT, Symbol.C_NINE, 'A', 'B', 'C', 'D', 'E', 'F',
             'G', 'H', 'I', 'J', 'K', Symbol.C_L, 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', Symbol.C_X, 'Y',
             'Z' };
+
+    /**
+     * Constructs a new LdapBuilder instance.
+     */
+    public LdapBuilder() {
+        // No initialization required.
+    }
 
     /**
      * Checks if the given {@link Attributes} contain a specific object class.

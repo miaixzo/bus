@@ -41,13 +41,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class Query extends Audit {
 
-    /**
-     * Constructs a new {@code Query} instance.
-     */
-    public Query() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852290719650L;
 
@@ -80,5 +73,12 @@ public class Query extends Audit {
      */
     @Transient
     protected String orderBy;
+
+    /**
+     * Constructs a new {@code Query} instance.
+     */
+    public Query() {
+        // No initialization required.
+    }
 
 }

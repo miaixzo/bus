@@ -38,13 +38,6 @@ import org.miaixz.bus.health.Builder;
 public class ProcPath {
 
     /**
-     * Keeps Linux procfs path resolution on the static API.
-     */
-    public ProcPath() {
-        // No initialization required.
-    }
-
-    /**
      * The /proc filesystem location.
      */
     public static final String PROC = queryProcConfig();
@@ -233,6 +226,13 @@ public class ProcPath {
      * The FILESYSTEMS constant.
      */
     public static final String FILESYSTEMS = PROC + "/filesystems";
+
+    /**
+     * Keeps Linux procfs path resolution on the static API.
+     */
+    public ProcPath() {
+        // No initialization required.
+    }
 
     /**
      * Queries the proc config.

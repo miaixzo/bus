@@ -39,13 +39,6 @@ import org.miaixz.bus.core.lang.annotation.Logical;
 @SuperBuilder
 public class Audit extends Entity {
 
-    /**
-     * Constructs a new {@code Audit} instance.
-     */
-    public Audit() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852290719630L;
 
@@ -84,5 +77,12 @@ public class Audit extends Entity {
      */
     @Column(nullable = false)
     protected Long modified;
+
+    /**
+     * Constructs a new {@code Audit} instance.
+     */
+    public Audit() {
+        // No initialization required.
+    }
 
 }

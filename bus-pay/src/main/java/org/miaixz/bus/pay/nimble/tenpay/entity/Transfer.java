@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class Transfer extends Voucher {
 
     /**
-     * Constructs a new {@code Transfer} instance.
-     */
-    public Transfer() {
-        // No initialization required.
-    }
-
-    /**
      * Character set.
      */
     private String input_charset;
@@ -126,5 +119,12 @@ public class Transfer extends Voucher {
      * Asynchronous notification URL.
      */
     private String notify_url;
+
+    /**
+     * Constructs a new {@code Transfer} instance.
+     */
+    public Transfer() {
+        // No initialization required.
+    }
 
 }

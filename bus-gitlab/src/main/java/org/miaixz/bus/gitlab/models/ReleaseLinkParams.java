@@ -29,13 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ReleaseLinkParams {
 
     /**
-     * Constructs a new {@code ReleaseLinkParams} instance.
-     */
-    public ReleaseLinkParams() {
-        // No initialization required.
-    }
-
-    /**
      * The name value.
      */
     private String name;
@@ -55,6 +48,13 @@ public class ReleaseLinkParams {
      * The link type value.
      */
     private String linkType;
+
+    /**
+     * Constructs a new {@code ReleaseLinkParams} instance.
+     */
+    public ReleaseLinkParams() {
+        // No initialization required.
+    }
 
     /**
      * Returns the name.

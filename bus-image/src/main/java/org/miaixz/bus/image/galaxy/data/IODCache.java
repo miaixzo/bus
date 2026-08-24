@@ -33,16 +33,16 @@ import org.miaixz.bus.image.IOD;
 public class IODCache {
 
     /**
+     * The internal map that stores IOD instances, keyed by their URI.
+     */
+    private final HashMap<String, IOD> map = new HashMap<>();
+
+    /**
      * Constructs a new IODCache instance.
      */
     public IODCache() {
         // No initialization required.
     }
-
-    /**
-     * The internal map that stores IOD instances, keyed by their URI.
-     */
-    private final HashMap<String, IOD> map = new HashMap<>();
 
     /**
      * Clears all cached {@link IOD} instances from this cache.

@@ -36,13 +36,6 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
 public class NativeSloTracker implements SloTracker {
 
     /**
-     * Constructs a new NativeSloTracker instance.
-     */
-    public NativeSloTracker() {
-        // No initialization required.
-    }
-
-    /**
      * Registered SLO definitions keyed by SLO name.
      */
     private final ConcurrentHashMap<String, SloDefinition> definitions = new ConcurrentHashMap<>();
@@ -51,6 +44,13 @@ public class NativeSloTracker implements SloTracker {
      * Callbacks fired when the error budget for a named SLO is exhausted.
      */
     private final ConcurrentHashMap<String, ConsumerX<SloEvent>> exhaustedCallbacks = new ConcurrentHashMap<>();
+
+    /**
+     * Constructs a new NativeSloTracker instance.
+     */
+    public NativeSloTracker() {
+        // No initialization required.
+    }
 
     /**
      * Immutable definition of a registered SLO, including its associated {@link ErrorBudget}.

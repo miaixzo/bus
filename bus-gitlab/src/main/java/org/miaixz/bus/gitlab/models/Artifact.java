@@ -36,13 +36,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class Artifact implements Serializable {
 
     /**
-     * Constructs a new {@code Artifact} instance.
-     */
-    public Artifact() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -64,6 +57,13 @@ public class Artifact implements Serializable {
      * The file format value.
      */
     private String fileFormat;
+
+    /**
+     * Constructs a new {@code Artifact} instance.
+     */
+    public Artifact() {
+        // No initialization required.
+    }
 
     /**
      * Returns the file type.

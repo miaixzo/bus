@@ -34,16 +34,16 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public class Win32DiskDrive {
 
     /**
+     * The WMI class name.
+     */
+    public static final String WIN32_DISK_DRIVE = "Win32_DiskDrive";
+
+    /**
      * Keeps Win32 disk drive queries on the static API.
      */
     public Win32DiskDrive() {
         // No initialization required.
     }
-
-    /**
-     * The WMI class name.
-     */
-    public static final String WIN32_DISK_DRIVE = "Win32_DiskDrive";
 
     /**
      * Queries the disk drive name info

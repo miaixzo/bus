@@ -48,13 +48,6 @@ import org.miaixz.bus.image.galaxy.io.SAXParserFactoryHolder;
 public class IOD extends ArrayList<IOD.DataElement> {
 
     /**
-     * Constructs a new IOD instance.
-     */
-    public IOD() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -74,6 +67,13 @@ public class IOD extends ArrayList<IOD.DataElement> {
      * The line number in the source XML file where this IOD was defined.
      */
     private int lineNumber = -1;
+
+    /**
+     * Constructs a new IOD instance.
+     */
+    public IOD() {
+        // No initialization required.
+    }
 
     /**
      * Loads an IOD from an XML definition file specified by a URI. The URI can be a file path, a URL, or a classpath
@@ -423,13 +423,6 @@ public class IOD extends ArrayList<IOD.DataElement> {
     public abstract static class Condition {
 
         /**
-         * Constructs a new Condition instance.
-         */
-        public Condition() {
-            // No initialization required.
-        }
-
-        /**
          * An optional identifier for the condition, used for referencing.
          */
         protected String id;
@@ -438,6 +431,13 @@ public class IOD extends ArrayList<IOD.DataElement> {
          * A flag to invert the logic of the condition (NOT).
          */
         protected boolean not;
+
+        /**
+         * Constructs a new Condition instance.
+         */
+        public Condition() {
+            // No initialization required.
+        }
 
         /**
          * Sets the identifier for this condition.

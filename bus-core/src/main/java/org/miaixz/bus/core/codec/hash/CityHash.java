@@ -38,13 +38,6 @@ import org.miaixz.bus.core.xyz.ByteKit;
  */
 public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]> {
 
-    /**
-     * Creates the shared CityHash implementation.
-     */
-    public CityHash() {
-        // No initialization required.
-    }
-
     // Some primes between 2^63 and 2^64 for various uses.
     private static final long k0 = 0xc3a5c85c97cb3127L;
     private static final long k1 = 0xb492b66fbe98f273L;
@@ -57,6 +50,13 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
      * Singleton instance of the CityHash.
      */
     public static final CityHash INSTANCE = new CityHash();
+
+    /**
+     * Creates the shared CityHash implementation.
+     */
+    public CityHash() {
+        // No initialization required.
+    }
 
     /**
      * Fetches a 64-bit long value from a byte array in little-endian order.

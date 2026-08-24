@@ -38,13 +38,6 @@ import org.miaixz.bus.image.metric.Connection;
 public class Option {
 
     /**
-     * Constructs a new {@code Option} instance.
-     */
-    public Option() {
-        // No initialization required.
-    }
-
-    /**
      * Default TLS cipher suites kept for legacy DICOM peer compatibility.
      */
     public static final List<String> TLS = List.of(
@@ -249,6 +242,13 @@ public class Option {
      * Password for the truststore.
      */
     private String truststorePass;
+
+    /**
+     * Constructs a new {@code Option} instance.
+     */
+    public Option() {
+        // No initialization required.
+    }
 
     /**
      * Creates connection options with bus-image defaults.

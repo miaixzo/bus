@@ -42,13 +42,6 @@ import org.miaixz.bus.logger.Logger;
 public class Edid {
 
     /**
-     * Creates a new EDID parser instance.
-     */
-    public Edid() {
-        // No initialization required.
-    }
-
-    /**
      * The EDID byte length.
      */
     private static final int EDID_LENGTH = 128;
@@ -137,6 +130,13 @@ public class Edid {
      * The display serial descriptor type.
      */
     private static final int DISPLAY_SERIAL_TYPE = 0xFF;
+
+    /**
+     * Creates a new EDID parser instance.
+     */
+    public Edid() {
+        // No initialization required.
+    }
 
     /**
      * Gets the manufacturer ID from bytes 8 and 9, which represent (up to) 3 five-bit characters.

@@ -35,13 +35,6 @@ import org.miaixz.bus.core.xyz.ReflectKit;
 public class KClassImpl {
 
     /**
-     * Constructs a new KClassImpl instance.
-     */
-    public KClassImpl() {
-        // No initialization required.
-    }
-
-    /**
      * The {@link Class} object for {@code kotlin.reflect.jvm.internal.KClassImpl}.
      */
     private static final Class<?> KCLASS_IMPL_CLASS;
@@ -50,6 +43,13 @@ public class KClassImpl {
      * The {@link Method} object for {@code KClassImpl.getConstructors()}.
      */
     private static final Method METHOD_GET_CONSTRUCTORS;
+
+    /**
+     * Constructs a new KClassImpl instance.
+     */
+    public KClassImpl() {
+        // No initialization required.
+    }
 
     static {
         KCLASS_IMPL_CLASS = ClassKit.loadClass("kotlin.reflect.jvm.internal.KClassImpl");

@@ -36,13 +36,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class PersonalAccessToken implements Serializable {
 
     /**
-     * Constructs a new {@code PersonalAccessToken} instance.
-     */
-    public PersonalAccessToken() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -95,6 +88,13 @@ public class PersonalAccessToken implements Serializable {
      * The token value.
      */
     private String token;
+
+    /**
+     * Constructs a new {@code PersonalAccessToken} instance.
+     */
+    public PersonalAccessToken() {
+        // No initialization required.
+    }
 
     /**
      * Returns the user id.

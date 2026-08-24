@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class Apply extends Voucher {
 
     /**
-     * Constructs a new {@code Apply} instance.
-     */
-    public Apply() {
-        // No initialization required.
-    }
-
-    /**
      * Partner ID, i.e., the institution number.
      */
     private String partner;
@@ -76,5 +69,12 @@ public class Apply extends Voucher {
      * Data signature.
      */
     private String dataSign;
+
+    /**
+     * Constructs a new {@code Apply} instance.
+     */
+    public Apply() {
+        // No initialization required.
+    }
 
 }

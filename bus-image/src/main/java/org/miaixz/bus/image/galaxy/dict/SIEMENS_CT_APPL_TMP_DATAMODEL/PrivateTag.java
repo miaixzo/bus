@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_CT_APPL_TMP_DATAMODEL;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS CT APPL TMP DATAMODEL";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (0029,xx00) VR=OB VM=1 CT Task Common DataModel
      */
     public static final int CTTaskCommonDataModel = 0x00290000;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

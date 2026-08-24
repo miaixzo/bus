@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class CreateRunnerParams implements Serializable {
 
     /**
-     * Constructs a new {@code CreateRunnerParams} instance.
-     */
-    public CreateRunnerParams() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     private static final long serialVersionUID = 2852250855126L;
@@ -87,6 +80,13 @@ public class CreateRunnerParams implements Serializable {
      * The maintenance note value.
      */
     private String maintenanceNote;
+
+    /**
+     * Constructs a new {@code CreateRunnerParams} instance.
+     */
+    public CreateRunnerParams() {
+        // No initialization required.
+    }
 
     /**
      * Returns the form.

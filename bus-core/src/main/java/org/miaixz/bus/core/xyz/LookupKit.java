@@ -43,16 +43,16 @@ import org.miaixz.bus.core.lang.reflect.lookup.MethodLookupFactory;
 public class LookupKit {
 
     /**
+     * Factory used to create lookup instances across JDK variants.
+     */
+    private static final LookupFactory factory;
+
+    /**
      * Constructs a new LookupKit instance.
      */
     public LookupKit() {
         // No initialization required.
     }
-
-    /**
-     * Factory used to create lookup instances across JDK variants.
-     */
-    private static final LookupFactory factory;
 
     static {
         factory = new MethodLookupFactory();

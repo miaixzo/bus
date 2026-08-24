@@ -45,13 +45,6 @@ import org.miaixz.bus.logger.Logger;
 public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
 
     /**
-     * Creates a new OpenBsdOperatingSystem instance.
-     */
-    public OpenBsdOperatingSystem() {
-        // No initialization required.
-    }
-
-    /**
      * The PS_COMMAND_ARGS constant.
      */
     static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name)
@@ -61,6 +54,13 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
      * The BOOTTIME constant.
      */
     private static final long BOOTTIME = querySystemBootTime();
+
+    /**
+     * Creates a new OpenBsdOperatingSystem instance.
+     */
+    public OpenBsdOperatingSystem() {
+        // No initialization required.
+    }
 
     /**
      * Queries the system boot time.

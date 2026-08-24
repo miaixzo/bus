@@ -37,13 +37,6 @@ import org.miaixz.bus.logger.Logger;
 @NotThreadSafe
 public class PerfCounterQueryHandler implements AutoCloseable {
 
-    /**
-     * Creates a new PerfCounterQueryHandler instance.
-     */
-    public PerfCounterQueryHandler() {
-        // No initialization required.
-    }
-
     // Map of counter handles
     /**
      * The counterHandleMap value.
@@ -54,6 +47,13 @@ public class PerfCounterQueryHandler implements AutoCloseable {
      * The queryHandle value.
      */
     private ByRef.CloseableHANDLEByReference queryHandle = null;
+
+    /**
+     * Creates a new PerfCounterQueryHandler instance.
+     */
+    public PerfCounterQueryHandler() {
+        // No initialization required.
+    }
 
     /**
      * Begin monitoring a Performance Data counter.

@@ -30,16 +30,16 @@ import java.util.List;
 public abstract class ItemPointerVisitor implements SequenceVisitor {
 
     /**
+     * The item pointers value.
+     */
+    protected final List<ItemPointer> itemPointers = new ArrayList<>(4);
+
+    /**
      * Constructs a new ItemPointerVisitor instance.
      */
     public ItemPointerVisitor() {
         // No initialization required.
     }
-
-    /**
-     * The item pointers value.
-     */
-    protected final List<ItemPointer> itemPointers = new ArrayList<>(4);
 
     /**
      * Executes the start item operation.

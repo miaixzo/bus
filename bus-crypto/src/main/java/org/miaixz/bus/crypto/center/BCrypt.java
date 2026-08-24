@@ -52,13 +52,6 @@ import org.miaixz.bus.logger.Logger;
 public class BCrypt {
 
     /**
-     * Constructs a new BCrypt instance.
-     */
-    public BCrypt() {
-        // No initialization required.
-    }
-
-    /**
      * Initial contents of data schedule.
      */
     private static final int[] P_ORIG = { 0x243f6a88, 0x85a308d3, 0x13198a2e, 0x03707344, 0xa4093822, 0x299f31d0,
@@ -217,6 +210,13 @@ public class BCrypt {
      * Expanded Blowfish S-boxes.
      */
     private int[] S;
+
+    /**
+     * Constructs a new BCrypt instance.
+     */
+    public BCrypt() {
+        // No initialization required.
+    }
 
     /**
      * Encode a byte array using bcrypt's slightly-modified base64 encoding scheme. Note that this is *not* compatible

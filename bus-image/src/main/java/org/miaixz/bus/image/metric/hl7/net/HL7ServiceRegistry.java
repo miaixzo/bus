@@ -37,13 +37,6 @@ import org.miaixz.bus.image.metric.hl7.HL7Exception;
 public class HL7ServiceRegistry extends DefaultHL7MessageListener {
 
     /**
-     * Constructs a new HL7ServiceRegistry instance.
-     */
-    public HL7ServiceRegistry() {
-        // No initialization required.
-    }
-
-    /**
      * The services value.
      */
     private final List<HL7Service> services = new ArrayList<>();
@@ -52,6 +45,13 @@ public class HL7ServiceRegistry extends DefaultHL7MessageListener {
      * The listeners value.
      */
     private final Map<String, HL7MessageListener> listeners = new HashMap<>();
+
+    /**
+     * Constructs a new HL7ServiceRegistry instance.
+     */
+    public HL7ServiceRegistry() {
+        // No initialization required.
+    }
 
     /**
      * Adds the hl7 service.

@@ -32,13 +32,6 @@ import lombok.Setter;
 public class InstanceStateHistory {
 
     /**
-     * Creates an empty instance-state history record.
-     */
-    public InstanceStateHistory() {
-        // No initialization required.
-    }
-
-    /**
      * State captured at this point in time.
      */
     private InstanceState state;
@@ -87,5 +80,12 @@ public class InstanceStateHistory {
      * Stable fingerprint of the affected instance.
      */
     private String fingerprint;
+
+    /**
+     * Creates an empty instance-state history record.
+     */
+    public InstanceStateHistory() {
+        // No initialization required.
+    }
 
 }

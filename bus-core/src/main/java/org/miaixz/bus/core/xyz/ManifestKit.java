@@ -39,16 +39,16 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class ManifestKit {
 
     /**
+     * Supported manifest file names when scanning exploded project directories.
+     */
+    private static final String[] MANIFEST_NAMES = { "Manifest.mf", "manifest.mf", "MANIFEST.MF" };
+
+    /**
      * Constructs a new ManifestKit instance.
      */
     public ManifestKit() {
         // No initialization required.
     }
-
-    /**
-     * Supported manifest file names when scanning exploded project directories.
-     */
-    private static final String[] MANIFEST_NAMES = { "Manifest.mf", "manifest.mf", "MANIFEST.MF" };
 
     /**
      * Gets the Manifest from the JAR file that contains the given class. Returns `null` if the class is not in a JAR

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_INSTANCE_MANIFEST;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS SYNGO INSTANCE MANIFEST";
@@ -47,5 +40,12 @@ public class PrivateTag {
      * (0009,xx10) VR=AE VM=1 syngo Index Source AE Title
      */
     public static final int syngoIndexSourceAETitle = 0x00090010;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

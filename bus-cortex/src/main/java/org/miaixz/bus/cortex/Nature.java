@@ -42,13 +42,6 @@ import org.miaixz.bus.core.basic.entity.Space;
 public class Nature extends Space {
 
     /**
-     * Constructs a new {@code Nature} instance.
-     */
-    public Nature() {
-        // No initialization required.
-    }
-
-    /**
      * Serialization identifier for the shared runtime base model.
      */
     @Serial
@@ -58,6 +51,13 @@ public class Nature extends Space {
      * Stable numeric asset type key used for persistence and business routing.
      */
     private Integer type;
+
+    /**
+     * Constructs a new {@code Nature} instance.
+     */
+    public Nature() {
+        // No initialization required.
+    }
 
     /**
      * Returns whether the current entry belongs to the supplied type.

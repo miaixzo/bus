@@ -57,13 +57,6 @@ import org.miaixz.bus.health.unix.shared.jna.AixLibc;
 public class AixOperatingSystem extends AbstractOperatingSystem {
 
     /**
-     * Constructs a new AixOperatingSystem instance.
-     */
-    public AixOperatingSystem() {
-        // No initialization required.
-    }
-
-    /**
      * The BOOT_TIME_SECONDS value.
      */
     private static final AtomicLong BOOT_TIME_SECONDS = new AtomicLong(0L);
@@ -84,6 +77,13 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
      */
     private final SupplierX<List<ApplicationInfo>> installedAppsSupplier = Memoizer
             .memoize(AixInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
+
+    /**
+     * Constructs a new AixOperatingSystem instance.
+     */
+    public AixOperatingSystem() {
+        // No initialization required.
+    }
 
     /**
      * Queries the system boot time millis.

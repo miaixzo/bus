@@ -35,13 +35,6 @@ import org.miaixz.bus.shade.screw.metadata.Table;
 public class MariadbTable implements Table {
 
     /**
-     * Constructs a new MariadbTable instance.
-     */
-    public MariadbTable() {
-        // No initialization required.
-    }
-
-    /**
      * Table catalog.
      */
     @MappingField(value = "TABLE_CAT")
@@ -100,5 +93,12 @@ public class MariadbTable implements Table {
      */
     @MappingField(value = "TYPE_NAME")
     private Object typeName;
+
+    /**
+     * Constructs a new MariadbTable instance.
+     */
+    public MariadbTable() {
+        // No initialization required.
+    }
 
 }

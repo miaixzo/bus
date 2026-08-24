@@ -29,13 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class EventEnvironment {
 
     /**
-     * Constructs a new {@code EventEnvironment} instance.
-     */
-    public EventEnvironment() {
-        // No initialization required.
-    }
-
-    /**
      * The name value.
      */
     private String name;
@@ -47,6 +40,13 @@ public class EventEnvironment {
      * The deployment tier value.
      */
     private String deploymentTier;
+
+    /**
+     * Constructs a new {@code EventEnvironment} instance.
+     */
+    public EventEnvironment() {
+        // No initialization required.
+    }
 
     /**
      * Returns the name.

@@ -31,13 +31,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public abstract class AbstractPushEvent {
 
     /**
-     * Constructs a new AbstractPushEvent instance.
-     */
-    public AbstractPushEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The refs heads value.
      */
     private static final String REFS_HEADS = "refs/heads/";
@@ -195,6 +188,13 @@ public abstract class AbstractPushEvent {
      * The ref protected value.
      */
     private Boolean refProtected;
+
+    /**
+     * Constructs a new AbstractPushEvent instance.
+     */
+    public AbstractPushEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the ref protected.

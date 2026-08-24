@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Image_Stamp;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "Siemens: Thorax/Multix FD Image Stamp";
@@ -62,5 +55,12 @@ public class PrivateTag {
      * (0023,xx04) VR=US VM=1 ?
      */
     public static final int _0023_xx04_ = 0x00230004;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

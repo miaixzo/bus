@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_004;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "Philips MR Imaging DD 004";
@@ -502,5 +495,12 @@ public class PrivateTag {
      * (2005,xx99) VR=CS VM=1 IViewBold Enabled
      */
     public static final int IViewBoldEnabled = 0x20050099;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

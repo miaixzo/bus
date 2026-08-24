@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.agfa_displayable_images;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "agfa/displayableImages";
@@ -47,5 +40,12 @@ public class PrivateTag {
      * (2E13,xx11) VR=IS VM=1 ?
      */
     public static final int _2E13_xx11_ = 0x2E130011;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

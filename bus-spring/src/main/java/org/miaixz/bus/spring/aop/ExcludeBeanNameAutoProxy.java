@@ -39,16 +39,16 @@ import org.miaixz.bus.core.xyz.PatternKit;
 public class ExcludeBeanNameAutoProxy extends BeanNameAutoProxyCreator {
 
     /**
+     * Bean name patterns excluded from automatic proxy creation.
+     */
+    private List<String> excludeBeanNames;
+
+    /**
      * Initializes an auto-proxy creator whose exclusion rules can be configured before Bean processing begins.
      */
     public ExcludeBeanNameAutoProxy() {
         // No initialization required.
     }
-
-    /**
-     * Bean name patterns excluded from automatic proxy creation.
-     */
-    private List<String> excludeBeanNames;
 
     /**
      * Sets the names of beans that should NOT be automatically wrapped with a proxy.

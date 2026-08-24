@@ -37,13 +37,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class ProcessConfig implements Serializable {
 
-    /**
-     * Constructs a new {@code ProcessConfig} instance.
-     */
-    public ProcessConfig() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2830692518360L;
 
@@ -76,5 +69,12 @@ public class ProcessConfig implements Serializable {
      * A list of table name suffixes to include. If specified, only tables with these suffixes will be processed.
      */
     private List<String> designatedTableSuffix;
+
+    /**
+     * Constructs a new {@code ProcessConfig} instance.
+     */
+    public ProcessConfig() {
+        // No initialization required.
+    }
 
 }

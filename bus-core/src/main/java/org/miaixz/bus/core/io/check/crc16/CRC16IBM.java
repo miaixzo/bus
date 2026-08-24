@@ -30,13 +30,6 @@ import java.io.Serial;
  */
 public class CRC16IBM extends CRC16Checksum {
 
-    /**
-     * Creates a new {@code CRC16IBM} instance.
-     */
-    public CRC16IBM() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852278882528L;
 
@@ -44,6 +37,13 @@ public class CRC16IBM extends CRC16Checksum {
      * The polynomial used in the CRC16-IBM calculation. It is the bit-reversed form of 0x8005.
      */
     private static final int WC_POLY = 0xa001;
+
+    /**
+     * Creates a new {@code CRC16IBM} instance.
+     */
+    public CRC16IBM() {
+        // No initialization required.
+    }
 
     /**
      * Updates the CRC16-IBM checksum with the specified byte.

@@ -39,16 +39,16 @@ import org.miaixz.bus.logger.Logger;
 public class SysctlKit {
 
     /**
+     * The SYSCTL_FAIL constant.
+     */
+    private static final String SYSCTL_FAIL = "Failed sysctl call: {}, Error code: {}";
+
+    /**
      * Keeps macOS sysctl queries on the static API.
      */
     public SysctlKit() {
         // No initialization required.
     }
-
-    /**
-     * The SYSCTL_FAIL constant.
-     */
-    private static final String SYSCTL_FAIL = "Failed sysctl call: {}, Error code: {}";
 
     /**
      * Executes a sysctl call with an int result.

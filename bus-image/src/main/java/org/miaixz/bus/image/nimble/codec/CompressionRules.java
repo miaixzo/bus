@@ -34,13 +34,6 @@ import java.util.List;
 public class CompressionRules implements Iterable<CompressionRule>, Serializable {
 
     /**
-     * Constructs a new CompressionRules instance.
-     */
-    public CompressionRules() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -50,6 +43,13 @@ public class CompressionRules implements Iterable<CompressionRule>, Serializable
      * The list value.
      */
     private final List<CompressionRule> list = new ArrayList<>();
+
+    /**
+     * Constructs a new CompressionRules instance.
+     */
+    public CompressionRules() {
+        // No initialization required.
+    }
 
     /**
      * Executes the add operation.

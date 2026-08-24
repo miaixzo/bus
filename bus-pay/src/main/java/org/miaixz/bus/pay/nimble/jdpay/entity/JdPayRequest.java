@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class JdPayRequest extends Voucher {
 
     /**
-     * Constructs a new {@code JdPayRequest} instance.
-     */
-    public JdPayRequest() {
-        // No initialization required.
-    }
-
-    /**
      * The version number of the interface.
      */
     private String version;
@@ -56,5 +49,12 @@ public class JdPayRequest extends Voucher {
      * The encrypted request data.
      */
     private String encrypt;
+
+    /**
+     * Constructs a new {@code JdPayRequest} instance.
+     */
+    public JdPayRequest() {
+        // No initialization required.
+    }
 
 }

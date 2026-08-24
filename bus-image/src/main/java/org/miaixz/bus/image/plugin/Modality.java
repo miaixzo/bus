@@ -44,16 +44,16 @@ import org.miaixz.bus.logger.Logger;
 public class Modality {
 
     /**
+     * The AE Title of the called application entity. Used for logging purposes.
+     */
+    private static String calledAET;
+
+    /**
      * Constructs a new Modality instance.
      */
     public Modality() {
         // No initialization required.
     }
-
-    /**
-     * The AE Title of the called application entity. Used for logging purposes.
-     */
-    private static String calledAET;
 
     /**
      * Copies TLS (Transport Layer Security) parameters from one connection object to another.

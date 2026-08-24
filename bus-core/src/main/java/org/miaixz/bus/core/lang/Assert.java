@@ -33,16 +33,16 @@ import org.miaixz.bus.core.xyz.*;
 public class Assert {
 
     /**
+     * Template for error messages when a value is out of bounds.
+     */
+    private static final String TEMPLATE_VALUE_MUST_BE_BETWEEN_AND = "The value must be between {} and {}.";
+
+    /**
      * Keeps argument and state assertions on the static API.
      */
     public Assert() {
         // No initialization required.
     }
-
-    /**
-     * Template for error messages when a value is out of bounds.
-     */
-    private static final String TEMPLATE_VALUE_MUST_BE_BETWEEN_AND = "The value must be between {} and {}.";
 
     /**
      * Asserts that an expression is true. If the expression is {@code false}, a custom exception provided by the

@@ -30,13 +30,6 @@ import java.io.Serial;
  */
 public class CRC16CCITTFalse extends CRC16Checksum {
 
-    /**
-     * Creates a CRC-16/CCITT-FALSE checksum implementation.
-     */
-    public CRC16CCITTFalse() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852278527996L;
 
@@ -44,6 +37,13 @@ public class CRC16CCITTFalse extends CRC16Checksum {
      * The polynomial used in the CRC16-CCITT-FALSE calculation (0x1021).
      */
     private static final int WC_POLY = 0x1021;
+
+    /**
+     * Creates a CRC-16/CCITT-FALSE checksum implementation.
+     */
+    public CRC16CCITTFalse() {
+        // No initialization required.
+    }
 
     /**
      * Resets the CRC16-CCITT-FALSE calculation to its initial state (0xFFFF).

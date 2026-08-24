@@ -48,13 +48,6 @@ import tools.jackson.databind.node.ValueNode;
 public abstract class AbstractIssue implements Serializable {
 
     /**
-     * Constructs a new AbstractIssue instance.
-     */
-    public AbstractIssue() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -223,6 +216,13 @@ public abstract class AbstractIssue implements Serializable {
     private TaskCompletionStatus taskCompletionStatus;
 
     /**
+     * Constructs a new AbstractIssue instance.
+     */
+    public AbstractIssue() {
+        // No initialization required.
+    }
+
+    /**
      * Returns the raw issue ID node.
      *
      * @return the raw issue ID node
@@ -310,13 +310,6 @@ public abstract class AbstractIssue implements Serializable {
     public static class TaskCompletionStatus implements Serializable {
 
         /**
-         * Constructs a new TaskCompletionStatus instance.
-         */
-        public TaskCompletionStatus() {
-            // No initialization required.
-        }
-
-        /**
          * The serial version uid value.
          */
         @Serial
@@ -330,6 +323,13 @@ public abstract class AbstractIssue implements Serializable {
          * The completed count value.
          */
         private Integer completedCount;
+
+        /**
+         * Constructs a new TaskCompletionStatus instance.
+         */
+        public TaskCompletionStatus() {
+            // No initialization required.
+        }
 
         /**
          * Returns the string.

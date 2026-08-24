@@ -38,13 +38,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Release implements Serializable {
 
     /**
-     * Constructs a new {@code Release} instance.
-     */
-    public Release() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -108,6 +101,13 @@ public class Release implements Serializable {
      */
     @JsonProperty("_links")
     private Map<String, String> links;
+
+    /**
+     * Constructs a new {@code Release} instance.
+     */
+    public Release() {
+        // No initialization required.
+    }
 
     /**
      * Returns the name.

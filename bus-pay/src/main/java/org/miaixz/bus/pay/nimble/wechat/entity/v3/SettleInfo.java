@@ -34,13 +34,6 @@ import lombok.experimental.SuperBuilder;
 public class SettleInfo {
 
     /**
-     * Constructs a new {@code SettleInfo} instance.
-     */
-    public SettleInfo() {
-        // No initialization required.
-    }
-
-    /**
      * Whether to enable profit sharing for this order.
      */
     private boolean profit_sharing;
@@ -49,5 +42,12 @@ public class SettleInfo {
      * The subsidy amount in cents.
      */
     private Integer subsidy_amount;
+
+    /**
+     * Constructs a new {@code SettleInfo} instance.
+     */
+    public SettleInfo() {
+        // No initialization required.
+    }
 
 }

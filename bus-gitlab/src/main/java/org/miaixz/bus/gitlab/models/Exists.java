@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Exists implements Serializable {
 
     /**
-     * Constructs a new {@code Exists} instance.
-     */
-    public Exists() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -48,6 +41,13 @@ public class Exists implements Serializable {
      * The exists value.
      */
     private Boolean exists;
+
+    /**
+     * Constructs a new {@code Exists} instance.
+     */
+    public Exists() {
+        // No initialization required.
+    }
 
     /**
      * Returns the exists.

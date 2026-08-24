@@ -51,13 +51,6 @@ import org.miaixz.bus.core.lang.Symbol;
 public class Tpl2Xml {
 
     /**
-     * Constructs a new {@code Tpl2Xml} instance.
-     */
-    public Tpl2Xml() {
-        // No initialization required.
-    }
-
-    /**
      * Constant for XML version 1.0.
      */
     private static final String XML_1_0 = "1.0";
@@ -108,6 +101,13 @@ public class Tpl2Xml {
      * The path to the output directory.
      */
     private String outDir;
+
+    /**
+     * Constructs a new {@code Tpl2Xml} instance.
+     */
+    public Tpl2Xml() {
+        // No initialization required.
+    }
 
     /**
      * Reads a template file and parses it into a map of private dictionaries.

@@ -45,13 +45,6 @@ import org.miaixz.bus.logger.Logger;
 public class PerfCounterWildcardQuery {
 
     /**
-     * Keeps wildcard Windows performance-counter queries on the static API.
-     */
-    public PerfCounterWildcardQuery() {
-        // No initialization required.
-    }
-
-    /**
      * The PERF_DISABLE_ALL_ON_FAILURE constant.
      */
     private static final boolean PERF_DISABLE_ALL_ON_FAILURE = Builder
@@ -62,6 +55,13 @@ public class PerfCounterWildcardQuery {
      * The FAILED_QUERY_CACHE constant.
      */
     private static final Set<String> FAILED_QUERY_CACHE = ConcurrentHashMap.newKeySet();
+
+    /**
+     * Keeps wildcard Windows performance-counter queries on the static API.
+     */
+    public PerfCounterWildcardQuery() {
+        // No initialization required.
+    }
 
     /**
      * Query the a Performance Counter using PDH, with WMI backup on failure, for values corresponding to the property

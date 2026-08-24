@@ -32,16 +32,16 @@ public class RequestBindingOptions {
     private static final int MAX_REQUEST_BODY_SIZE = 16 * 1024 * 1024;
 
     /**
+     * Default collection auto-growth limit for request binding.
+     */
+    private static final int AUTO_GROW_COLLECTION_LIMIT = 256;
+
+    /**
      * Initializes the immutable binding limits used by the request-object argument resolver.
      */
     public RequestBindingOptions() {
         // No initialization required.
     }
-
-    /**
-     * Default collection auto-growth limit for request binding.
-     */
-    private static final int AUTO_GROW_COLLECTION_LIMIT = 256;
 
     /**
      * Exposes the maximum collection size Spring binding may auto-grow.

@@ -37,18 +37,18 @@ import org.miaixz.bus.core.xyz.BooleanKit;
 public class BooleanConverter extends AbstractConverter {
 
     /**
-     * Creates a new {@code BooleanConverter} instance.
-     */
-    public BooleanConverter() {
-        // No initialization required.
-    }
-
-    /**
      * Singleton instance.
      */
     public static final BooleanConverter INSTANCE = new BooleanConverter();
     @Serial
     private static final long serialVersionUID = 2852265810501L;
+
+    /**
+     * Creates a new {@code BooleanConverter} instance.
+     */
+    public BooleanConverter() {
+        // No initialization required.
+    }
 
     /**
      * Internally converts the given value to a {@link Boolean}.

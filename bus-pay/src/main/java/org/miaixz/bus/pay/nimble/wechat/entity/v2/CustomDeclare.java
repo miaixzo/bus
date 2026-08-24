@@ -37,13 +37,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class CustomDeclare extends Voucher {
 
     /**
-     * Constructs a new {@code CustomDeclare} instance.
-     */
-    public CustomDeclare() {
-        // No initialization required.
-    }
-
-    /**
      * Signature.
      */
     private String sign;
@@ -132,5 +125,12 @@ public class CustomDeclare extends Voucher {
      * Name associated with the certificate.
      */
     private String name;
+
+    /**
+     * Constructs a new {@code CustomDeclare} instance.
+     */
+    public CustomDeclare() {
+        // No initialization required.
+    }
 
 }

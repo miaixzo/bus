@@ -38,16 +38,16 @@ import org.miaixz.bus.notify.magic.Notice;
 public class UpyunNotice extends Notice {
 
     /**
+     * The authentication token for Upyun API.
+     */
+    private String token;
+
+    /**
      * Constructs a new {@code UpyunNotice} instance.
      */
     public UpyunNotice() {
         // No initialization required.
     }
-
-    /**
-     * The authentication token for Upyun API.
-     */
-    private String token;
 
     /**
      * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
@@ -69,13 +69,6 @@ public class UpyunNotice extends Notice {
     public static class MessageId {
 
         /**
-         * Constructs a new {@code MessageId} instance.
-         */
-        public MessageId() {
-            // No initialization required.
-        }
-
-        /**
          * The error code, if any, indicating a failure.
          */
         private String error_code;
@@ -94,6 +87,13 @@ public class UpyunNotice extends Notice {
          * The mobile number to which the SMS was sent.
          */
         private String mobile;
+
+        /**
+         * Constructs a new {@code MessageId} instance.
+         */
+        public MessageId() {
+            // No initialization required.
+        }
 
         /**
          * Checks if the SMS sending operation was successful.

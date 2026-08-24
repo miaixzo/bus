@@ -38,13 +38,6 @@ import lombok.experimental.Accessors;
 public class IndexMeta {
 
     /**
-     * Constructs a new IndexMeta instance.
-     */
-    public IndexMeta() {
-        // No initialization required.
-    }
-
-    /**
      * Index name.
      */
     private String name;
@@ -58,6 +51,13 @@ public class IndexMeta {
      * Index column names.
      */
     private List<String> columns = new ArrayList<>();
+
+    /**
+     * Constructs a new IndexMeta instance.
+     */
+    public IndexMeta() {
+        // No initialization required.
+    }
 
     /**
      * Creates index metadata.

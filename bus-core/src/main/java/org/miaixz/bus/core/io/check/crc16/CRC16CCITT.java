@@ -30,13 +30,6 @@ import java.io.Serial;
  */
 public class CRC16CCITT extends CRC16Checksum {
 
-    /**
-     * Creates a CRC-16/CCITT checksum implementation.
-     */
-    public CRC16CCITT() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852278296375L;
 
@@ -44,6 +37,13 @@ public class CRC16CCITT extends CRC16Checksum {
      * The polynomial used in the CRC16-CCITT calculation. It is the bit-reversed form of 0x1021.
      */
     private static final int WC_POLY = 0x8408;
+
+    /**
+     * Creates a CRC-16/CCITT checksum implementation.
+     */
+    public CRC16CCITT() {
+        // No initialization required.
+    }
 
     /**
      * Updates the CRC16-CCITT checksum with the specified byte.

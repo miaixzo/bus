@@ -32,14 +32,14 @@ import org.miaixz.bus.core.xyz.CharKit;
  */
 public class UrlEncoder {
 
+    private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
+
     /**
      * Constructs a new UrlEncoder instance.
      */
     public UrlEncoder() {
         // No initialization required.
     }
-
-    private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
 
     /**
      * Encodes a URL using the default UTF-8 charset. Non-ASCII characters are converted to their hexadecimal

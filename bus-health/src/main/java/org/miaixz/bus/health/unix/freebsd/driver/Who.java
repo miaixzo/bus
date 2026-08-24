@@ -40,16 +40,16 @@ import org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc;
 public class Who {
 
     /**
+     * The LIBC constant.
+     */
+    private static final FreeBsdLibc LIBC = FreeBsdLibc.INSTANCE;
+
+    /**
      * Keeps FreeBSD logged-in-user queries on the static API.
      */
     public Who() {
         // No initialization required.
     }
-
-    /**
-     * The LIBC constant.
-     */
-    private static final FreeBsdLibc LIBC = FreeBsdLibc.INSTANCE;
 
     /**
      * Query {@code getutxent} to get logged in users.

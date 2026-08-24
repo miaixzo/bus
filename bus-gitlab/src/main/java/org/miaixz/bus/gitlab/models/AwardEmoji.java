@@ -37,13 +37,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class AwardEmoji implements Serializable {
 
     /**
-     * Constructs a new {@code AwardEmoji} instance.
-     */
-    public AwardEmoji() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -77,6 +70,13 @@ public class AwardEmoji implements Serializable {
      * The awardable type value.
      */
     private AwardableType awardableType;
+
+    /**
+     * Constructs a new {@code AwardEmoji} instance.
+     */
+    public AwardEmoji() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

@@ -37,13 +37,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class MergeRequest implements Serializable {
 
     /**
-     * Constructs a new {@code MergeRequest} instance.
-     */
-    public MergeRequest() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -290,6 +283,13 @@ public class MergeRequest implements Serializable {
     @JsonSerialize(using = JacksonJson.UserListSerializer.class)
     @JsonDeserialize(using = JacksonJson.UserListDeserializer.class)
     private List<User> approvedBy;
+
+    /**
+     * Constructs a new {@code MergeRequest} instance.
+     */
+    public MergeRequest() {
+        // No initialization required.
+    }
 
     /**
      * Returns the allow collaboration.

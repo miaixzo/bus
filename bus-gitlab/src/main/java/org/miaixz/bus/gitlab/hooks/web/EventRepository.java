@@ -30,13 +30,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class EventRepository {
 
     /**
-     * Constructs a new {@code EventRepository} instance.
-     */
-    public EventRepository() {
-        // No initialization required.
-    }
-
-    /**
      * The name value.
      */
     private String name;
@@ -64,6 +57,13 @@ public class EventRepository {
      * The visibility level value.
      */
     private AccessLevel visibility_level;
+
+    /**
+     * Constructs a new {@code EventRepository} instance.
+     */
+    public EventRepository() {
+        // No initialization required.
+    }
 
     /**
      * Returns the name.

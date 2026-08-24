@@ -34,13 +34,6 @@ import lombok.experimental.SuperBuilder;
 public class Memory {
 
     /**
-     * Constructs a new {@code Memory} instance.
-     */
-    public Memory() {
-        // No initialization required.
-    }
-
-    /**
      * Total memory (MemTotal in /proc/meminfo)
      */
     private String total;
@@ -59,5 +52,12 @@ public class Memory {
      * Memory usage percentage (used / total * 100)
      */
     private double usage;
+
+    /**
+     * Constructs a new {@code Memory} instance.
+     */
+    public Memory() {
+        // No initialization required.
+    }
 
 }

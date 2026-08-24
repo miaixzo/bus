@@ -42,13 +42,6 @@ import org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation.ProcessPe
 public class ProcessPerformanceData {
 
     /**
-     * Keeps Windows process performance data registry queries on the static API.
-     */
-    public ProcessPerformanceData() {
-        // No initialization required.
-    }
-
-    /**
      * The PROCESS constant.
      */
     public static final String PROCESS = "Process";
@@ -57,6 +50,13 @@ public class ProcessPerformanceData {
      * The PERFDATA constant.
      */
     private static final boolean PERFDATA = Builder.get(Builder._WINDOWS_HKEYPERFDATA, true);
+
+    /**
+     * Keeps Windows process performance data registry queries on the static API.
+     */
+    public ProcessPerformanceData() {
+        // No initialization required.
+    }
 
     /**
      * Query the registry for process performance counters

@@ -83,13 +83,6 @@ import org.miaixz.bus.logger.Logger;
 public class Keeper {
 
     /**
-     * Constructs a new Keeper instance.
-     */
-    public Keeper() {
-        // No initialization required.
-    }
-
-    /**
      * Default key size in bits for RSA/DSA algorithms.
      * <p>
      * For RSA/DSA, the default key size is 1024 bits. Key sizes must be a multiple of 64, ranging from 512 to 1024
@@ -119,6 +112,13 @@ public class Keeper {
      * Certificate type for X.509 certificates.
      */
     public static final String TYPE_X509 = "X.509";
+
+    /**
+     * Constructs a new Keeper instance.
+     */
+    public Keeper() {
+        // No initialization required.
+    }
 
     /**
      * Generates a {@link SecretKey} for symmetric encryption or digest algorithms. The key size will be determined by

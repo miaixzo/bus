@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Application implements Serializable {
 
     /**
-     * Constructs a new Application instance.
-     */
-    public Application() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -68,6 +61,13 @@ public class Application implements Serializable {
      * The secret value.
      */
     private String secret;
+
+    /**
+     * Constructs a new Application instance.
+     */
+    public Application() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

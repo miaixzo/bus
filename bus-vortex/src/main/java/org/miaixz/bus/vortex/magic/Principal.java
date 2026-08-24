@@ -43,13 +43,6 @@ import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 public class Principal {
 
     /**
-     * Creates an empty security principal.
-     */
-    public Principal() {
-        // No initialization required.
-    }
-
-    /**
      * The type of the credential being presented.
      * <ul>
      * <li>{@link Consts#ONE} (1): Represents a bearer token (e.g., JWT, Opaque Token).</li>
@@ -157,5 +150,12 @@ public class Principal {
      * @see Context Request context structure and lifecycle
      */
     protected Context context;
+
+    /**
+     * Creates an empty security principal.
+     */
+    public Principal() {
+        // No initialization required.
+    }
 
 }

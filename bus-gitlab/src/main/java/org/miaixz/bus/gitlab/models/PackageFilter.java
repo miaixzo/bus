@@ -34,13 +34,6 @@ import org.miaixz.bus.gitlab.models.Constants.SortOrder;
 public class PackageFilter implements Serializable {
 
     /**
-     * Constructs a new {@code PackageFilter} instance.
-     */
-    public PackageFilter() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -78,6 +71,13 @@ public class PackageFilter implements Serializable {
      * The package version value.
      */
     private String packageVersion;
+
+    /**
+     * Constructs a new {@code PackageFilter} instance.
+     */
+    public PackageFilter() {
+        // No initialization required.
+    }
 
     /**
      * Exclude Subgroups.

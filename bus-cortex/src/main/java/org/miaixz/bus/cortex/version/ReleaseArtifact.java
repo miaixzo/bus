@@ -32,13 +32,6 @@ import lombok.Setter;
 public class ReleaseArtifact {
 
     /**
-     * Creates an empty release artifact.
-     */
-    public ReleaseArtifact() {
-        // No initialization required.
-    }
-
-    /**
      * Artifact category, such as binary, manifest, schema, or documentation.
      */
     private String artifactType;
@@ -62,5 +55,12 @@ public class ReleaseArtifact {
      * Storage reference or URL for the artifact payload.
      */
     private String payloadRef;
+
+    /**
+     * Creates an empty release artifact.
+     */
+    public ReleaseArtifact() {
+        // No initialization required.
+    }
 
 }

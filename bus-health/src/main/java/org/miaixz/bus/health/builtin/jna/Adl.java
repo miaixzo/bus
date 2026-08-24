@@ -207,13 +207,6 @@ public interface Adl {
     class AdapterInfo extends Structure {
 
         /**
-         * Constructs a new AdapterInfo instance.
-         */
-        public AdapterInfo() {
-            // No initialization required.
-        }
-
-        /**
          * The iSize value.
          */
         public int iSize;
@@ -288,6 +281,13 @@ public interface Adl {
          */
         public int iOSDisplayIndex;
 
+        /**
+         * Constructs a new AdapterInfo instance.
+         */
+        public AdapterInfo() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -300,13 +300,6 @@ public interface Adl {
             "iCurrentDCEFPerformanceLevel", "iCurrentGFXPerformanceLevel", "iUVDPerformanceLevel",
             "iVCEPerformanceLevel", "iCurrentBusSpeed", "iCurrentBusLanes", "iMaximumBusLanes", "iVDDC", "iVDDCI" })
     class ADLODNPerformanceStatus extends Structure {
-
-        /**
-         * Constructs a new ADLODNPerformanceStatus instance.
-         */
-        public ADLODNPerformanceStatus() {
-            // No initialization required.
-        }
 
         /**
          * The iCoreClock value.
@@ -398,6 +391,13 @@ public interface Adl {
          */
         public int iVDDCI;
 
+        /**
+         * Constructs a new ADLODNPerformanceStatus instance.
+         */
+        public ADLODNPerformanceStatus() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -408,13 +408,6 @@ public interface Adl {
     @FieldOrder({ "iMode", "iFanControlMode", "iCurrentFanSpeedMode", "iCurrentFanSpeed", "iTargetFanSpeed",
             "iTargetTemperature", "iMinPerformanceClock", "iMinFanLimit" })
     class ADLODNFanControl extends Structure {
-
-        /**
-         * Constructs a new ADLODNFanControl instance.
-         */
-        public ADLODNFanControl() {
-            // No initialization required.
-        }
 
         /**
          * The iMode value.
@@ -455,6 +448,13 @@ public interface Adl {
          * The iMinFanLimit value.
          */
         public int iMinFanLimit;
+
+        /**
+         * Constructs a new ADLODNFanControl instance.
+         */
+        public ADLODNFanControl() {
+            // No initialization required.
+        }
 
     }
 

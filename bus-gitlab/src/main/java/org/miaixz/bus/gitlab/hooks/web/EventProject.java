@@ -30,13 +30,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class EventProject {
 
     /**
-     * Constructs a new {@code EventProject} instance.
-     */
-    public EventProject() {
-        // No initialization required.
-    }
-
-    /**
      * The id value.
      */
     private Long id;
@@ -100,6 +93,13 @@ public class EventProject {
      * The http url value.
      */
     private String httpUrl;
+
+    /**
+     * Constructs a new {@code EventProject} instance.
+     */
+    public EventProject() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

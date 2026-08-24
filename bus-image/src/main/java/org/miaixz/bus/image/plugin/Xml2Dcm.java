@@ -44,13 +44,6 @@ import org.miaixz.bus.image.galaxy.io.*;
 public class Xml2Dcm {
 
     /**
-     * Constructs a new {@code Xml2Dcm} instance.
-     */
-    public Xml2Dcm() {
-        // No initialization required.
-    }
-
-    /**
      * Descriptor for handling bulk data.
      */
     private final BasicBulkDataDescriptor bulkDataDescriptor = new BasicBulkDataDescriptor();
@@ -119,6 +112,13 @@ public class Xml2Dcm {
      * The main DICOM dataset.
      */
     private Attributes dataset;
+
+    /**
+     * Constructs a new {@code Xml2Dcm} instance.
+     */
+    public Xml2Dcm() {
+        // No initialization required.
+    }
 
     /**
      * Parses a DICOM XML file and returns its content as an {@link Attributes} object.

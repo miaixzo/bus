@@ -42,13 +42,6 @@ import org.miaixz.bus.health.builtin.software.OSDesktopWindow;
 public class Xwininfo {
 
     /**
-     * Keeps X11 desktop-window queries on the static API.
-     */
-    public Xwininfo() {
-        // No initialization required.
-    }
-
-    /**
      * The NET_CLIENT_LIST_STACKING constant.
      */
     private static final String[] NET_CLIENT_LIST_STACKING = Pattern.SPACES_PATTERN
@@ -69,6 +62,13 @@ public class Xwininfo {
      */
     private static final java.util.regex.Pattern WINDOW_PATTERN = java.util.regex.Pattern.compile(
             "(0x\\S+) (?:\"(.+)\")?.*: \\((?:\"(.+)\" \".+\")?\\) {2}(\\d+)x(\\d+)\\+.+ {2}\\+(-?\\d+)\\+(-?\\d+)");
+
+    /**
+     * Keeps X11 desktop-window queries on the static API.
+     */
+    public Xwininfo() {
+        // No initialization required.
+    }
 
     /**
      * Gets windows on the operating system's GUI desktop.

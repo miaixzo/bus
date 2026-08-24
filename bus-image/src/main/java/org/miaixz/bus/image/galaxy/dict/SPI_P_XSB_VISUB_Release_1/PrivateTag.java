@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SPI_P_XSB_VISUB_Release_1;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SPI-P-XSB-VISUB Release 1";
@@ -152,5 +145,12 @@ public class PrivateTag {
      * (0029,xx3F) VR=CS VM=1 ?
      */
     public static final int _0029_xx3F_ = 0x0029003F;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

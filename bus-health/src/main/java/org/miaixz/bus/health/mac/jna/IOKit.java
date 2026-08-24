@@ -71,13 +71,6 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
     class SMCKeyDataVers extends Structure {
 
         /**
-         * Constructs a new SMCKeyDataVers instance.
-         */
-        public SMCKeyDataVers() {
-            // No initialization required.
-        }
-
-        /**
          * Major version number.
          */
         public byte major;
@@ -102,6 +95,13 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
          */
         public short release;
 
+        /**
+         * Constructs a new SMCKeyDataVers instance.
+         */
+        public SMCKeyDataVers() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -115,13 +115,6 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      */
     @FieldOrder({ "version", "length", "cpuPLimit", "gpuPLimit", "memPLimit" })
     class SMCKeyDataPLimitData extends Structure {
-
-        /**
-         * Constructs a new SMCKeyDataPLimitData instance.
-         */
-        public SMCKeyDataPLimitData() {
-            // No initialization required.
-        }
 
         /**
          * Version of the power limit data structure.
@@ -148,6 +141,13 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
          */
         public int memPLimit;
 
+        /**
+         * Constructs a new SMCKeyDataPLimitData instance.
+         */
+        public SMCKeyDataPLimitData() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -161,13 +161,6 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      */
     @FieldOrder({ "dataSize", "dataType", "dataAttributes" })
     class SMCKeyDataKeyInfo extends Structure {
-
-        /**
-         * Constructs a new SMCKeyDataKeyInfo instance.
-         */
-        public SMCKeyDataKeyInfo() {
-            // No initialization required.
-        }
 
         /**
          * Size of the data.
@@ -184,6 +177,13 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
          */
         public byte dataAttributes;
 
+        /**
+         * Constructs a new SMCKeyDataKeyInfo instance.
+         */
+        public SMCKeyDataKeyInfo() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -196,13 +196,6 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      */
     @FieldOrder({ "key", "vers", "pLimitData", "keyInfo", "result", "status", "data8", "data32", "bytes" })
     class SMCKeyData extends Structure implements AutoCloseable {
-
-        /**
-         * Constructs a new SMCKeyData instance.
-         */
-        public SMCKeyData() {
-            // No initialization required.
-        }
 
         /**
          * The SMC key.
@@ -250,6 +243,13 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
         public byte[] bytes = new byte[32];
 
         /**
+         * Constructs a new SMCKeyData instance.
+         */
+        public SMCKeyData() {
+            // No initialization required.
+        }
+
+        /**
          * Closes the memory associated with this structure.
          */
         @Override
@@ -271,13 +271,6 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
     class SMCVal extends Structure implements AutoCloseable {
 
         /**
-         * Constructs a new SMCVal instance.
-         */
-        public SMCVal() {
-            // No initialization required.
-        }
-
-        /**
          * The SMC key.
          */
         public byte[] key = new byte[5];
@@ -296,6 +289,13 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
          * Raw bytes of data.
          */
         public byte[] bytes = new byte[32];
+
+        /**
+         * Constructs a new SMCVal instance.
+         */
+        public SMCVal() {
+            // No initialization required.
+        }
 
         /**
          * Closes the memory associated with this structure.

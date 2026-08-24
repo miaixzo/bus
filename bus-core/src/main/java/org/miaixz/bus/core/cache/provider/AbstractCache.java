@@ -51,13 +51,6 @@ import org.miaixz.bus.core.lang.mutable.MutableObject;
  */
 public abstract class AbstractCache<K, V> implements Cache<K, V> {
 
-    /**
-     * Creates a new {@code AbstractCache} instance.
-     */
-    public AbstractCache() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852230739085L;
 
@@ -100,6 +93,13 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
      * The listener for cache events.
      */
     protected CacheListener<K, V> listener;
+
+    /**
+     * Creates a new {@code AbstractCache} instance.
+     */
+    public AbstractCache() {
+        // No initialization required.
+    }
 
     /**
      * Puts an object into the cache with the default timeout.

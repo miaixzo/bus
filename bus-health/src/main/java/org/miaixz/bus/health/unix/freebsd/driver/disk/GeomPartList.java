@@ -39,13 +39,6 @@ import org.miaixz.bus.health.builtin.hardware.HWPartition;
 public class GeomPartList {
 
     /**
-     * Constructs a new GeomPartList instance.
-     */
-    public GeomPartList() {
-        // No initialization required.
-    }
-
-    /**
      * The GEOM_PART_LIST constant.
      */
     private static final String GEOM_PART_LIST = "geom part list";
@@ -54,6 +47,13 @@ public class GeomPartList {
      * The STAT_FILESIZE constant.
      */
     private static final String STAT_FILESIZE = "stat -f %i /dev/";
+
+    /**
+     * Constructs a new GeomPartList instance.
+     */
+    public GeomPartList() {
+        // No initialization required.
+    }
 
     /**
      * Queries partition data using geom, mount, and stat commands

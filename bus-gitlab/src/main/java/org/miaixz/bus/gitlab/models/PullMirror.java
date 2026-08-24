@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class PullMirror implements Serializable {
 
     /**
-     * Constructs a new {@code PullMirror} instance.
-     */
-    public PullMirror() {
-        // No initialization required.
-    }
-
-    /**
      * Serialization version identifier.
      */
     @Serial
@@ -104,6 +97,13 @@ public class PullMirror implements Serializable {
      * Regular expression used to limit mirrored branches.
      */
     private String mirrorBranchRegex;
+
+    /**
+     * Constructs a new {@code PullMirror} instance.
+     */
+    public PullMirror() {
+        // No initialization required.
+    }
 
     /**
      * Gets the pull mirror identifier.

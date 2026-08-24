@@ -34,13 +34,6 @@ import lombok.experimental.SuperBuilder;
 public class Jvm {
 
     /**
-     * Constructs a new {@code Jvm} instance.
-     */
-    public Jvm() {
-        // No initialization required.
-    }
-
-    /**
      * JDK Version
      */
     private String jdkVersion;
@@ -89,5 +82,12 @@ public class Jvm {
      * JVM Uptime (milliseconds)
      */
     private long uptime;
+
+    /**
+     * Constructs a new {@code Jvm} instance.
+     */
+    public Jvm() {
+        // No initialization required.
+    }
 
 }

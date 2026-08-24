@@ -46,13 +46,6 @@ import org.miaixz.bus.image.galaxy.io.SAXParserFactoryHolder;
 public class RecordFactory {
 
     /**
-     * Constructs a new {@code RecordFactory} instance.
-     */
-    public RecordFactory() {
-        // No initialization required.
-    }
-
-    /**
      * The in use value.
      */
     private static final int IN_USE = 0xffff;
@@ -76,6 +69,13 @@ public class RecordFactory {
      * The private record keys value.
      */
     private HashMap<String, int[]> privateRecordKeys;
+
+    /**
+     * Constructs a new {@code RecordFactory} instance.
+     */
+    public RecordFactory() {
+        // No initialization required.
+    }
 
     /**
      * Executes the lazy load default configuration operation.

@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class TaskCompletionStatus implements Serializable {
 
     /**
-     * Constructs a new {@code TaskCompletionStatus} instance.
-     */
-    public TaskCompletionStatus() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -52,6 +45,13 @@ public class TaskCompletionStatus implements Serializable {
      * The completed count value.
      */
     private Integer completedCount;
+
+    /**
+     * Constructs a new {@code TaskCompletionStatus} instance.
+     */
+    public TaskCompletionStatus() {
+        // No initialization required.
+    }
 
     /**
      * Returns the count.

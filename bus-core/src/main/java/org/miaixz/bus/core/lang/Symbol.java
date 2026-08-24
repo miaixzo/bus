@@ -27,13 +27,6 @@ package org.miaixz.bus.core.lang;
 public class Symbol {
 
     /**
-     * Constructs a new symbol constants holder.
-     */
-    public Symbol() {
-        // No initialization required.
-    }
-
-    /**
      * Character: ASCII NUL.
      */
     public static final char C_NUL = '\0';
@@ -1067,5 +1060,12 @@ public class Symbol {
      * Unicode escape sequence start string: "\\u"
      */
     public static final String UNICODE_START_CHAR = "\\u";
+
+    /**
+     * Constructs a new symbol constants holder.
+     */
+    public Symbol() {
+        // No initialization required.
+    }
 
 }

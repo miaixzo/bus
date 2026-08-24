@@ -37,13 +37,6 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  */
 public class Base64Decoder implements Decoder<byte[], byte[]>, Serializable {
 
-    /**
-     * Creates the shared Base64 decoder.
-     */
-    public Base64Decoder() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852282603562L;
 
@@ -67,6 +60,13 @@ public class Base64Decoder implements Decoder<byte[], byte[]>, Serializable {
             -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, // 60-6f a-o
             41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51 // 70-7a p-z
     };
+
+    /**
+     * Creates the shared Base64 decoder.
+     */
+    public Base64Decoder() {
+        // No initialization required.
+    }
 
     /**
      * Decodes a Base64 encoded byte array.

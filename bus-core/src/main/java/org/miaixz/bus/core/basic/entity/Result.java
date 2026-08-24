@@ -39,13 +39,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class Result<T> implements Serializable {
 
-    /**
-     * Constructs a new {@code Result} instance.
-     */
-    public Result() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852291039338L;
 
@@ -68,6 +61,13 @@ public class Result<T> implements Serializable {
      * The number of records per page for pagination.
      */
     protected transient Integer pageSize;
+
+    /**
+     * Constructs a new {@code Result} instance.
+     */
+    public Result() {
+        // No initialization required.
+    }
 
     /**
      * Creates a paginated result using the framework's existing {@code total}/{@code rows} response structure.

@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class EventCommit {
 
     /**
-     * Constructs a new {@code EventCommit} instance.
-     */
-    public EventCommit() {
-        // No initialization required.
-    }
-
-    /**
      * The id value.
      */
     private String id;
@@ -75,6 +68,13 @@ public class EventCommit {
      * The removed value.
      */
     private List<String> removed;
+
+    /**
+     * Constructs a new {@code EventCommit} instance.
+     */
+    public EventCommit() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

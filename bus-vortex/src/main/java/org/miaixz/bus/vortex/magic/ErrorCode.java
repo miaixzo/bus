@@ -33,13 +33,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
     /**
-     * Creates a gateway error-code registry holder.
-     */
-    public ErrorCode() {
-        // No initialization required.
-    }
-
-    /**
      * This interaction mode is not supported.
      */
     public static final Errors _116000 = ErrorRegistry.register("116000", "This interaction mode is not supported");
@@ -48,5 +41,12 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
      * Credential-bound signing requires a Bearer Token or API key.
      */
     public static final Errors _116001 = ErrorRegistry.register("116001", "Missing signature credential");
+
+    /**
+     * Creates a gateway error-code registry holder.
+     */
+    public ErrorCode() {
+        // No initialization required.
+    }
 
 }

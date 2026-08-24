@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_MR_PHOENIX_ATTRIBUTES;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS MR PHOENIX ATTRIBUTES";
@@ -57,5 +50,12 @@ public class PrivateTag {
      * (0021,xxF1) VR=UL VM=1 Count of Pseudo Attributes
      */
     public static final int CountOfPseudoAttributes = 0x002100F1;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_005;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "Philips MR Imaging DD 005";
@@ -507,5 +500,12 @@ public class PrivateTag {
      * (2005,xx92) VR=FL VM=1 Specific Energy Dose
      */
     public static final int SpecificEnergyDose = 0x20050092;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

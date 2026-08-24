@@ -48,13 +48,6 @@ import org.miaixz.bus.cortex.builtin.Selector;
 public class Vector extends Nature {
 
     /**
-     * Creates an empty shared query vector.
-     */
-    public Vector() {
-        // No initialization required.
-    }
-
-    /**
      * Application identifier bound to the queried asset or setting scope.
      */
     private String app_id;
@@ -120,6 +113,13 @@ public class Vector extends Nature {
      */
     @lombok.Builder.Default
     private int offset = 0;
+
+    /**
+     * Creates an empty shared query vector.
+     */
+    public Vector() {
+        // No initialization required.
+    }
 
     /**
      * Creates a new vector builder.

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_ENHANCED_IDATASET_API;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS SYNGO ENHANCED IDATASET API";
@@ -52,5 +45,12 @@ public class PrivateTag {
      * (0027,xx03) VR=SQ VM=1 Application Attributes Sequenc
      */
     public static final int ApplicationAttributesSequence = 0x00270003;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

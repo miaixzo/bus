@@ -57,13 +57,6 @@ import org.miaixz.bus.core.text.StringTrimer;
 public class ReflectKit {
 
     /**
-     * Creates an instance for reflection-based member and type operations.
-     */
-    public ReflectKit() {
-        // No initialization required.
-    }
-
-    /**
      * JVM type descriptor for void (V).
      */
     public static final char JVM_VOID = 'V';
@@ -117,6 +110,13 @@ public class ReflectKit {
      * Constructor cache.
      */
     private static final WeakConcurrentMap<Class<?>, Constructor<?>[]> CONSTRUCTORS_CACHE = new WeakConcurrentMap<>();
+
+    /**
+     * Creates an instance for reflection-based member and type operations.
+     */
+    public ReflectKit() {
+        // No initialization required.
+    }
 
     static {
         PRIMITIVE_TABLE.put(void.class, JVM_VOID, "void");

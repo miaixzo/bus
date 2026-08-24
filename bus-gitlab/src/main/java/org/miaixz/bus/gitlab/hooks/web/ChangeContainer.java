@@ -35,13 +35,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ChangeContainer<T> {
 
     /**
-     * Constructs a new {@code ChangeContainer} instance.
-     */
-    public ChangeContainer() {
-        // No initialization required.
-    }
-
-    /**
      * The previous value.
      */
     private T previous;
@@ -49,6 +42,13 @@ public class ChangeContainer<T> {
      * The current value.
      */
     private T current;
+
+    /**
+     * Constructs a new {@code ChangeContainer} instance.
+     */
+    public ChangeContainer() {
+        // No initialization required.
+    }
 
     /**
      * Returns the string.

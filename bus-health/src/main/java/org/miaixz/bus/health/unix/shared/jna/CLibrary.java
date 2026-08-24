@@ -222,13 +222,6 @@ public interface CLibrary extends LibCAPI, Library {
     class Sockaddr extends Structure {
 
         /**
-         * Constructs a new Sockaddr instance.
-         */
-        public Sockaddr() {
-            // No initialization required.
-        }
-
-        /**
          * Address family.
          */
         public short sa_family;
@@ -237,6 +230,13 @@ public interface CLibrary extends LibCAPI, Library {
          * Socket address data.
          */
         public byte[] sa_data = new byte[14];
+
+        /**
+         * Constructs a new Sockaddr instance.
+         */
+        public Sockaddr() {
+            // No initialization required.
+        }
 
         /**
          * A reference to a {@link Sockaddr} structure.
@@ -262,13 +262,6 @@ public interface CLibrary extends LibCAPI, Library {
      * @author Kimi Liu
      */
     class BsdTcpstat {
-
-        /**
-         * Constructs a new BsdTcpstat instance.
-         */
-        public BsdTcpstat() {
-            // No initialization required.
-        }
 
         /**
          * Connections initiated.
@@ -325,6 +318,13 @@ public interface CLibrary extends LibCAPI, Library {
          */
         public int tcps_rcvshort;
 
+        /**
+         * Constructs a new BsdTcpstat instance.
+         */
+        public BsdTcpstat() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -333,13 +333,6 @@ public interface CLibrary extends LibCAPI, Library {
      * @author Kimi Liu
      */
     class BsdUdpstat {
-
-        /**
-         * Constructs a new BsdUdpstat instance.
-         */
-        public BsdUdpstat() {
-            // No initialization required.
-        }
 
         /**
          * Total input packets.
@@ -381,6 +374,13 @@ public interface CLibrary extends LibCAPI, Library {
          */
         public int udps_snd6_swcsum;
 
+        /**
+         * Constructs a new BsdUdpstat instance.
+         */
+        public BsdUdpstat() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -389,13 +389,6 @@ public interface CLibrary extends LibCAPI, Library {
      * @author Kimi Liu
      */
     class BsdIpstat {
-
-        /**
-         * Constructs a new BsdIpstat instance.
-         */
-        public BsdIpstat() {
-            // No initialization required.
-        }
 
         /**
          * Total packets received.
@@ -432,6 +425,13 @@ public interface CLibrary extends LibCAPI, Library {
          */
         public int ips_delivered;
 
+        /**
+         * Constructs a new BsdIpstat instance.
+         */
+        public BsdIpstat() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -442,13 +442,6 @@ public interface CLibrary extends LibCAPI, Library {
     class BsdIp6stat {
 
         /**
-         * Constructs a new BsdIp6stat instance.
-         */
-        public BsdIp6stat() {
-            // No initialization required.
-        }
-
-        /**
          * Total packets received.
          */
         public long ip6s_total;
@@ -457,6 +450,13 @@ public interface CLibrary extends LibCAPI, Library {
          * Total output packets.
          */
         public long ip6s_localout;
+
+        /**
+         * Constructs a new BsdIp6stat instance.
+         */
+        public BsdIp6stat() {
+            // No initialization required.
+        }
 
     }
 

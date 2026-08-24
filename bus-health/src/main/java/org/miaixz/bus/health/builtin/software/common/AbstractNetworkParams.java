@@ -50,13 +50,6 @@ import org.miaixz.bus.logger.Logger;
 public abstract class AbstractNetworkParams implements NetworkParams {
 
     /**
-     * Constructs a new AbstractNetworkParams instance.
-     */
-    public AbstractNetworkParams() {
-        // No initialization required.
-    }
-
-    /**
      * The NAMESERVER constant.
      */
     private static final String NAMESERVER = "nameserver";
@@ -66,6 +59,13 @@ public abstract class AbstractNetworkParams implements NetworkParams {
      */
     private final SupplierX<InetAddress> localHost = Memoizer
             .memoize(this::queryLocalHost, Memoizer.defaultExpiration());
+
+    /**
+     * Constructs a new AbstractNetworkParams instance.
+     */
+    public AbstractNetworkParams() {
+        // No initialization required.
+    }
 
     /**
      * Convenience method to parse the output of the `route` command. While the command arguments vary between OS's the

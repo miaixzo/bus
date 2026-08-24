@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_FALCON_03;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_FALCON_03";
@@ -77,5 +70,12 @@ public class PrivateTag {
      * (0045,xx73) VR=IS VM=1 Collimator Height
      */
     public static final int CollimatorHeight = 0x00450073;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -62,13 +62,6 @@ import org.miaixz.bus.logger.Logger;
 public class MacFileSystem extends AbstractFileSystem {
 
     /**
-     * Constructs a new {@code MacFileSystem} instance.
-     */
-    public MacFileSystem() {
-        // No initialization required.
-    }
-
-    /**
      * The FS_PATH_EXCLUDES constant.
      */
     protected static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
@@ -213,6 +206,13 @@ public class MacFileSystem extends AbstractFileSystem {
      * The OPTIONS_MAP constant.
      */
     protected static final Map<Integer, String> OPTIONS_MAP = new HashMap<>();
+
+    /**
+     * Constructs a new {@code MacFileSystem} instance.
+     */
+    public MacFileSystem() {
+        // No initialization required.
+    }
 
     static {
         OPTIONS_MAP.put(MNT_SYNCHRONOUS, "synchronous");

@@ -34,13 +34,6 @@ import java.util.NoSuchElementException;
 public abstract class ComputeIterator<T> implements Iterator<T> {
 
     /**
-     * Creates a new {@code ComputeIterator} instance.
-     */
-    public ComputeIterator() {
-        // No initialization required.
-    }
-
-    /**
      * The next element to be returned by the iterator.
      */
     private T next;
@@ -49,6 +42,13 @@ public abstract class ComputeIterator<T> implements Iterator<T> {
      * A flag indicating if the iterator has been fully read.
      */
     private boolean finished;
+
+    /**
+     * Creates a new {@code ComputeIterator} instance.
+     */
+    public ComputeIterator() {
+        // No initialization required.
+    }
 
     /**
      * Computes the next element. Implement this method to define how the next element is generated. When

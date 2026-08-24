@@ -36,13 +36,6 @@ import org.miaixz.bus.notify.magic.Notice;
 public class UniNotice extends Notice {
 
     /**
-     * Constructs a new {@code UniNotice} instance.
-     */
-    public UniNotice() {
-        // No initialization required.
-    }
-
-    /**
      * Indicates whether to use simple mode. Defaults to true.
      */
     @Builder.Default
@@ -62,6 +55,13 @@ public class UniNotice extends Notice {
      * The maximum number of retries.
      */
     private int maxRetries;
+
+    /**
+     * Constructs a new {@code UniNotice} instance.
+     */
+    public UniNotice() {
+        // No initialization required.
+    }
 
     /**
      * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.

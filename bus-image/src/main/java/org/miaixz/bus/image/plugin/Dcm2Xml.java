@@ -47,13 +47,6 @@ import org.miaixz.bus.image.galaxy.io.SAXWriter;
 public class Dcm2Xml {
 
     /**
-     * Constructs a new Dcm2Xml instance.
-     */
-    public Dcm2Xml() {
-        // No initialization required.
-    }
-
-    /**
      * Constant for XML version 1.0.
      */
     private static final String XML_1_0 = "1.0";
@@ -117,6 +110,13 @@ public class Dcm2Xml {
      * The XML version to be used in the output.
      */
     private String xmlVersion = XML_1_0;
+
+    /**
+     * Constructs a new Dcm2Xml instance.
+     */
+    public Dcm2Xml() {
+        // No initialization required.
+    }
 
     /**
      * Converts a file path or URL string into a URL string.

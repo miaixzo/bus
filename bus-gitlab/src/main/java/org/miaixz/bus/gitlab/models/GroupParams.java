@@ -36,13 +36,6 @@ import org.miaixz.bus.gitlab.models.Constants.SubgroupCreationLevel;
 public class GroupParams implements Serializable {
 
     /**
-     * Constructs a new {@code GroupParams} instance.
-     */
-    public GroupParams() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -132,6 +125,13 @@ public class GroupParams implements Serializable {
      * The file template project id value.
      */
     private Long fileTemplateProjectId;
+
+    /**
+     * Constructs a new {@code GroupParams} instance.
+     */
+    public GroupParams() {
+        // No initialization required.
+    }
 
     /**
      * The parent group ID for creating nested group. For create only.

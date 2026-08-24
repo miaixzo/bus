@@ -35,13 +35,6 @@ import lombok.Setter;
 public class DataSchema extends DatabaseSchema {
 
     /**
-     * Constructs a new DataSchema instance.
-     */
-    public DataSchema() {
-        // No initialization required.
-    }
-
-    /**
      * The title of the generated document.
      */
     private String title;
@@ -65,5 +58,12 @@ public class DataSchema extends DatabaseSchema {
      * A description for the document.
      */
     private String description;
+
+    /**
+     * Constructs a new DataSchema instance.
+     */
+    public DataSchema() {
+        // No initialization required.
+    }
 
 }

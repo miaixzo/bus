@@ -44,14 +44,14 @@ import org.miaixz.bus.logger.Logger;
  */
 public class AliPayBuilder {
 
+    private static final String CHARSET_UTF8 = Charset.DEFAULT_UTF_8;
+
     /**
      * Constructs a new AliPayBuilder instance.
      */
     public AliPayBuilder() {
         // No initialization required.
     }
-
-    private static final String CHARSET_UTF8 = Charset.DEFAULT_UTF_8;
 
     /**
      * Generates the signature result.

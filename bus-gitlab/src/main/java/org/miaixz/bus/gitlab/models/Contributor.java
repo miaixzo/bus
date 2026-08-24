@@ -30,13 +30,6 @@ import java.io.Serial;
 public class Contributor extends AbstractUser<Contributor> {
 
     /**
-     * Constructs a new {@code Contributor} instance.
-     */
-    public Contributor() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -54,6 +47,13 @@ public class Contributor extends AbstractUser<Contributor> {
      * The deletions value.
      */
     private Integer deletions;
+
+    /**
+     * Constructs a new {@code Contributor} instance.
+     */
+    public Contributor() {
+        // No initialization required.
+    }
 
     /**
      * Returns the commits.

@@ -53,13 +53,6 @@ import org.miaixz.bus.core.lang.Symbol;
 public class ByteKit {
 
     /**
-     * Keeps byte conversion and comparison on the static API.
-     */
-    public ByteKit() {
-        // No initialization required.
-    }
-
-    /**
      * Default byte order: Little Endian.
      */
     public static final ByteOrder DEFAULT_ORDER = ByteOrder.LITTLE_ENDIAN;
@@ -70,6 +63,13 @@ public class ByteKit {
     public static final ByteOrder CPU_ENDIAN = "little".equals(System.getProperty("sun.cpu.endian"))
             ? ByteOrder.LITTLE_ENDIAN
             : ByteOrder.BIG_ENDIAN;
+
+    /**
+     * Keeps byte conversion and comparison on the static API.
+     */
+    public ByteKit() {
+        // No initialization required.
+    }
 
     /**
      * Encodes a CharSequence into a byte array using UTF-8 charset.

@@ -54,13 +54,6 @@ import org.miaixz.bus.mapper.handler.MapperHandler;
 public class OperationHandler<T> extends AbstractSqlHandler implements MapperHandler<T> {
 
     /**
-     * Initializes the SQL operation handler that classifies statements before mapper processing.
-     */
-    public OperationHandler() {
-        // No initialization required.
-    }
-
-    /**
      * Pattern to detect WHERE clause in SQL statements (case-insensitive)
      */
     private static final Pattern WHERE_PATTERN = Pattern.compile("\\bWHERE\\b", Pattern.CASE_INSENSITIVE);
@@ -103,6 +96,13 @@ public class OperationHandler<T> extends AbstractSqlHandler implements MapperHan
      * Flattened operation configuration containing global and database-specific entries.
      */
     private Properties properties;
+
+    /**
+     * Initializes the SQL operation handler that classifies statements before mapper processing.
+     */
+    public OperationHandler() {
+        // No initialization required.
+    }
 
     /**
      * Installs flattened Mapper configuration used for database-specific safety settings.

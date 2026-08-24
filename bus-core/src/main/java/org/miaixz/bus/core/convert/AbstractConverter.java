@@ -45,15 +45,15 @@ import org.miaixz.bus.core.xyz.TypeKit;
  */
 public abstract class AbstractConverter implements Converter, Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852263159195L;
+
     /**
      * Creates a new {@code AbstractConverter} instance.
      */
     public AbstractConverter() {
         // No initialization required.
     }
-
-    @Serial
-    private static final long serialVersionUID = 2852263159195L;
 
     /**
      * Converts the given value to the specified target type.

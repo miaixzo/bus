@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class GetTransferInfo extends Voucher {
 
     /**
-     * Constructs a new {@code GetTransferInfo} instance.
-     */
-    public GetTransferInfo() {
-        // No initialization required.
-    }
-
-    /**
      * Merchant ID.
      */
     private String mch_id;
@@ -66,5 +59,12 @@ public class GetTransferInfo extends Voucher {
      * Transaction ID.
      */
     private String transaction_id;
+
+    /**
+     * Constructs a new {@code GetTransferInfo} instance.
+     */
+    public GetTransferInfo() {
+        // No initialization required.
+    }
 
 }

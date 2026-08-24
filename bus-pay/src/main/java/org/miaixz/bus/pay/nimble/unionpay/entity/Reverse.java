@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class Reverse extends Voucher {
 
     /**
-     * Constructs a new {@code Reverse} instance.
-     */
-    public Reverse() {
-        // No initialization required.
-    }
-
-    /**
      * Service name.
      */
     private String service;
@@ -91,5 +84,12 @@ public class Reverse extends Voucher {
      * Group number.
      */
     private String groupno;
+
+    /**
+     * Constructs a new {@code Reverse} instance.
+     */
+    public Reverse() {
+        // No initialization required.
+    }
 
 }

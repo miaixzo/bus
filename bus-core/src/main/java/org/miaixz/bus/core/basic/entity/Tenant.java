@@ -36,16 +36,16 @@ import lombok.experimental.SuperBuilder;
 public class Tenant extends Tracer {
 
     /**
+     * The unique identifier of the tenant to which the current entity belongs.
+     */
+    @Column(length = 24)
+    private String tenant_id;
+
+    /**
      * Constructs a new {@code Tenant} instance.
      */
     public Tenant() {
         // No initialization required.
     }
-
-    /**
-     * The unique identifier of the tenant to which the current entity belongs.
-     */
-    @Column(length = 24)
-    private String tenant_id;
 
 }

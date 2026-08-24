@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_CT_HINO_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_CT_HINO_01";
@@ -52,5 +45,12 @@ public class PrivateTag {
      * (004B,xx03) VR=IS VM=1 HBC Number
      */
     public static final int HBCNumber = 0x004B0003;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

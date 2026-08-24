@@ -42,13 +42,6 @@ import org.miaixz.bus.shade.screw.process.ProcessConfig;
 @SuperBuilder
 public class Config implements Serializable {
 
-    /**
-     * Constructs a new {@code Config} instance.
-     */
-    public Config() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2805231869025L;
 
@@ -92,6 +85,13 @@ public class Config implements Serializable {
      * Configuration for the documentation generation engine.
      */
     private EngineConfig engineConfig;
+
+    /**
+     * Constructs a new {@code Config} instance.
+     */
+    public Config() {
+        // No initialization required.
+    }
 
     /**
      * Constructs a new {@code Config} instance.

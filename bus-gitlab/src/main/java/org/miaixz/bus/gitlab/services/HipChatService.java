@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
 public class HipChatService extends NotificationService {
 
     /**
-     * Constructs a new {@code HipChatService} instance.
-     */
-    public HipChatService() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -69,6 +62,13 @@ public class HipChatService extends NotificationService {
      * The server prop value.
      */
     public static final String SERVER_PROP = "server";
+
+    /**
+     * Constructs a new {@code HipChatService} instance.
+     */
+    public HipChatService() {
+        // No initialization required.
+    }
 
     /**
      * Get the form data for this service based on it's properties.

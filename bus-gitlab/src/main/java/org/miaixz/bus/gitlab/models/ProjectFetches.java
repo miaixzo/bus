@@ -36,13 +36,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class ProjectFetches implements Serializable {
 
     /**
-     * Constructs a new {@code ProjectFetches} instance.
-     */
-    public ProjectFetches() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -51,6 +44,13 @@ public class ProjectFetches implements Serializable {
      * The fetches value.
      */
     private Fetches fetches;
+
+    /**
+     * Constructs a new {@code ProjectFetches} instance.
+     */
+    public ProjectFetches() {
+        // No initialization required.
+    }
 
     /**
      * Returns the fetches.
@@ -91,13 +91,6 @@ public class ProjectFetches implements Serializable {
     public static class DateCount implements Serializable {
 
         /**
-         * Constructs a new {@code DateCount} instance.
-         */
-        public DateCount() {
-            // No initialization required.
-        }
-
-        /**
          * The serial version uid value.
          */
         @Serial
@@ -113,6 +106,13 @@ public class ProjectFetches implements Serializable {
          */
         @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
         private Date date;
+
+        /**
+         * Constructs a new {@code DateCount} instance.
+         */
+        public DateCount() {
+            // No initialization required.
+        }
 
         /**
          * Returns the count.
@@ -163,13 +163,6 @@ public class ProjectFetches implements Serializable {
      */
     public static class Fetches implements Serializable {
 
-        /**
-         * Constructs a new {@code Fetches} instance.
-         */
-        public Fetches() {
-            // No initialization required.
-        }
-
         @Serial
         private static final long serialVersionUID = 2852271590601L;
 
@@ -181,6 +174,13 @@ public class ProjectFetches implements Serializable {
          * The days value.
          */
         private List<DateCount> days;
+
+        /**
+         * Constructs a new {@code Fetches} instance.
+         */
+        public Fetches() {
+            // No initialization required.
+        }
 
         /**
          * Returns the total.

@@ -45,13 +45,6 @@ import tools.jackson.databind.node.ObjectNode;
 public class Todo implements Serializable {
 
     /**
-     * Constructs a new {@code Todo} instance.
-     */
-    public Todo() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -100,6 +93,13 @@ public class Todo implements Serializable {
      * The created at value.
      */
     private Date createdAt;
+
+    /**
+     * Constructs a new {@code Todo} instance.
+     */
+    public Todo() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

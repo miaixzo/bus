@@ -46,16 +46,16 @@ import org.miaixz.bus.metrics.nimble.Sample;
 public class HttpMetrics implements Filter {
 
     /**
+     * Servlet request attribute key used to pass the in-flight {@link Sample} through the filter chain.
+     */
+    private static final String ATTR_SAMPLE = Builder.HTTP_ATTR_SAMPLE;
+
+    /**
      * Constructs a new HttpMetrics instance.
      */
     public HttpMetrics() {
         // No initialization required.
     }
-
-    /**
-     * Servlet request attribute key used to pass the in-flight {@link Sample} through the filter chain.
-     */
-    private static final String ATTR_SAMPLE = Builder.HTTP_ATTR_SAMPLE;
 
     /**
      * Intercepts each HTTP request, starts a timer, and records duration/status/method/uri tags on completion.

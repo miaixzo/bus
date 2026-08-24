@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class GitLabCiTemplateElement implements Serializable {
 
     /**
-     * Constructs a new {@code GitLabCiTemplateElement} instance.
-     */
-    public GitLabCiTemplateElement() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -52,6 +45,13 @@ public class GitLabCiTemplateElement implements Serializable {
      * The name value.
      */
     private String name;
+
+    /**
+     * Constructs a new {@code GitLabCiTemplateElement} instance.
+     */
+    public GitLabCiTemplateElement() {
+        // No initialization required.
+    }
 
     /**
      * Returns the key.

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_SERS_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_SERS_01";
@@ -87,5 +80,12 @@ public class PrivateTag {
      * (0025,xx1B) VR=OB VM=1 Protocol Data Block (compressed)
      */
     public static final int ProtocolDataBlockCompressed = 0x0025001B;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

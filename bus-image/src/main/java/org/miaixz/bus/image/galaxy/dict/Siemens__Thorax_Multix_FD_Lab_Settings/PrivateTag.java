@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Lab_Settings;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "Siemens: Thorax/Multix FD Lab Settings";
@@ -132,5 +125,12 @@ public class PrivateTag {
      * (0021,xx31) VR=SH VM=1 AcquisitionSortNumber
      */
     public static final int AcquisitionSortNumber = 0x00210031;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

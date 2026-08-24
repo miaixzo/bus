@@ -39,13 +39,6 @@ public abstract class SrcToDestCopier<T, C extends SrcToDestCopier<T, C>> implem
     private static final long serialVersionUID = 2852251585211L;
 
     /**
-     * Constructs a source-to-destination copier.
-     */
-    public SrcToDestCopier() {
-        // No initialization required.
-    }
-
-    /**
      * The source object from which data will be copied.
      */
     protected T src;
@@ -60,6 +53,13 @@ public abstract class SrcToDestCopier<T, C extends SrcToDestCopier<T, C>> implem
      * {@code false} for a given element, that element will not be copied.
      */
     protected PredicateX<T> copyPredicate;
+
+    /**
+     * Constructs a source-to-destination copier.
+     */
+    public SrcToDestCopier() {
+        // No initialization required.
+    }
 
     /**
      * Retrieves the source object of the copier.

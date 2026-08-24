@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_MI_RWVM_SUV;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS MI RWVM SUV";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (0041,xx01) VR=CS VM=1 SUV Decay Correction Method
      */
     public static final int SUVDecayCorrectionMethod = 0x00410001;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

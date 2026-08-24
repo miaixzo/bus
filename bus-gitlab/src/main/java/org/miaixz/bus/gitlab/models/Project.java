@@ -46,13 +46,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class Project implements Serializable {
 
     /**
-     * Constructs a new {@code Project} instance.
-     */
-    public Project() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -618,6 +611,13 @@ public class Project implements Serializable {
      */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date markedForDeletionOn;
+
+    /**
+     * Constructs a new {@code Project} instance.
+     */
+    public Project() {
+        // No initialization required.
+    }
 
     /**
      * Returns the approvals before merge.

@@ -348,13 +348,6 @@ public class Console {
     public static class Table {
 
         /**
-         * Constructs a new Table.
-         */
-        public Table() {
-            // No initialization required.
-        }
-
-        /**
          * Full-width space character used when SBC mode is enabled.
          */
         private static final char SPACE = '\u3000';
@@ -379,6 +372,13 @@ public class Console {
          * Maximum character count for each column.
          */
         private List<Integer> columnCharNumber;
+
+        /**
+         * Constructs a new Table.
+         */
+        public Table() {
+            // No initialization required.
+        }
 
         /**
          * Creates a new {@code Table} instance.

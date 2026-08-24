@@ -49,13 +49,6 @@ import org.miaixz.bus.vortex.strategy.vetting.RestVettingStrategy;
 public class Args {
 
     /**
-     * Creates an empty gateway argument contract holder.
-     */
-    public Args() {
-        // No initialization required.
-    }
-
-    /**
      * The mandatory parameter name for the logical API method to be invoked.
      */
     public static final String METHOD = Http.Param.METHOD;
@@ -211,6 +204,13 @@ public class Args {
     public static final int PROTOCOL_SLUG = 7;
 
     /**
+     * Creates an empty gateway argument contract holder.
+     */
+    public Args() {
+        // No initialization required.
+    }
+
+    /**
      * Checks if the given path is a RESTful API proxy request path.
      *
      * @param path The URL path string to check.
@@ -328,16 +328,16 @@ public class Args {
     public static class Limit {
 
         /**
+         * Whether rate limiting is globally enabled.
+         */
+        private boolean enabled;
+
+        /**
          * Creates an empty rate-limit configuration.
          */
         public Limit() {
             // No initialization required.
         }
-
-        /**
-         * Whether rate limiting is globally enabled.
-         */
-        private boolean enabled;
 
     }
 

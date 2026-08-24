@@ -43,13 +43,6 @@ import org.miaixz.bus.core.Loader;
  */
 public abstract class AtomicLoader<T> implements Loader<T>, Serializable {
 
-    /**
-     * Keeps atomic lazy-loading coordination on the static API.
-     */
-    public AtomicLoader() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852267211560L;
 
@@ -57,6 +50,13 @@ public abstract class AtomicLoader<T> implements Loader<T>, Serializable {
      * The atomic reference holding the lazily loaded object.
      */
     private final AtomicReference<T> reference = new AtomicReference<>();
+
+    /**
+     * Keeps atomic lazy-loading coordination on the static API.
+     */
+    public AtomicLoader() {
+        // No initialization required.
+    }
 
     /**
      * Retrieves the lazily loaded object. The first time this method is called, the object is initialized and then

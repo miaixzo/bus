@@ -36,16 +36,16 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public class Win32Processor {
 
     /**
+     * The WMI class name.
+     */
+    public static final String WIN32_PROCESSOR = "Win32_Processor";
+
+    /**
      * Keeps Win32 processor queries on the static API.
      */
     public Win32Processor() {
         // No initialization required.
     }
-
-    /**
-     * The WMI class name.
-     */
-    public static final String WIN32_PROCESSOR = "Win32_Processor";
 
     /**
      * Returns processor voltage.

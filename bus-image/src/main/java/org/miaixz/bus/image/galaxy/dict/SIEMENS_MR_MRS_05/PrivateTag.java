@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_MR_MRS_05;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS MR MRS 05";
@@ -117,5 +110,12 @@ public class PrivateTag {
      * (0021,xx4B) VR=CS VM=1 Spectro Result Extend Type Detailed
      */
     public static final int SpectroResultExtendTypeDetailed = 0x0021004B;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

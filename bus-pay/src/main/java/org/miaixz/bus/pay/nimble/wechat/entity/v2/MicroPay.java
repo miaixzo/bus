@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class MicroPay extends Voucher {
 
     /**
-     * Constructs a new {@code MicroPay} instance.
-     */
-    public MicroPay() {
-        // No initialization required.
-    }
-
-    /**
      * Whether it is a deposit payment.
      */
     private String deposit;
@@ -161,5 +154,12 @@ public class MicroPay extends Voucher {
      * Face credential, used for face payment.
      */
     private String face_code;
+
+    /**
+     * Constructs a new {@code MicroPay} instance.
+     */
+    public MicroPay() {
+        // No initialization required.
+    }
 
 }

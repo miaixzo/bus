@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_ADWSoft_DPO1;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_ADWSoft_DPO1";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (0039,xx95) VR=LO VM=1 ?
      */
     public static final int _0039_xx95_ = 0x00390095;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

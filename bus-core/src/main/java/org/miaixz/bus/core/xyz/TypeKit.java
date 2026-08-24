@@ -40,18 +40,18 @@ import org.miaixz.bus.core.lang.reflect.TypeReference;
 public class TypeKit {
 
     /**
-     * Constructs a new TypeKit instance.
-     */
-    public TypeKit() {
-        // No initialization required.
-    }
-
-    /**
      * Common base object types.
      */
     private static final Class<?>[] BASE_TYPE_CLASS = new Class[] { String.class, Boolean.class, Character.class,
             Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Void.class, Object.class,
             Class.class };
+
+    /**
+     * Constructs a new TypeKit instance.
+     */
+    public TypeKit() {
+        // No initialization required.
+    }
 
     /**
      * Checks if a class is a Map type.

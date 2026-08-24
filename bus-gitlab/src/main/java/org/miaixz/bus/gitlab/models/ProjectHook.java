@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ProjectHook implements Serializable {
 
     /**
-     * Constructs a new {@code ProjectHook} instance.
-     */
-    public ProjectHook() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -136,6 +129,13 @@ public class ProjectHook implements Serializable {
      * The description value.
      */
     private String description;
+
+    /**
+     * Constructs a new {@code ProjectHook} instance.
+     */
+    public ProjectHook() {
+        // No initialization required.
+    }
 
     /**
      * Returns the build events.

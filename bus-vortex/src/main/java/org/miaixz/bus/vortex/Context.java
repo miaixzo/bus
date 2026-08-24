@@ -47,13 +47,6 @@ import org.miaixz.bus.vortex.magic.Parameter;
 public class Context extends Tracer {
 
     /**
-     * Creates an empty request context.
-     */
-    public Context() {
-        // No initialization required.
-    }
-
-    /**
      * The key used to store and retrieve this Context object from the attributes of a {@code ServerWebExchange}.
      * <p>
      * This provides a fallback mechanism for accessing the context, especially in components like {@link ErrorsHandler}
@@ -134,6 +127,13 @@ public class Context extends Tracer {
      * The HTTP method of the incoming request (e.g., GET, POST).
      */
     private Http.Method httpMethod;
+
+    /**
+     * Creates an empty request context.
+     */
+    public Context() {
+        // No initialization required.
+    }
 
     /**
      * Returns a read-only live view of the business parameters.

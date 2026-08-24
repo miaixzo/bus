@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class DownstreamPipeline implements Serializable {
 
     /**
-     * Constructs a new {@code DownstreamPipeline} instance.
-     */
-    public DownstreamPipeline() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -77,6 +70,13 @@ public class DownstreamPipeline implements Serializable {
      * The web url value.
      */
     private String webUrl;
+
+    /**
+     * Constructs a new {@code DownstreamPipeline} instance.
+     */
+    public DownstreamPipeline() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

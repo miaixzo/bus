@@ -28,17 +28,17 @@ package org.miaixz.bus.limiter;
 public class Holder {
 
     /**
+     * The global {@link Context} instance for the limiter module. This instance holds configuration and shared
+     * resources.
+     */
+    private static Context context;
+
+    /**
      * Initializes the access point for limiter configuration and shared runtime resources.
      */
     public Holder() {
         // No initialization required.
     }
-
-    /**
-     * The global {@link Context} instance for the limiter module. This instance holds configuration and shared
-     * resources.
-     */
-    private static Context context;
 
     /**
      * Sets the global {@link Context} instance. This method should typically be called once during application

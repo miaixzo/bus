@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Associations implements Serializable {
 
     /**
-     * Constructs a new {@code Associations} instance.
-     */
-    public Associations() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -60,6 +53,13 @@ public class Associations implements Serializable {
      * The merge requests count value.
      */
     private int mergeRequestsCount;
+
+    /**
+     * Constructs a new {@code Associations} instance.
+     */
+    public Associations() {
+        // No initialization required.
+    }
 
     /**
      * Returns the groups count.

@@ -42,13 +42,6 @@ import org.miaixz.bus.notify.magic.Notice;
 public class GenericNotice extends Notice {
 
     /**
-     * Constructs a new {@code GenericNotice} instance.
-     */
-    public GenericNotice() {
-        // No initialization required.
-    }
-
-    /**
      * SMTP host property key.
      */
     private static final String SMTP_HOST = "mail.smtp.host";
@@ -221,6 +214,13 @@ public class GenericNotice extends Notice {
      * Whether to use a global session. Defaults to true.
      */
     private boolean useGlobalSession;
+
+    /**
+     * Constructs a new {@code GenericNotice} instance.
+     */
+    public GenericNotice() {
+        // No initialization required.
+    }
 
     /**
      * Fills in default values for properties if they are null or empty.

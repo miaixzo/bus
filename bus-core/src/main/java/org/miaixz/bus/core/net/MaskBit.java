@@ -33,16 +33,16 @@ import org.miaixz.bus.core.net.ip.IPv4;
 public class MaskBit {
 
     /**
+     * A bidirectional map between mask bits and their corresponding dotted-decimal subnet masks.
+     */
+    private static final BiMap<Integer, String> MASK_BIT_MAP;
+
+    /**
      * Constructs a new MaskBit instance.
      */
     public MaskBit() {
         // No initialization required.
     }
-
-    /**
-     * A bidirectional map between mask bits and their corresponding dotted-decimal subnet masks.
-     */
-    private static final BiMap<Integer, String> MASK_BIT_MAP;
 
     static {
         MASK_BIT_MAP = new BiMap<>(new HashMap<>(32));

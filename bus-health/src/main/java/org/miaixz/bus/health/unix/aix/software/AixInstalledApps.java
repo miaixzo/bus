@@ -40,16 +40,16 @@ import org.miaixz.bus.health.builtin.software.ApplicationInfo;
 public class AixInstalledApps {
 
     /**
+     * The COLON_PATTERN constant.
+     */
+    private static final Pattern COLON_PATTERN = Pattern.compile(Symbol.COLON);
+
+    /**
      * Constructs a new AixInstalledApps instance.
      */
     public AixInstalledApps() {
         // No initialization required.
     }
-
-    /**
-     * The COLON_PATTERN constant.
-     */
-    private static final Pattern COLON_PATTERN = Pattern.compile(Symbol.COLON);
 
     /**
      * Queries the installed apps.

@@ -37,13 +37,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class PunyCode {
 
     /**
-     * Constructs a new PunyCode instance.
-     */
-    public PunyCode() {
-        // No initialization required.
-    }
-
-    /**
      * Minimum value for T.
      */
     private static final int TMIN = 1;
@@ -82,6 +75,13 @@ public class PunyCode {
      * The prefix for Punycode encoded domain names.
      */
     private static final String PUNY_CODE_PREFIX = "xn--";
+
+    /**
+     * Constructs a new PunyCode instance.
+     */
+    public PunyCode() {
+        // No initialization required.
+    }
 
     /**
      * Encodes a domain name to Punycode. This method handles domain names with multiple parts separated by dots,

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.PMI_Private_Calibration_Module_Version_
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "PMI Private Calibration Module Version 2.0";
@@ -102,5 +95,12 @@ public class PrivateTag {
      * (2121,xx0E) VR=FL VM=1 Vertical Pixel S Dev
      */
     public static final int VerticalPixelSDev = 0x2121000E;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

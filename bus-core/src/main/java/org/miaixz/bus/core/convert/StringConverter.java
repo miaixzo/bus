@@ -43,16 +43,16 @@ public class StringConverter extends AbstractConverter {
     private static final long serialVersionUID = 2852271992351L;
 
     /**
+     * Custom string conversion rules keyed by the target source type.
+     */
+    private Map<Class<?>, FunctionX<Object, String>> stringer;
+
+    /**
      * Constructs a new string converter.
      */
     public StringConverter() {
         // No initialization required.
     }
-
-    /**
-     * Custom string conversion rules keyed by the target source type.
-     */
-    private Map<Class<?>, FunctionX<Object, String>> stringer;
 
     /**
      * Adds custom toString rules for object types.

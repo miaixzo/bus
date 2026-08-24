@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class SendRedPack extends Voucher {
 
     /**
-     * Constructs a new {@code SendRedPack} instance.
-     */
-    public SendRedPack() {
-        // No initialization required.
-    }
-
-    /**
      * Random string.
      */
     private String nonce_str;
@@ -136,5 +129,12 @@ public class SendRedPack extends Voucher {
      * Notification method.
      */
     private String notify_way;
+
+    /**
+     * Constructs a new {@code SendRedPack} instance.
+     */
+    public SendRedPack() {
+        // No initialization required.
+    }
 
 }

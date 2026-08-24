@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_ACRQA_2_0_BLOCK3;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_ACRQA_2.0 BLOCK3";
@@ -97,5 +90,12 @@ public class PrivateTag {
      * (0023,xxFF) VR=US VM=1 CR Shutters Applied
      */
     public static final int CRShuttersApplied = 0x002300FF;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }
