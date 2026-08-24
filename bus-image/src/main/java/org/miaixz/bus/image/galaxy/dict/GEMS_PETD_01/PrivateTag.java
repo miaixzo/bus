@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_PETD_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_PETD_01";
@@ -1607,5 +1600,12 @@ public class PrivateTag {
      * (5005,xx0D) VR=LO VM=1 Point Color
      */
     public static final int PointColor = 0x5005000D;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

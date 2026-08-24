@@ -36,16 +36,16 @@ import org.miaixz.bus.core.xyz.StreamKit;
 public class GenozipFileDetector extends FileTypeDetector {
 
     /**
+     * The MIME type for Genozip files.
+     */
+    public final static String APPLICATION_VND_GENOZIP = "application/vnd.genozip";
+
+    /**
      * Constructs a new GenozipFileDetector instance.
      */
     public GenozipFileDetector() {
         // No initialization required.
     }
-
-    /**
-     * The MIME type for Genozip files.
-     */
-    public final static String APPLICATION_VND_GENOZIP = "application/vnd.genozip";
 
     /**
      * Executes the probe content type operation.

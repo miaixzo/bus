@@ -38,13 +38,6 @@ import org.miaixz.bus.tempus.pattern.parser.PatternParser;
 public class Builder {
 
     /**
-     * Constructs a new Builder instance.
-     */
-    public Builder() {
-        // No initialization required.
-    }
-
-    /**
      * The path to the Crontab configuration file.
      */
     public static final String CRONTAB_CONFIG_PATH = "config/tempus.setting";
@@ -68,6 +61,13 @@ public class Builder {
      * The cron setting configuration.
      */
     private static Setting crontabSetting;
+
+    /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
 
     /**
      * Sets a custom scheduled task configuration file.

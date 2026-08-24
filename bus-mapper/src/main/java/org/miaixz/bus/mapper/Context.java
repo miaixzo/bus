@@ -77,16 +77,16 @@ import org.miaixz.bus.mapper.feature.visible.VisibleConfig;
 public class Context extends org.miaixz.bus.core.Context {
 
     /**
+     * ThreadLocal storage for mapper configuration.
+     */
+    private static final ThreadLocal<MapperConfig> MAPPER_CONFIG = new ThreadLocal<>();
+
+    /**
      * Constructs a new Context instance.
      */
     public Context() {
         // No initialization required.
     }
-
-    /**
-     * ThreadLocal storage for mapper configuration.
-     */
-    private static final ThreadLocal<MapperConfig> MAPPER_CONFIG = new ThreadLocal<>();
 
     /**
      * Get mapper configuration for current thread.
@@ -251,13 +251,6 @@ public class Context extends org.miaixz.bus.core.Context {
     public static class MapperConfig {
 
         /**
-         * Constructs a new MapperConfig instance.
-         */
-        public MapperConfig() {
-            // No initialization required.
-        }
-
-        /**
          * Tenant isolation configuration.
          */
         private TenantConfig tenant;
@@ -283,6 +276,13 @@ public class Context extends org.miaixz.bus.core.Context {
         private AffixRuleConfig affix;
 
         /**
+         * Constructs a new MapperConfig instance.
+         */
+        public MapperConfig() {
+            // No initialization required.
+        }
+
+        /**
          * Create builder for fluent API.
          *
          * @return the builder
@@ -299,16 +299,16 @@ public class Context extends org.miaixz.bus.core.Context {
         public static class Builder {
 
             /**
+             * Mutable configuration instance assembled by this builder.
+             */
+            private final MapperConfig config = new MapperConfig();
+
+            /**
              * Constructs a new Builder instance.
              */
             public Builder() {
                 // No initialization required.
             }
-
-            /**
-             * Mutable configuration instance assembled by this builder.
-             */
-            private final MapperConfig config = new MapperConfig();
 
             /**
              * Configure tenant settings.

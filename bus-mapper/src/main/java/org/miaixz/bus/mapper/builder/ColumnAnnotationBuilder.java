@@ -46,16 +46,16 @@ import org.miaixz.bus.mapper.provider.NamingProvider;
 public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
 
     /**
+     * A marker to indicate that a field should not be mapped to a database column.
+     */
+    private static final Optional<List<ColumnMeta>> IGNORE = Optional.of(Collections.emptyList());
+
+    /**
      * Constructs a new ColumnAnnotationBuilder instance.
      */
     public ColumnAnnotationBuilder() {
         // No initialization required.
     }
-
-    /**
-     * A marker to indicate that a field should not be mapped to a database column.
-     */
-    private static final Optional<List<ColumnMeta>> IGNORE = Optional.of(Collections.emptyList());
 
     /**
      * Creates entity column information by parsing field annotations and generating column metadata.

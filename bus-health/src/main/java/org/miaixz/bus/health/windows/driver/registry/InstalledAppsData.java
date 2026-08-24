@@ -42,13 +42,6 @@ import org.miaixz.bus.health.windows.RegistryKit;
 public class InstalledAppsData {
 
     /**
-     * Creates a new InstalledAppsData instance.
-     */
-    public InstalledAppsData() {
-        // No initialization required.
-    }
-
-    /**
      * The REGISTRY_PATHS constant.
      */
     private static final Map<WinReg.HKEY, List<String>> REGISTRY_PATHS = new HashMap<>();
@@ -57,6 +50,13 @@ public class InstalledAppsData {
      * The ACCESS_FLAGS constant.
      */
     private static final int[] ACCESS_FLAGS = { KEY_WOW64_64KEY, KEY_WOW64_32KEY };
+
+    /**
+     * Creates a new InstalledAppsData instance.
+     */
+    public InstalledAppsData() {
+        // No initialization required.
+    }
 
     static {
         REGISTRY_PATHS.put(

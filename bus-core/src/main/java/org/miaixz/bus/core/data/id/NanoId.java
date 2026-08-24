@@ -43,13 +43,6 @@ import org.miaixz.bus.core.xyz.RandomKit;
 public class NanoId {
 
     /**
-     * Constructs a new NanoId instance.
-     */
-    public NanoId() {
-        // No initialization required.
-    }
-
-    /**
      * The default length of the ID.
      */
     public static final int DEFAULT_SIZE = 21;
@@ -64,6 +57,13 @@ public class NanoId {
      */
     private static final char[] DEFAULT_ALPHABET = "_-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
             .toCharArray();
+
+    /**
+     * Constructs a new NanoId instance.
+     */
+    public NanoId() {
+        // No initialization required.
+    }
 
     /**
      * Generates a pseudo-random NanoId string of the default length {@link #DEFAULT_SIZE}, using a cryptographically

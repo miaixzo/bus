@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class EventIssue {
 
     /**
-     * Constructs a new {@code EventIssue} instance.
-     */
-    public EventIssue() {
-        // No initialization required.
-    }
-
-    /**
      * The assignee id value.
      */
     private Long assigneeId;
@@ -192,6 +185,13 @@ public class EventIssue {
      * The labels value.
      */
     private List<EventLabel> labels;
+
+    /**
+     * Constructs a new {@code EventIssue} instance.
+     */
+    public EventIssue() {
+        // No initialization required.
+    }
 
     /**
      * Returns the assignee id.

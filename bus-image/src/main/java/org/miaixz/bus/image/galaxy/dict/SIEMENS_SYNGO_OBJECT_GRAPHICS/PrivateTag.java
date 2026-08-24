@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_OBJECT_GRAPHICS;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS SYNGO OBJECT GRAPHICS";
@@ -647,5 +640,12 @@ public class PrivateTag {
      * (0071,xxB7) VR=SL VM=1 Graphic Object Reference Label
      */
     public static final int GraphicObjectReferenceLabel = 0x007100B7;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

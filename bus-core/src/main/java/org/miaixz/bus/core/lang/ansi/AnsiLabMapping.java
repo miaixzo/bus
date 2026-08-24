@@ -31,17 +31,17 @@ import java.util.Map;
 public abstract class AnsiLabMapping {
 
     /**
+     * A map storing the correspondence between {@link AnsiElement} and {@link LabColor}. Subclasses are expected to
+     * populate this map.
+     */
+    protected Map<AnsiElement, LabColor> ansiLabMap;
+
+    /**
      * Creates a new {@code AnsiLabMapping} instance.
      */
     public AnsiLabMapping() {
         // No initialization required.
     }
-
-    /**
-     * A map storing the correspondence between {@link AnsiElement} and {@link LabColor}. Subclasses are expected to
-     * populate this map.
-     */
-    protected Map<AnsiElement, LabColor> ansiLabMap;
 
     /**
      * Looks up the {@link AnsiElement} that is closest to the given {@link Color}. The input {@link Color} is first

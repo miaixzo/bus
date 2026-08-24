@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.DLX_SERIE_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "DLX_SERIE_01";
@@ -202,5 +195,12 @@ public class PrivateTag {
      * (0019,xx28) VR=DS VM=1 Image chain FWHM psf mm max
      */
     public static final int ImageChainFWHMPsfMmMax = 0x00190028;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

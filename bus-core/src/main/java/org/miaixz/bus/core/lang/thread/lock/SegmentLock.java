@@ -64,13 +64,6 @@ import org.miaixz.bus.core.xyz.ListKit;
 public abstract class SegmentLock<L> {
 
     /**
-     * Constructs a new SegmentLock instance.
-     */
-    public SegmentLock() {
-        // No initialization required.
-    }
-
-    /**
      * When the number of segments exceeds this threshold, a {@link ConcurrentMap} is used instead of a large array to
      * save memory (applicable in lazy-loading scenarios).
      */
@@ -80,6 +73,13 @@ public abstract class SegmentLock<L> {
      * A bitmask representing all bits set, used for maximum integer value.
      */
     private static final int ALL_SET = ~0;
+
+    /**
+     * Constructs a new SegmentLock instance.
+     */
+    public SegmentLock() {
+        // No initialization required.
+    }
 
     /**
      * Creates a segment lock with strong references, where all segments are initialized upon creation.

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.mitra_presentation_1_0;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "MITRA PRESENTATION 1.0";
@@ -87,5 +80,12 @@ public class PrivateTag {
      * (0029,xx13) VR=CS VM=1 ?
      */
     public static final int _0029_xx13_ = 0x00290013;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class MicroPay extends Voucher {
 
     /**
-     * Constructs a new {@code MicroPay} instance.
-     */
-    public MicroPay() {
-        // No initialization required.
-    }
-
-    /**
      * Service name.
      */
     private String service;
@@ -166,5 +159,12 @@ public class MicroPay extends Voucher {
      * Group number.
      */
     private String groupno;
+
+    /**
+     * Constructs a new {@code MicroPay} instance.
+     */
+    public MicroPay() {
+        // No initialization required.
+    }
 
 }

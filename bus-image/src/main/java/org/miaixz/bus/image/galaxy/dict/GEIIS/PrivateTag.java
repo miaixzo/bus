@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEIIS;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEIIS";
@@ -122,5 +115,12 @@ public class PrivateTag {
      * (7FD1,xx60) VR=UL VM=1-n Subband Bytecounts
      */
     public static final int SubbandBytecounts = 0x7FD10060;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

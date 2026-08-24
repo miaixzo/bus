@@ -55,13 +55,6 @@ import org.miaixz.bus.logger.Logger;
 public class Transcoder {
 
     /**
-     * Constructs a new {@code Transcoder} instance.
-     */
-    public Transcoder() {
-        // No initialization required.
-    }
-
-    /**
      * The image reader spi value.
      */
     public static final ImageReaderSpi IMAGE_READER_SPI = new ImageReaderSpi();
@@ -70,6 +63,13 @@ public class Transcoder {
      * The image read param value.
      */
     private static final ImageReadParam IMAGE_READ_PARAM = new ImageReadParam();
+
+    /**
+     * Constructs a new {@code Transcoder} instance.
+     */
+    public Transcoder() {
+        // No initialization required.
+    }
 
     static {
         IMAGE_READ_PARAM.setReleaseImageAfterProcessing(true);

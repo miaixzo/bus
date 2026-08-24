@@ -34,13 +34,6 @@ import lombok.experimental.SuperBuilder;
 public class Payer {
 
     /**
-     * Constructs a new {@code Payer} instance.
-     */
-    public Payer() {
-        // No initialization required.
-    }
-
-    /**
      * The user's unique identifier under the merchant's AppID.
      */
     private String openid;
@@ -59,5 +52,12 @@ public class Payer {
      * The authorization code from the user's payment screen (for micropay).
      */
     private String auth_code;
+
+    /**
+     * Constructs a new {@code Payer} instance.
+     */
+    public Payer() {
+        // No initialization required.
+    }
 
 }

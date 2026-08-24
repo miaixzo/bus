@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIENET;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIENET";
@@ -147,5 +140,12 @@ public class PrivateTag {
      * (00A5,xx05) VR=LO VM=1 ?
      */
     public static final int _00A5_xx05_ = 0x00A50005;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

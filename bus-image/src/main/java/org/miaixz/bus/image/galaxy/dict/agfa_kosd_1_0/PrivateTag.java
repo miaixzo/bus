@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.agfa_kosd_1_0;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "AGFA KOSD 1.0";
@@ -47,5 +40,12 @@ public class PrivateTag {
      * (0035,xx03) VR=LT VM=1 ?
      */
     public static final int _0035_xx03_ = 0x00350003;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -37,13 +37,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class ImportStatus implements Serializable {
 
     /**
-     * Constructs a new {@code ImportStatus} instance.
-     */
-    public ImportStatus() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -154,6 +147,13 @@ public class ImportStatus implements Serializable {
      * The import error value.
      */
     private String importError;
+
+    /**
+     * Constructs a new {@code ImportStatus} instance.
+     */
+    public ImportStatus() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

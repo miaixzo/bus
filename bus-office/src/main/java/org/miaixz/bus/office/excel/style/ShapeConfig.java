@@ -33,13 +33,6 @@ import org.apache.poi.sl.usermodel.ShapeType;
  */
 public class ShapeConfig implements Serializable {
 
-    /**
-     * Constructs a new ShapeConfig instance.
-     */
-    public ShapeConfig() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852286218800L;
 
@@ -67,6 +60,13 @@ public class ShapeConfig implements Serializable {
      * The fill color. {@code null} indicates no filling.
      */
     private Color fillColor;
+
+    /**
+     * Constructs a new ShapeConfig instance.
+     */
+    public ShapeConfig() {
+        // No initialization required.
+    }
 
     /**
      * Creates a new shape configuration instance.

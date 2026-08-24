@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class TeamMemberSystemHookEvent extends AbstractSystemHookEvent {
 
     /**
-     * Constructs a new {@code TeamMemberSystemHookEvent} instance.
-     */
-    public TeamMemberSystemHookEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -106,6 +99,13 @@ public class TeamMemberSystemHookEvent extends AbstractSystemHookEvent {
      * The project visibility value.
      */
     private Visibility projectVisibility;
+
+    /**
+     * Constructs a new {@code TeamMemberSystemHookEvent} instance.
+     */
+    public TeamMemberSystemHookEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the created at.

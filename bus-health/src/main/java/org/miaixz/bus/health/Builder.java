@@ -52,13 +52,6 @@ import org.miaixz.bus.setting.nimble.props.Props;
 public class Builder {
 
     /**
-     * Constructs a new Builder instance.
-     */
-    public Builder() {
-        // No initialization required.
-    }
-
-    /**
      * Global configuration file path, specifying health-related properties.
      */
     public static final String _HEALTH_PROPERTIES = "bus.health.properties";
@@ -417,6 +410,13 @@ public class Builder {
      * Configuration properties, lazily initialized.
      */
     private static volatile Properties CONFIG;
+
+    /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
 
     /**
      * If the given pointer is an instance of the Memory class, calls its close method to free the natively allocated

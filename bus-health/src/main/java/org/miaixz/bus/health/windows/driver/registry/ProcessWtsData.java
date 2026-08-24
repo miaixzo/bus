@@ -48,16 +48,16 @@ import org.miaixz.bus.logger.Logger;
 public class ProcessWtsData {
 
     /**
+     * The IS_WINDOWS7_OR_GREATER constant.
+     */
+    private static final boolean IS_WINDOWS7_OR_GREATER = VersionHelpers.IsWindows7OrGreater();
+
+    /**
      * Keeps Windows process WTS-data registry queries on the static API.
      */
     public ProcessWtsData() {
         // No initialization required.
     }
-
-    /**
-     * The IS_WINDOWS7_OR_GREATER constant.
-     */
-    private static final boolean IS_WINDOWS7_OR_GREATER = VersionHelpers.IsWindows7OrGreater();
 
     /**
      * Query the registry for process performance counters

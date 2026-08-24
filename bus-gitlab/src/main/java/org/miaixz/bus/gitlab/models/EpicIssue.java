@@ -35,13 +35,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class EpicIssue extends AbstractIssue {
 
     /**
-     * Constructs a new {@code EpicIssue} instance.
-     */
-    public EpicIssue() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -61,6 +54,13 @@ public class EpicIssue extends AbstractIssue {
      * The relative position value.
      */
     private Integer relativePosition;
+
+    /**
+     * Constructs a new {@code EpicIssue} instance.
+     */
+    public EpicIssue() {
+        // No initialization required.
+    }
 
     /**
      * Returns the links.

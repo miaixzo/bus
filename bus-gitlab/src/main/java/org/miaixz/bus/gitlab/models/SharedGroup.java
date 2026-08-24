@@ -35,13 +35,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class SharedGroup implements Serializable {
 
     /**
-     * Constructs a new {@code SharedGroup} instance.
-     */
-    public SharedGroup() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -69,6 +62,13 @@ public class SharedGroup implements Serializable {
      */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date expiresAt;
+
+    /**
+     * Constructs a new {@code SharedGroup} instance.
+     */
+    public SharedGroup() {
+        // No initialization required.
+    }
 
     /**
      * Returns the group id.

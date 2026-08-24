@@ -55,13 +55,6 @@ package org.miaixz.bus.core.lang;
 public class Fields {
 
     /**
-     * Keeps shared date and time format patterns on the static API.
-     */
-    public Fields() {
-        // No initialization required.
-    }
-
-    /**
      * Year format: yyyy
      */
     public static final String NORM_YEAR = "yyyy";
@@ -221,5 +214,12 @@ public class Fields {
      * Format: milliseconds timestamp
      */
     public static final String FORMAT_MILLISECONDS = "#SSS";
+
+    /**
+     * Keeps shared date and time format patterns on the static API.
+     */
+    public Fields() {
+        // No initialization required.
+    }
 
 }

@@ -36,13 +36,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class NotificationSettings implements Serializable {
 
     /**
-     * Constructs a new {@code NotificationSettings} instance.
-     */
-    public NotificationSettings() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -59,6 +52,13 @@ public class NotificationSettings implements Serializable {
      * The events value.
      */
     private Events events;
+
+    /**
+     * Constructs a new {@code NotificationSettings} instance.
+     */
+    public NotificationSettings() {
+        // No initialization required.
+    }
 
     /**
      * Returns the level.
@@ -212,13 +212,6 @@ public class NotificationSettings implements Serializable {
     public static class Events implements Serializable {
 
         /**
-         * Constructs a new {@code Events} instance.
-         */
-        public Events() {
-            // No initialization required.
-        }
-
-        /**
          * The serial version uid value.
          */
         @Serial
@@ -272,6 +265,13 @@ public class NotificationSettings implements Serializable {
          * The success pipeline value.
          */
         private Boolean successPipeline;
+
+        /**
+         * Constructs a new {@code Events} instance.
+         */
+        public Events() {
+            // No initialization required.
+        }
 
         /**
          * Returns the new note.

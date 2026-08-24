@@ -33,13 +33,6 @@ import java.util.List;
 public class TID {
 
     /**
-     * Keeps native thread-ID lookup on the static API.
-     */
-    public TID() {
-        // No initialization required.
-    }
-
-    /**
      * Host information
      */
     public static final String HOST = "host";
@@ -132,5 +125,12 @@ public class TID {
             READINESS,
             POWERSOURCES,
             NETWORKIFS);
+
+    /**
+     * Keeps native thread-ID lookup on the static API.
+     */
+    public TID() {
+        // No initialization required.
+    }
 
 }

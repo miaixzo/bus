@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SMIL_PB79;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SMIL_PB79";
@@ -147,5 +140,12 @@ public class PrivateTag {
      * (0079,xx17) VR=IS VM=1 Subject Orientation
      */
     public static final int SubjectOrientation = 0x00790017;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

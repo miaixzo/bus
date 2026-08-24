@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class MergeRequestDiff extends MergeRequestVersion {
 
     /**
-     * Constructs a new {@code MergeRequestDiff} instance.
-     */
-    public MergeRequestDiff() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -52,6 +45,13 @@ public class MergeRequestDiff extends MergeRequestVersion {
      * The diffs value.
      */
     private List<Diff> diffs;
+
+    /**
+     * Constructs a new {@code MergeRequestDiff} instance.
+     */
+    public MergeRequestDiff() {
+        // No initialization required.
+    }
 
     /**
      * Returns the commits.

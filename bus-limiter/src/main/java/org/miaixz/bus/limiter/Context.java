@@ -37,13 +37,6 @@ import org.miaixz.bus.core.lang.Normal;
 public class Context {
 
     /**
-     * Constructs a new {@code Context} instance.
-     */
-    public Context() {
-        // No initialization required.
-    }
-
-    /**
      * Default duration for hotspot caching in seconds.
      */
     @Builder.Default
@@ -67,5 +60,12 @@ public class Context {
      * module-specific settings.
      */
     private String extension;
+
+    /**
+     * Constructs a new {@code Context} instance.
+     */
+    public Context() {
+        // No initialization required.
+    }
 
 }

@@ -138,13 +138,6 @@ public class Http {
     public static class Status {
 
         /**
-         * Creates an HTTP status-code namespace instance.
-         */
-        public Status() {
-            // No initialization required.
-        }
-
-        /**
          * HTTP Status Code 100: Continue. Server has received request headers, client should continue sending request
          * body. RFC 9110, Section 15.2.1.
          */
@@ -487,19 +480,19 @@ public class Http {
          */
         public static final int NETWORK_AUTHENTICATION_REQUIRED = 511;
 
+        /**
+         * Creates an HTTP status-code namespace instance.
+         */
+        public Status() {
+            // No initialization required.
+        }
+
     }
 
     /**
      * HTTP/2 SETTINGS identifiers and shared initial values defined by RFC 9113.
      */
     public static class Setting {
-
-        /**
-         * Creates an HTTP setting namespace instance.
-         */
-        public Setting() {
-            // No initialization required.
-        }
 
         /**
          * Identifier {@code 0x01} for SETTINGS_HEADER_TABLE_SIZE. The associated setting value is the maximum field
@@ -538,19 +531,19 @@ public class Http {
          */
         public static final int DEFAULT_INITIAL_WINDOW_SIZE = 65_535;
 
+        /**
+         * Creates an HTTP setting namespace instance.
+         */
+        public Setting() {
+            // No initialization required.
+        }
+
     }
 
     /**
      * HTTP header names and standard header values.
      */
     public static class Header {
-
-        /**
-         * Creates an HTTP header-name namespace instance.
-         */
-        public Header() {
-            // No initialization required.
-        }
 
         /**
          * HTTP Accept header field name. RFC 7231, Section 5.3.2
@@ -947,19 +940,19 @@ public class Http {
          */
         public static final String PSEUDO_AUTHORITY = ":authority";
 
+        /**
+         * Creates an HTTP header-name namespace instance.
+         */
+        public Header() {
+            // No initialization required.
+        }
+
     }
 
     /**
      * HTTP request parameter names used by Bus API contracts.
      */
     public static class Param {
-
-        /**
-         * Creates an HTTP parameter-name namespace instance.
-         */
-        public Param() {
-            // No initialization required.
-        }
 
         /**
          * Logical API method parameter name.
@@ -986,19 +979,19 @@ public class Http {
          */
         public static final String TIMESTAMP = "timestamp";
 
+        /**
+         * Creates an HTTP parameter-name namespace instance.
+         */
+        public Param() {
+            // No initialization required.
+        }
+
     }
 
     /**
      * Conventional HTTP endpoint paths used by Bus APIs.
      */
     public static class Path {
-
-        /**
-         * Creates an HTTP endpoint-path namespace instance.
-         */
-        public Path() {
-            // No initialization required.
-        }
 
         /**
          * Resource retrieval path.
@@ -1307,19 +1300,19 @@ public class Http {
          */
         public static final String LOGOUT = "/logout";
 
+        /**
+         * Creates an HTTP endpoint-path namespace instance.
+         */
+        public Path() {
+            // No initialization required.
+        }
+
     }
 
     /**
      * HTTP authentication values and credential extraction operations.
      */
     public static class Auth {
-
-        /**
-         * Creates an HTTP authentication namespace instance.
-         */
-        public Auth() {
-            // No initialization required.
-        }
 
         /**
          * Bearer authentication scheme name.
@@ -1363,6 +1356,13 @@ public class Http {
                 "X-API-KEY",
                 "API-KEY",
                 "API-ID");
+
+        /**
+         * Creates an HTTP authentication namespace instance.
+         */
+        public Auth() {
+            // No initialization required.
+        }
 
         /**
          * Resolves the preferred credential exclusively from standard request headers.
@@ -1577,13 +1577,6 @@ public class Http {
     public static class Cache {
 
         /**
-         * Creates an HTTP cache-directive namespace instance.
-         */
-        public Cache() {
-            // No initialization required.
-        }
-
-        /**
          * Cache response content that never changes.
          */
         public static final String IMMUTABLE = "immutable";
@@ -1643,19 +1636,19 @@ public class Http {
          */
         public static final String S_MAXAGE = "s-maxage";
 
+        /**
+         * Creates an HTTP cache-directive namespace instance.
+         */
+        public Cache() {
+            // No initialization required.
+        }
+
     }
 
     /**
      * WebSocket opening-handshake constants.
      */
     public static class WebSocket {
-
-        /**
-         * Creates a WebSocket handshake namespace instance.
-         */
-        public WebSocket() {
-            // No initialization required.
-        }
 
         /**
          * WebSocket client key header name.
@@ -1696,6 +1689,13 @@ public class Http {
          * WebSocket HTTP upgrade token.
          */
         public static final String UPGRADE_TOKEN = "websocket";
+
+        /**
+         * Creates a WebSocket handshake namespace instance.
+         */
+        public WebSocket() {
+            // No initialization required.
+        }
 
     }
 

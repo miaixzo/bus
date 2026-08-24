@@ -36,13 +36,6 @@ import org.miaixz.bus.notify.magic.Notice;
 public class DingTalkNotice extends Notice {
 
     /**
-     * Constructs a new {@code DingTalkNotice} instance.
-     */
-    public DingTalkNotice() {
-        // No initialization required.
-    }
-
-    /**
      * The agent ID of the application.
      */
     private String agentId;
@@ -77,5 +70,12 @@ public class DingTalkNotice extends Notice {
      * The DingTalk access token.
      */
     private String token;
+
+    /**
+     * Constructs a new {@code DingTalkNotice} instance.
+     */
+    public DingTalkNotice() {
+        // No initialization required.
+    }
 
 }

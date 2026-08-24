@@ -50,13 +50,6 @@ import org.miaixz.bus.health.unix.shared.jna.OpenBsdLibc;
 public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
 
     /**
-     * Creates a new OpenBsdCentralProcessor instance.
-     */
-    public OpenBsdCentralProcessor() {
-        // No initialization required.
-    }
-
-    /**
      * The DMESG_CPU constant.
      */
     private static final java.util.regex.Pattern DMESG_CPU = java.util.regex.Pattern
@@ -67,6 +60,13 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
      */
     private final SupplierX<Pair<Long, Long>> vmStats = Memoizer
             .memoize(OpenBsdCentralProcessor::queryVmStats, Memoizer.defaultExpiration());
+
+    /**
+     * Creates a new OpenBsdCentralProcessor instance.
+     */
+    public OpenBsdCentralProcessor() {
+        // No initialization required.
+    }
 
     /**
      * Returns the cpuid to family model stepping result.

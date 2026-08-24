@@ -29,13 +29,6 @@ import java.util.Collection;
 public abstract class Filters {
 
     /**
-     * Keeps classpath filter composition on the static API.
-     */
-    public Filters() {
-        // No initialization required.
-    }
-
-    /**
      * A filter that always returns {@code true}, effectively accepting all resources.
      */
     public static final Filter ALWAYS = (name, url) -> true;
@@ -44,6 +37,13 @@ public abstract class Filters {
      * A filter that always returns {@code false}, effectively rejecting all resources.
      */
     public static final Filter NEVER = (name, url) -> false;
+
+    /**
+     * Keeps classpath filter composition on the static API.
+     */
+    public Filters() {
+        // No initialization required.
+    }
 
     /**
      * Creates a composite filter that performs a logical AND operation on multiple child filters. All child filters

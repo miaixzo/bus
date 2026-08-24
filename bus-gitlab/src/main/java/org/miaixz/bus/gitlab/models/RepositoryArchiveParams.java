@@ -27,13 +27,6 @@ package org.miaixz.bus.gitlab.models;
 public class RepositoryArchiveParams {
 
     /**
-     * Constructs a new {@code RepositoryArchiveParams} instance.
-     */
-    public RepositoryArchiveParams() {
-        // No initialization required.
-    }
-
-    /**
      * The sha value.
      */
     private String sha;
@@ -41,6 +34,13 @@ public class RepositoryArchiveParams {
      * The path value.
      */
     private String path;
+
+    /**
+     * Constructs a new {@code RepositoryArchiveParams} instance.
+     */
+    public RepositoryArchiveParams() {
+        // No initialization required.
+    }
 
     /**
      * Add param "The commit SHA to download".

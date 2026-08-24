@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class LinkedIssue extends AbstractIssue {
 
     /**
-     * Constructs a new {@code LinkedIssue} instance.
-     */
-    public LinkedIssue() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -60,6 +53,13 @@ public class LinkedIssue extends AbstractIssue {
      * The link updated at value.
      */
     private Date linkUpdatedAt;
+
+    /**
+     * Constructs a new {@code LinkedIssue} instance.
+     */
+    public LinkedIssue() {
+        // No initialization required.
+    }
 
     /**
      * Returns the issue link id.

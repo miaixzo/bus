@@ -34,13 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class IssueEvent extends AbstractEvent {
 
     /**
-     * Constructs a new {@code IssueEvent} instance.
-     */
-    public IssueEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -87,6 +80,13 @@ public class IssueEvent extends AbstractEvent {
      * The changes value.
      */
     private IssueChanges changes;
+
+    /**
+     * Constructs a new {@code IssueEvent} instance.
+     */
+    public IssueEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the object kind.

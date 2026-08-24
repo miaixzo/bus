@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_HELIOS_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_HELIOS_01";
@@ -277,5 +270,12 @@ public class PrivateTag {
      * (0045,xx65) VR=FL VM=1-n Ellipse Orientation
      */
     public static final int EllipseOrientation = 0x00450065;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

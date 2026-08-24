@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class AuditEventDetail implements Serializable {
 
     /**
-     * Constructs a new {@code AuditEventDetail} instance.
-     */
-    public AuditEventDetail() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -88,6 +81,13 @@ public class AuditEventDetail implements Serializable {
      * The entity path value.
      */
     private String entityPath;
+
+    /**
+     * Constructs a new {@code AuditEventDetail} instance.
+     */
+    public AuditEventDetail() {
+        // No initialization required.
+    }
 
     /**
      * Returns the custom message.

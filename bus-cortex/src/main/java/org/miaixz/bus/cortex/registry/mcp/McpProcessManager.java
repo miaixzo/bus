@@ -32,16 +32,16 @@ import org.miaixz.bus.logger.Logger;
 public class McpProcessManager {
 
     /**
+     * Managed subprocesses keyed by MCP process identifier.
+     */
+    private final Map<String, Process> processes = new ConcurrentHashMap<>();
+
+    /**
      * Creates an empty MCP process manager.
      */
     public McpProcessManager() {
         // No initialization required.
     }
-
-    /**
-     * Managed subprocesses keyed by MCP process identifier.
-     */
-    private final Map<String, Process> processes = new ConcurrentHashMap<>();
 
     /**
      * Starts a new subprocess with the given command.

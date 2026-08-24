@@ -33,13 +33,6 @@ import org.miaixz.bus.core.lang.Normal;
 public class Consts extends Normal {
 
     /**
-     * Creates a constants holder for framework defaults.
-     */
-    public Consts() {
-        // No initialization required.
-    }
-
-    /**
      * General-purpose numeric identifier -1.
      * <p>
      * Can be used to represent various business concepts such as:
@@ -1491,5 +1484,12 @@ public class Consts extends Normal {
      * array, or complex data structure.
      */
     public static final String DATA = "data";
+
+    /**
+     * Creates a constants holder for framework defaults.
+     */
+    public Consts() {
+        // No initialization required.
+    }
 
 }

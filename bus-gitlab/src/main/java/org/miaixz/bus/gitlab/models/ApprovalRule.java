@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ApprovalRule implements Serializable {
 
     /**
-     * Constructs a new {@code ApprovalRule} instance.
-     */
-    public ApprovalRule() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -101,6 +94,13 @@ public class ApprovalRule implements Serializable {
      * The protected branches value.
      */
     private List<ProtectedBranch> protectedBranches;
+
+    /**
+     * Constructs a new {@code ApprovalRule} instance.
+     */
+    public ApprovalRule() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

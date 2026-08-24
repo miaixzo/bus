@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Bridge implements Serializable {
 
     /**
-     * Constructs a new {@code Bridge} instance.
-     */
-    public Bridge() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -121,6 +114,13 @@ public class Bridge implements Serializable {
      * The downstream pipeline value.
      */
     private DownstreamPipeline downstreamPipeline;
+
+    /**
+     * Constructs a new {@code Bridge} instance.
+     */
+    public Bridge() {
+        // No initialization required.
+    }
 
     /**
      * Returns the commit.

@@ -34,16 +34,16 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 public class PerfstatProtocol {
 
     /**
+     * The PERF constant.
+     */
+    private static final Perfstat PERF = Perfstat.INSTANCE;
+
+    /**
      * Keeps AIX perfstat protocol queries on the static API.
      */
     public PerfstatProtocol() {
         // No initialization required.
     }
-
-    /**
-     * The PERF constant.
-     */
-    private static final Perfstat PERF = Perfstat.INSTANCE;
 
     /**
      * Queries perfstat_protocol for per-protocol usage statistics

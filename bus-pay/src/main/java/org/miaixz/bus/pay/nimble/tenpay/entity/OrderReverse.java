@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class OrderReverse extends Voucher {
 
     /**
-     * Constructs a new {@code OrderReverse} instance.
-     */
-    public OrderReverse() {
-        // No initialization required.
-    }
-
-    /**
      * Sub-merchant App ID.
      */
     private String sub_appid;
@@ -81,5 +74,12 @@ public class OrderReverse extends Voucher {
      * Operator password.
      */
     private String op_user_passwd;
+
+    /**
+     * Constructs a new {@code OrderReverse} instance.
+     */
+    public OrderReverse() {
+        // No initialization required.
+    }
 
 }

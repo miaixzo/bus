@@ -34,16 +34,16 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public class Win32DiskDriveToDiskPartition {
 
     /**
+     * The WMI class name.
+     */
+    public static final String WIN32_DISK_DRIVE_TO_DISK_PARTITION = "Win32_DiskDriveToDiskPartition";
+
+    /**
      * Keeps Win32 disk drive to disk partition queries on the static API.
      */
     public Win32DiskDriveToDiskPartition() {
         // No initialization required.
     }
-
-    /**
-     * The WMI class name.
-     */
-    public static final String WIN32_DISK_DRIVE_TO_DISK_PARTITION = "Win32_DiskDriveToDiskPartition";
 
     /**
      * Queries the association between disk drive and partition.

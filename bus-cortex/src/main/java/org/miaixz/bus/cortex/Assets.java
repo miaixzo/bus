@@ -47,13 +47,6 @@ import org.miaixz.bus.cortex.builtin.LabelMapper;
 public class Assets extends Nature {
 
     /**
-     * Constructs a new {@code Assets} instance.
-     */
-    public Assets() {
-        // No initialization required.
-    }
-
-    /**
      * Human-readable name of the asset. Used for display in dashboards and logs.
      */
     private String name;
@@ -228,6 +221,13 @@ public class Assets extends Nature {
      */
     @Transient
     private Map<String, String> labels;
+
+    /**
+     * Constructs a new {@code Assets} instance.
+     */
+    public Assets() {
+        // No initialization required.
+    }
 
     /**
      * Returns whether the asset is currently configured to answer with mock content.

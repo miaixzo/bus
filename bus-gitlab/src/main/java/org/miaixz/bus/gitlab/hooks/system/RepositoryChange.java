@@ -29,13 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class RepositoryChange {
 
     /**
-     * Constructs a new {@code RepositoryChange} instance.
-     */
-    public RepositoryChange() {
-        // No initialization required.
-    }
-
-    /**
      * The after value.
      */
     private String after;
@@ -47,6 +40,13 @@ public class RepositoryChange {
      * The ref value.
      */
     private String ref;
+
+    /**
+     * Constructs a new {@code RepositoryChange} instance.
+     */
+    public RepositoryChange() {
+        // No initialization required.
+    }
 
     /**
      * Returns the after.

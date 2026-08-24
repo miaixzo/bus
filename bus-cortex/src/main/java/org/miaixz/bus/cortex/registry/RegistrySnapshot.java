@@ -37,13 +37,6 @@ import org.miaixz.bus.cortex.Type;
 public class RegistrySnapshot {
 
     /**
-     * Creates an empty registry snapshot.
-     */
-    public RegistrySnapshot() {
-        // No initialization required.
-    }
-
-    /**
      * Space included in this snapshot.
      */
     private String space_id;
@@ -92,5 +85,12 @@ public class RegistrySnapshot {
      * Assets carried by this snapshot.
      */
     private List<Assets> assets = List.of();
+
+    /**
+     * Creates an empty registry snapshot.
+     */
+    public RegistrySnapshot() {
+        // No initialization required.
+    }
 
 }

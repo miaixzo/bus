@@ -38,13 +38,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class Group extends AbstractGroup<Group> {
 
     /**
-     * Constructs a new {@code Group} instance.
-     */
-    public Group() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -61,13 +54,6 @@ public class Group extends AbstractGroup<Group> {
      * @author Kimi Liu
      */
     public class Statistics {
-
-        /**
-         * Constructs a new {@code Statistics} instance.
-         */
-        public Statistics() {
-            // No initialization required.
-        }
 
         /**
          * The total storage size used by the group.
@@ -105,6 +91,13 @@ public class Group extends AbstractGroup<Group> {
          * </p>
          */
         private Long jobArtifactsSize;
+
+        /**
+         * Constructs a new {@code Statistics} instance.
+         */
+        public Statistics() {
+            // No initialization required.
+        }
 
         /**
          * Returns the storage size.
@@ -270,6 +263,13 @@ public class Group extends AbstractGroup<Group> {
      */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date markedForDeletionOn;
+
+    /**
+     * Constructs a new {@code Group} instance.
+     */
+    public Group() {
+        // No initialization required.
+    }
 
     /**
      * Returns the path.

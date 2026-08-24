@@ -34,13 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Deployment implements Serializable {
 
     /**
-     * Constructs a new {@code Deployment} instance.
-     */
-    public Deployment() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -86,6 +79,13 @@ public class Deployment implements Serializable {
      * The deployable value.
      */
     private Deployable deployable;
+
+    /**
+     * Constructs a new {@code Deployment} instance.
+     */
+    public Deployment() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

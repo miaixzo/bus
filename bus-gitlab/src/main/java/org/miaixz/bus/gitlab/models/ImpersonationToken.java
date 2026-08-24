@@ -40,13 +40,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class ImpersonationToken implements Serializable {
 
     /**
-     * Constructs a new {@code ImpersonationToken} instance.
-     */
-    public ImpersonationToken() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -101,6 +94,13 @@ public class ImpersonationToken implements Serializable {
      * The impersonation value.
      */
     private Boolean impersonation;
+
+    /**
+     * Constructs a new {@code ImpersonationToken} instance.
+     */
+    public ImpersonationToken() {
+        // No initialization required.
+    }
 
     /**
      * Returns the description.

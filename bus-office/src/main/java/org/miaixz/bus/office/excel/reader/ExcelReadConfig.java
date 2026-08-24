@@ -29,13 +29,6 @@ import org.miaixz.bus.office.excel.ExcelConfig;
 public class ExcelReadConfig extends ExcelConfig {
 
     /**
-     * Constructs a new ExcelReadConfig instance.
-     */
-    public ExcelReadConfig() {
-        // No initialization required.
-    }
-
-    /**
      * Read mode.
      */
     protected ReadMode readMode = ReadMode.AUTO;
@@ -99,6 +92,13 @@ public class ExcelReadConfig extends ExcelConfig {
      * Optional streaming listener.
      */
     protected ExcelReadListener readListener;
+
+    /**
+     * Constructs a new ExcelReadConfig instance.
+     */
+    public ExcelReadConfig() {
+        // No initialization required.
+    }
 
     /**
      * Read mode enum.

@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Discussion implements Serializable {
 
     /**
-     * Constructs a new {@code Discussion} instance.
-     */
-    public Discussion() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -57,6 +50,13 @@ public class Discussion implements Serializable {
      * The notes value.
      */
     private List<Note> notes;
+
+    /**
+     * Constructs a new {@code Discussion} instance.
+     */
+    public Discussion() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

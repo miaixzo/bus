@@ -34,13 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class GroupProjectsFilter implements Serializable {
 
     /**
-     * Constructs a new {@code GroupProjectsFilter} instance.
-     */
-    public GroupProjectsFilter() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -98,6 +91,13 @@ public class GroupProjectsFilter implements Serializable {
      * The include sub groups value.
      */
     private Boolean includeSubGroups;
+
+    /**
+     * Constructs a new {@code GroupProjectsFilter} instance.
+     */
+    public GroupProjectsFilter() {
+        // No initialization required.
+    }
 
     /**
      * Limit by archived status.

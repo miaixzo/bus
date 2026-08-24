@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SPI_P_Private_DCI_Release_1;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SPI-P-Private-DCI Release 1";
@@ -77,5 +70,12 @@ public class PrivateTag {
      * (0019,xx17) VR=UN VM=1 ?
      */
     public static final int ECGTimeMapData = 0x00190017;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

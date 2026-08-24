@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class OrderQuery extends Voucher {
 
     /**
-     * Constructs a new {@code OrderQuery} instance.
-     */
-    public OrderQuery() {
-        // No initialization required.
-    }
-
-    /**
      * Service name.
      */
     private String service;
@@ -96,5 +89,12 @@ public class OrderQuery extends Voucher {
      * Signature.
      */
     private String sign;
+
+    /**
+     * Constructs a new {@code OrderQuery} instance.
+     */
+    public OrderQuery() {
+        // No initialization required.
+    }
 
 }

@@ -38,13 +38,6 @@ import org.miaixz.bus.logger.Logger;
 public class Factory {
 
     /**
-     * Constructs a new Factory instance.
-     */
-    public Factory() {
-        // No initialization required.
-    }
-
-    /**
      * Default maximum cache size defined by {@link Options}.
      */
     private static final long DEFAULT_CACHE_MAX_SIZE = new Options().getMaxSize();
@@ -53,6 +46,13 @@ public class Factory {
      * Default expiration defined by {@link Options}.
      */
     private static final long DEFAULT_CACHE_EXPIRE_MS = new Options().getExpire();
+
+    /**
+     * Constructs a new Factory instance.
+     */
+    public Factory() {
+        // No initialization required.
+    }
 
     /**
      * Returns whether the supplied options describe a concrete cache backend.

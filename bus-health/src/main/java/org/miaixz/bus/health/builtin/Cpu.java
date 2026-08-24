@@ -34,13 +34,6 @@ import lombok.experimental.SuperBuilder;
 public class Cpu {
 
     /**
-     * Constructs a new {@code Cpu} instance.
-     */
-    public Cpu() {
-        // No initialization required.
-    }
-
-    /**
      * Number of physical cores
      */
     private int physicalCores;
@@ -69,5 +62,12 @@ public class Cpu {
      * Total usage (100 - idle in /proc/stat)
      */
     private double totalUsage;
+
+    /**
+     * Constructs a new {@code Cpu} instance.
+     */
+    public Cpu() {
+        // No initialization required.
+    }
 
 }

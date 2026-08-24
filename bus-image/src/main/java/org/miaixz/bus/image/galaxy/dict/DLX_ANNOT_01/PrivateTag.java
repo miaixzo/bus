@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.DLX_ANNOT_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "DLX_ANNOT_01";
@@ -52,5 +45,12 @@ public class PrivateTag {
      * (70XX,xx07) VR=IS VM=2 ArrowEnd
      */
     public static final int ArrowEnd = 0x70000007;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

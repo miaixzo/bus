@@ -40,17 +40,17 @@ import org.miaixz.bus.logger.Logger;
 public class FallbackProvider implements Provider {
 
     /**
+     * A concurrent hash map to cache fallback methods for performance. The key is the generated fallback method name
+     * (e.g., "originalMethodNameFallback"), and the value is the {@link Method} object for the fallback method.
+     */
+    private final Map<String, Method> map = new ConcurrentHashMap<>();
+
+    /**
      * Constructs a new FallbackProvider instance.
      */
     public FallbackProvider() {
         // No initialization required.
     }
-
-    /**
-     * A concurrent hash map to cache fallback methods for performance. The key is the generated fallback method name
-     * (e.g., "originalMethodNameFallback"), and the value is the {@link Method} object for the fallback method.
-     */
-    private final Map<String, Method> map = new ConcurrentHashMap<>();
 
     /**
      * Returns the strategy mode supported by this provider, which is {@link StrategyMode#FALLBACK}.

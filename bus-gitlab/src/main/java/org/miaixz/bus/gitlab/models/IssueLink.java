@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class IssueLink implements Serializable {
 
     /**
-     * Constructs a new {@code IssueLink} instance.
-     */
-    public IssueLink() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -56,6 +49,13 @@ public class IssueLink implements Serializable {
      * The link type value.
      */
     private LinkType linkType;
+
+    /**
+     * Constructs a new {@code IssueLink} instance.
+     */
+    public IssueLink() {
+        // No initialization required.
+    }
 
     /**
      * Returns the source issue.

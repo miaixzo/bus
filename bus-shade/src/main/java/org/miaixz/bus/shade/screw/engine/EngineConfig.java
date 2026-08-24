@@ -36,13 +36,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class EngineConfig implements Serializable {
 
-    /**
-     * Constructs a new {@code EngineConfig} instance.
-     */
-    public EngineConfig() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2869182035691L;
 
@@ -76,5 +69,12 @@ public class EngineConfig implements Serializable {
      * The name of the generated file.
      */
     private String fileName;
+
+    /**
+     * Constructs a new {@code EngineConfig} instance.
+     */
+    public EngineConfig() {
+        // No initialization required.
+    }
 
 }

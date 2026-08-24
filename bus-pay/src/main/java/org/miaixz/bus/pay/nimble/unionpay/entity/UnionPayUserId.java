@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class UnionPayUserId extends Voucher {
 
     /**
-     * Constructs a new {@code UnionPayUserId} instance.
-     */
-    public UnionPayUserId() {
-        // No initialization required.
-    }
-
-    /**
      * Service name.
      */
     private String service;
@@ -96,5 +89,12 @@ public class UnionPayUserId extends Voucher {
      * Group number.
      */
     private String groupno;
+
+    /**
+     * Constructs a new {@code UnionPayUserId} instance.
+     */
+    public UnionPayUserId() {
+        // No initialization required.
+    }
 
 }

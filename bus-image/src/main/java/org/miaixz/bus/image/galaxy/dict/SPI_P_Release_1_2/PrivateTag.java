@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SPI_P_Release_1_2;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SPI-P Release 1;2";
@@ -62,5 +55,12 @@ public class PrivateTag {
      * (0029,xx1F) VR=CS VM=1 Subtraction Mask Select Status
      */
     public static final int SubtractionMaskSelectStatus = 0x0029001F;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

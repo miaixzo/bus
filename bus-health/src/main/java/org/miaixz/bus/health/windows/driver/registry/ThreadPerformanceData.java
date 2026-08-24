@@ -40,16 +40,16 @@ import org.miaixz.bus.health.windows.driver.perfmon.ThreadInformation.ThreadPerf
 public class ThreadPerformanceData {
 
     /**
+     * The THREAD constant.
+     */
+    public static final String THREAD = "Thread";
+
+    /**
      * Keeps Windows thread performance data registry queries on the static API.
      */
     public ThreadPerformanceData() {
         // No initialization required.
     }
-
-    /**
-     * The THREAD constant.
-     */
-    public static final String THREAD = "Thread";
 
     /**
      * Query the registry for thread performance counters

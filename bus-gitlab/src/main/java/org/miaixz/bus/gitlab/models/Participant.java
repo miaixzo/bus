@@ -29,16 +29,16 @@ import java.io.Serial;
 public class Participant extends AbstractUser<Participant> {
 
     /**
+     * The serial version uid value.
+     */
+    @Serial
+    private static final long serialVersionUID = 2852268898216L;
+
+    /**
      * Constructs a new {@code Participant} instance.
      */
     public Participant() {
         // No initialization required.
     }
-
-    /**
-     * The serial version uid value.
-     */
-    @Serial
-    private static final long serialVersionUID = 2852268898216L;
 
 }

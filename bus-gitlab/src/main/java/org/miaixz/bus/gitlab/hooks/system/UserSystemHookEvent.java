@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class UserSystemHookEvent extends AbstractSystemHookEvent {
 
     /**
-     * Constructs a new {@code UserSystemHookEvent} instance.
-     */
-    public UserSystemHookEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -97,6 +90,13 @@ public class UserSystemHookEvent extends AbstractSystemHookEvent {
      * The state value.
      */
     private String state;
+
+    /**
+     * Constructs a new {@code UserSystemHookEvent} instance.
+     */
+    public UserSystemHookEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the event name.

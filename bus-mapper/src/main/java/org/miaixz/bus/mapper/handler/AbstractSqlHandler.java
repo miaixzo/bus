@@ -45,13 +45,6 @@ import org.miaixz.bus.logger.Logger;
 public abstract class AbstractSqlHandler {
 
     /**
-     * Initializes common SQL interception state for a concrete handler.
-     */
-    public AbstractSqlHandler() {
-        // No initialization required.
-    }
-
-    /**
      * The property path for the `boundSql` field within a delegate proxy object.
      */
     public static final String DELEGATE_BOUNDSQL = "delegate.boundSql";
@@ -85,6 +78,13 @@ public abstract class AbstractSqlHandler {
      * Read-only provider for the effective JDBC data source key.
      */
     private Supplier<String> datasourceKeyProvider;
+
+    /**
+     * Initializes common SQL interception state for a concrete handler.
+     */
+    public AbstractSqlHandler() {
+        // No initialization required.
+    }
 
     /**
      * Installs the data source key provider owned by the data-access integration.

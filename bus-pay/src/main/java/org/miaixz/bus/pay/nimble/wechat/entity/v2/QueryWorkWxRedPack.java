@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class QueryWorkWxRedPack extends Voucher {
 
     /**
-     * Constructs a new {@code QueryWorkWxRedPack} instance.
-     */
-    public QueryWorkWxRedPack() {
-        // No initialization required.
-    }
-
-    /**
      * Random string.
      */
     private String nonce_str;
@@ -61,5 +54,12 @@ public class QueryWorkWxRedPack extends Voucher {
      * Merchant ID.
      */
     private String mch_id;
+
+    /**
+     * Constructs a new {@code QueryWorkWxRedPack} instance.
+     */
+    public QueryWorkWxRedPack() {
+        // No initialization required.
+    }
 
 }

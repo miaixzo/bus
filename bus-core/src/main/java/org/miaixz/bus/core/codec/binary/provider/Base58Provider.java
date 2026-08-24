@@ -34,13 +34,6 @@ import org.miaixz.bus.core.codec.binary.encoder.Base58Encoder;
  */
 public class Base58Provider implements Encoder<byte[], String>, Decoder<CharSequence, byte[]>, Serializable {
 
-    /**
-     * Creates the shared Base58 codec provider.
-     */
-    public Base58Provider() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852258919299L;
 
@@ -48,6 +41,13 @@ public class Base58Provider implements Encoder<byte[], String>, Decoder<CharSequ
      * Singleton instance of the Base58Provider.
      */
     public static Base58Provider INSTANCE = new Base58Provider();
+
+    /**
+     * Creates the shared Base58 codec provider.
+     */
+    public Base58Provider() {
+        // No initialization required.
+    }
 
     /**
      * Divides a number, represented as a byte array of digits in a given base, by a divisor. The input array is

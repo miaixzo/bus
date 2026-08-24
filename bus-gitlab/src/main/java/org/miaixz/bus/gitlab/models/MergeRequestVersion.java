@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class MergeRequestVersion implements Serializable {
 
     /**
-     * Constructs a new {@code MergeRequestVersion} instance.
-     */
-    public MergeRequestVersion() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -77,6 +70,13 @@ public class MergeRequestVersion implements Serializable {
      * The real size value.
      */
     private String realSize;
+
+    /**
+     * Constructs a new {@code MergeRequestVersion} instance.
+     */
+    public MergeRequestVersion() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

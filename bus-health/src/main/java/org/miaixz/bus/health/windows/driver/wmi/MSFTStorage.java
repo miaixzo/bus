@@ -34,13 +34,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public class MSFTStorage {
 
     /**
-     * Constructs a new {@code MSFTStorage} instance.
-     */
-    public MSFTStorage() {
-        // No initialization required.
-    }
-
-    /**
      * The WMI namespace for storage.
      */
     public static final String STORAGE_NAMESPACE = "ROOT\\Microsoft\\Windows\\Storage";
@@ -64,6 +57,13 @@ public class MSFTStorage {
      * The WMI class name for virtual disks.
      */
     public static final String MSFT_VIRTUAL_DISK = "MSFT_VirtualDisk";
+
+    /**
+     * Constructs a new {@code MSFTStorage} instance.
+     */
+    public MSFTStorage() {
+        // No initialization required.
+    }
 
     /**
      * Query the storage pools.

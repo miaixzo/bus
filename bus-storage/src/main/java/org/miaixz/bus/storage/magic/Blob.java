@@ -38,13 +38,6 @@ import lombok.experimental.SuperBuilder;
 public class Blob {
 
     /**
-     * Constructs a new {@code Blob} instance.
-     */
-    public Blob() {
-        // No initialization required.
-    }
-
-    /**
      * Unique identifier for the blob.
      */
     public String key;
@@ -119,5 +112,12 @@ public class Blob {
      * Extended fields for the file, stored as a map.
      */
     public Map<String, Object> extend;
+
+    /**
+     * Constructs a new {@code Blob} instance.
+     */
+    public Blob() {
+        // No initialization required.
+    }
 
 }

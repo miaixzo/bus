@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.PHILIPS_MR_PART_12;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "PHILIPS MR/PART 12";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (0009,xx10) VR=US VM=1 ?
      */
     public static final int _0009_xx10_ = 0x00090010;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

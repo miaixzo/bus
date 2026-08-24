@@ -70,13 +70,6 @@ import org.miaixz.bus.vortex.magic.Metrics;
 public class DefaultMonitor implements Monitor {
 
     /**
-     * Creates an in-memory monitor.
-     */
-    public DefaultMonitor() {
-        // No initialization required.
-    }
-
-    /**
      * Singleton instance of DefaultMonitor.
      * <p>
      * This instance can be shared across the application for centralized monitoring. It is thread-safe and suitable for
@@ -132,6 +125,13 @@ public class DefaultMonitor implements Monitor {
      * Total database duration in nanoseconds.
      */
     private final AtomicLong dbDurationNs = new AtomicLong(0);
+
+    /**
+     * Creates an in-memory monitor.
+     */
+    public DefaultMonitor() {
+        // No initialization required.
+    }
 
     /**
      * Records a cache access and updates hit or miss counters.

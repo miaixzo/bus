@@ -42,13 +42,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public abstract class AbstractUser<U extends AbstractUser<U>> implements Serializable {
 
     /**
-     * Constructs a new AbstractUser instance.
-     */
-    public AbstractUser() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -90,6 +83,13 @@ public abstract class AbstractUser<U extends AbstractUser<U>> implements Seriali
      * The web url value.
      */
     private String webUrl;
+
+    /**
+     * Constructs a new AbstractUser instance.
+     */
+    public AbstractUser() {
+        // No initialization required.
+    }
 
     /**
      * Sets the avatar URL and returns this user model.

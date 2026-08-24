@@ -61,13 +61,6 @@ import org.miaixz.bus.logger.Logger;
 public class LinuxFileSystem extends AbstractFileSystem {
 
     /**
-     * Constructs a new {@code LinuxFileSystem} instance.
-     */
-    public LinuxFileSystem() {
-        // No initialization required.
-    }
-
-    /**
      * The FS_PATH_EXCLUDES constant.
      */
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
@@ -111,6 +104,13 @@ public class LinuxFileSystem extends AbstractFileSystem {
      * Maximum number of concurrent NFS reachability probe threads.
      */
     private static final int NFS_PROBE_MAX_THREADS = 64;
+
+    /**
+     * Constructs a new {@code LinuxFileSystem} instance.
+     */
+    public LinuxFileSystem() {
+        // No initialization required.
+    }
 
     /**
      * Queries the statvfs.

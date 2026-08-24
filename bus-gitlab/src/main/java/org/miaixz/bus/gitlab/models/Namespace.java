@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Namespace implements Serializable {
 
     /**
-     * Constructs a new {@code Namespace} instance.
-     */
-    public Namespace() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -76,6 +69,13 @@ public class Namespace implements Serializable {
      * The web url value.
      */
     private String webUrl;
+
+    /**
+     * Constructs a new {@code Namespace} instance.
+     */
+    public Namespace() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

@@ -35,13 +35,6 @@ import org.miaixz.bus.core.xyz.LambdaKit;
  */
 public class LambdaNodeConfig<T, R> extends NodeConfig {
 
-    /**
-     * Constructs a new LambdaNodeConfig instance.
-     */
-    public LambdaNodeConfig() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852250050652L;
 
@@ -69,6 +62,13 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
      * The function for retrieving the list of child nodes.
      */
     private FunctionX<T, List<T>> childrenKeyFun;
+
+    /**
+     * Constructs a new LambdaNodeConfig instance.
+     */
+    public LambdaNodeConfig() {
+        // No initialization required.
+    }
 
     /**
      * Gets the function for retrieving the ID.

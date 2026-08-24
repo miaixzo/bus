@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_CT_VA0__COAD;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS CT VA0 COAD";
@@ -287,5 +280,12 @@ public class PrivateTag {
      * (0019,xxC5) VR=IS VM=1 ?
      */
     public static final int _0019_xxC5_ = 0x001900C5;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

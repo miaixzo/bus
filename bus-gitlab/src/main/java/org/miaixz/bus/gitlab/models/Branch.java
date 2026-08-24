@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Branch implements Serializable {
 
     /**
-     * Constructs a new {@code Branch} instance.
-     */
-    public Branch() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -80,6 +73,13 @@ public class Branch implements Serializable {
      * The web url value.
      */
     private String webUrl;
+
+    /**
+     * Constructs a new {@code Branch} instance.
+     */
+    public Branch() {
+        // No initialization required.
+    }
 
     /**
      * Returns the commit.

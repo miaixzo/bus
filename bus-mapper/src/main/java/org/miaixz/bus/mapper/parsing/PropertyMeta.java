@@ -43,16 +43,16 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class PropertyMeta<T extends PropertyMeta<T>> {
 
     /**
+     * Additional properties for extension.
+     */
+    protected Map<String, String> props;
+
+    /**
      * Constructs a new PropertyMeta instance.
      */
     public PropertyMeta() {
         // No initialization required.
     }
-
-    /**
-     * Additional properties for extension.
-     */
-    protected Map<String, String> props;
 
     /**
      * Gets a property value.

@@ -35,13 +35,6 @@ import org.miaixz.bus.gitlab.TopicsApi;
 public class TopicParams implements Serializable {
 
     /**
-     * Constructs a new {@code TopicParams} instance.
-     */
-    public TopicParams() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -59,6 +52,13 @@ public class TopicParams implements Serializable {
      * The description value.
      */
     private String description;
+
+    /**
+     * Constructs a new {@code TopicParams} instance.
+     */
+    public TopicParams() {
+        // No initialization required.
+    }
 
     /**
      * Sets the name and returns this instance.

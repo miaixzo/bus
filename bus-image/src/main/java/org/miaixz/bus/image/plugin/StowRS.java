@@ -74,13 +74,6 @@ import org.miaixz.bus.logger.Logger;
 public class StowRS {
 
     /**
-     * Constructs a new {@code StowRS} instance.
-     */
-    public StowRS() {
-        // No initialization required.
-    }
-
-    /**
      * The boundary string for the multipart request.
      */
     private static final String boundary = "myboundary";
@@ -259,6 +252,13 @@ public class StowRS {
      * A map of custom HTTP request properties.
      */
     private Map<String, String> requestProperties;
+
+    /**
+     * Constructs a new {@code StowRS} instance.
+     */
+    public StowRS() {
+        // No initialization required.
+    }
 
     /**
      * Logs performance metrics for a single sent chunk.

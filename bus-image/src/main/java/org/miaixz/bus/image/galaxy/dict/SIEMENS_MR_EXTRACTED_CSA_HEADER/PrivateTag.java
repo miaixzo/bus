@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_MR_EXTRACTED_CSA_HEADER;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS MR EXTRACTED CSA HEADER";
@@ -52,5 +45,12 @@ public class PrivateTag {
      * (0025,xx03) VR=AT VM=1 Extracted MR Header Tag
      */
     public static final int ExtractedMRHeaderTag = 0x00250003;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

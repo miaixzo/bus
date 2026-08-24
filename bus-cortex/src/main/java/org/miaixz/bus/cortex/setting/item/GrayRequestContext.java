@@ -37,13 +37,6 @@ import lombok.experimental.SuperBuilder;
 public class GrayRequestContext {
 
     /**
-     * Creates an empty gray-routing request context.
-     */
-    public GrayRequestContext() {
-        // No initialization required.
-    }
-
-    /**
      * Client IP address used for gray-routing evaluation.
      */
     private String clientIp;
@@ -67,6 +60,13 @@ public class GrayRequestContext {
      * Optional logical request labels.
      */
     private Map<String, String> labels;
+
+    /**
+     * Creates an empty gray-routing request context.
+     */
+    public GrayRequestContext() {
+        // No initialization required.
+    }
 
     /**
      * Returns an immutable view of request headers.

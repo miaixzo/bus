@@ -37,13 +37,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class EventMergeRequest {
 
     /**
-     * Constructs a new {@code EventMergeRequest} instance.
-     */
-    public EventMergeRequest() {
-        // No initialization required.
-    }
-
-    /**
      * The assignee id value.
      */
     private Long assigneeId;
@@ -271,6 +264,13 @@ public class EventMergeRequest {
      * The oldrev value.
      */
     private String oldrev;
+
+    /**
+     * Constructs a new {@code EventMergeRequest} instance.
+     */
+    public EventMergeRequest() {
+        // No initialization required.
+    }
 
     /**
      * Returns the assignee id.
@@ -1398,13 +1398,6 @@ public class EventMergeRequest {
     public static class MergeParams {
 
         /**
-         * Constructs a new {@code MergeParams} instance.
-         */
-        public MergeParams() {
-            // No initialization required.
-        }
-
-        /**
          * Auto-merge strategy selected for the merge request.
          */
         private String autoMergeStrategy;
@@ -1438,6 +1431,13 @@ public class EventMergeRequest {
          * Merge train reference details.
          */
         private TrainRef trainRef;
+
+        /**
+         * Constructs a new {@code MergeParams} instance.
+         */
+        public MergeParams() {
+            // No initialization required.
+        }
 
         /**
          * Gets the auto-merge strategy selected for the merge request.
@@ -1572,13 +1572,6 @@ public class EventMergeRequest {
         public static class TrainRef {
 
             /**
-             * Constructs a new {@code TrainRef} instance.
-             */
-            public TrainRef() {
-                // No initialization required.
-            }
-
-            /**
              * Commit SHA for the merge train reference.
              */
             private String commitSha;
@@ -1592,6 +1585,13 @@ public class EventMergeRequest {
              * Squash commit SHA for the merge train reference.
              */
             private String squashCommitSha;
+
+            /**
+             * Constructs a new {@code TrainRef} instance.
+             */
+            public TrainRef() {
+                // No initialization required.
+            }
 
             /**
              * Gets the commit SHA for the merge train reference.

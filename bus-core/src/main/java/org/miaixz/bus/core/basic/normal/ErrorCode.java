@@ -28,13 +28,6 @@ import org.miaixz.bus.core.lang.Symbol;
  */
 public class ErrorCode {
 
-    /**
-     * ErrorCode with default settings.
-     */
-    public ErrorCode() {
-        // No initialization required.
-    }
-
     // =================================================================================================================
     // Global & System Codes (-1 ~ -99)
     // =================================================================================================================
@@ -1172,5 +1165,12 @@ public class ErrorCode {
      * DNS resolution failed.
      */
     public static final Errors _100904 = ErrorRegistry.register("100904", "DNS resolution failed");
+
+    /**
+     * ErrorCode with default settings.
+     */
+    public ErrorCode() {
+        // No initialization required.
+    }
 
 }

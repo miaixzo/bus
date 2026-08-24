@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class OrderQuery extends Voucher {
 
     /**
-     * Constructs a new {@code OrderQuery} instance.
-     */
-    public OrderQuery() {
-        // No initialization required.
-    }
-
-    /**
      * Sub-merchant App ID.
      */
     private String sub_appid;
@@ -76,5 +69,12 @@ public class OrderQuery extends Voucher {
      * Merchant order number.
      */
     private String out_trade_no;
+
+    /**
+     * Constructs a new {@code OrderQuery} instance.
+     */
+    public OrderQuery() {
+        // No initialization required.
+    }
 
 }

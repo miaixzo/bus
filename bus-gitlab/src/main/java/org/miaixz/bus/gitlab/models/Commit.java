@@ -34,13 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Commit implements Serializable {
 
     /**
-     * Constructs a new {@code Commit} instance.
-     */
-    public Commit() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -126,6 +119,13 @@ public class Commit implements Serializable {
      * The last pipeline value.
      */
     private Pipeline lastPipeline;
+
+    /**
+     * Constructs a new {@code Commit} instance.
+     */
+    public Commit() {
+        // No initialization required.
+    }
 
     /**
      * Returns the author.

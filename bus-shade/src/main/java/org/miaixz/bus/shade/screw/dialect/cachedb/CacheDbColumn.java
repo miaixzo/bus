@@ -35,13 +35,6 @@ import org.miaixz.bus.shade.screw.metadata.Column;
 public class CacheDbColumn implements Column {
 
     /**
-     * Constructs a new CacheDbColumn instance.
-     */
-    public CacheDbColumn() {
-        // No initialization required.
-    }
-
-    /**
      * The table name that is the scope of a REFERENCE attribute.
      */
     @MappingField(value = "SCOPE_TABLE")
@@ -201,5 +194,12 @@ public class CacheDbColumn implements Column {
      */
     @MappingField(value = "COLUMN_LENGTH")
     private String columnLength;
+
+    /**
+     * Constructs a new CacheDbColumn instance.
+     */
+    public CacheDbColumn() {
+        // No initialization required.
+    }
 
 }

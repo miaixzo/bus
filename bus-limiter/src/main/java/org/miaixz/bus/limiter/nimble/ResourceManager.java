@@ -37,13 +37,6 @@ import org.miaixz.bus.limiter.magic.annotation.Limiting;
 public class ResourceManager {
 
     /**
-     * Initializes the manager that tracks protected limiter resources and their runtime counters.
-     */
-    public ResourceManager() {
-        // No initialization required.
-    }
-
-    /**
      * A static set to keep track of method resource keys that have been registered for protection. This is primarily
      * used for logging or to avoid re-registering rules.
      */
@@ -54,6 +47,13 @@ public class ResourceManager {
      * represents the current limiting state for a specific resource.
      */
     private final Map<String, Protection> map = new ConcurrentHashMap<>();
+
+    /**
+     * Initializes the manager that tracks protected limiter resources and their runtime counters.
+     */
+    public ResourceManager() {
+        // No initialization required.
+    }
 
     /**
      * Checks if a given resource key is currently registered as a protected method.

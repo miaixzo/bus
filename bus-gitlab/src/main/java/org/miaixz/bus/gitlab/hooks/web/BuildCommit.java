@@ -31,13 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class BuildCommit {
 
     /**
-     * Constructs a new {@code BuildCommit} instance.
-     */
-    public BuildCommit() {
-        // No initialization required.
-    }
-
-    /**
      * The id value.
      */
     private Long id;
@@ -81,6 +74,13 @@ public class BuildCommit {
      * The finished at value.
      */
     private Date finishedAt;
+
+    /**
+     * Constructs a new {@code BuildCommit} instance.
+     */
+    public BuildCommit() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

@@ -1136,11 +1136,6 @@ public class Mat extends CleanableMat {
      */
     public static class Tuple2<T> {
 
-        public Tuple2(T _0, T _1) {
-            this._0 = _0;
-            this._1 = _1;
-        }
-
         public T get_0() {
             return _0;
         }
@@ -1152,18 +1147,17 @@ public class Mat extends CleanableMat {
         private final T _0;
         private final T _1;
 
+        public Tuple2(T _0, T _1) {
+            this._0 = _0;
+            this._1 = _1;
+        }
+
     }
 
     /**
      * The tuple 3 class.
      */
     public static class Tuple3<T> {
-
-        public Tuple3(T _0, T _1, T _2) {
-            this._0 = _0;
-            this._1 = _1;
-            this._2 = _2;
-        }
 
         public T get_0() {
             return _0;
@@ -1181,19 +1175,18 @@ public class Mat extends CleanableMat {
         private final T _1;
         private final T _2;
 
+        public Tuple3(T _0, T _1, T _2) {
+            this._0 = _0;
+            this._1 = _1;
+            this._2 = _2;
+        }
+
     }
 
     /**
      * The tuple 4 class.
      */
     public static class Tuple4<T> {
-
-        public Tuple4(T _0, T _1, T _2, T _3) {
-            this._0 = _0;
-            this._1 = _1;
-            this._2 = _2;
-            this._3 = _3;
-        }
 
         public T get_0() {
             return _0;
@@ -1215,6 +1208,13 @@ public class Mat extends CleanableMat {
         private final T _1;
         private final T _2;
         private final T _3;
+
+        public Tuple4(T _0, T _1, T _2, T _3) {
+            this._0 = _0;
+            this._1 = _1;
+            this._2 = _2;
+            this._3 = _3;
+        }
 
     }
 
@@ -1246,6 +1246,9 @@ public class Mat extends CleanableMat {
      */
     private static class AtableBase {
 
+        protected final Mat mat;
+        protected final int[] indices;
+
         protected AtableBase(Mat mat, int row, int col) {
             this.mat = mat;
             indices = new int[2];
@@ -1257,9 +1260,6 @@ public class Mat extends CleanableMat {
             this.mat = mat;
             this.indices = indices;
         }
-
-        protected final Mat mat;
-        protected final int[] indices;
 
     }
 

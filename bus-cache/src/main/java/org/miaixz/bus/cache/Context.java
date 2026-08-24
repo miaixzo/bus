@@ -35,13 +35,6 @@ import org.miaixz.bus.core.lang.EnumValue;
 public class Context {
 
     /**
-     * Constructs a new Context instance.
-     */
-    public Context() {
-        // No initialization required.
-    }
-
-    /**
      * A map of named cache instances, where the key is the cache name and the value is the {@link CacheX}
      * implementation.
      */
@@ -61,6 +54,13 @@ public class Context {
      * The global switch to enable or disable cache penetration prevention.
      */
     private EnumValue.Switch prevent;
+
+    /**
+     * Constructs a new Context instance.
+     */
+    public Context() {
+        // No initialization required.
+    }
 
     /**
      * Creates a new {@link Context} instance with default settings.

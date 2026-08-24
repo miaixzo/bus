@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_CT_APPL_EVIDENCEDOCUMENT;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS CT APPL EVIDENCEDOCUMENT";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (0029,xx00) VR=UT VM=1 Private Task Datamodel
      */
     public static final int PrivateTaskDatamodel = 0x00290000;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

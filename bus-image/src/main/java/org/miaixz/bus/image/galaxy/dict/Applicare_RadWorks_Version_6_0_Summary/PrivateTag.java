@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.Applicare_RadWorks_Version_6_0_Summary;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "Applicare/RadWorks/Version 6.0/Summary";
@@ -62,5 +55,12 @@ public class PrivateTag {
      * (3109,xx16) VR=TM VM=1 Receive Time
      */
     public static final int ReceiveTime = 0x31090016;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

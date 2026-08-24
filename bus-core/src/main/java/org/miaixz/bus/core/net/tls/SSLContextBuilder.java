@@ -52,13 +52,6 @@ public class SSLContextBuilder implements Builder<SSLContext> {
     private static final long serialVersionUID = 2852230919781L;
 
     /**
-     * Constructs a new {@code SSLContextBuilder}.
-     */
-    public SSLContextBuilder() {
-        // No initialization required.
-    }
-
-    /**
      * The SSL protocol to use.
      */
     private String protocol = Protocol.TLS.name;
@@ -82,6 +75,13 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      * The security provider.
      */
     private Provider provider;
+
+    /**
+     * Constructs a new {@code SSLContextBuilder}.
+     */
+    public SSLContextBuilder() {
+        // No initialization required.
+    }
 
     /**
      * Creates a new {@code SSLContextBuilder}.

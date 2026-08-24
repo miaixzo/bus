@@ -29,13 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class EventExternalStatusCheck {
 
     /**
-     * Constructs a new {@code EventExternalStatusCheck} instance.
-     */
-    public EventExternalStatusCheck() {
-        // No initialization required.
-    }
-
-    /**
      * The id value.
      */
     private Long id;
@@ -47,6 +40,13 @@ public class EventExternalStatusCheck {
      * The external url value.
      */
     private String externalUrl;
+
+    /**
+     * Constructs a new {@code EventExternalStatusCheck} instance.
+     */
+    public EventExternalStatusCheck() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

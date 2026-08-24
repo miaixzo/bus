@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.archive;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "Miaixz Archive 5";
@@ -392,5 +385,12 @@ public class PrivateTag {
      * (7777,xxE1) VR=CS VM=1 X-Road Data Status
      */
     public static final int XRoadDataStatus = 0x777700E1;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

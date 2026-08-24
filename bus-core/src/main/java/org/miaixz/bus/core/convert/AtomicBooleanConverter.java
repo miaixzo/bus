@@ -32,18 +32,18 @@ import org.miaixz.bus.core.xyz.BooleanKit;
 public class AtomicBooleanConverter extends AbstractConverter {
 
     /**
-     * Creates a new {@code AtomicBooleanConverter} instance.
-     */
-    public AtomicBooleanConverter() {
-        // No initialization required.
-    }
-
-    /**
      * Singleton instance.
      */
     public static final AtomicBooleanConverter INSTANCE = new AtomicBooleanConverter();
     @Serial
     private static final long serialVersionUID = 2852263652262L;
+
+    /**
+     * Creates a new {@code AtomicBooleanConverter} instance.
+     */
+    public AtomicBooleanConverter() {
+        // No initialization required.
+    }
 
     /**
      * Internally converts the given value to an {@link AtomicBoolean}.

@@ -31,13 +31,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public abstract class AbstractEvent implements Event {
 
     /**
-     * Constructs a new AbstractEvent instance.
-     */
-    public AbstractEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -59,6 +52,13 @@ public abstract class AbstractEvent implements Event {
      * The secret token value.
      */
     private String secretToken;
+
+    /**
+     * Constructs a new AbstractEvent instance.
+     */
+    public AbstractEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the webhook event type.

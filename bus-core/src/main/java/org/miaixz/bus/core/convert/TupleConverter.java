@@ -32,16 +32,16 @@ import org.miaixz.bus.core.lang.tuple.Tuple;
 public class TupleConverter implements Converter {
 
     /**
+     * Singleton instance
+     */
+    public static final TupleConverter INSTANCE = new TupleConverter();
+
+    /**
      * Constructs a new tuple converter.
      */
     public TupleConverter() {
         // No initialization required.
     }
-
-    /**
-     * Singleton instance
-     */
-    public static final TupleConverter INSTANCE = new TupleConverter();
 
     /**
      * Converts the given value to a Tuple.

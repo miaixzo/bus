@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.DLX_EXAMS_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "DLX_EXAMS_01";
@@ -52,5 +45,12 @@ public class PrivateTag {
      * (0015,xx03) VR=DS VM=1 Cardiac Calibration Ratio
      */
     public static final int CardiacCalibrationRatio = 0x00150003;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

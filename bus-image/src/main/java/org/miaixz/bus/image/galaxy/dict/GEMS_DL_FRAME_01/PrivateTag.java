@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_DL_FRAME_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_DL_FRAME_01";
@@ -252,5 +245,12 @@ public class PrivateTag {
      * (0025,xx3C) VR=CS VM=1 Internal Label Frame
      */
     public static final int InternalLabelFrame = 0x0025003C;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -54,13 +54,6 @@ public interface OperatingSystem {
     class ProcessFiltering {
 
         /**
-         * Creates a process-filter definition container.
-         */
-        public ProcessFiltering() {
-            // No initialization required.
-        }
-
-        /**
          * No filtering. Returns all processes.
          */
         public static final PredicateX<OSProcess> ALL_PROCESSES = p -> true;
@@ -85,6 +78,13 @@ public interface OperatingSystem {
          */
         public static final PredicateX<OSProcess> BITNESS_32 = p -> p.getBitness() == 32;
 
+        /**
+         * Creates a process-filter definition container.
+         */
+        public ProcessFiltering() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -95,13 +95,6 @@ public interface OperatingSystem {
      * @author Kimi Liu
      */
     class ProcessSorting {
-
-        /**
-         * Creates a process-order definition container.
-         */
-        public ProcessSorting() {
-            // No initialization required.
-        }
 
         /**
          * No sorting.
@@ -152,6 +145,13 @@ public interface OperatingSystem {
          */
         public static final Comparator<OSProcess> NAME_ASC = Comparator
                 .comparing(OSProcess::getName, String.CASE_INSENSITIVE_ORDER);
+
+        /**
+         * Creates a process-order definition container.
+         */
+        public ProcessSorting() {
+            // No initialization required.
+        }
 
     }
 

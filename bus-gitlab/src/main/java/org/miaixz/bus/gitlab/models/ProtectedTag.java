@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ProtectedTag implements Serializable {
 
     /**
-     * Constructs a new {@code ProtectedTag} instance.
-     */
-    public ProtectedTag() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -51,13 +44,6 @@ public class ProtectedTag implements Serializable {
      * @author Kimi Liu
      */
     public static class CreateAccessLevel implements Serializable {
-
-        /**
-         * Constructs a new {@code CreateAccessLevel} instance.
-         */
-        public CreateAccessLevel() {
-            // No initialization required.
-        }
 
         /**
          * The serial version uid value.
@@ -73,6 +59,13 @@ public class ProtectedTag implements Serializable {
          * The access level description value.
          */
         private String accessLevelDescription;
+
+        /**
+         * Constructs a new {@code CreateAccessLevel} instance.
+         */
+        public CreateAccessLevel() {
+            // No initialization required.
+        }
 
         /**
          * Returns the access level.
@@ -124,6 +117,13 @@ public class ProtectedTag implements Serializable {
      * The create access levels value.
      */
     private List<CreateAccessLevel> createAccessLevels;
+
+    /**
+     * Constructs a new {@code ProtectedTag} instance.
+     */
+    public ProtectedTag() {
+        // No initialization required.
+    }
 
     /**
      * Returns the name.

@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class GetPublicKey extends Voucher {
 
     /**
-     * Constructs a new {@code GetPublicKey} instance.
-     */
-    public GetPublicKey() {
-        // No initialization required.
-    }
-
-    /**
      * Merchant ID.
      */
     private String mch_id;
@@ -61,5 +54,12 @@ public class GetPublicKey extends Voucher {
      * Signature type.
      */
     private String sign_type;
+
+    /**
+     * Constructs a new {@code GetPublicKey} instance.
+     */
+    public GetPublicKey() {
+        // No initialization required.
+    }
 
 }

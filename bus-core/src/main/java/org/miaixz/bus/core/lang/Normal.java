@@ -36,13 +36,6 @@ import org.miaixz.bus.core.xyz.SetKit;
 public class Normal {
 
     /**
-     * Constructs a new Normal instance.
-     */
-    public Normal() {
-        // No initialization required.
-    }
-
-    /**
      * The number 1024, representing 2^10.
      */
     public static final int _1024 = 1 << 10;
@@ -1369,6 +1362,13 @@ public class Normal {
             Repeatable.class,
             Native.class,
             FunctionalInterface.class);
+
+    /**
+     * Constructs a new Normal instance.
+     */
+    public Normal() {
+        // No initialization required.
+    }
 
     /**
      * Checks if the provided URL represents a file resource. File protocols include "file", "vfsfile", or "vfs".

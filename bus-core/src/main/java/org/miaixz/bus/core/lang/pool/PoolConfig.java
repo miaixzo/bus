@@ -35,13 +35,6 @@ import java.io.Serializable;
  */
 public class PoolConfig implements Serializable {
 
-    /**
-     * Constructs a new PoolConfig instance.
-     */
-    public PoolConfig() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852272106223L;
 
@@ -67,6 +60,13 @@ public class PoolConfig implements Serializable {
      * duration, it may be evicted from the pool.
      */
     private long maxIdle;
+
+    /**
+     * Constructs a new PoolConfig instance.
+     */
+    public PoolConfig() {
+        // No initialization required.
+    }
 
     /**
      * Creates a new {@code PoolConfig} instance with default settings.

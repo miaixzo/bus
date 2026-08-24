@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class CreateRunnerResponse implements Serializable {
 
     /**
-     * Constructs a new {@code CreateRunnerResponse} instance.
-     */
-    public CreateRunnerResponse() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     private static final long serialVersionUID = 2852250855127L;
@@ -55,6 +48,13 @@ public class CreateRunnerResponse implements Serializable {
      * The token expires at value.
      */
     private Date tokenExpiresAt;
+
+    /**
+     * Constructs a new {@code CreateRunnerResponse} instance.
+     */
+    public CreateRunnerResponse() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

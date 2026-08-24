@@ -48,13 +48,6 @@ import org.miaixz.bus.logger.Logger;
 public class WmiQueryHandler {
 
     /**
-     * Creates a new WmiQueryHandler instance.
-     */
-    public WmiQueryHandler() {
-        // No initialization required.
-    }
-
-    /**
      * The globalTimeout constant.
      */
     private static final int globalTimeout = Builder.get(Builder._WMI_TIMEOUT, -1);
@@ -90,6 +83,13 @@ public class WmiQueryHandler {
      * The securityInitialized value.
      */
     private volatile boolean securityInitialized = false;
+
+    /**
+     * Creates a new WmiQueryHandler instance.
+     */
+    public WmiQueryHandler() {
+        // No initialization required.
+    }
 
     /**
      * Factory method to create an instance of this class. To override this class, use {@link #setInstanceClass(Class)}

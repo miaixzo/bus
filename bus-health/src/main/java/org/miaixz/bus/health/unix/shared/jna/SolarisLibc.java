@@ -112,13 +112,6 @@ public interface SolarisLibc extends CLibrary {
     class SolarisUtmpx extends Structure {
 
         /**
-         * Creates a new SolarisUtmpx instance.
-         */
-        public SolarisUtmpx() {
-            // No initialization required.
-        }
-
-        /**
          * The ut_user value.
          */
         public byte[] ut_user = new byte[UTX_USERSIZE]; // user login name
@@ -163,6 +156,13 @@ public interface SolarisLibc extends CLibrary {
          */
         public byte[] ut_host = new byte[UTX_HOSTSIZE]; // host name
 
+        /**
+         * Creates a new SolarisUtmpx instance.
+         */
+        public SolarisUtmpx() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -177,13 +177,6 @@ public interface SolarisLibc extends CLibrary {
     class Exit_status extends Structure {
 
         /**
-         * Creates a new Exit_status instance.
-         */
-        public Exit_status() {
-            // No initialization required.
-        }
-
-        /**
          * The e_termination value.
          */
         public short e_termination; // Process termination status
@@ -191,6 +184,13 @@ public interface SolarisLibc extends CLibrary {
          * The e_exit value.
          */
         public short e_exit; // Process exit status
+
+        /**
+         * Creates a new Exit_status instance.
+         */
+        public Exit_status() {
+            // No initialization required.
+        }
 
     }
 
@@ -207,13 +207,6 @@ public interface SolarisLibc extends CLibrary {
     class Timeval extends Structure {
 
         /**
-         * Creates a new Timeval instance.
-         */
-        public Timeval() {
-            // No initialization required.
-        }
-
-        /**
          * The tv_sec value.
          */
         public NativeLong tv_sec; // seconds
@@ -221,6 +214,13 @@ public interface SolarisLibc extends CLibrary {
          * The tv_usec value.
          */
         public NativeLong tv_usec; // microseconds
+
+        /**
+         * Creates a new Timeval instance.
+         */
+        public Timeval() {
+            // No initialization required.
+        }
 
     }
 

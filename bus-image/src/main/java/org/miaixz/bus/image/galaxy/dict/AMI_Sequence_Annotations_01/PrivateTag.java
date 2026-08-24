@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.AMI_Sequence_Annotations_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "AMI Sequence Annotations_01";
@@ -102,5 +95,12 @@ public class PrivateTag {
      * (3103,xxE0) VR=US VM=1 Annotation Frame Number
      */
     public static final int AnnotationFrameNumber = 0x310300E0;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

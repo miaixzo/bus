@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_ADVANCED_PRESENTATION;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS SYNGO ADVANCED PRESENTATION";
@@ -972,5 +965,12 @@ public class PrivateTag {
      * (0029,xxFD) VR=LO VM=1 Measurement Application Type ID
      */
     public static final int MeasurementApplicationTypeID = 0x002900FD;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

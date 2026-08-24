@@ -34,13 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class License implements Serializable {
 
     /**
-     * Constructs a new {@code License} instance.
-     */
-    public License() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -94,6 +87,13 @@ public class License implements Serializable {
      * The add ons value.
      */
     private Map<String, Integer> addOns;
+
+    /**
+     * Constructs a new {@code License} instance.
+     */
+    public License() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

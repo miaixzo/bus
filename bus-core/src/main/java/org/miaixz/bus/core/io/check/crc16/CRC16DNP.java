@@ -30,13 +30,6 @@ import java.io.Serial;
  */
 public class CRC16DNP extends CRC16Checksum {
 
-    /**
-     * Creates a CRC-16/DNP checksum implementation.
-     */
-    public CRC16DNP() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852278821990L;
 
@@ -44,6 +37,13 @@ public class CRC16DNP extends CRC16Checksum {
      * The polynomial used in the CRC16-DNP calculation. It is the bit-reversed form of 0x3D65.
      */
     private static final int WC_POLY = 0xA6BC;
+
+    /**
+     * Creates a CRC-16/DNP checksum implementation.
+     */
+    public CRC16DNP() {
+        // No initialization required.
+    }
 
     /**
      * Updates the CRC16-DNP checksum with the specified array of bytes. After the superclass update, the internal CRC

@@ -47,19 +47,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
 public class PayProperties {
 
     /**
-     * Binds immutable payment provider and cache settings from {@code bus.pay}.
-     *
-     * @param enabled whether payment integration is enabled
-     * @param type    provider configuration grouped by payment registry type
-     * @param cache   cache backend settings used by payment services
-     */
-    public PayProperties(@DefaultValue("false") boolean enabled, Map<Registry, Context> type, Options cache) {
-        this.enabled = enabled;
-        this.type = type == null ? Map.of() : Map.copyOf(type);
-        this.cache = cache;
-    }
-
-    /**
      * Whether payment integration is enabled.
      */
     private final boolean enabled;
@@ -79,6 +66,19 @@ public class PayProperties {
      */
     @NestedConfigurationProperty
     private final Options cache;
+
+    /**
+     * Binds immutable payment provider and cache settings from {@code bus.pay}.
+     *
+     * @param enabled whether payment integration is enabled
+     * @param type    provider configuration grouped by payment registry type
+     * @param cache   cache backend settings used by payment services
+     */
+    public PayProperties(@DefaultValue("false") boolean enabled, Map<Registry, Context> type, Options cache) {
+        this.enabled = enabled;
+        this.type = type == null ? Map.of() : Map.copyOf(type);
+        this.cache = cache;
+    }
 
     /**
      * @return masked diagnostic representation

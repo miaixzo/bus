@@ -45,13 +45,6 @@ import lombok.Getter;
 public class AuditRecord {
 
     /**
-     * Constructs a new AuditRecord instance.
-     */
-    public AuditRecord() {
-        // No initialization required.
-    }
-
-    /**
      * SQL statement ID (Mapper method fully qualified name)
      */
     private String sqlId;
@@ -110,6 +103,13 @@ public class AuditRecord {
      * Additional information (user information, IP address, etc.)
      */
     private Map<String, Object> context;
+
+    /**
+     * Constructs a new AuditRecord instance.
+     */
+    public AuditRecord() {
+        // No initialization required.
+    }
 
     /**
      * Create audit record

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Raw_Image_Set
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "Siemens: Thorax/Multix FD Raw Image Settings";
@@ -227,5 +220,12 @@ public class PrivateTag {
      * (0025,xx37) VR=DS VM=1 ?
      */
     public static final int _0025_xx37_ = 0x00250037;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

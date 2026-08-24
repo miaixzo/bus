@@ -33,13 +33,6 @@ import org.miaixz.bus.image.metric.Connection;
 public class HL7ApplicationInfo implements Serializable {
 
     /**
-     * Constructs a new HL7ApplicationInfo instance.
-     */
-    public HL7ApplicationInfo() {
-        // No initialization required.
-    }
-
-    /**
      * The conns value.
      */
     private final List<Connection> conns = new ArrayList<>(1);
@@ -73,6 +66,13 @@ public class HL7ApplicationInfo implements Serializable {
      * The installed value.
      */
     private Boolean installed;
+
+    /**
+     * Constructs a new HL7ApplicationInfo instance.
+     */
+    public HL7ApplicationInfo() {
+        // No initialization required.
+    }
 
     /**
      * Gets the installed.

@@ -29,13 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class EventReleaseSource {
 
     /**
-     * Constructs a new {@code EventReleaseSource} instance.
-     */
-    public EventReleaseSource() {
-        // No initialization required.
-    }
-
-    /**
      * The format value.
      */
     private String format;
@@ -43,6 +36,13 @@ public class EventReleaseSource {
      * The url value.
      */
     private String url;
+
+    /**
+     * Constructs a new {@code EventReleaseSource} instance.
+     */
+    public EventReleaseSource() {
+        // No initialization required.
+    }
 
     /**
      * Returns the format.

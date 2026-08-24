@@ -38,13 +38,6 @@ import org.miaixz.bus.gitlab.support.ISO8601;
 public class IssuesStatisticsFilter implements Serializable {
 
     /**
-     * Constructs a new {@code IssuesStatisticsFilter} instance.
-     */
-    public IssuesStatisticsFilter() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -106,6 +99,13 @@ public class IssuesStatisticsFilter implements Serializable {
      * The confidential value.
      */
     private Boolean confidential;
+
+    /**
+     * Constructs a new {@code IssuesStatisticsFilter} instance.
+     */
+    public IssuesStatisticsFilter() {
+        // No initialization required.
+    }
 
     /**
      * Sets the labels and returns this instance.

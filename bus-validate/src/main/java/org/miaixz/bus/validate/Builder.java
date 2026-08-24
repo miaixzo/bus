@@ -32,13 +32,6 @@ import org.miaixz.bus.core.lang.Validator;
 public class Builder extends Validator {
 
     /**
-     * Constructs a new Builder instance.
-     */
-    public Builder() {
-        // No initialization required.
-    }
-
-    /**
      * Default attribute name.
      */
     public static final String DEFAULT_FIELD = "field";
@@ -166,6 +159,13 @@ public class Builder extends Validator {
      * True validator name.
      */
     public static final String _TRUE = "True";
+
+    /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
 
     /**
      * Creates a new validation instance for the given object. A new object is created each time to avoid thread safety

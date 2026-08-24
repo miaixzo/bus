@@ -30,13 +30,6 @@ import java.io.Serial;
  */
 public class CRC16Maxim extends CRC16Checksum {
 
-    /**
-     * Creates a CRC-16/MAXIM checksum implementation.
-     */
-    public CRC16Maxim() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852279557397L;
 
@@ -44,6 +37,13 @@ public class CRC16Maxim extends CRC16Checksum {
      * The polynomial used in the CRC16-MAXIM calculation. It is the bit-reversed form of 0x8005.
      */
     private static final int WC_POLY = 0xa001;
+
+    /**
+     * Creates a CRC-16/MAXIM checksum implementation.
+     */
+    public CRC16Maxim() {
+        // No initialization required.
+    }
 
     /**
      * Updates the CRC16-MAXIM checksum with the specified array of bytes. After the superclass update, the internal CRC

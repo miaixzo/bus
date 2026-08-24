@@ -34,13 +34,6 @@ import lombok.experimental.SuperBuilder;
 public class StoreInfo {
 
     /**
-     * Constructs a new {@code StoreInfo} instance.
-     */
-    public StoreInfo() {
-        // No initialization required.
-    }
-
-    /**
      * The store ID.
      */
     private String id;
@@ -59,5 +52,12 @@ public class StoreInfo {
      * The detailed address of the store.
      */
     private String address;
+
+    /**
+     * Constructs a new {@code StoreInfo} instance.
+     */
+    public StoreInfo() {
+        // No initialization required.
+    }
 
 }

@@ -97,13 +97,6 @@ public interface LinuxLibc extends LibC, CLibrary {
     class Rusage extends Structure {
 
         /**
-         * Creates a new Rusage instance.
-         */
-        public Rusage() {
-            // No initialization required.
-        }
-
-        /**
          * User time seconds.
          */
         public NativeLong ru_utime_sec;
@@ -193,6 +186,13 @@ public interface LinuxLibc extends LibC, CLibrary {
          */
         public NativeLong ru_nivcsw;
 
+        /**
+         * Creates a new Rusage instance.
+         */
+        public Rusage() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -215,13 +215,6 @@ public interface LinuxLibc extends LibC, CLibrary {
     @FieldOrder({ "ut_type", "ut_pid", "ut_line", "ut_id", "ut_user", "ut_host", "ut_exit", "ut_session", "ut_tv",
             "ut_addr_v6", "reserved" })
     class LinuxUtmpx extends Structure {
-
-        /**
-         * Constructs a new {@code LinuxUtmpx} instance.
-         */
-        public LinuxUtmpx() {
-            // No initialization required.
-        }
 
         /**
          * The ut_type value.
@@ -268,6 +261,13 @@ public interface LinuxLibc extends LibC, CLibrary {
          */
         public byte[] reserved = new byte[20]; // Reserved for future use.
 
+        /**
+         * Constructs a new {@code LinuxUtmpx} instance.
+         */
+        public LinuxUtmpx() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -282,13 +282,6 @@ public interface LinuxLibc extends LibC, CLibrary {
     class Exit_status extends Structure {
 
         /**
-         * Constructs a new {@code Exit_status} instance.
-         */
-        public Exit_status() {
-            // No initialization required.
-        }
-
-        /**
          * The e_termination value.
          */
         public short e_termination; // Process termination status
@@ -296,6 +289,13 @@ public interface LinuxLibc extends LibC, CLibrary {
          * The e_exit value.
          */
         public short e_exit; // Process exit status
+
+        /**
+         * Constructs a new {@code Exit_status} instance.
+         */
+        public Exit_status() {
+            // No initialization required.
+        }
 
     }
 
@@ -311,13 +311,6 @@ public interface LinuxLibc extends LibC, CLibrary {
     class Ut_Tv extends Structure {
 
         /**
-         * Constructs a new {@code Ut_Tv} instance.
-         */
-        public Ut_Tv() {
-            // No initialization required.
-        }
-
-        /**
          * The tv_sec value.
          */
         public int tv_sec; // seconds
@@ -325,6 +318,13 @@ public interface LinuxLibc extends LibC, CLibrary {
          * The tv_usec value.
          */
         public int tv_usec; // microseconds
+
+        /**
+         * Constructs a new {@code Ut_Tv} instance.
+         */
+        public Ut_Tv() {
+            // No initialization required.
+        }
 
     }
 

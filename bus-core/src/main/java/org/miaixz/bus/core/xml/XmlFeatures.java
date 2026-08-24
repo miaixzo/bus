@@ -28,13 +28,6 @@ package org.miaixz.bus.core.xml;
 public class XmlFeatures {
 
     /**
-     * Constructs a new XmlFeatures instance.
-     */
-    public XmlFeatures() {
-        // No initialization required.
-    }
-
-    /**
      * Feature to disallow DOCTYPE declarations in XML. This prevents XML External Entity (XXE) attacks by not allowing
      * external entities to be included in the XML document.
      */
@@ -54,5 +47,12 @@ public class XmlFeatures {
      * Feature to exclude external parameter entities and the external DTD subset.
      */
     public static final String EXTERNAL_PARAMETER_ENTITIES = "http://xml.org/sax/features/external-parameter-entities";
+
+    /**
+     * Constructs a new XmlFeatures instance.
+     */
+    public XmlFeatures() {
+        // No initialization required.
+    }
 
 }

@@ -35,13 +35,6 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 public class Modifier {
 
     /**
-     * Constructs a new Modifier instance.
-     */
-    public Modifier() {
-        // No initialization required.
-    }
-
-    /**
      * Fields to be ignored during calculation.
      */
     private static final int[] IGNORE_FIELDS = new int[] { java.util.Calendar.HOUR_OF_DAY, // Same as HOUR
@@ -52,6 +45,13 @@ public class Modifier {
             java.util.Calendar.WEEK_OF_MONTH, // Special handling
             java.util.Calendar.WEEK_OF_YEAR // Represented by WEEK_OF_MONTH
     };
+
+    /**
+     * Constructs a new Modifier instance.
+     */
+    public Modifier() {
+        // No initialization required.
+    }
 
     /**
      * Modifies the date based on the specified field and modification type.

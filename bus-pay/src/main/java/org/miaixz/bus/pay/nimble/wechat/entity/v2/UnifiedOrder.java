@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class UnifiedOrder extends Voucher {
 
     /**
-     * Constructs a new {@code UnifiedOrder} instance.
-     */
-    public UnifiedOrder() {
-        // No initialization required.
-    }
-
-    /**
      * Merchant ID.
      */
     private String mch_id;
@@ -171,5 +164,12 @@ public class UnifiedOrder extends Voucher {
      * Whether to use profit sharing (Y/N).
      */
     private String profit_sharing;
+
+    /**
+     * Constructs a new {@code UnifiedOrder} instance.
+     */
+    public UnifiedOrder() {
+        // No initialization required.
+    }
 
 }

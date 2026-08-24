@@ -31,13 +31,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public abstract class AbstractSystemHookEvent implements SystemHookEvent {
 
     /**
-     * Constructs a new AbstractSystemHookEvent instance.
-     */
-    public AbstractSystemHookEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -55,6 +48,13 @@ public abstract class AbstractSystemHookEvent implements SystemHookEvent {
      * The request secret token value.
      */
     private String requestSecretToken;
+
+    /**
+     * Constructs a new AbstractSystemHookEvent instance.
+     */
+    public AbstractSystemHookEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the request url.

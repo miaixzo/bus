@@ -37,13 +37,6 @@ import org.miaixz.bus.logger.Logger;
 public class LlmFactory {
 
     /**
-     * Creates an LLM provider factory.
-     */
-    public LlmFactory() {
-        // No initialization required.
-    }
-
-    /**
      * Cache for storing created LLM provider instances.
      * <p>
      * The cache key is a composite string in the format: {@code "type:endpoint:apiKey"}. This ensures that providers
@@ -54,6 +47,13 @@ public class LlmFactory {
      * </p>
      */
     private final Map<String, LlmProvider> providerCache = new ConcurrentHashMap<>();
+
+    /**
+     * Creates an LLM provider factory.
+     */
+    public LlmFactory() {
+        // No initialization required.
+    }
 
     /**
      * Gets or creates an LLM provider for the specified configuration.

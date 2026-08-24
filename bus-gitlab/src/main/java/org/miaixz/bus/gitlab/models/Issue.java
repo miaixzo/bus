@@ -31,13 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Issue extends AbstractIssue {
 
     /**
-     * Constructs a new {@code Issue} instance.
-     */
-    public Issue() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -47,6 +40,13 @@ public class Issue extends AbstractIssue {
      * The subscribed value.
      */
     private Boolean subscribed;
+
+    /**
+     * Constructs a new {@code Issue} instance.
+     */
+    public Issue() {
+        // No initialization required.
+    }
 
     /**
      * Returns the subscribed.

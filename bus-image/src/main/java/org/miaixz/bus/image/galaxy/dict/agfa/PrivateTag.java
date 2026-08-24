@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.agfa;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "AGFA";
@@ -152,5 +145,12 @@ public class PrivateTag {
      * (0019,xx93) VR=CS VM=1 Status
      */
     public static final int Status = 0x00190093;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

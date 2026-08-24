@@ -31,13 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class CreatedChildEpic extends AbstractMinimalEpic<CreatedChildEpic> {
 
     /**
-     * Constructs a new {@code CreatedChildEpic} instance.
-     */
-    public CreatedChildEpic() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -55,6 +48,13 @@ public class CreatedChildEpic extends AbstractMinimalEpic<CreatedChildEpic> {
      * The relation url value.
      */
     private String relationUrl;
+
+    /**
+     * Constructs a new {@code CreatedChildEpic} instance.
+     */
+    public CreatedChildEpic() {
+        // No initialization required.
+    }
 
     /**
      * Returns the has children.

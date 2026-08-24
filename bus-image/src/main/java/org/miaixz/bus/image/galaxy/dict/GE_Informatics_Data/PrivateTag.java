@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GE_Informatics_Data;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GE Informatics Data";
@@ -72,5 +65,12 @@ public class PrivateTag {
      * (3003,xx06) VR=OB VM=1 ?
      */
     public static final int _3003_xx06_ = 0x30030006;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

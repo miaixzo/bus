@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_VXTL_USERDATA_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_VXTL_USERDATA_01";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (0047,xx11) VR=LT VM=1 ?
      */
     public static final int _0047_xx11_ = 0x00470011;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

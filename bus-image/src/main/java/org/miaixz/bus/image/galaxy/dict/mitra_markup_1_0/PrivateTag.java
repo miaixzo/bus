@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.mitra_markup_1_0;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "MITRA MARKUP 1.0";
@@ -112,5 +105,12 @@ public class PrivateTag {
      * (0029,xx14) VR=OB VM=1-n Markup15
      */
     public static final int Markup15 = 0x00290014;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

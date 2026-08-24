@@ -29,13 +29,6 @@ import org.miaixz.bus.core.lang.Symbol;
 public class FestivalBuilder {
 
     /**
-     * Constructs a new {@code FestivalBuilder} instance.
-     */
-    public FestivalBuilder() {
-        // No initialization required.
-    }
-
-    /**
      * Festival name.
      */
     protected String name;
@@ -45,6 +38,13 @@ public class FestivalBuilder {
      */
     protected char[] data = { Symbol.C_AT, Symbol.C_UNDERLINE, Symbol.C_UNDERLINE, Symbol.C_UNDERLINE,
             Symbol.C_UNDERLINE, Symbol.C_UNDERLINE, Symbol.C_ZERO, Symbol.C_ZERO, Symbol.C_ZERO };
+
+    /**
+     * Constructs a new {@code FestivalBuilder} instance.
+     */
+    public FestivalBuilder() {
+        // No initialization required.
+    }
 
     /**
      * Sets the festival name.

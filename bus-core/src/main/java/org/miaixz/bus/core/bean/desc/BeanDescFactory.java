@@ -39,16 +39,16 @@ import org.miaixz.bus.core.xyz.RecordKit;
 public class BeanDescFactory {
 
     /**
+     * A weak concurrent map for caching {@code BeanDesc} instances.
+     */
+    private static final WeakConcurrentMap<Class<?>, BeanDesc> Cache = new WeakConcurrentMap<>();
+
+    /**
      * Keeps bean-description factory selection on the static API.
      */
     public BeanDescFactory() {
         // No initialization required.
     }
-
-    /**
-     * A weak concurrent map for caching {@code BeanDesc} instances.
-     */
-    private static final WeakConcurrentMap<Class<?>, BeanDesc> Cache = new WeakConcurrentMap<>();
 
     /**
      * Gets a cached {@link BeanDesc} for the given class. If the descriptor is not in the cache, a new one is created

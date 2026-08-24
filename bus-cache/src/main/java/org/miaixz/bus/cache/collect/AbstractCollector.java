@@ -410,13 +410,6 @@ public abstract class AbstractCollector implements Collector, AutoCloseable {
     protected static class Tally {
 
         /**
-         * Constructs a new Tally instance.
-         */
-        public Tally() {
-            // No initialization required.
-        }
-
-        /**
          * The cache pattern name (e.g., cache name).
          */
         private String pattern;
@@ -435,6 +428,13 @@ public abstract class AbstractCollector implements Collector, AutoCloseable {
          * The version number for optimistic locking.
          */
         private long version;
+
+        /**
+         * Constructs a new Tally instance.
+         */
+        public Tally() {
+            // No initialization required.
+        }
 
         /**
          * Returns the cache pattern name.

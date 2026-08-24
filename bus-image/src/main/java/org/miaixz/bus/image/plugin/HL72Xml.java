@@ -45,13 +45,6 @@ import org.miaixz.bus.image.metric.hl7.HL7Segment;
 public class HL72Xml {
 
     /**
-     * Constructs a new HL72Xml instance.
-     */
-    public HL72Xml() {
-        // No initialization required.
-    }
-
-    /**
      * The URL of the XSLT stylesheet to apply.
      */
     private URL xslt;
@@ -70,6 +63,13 @@ public class HL72Xml {
      * The character set to use if not specified in the MSH segment.
      */
     private String charset;
+
+    /**
+     * Constructs a new HL72Xml instance.
+     */
+    public HL72Xml() {
+        // No initialization required.
+    }
 
     /**
      * Sets the URL of an XSLT stylesheet to be applied to the generated XML.

@@ -31,13 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class EventReleaseAssets {
 
     /**
-     * Constructs a new {@code EventReleaseAssets} instance.
-     */
-    public EventReleaseAssets() {
-        // No initialization required.
-    }
-
-    /**
      * The count value.
      */
     private Integer count;
@@ -49,6 +42,13 @@ public class EventReleaseAssets {
      * The sources value.
      */
     private List<EventReleaseSource> sources;
+
+    /**
+     * Constructs a new {@code EventReleaseAssets} instance.
+     */
+    public EventReleaseAssets() {
+        // No initialization required.
+    }
 
     /**
      * Returns the count.

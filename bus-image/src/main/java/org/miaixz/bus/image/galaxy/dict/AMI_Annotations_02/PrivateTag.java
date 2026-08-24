@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.AMI_Annotations_02;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "AMI Annotations_02";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (3101,xx20) VR=SQ VM=1 Annotation Sequence
      */
     public static final int AnnotationSequence = 0x31010020;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

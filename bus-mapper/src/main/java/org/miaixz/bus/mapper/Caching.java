@@ -52,13 +52,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class Caching extends XMLLanguageDriver {
 
     /**
-     * Constructs a new Caching instance.
-     */
-    public Caching() {
-        // No initialization required.
-    }
-
-    /**
      * A map to cache {@link SqlMetaCache} objects. The initial capacity is set based on an estimate (e.g., 30 entities
      * with 25 methods each).
      * <p>
@@ -90,6 +83,13 @@ public class Caching extends XMLLanguageDriver {
      */
     private static final boolean USE_ONCE = Context.INSTANCE
             .getBoolean(Args.PROVIDER_KEY + Symbol.DOT + Args.USEONCE_KEY, false);
+
+    /**
+     * Constructs a new Caching instance.
+     */
+    public Caching() {
+        // No initialization required.
+    }
 
     /**
      * Generates a cache key based on the mapper interface and method.

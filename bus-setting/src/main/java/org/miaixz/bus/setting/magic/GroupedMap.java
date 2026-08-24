@@ -37,13 +37,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, String>> {
 
-    /**
-     * Constructs a new GroupedMap instance.
-     */
-    public GroupedMap() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852227322018L;
 
@@ -66,6 +59,13 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
      * Cached size of all key-value pairs across all groups. -1 indicates it needs recalculation.
      */
     private int size = -1;
+
+    /**
+     * Constructs a new GroupedMap instance.
+     */
+    public GroupedMap() {
+        // No initialization required.
+    }
 
     /**
      * Gets a value for a given key within a specific group.

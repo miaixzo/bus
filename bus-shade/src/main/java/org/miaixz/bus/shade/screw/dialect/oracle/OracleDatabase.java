@@ -35,16 +35,16 @@ import org.miaixz.bus.shade.screw.metadata.Database;
 public class OracleDatabase implements Database {
 
     /**
+     * The name of the database.
+     */
+    @MappingField(value = "TABLE_CAT")
+    private String database;
+
+    /**
      * Constructs a new OracleDatabase instance.
      */
     public OracleDatabase() {
         // No initialization required.
     }
-
-    /**
-     * The name of the database.
-     */
-    @MappingField(value = "TABLE_CAT")
-    private String database;
 
 }

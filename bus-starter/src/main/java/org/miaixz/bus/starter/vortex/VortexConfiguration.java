@@ -138,6 +138,11 @@ public class VortexConfiguration {
     private static final String WS_ROUTER = "ws";
 
     /**
+     * Bound Vortex configuration properties.
+     */
+    private final VortexProperties properties;
+
+    /**
      * Stores and validates the Vortex gateway properties and installs performance settings before any runtime Bean is
      * created.
      *
@@ -148,11 +153,6 @@ public class VortexConfiguration {
         this.properties.validate();
         Holder.of(this.properties.getPerformance());
     }
-
-    /**
-     * Bound Vortex configuration properties.
-     */
-    private final VortexProperties properties;
 
     /**
      * Configures the complete Vortex reactive server.

@@ -40,16 +40,16 @@ import org.miaixz.bus.health.unix.shared.jna.CLibrary;
 public class Who {
 
     /**
+     * Singleton instance of the SystemB library.
+     */
+    private static final SystemB SYS = SystemB.INSTANCE;
+
+    /**
      * Keeps macOS logged-in-user queries on the static API.
      */
     public Who() {
         // No initialization required.
     }
-
-    /**
-     * Singleton instance of the SystemB library.
-     */
-    private static final SystemB SYS = SystemB.INSTANCE;
 
     /**
      * Queries {@code getutxent} to get logged in users.

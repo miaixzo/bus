@@ -43,13 +43,6 @@ import org.miaixz.bus.logger.Logger;
 public class CommitAction implements Serializable {
 
     /**
-     * Constructs a new {@code CommitAction} instance.
-     */
-    public CommitAction() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -96,6 +89,13 @@ public class CommitAction implements Serializable {
      * The execute filemode value.
      */
     private Boolean executeFilemode;
+
+    /**
+     * Constructs a new {@code CommitAction} instance.
+     */
+    public CommitAction() {
+        // No initialization required.
+    }
 
     /**
      * Reads the content of a File instance and returns it as a String of either text or base64 encoded text.

@@ -79,13 +79,6 @@ public class WindowsDxgi {
      */
     private static final int DXGI_ERROR_NOT_FOUND = 0x887A0002;
 
-    /**
-     * Creates a new WindowsDxgi instance.
-     */
-    public WindowsDxgi() {
-        // No initialization required.
-    }
-
     // -------------------------------------------------------------------------
     // Native function entry point
     // -------------------------------------------------------------------------
@@ -117,6 +110,13 @@ public class WindowsDxgi {
      * The DXGI_AVAILABLE constant.
      */
     private static final boolean DXGI_AVAILABLE;
+
+    /**
+     * Creates a new WindowsDxgi instance.
+     */
+    public WindowsDxgi() {
+        // No initialization required.
+    }
 
     static {
         boolean available = false;
@@ -157,13 +157,6 @@ public class WindowsDxgi {
     @FieldOrder({ "Description", "VendorId", "DeviceId", "SubSysId", "Revision", "DedicatedVideoMemory",
             "DedicatedSystemMemory", "SharedSystemMemory", "AdapterLuidLowPart", "AdapterLuidHighPart" })
     public static class DXGI_ADAPTER_DESC extends Structure {
-
-        /**
-         * Creates a new DXGI_ADAPTER_DESC instance.
-         */
-        public DXGI_ADAPTER_DESC() {
-            // No initialization required.
-        }
 
         /**
          * The Description value.
@@ -214,6 +207,13 @@ public class WindowsDxgi {
          * The AdapterLuidHighPart value.
          */
         public int AdapterLuidHighPart;
+
+        /**
+         * Creates a new DXGI_ADAPTER_DESC instance.
+         */
+        public DXGI_ADAPTER_DESC() {
+            // No initialization required.
+        }
 
     }
 

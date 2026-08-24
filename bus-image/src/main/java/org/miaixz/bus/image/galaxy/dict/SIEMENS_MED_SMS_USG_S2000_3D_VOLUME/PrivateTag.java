@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_SMS_USG_S2000_3D_VOLUME;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS MED SMS USG S2000 3D VOLUME";
@@ -527,5 +520,12 @@ public class PrivateTag {
      * (0039,xxF6) VR=LT VM=1 ?
      */
     public static final int _0039_xxF6_ = 0x003900F6;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SPI_P_Release_1_1;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SPI-P Release 1;1";
@@ -217,5 +210,12 @@ public class PrivateTag {
      * (0029,xx4F) VR=CS VM=1 Magnifying Glass Select Status
      */
     public static final int MagnifyingGlassSelectStatus = 0x0029004F;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

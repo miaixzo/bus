@@ -49,13 +49,6 @@ import org.miaixz.bus.core.lang.Symbol;
 public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 
     /**
-     * Initializes the post-processor that exposes Bus logging properties as native Spring Boot logging properties.
-     */
-    public LoggingEnvironmentPostProcessor() {
-        // No initialization required.
-    }
-
-    /**
      * Name of the generated logging bridge property source.
      */
     private static final String PROPERTY_SOURCE = "busLoggingNamespaceBridge";
@@ -91,6 +84,13 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
      * Source namespace element count.
      */
     private static final int SOURCE_NAMESPACE_ELEMENTS = SOURCE_NAMESPACE.getNumberOfElements();
+
+    /**
+     * Initializes the post-processor that exposes Bus logging properties as native Spring Boot logging properties.
+     */
+    public LoggingEnvironmentPostProcessor() {
+        // No initialization required.
+    }
 
     /**
      * Maps {@code bus.logging.*} properties to {@code logging.*} properties.

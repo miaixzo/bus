@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GE_LUT_Asymmetry_Parameter;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GE LUT Asymmetry Parameter";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (0045,xx67) VR=DS VM=1 LUT Assymetry
      */
     public static final int LUTAssymetry = 0x00450067;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

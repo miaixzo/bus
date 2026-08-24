@@ -31,13 +31,6 @@ import java.util.List;
 public class ProjectGroupsFilter implements Serializable {
 
     /**
-     * Constructs a new {@code ProjectGroupsFilter} instance.
-     */
-    public ProjectGroupsFilter() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -63,6 +56,13 @@ public class ProjectGroupsFilter implements Serializable {
      * The with shared value.
      */
     private Boolean withShared;
+
+    /**
+     * Constructs a new {@code ProjectGroupsFilter} instance.
+     */
+    public ProjectGroupsFilter() {
+        // No initialization required.
+    }
 
     /**
      * Search for specific groups.

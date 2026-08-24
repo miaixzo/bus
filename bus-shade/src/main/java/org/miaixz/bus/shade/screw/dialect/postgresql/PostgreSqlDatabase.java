@@ -34,15 +34,15 @@ import org.miaixz.bus.shade.screw.metadata.Database;
 public class PostgreSqlDatabase implements Database {
 
     /**
+     * The name of the database.
+     */
+    private String database;
+
+    /**
      * Constructs a new PostgreSqlDatabase instance.
      */
     public PostgreSqlDatabase() {
         // No initialization required.
     }
-
-    /**
-     * The name of the database.
-     */
-    private String database;
 
 }

@@ -54,13 +54,6 @@ import org.miaixz.bus.logger.Logger;
 public class SmcKit {
 
     /**
-     * Keeps macOS SMC queries on the static API.
-     */
-    public SmcKit() {
-        // No initialization required.
-    }
-
-    /**
      * Instance of IOKit.
      */
     private static final IOKit IO = IOKit.INSTANCE;
@@ -418,6 +411,13 @@ public class SmcKit {
      * Lowest reading accepted as a plausible CPU voltage, in volts.
      */
     public static final double MIN_PLAUSIBLE_VOLTAGE = SmcSensorValues.MIN_PLAUSIBLE_VOLTAGE;
+
+    /**
+     * Keeps macOS SMC queries on the static API.
+     */
+    public SmcKit() {
+        // No initialization required.
+    }
 
     /**
      * Tests whether a reading is plausible as a CPU voltage.

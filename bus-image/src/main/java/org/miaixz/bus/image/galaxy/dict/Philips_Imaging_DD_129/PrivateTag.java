@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.Philips_Imaging_DD_129;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "Philips Imaging DD 129";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (2001,xx00) VR=SQ VM=1 Presentation State Sequence
      */
     public static final int PresentationStateSequence = 0x20010000;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

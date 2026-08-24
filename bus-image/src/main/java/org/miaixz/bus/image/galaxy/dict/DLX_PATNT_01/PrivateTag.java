@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.DLX_PATNT_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "DLX_PATNT_01";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (0011,xx01) VR=LT VM=1 Patient DOB
      */
     public static final int PatientDOB = 0x00110001;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

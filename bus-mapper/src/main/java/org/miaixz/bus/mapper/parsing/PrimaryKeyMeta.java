@@ -38,13 +38,6 @@ import lombok.experimental.Accessors;
 public class PrimaryKeyMeta {
 
     /**
-     * Constructs a new PrimaryKeyMeta instance.
-     */
-    public PrimaryKeyMeta() {
-        // No initialization required.
-    }
-
-    /**
      * Primary key constraint name.
      */
     private String name;
@@ -53,6 +46,13 @@ public class PrimaryKeyMeta {
      * Primary key column names.
      */
     private List<String> columns = new ArrayList<>();
+
+    /**
+     * Constructs a new PrimaryKeyMeta instance.
+     */
+    public PrimaryKeyMeta() {
+        // No initialization required.
+    }
 
     /**
      * Creates primary key metadata.

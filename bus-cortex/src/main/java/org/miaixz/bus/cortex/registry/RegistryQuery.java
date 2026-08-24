@@ -38,13 +38,6 @@ import org.miaixz.bus.cortex.builtin.Selector;
 public class RegistryQuery {
 
     /**
-     * Creates an empty registry query.
-     */
-    public RegistryQuery() {
-        // No initialization required.
-    }
-
-    /**
      * Registry space identifier.
      */
     private String space_id;
@@ -103,5 +96,12 @@ public class RegistryQuery {
      * Maximum result size for pagination.
      */
     private int limit = 100;
+
+    /**
+     * Creates an empty registry query.
+     */
+    public RegistryQuery() {
+        // No initialization required.
+    }
 
 }

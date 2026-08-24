@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class DetailedStatus implements Serializable {
 
     /**
-     * Constructs a new {@code DetailedStatus} instance.
-     */
-    public DetailedStatus() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -80,6 +73,13 @@ public class DetailedStatus implements Serializable {
      * The favicon value.
      */
     private String favicon;
+
+    /**
+     * Constructs a new {@code DetailedStatus} instance.
+     */
+    public DetailedStatus() {
+        // No initialization required.
+    }
 
     /**
      * Returns the icon.

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.agfa_adc_compact;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "AGFA_ADC_Compact";
@@ -97,5 +90,12 @@ public class PrivateTag {
      * (0019,xx95) VR=CS VM=1 Image quality
      */
     public static final int ImageQuality = 0x00190095;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

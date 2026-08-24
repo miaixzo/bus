@@ -43,13 +43,6 @@ import org.miaixz.bus.health.builtin.jna.Struct;
 public class DeviceTree {
 
     /**
-     * Constructs a new DeviceTree instance.
-     */
-    public DeviceTree() {
-        // No initialization required.
-    }
-
-    /**
      * The MAX_PATH constant.
      */
     private static final int MAX_PATH = 260;
@@ -63,6 +56,13 @@ public class DeviceTree {
      * The C32 constant.
      */
     private static final Cfgmgr32 C32 = Cfgmgr32.INSTANCE;
+
+    /**
+     * Constructs a new DeviceTree instance.
+     */
+    public DeviceTree() {
+        // No initialization required.
+    }
 
     /**
      * Queries devices matching the specified device interface and returns maps representing device tree relationships,

@@ -29,16 +29,16 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class AlwaysTrueMatcher implements PartMatcher {
 
     /**
+     * Singleton instance.
+     */
+    public static final AlwaysTrueMatcher INSTANCE = new AlwaysTrueMatcher();
+
+    /**
      * Constructs a new {@code AlwaysTrueMatcher} instance.
      */
     public AlwaysTrueMatcher() {
         // No initialization required.
     }
-
-    /**
-     * Singleton instance.
-     */
-    public static final AlwaysTrueMatcher INSTANCE = new AlwaysTrueMatcher();
 
     /**
      * Always returns {@code true}, indicating that any value matches.

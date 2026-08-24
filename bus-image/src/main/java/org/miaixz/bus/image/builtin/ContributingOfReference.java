@@ -30,13 +30,6 @@ import org.miaixz.bus.image.galaxy.data.Code;
 public class ContributingOfReference {
 
     /**
-     * Constructs a new ContributingOfReference instance.
-     */
-    public ContributingOfReference() {
-        // No initialization required.
-    }
-
-    /**
      * Code for Acquisition Equipment.
      */
     public static final Code AcquisitionEquipment = new Code("109101", "DCM", null, "Acquisition Equipment");
@@ -88,5 +81,12 @@ public class ContributingOfReference {
      */
     public static final Code VideoTapeDigitizerEquipment = new Code("VIDD", "DCM", null,
             "Video Tape Digitizer Equipment");
+
+    /**
+     * Constructs a new ContributingOfReference instance.
+     */
+    public ContributingOfReference() {
+        // No initialization required.
+    }
 
 }

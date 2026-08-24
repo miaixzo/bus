@@ -111,13 +111,6 @@ public class AdlKit {
 
     }
 
-    /**
-     * Creates a new AdlKit instance.
-     */
-    public AdlKit() {
-        // No initialization required.
-    }
-
     // Lazy adapter enumeration state — written once, read-only thereafter
     /**
      * The ENUM_LOCK constant.
@@ -134,6 +127,13 @@ public class AdlKit {
      */
     private static final AtomicReference<Map<Integer, Integer>> BUS_TO_INDEX = new AtomicReference<>(
             Collections.emptyMap());
+
+    /**
+     * Creates a new AdlKit instance.
+     */
+    public AdlKit() {
+        // No initialization required.
+    }
 
     // -------------------------------------------------------------------------
     // ADL lifecycle management

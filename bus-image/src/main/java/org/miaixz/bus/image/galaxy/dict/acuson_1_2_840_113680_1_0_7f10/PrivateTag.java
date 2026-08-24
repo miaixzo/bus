@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.acuson_1_2_840_113680_1_0_7f10;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "ACUSON:1.2.840.113680.1.0:7f10";
@@ -392,5 +385,12 @@ public class PrivateTag {
      * (7fdf,xxf5) VR=IS VM=1 ?
      */
     public static final int _7fdf_xxf5_ = 0x7fdf00f5;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -47,13 +47,6 @@ import org.miaixz.bus.health.unix.freebsd.BsdSysctlKit;
 public class FreeBsdFileSystem extends AbstractFileSystem {
 
     /**
-     * Constructs a new FreeBsdFileSystem instance.
-     */
-    public FreeBsdFileSystem() {
-        // No initialization required.
-    }
-
-    /**
      * The FS_PATH_EXCLUDES constant.
      */
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
@@ -76,6 +69,13 @@ public class FreeBsdFileSystem extends AbstractFileSystem {
      */
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Builder._UNIX_FREEBSD_FS_VOLUME_INCLUDES);
+
+    /**
+     * Constructs a new FreeBsdFileSystem instance.
+     */
+    public FreeBsdFileSystem() {
+        // No initialization required.
+    }
 
     /**
      * Returns the file stores.

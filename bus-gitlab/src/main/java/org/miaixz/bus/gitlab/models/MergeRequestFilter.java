@@ -46,13 +46,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class MergeRequestFilter implements Serializable {
 
     /**
-     * Constructs a new {@code MergeRequestFilter} instance.
-     */
-    public MergeRequestFilter() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -156,6 +149,13 @@ public class MergeRequestFilter implements Serializable {
      * The not value.
      */
     private Map<MergeRequestField, Object> not;
+
+    /**
+     * Constructs a new {@code MergeRequestFilter} instance.
+     */
+    public MergeRequestFilter() {
+        // No initialization required.
+    }
 
     /**
      * Returns the state.

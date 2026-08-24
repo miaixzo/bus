@@ -37,13 +37,6 @@ import org.miaixz.bus.core.xyz.ByteKit;
 public class MurmurHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]> {
 
     /**
-     * Constructs a new {@code MurmurHash} instance.
-     */
-    public MurmurHash() {
-        // No initialization required.
-    }
-
-    /**
      * Singleton instance of the MurmurHash.
      */
     public static final MurmurHash INSTANCE = new MurmurHash();
@@ -69,6 +62,13 @@ public class MurmurHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[
     private static final int DEFAULT_SEED = 0;
     private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
     private static final ByteOrder DEFAULT_ORDER = ByteOrder.LITTLE_ENDIAN;
+
+    /**
+     * Constructs a new {@code MurmurHash} instance.
+     */
+    public MurmurHash() {
+        // No initialization required.
+    }
 
     private static int mix32(int k, int hash) {
         k *= C1_32;

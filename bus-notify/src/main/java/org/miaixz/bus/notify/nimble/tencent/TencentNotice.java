@@ -37,16 +37,16 @@ import org.miaixz.bus.notify.magic.Notice;
 public class TencentNotice extends Notice {
 
     /**
+     * The SMS application ID.
+     */
+    private String smsAppId;
+
+    /**
      * Constructs a new {@code TencentNotice} instance.
      */
     public TencentNotice() {
         // No initialization required.
     }
-
-    /**
-     * The SMS application ID.
-     */
-    private String smsAppId;
 
     /**
      * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.

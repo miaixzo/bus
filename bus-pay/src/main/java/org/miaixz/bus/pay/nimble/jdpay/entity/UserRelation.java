@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class UserRelation extends Voucher {
 
     /**
-     * Constructs a new {@code UserRelation} instance.
-     */
-    public UserRelation() {
-        // No initialization required.
-    }
-
-    /**
      * Version number.
      */
     private String version;
@@ -61,5 +54,12 @@ public class UserRelation extends Voucher {
      * Signature.
      */
     private String sign;
+
+    /**
+     * Constructs a new {@code UserRelation} instance.
+     */
+    public UserRelation() {
+        // No initialization required.
+    }
 
 }

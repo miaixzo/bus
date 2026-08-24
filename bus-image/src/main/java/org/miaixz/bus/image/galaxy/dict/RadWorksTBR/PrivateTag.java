@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.RadWorksTBR;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "RadWorksTBR";
@@ -47,5 +40,12 @@ public class PrivateTag {
      * (3111,xxFF) VR=SQ VM=1 Query Result
      */
     public static final int QueryResult = 0x311100FF;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

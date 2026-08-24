@@ -37,16 +37,16 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public class Win32LogicalDisk {
 
     /**
+     * The WMI class name.
+     */
+    public static final String WIN32_LOGICAL_DISK = "Win32_LogicalDisk";
+
+    /**
      * Keeps Win32 logical disk queries on the static API.
      */
     public Win32LogicalDisk() {
         // No initialization required.
     }
-
-    /**
-     * The WMI class name.
-     */
-    public static final String WIN32_LOGICAL_DISK = "Win32_LogicalDisk";
 
     /**
      * Queries logical disk information

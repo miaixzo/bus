@@ -34,13 +34,6 @@ import lombok.experimental.SuperBuilder;
 public class RefundGoodsDetail {
 
     /**
-     * Constructs a new {@code RefundGoodsDetail} instance.
-     */
-    public RefundGoodsDetail() {
-        // No initialization required.
-    }
-
-    /**
      * The merchant's internal goods ID.
      */
     private String merchant_goods_id;
@@ -69,5 +62,12 @@ public class RefundGoodsDetail {
      * The quantity of this item being refunded.
      */
     private int refund_quantity;
+
+    /**
+     * Constructs a new {@code RefundGoodsDetail} instance.
+     */
+    public RefundGoodsDetail() {
+        // No initialization required.
+    }
 
 }

@@ -37,13 +37,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class EventLabel implements Serializable {
 
     /**
-     * Constructs a new {@code EventLabel} instance.
-     */
-    public EventLabel() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -148,6 +141,13 @@ public class EventLabel implements Serializable {
      * The group id value.
      */
     private Long groupId;
+
+    /**
+     * Constructs a new {@code EventLabel} instance.
+     */
+    public EventLabel() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_GDXE_ATHENAV2_INTERNAL_USE;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_GDXE_ATHENAV2_INTERNAL_USE";
@@ -57,5 +50,12 @@ public class PrivateTag {
      * (7FDF,xx25) VR=CS VM=1 PPS Status
      */
     public static final int PPSStatus = 0x7FDF0025;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

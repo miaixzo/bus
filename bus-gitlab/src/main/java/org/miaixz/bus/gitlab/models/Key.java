@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Key implements Serializable {
 
     /**
-     * Constructs a new {@code Key} instance.
-     */
-    public Key() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -65,6 +58,13 @@ public class Key implements Serializable {
      * The user value.
      */
     private User user;
+
+    /**
+     * Constructs a new {@code Key} instance.
+     */
+    public Key() {
+        // No initialization required.
+    }
 
     /**
      * Returns the created at.

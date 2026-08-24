@@ -39,13 +39,6 @@ import lombok.experimental.SuperBuilder;
 public class LlmResponse {
 
     /**
-     * Creates an empty LLM response.
-     */
-    public LlmResponse() {
-        // No initialization required.
-    }
-
-    /**
      * Unique identifier for the completion.
      */
     private String id;
@@ -76,6 +69,13 @@ public class LlmResponse {
     private Usage usage;
 
     /**
+     * Creates an empty LLM response.
+     */
+    public LlmResponse() {
+        // No initialization required.
+    }
+
+    /**
      * Represents a single completion choice.
      *
      * @author Kimi Liu
@@ -83,13 +83,6 @@ public class LlmResponse {
     @Getter
     @Setter
     public static class Choice {
-
-        /**
-         * Creates an empty LLM choice.
-         */
-        public Choice() {
-            // No initialization required.
-        }
 
         /**
          * The index of this choice.
@@ -106,6 +99,13 @@ public class LlmResponse {
          */
         private String finishReason;
 
+        /**
+         * Creates an empty LLM choice.
+         */
+        public Choice() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -118,13 +118,6 @@ public class LlmResponse {
     public static class Message {
 
         /**
-         * Creates an empty LLM response message.
-         */
-        public Message() {
-            // No initialization required.
-        }
-
-        /**
          * The role of the message author.
          */
         private String role;
@@ -133,6 +126,13 @@ public class LlmResponse {
          * The content of the message.
          */
         private String content;
+
+        /**
+         * Creates an empty LLM response message.
+         */
+        public Message() {
+            // No initialization required.
+        }
 
     }
 
@@ -144,13 +144,6 @@ public class LlmResponse {
     @Getter
     @Setter
     public static class Usage {
-
-        /**
-         * Creates an empty token usage snapshot.
-         */
-        public Usage() {
-            // No initialization required.
-        }
 
         /**
          * Number of tokens in the prompt. JSON field: prompt_tokens
@@ -166,6 +159,13 @@ public class LlmResponse {
          * Total number of tokens used. JSON field: total_tokens
          */
         private Integer totalTokens;
+
+        /**
+         * Creates an empty token usage snapshot.
+         */
+        public Usage() {
+            // No initialization required.
+        }
 
     }
 

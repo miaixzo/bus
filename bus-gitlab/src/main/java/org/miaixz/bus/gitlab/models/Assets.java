@@ -34,13 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Assets implements Serializable {
 
     /**
-     * Constructs a new {@code Assets} instance.
-     */
-    public Assets() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -62,6 +55,13 @@ public class Assets implements Serializable {
      * The evidence file path value.
      */
     private String evidenceFilePath;
+
+    /**
+     * Constructs a new {@code Assets} instance.
+     */
+    public Assets() {
+        // No initialization required.
+    }
 
     /**
      * Returns the count.
@@ -162,13 +162,6 @@ public class Assets implements Serializable {
     public static class Source implements Serializable {
 
         /**
-         * Constructs a new {@code Source} instance.
-         */
-        public Source() {
-            // No initialization required.
-        }
-
-        /**
          * The serial version uid value.
          */
         @Serial
@@ -182,6 +175,13 @@ public class Assets implements Serializable {
          * The url value.
          */
         private String url;
+
+        /**
+         * Constructs a new {@code Source} instance.
+         */
+        public Source() {
+            // No initialization required.
+        }
 
         /**
          * Returns the format.
@@ -243,13 +243,6 @@ public class Assets implements Serializable {
      */
     public static class Link implements Serializable {
 
-        /**
-         * Constructs a new {@code Link} instance.
-         */
-        public Link() {
-            // No initialization required.
-        }
-
         @Serial
         private static final long serialVersionUID = 2852237162837L;
 
@@ -269,6 +262,13 @@ public class Assets implements Serializable {
          * The external value.
          */
         private Boolean external;
+
+        /**
+         * Constructs a new {@code Link} instance.
+         */
+        public Link() {
+            // No initialization required.
+        }
 
         /**
          * Returns the id.

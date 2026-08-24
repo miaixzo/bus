@@ -144,13 +144,6 @@ public class ErrorRegistry implements Errors {
     public static class Builder {
 
         /**
-         * Constructs a new Builder.
-         */
-        public Builder() {
-            // No initialization required.
-        }
-
-        /**
          * The unique key for the error code.
          */
         private String key;
@@ -159,6 +152,13 @@ public class ErrorRegistry implements Errors {
          * The default error message, used when a localized message is not found.
          */
         private String value;
+
+        /**
+         * Constructs a new Builder.
+         */
+        public Builder() {
+            // No initialization required.
+        }
 
         /**
          * Sets the error code key.

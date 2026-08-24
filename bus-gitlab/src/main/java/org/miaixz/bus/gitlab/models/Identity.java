@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Identity implements Serializable {
 
     /**
-     * Constructs a new {@code Identity} instance.
-     */
-    public Identity() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -56,6 +49,13 @@ public class Identity implements Serializable {
      * The saml provider id value.
      */
     private Integer samlProviderId;
+
+    /**
+     * Constructs a new {@code Identity} instance.
+     */
+    public Identity() {
+        // No initialization required.
+    }
 
     /**
      * Returns the provider.

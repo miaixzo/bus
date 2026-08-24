@@ -33,16 +33,16 @@ import java.util.*;
 public class DependencyGraph {
 
     /**
+     * Adjacency map from a service to the services it directly depends on.
+     */
+    private final Map<String, Set<String>> edges = new HashMap<>();
+
+    /**
      * Creates an empty dependency graph.
      */
     public DependencyGraph() {
         // No initialization required.
     }
-
-    /**
-     * Adjacency map from a service to the services it directly depends on.
-     */
-    private final Map<String, Set<String>> edges = new HashMap<>();
 
     /**
      * Records that {@code from} depends on {@code to}.

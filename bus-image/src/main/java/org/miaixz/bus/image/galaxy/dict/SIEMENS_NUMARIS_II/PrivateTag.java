@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_NUMARIS_II;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS NUMARIS II";
@@ -52,5 +45,12 @@ public class PrivateTag {
      * (7FE3,xx20) VR=OB VM=1 Image Graphics Dummy
      */
     public static final int ImageGraphicsDummy = 0x7FE30020;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

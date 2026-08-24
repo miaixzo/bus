@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_STDY_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_STDY_01";
@@ -77,5 +70,12 @@ public class PrivateTag {
      * (0023,xx80) VR=SQ VM=1 Has MPPS Related Tags
      */
     public static final int HasMPPSRelatedTags = 0x00230080;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

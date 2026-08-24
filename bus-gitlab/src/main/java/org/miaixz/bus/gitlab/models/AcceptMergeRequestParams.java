@@ -32,13 +32,6 @@ import java.io.Serializable;
 public class AcceptMergeRequestParams implements Serializable {
 
     /**
-     * Constructs a new AcceptMergeRequestParams instance.
-     */
-    public AcceptMergeRequestParams() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -68,6 +61,13 @@ public class AcceptMergeRequestParams implements Serializable {
      * The squash commit message value.
      */
     private String squashCommitMessage;
+
+    /**
+     * Constructs a new AcceptMergeRequestParams instance.
+     */
+    public AcceptMergeRequestParams() {
+        // No initialization required.
+    }
 
     /**
      * Custom merge commit message.

@@ -50,16 +50,16 @@ import org.miaixz.bus.core.text.CharsBacker;
 public class ClassKit {
 
     /**
+     * Map of primitive type names to their corresponding wrapper classes.
+     */
+    private static final Map<String, Class<?>> PRIMITIVE_WRAPPER_MAP = new HashMap<>();
+
+    /**
      * Keeps class loading and introspection on the static API.
      */
     public ClassKit() {
         // No initialization required.
     }
-
-    /**
-     * Map of primitive type names to their corresponding wrapper classes.
-     */
-    private static final Map<String, Class<?>> PRIMITIVE_WRAPPER_MAP = new HashMap<>();
 
     /**
      * Gets the type of an object in a null-safe manner.

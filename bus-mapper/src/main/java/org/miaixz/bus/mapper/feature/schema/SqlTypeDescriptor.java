@@ -42,13 +42,6 @@ import org.miaixz.bus.core.lang.Symbol;
 public class SqlTypeDescriptor {
 
     /**
-     * Constructs a new SqlTypeDescriptor instance.
-     */
-    public SqlTypeDescriptor() {
-        // No initialization required.
-    }
-
-    /**
      * JDBC type associated with the SQL type.
      */
     private JdbcType jdbcType;
@@ -77,6 +70,13 @@ public class SqlTypeDescriptor {
      * Native SQL type definition supplied by entity metadata.
      */
     private String nativeDefinition;
+
+    /**
+     * Constructs a new SqlTypeDescriptor instance.
+     */
+    public SqlTypeDescriptor() {
+        // No initialization required.
+    }
 
     /**
      * Creates a SQL type descriptor for a type name.

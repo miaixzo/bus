@@ -68,13 +68,6 @@ import org.miaixz.bus.vortex.registry.AbstractRegistry;
 public class CacheStats {
 
     /**
-     * Creates an empty cache statistics snapshot.
-     */
-    public CacheStats() {
-        // No initialization required.
-    }
-
-    /**
      * Total number of cache hits.
      */
     private long hitCount;
@@ -93,5 +86,12 @@ public class CacheStats {
      * Current size of L1 cache (ConcurrentHashMap).
      */
     private long cacheSize;
+
+    /**
+     * Creates an empty cache statistics snapshot.
+     */
+    public CacheStats() {
+        // No initialization required.
+    }
 
 }

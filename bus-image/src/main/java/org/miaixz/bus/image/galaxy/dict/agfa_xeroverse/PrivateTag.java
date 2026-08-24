@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.agfa_xeroverse;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "agfa/xeroverse";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (7FDB,xx99) VR=LO VM=1 ?
      */
     public static final int _7FDB_xx99_ = 0x7FDB0099;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

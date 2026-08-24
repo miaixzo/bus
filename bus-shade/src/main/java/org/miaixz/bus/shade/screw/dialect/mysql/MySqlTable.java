@@ -35,13 +35,6 @@ import org.miaixz.bus.shade.screw.metadata.Table;
 public class MySqlTable implements Table {
 
     /**
-     * Constructs a new MySqlTable instance.
-     */
-    public MySqlTable() {
-        // No initialization required.
-    }
-
-    /**
      * Table catalog (may be {@code null}).
      */
     @MappingField(value = "TABLE_CAT")
@@ -100,5 +93,12 @@ public class MySqlTable implements Table {
      */
     @MappingField(value = "TYPE_NAME")
     private String typeName;
+
+    /**
+     * Constructs a new MySqlTable instance.
+     */
+    public MySqlTable() {
+        // No initialization required.
+    }
 
 }

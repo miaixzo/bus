@@ -40,13 +40,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
 @SuperBuilder
 public class Message<T> implements Serializable {
 
-    /**
-     * Constructs a new {@code Message} instance.
-     */
-    public Message() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852291039238L;
 
@@ -64,6 +57,13 @@ public class Message<T> implements Serializable {
      * The data payload of the response.
      */
     public T data;
+
+    /**
+     * Constructs a new {@code Message} instance.
+     */
+    public Message() {
+        // No initialization required.
+    }
 
     /**
      * Creates a successful response while preserving the framework's existing response contract.

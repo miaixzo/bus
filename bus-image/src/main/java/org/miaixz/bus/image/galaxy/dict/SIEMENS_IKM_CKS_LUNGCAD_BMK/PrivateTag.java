@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_IKM_CKS_LUNGCAD_BMK;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS IKM CKS LUNGCAD BMK";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (0029,xx01) VR=UT VM=1 ?
      */
     public static final int _0029_xx01_ = 0x00290001;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

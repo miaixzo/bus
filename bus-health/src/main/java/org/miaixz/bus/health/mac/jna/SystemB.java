@@ -81,13 +81,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     class Rusage extends Structure {
 
         /**
-         * Creates a new Rusage instance.
-         */
-        public Rusage() {
-            // No initialization required.
-        }
-
-        /**
          * User time seconds.
          */
         public NativeLong ru_utime_sec;
@@ -176,6 +169,13 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
          * Involuntary context switches.
          */
         public NativeLong ru_nivcsw;
+
+        /**
+         * Creates a new Rusage instance.
+         */
+        public Rusage() {
+            // No initialization required.
+        }
 
     }
 
@@ -287,13 +287,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     class MacUtmpx extends Structure {
 
         /**
-         * Creates a new MacUtmpx instance.
-         */
-        public MacUtmpx() {
-            // No initialization required.
-        }
-
-        /**
          * Login name.
          */
         public byte[] ut_user = new byte[UTX_USERSIZE];
@@ -333,6 +326,13 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
          */
         public byte[] ut_pad = new byte[16];
 
+        /**
+         * Creates a new MacUtmpx instance.
+         */
+        public MacUtmpx() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -347,13 +347,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     class ProcFdInfo extends Structure {
 
         /**
-         * Creates a new ProcFdInfo instance.
-         */
-        public ProcFdInfo() {
-            // No initialization required.
-        }
-
-        /**
          * File descriptor number.
          */
         public int proc_fd;
@@ -362,6 +355,13 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
          * Type of the file descriptor.
          */
         public int proc_fdtype;
+
+        /**
+         * Creates a new ProcFdInfo instance.
+         */
+        public ProcFdInfo() {
+            // No initialization required.
+        }
 
     }
 
@@ -376,13 +376,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     @FieldOrder({ "insi_fport", "insi_lport", "insi_gencnt", "insi_flags", "insi_flow", "insi_vflag", "insi_ip_ttl",
             "rfu_1", "insi_faddr", "insi_laddr", "insi_v4", "insi_v6" })
     class InSockInfo extends Structure {
-
-        /**
-         * Creates a new InSockInfo instance.
-         */
-        public InSockInfo() {
-            // No initialization required.
-        }
 
         /**
          * Foreign port.
@@ -444,6 +437,13 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
          */
         public byte[] insi_v6 = new byte[9];
 
+        /**
+         * Creates a new InSockInfo instance.
+         */
+        public InSockInfo() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -456,13 +456,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      */
     @FieldOrder({ "tcpsi_ini", "tcpsi_state", "tcpsi_timer", "tcpsi_mss", "tcpsi_flags", "rfu_1", "tcpsi_tp" })
     class TcpSockInfo extends Structure {
-
-        /**
-         * Creates a new TcpSockInfo instance.
-         */
-        public TcpSockInfo() {
-            // No initialization required.
-        }
 
         /**
          * Internet socket information.
@@ -499,6 +492,13 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
          */
         public long tcpsi_tp;
 
+        /**
+         * Creates a new TcpSockInfo instance.
+         */
+        public TcpSockInfo() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -513,13 +513,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
             "soi_linger", "soi_state", "soi_qlen", "soi_incqlen", "soi_qlimit", "soi_timeo", "soi_error", "soi_oobmark",
             "soi_rcv", "soi_snd", "soi_kind", "rfu_1", "soi_proto" })
     class SocketInfo extends Structure {
-
-        /**
-         * Creates a new SocketInfo instance.
-         */
-        public SocketInfo() {
-            // No initialization required.
-        }
 
         /**
          * Vnode information statistics.
@@ -621,6 +614,13 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
          */
         public Pri soi_proto;
 
+        /**
+         * Creates a new SocketInfo instance.
+         */
+        public SocketInfo() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -633,13 +633,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      */
     @FieldOrder({ "fi_openflags", "fi_status", "fi_offset", "fi_type", "fi_guardflags" })
     class ProcFileInfo extends Structure {
-
-        /**
-         * Creates a new ProcFileInfo instance.
-         */
-        public ProcFileInfo() {
-            // No initialization required.
-        }
 
         /**
          * Open flags.
@@ -666,6 +659,13 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
          */
         public int fi_guardflags;
 
+        /**
+         * Creates a new ProcFileInfo instance.
+         */
+        public ProcFileInfo() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -680,13 +680,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     class SocketFdInfo extends Structure implements AutoCloseable {
 
         /**
-         * Creates a new SocketFdInfo instance.
-         */
-        public SocketFdInfo() {
-            // No initialization required.
-        }
-
-        /**
          * Process file information.
          */
         public ProcFileInfo pfi;
@@ -695,6 +688,13 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
          * Socket information.
          */
         public SocketInfo psi;
+
+        /**
+         * Creates a new SocketFdInfo instance.
+         */
+        public SocketFdInfo() {
+            // No initialization required.
+        }
 
         /**
          * Closes the memory associated with this structure.
@@ -717,13 +717,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     class Pri extends Union {
 
         /**
-         * Creates a new Pri instance.
-         */
-        public Pri() {
-            // No initialization required.
-        }
-
-        /**
          * Internet socket information.
          */
         public InSockInfo pri_in;
@@ -737,6 +730,13 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
          * Maximum size of the union, used for memory allocation.
          */
         public byte[] max_size = new byte[524];
+
+        /**
+         * Creates a new Pri instance.
+         */
+        public Pri() {
+            // No initialization required.
+        }
 
     }
 

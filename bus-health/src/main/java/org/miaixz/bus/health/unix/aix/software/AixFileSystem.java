@@ -46,13 +46,6 @@ import org.miaixz.bus.health.builtin.software.common.AbstractFileSystem;
 public class AixFileSystem extends AbstractFileSystem {
 
     /**
-     * Constructs a new AixFileSystem instance.
-     */
-    public AixFileSystem() {
-        // No initialization required.
-    }
-
-    /**
      * The FS_PATH_EXCLUDES constant.
      */
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
@@ -80,6 +73,13 @@ public class AixFileSystem extends AbstractFileSystem {
      * Pattern matching local and remote filesystem names in df output.
      */
     private static final java.util.regex.Pattern FS_PATTERN = java.util.regex.Pattern.compile("^(?:[\\w.]+:)?/");
+
+    /**
+     * Constructs a new AixFileSystem instance.
+     */
+    public AixFileSystem() {
+        // No initialization required.
+    }
 
     /**
      * Returns the file store matching.

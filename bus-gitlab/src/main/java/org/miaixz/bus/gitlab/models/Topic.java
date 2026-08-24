@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Topic implements Serializable {
 
     /**
-     * Constructs a new {@code Topic} instance.
-     */
-    public Topic() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -73,6 +66,13 @@ public class Topic implements Serializable {
      * The avatar url value.
      */
     private String avatarUrl;
+
+    /**
+     * Constructs a new {@code Topic} instance.
+     */
+    public Topic() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

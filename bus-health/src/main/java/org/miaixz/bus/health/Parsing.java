@@ -64,13 +64,6 @@ import org.miaixz.bus.logger.Logger;
 public class Parsing {
 
     /**
-     * Keeps health-data parsing on the static API.
-     */
-    public Parsing() {
-        // No initialization required.
-    }
-
-    /**
      * Default log message template for recording parsing failures.
      */
     private static final String DEFAULT_LOG_MSG = "{} didn't parse. Returning default. {}";
@@ -165,6 +158,13 @@ public class Parsing {
      */
     private static final DateTimeFormatter CIM_FORMAT = DateTimeFormatter
             .ofPattern("yyyyMMddHHmmss.SSSSSSZZZZZ", Locale.US);
+
+    /**
+     * Keeps health-data parsing on the static API.
+     */
+    public Parsing() {
+        // No initialization required.
+    }
 
     /**
      * Tests if a string matches a wildcard pattern.

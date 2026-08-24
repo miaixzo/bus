@@ -35,13 +35,6 @@ import org.miaixz.bus.core.xyz.MethodKit;
 public class KCallable {
 
     /**
-     * Constructs a new KCallable instance.
-     */
-    public KCallable() {
-        // No initialization required.
-    }
-
-    /**
      * The {@link Method} object for {@code KCallable.getParameters()}.
      */
     private static final Method METHOD_GET_PARAMETERS;
@@ -50,6 +43,13 @@ public class KCallable {
      * The {@link Method} object for {@code KCallable.call()}.
      */
     private static final Method METHOD_CALL;
+
+    /**
+     * Constructs a new KCallable instance.
+     */
+    public KCallable() {
+        // No initialization required.
+    }
 
     static {
         final Class<?> kFunctionClass = ClassKit.loadClass("kotlin.reflect.KCallable");

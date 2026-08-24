@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class GpgSignature implements Serializable {
 
     /**
-     * Constructs a new {@code GpgSignature} instance.
-     */
-    public GpgSignature() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -68,6 +61,13 @@ public class GpgSignature implements Serializable {
      * The gpg key subkey id value.
      */
     private String gpgKeySubkeyId;
+
+    /**
+     * Constructs a new {@code GpgSignature} instance.
+     */
+    public GpgSignature() {
+        // No initialization required.
+    }
 
     /**
      * Returns the gpg key id.

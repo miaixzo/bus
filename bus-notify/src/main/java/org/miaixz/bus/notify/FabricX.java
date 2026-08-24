@@ -40,13 +40,6 @@ import org.miaixz.bus.fabric.Payload;
 public abstract class FabricX {
 
     /**
-     * Constructs a new {@code FabricX} instance.
-     */
-    public FabricX() {
-        // No initialization required.
-    }
-
-    /**
      * Shared Fabric context for notification HTTP calls.
      */
     private static final org.miaixz.bus.fabric.Context CONTEXT = org.miaixz.bus.fabric.Context.create();
@@ -55,6 +48,13 @@ public abstract class FabricX {
      * Form media used by notification requests.
      */
     private static final MediaType FORM = MediaType.APPLICATION_FORM_URLENCODED_TYPE;
+
+    /**
+     * Constructs a new {@code FabricX} instance.
+     */
+    public FabricX() {
+        // No initialization required.
+    }
 
     /**
      * Sends a GET request.

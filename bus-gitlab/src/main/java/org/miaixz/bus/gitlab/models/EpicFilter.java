@@ -43,13 +43,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class EpicFilter implements Serializable {
 
     /**
-     * Constructs a new {@code EpicFilter} instance.
-     */
-    public EpicFilter() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -111,6 +104,13 @@ public class EpicFilter implements Serializable {
      * The not value.
      */
     private Map<EpicField, Object> not;
+
+    /**
+     * Constructs a new {@code EpicFilter} instance.
+     */
+    public EpicFilter() {
+        // No initialization required.
+    }
 
     /**
      * Add 'state' filter.

@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class SamlGroupLink implements Serializable {
 
     /**
-     * Constructs a new {@code SamlGroupLink} instance.
-     */
-    public SamlGroupLink() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -58,6 +51,13 @@ public class SamlGroupLink implements Serializable {
      * The member role id value.
      */
     private int memberRoleId;
+
+    /**
+     * Constructs a new {@code SamlGroupLink} instance.
+     */
+    public SamlGroupLink() {
+        // No initialization required.
+    }
 
     /**
      * Returns the name.

@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class GetHbInfo extends Voucher {
 
     /**
-     * Constructs a new {@code GetHbInfo} instance.
-     */
-    public GetHbInfo() {
-        // No initialization required.
-    }
-
-    /**
      * Random string.
      */
     private String nonce_str;
@@ -66,5 +59,12 @@ public class GetHbInfo extends Voucher {
      * Bill type.
      */
     private String bill_type;
+
+    /**
+     * Constructs a new {@code GetHbInfo} instance.
+     */
+    public GetHbInfo() {
+        // No initialization required.
+    }
 
 }

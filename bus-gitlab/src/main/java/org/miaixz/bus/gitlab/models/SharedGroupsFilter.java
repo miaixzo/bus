@@ -35,13 +35,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class SharedGroupsFilter implements Serializable {
 
     /**
-     * Constructs a new {@code SharedGroupsFilter} instance.
-     */
-    public SharedGroupsFilter() {
-        // No initialization required.
-    }
-
-    /**
      * Serialization version identifier.
      */
     @Serial
@@ -81,6 +74,13 @@ public class SharedGroupsFilter implements Serializable {
      * Flag indicating whether custom attributes should be included.
      */
     private Boolean withCustomAttributes;
+
+    /**
+     * Constructs a new {@code SharedGroupsFilter} instance.
+     */
+    public SharedGroupsFilter() {
+        // No initialization required.
+    }
 
     /**
      * Excludes the specified group IDs from the response.

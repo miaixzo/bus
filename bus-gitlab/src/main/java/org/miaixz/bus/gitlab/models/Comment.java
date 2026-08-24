@@ -34,13 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Comment implements Serializable {
 
     /**
-     * Constructs a new {@code Comment} instance.
-     */
-    public Comment() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -70,6 +63,13 @@ public class Comment implements Serializable {
      * The note value.
      */
     private String note;
+
+    /**
+     * Constructs a new {@code Comment} instance.
+     */
+    public Comment() {
+        // No initialization required.
+    }
 
     /**
      * Returns the author.

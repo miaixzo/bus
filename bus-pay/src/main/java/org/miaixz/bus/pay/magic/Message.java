@@ -41,13 +41,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 @SuperBuilder
 public class Message extends org.miaixz.bus.core.basic.entity.Message<Void> {
 
-    /**
-     * Constructs a new {@code Message} instance.
-     */
-    public Message() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852292670363L;
 
@@ -70,6 +63,13 @@ public class Message extends org.miaixz.bus.core.basic.entity.Message<Void> {
      * The headers of the message.
      */
     private Map<String, List<String>> headers;
+
+    /**
+     * Constructs a new {@code Message} instance.
+     */
+    public Message() {
+        // No initialization required.
+    }
 
     /**
      * Retrieves the first header value for the given header name.

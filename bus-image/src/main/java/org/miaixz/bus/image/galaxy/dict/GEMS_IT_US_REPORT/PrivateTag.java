@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_IT_US_REPORT;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_IT_US_REPORT";
@@ -52,5 +45,12 @@ public class PrivateTag {
      * (0045,xx13) VR=OW VM=1 Vivid PDF file
      */
     public static final int VividPDFFile = 0x00450013;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

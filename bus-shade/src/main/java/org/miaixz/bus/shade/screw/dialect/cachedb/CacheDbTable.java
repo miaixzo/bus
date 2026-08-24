@@ -35,13 +35,6 @@ import org.miaixz.bus.shade.screw.metadata.Table;
 public class CacheDbTable implements Table {
 
     /**
-     * Constructs a new CacheDbTable instance.
-     */
-    public CacheDbTable() {
-        // No initialization required.
-    }
-
-    /**
      * The table catalog (may be {@code null}).
      */
     @MappingField(value = "TABLE_CAT")
@@ -100,5 +93,12 @@ public class CacheDbTable implements Table {
      */
     @MappingField(value = "TYPE_NAME")
     private String typeName;
+
+    /**
+     * Constructs a new CacheDbTable instance.
+     */
+    public CacheDbTable() {
+        // No initialization required.
+    }
 
 }

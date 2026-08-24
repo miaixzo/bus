@@ -35,17 +35,17 @@ import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 public class WeakIntern<T> implements Intern<T> {
 
     /**
+     * The cache for storing weak references to interned objects. The keys are the objects themselves, and the values
+     * are weak references to the canonical objects.
+     */
+    private final WeakConcurrentMap<T, WeakReference<T>> cache = new WeakConcurrentMap<>();
+
+    /**
      * Constructs a new WeakIntern instance.
      */
     public WeakIntern() {
         // No initialization required.
     }
-
-    /**
-     * The cache for storing weak references to interned objects. The keys are the objects themselves, and the values
-     * are weak references to the canonical objects.
-     */
-    private final WeakConcurrentMap<T, WeakReference<T>> cache = new WeakConcurrentMap<>();
 
     /**
      * Returns the canonical representation for the given object. If the object is already in the cache, its canonical

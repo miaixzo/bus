@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_MEDCOM_HEADER;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS MEDCOM HEADER";
@@ -177,5 +170,12 @@ public class PrivateTag {
      * (0029,xx77) VR=UL VM=1 Referenced Object Offse
      */
     public static final int ReferencedObjectOffset = 0x00290077;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

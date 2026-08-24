@@ -41,13 +41,6 @@ import org.miaixz.bus.health.unix.shared.jna.CLibrary;
 public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats {
 
     /**
-     * Constructs a new FreeBsdInternetProtocolStats instance.
-     */
-    public FreeBsdInternetProtocolStats() {
-        // No initialization required.
-    }
-
-    /**
      * The establishedv4v6 value.
      */
     private final SupplierX<Pair<Long, Long>> establishedv4v6 = Memoizer
@@ -64,6 +57,13 @@ public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats 
      */
     private final SupplierX<CLibrary.BsdUdpstat> udpstat = Memoizer
             .memoize(FreeBsdInternetProtocolStats::queryUdpstat, Memoizer.defaultExpiration());
+
+    /**
+     * Constructs a new FreeBsdInternetProtocolStats instance.
+     */
+    public FreeBsdInternetProtocolStats() {
+        // No initialization required.
+    }
 
     /**
      * Queries the tcpstat.

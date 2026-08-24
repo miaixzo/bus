@@ -31,13 +31,6 @@ import org.miaixz.bus.gitlab.models.Reviewer;
 public class MergeRequestChanges extends EventChanges {
 
     /**
-     * Constructs a new {@code MergeRequestChanges} instance.
-     */
-    public MergeRequestChanges() {
-        // No initialization required.
-    }
-
-    /**
      * The merge status value.
      */
     private ChangeContainer<String> mergeStatus;
@@ -45,6 +38,13 @@ public class MergeRequestChanges extends EventChanges {
      * The reviewers value.
      */
     private ChangeContainer<List<Reviewer>> reviewers;
+
+    /**
+     * Constructs a new {@code MergeRequestChanges} instance.
+     */
+    public MergeRequestChanges() {
+        // No initialization required.
+    }
 
     /**
      * Returns the merge status.

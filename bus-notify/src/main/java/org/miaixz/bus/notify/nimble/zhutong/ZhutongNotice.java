@@ -37,17 +37,17 @@ import org.miaixz.bus.notify.magic.Notice;
 public class ZhutongNotice extends Notice {
 
     /**
+     * The name of the template variable. View address: https://mix2.zthysms.com/index.html#/TemplateManagement. Can be
+     * empty, in which case a non-template form is used to send SMS.
+     */
+    private String templateName;
+
+    /**
      * Constructs a new {@code ZhutongNotice} instance.
      */
     public ZhutongNotice() {
         // No initialization required.
     }
-
-    /**
-     * The name of the template variable. View address: https://mix2.zthysms.com/index.html#/TemplateManagement. Can be
-     * empty, in which case a non-template form is used to send SMS.
-     */
-    private String templateName;
 
     /**
      * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.

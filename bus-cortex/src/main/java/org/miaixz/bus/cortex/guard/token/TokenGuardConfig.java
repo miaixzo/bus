@@ -37,13 +37,6 @@ import org.miaixz.bus.cortex.Builder;
 public class TokenGuardConfig {
 
     /**
-     * Creates a token-guard configuration with default policy values.
-     */
-    public TokenGuardConfig() {
-        // No initialization required.
-    }
-
-    /**
      * Whether token-based guard logic is enabled for the current scope.
      */
     private boolean enabled = true;
@@ -112,6 +105,13 @@ public class TokenGuardConfig {
      * Optional per-scope lifetime override expressed in seconds.
      */
     private Map<String, Long> scopeExpireSeconds = new LinkedHashMap<>();
+
+    /**
+     * Creates a token-guard configuration with default policy values.
+     */
+    public TokenGuardConfig() {
+        // No initialization required.
+    }
 
     /**
      * Returns whether the given transport channel is allowed.

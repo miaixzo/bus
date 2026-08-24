@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SHS_MagicView_300;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SHS MagicView 300";
@@ -47,5 +40,12 @@ public class PrivateTag {
      * (0029,xx03) VR=FD VM=1 ?
      */
     public static final int _0029_xx03_ = 0x00290003;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

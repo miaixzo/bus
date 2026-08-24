@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class EventSnippet {
 
     /**
-     * Constructs a new {@code EventSnippet} instance.
-     */
-    public EventSnippet() {
-        // No initialization required.
-    }
-
-    /**
      * The id value.
      */
     private Long id;
@@ -83,6 +76,13 @@ public class EventSnippet {
      * The visibility level value.
      */
     private AccessLevel visibilityLevel;
+
+    /**
+     * Constructs a new {@code EventSnippet} instance.
+     */
+    public EventSnippet() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

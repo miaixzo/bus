@@ -35,13 +35,6 @@ import org.miaixz.bus.core.lang.reflect.JdkProxy;
 public class Builder {
 
     /**
-     * Initializes the limiter builder that derives resource keys and protection metadata from methods.
-     */
-    public Builder() {
-        // No initialization required.
-    }
-
-    /**
      * A concurrent hash map to cache method names for performance. The key is the {@link Method} object, and the value
      * is its string representation.
      */
@@ -51,6 +44,13 @@ public class Builder {
      * A lock object used for synchronizing access to the {@link #MAP} when resolving method names.
      */
     private static final Object LOCK = new Object();
+
+    /**
+     * Initializes the limiter builder that derives resource keys and protection metadata from methods.
+     */
+    public Builder() {
+        // No initialization required.
+    }
 
     /**
      * Retrieves the actual user class from a given class, handling CGLIB proxies. If the provided class is a CGLIB

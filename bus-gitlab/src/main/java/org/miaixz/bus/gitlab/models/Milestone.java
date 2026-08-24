@@ -35,13 +35,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class Milestone implements Serializable {
 
     /**
-     * Constructs a new {@code Milestone} instance.
-     */
-    public Milestone() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -104,6 +97,13 @@ public class Milestone implements Serializable {
      * The web url value.
      */
     private String webUrl;
+
+    /**
+     * Constructs a new {@code Milestone} instance.
+     */
+    public Milestone() {
+        // No initialization required.
+    }
 
     /**
      * Returns the created at.

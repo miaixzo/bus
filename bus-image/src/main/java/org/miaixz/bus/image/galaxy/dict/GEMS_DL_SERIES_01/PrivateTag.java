@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_DL_SERIES_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_DL_SERIES_01";
@@ -67,5 +60,12 @@ public class PrivateTag {
      * (0019,xx4D) VR=CS VM=1 Browser Hide
      */
     public static final int BrowserHide = 0x0019004D;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

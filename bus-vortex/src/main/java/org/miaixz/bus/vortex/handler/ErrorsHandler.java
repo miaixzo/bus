@@ -369,13 +369,6 @@ public class ErrorsHandler implements WebExceptionHandler {
     public static class Message {
 
         /**
-         * Creates an empty response message.
-         */
-        public Message() {
-            // No initialization required.
-        }
-
-        /**
          * The response code, indicating the specific error or status.
          */
         private String errcode;
@@ -384,6 +377,13 @@ public class ErrorsHandler implements WebExceptionHandler {
          * The descriptive error message or status message.
          */
         private String errmsg;
+
+        /**
+         * Creates an empty response message.
+         */
+        public Message() {
+            // No initialization required.
+        }
 
     }
 

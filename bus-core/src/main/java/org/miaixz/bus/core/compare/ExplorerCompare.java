@@ -49,16 +49,16 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ExplorerCompare implements Comparator<CharSequence> {
 
     /**
+     * Singleton instance of the comparator.
+     */
+    public static final ExplorerCompare INSTANCE = new ExplorerCompare();
+
+    /**
      * Creates the shared Windows Explorer-style string comparator.
      */
     public ExplorerCompare() {
         // No initialization required.
     }
-
-    /**
-     * Singleton instance of the comparator.
-     */
-    public static final ExplorerCompare INSTANCE = new ExplorerCompare();
 
     /**
      * Compare method.

@@ -47,13 +47,6 @@ import org.miaixz.bus.logger.Logger;
 public class RequestProvider implements Provider {
 
     /**
-     * Constructs a new RequestProvider instance.
-     */
-    public RequestProvider() {
-        // No initialization required.
-    }
-
-    /**
      * An {@link ExecutorService} used for asynchronously cleaning up expired {@link ResourceManager} instances. It uses
      * a fixed thread pool with one thread.
      */
@@ -82,6 +75,13 @@ public class RequestProvider implements Provider {
         }
 
     };
+
+    /**
+     * Constructs a new RequestProvider instance.
+     */
+    public RequestProvider() {
+        // No initialization required.
+    }
 
     /**
      * Sets a new user identifier provider. This allows customizing how user identifiers are obtained for request

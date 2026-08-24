@@ -56,13 +56,6 @@ import org.miaixz.bus.core.xyz.ZoneKit;
 public class Formatter {
 
     /**
-     * Creates a new {@code Formatter} instance.
-     */
-    public Formatter() {
-        // No initialization required.
-    }
-
-    /**
      * Month format {@link FormatBuilder}: yyyy-MM
      */
     public static final FormatBuilder NORM_MONTH_FORMAT = FormatBuilder.getInstance(Fields.NORM_MONTH);
@@ -318,6 +311,13 @@ public class Formatter {
      * Maximum time for hour, minute, second only.
      */
     public static final LocalTime MAX_HMS = LocalTime.of(23, 59, 59);
+
+    /**
+     * Creates a new {@code Formatter} instance.
+     */
+    public Formatter() {
+        // No initialization required.
+    }
 
     /**
      * Converts the specified date string to a Unix timestamp.

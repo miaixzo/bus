@@ -36,13 +36,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public class MSAcpiThermalZoneTemperature {
 
     /**
-     * Constructs a new {@code MSAcpiThermalZoneTemperature} instance.
-     */
-    public MSAcpiThermalZoneTemperature() {
-        // No initialization required.
-    }
-
-    /**
      * The WMI namespace for this class.
      */
     public static final String WMI_NAMESPACE = "ROOT\\WMI";
@@ -51,6 +44,13 @@ public class MSAcpiThermalZoneTemperature {
      * The WMI class name.
      */
     public static final String MS_ACPI_THERMAL_ZONE_TEMPERATURE = "MSAcpi_ThermalZoneTemperature";
+
+    /**
+     * Constructs a new {@code MSAcpiThermalZoneTemperature} instance.
+     */
+    public MSAcpiThermalZoneTemperature() {
+        // No initialization required.
+    }
 
     /**
      * Queries the current temperature

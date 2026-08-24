@@ -37,13 +37,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class RunnerDetail extends Runner {
 
     /**
-     * Constructs a new {@code RunnerDetail} instance.
-     */
-    public RunnerDetail() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -85,6 +78,13 @@ public class RunnerDetail extends Runner {
      * The access level value.
      */
     private RunnerAccessLevel accessLevel;
+
+    /**
+     * Constructs a new {@code RunnerDetail} instance.
+     */
+    public RunnerDetail() {
+        // No initialization required.
+    }
 
     /**
      * Enumeration representing the access level for a GitLab CI/CD runner.

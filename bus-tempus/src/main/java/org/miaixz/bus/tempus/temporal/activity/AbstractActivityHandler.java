@@ -54,16 +54,16 @@ public abstract class AbstractActivityHandler<R, C>
         implements ActivityContextFactory<R, C>, ActivityExecutorResolver<R, C>, ActivityResultSerializer {
 
     /**
+     * Shared scheduler for activity heartbeats to avoid creating one thread per invocation.
+     */
+    private static final ScheduledExecutorService HEARTBEAT_SCHEDULER = createHeartbeatScheduler();
+
+    /**
      * Creates an activity handler template.
      */
     public AbstractActivityHandler() {
         // No initialization required.
     }
-
-    /**
-     * Shared scheduler for activity heartbeats to avoid creating one thread per invocation.
-     */
-    private static final ScheduledExecutorService HEARTBEAT_SCHEDULER = createHeartbeatScheduler();
 
     /**
      * Executes the activity for the specified request.

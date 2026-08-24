@@ -41,13 +41,6 @@ import org.miaixz.bus.office.excel.ExcelConfig;
 public class ExcelWriteConfig extends ExcelConfig {
 
     /**
-     * Constructs a new ExcelWriteConfig instance.
-     */
-    public ExcelWriteConfig() {
-        // No initialization required.
-    }
-
-    /**
      * Maximum rows allowed per XLSX sheet.
      */
     public static final int XLSX_MAX_ROWS_PER_SHEET = 1_048_576;
@@ -108,6 +101,13 @@ public class ExcelWriteConfig extends ExcelConfig {
      * Big data mode flag.
      */
     protected boolean bigDataMode;
+
+    /**
+     * Constructs a new ExcelWriteConfig instance.
+     */
+    public ExcelWriteConfig() {
+        // No initialization required.
+    }
 
     /**
      * Sets the header alias mapping and resets the alias comparator.

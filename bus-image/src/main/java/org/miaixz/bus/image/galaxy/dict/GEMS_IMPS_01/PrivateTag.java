@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_IMPS_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_IMPS_01";
@@ -82,5 +75,12 @@ public class PrivateTag {
      * (0029,xx35) VR=SL VM=1 Advantage Comp Underflow
      */
     public static final int AdvantageCompUnderflow = 0x00290035;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -44,16 +44,16 @@ import org.miaixz.bus.health.windows.driver.wmi.Win32Processor;
 public class LogicalProcessorInformation {
 
     /**
+     * The IS_WIN10_OR_GREATER constant.
+     */
+    private static final boolean IS_WIN10_OR_GREATER = VersionHelpers.IsWindows10OrGreater();
+
+    /**
      * Constructs a new {@code LogicalProcessorInformation} instance.
      */
     public LogicalProcessorInformation() {
         // No initialization required.
     }
-
-    /**
-     * The IS_WIN10_OR_GREATER constant.
-     */
-    private static final boolean IS_WIN10_OR_GREATER = VersionHelpers.IsWindows10OrGreater();
 
     /**
      * Get a list of logical processors on this machine. Requires Windows 7 and higher.

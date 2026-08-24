@@ -55,13 +55,6 @@ import org.miaixz.bus.image.metric.pdu.IdentityRQ;
 public class Args {
 
     /**
-     * Constructs a new {@code Args} instance.
-     */
-    public Args() {
-        // No initialization required.
-    }
-
-    /**
      * Transfer Syntax order: Implicit VR Little Endian first.
      */
     public static final String[] IVR_LE_FIRST = { UID.ImplicitVRLittleEndian.uid, UID.ExplicitVRLittleEndian.uid,
@@ -166,6 +159,13 @@ public class Args {
      * {@code sop-classes-tcs.properties}).
      */
     private URL sopClassesTCS;
+
+    /**
+     * Constructs a new {@code Args} instance.
+     */
+    public Args() {
+        // No initialization required.
+    }
 
     /**
      * Constructs an {@code Args} object with a specific setting for binding the calling AET.

@@ -30,13 +30,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
     /**
-     * Constructs a new ErrorCode with default settings.
-     */
-    public ErrorCode() {
-        // No initialization required.
-    }
-
-    /**
      * Directory already exists.
      */
     public static final Errors _113000 = ErrorRegistry.register("113000", "Directory already exists");
@@ -96,5 +89,12 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
      * This storage operation is not supported.
      */
     public static final Errors _113011 = ErrorRegistry.register("113011", "This storage operation is not supported");
+
+    /**
+     * Constructs a new ErrorCode with default settings.
+     */
+    public ErrorCode() {
+        // No initialization required.
+    }
 
 }

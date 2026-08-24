@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.CARDIO_D_R__1_0;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "CARDIO-D.R. 1.0";
@@ -117,5 +110,12 @@ public class PrivateTag {
      * (0029,xx03) VR=FL VM=1 Edge Enhancement Gain
      */
     public static final int EdgeEnhancementGain = 0x00290003;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

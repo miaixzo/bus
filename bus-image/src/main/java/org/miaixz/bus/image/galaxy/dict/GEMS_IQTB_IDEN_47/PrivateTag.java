@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_IQTB_IDEN_47;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_IQTB_IDEN_47";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (0047,xx02) VR=UL VM=1 ?
      */
     public static final int _0047_xx02_ = 0x00470002;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

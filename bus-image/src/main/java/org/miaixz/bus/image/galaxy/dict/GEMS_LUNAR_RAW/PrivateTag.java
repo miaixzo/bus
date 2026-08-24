@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_LUNAR_RAW;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_LUNAR_RAW";
@@ -57,5 +50,12 @@ public class PrivateTag {
      * (7003,xx04) VR=LO VM=1 enCORE File Modified Time
      */
     public static final int enCOREFileModifiedTime = 0x70030004;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

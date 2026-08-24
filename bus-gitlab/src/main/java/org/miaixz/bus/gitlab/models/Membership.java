@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Membership implements Serializable {
 
     /**
-     * Constructs a new {@code Membership} instance.
-     */
-    public Membership() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -60,6 +53,13 @@ public class Membership implements Serializable {
      * The access level value.
      */
     private AccessLevel accessLevel;
+
+    /**
+     * Constructs a new {@code Membership} instance.
+     */
+    public Membership() {
+        // No initialization required.
+    }
 
     /**
      * Returns the source id.

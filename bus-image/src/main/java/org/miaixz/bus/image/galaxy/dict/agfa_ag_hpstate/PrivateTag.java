@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.agfa_ag_hpstate;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "AGFA-AG_HPState";
@@ -197,5 +190,12 @@ public class PrivateTag {
      * (0087,xx08) VR=FD VM=2 ?
      */
     public static final int _0087_xx08_ = 0x00870008;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -37,13 +37,6 @@ import org.miaixz.bus.image.metric.Connection;
 public abstract class AAssociateRQAC {
 
     /**
-     * Constructs a new AAssociateRQAC instance.
-     */
-    public AAssociateRQAC() {
-        // No initialization required.
-    }
-
-    /**
      * The pcs value.
      */
     protected final List<PresentationContext> pcs = new ArrayList<>();
@@ -127,6 +120,13 @@ public abstract class AAssociateRQAC {
      * The identity ac value.
      */
     protected IdentityAC identityAC;
+
+    /**
+     * Constructs a new AAssociateRQAC instance.
+     */
+    public AAssociateRQAC() {
+        // No initialization required.
+    }
 
     /**
      * Executes the check calling aet operation.

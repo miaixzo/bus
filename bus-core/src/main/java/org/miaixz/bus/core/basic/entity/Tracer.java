@@ -39,13 +39,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class Tracer extends Authorize {
 
-    /**
-     * Constructs a new {@code Tracer} instance.
-     */
-    public Tracer() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852291120377L;
 
@@ -112,6 +105,13 @@ public class Tracer extends Authorize {
      */
     @Transient
     protected String x_request_terminal;
+
+    /**
+     * Constructs a new {@code Tracer} instance.
+     */
+    public Tracer() {
+        // No initialization required.
+    }
 
     /**
      * Gets the client IP address, preferring IPv4 over IPv6.

@@ -51,13 +51,6 @@ import org.miaixz.bus.core.xml.XmlWriter;
 public class XmlKit {
 
     /**
-     * Constructs a new XmlKit instance.
-     */
-    public XmlKit() {
-        // No initialization required.
-    }
-
-    /**
      * Regex for invalid characters in XML.
      */
     public static final Pattern INVALID_PATTERN = Pattern.compile("[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f]");
@@ -66,6 +59,13 @@ public class XmlKit {
      * Regex for comments in XML.
      */
     public static final Pattern COMMENT_PATTERN = Pattern.compile("(?s)");
+
+    /**
+     * Constructs a new XmlKit instance.
+     */
+    public XmlKit() {
+        // No initialization required.
+    }
 
     /**
      * Reads and parses an XML file from a path or content string.

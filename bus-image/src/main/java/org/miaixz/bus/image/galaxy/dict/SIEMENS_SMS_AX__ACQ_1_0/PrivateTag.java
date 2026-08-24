@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SMS_AX__ACQ_1_0;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS SMS-AX ACQ 1.0";
@@ -492,5 +485,12 @@ public class PrivateTag {
      * (0021,xxA6) VR=FD VM=1 3D R-R Interval Time Measure
      */
     public static final int ThreeDRRIntervalTimeMeasured = 0x002100A6;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

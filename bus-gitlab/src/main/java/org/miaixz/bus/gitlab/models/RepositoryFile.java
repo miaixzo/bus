@@ -36,13 +36,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class RepositoryFile implements Serializable {
 
     /**
-     * Constructs a new {@code RepositoryFile} instance.
-     */
-    public RepositoryFile() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -88,6 +81,13 @@ public class RepositoryFile implements Serializable {
      * The last commit id value.
      */
     private String lastCommitId;
+
+    /**
+     * Constructs a new {@code RepositoryFile} instance.
+     */
+    public RepositoryFile() {
+        // No initialization required.
+    }
 
     /**
      * Returns the file name.

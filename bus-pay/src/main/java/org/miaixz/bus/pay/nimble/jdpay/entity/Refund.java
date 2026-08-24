@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class Refund extends Voucher {
 
     /**
-     * Constructs a new {@code Refund} instance.
-     */
-    public Refund() {
-        // No initialization required.
-    }
-
-    /**
      * Version number.
      */
     private String version;
@@ -106,5 +99,12 @@ public class Refund extends Voucher {
      * Certificate.
      */
     private String cert;
+
+    /**
+     * Constructs a new {@code Refund} instance.
+     */
+    public Refund() {
+        // No initialization required.
+    }
 
 }

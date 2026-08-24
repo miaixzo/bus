@@ -60,13 +60,6 @@ import org.miaixz.bus.logger.Logger;
 public class WindowsOperatingSystem extends AbstractOperatingSystem {
 
     /**
-     * Creates a new WindowsOperatingSystem instance.
-     */
-    public WindowsOperatingSystem() {
-        // No initialization required.
-    }
-
-    /**
      * The USE_PROCSTATE_SUSPENDED constant.
      */
     private static final boolean USE_PROCSTATE_SUSPENDED = Builder.get(Builder._WINDOWS_PROCSTATE_SUSPENDED, false);
@@ -136,6 +129,13 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
      */
     private final SupplierX<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromPerfCounters = Memoizer
             .memoize(WindowsOperatingSystem::queryThreadMapFromPerfCounters, Memoizer.defaultExpiration());
+
+    /**
+     * Creates a new WindowsOperatingSystem instance.
+     */
+    public WindowsOperatingSystem() {
+        // No initialization required.
+    }
 
     /**
      * Returns the parent pids from snapshot.
