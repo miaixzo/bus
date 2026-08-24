@@ -115,6 +115,17 @@ public final class UnverifiedJWT {
     }
 
     /**
+     * Verifies the original compact token with String key material under an explicit conversion strategy.
+     *
+     * @param secret   non-empty String key material
+     * @param mode   explicit String-to-key mode
+     * @return cryptographically verified JWT
+     */
+    public JWT verify(final String secret, final JWT.Mode mode) {
+        return JWT.verify(compact, secret, mode);
+    }
+
+    /**
      * Verifies the original compact token with strict caller-owned HS256 key bytes.
      *
      * @param secret raw HMAC key containing at least 256 bits

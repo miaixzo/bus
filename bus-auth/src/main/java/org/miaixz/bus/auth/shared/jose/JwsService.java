@@ -88,6 +88,10 @@ public class JwsService {
      * Immutable profile-specific JWS algorithm allow-list.
      */
     private final Set<String> allowedAlgorithms;
+    /**
+     * Whether operation keys must satisfy the registered JWA minimum strength.
+     */
+    private final boolean minimumKeyStrengthEnforced;
 
     /**
      * Creates a profile-scoped JWS service.
@@ -96,11 +100,33 @@ public class JwsService {
      * @param allowedAlgorithms exact case-sensitive JWS algorithm allow-list
      */
     public JwsService(final AlgorithmGuard algorithmGuard, final Set<String> allowedAlgorithms) {
+        this(algorithmGuard, allowedAlgorithms, true);
+    }
+
+    /**
+     * Creates a profile-scoped JWS service with an explicit minimum-key-strength policy.
+     * <p>
+     * Disabling the minimum-strength check exists only for an explicitly selected legacy String-key compatibility
+     * profile. Algorithm allow-list, key type, key direction, and signature verification checks remain mandatory.
+     * </p>
+     *
+     * @param algorithmGuard             shared algorithm validation primitive
+     * @param allowedAlgorithms          exact case-sensitive JWS algorithm allow-list
+     * @param minimumKeyStrengthEnforced whether registered JWA minimum key sizes are enforced
+     */
+    public JwsService(
+            final AlgorithmGuard algorithmGuard,
+            final Set<String> allowedAlgorithms,
+            final boolean minimumKeyStrengthEnforced) {
         this.algorithmGuard = Assert.notNull(algorithmGuard, "JWS algorithm guard must not be null");
         Assert.notNull(allowedAlgorithms, "JWS algorithm allowlist must not be null");
         this.allowedAlgorithms = Set.copyOf(allowedAlgorithms);
+        this.minimumKeyStrengthEnforced = minimumKeyStrengthEnforced;
         if (this.allowedAlgorithms.isEmpty()) {
             throw new ValidateException("JWS algorithm allowlist must not be empty");
+        }
+        if (!minimumKeyStrengthEnforced && this.allowedAlgorithms.stream().anyMatch(name -> !name.startsWith("HS"))) {
+            throw new ValidateException("Relaxed JWS minimum key strength is available for HMAC algorithms only");
         }
     }
 
@@ -781,7 +807,7 @@ public class JwsService {
         if (!registration.keyTypes().contains(family)) {
             throw new ValidateException("JWS key family does not match the selected algorithm");
         }
-        if (keyBits(key) < registration.minimumKeyBits()) {
+        if (minimumKeyStrengthEnforced && keyBits(key) < registration.minimumKeyBits()) {
             throw new ValidateException("JWS key does not meet the selected algorithm minimum strength");
         }
     }

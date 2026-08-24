@@ -121,6 +121,21 @@ public class JWT {
     }
 
     /**
+     * Signs an implementation-neutral Claims Set with String key material under an explicit conversion strategy.
+     *
+     * @param claims   caller-supplied Claims Set
+     * @param secret   non-empty String key material
+     * @param mode     explicit String-to-key mode
+     * @return compact signed JWT
+     */
+    public static String sign(
+            final Map<String, ?> claims,
+            final String secret,
+            final Mode mode) {
+        return JwtService.hs256(secret, mode).sign(JwtClaims.of(claims)).compact();
+    }
+
+    /**
      * Signs one public record as an implementation-neutral Claims Set with an explicit HS256 secret.
      *
      * @param claims caller-supplied public record
@@ -142,6 +157,22 @@ public class JWT {
      */
     public static <T extends Record> String sign(final T claims, final String secret) {
         return JwtService.hs256(secret).sign(JwtClaims.of(claims)).compact();
+    }
+
+    /**
+     * Signs one public record with String key material under an explicit conversion strategy.
+     *
+     * @param claims   caller-supplied public record
+     * @param secret   non-empty String key material
+     * @param mode     explicit String-to-key mode
+     * @param <T>      public record type
+     * @return compact signed JWT
+     */
+    public static <T extends Record> String sign(
+            final T claims,
+            final String secret,
+            final Mode mode) {
+        return JwtService.hs256(secret, mode).sign(JwtClaims.of(claims)).compact();
     }
 
     /**
@@ -208,6 +239,27 @@ public class JWT {
     }
 
     /**
+     * Issues an HS256 JWT from String key material under an explicit conversion strategy.
+     *
+     * @param claims   subject and application claims that do not replace issuer-generated claims
+     * @param secret   non-empty String key material
+     * @param mode     explicit String-to-key mode
+     * @param issuer   exact issuer StringOrURI
+     * @param audience exact audience StringOrURI
+     * @param lifetime positive token lifetime
+     * @return compact issued JWT
+     */
+    public static String issue(
+            final Map<String, ?> claims,
+            final String secret,
+            final Mode mode,
+            final String issuer,
+            final String audience,
+            final Duration lifetime) {
+        return JwtService.hs256(secret, mode).issue(JwtClaims.of(claims), issuer, audience, lifetime).compact();
+    }
+
+    /**
      * Issues an HS256 JWT from a public record after generating registered issuer-owned claims.
      *
      * @param claims   subject and application claim record
@@ -245,6 +297,28 @@ public class JWT {
             final String audience,
             final Duration lifetime) {
         return JwtService.hs256(secret).issue(JwtClaims.of(claims), issuer, audience, lifetime).compact();
+    }
+
+    /**
+     * Issues an HS256 JWT from a public record and String key material under an explicit conversion strategy.
+     *
+     * @param claims   subject and application claim record
+     * @param secret   non-empty String key material
+     * @param mode     explicit String-to-key mode
+     * @param issuer   exact issuer StringOrURI
+     * @param audience exact audience StringOrURI
+     * @param lifetime positive token lifetime
+     * @param <T>      public record type
+     * @return compact issued JWT
+     */
+    public static <T extends Record> String issue(
+            final T claims,
+            final String secret,
+            final Mode mode,
+            final String issuer,
+            final String audience,
+            final Duration lifetime) {
+        return JwtService.hs256(secret, mode).issue(JwtClaims.of(claims), issuer, audience, lifetime).compact();
     }
 
     /**
@@ -313,6 +387,21 @@ public class JWT {
     }
 
     /**
+     * Cryptographically verifies one compact HS256 JWT with String key material under an explicit conversion strategy.
+     *
+     * @param compact  compact signed JWT
+     * @param secret   non-empty String key material
+     * @param mode     explicit String-to-key mode
+     * @return immutable cryptographically verified JWT
+     */
+    public static JWT verify(
+            final String compact,
+            final String secret,
+            final Mode mode) {
+        return JwtService.hs256(secret, mode).verify(compact);
+    }
+
+    /**
      * Parses one compact signed JWT without validating its signature.
      * <p>
      * The returned Header and Claims Set are explicitly untrusted. This entry point exists for bounded tenant or key
@@ -361,6 +450,22 @@ public class JWT {
     }
 
     /**
+     * Verifies one compact HS256 JWT with an explicit String-to-key strategy and validates every registered temporal
+     * claim present.
+     *
+     * @param compact  compact signed JWT
+     * @param secret   non-empty String key material
+     * @param mode     explicit String-to-key mode
+     * @return immutable cryptographically and temporally validated JWT
+     */
+    public static JWT validate(
+            final String compact,
+            final String secret,
+            final Mode mode) {
+        return JwtService.hs256(secret, mode).validate(compact);
+    }
+
+    /**
      * Verifies one compact JWT with an explicit trusted algorithm and validates every registered temporal claim that is
      * present.
      *
@@ -395,6 +500,23 @@ public class JWT {
      */
     public static JWT validate(final String compact, final String secret, final Requirements requirements) {
         return JwtService.hs256(secret).validate(compact, requirements);
+    }
+
+    /**
+     * Verifies one compact HS256 JWT under an explicit String-to-key strategy and applies common-claim requirements.
+     *
+     * @param compact      compact signed JWT
+     * @param secret       non-empty String key material
+     * @param mode         explicit String-to-key mode
+     * @param requirements explicit issuer, audience, temporal, and subject requirements
+     * @return immutable fully validated JWT
+     */
+    public static JWT validate(
+            final String compact,
+            final String secret,
+            final Mode mode,
+            final Requirements requirements) {
+        return JwtService.hs256(secret, mode).validate(compact, requirements);
     }
 
     /**
@@ -437,6 +559,22 @@ public class JWT {
     }
 
     /**
+     * Tests whether one compact HS256 JWT has a valid signature and temporal claims under an explicit String-to-key
+     * strategy.
+     *
+     * @param compact  compact signed JWT
+     * @param secret   non-empty String key material
+     * @param mode     explicit String-to-key mode
+     * @return {@code true} when verification and temporal validation succeed
+     */
+    public static boolean isValid(
+            final String compact,
+            final String secret,
+            final Mode mode) {
+        return JwtService.hs256(secret, mode).isValid(compact);
+    }
+
+    /**
      * Tests whether one compact JWT has a valid signature and valid registered temporal claims under an explicit
      * trusted algorithm.
      *
@@ -471,6 +609,23 @@ public class JWT {
      */
     public static boolean isValid(final String compact, final String secret, final Requirements requirements) {
         return JwtService.hs256(secret).isValid(compact, requirements);
+    }
+
+    /**
+     * Tests whether one compact HS256 JWT satisfies common-claim requirements under an explicit String-to-key strategy.
+     *
+     * @param compact      compact signed JWT
+     * @param secret       non-empty String key material
+     * @param mode         explicit String-to-key mode
+     * @param requirements explicit issuer, audience, temporal, and subject requirements
+     * @return {@code true} when complete validation succeeds
+     */
+    public static boolean isValid(
+            final String compact,
+            final String secret,
+            final Mode mode,
+            final Requirements requirements) {
+        return JwtService.hs256(secret, mode).isValid(compact, requirements);
     }
 
     /**
@@ -534,6 +689,27 @@ public class JWT {
     @Override
     public String toString() {
         return "JWT[kind=" + kind + ", compact=[REDACTED]]";
+    }
+
+    /**
+     * Selects how caller-owned String material becomes an HS256 operation key.
+     * <p>
+     * The default String overloads use {@link #HKDF_SHA256_V1}. Callers that must interoperate with systems using the
+     * exact UTF-8 bytes of a legacy String secret can explicitly select {@link #RAW}. The mode is never inferred from
+     * secret length and verification never falls back to another mode.
+     * </p>
+     *
+     * @author Kimi Liu
+     */
+    public enum Mode {
+        /**
+         * Derives a deterministic 256-bit HS256 key through the version-one HKDF-SHA-256 profile.
+         */
+        HKDF_SHA256_V1,
+        /**
+         * Uses the exact UTF-8 bytes of the supplied non-empty String as the HMAC key.
+         */
+        RAW
     }
 
     /**
