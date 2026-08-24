@@ -133,6 +133,21 @@ public class JwtService {
     }
 
     /**
+     * Creates an HS256 service from arbitrary non-empty String key material.
+     * <p>
+     * Every String, regardless of length, is converted through the immutable {@link HkdfJwtKeyDeriver} profile. The
+     * resulting 256-bit key is deterministic across JVMs and cluster nodes. This overload accepts short values for
+     * application compatibility, but derivation cannot add entropy to a weak secret.
+     * </p>
+     *
+     * @param secret non-empty String key material preserved exactly as supplied
+     * @return immutable HS256 JWT service
+     */
+    public static JwtService hs256(final String secret) {
+        return new JwtService(JwaAlgorithm.HS256, HkdfJwtKeyDeriver.INSTANCE.derive(JwaAlgorithm.HS256, secret));
+    }
+
+    /**
      * Signs a caller-owned Claims Set without generating or replacing registered claims.
      *
      * @param claims validated implementation-neutral Claims Set
