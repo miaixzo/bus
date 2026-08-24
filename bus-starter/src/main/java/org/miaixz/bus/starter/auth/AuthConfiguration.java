@@ -28,17 +28,26 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Condition;
+import org.springframework.context.annotation.ConditionContext;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import org.miaixz.bus.auth.FabricX;
+import org.miaixz.bus.auth.shared.jwt.JwtService;
 import org.miaixz.bus.auth.source.SourceAggregate;
 import org.miaixz.bus.auth.source.SourceSuite;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Factory;
 import org.miaixz.bus.cache.nimble.MemoryCache;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.ContextBuilder;
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
@@ -48,7 +57,8 @@ import org.miaixz.bus.starter.annotation.EnableAuth;
  * Assembles the Spring-owned infrastructure required by the bus-auth Source runtime.
  * <p>
  * The configuration freezes one Source registration snapshot, creates one atomic authentication cache, and supplies
- * both to {@link AuthService}. It is active by default when bus-auth is present, can be disabled with
+ * both to {@link AuthService}. When {@code bus.auth.jwt.secret} is present it also creates one reusable
+ * {@link JwtService}. It is active by default when bus-auth is present, can be disabled with
  * {@code bus.auth.enabled=false}, and can always be enabled explicitly with {@link EnableAuth}.
  * </p>
  *
@@ -59,6 +69,11 @@ import org.miaixz.bus.starter.annotation.EnableAuth;
 @ConditionalOnClass(name = "org.miaixz.bus.auth.cache.AuthCache")
 @ConditionalOnEnabled(annotation = EnableAuth.class, prefix = GeniusBuilder.AUTH, matchIfMissing = true)
 public class AuthConfiguration {
+
+    /**
+     * Exact optional property activating the shared JWT service.
+     */
+    private static final String JWT_SECRET_PROPERTY = GeniusBuilder.AUTH + ".jwt.secret";
 
     /**
      * Bound root authentication properties.
@@ -131,6 +146,35 @@ public class AuthConfiguration {
     }
 
     /**
+     * Creates one reusable HS256 JWT service when exact String key material is configured.
+     * <p>
+     * The service derives its key once during context initialization. Compatibility policy accepts every non-empty
+     * String and warns for values shorter than 32 UTF-8 bytes; strict policy rejects those values. Neither path logs
+     * secret or derived key material.
+     * </p>
+     *
+     * @return configured immutable JWT service
+     */
+    @Bean
+    @ConditionalOnMissingBean(JwtService.class)
+    @Conditional(JwtSecretCondition.class)
+    public JwtService jwtService() {
+        final AuthProperties.Jwt jwt = Assert.notNull(properties.getJwt(), "JWT settings must not be null");
+        final String secret = Assert.notEmpty(jwt.secret(), "JWT String secret must not be empty");
+        final int secretBytes = secret.getBytes(Charset.UTF_8).length;
+        if (secretBytes < 32) {
+            if (AuthProperties.SecretPolicy.STRICT == jwt.secretPolicy()) {
+                throw new ValidateException("Strict JWT String secret must contain at least 32 UTF-8 bytes");
+            }
+            Logger.warn(
+                    false,
+                    "Starter",
+                    "Configured JWT String secret contains fewer than 32 UTF-8 bytes; compatibility mode accepts it but cannot add entropy");
+        }
+        return JwtService.hs256(secret);
+    }
+
+    /**
      * Creates the atomic cache used by authentication security-state flows.
      * <p>
      * {@code bus.auth.cache.type} may select {@code memory}, {@code redis}, or {@code redis-cluster}. When absent, the
@@ -160,6 +204,28 @@ public class AuthConfiguration {
         }
         String type = properties.getCache().getType();
         return StringKit.isNotBlank(type) && !Normal.DEFAULT.equalsIgnoreCase(type.trim());
+    }
+
+    /**
+     * Activates the optional JWT bean whenever the secret property is present, including values such as {@code false}
+     * or whitespace that generic boolean-oriented property conditions would misinterpret.
+     *
+     * @author Kimi Liu
+     */
+    static final class JwtSecretCondition implements Condition {
+
+        /**
+         * Returns whether Spring contains an explicit JWT secret property.
+         *
+         * @param context  current condition context
+         * @param metadata annotated component metadata
+         * @return {@code true} when the property is present
+         */
+        @Override
+        public boolean matches(final ConditionContext context, final AnnotatedTypeMetadata metadata) {
+            return context.getEnvironment().containsProperty(JWT_SECRET_PROPERTY);
+        }
+
     }
 
 }
