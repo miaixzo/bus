@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class CreateHb extends Voucher {
 
     /**
-     * Constructs a new {@code CreateHb} instance.
-     */
-    public CreateHb() {
-        // No initialization required.
-    }
-
-    /**
      * Character set.
      */
     private String charset;
@@ -131,5 +124,12 @@ public class CreateHb extends Voucher {
      * Maximum value of a red packet.
      */
     private String max_value;
+
+    /**
+     * Constructs a new {@code CreateHb} instance.
+     */
+    public CreateHb() {
+        // No initialization required.
+    }
 
 }

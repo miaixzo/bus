@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_DATA_PADDING;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS SYNGO DATA PADDING";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (7FDF,xxFC) VR=OB VM=1 Pixel Data Leading Padding
      */
     public static final int PixelDataLeadingPadding = 0x7FDF00FC;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SPI_P_Private_ICS_Release_1_3;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SPI-P-Private_ICS Release 1;3";
@@ -47,5 +40,12 @@ public class PrivateTag {
      * (0029,xx01) VR=ST VM=1 ?
      */
     public static final int _0029_xx01_ = 0x00290001;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

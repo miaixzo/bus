@@ -34,13 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class CommitPayload implements Serializable {
 
     /**
-     * Constructs a new {@code CommitPayload} instance.
-     */
-    public CommitPayload() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -86,6 +79,13 @@ public class CommitPayload implements Serializable {
      * The force value.
      */
     private Boolean force;
+
+    /**
+     * Constructs a new {@code CommitPayload} instance.
+     */
+    public CommitPayload() {
+        // No initialization required.
+    }
 
     /**
      * Returns the branch.

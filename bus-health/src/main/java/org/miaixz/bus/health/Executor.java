@@ -38,16 +38,16 @@ import org.miaixz.bus.logger.Logger;
 public class Executor {
 
     /**
+     * Default environment settings to ensure command output uses standard language format.
+     */
+    private static final String[] DEFAULT_ENV = getDefaultEnv();
+
+    /**
      * Constructs a new Executor instance.
      */
     public Executor() {
         // No initialization required.
     }
-
-    /**
-     * Default environment settings to ensure command output uses standard language format.
-     */
-    private static final String[] DEFAULT_ENV = getDefaultEnv();
 
     /**
      * Retrieves the default environment settings.

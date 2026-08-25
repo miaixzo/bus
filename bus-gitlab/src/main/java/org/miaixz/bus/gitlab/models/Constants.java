@@ -1961,14 +1961,14 @@ public interface Constants {
          */
         private final String value;
 
-        ArchiveFormat() {
-            this.value = name().toLowerCase().replace(Symbol.C_UNDERLINE, Symbol.C_DOT);
-        }
-
         /**
          * The values map value.
          */
         private static Map<String, ArchiveFormat> valuesMap = new HashMap<String, ArchiveFormat>(8);
+
+        ArchiveFormat() {
+            this.value = name().toLowerCase().replace(Symbol.C_UNDERLINE, Symbol.C_DOT);
+        }
 
         static {
             for (ArchiveFormat archiveFormat : ArchiveFormat.values())

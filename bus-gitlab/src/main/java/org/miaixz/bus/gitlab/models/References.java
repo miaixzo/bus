@@ -34,13 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class References implements Serializable {
 
     /**
-     * Constructs a new {@code References} instance.
-     */
-    public References() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -60,6 +53,13 @@ public class References implements Serializable {
      * The full value.
      */
     private String full;
+
+    /**
+     * Constructs a new {@code References} instance.
+     */
+    public References() {
+        // No initialization required.
+    }
 
     /**
      * Returns the short.

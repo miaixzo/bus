@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_DFR_01_ORIGINAL;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS DFR.01 ORIGINAL";
@@ -252,5 +245,12 @@ public class PrivateTag {
      * (0017,xxC2) VR=LO VM=1 ?
      */
     public static final int _0017_xxC2_ = 0x001700C2;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

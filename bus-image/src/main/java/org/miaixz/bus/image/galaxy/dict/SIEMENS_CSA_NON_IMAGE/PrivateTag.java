@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_CSA_NON_IMAGE;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS CSA NON-IMAGE";
@@ -57,5 +50,12 @@ public class PrivateTag {
      * (7FE1,xx10) VR=OB VM=1 CSA Data
      */
     public static final int CSAData = 0x7FE10010;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

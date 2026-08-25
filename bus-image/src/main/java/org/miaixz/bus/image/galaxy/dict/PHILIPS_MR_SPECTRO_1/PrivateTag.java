@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.PHILIPS_MR_SPECTRO_1;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "PHILIPS MR SPECTRO;1";
@@ -287,5 +280,12 @@ public class PrivateTag {
      * (0019,xx80) VR=IS VM=1 ?
      */
     public static final int _0019_xx80_ = 0x00190080;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

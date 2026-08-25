@@ -137,13 +137,6 @@ public interface FreeBsdLibc extends CLibrary {
     class FreeBsdUtmpx extends Structure {
 
         /**
-         * Constructs a new FreeBsdUtmpx instance.
-         */
-        public FreeBsdUtmpx() {
-            // No initialization required.
-        }
-
-        /**
          * Type of entry.
          */
         public short ut_type;
@@ -183,6 +176,13 @@ public interface FreeBsdLibc extends CLibrary {
          */
         public byte[] ut_spare = new byte[64];
 
+        /**
+         * Constructs a new FreeBsdUtmpx instance.
+         */
+        public FreeBsdUtmpx() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -198,13 +198,6 @@ public interface FreeBsdLibc extends CLibrary {
     class Timeval extends Structure {
 
         /**
-         * Constructs a new Timeval instance.
-         */
-        public Timeval() {
-            // No initialization required.
-        }
-
-        /**
          * Seconds.
          */
         public long tv_sec;
@@ -213,6 +206,13 @@ public interface FreeBsdLibc extends CLibrary {
          * Microseconds.
          */
         public long tv_usec;
+
+        /**
+         * Constructs a new Timeval instance.
+         */
+        public Timeval() {
+            // No initialization required.
+        }
 
     }
 
@@ -228,16 +228,16 @@ public interface FreeBsdLibc extends CLibrary {
     class CpTime extends Structure implements AutoCloseable {
 
         /**
+         * CPU ticks.
+         */
+        public long[] cpu_ticks = new long[CPUSTATES];
+
+        /**
          * Constructs a new CpTime instance.
          */
         public CpTime() {
             // No initialization required.
         }
-
-        /**
-         * CPU ticks.
-         */
-        public long[] cpu_ticks = new long[CPUSTATES];
 
         /**
          * Closes the memory associated with this structure.

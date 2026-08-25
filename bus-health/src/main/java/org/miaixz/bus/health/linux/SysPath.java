@@ -38,13 +38,6 @@ import org.miaixz.bus.health.Builder;
 public class SysPath {
 
     /**
-     * Keeps Linux sysfs path resolution on the static API.
-     */
-    public SysPath() {
-        // No initialization required.
-    }
-
-    /**
      * The /sys filesystem location.
      */
     public static final String SYS = querySysConfig() + Symbol.SLASH;
@@ -93,6 +86,13 @@ public class SysPath {
      * The DRM constant.
      */
     public static final String DRM = SYS + "class/drm/";
+
+    /**
+     * Keeps Linux sysfs path resolution on the static API.
+     */
+    public SysPath() {
+        // No initialization required.
+    }
 
     /**
      * Queries the sys config.

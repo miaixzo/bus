@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class CustomerPay extends Voucher {
 
     /**
-     * Constructs a new {@code CustomerPay} instance.
-     */
-    public CustomerPay() {
-        // No initialization required.
-    }
-
-    /**
      * Version number.
      */
     private String version;
@@ -146,5 +139,12 @@ public class CustomerPay extends Voucher {
      * Business type.
      */
     private String bizTp;
+
+    /**
+     * Constructs a new {@code CustomerPay} instance.
+     */
+    public CustomerPay() {
+        // No initialization required.
+    }
 
 }

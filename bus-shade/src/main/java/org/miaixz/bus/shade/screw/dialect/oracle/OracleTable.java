@@ -35,13 +35,6 @@ import org.miaixz.bus.shade.screw.metadata.Table;
 public class OracleTable implements Table {
 
     /**
-     * Constructs a new OracleTable instance.
-     */
-    public OracleTable() {
-        // No initialization required.
-    }
-
-    /**
      * The table catalog (may be {@code null}).
      */
     @MappingField(value = "TABLE_CAT")
@@ -70,5 +63,12 @@ public class OracleTable implements Table {
      */
     @MappingField(value = "REMARKS")
     private String remarks;
+
+    /**
+     * Constructs a new OracleTable instance.
+     */
+    public OracleTable() {
+        // No initialization required.
+    }
 
 }

@@ -34,16 +34,16 @@ import java.nio.file.attribute.BasicFileAttributes;
 public class DeleteVisitor extends SimpleFileVisitor<Path> {
 
     /**
+     * Singleton instance of {@code DeleteVisitor}.
+     */
+    public static DeleteVisitor INSTANCE = new DeleteVisitor();
+
+    /**
      * Creates the shared file-tree deletion visitor.
      */
     public DeleteVisitor() {
         // No initialization required.
     }
-
-    /**
-     * Singleton instance of {@code DeleteVisitor}.
-     */
-    public static DeleteVisitor INSTANCE = new DeleteVisitor();
 
     /**
      * Invoked when a file is visited. Deletes the file.

@@ -54,13 +54,6 @@ import org.miaixz.bus.pay.magic.Message;
  */
 public class WechatPayBuilder {
 
-    /**
-     * Constructs a new WechatPayBuilder instance.
-     */
-    public WechatPayBuilder() {
-        // No initialization required.
-    }
-
     private static final String OS = Keys.get(Keys.OS_NAME) + Symbol.SLASH + Keys.get(Keys.OS_VERSION);
     private static final String VERSION = Keys.get(Keys.JAVA_VERSION);
 
@@ -71,6 +64,13 @@ public class WechatPayBuilder {
      * Maximum plaintext size for RSA encryption.
      */
     private static final int MAX_ENCRYPT_BLOCK = 117;
+
+    /**
+     * Constructs a new WechatPayBuilder instance.
+     */
+    public WechatPayBuilder() {
+        // No initialization required.
+    }
 
     /**
      * Gets base headers for WeChat Pay API requests.

@@ -31,13 +31,6 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
 public class ExternalWikiService extends NotificationService {
 
     /**
-     * Constructs a new {@code ExternalWikiService} instance.
-     */
-    public ExternalWikiService() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -47,6 +40,13 @@ public class ExternalWikiService extends NotificationService {
      */
 
     public static final String WIKIURL_KEY_PROP = "external_wiki_url";
+
+    /**
+     * Constructs a new {@code ExternalWikiService} instance.
+     */
+    public ExternalWikiService() {
+        // No initialization required.
+    }
 
     /**
      * Get the form data for this service based on it's properties.

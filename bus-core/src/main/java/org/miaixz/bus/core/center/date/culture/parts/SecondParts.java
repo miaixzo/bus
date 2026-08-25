@@ -33,13 +33,6 @@ package org.miaixz.bus.core.center.date.culture.parts;
 public abstract class SecondParts extends DayParts {
 
     /**
-     * Constructs second-based date parts.
-     */
-    public SecondParts() {
-        // No initialization required.
-    }
-
-    /**
      * The hour of the day (0-23).
      */
     protected int hour;
@@ -53,6 +46,13 @@ public abstract class SecondParts extends DayParts {
      * The second of the minute (0-59).
      */
     protected int second;
+
+    /**
+     * Constructs second-based date parts.
+     */
+    public SecondParts() {
+        // No initialization required.
+    }
 
     /**
      * Validates the time components.

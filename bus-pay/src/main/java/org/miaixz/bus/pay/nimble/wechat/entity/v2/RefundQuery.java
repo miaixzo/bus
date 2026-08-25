@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class RefundQuery extends Voucher {
 
     /**
-     * Constructs a new {@code RefundQuery} instance.
-     */
-    public RefundQuery() {
-        // No initialization required.
-    }
-
-    /**
      * Sub-merchant App ID.
      */
     private String sub_appid;
@@ -96,5 +89,12 @@ public class RefundQuery extends Voucher {
      * Offset.
      */
     private String offset;
+
+    /**
+     * Constructs a new {@code RefundQuery} instance.
+     */
+    public RefundQuery() {
+        // No initialization required.
+    }
 
 }

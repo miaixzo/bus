@@ -51,13 +51,6 @@ import org.miaixz.bus.logger.Logger;
 public class Dcm2Jpg {
 
     /**
-     * Constructs a new Dcm2Jpg instance.
-     */
-    public Dcm2Jpg() {
-        // No initialization required.
-    }
-
-    /**
      * The ImageReader for DICOM format.
      */
     private final ImageReader imageReader = ImageIO.getImageReadersByFormatName("DICOM").next();
@@ -146,6 +139,13 @@ public class Dcm2Jpg {
      * The ICC Profile option to apply.
      */
     private ICCProfile.Option iccProfile = ICCProfile.Option.none;
+
+    /**
+     * Constructs a new Dcm2Jpg instance.
+     */
+    public Dcm2Jpg() {
+        // No initialization required.
+    }
 
     /**
      * Creates a predicate to match a writer based on its class name.

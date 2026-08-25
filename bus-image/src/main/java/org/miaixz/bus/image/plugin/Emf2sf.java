@@ -39,13 +39,6 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 public class Emf2sf {
 
     /**
-     * Constructs a new Emf2sf instance.
-     */
-    public Emf2sf() {
-        // No initialization required.
-    }
-
-    /**
      * The core component for extracting frames.
      */
     private final MultiframeExtractor extractor = new MultiframeExtractor();
@@ -64,6 +57,13 @@ public class Emf2sf {
      * The directory where the single-frame files will be saved.
      */
     private File outDir;
+
+    /**
+     * Constructs a new Emf2sf instance.
+     */
+    public Emf2sf() {
+        // No initialization required.
+    }
 
     /**
      * Sets the output directory for the extracted single-frame files. If the directory does not exist, it will be

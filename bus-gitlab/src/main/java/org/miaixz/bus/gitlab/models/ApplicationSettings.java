@@ -40,13 +40,6 @@ import tools.jackson.databind.node.*;
 public class ApplicationSettings implements Serializable {
 
     /**
-     * Constructs a new {@code ApplicationSettings} instance.
-     */
-    public ApplicationSettings() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -68,6 +61,13 @@ public class ApplicationSettings implements Serializable {
      * The settings value.
      */
     private Map<String, Object> settings = new HashMap<>();
+
+    /**
+     * Constructs a new {@code ApplicationSettings} instance.
+     */
+    public ApplicationSettings() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

@@ -32,13 +32,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class CommitStatusFilter implements Serializable {
 
     /**
-     * Constructs a new {@code CommitStatusFilter} instance.
-     */
-    public CommitStatusFilter() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -60,6 +53,13 @@ public class CommitStatusFilter implements Serializable {
      * The all value.
      */
     private Boolean all;
+
+    /**
+     * Constructs a new {@code CommitStatusFilter} instance.
+     */
+    public CommitStatusFilter() {
+        // No initialization required.
+    }
 
     /**
      * Sets the ref and returns this instance.

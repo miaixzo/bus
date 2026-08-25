@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_ACQU_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_ACQU_01";
@@ -962,5 +955,12 @@ public class PrivateTag {
      * (0019,xxF9) VR=DS VM=1 Transmit Gain
      */
     public static final int TransmitGain = 0x001900F9;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

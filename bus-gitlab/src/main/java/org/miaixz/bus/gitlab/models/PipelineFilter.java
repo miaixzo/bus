@@ -39,13 +39,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class PipelineFilter implements Serializable {
 
     /**
-     * Constructs a new {@code PipelineFilter} instance.
-     */
-    public PipelineFilter() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -111,6 +104,13 @@ public class PipelineFilter implements Serializable {
      * {@link Constants.SortOrder} Return issues sorted in asc or desc order. Default is desc.
      */
     private SortOrder sort;
+
+    /**
+     * Constructs a new {@code PipelineFilter} instance.
+     */
+    public PipelineFilter() {
+        // No initialization required.
+    }
 
     /**
      * Sets the scope.

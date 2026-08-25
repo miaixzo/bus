@@ -34,13 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class WorkItemEvent extends AbstractEvent {
 
     /**
-     * Constructs a new {@code WorkItemEvent} instance.
-     */
-    public WorkItemEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -79,6 +72,13 @@ public class WorkItemEvent extends AbstractEvent {
      * The changes value.
      */
     private WorkItemChanges changes;
+
+    /**
+     * Constructs a new {@code WorkItemEvent} instance.
+     */
+    public WorkItemEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the object kind.

@@ -529,24 +529,22 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
 
         int ncpu = getLogicalProcessorCount();
         long[][] ticks = new long[ncpu][CentralProcessor.TickType.values().length];
-        if (instances.isEmpty() || systemList == null || userList == null || irqList == null || softIrqList == null
-                || idleList == null
-                || (USE_CPU_USAGE_COUNTERS && (baseList == null || privilegedUsageTicks == null
-                        || processorUsageTicks == null || processorUsageBaseTicks == null || initSystemList == null
-                        || initUserList == null || initBase == null || initialPrivilegedUsageTicks == null
-                        || initialProcessorUsageTicks == null || initialProcessorUsageBaseTicks == null))) {
-            return ticks;
-        }
         int size = instances.size();
-        if (systemList.size() < size || userList.size() < size || irqList.size() < size || softIrqList.size() < size
-                || idleList.size() < size) {
+        if (instances.isEmpty() || !hasAll(size, systemList, userList, irqList, softIrqList, idleList)) {
             return ticks;
         }
-        if (USE_CPU_USAGE_COUNTERS && (baseList.size() < size || privilegedUsageTicks.size() < size
-                || processorUsageTicks.size() < size || processorUsageBaseTicks.size() < size
-                || initSystemList.size() < size || initUserList.size() < size || initBase.size() < size
-                || initialPrivilegedUsageTicks.size() < size || initialProcessorUsageTicks.size() < size
-                || initialProcessorUsageBaseTicks.size() < size)) {
+        if (USE_CPU_USAGE_COUNTERS && !hasAll(
+                size,
+                baseList,
+                privilegedUsageTicks,
+                processorUsageTicks,
+                processorUsageBaseTicks,
+                initSystemList,
+                initUserList,
+                initBase,
+                initialPrivilegedUsageTicks,
+                initialProcessorUsageTicks,
+                initialProcessorUsageBaseTicks)) {
             return ticks;
         }
         for (int i = 0; i < size; i++) {
@@ -629,6 +627,23 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
         }
         // Skipping nice and IOWait, they'll stay 0
         return ticks;
+    }
+
+    /**
+     * Reports whether every counter list was read and holds at least {@code size} values.
+     *
+     * @param size  the number of processor instances to index
+     * @param lists the counter lists to check
+     * @return {@code true} if all lists are present and long enough
+     */
+    @SafeVarargs
+    private static boolean hasAll(int size, List<Long>... lists) {
+        for (List<Long> list : lists) {
+            if (list == null || list.size() < size) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

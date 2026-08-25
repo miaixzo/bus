@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.agfa_pacs_archive_mirroring_1_0;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "AGFA PACS Archive Mirroring 1.0";
@@ -47,5 +40,12 @@ public class PrivateTag {
      * (0031,xx01) VR=UL VM=1 ?
      */
     public static final int _0031_xx01_ = 0x00310001;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

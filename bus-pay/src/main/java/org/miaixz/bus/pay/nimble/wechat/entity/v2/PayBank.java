@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class PayBank extends Voucher {
 
     /**
-     * Constructs a new {@code PayBank} instance.
-     */
-    public PayBank() {
-        // No initialization required.
-    }
-
-    /**
      * Merchant ID.
      */
     private String mch_id;
@@ -86,5 +79,12 @@ public class PayBank extends Voucher {
      * Description.
      */
     private String desc;
+
+    /**
+     * Constructs a new {@code PayBank} instance.
+     */
+    public PayBank() {
+        // No initialization required.
+    }
 
 }

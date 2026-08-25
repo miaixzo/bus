@@ -41,13 +41,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public abstract class AbstractGroup<G extends AbstractGroup<G>> implements Serializable {
 
     /**
-     * Constructs a new AbstractGroup instance.
-     */
-    public AbstractGroup() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -77,6 +70,13 @@ public abstract class AbstractGroup<G extends AbstractGroup<G>> implements Seria
      * The full path value.
      */
     private String fullPath;
+
+    /**
+     * Constructs a new AbstractGroup instance.
+     */
+    public AbstractGroup() {
+        // No initialization required.
+    }
 
     /**
      * Sets the group ID and returns this group model.

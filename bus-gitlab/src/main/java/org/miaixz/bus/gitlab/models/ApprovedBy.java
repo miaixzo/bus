@@ -35,13 +35,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ApprovedBy implements Serializable {
 
     /**
-     * Constructs a new {@code ApprovedBy} instance.
-     */
-    public ApprovedBy() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -55,6 +48,13 @@ public class ApprovedBy implements Serializable {
      * The group value.
      */
     private Group group;
+
+    /**
+     * Constructs a new {@code ApprovedBy} instance.
+     */
+    public ApprovedBy() {
+        // No initialization required.
+    }
 
     /**
      * Returns the user.

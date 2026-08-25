@@ -34,13 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class PipelineSchedule implements Serializable {
 
     /**
-     * Constructs a new {@code PipelineSchedule} instance.
-     */
-    public PipelineSchedule() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -94,6 +87,13 @@ public class PipelineSchedule implements Serializable {
      * The variables value.
      */
     private List<Variable> variables;
+
+    /**
+     * Constructs a new {@code PipelineSchedule} instance.
+     */
+    public PipelineSchedule() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

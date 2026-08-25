@@ -40,13 +40,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public abstract class NotificationService implements Serializable {
 
     /**
-     * Constructs a new {@code NotificationService} instance.
-     */
-    public NotificationService() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -207,6 +200,13 @@ public abstract class NotificationService implements Serializable {
      * The properties value.
      */
     private Map<String, Object> properties;
+
+    /**
+     * Constructs a new {@code NotificationService} instance.
+     */
+    public NotificationService() {
+        // No initialization required.
+    }
 
     /**
      * Executes the service properties form operation.

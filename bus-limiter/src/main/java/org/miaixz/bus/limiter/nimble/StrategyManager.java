@@ -36,17 +36,17 @@ import org.miaixz.bus.logger.Logger;
 public class StrategyManager {
 
     /**
+     * A static map to cache {@link Provider} instances, keyed by their {@link StrategyMode}. This allows for quick
+     * retrieval of the appropriate strategy executor.
+     */
+    private static final Map<StrategyMode, Provider> map = new ConcurrentHashMap<>();
+
+    /**
      * Initializes the manager that resolves and caches limiter strategy Providers by strategy mode.
      */
     public StrategyManager() {
         // No initialization required.
     }
-
-    /**
-     * A static map to cache {@link Provider} instances, keyed by their {@link StrategyMode}. This allows for quick
-     * retrieval of the appropriate strategy executor.
-     */
-    private static final Map<StrategyMode, Provider> map = new ConcurrentHashMap<>();
 
     /**
      * Adds a {@link Provider} to the strategy manager. The provider is registered under its associated

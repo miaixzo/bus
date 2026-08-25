@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_DL_PATNT_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_DL_PATNT_01";
@@ -57,5 +50,12 @@ public class PrivateTag {
      * (0011,xx83) VR=CS VM=1 Lock Demographics
      */
     public static final int LockDemographics = 0x00110083;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

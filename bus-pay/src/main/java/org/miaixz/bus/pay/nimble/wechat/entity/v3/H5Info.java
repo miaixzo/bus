@@ -34,13 +34,6 @@ import lombok.experimental.SuperBuilder;
 public class H5Info {
 
     /**
-     * Constructs a new {@code H5Info} instance.
-     */
-    public H5Info() {
-        // No initialization required.
-    }
-
-    /**
      * The scene type (e.g., "iOS", "Android", "Wap").
      */
     private String type;
@@ -64,5 +57,12 @@ public class H5Info {
      * The Package Name for the Android platform.
      */
     private String package_name;
+
+    /**
+     * Constructs a new {@code H5Info} instance.
+     */
+    public H5Info() {
+        // No initialization required.
+    }
 
 }

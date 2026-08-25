@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.http___www_gemedicalsystems_com_it_solu
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "http://www.gemedicalsystems.com/it_solutions/bamwallthickness/1.0";
@@ -67,5 +60,12 @@ public class PrivateTag {
      * (3118,xx60) VR=OB VM=1 BAM WallThickness File Content
      */
     public static final int BAMWallThicknessFileContent = 0x31180060;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

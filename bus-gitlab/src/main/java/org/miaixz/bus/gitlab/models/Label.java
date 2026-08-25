@@ -34,13 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Label implements Serializable {
 
     /**
-     * Constructs a new {@code Label} instance.
-     */
-    public Label() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -94,6 +87,13 @@ public class Label implements Serializable {
      * The is project label value.
      */
     private Boolean isProjectLabel;
+
+    /**
+     * Constructs a new {@code Label} instance.
+     */
+    public Label() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

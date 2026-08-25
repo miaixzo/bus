@@ -29,15 +29,15 @@ import java.util.UUID;
  */
 public class UUIDConverter extends AbstractConverter {
 
+    @Serial
+    private static final long serialVersionUID = 2852272763653L;
+
     /**
      * Constructs a new UUIDConverter instance.
      */
     public UUIDConverter() {
         // No initialization required.
     }
-
-    @Serial
-    private static final long serialVersionUID = 2852272763653L;
 
     /**
      * Converts the given value to a UUID.

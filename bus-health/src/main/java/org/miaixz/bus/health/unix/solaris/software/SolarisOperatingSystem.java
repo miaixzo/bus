@@ -56,13 +56,6 @@ import org.miaixz.bus.health.unix.solaris.driver.Who;
 public class SolarisOperatingSystem extends AbstractOperatingSystem {
 
     /**
-     * Creates a new SolarisOperatingSystem instance.
-     */
-    public SolarisOperatingSystem() {
-        // No initialization required.
-    }
-
-    /**
      * This static field identifies if the kstat2 library (available in Solaris 11.4 or greater) can be loaded.
      */
     public static final boolean HAS_KSTAT2;
@@ -92,6 +85,13 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
      */
     private final SupplierX<Long> uptimeSupplier = Memoizer
             .memoize(SolarisOperatingSystem::queryUptime, Memoizer.defaultExpiration());
+
+    /**
+     * Creates a new SolarisOperatingSystem instance.
+     */
+    public SolarisOperatingSystem() {
+        // No initialization required.
+    }
 
     static {
         String[] split = Pattern.SPACES_PATTERN.split(Executor.getFirstAnswer("uname -rv"));

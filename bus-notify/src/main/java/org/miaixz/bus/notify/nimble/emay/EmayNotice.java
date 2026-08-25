@@ -36,15 +36,15 @@ import org.miaixz.bus.notify.magic.Notice;
 public class EmayNotice extends Notice {
 
     /**
+     * The request URL for the Emay API.
+     */
+    private String requestUrl;
+
+    /**
      * Constructs a new {@code EmayNotice} instance.
      */
     public EmayNotice() {
         // No initialization required.
     }
-
-    /**
-     * The request URL for the Emay API.
-     */
-    private String requestUrl;
 
 }

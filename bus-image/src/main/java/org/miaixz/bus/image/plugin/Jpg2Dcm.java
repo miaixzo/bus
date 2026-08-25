@@ -57,13 +57,6 @@ import org.miaixz.bus.logger.Logger;
 public class Jpg2Dcm {
 
     /**
-     * Constructs a new Jpg2Dcm instance.
-     */
-    public Jpg2Dcm() {
-        // No initialization required.
-    }
-
-    /**
      * The buffer size for copying data.
      */
     private static final int BUFFER_SIZE = 8162;
@@ -117,6 +110,13 @@ public class Jpg2Dcm {
      * The maximum length for each fragment of the encapsulated pixel data.
      */
     private long fragmentLength = 4294967294L; // 2^32-2;
+
+    /**
+     * Constructs a new Jpg2Dcm instance.
+     */
+    public Jpg2Dcm() {
+        // No initialization required.
+    }
 
     /**
      * Supplements the metadata with UIDs for Study, Series, and SOP Instance if they are missing.

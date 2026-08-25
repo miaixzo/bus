@@ -47,19 +47,6 @@ import org.miaixz.bus.storage.Registry;
 public class StorageProperties {
 
     /**
-     * Binds immutable storage provider and cache settings from {@code bus.storage}.
-     *
-     * @param enabled whether storage integration is enabled
-     * @param type    provider configuration grouped by storage registry type
-     * @param cache   cache backend settings used by storage services
-     */
-    public StorageProperties(@DefaultValue("false") boolean enabled, Map<Registry, Context> type, Options cache) {
-        this.enabled = enabled;
-        this.type = type == null ? Map.of() : Map.copyOf(type);
-        this.cache = cache;
-    }
-
-    /**
      * Whether storage integration is enabled.
      */
     private final boolean enabled;
@@ -75,6 +62,19 @@ public class StorageProperties {
      */
     @NestedConfigurationProperty
     private final Options cache;
+
+    /**
+     * Binds immutable storage provider and cache settings from {@code bus.storage}.
+     *
+     * @param enabled whether storage integration is enabled
+     * @param type    provider configuration grouped by storage registry type
+     * @param cache   cache backend settings used by storage services
+     */
+    public StorageProperties(@DefaultValue("false") boolean enabled, Map<Registry, Context> type, Options cache) {
+        this.enabled = enabled;
+        this.type = type == null ? Map.of() : Map.copyOf(type);
+        this.cache = cache;
+    }
 
     /**
      * @return masked diagnostic representation

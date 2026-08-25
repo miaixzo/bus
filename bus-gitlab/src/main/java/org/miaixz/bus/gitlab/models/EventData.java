@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class EventData implements Serializable {
 
     /**
-     * Constructs a new {@code EventData} instance.
-     */
-    public EventData() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -77,6 +70,13 @@ public class EventData implements Serializable {
      * The user name value.
      */
     private String userName;
+
+    /**
+     * Constructs a new {@code EventData} instance.
+     */
+    public EventData() {
+        // No initialization required.
+    }
 
     /**
      * Returns the after.

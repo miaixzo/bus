@@ -39,13 +39,6 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 public class IdGroup {
 
     /**
-     * Constructs a new IdGroup instance.
-     */
-    public IdGroup() {
-        // No initialization required.
-    }
-
-    /**
      * SupplierX for a map of user IDs to usernames, with the cache fully refreshed after 5 minutes.
      */
     private static final SupplierX<Map<String, String>> USERS_ID_MAP = Memoizer
@@ -62,6 +55,13 @@ public class IdGroup {
      * checking if the output of "id -u" is 0.
      */
     private static final boolean ELEVATED = 0 == Parsing.parseIntOrDefault(Executor.getFirstAnswer("id -u"), -1);
+
+    /**
+     * Constructs a new IdGroup instance.
+     */
+    public IdGroup() {
+        // No initialization required.
+    }
 
     /**
      * Checks if the current process has elevated privileges, such as sudo or Administrator.

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_FUNCTOOL_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_FUNCTOOL_01";
@@ -107,5 +100,12 @@ public class PrivateTag {
      * (0051,xx0E) VR=SL VM=1 ?
      */
     public static final int _0051_xx0E_ = 0x0051000E;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

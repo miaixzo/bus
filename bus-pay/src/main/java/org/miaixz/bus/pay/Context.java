@@ -35,13 +35,6 @@ import lombok.Setter;
 @Setter
 public class Context implements Serializable {
 
-    /**
-     * Constructs a new {@code Context} instance.
-     */
-    public Context() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852292391971L;
 
@@ -134,5 +127,12 @@ public class Context implements Serializable {
      * WeChat platform certificate path.
      */
     private String certPath;
+
+    /**
+     * Constructs a new {@code Context} instance.
+     */
+    public Context() {
+        // No initialization required.
+    }
 
 }

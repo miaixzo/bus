@@ -33,13 +33,6 @@ import org.miaixz.bus.image.galaxy.data.VR;
 public class Commands {
 
     /**
-     * Constructs a new Commands instance.
-     */
-    public Commands() {
-        // No initialization required.
-    }
-
-    /**
      * The no dataset value.
      */
     public static final int NO_DATASET = 0x0101;
@@ -48,6 +41,13 @@ public class Commands {
      * The with dataset type value.
      */
     private static int withDatasetType = 0x0000;
+
+    /**
+     * Constructs a new Commands instance.
+     */
+    public Commands() {
+        // No initialization required.
+    }
 
     /**
      * Executes the mk c store rq operation.

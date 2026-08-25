@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class CompareResults implements Serializable {
 
     /**
-     * Constructs a new {@code CompareResults} instance.
-     */
-    public CompareResults() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -65,6 +58,13 @@ public class CompareResults implements Serializable {
      * The compare same ref value.
      */
     private Boolean compareSameRef;
+
+    /**
+     * Constructs a new {@code CompareResults} instance.
+     */
+    public CompareResults() {
+        // No initialization required.
+    }
 
     /**
      * Returns the commit.

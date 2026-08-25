@@ -46,13 +46,6 @@ import org.miaixz.bus.image.galaxy.data.VR;
 public class AnatomicRegion {
 
     /**
-     * Constructs a new AnatomicRegion instance.
-     */
-    public AnatomicRegion() {
-        // No initialization required.
-    }
-
-    /**
      * Provides metadata for an anatomic category.
      *
      * @author Kimi Liu
@@ -2181,6 +2174,13 @@ public class AnatomicRegion {
      */
     private static final AtomicReference<Map<CategoryBuilder, List<Code>>> EXTENSION_CATEGORIES = new AtomicReference<>(
             Map.of());
+
+    /**
+     * Constructs a new AnatomicRegion instance.
+     */
+    public AnatomicRegion() {
+        // No initialization required.
+    }
 
     static {
         BODY_PART_EXAMINED.put("ABDOMEN", Abdomen);

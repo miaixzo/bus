@@ -30,15 +30,15 @@ import org.miaixz.bus.core.lang.Charset;
  */
 public class CharsetConverter extends AbstractConverter {
 
+    @Serial
+    private static final long serialVersionUID = 2852266502058L;
+
     /**
      * Creates a new {@code CharsetConverter} instance.
      */
     public CharsetConverter() {
         // No initialization required.
     }
-
-    @Serial
-    private static final long serialVersionUID = 2852266502058L;
 
     /**
      * Internally converts the given value to a {@link java.nio.charset.Charset}.

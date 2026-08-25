@@ -85,13 +85,6 @@ import org.miaixz.bus.logger.Logger;
 public class Builder {
 
     /**
-     * Constructs a new Builder instance.
-     */
-    public Builder() {
-        // No initialization required.
-    }
-
-    /**
      * The default curve name for SM2 algorithm.
      */
     public static final String SM2_CURVE_NAME = "sm2p256v1";
@@ -120,6 +113,13 @@ public class Builder {
      * System property to control whether to decode Hex strings. Defaults to true.
      */
     public static String CRYPTO_DECODE_HEX = "bus.crypto.decodeHex";
+
+    /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
 
     /**
      * Generates an algorithm string in the format "XXXwithXXX".

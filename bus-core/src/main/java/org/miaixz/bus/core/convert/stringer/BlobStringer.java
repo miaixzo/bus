@@ -36,16 +36,16 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class BlobStringer implements FunctionX<Object, String> {
 
     /**
+     * Singleton instance.
+     */
+    public static final BlobStringer INSTANCE = new BlobStringer();
+
+    /**
      * Creates the shared BLOB-to-string converter.
      */
     public BlobStringer() {
         // No initialization required.
     }
-
-    /**
-     * Singleton instance.
-     */
-    public static final BlobStringer INSTANCE = new BlobStringer();
 
     /**
      * Converts a {@link Blob} object to a String.

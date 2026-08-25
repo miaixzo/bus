@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_ENCAPSULATED_DOCUMENT_DAT
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS SYNGO ENCAPSULATED DOCUMENT DATA";
@@ -52,5 +45,12 @@ public class PrivateTag {
      * (0087,xx40) VR=OB VM=1 Report Identifier
      */
     public static final int ReportIdentifier = 0x00870040;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

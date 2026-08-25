@@ -34,16 +34,16 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public class Win32DiskPartition {
 
     /**
+     * The WMI class name.
+     */
+    public static final String WIN32_DISK_PARTITION = "Win32_DiskPartition";
+
+    /**
      * Keeps Win32 disk partition queries on the static API.
      */
     public Win32DiskPartition() {
         // No initialization required.
     }
-
-    /**
-     * The WMI class name.
-     */
-    public static final String WIN32_DISK_PARTITION = "Win32_DiskPartition";
 
     /**
      * Queries the partition.

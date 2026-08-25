@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_MEDCOM_OOG;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS MEDCOM OOG";
@@ -52,5 +45,12 @@ public class PrivateTag {
      * (0029,xx10) VR=OB VM=1 MedCom OOG Info
      */
     public static final int MedComOOGInfo = 0x00290010;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

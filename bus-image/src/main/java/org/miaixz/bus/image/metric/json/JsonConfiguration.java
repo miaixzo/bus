@@ -42,16 +42,16 @@ import org.miaixz.bus.image.metric.net.KeycloakClient;
 public class JsonConfiguration {
 
     /**
+     * The extensions value.
+     */
+    private final List<JsonConfigurationExtension> extensions = new ArrayList<>();
+
+    /**
      * Constructs a new JsonConfiguration instance.
      */
     public JsonConfiguration() {
         // No initialization required.
     }
-
-    /**
-     * The extensions value.
-     */
-    private final List<JsonConfigurationExtension> extensions = new ArrayList<>();
 
     /**
      * Adds the json configuration extension.

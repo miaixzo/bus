@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class User extends AbstractUser<User> {
 
     /**
-     * Constructs a new {@code User} instance.
-     */
-    public User() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -165,6 +158,13 @@ public class User extends AbstractUser<User> {
      * The skip confirmation value.
      */
     private Boolean skipConfirmation;
+
+    /**
+     * Constructs a new {@code User} instance.
+     */
+    public User() {
+        // No initialization required.
+    }
 
     /**
      * Returns the bio.

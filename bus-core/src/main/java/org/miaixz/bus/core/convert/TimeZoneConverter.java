@@ -37,16 +37,16 @@ public class TimeZoneConverter extends AbstractConverter implements MatcherConve
     private static final long serialVersionUID = 2852272228100L;
 
     /**
+     * Singleton instance
+     */
+    public static final TimeZoneConverter INSTANCE = new TimeZoneConverter();
+
+    /**
      * Constructs a new time-zone converter.
      */
     public TimeZoneConverter() {
         // No initialization required.
     }
-
-    /**
-     * Singleton instance
-     */
-    public static final TimeZoneConverter INSTANCE = new TimeZoneConverter();
 
     /**
      * Checks if this converter can handle the conversion to the specified target type.

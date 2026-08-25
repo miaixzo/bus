@@ -27,13 +27,6 @@ package org.miaixz.bus.image.nimble.codec.jpeg;
 public class JPEG {
 
     /**
-     * Constructs a new JPEG instance.
-     */
-    public JPEG() {
-        // No initialization required.
-    }
-
-    /**
      * For temporary use in arithmetic coding
      */
     public static final int TEM = 0x01;
@@ -343,6 +336,13 @@ public class JPEG {
      * The jpeg2000 standalone value.
      */
     private static final int JPEG2000_STANDALONE = 0x30;
+
+    /**
+     * Constructs a new JPEG instance.
+     */
+    public JPEG() {
+        // No initialization required.
+    }
 
     /**
      * Determines whether standalone.

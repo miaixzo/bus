@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class GroupSystemHookEvent extends AbstractSystemHookEvent {
 
     /**
-     * Constructs a new {@code GroupSystemHookEvent} instance.
-     */
-    public GroupSystemHookEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -101,6 +94,13 @@ public class GroupSystemHookEvent extends AbstractSystemHookEvent {
      * The old full path value.
      */
     private String oldFullPath;
+
+    /**
+     * Constructs a new {@code GroupSystemHookEvent} instance.
+     */
+    public GroupSystemHookEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the created at.

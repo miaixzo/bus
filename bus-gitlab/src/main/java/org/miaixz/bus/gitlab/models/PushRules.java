@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class PushRules implements Serializable {
 
     /**
-     * Constructs a new {@code PushRules} instance.
-     */
-    public PushRules() {
-        // No initialization required.
-    }
-
-    /**
      * Serialization version identifier.
      */
     @Serial
@@ -124,6 +117,13 @@ public class PushRules implements Serializable {
      * Flag indicating whether commits without Developer Certificate of Origin sign-off are rejected.
      */
     private Boolean rejectNonDcoCommits;
+
+    /**
+     * Constructs a new {@code PushRules} instance.
+     */
+    public PushRules() {
+        // No initialization required.
+    }
 
     /**
      * Gets the push rules identifier.

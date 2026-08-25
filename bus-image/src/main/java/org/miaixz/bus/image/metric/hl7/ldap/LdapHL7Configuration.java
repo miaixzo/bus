@@ -53,13 +53,6 @@ import org.miaixz.bus.logger.Logger;
 public class LdapHL7Configuration extends LdapDicomConfigurationExtension implements HL7Configuration {
 
     /**
-     * Constructs a new LdapHL7Configuration instance.
-     */
-    public LdapHL7Configuration() {
-        // No initialization required.
-    }
-
-    /**
      * The hl7 attrs value.
      */
     static final String[] HL7_ATTRS = { "dicomDeviceName", "hl7ApplicationName", "hl7OtherApplicationName",
@@ -79,6 +72,13 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
      * The app names registry dn value.
      */
     private String appNamesRegistryDN;
+
+    /**
+     * Constructs a new LdapHL7Configuration instance.
+     */
+    public LdapHL7Configuration() {
+        // No initialization required.
+    }
 
     /**
      * Adds the hl7 configuration extension.

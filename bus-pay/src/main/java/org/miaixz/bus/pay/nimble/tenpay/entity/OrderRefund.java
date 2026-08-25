@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class OrderRefund extends Voucher {
 
     /**
-     * Constructs a new {@code OrderRefund} instance.
-     */
-    public OrderRefund() {
-        // No initialization required.
-    }
-
-    /**
      * Sub-merchant App ID.
      */
     private String sub_appid;
@@ -101,5 +94,12 @@ public class OrderRefund extends Voucher {
      * Refund account.
      */
     private String refund_account;
+
+    /**
+     * Constructs a new {@code OrderRefund} instance.
+     */
+    public OrderRefund() {
+        // No initialization required.
+    }
 
 }

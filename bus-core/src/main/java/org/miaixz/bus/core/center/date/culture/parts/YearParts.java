@@ -35,16 +35,16 @@ import org.miaixz.bus.core.center.date.culture.Loops;
 public abstract class YearParts extends Loops {
 
     /**
+     * The year value in the calendar system.
+     */
+    protected int year;
+
+    /**
      * Constructs a new {@code YearParts} instance.
      */
     public YearParts() {
         // No initialization required.
     }
-
-    /**
-     * The year value in the calendar system.
-     */
-    protected int year;
 
     /**
      * Gets the year.

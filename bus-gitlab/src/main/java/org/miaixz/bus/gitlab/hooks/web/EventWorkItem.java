@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class EventWorkItem {
 
     /**
-     * Constructs a new {@code EventWorkItem} instance.
-     */
-    public EventWorkItem() {
-        // No initialization required.
-    }
-
-    /**
      * The author id value.
      */
     private Long authorId;
@@ -159,6 +152,13 @@ public class EventWorkItem {
      * The action value.
      */
     private String action;
+
+    /**
+     * Constructs a new {@code EventWorkItem} instance.
+     */
+    public EventWorkItem() {
+        // No initialization required.
+    }
 
     /**
      * Returns the author id.

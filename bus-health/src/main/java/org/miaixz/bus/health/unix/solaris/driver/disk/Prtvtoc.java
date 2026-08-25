@@ -39,16 +39,16 @@ import org.miaixz.bus.health.builtin.hardware.HWPartition;
 public class Prtvtoc {
 
     /**
+     * The PRTVTOC_DEV_DSK constant.
+     */
+    private static final String PRTVTOC_DEV_DSK = "prtvtoc /dev/dsk/";
+
+    /**
      * Keeps Solaris disk-table queries on the static API.
      */
     public Prtvtoc() {
         // No initialization required.
     }
-
-    /**
-     * The PRTVTOC_DEV_DSK constant.
-     */
-    private static final String PRTVTOC_DEV_DSK = "prtvtoc /dev/dsk/";
 
     /**
      * Queries the partitions.

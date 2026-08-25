@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ProtectedBranch implements Serializable {
 
     /**
-     * Constructs a new {@code ProtectedBranch} instance.
-     */
-    public ProtectedBranch() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -73,6 +66,13 @@ public class ProtectedBranch implements Serializable {
      * The allow force push value.
      */
     private Boolean allowForcePush;
+
+    /**
+     * Constructs a new {@code ProtectedBranch} instance.
+     */
+    public ProtectedBranch() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

@@ -35,13 +35,6 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 public class PostgreSqlPrimaryKey implements PrimaryKey {
 
     /**
-     * Constructs a new PostgreSqlPrimaryKey instance.
-     */
-    public PostgreSqlPrimaryKey() {
-        // No initialization required.
-    }
-
-    /**
      * The name of the primary key constraint.
      */
     @MappingField(value = "pk_name")
@@ -76,5 +69,12 @@ public class PostgreSqlPrimaryKey implements PrimaryKey {
      */
     @MappingField(value = "table_name")
     private String tableName;
+
+    /**
+     * Constructs a new PostgreSqlPrimaryKey instance.
+     */
+    public PostgreSqlPrimaryKey() {
+        // No initialization required.
+    }
 
 }

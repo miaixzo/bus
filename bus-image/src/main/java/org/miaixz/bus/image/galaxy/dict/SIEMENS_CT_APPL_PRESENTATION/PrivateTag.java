@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_CT_APPL_PRESENTATION;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS CT APPL PRESENTATION";
@@ -92,5 +85,12 @@ public class PrivateTag {
      * (0029,xx10) VR=US VM=1 Kernel Filter
      */
     public static final int KernelFilter = 0x00290010;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

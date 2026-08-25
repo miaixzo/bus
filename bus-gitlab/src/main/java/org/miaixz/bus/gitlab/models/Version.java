@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Version implements Serializable {
 
     /**
-     * Constructs a new {@code Version} instance.
-     */
-    public Version() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -52,6 +45,13 @@ public class Version implements Serializable {
      * The revision value.
      */
     private String revision;
+
+    /**
+     * Constructs a new {@code Version} instance.
+     */
+    public Version() {
+        // No initialization required.
+    }
 
     /**
      * Returns the version.

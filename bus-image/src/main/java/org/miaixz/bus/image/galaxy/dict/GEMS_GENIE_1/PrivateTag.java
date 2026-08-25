@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_GENIE_1;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_GENIE_1";
@@ -1412,5 +1405,12 @@ public class PrivateTag {
      * (5001,xx60) VR=LO VM=1-n Dataset ROI Mapping
      */
     public static final int DatasetROIMapping = 0x50010060;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

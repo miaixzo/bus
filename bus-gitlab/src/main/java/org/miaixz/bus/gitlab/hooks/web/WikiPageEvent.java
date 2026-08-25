@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class WikiPageEvent extends AbstractEvent {
 
     /**
-     * Constructs a new {@code WikiPageEvent} instance.
-     */
-    public WikiPageEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -69,6 +62,13 @@ public class WikiPageEvent extends AbstractEvent {
      * The object attributes value.
      */
     private ObjectAttributes objectAttributes;
+
+    /**
+     * Constructs a new {@code WikiPageEvent} instance.
+     */
+    public WikiPageEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the object kind.
@@ -180,13 +180,6 @@ public class WikiPageEvent extends AbstractEvent {
     public static class Wiki {
 
         /**
-         * Constructs a new {@code Wiki} instance.
-         */
-        public Wiki() {
-            // No initialization required.
-        }
-
-        /**
          * The web url value.
          */
         private String webUrl;
@@ -206,6 +199,13 @@ public class WikiPageEvent extends AbstractEvent {
          * The default branch value.
          */
         private String defaultBranch;
+
+        /**
+         * Constructs a new {@code Wiki} instance.
+         */
+        public Wiki() {
+            // No initialization required.
+        }
 
         /**
          * Returns the web url.
@@ -328,13 +328,6 @@ public class WikiPageEvent extends AbstractEvent {
     public static class ObjectAttributes {
 
         /**
-         * Constructs a new {@code ObjectAttributes} instance.
-         */
-        public ObjectAttributes() {
-            // No initialization required.
-        }
-
-        /**
          * The title value.
          */
         private String title;
@@ -370,6 +363,13 @@ public class WikiPageEvent extends AbstractEvent {
          * The version id value.
          */
         private String versionId;
+
+        /**
+         * Constructs a new {@code ObjectAttributes} instance.
+         */
+        public ObjectAttributes() {
+            // No initialization required.
+        }
 
         /**
          * Returns the title.

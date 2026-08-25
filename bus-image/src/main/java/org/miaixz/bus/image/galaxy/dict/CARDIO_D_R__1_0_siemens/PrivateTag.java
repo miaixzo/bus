@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.CARDIO_D_R__1_0_siemens;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "CARDIO-D.R. 1.0";
@@ -67,5 +60,12 @@ public class PrivateTag {
      * (0029,xxAD) VR=FL VM=1 Displayed Area Top Left Hand Corner Fractional
      */
     public static final int DisplayedAreaTopLeftHandCornerFractional = 0x002900AD;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

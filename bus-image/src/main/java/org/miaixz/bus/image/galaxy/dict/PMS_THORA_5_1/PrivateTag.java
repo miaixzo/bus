@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.PMS_THORA_5_1;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "PMS-THORA-5.1";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (0089,xx20) VR=SQ VM=1 ?
      */
     public static final int _0089_xx20_ = 0x00890020;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

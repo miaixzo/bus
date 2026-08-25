@@ -40,13 +40,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class UrlPath {
 
     /**
-     * Constructs a new {@code UrlPath} instance.
-     */
-    public UrlPath() {
-        // No initialization required.
-    }
-
-    /**
      * The list of path segments.
      */
     private List<CharSequence> segments;
@@ -55,6 +48,13 @@ public class UrlPath {
      * Whether to append a trailing slash to the path.
      */
     private boolean withEngTag;
+
+    /**
+     * Constructs a new {@code UrlPath} instance.
+     */
+    public UrlPath() {
+        // No initialization required.
+    }
 
     /**
      * Creates a new {@link UrlPath} instance.

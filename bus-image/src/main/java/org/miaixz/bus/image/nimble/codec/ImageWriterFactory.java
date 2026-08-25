@@ -46,13 +46,6 @@ import org.miaixz.bus.logger.Logger;
 public class ImageWriterFactory implements Serializable {
 
     /**
-     * Constructs a new ImageWriterFactory instance.
-     */
-    public ImageWriterFactory() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -72,6 +65,13 @@ public class ImageWriterFactory implements Serializable {
      * The patch jpegls value.
      */
     private PatchJPEGLS patchJPEGLS;
+
+    /**
+     * Constructs a new ImageWriterFactory instance.
+     */
+    public ImageWriterFactory() {
+        // No initialization required.
+    }
 
     /**
      * Executes the nullify operation.

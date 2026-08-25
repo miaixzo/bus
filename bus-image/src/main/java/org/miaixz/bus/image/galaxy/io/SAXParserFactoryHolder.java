@@ -36,16 +36,16 @@ import org.miaixz.bus.image.Builder;
 public class SAXParserFactoryHolder {
 
     /**
+     * The factory value.
+     */
+    public static final SAXParserFactory factory;
+
+    /**
      * Constructs a new {@code SAXParserFactoryHolder} instance.
      */
     public SAXParserFactoryHolder() {
         // No initialization required.
     }
-
-    /**
-     * The factory value.
-     */
-    public static final SAXParserFactory factory;
 
     static {
         factory = SAXParserFactory.newInstance();

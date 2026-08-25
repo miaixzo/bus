@@ -38,13 +38,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class IterationFilter implements Serializable {
 
     /**
-     * Constructs a new {@code IterationFilter} instance.
-     */
-    public IterationFilter() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -106,6 +99,13 @@ public class IterationFilter implements Serializable {
      * Return iterations updated before the specified date. Expected in ISO 8601 format (2019-03-15T08:00:00Z).
      */
     private Date updatedBefore;
+
+    /**
+     * Constructs a new {@code IterationFilter} instance.
+     */
+    public IterationFilter() {
+        // No initialization required.
+    }
 
     /**
      * Returns the state.

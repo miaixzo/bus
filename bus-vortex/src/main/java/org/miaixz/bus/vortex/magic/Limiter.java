@@ -43,13 +43,6 @@ import org.miaixz.bus.vortex.strategy.LimiterStrategy;
 public class Limiter {
 
     /**
-     * Creates an empty limiter definition.
-     */
-    public Limiter() {
-        // No initialization required.
-    }
-
-    /**
      * The IP address of the request source. Used for creating per-IP limiters.
      */
     private String ip;
@@ -73,6 +66,13 @@ public class Limiter {
      * The underlying token bucket instance. It is volatile and lazily initialized to ensure thread safety.
      */
     private volatile RateLimiter rateLimiter;
+
+    /**
+     * Creates an empty limiter definition.
+     */
+    public Limiter() {
+        // No initialization required.
+    }
 
     /**
      * Lazily initializes and retrieves the underlying {@link RateLimiter} instance using thread-safe double-checked

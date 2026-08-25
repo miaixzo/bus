@@ -42,13 +42,6 @@ import org.miaixz.bus.core.lang.Symbol;
  */
 public class Z85 implements Encoder<byte[], String>, Decoder<String, byte[]>, Serializable {
 
-    /**
-     * Constructs a new {@code Z85} instance.
-     */
-    public Z85() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852282097928L;
 
@@ -74,6 +67,13 @@ public class Z85 implements Encoder<byte[], String>, Decoder<String, byte[]>, Se
             0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x4D, 0x00, 0x4E, 0x43, 0x00,
             0x00, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A,
             0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20, 0x21, 0x22, 0x23, 0x4F, 0x00, 0x50, 0x00, 0x00 };
+
+    /**
+     * Constructs a new {@code Z85} instance.
+     */
+    public Z85() {
+        // No initialization required.
+    }
 
     /**
      * Encodes a byte array into a Z85-encoded string.

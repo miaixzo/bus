@@ -38,16 +38,16 @@ import org.miaixz.bus.image.metric.hl7.net.HL7Application;
 public class LdapHL7ConfigurationExtension {
 
     /**
+     * The config value.
+     */
+    protected LdapHL7Configuration config;
+
+    /**
      * Constructs a new LdapHL7ConfigurationExtension instance.
      */
     public LdapHL7ConfigurationExtension() {
         // No initialization required.
     }
-
-    /**
-     * The config value.
-     */
-    protected LdapHL7Configuration config;
 
     /**
      * Gets the hl7 configuration.

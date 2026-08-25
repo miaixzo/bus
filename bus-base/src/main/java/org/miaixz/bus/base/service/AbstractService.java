@@ -74,17 +74,17 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
         implements SharedService<T, I> {
 
     /**
+     * The underlying mapper instance for database interactions. Automatically injected by Spring.
+     */
+    @Autowired
+    protected M mapper;
+
+    /**
      * Constructs a new AbstractService instance.
      */
     public AbstractService() {
         // No initialization required.
     }
-
-    /**
-     * The underlying mapper instance for database interactions. Automatically injected by Spring.
-     */
-    @Autowired
-    protected M mapper;
 
     /**
      * Persists a new entity with all fields.

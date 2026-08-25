@@ -12,6 +12,15 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.starter.auth.AuthConfiguration$JwtSecretCondition",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.starter.auth.AuthProperties",
       "methods": [
         {
@@ -19,6 +28,14 @@
           "parameterTypes": [
             "boolean",
             "org.miaixz.bus.cache.Options"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "org.miaixz.bus.cache.Options",
+            "org.miaixz.bus.starter.auth.AuthProperties$Jwt"
           ]
         }
       ]
@@ -34,6 +51,18 @@
             "java.lang.String",
             "java.lang.String",
             "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.auth.AuthProperties$Jwt",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.starter.auth.AuthProperties$SecretPolicy"
           ]
         }
       ]

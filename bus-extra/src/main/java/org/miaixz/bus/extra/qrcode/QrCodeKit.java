@@ -53,13 +53,6 @@ import org.miaixz.bus.extra.qrcode.render.SVGRender;
 public class QrCodeKit {
 
     /**
-     * Constructs a new QrCodeKit instance.
-     */
-    public QrCodeKit() {
-        // No initialization required.
-    }
-
-    /**
      * SVG vector graphic format.
      */
     public static final String QR_TYPE_SVG = "svg";
@@ -68,6 +61,13 @@ public class QrCodeKit {
      * Ascii Art character text format.
      */
     public static final String QR_TYPE_TXT = "txt";
+
+    /**
+     * Constructs a new QrCodeKit instance.
+     */
+    public QrCodeKit() {
+        // No initialization required.
+    }
 
     /**
      * Generates a Base64 encoded QR code in String format.

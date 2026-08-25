@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class PackageFile implements Serializable {
 
     /**
-     * Constructs a new {@code PackageFile} instance.
-     */
-    public PackageFile() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -77,6 +70,13 @@ public class PackageFile implements Serializable {
      * The file sha256 value.
      */
     private String fileSha256;
+
+    /**
+     * Constructs a new {@code PackageFile} instance.
+     */
+    public PackageFile() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

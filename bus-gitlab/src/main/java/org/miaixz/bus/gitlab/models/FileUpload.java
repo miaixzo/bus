@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class FileUpload implements Serializable {
 
     /**
-     * Constructs a new {@code FileUpload} instance.
-     */
-    public FileUpload() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -56,6 +49,13 @@ public class FileUpload implements Serializable {
      * The markdown value.
      */
     private String markdown;
+
+    /**
+     * Constructs a new {@code FileUpload} instance.
+     */
+    public FileUpload() {
+        // No initialization required.
+    }
 
     /**
      * Returns the alt.

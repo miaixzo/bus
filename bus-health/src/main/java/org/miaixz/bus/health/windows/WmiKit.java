@@ -42,13 +42,6 @@ import org.miaixz.bus.health.Parsing;
 public class WmiKit {
 
     /**
-     * Keeps WMI queries on the static API.
-     */
-    public WmiKit() {
-        // No initialization required.
-    }
-
-    /**
      * The namespace where Open Hardware Monitor publishes to WMI,
      * <code>OHM_NAMESPACE="ROOT\\OpenHardwareMonitor"</code>. This namespace is not built-in to WMI, so if OHM is not
      * running would result in unnecessary log messages.
@@ -76,6 +69,13 @@ public class WmiKit {
      * Variant type code for boolean values.
      */
     private static final int VT_BOOL = 11;
+
+    /**
+     * Keeps WMI queries on the static API.
+     */
+    public WmiKit() {
+        // No initialization required.
+    }
 
     /**
      * Translate a WmiQuery to the actual query string

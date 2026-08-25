@@ -47,13 +47,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class CreditCode {
 
     /**
-     * Keeps unified social credit-code validation on the static API.
-     */
-    public CreditCode() {
-        // No initialization required.
-    }
-
-    /**
      * Unified social credit code regex.
      */
     public static final java.util.regex.Pattern CREDIT_CODE_PATTERN = Pattern.CREDIT_CODE_PATTERN;
@@ -72,6 +65,13 @@ public class CreditCode {
      * Map from code characters to their index.
      */
     private static final Map<Character, Integer> CODE_INDEX_MAP;
+
+    /**
+     * Keeps unified social credit-code validation on the static API.
+     */
+    public CreditCode() {
+        // No initialization required.
+    }
 
     static {
         CODE_INDEX_MAP = new ConcurrentHashMap<>();

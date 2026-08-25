@@ -45,8 +45,8 @@ import org.miaixz.bus.logger.Logger;
  * Metric source priority by method:
  * <ul>
  * <li>{@code getGpuTicks()}: PDH GPU Engine counters ({@code Running Time} / {@code Running Time_Base}).</li>
- * <li>{@code getGpuUsage()}: LHM WMI {@code GPU Core} load sensor. Falls back to PDH tick-delta ({@code getGpuTicks()}
- * delta) when LHM is not running; returns -1 on the first call (priming).</li>
+ * <li>{@code getGpuUsage()}: NVML, then ADL, then LHM WMI {@code GPU Core} load sensor. Falls back to PDH tick-delta
+ * ({@code getGpuTicks()} delta) when the direct sources are unavailable; returns -1 on the first call (priming).</li>
  * <li>{@code getVramUsed()}: PDH GPU Adapter Memory {@code DedicatedUsage}, then LHM {@code GPU Memory Used}.</li>
  * <li>{@code getSharedMemoryUsed()}: PDH GPU Adapter Memory {@code SharedUsage}.</li>
  * <li>{@code getTemperature()}: NVML, then ADL, then LHM {@code GPU Core} temperature.</li>
@@ -206,6 +206,20 @@ final class WindowsGpuStats implements GpuStats {
     @Override
     public synchronized double getGpuUsage() {
         checkOpen();
+        String nvmlDevice = findNvmlDevice();
+        if (nvmlDevice != null) {
+            double val = NvmlKit.getGpuUsage(nvmlDevice);
+            if (val >= 0) {
+                return val;
+            }
+        }
+        int adlIndex = findAdlIndex();
+        if (adlIndex >= 0) {
+            double val = AdlKit.getGpuUsage(adlIndex);
+            if (val >= 0) {
+                return val;
+            }
+        }
         if (!lhmParent.isEmpty()) {
             try {
                 WmiResult<LhmSensor.LhmSensorProperty> sensors = LhmSensor.querySensors(lhmParent, "Load");
@@ -223,6 +237,10 @@ final class WindowsGpuStats implements GpuStats {
         if (previousUsageTicks != null) {
             long dActive = curr.getActiveTicks() - previousUsageTicks.getActiveTicks();
             long dIdle = curr.getIdleTicks() - previousUsageTicks.getIdleTicks();
+            if (dActive < 0 || dIdle < 0) {
+                previousUsageTicks = curr;
+                return -1d;
+            }
             long dTotal = dActive + dIdle;
             previousUsageTicks = curr;
             return dTotal > 0 ? dActive * 100.0 / dTotal : -1d;

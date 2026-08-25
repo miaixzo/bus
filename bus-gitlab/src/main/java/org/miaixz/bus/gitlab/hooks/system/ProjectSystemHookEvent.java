@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ProjectSystemHookEvent extends AbstractSystemHookEvent {
 
     /**
-     * Constructs a new {@code ProjectSystemHookEvent} instance.
-     */
-    public ProjectSystemHookEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -110,6 +103,13 @@ public class ProjectSystemHookEvent extends AbstractSystemHookEvent {
      * The old path with namespace value.
      */
     private String oldPathWithNamespace;
+
+    /**
+     * Constructs a new {@code ProjectSystemHookEvent} instance.
+     */
+    public ProjectSystemHookEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the created at.

@@ -30,13 +30,6 @@ import java.io.Serial;
  */
 public class CRC16XModem extends CRC16Checksum {
 
-    /**
-     * Creates a CRC-16/XMODEM checksum implementation.
-     */
-    public CRC16XModem() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852285115000L;
 
@@ -44,6 +37,13 @@ public class CRC16XModem extends CRC16Checksum {
      * The polynomial used in the CRC16-XModem calculation (0x1021). This corresponds to bits at positions 0, 5, and 12.
      */
     private static final int WC_POLY = 0x1021;
+
+    /**
+     * Creates a CRC-16/XMODEM checksum implementation.
+     */
+    public CRC16XModem() {
+        // No initialization required.
+    }
 
     /**
      * Updates the CRC16-XModem checksum with the specified array of bytes. The internal CRC value is masked with 0xffff

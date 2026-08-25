@@ -34,13 +34,6 @@ import lombok.experimental.SuperBuilder;
 public class Disk {
 
     /**
-     * Constructs a new {@code Disk} instance.
-     */
-    public Disk() {
-        // No initialization required.
-    }
-
-    /**
      * Device name (e.g., /dev/sda1)
      */
     private String deviceName;
@@ -104,5 +97,12 @@ public class Disk {
      * Usage percentage (usedSpace / totalSpace * 100)
      */
     private double usagePercent;
+
+    /**
+     * Constructs a new {@code Disk} instance.
+     */
+    public Disk() {
+        // No initialization required.
+    }
 
 }

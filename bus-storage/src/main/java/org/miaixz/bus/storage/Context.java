@@ -37,13 +37,6 @@ import org.miaixz.bus.core.lang.Normal;
 public class Context {
 
     /**
-     * Constructs a new {@code Context} instance.
-     */
-    public Context() {
-        // No initialization required.
-    }
-
-    /**
      * The URL prefix for the storage service.
      */
     @Builder.Default
@@ -117,5 +110,12 @@ public class Context {
      */
     @Builder.Default
     private long readTimeout = 30;
+
+    /**
+     * Constructs a new {@code Context} instance.
+     */
+    public Context() {
+        // No initialization required.
+    }
 
 }

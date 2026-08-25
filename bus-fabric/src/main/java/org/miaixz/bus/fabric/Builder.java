@@ -42,13 +42,6 @@ import org.miaixz.bus.core.net.tls.TlsVersion;
 public class Builder {
 
     /**
-     * Creates an empty constant-catalog instance.
-     */
-    public Builder() {
-        // No initialization required.
-    }
-
-    /**
      * AIO protocol scheme.
      */
     public static final String AIO_SCHEME = "aio";
@@ -1135,5 +1128,12 @@ public class Builder {
      * WebSocket write tag.
      */
     public static final String WEBSOCKET_WRITE = "websocket-write";
+
+    /**
+     * Creates an empty constant-catalog instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
 
 }

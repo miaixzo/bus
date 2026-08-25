@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class BatchQueryComment extends Voucher {
 
     /**
-     * Constructs a new {@code BatchQueryComment} instance.
-     */
-    public BatchQueryComment() {
-        // No initialization required.
-    }
-
-    /**
      * Merchant ID.
      */
     private String mch_id;
@@ -81,5 +74,12 @@ public class BatchQueryComment extends Voucher {
      * Limit.
      */
     private String limit;
+
+    /**
+     * Constructs a new {@code BatchQueryComment} instance.
+     */
+    public BatchQueryComment() {
+        // No initialization required.
+    }
 
 }

@@ -36,13 +36,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class LabelEvent implements Serializable {
 
     /**
-     * Constructs a new {@code LabelEvent} instance.
-     */
-    public LabelEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -138,6 +131,13 @@ public class LabelEvent implements Serializable {
      * The action value.
      */
     private String action;
+
+    /**
+     * Constructs a new {@code LabelEvent} instance.
+     */
+    public LabelEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

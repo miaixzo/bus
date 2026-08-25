@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class AuthCodeToOpenId extends Voucher {
 
     /**
-     * Constructs a new {@code AuthCodeToOpenId} instance.
-     */
-    public AuthCodeToOpenId() {
-        // No initialization required.
-    }
-
-    /**
      * Sub-merchant App ID.
      */
     private String sub_appid;
@@ -76,5 +69,12 @@ public class AuthCodeToOpenId extends Voucher {
      * Signature type.
      */
     private String sign_type;
+
+    /**
+     * Constructs a new {@code AuthCodeToOpenId} instance.
+     */
+    public AuthCodeToOpenId() {
+        // No initialization required.
+    }
 
 }

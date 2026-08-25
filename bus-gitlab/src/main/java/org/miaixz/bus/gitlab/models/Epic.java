@@ -34,13 +34,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class Epic extends AbstractEpic<Epic> {
 
     /**
-     * Constructs a new {@code Epic} instance.
-     */
-    public Epic() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -65,6 +58,13 @@ public class Epic extends AbstractEpic<Epic> {
      * The subscribed value.
      */
     private Boolean subscribed;
+
+    /**
+     * Constructs a new {@code Epic} instance.
+     */
+    public Epic() {
+        // No initialization required.
+    }
 
     /**
      * Returns the start date is fixed.

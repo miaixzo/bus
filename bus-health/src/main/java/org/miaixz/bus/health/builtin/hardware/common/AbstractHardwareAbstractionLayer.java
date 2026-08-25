@@ -38,13 +38,6 @@ import org.miaixz.bus.health.builtin.hardware.*;
 public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstractionLayer {
 
     /**
-     * Constructs a new AbstractHardwareAbstractionLayer instance.
-     */
-    public AbstractHardwareAbstractionLayer() {
-        // No initialization required.
-    }
-
-    /**
      * The computerSystem value.
      */
     private final SupplierX<ComputerSystem> computerSystem = Memoizer.memoize(this::createComputerSystem);
@@ -91,6 +84,13 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
      * The virtualization platform supplier.
      */
     private final SupplierX<Optional<String>> virtualization = Memoizer.memoize(() -> Virtuality.identify(this));
+
+    /**
+     * Constructs a new AbstractHardwareAbstractionLayer instance.
+     */
+    public AbstractHardwareAbstractionLayer() {
+        // No initialization required.
+    }
 
     /**
      * Returns the computer system.

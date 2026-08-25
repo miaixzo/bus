@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class DownloadBill extends Voucher {
 
     /**
-     * Constructs a new {@code DownloadBill} instance.
-     */
-    public DownloadBill() {
-        // No initialization required.
-    }
-
-    /**
      * Sub-merchant App ID.
      */
     private String sub_appid;
@@ -86,5 +79,12 @@ public class DownloadBill extends Voucher {
      * The compression type for the bill file (e.g., GZIP).
      */
     private String tar_type;
+
+    /**
+     * Constructs a new {@code DownloadBill} instance.
+     */
+    public DownloadBill() {
+        // No initialization required.
+    }
 
 }

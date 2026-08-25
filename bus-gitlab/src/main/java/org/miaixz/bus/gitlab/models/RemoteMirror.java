@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class RemoteMirror implements Serializable {
 
     /**
-     * Constructs a new {@code RemoteMirror} instance.
-     */
-    public RemoteMirror() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -85,6 +78,13 @@ public class RemoteMirror implements Serializable {
      * The url value.
      */
     private String url;
+
+    /**
+     * Constructs a new {@code RemoteMirror} instance.
+     */
+    public RemoteMirror() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

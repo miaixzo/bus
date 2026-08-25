@@ -30,13 +30,6 @@ import java.io.Serializable;
 public class CustomAttribute implements Serializable {
 
     /**
-     * Constructs a new {@code CustomAttribute} instance.
-     */
-    public CustomAttribute() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -50,6 +43,13 @@ public class CustomAttribute implements Serializable {
      * The value value.
      */
     private String value;
+
+    /**
+     * Constructs a new {@code CustomAttribute} instance.
+     */
+    public CustomAttribute() {
+        // No initialization required.
+    }
 
     /**
      * Returns the key.

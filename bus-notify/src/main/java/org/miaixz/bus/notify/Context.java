@@ -34,13 +34,6 @@ import lombok.experimental.SuperBuilder;
 public class Context {
 
     /**
-     * Constructs a new {@code Context} instance.
-     */
-    public Context() {
-        // No initialization required.
-    }
-
-    /**
      * The application key corresponding to various platforms.
      */
     private String appKey;
@@ -69,5 +62,12 @@ public class Context {
      * Extension properties or additional data.
      */
     private String extension;
+
+    /**
+     * Constructs a new {@code Context} instance.
+     */
+    public Context() {
+        // No initialization required.
+    }
 
 }

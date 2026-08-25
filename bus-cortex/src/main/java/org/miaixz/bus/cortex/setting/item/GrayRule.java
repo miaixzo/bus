@@ -36,13 +36,6 @@ import lombok.experimental.SuperBuilder;
 public class GrayRule {
 
     /**
-     * Creates an empty gray-release rule.
-     */
-    public GrayRule() {
-        // No initialization required.
-    }
-
-    /**
      * Gray-routing strategy type.
      */
     private GrayType type;
@@ -96,6 +89,13 @@ public class GrayRule {
      * Setting content returned when the rule matches.
      */
     private String grayContent;
+
+    /**
+     * Creates an empty gray-release rule.
+     */
+    public GrayRule() {
+        // No initialization required.
+    }
 
     /**
      * Returns a concise textual representation of the configured gray-release rule.

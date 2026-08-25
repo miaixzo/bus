@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class UnifiedOrder extends Voucher {
 
     /**
-     * Constructs a new {@code UnifiedOrder} instance.
-     */
-    public UnifiedOrder() {
-        // No initialization required.
-    }
-
-    /**
      * Sub-merchant App ID.
      */
     private String sub_appid;
@@ -141,5 +134,12 @@ public class UnifiedOrder extends Voucher {
      * Mini program parameters.
      */
     private String mini_app_param;
+
+    /**
+     * Constructs a new {@code UnifiedOrder} instance.
+     */
+    public UnifiedOrder() {
+        // No initialization required.
+    }
 
 }

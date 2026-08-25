@@ -29,13 +29,6 @@ import java.util.Date;
 public class IssueChanges extends EventChanges {
 
     /**
-     * Constructs a new {@code IssueChanges} instance.
-     */
-    public IssueChanges() {
-        // No initialization required.
-    }
-
-    /**
      * The due date value.
      */
     private ChangeContainer<Date> dueDate;
@@ -47,6 +40,13 @@ public class IssueChanges extends EventChanges {
      * The heath status value.
      */
     private ChangeContainer<String> heathStatus;
+
+    /**
+     * Constructs a new {@code IssueChanges} instance.
+     */
+    public IssueChanges() {
+        // No initialization required.
+    }
 
     /**
      * Returns the due date.

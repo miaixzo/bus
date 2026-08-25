@@ -20,7 +20,6 @@
 package org.miaixz.bus.health.linux.software;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -32,11 +31,6 @@ import org.miaixz.bus.health.builtin.software.ApplicationInfo;
  * @author Kimi Liu
  */
 public class LinuxInstalledApps {
-
-    /**
-     * The PIPE_PATTERN constant.
-     */
-    private static final Pattern PIPE_PATTERN = Pattern.compile("\\|");
 
     /**
      * The PACKAGE_MANAGER_COMMANDS constant.
@@ -122,8 +116,9 @@ public class LinuxInstalledApps {
         Set<ApplicationInfo> appInfoSet = new LinkedHashSet<>();
 
         for (String line : output) {
-            // split by the pipe character
-            String[] parts = PIPE_PATTERN.split(line, -1); // -1 to keep empty fields
+            // Not a precompiled Pattern: a two-character backslash escape takes String.split's
+            // regex-free fast path, which measures faster than Pattern.split.
+            String[] parts = line.split("\\|", -1); // -1 to keep empty fields
 
             // Check if we have all 8 fields
             if (parts.length >= 8) {

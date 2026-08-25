@@ -37,13 +37,6 @@ import org.miaixz.bus.health.linux.ProcPath;
 public class Auxv {
 
     /**
-     * Constructs a new Auxv instance.
-     */
-    public Auxv() {
-        // No initialization required.
-    }
-
-    /**
      * end of vector
      */
     public static final int AT_NULL = 0;
@@ -62,6 +55,13 @@ public class Auxv {
      * frequency at which times() increments
      */
     public static final int AT_CLKTCK = 17;
+
+    /**
+     * Constructs a new Auxv instance.
+     */
+    public Auxv() {
+        // No initialization required.
+    }
 
     /**
      * Retrieve the auxiliary vector for the current process

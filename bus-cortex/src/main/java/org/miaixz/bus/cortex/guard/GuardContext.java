@@ -37,13 +37,6 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 public class GuardContext {
 
     /**
-     * Creates an empty guard evaluation context.
-     */
-    public GuardContext() {
-        // No initialization required.
-    }
-
-    /**
      * Space identifier of the protected asset.
      */
     private String space_id;
@@ -112,6 +105,13 @@ public class GuardContext {
      * Caller-supplied labels or request attributes used by policy evaluators.
      */
     private Map<String, Object> attributes;
+
+    /**
+     * Creates an empty guard evaluation context.
+     */
+    public GuardContext() {
+        // No initialization required.
+    }
 
     /**
      * Sets the space identifier of the protected asset.

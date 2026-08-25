@@ -34,13 +34,6 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
 public class JiraService extends NotificationService {
 
     /**
-     * Constructs a new {@code JiraService} instance.
-     */
-    public JiraService() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -75,6 +68,13 @@ public class JiraService extends NotificationService {
      * The password value.
      */
     private CharSequence password;
+
+    /**
+     * Constructs a new {@code JiraService} instance.
+     */
+    public JiraService() {
+        // No initialization required.
+    }
 
     /**
      * Get the form data for this service based on it's properties.

@@ -38,13 +38,6 @@ import org.miaixz.bus.health.builtin.software.OSFileStore;
 public abstract class AbstractFileSystem implements FileSystem {
 
     /**
-     * Constructs a new AbstractFileSystem instance.
-     */
-    public AbstractFileSystem() {
-        // No initialization required.
-    }
-
-    /**
      * FileSystem types which are network-based and should be excluded from local-only lists
      */
     protected static final List<String> NETWORK_FS_TYPES = Arrays
@@ -55,6 +48,13 @@ public abstract class AbstractFileSystem implements FileSystem {
      */
     protected static final List<String> PSEUDO_FS_TYPES = Arrays
             .asList(Builder.get(Builder._PSEUDO_FILESYSTEM_TYPES, Normal.EMPTY).split(Symbol.COMMA));
+
+    /**
+     * Constructs a new AbstractFileSystem instance.
+     */
+    public AbstractFileSystem() {
+        // No initialization required.
+    }
 
     /**
      * Returns the file stores.

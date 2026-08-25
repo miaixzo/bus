@@ -41,18 +41,18 @@ import org.miaixz.bus.health.builtin.software.OSProcess;
 public class ThreadInfo {
 
     /**
-     * Keeps macOS thread metadata queries on the static API.
-     */
-    public ThreadInfo() {
-        // No initialization required.
-    }
-
-    /**
      * Pattern for parsing `ps -awwxM` output for thread information. Groups: 1: PID 2: CPU usage 3: State 4: Priority
      * 5: System time 6: User time
      */
     private static final Pattern PS_M = Pattern.compile(
             "\\D+(\\d+).+(\\d+\\.\\d)\\s+(\\w)\\s+(\\d+)\\D+(\\d+:\\d{2}\\.\\d{2})\\s+(\\d+:\\d{2}\\.\\d{2}).+");
+
+    /**
+     * Keeps macOS thread metadata queries on the static API.
+     */
+    public ThreadInfo() {
+        // No initialization required.
+    }
 
     /**
      * Queries thread statistics for a given process ID.

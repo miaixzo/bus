@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ErrorTrackingClientKey implements Serializable {
 
     /**
-     * Constructs a new {@code ErrorTrackingClientKey} instance.
-     */
-    public ErrorTrackingClientKey() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     private static final long serialVersionUID = 2826910583269L;
@@ -64,6 +57,13 @@ public class ErrorTrackingClientKey implements Serializable {
      */
     @JsonProperty("sentry_dsn")
     private String sentryDsn;
+
+    /**
+     * Constructs a new {@code ErrorTrackingClientKey} instance.
+     */
+    public ErrorTrackingClientKey() {
+        // No initialization required.
+    }
 
     /**
      * Returns the public key.

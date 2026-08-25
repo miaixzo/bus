@@ -66,13 +66,6 @@ import org.opencv.imgproc.Imgproc;
  */
 public class ImageConversion {
 
-    /**
-     * Creates a new instance.
-     */
-    public ImageConversion() {
-        // No initialization required.
-    }
-
     // Channel band offsets for color conversions
     /**
      * The rgb offsets value.
@@ -113,6 +106,13 @@ public class ImageConversion {
             DataBuffer.TYPE_FLOAT,
             CvType.CV_64F,
             DataBuffer.TYPE_DOUBLE);
+
+    /**
+     * Creates a new instance.
+     */
+    public ImageConversion() {
+        // No initialization required.
+    }
 
     /**
      * Converts an OpenCV Mat object to a Java BufferedImage.

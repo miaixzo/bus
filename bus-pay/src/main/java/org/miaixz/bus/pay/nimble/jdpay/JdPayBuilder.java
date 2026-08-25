@@ -53,13 +53,6 @@ import org.miaixz.bus.pay.nimble.wechat.WechatPayBuilder;
  */
 public class JdPayBuilder {
 
-    /**
-     * Constructs a new JdPayBuilder instance.
-     */
-    public JdPayBuilder() {
-        // No initialization required.
-    }
-
     private static final String XML_HEAD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     private static final String XML_JDPAY_START = "<jdpay>";
     private static final String XML_JDPAY_END = "</jdpay>";
@@ -67,6 +60,13 @@ public class JdPayBuilder {
     private static final String XML_SIGN_START = "<sign>";
     private static final String XML_SIGN_END = "</sign>";
     private static final String SIGN = "sign";
+
+    /**
+     * Constructs a new JdPayBuilder instance.
+     */
+    public JdPayBuilder() {
+        // No initialization required.
+    }
 
     /**
      * Encrypts the values of a map using 3DES for online payment interfaces. All fields except for 'merchant',

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SPI;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SPI";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (0029,xx60) VR=LO VM=1 Compression Algorithm
      */
     public static final int CompressionAlgorithm = 0x00290060;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -38,13 +38,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class AbstractMinimalEpic<E extends AbstractMinimalEpic<E>> implements Serializable {
 
     /**
-     * Constructs a new AbstractMinimalEpic instance.
-     */
-    public AbstractMinimalEpic() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -78,6 +71,13 @@ public class AbstractMinimalEpic<E extends AbstractMinimalEpic<E>> implements Se
      * The url value.
      */
     private String url;
+
+    /**
+     * Constructs a new AbstractMinimalEpic instance.
+     */
+    public AbstractMinimalEpic() {
+        // No initialization required.
+    }
 
     /**
      * Sets the title and returns this minimal epic model.

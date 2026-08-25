@@ -44,13 +44,6 @@ import org.miaixz.bus.logger.Logger;
 public class HkeyUserData {
 
     /**
-     * Constructs a new HkeyUserData instance.
-     */
-    public HkeyUserData() {
-        // No initialization required.
-    }
-
-    /**
      * The PATH_DELIMITER constant.
      */
     private static final String PATH_DELIMITER = Symbol.BACKSLASH;
@@ -74,6 +67,13 @@ public class HkeyUserData {
      * The SESSIONNAME constant.
      */
     private static final String SESSIONNAME = "SESSIONNAME";
+
+    /**
+     * Constructs a new HkeyUserData instance.
+     */
+    public HkeyUserData() {
+        // No initialization required.
+    }
 
     /**
      * Queries the user sessions.

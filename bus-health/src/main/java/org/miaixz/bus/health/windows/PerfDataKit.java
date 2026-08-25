@@ -50,13 +50,6 @@ import org.miaixz.bus.logger.Logger;
 public class PerfDataKit {
 
     /**
-     * Keeps Windows performance-data parsing on the static API.
-     */
-    public PerfDataKit() {
-        // No initialization required.
-    }
-
-    /**
      * The PZERO constant.
      */
     private static final DWORD_PTR PZERO = new DWORD_PTR(0);
@@ -75,6 +68,13 @@ public class PerfDataKit {
      * The IS_VISTA_OR_GREATER constant.
      */
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
+
+    /**
+     * Keeps Windows performance-data parsing on the static API.
+     */
+    public PerfDataKit() {
+        // No initialization required.
+    }
 
     /**
      * Update a query and get the timestamp

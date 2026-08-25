@@ -18,8 +18,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Activates authentication services, resolves protected controller methods, and binds authentication properties. This
- * non-exported package contains Starter assembly rather than public business APIs.
+ * Activates authentication services, resolves protected controller methods, and binds authentication properties.
+ * Configuring {@code bus.auth.jwt.secret} additionally exposes one reusable, deterministically keyed
+ * {@link org.miaixz.bus.auth.shared.jwt.JwtService}. This non-exported package contains Starter assembly rather than
+ * public business APIs.
  *
  * @author Kimi Liu
  */

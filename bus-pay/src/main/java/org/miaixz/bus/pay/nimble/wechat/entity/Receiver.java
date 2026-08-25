@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class Receiver extends Voucher {
 
     /**
-     * Constructs a new {@code Receiver} instance.
-     */
-    public Receiver() {
-        // No initialization required.
-    }
-
-    /**
      * Type of profit sharing receiver. MERCHANT_ID: Merchant ID (mch_id or sub_mch_id) PERSONAL_OPENID: Personal openid
      */
     private String type;
@@ -81,5 +74,12 @@ public class Receiver extends Voucher {
      * Description of profit sharing.
      */
     private String description;
+
+    /**
+     * Constructs a new {@code Receiver} instance.
+     */
+    public Receiver() {
+        // No initialization required.
+    }
 
 }

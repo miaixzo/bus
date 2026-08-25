@@ -30,13 +30,6 @@ import java.io.Serializable;
 public class GroupHookParams implements Serializable {
 
     /**
-     * Constructs a new {@code GroupHookParams} instance.
-     */
-    public GroupHookParams() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -138,6 +131,13 @@ public class GroupHookParams implements Serializable {
      * The custom webhook template value.
      */
     private String customWebhookTemplate;
+
+    /**
+     * Constructs a new {@code GroupHookParams} instance.
+     */
+    public GroupHookParams() {
+        // No initialization required.
+    }
 
     /**
      * Returns the form.

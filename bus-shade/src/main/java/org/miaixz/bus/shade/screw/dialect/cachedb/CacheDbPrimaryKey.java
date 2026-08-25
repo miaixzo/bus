@@ -35,13 +35,6 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 public class CacheDbPrimaryKey implements PrimaryKey {
 
     /**
-     * Constructs a new CacheDbPrimaryKey instance.
-     */
-    public CacheDbPrimaryKey() {
-        // No initialization required.
-    }
-
-    /**
      * The table catalog (may be {@code null}).
      */
     @MappingField(value = "TABLE_CATALOG")
@@ -75,5 +68,12 @@ public class CacheDbPrimaryKey implements PrimaryKey {
      * The name of the primary key constraint.
      */
     private String pkName;
+
+    /**
+     * Constructs a new CacheDbPrimaryKey instance.
+     */
+    public CacheDbPrimaryKey() {
+        // No initialization required.
+    }
 
 }

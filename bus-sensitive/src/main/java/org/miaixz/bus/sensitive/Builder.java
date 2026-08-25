@@ -33,13 +33,6 @@ import org.miaixz.bus.core.text.dfa.Sensitive;
 public class Builder extends Sensitive {
 
     /**
-     * Constructs a new Builder instance.
-     */
-    public Builder() {
-        // No initialization required.
-    }
-
-    /**
      * Constant for enabling all processing (e.g., desensitization and encryption).
      */
     public static final String ALL = "ALL";
@@ -73,6 +66,13 @@ public class Builder extends Sensitive {
      * Constant for applying global encryption rules.
      */
     public static final String OVERALL = "OVERALL";
+
+    /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
 
     /**
      * Applies desensitization to the given object. This method creates a new provider instance for each call to ensure

@@ -35,13 +35,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ProjectFilter implements Serializable {
 
     /**
-     * Constructs a new {@code ProjectFilter} instance.
-     */
-    public ProjectFilter() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -151,6 +144,13 @@ public class ProjectFilter implements Serializable {
      * The topic id value.
      */
     private Integer topic_id;
+
+    /**
+     * Constructs a new {@code ProjectFilter} instance.
+     */
+    public ProjectFilter() {
+        // No initialization required.
+    }
 
     /**
      * Limit by archived status.

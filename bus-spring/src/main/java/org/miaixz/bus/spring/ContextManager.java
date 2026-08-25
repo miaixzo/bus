@@ -32,16 +32,16 @@ import org.miaixz.bus.core.xyz.ThreadKit;
 public class ContextManager {
 
     /**
+     * Thread-local context stack owned exclusively by this manager instance.
+     */
+    private final ThreadLocal<ContextState> current = ThreadKit.newThreadLocal(false);
+
+    /**
      * Creates an independent context state manager.
      */
     public ContextManager() {
         // No initialization required.
     }
-
-    /**
-     * Thread-local context stack owned exclusively by this manager instance.
-     */
-    private final ThreadLocal<ContextState> current = ThreadKit.newThreadLocal(false);
 
     /**
      * Captures the current immutable state.

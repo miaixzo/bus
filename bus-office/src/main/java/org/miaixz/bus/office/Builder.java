@@ -41,13 +41,6 @@ import org.miaixz.bus.logger.Logger;
 public class Builder {
 
     /**
-     * Constructs a new Builder instance.
-     */
-    public Builder() {
-        // No initialization required.
-    }
-
-    /**
      * Content type for XLS files.
      */
     public static final String XLS_CONTENT_TYPE = "application/vnd.ms-excel";
@@ -66,6 +59,13 @@ public class Builder {
      * Some special custom date formats.
      */
     private static final int[] CUSTOM_FORMATS = new int[] { 28, 30, 31, 32, 33, 55, 56, 57, 58 };
+
+    /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
 
     /**
      * Checks if the cell is in date format.

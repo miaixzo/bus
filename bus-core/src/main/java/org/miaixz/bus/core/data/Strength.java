@@ -31,13 +31,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Strength {
 
     /**
-     * Constructs a new password strength checker.
-     */
-    public Strength() {
-        // No initialization required.
-    }
-
-    /**
      * Simple password dictionary.
      */
     private static final String[] DICTIONARY = { "password", "abc123", "iloveyou", "adobe123", "123123", "sunshine",
@@ -48,6 +41,13 @@ public class Strength {
      */
     private static final int[] SIZE_TABLE = { 9, 99, 999, 9999, 99999, 999999, 9999999, 99999999, 999999999,
             Integer.MAX_VALUE };
+
+    /**
+     * Constructs a new password strength checker.
+     */
+    public Strength() {
+        // No initialization required.
+    }
 
     /**
      * Check the robustness of the password.

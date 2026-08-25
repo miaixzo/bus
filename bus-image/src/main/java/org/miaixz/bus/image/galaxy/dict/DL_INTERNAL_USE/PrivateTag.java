@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.DL_INTERNAL_USE;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "DL_INTERNAL_USE";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (0015,xx8F) VR=IS VM=1 ?
      */
     public static final int _0015_xx8F_ = 0x0015008F;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

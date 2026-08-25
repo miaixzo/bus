@@ -32,16 +32,16 @@ package org.miaixz.bus.core.center.date.culture.parts;
 public abstract class MonthParts extends YearParts {
 
     /**
+     * The month of the year (1-based index).
+     */
+    protected int month;
+
+    /**
      * Constructs month-based date parts.
      */
     public MonthParts() {
         // No initialization required.
     }
-
-    /**
-     * The month of the year (1-based index).
-     */
-    protected int month;
 
     /**
      * Gets the month of the year.

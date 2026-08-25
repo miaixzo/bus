@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_CT_CARDIAC_001;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_CT_CARDIAC_001";
@@ -132,5 +125,12 @@ public class PrivateTag {
      * (0049,xx26) VR=CS VM=1 Compression Alg
      */
     public static final int CompressionAlg = 0x00490026;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

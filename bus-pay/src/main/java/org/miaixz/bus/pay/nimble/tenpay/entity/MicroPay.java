@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class MicroPay extends Voucher {
 
     /**
-     * Constructs a new {@code MicroPay} instance.
-     */
-    public MicroPay() {
-        // No initialization required.
-    }
-
-    /**
      * Sub-merchant App ID.
      */
     private String sub_appid;
@@ -126,5 +119,12 @@ public class MicroPay extends Voucher {
      * Trade type.
      */
     private String trade_type;
+
+    /**
+     * Constructs a new {@code MicroPay} instance.
+     */
+    public MicroPay() {
+        // No initialization required.
+    }
 
 }

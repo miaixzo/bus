@@ -31,13 +31,6 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public abstract class TextFinder implements Finder, Serializable {
 
-    /**
-     * Constructs a text finder.
-     */
-    public TextFinder() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852237708637L;
 
@@ -55,6 +48,13 @@ public abstract class TextFinder implements Finder, Serializable {
      * Flag indicating whether to search in reverse (from end to start).
      */
     protected boolean negative;
+
+    /**
+     * Constructs a text finder.
+     */
+    public TextFinder() {
+        // No initialization required.
+    }
 
     /**
      * Sets the text to be searched.

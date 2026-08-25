@@ -35,13 +35,6 @@ import org.miaixz.bus.core.Loader;
  */
 public abstract class LazyLoader<T> implements Loader<T>, Serializable {
 
-    /**
-     * Constructs a new LazyLoader instance.
-     */
-    public LazyLoader() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852267795270L;
 
@@ -49,6 +42,13 @@ public abstract class LazyLoader<T> implements Loader<T>, Serializable {
      * The lazily loaded object. It is volatile to ensure visibility across threads.
      */
     private volatile T object;
+
+    /**
+     * Constructs a new LazyLoader instance.
+     */
+    public LazyLoader() {
+        // No initialization required.
+    }
 
     /**
      * Retrieves the lazily loaded object. The first time this method is called, the object is initialized and then

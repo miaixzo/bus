@@ -90,13 +90,6 @@ import lombok.experimental.SuperBuilder;
 public class Performance {
 
     /**
-     * Creates a performance configuration with default values.
-     */
-    public Performance() {
-        // No initialization required.
-    }
-
-    /**
      * Transport-level maximum size in bytes for non-multipart request bodies.
      * <p>
      * This is the outer DoS limit. Operations that must materialize a body are further restricted by
@@ -369,5 +362,12 @@ public class Performance {
      */
     @Builder.Default
     private List<String> mcpTrustedOrigins = List.of();
+
+    /**
+     * Creates a performance configuration with default values.
+     */
+    public Performance() {
+        // No initialization required.
+    }
 
 }

@@ -28,13 +28,6 @@ package org.miaixz.bus.core.text;
 public class ASCIIStrCache {
 
     /**
-     * Keeps ASCII string-cache lookup on the static API.
-     */
-    public ASCIIStrCache() {
-        // No initialization required.
-    }
-
-    /**
      * The maximum length of the ASCII character set (0-127).
      */
     private static final int ASCII_LENGTH = 128;
@@ -44,6 +37,13 @@ public class ASCIIStrCache {
      * the value is its {@link String} representation.
      */
     private static final String[] CACHE = new String[ASCII_LENGTH];
+
+    /**
+     * Keeps ASCII string-cache lookup on the static API.
+     */
+    public ASCIIStrCache() {
+        // No initialization required.
+    }
 
     static {
         // Populate the cache with String representations of ASCII characters.

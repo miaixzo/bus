@@ -54,13 +54,6 @@ import org.miaixz.bus.office.excel.writer.ExcelWriter;
 public class ExcelKit {
 
     /**
-     * Constructs a new ExcelKit instance.
-     */
-    public ExcelKit() {
-        // No initialization required.
-    }
-
-    /**
      * File size threshold for AUTO read mode to prefer streaming.
      */
     private static final long AUTO_STREAM_FILE_SIZE_THRESHOLD = 64L * 1024 * 1024;
@@ -99,6 +92,13 @@ public class ExcelKit {
      * Default queue poll timeout in milliseconds.
      */
     private static final long TRANSFER_POLL_TIMEOUT_MS_DEFAULT = 200L;
+
+    /**
+     * Constructs a new ExcelKit instance.
+     */
+    public ExcelKit() {
+        // No initialization required.
+    }
 
     /**
      * Reads an Excel file using SAX, supporting both '03 and '07 formats.

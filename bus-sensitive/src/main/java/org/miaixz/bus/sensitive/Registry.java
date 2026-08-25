@@ -39,16 +39,16 @@ import org.miaixz.bus.sensitive.nimble.*;
 public class Registry {
 
     /**
+     * A cache mapping strategy types to their provider instances.
+     */
+    private static final Map<EnumValue.Masking, StrategyProvider> STRATEGY_CACHE = new ConcurrentHashMap<>();
+
+    /**
      * Constructs a new Registry instance.
      */
     public Registry() {
         // No initialization required.
     }
-
-    /**
-     * A cache mapping strategy types to their provider instances.
-     */
-    private static final Map<EnumValue.Masking, StrategyProvider> STRATEGY_CACHE = new ConcurrentHashMap<>();
 
     static {
         register(new AddressProvider());

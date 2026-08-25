@@ -37,13 +37,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class Environment implements Serializable {
 
     /**
-     * Constructs a new {@code Environment} instance.
-     */
-    public Environment() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -81,6 +74,13 @@ public class Environment implements Serializable {
      * The last deployment value.
      */
     private Deployment lastDeployment;
+
+    /**
+     * Constructs a new {@code Environment} instance.
+     */
+    public Environment() {
+        // No initialization required.
+    }
 
     /**
      * Returns the tier.

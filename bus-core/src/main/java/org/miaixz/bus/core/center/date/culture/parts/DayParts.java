@@ -32,16 +32,16 @@ package org.miaixz.bus.core.center.date.culture.parts;
 public abstract class DayParts extends MonthParts {
 
     /**
+     * The day of the month (1-based index).
+     */
+    protected int day;
+
+    /**
      * Constructs day-based date parts.
      */
     public DayParts() {
         // No initialization required.
     }
-
-    /**
-     * The day of the month (1-based index).
-     */
-    protected int day;
 
     /**
      * Gets the day of the month.

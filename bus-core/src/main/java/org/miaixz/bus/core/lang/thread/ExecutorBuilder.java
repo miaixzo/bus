@@ -52,13 +52,6 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     private static final long serialVersionUID = 2852279106156L;
 
     /**
-     * Creates an executor builder returned by the static factory method.
-     */
-    public ExecutorBuilder() {
-        // No initialization required.
-    }
-
-    /**
      * The default capacity for the waiting queue, used if no specific queue is provided.
      */
     public static final int DEFAULT_QUEUE_CAPACITY = Integer.MAX_VALUE;
@@ -100,6 +93,13 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
      * {@code keepAliveTime}.
      */
     private Boolean allowCoreThreadTimeOut;
+
+    /**
+     * Creates an executor builder returned by the static factory method.
+     */
+    public ExecutorBuilder() {
+        // No initialization required.
+    }
 
     /**
      * Creates a new {@code ExecutorBuilder} instance, initiating the build process for a {@link ThreadPoolExecutor}.

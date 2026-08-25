@@ -38,13 +38,6 @@ import org.miaixz.bus.core.xyz.*;
  */
 public class EnumConverter extends AbstractConverter implements MatcherConverter {
 
-    /**
-     * Creates a new {@code EnumConverter} instance.
-     */
-    public EnumConverter() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852268818368L;
 
@@ -57,6 +50,13 @@ public class EnumConverter extends AbstractConverter implements MatcherConverter
      * Cache of enum conversion methods keyed by enum type and accepted parameter type.
      */
     private static final WeakConcurrentMap<Class<?>, Map<Class<?>, Method>> VALUE_OF_METHOD_CACHE = new WeakConcurrentMap<>();
+
+    /**
+     * Creates a new {@code EnumConverter} instance.
+     */
+    public EnumConverter() {
+        // No initialization required.
+    }
 
     /**
      * Attempts conversion with the following rules:

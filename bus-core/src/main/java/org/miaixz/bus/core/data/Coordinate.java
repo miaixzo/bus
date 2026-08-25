@@ -41,13 +41,6 @@ import java.util.Objects;
 public class Coordinate {
 
     /**
-     * Keeps coordinate conversion on the static API.
-     */
-    public Coordinate() {
-        // No initialization required.
-    }
-
-    /**
      * Coordinate transformation parameter (intermediate variable for converting between Mars and Baidu coordinate
      * systems).
      */
@@ -67,6 +60,13 @@ public class Coordinate {
      * Correction parameter (eccentricity ee).
      */
     public static final double CORRECTION_PARAM = 0.00669342162296594323D;
+
+    /**
+     * Keeps coordinate conversion on the static API.
+     */
+    public Coordinate() {
+        // No initialization required.
+    }
 
     /**
      * Determines if the coordinates are outside of China. The Mars coordinate system (GCJ-02) is only valid within

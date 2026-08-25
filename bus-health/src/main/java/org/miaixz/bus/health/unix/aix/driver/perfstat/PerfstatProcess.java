@@ -36,13 +36,6 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 public class PerfstatProcess {
 
     /**
-     * Keeps AIX perfstat process queries on the static API.
-     */
-    public PerfstatProcess() {
-        // No initialization required.
-    }
-
-    /**
      * The PERF constant.
      */
     private static final Perfstat PERF = Perfstat.INSTANCE;
@@ -61,6 +54,13 @@ public class PerfstatProcess {
      * Maximum number of buffer-fill retries after an exactly full result.
      */
     private static final int MAX_BUFFER_RETRIES = 3;
+
+    /**
+     * Keeps AIX perfstat process queries on the static API.
+     */
+    public PerfstatProcess() {
+        // No initialization required.
+    }
 
     /**
      * Returns the padded allocation size for a reported process count.

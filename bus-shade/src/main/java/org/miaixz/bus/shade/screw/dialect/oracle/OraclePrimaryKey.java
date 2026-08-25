@@ -35,13 +35,6 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 public class OraclePrimaryKey implements PrimaryKey {
 
     /**
-     * Constructs a new OraclePrimaryKey instance.
-     */
-    public OraclePrimaryKey() {
-        // No initialization required.
-    }
-
-    /**
      * The name of the table.
      */
     @MappingField(value = "TABLE_NAME")
@@ -70,5 +63,12 @@ public class OraclePrimaryKey implements PrimaryKey {
      */
     @MappingField(value = "KEY_SEQ")
     private String keySeq;
+
+    /**
+     * Constructs a new OraclePrimaryKey instance.
+     */
+    public OraclePrimaryKey() {
+        // No initialization required.
+    }
 
 }

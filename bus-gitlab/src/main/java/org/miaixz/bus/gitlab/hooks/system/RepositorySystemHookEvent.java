@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class RepositorySystemHookEvent extends AbstractSystemHookEvent {
 
     /**
-     * Constructs a new {@code RepositorySystemHookEvent} instance.
-     */
-    public RepositorySystemHookEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -88,6 +81,13 @@ public class RepositorySystemHookEvent extends AbstractSystemHookEvent {
      * The refs value.
      */
     private List<String> refs;
+
+    /**
+     * Constructs a new {@code RepositorySystemHookEvent} instance.
+     */
+    public RepositorySystemHookEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the event name.

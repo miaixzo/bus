@@ -40,17 +40,17 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public class ActualTypeMapper {
 
     /**
+     * A weak concurrent map to cache the mapping between a generic type and its resolved actual type arguments. The
+     * keys are generic types (e.g., ParameterizedType), and the values are maps from TypeVariable to their actual Type.
+     */
+    private static final WeakConcurrentMap<Type, Map<Type, Type>> CACHE = new WeakConcurrentMap<>();
+
+    /**
      * Keeps generic type-variable resolution on the static API.
      */
     public ActualTypeMapper() {
         // No initialization required.
     }
-
-    /**
-     * A weak concurrent map to cache the mapping between a generic type and its resolved actual type arguments. The
-     * keys are generic types (e.g., ParameterizedType), and the values are maps from TypeVariable to their actual Type.
-     */
-    private static final WeakConcurrentMap<Type, Map<Type, Type>> CACHE = new WeakConcurrentMap<>();
 
     /**
      * Retrieves the mapping between generic type variables and their actual types for a given type. The result is

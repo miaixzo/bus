@@ -33,17 +33,17 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class CachingTableSchemaBuilder implements TableSchemaBuilder {
 
     /**
+     * Caches entity class information, with the entity class as the key and the corresponding {@link TableMeta} as the
+     * value.
+     */
+    private final Map<Class<?>, TableMeta> ENTITY_CLASS_MAP = Collections.synchronizedMap(new WeakHashMap<>());
+
+    /**
      * Constructs a new CachingTableSchemaBuilder instance.
      */
     public CachingTableSchemaBuilder() {
         // No initialization required.
     }
-
-    /**
-     * Caches entity class information, with the entity class as the key and the corresponding {@link TableMeta} as the
-     * value.
-     */
-    private final Map<Class<?>, TableMeta> ENTITY_CLASS_MAP = Collections.synchronizedMap(new WeakHashMap<>());
 
     /**
      * Creates entity table information, with caching support to avoid redundant creation.

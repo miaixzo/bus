@@ -37,13 +37,6 @@ import lombok.experimental.Accessors;
 public class SchemaReport {
 
     /**
-     * Constructs a new SchemaReport instance.
-     */
-    public SchemaReport() {
-        // No initialization required.
-    }
-
-    /**
      * SQL statements executed successfully.
      */
     private List<String> executedSqls = new ArrayList<>();
@@ -57,5 +50,12 @@ public class SchemaReport {
      * Schema differences that failed during execution.
      */
     private List<SchemaDiff> failedDiffs = new ArrayList<>();
+
+    /**
+     * Constructs a new SchemaReport instance.
+     */
+    public SchemaReport() {
+        // No initialization required.
+    }
 
 }

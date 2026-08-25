@@ -30,13 +30,6 @@ import org.miaixz.bus.image.galaxy.data.Code;
 public class DeIdentificationMethod {
 
     /**
-     * Constructs a new DeIdentificationMethod instance.
-     */
-    public DeIdentificationMethod() {
-        // No initialization required.
-    }
-
-    /**
      * Code for Basic Application Confidentiality Profile de-identification method.
      */
     public static final Code BasicApplicationConfidentialityProfile = new Code("113100", "DCM", null,
@@ -114,5 +107,12 @@ public class DeIdentificationMethod {
      */
     public static final Code RetainPatientIDHashOption = new Code("113113", "99DCM", null,
             "Retain Patient ID Hash Option");
+
+    /**
+     * Constructs a new DeIdentificationMethod instance.
+     */
+    public DeIdentificationMethod() {
+        // No initialization required.
+    }
 
 }

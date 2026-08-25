@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class DownloadHbBill extends Voucher {
 
     /**
-     * Constructs a new {@code DownloadHbBill} instance.
-     */
-    public DownloadHbBill() {
-        // No initialization required.
-    }
-
-    /**
      * Signature.
      */
     private String sign;
@@ -56,5 +49,12 @@ public class DownloadHbBill extends Voucher {
      * Bill date.
      */
     private String date;
+
+    /**
+     * Constructs a new {@code DownloadHbBill} instance.
+     */
+    public DownloadHbBill() {
+        // No initialization required.
+    }
 
 }

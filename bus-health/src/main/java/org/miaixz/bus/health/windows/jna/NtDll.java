@@ -78,13 +78,6 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
     class PROCESS_BASIC_INFORMATION extends Structure {
 
         /**
-         * Creates a new PROCESS_BASIC_INFORMATION instance.
-         */
-        public PROCESS_BASIC_INFORMATION() {
-            // No initialization required.
-        }
-
-        /**
          * The Reserved1 value.
          */
         public Pointer Reserved1;
@@ -98,6 +91,13 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * The Reserved2 value.
          */
         public Pointer[] Reserved2 = new Pointer[4];
+
+        /**
+         * Creates a new PROCESS_BASIC_INFORMATION instance.
+         */
+        public PROCESS_BASIC_INFORMATION() {
+            // No initialization required.
+        }
 
     }
 
@@ -114,13 +114,6 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
     class PEB extends Structure {
 
         /**
-         * Creates a new PEB instance.
-         */
-        public PEB() {
-            // No initialization required.
-        }
-
-        /**
          * The pad value.
          */
         public byte[] pad = new byte[4];
@@ -134,6 +127,13 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * The ProcessParameters value.
          */
         public Pointer ProcessParameters; // RTL_USER_PROCESS_PARAMETERS
+
+        /**
+         * Creates a new PEB instance.
+         */
+        public PEB() {
+            // No initialization required.
+        }
 
     }
 
@@ -154,13 +154,6 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
             "LoaderThreads", "RedirectionDllName", "HeapPartitionName", "DefaultThreadpoolCpuSetMasks",
             "DefaultThreadpoolCpuSetMaskCount" })
     class RTL_USER_PROCESS_PARAMETERS extends Structure {
-
-        /**
-         * Creates a new RTL_USER_PROCESS_PARAMETERS instance.
-         */
-        public RTL_USER_PROCESS_PARAMETERS() {
-            // No initialization required.
-        }
 
         /**
          * The MaximumLength value.
@@ -347,6 +340,13 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          */
         public int DefaultThreadpoolCpuSetMaskCount;
 
+        /**
+         * Creates a new RTL_USER_PROCESS_PARAMETERS instance.
+         */
+        public RTL_USER_PROCESS_PARAMETERS() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -362,13 +362,6 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
     class UNICODE_STRING extends Structure {
 
         /**
-         * Creates a new UNICODE_STRING instance.
-         */
-        public UNICODE_STRING() {
-            // No initialization required.
-        }
-
-        /**
          * The Length value.
          */
         public short Length;
@@ -382,6 +375,13 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * The Buffer value.
          */
         public Pointer Buffer;
+
+        /**
+         * Creates a new UNICODE_STRING instance.
+         */
+        public UNICODE_STRING() {
+            // No initialization required.
+        }
 
     }
 
@@ -398,13 +398,6 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
     class STRING extends Structure {
 
         /**
-         * Creates a new STRING instance.
-         */
-        public STRING() {
-            // No initialization required.
-        }
-
-        /**
          * The Length value.
          */
         public short Length;
@@ -418,6 +411,13 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * The Buffer value.
          */
         public Pointer Buffer;
+
+        /**
+         * Creates a new STRING instance.
+         */
+        public STRING() {
+            // No initialization required.
+        }
 
     }
 
@@ -433,13 +433,6 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
     class CURDIR extends Structure {
 
         /**
-         * Creates a new CURDIR instance.
-         */
-        public CURDIR() {
-            // No initialization required.
-        }
-
-        /**
          * The DosPath value.
          */
         public UNICODE_STRING DosPath;
@@ -448,6 +441,13 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * The Handle value.
          */
         public Pointer Handle;
+
+        /**
+         * Creates a new CURDIR instance.
+         */
+        public CURDIR() {
+            // No initialization required.
+        }
 
     }
 
@@ -461,13 +461,6 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
      */
     @FieldOrder({ "Flags", "Length", "TimeStamp", "DosPath" })
     class RTL_DRIVE_LETTER_CURDIR extends Structure {
-
-        /**
-         * Creates a new RTL_DRIVE_LETTER_CURDIR instance.
-         */
-        public RTL_DRIVE_LETTER_CURDIR() {
-            // No initialization required.
-        }
 
         /**
          * The Flags value.
@@ -488,6 +481,13 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * The DosPath value.
          */
         public STRING DosPath;
+
+        /**
+         * Creates a new RTL_DRIVE_LETTER_CURDIR instance.
+         */
+        public RTL_DRIVE_LETTER_CURDIR() {
+            // No initialization required.
+        }
 
     }
 

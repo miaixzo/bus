@@ -31,13 +31,6 @@ import org.miaixz.bus.gitlab.hooks.web.MergeRequestEvent;
 public class MergeRequestSystemHookEvent extends MergeRequestEvent implements SystemHookEvent {
 
     /**
-     * Constructs a new {@code MergeRequestSystemHookEvent} instance.
-     */
-    public MergeRequestSystemHookEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -56,6 +49,13 @@ public class MergeRequestSystemHookEvent extends MergeRequestEvent implements Sy
      * The event name value.
      */
     private String eventName;
+
+    /**
+     * Constructs a new {@code MergeRequestSystemHookEvent} instance.
+     */
+    public MergeRequestSystemHookEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the object kind.

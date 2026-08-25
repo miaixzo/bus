@@ -32,13 +32,6 @@ import org.miaixz.bus.metrics.window.EwmaRate;
 public class NativeMeter implements Meter {
 
     /**
-     * Constructs a new NativeMeter instance.
-     */
-    public NativeMeter() {
-        // No initialization required.
-    }
-
-    /**
      * Lock-free accumulator for the cumulative event count.
      */
     private final LongAdder adder = new LongAdder();
@@ -62,6 +55,13 @@ public class NativeMeter implements Meter {
      * Nanosecond timestamp at creation; used to compute mean rate.
      */
     private final long startNanos = System.nanoTime();
+
+    /**
+     * Constructs a new NativeMeter instance.
+     */
+    public NativeMeter() {
+        // No initialization required.
+    }
 
     /**
      * Increment by one.

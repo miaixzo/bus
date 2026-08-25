@@ -53,13 +53,6 @@ import org.miaixz.bus.logger.Logger;
 public class Centre {
 
     /**
-     * Constructs a new {@code Centre} instance.
-     */
-    public Centre() {
-        // No initialization required.
-    }
-
-    /**
      * The main DICOM device configuration, which encapsulates all network and application settings.
      */
     public Device device;
@@ -93,6 +86,13 @@ public class Centre {
      * The scheduled executor service for running delayed or periodic tasks.
      */
     public ScheduledExecutorService scheduledExecutor;
+
+    /**
+     * Constructs a new {@code Centre} instance.
+     */
+    public Centre() {
+        // No initialization required.
+    }
 
     /**
      * Constructs a new Centre with a specified device.

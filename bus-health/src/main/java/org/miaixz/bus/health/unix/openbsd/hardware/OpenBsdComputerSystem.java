@@ -39,13 +39,6 @@ import org.miaixz.bus.health.unix.shared.hardware.UnixBaseboard;
 public class OpenBsdComputerSystem extends AbstractComputerSystem {
 
     /**
-     * Creates a new OpenBsdComputerSystem instance.
-     */
-    public OpenBsdComputerSystem() {
-        // No initialization required.
-    }
-
-    /**
      * The manufacturer value.
      */
     private final SupplierX<String> manufacturer = Memoizer.memoize(OpenBsdComputerSystem::queryManufacturer);
@@ -64,6 +57,13 @@ public class OpenBsdComputerSystem extends AbstractComputerSystem {
      * The uuid value.
      */
     private final SupplierX<String> uuid = Memoizer.memoize(OpenBsdComputerSystem::queryUUID);
+
+    /**
+     * Creates a new OpenBsdComputerSystem instance.
+     */
+    public OpenBsdComputerSystem() {
+        // No initialization required.
+    }
 
     /**
      * Queries the manufacturer.

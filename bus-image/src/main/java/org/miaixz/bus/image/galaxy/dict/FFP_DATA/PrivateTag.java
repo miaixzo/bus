@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.FFP_DATA;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "FFP DATA";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (0009,xx01) VR=UN VM=1 CR Header Information
      */
     public static final int CRHeaderInformation = 0x00090001;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -30,13 +30,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class PushData {
 
     /**
-     * Constructs a new {@code PushData} instance.
-     */
-    public PushData() {
-        // No initialization required.
-    }
-
-    /**
      * The commit count value.
      */
     private Integer commitCount;
@@ -64,6 +57,13 @@ public class PushData {
      * The commit title value.
      */
     private String commitTitle;
+
+    /**
+     * Constructs a new {@code PushData} instance.
+     */
+    public PushData() {
+        // No initialization required.
+    }
 
     /**
      * Returns the commit count.

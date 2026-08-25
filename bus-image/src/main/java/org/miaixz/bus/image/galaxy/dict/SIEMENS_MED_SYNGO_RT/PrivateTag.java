@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_SYNGO_RT;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS MED SYNGO RT";
@@ -522,5 +515,12 @@ public class PrivateTag {
      * (300B,xxF1) VR=CS VM=1 Interpreted Radiation Type
      */
     public static final int InterpretedRadiationType = 0x300B00F1;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

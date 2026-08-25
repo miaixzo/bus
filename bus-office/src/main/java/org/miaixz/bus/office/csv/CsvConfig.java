@@ -37,13 +37,6 @@ import org.miaixz.bus.core.lang.Symbol;
  */
 public class CsvConfig<T extends CsvConfig<T>> implements Serializable {
 
-    /**
-     * Constructs a new CsvConfig instance.
-     */
-    public CsvConfig() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852282577197L;
 
@@ -66,6 +59,13 @@ public class CsvConfig<T extends CsvConfig<T>> implements Serializable {
      * Header alias map.
      */
     protected Map<String, String> headerAlias = new LinkedHashMap<>();
+
+    /**
+     * Constructs a new CsvConfig instance.
+     */
+    public CsvConfig() {
+        // No initialization required.
+    }
 
     /**
      * Sets the field separator. Default is comma ','.

@@ -44,13 +44,6 @@ import org.miaixz.bus.mapper.parsing.PrimaryKeyMeta;
 public class TableSnapshot {
 
     /**
-     * Constructs a new TableSnapshot instance.
-     */
-    public TableSnapshot() {
-        // No initialization required.
-    }
-
-    /**
      * Database table name.
      */
     private String name;
@@ -84,6 +77,13 @@ public class TableSnapshot {
      * Database foreign key snapshots.
      */
     private List<ForeignKeyMeta> foreignKeys = new ArrayList<>();
+
+    /**
+     * Constructs a new TableSnapshot instance.
+     */
+    public TableSnapshot() {
+        // No initialization required.
+    }
 
     /**
      * Finds a column snapshot by name.

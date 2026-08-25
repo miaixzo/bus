@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SPI_P_CTBE_Private_Release_1;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SPI-P-CTBE-Private Release 1";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (0021,xx00) VR=DS VM=1 ?
      */
     public static final int _0021_xx00_ = 0x00210000;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

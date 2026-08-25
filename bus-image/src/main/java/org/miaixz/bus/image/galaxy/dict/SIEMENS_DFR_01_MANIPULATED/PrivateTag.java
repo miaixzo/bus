@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_DFR_01_MANIPULATED;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS DFR.01 MANIPULATED";
@@ -177,5 +170,12 @@ public class PrivateTag {
      * (0017,xxA3) VR=SH VM=1 Image Name Extension 2
      */
     public static final int ImageNameExtension2 = 0x001700A3;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

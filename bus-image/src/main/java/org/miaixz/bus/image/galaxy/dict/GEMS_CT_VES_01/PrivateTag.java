@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_CT_VES_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_CT_VES_01";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (0051,xx01) VR=SQ VM=1 CTVESequence
      */
     public static final int CTVESSequence = 0x00510001;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

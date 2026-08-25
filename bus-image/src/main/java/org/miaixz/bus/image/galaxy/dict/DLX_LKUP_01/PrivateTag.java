@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.DLX_LKUP_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "DLX_LKUP_01";
@@ -47,5 +40,12 @@ public class PrivateTag {
      * (60XX,xx02) VR=US VM=1 Gray Palette Color Lookup Table Data
      */
     public static final int GrayPaletteColorLookupTableData = 0x60000002;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

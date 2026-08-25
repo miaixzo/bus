@@ -28,13 +28,6 @@ import java.io.Serial;
  */
 public class CRC16Ansi extends CRC16Checksum {
 
-    /**
-     * Creates a CRC-16/ANSI checksum implementation.
-     */
-    public CRC16Ansi() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852278118286L;
 
@@ -42,6 +35,13 @@ public class CRC16Ansi extends CRC16Checksum {
      * The polynomial used in the CRC16-ANSI calculation.
      */
     private static final int WC_POLY = 0xa001;
+
+    /**
+     * Creates a CRC-16/ANSI checksum implementation.
+     */
+    public CRC16Ansi() {
+        // No initialization required.
+    }
 
     /**
      * Resets the CRC16-ANSI calculation to its initial state (0xFFFF).

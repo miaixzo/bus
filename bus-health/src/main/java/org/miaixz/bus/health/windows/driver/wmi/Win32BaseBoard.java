@@ -36,16 +36,16 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public class Win32BaseBoard {
 
     /**
+     * The WMI class name.
+     */
+    public static final String WIN32_BASEBOARD = "Win32_BaseBoard";
+
+    /**
      * Keeps Win32 base board queries on the static API.
      */
     public Win32BaseBoard() {
         // No initialization required.
     }
-
-    /**
-     * The WMI class name.
-     */
-    public static final String WIN32_BASEBOARD = "Win32_BaseBoard";
 
     /**
      * Queries the Baseboard description.

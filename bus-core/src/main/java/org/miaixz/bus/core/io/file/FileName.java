@@ -42,17 +42,17 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class FileName {
 
     /**
+     * An array of special double-file extensions (e.g., for compressed tarballs like "tar.bz2", "tar.gz", "tar.xz").
+     * These suffixes are treated as a single extension for operations like {@link #mainName(String)}.
+     */
+    private static final CharSequence[] SPECIAL_SUFFIX = { "tar.bz2", "tar.Z", "tar.gz", "tar.xz" };
+
+    /**
      * Keeps file-name parsing and normalization on the static API.
      */
     public FileName() {
         // No initialization required.
     }
-
-    /**
-     * An array of special double-file extensions (e.g., for compressed tarballs like "tar.bz2", "tar.gz", "tar.xz").
-     * These suffixes are treated as a single extension for operations like {@link #mainName(String)}.
-     */
-    private static final CharSequence[] SPECIAL_SUFFIX = { "tar.bz2", "tar.Z", "tar.gz", "tar.xz" };
 
     /**
      * Returns the name of the file.

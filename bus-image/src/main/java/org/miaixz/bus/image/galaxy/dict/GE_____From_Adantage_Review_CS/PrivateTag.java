@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GE_____From_Adantage_Review_CS;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GE ??? From Adantage Review CS";
@@ -67,5 +60,12 @@ public class PrivateTag {
      * (0019,xx90) VR=LO VM=1 CR Film Output Exposures
      */
     public static final int CRFilmOutputExposures = 0x00190090;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Repository implements Serializable {
 
     /**
-     * Constructs a new {@code Repository} instance.
-     */
-    public Repository() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -60,6 +53,13 @@ public class Repository implements Serializable {
      * The url value.
      */
     private String url;
+
+    /**
+     * Constructs a new {@code Repository} instance.
+     */
+    public Repository() {
+        // No initialization required.
+    }
 
     /**
      * Returns the description.

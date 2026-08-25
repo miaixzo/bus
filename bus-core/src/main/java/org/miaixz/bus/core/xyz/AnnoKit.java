@@ -51,13 +51,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class AnnoKit {
 
     /**
-     * Keeps annotation lookup and synthesis on the static API.
-     */
-    public AnnoKit() {
-        // No initialization required.
-    }
-
-    /**
      * JDK annotation attribute field name.
      */
     private static final String JDK_MEMBER_ATTRIBUTE = "memberValues";
@@ -101,6 +94,13 @@ public class AnnoKit {
      * Value: the synthesized annotation object, or {@code NULL_ANNOTATION_SENTINEL} if not present.
      */
     private static final Map<AnnotationLookupKey, Annotation> L2_SYNTHESIZED_ANNOTATION_CACHE = new SoftConcurrentMap<>();
+
+    /**
+     * Keeps annotation lookup and synthesis on the static API.
+     */
+    public AnnoKit() {
+        // No initialization required.
+    }
 
     /**
      * Retrieves annotations directly declared on the given element. If a cached value exists, it is returned. This

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_ACRQA_1_0_BLOCK2;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_ACRQA_1.0 BLOCK2";
@@ -87,5 +80,12 @@ public class PrivateTag {
      * (0023,xx90) VR=DS VM=1 CR DRT
      */
     public static final int CRDRT = 0x00230090;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

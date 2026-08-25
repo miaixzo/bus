@@ -38,13 +38,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Charset {
 
     /**
-     * Keeps common charset lookup on the static API.
-     */
-    public Charset() {
-        // No initialization required.
-    }
-
-    /**
      * The default character set of the Java virtual machine.
      */
     public static final java.nio.charset.Charset DEFAULT = java.nio.charset.Charset.defaultCharset();
@@ -173,6 +166,13 @@ public class Charset {
      * {@link java.nio.charset.Charset} instance for Windows-1252.
      */
     public static final java.nio.charset.Charset WINDOWS_1252 = java.nio.charset.Charset.forName(DEFAULT_WINDOWS_1252);
+
+    /**
+     * Keeps common charset lookup on the static API.
+     */
+    public Charset() {
+        // No initialization required.
+    }
 
     /**
      * Converts a character set name to a {@link java.nio.charset.Charset} object. If the character set name is blank,

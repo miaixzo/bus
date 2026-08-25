@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class DepositConsume extends Voucher {
 
     /**
-     * Constructs a new {@code DepositConsume} instance.
-     */
-    public DepositConsume() {
-        // No initialization required.
-    }
-
-    /**
      * Sub-merchant App ID.
      */
     private String sub_appid;
@@ -96,5 +89,12 @@ public class DepositConsume extends Voucher {
      * Signature type.
      */
     private String sign_type;
+
+    /**
+     * Constructs a new {@code DepositConsume} instance.
+     */
+    public DepositConsume() {
+        // No initialization required.
+    }
 
 }

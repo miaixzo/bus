@@ -36,13 +36,6 @@ import lombok.experimental.SuperBuilder;
 public class BatchTransferModel {
 
     /**
-     * Constructs a new {@code BatchTransferModel} instance.
-     */
-    public BatchTransferModel() {
-        // No initialization required.
-    }
-
-    /**
      * The merchant's internal batch number. It must be unique within the merchant's system and can only consist of
      * numbers and uppercase/lowercase letters.
      */
@@ -79,5 +72,12 @@ public class BatchTransferModel {
      * The scene ID specifying the use case for this transfer.
      */
     private String transfer_scene_id;
+
+    /**
+     * Constructs a new {@code BatchTransferModel} instance.
+     */
+    public BatchTransferModel() {
+        // No initialization required.
+    }
 
 }

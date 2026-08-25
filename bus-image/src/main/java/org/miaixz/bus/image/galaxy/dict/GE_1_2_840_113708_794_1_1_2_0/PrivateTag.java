@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GE_1_2_840_113708_794_1_1_2_0;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "1.2.840.113708.794.1.1.2.0";
@@ -62,5 +55,12 @@ public class PrivateTag {
      * (0087,xx50) VR=IS VM=1 Estimated Retrieve Time
      */
     public static final int EstimatedRetrieveTime = 0x00870050;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

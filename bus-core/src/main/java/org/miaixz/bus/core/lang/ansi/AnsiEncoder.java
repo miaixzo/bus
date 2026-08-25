@@ -30,13 +30,6 @@ import org.miaixz.bus.core.lang.Symbol;
 public class AnsiEncoder {
 
     /**
-     * Keeps ANSI escape-sequence encoding on the static API.
-     */
-    public AnsiEncoder() {
-        // No initialization required.
-    }
-
-    /**
      * The starting sequence for an ANSI escape code.
      */
     private static final String ENCODE_START = "\033[";
@@ -50,6 +43,13 @@ public class AnsiEncoder {
      * The ANSI reset code, which resets all formatting to default.
      */
     private static final String RESET = "0;" + Ansi4BitColor.DEFAULT;
+
+    /**
+     * Keeps ANSI escape-sequence encoding on the static API.
+     */
+    public AnsiEncoder() {
+        // No initialization required.
+    }
 
     /**
      * Encodes a sequence of objects into an ANSI string. {@link AnsiElement} instances within the arguments will be

@@ -41,13 +41,6 @@ import freemarker.template.Template;
 public class Builder {
 
     /**
-     * Constructs a new Builder instance.
-     */
-    public Builder() {
-        // No initialization required.
-    }
-
-    /**
      * Constant for identifying the Entity template.
      */
     public static final String ENTITY = "Entity";
@@ -81,6 +74,13 @@ public class Builder {
      * The file extension for FreeMarker templates.
      */
     public static final String SUFFIX = ".ftl";
+
+    /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
 
     /**
      * Creates an entity class file.

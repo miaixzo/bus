@@ -34,13 +34,6 @@ import lombok.Setter;
 public class DiagnosticsSnapshot {
 
     /**
-     * Creates an empty diagnostics snapshot.
-     */
-    public DiagnosticsSnapshot() {
-        // No initialization required.
-    }
-
-    /**
      * Runtime component name.
      */
     private String component;
@@ -64,5 +57,12 @@ public class DiagnosticsSnapshot {
      * Snapshot update timestamp in epoch milliseconds.
      */
     private long updatedAt;
+
+    /**
+     * Creates an empty diagnostics snapshot.
+     */
+    public DiagnosticsSnapshot() {
+        // No initialization required.
+    }
 
 }

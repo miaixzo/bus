@@ -32,13 +32,6 @@ import org.miaixz.bus.core.lang.Normal;
 public class BooleanKit {
 
     /**
-     * Keeps Boolean parsing and conversion on the static API.
-     */
-    public BooleanKit() {
-        // No initialization required.
-    }
-
-    /**
      * A set of strings that represent the boolean value {@code true}.
      */
     private static final Set<String> TRUE_SET = SetKit.of(Normal.TRUE_ARRAY);
@@ -47,6 +40,13 @@ public class BooleanKit {
      * A set of strings that represent the boolean value {@code false}.
      */
     private static final Set<String> FALSE_SET = SetKit.of(Normal.FALSE_ARRAY);
+
+    /**
+     * Keeps Boolean parsing and conversion on the static API.
+     */
+    public BooleanKit() {
+        // No initialization required.
+    }
 
     /**
      * Negates the given boolean.

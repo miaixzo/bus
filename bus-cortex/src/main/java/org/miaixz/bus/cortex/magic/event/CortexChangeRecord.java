@@ -32,13 +32,6 @@ import lombok.Setter;
 public class CortexChangeRecord {
 
     /**
-     * Creates an empty change-log record.
-     */
-    public CortexChangeRecord() {
-        // No initialization required.
-    }
-
-    /**
      * Unique change-log record identifier.
      */
     private String id;
@@ -127,5 +120,12 @@ public class CortexChangeRecord {
      * Last modification timestamp in epoch milliseconds.
      */
     private long modified;
+
+    /**
+     * Creates an empty change-log record.
+     */
+    public CortexChangeRecord() {
+        // No initialization required.
+    }
 
 }

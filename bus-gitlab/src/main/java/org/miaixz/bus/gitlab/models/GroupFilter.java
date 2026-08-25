@@ -36,13 +36,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class GroupFilter implements Serializable {
 
     /**
-     * Constructs a new {@code GroupFilter} instance.
-     */
-    public GroupFilter() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -92,6 +85,13 @@ public class GroupFilter implements Serializable {
      * The custom attributes filter value.
      */
     private List<CustomAttribute> customAttributesFilter = new ArrayList<>();
+
+    /**
+     * Constructs a new {@code GroupFilter} instance.
+     */
+    public GroupFilter() {
+        // No initialization required.
+    }
 
     /**
      * Do not include the provided groups IDs.

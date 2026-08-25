@@ -32,16 +32,16 @@ import java.util.Queue;
 public class DiscardingQueue extends AbstractQueue<Object> {
 
     /**
+     * The singleton instance shared by all callers.
+     */
+    private static final DiscardingQueue INSTANCE = new DiscardingQueue();
+
+    /**
      * Creates the shared queue that discards submitted elements.
      */
     public DiscardingQueue() {
         // No initialization required.
     }
-
-    /**
-     * The singleton instance shared by all callers.
-     */
-    private static final DiscardingQueue INSTANCE = new DiscardingQueue();
 
     /**
      * Gets the singleton empty queue instance.

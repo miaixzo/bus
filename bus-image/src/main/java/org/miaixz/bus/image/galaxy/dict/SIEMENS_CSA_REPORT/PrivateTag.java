@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_CSA_REPORT;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS CSA REPORT";
@@ -57,5 +50,12 @@ public class PrivateTag {
      * (0029,xx17) VR=UI VM=1 SC SOP Instance UID
      */
     public static final int SCSOPInstanceUID = 0x00290017;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

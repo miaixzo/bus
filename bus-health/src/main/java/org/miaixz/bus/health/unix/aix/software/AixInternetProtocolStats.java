@@ -39,17 +39,17 @@ import org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatProtocol;
 public class AixInternetProtocolStats extends AbstractInternetProtocolStats {
 
     /**
+     * The ipstats value.
+     */
+    private final SupplierX<perfstat_protocol_t[]> ipstats = Memoizer
+            .memoize(PerfstatProtocol::queryProtocols, Memoizer.defaultExpiration());
+
+    /**
      * Constructs a new AixInternetProtocolStats instance.
      */
     public AixInternetProtocolStats() {
         // No initialization required.
     }
-
-    /**
-     * The ipstats value.
-     */
-    private final SupplierX<perfstat_protocol_t[]> ipstats = Memoizer
-            .memoize(PerfstatProtocol::queryProtocols, Memoizer.defaultExpiration());
 
     /**
      * Returns the tc pv4 stats.

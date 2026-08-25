@@ -36,13 +36,6 @@ import org.miaixz.bus.core.lang.tuple.Pair;
 public class LoadAverage {
 
     /**
-     * Constructs a new {@code LoadAverage} instance.
-     */
-    public LoadAverage() {
-        // No initialization required.
-    }
-
-    /**
      * The EXP_WEIGHT constant.
      */
     private static final double[] EXP_WEIGHT = new double[] {
@@ -58,6 +51,13 @@ public class LoadAverage {
      * The loadAverages value.
      */
     private static double[] loadAverages = new double[] { -1d, -1d, -1d };
+
+    /**
+     * Constructs a new {@code LoadAverage} instance.
+     */
+    public LoadAverage() {
+        // No initialization required.
+    }
 
     /**
      * Queries the load average.

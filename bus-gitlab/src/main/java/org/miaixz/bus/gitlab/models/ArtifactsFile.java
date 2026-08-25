@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ArtifactsFile implements Serializable {
 
     /**
-     * Constructs a new {@code ArtifactsFile} instance.
-     */
-    public ArtifactsFile() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -52,6 +45,13 @@ public class ArtifactsFile implements Serializable {
      * The size value.
      */
     private Long size;
+
+    /**
+     * Constructs a new {@code ArtifactsFile} instance.
+     */
+    public ArtifactsFile() {
+        // No initialization required.
+    }
 
     /**
      * Returns the filename.

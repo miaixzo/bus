@@ -38,13 +38,6 @@ import org.miaixz.bus.gitlab.support.ISO8601;
 public class DeploymentFilter implements Serializable {
 
     /**
-     * Constructs a new {@code DeploymentFilter} instance.
-     */
-    public DeploymentFilter() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -79,6 +72,13 @@ public class DeploymentFilter implements Serializable {
      * The status to filter deployments by.
      */
     private DeploymentStatus status;
+
+    /**
+     * Constructs a new {@code DeploymentFilter} instance.
+     */
+    public DeploymentFilter() {
+        // No initialization required.
+    }
 
     /**
      * Returns the order by.

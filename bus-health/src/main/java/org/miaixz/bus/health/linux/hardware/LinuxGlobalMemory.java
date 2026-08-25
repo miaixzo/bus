@@ -42,13 +42,6 @@ import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
 public class LinuxGlobalMemory extends AbstractGlobalMemory {
 
     /**
-     * Constructs a new {@code LinuxGlobalMemory} instance.
-     */
-    public LinuxGlobalMemory() {
-        // No initialization required.
-    }
-
-    /**
      * The PAGE_SIZE constant.
      */
     private static final long PAGE_SIZE = LinuxOperatingSystem.getPageSize();
@@ -63,6 +56,13 @@ public class LinuxGlobalMemory extends AbstractGlobalMemory {
      * The vm value.
      */
     private final SupplierX<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
+
+    /**
+     * Constructs a new {@code LinuxGlobalMemory} instance.
+     */
+    public LinuxGlobalMemory() {
+        // No initialization required.
+    }
 
     /**
      * Updates instance variables from reading /proc/meminfo. While most of the information is available in the sysinfo

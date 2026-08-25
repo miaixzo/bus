@@ -34,13 +34,6 @@ import lombok.Setter;
 public class RegistryWatchScope {
 
     /**
-     * Creates an empty registry watch scope.
-     */
-    public RegistryWatchScope() {
-        // No initialization required.
-    }
-
-    /**
      * Registry query criteria for the watch subscription.
      */
     private RegistryQuery query;
@@ -64,5 +57,12 @@ public class RegistryWatchScope {
      * Maximum pending event count for the subscription.
      */
     private int maxPending;
+
+    /**
+     * Creates an empty registry watch scope.
+     */
+    public RegistryWatchScope() {
+        // No initialization required.
+    }
 
 }

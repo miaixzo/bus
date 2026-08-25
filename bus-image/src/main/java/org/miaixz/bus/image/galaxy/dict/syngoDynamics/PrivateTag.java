@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.syngoDynamics;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "syngoDynamics";
@@ -52,5 +45,12 @@ public class PrivateTag {
      * (0021,xxB1) VR=LO VM=1 ?
      */
     public static final int _0021_xxB1_ = 0x002100B1;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

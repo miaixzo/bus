@@ -28,6 +28,7 @@ import com.sun.jna.platform.linux.Udev;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Executor;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.LogicalVolumeGroup;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractLogicalVolumeGroup;
 import org.miaixz.bus.health.linux.DevPath;
@@ -119,18 +120,20 @@ public class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
                                     String vgName = device.getPropertyValue(DM_VG_NAME);
                                     String lvName = device.getPropertyValue(DM_LV_NAME);
                                     if (!StringKit.isBlank(vgName) && !StringKit.isBlank(lvName)) {
-                                        logicalVolumesMap.computeIfAbsent(vgName, k -> new HashMap<>());
-                                        Map<String, Set<String>> lvMapForGroup = logicalVolumesMap.get(vgName);
+                                        String vg = Parsing.getStringValueOrEmpty(vgName);
+                                        String lv = Parsing.getStringValueOrEmpty(lvName);
+                                        logicalVolumesMap.computeIfAbsent(vg, k -> new HashMap<>());
+                                        Map<String, Set<String>> lvMapForGroup = logicalVolumesMap.get(vg);
                                         // Backup to add to pv set if pvs command failed
-                                        physicalVolumesMap.computeIfAbsent(vgName, k -> new HashSet<>());
-                                        Set<String> pvSetForGroup = physicalVolumesMap.get(vgName);
+                                        physicalVolumesMap.computeIfAbsent(vg, k -> new HashSet<>());
+                                        Set<String> pvSetForGroup = physicalVolumesMap.get(vg);
 
                                         File slavesDir = new File(syspath + "/slaves");
                                         File[] slaves = slavesDir.listFiles();
                                         if (slaves != null) {
                                             for (File f : slaves) {
                                                 String pvName = f.getName();
-                                                lvMapForGroup.computeIfAbsent(lvName, k -> new HashSet<>())
+                                                lvMapForGroup.computeIfAbsent(lv, k -> new HashSet<>())
                                                         .add(DevPath.DEV + pvName);
                                                 // Backup to add to pv set if pvs command failed
                                                 // Added /dev/ to remove duplicates like /dev/sda1 and sda1
@@ -152,7 +155,9 @@ public class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
             udev.unref();
         }
         return logicalVolumesMap.entrySet().stream()
-                .map(e -> new LinuxLogicalVolumeGroup(e.getKey(), e.getValue(), physicalVolumesMap.get(e.getKey())))
+                .map(
+                        e -> new LinuxLogicalVolumeGroup(e.getKey(), e.getValue(),
+                                physicalVolumesMap.getOrDefault(e.getKey(), Collections.emptySet())))
                 .collect(Collectors.toList());
     }
 

@@ -45,13 +45,6 @@ import org.miaixz.bus.vortex.provider.MetricsProvider;
 public class Metrics {
 
     /**
-     * Creates an empty metrics snapshot.
-     */
-    public Metrics() {
-        // No initialization required.
-    }
-
-    /**
      * The CPU usage of the process, represented as a percentage (e.g., 15.5 for 15.5%).
      */
     private double cpu;
@@ -126,6 +119,13 @@ public class Metrics {
      */
     @Builder.Default
     private double avgDbDurationMs = 0.0;
+
+    /**
+     * Creates an empty metrics snapshot.
+     */
+    public Metrics() {
+        // No initialization required.
+    }
 
     /**
      * Calculates the success rate (0.0 - 1.0).

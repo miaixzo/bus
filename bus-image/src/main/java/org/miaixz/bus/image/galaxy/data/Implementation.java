@@ -29,13 +29,6 @@ import org.miaixz.bus.core.lang.Normal;
 public class Implementation {
 
     /**
-     * Constructs a new Implementation instance.
-     */
-    public Implementation() {
-        // No initialization required.
-    }
-
-    /**
      * Provides DICOM processing details.
      */
     private static final String IMPL_CLASS_UID = "1.3.51.0.42.1.1";
@@ -44,6 +37,13 @@ public class Implementation {
      * Provides DICOM processing details.
      */
     private static final String IMPL_VERS_NAME = versionName();
+
+    /**
+     * Constructs a new Implementation instance.
+     */
+    public Implementation() {
+        // No initialization required.
+    }
 
     /**
      * Provides DICOM processing details.

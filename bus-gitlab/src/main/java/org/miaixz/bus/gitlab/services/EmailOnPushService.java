@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
 public class EmailOnPushService extends NotificationService {
 
     /**
-     * Constructs a new {@code EmailOnPushService} instance.
-     */
-    public EmailOnPushService() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -57,6 +50,13 @@ public class EmailOnPushService extends NotificationService {
      * The send from committer email prop value.
      */
     public static final String SEND_FROM_COMMITTER_EMAIL_PROP = "send_from_committer_email";
+
+    /**
+     * Constructs a new {@code EmailOnPushService} instance.
+     */
+    public EmailOnPushService() {
+        // No initialization required.
+    }
 
     /**
      * Executes the service properties form operation.

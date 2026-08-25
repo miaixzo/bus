@@ -37,16 +37,16 @@ import org.miaixz.bus.health.Parsing;
 public class Lshal {
 
     /**
+     * The LSHAL_CMD constant.
+     */
+    private static final String LSHAL_CMD = "lshal";
+
+    /**
      * Constructs a new {@code Lshal} instance.
      */
     public Lshal() {
         // No initialization required.
     }
-
-    /**
-     * The LSHAL_CMD constant.
-     */
-    private static final String LSHAL_CMD = "lshal";
 
     /**
      * Query lshal to get device major

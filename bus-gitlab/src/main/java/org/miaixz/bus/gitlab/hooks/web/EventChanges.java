@@ -39,13 +39,6 @@ import org.miaixz.bus.logger.Logger;
 public abstract class EventChanges {
 
     /**
-     * Constructs a new {@code EventChanges} instance.
-     */
-    public EventChanges() {
-        // No initialization required.
-    }
-
-    /**
      * The author id value.
      */
     private ChangeContainer<Long> authorId;
@@ -93,6 +86,13 @@ public abstract class EventChanges {
      * The other properties value.
      */
     private Map<String, ChangeContainer<Object>> otherProperties = new LinkedHashMap<>();
+
+    /**
+     * Constructs a new {@code EventChanges} instance.
+     */
+    public EventChanges() {
+        // No initialization required.
+    }
 
     /**
      * Returns the author id.

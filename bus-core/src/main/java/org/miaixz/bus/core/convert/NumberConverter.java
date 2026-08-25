@@ -55,13 +55,6 @@ import org.miaixz.bus.core.xyz.*;
  */
 public class NumberConverter extends AbstractConverter implements MatcherConverter {
 
-    /**
-     * Constructs a new {@code NumberConverter} instance.
-     */
-    public NumberConverter() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852269279995L;
 
@@ -69,6 +62,13 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
      * Singleton instance
      */
     public static final NumberConverter INSTANCE = new NumberConverter();
+
+    /**
+     * Constructs a new {@code NumberConverter} instance.
+     */
+    public NumberConverter() {
+        // No initialization required.
+    }
 
     /**
      * Converts an object to a number, supporting:

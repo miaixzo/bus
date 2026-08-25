@@ -33,13 +33,6 @@ import org.miaixz.bus.core.xyz.ReflectKit;
  */
 public class EmptyBeanConverter extends AbstractConverter implements MatcherConverter, Serializable {
 
-    /**
-     * Creates a new {@code EmptyBeanConverter} instance.
-     */
-    public EmptyBeanConverter() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852268257237L;
 
@@ -47,6 +40,13 @@ public class EmptyBeanConverter extends AbstractConverter implements MatcherConv
      * Singleton instance
      */
     public static final EmptyBeanConverter INSTANCE = new EmptyBeanConverter();
+
+    /**
+     * Creates a new {@code EmptyBeanConverter} instance.
+     */
+    public EmptyBeanConverter() {
+        // No initialization required.
+    }
 
     /**
      * Checks if this converter can handle the conversion to the specified target type.

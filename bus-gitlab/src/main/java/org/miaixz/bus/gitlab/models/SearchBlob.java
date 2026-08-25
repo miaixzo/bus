@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class SearchBlob implements Serializable {
 
     /**
-     * Constructs a new {@code SearchBlob} instance.
-     */
-    public SearchBlob() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -72,6 +65,13 @@ public class SearchBlob implements Serializable {
      * The project id value.
      */
     private Long projectId;
+
+    /**
+     * Constructs a new {@code SearchBlob} instance.
+     */
+    public SearchBlob() {
+        // No initialization required.
+    }
 
     /**
      * Returns the basename.

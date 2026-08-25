@@ -29,16 +29,16 @@ import org.miaixz.bus.core.lang.Normal;
 public class PrivateKeyword {
 
     /**
+     * The private creator value.
+     */
+    public static final String PrivateCreator = Normal.EMPTY;
+
+    /**
      * Constructs a new {@code PrivateKeyword} instance.
      */
     public PrivateKeyword() {
         // No initialization required.
     }
-
-    /**
-     * The private creator value.
-     */
-    public static final String PrivateCreator = Normal.EMPTY;
 
     /**
      * Executes the value of operation.

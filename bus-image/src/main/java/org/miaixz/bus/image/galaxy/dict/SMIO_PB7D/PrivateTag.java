@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SMIO_PB7D;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SMIO_PB7D";
@@ -52,5 +45,12 @@ public class PrivateTag {
      * (007D,xx03) VR=FL VM=1 Origin
      */
     public static final int Origin = 0x007D0003;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

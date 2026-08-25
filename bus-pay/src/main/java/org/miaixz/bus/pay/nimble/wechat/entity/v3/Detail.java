@@ -36,13 +36,6 @@ import lombok.experimental.SuperBuilder;
 public class Detail {
 
     /**
-     * Constructs a new {@code Detail} instance.
-     */
-    public Detail() {
-        // No initialization required.
-    }
-
-    /**
      * Original price of the order.
      */
     private int cost_price;
@@ -56,5 +49,12 @@ public class Detail {
      * List of single products.
      */
     private List<GoodsDetail> goods_detail;
+
+    /**
+     * Constructs a new {@code Detail} instance.
+     */
+    public Detail() {
+        // No initialization required.
+    }
 
 }

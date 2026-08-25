@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_REGISTRATION;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS SYNGO REGISTRATION";
@@ -47,5 +40,12 @@ public class PrivateTag {
      * (0071,xx21) VR=CS VM=1 Registration Is Validated Flag
      */
     public static final int RegistrationIsValidatedFlag = 0x00710021;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

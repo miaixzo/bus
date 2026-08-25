@@ -34,13 +34,6 @@ import lombok.experimental.SuperBuilder;
 public class SceneInfo {
 
     /**
-     * Constructs a new {@code SceneInfo} instance.
-     */
-    public SceneInfo() {
-        // No initialization required.
-    }
-
-    /**
      * The payer's client IP address.
      */
     private String payer_client_ip;
@@ -59,5 +52,12 @@ public class SceneInfo {
      * Information for H5 payment scenarios.
      */
     private H5Info h5_info;
+
+    /**
+     * Constructs a new {@code SceneInfo} instance.
+     */
+    public SceneInfo() {
+        // No initialization required.
+    }
 
 }

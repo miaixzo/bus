@@ -34,13 +34,6 @@ import lombok.experimental.SuperBuilder;
 public class UnifiedOrder {
 
     /**
-     * Constructs a new {@code UnifiedOrder} instance.
-     */
-    public UnifiedOrder() {
-        // No initialization required.
-    }
-
-    /**
      * The AppID of the Official Account or Mini Program.
      */
     private String appid;
@@ -129,5 +122,12 @@ public class UnifiedOrder {
      * A flag indicating whether an electronic invoice (fapiao) is supported.
      */
     private boolean support_fapiao;
+
+    /**
+     * Constructs a new {@code UnifiedOrder} instance.
+     */
+    public UnifiedOrder() {
+        // No initialization required.
+    }
 
 }

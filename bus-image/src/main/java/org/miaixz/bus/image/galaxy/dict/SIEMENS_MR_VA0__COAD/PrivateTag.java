@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_MR_VA0__COAD;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS MR VA0 COAD";
@@ -262,5 +255,12 @@ public class PrivateTag {
      * (0019,xxDA) VR=CS VM=1 Phase Coding Direction
      */
     public static final int PhaseCodingDirection = 0x001900DA;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

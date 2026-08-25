@@ -94,13 +94,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class AnnotatedElements {
 
     /**
-     * Keeps merged-annotation traversal on the static API.
-     */
-    public AnnotatedElements() {
-        // No initialization required.
-    }
-
-    /**
      * Cache for {@link MetaAnnotatedElement} with attribute resolution enabled.
      */
     private static final Map<AnnotatedElement, MetaAnnotatedElement<ResolvedAnnotationMapping>> RESOLVED_ELEMENT_CACHE = new WeakConcurrentMap<>();
@@ -119,6 +112,13 @@ public class AnnotatedElements {
      * Cache for {@link RepeatableMetaAnnotatedElement} with attribute resolution disabled.
      */
     private static final Map<AnnotatedElement, RepeatableMetaAnnotatedElement<GenericAnnotationMapping>> REPEATABLE_ELEMENT_CACHE = new WeakConcurrentMap<>();
+
+    /**
+     * Keeps merged-annotation traversal on the static API.
+     */
+    public AnnotatedElements() {
+        // No initialization required.
+    }
 
     /**
      * Checks if an annotation of the specified type is present on the element or within its hierarchy, including on

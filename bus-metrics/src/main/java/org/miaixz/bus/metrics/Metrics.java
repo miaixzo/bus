@@ -57,16 +57,16 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
 public class Metrics {
 
     /**
+     * Active metrics provider; lazily initialised via SPI on first access.
+     */
+    private static volatile Provider PROVIDER;
+
+    /**
      * Constructs a new Metrics instance.
      */
     public Metrics() {
         // No initialization required.
     }
-
-    /**
-     * Active metrics provider; lazily initialised via SPI on first access.
-     */
-    private static volatile Provider PROVIDER;
 
     /**
      * Returns the active provider, loading it via SPI on first call.

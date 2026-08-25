@@ -36,13 +36,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class CertificateInfo implements Serializable {
 
-    /**
-     * Constructs a new {@code CertificateInfo} instance.
-     */
-    public CertificateInfo() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852258391088L;
 
@@ -65,5 +58,12 @@ public class CertificateInfo implements Serializable {
      * The encrypted certificate details.
      */
     private EncryptCertificate encrypt_certificate;
+
+    /**
+     * Constructs a new {@code CertificateInfo} instance.
+     */
+    public CertificateInfo() {
+        // No initialization required.
+    }
 
 }

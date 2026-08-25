@@ -37,13 +37,6 @@ import lombok.experimental.SuperBuilder;
 public class Watch<T> implements Change<T> {
 
     /**
-     * Creates an empty watch event.
-     */
-    public Watch() {
-        // No initialization required.
-    }
-
-    /**
      * Space of the subscription that produced this event.
      */
     private String space_id;
@@ -120,5 +113,12 @@ public class Watch<T> implements Change<T> {
      * Creation time of this watch event in epoch milliseconds.
      */
     private long timestamp;
+
+    /**
+     * Creates an empty watch event.
+     */
+    public Watch() {
+        // No initialization required.
+    }
 
 }

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.DIDI_TO_PCR_1_1;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "DIDI TO PCR 1.1";
@@ -247,5 +240,12 @@ public class PrivateTag {
      * (0089,xx10) VR=SQ VM=1 Stamp Image Sequence
      */
     public static final int StampImageSequence = 0x00890010;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

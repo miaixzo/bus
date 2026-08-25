@@ -40,13 +40,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class ExportStatus implements Serializable {
 
     /**
-     * Constructs a new {@code ExportStatus} instance.
-     */
-    public ExportStatus() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -155,6 +148,13 @@ public class ExportStatus implements Serializable {
      */
     @JsonProperty("_links")
     private Map<String, String> links;
+
+    /**
+     * Constructs a new {@code ExportStatus} instance.
+     */
+    public ExportStatus() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

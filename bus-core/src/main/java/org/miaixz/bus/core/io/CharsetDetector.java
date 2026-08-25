@@ -42,16 +42,16 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class CharsetDetector {
 
     /**
+     * Default charsets to participate in the detection test.
+     */
+    private static final java.nio.charset.Charset[] DEFAULT_CHARSETS;
+
+    /**
      * Keeps byte-stream charset detection on the static API.
      */
     public CharsetDetector() {
         // No initialization required.
     }
-
-    /**
-     * Default charsets to participate in the detection test.
-     */
-    private static final java.nio.charset.Charset[] DEFAULT_CHARSETS;
 
     static {
         final String[] names = { Charset.DEFAULT_UTF_8, Charset.DEFAULT_GBK, Charset.DEFAULT_GB_2312,

@@ -38,13 +38,6 @@ import lombok.experimental.Accessors;
 public class ForeignKeyMeta {
 
     /**
-     * Constructs a new ForeignKeyMeta instance.
-     */
-    public ForeignKeyMeta() {
-        // No initialization required.
-    }
-
-    /**
      * Foreign key constraint name.
      */
     private String name;
@@ -73,6 +66,13 @@ public class ForeignKeyMeta {
      * Optional ON UPDATE action.
      */
     private String onUpdate;
+
+    /**
+     * Constructs a new ForeignKeyMeta instance.
+     */
+    public ForeignKeyMeta() {
+        // No initialization required.
+    }
 
     /**
      * Creates foreign key metadata.

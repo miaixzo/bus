@@ -44,13 +44,6 @@ import java.io.OutputStream;
 public class AnimatedGifEncoder {
 
     /**
-     * Constructs a new AnimatedGifEncoder instance.
-     */
-    public AnimatedGifEncoder() {
-        // No initialization required.
-    }
-
-    /**
      * The width of the image frames.
      */
     protected int width;
@@ -144,6 +137,13 @@ public class AnimatedGifEncoder {
      * The default sample interval for the quantizer.
      */
     protected int sample = 10; // default sample interval for quantizer
+
+    /**
+     * Constructs a new AnimatedGifEncoder instance.
+     */
+    public AnimatedGifEncoder() {
+        // No initialization required.
+    }
 
     /**
      * Sets the delay time between each frame, or changes it for subsequent frames (applies to last frame added).
