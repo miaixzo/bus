@@ -31,6 +31,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
@@ -59,6 +60,7 @@ import org.miaixz.bus.logger.Logger;
  * attribute editing and transfer syntax adaptation.
  *
  * @author Kimi Liu
+ * @since Java 21+
  */
 public class StoreSCU implements AutoCloseable {
 
@@ -174,20 +176,30 @@ public class StoreSCU implements AutoCloseable {
     /**
      * A factory for creating DIMSE response handlers for each C-STORE request.
      */
-    private RSPHandlerFactory rspHandlerFactory = file -> new DimseRSPHandler(as.nextMessageID()) {
+    private RSPHandlerFactory rspHandlerFactory = this::createDefaultRspHandler;
 
-        @Override
-        public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
-            super.onDimseRSP(as, cmd, data);
-            onCStoreRSP(cmd, file);
+    /**
+     * Creates the default response handler for a C-STORE operation.
+     *
+     * @param file the file being sent.
+     * @return the response handler.
+     */
+    private DimseRSPHandler createDefaultRspHandler(File file) {
+        return new DimseRSPHandler(as.nextMessageID()) {
 
-            ImageProgress progress = state.getProgress();
-            if (progress != null) {
-                progress.setProcessedFile(file);
-                progress.setAttributes(cmd);
+            @Override
+            public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
+                super.onDimseRSP(as, cmd, data);
+                onCStoreRSP(cmd, file);
+
+                ImageProgress progress = state.getProgress();
+                if (progress != null) {
+                    progress.setProcessedFile(file);
+                    progress.setAttributes(cmd);
+                }
             }
-        }
-    };
+        };
+    }
 
     /**
      * Constructs a new {@code StoreSCU} instance.
@@ -226,7 +238,7 @@ public class StoreSCU implements AutoCloseable {
      * @param rspHandlerFactory The response handler factory.
      */
     public void setRspHandlerFactory(RSPHandlerFactory rspHandlerFactory) {
-        this.rspHandlerFactory = rspHandlerFactory;
+        this.rspHandlerFactory = rspHandlerFactory == null ? this::createDefaultRspHandler : rspHandlerFactory;
     }
 
     /**
@@ -299,7 +311,7 @@ public class StoreSCU implements AutoCloseable {
      * @param prefix The file prefix.
      */
     public void setTmpFilePrefix(String prefix) {
-        this.tmpPrefix = prefix;
+        this.tmpPrefix = prefix == null ? DEFAULT_TMP_PREFIX : prefix;
     }
 
     /**
@@ -317,6 +329,9 @@ public class StoreSCU implements AutoCloseable {
      * @param tmpDir The temporary directory.
      */
     public void setTmpFileDirectory(File tmpDir) {
+        if (tmpDir != null && !tmpDir.isDirectory()) {
+            throw new IllegalArgumentException("Not a directory: " + tmpDir);
+        }
         this.tmpDir = tmpDir;
     }
 
@@ -349,7 +364,8 @@ public class StoreSCU implements AutoCloseable {
     public void scanFiles(List<String> fnames, boolean printout) throws IOException {
         tmpFile = File.createTempFile(tmpPrefix, tmpSuffix, tmpDir);
         ownsTmpFile = true;
-        try (BufferedWriter fileInfos = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmpFile)))) {
+        try (BufferedWriter fileInfos = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(tmpFile), Charset.UTF_8))) {
             for (String fname : fnames) {
                 scan(new File(fname), fileInfos, printout);
             }
@@ -414,7 +430,8 @@ public class StoreSCU implements AutoCloseable {
      * @throws IOException if an I/O error occurs.
      */
     public void sendFiles() throws IOException {
-        try (BufferedReader fileInfos = new BufferedReader(new InputStreamReader(new FileInputStream(tmpFile)))) {
+        try (BufferedReader fileInfos = new BufferedReader(
+                new InputStreamReader(new FileInputStream(tmpFile), Charset.UTF_8))) {
             Logger.info(
                     true,
                     "Image",
@@ -424,10 +441,25 @@ public class StoreSCU implements AutoCloseable {
             String line;
             int sentCount = 0;
             while (as.isReadyForDataTransfer() && (line = fileInfos.readLine()) != null) {
+                ImageProgress progress = state.getProgress();
+                if (progress != null && progress.isCancelled()) {
+                    Logger.info(false, "Image", "Aborting C-STORE: cancel by progress");
+                    as.abort();
+                    break;
+                }
                 String[] ss = StringKit.splitToArray(line, Symbol.HT);
                 try {
                     send(new File(ss[4]), Long.parseLong(ss[3]), ss[1], ss[0], ss[2]);
                     sentCount++;
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    Logger.warn(
+                            false,
+                            "Image",
+                            e,
+                            "DICOM send interrupted: fileName={}, sopInstanceUid={}",
+                            ss.length > 4 ? new File(ss[4]).getName() : null,
+                            ss.length > 0 ? ss[0] : null);
                 } catch (Exception e) {
                     Logger.warn(
                             false,
@@ -539,7 +571,7 @@ public class StoreSCU implements AutoCloseable {
         ImageAdapter.AdaptTransferSyntax syntax = new ImageAdapter.AdaptTransferSyntax(tsuid,
                 StreamSCU.selectTransferSyntax(as, cuid, tsuid));
         boolean noChange = uidSuffix == null && (attrs == null || attrs.isEmpty())
-                && syntax.getRequested().equals(tsuid) && dicomEditors == null;
+                && syntax.getRequested().equals(tsuid) && (dicomEditors == null || dicomEditors.isEmpty());
         DataWriter dataWriter;
         if (f.getName().endsWith(".xml")) {
             try (InputStream in = new FileInputStream(f)) {
@@ -594,6 +626,7 @@ public class StoreSCU implements AutoCloseable {
             cuid = data.getString(Tag.SOPClassUID);
         }
         if (attrs != null && Builder.updateAttributes(data, attrs, uidSuffix)) {
+            cuid = data.getString(Tag.SOPClassUID);
             iuid = data.getString(Tag.SOPInstanceUID);
         }
 
@@ -736,6 +769,7 @@ public class StoreSCU implements AutoCloseable {
      * A factory for creating DIMSE response handlers for C-STORE operations.
      *
      * @author Kimi Liu
+     * @since Java 21+
      */
     public interface RSPHandlerFactory {
 
