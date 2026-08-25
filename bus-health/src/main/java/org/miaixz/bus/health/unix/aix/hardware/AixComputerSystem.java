@@ -29,6 +29,7 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.Baseboard;
 import org.miaixz.bus.health.builtin.hardware.Firmware;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractComputerSystem;
@@ -91,7 +92,7 @@ final class AixComputerSystem extends AbstractComputerSystem {
 
         for (final String checkLine : Executor.runNative("lsattr -El sys0")) {
             if (checkLine.startsWith(fwVersionMarker)) {
-                fwVersion = checkLine.split(fwVersionMarker)[1].trim();
+                fwVersion = Parsing.getTextAfterString(checkLine, fwVersionMarker).trim();
                 int comma = fwVersion.indexOf(Symbol.C_COMMA);
                 if (comma > 0 && fwVersion.length() > comma) {
                     fwVendor = fwVersion.substring(0, comma);
@@ -99,7 +100,7 @@ final class AixComputerSystem extends AbstractComputerSystem {
                 }
                 fwVersion = Pattern.SPACES_PATTERN.split(fwVersion)[0];
             } else if (checkLine.startsWith(modelMarker)) {
-                model = checkLine.split(modelMarker)[1].trim();
+                model = Parsing.getTextAfterString(checkLine, modelMarker).trim();
                 int comma = model.indexOf(Symbol.C_COMMA);
                 if (comma > 0 && model.length() > comma) {
                     manufacturer = model.substring(0, comma);
@@ -107,10 +108,10 @@ final class AixComputerSystem extends AbstractComputerSystem {
                 }
                 model = Pattern.SPACES_PATTERN.split(model)[0];
             } else if (checkLine.startsWith(systemIdMarker)) {
-                serialNumber = checkLine.split(systemIdMarker)[1].trim();
+                serialNumber = Parsing.getTextAfterString(checkLine, systemIdMarker).trim();
                 serialNumber = Pattern.SPACES_PATTERN.split(serialNumber)[0];
             } else if (checkLine.startsWith(uuidMarker)) {
-                uuid = checkLine.split(uuidMarker)[1].trim();
+                uuid = Parsing.getTextAfterString(checkLine, uuidMarker).trim();
                 uuid = Pattern.SPACES_PATTERN.split(uuid)[0];
             }
         }
@@ -120,7 +121,7 @@ final class AixComputerSystem extends AbstractComputerSystem {
              System Firmware level is RG080425_d79e22_regatta
              */
             if (checkLine.startsWith(fwPlatformVersionMarker)) {
-                fwPlatformVersion = checkLine.split(fwPlatformVersionMarker)[1].trim();
+                fwPlatformVersion = Parsing.getTextAfterString(checkLine, fwPlatformVersionMarker).trim();
                 break;
             }
         }

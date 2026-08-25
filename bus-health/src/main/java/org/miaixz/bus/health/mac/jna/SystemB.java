@@ -278,7 +278,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      * char ut_user[UTX_USERSIZE];
      * char ut_id[UTX_IDSIZE];
      * char ut_line[UTX_LINESIZE]; pid_t ut_pid; short ut_type; struct timeval ut_tv; char ut_host[UTX_HOSTSIZE];
-     * char ut_pad[16]; }; }
+     * __uint32_t ut_pad[16]; }; }
      * </p>
      *
      * @author Kimi Liu
@@ -324,7 +324,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
         /**
          * Reserved for future use.
          */
-        public byte[] ut_pad = new byte[16];
+        public int[] ut_pad = new int[16];
 
         /**
          * Creates a new MacUtmpx instance.

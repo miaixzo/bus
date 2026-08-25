@@ -19,8 +19,12 @@
 */
 package org.miaixz.bus.health.unix.shared.jna;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.sun.jna.Library;
 import com.sun.jna.NativeLong;
+import com.sun.jna.Platform;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
@@ -462,12 +466,39 @@ public interface CLibrary extends LibCAPI, Library {
 
     /**
      * Address information structure.
+     * <p>
+     * The field order differs by platform: glibc declares {@code ai_addr} before {@code ai_canonname}, while BSDs and
+     * macOS declare them the other way around.
      *
      * @author Kimi Liu
      */
-    @FieldOrder({ "ai_flags", "ai_family", "ai_socktype", "ai_protocol", "ai_addrlen", "ai_addr", "ai_canonname",
-            "ai_next" })
     class Addrinfo extends Structure implements AutoCloseable {
+
+        /**
+         * Field order for glibc platforms.
+         */
+        private static final List<String> GLIBC_ORDER = Arrays.asList(
+                "ai_flags",
+                "ai_family",
+                "ai_socktype",
+                "ai_protocol",
+                "ai_addrlen",
+                "ai_addr",
+                "ai_canonname",
+                "ai_next");
+
+        /**
+         * Field order for BSD and macOS platforms.
+         */
+        private static final List<String> BSD_ORDER = Arrays.asList(
+                "ai_flags",
+                "ai_family",
+                "ai_socktype",
+                "ai_protocol",
+                "ai_addrlen",
+                "ai_canonname",
+                "ai_addr",
+                "ai_next");
 
         /**
          * Input flags.
@@ -508,6 +539,17 @@ public interface CLibrary extends LibCAPI, Library {
          * Pointer to next in list.
          */
         public ByReference ai_next;
+
+        /**
+         * Returns the platform-specific field order.
+         *
+         * @return the field order for the current platform
+         */
+        @Override
+        protected List<String> getFieldOrder() {
+            return Platform.isMac() || Platform.isFreeBSD() || Platform.isOpenBSD() || Platform.isNetBSD()
+                    || Platform.isDragonFlyBSD() ? BSD_ORDER : GLIBC_ORDER;
+        }
 
         /**
          * Constructs an {@code Addrinfo} object.

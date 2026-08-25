@@ -20,6 +20,7 @@
 package org.miaixz.bus.health.unix.aix.driver;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -62,32 +63,55 @@ public class PsInfo {
     }
 
     /**
-     * Reads /proc/pid/psinfo and returns data in a structure
+     * Reads /proc/pid/psinfo and returns data in a structure.
      *
      * @param pid The process ID
-     * @return A structure containing information for the requested process
+     * @return A structure containing information for the requested process, or {@code null} if unavailable
      */
     public static AixLibc.AixPsInfo queryPsInfo(int pid) {
-        return new AixLibc.AixPsInfo(Builder.readAllBytesAsBuffer(String.format(Locale.ROOT, "/proc/%d/psinfo", pid)));
+        String path = String.format(Locale.ROOT, "/proc/%d/psinfo", pid);
+        ByteBuffer buff = Builder.readAllBytesAsBuffer(path);
+        if (buff.remaining() == 0) {
+            Logger.debug(false, "Health", "psinfo file empty or unreadable for pid {} ({})", pid, path);
+            return null;
+        }
+        int size = buff.remaining();
+        try {
+            return new AixLibc.AixPsInfo(buff);
+        } catch (RuntimeException e) {
+            Logger.warn(false, "Health", e, "Failed to parse psinfo for pid {} (file size {} bytes)", pid, size);
+            return null;
+        }
     }
 
     /**
-     * Reads /proc/pid/lwp/tid/lwpsinfo and returns data in a structure
+     * Reads /proc/pid/lwp/tid/lwpsinfo and returns data in a structure.
      *
      * @param pid The process ID
      * @param tid The thread ID (lwpid)
-     * @return A structure containing information for the requested thread
+     * @return A structure containing information for the requested thread, or {@code null} if unavailable
      */
     public static AixLibc.AixLwpsInfo queryLwpsInfo(int pid, int tid) {
-        return new AixLibc.AixLwpsInfo(
-                Builder.readAllBytesAsBuffer(String.format(Locale.ROOT, "/proc/%d/lwp/%d/lwpsinfo", pid, tid)));
+        String path = String.format(Locale.ROOT, "/proc/%d/lwp/%d/lwpsinfo", pid, tid);
+        ByteBuffer buff = Builder.readAllBytesAsBuffer(path);
+        if (buff.remaining() == 0) {
+            Logger.debug(false, "Health", "lwpsinfo file empty or unreadable for pid {} tid {} ({})", pid, tid, path);
+            return null;
+        }
+        try {
+            return new AixLibc.AixLwpsInfo(buff);
+        } catch (RuntimeException e) {
+            Logger.debug(false, "Health", "Failed to parse lwpsinfo for pid {} tid {}: {}", pid, tid, e.toString());
+            return null;
+        }
     }
 
     /**
      * Reads the pr_argc, pr_argv, and pr_envp fields from /proc/pid/psinfo
      *
      * @param pid    The process ID
-     * @param psinfo A populated {@link AixLibc.AixPsInfo} structure containing the offset pointers for these fields
+     * @param psinfo A populated {@link AixLibc.AixPsInfo} structure containing the offset pointers for these fields, or
+     *               {@code null} if unavailable
      * @return A triplet containing the argc, argv, and envp values, or null if unable to read
      */
     public static Triplet<Integer, Long, Long> queryArgsEnvAddrs(int pid, AixLibc.AixPsInfo psinfo) {
@@ -110,7 +134,8 @@ public class PsInfo {
      * Read the argument and environment strings from process address space
      *
      * @param pid    the process id
-     * @param psinfo A populated {@link AixLibc.AixPsInfo} structure containing the offset pointers for these fields
+     * @param psinfo A populated {@link AixLibc.AixPsInfo} structure containing the offset pointers for these fields, or
+     *               {@code null} if unavailable
      * @return A pair containing a list of the arguments and a map of environment variables
      */
     public static Pair<List<String>, Map<String, String>> queryArgsEnv(int pid, AixLibc.AixPsInfo psinfo) {

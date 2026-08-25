@@ -30,6 +30,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.jna.Adl;
 import org.miaixz.bus.logger.Logger;
@@ -267,6 +268,36 @@ public class AdlKit {
     }
 
     /**
+     * Reads one field from the OverdriveN performance status.
+     *
+     * @param adapterIndex the ADL adapter index
+     * @param field        the selected field reader
+     * @return the raw field value, or {@code -1}
+     */
+    private static int performanceStatusField(int adapterIndex, ToIntFunction<Adl.ADLODNPerformanceStatus> field) {
+        if (adapterIndex < 0) {
+            return Normal.__1;
+        }
+        Pointer ctx = adlInit();
+        if (ctx == null) {
+            return Normal.__1;
+        }
+        try {
+            if (!supportsOverdriveN(ctx, adapterIndex)) {
+                return Normal.__1;
+            }
+            Adl.ADLODNPerformanceStatus perf = new Adl.ADLODNPerformanceStatus();
+            if (Holder.LIB.ADL2_OverdriveN_PerformanceStatus_Get(ctx, adapterIndex, perf) == Adl.ADL_OK) {
+                perf.read();
+                return field.applyAsInt(perf);
+            }
+            return Normal.__1;
+        } finally {
+            adlUninit(ctx);
+        }
+    }
+
+    /**
      * Reads one clock from the OverdriveN performance status in MHz.
      *
      * @param adapterIndex the ADL adapter index
@@ -274,26 +305,8 @@ public class AdlKit {
      * @return the clock in MHz, or {@code -1}
      */
     private static long performanceClockMhz(int adapterIndex, ToIntFunction<Adl.ADLODNPerformanceStatus> clock) {
-        if (adapterIndex < 0) {
-            return -1L;
-        }
-        Pointer ctx = adlInit();
-        if (ctx == null) {
-            return -1L;
-        }
-        try {
-            if (!supportsOverdriveN(ctx, adapterIndex)) {
-                return -1L;
-            }
-            Adl.ADLODNPerformanceStatus perf = new Adl.ADLODNPerformanceStatus();
-            if (Holder.LIB.ADL2_OverdriveN_PerformanceStatus_Get(ctx, adapterIndex, perf) == Adl.ADL_OK) {
-                perf.read();
-                return clock.applyAsInt(perf) / 100L;
-            }
-            return -1L;
-        } finally {
-            adlUninit(ctx);
-        }
+        int raw = performanceStatusField(adapterIndex, clock);
+        return raw < Normal._0 ? Normal.__1 : raw / Normal._100;
     }
 
     // -------------------------------------------------------------------------
@@ -371,26 +384,7 @@ public class AdlKit {
      * @return GPU core usage percentage, or -1
      */
     public static double getGpuUsage(int adapterIndex) {
-        if (adapterIndex < 0) {
-            return -1d;
-        }
-        Pointer ctx = adlInit();
-        if (ctx == null) {
-            return -1d;
-        }
-        try {
-            if (!supportsOverdriveN(ctx, adapterIndex)) {
-                return -1d;
-            }
-            Adl.ADLODNPerformanceStatus perf = new Adl.ADLODNPerformanceStatus();
-            if (Holder.LIB.ADL2_OverdriveN_PerformanceStatus_Get(ctx, adapterIndex, perf) == Adl.ADL_OK) {
-                perf.read();
-                return perf.iGPUActivityPercent;
-            }
-            return -1d;
-        } finally {
-            adlUninit(ctx);
-        }
+        return performanceStatusField(adapterIndex, perf -> perf.iGPUActivityPercent);
     }
 
     /**

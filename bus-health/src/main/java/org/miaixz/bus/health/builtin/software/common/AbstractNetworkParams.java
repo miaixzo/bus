@@ -38,6 +38,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Memoizer;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.NetworkParams;
 import org.miaixz.bus.logger.Logger;
 
@@ -76,7 +77,7 @@ public abstract class AbstractNetworkParams implements NetworkParams {
      */
     protected static String searchGateway(List<String> lines) {
         for (String line : lines) {
-            String leftTrimmed = line.replaceFirst("^\\s+", Normal.EMPTY);
+            String leftTrimmed = Parsing.trimLeadingWhitespace(line);
             if (leftTrimmed.startsWith("gateway:")) {
                 String[] split = Pattern.SPACES_PATTERN.split(leftTrimmed);
                 if (split.length < 2) {
@@ -187,7 +188,7 @@ public abstract class AbstractNetworkParams implements NetworkParams {
         for (int i = 0; i < resolv.size() && servers.size() < maxNameServer; i++) {
             String line = resolv.get(i);
             if (line.startsWith(key)) {
-                String value = line.substring(key.length()).replaceFirst("^[ \t]+", Normal.EMPTY);
+                String value = Parsing.trimLeadingWhitespace(line.substring(key.length()));
                 if (!value.isEmpty() && value.charAt(0) != Symbol.C_HASH && value.charAt(0) != Symbol.C_SEMICOLON) {
                     String val = value.split("[ \t#;]", 2)[0];
                     servers.add(val);

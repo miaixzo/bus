@@ -40,9 +40,9 @@ import org.miaixz.bus.health.builtin.software.ApplicationInfo;
 public class AixInstalledApps {
 
     /**
-     * The COLON_PATTERN constant.
+     * A four-digit YYWW build date.
      */
-    private static final Pattern COLON_PATTERN = Pattern.compile(Symbol.COLON);
+    private static final Pattern YYWW_DATE = Pattern.compile("\\d{4}");
 
     /**
      * Constructs a new AixInstalledApps instance.
@@ -82,8 +82,8 @@ public class AixInstalledApps {
              * HCA Runtime Environment: : : : : : :0:0:/:1837 (2) bash:bash-5.0.18-1:5.0.18-1: : :C:R:The GNU Bourne
              * Again shell (bash) version 5.0.18: :/bin/rpm -e bash: : : : :0: :(none):Fri Sep 18 15:53:11 2020
              */
-            // split by the colon character
-            String[] parts = COLON_PATTERN.split(line, -1); // -1 to keep empty fields
+            // Split by the colon character and keep empty fields.
+            String[] parts = line.split(Symbol.COLON, -1);
             String name = Parsing.getStringValueOrUnknown(parts[0]);
             if (name.equals(Normal.UNKNOWN)) {
                 continue;
@@ -95,7 +95,7 @@ public class AixInstalledApps {
             String buildDate = Parsing.getStringValueOrUnknown(parts[17]);
             long timestamp = 0;
             if (!buildDate.equals(Normal.UNKNOWN)) {
-                if (buildDate.matches("\\d{4}")) {
+                if (YYWW_DATE.matcher(buildDate).matches()) {
                     // Convert to ISO week date string (e.g., 1125 -> 2011-W25-2 for Monday)
                     String isoWeekString = "20" + buildDate.substring(0, 2) + "-W" + buildDate.substring(2) + "-2";
                     timestamp = Parsing.parseDateToEpoch(isoWeekString, "YYYY-'W'ww-e");

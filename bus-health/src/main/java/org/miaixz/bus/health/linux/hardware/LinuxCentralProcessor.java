@@ -373,7 +373,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 marker = "ID:";
                 procInfo = true;
             } else if (procInfo && checkLine.contains(marker)) {
-                return checkLine.split(marker)[1].trim();
+                return Parsing.getTextAfterString(checkLine, marker).trim();
             }
         }
         // If we've gotten this far, dmidecode failed. Try cpuid.
@@ -500,7 +500,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 case "model name":
                 case "processor": // some ARM chips
                     // Ignore processor number
-                    if (!splitLine[1].matches("\\d+")) {
+                    if (splitLine[1].isEmpty() || !splitLine[1].chars().allMatch(Character::isDigit)) {
                         cpuName = splitLine[1];
                     }
                     break;
