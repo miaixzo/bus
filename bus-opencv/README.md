@@ -116,6 +116,7 @@ import org.opencv.core.MatOfRect;
 import org.opencv.core.Rect;
 
 public class FaceDetectionExample {
+    
     public void detectFaces(String imagePath) {
         // Load image
         Mat image = Imgcodecs.imread(imagePath);
@@ -138,6 +139,7 @@ public class FaceDetectionExample {
         // Save result
         Imgcodecs.imwrite("faces_detected.jpg", image);
     }
+    
 }
 ```
 
@@ -168,6 +170,7 @@ import org.miaixz.bus.opengl.VideoCapture;
 import org.miaixz.bus.opengl.VideoWriter;
 
 public class VideoExample {
+    
     public void processVideo(String inputPath, String outputPath) {
         // Open video file
         VideoCapture capture = new VideoCapture(inputPath);
@@ -199,6 +202,7 @@ public class VideoExample {
         capture.release();
         writer.release();
     }
+    
 }
 ```
 
