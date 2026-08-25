@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
+import org.miaixz.bus.health.Parsing;
 
 /**
  * Reads info from {@code dmidecode}
@@ -99,7 +100,7 @@ public class Dmidecode {
         String marker = "Serial Number:";
         for (String checkLine : lines) {
             if (checkLine.contains(marker)) {
-                return checkLine.split(marker)[1].trim();
+                return Parsing.getTextAfterString(checkLine, marker).trim();
             }
         }
         return null;
@@ -124,7 +125,7 @@ public class Dmidecode {
         String marker = "UUID:";
         for (String checkLine : lines) {
             if (checkLine.contains(marker)) {
-                return checkLine.split(marker)[1].trim();
+                return Parsing.getTextAfterString(checkLine, marker).trim();
             }
         }
         return null;

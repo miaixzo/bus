@@ -22,6 +22,7 @@ package org.miaixz.bus.health.linux.hardware;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.ToLongFunction;
 
 import org.miaixz.bus.core.center.function.FunctionX;
@@ -267,11 +268,20 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
     private static List<GraphicsCard> getGraphicsCardsFromLspci() {
         return getGraphicsCardsFromLspci(
                 Executor.runNative("lspci -vnnmm"),
-                attrs -> new LinuxGraphicsCard(attrs.getName(), attrs.getDeviceId(), attrs.getVendor(),
-                        attrs.getVersionInfo(), vram(attrs), attrs.getDrmDevicePath(), attrs.getDriverName(),
-                        attrs.getPciBusId()),
+                LinuxGraphicsCard::createGraphicsCard,
                 slot -> queryLspciMemorySize(Executor.runNative("lspci -v -s " + slot)),
                 LinuxGraphicsCard::findDrmInfo);
+    }
+
+    /**
+     * Creates a graphics card from parsed attributes.
+     *
+     * @param attrs the parsed graphics card attributes
+     * @return the graphics card
+     */
+    private static GraphicsCard createGraphicsCard(Attrs attrs) {
+        return new LinuxGraphicsCard(attrs.getName(), attrs.getDeviceId(), attrs.getVendor(), attrs.getVersionInfo(),
+                vram(attrs), attrs.getDrmDevicePath(), attrs.getDriverName(), attrs.getPciBusId());
     }
 
     /**
@@ -282,7 +292,23 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
      */
     private static long vram(Attrs attrs) {
         long total = NvmlKit.getVramTotal(NvmlKit.findDevice(attrs.getPciBusId()));
-        return total > 0 ? total : attrs.getVram();
+        return total > Normal._0 ? total : vramTotal(attrs);
+    }
+
+    /**
+     * Returns the total VRAM from sysfs when the driver publishes it, falling back to parsed lspci or lshw memory.
+     *
+     * @param attrs the parsed graphics card attributes
+     * @return the best available non-NVML VRAM total
+     */
+    private static long vramTotal(Attrs attrs) {
+        if (!attrs.getDrmDevicePath().isEmpty() && "amdgpu".equals(attrs.getDriverName().toLowerCase(Locale.ROOT))) {
+            long total = Builder.getLongFromFile(attrs.getDrmDevicePath() + "/mem_info_vram_total", -1L);
+            if (total > Normal._0) {
+                return total;
+            }
+        }
+        return attrs.getVram();
     }
 
     /**
@@ -423,9 +449,11 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
                 if (cardNum++ > 0) {
                     Triplet<String, String, String> drmInfo = findDrmInfo(busInfo);
                     cardList.add(
-                            new LinuxGraphicsCard(name, deviceId, vendor,
-                                    versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList),
-                                    vram, drmInfo.getLeft(), drmInfo.getMiddle(), drmInfo.getRight()));
+                            createGraphicsCard(
+                                    new Attrs(name, deviceId, vendor,
+                                            versionInfoList.isEmpty() ? Normal.UNKNOWN
+                                                    : String.join(", ", versionInfoList),
+                                            vram, drmInfo.getLeft(), drmInfo.getMiddle(), drmInfo.getRight())));
                 }
                 name = Normal.UNKNOWN;
                 deviceId = Normal.UNKNOWN;
@@ -455,9 +483,10 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         if (cardNum > 0) {
             Triplet<String, String, String> drmInfo = findDrmInfo(busInfo);
             cardList.add(
-                    new LinuxGraphicsCard(name, deviceId, vendor,
-                            versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList), vram,
-                            drmInfo.getLeft(), drmInfo.getMiddle(), drmInfo.getRight()));
+                    createGraphicsCard(
+                            new Attrs(name, deviceId, vendor,
+                                    versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList),
+                                    vram, drmInfo.getLeft(), drmInfo.getMiddle(), drmInfo.getRight())));
         }
         return cardList;
     }

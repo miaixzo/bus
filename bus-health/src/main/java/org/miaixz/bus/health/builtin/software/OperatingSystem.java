@@ -484,12 +484,14 @@ public interface OperatingSystem {
             this.codeName = codeName;
             this.buildNumber = buildNumber;
 
-            StringBuilder sb = new StringBuilder(getVersion() != null ? getVersion() : Normal.UNKNOWN);
-            if (!StringKit.isBlank(getCodeName())) {
-                sb.append(" (").append(getCodeName()).append(Symbol.C_PARENTHESE_RIGHT);
+            // Read the fields rather than the getters: this class is not final, and an override that consulted
+            // subclass state would see it uninitialized here.
+            StringBuilder sb = new StringBuilder(version != null ? version : Normal.UNKNOWN);
+            if (!StringKit.isBlank(codeName)) {
+                sb.append(" (").append(codeName).append(Symbol.C_PARENTHESE_RIGHT);
             }
-            if (!StringKit.isBlank(getBuildNumber())) {
-                sb.append(" build ").append(getBuildNumber());
+            if (!StringKit.isBlank(buildNumber)) {
+                sb.append(" build ").append(buildNumber);
             }
             this.versionStr = sb.toString();
         }

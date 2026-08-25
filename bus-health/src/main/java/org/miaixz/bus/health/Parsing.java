@@ -824,6 +824,25 @@ public class Parsing {
     }
 
     /**
+     * Gets the portion of a string preceding the first occurrence of a delimiter.
+     *
+     * <p>
+     * If the delimiter is absent, the original string is returned. If the input is {@code null} or starts with the
+     * delimiter, an empty string is returned.
+     *
+     * @param text      The string to split.
+     * @param delimiter The delimiter to stop before.
+     * @return The text before the delimiter, the whole string if the delimiter is absent, or an empty string.
+     */
+    public static String getStringBefore(String text, char delimiter) {
+        if (text == null) {
+            return Normal.EMPTY;
+        }
+        int idx = text.indexOf(delimiter);
+        return idx < 0 ? text : text.substring(0, idx);
+    }
+
+    /**
      * Parses a string of the form "10.12.2" or "key = 1 (0x1) (int)" to find the integer value of the first contiguous
      * set of digits.
      *
@@ -1063,6 +1082,32 @@ public class Parsing {
             result = result.substring(0, result.indexOf(after));
         }
         return result;
+    }
+
+    /**
+     * Removes leading whitespace from a string.
+     *
+     * @param s The string to trim.
+     * @return The string with leading whitespace removed.
+     */
+    public static String trimLeadingWhitespace(String s) {
+        int start = 0;
+        while (start < s.length() && Character.isWhitespace(s.charAt(start))) {
+            start++;
+        }
+        return start == 0 ? s : s.substring(start);
+    }
+
+    /**
+     * Gets the text following the first occurrence of a marker string.
+     *
+     * @param text   The text to search.
+     * @param marker The marker to start after.
+     * @return The text after the marker, or an empty string if the marker is absent.
+     */
+    public static String getTextAfterString(String text, String marker) {
+        int index = text.indexOf(marker);
+        return index < 0 ? Normal.EMPTY : text.substring(index + marker.length());
     }
 
     /**
@@ -1990,6 +2035,16 @@ public class Parsing {
      */
     public static String getStringValueOrUnknown(String value) {
         return (value == null || value.isEmpty()) ? Normal.UNKNOWN : value;
+    }
+
+    /**
+     * Returns the given string value if it is not {@code null}; otherwise, returns an empty string.
+     *
+     * @param value the value to check
+     * @return the input value if it is not {@code null}; otherwise, an empty string
+     */
+    public static String getStringValueOrEmpty(String value) {
+        return value == null ? Normal.EMPTY : value;
     }
 
     /**

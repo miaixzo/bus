@@ -68,6 +68,13 @@
           ]
         },
         {
+          "name": "getIntFromFile",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
           "name": "getKeyValueMapFromFile",
           "parameterTypes": [
             "java.lang.String",
@@ -78,6 +85,13 @@
           "name": "getLongFromFile",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "getLongFromFile",
+          "parameterTypes": [
+            "java.lang.String",
+            "long"
           ]
         },
         {
@@ -2177,6 +2191,12 @@
           ]
         },
         {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
           "name": "getConnectedDevices",
           "parameterTypes": []
         },
@@ -2202,6 +2222,10 @@
         },
         {
           "name": "getVendorId",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
           "parameterTypes": []
         },
         {
@@ -24556,8 +24580,28 @@
           ]
         },
         {
+          "name": "getStringBefore",
+          "parameterTypes": [
+            "java.lang.String",
+            "char"
+          ]
+        },
+        {
+          "name": "getStringValueOrEmpty",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "getStringValueOrUnknown",
           "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getTextAfterString",
+          "parameterTypes": [
+            "java.lang.String",
             "java.lang.String"
           ]
         },
@@ -24866,6 +24910,12 @@
           "parameterTypes": [
             "java.lang.String",
             "int"
+          ]
+        },
+        {
+          "name": "trimLeadingWhitespace",
+          "parameterTypes": [
+            "java.lang.String"
           ]
         },
         {

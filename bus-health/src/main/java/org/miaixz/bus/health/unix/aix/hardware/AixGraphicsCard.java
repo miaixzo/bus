@@ -22,6 +22,7 @@ package org.miaixz.bus.health.unix.aix.hardware;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
@@ -39,6 +40,11 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractGraphicsCard;
  */
 @Immutable
 final class AixGraphicsCard extends AbstractGraphicsCard {
+
+    /**
+     * The run of dots lscfg uses to pad a label out to its value.
+     */
+    private static final Pattern DOT_RUN = Pattern.compile("\\.\\.+");
 
     /**
      * Constructor for AixGraphicsCard
@@ -75,7 +81,7 @@ final class AixGraphicsCard extends AbstractGraphicsCard {
                 if (s.startsWith("Manufacture ID")) {
                     vendor = Parsing.removeLeadingDots(s.substring(14));
                 } else if (s.contains("Level")) {
-                    versionInfo.add(s.replaceAll("\\.\\.+", Symbol.EQUAL));
+                    versionInfo.add(DOT_RUN.matcher(s).replaceAll(Symbol.EQUAL));
                 } else if (s.startsWith("Hardware Location Code")) {
                     cardList.add(
                             new AixGraphicsCard(name, Normal.UNKNOWN,

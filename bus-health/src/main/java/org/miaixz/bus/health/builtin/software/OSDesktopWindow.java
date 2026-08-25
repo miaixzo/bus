@@ -85,7 +85,8 @@ public class OSDesktopWindow {
         this.windowId = windowId;
         this.title = title;
         this.command = command;
-        this.locAndSize = locAndSize;
+        // Rectangle is mutable, so copy it on the way in and on the way out to honor the immutable contract.
+        this.locAndSize = new Rectangle(locAndSize);
         this.owningProcessId = owningProcessId;
         this.order = order;
         this.visible = visible;
@@ -94,7 +95,7 @@ public class OSDesktopWindow {
     /**
      * Gets the operating system's handle, window ID, or other unique identifier for this window.
      * <p>
-     * On Winodws, this can be converted to a {@link HWND} using {@code new HWND(new Pointer(windowId))}. On macOS, this
+     * On Windows, this can be converted to a {@link HWND} using {@code new HWND(new Pointer(windowId))}. On macOS, this
      * is the Core Graphics Window ID. On Unix-like systems, this is the X11 Window ID.
      *
      * @return the windowId
@@ -124,10 +125,10 @@ public class OSDesktopWindow {
     /**
      * Gets a {@link Rectangle} representing the window's location and size.
      *
-     * @return the location and size
+     * @return a copy of the location and size; mutating it does not affect this window
      */
     public Rectangle getLocAndSize() {
-        return locAndSize;
+        return new Rectangle(locAndSize);
     }
 
     /**

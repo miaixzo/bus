@@ -327,7 +327,7 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
         int idx = 0;
         for (final String checkLine : Executor.runNative("pmcycles -m")) {
             if (checkLine.contains(freqMarker)) {
-                freqs[idx++] = Parsing.parseHertz(checkLine.split(freqMarker)[1].trim());
+                freqs[idx++] = Parsing.parseHertz(Parsing.getTextAfterString(checkLine, freqMarker).trim());
                 if (idx >= freqs.length) {
                     break;
                 }

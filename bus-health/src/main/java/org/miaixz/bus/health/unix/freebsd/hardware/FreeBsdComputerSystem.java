@@ -89,15 +89,15 @@ final class FreeBsdComputerSystem extends AbstractComputerSystem {
         // Only works with root permissions but it's all we've got
         for (final String checkLine : Executor.runNative("dmidecode -t system")) {
             if (checkLine.contains(manufacturerMarker)) {
-                manufacturer = checkLine.split(manufacturerMarker)[1].trim();
+                manufacturer = Parsing.getTextAfterString(checkLine, manufacturerMarker).trim();
             } else if (checkLine.contains(productNameMarker)) {
-                model = checkLine.split(productNameMarker)[1].trim();
+                model = Parsing.getTextAfterString(checkLine, productNameMarker).trim();
             } else if (checkLine.contains(serialNumMarker)) {
-                serialNumber = checkLine.split(serialNumMarker)[1].trim();
+                serialNumber = Parsing.getTextAfterString(checkLine, serialNumMarker).trim();
             } else if (checkLine.contains(uuidMarker)) {
-                uuid = checkLine.split(uuidMarker)[1].trim();
+                uuid = Parsing.getTextAfterString(checkLine, uuidMarker).trim();
             } else if (checkLine.contains(versionMarker)) {
-                version = checkLine.split(versionMarker)[1].trim();
+                version = Parsing.getTextAfterString(checkLine, versionMarker).trim();
             }
         }
         // If we get to end and haven't assigned, use fallback
