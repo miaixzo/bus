@@ -41,17 +41,17 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Voucher {
 
     /**
+     * The appid of the merchant account application or the appid bound to the merchant account. The enterprise number
+     * (corpid) is this appid.
+     */
+    private String appid;
+
+    /**
      * Constructs a new {@code Voucher} instance.
      */
     public Voucher() {
         // No initialization required.
     }
-
-    /**
-     * The appid of the merchant account application or the appid bound to the merchant account. The enterprise number
-     * (corpid) is this appid.
-     */
-    private String appid;
 
     /**
      * Converts the constructed builder to a Map.

@@ -50,13 +50,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ObjectId {
 
     /**
-     * Constructs a new ObjectId instance.
-     */
-    public ObjectId() {
-        // No initialization required.
-    }
-
-    /**
      * A thread-safe counter for generating unique IDs.
      */
     private static final AtomicInteger NEXT_INC = new AtomicInteger(RandomKit.randomInt());
@@ -65,6 +58,13 @@ public class ObjectId {
      * The machine identifier.
      */
     private static final char[] MACHINE_CODE = initMachineCode();
+
+    /**
+     * Constructs a new ObjectId instance.
+     */
+    public ObjectId() {
+        // No initialization required.
+    }
 
     /**
      * Checks if the given string is a valid ObjectId.

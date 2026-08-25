@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class AuthInfo extends Voucher {
 
     /**
-     * Constructs a new {@code AuthInfo} instance.
-     */
-    public AuthInfo() {
-        // No initialization required.
-    }
-
-    /**
      * Merchant ID.
      */
     private String mch_id;
@@ -106,5 +99,12 @@ public class AuthInfo extends Voucher {
      * Signature.
      */
     private String sign;
+
+    /**
+     * Constructs a new {@code AuthInfo} instance.
+     */
+    public AuthInfo() {
+        // No initialization required.
+    }
 
 }

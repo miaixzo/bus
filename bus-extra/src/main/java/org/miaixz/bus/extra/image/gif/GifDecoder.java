@@ -57,13 +57,6 @@ import org.miaixz.bus.core.lang.Normal;
 public class GifDecoder {
 
     /**
-     * Constructs a new GifDecoder instance.
-     */
-    public GifDecoder() {
-        // No initialization required.
-    }
-
-    /**
      * File read status: No errors.
      */
     public static final int STATUS_OK = 0;
@@ -230,6 +223,13 @@ public class GifDecoder {
      * The total number of frames.
      */
     protected int frameCount;
+
+    /**
+     * Constructs a new GifDecoder instance.
+     */
+    public GifDecoder() {
+        // No initialization required.
+    }
 
     /**
      * Gets display duration for specified frame.

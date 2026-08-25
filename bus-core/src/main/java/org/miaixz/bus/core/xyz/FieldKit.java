@@ -42,16 +42,16 @@ import org.miaixz.bus.core.lang.reflect.field.FieldReflect;
 public class FieldKit {
 
     /**
+     * Field cache.
+     */
+    private static final WeakConcurrentMap<Class<?>, FieldReflect> FIELDS_CACHE = new WeakConcurrentMap<>();
+
+    /**
      * Keeps reflected field access on the static API.
      */
     public FieldKit() {
         // No initialization required.
     }
-
-    /**
-     * Field cache.
-     */
-    private static final WeakConcurrentMap<Class<?>, FieldReflect> FIELDS_CACHE = new WeakConcurrentMap<>();
 
     /**
      * Clears the field cache.

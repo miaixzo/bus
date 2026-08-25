@@ -34,13 +34,6 @@ import org.miaixz.bus.core.lang.Regex;
 public class Pattern {
 
     /**
-     * Constructs a new Pattern instance.
-     */
-    public Pattern() {
-        // No initialization required.
-    }
-
-    /**
      * Regular expression for English letters, numbers, and underscores.
      */
     public static final java.util.regex.Pattern GENERAL_PATTERN = java.util.regex.Pattern.compile(Regex.GENERAL);
@@ -331,6 +324,13 @@ public class Pattern {
      * reclaimed under memory pressure while remaining stable during normal lookup.
      */
     private static final ReferenceConcurrentMap<RegexWithFlag, java.util.regex.Pattern> POOL = new SoftConcurrentMap<>();
+
+    /**
+     * Constructs a new Pattern instance.
+     */
+    public Pattern() {
+        // No initialization required.
+    }
 
     /**
      * Retrieves a compiled {@link java.util.regex.Pattern} from the pool based on the regular expression string. If the

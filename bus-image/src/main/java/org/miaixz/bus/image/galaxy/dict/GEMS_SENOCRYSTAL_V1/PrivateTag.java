@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_SENOCRYSTAL_V1;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_SENOCRYSTAL_V1";
@@ -77,5 +70,12 @@ public class PrivateTag {
      * (0055,xx07) VR=IS VM=1 Clip
      */
     public static final int Clip = 0x00550007;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

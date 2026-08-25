@@ -39,13 +39,6 @@ import tools.jackson.databind.annotation.JsonDeserialize;
 public class HealthCheckInfo implements Serializable {
 
     /**
-     * Constructs a new {@code HealthCheckInfo} instance.
-     */
-    public HealthCheckInfo() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -92,6 +85,13 @@ public class HealthCheckInfo implements Serializable {
      */
     @JsonDeserialize(using = HealthCheckItemDeserializer.class)
     private HealthCheckItem gitalyCheck;
+
+    /**
+     * Constructs a new {@code HealthCheckInfo} instance.
+     */
+    public HealthCheckInfo() {
+        // No initialization required.
+    }
 
     /**
      * Returns the db check.

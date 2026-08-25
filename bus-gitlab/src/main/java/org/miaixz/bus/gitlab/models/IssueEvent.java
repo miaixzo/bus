@@ -36,13 +36,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class IssueEvent implements Serializable {
 
     /**
-     * Constructs a new {@code IssueEvent} instance.
-     */
-    public IssueEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -126,6 +119,13 @@ public class IssueEvent implements Serializable {
      * The state value.
      */
     private String state;
+
+    /**
+     * Constructs a new {@code IssueEvent} instance.
+     */
+    public IssueEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

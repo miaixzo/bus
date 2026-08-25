@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.http___www_gemedicalsystems_com_it_solu
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "http://www.gemedicalsystems.com/it_solutions/rad_pacs/";
@@ -52,5 +45,12 @@ public class PrivateTag {
      * (3115,xx03) VR=CS VM=1 Pacs examnotes flag
      */
     public static final int PacsExamnotesFlag = 0x31150003;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

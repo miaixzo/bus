@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.AMI_ImageContext_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "AMI ImageContext_01";
@@ -82,5 +75,12 @@ public class PrivateTag {
      * (3109,xx90) VR=CS VM=1 Show Image Overlay
      */
     public static final int ShowImageOverlay = 0x31090090;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

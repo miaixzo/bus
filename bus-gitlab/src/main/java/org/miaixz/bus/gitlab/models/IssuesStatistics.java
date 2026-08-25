@@ -34,13 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class IssuesStatistics implements Serializable {
 
     /**
-     * Constructs a new {@code IssuesStatistics} instance.
-     */
-    public IssuesStatistics() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -50,6 +43,13 @@ public class IssuesStatistics implements Serializable {
      * The statistics value.
      */
     private Statistics statistics;
+
+    /**
+     * Constructs a new {@code IssuesStatistics} instance.
+     */
+    public IssuesStatistics() {
+        // No initialization required.
+    }
 
     /**
      * Returns the statistics.
@@ -101,13 +101,6 @@ public class IssuesStatistics implements Serializable {
     public static class Statistics implements Serializable {
 
         /**
-         * Constructs a new {@code Statistics} instance.
-         */
-        public Statistics() {
-            // No initialization required.
-        }
-
-        /**
          * The serial version uid value.
          */
         @Serial
@@ -117,6 +110,13 @@ public class IssuesStatistics implements Serializable {
          * The counts value.
          */
         private Counts counts;
+
+        /**
+         * Constructs a new {@code Statistics} instance.
+         */
+        public Statistics() {
+            // No initialization required.
+        }
 
         /**
          * Returns the counts.
@@ -147,13 +147,6 @@ public class IssuesStatistics implements Serializable {
      */
     public static class Counts implements Serializable {
 
-        /**
-         * Constructs a new {@code Counts} instance.
-         */
-        public Counts() {
-            // No initialization required.
-        }
-
         @Serial
         private static final long serialVersionUID = 2852258280077L;
 
@@ -169,6 +162,13 @@ public class IssuesStatistics implements Serializable {
          * The opened value.
          */
         private Integer opened;
+
+        /**
+         * Constructs a new {@code Counts} instance.
+         */
+        public Counts() {
+            // No initialization required.
+        }
 
         /**
          * Returns the all.

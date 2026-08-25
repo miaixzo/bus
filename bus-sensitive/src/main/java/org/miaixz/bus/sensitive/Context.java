@@ -40,13 +40,6 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
 public class Context {
 
     /**
-     * Constructs a new Context instance.
-     */
-    public Context() {
-        // No initialization required.
-    }
-
-    /**
      * The current object being processed.
      */
     private Object currentObject;
@@ -80,6 +73,13 @@ public class Context {
      * An extension property for custom data.
      */
     private String extension;
+
+    /**
+     * Constructs a new Context instance.
+     */
+    public Context() {
+        // No initialization required.
+    }
 
     /**
      * Creates an empty mutable context for one sensitive-data operation.

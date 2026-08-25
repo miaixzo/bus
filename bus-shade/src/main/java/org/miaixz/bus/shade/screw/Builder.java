@@ -30,13 +30,6 @@ import org.miaixz.bus.shade.screw.execute.ProduceExecute;
 public class Builder {
 
     /**
-     * Constructs a new Builder instance.
-     */
-    public Builder() {
-        // No initialization required.
-    }
-
-    /**
      * The percent sign symbol (%).
      */
     public static final String PERCENT_SIGN = Symbol.PERCENT;
@@ -95,6 +88,13 @@ public class Builder {
      * The string "Y", typically representing "Yes".
      */
     public static final String Y = "Y";
+
+    /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
 
     /**
      * Creates and generates the database structure documentation file.

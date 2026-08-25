@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_Ultrasound_ExamGroup_001;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_Ultrasound_ExamGroup_001";
@@ -47,5 +40,12 @@ public class PrivateTag {
      * (6005,xx20) VR=UT VM=1 ?
      */
     public static final int _6005_xx20_ = 0x60050020;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

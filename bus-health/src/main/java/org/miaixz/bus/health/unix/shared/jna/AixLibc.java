@@ -22,6 +22,7 @@ package org.miaixz.bus.health.unix.shared.jna;
 import java.nio.ByteBuffer;
 
 import com.sun.jna.Native;
+import com.sun.jna.NativeLong;
 
 import org.miaixz.bus.health.Parsing;
 
@@ -55,10 +56,13 @@ public interface AixLibc extends CLibrary {
 
     /**
      * Returns the caller's kernel thread ID.
+     * <p>
+     * AIX declares this as {@code tid_t}, whose width follows {@code long}. {@link NativeLong} therefore stays correct
+     * in either 32-bit or 64-bit data model.
      *
      * @return the caller's kernel thread ID.
      */
-    int thread_self();
+    NativeLong thread_self();
 
     /**
      * Represents the process information structure on AIX.

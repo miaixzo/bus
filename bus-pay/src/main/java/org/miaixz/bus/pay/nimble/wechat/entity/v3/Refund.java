@@ -36,13 +36,6 @@ import lombok.experimental.SuperBuilder;
 public class Refund {
 
     /**
-     * Constructs a new {@code Refund} instance.
-     */
-    public Refund() {
-        // No initialization required.
-    }
-
-    /**
      * Sub-merchant ID (for service providers).
      */
     private String sub_mchid;
@@ -86,5 +79,12 @@ public class Refund {
      * Details of the specific goods being refunded.
      */
     private List<RefundGoodsDetail> goods_detail;
+
+    /**
+     * Constructs a new {@code Refund} instance.
+     */
+    public Refund() {
+        // No initialization required.
+    }
 
 }

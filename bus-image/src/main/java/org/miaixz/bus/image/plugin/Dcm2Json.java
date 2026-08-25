@@ -43,13 +43,6 @@ import org.miaixz.bus.image.metric.json.JSONWriter;
 public class Dcm2Json {
 
     /**
-     * Constructs a new Dcm2Json instance.
-     */
-    public Dcm2Json() {
-        // No initialization required.
-    }
-
-    /**
      * Describes how to handle bulk data.
      */
     private final BasicBulkDataDescriptor bulkDataDescriptor = new BasicBulkDataDescriptor();
@@ -88,6 +81,13 @@ public class Dcm2Json {
      * Whether to encode numeric VRs (DS, IS, SV, UV) as JSON numbers instead of strings.
      */
     private boolean encodeAsNumber;
+
+    /**
+     * Constructs a new Dcm2Json instance.
+     */
+    public Dcm2Json() {
+        // No initialization required.
+    }
 
     /**
      * Sets whether to indent the JSON output for pretty-printing.

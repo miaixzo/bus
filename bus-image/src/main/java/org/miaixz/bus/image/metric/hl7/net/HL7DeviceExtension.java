@@ -38,13 +38,6 @@ import org.miaixz.bus.image.metric.net.DeviceExtension;
 public class HL7DeviceExtension extends DeviceExtension {
 
     /**
-     * Constructs a new HL7DeviceExtension instance.
-     */
-    public HL7DeviceExtension() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -69,6 +62,13 @@ public class HL7DeviceExtension extends DeviceExtension {
      * The hl7 connection monitor value.
      */
     private transient HL7ConnectionMonitor hl7ConnectionMonitor;
+
+    /**
+     * Constructs a new HL7DeviceExtension instance.
+     */
+    public HL7DeviceExtension() {
+        // No initialization required.
+    }
 
     /**
      * Executes the verify not used operation.

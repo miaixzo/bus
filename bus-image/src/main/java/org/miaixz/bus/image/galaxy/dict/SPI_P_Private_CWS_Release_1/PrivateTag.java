@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SPI_P_Private_CWS_Release_1;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SPI-P-Private-CWS Release 1";
@@ -52,5 +45,12 @@ public class PrivateTag {
      * (0021,xx02) VR=IS VM=1-n WindowOfImagesScope
      */
     public static final int WindowOfImagesScope = 0x00210002;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

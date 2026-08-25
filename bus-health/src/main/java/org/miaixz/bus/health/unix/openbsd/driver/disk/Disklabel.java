@@ -90,13 +90,13 @@ public class Disklabel {
             // boundend: 15693824
             // drivedata: 0
             if (line.contains(totalMarker)) {
-                totalSectors = Parsing.parseLongOrDefault(line.split(totalMarker)[1].trim(), 1L);
+                totalSectors = Parsing.parseLongOrDefault(Parsing.getTextAfterString(line, totalMarker).trim(), 1L);
             } else if (line.contains(bpsMarker)) {
                 bytesPerSector = Parsing.getFirstIntValue(line);
             } else if (line.contains(labelMarker)) {
-                label = line.split(labelMarker)[1].trim();
+                label = Parsing.getTextAfterString(line, labelMarker).trim();
             } else if (line.contains(duidMarker)) {
-                duid = line.split(duidMarker)[1].trim();
+                duid = Parsing.getTextAfterString(line, duidMarker).trim();
             }
             /*-
             16 partitions:

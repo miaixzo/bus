@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEIIS_PACS;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEIIS PACS";
@@ -82,5 +75,12 @@ public class PrivateTag {
      * (0907,xx31) VR=UI VM=1-n Exclude Study UIDs
      */
     public static final int ExcludeStudyUIDs = 0x09070031;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

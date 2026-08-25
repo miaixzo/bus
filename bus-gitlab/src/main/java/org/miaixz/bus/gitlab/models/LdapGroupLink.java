@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class LdapGroupLink implements Serializable {
 
     /**
-     * Constructs a new {@code LdapGroupLink} instance.
-     */
-    public LdapGroupLink() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -63,6 +56,13 @@ public class LdapGroupLink implements Serializable {
      * The filter value.
      */
     private String filter;
+
+    /**
+     * Constructs a new {@code LdapGroupLink} instance.
+     */
+    public LdapGroupLink() {
+        // No initialization required.
+    }
 
     /**
      * Returns the cn.

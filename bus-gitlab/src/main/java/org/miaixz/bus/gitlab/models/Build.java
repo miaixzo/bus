@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Build {
 
     /**
-     * Constructs a new {@code Build} instance.
-     */
-    public Build() {
-        // No initialization required.
-    }
-
-    /**
      * The id value.
      */
     private Long id;
@@ -106,6 +99,13 @@ public class Build {
      * The environment value.
      */
     private EventEnvironment environment;
+
+    /**
+     * Constructs a new {@code Build} instance.
+     */
+    public Build() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

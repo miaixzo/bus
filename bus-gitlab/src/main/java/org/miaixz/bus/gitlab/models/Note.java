@@ -37,13 +37,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class Note implements Serializable {
 
     /**
-     * Constructs a new {@code Note} instance.
-     */
-    public Note() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -329,6 +322,13 @@ public class Note implements Serializable {
      * The position value.
      */
     private Position position;
+
+    /**
+     * Constructs a new {@code Note} instance.
+     */
+    public Note() {
+        // No initialization required.
+    }
 
     /**
      * Returns the attachment.

@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ContainerExpirationPolicy implements Serializable {
 
     /**
-     * Constructs a new {@code ContainerExpirationPolicy} instance.
-     */
-    public ContainerExpirationPolicy() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -73,6 +66,13 @@ public class ContainerExpirationPolicy implements Serializable {
      * The next run at value.
      */
     private String nextRunAt;
+
+    /**
+     * Constructs a new {@code ContainerExpirationPolicy} instance.
+     */
+    public ContainerExpirationPolicy() {
+        // No initialization required.
+    }
 
     /**
      * Returns the cadence.

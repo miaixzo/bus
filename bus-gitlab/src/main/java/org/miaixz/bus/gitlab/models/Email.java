@@ -30,13 +30,6 @@ import java.io.Serializable;
 public class Email implements Serializable {
 
     /**
-     * Constructs a new {@code Email} instance.
-     */
-    public Email() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -50,6 +43,13 @@ public class Email implements Serializable {
      * The email value.
      */
     private String email;
+
+    /**
+     * Constructs a new {@code Email} instance.
+     */
+    public Email() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

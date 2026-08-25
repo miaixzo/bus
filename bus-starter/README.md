@@ -101,6 +101,28 @@ bus:
 
 Both switches default to `true` when their required runtime classes are present.
 
+### JWT String keys
+
+Configuring `bus.auth.jwt.secret` provides a reusable injectable `JwtService`:
+
+```yaml
+bus:
+  auth:
+    jwt:
+      secret: ${JWT_SECRET}
+      secret-policy: compatible
+```
+
+Bus preserves every String character and deterministically derives a 256-bit HS256 key through a frozen,
+versioned HKDF-SHA-256 profile, so identical configuration produces identical keys on every cluster node. The default
+`compatible` policy accepts every non-empty String and logs a security warning below 32 UTF-8 bytes. The `strict`
+policy rejects such short values during startup. Derivation satisfies the algorithm's key-length requirement but cannot
+add entropy, so production deployments should still configure a high-entropy secret.
+
+Dynamic tenant keys do not require a Spring Bean: use `JWT.sign(claims, secret)`, then read the unverified tenant
+selector through `JWT.parse(token)` and call `verify(secret)`. Tokens issued by the legacy raw-String behavior are not
+accepted and should be reissued after upgrading.
+
 ## Feature activation model
 
 Product features use one deterministic activation order: an explicit `@EnableXxx` annotation always enables its feature,

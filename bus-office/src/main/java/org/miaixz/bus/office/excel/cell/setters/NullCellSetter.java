@@ -31,16 +31,16 @@ import org.miaixz.bus.core.lang.Normal;
 public class NullCellSetter implements CellSetter {
 
     /**
+     * Singleton instance of {@code NullCellSetter}.
+     */
+    public static final NullCellSetter INSTANCE = new NullCellSetter();
+
+    /**
      * Constructs a new {@code NullCellSetter} instance.
      */
     public NullCellSetter() {
         // No initialization required.
     }
-
-    /**
-     * Singleton instance of {@code NullCellSetter}.
-     */
-    public static final NullCellSetter INSTANCE = new NullCellSetter();
 
     /**
      * Implements the behavior defined by the supertype.

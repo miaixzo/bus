@@ -33,15 +33,15 @@ import org.miaixz.bus.core.xyz.CharKit;
  */
 public class NumericEntityUnescaper extends StringReplacer {
 
+    @Serial
+    private static final long serialVersionUID = 2852236101870L;
+
     /**
      * Constructs a new NumericEntityUnescaper instance.
      */
     public NumericEntityUnescaper() {
         // No initialization required.
     }
-
-    @Serial
-    private static final long serialVersionUID = 2852236101870L;
 
     /**
      * Replaces a numeric entity (e.g., {@code &#123;}, {@code &#xABC;}) with its corresponding character.

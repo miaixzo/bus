@@ -46,13 +46,6 @@ import org.miaixz.bus.mapper.Charter.Schema;
 public class MapperOptions {
 
     /**
-     * Initializes mapper runtime options with the defaults declared by each feature group.
-     */
-    public MapperOptions() {
-        // No initialization required.
-    }
-
-    /**
      * Base packages to scan for MyBatis mapper interfaces.
      * <p>
      * You can specify more than one package by using a comma or semicolon as a separator.
@@ -175,6 +168,13 @@ public class MapperOptions {
     private SchemaOptions schema = new SchemaOptions();
 
     /**
+     * Initializes mapper runtime options with the defaults declared by each feature group.
+     */
+    public MapperOptions() {
+        // No initialization required.
+    }
+
+    /**
      * Resolves mapper configuration properties into the flat Properties contract consumed by mapper handlers.
      * <p>
      * Supports both legacy fixed-key configuration and the {@code namespaces[].name} structure.
@@ -245,13 +245,6 @@ public class MapperOptions {
     public static class OperationOptions {
 
         /**
-         * Initializes SQL operation handling with its declared enablement and safety defaults.
-         */
-        public OperationOptions() {
-            // No initialization required.
-        }
-
-        /**
          * Enable/disable operation handler (default: true).
          */
         private boolean enabled = true;
@@ -260,6 +253,13 @@ public class MapperOptions {
          * Enable/disable strict mode for operation safety checks (default: true).
          */
         private boolean strictMode = true;
+
+        /**
+         * Initializes SQL operation handling with its declared enablement and safety defaults.
+         */
+        public OperationOptions() {
+            // No initialization required.
+        }
 
     }
 
@@ -271,14 +271,6 @@ public class MapperOptions {
     @Getter
     @Setter
     public static class PageOptions {
-
-        /**
-         * Creates pagination options with the documented defaults.
-         */
-        public PageOptions() {
-            // Default values are declared on the fields below.
-            // No initialization required.
-        }
 
         /**
          * Whether the pagination handler is enabled.
@@ -300,6 +292,14 @@ public class MapperOptions {
          */
         private String params;
 
+        /**
+         * Creates pagination options with the documented defaults.
+         */
+        public PageOptions() {
+            // Default values are declared on the fields below.
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -312,16 +312,16 @@ public class MapperOptions {
     public static class IdentifierOptions {
 
         /**
+         * Whether physical identifier validation is enabled.
+         */
+        private boolean enabled = true;
+
+        /**
          * Creates enabled-by-default identifier validation options.
          */
         public IdentifierOptions() {
             // No initialization required.
         }
-
-        /**
-         * Whether physical identifier validation is enabled.
-         */
-        private boolean enabled = true;
 
     }
 
@@ -336,13 +336,6 @@ public class MapperOptions {
     @Getter
     @Setter
     public static class TenantOptions {
-
-        /**
-         * Initializes tenant isolation with its declared column, exclusion, and enforcement defaults.
-         */
-        public TenantOptions() {
-            // No initialization required.
-        }
 
         /**
          * Enable/disable tenant handler (default: true).
@@ -379,6 +372,13 @@ public class MapperOptions {
          */
         private boolean enableSqlCache = true;
 
+        /**
+         * Initializes tenant isolation with its declared column, exclusion, and enforcement defaults.
+         */
+        public TenantOptions() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -391,13 +391,6 @@ public class MapperOptions {
     @Getter
     @Setter
     public static class AuditOptions {
-
-        /**
-         * Initializes audit handling with its declared enablement and field defaults.
-         */
-        public AuditOptions() {
-            // No initialization required.
-        }
 
         /**
          * Enable/disable audit handler (default: true).
@@ -429,6 +422,13 @@ public class MapperOptions {
          */
         private boolean printConsole = false;
 
+        /**
+         * Initializes audit handling with its declared enablement and field defaults.
+         */
+        public AuditOptions() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -441,13 +441,6 @@ public class MapperOptions {
     @Getter
     @Setter
     public static class PopulateOptions {
-
-        /**
-         * Initializes automatic field population with its declared enablement defaults.
-         */
-        public PopulateOptions() {
-            // No initialization required.
-        }
 
         /**
          * Enable/disable populate handler (default: true).
@@ -474,6 +467,13 @@ public class MapperOptions {
          */
         private boolean modifier = true;
 
+        /**
+         * Initializes automatic field population with its declared enablement defaults.
+         */
+        public PopulateOptions() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -488,13 +488,6 @@ public class MapperOptions {
     public static class VisibleOptions {
 
         /**
-         * Initializes row visibility filtering with its declared enablement defaults.
-         */
-        public VisibleOptions() {
-            // No initialization required.
-        }
-
-        /**
          * Enable/disable visible handler (default: true).
          */
         private boolean enabled = true;
@@ -503,6 +496,13 @@ public class MapperOptions {
          * Tables to ignore visibility filtering. Multiple table names may be separated with commas.
          */
         private String ignore;
+
+        /**
+         * Initializes row visibility filtering with its declared enablement defaults.
+         */
+        public VisibleOptions() {
+            // No initialization required.
+        }
 
     }
 
@@ -516,13 +516,6 @@ public class MapperOptions {
     @Getter
     @Setter
     public static class AffixOptions {
-
-        /**
-         * Initializes affix rewriting with its declared defaults.
-         */
-        public AffixOptions() {
-            // No initialization required.
-        }
 
         /**
          * Enables or disables affix rewriting (default: true).
@@ -539,6 +532,13 @@ public class MapperOptions {
          */
         private AffixPartOptions suffix;
 
+        /**
+         * Initializes affix rewriting with its declared defaults.
+         */
+        public AffixOptions() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -551,13 +551,6 @@ public class MapperOptions {
     public static class AffixPartOptions {
 
         /**
-         * Creates an empty affix-side configuration.
-         */
-        public AffixPartOptions() {
-            // No initialization required.
-        }
-
-        /**
          * Text applied to the corresponding side of a table name.
          */
         private String value;
@@ -566,6 +559,13 @@ public class MapperOptions {
          * Logical table names excluded only from this side.
          */
         private String ignore;
+
+        /**
+         * Creates an empty affix-side configuration.
+         */
+        public AffixPartOptions() {
+            // No initialization required.
+        }
 
     }
 
@@ -580,13 +580,6 @@ public class MapperOptions {
     @Getter
     @Setter
     public static class SchemaOptions {
-
-        /**
-         * Initializes schema management with its declared enablement and package defaults.
-         */
-        public SchemaOptions() {
-            // No initialization required.
-        }
 
         /**
          * Whether entity schema initialization is enabled.
@@ -761,6 +754,13 @@ public class MapperOptions {
          * Column rename mappings used when {@link #allowRenameColumn} is enabled.
          */
         private Map<String, String> renameMappings = new LinkedHashMap<>();
+
+        /**
+         * Initializes schema management with its declared enablement and package defaults.
+         */
+        public SchemaOptions() {
+            // No initialization required.
+        }
 
     }
 

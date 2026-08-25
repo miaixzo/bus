@@ -42,13 +42,6 @@ import io.temporal.worker.WorkerFactory;
 public class WorkflowSubscriberRuntime {
 
     /**
-     * Creates a worker subscriber runtime state.
-     */
-    public WorkflowSubscriberRuntime() {
-        // No initialization required.
-    }
-
-    /**
      * Temporal workflow transport handle.
      */
     private Object transportHandle;
@@ -102,6 +95,13 @@ public class WorkflowSubscriberRuntime {
      * Whether reconnect has been scheduled.
      */
     private boolean reconnectScheduled;
+
+    /**
+     * Creates a worker subscriber runtime state.
+     */
+    public WorkflowSubscriberRuntime() {
+        // No initialization required.
+    }
 
     /**
      * Marks the runtime as starting.

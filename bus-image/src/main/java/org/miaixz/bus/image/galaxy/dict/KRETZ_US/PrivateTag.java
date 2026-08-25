@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.KRETZ_US;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "KRETZ_US";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (7FE1,xx01) VR=OB VM=1 ?
      */
     public static final int _7FE1_xx01_ = 0x7FE10001;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

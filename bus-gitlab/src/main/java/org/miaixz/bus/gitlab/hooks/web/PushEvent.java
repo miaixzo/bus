@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class PushEvent extends AbstractPushEvent implements Event {
 
     /**
-     * Constructs a new {@code PushEvent} instance.
-     */
-    public PushEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -52,6 +45,13 @@ public class PushEvent extends AbstractPushEvent implements Event {
      * The object kind value.
      */
     public static final String OBJECT_KIND = "push";
+
+    /**
+     * Constructs a new {@code PushEvent} instance.
+     */
+    public PushEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the object kind.

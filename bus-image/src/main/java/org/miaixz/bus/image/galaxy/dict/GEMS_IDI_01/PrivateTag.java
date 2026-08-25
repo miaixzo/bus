@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_IDI_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_IDI_01";
@@ -72,5 +65,12 @@ public class PrivateTag {
      * (0073,xx50) VR=DS VM=2 Detector Active Dimensions
      */
     public static final int DetectorActiveDimensions = 0x00730050;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

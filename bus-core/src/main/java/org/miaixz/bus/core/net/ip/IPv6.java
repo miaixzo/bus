@@ -39,16 +39,16 @@ import org.miaixz.bus.core.xyz.NetKit;
 public class IPv6 {
 
     /**
+     * Cached local hostname.
+     */
+    private static volatile String localhostName;
+
+    /**
      * Constructs a new IPv6 instance.
      */
     public IPv6() {
         // No initialization required.
     }
-
-    /**
-     * Cached local hostname.
-     */
-    private static volatile String localhostName;
 
     /**
      * Converts an IPv6 address string to a {@link BigInteger}.

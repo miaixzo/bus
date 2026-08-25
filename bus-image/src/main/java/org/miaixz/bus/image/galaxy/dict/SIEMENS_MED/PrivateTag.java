@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS MED";
@@ -112,5 +105,12 @@ public class PrivateTag {
      * (7003,xx10) VR=LO VM=1 Header
      */
     public static final int Header = 0x70030010;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class ProfitSharingReturn extends Voucher {
 
     /**
-     * Constructs a new {@code ProfitSharingReturn} instance.
-     */
-    public ProfitSharingReturn() {
-        // No initialization required.
-    }
-
-    /**
      * Sub-merchant App ID.
      */
     private String sub_appid;
@@ -106,5 +99,12 @@ public class ProfitSharingReturn extends Voucher {
      * Description.
      */
     private String description;
+
+    /**
+     * Constructs a new {@code ProfitSharingReturn} instance.
+     */
+    public ProfitSharingReturn() {
+        // No initialization required.
+    }
 
 }

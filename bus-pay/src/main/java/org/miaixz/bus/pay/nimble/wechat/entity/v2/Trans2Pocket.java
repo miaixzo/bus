@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class Trans2Pocket extends Voucher {
 
     /**
-     * Constructs a new {@code Trans2Pocket} instance.
-     */
-    public Trans2Pocket() {
-        // No initialization required.
-    }
-
-    /**
      * Merchant ID.
      */
     private String mch_id;
@@ -126,5 +119,12 @@ public class Trans2Pocket extends Voucher {
      * WeCom application agent ID.
      */
     private String agentid;
+
+    /**
+     * Constructs a new {@code Trans2Pocket} instance.
+     */
+    public Trans2Pocket() {
+        // No initialization required.
+    }
 
 }

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_EVIDENCE_DOCUMENT_DATA;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS SYNGO EVIDENCE DOCUMENT DATA";
@@ -97,5 +90,12 @@ public class PrivateTag {
      * (0077,xx80) VR=OB VM=1 Volume Catalog
      */
     public static final int VolumeCatalog = 0x00770080;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

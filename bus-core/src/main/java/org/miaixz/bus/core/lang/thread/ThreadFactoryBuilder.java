@@ -35,13 +35,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class ThreadFactoryBuilder implements Builder<ThreadFactory> {
 
-    /**
-     * Constructs a new thread factory builder.
-     */
-    public ThreadFactoryBuilder() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852280056509L;
 
@@ -69,6 +62,13 @@ public class ThreadFactoryBuilder implements Builder<ThreadFactory> {
      * The handler for uncaught exceptions.
      */
     private UncaughtExceptionHandler uncaughtExceptionHandler;
+
+    /**
+     * Constructs a new thread factory builder.
+     */
+    public ThreadFactoryBuilder() {
+        // No initialization required.
+    }
 
     /**
      * Creates a new {@code ThreadFactoryBuilder}.

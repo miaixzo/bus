@@ -45,13 +45,6 @@ import org.miaixz.bus.mapper.feature.visible.VisibleProvider;
 public class MapperPluginProviders {
 
     /**
-     * Initializes an empty runtime collaborator holder.
-     */
-    public MapperPluginProviders() {
-        // No initialization required.
-    }
-
-    /**
      * Provider used to resolve tenant identifiers and optional tenant handler configuration.
      */
     private TenantProvider tenantProvider;
@@ -85,5 +78,12 @@ public class MapperPluginProviders {
      * Read-only supplier for the effective JDBC data source key, owned by the data-access integration.
      */
     private Supplier<String> datasourceKeyProvider;
+
+    /**
+     * Initializes an empty runtime collaborator holder.
+     */
+    public MapperPluginProviders() {
+        // No initialization required.
+    }
 
 }

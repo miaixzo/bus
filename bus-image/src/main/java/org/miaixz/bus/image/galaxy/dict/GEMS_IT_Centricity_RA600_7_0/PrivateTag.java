@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_IT_Centricity_RA600_7_0;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS-IT/Centricity RA600/7.0";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (4113,xx10) VR=UI VM=1 Number of images in study
      */
     public static final int NumberOfImagesInStudy = 0x41130010;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

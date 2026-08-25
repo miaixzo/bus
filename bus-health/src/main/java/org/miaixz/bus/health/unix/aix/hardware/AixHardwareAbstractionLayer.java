@@ -41,13 +41,6 @@ import org.miaixz.bus.health.unix.shared.hardware.UnixDisplay;
 @ThreadSafe
 public class AixHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
 
-    /**
-     * Constructs a new AixHardwareAbstractionLayer instance.
-     */
-    public AixHardwareAbstractionLayer() {
-        // No initialization required.
-    }
-
     // Memoized hardware listing
     /**
      * The lscfg value.
@@ -60,6 +53,13 @@ public class AixHardwareAbstractionLayer extends AbstractHardwareAbstractionLaye
      */
     private final SupplierX<perfstat_disk_t[]> diskStats = Memoizer
             .memoize(PerfstatDisk::queryDiskStats, Memoizer.defaultExpiration());
+
+    /**
+     * Constructs a new AixHardwareAbstractionLayer instance.
+     */
+    public AixHardwareAbstractionLayer() {
+        // No initialization required.
+    }
 
     /**
      * Creates the computer system.

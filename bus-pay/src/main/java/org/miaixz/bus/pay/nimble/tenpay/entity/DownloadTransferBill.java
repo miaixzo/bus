@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class DownloadTransferBill extends Voucher {
 
     /**
-     * Constructs a new {@code DownloadTransferBill} instance.
-     */
-    public DownloadTransferBill() {
-        // No initialization required.
-    }
-
-    /**
      * Merchant ID.
      */
     private String mch_id;
@@ -61,5 +54,12 @@ public class DownloadTransferBill extends Voucher {
      * Signature.
      */
     private String sign;
+
+    /**
+     * Constructs a new {@code DownloadTransferBill} instance.
+     */
+    public DownloadTransferBill() {
+        // No initialization required.
+    }
 
 }

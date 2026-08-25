@@ -30,13 +30,6 @@ import java.util.Date;
 public class AccessRequest extends AbstractUser<AccessRequest> {
 
     /**
-     * Constructs a new AccessRequest instance.
-     */
-    public AccessRequest() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -50,6 +43,13 @@ public class AccessRequest extends AbstractUser<AccessRequest> {
      * The access level value.
      */
     private AccessLevel accessLevel;
+
+    /**
+     * Constructs a new AccessRequest instance.
+     */
+    public AccessRequest() {
+        // No initialization required.
+    }
 
     /**
      * Returns the requested at.

@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class DeployKey implements Serializable {
 
     /**
-     * Constructs a new {@code DeployKey} instance.
-     */
-    public DeployKey() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -65,6 +58,13 @@ public class DeployKey implements Serializable {
      * The created at value.
      */
     private Date createdAt;
+
+    /**
+     * Constructs a new {@code DeployKey} instance.
+     */
+    public DeployKey() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

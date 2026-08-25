@@ -43,13 +43,6 @@ import org.miaixz.bus.logger.Logger;
 public class PsInfo {
 
     /**
-     * Keeps Solaris process-information queries on the static API.
-     */
-    public PsInfo() {
-        // No initialization required.
-    }
-
-    /**
      * The LIBC constant.
      */
     private static final SolarisLibc LIBC = SolarisLibc.INSTANCE;
@@ -58,6 +51,13 @@ public class PsInfo {
      * The PAGE_SIZE constant.
      */
     private static final long PAGE_SIZE = Parsing.parseLongOrDefault(Executor.getFirstAnswer("pagesize"), 4096L);
+
+    /**
+     * Keeps Solaris process-information queries on the static API.
+     */
+    public PsInfo() {
+        // No initialization required.
+    }
 
     /**
      * Reads /proc/pid/psinfo and returns data in a structure

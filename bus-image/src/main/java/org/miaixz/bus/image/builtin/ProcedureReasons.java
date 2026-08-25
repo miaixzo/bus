@@ -30,13 +30,6 @@ import org.miaixz.bus.image.galaxy.data.Code;
 public class ProcedureReasons {
 
     /**
-     * Constructs a new {@code ProcedureReasons} instance.
-     */
-    public ProcedureReasons() {
-        // No initialization required.
-    }
-
-    /**
      * Code for Equipment failure as a reason for procedure discontinuation.
      */
     public static final Code EquipmentFailure = new Code("110501", "DCM", null, "Equipment failure");
@@ -111,6 +104,14 @@ public class ProcedureReasons {
      * Code for Workitem expired as a reason for procedure discontinuation.
      */
     public static final Code WorkitemExpired = new Code("110533", "DCM", null, "Workitem expired");
+
+    /**
+     * Constructs a new {@code ProcedureReasons} instance.
+     */
+    public ProcedureReasons() {
+        // No initialization required.
+    }
+
     // TODO Include CID 9301 Modality PPS Discontinuation Reasons
     // TODO Include CID 60 Imaging Agent Administration Adverse Events
 

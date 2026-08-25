@@ -39,16 +39,16 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public class Win32Process {
 
     /**
+     * The WMI class name.
+     */
+    public static final String WIN32_PROCESS = "Win32_Process";
+
+    /**
      * Keeps Win32 process queries on the static API.
      */
     public Win32Process() {
         // No initialization required.
     }
-
-    /**
-     * The WMI class name.
-     */
-    public static final String WIN32_PROCESS = "Win32_Process";
 
     /**
      * Returns process command lines

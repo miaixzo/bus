@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.AMI_StudyExtensions_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "AMI StudyExtensions_01";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (3111,xx01) VR=UL VM=1 Last Released Annot Label
      */
     public static final int LastReleasedAnnotLabel = 0x31110001;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

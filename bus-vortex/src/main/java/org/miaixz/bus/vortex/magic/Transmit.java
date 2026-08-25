@@ -41,6 +41,21 @@ import org.miaixz.bus.vortex.registry.ServerRegistry;
 public class Transmit {
 
     /**
+     * The unique name or ID of the service, derived from {@link Assets#getName()}.
+     */
+    private String name;
+
+    /**
+     * The latest performance metrics for the service process (e.g., CPU and memory usage).
+     */
+    private Metrics metrics;
+
+    /**
+     * The current lifecycle status of the service process (e.g., RUNNING, CLOSED).
+     */
+    private Lifecycle.State lifecycle;
+
+    /**
      * Constructs an empty service transmission snapshot.
      */
     public Transmit() {
@@ -59,20 +74,5 @@ public class Transmit {
         this.metrics = metrics;
         this.lifecycle = lifecycle;
     }
-
-    /**
-     * The unique name or ID of the service, derived from {@link Assets#getName()}.
-     */
-    private String name;
-
-    /**
-     * The latest performance metrics for the service process (e.g., CPU and memory usage).
-     */
-    private Metrics metrics;
-
-    /**
-     * The current lifecycle status of the service process (e.g., RUNNING, CLOSED).
-     */
-    private Lifecycle.State lifecycle;
 
 }

@@ -32,13 +32,6 @@ import org.miaixz.bus.cortex.registry.HealthProbeScheduler;
 public class Builder {
 
     /**
-     * Creates a new Builder.
-     */
-    public Builder() {
-        // No initialization required.
-    }
-
-    /**
      * Default space used when no explicit space is specified.
      */
     public static final String DEFAULT_SPACE = Normal.DEFAULT;
@@ -88,5 +81,12 @@ public class Builder {
      * CacheX key prefix for audit log entries ({@code audit:}).
      */
     public static final String AUDIT_PREFIX = "audit" + Symbol.COLON;
+
+    /**
+     * Creates a new Builder.
+     */
+    public Builder() {
+        // No initialization required.
+    }
 
 }

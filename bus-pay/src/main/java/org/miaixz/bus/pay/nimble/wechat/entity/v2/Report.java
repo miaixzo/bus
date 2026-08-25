@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class Report extends Voucher {
 
     /**
-     * Constructs a new {@code Report} instance.
-     */
-    public Report() {
-        // No initialization required.
-    }
-
-    /**
      * Sub-merchant App ID.
      */
     private String sub_appid;
@@ -126,5 +119,12 @@ public class Report extends Voucher {
      * Time.
      */
     private String time;
+
+    /**
+     * Constructs a new {@code Report} instance.
+     */
+    public Report() {
+        // No initialization required.
+    }
 
 }

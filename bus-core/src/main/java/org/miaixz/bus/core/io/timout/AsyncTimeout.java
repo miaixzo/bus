@@ -39,13 +39,6 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class AsyncTimeout extends Timeout {
 
     /**
-     * Creates a new {@code AsyncTimeout} instance.
-     */
-    public AsyncTimeout() {
-        // No initialization required.
-    }
-
-    /**
      * The maximum number of bytes to write at once. No more than 64 KiB should be written at a time, regardless of the
      * total size. Otherwise, slow connections may time out even if progress is (slowly) being made. Without this,
      * writing a single 1 MiB buffer might never succeed on a sufficiently slow connection.
@@ -82,6 +75,13 @@ public class AsyncTimeout extends Timeout {
      * The time in nanoseconds when this timeout is scheduled to expire.
      */
     private long timeoutAt;
+
+    /**
+     * Creates a new {@code AsyncTimeout} instance.
+     */
+    public AsyncTimeout() {
+        // No initialization required.
+    }
 
     /**
      * Schedules a timeout to be enforced by the watchdog thread. This method adds the given {@code node} to the sorted

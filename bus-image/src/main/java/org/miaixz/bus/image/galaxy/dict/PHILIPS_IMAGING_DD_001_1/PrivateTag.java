@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.PHILIPS_IMAGING_DD_001_1;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "PHILIPS IMAGING DD 001";
@@ -637,5 +630,12 @@ public class PrivateTag {
      * (2001,xxF2) VR=FL VM=1-n Retrospective Motion Correction
      */
     public static final int RetrospectiveMotionCorrection = 0x200100F2;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

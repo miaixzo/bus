@@ -548,11 +548,12 @@ public class LinuxHWDiskStore extends AbstractHWDiskStore {
             int major,
             int minor) {
         if (isLogicalVolume(dmUuid) && !StringKit.isBlank(vgName) && !StringKit.isBlank(lvName)) {
+            String vg = Parsing.getStringValueOrEmpty(vgName);
+            String lv = Parsing.getStringValueOrEmpty(lvName);
             store.partitionList.add(
-                    new HWPartition(getPartitionNameForDmDevice(vgName, lvName), sysname,
-                            fsType == null ? PARTITION : fsType, fsUuid == null ? Normal.EMPTY : fsUuid,
-                            fsLabel == null ? Normal.EMPTY : fsLabel, size, major, minor,
-                            getMountPointOfDmDevice(vgName, lvName)));
+                    new HWPartition(getPartitionNameForDmDevice(vg, lv), sysname, fsType == null ? PARTITION : fsType,
+                            fsUuid == null ? Normal.EMPTY : fsUuid, fsLabel == null ? Normal.EMPTY : fsLabel, size,
+                            major, minor, getMountPointOfDmDevice(vg, lv)));
         } else if (isEncryptedVolume(dmUuid)) {
             String name = getDmDevicePath(dmName, devnode);
             store.partitionList.add(

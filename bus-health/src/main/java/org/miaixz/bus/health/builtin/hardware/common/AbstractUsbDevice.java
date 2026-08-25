@@ -24,10 +24,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.UsbDevice;
 
 /**
@@ -87,11 +89,11 @@ public abstract class AbstractUsbDevice implements UsbDevice {
     public AbstractUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
             String uniqueDeviceId, List<UsbDevice> connectedDevices) {
         this.name = name;
-        this.vendor = vendor;
+        this.vendor = Parsing.getStringValueOrEmpty(vendor);
         this.vendorId = vendorId;
         this.productId = productId;
         this.serialNumber = serialNumber;
-        this.uniqueDeviceId = uniqueDeviceId;
+        this.uniqueDeviceId = Parsing.getStringValueOrEmpty(uniqueDeviceId);
         this.connectedDevices = Collections.unmodifiableList(connectedDevices);
     }
 
@@ -187,6 +189,43 @@ public abstract class AbstractUsbDevice implements UsbDevice {
     @Override
     public List<UsbDevice> getConnectedDevices() {
         return this.connectedDevices;
+    }
+
+    /**
+     * Compares this device to another for equality. Two devices are equal when their name, unique device ID, vendor ID,
+     * product ID and serial number all match, which are the same fields {@link UsbDevice#compareTo(UsbDevice)} orders
+     * by.
+     * <p>
+     * Only another {@link AbstractUsbDevice} can be equal to this one. Widening that to any {@link UsbDevice} would
+     * make equality asymmetric, because a foreign implementation carrying the same values is free to keep the
+     * identity-based {@code equals} it inherits from {@link Object}. Ordering has no such limitation, because
+     * {@link UsbDevice} supplies it to every implementation.
+     *
+     * @param obj the object to compare with
+     * @return {@code true} if the two devices carry the same identity fields
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof AbstractUsbDevice)) {
+            return false;
+        }
+        AbstractUsbDevice other = (AbstractUsbDevice) obj;
+        return getName().equals(other.getName()) && getUniqueDeviceId().equals(other.getUniqueDeviceId())
+                && getVendorId().equals(other.getVendorId()) && getProductId().equals(other.getProductId())
+                && getSerialNumber().equals(other.getSerialNumber());
+    }
+
+    /**
+     * Returns a hash code over the same identity fields {@link #equals(Object)} compares.
+     *
+     * @return the hash code
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getUniqueDeviceId(), getVendorId(), getProductId(), getSerialNumber());
     }
 
     /**
@@ -295,18 +334,6 @@ public abstract class AbstractUsbDevice implements UsbDevice {
     @Override
     public String toString() {
         return indentUsb(this, 1);
-    }
-
-    /**
-     * Returns the compare to result.
-     *
-     * @param usb the usb
-     * @return the compare to result
-     */
-    @Override
-    public int compareTo(UsbDevice usb) {
-        // Naturally sort by device name
-        return getName().compareTo(usb.getName());
     }
 
 }

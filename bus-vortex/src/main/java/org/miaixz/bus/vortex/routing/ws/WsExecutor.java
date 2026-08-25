@@ -77,13 +77,6 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
     private static final String WS_SCHEME_PATTERN = "^(" + WS_SCHEME + Symbol.OR + WSS_SCHEME + Symbol.PARENTHESE_RIGHT;
 
     /**
-     * Creates a WebSocket executor.
-     */
-    public WsExecutor() {
-        // No initialization required.
-    }
-
-    /**
      * A thread-safe map of active WebSocket sessions, keyed by session ID. This allows tracking and managing all active
      * connections through the gateway.
      */
@@ -94,6 +87,13 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
      * as connection time, target upstream URL, and custom attributes.
      */
     private final Map<String, SessionMetadata> sessionMetadata = new ConcurrentHashMap<>();
+
+    /**
+     * Creates a WebSocket executor.
+     */
+    public WsExecutor() {
+        // No initialization required.
+    }
 
     /**
      * Executes a WebSocket request using the provided context.

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.Applicare_RadWorks_Version_5_0;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "Applicare/RadWorks/Version 5.0";
@@ -277,5 +270,12 @@ public class PrivateTag {
      * (3109,xxEF) VR=CS VM=1 Action (Add,Remove,Change)
      */
     public static final int Action = 0x310900EF;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

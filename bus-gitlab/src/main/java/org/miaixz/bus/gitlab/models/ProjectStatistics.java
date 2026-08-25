@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ProjectStatistics implements Serializable {
 
     /**
-     * Constructs a new {@code ProjectStatistics} instance.
-     */
-    public ProjectStatistics() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -73,6 +66,13 @@ public class ProjectStatistics implements Serializable {
      * The packages size value.
      */
     long packagesSize;
+
+    /**
+     * Constructs a new {@code ProjectStatistics} instance.
+     */
+    public ProjectStatistics() {
+        // No initialization required.
+    }
 
     /**
      * Returns the commit count.

@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class UnifiedOrder extends Voucher {
 
     /**
-     * Constructs a new {@code UnifiedOrder} instance.
-     */
-    public UnifiedOrder() {
-        // No initialization required.
-    }
-
-    /**
      * Service name.
      */
     private String service;
@@ -211,5 +204,12 @@ public class UnifiedOrder extends Voucher {
      * Group number.
      */
     private String groupno;
+
+    /**
+     * Constructs a new {@code UnifiedOrder} instance.
+     */
+    public UnifiedOrder() {
+        // No initialization required.
+    }
 
 }

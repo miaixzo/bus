@@ -42,13 +42,6 @@ import org.miaixz.bus.cortex.Vector;
 public class ItemQuery extends ItemScope {
 
     /**
-     * Creates an empty setting query.
-     */
-    public ItemQuery() {
-        // No initialization required.
-    }
-
-    /**
      * Setting data identifier.
      */
     private String data_id;
@@ -68,5 +61,12 @@ public class ItemQuery extends ItemScope {
      * Request context used for gray-release evaluation after space, profile, and application matching.
      */
     private GrayRequestContext requestContext;
+
+    /**
+     * Creates an empty setting query.
+     */
+    public ItemQuery() {
+        // No initialization required.
+    }
 
 }

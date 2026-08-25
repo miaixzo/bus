@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_OCS_SS_VERSION_INFO;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS MED OCS SS VERSION INFO";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (0039,xx76) VR=LO VM=1 Structure Set Predecessor
      */
     public static final int StructureSetPredecessor = 0x00390076;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

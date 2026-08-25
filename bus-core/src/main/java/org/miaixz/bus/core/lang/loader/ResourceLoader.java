@@ -88,16 +88,16 @@ public abstract class ResourceLoader implements Loader {
     protected abstract static class ResourceEnumerator implements Enumeration<Resource> {
 
         /**
+         * The next resource in the enumeration, or {@code null} if not yet determined or no more elements.
+         */
+        protected Resource next;
+
+        /**
          * Constructs a resource enumerator.
          */
         protected ResourceEnumerator() {
             // No initialization required.
         }
-
-        /**
-         * The next resource in the enumeration, or {@code null} if not yet determined or no more elements.
-         */
-        protected Resource next;
 
         /**
          * Returns the next element in the enumeration.

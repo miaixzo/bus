@@ -51,16 +51,16 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class ZipKit {
 
     /**
+     * Default charset, using the platform's default charset.
+     */
+    private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.defaultCharset();
+
+    /**
      * Constructs a new {@code ZipKit} instance.
      */
     public ZipKit() {
         // No initialization required.
     }
-
-    /**
-     * Default charset, using the platform's default charset.
-     */
-    private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.defaultCharset();
 
     /**
      * Zips a source file or directory into a zip file in the same directory, using UTF-8 encoding.

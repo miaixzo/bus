@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GE_GROUP;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GE_GROUP";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (6005,xx10) VR=UT VM=1 ?
      */
     public static final int _6005_xx10_ = 0x60050010;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

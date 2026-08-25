@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.Applicare_Print_Version_5_1;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "Applicare/Print/Version 5.1";
@@ -82,5 +75,12 @@ public class PrivateTag {
      * (4101,xx09) VR=US VM=1 Show Caliper
      */
     public static final int ShowCaliper = 0x41010009;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

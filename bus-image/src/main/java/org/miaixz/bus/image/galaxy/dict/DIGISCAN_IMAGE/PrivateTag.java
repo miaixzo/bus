@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.DIGISCAN_IMAGE;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "DIGISCAN IMAGE";
@@ -57,5 +50,12 @@ public class PrivateTag {
      * (0029,xx34) VR=LO VM=1 ?
      */
     public static final int _0029_xx34_ = 0x00290034;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

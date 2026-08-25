@@ -100,7 +100,17 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     /**
      * The DOUBLE_QUOTES constant.
      */
-    private static final String DOUBLE_QUOTES = "(?:^\"|\"$)";
+    private static final java.util.regex.Pattern DOUBLE_QUOTES = java.util.regex.Pattern.compile("(?:^\"|\"$)");
+
+    /**
+     * Pattern used to split release strings around parentheses.
+     */
+    private static final java.util.regex.Pattern PARENTHESES = java.util.regex.Pattern.compile("[()]");
+
+    /**
+     * Pattern used to split Ubuntu-style release strings.
+     */
+    private static final java.util.regex.Pattern COMMA_SPACE = java.util.regex.Pattern.compile(", ");
 
     /**
      * Jiffies per second, used for process time counters.
@@ -356,11 +366,11 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 // remove beginning and ending '"' characters, etc from
                 // VERSION="14.04.4 LTS, Trusty Tahr" (Ubuntu style)
                 // or VERSION="17 (Beefy Miracle)" (os-release doc style)
-                line = line.replace("VERSION=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
-                String[] split = line.split("[()]");
+                line = DOUBLE_QUOTES.matcher(line.replace("VERSION=", Normal.EMPTY)).replaceAll(Normal.EMPTY).trim();
+                String[] split = PARENTHESES.split(line);
                 if (split.length <= 1) {
                     // If no parentheses, check for Ubuntu's comma format
-                    split = line.split(", ");
+                    split = COMMA_SPACE.split(line);
                 }
                 if (split.length > 0) {
                     versionId = split[0].trim();
@@ -372,12 +382,13 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 Logger.debug(false, "Health", OS_RELEASE_LOG, line);
                 // remove beginning and ending '"' characters, etc from
                 // NAME="Ubuntu"
-                family = line.replace("NAME=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
+                family = DOUBLE_QUOTES.matcher(line.replace("NAME=", Normal.EMPTY)).replaceAll(Normal.EMPTY).trim();
             } else if (line.startsWith("VERSION_ID=") && versionId.equals(Normal.UNKNOWN)) {
                 Logger.debug(false, "Health", OS_RELEASE_LOG, line);
                 // remove beginning and ending '"' characters, etc from
                 // VERSION_ID="14.04"
-                versionId = line.replace("VERSION_ID=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
+                versionId = DOUBLE_QUOTES.matcher(line.replace("VERSION_ID=", Normal.EMPTY)).replaceAll(Normal.EMPTY)
+                        .trim();
             }
         }
         return family == null ? null : Triplet.of(family, versionId, codeName);
@@ -460,8 +471,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         for (String line : lines) {
             if (line.startsWith("DISTRIB_DESCRIPTION=")) {
                 Logger.debug(false, "Health", LSB_RELEASE_LOG, line);
-                line = line.replace("DISTRIB_DESCRIPTION=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY)
-                        .trim();
+                line = DOUBLE_QUOTES.matcher(line.replace("DISTRIB_DESCRIPTION=", Normal.EMPTY))
+                        .replaceAll(Normal.EMPTY).trim();
                 if (line.contains(RELEASE_DELIM)) {
                     Triplet<String, String, String> triplet = parseRelease(line, RELEASE_DELIM);
                     family = triplet.getLeft();
@@ -474,15 +485,16 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 }
             } else if (line.startsWith("DISTRIB_ID=") && family == null) {
                 Logger.debug(false, "Health", LSB_RELEASE_LOG, line);
-                family = line.replace("DISTRIB_ID=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
+                family = DOUBLE_QUOTES.matcher(line.replace("DISTRIB_ID=", Normal.EMPTY)).replaceAll(Normal.EMPTY)
+                        .trim();
             } else if (line.startsWith("DISTRIB_RELEASE=") && versionId.equals(Normal.UNKNOWN)) {
                 Logger.debug(false, "Health", LSB_RELEASE_LOG, line);
-                versionId = line.replace("DISTRIB_RELEASE=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY)
-                        .trim();
+                versionId = DOUBLE_QUOTES.matcher(line.replace("DISTRIB_RELEASE=", Normal.EMPTY))
+                        .replaceAll(Normal.EMPTY).trim();
             } else if (line.startsWith("DISTRIB_CODENAME=") && codeName.equals(Normal.UNKNOWN)) {
                 Logger.debug(false, "Health", LSB_RELEASE_LOG, line);
-                codeName = line.replace("DISTRIB_CODENAME=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY)
-                        .trim();
+                codeName = DOUBLE_QUOTES.matcher(line.replace("DISTRIB_CODENAME=", Normal.EMPTY))
+                        .replaceAll(Normal.EMPTY).trim();
             }
         }
         return family == null ? null : Triplet.of(family, versionId, codeName);
@@ -530,16 +542,17 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      * Parses version description line style
      *
      * @param line      a String of the form "Distributor release x.x (Codename)"
-     * @param splitLine A regex to split on, e.g. " release "
+     * @param splitLine A literal delimiter to split on, e.g. " release "
      * @return a triplet with the parsed family, versionID and codeName
      */
     static Triplet<String, String, String> parseRelease(String line, String splitLine) {
-        String[] split = line.split(splitLine);
-        String family = split[0].trim();
+        int delim = line.indexOf(splitLine);
+        String family = (delim < 0 ? line : line.substring(0, delim)).trim();
         String versionId = Normal.UNKNOWN;
         String codeName = Normal.UNKNOWN;
-        if (split.length > 1) {
-            split = split[1].split("[()]");
+        String rest = delim < 0 ? Normal.EMPTY : line.substring(delim + splitLine.length());
+        if (!rest.isEmpty()) {
+            String[] split = PARENTHESES.split(rest, -1);
             if (split.length > 0) {
                 versionId = split[0].trim();
             }

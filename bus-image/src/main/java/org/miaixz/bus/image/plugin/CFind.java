@@ -41,13 +41,6 @@ import org.miaixz.bus.logger.Logger;
 public class CFind {
 
     /**
-     * Constructs a new CFind instance.
-     */
-    public CFind() {
-        // No initialization required.
-    }
-
-    /**
      * Represents the Patient ID (0010,0020) DICOM tag.
      */
     public static final ImageParam PatientID = new ImageParam(Tag.PatientID);
@@ -157,6 +150,13 @@ public class CFind {
      * Represents the SOP Class UID (0008,0016) DICOM tag.
      */
     public static final ImageParam SopClassUID = new ImageParam(Tag.SOPClassUID);
+
+    /**
+     * Constructs a new CFind instance.
+     */
+    public CFind() {
+        // No initialization required.
+    }
 
     /**
      * Performs a DICOM C-FIND operation with default settings.

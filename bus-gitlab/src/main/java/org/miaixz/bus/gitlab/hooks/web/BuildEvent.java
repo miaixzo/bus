@@ -34,13 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class BuildEvent extends AbstractEvent {
 
     /**
-     * Constructs a new {@code BuildEvent} instance.
-     */
-    public BuildEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     private static final long serialVersionUID = 2815283069125L;
@@ -157,6 +150,13 @@ public class BuildEvent extends AbstractEvent {
      * The environment value.
      */
     private EventEnvironment environment;
+
+    /**
+     * Constructs a new {@code BuildEvent} instance.
+     */
+    public BuildEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the object kind.

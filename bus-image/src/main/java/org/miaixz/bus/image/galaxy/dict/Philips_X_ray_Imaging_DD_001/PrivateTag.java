@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.Philips_X_ray_Imaging_DD_001;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "Philips X-ray Imaging DD 001";
@@ -192,5 +185,12 @@ public class PrivateTag {
      * (2003,xx32) VR=UI VM=1 ?
      */
     public static final int _2003_xx32_ = 0x20030032;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

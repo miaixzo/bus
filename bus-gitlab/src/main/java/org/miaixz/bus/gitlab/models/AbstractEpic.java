@@ -49,13 +49,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic<E> implements Serializable {
 
     /**
-     * Constructs a new AbstractEpic instance.
-     */
-    public AbstractEpic() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -147,6 +140,13 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
      */
     @JsonProperty("_links")
     private Map<String, String> links;
+
+    /**
+     * Constructs a new AbstractEpic instance.
+     */
+    public AbstractEpic() {
+        // No initialization required.
+    }
 
     /**
      * Sets the author and returns this epic model.

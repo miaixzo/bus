@@ -51,13 +51,6 @@ import org.miaixz.bus.health.unix.solaris.KstatKit.KstatChain;
 public class SolarisFileSystem extends AbstractFileSystem {
 
     /**
-     * Creates a new SolarisFileSystem instance.
-     */
-    public SolarisFileSystem() {
-        // No initialization required.
-    }
-
-    /**
      * The fileDesc value.
      */
     private final SupplierX<Pair<Long, Long>> fileDesc = Memoizer
@@ -86,6 +79,13 @@ public class SolarisFileSystem extends AbstractFileSystem {
      */
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Builder._UNIX_SOLARIS_FS_VOLUME_INCLUDES);
+
+    /**
+     * Creates a new SolarisFileSystem instance.
+     */
+    public SolarisFileSystem() {
+        // No initialization required.
+    }
 
     /**
      * Returns the file store matching.

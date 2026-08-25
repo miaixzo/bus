@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_MR_N3D;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS MR N3D";
@@ -582,5 +575,12 @@ public class PrivateTag {
      * (0021,xxC2) VR=CS VM=1 Current Active Plane
      */
     public static final int CurrentActivePlane = 0x002100C2;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

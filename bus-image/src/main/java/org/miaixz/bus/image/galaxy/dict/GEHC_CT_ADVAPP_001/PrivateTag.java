@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEHC_CT_ADVAPP_001;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEHC_CT_ADVAPP_001";
@@ -122,5 +115,12 @@ public class PrivateTag {
      * (0053,xx9D) VR=LO VM=1 MARs Annotation
      */
     public static final int MARsAnnotation = 0x0053009D;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

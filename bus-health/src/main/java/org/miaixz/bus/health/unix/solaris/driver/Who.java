@@ -40,16 +40,16 @@ import org.miaixz.bus.health.unix.shared.jna.SolarisLibc;
 public class Who {
 
     /**
+     * The LIBC constant.
+     */
+    private static final SolarisLibc LIBC = SolarisLibc.INSTANCE;
+
+    /**
      * Keeps Solaris logged-in-user queries on the static API.
      */
     public Who() {
         // No initialization required.
     }
-
-    /**
-     * The LIBC constant.
-     */
-    private static final SolarisLibc LIBC = SolarisLibc.INSTANCE;
 
     /**
      * Query {@code getutxent} to get logged in users.

@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class RegistryRepositoryTag implements Serializable {
 
     /**
-     * Constructs a new {@code RegistryRepositoryTag} instance.
-     */
-    public RegistryRepositoryTag() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -77,6 +70,13 @@ public class RegistryRepositoryTag implements Serializable {
      * The total size value.
      */
     private Long totalSize;
+
+    /**
+     * Constructs a new {@code RegistryRepositoryTag} instance.
+     */
+    public RegistryRepositoryTag() {
+        // No initialization required.
+    }
 
     /**
      * Returns the name.

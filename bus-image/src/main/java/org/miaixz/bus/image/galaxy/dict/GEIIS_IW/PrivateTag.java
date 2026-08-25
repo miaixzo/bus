@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEIIS_IW;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEIIS_IW";
@@ -282,5 +275,12 @@ public class PrivateTag {
      * (0075,xxC1) VR=UI VM=1 ?
      */
     public static final int _0075_xxC1_ = 0x007500C1;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -30,13 +30,6 @@ import java.io.Serializable;
  */
 public class NodeConfig implements Serializable {
 
-    /**
-     * Constructs a new {@code NodeConfig} instance.
-     */
-    public NodeConfig() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852250253009L;
 
@@ -74,6 +67,13 @@ public class NodeConfig implements Serializable {
      * The maximum depth of the tree to build, starting from 0. A null value means unlimited depth.
      */
     private Integer deep;
+
+    /**
+     * Constructs a new {@code NodeConfig} instance.
+     */
+    public NodeConfig() {
+        // No initialization required.
+    }
 
     /**
      * Gets the property name for the node's ID.

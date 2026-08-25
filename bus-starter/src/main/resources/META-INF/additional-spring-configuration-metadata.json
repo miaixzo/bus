@@ -7,6 +7,17 @@
       "defaultValue": true
     },
     {
+      "name": "bus.auth.jwt.secret",
+      "type": "java.lang.String",
+      "description": "Exact non-empty String key material for the shared HS256 JwtService. Bus deterministically derives a 256-bit key through its versioned HKDF-SHA-256 profile."
+    },
+    {
+      "name": "bus.auth.jwt.secret-policy",
+      "type": "org.miaixz.bus.starter.auth.AuthProperties$SecretPolicy",
+      "description": "Whether short JWT String key material is accepted with a warning or rejected during startup.",
+      "defaultValue": "COMPATIBLE"
+    },
+    {
       "name": "bus.cache.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether Cache integration is enabled.",

@@ -36,16 +36,16 @@ import org.miaixz.bus.core.lang.Assert;
 public class EnumKit {
 
     /**
+     * Cache of enum constants keyed by enum type.
+     */
+    private static final Map<Class<?>, Enum<?>[]> CACHE = new ConcurrentHashMap<>();
+
+    /**
      * Keeps enum lookup and conversion on the static API.
      */
     public EnumKit() {
         // No initialization required.
     }
-
-    /**
-     * Cache of enum constants keyed by enum type.
-     */
-    private static final Map<Class<?>, Enum<?>[]> CACHE = new ConcurrentHashMap<>();
 
     /**
      * Clears the enum cache, allowing enums to be reloaded.

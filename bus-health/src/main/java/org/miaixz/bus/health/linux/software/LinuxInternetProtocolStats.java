@@ -47,13 +47,6 @@ import org.miaixz.bus.health.linux.driver.proc.ProcessStat;
 public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
 
     /**
-     * Constructs a new {@code LinuxInternetProtocolStats} instance.
-     */
-    public LinuxInternetProtocolStats() {
-        // No initialization required.
-    }
-
-    /**
      * The TCP statistics prefix.
      */
     private static final String TCP_COLON = "Tcp:";
@@ -67,6 +60,13 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
      * The UDP6 statistics prefix.
      */
     private static final String UDP6 = "Udp6";
+
+    /**
+     * Constructs a new {@code LinuxInternetProtocolStats} instance.
+     */
+    public LinuxInternetProtocolStats() {
+        // No initialization required.
+    }
 
     /**
      * The TcpStat enum.

@@ -42,16 +42,16 @@ import org.miaixz.bus.image.metric.json.JsonConfigurationExtension;
 public class JsonHL7Configuration extends JsonConfigurationExtension {
 
     /**
+     * The extensions value.
+     */
+    private final List<JsonHL7ConfigurationExtension> extensions = new ArrayList<>();
+
+    /**
      * Constructs a new JsonHL7Configuration instance.
      */
     public JsonHL7Configuration() {
         // No initialization required.
     }
-
-    /**
-     * The extensions value.
-     */
-    private final List<JsonHL7ConfigurationExtension> extensions = new ArrayList<>();
 
     /**
      * Adds the hl7 configuration extension.

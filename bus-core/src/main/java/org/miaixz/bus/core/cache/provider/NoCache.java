@@ -36,15 +36,15 @@ import org.miaixz.bus.core.center.function.SupplierX;
  */
 public class NoCache<K, V> implements Cache<K, V> {
 
+    @Serial
+    private static final long serialVersionUID = 2852232053893L;
+
     /**
      * Constructs a new NoCache instance.
      */
     public NoCache() {
         // No initialization required.
     }
-
-    @Serial
-    private static final long serialVersionUID = 2852232053893L;
 
     /**
      * @return Always returns {@code 0}.

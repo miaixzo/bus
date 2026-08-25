@@ -32,16 +32,16 @@ import org.miaixz.bus.core.lang.caller.StackTraceCaller;
 public class CallerKit {
 
     /**
+     * Shared caller strategy used by this class.
+     */
+    private static final Caller INSTANCE;
+
+    /**
      * Keeps call-stack inspection on the static API.
      */
     public CallerKit() {
         // No initialization required.
     }
-
-    /**
-     * Shared caller strategy used by this class.
-     */
-    private static final Caller INSTANCE;
 
     static {
         INSTANCE = tryCreateCaller();

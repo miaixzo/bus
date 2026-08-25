@@ -91,13 +91,6 @@ public class Bundle {
     public static class Paged<T> {
 
         /**
-         * Constructs a new {@code Paged} instance.
-         */
-        public Paged() {
-            // No initialization required.
-        }
-
-        /**
          * Bundle handle identifier.
          */
         private String handleId;
@@ -156,6 +149,13 @@ public class Bundle {
          * Current page items.
          */
         private List<T> items;
+
+        /**
+         * Constructs a new {@code Paged} instance.
+         */
+        public Paged() {
+            // No initialization required.
+        }
 
         /**
          * Checks whether the current page contains items.

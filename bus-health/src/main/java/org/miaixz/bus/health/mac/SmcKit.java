@@ -24,11 +24,11 @@ import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.jna.NativeLong;
+import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.IOKit.IOConnect;
 import com.sun.jna.platform.mac.IOKit.IOService;
 import com.sun.jna.platform.mac.IOKitUtil;
@@ -43,7 +43,6 @@ import org.miaixz.bus.health.mac.jna.IOKit.SMCKeyData;
 import org.miaixz.bus.health.mac.jna.IOKit.SMCKeyDataKeyInfo;
 import org.miaixz.bus.health.mac.jna.IOKit.SMCVal;
 import org.miaixz.bus.health.mac.jna.SystemB;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * Provides access to SMC calls on macOS
@@ -54,16 +53,14 @@ import org.miaixz.bus.logger.Logger;
 public class SmcKit {
 
     /**
-     * Keeps macOS SMC queries on the static API.
-     */
-    public SmcKit() {
-        // No initialization required.
-    }
-
-    /**
      * Instance of IOKit.
      */
     private static final IOKit IO = IOKit.INSTANCE;
+
+    /**
+     * Reports a connection failure once rather than on every sensor query.
+     */
+    private static final SmcOpenFailure OPEN_FAILURE = new SmcOpenFailure();
 
     /**
      * Thread-safe map for caching info retrieved by a key necessary for subsequent calls.
@@ -207,21 +204,20 @@ public class SmcKit {
             try (CloseablePointerByReference connPtr = new CloseablePointerByReference()) {
                 int result = IO.IOServiceOpen(smcService, SystemB.INSTANCE.mach_task_self(), 0, connPtr);
                 if (result == 0) {
-                    return new IOConnect(connPtr.getValue());
-                } else if (Logger.isErrorEnabled()) {
-                    Logger.error(
-                            false,
-                            "Health",
-                            String.format(
-                                    Locale.ROOT,
-                                    "Unable to open connection to AppleSMC service. Error: 0x%08x",
-                                    result));
+                    Pointer conn = connPtr.getValue();
+                    if (conn == null) {
+                        OPEN_FAILURE.nullConnection();
+                    } else {
+                        return new IOConnect(conn);
+                    }
+                } else {
+                    OPEN_FAILURE.openFailed(result);
                 }
             } finally {
                 smcService.release();
             }
         } else {
-            Logger.error(false, "Health", "Unable to locate AppleSMC service");
+            OPEN_FAILURE.serviceNotFound();
         }
         return null;
     }
@@ -418,6 +414,13 @@ public class SmcKit {
      * Lowest reading accepted as a plausible CPU voltage, in volts.
      */
     public static final double MIN_PLAUSIBLE_VOLTAGE = SmcSensorValues.MIN_PLAUSIBLE_VOLTAGE;
+
+    /**
+     * Keeps macOS SMC queries on the static API.
+     */
+    public SmcKit() {
+        // No initialization required.
+    }
 
     /**
      * Tests whether a reading is plausible as a CPU voltage.

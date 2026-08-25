@@ -24,6 +24,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.miaixz.bus.health.Parsing;
+
 /**
  * Represents common information about an installed application across different operating systems. This class provides
  * standardized access to essential application details while allowing flexibility for OS-specific fields via an
@@ -71,11 +73,12 @@ public class ApplicationInfo {
      */
     public ApplicationInfo(String name, String version, String vendor, long timestamp,
             Map<String, String> additionalInfo) {
-        this.name = name;
-        this.version = version;
-        this.vendor = vendor;
+        this.name = Parsing.getStringValueOrEmpty(name);
+        this.version = Parsing.getStringValueOrEmpty(version);
+        this.vendor = Parsing.getStringValueOrEmpty(vendor);
         this.timestamp = timestamp;
-        this.additionalInfo = additionalInfo != null ? new LinkedHashMap<>(additionalInfo) : Collections.emptyMap();
+        this.additionalInfo = additionalInfo != null ? Collections.unmodifiableMap(new LinkedHashMap<>(additionalInfo))
+                : Collections.emptyMap();
     }
 
     /**
@@ -124,7 +127,7 @@ public class ApplicationInfo {
      * Gets additional application details that are OS-specific and not covered by the main fields. This map may include
      * attributes like installation location, source, architecture, or other metadata.
      *
-     * @return A map containing optional key-value pairs of application details.
+     * @return An unmodifiable map containing optional key-value pairs of application details.
      */
     public Map<String, String> getAdditionalInfo() {
         return additionalInfo;

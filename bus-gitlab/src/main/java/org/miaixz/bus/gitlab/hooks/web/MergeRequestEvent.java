@@ -35,13 +35,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class MergeRequestEvent extends AbstractEvent {
 
     /**
-     * Constructs a new {@code MergeRequestEvent} instance.
-     */
-    public MergeRequestEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -88,6 +81,13 @@ public class MergeRequestEvent extends AbstractEvent {
      * The reviewers value.
      */
     private List<Reviewer> reviewers;
+
+    /**
+     * Constructs a new {@code MergeRequestEvent} instance.
+     */
+    public MergeRequestEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the object kind.

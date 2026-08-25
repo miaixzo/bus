@@ -40,13 +40,6 @@ import org.miaixz.bus.core.text.CharsBacker;
 public class ColorKit {
 
     /**
-     * Keeps color parsing and conversion on the static API.
-     */
-    public ColorKit() {
-        // No initialization required.
-    }
-
-    /**
      * Immutable mapping between color names and their {@link Color} instances.
      */
     private static final Map<String, Color> COLOR_MAPPING;
@@ -55,6 +48,13 @@ public class ColorKit {
      * Upper bound for RGB color values.
      */
     private static final int RGB_COLOR_BOUND = 256;
+
+    /**
+     * Keeps color parsing and conversion on the static API.
+     */
+    public ColorKit() {
+        // No initialization required.
+    }
 
     static {
         final Map<String, Color> colorMap = MapKit.builder("BLACK", Color.BLACK).put("WHITE", Color.WHITE)

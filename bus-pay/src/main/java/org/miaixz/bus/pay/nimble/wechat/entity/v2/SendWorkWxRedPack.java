@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class SendWorkWxRedPack extends Voucher {
 
     /**
-     * Constructs a new {@code SendWorkWxRedPack} instance.
-     */
-    public SendWorkWxRedPack() {
-        // No initialization required.
-    }
-
-    /**
      * Random string.
      */
     private String nonce_str;
@@ -116,5 +109,12 @@ public class SendWorkWxRedPack extends Voucher {
      * WeCom-specific signature.
      */
     private String workwx_sign;
+
+    /**
+     * Constructs a new {@code SendWorkWxRedPack} instance.
+     */
+    public SendWorkWxRedPack() {
+        // No initialization required.
+    }
 
 }

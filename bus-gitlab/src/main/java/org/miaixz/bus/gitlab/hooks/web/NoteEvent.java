@@ -38,13 +38,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class NoteEvent extends AbstractEvent {
 
     /**
-     * Constructs a new {@code NoteEvent} instance.
-     */
-    public NoteEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -95,6 +88,13 @@ public class NoteEvent extends AbstractEvent {
      * The snippet value.
      */
     private EventSnippet snippet;
+
+    /**
+     * Constructs a new {@code NoteEvent} instance.
+     */
+    public NoteEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the object kind.
@@ -373,13 +373,6 @@ public class NoteEvent extends AbstractEvent {
     public static class ObjectAttributes {
 
         /**
-         * Constructs a new {@code ObjectAttributes} instance.
-         */
-        public ObjectAttributes() {
-            // No initialization required.
-        }
-
-        /**
          * The id value.
          */
         private Long id;
@@ -444,6 +437,13 @@ public class NoteEvent extends AbstractEvent {
          * The url value.
          */
         private String url;
+
+        /**
+         * Constructs a new {@code ObjectAttributes} instance.
+         */
+        public ObjectAttributes() {
+            // No initialization required.
+        }
 
         /**
          * Returns the id.

@@ -31,15 +31,15 @@ import java.net.URL;
  */
 public class URIConverter extends AbstractConverter {
 
+    @Serial
+    private static final long serialVersionUID = 2852272395520L;
+
     /**
      * Constructs a new URIConverter instance.
      */
     public URIConverter() {
         // No initialization required.
     }
-
-    @Serial
-    private static final long serialVersionUID = 2852272395520L;
 
     /**
      * Converts the given value to a URI.

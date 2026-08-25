@@ -34,15 +34,15 @@ import org.miaixz.bus.shade.screw.metadata.Database;
 public class CacheDbDatabase implements Database {
 
     /**
+     * The name of the database.
+     */
+    private String database;
+
+    /**
      * Constructs a new CacheDbDatabase instance.
      */
     public CacheDbDatabase() {
         // No initialization required.
     }
-
-    /**
-     * The name of the database.
-     */
-    private String database;
 
 }

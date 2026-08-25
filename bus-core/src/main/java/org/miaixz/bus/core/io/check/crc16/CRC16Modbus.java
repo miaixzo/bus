@@ -30,13 +30,6 @@ import java.io.Serial;
  */
 public class CRC16Modbus extends CRC16Checksum {
 
-    /**
-     * Creates a CRC-16/MODBUS checksum implementation.
-     */
-    public CRC16Modbus() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852279670851L;
 
@@ -44,6 +37,13 @@ public class CRC16Modbus extends CRC16Checksum {
      * The polynomial used in the CRC16-Modbus calculation. It is the bit-reversed form of 0x8005.
      */
     private static final int WC_POLY = 0xa001;
+
+    /**
+     * Creates a CRC-16/MODBUS checksum implementation.
+     */
+    public CRC16Modbus() {
+        // No initialization required.
+    }
 
     /**
      * Resets the CRC16-Modbus calculation to its initial state (0xFFFF).

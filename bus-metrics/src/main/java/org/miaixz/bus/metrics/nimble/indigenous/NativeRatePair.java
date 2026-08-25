@@ -30,13 +30,6 @@ import org.miaixz.bus.metrics.nimble.RatePair;
 public class NativeRatePair implements RatePair {
 
     /**
-     * Constructs a new NativeRatePair instance.
-     */
-    public NativeRatePair() {
-        // No initialization required.
-    }
-
-    /**
      * Meter tracking all events (successes + errors).
      */
     private final NativeMeter totalMeter = new NativeMeter();
@@ -50,6 +43,13 @@ public class NativeRatePair implements RatePair {
      * Meter tracking success events only.
      */
     private final NativeMeter successMeter = new NativeMeter();
+
+    /**
+     * Constructs a new NativeRatePair instance.
+     */
+    public NativeRatePair() {
+        // No initialization required.
+    }
 
     /**
      * Record one successful event into total and success meters.

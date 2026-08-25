@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_3D_FUSION_MATRIX;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS SYNGO 3D FUSION MATRIX";
@@ -52,5 +45,12 @@ public class PrivateTag {
      * (0029,xx10) VR=UI VM=1 Matrix Referenced Series Instance UID
      */
     public static final int MatrixReferencedSeriesInstanceUID = 0x00290010;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

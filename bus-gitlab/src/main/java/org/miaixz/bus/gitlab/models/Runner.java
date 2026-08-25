@@ -37,13 +37,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class Runner implements Serializable {
 
     /**
-     * Constructs a new {@code Runner} instance.
-     */
-    public Runner() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -89,6 +82,13 @@ public class Runner implements Serializable {
      * The ip address value.
      */
     private String ipAddress;
+
+    /**
+     * Constructs a new {@code Runner} instance.
+     */
+    public Runner() {
+        // No initialization required.
+    }
 
     /**
      * Returns the runner type.

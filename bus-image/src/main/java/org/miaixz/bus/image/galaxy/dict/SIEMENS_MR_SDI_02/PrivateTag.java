@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_MR_SDI_02;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS MR SDI 02";
@@ -492,5 +485,12 @@ public class PrivateTag {
      * (0021,xxFE) VR=SQ VM=1 Siemens MR SDI Sequence
      */
     public static final int SiemensMRSDISequence = 0x002100FE;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -36,13 +36,6 @@ import lombok.experimental.SuperBuilder;
 public class Notice {
 
     /**
-     * Constructs a new {@code Notice} instance.
-     */
-    public Notice() {
-        // No initialization required.
-    }
-
-    /**
      * The URL associated with the notice, if any.
      */
     protected String url;
@@ -96,6 +89,13 @@ public class Notice {
      * The sending mode of the message.
      */
     protected Mode mode;
+
+    /**
+     * Constructs a new {@code Notice} instance.
+     */
+    public Notice() {
+        // No initialization required.
+    }
 
     /**
      * Enumerates the types of content that can be sent.

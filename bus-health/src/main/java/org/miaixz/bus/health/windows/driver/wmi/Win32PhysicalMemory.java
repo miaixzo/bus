@@ -36,16 +36,16 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public class Win32PhysicalMemory {
 
     /**
+     * The WMI class name.
+     */
+    public static final String WIN32_PHYSICAL_MEMORY = "Win32_PhysicalMemory";
+
+    /**
      * Keeps Win32 physical memory queries on the static API.
      */
     public Win32PhysicalMemory() {
         // No initialization required.
     }
-
-    /**
-     * The WMI class name.
-     */
-    public static final String WIN32_PHYSICAL_MEMORY = "Win32_PhysicalMemory";
 
     /**
      * Queries physical memory info for Win10 and later.

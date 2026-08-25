@@ -34,13 +34,6 @@ import lombok.experimental.SuperBuilder;
 public class GoodsDetail {
 
     /**
-     * Constructs a new {@code GoodsDetail} instance.
-     */
-    public GoodsDetail() {
-        // No initialization required.
-    }
-
-    /**
      * The merchant's internal goods ID.
      */
     private String merchant_goods_id;
@@ -64,5 +57,12 @@ public class GoodsDetail {
      * The unit price of the goods in cents.
      */
     private int unit_price;
+
+    /**
+     * Constructs a new {@code GoodsDetail} instance.
+     */
+    public GoodsDetail() {
+        // No initialization required.
+    }
 
 }

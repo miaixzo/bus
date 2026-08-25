@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_FLCOMPACT_VA01A_PROC;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS_FLCOMPACT_VA01A_PROC";
@@ -362,5 +355,12 @@ public class PrivateTag {
      * (0017,xxC0) VR=LO VM=1 ?
      */
     public static final int _0017_xxC0_ = 0x001700C0;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

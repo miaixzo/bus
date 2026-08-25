@@ -37,13 +37,6 @@ import lombok.Setter;
 public class Selector {
 
     /**
-     * Creates an empty metadata selector.
-     */
-    public Selector() {
-        // No initialization required.
-    }
-
-    /**
      * Comparison operator for label selector expressions.
      *
      * @author Kimi Liu
@@ -82,6 +75,13 @@ public class Selector {
      * Set of values used in the comparison.
      */
     private List<String> values;
+
+    /**
+     * Creates an empty metadata selector.
+     */
+    public Selector() {
+        // No initialization required.
+    }
 
     /**
      * Creates an equality selector.

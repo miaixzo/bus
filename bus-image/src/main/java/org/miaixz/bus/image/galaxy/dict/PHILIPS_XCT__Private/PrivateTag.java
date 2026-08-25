@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.PHILIPS_XCT__Private;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "PHILIPS XCT -Private";
@@ -47,5 +40,12 @@ public class PrivateTag {
      * (7051,xx02) VR=DS VM=1 DLPEstimate
      */
     public static final int DLPEstimate = 0x70510002;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

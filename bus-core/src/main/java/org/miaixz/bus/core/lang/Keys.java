@@ -42,13 +42,6 @@ import org.miaixz.bus.core.xyz.*;
 public class Keys {
 
     /**
-     * Constructs a new Keys instance.
-     */
-    public Keys() {
-        // No initialization required.
-    }
-
-    /**
      * The core framework identifier.
      */
     public static final String BUS = "bus";
@@ -293,6 +286,13 @@ public class Keys {
      * Indicates whether the current environment is GraalVM Native Image.
      */
     public static final boolean IS_GRAALVM_NATIVE;
+
+    /**
+     * Constructs a new Keys instance.
+     */
+    public Keys() {
+        // No initialization required.
+    }
 
     static {
         // Set UTF-8 as default encoding system-wide

@@ -48,13 +48,6 @@ import org.miaixz.bus.core.xyz.RecordKit;
  */
 public class RecordConverter extends AbstractConverter implements MatcherConverter {
 
-    /**
-     * Constructs a new {@code RecordConverter} instance.
-     */
-    public RecordConverter() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852271152563L;
 
@@ -62,6 +55,13 @@ public class RecordConverter extends AbstractConverter implements MatcherConvert
      * Singleton instance.
      */
     public static RecordConverter INSTANCE = new RecordConverter();
+
+    /**
+     * Constructs a new {@code RecordConverter} instance.
+     */
+    public RecordConverter() {
+        // No initialization required.
+    }
 
     /**
      * Determines whether the specified target type is a record type.

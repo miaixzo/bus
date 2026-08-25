@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Board implements Serializable {
 
     /**
-     * Constructs a new {@code Board} instance.
-     */
-    public Board() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -89,6 +82,13 @@ public class Board implements Serializable {
      * The weight value.
      */
     private Integer weight;
+
+    /**
+     * Constructs a new {@code Board} instance.
+     */
+    public Board() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

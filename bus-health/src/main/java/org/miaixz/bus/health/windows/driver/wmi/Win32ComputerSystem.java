@@ -36,16 +36,16 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public class Win32ComputerSystem {
 
     /**
+     * The WMI class name.
+     */
+    public static final String WIN32_COMPUTER_SYSTEM = "Win32_ComputerSystem";
+
+    /**
      * Keeps Win32 computer system queries on the static API.
      */
     public Win32ComputerSystem() {
         // No initialization required.
     }
-
-    /**
-     * The WMI class name.
-     */
-    public static final String WIN32_COMPUTER_SYSTEM = "Win32_ComputerSystem";
 
     /**
      * Queries the Computer System.

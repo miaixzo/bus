@@ -40,13 +40,6 @@ import org.miaixz.bus.core.xyz.ThreadKit;
 public class Sensitive {
 
     /**
-     * Constructs a new Sensitive instance.
-     */
-    public Sensitive() {
-        // No initialization required.
-    }
-
-    /**
      * The default separator used for sensitive words in a string, typically a comma.
      */
     public static final String DEFAULT_SEPARATOR = Symbol.COMMA;
@@ -55,6 +48,13 @@ public class Sensitive {
      * The underlying {@link WordTree} instance used to store and search for sensitive words.
      */
     private static final WordTree sensitiveTree = new WordTree();
+
+    /**
+     * Constructs a new Sensitive instance.
+     */
+    public Sensitive() {
+        // No initialization required.
+    }
 
     /**
      * Checks if the sensitive word tree has been initialized with sensitive words.

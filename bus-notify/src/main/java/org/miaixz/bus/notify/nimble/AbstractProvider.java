@@ -38,6 +38,11 @@ import org.miaixz.bus.notify.magic.Notice;
 public abstract class AbstractProvider<T extends Notice, K extends Context> implements Provider<T> {
 
     /**
+     * The context containing configuration information for the provider.
+     */
+    protected K context;
+
+    /**
      * Constructs a new {@code AbstractProvider} instance.
      */
     public AbstractProvider() {
@@ -52,11 +57,6 @@ public abstract class AbstractProvider<T extends Notice, K extends Context> impl
     protected AbstractProvider(K context) {
         this.context = context;
     }
-
-    /**
-     * The context containing configuration information for the provider.
-     */
-    protected K context;
 
     /**
      * Sends a notification with the given notice. Implementations should override this method to provide specific

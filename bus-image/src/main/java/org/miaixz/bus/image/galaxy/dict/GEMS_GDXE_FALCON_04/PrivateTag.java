@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_GDXE_FALCON_04;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_GDXE_FALCON_04";
@@ -232,5 +225,12 @@ public class PrivateTag {
      * (0011,xx6D) VR=DS VM=1 ?
      */
     public static final int _0011_xx6D_ = 0x0011006D;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

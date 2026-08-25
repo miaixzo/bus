@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class KeySystemHookEvent extends AbstractSystemHookEvent {
 
     /**
-     * Constructs a new {@code KeySystemHookEvent} instance.
-     */
-    public KeySystemHookEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -77,6 +70,13 @@ public class KeySystemHookEvent extends AbstractSystemHookEvent {
      * The id value.
      */
     private Long id;
+
+    /**
+     * Constructs a new {@code KeySystemHookEvent} instance.
+     */
+    public KeySystemHookEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the created at.

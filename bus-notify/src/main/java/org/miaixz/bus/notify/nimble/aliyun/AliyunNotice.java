@@ -37,16 +37,16 @@ import org.miaixz.bus.notify.magic.Notice;
 public class AliyunNotice extends Notice {
 
     /**
+     * The number of times to play the voice message.
+     */
+    private String playTimes;
+
+    /**
      * Constructs a new {@code AliyunNotice} instance.
      */
     public AliyunNotice() {
         // No initialization required.
     }
-
-    /**
-     * The number of times to play the voice message.
-     */
-    private String playTimes;
 
     /**
      * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.

@@ -50,13 +50,6 @@ import org.miaixz.bus.logger.Logger;
 public class Pdf2Dcm {
 
     /**
-     * Constructs a new {@code Pdf2Dcm} instance.
-     */
-    public Pdf2Dcm() {
-        // No initialization required.
-    }
-
-    /**
      * The maximum file size allowed for encapsulation (2GB - 2 bytes).
      */
     private static final long MAX_FILE_SIZE = 0x7FFFFFFE;
@@ -90,6 +83,13 @@ public class Pdf2Dcm {
      * A flag to include the Encapsulated Document Length tag.
      */
     private static boolean encapsulatedDocLength;
+
+    /**
+     * Constructs a new {@code Pdf2Dcm} instance.
+     */
+    public Pdf2Dcm() {
+        // No initialization required.
+    }
 
     /**
      * Determines the {@link FileContentType} from a string identifier (MIME type or file extension).

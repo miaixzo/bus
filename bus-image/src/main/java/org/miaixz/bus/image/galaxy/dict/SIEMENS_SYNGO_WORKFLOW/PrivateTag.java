@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_WORKFLOW;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS SYNGO WORKFLOW";
@@ -217,5 +210,12 @@ public class PrivateTag {
      * (0031,xx83) VR=SQ VM=1 Institution Code Sequence
      */
     public static final int InstitutionCodeSequence = 0x00310083;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

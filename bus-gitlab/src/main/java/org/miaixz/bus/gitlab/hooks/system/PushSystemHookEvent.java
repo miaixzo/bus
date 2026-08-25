@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class PushSystemHookEvent extends AbstractPushEvent implements SystemHookEvent {
 
     /**
-     * Constructs a new {@code PushSystemHookEvent} instance.
-     */
-    public PushSystemHookEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -48,6 +41,13 @@ public class PushSystemHookEvent extends AbstractPushEvent implements SystemHook
      */
 
     public static final String PUSH_EVENT = "push";
+
+    /**
+     * Constructs a new {@code PushSystemHookEvent} instance.
+     */
+    public PushSystemHookEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the string.

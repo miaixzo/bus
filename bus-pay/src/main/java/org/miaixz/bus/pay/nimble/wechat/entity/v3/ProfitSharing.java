@@ -40,13 +40,6 @@ import org.miaixz.bus.pay.nimble.wechat.entity.Receiver;
 public class ProfitSharing extends Voucher {
 
     /**
-     * Constructs a new {@code ProfitSharing} instance.
-     */
-    public ProfitSharing() {
-        // No initialization required.
-    }
-
-    /**
      * Service provider's merchant ID, assigned by WeChat Pay. Compatible with V2 API.
      */
     private String mch_id;
@@ -83,5 +76,12 @@ public class ProfitSharing extends Voucher {
      * performed on this order.
      */
     private boolean unfreeze_unsplit;
+
+    /**
+     * Constructs a new {@code ProfitSharing} instance.
+     */
+    public ProfitSharing() {
+        // No initialization required.
+    }
 
 }

@@ -75,11 +75,11 @@ final class FreeBsdFirmware extends AbstractFirmware {
         // Only works with root permissions but it's all we've got
         for (final String checkLine : Executor.runNative("dmidecode -t bios")) {
             if (checkLine.contains(manufacturerMarker)) {
-                manufacturer = checkLine.split(manufacturerMarker)[1].trim();
+                manufacturer = Parsing.getTextAfterString(checkLine, manufacturerMarker).trim();
             } else if (checkLine.contains(versionMarker)) {
-                version = checkLine.split(versionMarker)[1].trim();
+                version = Parsing.getTextAfterString(checkLine, versionMarker).trim();
             } else if (checkLine.contains(releaseDateMarker)) {
-                releaseDate = checkLine.split(releaseDateMarker)[1].trim();
+                releaseDate = Parsing.getTextAfterString(checkLine, releaseDateMarker).trim();
             }
         }
         releaseDate = Parsing.parseMmDdYyyyToYyyyMmDD(releaseDate);

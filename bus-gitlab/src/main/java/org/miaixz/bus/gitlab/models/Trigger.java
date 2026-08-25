@@ -31,13 +31,6 @@ import java.util.Date;
 public class Trigger implements Serializable {
 
     /**
-     * Constructs a new {@code Trigger} instance.
-     */
-    public Trigger() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -71,6 +64,13 @@ public class Trigger implements Serializable {
      * The owner value.
      */
     private User owner;
+
+    /**
+     * Constructs a new {@code Trigger} instance.
+     */
+    public Trigger() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

@@ -37,16 +37,16 @@ import org.miaixz.bus.notify.magic.Notice;
 public class YunpianNotice extends Notice {
 
     /**
+     * The API key for Yunpian API.
+     */
+    private String apikey;
+
+    /**
      * Constructs a new {@code YunpianNotice} instance.
      */
     public YunpianNotice() {
         // No initialization required.
     }
-
-    /**
-     * The API key for Yunpian API.
-     */
-    private String apikey;
 
     /**
      * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.

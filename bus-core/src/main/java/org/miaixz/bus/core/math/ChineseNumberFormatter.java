@@ -42,13 +42,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ChineseNumberFormatter {
 
     /**
-     * Creates a configurable Chinese-number formatter.
-     */
-    public ChineseNumberFormatter() {
-        // No initialization required.
-    }
-
-    /**
      * Chinese numeral characters. Odd indices are simplified, even indices are traditional (for accounting). '零' (zero)
      * is shared.
      */
@@ -81,6 +74,13 @@ public class ChineseNumberFormatter {
      * The name of the main currency unit (e.g., '元' or '圆').
      */
     private String unitName = Symbol.CNY_YUAN;
+
+    /**
+     * Creates a configurable Chinese-number formatter.
+     */
+    public ChineseNumberFormatter() {
+        // No initialization required.
+    }
 
     /**
      * Converts an Arabic numeral (integer, positive or negative) to a concise Chinese representation with section units

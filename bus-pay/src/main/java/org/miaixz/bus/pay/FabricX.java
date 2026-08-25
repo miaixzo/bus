@@ -63,13 +63,6 @@ import org.miaixz.bus.fabric.protocol.http.body.MultipartBody;
 public abstract class FabricX {
 
     /**
-     * Constructs a new {@code FabricX} instance.
-     */
-    public FabricX() {
-        // No initialization required.
-    }
-
-    /**
      * Shared Fabric context for non-certificate payment HTTP calls.
      */
     private static final Context CONTEXT = Context.create();
@@ -78,6 +71,13 @@ public abstract class FabricX {
      * Form media used by payment requests.
      */
     private static final MediaType FORM = MediaType.APPLICATION_FORM_URLENCODED_TYPE;
+
+    /**
+     * Constructs a new {@code FabricX} instance.
+     */
+    public FabricX() {
+        // No initialization required.
+    }
 
     /**
      * Sends a GET request.

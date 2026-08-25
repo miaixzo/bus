@@ -35,13 +35,6 @@ import org.miaixz.bus.shade.screw.metadata.Column;
 public class SqlServerColumn implements Column {
 
     /**
-     * Constructs a new SqlServerColumn instance.
-     */
-    public SqlServerColumn() {
-        // No initialization required.
-    }
-
-    /**
      * The name of the table that is the scope of a REFERENCE attribute (null if DATA_TYPE is not REF).
      */
     @MappingField(value = "SCOPE_TABLE")
@@ -207,5 +200,12 @@ public class SqlServerColumn implements Column {
      */
     @MappingField(value = "COLUMN_LENGTH")
     private String columnLength;
+
+    /**
+     * Constructs a new SqlServerColumn instance.
+     */
+    public SqlServerColumn() {
+        // No initialization required.
+    }
 
 }

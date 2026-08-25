@@ -35,15 +35,15 @@ import org.miaixz.bus.core.xyz.CollKit;
  */
 public class Graph<T> extends SetValueMap<T, T> {
 
+    @Serial
+    private static final long serialVersionUID = 2852277389299L;
+
     /**
      * Creates a new {@code Graph} instance.
      */
     public Graph() {
         // No initialization required.
     }
-
-    @Serial
-    private static final long serialVersionUID = 2852277389299L;
 
     /**
      * Adds an undirected edge between two nodes.

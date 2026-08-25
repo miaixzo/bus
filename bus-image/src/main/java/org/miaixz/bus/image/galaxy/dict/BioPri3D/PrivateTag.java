@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.BioPri3D;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "BioPri3D";
@@ -127,5 +120,12 @@ public class PrivateTag {
      * (0063,xx21) VR=UL VM=1 ?
      */
     public static final int _0063_xx21_ = 0x00630021;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

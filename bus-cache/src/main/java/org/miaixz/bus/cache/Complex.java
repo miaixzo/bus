@@ -49,13 +49,6 @@ import org.miaixz.bus.proxy.invoker.ProxyChain;
 public class Complex {
 
     /**
-     * Constructs a new Complex instance.
-     */
-    public Complex() {
-        // No initialization required.
-    }
-
-    /**
      * The configuration context for the cache module.
      */
     private Context context;
@@ -74,6 +67,13 @@ public class Complex {
      * The reader responsible for handling multi-key batch cache lookups.
      */
     private AbstractReader multiCacheReader;
+
+    /**
+     * Constructs a new Complex instance.
+     */
+    public Complex() {
+        // No initialization required.
+    }
 
     /**
      * Checks if caching is enabled for a method annotated with {@link Cached}.

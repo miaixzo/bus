@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.mitra_object_utf8_attributes_1_0;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "MITRA OBJECT UTF8 ATTRIBUTES 1.0";
@@ -97,5 +90,12 @@ public class PrivateTag {
      * (0033,xx19) VR=PN VM=1 ?
      */
     public static final int _0033_xx19_ = 0x00330019;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

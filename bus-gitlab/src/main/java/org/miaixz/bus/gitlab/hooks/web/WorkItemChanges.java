@@ -29,13 +29,6 @@ import java.util.Date;
 public class WorkItemChanges extends EventChanges {
 
     /**
-     * Constructs a new {@code WorkItemChanges} instance.
-     */
-    public WorkItemChanges() {
-        // No initialization required.
-    }
-
-    /**
      * The heath status value.
      */
     private ChangeContainer<String> heathStatus;
@@ -43,6 +36,13 @@ public class WorkItemChanges extends EventChanges {
      * The last edited at value.
      */
     private ChangeContainer<Date> lastEditedAt;
+
+    /**
+     * Constructs a new {@code WorkItemChanges} instance.
+     */
+    public WorkItemChanges() {
+        // No initialization required.
+    }
 
     /**
      * Returns the heath status.

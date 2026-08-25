@@ -41,13 +41,6 @@ import org.miaixz.bus.health.builtin.software.OperatingSystem;
 public abstract class AbstractOperatingSystem implements OperatingSystem {
 
     /**
-     * Constructs a new AbstractOperatingSystem instance.
-     */
-    public AbstractOperatingSystem() {
-        // No initialization required.
-    }
-
-    /**
      * The USE_WHO_COMMAND constant.
      */
     protected static final boolean USE_WHO_COMMAND = Builder.get(Builder._UNIX_WHOCOMMAND, false);
@@ -67,6 +60,13 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
      * The bitness value.
      */
     private final SupplierX<Integer> bitness = Memoizer.memoize(this::queryPlatformBitness);
+
+    /**
+     * Constructs a new AbstractOperatingSystem instance.
+     */
+    public AbstractOperatingSystem() {
+        // No initialization required.
+    }
 
     /**
      * Filters a complete process list to return the children or descendants of a particular process. The process itself

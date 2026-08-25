@@ -47,16 +47,16 @@ public class SpringBootConfigListener implements ApplicationListener<Application
     private static final String PROPERTY_SOURCE = "busConfig";
 
     /**
+     * A flag to ensure that configuration registration and banner printing are performed only once.
+     */
+    private final AtomicBoolean registered = new AtomicBoolean();
+
+    /**
      * Initializes the listener that registers Bus configuration and prints the banner once per application startup.
      */
     public SpringBootConfigListener() {
         // No initialization required.
     }
-
-    /**
-     * A flag to ensure that configuration registration and banner printing are performed only once.
-     */
-    private final AtomicBoolean registered = new AtomicBoolean();
 
     /**
      * Handles the {@link ApplicationEnvironmentPreparedEvent} and triggers configuration registration once.

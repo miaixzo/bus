@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class CloseOrder extends Voucher {
 
     /**
-     * Constructs a new {@code CloseOrder} instance.
-     */
-    public CloseOrder() {
-        // No initialization required.
-    }
-
-    /**
      * Sub-merchant App ID.
      */
     private String sub_appid;
@@ -76,5 +69,12 @@ public class CloseOrder extends Voucher {
      * Total fee.
      */
     private String total_fee;
+
+    /**
+     * Constructs a new {@code CloseOrder} instance.
+     */
+    public CloseOrder() {
+        // No initialization required.
+    }
 
 }

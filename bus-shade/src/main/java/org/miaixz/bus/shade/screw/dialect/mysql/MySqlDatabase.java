@@ -34,15 +34,15 @@ import org.miaixz.bus.shade.screw.metadata.Database;
 public class MySqlDatabase implements Database {
 
     /**
+     * The name of the database.
+     */
+    private String database;
+
+    /**
      * Constructs a new MySqlDatabase instance.
      */
     public MySqlDatabase() {
         // No initialization required.
     }
-
-    /**
-     * The name of the database.
-     */
-    private String database;
 
 }

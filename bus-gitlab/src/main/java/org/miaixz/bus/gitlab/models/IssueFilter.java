@@ -46,13 +46,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class IssueFilter implements Serializable {
 
     /**
-     * Constructs a new {@code IssueFilter} instance.
-     */
-    public IssueFilter() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -153,6 +146,13 @@ public class IssueFilter implements Serializable {
      * The not value.
      */
     private Map<IssueField, Object> not;
+
+    /**
+     * Constructs a new {@code IssueFilter} instance.
+     */
+    public IssueFilter() {
+        // No initialization required.
+    }
 
     /*- properties -*/
     /**

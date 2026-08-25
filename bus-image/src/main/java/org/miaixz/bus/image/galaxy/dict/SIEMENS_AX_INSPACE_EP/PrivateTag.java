@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_AX_INSPACE_EP;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS AX INSPACE_EP";
@@ -47,5 +40,12 @@ public class PrivateTag {
      * (0009,xx51) VR=UI VM=1 ?
      */
     public static final int _0009_xx51_ = 0x00090051;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

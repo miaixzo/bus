@@ -43,13 +43,6 @@ import org.miaixz.bus.core.xyz.SetKit;
  */
 public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
 
-    /**
-     * Constructs a new LockedCache instance.
-     */
-    public LockedCache() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852231905670L;
 
@@ -58,6 +51,13 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
      * can also change the map's structure, requiring a full lock.
      */
     protected Lock lock = new ReentrantLock();
+
+    /**
+     * Constructs a new LockedCache instance.
+     */
+    public LockedCache() {
+        // No initialization required.
+    }
 
     /**
      * Adds a value to the cache with the specified timeout.

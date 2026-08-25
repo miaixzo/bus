@@ -41,13 +41,6 @@ import org.miaixz.bus.vortex.magic.Performance;
 public class VortexProperties {
 
     /**
-     * Initializes Vortex properties with the documented transport and asset-refresh defaults.
-     */
-    public VortexProperties() {
-        // No initialization required.
-    }
-
-    /**
      * Whether Vortex integration is enabled.
      */
     private boolean enabled;
@@ -83,6 +76,13 @@ public class VortexProperties {
      * Asset registry runtime configuration.
      */
     private Assets assets = new Assets();
+
+    /**
+     * Initializes Vortex properties with the documented transport and asset-refresh defaults.
+     */
+    public VortexProperties() {
+        // No initialization required.
+    }
 
     /**
      * Validates bound values and cross-field capacity invariants before shared runtime resources are created.
@@ -156,13 +156,6 @@ public class VortexProperties {
     public static class Assets {
 
         /**
-         * Initializes asset refresh settings with refresh enabled and the default interval.
-         */
-        public Assets() {
-            // No initialization required.
-        }
-
-        /**
          * Whether periodic asset registry refresh is enabled.
          */
         private boolean refreshEnabled = true;
@@ -196,6 +189,13 @@ public class VortexProperties {
          * Registry method used to resolve public slug forwarding assets.
          */
         private String slugMethod = Args.VORTEX_SLUG_GET;
+
+        /**
+         * Initializes asset refresh settings with refresh enabled and the default interval.
+         */
+        public Assets() {
+            // No initialization required.
+        }
 
     }
 

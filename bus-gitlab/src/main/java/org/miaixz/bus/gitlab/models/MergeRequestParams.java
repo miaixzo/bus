@@ -36,13 +36,6 @@ import org.miaixz.bus.gitlab.models.Constants.StateEvent;
 public class MergeRequestParams implements Serializable {
 
     /**
-     * Constructs a new {@code MergeRequestParams} instance.
-     */
-    public MergeRequestParams() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -125,6 +118,13 @@ public class MergeRequestParams implements Serializable {
      * Flag indicating whether the merge request should be created as a draft.
      */
     private Boolean draft;
+
+    /**
+     * Constructs a new {@code MergeRequestParams} instance.
+     */
+    public MergeRequestParams() {
+        // No initialization required.
+    }
 
     /**
      * Set the source branch. This is for merge request creation only.

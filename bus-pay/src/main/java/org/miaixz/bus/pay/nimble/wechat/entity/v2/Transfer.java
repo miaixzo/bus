@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class Transfer extends Voucher {
 
     /**
-     * Constructs a new {@code Transfer} instance.
-     */
-    public Transfer() {
-        // No initialization required.
-    }
-
-    /**
      * Merchant App ID.
      */
     private String mch_appid;
@@ -101,5 +94,12 @@ public class Transfer extends Voucher {
      * Client IP address.
      */
     private String spbill_create_ip;
+
+    /**
+     * Constructs a new {@code Transfer} instance.
+     */
+    public Transfer() {
+        // No initialization required.
+    }
 
 }

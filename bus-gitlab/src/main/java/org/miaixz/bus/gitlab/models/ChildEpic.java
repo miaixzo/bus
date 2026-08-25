@@ -31,17 +31,17 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ChildEpic extends AbstractEpic<ChildEpic> {
 
     /**
+     * The serial version uid value.
+     */
+    @Serial
+    private static final long serialVersionUID = 2852239105250L;
+
+    /**
      * Constructs a new {@code ChildEpic} instance.
      */
     public ChildEpic() {
         // No initialization required.
     }
-
-    /**
-     * The serial version uid value.
-     */
-    @Serial
-    private static final long serialVersionUID = 2852239105250L;
 
     /**
      * Returns the string.

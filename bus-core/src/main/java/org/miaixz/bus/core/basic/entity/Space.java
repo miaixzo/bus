@@ -34,16 +34,16 @@ import lombok.experimental.SuperBuilder;
 public class Space extends Tracer {
 
     /**
+     * Unique identifier of the logical space that owns the current entity.
+     */
+    private String space_id;
+
+    /**
      * Constructs a new {@code Space} instance.
      */
     public Space() {
         // No initialization required.
     }
-
-    /**
-     * Unique identifier of the logical space that owns the current entity.
-     */
-    private String space_id;
 
     /**
      * Returns whether the current entry belongs to the supplied space.

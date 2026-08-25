@@ -148,23 +148,6 @@ final class HpackDecoder {
     private int maxHeaderCount;
 
     /**
-     * Creates a codec.
-     */
-    HpackDecoder() {
-        this.dynamicTable = new ArrayList<>();
-        this.dynamicExactIndex = new HashMap<>();
-        this.dynamicNameIndex = new HashMap<>();
-        this.dynamicSequences = new ArrayList<>();
-        this.writer = new ByteWriter(Normal._128);
-        this.tableSize = Normal._4096;
-        this.maxTableSize = Normal._4096;
-        this.maxHeaderBlockBytes = Builder.BYTES_64_KIB;
-        this.maxHeaderListSize = Builder.BYTES_64_KIB;
-        this.maxHeaderFieldBytes = Normal._16384;
-        this.maxHeaderCount = 256;
-    }
-
-    /**
      * Encodes headers.
      *
      * @param headers ordered HTTP/2 header fields to encode
@@ -950,6 +933,23 @@ final class HpackDecoder {
      * Huffman decoding root.
      */
     private static final HuffmanNode HUFFMAN_ROOT = huffmanRoot();
+
+    /**
+     * Creates a codec.
+     */
+    HpackDecoder() {
+        this.dynamicTable = new ArrayList<>();
+        this.dynamicExactIndex = new HashMap<>();
+        this.dynamicNameIndex = new HashMap<>();
+        this.dynamicSequences = new ArrayList<>();
+        this.writer = new ByteWriter(Normal._128);
+        this.tableSize = Normal._4096;
+        this.maxTableSize = Normal._4096;
+        this.maxHeaderBlockBytes = Builder.BYTES_64_KIB;
+        this.maxHeaderListSize = Builder.BYTES_64_KIB;
+        this.maxHeaderFieldBytes = Normal._16384;
+        this.maxHeaderCount = 256;
+    }
 
     /**
      * Decodes an HPACK Huffman string with a decoded-byte budget.

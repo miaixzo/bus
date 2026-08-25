@@ -34,18 +34,18 @@ import org.miaixz.bus.core.lang.exception.ConvertException;
 public class CastConverter implements MatcherConverter, Serializable {
 
     /**
-     * Creates the shared type-casting converter.
-     */
-    public CastConverter() {
-        // No initialization required.
-    }
-
-    /**
      * Singleton instance.
      */
     public static final CastConverter INSTANCE = new CastConverter();
     @Serial
     private static final long serialVersionUID = 2852266109781L;
+
+    /**
+     * Creates the shared type-casting converter.
+     */
+    public CastConverter() {
+        // No initialization required.
+    }
 
     /**
      * Checks if the value is already an instance of the raw target type.

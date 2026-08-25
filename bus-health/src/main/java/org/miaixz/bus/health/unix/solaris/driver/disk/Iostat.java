@@ -40,13 +40,6 @@ import org.miaixz.bus.health.Parsing;
 @ThreadSafe
 public class Iostat {
 
-    /**
-     * Constructs a new Iostat instance.
-     */
-    public Iostat() {
-        // No initialization required.
-    }
-
     // Note uppercase E
     /**
      * The IOSTAT_ER_DETAIL constant.
@@ -79,6 +72,13 @@ public class Iostat {
      * The DEVICE_HEADER constant.
      */
     private static final String DEVICE_HEADER = "device";
+
+    /**
+     * Constructs a new Iostat instance.
+     */
+    public Iostat() {
+        // No initialization required.
+    }
 
     /**
      * Query iostat to map partitions to mount points

@@ -31,13 +31,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class NumberValidator {
 
     /**
-     * Constructs a new NumberValidator instance.
-     */
-    public NumberValidator() {
-        // No initialization required.
-    }
-
-    /**
      * The tolerance value for double comparison. Two double values are considered equal if their absolute difference is
      * less than this value.
      */
@@ -48,6 +41,13 @@ public class NumberValidator {
      * less than this value.
      */
     public static final double FLOAT_EPSILON = 1e-5;
+
+    /**
+     * Constructs a new NumberValidator instance.
+     */
+    public NumberValidator() {
+        // No initialization required.
+    }
 
     /**
      * Checks if a float value is equal to zero within a small tolerance.

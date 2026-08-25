@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_3D_INTVL_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_3D_INTVL_01";
@@ -222,5 +215,12 @@ public class PrivateTag {
      * (0023,xx44) VR=CS VM=1 Ablation Point Visibility
      */
     public static final int AblationPointVisibility = 0x00230044;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

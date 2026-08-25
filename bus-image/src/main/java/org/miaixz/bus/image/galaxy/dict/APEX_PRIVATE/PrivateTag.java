@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.APEX_PRIVATE;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "APEX_PRIVATE";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (0027,xx11) VR=DS VM=1 Bed Position
      */
     public static final int BedPosition = 0x00270011;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

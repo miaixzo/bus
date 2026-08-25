@@ -36,13 +36,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public class OhmHardware {
 
     /**
-     * Keeps Open Hardware Monitor hardware queries on the static API.
-     */
-    public OhmHardware() {
-        // No initialization required.
-    }
-
-    /**
      * The WMI namespace for Open Hardware Monitor.
      */
     public static final String OHM_NAMESPACE = WmiKit.OHM_NAMESPACE;
@@ -51,6 +44,13 @@ public class OhmHardware {
      * The WMI class name for hardware.
      */
     public static final String HARDWARE = "Hardware";
+
+    /**
+     * Keeps Open Hardware Monitor hardware queries on the static API.
+     */
+    public OhmHardware() {
+        // No initialization required.
+    }
 
     /**
      * Queries the hardware identifiers for a monitored type.

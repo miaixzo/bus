@@ -34,13 +34,6 @@ import lombok.experimental.SuperBuilder;
 public class Amount {
 
     /**
-     * Constructs a new {@code Amount} instance.
-     */
-    public Amount() {
-        // No initialization required.
-    }
-
-    /**
      * The total amount in cents.
      */
     private int total;
@@ -49,5 +42,12 @@ public class Amount {
      * The currency type, e.g., "CNY".
      */
     private String currency;
+
+    /**
+     * Constructs a new {@code Amount} instance.
+     */
+    public Amount() {
+        // No initialization required.
+    }
 
 }

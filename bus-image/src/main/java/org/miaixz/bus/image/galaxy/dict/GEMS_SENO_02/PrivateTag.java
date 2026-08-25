@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_SENO_02;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_SENO_02";
@@ -512,5 +505,12 @@ public class PrivateTag {
      * (0045,xxAD) VR=LO VM=1-n Paddle Properties
      */
     public static final int PaddleProperties = 0x004500AD;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -30,13 +30,6 @@ import java.io.Serializable;
 public class OauthTokenResponse implements Serializable {
 
     /**
-     * Constructs a new {@code OauthTokenResponse} instance.
-     */
-    public OauthTokenResponse() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -62,6 +55,13 @@ public class OauthTokenResponse implements Serializable {
      * The created at value.
      */
     private Long createdAt;
+
+    /**
+     * Constructs a new {@code OauthTokenResponse} instance.
+     */
+    public OauthTokenResponse() {
+        // No initialization required.
+    }
 
     /**
      * Returns the access token.

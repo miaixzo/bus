@@ -39,12 +39,6 @@ public class Subdiv2D {
 
     protected final long nativeObj;
 
-    protected Subdiv2D(long addr) {
-        nativeObj = addr;
-        long nativeObjCopy = nativeObj;
-        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
-    }
-
     public long getNativeObjAddr() {
         return nativeObj;
     }
@@ -59,6 +53,12 @@ public class Subdiv2D {
             PTLOC_ON_EDGE = 2, NEXT_AROUND_ORG = 0x00, NEXT_AROUND_DST = 0x22, PREV_AROUND_ORG = 0x11,
             PREV_AROUND_DST = 0x33, NEXT_AROUND_LEFT = 0x13, NEXT_AROUND_RIGHT = 0x31, PREV_AROUND_LEFT = 0x20,
             PREV_AROUND_RIGHT = 0x02;
+
+    protected Subdiv2D(long addr) {
+        nativeObj = addr;
+        long nativeObjCopy = nativeObj;
+        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
+    }
 
     //
     // C++: cv::Subdiv2D::Subdiv2D()

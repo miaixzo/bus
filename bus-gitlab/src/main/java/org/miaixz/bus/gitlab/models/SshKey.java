@@ -35,13 +35,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class SshKey implements Serializable {
 
     /**
-     * Constructs a new {@code SshKey} instance.
-     */
-    public SshKey() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -72,6 +65,13 @@ public class SshKey implements Serializable {
      * The user id value.
      */
     private Long userId;
+
+    /**
+     * Constructs a new {@code SshKey} instance.
+     */
+    public SshKey() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

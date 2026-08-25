@@ -48,13 +48,6 @@ public interface IPHlpAPI extends com.sun.jna.platform.win32.IPHlpAPI {
     class SOCKADDR_INET extends Structure {
 
         /**
-         * Creates a new socket address structure.
-         */
-        public SOCKADDR_INET() {
-            // No initialization required.
-        }
-
-        /**
          * Address family.
          */
         public short si_family;
@@ -78,6 +71,14 @@ public interface IPHlpAPI extends com.sun.jna.platform.win32.IPHlpAPI {
          * IPv6 scope ID.
          */
         public int scopeId;
+
+        /**
+         * Creates a new socket address structure.
+         */
+        public SOCKADDR_INET() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -85,13 +86,6 @@ public interface IPHlpAPI extends com.sun.jna.platform.win32.IPHlpAPI {
      */
     @FieldOrder({ "Prefix", "PrefixLength" })
     class IP_ADDRESS_PREFIX extends Structure {
-
-        /**
-         * Creates a new address prefix structure.
-         */
-        public IP_ADDRESS_PREFIX() {
-            // No initialization required.
-        }
 
         /**
          * Prefix address.
@@ -102,6 +96,14 @@ public interface IPHlpAPI extends com.sun.jna.platform.win32.IPHlpAPI {
          * Prefix length.
          */
         public byte PrefixLength;
+
+        /**
+         * Creates a new address prefix structure.
+         */
+        public IP_ADDRESS_PREFIX() {
+            // No initialization required.
+        }
+
     }
 
     /**

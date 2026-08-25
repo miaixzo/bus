@@ -41,13 +41,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Calculator {
 
     /**
-     * Creates an expression calculator used by the static calculation entry point.
-     */
-    public Calculator() {
-        // No initialization required.
-    }
-
-    /**
      * The stack used to store the postfix expression (Reverse Polish Notation).
      */
     private final Stack<String> postfixStack = new Stack<>();
@@ -69,6 +62,13 @@ public class Calculator {
      * </p>
      */
     private final int[] operatPriority = new int[] { 0, 3, 2, 1, -1, 1, 0, 2 };
+
+    /**
+     * Creates an expression calculator used by the static calculation entry point.
+     */
+    public Calculator() {
+        // No initialization required.
+    }
 
     /**
      * Calculates the value of a given mathematical expression.

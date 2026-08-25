@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Pipeline implements Serializable {
 
     /**
-     * Constructs a new {@code Pipeline} instance.
-     */
-    public Pipeline() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -133,6 +126,13 @@ public class Pipeline implements Serializable {
      * The name value.
      */
     private String name;
+
+    /**
+     * Constructs a new {@code Pipeline} instance.
+     */
+    public Pipeline() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

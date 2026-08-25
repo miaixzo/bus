@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_CSA_HEADER;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS CSA HEADER";
@@ -67,5 +60,12 @@ public class PrivateTag {
      * (0029,xx20) VR=OB VM=1 CSA Series Header Info
      */
     public static final int CSASeriesHeaderInfo = 0x00290020;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

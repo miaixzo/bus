@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Blame implements Serializable {
 
     /**
-     * Constructs a new {@code Blame} instance.
-     */
-    public Blame() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -53,6 +46,13 @@ public class Blame implements Serializable {
      * The lines value.
      */
     private List<String> lines;
+
+    /**
+     * Constructs a new {@code Blame} instance.
+     */
+    public Blame() {
+        // No initialization required.
+    }
 
     /**
      * Returns the commit.

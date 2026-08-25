@@ -152,13 +152,6 @@ public interface CoreGraphics extends Library {
     class CGPoint extends Structure {
 
         /**
-         * Constructs a new CGPoint instance.
-         */
-        public CGPoint() {
-            // No initialization required.
-        }
-
-        /**
          * The x-coordinate of the point.
          */
         public double x;
@@ -167,6 +160,13 @@ public interface CoreGraphics extends Library {
          * The y-coordinate of the point.
          */
         public double y;
+
+        /**
+         * Constructs a new CGPoint instance.
+         */
+        public CGPoint() {
+            // No initialization required.
+        }
 
     }
 
@@ -182,13 +182,6 @@ public interface CoreGraphics extends Library {
     class CGSize extends Structure {
 
         /**
-         * Constructs a new CGSize instance.
-         */
-        public CGSize() {
-            // No initialization required.
-        }
-
-        /**
          * The width component of the size.
          */
         public double width;
@@ -197,6 +190,13 @@ public interface CoreGraphics extends Library {
          * The height component of the size.
          */
         public double height;
+
+        /**
+         * Constructs a new CGSize instance.
+         */
+        public CGSize() {
+            // No initialization required.
+        }
 
     }
 
@@ -209,13 +209,6 @@ public interface CoreGraphics extends Library {
     class CGSizeByValue extends Structure implements Structure.ByValue {
 
         /**
-         * Constructs a new CGSizeByValue instance.
-         */
-        public CGSizeByValue() {
-            // No initialization required.
-        }
-
-        /**
          * The width component of the size.
          */
         public double width;
@@ -224,6 +217,13 @@ public interface CoreGraphics extends Library {
          * The height component of the size.
          */
         public double height;
+
+        /**
+         * Constructs a new CGSizeByValue instance.
+         */
+        public CGSizeByValue() {
+            // No initialization required.
+        }
 
     }
 
@@ -239,13 +239,6 @@ public interface CoreGraphics extends Library {
     class CGRect extends Structure implements AutoCloseable {
 
         /**
-         * Constructs a new CGRect instance.
-         */
-        public CGRect() {
-            // No initialization required.
-        }
-
-        /**
          * The origin point (x, y) of the rectangle.
          */
         public CGPoint origin;
@@ -254,6 +247,13 @@ public interface CoreGraphics extends Library {
          * The size (width, height) of the rectangle.
          */
         public CGSize size;
+
+        /**
+         * Constructs a new CGRect instance.
+         */
+        public CGRect() {
+            // No initialization required.
+        }
 
         /**
          * Closes the memory associated with this structure.

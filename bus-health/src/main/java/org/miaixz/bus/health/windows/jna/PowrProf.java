@@ -245,13 +245,6 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
     class BATTERY_QUERY_INFORMATION extends Structure implements AutoCloseable {
 
         /**
-         * Creates a new BATTERY_QUERY_INFORMATION instance.
-         */
-        public BATTERY_QUERY_INFORMATION() {
-            // No initialization required.
-        }
-
-        /**
          * The BatteryTag value.
          */
         public int BatteryTag;
@@ -265,6 +258,13 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
          * The AtRate value.
          */
         public int AtRate;
+
+        /**
+         * Creates a new BATTERY_QUERY_INFORMATION instance.
+         */
+        public BATTERY_QUERY_INFORMATION() {
+            // No initialization required.
+        }
 
         /**
          * Closes this resource.
@@ -294,13 +294,6 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
     @FieldOrder({ "Capabilities", "Technology", "Reserved", "Chemistry", "DesignedCapacity", "FullChargedCapacity",
             "DefaultAlert1", "DefaultAlert2", "CriticalBias", "CycleCount" })
     class BATTERY_INFORMATION extends Structure implements AutoCloseable {
-
-        /**
-         * Creates a new BATTERY_INFORMATION instance.
-         */
-        public BATTERY_INFORMATION() {
-            // No initialization required.
-        }
 
         /**
          * The Capabilities value.
@@ -353,6 +346,13 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
         public int CycleCount;
 
         /**
+         * Creates a new BATTERY_INFORMATION instance.
+         */
+        public BATTERY_INFORMATION() {
+            // No initialization required.
+        }
+
+        /**
          * Closes this resource.
          */
         @Override
@@ -372,13 +372,6 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
      */
     @FieldOrder({ "BatteryTag", "Timeout", "PowerState", "LowCapacity", "HighCapacity" })
     class BATTERY_WAIT_STATUS extends Structure implements AutoCloseable {
-
-        /**
-         * Creates a new BATTERY_WAIT_STATUS instance.
-         */
-        public BATTERY_WAIT_STATUS() {
-            // No initialization required.
-        }
 
         /**
          * The BatteryTag value.
@@ -406,6 +399,13 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
         public int HighCapacity;
 
         /**
+         * Creates a new BATTERY_WAIT_STATUS instance.
+         */
+        public BATTERY_WAIT_STATUS() {
+            // No initialization required.
+        }
+
+        /**
          * Closes this resource.
          */
         @Override
@@ -428,13 +428,6 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
     class BATTERY_STATUS extends Structure implements AutoCloseable {
 
         /**
-         * Creates a new BATTERY_STATUS instance.
-         */
-        public BATTERY_STATUS() {
-            // No initialization required.
-        }
-
-        /**
          * The PowerState value.
          */
         public int PowerState;
@@ -453,6 +446,13 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
          * The Rate value.
          */
         public int Rate;
+
+        /**
+         * Creates a new BATTERY_STATUS instance.
+         */
+        public BATTERY_STATUS() {
+            // No initialization required.
+        }
 
         /**
          * Closes this resource.
@@ -477,13 +477,6 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
     class BATTERY_MANUFACTURE_DATE extends Structure implements AutoCloseable {
 
         /**
-         * Creates a new BATTERY_MANUFACTURE_DATE instance.
-         */
-        public BATTERY_MANUFACTURE_DATE() {
-            // No initialization required.
-        }
-
-        /**
          * The Day value.
          */
         public byte Day;
@@ -497,6 +490,13 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
          * The Year value.
          */
         public short Year;
+
+        /**
+         * Creates a new BATTERY_MANUFACTURE_DATE instance.
+         */
+        public BATTERY_MANUFACTURE_DATE() {
+            // No initialization required.
+        }
 
         /**
          * Closes this resource.

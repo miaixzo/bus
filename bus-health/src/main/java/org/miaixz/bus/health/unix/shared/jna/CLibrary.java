@@ -19,8 +19,12 @@
 */
 package org.miaixz.bus.health.unix.shared.jna;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.sun.jna.Library;
 import com.sun.jna.NativeLong;
+import com.sun.jna.Platform;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
@@ -222,13 +226,6 @@ public interface CLibrary extends LibCAPI, Library {
     class Sockaddr extends Structure {
 
         /**
-         * Constructs a new Sockaddr instance.
-         */
-        public Sockaddr() {
-            // No initialization required.
-        }
-
-        /**
          * Address family.
          */
         public short sa_family;
@@ -237,6 +234,13 @@ public interface CLibrary extends LibCAPI, Library {
          * Socket address data.
          */
         public byte[] sa_data = new byte[14];
+
+        /**
+         * Constructs a new Sockaddr instance.
+         */
+        public Sockaddr() {
+            // No initialization required.
+        }
 
         /**
          * A reference to a {@link Sockaddr} structure.
@@ -262,13 +266,6 @@ public interface CLibrary extends LibCAPI, Library {
      * @author Kimi Liu
      */
     class BsdTcpstat {
-
-        /**
-         * Constructs a new BsdTcpstat instance.
-         */
-        public BsdTcpstat() {
-            // No initialization required.
-        }
 
         /**
          * Connections initiated.
@@ -325,6 +322,13 @@ public interface CLibrary extends LibCAPI, Library {
          */
         public int tcps_rcvshort;
 
+        /**
+         * Constructs a new BsdTcpstat instance.
+         */
+        public BsdTcpstat() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -333,13 +337,6 @@ public interface CLibrary extends LibCAPI, Library {
      * @author Kimi Liu
      */
     class BsdUdpstat {
-
-        /**
-         * Constructs a new BsdUdpstat instance.
-         */
-        public BsdUdpstat() {
-            // No initialization required.
-        }
 
         /**
          * Total input packets.
@@ -381,6 +378,13 @@ public interface CLibrary extends LibCAPI, Library {
          */
         public int udps_snd6_swcsum;
 
+        /**
+         * Constructs a new BsdUdpstat instance.
+         */
+        public BsdUdpstat() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -389,13 +393,6 @@ public interface CLibrary extends LibCAPI, Library {
      * @author Kimi Liu
      */
     class BsdIpstat {
-
-        /**
-         * Constructs a new BsdIpstat instance.
-         */
-        public BsdIpstat() {
-            // No initialization required.
-        }
 
         /**
          * Total packets received.
@@ -432,6 +429,13 @@ public interface CLibrary extends LibCAPI, Library {
          */
         public int ips_delivered;
 
+        /**
+         * Constructs a new BsdIpstat instance.
+         */
+        public BsdIpstat() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -440,13 +444,6 @@ public interface CLibrary extends LibCAPI, Library {
      * @author Kimi Liu
      */
     class BsdIp6stat {
-
-        /**
-         * Constructs a new BsdIp6stat instance.
-         */
-        public BsdIp6stat() {
-            // No initialization required.
-        }
 
         /**
          * Total packets received.
@@ -458,16 +455,50 @@ public interface CLibrary extends LibCAPI, Library {
          */
         public long ip6s_localout;
 
+        /**
+         * Constructs a new BsdIp6stat instance.
+         */
+        public BsdIp6stat() {
+            // No initialization required.
+        }
+
     }
 
     /**
      * Address information structure.
+     * <p>
+     * The field order differs by platform: glibc declares {@code ai_addr} before {@code ai_canonname}, while BSDs and
+     * macOS declare them the other way around.
      *
      * @author Kimi Liu
      */
-    @FieldOrder({ "ai_flags", "ai_family", "ai_socktype", "ai_protocol", "ai_addrlen", "ai_addr", "ai_canonname",
-            "ai_next" })
     class Addrinfo extends Structure implements AutoCloseable {
+
+        /**
+         * Field order for glibc platforms.
+         */
+        private static final List<String> GLIBC_ORDER = Arrays.asList(
+                "ai_flags",
+                "ai_family",
+                "ai_socktype",
+                "ai_protocol",
+                "ai_addrlen",
+                "ai_addr",
+                "ai_canonname",
+                "ai_next");
+
+        /**
+         * Field order for BSD and macOS platforms.
+         */
+        private static final List<String> BSD_ORDER = Arrays.asList(
+                "ai_flags",
+                "ai_family",
+                "ai_socktype",
+                "ai_protocol",
+                "ai_addrlen",
+                "ai_canonname",
+                "ai_addr",
+                "ai_next");
 
         /**
          * Input flags.
@@ -508,6 +539,17 @@ public interface CLibrary extends LibCAPI, Library {
          * Pointer to next in list.
          */
         public ByReference ai_next;
+
+        /**
+         * Returns the platform-specific field order.
+         *
+         * @return the field order for the current platform
+         */
+        @Override
+        protected List<String> getFieldOrder() {
+            return Platform.isMac() || Platform.isFreeBSD() || Platform.isOpenBSD() || Platform.isNetBSD()
+                    || Platform.isDragonFlyBSD() ? BSD_ORDER : GLIBC_ORDER;
+        }
 
         /**
          * Constructs an {@code Addrinfo} object.

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_CT_APPL_MEASUREMENT;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS CT APPL MEASUREMENT";
@@ -52,5 +45,12 @@ public class PrivateTag {
      * (0029,xx10) VR=CS VM=1 DualEnergy ROI Annotation Mode
      */
     public static final int DualEnergyROIAnnotationMode = 0x00290010;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

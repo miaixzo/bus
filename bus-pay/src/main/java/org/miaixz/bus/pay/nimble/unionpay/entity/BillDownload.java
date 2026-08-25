@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class BillDownload extends Voucher {
 
     /**
-     * Constructs a new {@code BillDownload} instance.
-     */
-    public BillDownload() {
-        // No initialization required.
-    }
-
-    /**
      * Service name.
      */
     private String service;
@@ -86,5 +79,12 @@ public class BillDownload extends Voucher {
      * Signature.
      */
     private String sign;
+
+    /**
+     * Constructs a new {@code BillDownload} instance.
+     */
+    public BillDownload() {
+        // No initialization required.
+    }
 
 }

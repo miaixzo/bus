@@ -34,13 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Job implements Serializable {
 
     /**
-     * Constructs a new {@code Job} instance.
-     */
-    public Job() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -154,6 +147,13 @@ public class Job implements Serializable {
      * The project value.
      */
     private Project project;
+
+    /**
+     * Constructs a new {@code Job} instance.
+     */
+    public Job() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

@@ -41,17 +41,17 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractFirmware;
 public class OpenBsdFirmware extends AbstractFirmware {
 
     /**
+     * The manufVersRelease value.
+     */
+    private final SupplierX<Triplet<String, String, String>> manufVersRelease = Memoizer
+            .memoize(OpenBsdFirmware::readDmesg);
+
+    /**
      * Creates a new OpenBsdFirmware instance.
      */
     public OpenBsdFirmware() {
         // No initialization required.
     }
-
-    /**
-     * The manufVersRelease value.
-     */
-    private final SupplierX<Triplet<String, String, String>> manufVersRelease = Memoizer
-            .memoize(OpenBsdFirmware::readDmesg);
 
     /**
      * Reads the dmesg.

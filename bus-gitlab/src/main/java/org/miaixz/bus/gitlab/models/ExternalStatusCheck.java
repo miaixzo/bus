@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ExternalStatusCheck implements Serializable {
 
     /**
-     * Constructs a new {@code ExternalStatusCheck} instance.
-     */
-    public ExternalStatusCheck() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -65,6 +58,13 @@ public class ExternalStatusCheck implements Serializable {
      * The protected branches value.
      */
     private List<ExternalStatusCheckProtectedBranch> protectedBranches;
+
+    /**
+     * Constructs a new {@code ExternalStatusCheck} instance.
+     */
+    public ExternalStatusCheck() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

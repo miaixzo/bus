@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_RELA_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_RELA_01";
@@ -227,5 +220,12 @@ public class PrivateTag {
      * (0021,xx93) VR=FL VM=1 Biopsy Ref Location
      */
     public static final int BiopsyRefLocation = 0x00210093;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

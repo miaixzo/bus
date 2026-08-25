@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class RelatedEpicLink implements Serializable {
 
     /**
-     * Constructs a new {@code RelatedEpicLink} instance.
-     */
-    public RelatedEpicLink() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -69,6 +62,13 @@ public class RelatedEpicLink implements Serializable {
      * The updated at value.
      */
     private Date updatedAt;
+
+    /**
+     * Constructs a new {@code RelatedEpicLink} instance.
+     */
+    public RelatedEpicLink() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

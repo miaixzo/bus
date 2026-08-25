@@ -57,13 +57,6 @@ import org.miaixz.bus.office.excel.ExcelSaxKit;
 public class SheetRidReader extends DefaultHandler {
 
     /**
-     * Constructs a new SheetRidReader instance.
-     */
-    public SheetRidReader() {
-        // No initialization required.
-    }
-
-    /**
      * The tag name for a sheet element in the Excel XML.
      */
     private final static String TAG_NAME = "sheet";
@@ -92,6 +85,13 @@ public class SheetRidReader extends DefaultHandler {
      * Map storing the mapping from sheet name to relationship ID (1-based).
      */
     private final Map<String, Integer> NAME_RID_MAP = new LinkedHashMap<>();
+
+    /**
+     * Constructs a new SheetRidReader instance.
+     */
+    public SheetRidReader() {
+        // No initialization required.
+    }
 
     /**
      * Parses sheet name, sheet ID, and other related information from {@link XSSFReader}.

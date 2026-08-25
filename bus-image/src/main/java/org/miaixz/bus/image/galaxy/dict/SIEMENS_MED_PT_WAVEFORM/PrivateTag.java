@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_PT_WAVEFORM;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS MED PT WAVEFORM";
@@ -62,5 +55,12 @@ public class PrivateTag {
      * (0071,xx50) VR=CS VM=1 Respiratory Trigger Type
      */
     public static final int RespiratoryTriggerType = 0x00710050;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

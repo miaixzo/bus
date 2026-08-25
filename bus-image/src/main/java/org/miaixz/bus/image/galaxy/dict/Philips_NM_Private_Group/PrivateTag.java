@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.Philips_NM_Private_Group;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "Philips NM Private Group";
@@ -42,5 +35,12 @@ public class PrivateTag {
      * (7043,xx00) VR=SH VM=1 ?
      */
     public static final int _7043_xx00_ = 0x70430000;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

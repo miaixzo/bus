@@ -36,16 +36,16 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public class Win32ComputerSystemProduct {
 
     /**
+     * The WMI class name.
+     */
+    public static final String WIN32_COMPUTER_SYSTEM_PRODUCT = "Win32_ComputerSystemProduct";
+
+    /**
      * Keeps Win32 computer system product queries on the static API.
      */
     public Win32ComputerSystemProduct() {
         // No initialization required.
     }
-
-    /**
-     * The WMI class name.
-     */
-    public static final String WIN32_COMPUTER_SYSTEM_PRODUCT = "Win32_ComputerSystemProduct";
 
     /**
      * Queries the Computer System Product.

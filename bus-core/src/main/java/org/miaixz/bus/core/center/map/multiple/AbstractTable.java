@@ -41,13 +41,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
 
     /**
-     * Creates a new {@code AbstractTable} instance.
-     */
-    public AbstractTable() {
-        // No initialization required.
-    }
-
-    /**
      * Cached collection view of all values in the table. Lazily initialized.
      */
     private transient Collection<V> values;
@@ -56,6 +49,13 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
      * Cached set view of all cells in the table. Lazily initialized.
      */
     private transient Set<Cell<R, C, V>> cellSet;
+
+    /**
+     * Creates a new {@code AbstractTable} instance.
+     */
+    public AbstractTable() {
+        // No initialization required.
+    }
 
     /**
      * Compares the specified object with this table for equality. Returns {@code true} if the given object is also a

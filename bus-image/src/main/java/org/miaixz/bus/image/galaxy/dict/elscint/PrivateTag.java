@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.elscint;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "ELSCINT1";
@@ -1527,5 +1520,12 @@ public class PrivateTag {
      * (7FDF,xxFF) VR=SH VM=1 ?
      */
     public static final int _7FDF_xxFF_ = 0x7FDF00FF;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -35,13 +35,6 @@ import lombok.Setter;
 @Setter
 public class DatabaseSchema implements Serializable {
 
-    /**
-     * Constructs a new DatabaseSchema instance.
-     */
-    public DatabaseSchema() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852277792906L;
 
@@ -54,5 +47,12 @@ public class DatabaseSchema implements Serializable {
      * A list of {@link TableSchema} objects representing the tables in the database.
      */
     private List<TableSchema> tables;
+
+    /**
+     * Constructs a new DatabaseSchema instance.
+     */
+    public DatabaseSchema() {
+        // No initialization required.
+    }
 
 }

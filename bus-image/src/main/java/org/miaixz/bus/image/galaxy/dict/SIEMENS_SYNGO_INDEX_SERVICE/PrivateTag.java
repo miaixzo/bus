@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_INDEX_SERVICE;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS SYNGO INDEX SERVICE";
@@ -112,5 +105,12 @@ public class PrivateTag {
      * (0009,xx50) VR=CS VM=1 Hidden Instance
      */
     public static final int HiddenInstance = 0x00090050;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

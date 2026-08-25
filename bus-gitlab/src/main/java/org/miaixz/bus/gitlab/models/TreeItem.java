@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class TreeItem implements Serializable {
 
     /**
-     * Constructs a new {@code TreeItem} instance.
-     */
-    public TreeItem() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -98,6 +91,13 @@ public class TreeItem implements Serializable {
      * The type field.
      */
     private Type type;
+
+    /**
+     * Constructs a new {@code TreeItem} instance.
+     */
+    public TreeItem() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

@@ -33,13 +33,6 @@ import java.util.List;
 public class ApprovalRuleParams implements Serializable {
 
     /**
-     * Constructs a new {@code ApprovalRuleParams} instance.
-     */
-    public ApprovalRuleParams() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -81,6 +74,13 @@ public class ApprovalRuleParams implements Serializable {
      * The usernames value.
      */
     private List<String> usernames;
+
+    /**
+     * Constructs a new {@code ApprovalRuleParams} instance.
+     */
+    public ApprovalRuleParams() {
+        // No initialization required.
+    }
 
     /**
      * Executes the rule. operation.

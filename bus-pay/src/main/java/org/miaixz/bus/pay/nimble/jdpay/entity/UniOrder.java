@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class UniOrder extends Voucher {
 
     /**
-     * Constructs a new {@code UniOrder} instance.
-     */
-    public UniOrder() {
-        // No initialization required.
-    }
-
-    /**
      * Version number.
      */
     private String version;
@@ -201,5 +194,12 @@ public class UniOrder extends Voucher {
      * Business type.
      */
     private String bizTp;
+
+    /**
+     * Constructs a new {@code UniOrder} instance.
+     */
+    public UniOrder() {
+        // No initialization required.
+    }
 
 }

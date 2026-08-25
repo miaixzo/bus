@@ -44,13 +44,6 @@ import org.miaixz.bus.core.lang.ZoneId;
 public class ISO8601 {
 
     /**
-     * Constructs a new {@code ISO8601} instance.
-     */
-    public ISO8601() {
-        // No initialization required.
-    }
-
-    /**
      * The pattern value.
      */
 
@@ -101,6 +94,13 @@ public class ISO8601 {
             .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0).parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
             .parseDefaulting(ChronoField.MILLI_OF_SECOND, 0).parseDefaulting(ChronoField.OFFSET_SECONDS, 0)
             .toFormatter();
+
+    /**
+     * Constructs a new {@code ISO8601} instance.
+     */
+    public ISO8601() {
+        // No initialization required.
+    }
 
     /**
      * Get a ISO8601 formatted string for the provided Calendar instance.

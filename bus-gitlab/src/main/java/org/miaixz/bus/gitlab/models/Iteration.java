@@ -38,13 +38,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class Iteration implements Serializable {
 
     /**
-     * Constructs a new {@code Iteration} instance.
-     */
-    public Iteration() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -172,6 +165,13 @@ public class Iteration implements Serializable {
      * The web url value.
      */
     private String webUrl;
+
+    /**
+     * Constructs a new {@code Iteration} instance.
+     */
+    public Iteration() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

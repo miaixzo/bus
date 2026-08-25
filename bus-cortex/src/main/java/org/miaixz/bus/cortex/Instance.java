@@ -37,13 +37,6 @@ import lombok.experimental.SuperBuilder;
 public class Instance {
 
     /**
-     * Creates an empty runtime instance descriptor.
-     */
-    public Instance() {
-        // No initialization required.
-    }
-
-    /**
      * Space containing the runtime instance.
      */
     private String space_id;
@@ -155,6 +148,13 @@ public class Instance {
      * Additional instance metadata published for routing or discovery.
      */
     private Map<String, String> metadata;
+
+    /**
+     * Creates an empty runtime instance descriptor.
+     */
+    public Instance() {
+        // No initialization required.
+    }
 
     /**
      * Returns whether the instance is currently healthy.

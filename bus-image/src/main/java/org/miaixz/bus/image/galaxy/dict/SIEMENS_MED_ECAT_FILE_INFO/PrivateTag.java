@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_ECAT_FILE_INFO;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS MED ECAT FILE INFO";
@@ -47,5 +40,12 @@ public class PrivateTag {
      * (0021,xx01) VR=OB VM=1 ECAT_Image_Subheader
      */
     public static final int ECATImageSubheader = 0x00210001;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

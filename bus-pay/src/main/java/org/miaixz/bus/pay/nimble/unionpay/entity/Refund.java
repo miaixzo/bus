@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class Refund extends Voucher {
 
     /**
-     * Constructs a new {@code Refund} instance.
-     */
-    public Refund() {
-        // No initialization required.
-    }
-
-    /**
      * Service name.
      */
     private String service;
@@ -121,5 +114,12 @@ public class Refund extends Voucher {
      * Group number.
      */
     private String groupno;
+
+    /**
+     * Constructs a new {@code Refund} instance.
+     */
+    public Refund() {
+        // No initialization required.
+    }
 
 }

@@ -32,13 +32,6 @@ import lombok.Setter;
 public class Label {
 
     /**
-     * Creates an empty label.
-     */
-    public Label() {
-        // No initialization required.
-    }
-
-    /**
      * Label key name.
      */
     private String key;
@@ -52,5 +45,12 @@ public class Label {
      * Optional category used for grouping labels.
      */
     private String category;
+
+    /**
+     * Creates an empty label.
+     */
+    public Label() {
+        // No initialization required.
+    }
 
 }

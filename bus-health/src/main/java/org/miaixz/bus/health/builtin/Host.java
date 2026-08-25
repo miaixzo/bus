@@ -34,13 +34,6 @@ import lombok.experimental.SuperBuilder;
 public class Host {
 
     /**
-     * Constructs a new {@code Host} instance.
-     */
-    public Host() {
-        // No initialization required.
-    }
-
-    /**
      * System name
      */
     private String name;
@@ -84,5 +77,12 @@ public class Host {
      * Packets received per second
      */
     private double rxPacketsPerSecond;
+
+    /**
+     * Constructs a new {@code Host} instance.
+     */
+    public Host() {
+        // No initialization required.
+    }
 
 }

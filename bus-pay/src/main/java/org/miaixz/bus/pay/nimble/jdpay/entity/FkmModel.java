@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class FkmModel extends Voucher {
 
     /**
-     * Constructs a new {@code FkmModel} instance.
-     */
-    public FkmModel() {
-        // No initialization required.
-    }
-
-    /**
      * User payment code.
      */
     private String token;
@@ -151,5 +144,12 @@ public class FkmModel extends Voucher {
      * Business type.
      */
     private String bizTp;
+
+    /**
+     * Constructs a new {@code FkmModel} instance.
+     */
+    public FkmModel() {
+        // No initialization required.
+    }
 
 }

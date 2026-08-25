@@ -36,13 +36,6 @@ import org.miaixz.bus.notify.magic.Notice;
 public class CtyunNotice extends Notice {
 
     /**
-     * Constructs a new {@code CtyunNotice} instance.
-     */
-    public CtyunNotice() {
-        // No initialization required.
-    }
-
-    /**
      * The name of the template variable.
      */
     private String templateName;
@@ -52,6 +45,13 @@ public class CtyunNotice extends Notice {
      */
     @Builder.Default
     private String action = "SendSms";
+
+    /**
+     * Constructs a new {@code CtyunNotice} instance.
+     */
+    public CtyunNotice() {
+        // No initialization required.
+    }
 
     /**
      * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.

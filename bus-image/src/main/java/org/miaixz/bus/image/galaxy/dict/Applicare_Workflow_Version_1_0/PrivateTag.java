@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.Applicare_Workflow_Version_1_0;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "Applicare/Workflow/Version 1.0";
@@ -127,5 +120,12 @@ public class PrivateTag {
      * (3113,xxE2) VR=CS VM=1 KfEdit Lock User
      */
     public static final int KfEditLockUser = 0x311300E2;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

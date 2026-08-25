@@ -30,13 +30,6 @@ import java.io.Serializable;
 public class HL7ApplicationExtension implements Serializable {
 
     /**
-     * Constructs a new HL7ApplicationExtension instance.
-     */
-    public HL7ApplicationExtension() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -46,6 +39,13 @@ public class HL7ApplicationExtension implements Serializable {
      * The hl7 app value.
      */
     protected HL7Application hl7App;
+
+    /**
+     * Constructs a new HL7ApplicationExtension instance.
+     */
+    public HL7ApplicationExtension() {
+        // No initialization required.
+    }
 
     /**
      * Gets the hl7 application.

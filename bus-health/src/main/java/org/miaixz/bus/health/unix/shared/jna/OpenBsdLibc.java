@@ -324,13 +324,6 @@ public interface OpenBsdLibc extends CLibrary {
     class Timeval extends Structure {
 
         /**
-         * Creates a new Timeval instance.
-         */
-        public Timeval() {
-            // No initialization required.
-        }
-
-        /**
          * Seconds.
          */
         public long tv_sec;
@@ -339,6 +332,13 @@ public interface OpenBsdLibc extends CLibrary {
          * Microseconds.
          */
         public long tv_usec;
+
+        /**
+         * Creates a new Timeval instance.
+         */
+        public Timeval() {
+            // No initialization required.
+        }
 
     }
 

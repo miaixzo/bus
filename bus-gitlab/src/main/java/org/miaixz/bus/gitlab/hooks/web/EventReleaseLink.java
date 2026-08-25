@@ -29,13 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class EventReleaseLink {
 
     /**
-     * Constructs a new {@code EventReleaseLink} instance.
-     */
-    public EventReleaseLink() {
-        // No initialization required.
-    }
-
-    /**
      * The id value.
      */
     private Long id;
@@ -55,6 +48,13 @@ public class EventReleaseLink {
      * The url value.
      */
     private String url;
+
+    /**
+     * Constructs a new {@code EventReleaseLink} instance.
+     */
+    public EventReleaseLink() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

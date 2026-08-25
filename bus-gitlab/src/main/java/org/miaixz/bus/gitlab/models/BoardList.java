@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class BoardList implements Serializable {
 
     /**
-     * Constructs a new {@code BoardList} instance.
-     */
-    public BoardList() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -84,6 +77,13 @@ public class BoardList implements Serializable {
      * The list type value.
      */
     private String listType;
+
+    /**
+     * Constructs a new {@code BoardList} instance.
+     */
+    public BoardList() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

@@ -35,16 +35,16 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class ClobStringer implements FunctionX<Object, String> {
 
     /**
+     * Singleton instance.
+     */
+    public static final ClobStringer INSTANCE = new ClobStringer();
+
+    /**
      * Creates the shared CLOB-to-string converter.
      */
     public ClobStringer() {
         // No initialization required.
     }
-
-    /**
-     * Singleton instance.
-     */
-    public static final ClobStringer INSTANCE = new ClobStringer();
 
     /**
      * Converts a {@link Clob} object to a String.

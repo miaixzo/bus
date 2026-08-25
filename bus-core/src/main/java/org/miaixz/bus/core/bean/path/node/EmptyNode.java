@@ -28,15 +28,15 @@ package org.miaixz.bus.core.bean.path.node;
 public class EmptyNode implements Node {
 
     /**
+     * The singleton instance of {@code EmptyNode}.
+     */
+    public static EmptyNode INSTANCE = new EmptyNode();
+
+    /**
      * Creates the shared empty bean-path node.
      */
     public EmptyNode() {
         // No initialization required.
     }
-
-    /**
-     * The singleton instance of {@code EmptyNode}.
-     */
-    public static EmptyNode INSTANCE = new EmptyNode();
 
 }

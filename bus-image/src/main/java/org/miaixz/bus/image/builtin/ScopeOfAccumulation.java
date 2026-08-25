@@ -30,13 +30,6 @@ import org.miaixz.bus.image.galaxy.data.Code;
 public class ScopeOfAccumulation {
 
     /**
-     * Constructs a new {@code ScopeOfAccumulation} instance.
-     */
-    public ScopeOfAccumulation() {
-        // No initialization required.
-    }
-
-    /**
      * Code for "Scope of Accumulation".
      */
     public static final Code CODE = new Code("113705", "DCM", null, "Scope of Accumulation");
@@ -65,5 +58,12 @@ public class ScopeOfAccumulation {
      * Code for "Irradiation Event" scope of accumulation.
      */
     public static final Code IrradiationEvent = new Code("113852", "DCM", null, "Irradiation Event");
+
+    /**
+     * Constructs a new {@code ScopeOfAccumulation} instance.
+     */
+    public ScopeOfAccumulation() {
+        // No initialization required.
+    }
 
 }

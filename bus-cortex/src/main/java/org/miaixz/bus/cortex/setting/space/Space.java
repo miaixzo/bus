@@ -37,13 +37,6 @@ import org.miaixz.bus.cortex.Type;
 public class Space extends Setting {
 
     /**
-     * Creates an empty space directory entry.
-     */
-    public Space() {
-        setType(Type.SPACE.key());
-    }
-
-    /**
      * Legacy space code kept only for compatibility and display. {@code id} remains the authoritative identifier.
      */
     private String code;
@@ -52,5 +45,12 @@ public class Space extends Setting {
      * Display name.
      */
     private String name;
+
+    /**
+     * Creates an empty space directory entry.
+     */
+    public Space() {
+        setType(Type.SPACE.key());
+    }
 
 }

@@ -37,13 +37,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class Authorize extends Query {
 
-    /**
-     * Constructs a new {@code Authorize} instance.
-     */
-    public Authorize() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852290950589L;
 
@@ -142,5 +135,12 @@ public class Authorize extends Query {
      */
     @Transient
     protected String x_raw_data;
+
+    /**
+     * Constructs a new {@code Authorize} instance.
+     */
+    public Authorize() {
+        // No initialization required.
+    }
 
 }

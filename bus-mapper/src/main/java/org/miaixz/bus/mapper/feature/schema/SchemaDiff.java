@@ -42,13 +42,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class SchemaDiff {
 
     /**
-     * Constructs a new SchemaDiff instance.
-     */
-    public SchemaDiff() {
-        // No initialization required.
-    }
-
-    /**
      * Schema behavior type represented by the difference.
      */
     private Behavior type;
@@ -102,6 +95,13 @@ public class SchemaDiff {
      * Human-readable difference message.
      */
     private String message;
+
+    /**
+     * Constructs a new SchemaDiff instance.
+     */
+    public SchemaDiff() {
+        // No initialization required.
+    }
 
     /**
      * Creates a schema difference.

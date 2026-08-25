@@ -39,16 +39,16 @@ import org.miaixz.bus.core.basic.entity.Tracer;
 public class BaseEntity extends Tracer {
 
     /**
+     * Serial version UID.
+     */
+    @Serial
+    private static final long serialVersionUID = 2852287773629L;
+
+    /**
      * Constructs a new {@code BaseEntity} instance.
      */
     public BaseEntity() {
         // No initialization required.
     }
-
-    /**
-     * Serial version UID.
-     */
-    @Serial
-    private static final long serialVersionUID = 2852287773629L;
 
 }

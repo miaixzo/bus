@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class GroupMemberSystemHookEvent extends AbstractSystemHookEvent {
 
     /**
-     * Constructs a new {@code GroupMemberSystemHookEvent} instance.
-     */
-    public GroupMemberSystemHookEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -97,6 +90,13 @@ public class GroupMemberSystemHookEvent extends AbstractSystemHookEvent {
      * The user id value.
      */
     private Long userId;
+
+    /**
+     * Constructs a new {@code GroupMemberSystemHookEvent} instance.
+     */
+    public GroupMemberSystemHookEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the created at.

@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.KINETDX;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "KINETDX";
@@ -72,5 +65,12 @@ public class PrivateTag {
      * (0021,xxB4) VR=LO VM=1 ?
      */
     public static final int _0021_xxB4_ = 0x002100B4;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

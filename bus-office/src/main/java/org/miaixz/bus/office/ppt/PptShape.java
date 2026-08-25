@@ -357,13 +357,6 @@ public class PptShape {
     public static class Data {
 
         /**
-         * Constructs a new Data instance.
-         */
-        public Data() {
-            // No initialization required.
-        }
-
-        /**
          * The shape type.
          */
         private Type type;
@@ -397,6 +390,13 @@ public class PptShape {
          * The picture file name for picture shapes.
          */
         private String pictureFileName;
+
+        /**
+         * Constructs a new Data instance.
+         */
+        public Data() {
+            // No initialization required.
+        }
 
         /**
          * Gets the shape type.

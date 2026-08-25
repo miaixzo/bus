@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class JobEvent extends AbstractEvent {
 
     /**
-     * Constructs a new {@code JobEvent} instance.
-     */
-    public JobEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -126,6 +119,13 @@ public class JobEvent extends AbstractEvent {
      * The repository value.
      */
     private EventRepository repository;
+
+    /**
+     * Constructs a new {@code JobEvent} instance.
+     */
+    public JobEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the object kind.

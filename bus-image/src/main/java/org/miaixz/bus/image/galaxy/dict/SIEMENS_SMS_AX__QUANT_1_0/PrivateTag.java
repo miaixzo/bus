@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SMS_AX__QUANT_1_0;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS SMS-AX QUANT 1.0";
@@ -82,5 +75,12 @@ public class PrivateTag {
      * (0023,xx08) VR=IS VM=1 Calibration Table Object Distance
      */
     public static final int CalibrationTableObjectDistance = 0x00230008;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

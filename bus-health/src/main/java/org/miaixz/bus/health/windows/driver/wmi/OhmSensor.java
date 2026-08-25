@@ -36,13 +36,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public class OhmSensor {
 
     /**
-     * Keeps Open Hardware Monitor sensor queries on the static API.
-     */
-    public OhmSensor() {
-        // No initialization required.
-    }
-
-    /**
      * The WMI namespace for Open Hardware Monitor.
      */
     public static final String OHM_NAMESPACE = WmiKit.OHM_NAMESPACE;
@@ -51,6 +44,13 @@ public class OhmSensor {
      * The WMI class name for sensors.
      */
     public static final String SENSOR = "Sensor";
+
+    /**
+     * Keeps Open Hardware Monitor sensor queries on the static API.
+     */
+    public OhmSensor() {
+        // No initialization required.
+    }
 
     /**
      * Queries the sensor value of an hardware identifier and sensor type.

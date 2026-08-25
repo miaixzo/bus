@@ -32,13 +32,6 @@ import org.miaixz.bus.core.lang.Symbol;
 public class RFC3986 {
 
     /**
-     * Constructs a new RFC 3986 codec definition holder.
-     */
-    public RFC3986() {
-        // No initialization required.
-    }
-
-    /**
      * The set of generic URI component delimiters. {@code gen-delims = ":" / "/" / "?" / "#" / "[" / "]" / "@"}
      */
     public static final PercentCodec GEN_DELIMS = PercentCodec.Builder.of(":/?#[]@").build();
@@ -117,6 +110,13 @@ public class RFC3986 {
      * A strict encoder for query parameter names, where the name cannot contain any delimiters.
      */
     public static final PercentCodec QUERY_PARAM_NAME_STRICT = UNRESERVED;
+
+    /**
+     * Constructs a new RFC 3986 codec definition holder.
+     */
+    public RFC3986() {
+        // No initialization required.
+    }
 
     /**
      * Generates a string containing all unreserved characters as defined in RFC 3986.

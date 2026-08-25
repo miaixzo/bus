@@ -60,13 +60,6 @@ import org.miaixz.bus.logger.Logger;
 @SuperBuilder
 public class Certificate implements Serializable {
 
-    /**
-     * Constructs a new {@code Certificate} instance.
-     */
-    public Certificate() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852288292676L;
 
@@ -139,6 +132,13 @@ public class Certificate implements Serializable {
      * The X.509 certificate itself.
      */
     private X509Certificate self;
+
+    /**
+     * Constructs a new {@code Certificate} instance.
+     */
+    public Certificate() {
+        // No initialization required.
+    }
 
     /**
      * Builds and signs an X.509 certificate, typically for a Certificate Authority (CA). This method generates a

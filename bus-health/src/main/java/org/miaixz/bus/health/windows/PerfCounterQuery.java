@@ -43,13 +43,6 @@ import org.miaixz.bus.logger.Logger;
 public class PerfCounterQuery {
 
     /**
-     * Keeps Windows performance-counter queries on the static API.
-     */
-    public PerfCounterQuery() {
-        // No initialization required.
-    }
-
-    /**
      * Multiple classes use these constants
      */
     public static final String TOTAL_INSTANCE = "_Total";
@@ -90,6 +83,13 @@ public class PerfCounterQuery {
      * The LOCALIZE_CACHE constant.
      */
     private static final ConcurrentHashMap<String, String> LOCALIZE_CACHE = new ConcurrentHashMap<>();
+
+    /**
+     * Keeps Windows performance-counter queries on the static API.
+     */
+    public PerfCounterQuery() {
+        // No initialization required.
+    }
 
     /**
      * Query the a Performance Counter using PDH, with WMI backup on failure, for values corresponding to the property

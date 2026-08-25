@@ -35,13 +35,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Diff implements Serializable {
 
     /**
-     * Constructs a new {@code Diff} instance.
-     */
-    public Diff() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -85,6 +78,13 @@ public class Diff implements Serializable {
      * The renamed file value.
      */
     private Boolean renamedFile;
+
+    /**
+     * Constructs a new {@code Diff} instance.
+     */
+    public Diff() {
+        // No initialization required.
+    }
 
     /**
      * Returns the amode.

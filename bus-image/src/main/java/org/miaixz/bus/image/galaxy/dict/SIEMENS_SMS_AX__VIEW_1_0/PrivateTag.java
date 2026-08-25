@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SMS_AX__VIEW_1_0;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS SMS-AX VIEW 1.0";
@@ -197,5 +190,12 @@ public class PrivateTag {
      * (0019,xx42) VR=SL VM=2 Dispayed Area Bottom Right Hand Corner
      */
     public static final int DispayedAreaBottomRightHandCorner = 0x00190042;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -37,13 +37,6 @@ import org.miaixz.bus.cortex.Type;
 public class Profile extends Setting {
 
     /**
-     * Creates an empty profile directory entry.
-     */
-    public Profile() {
-        setType(Type.PROFILE.key());
-    }
-
-    /**
      * Legacy profile code kept only for compatibility and display. {@code id} remains the authoritative identifier.
      */
     private String code;
@@ -62,5 +55,12 @@ public class Profile extends Setting {
      * Whether the profile is built in.
      */
     private Boolean builtin;
+
+    /**
+     * Creates an empty profile directory entry.
+     */
+    public Profile() {
+        setType(Type.PROFILE.key());
+    }
 
 }

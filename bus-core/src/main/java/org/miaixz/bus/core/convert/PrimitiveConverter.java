@@ -42,13 +42,6 @@ import org.miaixz.bus.core.lang.exception.ConvertException;
  */
 public class PrimitiveConverter extends AbstractConverter implements MatcherConverter, Serializable {
 
-    /**
-     * Constructs a new {@code PrimitiveConverter} instance.
-     */
-    public PrimitiveConverter() {
-        // No initialization required.
-    }
-
     @Serial
     private static final long serialVersionUID = 2852271020075L;
 
@@ -56,6 +49,13 @@ public class PrimitiveConverter extends AbstractConverter implements MatcherConv
      * Singleton instance
      */
     public static final PrimitiveConverter INSTANCE = new PrimitiveConverter();
+
+    /**
+     * Constructs a new {@code PrimitiveConverter} instance.
+     */
+    public PrimitiveConverter() {
+        // No initialization required.
+    }
 
     /**
      * Checks if this converter can handle the conversion to the specified target type.

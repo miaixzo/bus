@@ -47,13 +47,6 @@ import org.miaixz.bus.health.unix.openbsd.OpenBsdSysctlKit;
 public class OpenBsdFileSystem extends AbstractFileSystem {
 
     /**
-     * Creates a new OpenBsdFileSystem instance.
-     */
-    public OpenBsdFileSystem() {
-        // No initialization required.
-    }
-
-    /**
      * The FS_PATH_EXCLUDES constant.
      */
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
@@ -76,6 +69,13 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
      */
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Builder._UNIX_OPENBSD_FS_VOLUME_INCLUDES);
+
+    /**
+     * Creates a new OpenBsdFileSystem instance.
+     */
+    public OpenBsdFileSystem() {
+        // No initialization required.
+    }
 
     /**
      * Returns the file store matching.

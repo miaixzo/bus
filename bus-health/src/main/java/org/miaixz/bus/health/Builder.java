@@ -52,13 +52,6 @@ import org.miaixz.bus.setting.nimble.props.Props;
 public class Builder {
 
     /**
-     * Constructs a new Builder instance.
-     */
-    public Builder() {
-        // No initialization required.
-    }
-
-    /**
      * Global configuration file path, specifying health-related properties.
      */
     public static final String _HEALTH_PROPERTIES = "bus.health.properties";
@@ -419,6 +412,13 @@ public class Builder {
     private static volatile Properties CONFIG;
 
     /**
+     * Constructs a new Builder instance.
+     */
+    public Builder() {
+        // No initialization required.
+    }
+
+    /**
      * If the given pointer is an instance of the Memory class, calls its close method to free the natively allocated
      * memory.
      *
@@ -670,6 +670,21 @@ public class Builder {
      * @return The value contained in the file, or 0 if no value is present.
      */
     public static long getLongFromFile(String filename) {
+        return getLongFromFile(filename, 0L);
+    }
+
+    /**
+     * Reads a file and returns the long integer value contained within it. Primarily used for Linux /sys filesystem.
+     *
+     * <p>
+     * Use a default outside the real value range when callers need to distinguish an unreadable file from a genuine
+     * zero counter.
+     *
+     * @param filename     The file to read.
+     * @param defaultValue The value to return when the file cannot be read or does not contain a long value.
+     * @return The value contained in the file, or {@code defaultValue} if no value is present.
+     */
+    public static long getLongFromFile(String filename, long defaultValue) {
         if (Logger.isDebugEnabled()) {
             Logger.debug(true, "Health", READING_LOG, filename);
         }
@@ -678,9 +693,9 @@ public class Builder {
             if (Logger.isTraceEnabled()) {
                 Logger.trace(false, "Health", READ_LOG, read.get(0));
             }
-            return Parsing.parseLongOrDefault(read.get(0), 0L);
+            return Parsing.parseLongOrDefault(read.get(0), defaultValue);
         }
-        return 0L;
+        return defaultValue;
     }
 
     /**
@@ -711,6 +726,21 @@ public class Builder {
      * @return The value contained in the file, or 0 if no value is present.
      */
     public static int getIntFromFile(String filename) {
+        return getIntFromFile(filename, 0);
+    }
+
+    /**
+     * Reads a file and returns the integer value contained within it. Primarily used for Linux /sys filesystem.
+     *
+     * <p>
+     * Use a default outside the real value range when callers need to distinguish an unreadable file from a genuine
+     * zero counter.
+     *
+     * @param filename     The file to read.
+     * @param defaultValue The value to return when the file cannot be read or does not contain an integer value.
+     * @return The value contained in the file, or {@code defaultValue} if no value is present.
+     */
+    public static int getIntFromFile(String filename, int defaultValue) {
         if (Logger.isDebugEnabled()) {
             Logger.debug(true, "Health", READING_LOG, filename);
         }
@@ -720,7 +750,7 @@ public class Builder {
                 if (Logger.isTraceEnabled()) {
                     Logger.trace(false, "Health", READ_LOG, read.get(0));
                 }
-                return Parsing.parseIntOrDefault(read.get(0), 0);
+                return Parsing.parseIntOrDefault(read.get(0), defaultValue);
             }
         } catch (NumberFormatException ex) {
             Logger.warn(
@@ -731,7 +761,7 @@ public class Builder {
                     filename != null,
                     ex.getClass().getSimpleName());
         }
-        return 0;
+        return defaultValue;
     }
 
     /**

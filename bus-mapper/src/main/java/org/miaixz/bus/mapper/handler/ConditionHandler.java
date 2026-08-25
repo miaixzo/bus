@@ -55,13 +55,6 @@ import org.miaixz.bus.mapper.parsing.SqlSource;
 public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implements MapperHandler<T> {
 
     /**
-     * Initializes the handler that evaluates mapper feature conditions against runtime properties.
-     */
-    public ConditionHandler() {
-        // No initialization required.
-    }
-
-    /**
      * Flattened Mapper properties used for feature configuration lookup.
      * <p>
      * Handler subclasses use the effective JDBC data source key to select database-specific entries. The properties do
@@ -79,6 +72,13 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
      * Properties instance currently associated with the derived configuration cache.
      */
     private volatile Properties cachedProperties;
+
+    /**
+     * Initializes the handler that evaluates mapper feature conditions against runtime properties.
+     */
+    public ConditionHandler() {
+        // No initialization required.
+    }
 
     /**
      * Returns the configuration scope handled by this instance, such as {@link Args#TENANT_KEY}.

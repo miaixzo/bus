@@ -43,13 +43,6 @@ import java.util.*;
 public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> implements Deque<E> {
 
     /**
-     * Constructs a new LinkedDeque instance.
-     */
-    public LinkedDeque() {
-        // No initialization required.
-    }
-
-    /**
      * Pointer to first node. Invariant: (first == null && last == null) || (first.prev == null)
      */
     E first;
@@ -58,6 +51,13 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
      * Pointer to last node. Invariant: (first == null && last == null) || (last.next == null)
      */
     E last;
+
+    /**
+     * Constructs a new LinkedDeque instance.
+     */
+    public LinkedDeque() {
+        // No initialization required.
+    }
 
     /**
      * Links the element to the front of the deque so that it becomes the first element.

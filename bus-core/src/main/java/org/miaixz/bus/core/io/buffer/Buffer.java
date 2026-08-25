@@ -3054,13 +3054,6 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     public static class UnsafeCursor implements Closeable {
 
         /**
-         * Constructs a new UnsafeCursor.
-         */
-        public UnsafeCursor() {
-            // No initialization required.
-        }
-
-        /**
          * The buffer this cursor is attached to.
          */
         public Buffer buffer;
@@ -3094,6 +3087,13 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
          * The current segment.
          */
         private Segment segment;
+
+        /**
+         * Constructs a new UnsafeCursor.
+         */
+        public UnsafeCursor() {
+            // No initialization required.
+        }
 
         /**
          * Seeks to the next range of bytes, advancing the offset by {@code end - start}. Returns the size of the

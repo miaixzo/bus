@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_FRAME_SET;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SIEMENS SYNGO FRAME SET";
@@ -67,5 +60,12 @@ public class PrivateTag {
      * (0029,xx20) VR=IS VM=1 Representation Pixel Offse
      */
     public static final int RepresentationPixelOffset = 0x00290020;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Link implements Serializable {
 
     /**
-     * Constructs a new {@code Link} instance.
-     */
-    public Link() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -61,6 +54,13 @@ public class Link implements Serializable {
      * The link type value.
      */
     private String linkType;
+
+    /**
+     * Constructs a new {@code Link} instance.
+     */
+    public Link() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

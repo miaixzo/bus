@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class TagPushSystemHookEvent extends AbstractPushEvent implements SystemHookEvent {
 
     /**
-     * Constructs a new {@code TagPushSystemHookEvent} instance.
-     */
-    public TagPushSystemHookEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -48,6 +41,13 @@ public class TagPushSystemHookEvent extends AbstractPushEvent implements SystemH
      */
 
     public static final String TAG_PUSH_EVENT = "tag_push";
+
+    /**
+     * Constructs a new {@code TagPushSystemHookEvent} instance.
+     */
+    public TagPushSystemHookEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the string.

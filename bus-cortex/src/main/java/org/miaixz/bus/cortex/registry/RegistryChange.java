@@ -61,13 +61,6 @@ public class RegistryChange<T extends Assets> implements Change<T> {
     }
 
     /**
-     * Creates an empty registry change event.
-     */
-    public RegistryChange() {
-        // No initialization required.
-    }
-
-    /**
      * Identifier of the affected asset.
      */
     private String id;
@@ -156,5 +149,12 @@ public class RegistryChange<T extends Assets> implements Change<T> {
      * Creation time of this registry event in epoch milliseconds.
      */
     private long timestamp;
+
+    /**
+     * Creates an empty registry change event.
+     */
+    public RegistryChange() {
+        // No initialization required.
+    }
 
 }

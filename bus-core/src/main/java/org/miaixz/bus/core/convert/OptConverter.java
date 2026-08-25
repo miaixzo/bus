@@ -30,15 +30,15 @@ import org.miaixz.bus.core.lang.Optional;
  */
 public class OptConverter extends AbstractConverter {
 
+    @Serial
+    private static final long serialVersionUID = 2852269671795L;
+
     /**
      * Constructs a new OptConverter instance.
      */
     public OptConverter() {
         // No initialization required.
     }
-
-    @Serial
-    private static final long serialVersionUID = 2852269671795L;
 
     /**
      * Converts the given value to an Optional.

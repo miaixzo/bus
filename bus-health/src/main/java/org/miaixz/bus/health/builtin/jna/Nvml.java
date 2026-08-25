@@ -183,13 +183,6 @@ public interface Nvml {
     class NvmlUtilization extends Structure {
 
         /**
-         * Creates a new NvmlUtilization instance.
-         */
-        public NvmlUtilization() {
-            // No initialization required.
-        }
-
-        /**
          * The gpu value.
          */
         public int gpu;
@@ -198,6 +191,13 @@ public interface Nvml {
          * The memory value.
          */
         public int memory;
+
+        /**
+         * Creates a new NvmlUtilization instance.
+         */
+        public NvmlUtilization() {
+            // No initialization required.
+        }
 
     }
 
@@ -208,13 +208,6 @@ public interface Nvml {
      */
     @FieldOrder({ "total", "free", "used" })
     class NvmlMemory extends Structure {
-
-        /**
-         * Creates a new NvmlMemory instance.
-         */
-        public NvmlMemory() {
-            // No initialization required.
-        }
 
         /**
          * The total value.
@@ -231,6 +224,13 @@ public interface Nvml {
          */
         public long used;
 
+        /**
+         * Creates a new NvmlMemory instance.
+         */
+        public NvmlMemory() {
+            // No initialization required.
+        }
+
     }
 
     /**
@@ -240,13 +240,6 @@ public interface Nvml {
      */
     @FieldOrder({ "busIdLegacy", "domain", "bus", "device", "pciDeviceId", "pciSubSystemId", "busId" })
     class NvmlPciInfo extends Structure {
-
-        /**
-         * Creates a new NvmlPciInfo instance.
-         */
-        public NvmlPciInfo() {
-            // No initialization required.
-        }
 
         /**
          * The busIdLegacy value.
@@ -282,6 +275,13 @@ public interface Nvml {
          * The busId value.
          */
         public byte[] busId = new byte[32];
+
+        /**
+         * Creates a new NvmlPciInfo instance.
+         */
+        public NvmlPciInfo() {
+            // No initialization required.
+        }
 
     }
 

@@ -34,13 +34,6 @@ import lombok.experimental.SuperBuilder;
 public class TransferDetailInput {
 
     /**
-     * Constructs a new {@code TransferDetailInput} instance.
-     */
-    public TransferDetailInput() {
-        // No initialization required.
-    }
-
-    /**
      * The merchant's unique identifier for this specific detail within the batch. Can only consist of numbers and
      * uppercase/lowercase letters.
      */
@@ -72,5 +65,12 @@ public class TransferDetailInput {
      * provided, the user_name must also be provided.
      */
     private String user_id_card;
+
+    /**
+     * Constructs a new {@code TransferDetailInput} instance.
+     */
+    public TransferDetailInput() {
+        // No initialization required.
+    }
 
 }

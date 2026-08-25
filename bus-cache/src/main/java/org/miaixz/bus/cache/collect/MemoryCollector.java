@@ -38,13 +38,6 @@ import org.miaixz.bus.cache.Collector;
 public class MemoryCollector implements Collector {
 
     /**
-     * Constructs a new MemoryCollector instance.
-     */
-    public MemoryCollector() {
-        // No initialization required.
-    }
-
-    /**
      * A thread-safe map to store the hit counts for each cache pattern.
      */
     private final ConcurrentMap<String, AtomicLong> hitMap = new ConcurrentHashMap<>();
@@ -53,6 +46,13 @@ public class MemoryCollector implements Collector {
      * A thread-safe map to store the total request counts for each cache pattern.
      */
     private final ConcurrentMap<String, AtomicLong> requireMap = new ConcurrentHashMap<>();
+
+    /**
+     * Constructs a new MemoryCollector instance.
+     */
+    public MemoryCollector() {
+        // No initialization required.
+    }
 
     /**
      * Increments the hit count for a specific cache pattern.

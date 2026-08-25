@@ -29,13 +29,6 @@ import java.util.Date;
 public class GpgKey {
 
     /**
-     * Constructs a new {@code GpgKey} instance.
-     */
-    public GpgKey() {
-        // No initialization required.
-    }
-
-    /**
      * The id value.
      */
     private Long id;
@@ -47,6 +40,13 @@ public class GpgKey {
      * The created at value.
      */
     private Date createdAt;
+
+    /**
+     * Constructs a new {@code GpgKey} instance.
+     */
+    public GpgKey() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

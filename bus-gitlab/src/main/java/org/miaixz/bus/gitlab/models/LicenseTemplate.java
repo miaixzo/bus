@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class LicenseTemplate implements Serializable {
 
     /**
-     * Constructs a new {@code LicenseTemplate} instance.
-     */
-    public LicenseTemplate() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -89,6 +82,13 @@ public class LicenseTemplate implements Serializable {
      * The content value.
      */
     private String content;
+
+    /**
+     * Constructs a new {@code LicenseTemplate} instance.
+     */
+    public LicenseTemplate() {
+        // No initialization required.
+    }
 
     /**
      * Returns the key.

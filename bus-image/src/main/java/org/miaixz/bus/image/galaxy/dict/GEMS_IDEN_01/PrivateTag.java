@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_IDEN_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "GEMS_IDEN_01";
@@ -117,5 +110,12 @@ public class PrivateTag {
      * (0009,xxE9) VR=SL VM=1 Actual Series Data Time Stamp
      */
     public static final int ActualSeriesDataTimeStamp = 0x000900E9;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

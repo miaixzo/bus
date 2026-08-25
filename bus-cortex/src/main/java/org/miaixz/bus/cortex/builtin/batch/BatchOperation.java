@@ -38,13 +38,6 @@ import org.miaixz.bus.cortex.Type;
 public class BatchOperation {
 
     /**
-     * Creates an empty batch operation descriptor.
-     */
-    public BatchOperation() {
-        // No initialization required.
-    }
-
-    /**
      * Type of operation to apply to each entry in the batch.
      *
      * @author Kimi Liu
@@ -139,5 +132,12 @@ public class BatchOperation {
      * Operation to apply to the entries.
      */
     private OperationType operationType = OperationType.UPSERT;
+
+    /**
+     * Creates an empty batch operation descriptor.
+     */
+    public BatchOperation() {
+        // No initialization required.
+    }
 
 }

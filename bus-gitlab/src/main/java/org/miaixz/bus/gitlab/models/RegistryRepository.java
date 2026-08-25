@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class RegistryRepository implements Serializable {
 
     /**
-     * Constructs a new {@code RegistryRepository} instance.
-     */
-    public RegistryRepository() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -65,6 +58,13 @@ public class RegistryRepository implements Serializable {
      * The created at value.
      */
     private Date createdAt;
+
+    /**
+     * Constructs a new {@code RegistryRepository} instance.
+     */
+    public RegistryRepository() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

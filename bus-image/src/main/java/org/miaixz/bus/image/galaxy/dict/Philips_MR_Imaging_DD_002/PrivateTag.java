@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_002;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "Philips MR Imaging DD 002";
@@ -152,5 +145,12 @@ public class PrivateTag {
      * (2005,xx99) VR=UL VM=1 Number of Request Excerpts
      */
     public static final int NumberOfRequestExcerpts = 0x20050099;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

@@ -36,13 +36,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class Badge implements Serializable {
 
     /**
-     * Constructs a new {@code Badge} instance.
-     */
-    public Badge() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -76,6 +69,13 @@ public class Badge implements Serializable {
      * The kind value.
      */
     private BadgeKind kind;
+
+    /**
+     * Constructs a new {@code Badge} instance.
+     */
+    public Badge() {
+        // No initialization required.
+    }
 
     /**
      * Returns the id.

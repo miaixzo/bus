@@ -32,13 +32,6 @@ import org.miaixz.bus.core.lang.Normal;
 public class FestivalRegistry {
 
     /**
-     * Constructs a new {@code FestivalRegistry} instance.
-     */
-    public FestivalRegistry() {
-        // No initialization required.
-    }
-
-    /**
      * Valid encoding characters.
      */
     public static final String CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTU_VWXYZabcdefghijklmnopqrstuvwxyz";
@@ -63,6 +56,13 @@ public class FestivalRegistry {
      * Regex pattern for matching festival data entries.
      */
     public static final String REGEX = "(@[0-9A-Za-z_]{8})(%s)";
+
+    /**
+     * Constructs a new {@code FestivalRegistry} instance.
+     */
+    public FestivalRegistry() {
+        // No initialization required.
+    }
 
     /**
      * Removes a festival by name.

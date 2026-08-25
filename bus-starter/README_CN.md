@@ -101,6 +101,27 @@ bus:
 
 当存在所需的运行时类时，两个交换机都默认为 `true`。
 
+### JWT 字符串密钥
+
+配置 `bus.auth.jwt.secret` 后，Starter 会提供一个可直接注入的 `JwtService`：
+
+```yaml
+bus:
+  auth:
+    jwt:
+      secret: ${JWT_SECRET}
+      secret-policy: compatible
+```
+
+框架会保留密钥字符串的全部字符，并通过固定版本的 HKDF-SHA-256 规则确定性派生 256 位 HS256 密钥，
+因此同一个配置值在所有集群节点上都会得到相同结果。默认 `compatible` 策略允许任意非空字符串；
+少于 32 个 UTF-8 字节时会记录安全警告。`strict` 策略会在启动时拒绝这类短密钥。派生只能满足算法长度要求，
+不能增加原始密钥的熵，生产环境仍应使用高强度配置值。
+
+动态租户密钥无需创建 Spring Bean，可直接使用 `JWT.sign(claims, secret)`，并通过
+`JWT.parse(token)` 读取未验签的租户标识后调用 `verify(secret)`。旧版原始字符串签发的 Token 不做兼容验证，
+升级后应统一重新签发。
+
 ## 功能激活模型
 
 产品功能使用一种确定性激活顺序：显式 `@EnableXxx` 注释始终启用其功能，

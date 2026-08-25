@@ -61,16 +61,16 @@ public interface ClassMapper<T> {
     class CachingEntityClass {
 
         /**
+         * A map to store the mapping between interface classes and their corresponding entity class types.
+         */
+        static Map<Class<?>, Class<?>> entityClassMap = new ConcurrentHashMap<>();
+
+        /**
          * Constructs a new CachingEntityClass instance.
          */
         public CachingEntityClass() {
             // No initialization required.
         }
-
-        /**
-         * A map to store the mapping between interface classes and their corresponding entity class types.
-         */
-        static Map<Class<?>, Class<?>> entityClassMap = new ConcurrentHashMap<>();
 
         /**
          * Gets the entity class type for a given sub-interface.

@@ -51,13 +51,6 @@ import org.miaixz.bus.spring.web.wrapper.CachedBodyRequestWrapper;
 public class RequestContext {
 
     /**
-     * Initializes a request accessor that stores all derived values on the active Servlet request.
-     */
-    public RequestContext() {
-        // No initialization required.
-    }
-
-    /**
      * Prefix isolating request-scoped cache attributes from application attributes.
      */
     private static final String ATTRIBUTE_PREFIX = RequestContext.class.getName() + Symbol.DOT;
@@ -85,6 +78,13 @@ public class RequestContext {
      * Marker distinguishing an absent body from an uninitialized cache.
      */
     private static final Object EMPTY_BODY = new Object();
+
+    /**
+     * Initializes a request accessor that stores all derived values on the active Servlet request.
+     */
+    public RequestContext() {
+        // No initialization required.
+    }
 
     /**
      * Returns the request bound by Spring to the current thread.

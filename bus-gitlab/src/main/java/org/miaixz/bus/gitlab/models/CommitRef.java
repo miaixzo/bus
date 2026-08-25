@@ -36,13 +36,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class CommitRef implements Serializable {
 
     /**
-     * Constructs a new {@code CommitRef} instance.
-     */
-    public CommitRef() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -56,6 +49,13 @@ public class CommitRef implements Serializable {
      * The name value.
      */
     private String name;
+
+    /**
+     * Constructs a new {@code CommitRef} instance.
+     */
+    public CommitRef() {
+        // No initialization required.
+    }
 
     /**
      * Enumeration representing the type of Git reference.

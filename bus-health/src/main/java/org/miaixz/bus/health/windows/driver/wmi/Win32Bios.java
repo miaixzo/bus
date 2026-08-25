@@ -36,16 +36,16 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 public class Win32Bios {
 
     /**
+     * The WMI class name with WHERE clause for primary BIOS.
+     */
+    public static final String WIN32_BIOS_WHERE_PRIMARY_BIOS_TRUE = "Win32_BIOS where PrimaryBIOS=true";
+
+    /**
      * Keeps Win32 BIOS queries on the static API.
      */
     public Win32Bios() {
         // No initialization required.
     }
-
-    /**
-     * The WMI class name with WHERE clause for primary BIOS.
-     */
-    public static final String WIN32_BIOS_WHERE_PRIMARY_BIOS_TRUE = "Win32_BIOS where PrimaryBIOS=true";
 
     /**
      * Queries the BIOS serial number.

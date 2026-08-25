@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class CommitStats implements Serializable {
 
     /**
-     * Constructs a new {@code CommitStats} instance.
-     */
-    public CommitStats() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -56,6 +49,13 @@ public class CommitStats implements Serializable {
      * The total value.
      */
     private Integer total;
+
+    /**
+     * Constructs a new {@code CommitStats} instance.
+     */
+    public CommitStats() {
+        // No initialization required.
+    }
 
     /**
      * Returns the additions.

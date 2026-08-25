@@ -32,13 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class RepositoryFileResponse implements Serializable {
 
     /**
-     * Constructs a new {@code RepositoryFileResponse} instance.
-     */
-    public RepositoryFileResponse() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -52,6 +45,13 @@ public class RepositoryFileResponse implements Serializable {
      * The branch value.
      */
     private String branch;
+
+    /**
+     * Constructs a new {@code RepositoryFileResponse} instance.
+     */
+    public RepositoryFileResponse() {
+        // No initialization required.
+    }
 
     /**
      * Returns the file path.

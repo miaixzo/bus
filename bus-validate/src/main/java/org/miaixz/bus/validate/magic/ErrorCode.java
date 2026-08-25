@@ -30,13 +30,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
     /**
-     * Constructs a new ErrorCode instance.
-     */
-    public ErrorCode() {
-        // No initialization required.
-    }
-
-    /**
      * Error code for a generic parameter validation failure.
      */
     public static final String _PARAMETER_VALIDATE = "115000";
@@ -455,5 +448,12 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
      * A value that must be true is invalid.
      */
     public static final Errors _115027 = ErrorRegistry.register(_TRUE, _TRUE_VALUE);
+
+    /**
+     * Constructs a new ErrorCode instance.
+     */
+    public ErrorCode() {
+        // No initialization required.
+    }
 
 }

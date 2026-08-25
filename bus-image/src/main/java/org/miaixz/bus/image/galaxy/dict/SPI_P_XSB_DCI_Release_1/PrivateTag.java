@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.SPI_P_XSB_DCI_Release_1;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "SPI-P-XSB-DCI Release 1";
@@ -62,5 +55,12 @@ public class PrivateTag {
      * (0019,xx20) VR=DS VM=1 RTD Data Compression Factor
      */
     public static final int RTDDataCompressionFactor = 0x00190020;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

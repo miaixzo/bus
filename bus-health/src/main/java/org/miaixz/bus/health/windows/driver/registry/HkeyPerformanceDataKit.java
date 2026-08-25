@@ -42,13 +42,6 @@ import org.miaixz.bus.logger.Logger;
 public class HkeyPerformanceDataKit {
 
     /**
-     * Constructs a new HkeyPerformanceDataKit instance.
-     */
-    public HkeyPerformanceDataKit() {
-        // No initialization required.
-    }
-
-    /**
      * Do a one-time lookup of the HKEY_PERFORMANCE_TEXT counter indices and store in a map for efficient lookups
      * on-demand.
      */
@@ -68,6 +61,13 @@ public class HkeyPerformanceDataKit {
      * The maxPerfBufferSize value.
      */
     private static int maxPerfBufferSize = 16384;
+
+    /**
+     * Constructs a new HkeyPerformanceDataKit instance.
+     */
+    public HkeyPerformanceDataKit() {
+        // No initialization required.
+    }
 
     /**
      * Reads and parses a block of performance data from the registry.

@@ -36,13 +36,6 @@ import org.miaixz.bus.pay.magic.Voucher;
 public class Revoke extends Voucher {
 
     /**
-     * Constructs a new {@code Revoke} instance.
-     */
-    public Revoke() {
-        // No initialization required.
-    }
-
-    /**
      * Version number.
      */
     private String version;
@@ -91,5 +84,12 @@ public class Revoke extends Voucher {
      * Certificate.
      */
     private String cert;
+
+    /**
+     * Constructs a new {@code Revoke} instance.
+     */
+    public Revoke() {
+        // No initialization required.
+    }
 
 }

@@ -36,13 +36,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class EntityClassBuilder {
 
     /**
-     * Constructs a new EntityClassBuilder instance.
-     */
-    public EntityClassBuilder() {
-        // No initialization required.
-    }
-
-    /**
      * A thread-safe store for table metadata, keyed by entity class.
      */
     private static final Map<Class<?>, TableMeta> TABLE_META_STORE = Collections.synchronizedMap(new WeakHashMap<>());
@@ -52,6 +45,13 @@ public class EntityClassBuilder {
      */
     private static final Map<Class<?>, List<ColumnMeta>> COLUMN_META_STORE = Collections
             .synchronizedMap(new WeakHashMap<>());
+
+    /**
+     * Constructs a new EntityClassBuilder instance.
+     */
+    public EntityClassBuilder() {
+        // No initialization required.
+    }
 
     /**
      * Stores a {@link TableMeta} instance.

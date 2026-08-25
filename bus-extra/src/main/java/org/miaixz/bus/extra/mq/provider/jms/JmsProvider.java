@@ -41,13 +41,6 @@ import org.miaixz.bus.logger.Logger;
 public abstract class JmsProvider implements MQProvider, Closeable {
 
     /**
-     * Constructs a JMS provider with the default queue mode and group names.
-     */
-    public JmsProvider() {
-        // No initialization required.
-    }
-
-    /**
      * The JMS connection object.
      */
     private Connection connection;
@@ -71,6 +64,13 @@ public abstract class JmsProvider implements MQProvider, Closeable {
      * The name of the consumer group, defaults to "bus.queue".
      */
     private String consumerGroup = "bus.queue";
+
+    /**
+     * Constructs a JMS provider with the default queue mode and group names.
+     */
+    public JmsProvider() {
+        // No initialization required.
+    }
 
     /**
      * Initializes the JMS connection and session using the provided {@link MQConfig}.

@@ -29,6 +29,10 @@ public abstract class CleanableMat {
     // A native memory cleaner for the OpenCV library
     public static Cleaner cleaner = Cleaner.create();
 
+    private static native void n_delete(long nativeObj);
+
+    public final long nativeObj;
+
     public CleanableMat(long obj) {
         if (obj == 0)
             throw new UnsupportedOperationException("Native object address is NULL");
@@ -39,9 +43,5 @@ public abstract class CleanableMat {
         long nativeObjCopy = nativeObj;
         cleaner.register(this, () -> n_delete(nativeObjCopy));
     }
-
-    private static native void n_delete(long nativeObj);
-
-    public final long nativeObj;
 
 }

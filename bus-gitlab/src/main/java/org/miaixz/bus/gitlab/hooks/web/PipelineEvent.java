@@ -37,13 +37,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class PipelineEvent extends AbstractEvent {
 
     /**
-     * Constructs a new {@code PipelineEvent} instance.
-     */
-    public PipelineEvent() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -86,6 +79,13 @@ public class PipelineEvent extends AbstractEvent {
      * The builds value.
      */
     private List<Build> builds;
+
+    /**
+     * Constructs a new {@code PipelineEvent} instance.
+     */
+    public PipelineEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the object kind.
@@ -268,13 +268,6 @@ public class PipelineEvent extends AbstractEvent {
     public static class ObjectAttributes {
 
         /**
-         * Constructs a new {@code ObjectAttributes} instance.
-         */
-        public ObjectAttributes() {
-            // No initialization required.
-        }
-
-        /**
          * The id value.
          */
         private Long id;
@@ -342,6 +335,13 @@ public class PipelineEvent extends AbstractEvent {
          * The url value.
          */
         private String url;
+
+        /**
+         * Constructs a new {@code ObjectAttributes} instance.
+         */
+        public ObjectAttributes() {
+            // No initialization required.
+        }
 
         /**
          * Returns the id.

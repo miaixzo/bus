@@ -60,13 +60,6 @@ import org.miaixz.bus.starter.annotation.EnableMapper;
 public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
 
     /**
-     * Initializes the registrar before Spring supplies its resource loader and environment callbacks.
-     */
-    public MapperScannerRegistrar() {
-        // No initialization required.
-    }
-
-    /**
      * The Spring {@link ResourceLoader} for resource location.
      */
     private ResourceLoader resourceLoader;
@@ -75,6 +68,13 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
      * The Spring {@link Environment} for access to properties.
      */
     private Environment environment;
+
+    /**
+     * Initializes the registrar before Spring supplies its resource loader and environment callbacks.
+     */
+    public MapperScannerRegistrar() {
+        // No initialization required.
+    }
 
     /**
      * Registers mapper interfaces using annotation attributes first and configuration properties second.

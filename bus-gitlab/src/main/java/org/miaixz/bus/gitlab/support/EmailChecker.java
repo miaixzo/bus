@@ -29,13 +29,6 @@ import java.util.regex.Pattern;
 public class EmailChecker {
 
     /**
-     * Constructs a new {@code EmailChecker} instance.
-     */
-    public EmailChecker() {
-        // No initialization required.
-    }
-
-    /**
      * Java regular expression for validating an email address.
      */
 
@@ -48,6 +41,13 @@ public class EmailChecker {
      * Compiled pattern for {@link #EMAIL_REGEX}.
      */
     public static final Pattern EMAIL_REGEX_PATTERN = Pattern.compile(EMAIL_REGEX);
+
+    /**
+     * Constructs a new {@code EmailChecker} instance.
+     */
+    public EmailChecker() {
+        // No initialization required.
+    }
 
     /**
      * Returns true if the provided String is a valid email address.

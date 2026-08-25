@@ -27,13 +27,6 @@ package org.miaixz.bus.image.galaxy.dict.AMI_ImageTransform_01;
 public class PrivateTag {
 
     /**
-     * Constructs a new {@code PrivateTag} instance.
-     */
-    public PrivateTag() {
-        // No initialization required.
-    }
-
-    /**
      * The private creator value.
      */
     public static final String PrivateCreator = "AMI ImageTransform_01";
@@ -67,5 +60,12 @@ public class PrivateTag {
      * (3107,xx60) VR=DS VM=1 Calibration Factor
      */
     public static final int CalibrationFactor = 0x31070060;
+
+    /**
+     * Constructs a new {@code PrivateTag} instance.
+     */
+    public PrivateTag() {
+        // No initialization required.
+    }
 
 }

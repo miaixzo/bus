@@ -49,13 +49,6 @@ import org.miaixz.bus.cortex.builtin.Selector;
 public class ItemScope {
 
     /**
-     * Creates an empty setting scope.
-     */
-    public ItemScope() {
-        // No initialization required.
-    }
-
-    /**
      * Space containing the target setting entries.
      */
     private String space_id;
@@ -105,6 +98,13 @@ public class ItemScope {
      * Number of matching entries to skip.
      */
     private int offset;
+
+    /**
+     * Creates an empty setting scope.
+     */
+    public ItemScope() {
+        // No initialization required.
+    }
 
     /**
      * Returns management-facing label items converted from runtime labels.

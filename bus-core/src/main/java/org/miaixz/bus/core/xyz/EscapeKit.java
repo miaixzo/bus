@@ -37,13 +37,6 @@ import org.miaixz.bus.core.text.escape.XmlUnescape;
 public class EscapeKit {
 
     /**
-     * Keeps text escaping and unescaping on the static API.
-     */
-    public EscapeKit() {
-        // No initialization required.
-    }
-
-    /**
      * Characters that should not be escaped for JS compatibility.
      */
     private static final String NOT_ESCAPE_CHARS = "*@-_+./";
@@ -53,6 +46,13 @@ public class EscapeKit {
      */
     private static final PredicateX<Character> JS_ESCAPE_FILTER = c -> !(Character.isDigit(c)
             || Character.isLowerCase(c) || Character.isUpperCase(c) || StringKit.contains(NOT_ESCAPE_CHARS, c));
+
+    /**
+     * Keeps text escaping and unescaping on the static API.
+     */
+    public EscapeKit() {
+        // No initialization required.
+    }
 
     /**
      * Escapes special characters in XML.

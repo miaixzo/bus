@@ -33,13 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class CommitStatus implements Serializable {
 
     /**
-     * Constructs a new {@code CommitStatus} instance.
-     */
-    public CommitStatus() {
-        // No initialization required.
-    }
-
-    /**
      * The serial version uid value.
      */
     @Serial
@@ -101,6 +94,13 @@ public class CommitStatus implements Serializable {
      * The target url value.
      */
     private String targetUrl;
+
+    /**
+     * Constructs a new {@code CommitStatus} instance.
+     */
+    public CommitStatus() {
+        // No initialization required.
+    }
 
     /**
      * Returns whether the allow failure is enabled.
