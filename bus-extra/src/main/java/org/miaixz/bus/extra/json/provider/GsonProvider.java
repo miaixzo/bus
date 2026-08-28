@@ -19,43 +19,22 @@
 */
 package org.miaixz.bus.extra.json.provider;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.Strictness;
-import com.google.gson.TypeAdapter;
-import com.google.gson.TypeAdapterFactory;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.extra.json.JsonPropertyFilter;
 import org.miaixz.bus.extra.json.JsonValue;
 import org.miaixz.bus.extra.json.JsonWriteOptions;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.lang.reflect.Type;
+import java.util.*;
 
 /**
  * Provides Bus JSON operations through Gson while confining {@link JsonElement} instances to this provider.
@@ -116,7 +95,7 @@ public class GsonProvider extends AbstractJsonProvider {
         return new GsonBuilder()
                 // Custom deserializer for Map to prevent integers from being parsed as doubles.
                 .registerTypeAdapter(new TypeToken<Map<Object, Object>>() {
-                }.getType(),
+                        }.getType(),
                         // Custom JSON deserializer for Map objects. This deserializer prevents Gson from converting
                         // integer values to doubles during JSON deserialization by ensuring all primitive values are
                         // converted to strings.
@@ -136,7 +115,7 @@ public class GsonProvider extends AbstractJsonProvider {
                         })
                 // Custom deserializer for List to handle mixed-type arrays.
                 .registerTypeAdapter(new TypeToken<List<Object>>() {
-                }.getType(),
+                        }.getType(),
                         // Custom JSON deserializer for List objects. This deserializer handles mixed-type arrays by
                         // processing JSON objects and primitives appropriately, extracting all entries from nested JSON
                         // objects.
@@ -504,10 +483,9 @@ public class GsonProvider extends AbstractJsonProvider {
                  *
                  * @param output target JSON writer
                  * @param value  value to serialize
-                 * @throws IOException if the JSON writer fails
                  */
                 @Override
-                public void write(JsonWriter output, T value) throws IOException {
+                public void write(JsonWriter output, T value) {
                     JsonElement tree = delegate.toJsonTree(value);
                     filterObject(value, tree, options);
                     gson.toJson(tree, output);
@@ -543,37 +521,15 @@ public class GsonProvider extends AbstractJsonProvider {
         Iterator<Map.Entry<String, JsonElement>> entries = tree.getAsJsonObject().entrySet().iterator();
         while (entries.hasNext()) {
             Map.Entry<String, JsonElement> entry = entries.next();
-            Object propertyValue = readFieldValue(source, entry.getKey());
-            if ((!options.writeNulls() && entry.getValue().isJsonNull())
-                    || !options.propertyFilter().accept(source, entry.getKey(), propertyValue)) {
+            if (!options.writeNulls() && entry.getValue().isJsonNull()) {
+                entries.remove();
+                continue;
+            }
+            Object propertyValue = options.hasPropertyFilter() ? BeanKit.getFieldValue(source, entry.getKey()) : null;
+            if (!options.propertyFilter().accept(source, entry.getKey(), propertyValue)) {
                 entries.remove();
             }
         }
-    }
-
-    /**
-     * Reads a field value for filtering while keeping custom adapters and synthetic JSON properties permissive.
-     *
-     * @param source source object
-     * @param name   serialized property name
-     * @return field value, or {@code null} when the field is absent or inaccessible
-     */
-    private static Object readFieldValue(Object source, String name) {
-        Class<?> type = source.getClass();
-        while (type != null && type != Object.class) {
-            try {
-                Field field = type.getDeclaredField(name);
-                if (field.trySetAccessible()) {
-                    return field.get(source);
-                }
-                return null;
-            } catch (NoSuchFieldException ignored) {
-                type = type.getSuperclass();
-            } catch (IllegalAccessException | RuntimeException ignored) {
-                return null;
-            }
-        }
-        return null;
     }
 
 }
