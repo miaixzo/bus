@@ -154,7 +154,7 @@ public class JschSftp extends AbstractFtp {
      * Initializes the SFTP connection. If the session or channel is not yet established, it will be created and
      * connected. The filename encoding will be set based on the FTP configuration.
      *
-     * @throws InternalException if a JSch or SftpException occurs during initialization.
+     * @throws InternalException if a JSch exception occurs during initialization.
      */
     public void init() {
         if (null == this.channel) {
@@ -202,8 +202,8 @@ public class JschSftp extends AbstractFtp {
             if (!channel.isConnected()) {
                 channel.connect((int) Math.max(this.ftpConfig.getConnector().getTimeout(), 0));
             }
-            channel.setFilenameEncoding(this.ftpConfig.getCharset().toString());
-        } catch (final JSchException | SftpException e) {
+            channel.setFilenameEncoding(this.ftpConfig.getCharset());
+        } catch (final JSchException e) {
             Logger.warn(
                     false,
                     "Extra",

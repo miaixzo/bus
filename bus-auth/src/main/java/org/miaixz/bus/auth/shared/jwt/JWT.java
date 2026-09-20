@@ -123,15 +123,12 @@ public class JWT {
     /**
      * Signs an implementation-neutral Claims Set with String key material under an explicit conversion strategy.
      *
-     * @param claims   caller-supplied Claims Set
-     * @param secret   non-empty String key material
-     * @param mode     explicit String-to-key mode
+     * @param claims caller-supplied Claims Set
+     * @param secret non-empty String key material
+     * @param mode   explicit String-to-key mode
      * @return compact signed JWT
      */
-    public static String sign(
-            final Map<String, ?> claims,
-            final String secret,
-            final Mode mode) {
+    public static String sign(final Map<String, ?> claims, final String secret, final Mode mode) {
         return JwtService.hs256(secret, mode).sign(JwtClaims.of(claims)).compact();
     }
 
@@ -162,16 +159,13 @@ public class JWT {
     /**
      * Signs one public record with String key material under an explicit conversion strategy.
      *
-     * @param claims   caller-supplied public record
-     * @param secret   non-empty String key material
-     * @param mode     explicit String-to-key mode
-     * @param <T>      public record type
+     * @param claims caller-supplied public record
+     * @param secret non-empty String key material
+     * @param mode   explicit String-to-key mode
+     * @param <T>    public record type
      * @return compact signed JWT
      */
-    public static <T extends Record> String sign(
-            final T claims,
-            final String secret,
-            final Mode mode) {
+    public static <T extends Record> String sign(final T claims, final String secret, final Mode mode) {
         return JwtService.hs256(secret, mode).sign(JwtClaims.of(claims)).compact();
     }
 
@@ -389,15 +383,12 @@ public class JWT {
     /**
      * Cryptographically verifies one compact HS256 JWT with String key material under an explicit conversion strategy.
      *
-     * @param compact  compact signed JWT
-     * @param secret   non-empty String key material
-     * @param mode     explicit String-to-key mode
+     * @param compact compact signed JWT
+     * @param secret  non-empty String key material
+     * @param mode    explicit String-to-key mode
      * @return immutable cryptographically verified JWT
      */
-    public static JWT verify(
-            final String compact,
-            final String secret,
-            final Mode mode) {
+    public static JWT verify(final String compact, final String secret, final Mode mode) {
         return JwtService.hs256(secret, mode).verify(compact);
     }
 
@@ -453,15 +444,12 @@ public class JWT {
      * Verifies one compact HS256 JWT with an explicit String-to-key strategy and validates every registered temporal
      * claim present.
      *
-     * @param compact  compact signed JWT
-     * @param secret   non-empty String key material
-     * @param mode     explicit String-to-key mode
+     * @param compact compact signed JWT
+     * @param secret  non-empty String key material
+     * @param mode    explicit String-to-key mode
      * @return immutable cryptographically and temporally validated JWT
      */
-    public static JWT validate(
-            final String compact,
-            final String secret,
-            final Mode mode) {
+    public static JWT validate(final String compact, final String secret, final Mode mode) {
         return JwtService.hs256(secret, mode).validate(compact);
     }
 
@@ -562,15 +550,12 @@ public class JWT {
      * Tests whether one compact HS256 JWT has a valid signature and temporal claims under an explicit String-to-key
      * strategy.
      *
-     * @param compact  compact signed JWT
-     * @param secret   non-empty String key material
-     * @param mode     explicit String-to-key mode
+     * @param compact compact signed JWT
+     * @param secret  non-empty String key material
+     * @param mode    explicit String-to-key mode
      * @return {@code true} when verification and temporal validation succeed
      */
-    public static boolean isValid(
-            final String compact,
-            final String secret,
-            final Mode mode) {
+    public static boolean isValid(final String compact, final String secret, final Mode mode) {
         return JwtService.hs256(secret, mode).isValid(compact);
     }
 

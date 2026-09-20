@@ -24,7 +24,9 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.extra.ssh.provider.jsch.ChannelType;
 import org.miaixz.bus.logger.Logger;
 
@@ -72,7 +74,7 @@ public class JschKit {
             throw new InternalException(e);
         }
 
-        session.setPassword(connector.getPassword());
+        session.setPassword(ByteKit.toBytes(connector.getPassword(), Charset.UTF_8));
         // Set prompt for first login, possible values: (ask | yes | no)
         session.setConfig("StrictHostKeyChecking", "no");
 

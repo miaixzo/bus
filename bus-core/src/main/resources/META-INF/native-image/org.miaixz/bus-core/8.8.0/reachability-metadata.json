@@ -7858,6 +7858,46 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.core.codec.binary.Base85",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.Base85Codec",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.Base85Codec$Base85Decoder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.Base85Codec$Base85Encoder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.core.codec.binary.Crockford",
       "methods": [
         {
