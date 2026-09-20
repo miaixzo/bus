@@ -22,7 +22,6 @@ package org.miaixz.bus.image.plugin;
 import java.io.*;
 import java.net.URL;
 import java.util.Date;
-import java.util.UUID;
 
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
@@ -32,6 +31,7 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamSource;
 
+import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.galaxy.io.SAXTransformer;
@@ -76,37 +76,6 @@ public class HL7Rcv {
      * The network connection configuration.
      */
     private final Connection conn = new Connection();
-
-    /**
-     * The directory to store received messages.
-     */
-    private String storageDir;
-
-    /**
-     * The default character set to use if not specified in the message.
-     */
-    private String charset;
-
-    /**
-     * The compiled XSLT templates for response generation.
-     */
-    private Templates tpls;
-
-    /**
-     * Parameters to be passed to the XSLT transformation.
-     */
-    private String[] xsltParams;
-
-    /**
-     * A flag to use UUIDs for filenames when storing messages.
-     */
-    private boolean useUUIDForFilename;
-
-    /**
-     * A delay in milliseconds before sending a response.
-     */
-    private int responseDelay;
-
     /**
      * The message listener that processes incoming HL7 messages.
      */
@@ -117,6 +86,30 @@ public class HL7Rcv {
             throw new HL7Exception(new ERRSegment(msg.msh()).setUserMessage(e.getMessage()), e);
         }
     };
+    /**
+     * The directory to store received messages.
+     */
+    private String storageDir;
+    /**
+     * The default character set to use if not specified in the message.
+     */
+    private String charset;
+    /**
+     * The compiled XSLT templates for response generation.
+     */
+    private Templates tpls;
+    /**
+     * Parameters to be passed to the XSLT transformation.
+     */
+    private String[] xsltParams;
+    /**
+     * A flag to use UUIDs for filenames when storing messages.
+     */
+    private boolean useUUIDForFilename;
+    /**
+     * A delay in milliseconds before sending a response.
+     */
+    private int responseDelay;
 
     /**
      * Constructs a new {@code HL7Rcv} instance and initializes its components.

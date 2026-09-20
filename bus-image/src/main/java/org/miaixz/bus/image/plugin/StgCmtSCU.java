@@ -76,37 +76,6 @@ public class StgCmtSCU {
      * A map to group SOP instances for commitment, keyed by a split key.
      */
     private final HashMap<String, List<String>> map = new HashMap<>();
-
-    /**
-     * Additional attributes to be merged. (Not currently used in this implementation).
-     */
-    private Attributes attrs;
-
-    /**
-     * A suffix for generated UIDs. (Not currently used in this implementation).
-     */
-    private String uidSuffix;
-
-    /**
-     * The directory to store received storage commitment result files.
-     */
-    private File storageDir;
-
-    /**
-     * A flag to keep the association alive while waiting for results.
-     */
-    private boolean keepAlive;
-
-    /**
-     * A DICOM tag used to split commitment requests into multiple transactions.
-     */
-    private int splitTag;
-
-    /**
-     * The status code to be returned in the N-EVENT-REPORT response.
-     */
-    private int status;
-
     /**
      * The service that handles incoming N-EVENT-REPORT requests (commitment results).
      */
@@ -140,7 +109,30 @@ public class StgCmtSCU {
             }
         }
     };
-
+    /**
+     * Additional attributes to be merged. (Not currently used in this implementation).
+     */
+    private Attributes attrs;
+    /**
+     * A suffix for generated UIDs. (Not currently used in this implementation).
+     */
+    private String uidSuffix;
+    /**
+     * The directory to store received storage commitment result files.
+     */
+    private File storageDir;
+    /**
+     * A flag to keep the association alive while waiting for results.
+     */
+    private boolean keepAlive;
+    /**
+     * A DICOM tag used to split commitment requests into multiple transactions.
+     */
+    private int splitTag;
+    /**
+     * The status code to be returned in the N-EVENT-REPORT response.
+     */
+    private int status;
     /**
      * The active DICOM association.
      */

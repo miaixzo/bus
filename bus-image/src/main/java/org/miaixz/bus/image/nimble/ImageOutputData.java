@@ -252,6 +252,16 @@ public class ImageOutputData {
     }
 
     /**
+     * Gets the frame size in bytes.
+     *
+     * @param image the image.
+     * @return the frame size.
+     */
+    private static double frameSizeInBytes(PlanarImage image) {
+        return (double) image.width() * image.height() * image.elemSize();
+    }
+
+    /**
      * Gets the first image.
      *
      * @return the first image.
@@ -328,16 +338,6 @@ public class ImageOutputData {
             ImageReader.closeMat(dicomParams);
             ImageReader.closeMat(buf);
         }
-    }
-
-    /**
-     * Gets the frame size in bytes.
-     *
-     * @param image the image.
-     * @return the frame size.
-     */
-    private static double frameSizeInBytes(PlanarImage image) {
-        return (double) image.width() * image.height() * image.elemSize();
     }
 
     /**
@@ -603,11 +603,11 @@ public class ImageOutputData {
         params[Imgcodecs.DICOM_PARAM_JPEG_MODE] = param.getJpegMode(); // JPEG Codec mode
         params[Imgcodecs.DICOM_PARAM_JPEGLS_LOSSY_ERROR] = jpeglsNLE; // Lossy error for jpeg-ls
         params[Imgcodecs.DICOM_PARAM_J2K_COMPRESSION_FACTOR] = param.getCompressionRatioFactor(); // JPEG2000 factor of
-                                                                                                  // compression ratio
+        // compression ratio
         params[Imgcodecs.DICOM_PARAM_JPEG_QUALITY] = param.getCompressionQuality(); // JPEG lossy quality
         params[Imgcodecs.DICOM_PARAM_JPEG_PREDICTION] = param.getPrediction(); // JPEG lossless prediction
         params[Imgcodecs.DICOM_PARAM_JPEG_PT_TRANSFORM] = param.getPointTransform(); // JPEG lossless transformation
-                                                                                     // point
+        // point
 
         data.setInt(Tag.Columns, VR.US, img.width());
         data.setInt(Tag.Rows, VR.US, img.height());

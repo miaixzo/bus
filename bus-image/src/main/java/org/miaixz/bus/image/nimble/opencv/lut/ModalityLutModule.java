@@ -111,6 +111,27 @@ public class ModalityLutModule {
     }
 
     /**
+     * Gets a reset identity instance.
+     *
+     * @return the reset instance.
+     */
+    public static ModalityLutModule getResetInstance() {
+        return getResetInstance(null, null, null);
+    }
+
+    /**
+     * Gets a reset identity instance that retains the original rescale parameters.
+     *
+     * @param rescaleSlope     the rescale slope.
+     * @param rescaleIntercept the rescale intercept.
+     * @param rescaleType      the rescale type.
+     * @return the reset instance.
+     */
+    public static ModalityLutModule getResetInstance(Double rescaleSlope, Double rescaleIntercept, String rescaleType) {
+        return new ModalityLutModule(rescaleSlope, rescaleIntercept, rescaleType);
+    }
+
+    /**
      * Executes the init operation.
      *
      * @param dcm the dcm.
@@ -278,27 +299,6 @@ public class ModalityLutModule {
         // Divide pixel value by (2 ^ rightBit) => remove right bits
         rs /= 1 << shiftHighBit;
         this.rescaleSlope = OptionalDouble.of(rs);
-    }
-
-    /**
-     * Gets a reset identity instance.
-     *
-     * @return the reset instance.
-     */
-    public static ModalityLutModule getResetInstance() {
-        return getResetInstance(null, null, null);
-    }
-
-    /**
-     * Gets a reset identity instance that retains the original rescale parameters.
-     *
-     * @param rescaleSlope     the rescale slope.
-     * @param rescaleIntercept the rescale intercept.
-     * @param rescaleType      the rescale type.
-     * @return the reset instance.
-     */
-    public static ModalityLutModule getResetInstance(Double rescaleSlope, Double rescaleIntercept, String rescaleType) {
-        return new ModalityLutModule(rescaleSlope, rescaleIntercept, rescaleType);
     }
 
 }

@@ -156,6 +156,23 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
     }
 
     /**
+     * Just read from the raw data segment - this gets converted to an in-memory fragments object, which is then handled
+     * as a single fragment, with no basic offset table. Basically just an easy way to get an image input stream on a
+     * byte array.
+     *
+     * @param data the data value
+     * @throws IOException if the operation fails
+     */
+    public SegmentedInputImageStream(byte[] data) throws IOException {
+        stream = null;
+        fragments = new Fragments(VR.OB, false, 2);
+        fragments.add(Normal.EMPTY_BYTE_ARRAY);
+        fragments.add(data);
+        lastSegment = 2;
+        seek(0);
+    }
+
+    /**
      * Groups a one-{@link BulkData}-per-fragment list into the fragment index where each frame starts. The Basic Offset
      * Table is used when it covers all frames; otherwise the first code-stream word is used as the frame boundary
      * marker.
@@ -205,23 +222,6 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
                     + " frames (found " + n + " frame starts)");
         }
         return starts;
-    }
-
-    /**
-     * Just read from the raw data segment - this gets converted to an in-memory fragments object, which is then handled
-     * as a single fragment, with no basic offset table. Basically just an easy way to get an image input stream on a
-     * byte array.
-     *
-     * @param data the data value
-     * @throws IOException if the operation fails
-     */
-    public SegmentedInputImageStream(byte[] data) throws IOException {
-        stream = null;
-        fragments = new Fragments(VR.OB, false, 2);
-        fragments.add(Normal.EMPTY_BYTE_ARRAY);
-        fragments.add(data);
-        lastSegment = 2;
-        seek(0);
     }
 
     /**

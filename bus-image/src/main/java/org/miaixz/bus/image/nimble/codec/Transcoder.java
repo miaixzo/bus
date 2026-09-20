@@ -91,187 +91,6 @@ public class Transcoder implements Closeable {
      * The dataset value.
      */
     private final Attributes dataset;
-
-    /**
-     * The retain file meta information value.
-     */
-    private boolean retainFileMetaInformation;
-
-    /**
-     * The include file meta information value.
-     */
-    private boolean includeFileMetaInformation;
-
-    /**
-     * The include implementation version name value.
-     */
-    private boolean includeImplementationVersionName = true;
-
-    /**
-     * The nullify pixel data value.
-     */
-    private boolean nullifyPixelData;
-
-    /**
-     * The enc opts value.
-     */
-    private ImageEncodingOptions encOpts = ImageEncodingOptions.DEFAULT;
-
-    /**
-     * The close input stream value.
-     */
-    private boolean closeInputStream = true;
-
-    /**
-     * The close output stream value.
-     */
-    private boolean closeOutputStream = true;
-
-    /**
-     * The delete bulk data files value.
-     */
-    private boolean deleteBulkDataFiles = true;
-
-    /**
-     * The dest transfer syntax value.
-     */
-    private String destTransferSyntax;
-
-    /**
-     * The dest transfer syntax type value.
-     */
-    private TransferSyntaxType destTransferSyntaxType;
-
-    /**
-     * The lossy compression value.
-     */
-    private boolean lossyCompression;
-
-    /**
-     * The bits compressed value.
-     */
-    private int bitsCompressed = 0;
-
-    /**
-     * The max pixel value error value.
-     */
-    private int maxPixelValueError = -1;
-
-    /**
-     * The avg pixel value block size value.
-     */
-    private int avgPixelValueBlockSize = 1;
-
-    /**
-     * The file meta information value.
-     */
-    private Attributes fileMetaInformation;
-
-    /**
-     * The dos value.
-     */
-    private ImageOutputStream dos;
-
-    /**
-     * The handler value.
-     */
-    private Handler handler;
-
-    /**
-     * The image descriptor value.
-     */
-    private ImageDescriptor imageDescriptor;
-
-    /**
-     * The compressor image descriptor value.
-     */
-    private ImageDescriptor compressorImageDescriptor;
-
-    /**
-     * The encapsulated pixel data value.
-     */
-    private EncapsulatedPixelDataImageInputStream encapsulatedPixelData;
-
-    /**
-     * The decompressor param value.
-     */
-    private ImageReaderFactory.ImageReaderParam decompressorParam;
-
-    /**
-     * The decompressor value.
-     */
-    private ImageReader decompressor;
-
-    /**
-     * The decompress param value.
-     */
-    private ImageReadParam decompressParam;
-
-    /**
-     * The compressor param value.
-     */
-    private ImageWriterFactory.ImageWriterParam compressorParam;
-
-    /**
-     * The compressor value.
-     */
-    private ImageWriter compressor;
-
-    /**
-     * The compress param value.
-     */
-    private ImageWriteParam compressParam;
-
-    /**
-     * The verifier value.
-     */
-    private ImageReader verifier;
-
-    /**
-     * The verify param value.
-     */
-    private ImageReadParam verifyParam;
-
-    /**
-     * The ybr2rgb value.
-     */
-    private boolean ybr2rgb;
-
-    /**
-     * The palette2rgb value.
-     */
-    private boolean palette2rgb;
-
-    /**
-     * The original bi value.
-     */
-    private BufferedImage originalBi;
-
-    /**
-     * The bi value.
-     */
-    private BufferedImage bi;
-
-    /**
-     * The bi2 value.
-     */
-    private BufferedImage bi2;
-
-    /**
-     * The pixel data bulk data uri value.
-     */
-    private String pixelDataBulkDataURI;
-
-    /**
-     * The buffer value.
-     */
-    private byte[] buffer;
-
-    /**
-     * The encapsulated pixel data value total length value.
-     */
-    private long encapsulatedPixelDataValueTotalLength;
-
     /**
      * The image input handler value.
      */
@@ -333,6 +152,150 @@ public class Transcoder implements Closeable {
 
         }
     };
+    /**
+     * The retain file meta information value.
+     */
+    private boolean retainFileMetaInformation;
+    /**
+     * The include file meta information value.
+     */
+    private boolean includeFileMetaInformation;
+    /**
+     * The include implementation version name value.
+     */
+    private boolean includeImplementationVersionName = true;
+    /**
+     * The nullify pixel data value.
+     */
+    private boolean nullifyPixelData;
+    /**
+     * The enc opts value.
+     */
+    private ImageEncodingOptions encOpts = ImageEncodingOptions.DEFAULT;
+    /**
+     * The close input stream value.
+     */
+    private boolean closeInputStream = true;
+    /**
+     * The close output stream value.
+     */
+    private boolean closeOutputStream = true;
+    /**
+     * The delete bulk data files value.
+     */
+    private boolean deleteBulkDataFiles = true;
+    /**
+     * The dest transfer syntax value.
+     */
+    private String destTransferSyntax;
+    /**
+     * The dest transfer syntax type value.
+     */
+    private TransferSyntaxType destTransferSyntaxType;
+    /**
+     * The lossy compression value.
+     */
+    private boolean lossyCompression;
+    /**
+     * The bits compressed value.
+     */
+    private int bitsCompressed = 0;
+    /**
+     * The max pixel value error value.
+     */
+    private int maxPixelValueError = -1;
+    /**
+     * The avg pixel value block size value.
+     */
+    private int avgPixelValueBlockSize = 1;
+    /**
+     * The file meta information value.
+     */
+    private Attributes fileMetaInformation;
+    /**
+     * The dos value.
+     */
+    private ImageOutputStream dos;
+    /**
+     * The handler value.
+     */
+    private Handler handler;
+    /**
+     * The image descriptor value.
+     */
+    private ImageDescriptor imageDescriptor;
+    /**
+     * The compressor image descriptor value.
+     */
+    private ImageDescriptor compressorImageDescriptor;
+    /**
+     * The encapsulated pixel data value.
+     */
+    private EncapsulatedPixelDataImageInputStream encapsulatedPixelData;
+    /**
+     * The decompressor param value.
+     */
+    private ImageReaderFactory.ImageReaderParam decompressorParam;
+    /**
+     * The decompressor value.
+     */
+    private ImageReader decompressor;
+    /**
+     * The decompress param value.
+     */
+    private ImageReadParam decompressParam;
+    /**
+     * The compressor param value.
+     */
+    private ImageWriterFactory.ImageWriterParam compressorParam;
+    /**
+     * The compressor value.
+     */
+    private ImageWriter compressor;
+    /**
+     * The compress param value.
+     */
+    private ImageWriteParam compressParam;
+    /**
+     * The verifier value.
+     */
+    private ImageReader verifier;
+    /**
+     * The verify param value.
+     */
+    private ImageReadParam verifyParam;
+    /**
+     * The ybr2rgb value.
+     */
+    private boolean ybr2rgb;
+    /**
+     * The palette2rgb value.
+     */
+    private boolean palette2rgb;
+    /**
+     * The original bi value.
+     */
+    private BufferedImage originalBi;
+    /**
+     * The bi value.
+     */
+    private BufferedImage bi;
+    /**
+     * The bi2 value.
+     */
+    private BufferedImage bi2;
+    /**
+     * The pixel data bulk data uri value.
+     */
+    private String pixelDataBulkDataURI;
+    /**
+     * The buffer value.
+     */
+    private byte[] buffer;
+    /**
+     * The encapsulated pixel data value total length value.
+     */
+    private long encapsulatedPixelDataValueTotalLength;
 
     /**
      * Creates a new instance.

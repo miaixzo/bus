@@ -98,6 +98,40 @@ public class HttpTag {
     }
 
     /**
+     * Validates the key.
+     *
+     * @param key the key.
+     * @return the operation result.
+     */
+    private static String validateKey(String key) {
+        String trimmed = key.trim();
+        if (trimmed.isBlank()) {
+            throw new IllegalArgumentException("HTTP header key cannot be blank");
+        }
+        if (!VALID_HEADER_NAME.matcher(trimmed).matches()) {
+            throw new IllegalArgumentException("HTTP header key contains invalid characters: " + key);
+        }
+        return trimmed;
+    }
+
+    /**
+     * Validates the value.
+     *
+     * @param value the value.
+     * @return the operation result.
+     */
+    private static String validateValue(String value) {
+        if (value.length() > MAX_HEADER_LENGTH) {
+            throw new IllegalArgumentException("HTTP header value exceeds maximum length: " + value.length());
+        }
+        String trimmed = value.trim();
+        if (trimmed.chars().anyMatch(ch -> ch < 32 && ch != 9)) {
+            throw new IllegalArgumentException("HTTP header value contains invalid control characters");
+        }
+        return trimmed;
+    }
+
+    /**
      * Gets the key.
      *
      * @return the key.
@@ -175,40 +209,6 @@ public class HttpTag {
     @Override
     public int hashCode() {
         return Objects.hash(key, value);
-    }
-
-    /**
-     * Validates the key.
-     *
-     * @param key the key.
-     * @return the operation result.
-     */
-    private static String validateKey(String key) {
-        String trimmed = key.trim();
-        if (trimmed.isBlank()) {
-            throw new IllegalArgumentException("HTTP header key cannot be blank");
-        }
-        if (!VALID_HEADER_NAME.matcher(trimmed).matches()) {
-            throw new IllegalArgumentException("HTTP header key contains invalid characters: " + key);
-        }
-        return trimmed;
-    }
-
-    /**
-     * Validates the value.
-     *
-     * @param value the value.
-     * @return the operation result.
-     */
-    private static String validateValue(String value) {
-        if (value.length() > MAX_HEADER_LENGTH) {
-            throw new IllegalArgumentException("HTTP header value exceeds maximum length: " + value.length());
-        }
-        String trimmed = value.trim();
-        if (trimmed.chars().anyMatch(ch -> ch < 32 && ch != 9)) {
-            throw new IllegalArgumentException("HTTP header value contains invalid control characters");
-        }
-        return trimmed;
     }
 
 }

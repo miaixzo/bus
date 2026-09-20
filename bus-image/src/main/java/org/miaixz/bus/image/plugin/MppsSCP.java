@@ -60,22 +60,6 @@ public class MppsSCP {
      * The network connection configuration.
      */
     private final Connection conn = new Connection();
-
-    /**
-     * The directory to store received MPPS objects.
-     */
-    private File storageDir;
-
-    /**
-     * The Information Object Definition (IOD) for validating N-CREATE requests.
-     */
-    private IOD mppsNCreateIOD;
-
-    /**
-     * The Information Object Definition (IOD) for validating N-SET requests.
-     */
-    private IOD mppsNSetIOD;
-
     /**
      * The core service implementation that handles MPPS DIMSE messages.
      */
@@ -93,6 +77,18 @@ public class MppsSCP {
             return MppsSCP.this.set(as, rq, rqAttrs);
         }
     };
+    /**
+     * The directory to store received MPPS objects.
+     */
+    private File storageDir;
+    /**
+     * The Information Object Definition (IOD) for validating N-CREATE requests.
+     */
+    private IOD mppsNCreateIOD;
+    /**
+     * The Information Object Definition (IOD) for validating N-SET requests.
+     */
+    private IOD mppsNSetIOD;
 
     /**
      * Constructs a new {@code MppsSCP} device, initializing the Application Entity and registering the MPPS and C-ECHO

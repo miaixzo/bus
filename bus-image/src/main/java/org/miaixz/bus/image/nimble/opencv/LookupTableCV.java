@@ -35,10 +35,10 @@ import org.opencv.core.Mat;
  * Supports byte and short data types with configurable offsets and signed/unsigned interpretation. Handles multi-band
  * images and adjusts lookup tables for mismatched bands.
  *
+ * @author Kimi Liu
  * @see DataBufferByte
  * @see DataBufferUShort
  * @see DataBufferShort
- * @author Kimi Liu
  */
 public class LookupTableCV {
 
@@ -203,6 +203,191 @@ public class LookupTableCV {
     }
 
     /**
+     * Extracts source data from a Mat.
+     *
+     * @param src  the source Mat.
+     * @param size the element count.
+     * @return the extracted primitive array.
+     */
+    private static Object extractSourceData(Mat src, int size) {
+        int depth = CvType.depth(src.type());
+        if (depth == CvType.CV_8U || depth == CvType.CV_8S) {
+            byte[] byteData = new byte[size];
+            src.get(0, 0, byteData);
+            return byteData;
+        }
+        if (depth == CvType.CV_16U || depth == CvType.CV_16S) {
+            short[] shortData = new short[size];
+            src.get(0, 0, shortData);
+            return shortData;
+        }
+        throw new IllegalArgumentException(
+                "Unsupported dataType for LUT transformation: " + CvType.typeToString(src.type()));
+    }
+
+    /**
+     * Creates an image Mat from byte data.
+     *
+     * @param height the image height.
+     * @param width  the image width.
+     * @param type   the OpenCV type.
+     * @param data   the image data.
+     * @return the created image.
+     */
+    private static ImageCV toMat(int height, int width, int type, byte[] data) {
+        var dst = new ImageCV(height, width, type);
+        dst.put(0, 0, data);
+        return dst;
+    }
+
+    /**
+     * Creates an image Mat from short data.
+     *
+     * @param height the image height.
+     * @param width  the image width.
+     * @param type   the OpenCV type.
+     * @param data   the image data.
+     * @return the created image.
+     */
+    private static ImageCV toMat(int height, int width, int type, short[] data) {
+        var dst = new ImageCV(height, width, type);
+        dst.put(0, 0, data);
+        return dst;
+    }
+
+    /**
+     * Expands one byte band to the requested number of channels.
+     *
+     * @param bandData the band data.
+     * @param channels the channel count.
+     * @return the expanded bands.
+     */
+    private static byte[][] expandToChannels(byte[] bandData, int channels) {
+        byte[][] expanded = new byte[channels][];
+        Arrays.fill(expanded, bandData);
+        return expanded;
+    }
+
+    /**
+     * Expands one short band to the requested number of channels.
+     *
+     * @param bandData the band data.
+     * @param channels the channel count.
+     * @return the expanded bands.
+     */
+    private static short[][] expandToChannels(short[] bandData, int channels) {
+        short[][] expanded = new short[channels][];
+        Arrays.fill(expanded, bandData);
+        return expanded;
+    }
+
+    /**
+     * Clamps a pixel value to a table index.
+     *
+     * @param pixel    the pixel value.
+     * @param offset   the table offset.
+     * @param maxIndex the maximum table index.
+     * @return the clamped index.
+     */
+    private static int clampIndex(int pixel, int offset, int maxIndex) {
+        return Math.max(0, Math.min(pixel - offset, maxIndex));
+    }
+
+    /**
+     * Resolves the number of channels to read from the source.
+     *
+     * @param srcLength the source array length.
+     * @param dstLength the destination array length.
+     * @param numBands  the destination band count.
+     * @return the source channel count.
+     */
+    private static int sourceChannels(int srcLength, int dstLength, int numBands) {
+        return srcLength < dstLength ? 1 : numBands;
+    }
+
+    /**
+     * Applies a byte table to byte source data.
+     *
+     * @param src the source data.
+     * @param dst the destination data.
+     * @param ctx the LUT context.
+     */
+    private static void lookupByteToByte(byte[] src, byte[] dst, LutContext ctx) {
+        int numBands = ctx.numBands();
+        int srcChannels = sourceChannels(src.length, dst.length, numBands);
+        for (int b = 0; b < numBands; b++) {
+            byte[] table = ctx.byteData()[b];
+            int offset = ctx.offsets()[b];
+            int maxIndex = table.length - 1;
+            for (int s = srcChannels == 1 ? 0 : b, d = b; d < dst.length; s += srcChannels, d += numBands) {
+                dst[d] = table[clampIndex(src[s] & 0xFF, offset, maxIndex)];
+            }
+        }
+    }
+
+    /**
+     * Applies a byte table to short source data.
+     *
+     * @param src  the source data.
+     * @param dst  the destination data.
+     * @param ctx  the LUT context.
+     * @param mask the source mask.
+     */
+    private static void lookupShortToByte(short[] src, byte[] dst, LutContext ctx, int mask) {
+        int numBands = ctx.numBands();
+        int srcChannels = sourceChannels(src.length, dst.length, numBands);
+        for (int b = 0; b < numBands; b++) {
+            byte[] table = ctx.byteData()[b];
+            int offset = ctx.offsets()[b];
+            int maxIndex = table.length - 1;
+            for (int s = srcChannels == 1 ? 0 : b, d = b; d < dst.length; s += srcChannels, d += numBands) {
+                dst[d] = table[clampIndex(src[s] & mask, offset, maxIndex)];
+            }
+        }
+    }
+
+    /**
+     * Applies a short table to byte source data.
+     *
+     * @param src the source data.
+     * @param dst the destination data.
+     * @param ctx the LUT context.
+     */
+    private static void lookupByteToShort(byte[] src, short[] dst, LutContext ctx) {
+        int numBands = ctx.numBands();
+        int srcChannels = sourceChannels(src.length, dst.length, numBands);
+        for (int b = 0; b < numBands; b++) {
+            short[] table = ctx.shortData()[b];
+            int offset = ctx.offsets()[b];
+            int maxIndex = table.length - 1;
+            for (int s = srcChannels == 1 ? 0 : b, d = b; d < dst.length; s += srcChannels, d += numBands) {
+                dst[d] = table[clampIndex(src[s] & 0xFF, offset, maxIndex)];
+            }
+        }
+    }
+
+    /**
+     * Applies a short table to short source data.
+     *
+     * @param src  the source data.
+     * @param dst  the destination data.
+     * @param ctx  the LUT context.
+     * @param mask the source mask.
+     */
+    private static void lookupShortToShort(short[] src, short[] dst, LutContext ctx, int mask) {
+        int numBands = ctx.numBands();
+        int srcChannels = sourceChannels(src.length, dst.length, numBands);
+        for (int b = 0; b < numBands; b++) {
+            short[] table = ctx.shortData()[b];
+            int offset = ctx.offsets()[b];
+            int maxIndex = table.length - 1;
+            for (int s = srcChannels == 1 ? 0 : b, d = b; d < dst.length; s += srcChannels, d += numBands) {
+                dst[d] = table[clampIndex(src[s] & mask, offset, maxIndex)];
+            }
+        }
+    }
+
+    /**
      * Gets the data.
      *
      * @return the data.
@@ -332,67 +517,60 @@ public class LookupTableCV {
     }
 
     /**
-     * Applies this lookup table to the source image.
+     * Applies this lookup table to the source image. The table is applied band by band; a single-band table is applied
+     * to every channel, and a multi-band table applied to a single-channel image produces one channel per band.
      *
-     * @param src source image matrix
-     * @return transformed image
+     * @param src source image matrix with 8-bit or 16-bit depth.
+     * @return the transformed image.
+     * @throws IllegalArgumentException if the table and the image both have several bands, in different numbers.
      */
     public ImageCV lookup(Mat src) {
         Objects.requireNonNull(src, "Source Mat cannot be null.");
 
         int width = src.width();
         int height = src.height();
-        int cvType = src.type();
-        int channels = CvType.channels(cvType);
-        int srcDataType = ImageConversion.convertToDataType(cvType);
+        int channels = src.channels();
+        int srcDataType = ImageConversion.convertToDataType(src.type());
+        int mask = srcDataType == DataBuffer.TYPE_SHORT && !forceReadingUnsigned ? 0xFFFFFFFF : 0xFFFF;
 
-        Object sourceData = extractSourceData(src, width, height, channels, cvType);
-
+        Object sourceData = extractSourceData(src, width * height * channels);
         LutContext context = prepareLutContext(channels);
+        int pixels = width * height;
 
-        if (context.isTableDataByte()) {
-            return applyByteLookup(srcDataType, width, height, context, sourceData);
-        } else {
-            return applyShortLookup(srcDataType, width, height, context, sourceData);
+        if (context.byteData() != null) {
+            byte[] dstData = sourceData instanceof byte[] bytes && channels == context.numBands() ? bytes
+                    : new byte[pixels * context.numBands()];
+            if (sourceData instanceof byte[] bytes) {
+                lookupByteToByte(bytes, dstData, context);
+            } else {
+                lookupShortToByte((short[]) sourceData, dstData, context, mask);
+            }
+            return toMat(height, width, CvType.CV_8UC(context.numBands()), dstData);
         }
+
+        short[] dstData = sourceData instanceof short[] shorts && channels == context.numBands() ? shorts
+                : new short[pixels * context.numBands()];
+        if (sourceData instanceof byte[] bytes) {
+            lookupByteToShort(bytes, dstData, context);
+        } else {
+            lookupShortToShort((short[]) sourceData, dstData, context, mask);
+        }
+        int depth = getDataType() == DataBuffer.TYPE_USHORT ? CvType.CV_16U : CvType.CV_16S;
+        return toMat(height, width, CvType.makeType(depth, context.numBands()), dstData);
     }
 
     /**
-     * Executes the extract source data operation.
+     * Prepares the LUT context for the source channel count.
      *
-     * @param src      the src.
-     * @param width    the width.
-     * @param height   the height.
-     * @param channels the channels.
-     * @param cvType   the cv type.
-     * @return the operation result.
-     */
-    private Object extractSourceData(Mat src, int width, int height, int channels, int cvType) {
-        int depth = CvType.depth(cvType);
-        int size = width * height * channels;
-
-        if (depth == CvType.CV_8U || depth == CvType.CV_8S) {
-            byte[] byteData = new byte[size];
-            src.get(0, 0, byteData);
-            return byteData;
-        } else if (depth == CvType.CV_16U || depth == CvType.CV_16S) {
-            short[] shortData = new short[size];
-            src.get(0, 0, shortData);
-            return shortData;
-        } else {
-            throw new IllegalArgumentException(
-                    "Unsupported dataType for LUT transformation: " + CvType.typeToString(cvType));
-        }
-    }
-
-    /**
-     * Executes the prepare lut context operation.
-     *
-     * @param channels the channels.
-     * @return the operation result.
+     * @param channels the source channel count.
+     * @return the LUT context.
      */
     private LutContext prepareLutContext(int channels) {
         int numBands = getNumBands();
+        if (numBands != channels && numBands != 1 && channels != 1) {
+            throw new IllegalArgumentException(
+                    "A " + numBands + "-band table cannot be applied to a " + channels + "-channel image");
+        }
         int[] tblOffsets = getOffsets();
         byte[][] bTblData = getByteData();
         short[][] sTblData = getShortData();
@@ -406,418 +584,19 @@ public class LookupTableCV {
             tblOffsets = createOffsets(channels, tblOffsets[0]);
             numBands = channels;
         }
-
-        return new LutContext(numBands, channels, tblOffsets, bTblData, sTblData);
+        return new LutContext(numBands, tblOffsets, bTblData, sTblData);
     }
 
     /**
-     * Executes the expand to channels operation.
+     * Stores LUT parameters used during one lookup operation.
      *
-     * @param bandData the band data.
-     * @param channels the channels.
-     * @return the operation result.
-     */
-    private static byte[][] expandToChannels(byte[] bandData, int channels) {
-        byte[][] expanded = new byte[channels][];
-        Arrays.fill(expanded, bandData);
-        return expanded;
-    }
-
-    /**
-     * Executes the expand to channels operation.
-     *
-     * @param bandData the band data.
-     * @param channels the channels.
-     * @return the operation result.
-     */
-    private static short[][] expandToChannels(short[] bandData, int channels) {
-        short[][] expanded = new short[channels][];
-        Arrays.fill(expanded, bandData);
-        return expanded;
-    }
-
-    /**
-     * Applies the byte lookup.
-     *
-     * @param srcDataType the src data type.
-     * @param width       the width.
-     * @param height      the height.
-     * @param ctx         the ctx.
-     * @param sourceData  the source data.
-     * @return the operation result.
-     */
-    private ImageCV applyByteLookup(int srcDataType, int width, int height, LutContext ctx, Object sourceData) {
-
-        boolean isSourceByte = srcDataType == DataBuffer.TYPE_BYTE;
-        byte[] dstData = isSourceByte && ctx.channels >= ctx.numBands ? (byte[]) sourceData
-                : new byte[width * height * ctx.numBands];
-
-        if (srcDataType == DataBuffer.TYPE_BYTE) {
-            lookupByteToByte((byte[]) sourceData, dstData, ctx);
-        } else if (srcDataType == DataBuffer.TYPE_USHORT) {
-            lookupShortToByte((short[]) sourceData, dstData, ctx, 0xFFFF);
-        } else if (srcDataType == DataBuffer.TYPE_SHORT) {
-            int mask = forceReadingUnsigned ? 0xFFFF : 0xFFFFFFFF;
-            lookupShortToByte((short[]) sourceData, dstData, ctx, mask);
-        } else {
-            throw new IllegalArgumentException("Unsupported LUT conversion from source dataType: " + srcDataType);
-        }
-
-        ImageCV dst = new ImageCV(height, width, CvType.CV_8UC(ctx.numBands));
-        dst.put(0, 0, dstData);
-        return dst;
-    }
-
-    /**
-     * Applies the short lookup.
-     *
-     * @param srcDataType the src data type.
-     * @param width       the width.
-     * @param height      the height.
-     * @param ctx         the ctx.
-     * @param sourceData  the source data.
-     * @return the operation result.
-     */
-    private ImageCV applyShortLookup(int srcDataType, int width, int height, LutContext ctx, Object sourceData) {
-
-        boolean isSourceByte = srcDataType == DataBuffer.TYPE_BYTE;
-        short[] dstData = !isSourceByte && ctx.channels >= ctx.numBands ? (short[]) sourceData
-                : new short[width * height * ctx.numBands];
-
-        if (srcDataType == DataBuffer.TYPE_BYTE) {
-            lookupByteToShort((byte[]) sourceData, dstData, ctx);
-        } else if (srcDataType == DataBuffer.TYPE_USHORT) {
-            lookupShortToShort((short[]) sourceData, dstData, ctx, 0xFFFF);
-        } else if (srcDataType == DataBuffer.TYPE_SHORT) {
-            int mask = forceReadingUnsigned ? 0xFFFF : 0xFFFFFFFF;
-            lookupShortToShort((short[]) sourceData, dstData, ctx, mask);
-        } else {
-            throw new IllegalArgumentException("Unsupported LUT conversion from source dataType: " + srcDataType);
-        }
-
-        int cvType = getDataType() == DataBuffer.TYPE_USHORT ? CvType.CV_16UC(ctx.channels)
-                : CvType.CV_16SC(ctx.channels);
-        ImageCV dst = new ImageCV(height, width, cvType);
-        dst.put(0, 0, dstData);
-        return dst;
-    }
-
-    /**
-     * Executes the clamp index operation.
-     *
-     * @param pixel     the pixel.
-     * @param offset    the offset.
-     * @param maxLength the max length.
-     * @return the operation result.
-     */
-    private static int clampIndex(int pixel, int offset, int maxLength) {
-        return Math.max(0, Math.min(pixel - offset, maxLength));
-    }
-
-    /**
-     * Executes the lookup byte to byte operation.
-     *
-     * @param srcData the src data.
-     * @param dstData the dst data.
-     * @param ctx     the ctx.
-     */
-    private void lookupByteToByte(byte[] srcData, byte[] dstData, LutContext ctx) {
-        if (srcData.length < dstData.length) {
-            expandChannelsByteToByte(srcData, dstData, ctx);
-        } else {
-            processPerBandByteToByte(srcData, dstData, ctx.numBands, ctx.byteData, ctx.offsets);
-        }
-    }
-
-    /**
-     * Executes the lookup short to byte operation.
-     *
-     * @param srcData the src data.
-     * @param dstData the dst data.
-     * @param ctx     the ctx.
-     * @param mask    the mask.
-     */
-    private void lookupShortToByte(short[] srcData, byte[] dstData, LutContext ctx, int mask) {
-        if (srcData.length < dstData.length) {
-            expandChannelsShortToByte(srcData, dstData, ctx, mask);
-        } else {
-            processPerBandShortToByte(srcData, dstData, ctx.numBands, ctx.byteData, ctx.offsets, mask);
-        }
-    }
-
-    /**
-     * Executes the lookup byte to short operation.
-     *
-     * @param srcData the src data.
-     * @param dstData the dst data.
-     * @param ctx     the ctx.
-     */
-    private void lookupByteToShort(byte[] srcData, short[] dstData, LutContext ctx) {
-        if (srcData.length < dstData.length) {
-            expandChannelsByteToShort(srcData, dstData, ctx);
-        } else {
-            processPerBandByteToShort(srcData, dstData, ctx.numBands, ctx.shortData, ctx.offsets);
-        }
-    }
-
-    /**
-     * Executes the lookup short to short operation.
-     *
-     * @param srcData the src data.
-     * @param dstData the dst data.
-     * @param ctx     the ctx.
-     * @param mask    the mask.
-     */
-    private void lookupShortToShort(short[] srcData, short[] dstData, LutContext ctx, int mask) {
-        if (srcData.length < dstData.length) {
-            expandChannelsShortToShort(srcData, dstData, ctx, mask);
-        } else {
-            processPerBandShortToShort(srcData, dstData, ctx.numBands, ctx.shortData, ctx.offsets, mask);
-        }
-    }
-
-    // Expand channels methods
-
-    /**
-     * Executes the expand channels byte to byte operation.
-     *
-     * @param srcData the src data.
-     * @param dstData the dst data.
-     * @param ctx     the ctx.
-     */
-    private void expandChannelsByteToByte(byte[] srcData, byte[] dstData, LutContext ctx) {
-        for (int i = 0; i < srcData.length; i++) {
-            int pixel = srcData[i] & 0xFF;
-            for (int b = 0; b < ctx.numBands; b++) {
-                int index = clampIndex(pixel, ctx.offsets[b], ctx.byteData[b].length - 1);
-                dstData[i * ctx.numBands + b] = ctx.byteData[b][index];
-            }
-        }
-    }
-
-    /**
-     * Executes the expand channels short to byte operation.
-     *
-     * @param srcData the src data.
-     * @param dstData the dst data.
-     * @param ctx     the ctx.
-     * @param mask    the mask.
-     */
-    private void expandChannelsShortToByte(short[] srcData, byte[] dstData, LutContext ctx, int mask) {
-        for (int i = 0; i < srcData.length; i++) {
-            int pixel = srcData[i] & mask;
-            for (int b = 0; b < ctx.numBands; b++) {
-                int index = clampIndex(pixel, ctx.offsets[b], ctx.byteData[b].length - 1);
-                dstData[i * ctx.numBands + b] = ctx.byteData[b][index];
-            }
-        }
-    }
-
-    /**
-     * Executes the expand channels byte to short operation.
-     *
-     * @param srcData the src data.
-     * @param dstData the dst data.
-     * @param ctx     the ctx.
-     */
-    private void expandChannelsByteToShort(byte[] srcData, short[] dstData, LutContext ctx) {
-        for (int i = 0; i < srcData.length; i++) {
-            int pixel = srcData[i] & 0xFF;
-            for (int b = 0; b < ctx.numBands; b++) {
-                int index = clampIndex(pixel, ctx.offsets[b], ctx.shortData[b].length - 1);
-                dstData[i * ctx.numBands + b] = ctx.shortData[b][index];
-            }
-        }
-    }
-
-    /**
-     * Executes the expand channels short to short operation.
-     *
-     * @param srcData the src data.
-     * @param dstData the dst data.
-     * @param ctx     the ctx.
-     * @param mask    the mask.
-     */
-    private void expandChannelsShortToShort(short[] srcData, short[] dstData, LutContext ctx, int mask) {
-        for (int i = 0; i < srcData.length; i++) {
-            int pixel = srcData[i] & mask;
-            for (int b = 0; b < ctx.numBands; b++) {
-                int index = clampIndex(pixel, ctx.offsets[b], ctx.shortData[b].length - 1);
-                dstData[i * ctx.numBands + b] = ctx.shortData[b][index];
-            }
-        }
-    }
-
-    // Process per band methods
-
-    /**
-     * Processes the per band byte to byte.
-     *
-     * @param srcData  the src data.
-     * @param dstData  the dst data.
-     * @param numBands the num bands.
-     * @param tables   the tables.
-     * @param offsets  the offsets.
-     */
-    private static void processPerBandByteToByte(
-            byte[] srcData,
-            byte[] dstData,
-            int numBands,
-            byte[][] tables,
-            int[] offsets) {
-        for (int b = 0; b < numBands; b++) {
-            byte[] table = tables[b];
-            int offset = offsets[b];
-            int maxLength = table.length - 1;
-            for (int i = b; i < srcData.length; i += numBands) {
-                dstData[i] = table[clampIndex(srcData[i] & 0xFF, offset, maxLength)];
-            }
-        }
-    }
-
-    /**
-     * Processes the per band short to byte.
-     *
-     * @param srcData  the src data.
-     * @param dstData  the dst data.
-     * @param numBands the num bands.
-     * @param tables   the tables.
-     * @param offsets  the offsets.
-     * @param mask     the mask.
-     */
-    private static void processPerBandShortToByte(
-            short[] srcData,
-            byte[] dstData,
-            int numBands,
-            byte[][] tables,
-            int[] offsets,
-            int mask) {
-        for (int b = 0; b < numBands; b++) {
-            byte[] table = tables[b];
-            int offset = offsets[b];
-            int maxLength = table.length - 1;
-            for (int i = b; i < srcData.length; i += numBands) {
-                dstData[i] = table[clampIndex(srcData[i] & mask, offset, maxLength)];
-            }
-        }
-    }
-
-    /**
-     * Processes the per band byte to short.
-     *
-     * @param srcData  the src data.
-     * @param dstData  the dst data.
-     * @param numBands the num bands.
-     * @param tables   the tables.
-     * @param offsets  the offsets.
-     */
-    private static void processPerBandByteToShort(
-            byte[] srcData,
-            short[] dstData,
-            int numBands,
-            short[][] tables,
-            int[] offsets) {
-        for (int b = 0; b < numBands; b++) {
-            short[] table = tables[b];
-            int offset = offsets[b];
-            int maxLength = table.length - 1;
-            for (int i = b; i < srcData.length; i += numBands) {
-                dstData[i] = table[clampIndex(srcData[i] & 0xFF, offset, maxLength)];
-            }
-        }
-    }
-
-    /**
-     * Processes the per band short to short.
-     *
-     * @param srcData  the src data.
-     * @param dstData  the dst data.
-     * @param numBands the num bands.
-     * @param tables   the tables.
-     * @param offsets  the offsets.
-     * @param mask     the mask.
-     */
-    private static void processPerBandShortToShort(
-            short[] srcData,
-            short[] dstData,
-            int numBands,
-            short[][] tables,
-            int[] offsets,
-            int mask) {
-        for (int b = 0; b < numBands; b++) {
-            short[] table = tables[b];
-            int offset = offsets[b];
-            int maxLength = table.length - 1;
-            for (int i = b; i < srcData.length; i += numBands) {
-                dstData[i] = table[clampIndex(srcData[i] & mask, offset, maxLength)];
-            }
-        }
-    }
-
-    /**
-     * Represents the LutContext record.
-     *
-     * @param numBands  the num bands.
-     * @param channels  the channels.
-     * @param offsets   the offsets.
-     * @param byteData  the byte data.
-     * @param shortData the short data.
+     * @param numBands  the number of destination bands.
+     * @param offsets   the table offsets.
+     * @param byteData  the byte table data.
+     * @param shortData the short table data.
      * @author Kimi Liu
      */
-    private record LutContext(int numBands, int channels, int[] offsets, byte[][] byteData, short[][] shortData) {
-
-        /**
-         * Determines whether table data byte.
-         *
-         * @return true if the condition is met; otherwise false.
-         */
-        boolean isTableDataByte() {
-            return byteData != null;
-        }
-
-        /**
-         * Compares this instance with another object for equality.
-         *
-         * @param o the o.
-         * @return true if the condition is met; otherwise false.
-         */
-        @Override
-        public boolean equals(Object o) {
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            LutContext that = (LutContext) o;
-            return numBands() == that.numBands() && channels() == that.channels()
-                    && Objects.deepEquals(offsets(), that.offsets()) && Objects.deepEquals(byteData(), that.byteData())
-                    && Objects.deepEquals(shortData(), that.shortData());
-        }
-
-        /**
-         * Returns the hash code.
-         *
-         * @return the hash code.
-         */
-        @Override
-        public int hashCode() {
-            return Objects.hash(
-                    numBands(),
-                    channels(),
-                    Arrays.hashCode(offsets()),
-                    Arrays.deepHashCode(byteData()),
-                    Arrays.deepHashCode(shortData()));
-        }
-
-        /**
-         * Returns the string representation.
-         *
-         * @return the string representation.
-         */
-        @Override
-        public String toString() {
-            return "LutContext{" + "numBands=" + numBands + ", channels=" + channels + ", offsets="
-                    + Arrays.toString(offsets) + ", byteData=" + Arrays.deepToString(byteData) + ", shortData="
-                    + Arrays.deepToString(shortData) + '}';
-        }
+    private record LutContext(int numBands, int[] offsets, byte[][] byteData, short[][] shortData) {
 
     }
 

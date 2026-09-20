@@ -46,9 +46,9 @@ package org.miaixz.bus.image.nimble.opencv.lut;
  * @param presentationState the DICOM presentation state LUT configuration, may be {@code null} if no presentation state
  *                          is available
  * @param pixelPadding      {@code true} to enable pixel padding during image processing, {@code false} to disable it
+ * @author Kimi Liu
  * @see WlPresentation
  * @see PresentationStateLut
- * @author Kimi Liu
  */
 public record DefaultWlPresentation(PresentationStateLut presentationState, boolean pixelPadding)
         implements WlPresentation {

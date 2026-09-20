@@ -89,37 +89,6 @@ public class StoreSCP {
      * A progress handler to monitor the storage process.
      */
     public final ImageProgress progress;
-
-    /**
-     * A handler for post-processing of received files.
-     */
-    public Efforts efforts;
-
-    /**
-     * A format string for generating custom file paths.
-     */
-    public Format filePathFormat;
-
-    /**
-     * A regex pattern used with the file path format.
-     */
-    public Pattern regex;
-
-    /**
-     * The default status to be returned in C-STORE responses.
-     */
-    public volatile int status = Status.Success;
-
-    /**
-     * An array of delays (in ms) to simulate latency before receiving data.
-     */
-    private int[] receiveDelays;
-
-    /**
-     * An array of delays (in ms) to simulate processing time before sending a response.
-     */
-    private int[] responseDelays;
-
     /**
      * The core service implementation that handles C-STORE requests.
      */
@@ -191,6 +160,30 @@ public class StoreSCP {
             }
         }
     };
+    /**
+     * A handler for post-processing of received files.
+     */
+    public Efforts efforts;
+    /**
+     * A format string for generating custom file paths.
+     */
+    public Format filePathFormat;
+    /**
+     * A regex pattern used with the file path format.
+     */
+    public Pattern regex;
+    /**
+     * The default status to be returned in C-STORE responses.
+     */
+    public volatile int status = Status.Success;
+    /**
+     * An array of delays (in ms) to simulate latency before receiving data.
+     */
+    private int[] receiveDelays;
+    /**
+     * An array of delays (in ms) to simulate processing time before sending a response.
+     */
+    private int[] responseDelays;
 
     /**
      * Constructs a new {@code StoreSCP} with a specified storage directory.

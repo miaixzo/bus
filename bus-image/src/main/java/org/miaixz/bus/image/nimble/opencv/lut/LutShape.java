@@ -51,6 +51,11 @@ public class LutShape {
     public static final LutShape LINEAR = new LutShape(Function.LINEAR);
 
     /**
+     * The exact linear value.
+     */
+    public static final LutShape LINEAR_EXACT = new LutShape(Function.LINEAR_EXACT);
+
+    /**
      * The sigmoid value.
      */
     public static final LutShape SIGMOID = new LutShape(Function.SIGMOID);
@@ -69,83 +74,14 @@ public class LutShape {
      * The log inv value.
      */
     public static final LutShape LOG_INV = new LutShape(Function.LOG_INV);
-
-    /**
-     * Enumeration of predefined lookup table transformation functions.
-     * <p>
-     * LINEAR and SIGMOID are defined according to DICOM Part 3 standard. Other functions provide custom implementations
-     * for specialized imaging needs.
-     *
-     * @author Kimi Liu
-     */
-    public enum Function {
-
-        /**
-         * Linear transformation: f(x) = x
-         */
-        LINEAR("Linear"),
-        /**
-         * Sigmoid transformation: f(x) = 1/(1+e^(-x))
-         */
-        SIGMOID("Sigmoid"),
-        /**
-         * Normalized sigmoid transformation with enhanced contrast
-         */
-        SIGMOID_NORM("Sigmoid Normalize"),
-        /**
-         * Logarithmic transformation: f(x) = log(x)
-         */
-        LOG("Logarithmic"),
-        /**
-         * Inverse logarithmic transformation: f(x) = e^x
-         */
-        LOG_INV("Logarithmic Inverse");
-
-        /**
-         * The description value.
-         */
-        private final String description;
-
-        /**
-         * Creates a new instance.
-         *
-         * @param description the description.
-         */
-        Function(String description) {
-            this.description = description;
-        }
-
-        /**
-         * Returns the description.
-         *
-         * @return the description.
-         */
-        public String getDescription() {
-            return description;
-        }
-
-        /**
-         * Returns the string representation.
-         *
-         * @return the string representation.
-         */
-        @Override
-        public String toString() {
-            return description;
-        }
-
-    }
-
     /**
      * The function value.
      */
     private final Function function;
-
     /**
      * The explanation value.
      */
     private final String explanation;
-
     /**
      * The lookup value.
      */
@@ -192,6 +128,36 @@ public class LutShape {
      */
     private static String normalizeExplanation(String explanation) {
         return Objects.toString(explanation, Normal.EMPTY);
+    }
+
+    /**
+     * Returns the LUT shape.
+     *
+     * @param shape the shape.
+     * @return the LUT shape.
+     */
+    public static LutShape getLutShape(String shape) {
+        if (!StringKit.hasText(shape)) {
+            return null;
+        }
+        return switch (shape.trim().toUpperCase()) {
+            case "LINEAR" -> LINEAR;
+            case "LINEAR_EXACT" -> LINEAR_EXACT;
+            case "SIGMOID" -> SIGMOID;
+            case "SIGMOID_NORM" -> SIGMOID_NORM;
+            case "LOG" -> LOG;
+            case "LOG_INV" -> LOG_INV;
+            default -> null;
+        };
+    }
+
+    /**
+     * Returns the all predefined.
+     *
+     * @return the all predefined.
+     */
+    public static Set<LutShape> getAllPredefined() {
+        return Set.of(LINEAR, LINEAR_EXACT, SIGMOID, SIGMOID_NORM, LOG, LOG_INV);
     }
 
     /**
@@ -263,32 +229,73 @@ public class LutShape {
     }
 
     /**
-     * Returns the LUT shape.
+     * Enumeration of predefined lookup table transformation functions.
+     * <p>
+     * LINEAR and SIGMOID are defined according to DICOM Part 3 standard. Other functions provide custom implementations
+     * for specialized imaging needs.
      *
-     * @param shape the shape.
-     * @return the LUT shape.
+     * @author Kimi Liu
      */
-    public static LutShape getLutShape(String shape) {
-        if (!StringKit.hasText(shape)) {
-            return null;
-        }
-        return switch (shape.trim().toUpperCase()) {
-            case "LINEAR" -> LINEAR;
-            case "SIGMOID" -> SIGMOID;
-            case "SIGMOID_NORM" -> SIGMOID_NORM;
-            case "LOG" -> LOG;
-            case "LOG_INV" -> LOG_INV;
-            default -> null;
-        };
-    }
+    public enum Function {
 
-    /**
-     * Returns the all predefined.
-     *
-     * @return the all predefined.
-     */
-    public static Set<LutShape> getAllPredefined() {
-        return Set.of(LINEAR, SIGMOID, SIGMOID_NORM, LOG, LOG_INV);
+        /**
+         * Linear transformation: f(x) = x
+         */
+        LINEAR("Linear"),
+        /**
+         * Exact linear transformation: f(x) = x.
+         */
+        LINEAR_EXACT("Linear Exact"),
+        /**
+         * Sigmoid transformation: f(x) = 1/(1+e^(-x))
+         */
+        SIGMOID("Sigmoid"),
+        /**
+         * Normalized sigmoid transformation with enhanced contrast
+         */
+        SIGMOID_NORM("Sigmoid Normalize"),
+        /**
+         * Logarithmic transformation: f(x) = log(x)
+         */
+        LOG("Logarithmic"),
+        /**
+         * Inverse logarithmic transformation: f(x) = e^x
+         */
+        LOG_INV("Logarithmic Inverse");
+
+        /**
+         * The description value.
+         */
+        private final String description;
+
+        /**
+         * Creates a new instance.
+         *
+         * @param description the description.
+         */
+        Function(String description) {
+            this.description = description;
+        }
+
+        /**
+         * Returns the description.
+         *
+         * @return the description.
+         */
+        public String getDescription() {
+            return description;
+        }
+
+        /**
+         * Returns the string representation.
+         *
+         * @return the string representation.
+         */
+        @Override
+        public String toString() {
+            return description;
+        }
+
     }
 
 }

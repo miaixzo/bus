@@ -174,6 +174,30 @@ public abstract class LocalizerPoster {
     }
 
     /**
+     * Executes the classify corners into edge crossing z plane operation.
+     *
+     * @param startCorner the start corner.
+     * @param endCorner   the end corner.
+     * @return true if the classify corners into edge crossing z plane condition is true; otherwise false.
+     */
+    protected static boolean classifyCornersIntoEdgeCrossingZPlane(Vector3 startCorner, Vector3 endCorner) {
+        double startZ = startCorner.z();
+        double endZ = endCorner.z();
+        return (startZ <= 0 && endZ >= 0) || (startZ >= 0 && endZ <= 0);
+    }
+
+    /**
+     * Checks whether the equal condition is true.
+     *
+     * @param a the a.
+     * @param b the b.
+     * @return true if the equal condition is true; otherwise false.
+     */
+    private static boolean isEqual(double a, double b) {
+        return Math.abs(a - b) <= EPSILON;
+    }
+
+    /**
      * Executes the transform point from source space into localizer space operation.
      *
      * @param point the point.
@@ -255,19 +279,6 @@ public abstract class LocalizerPoster {
     }
 
     /**
-     * Executes the classify corners into edge crossing z plane operation.
-     *
-     * @param startCorner the start corner.
-     * @param endCorner   the end corner.
-     * @return true if the classify corners into edge crossing z plane condition is true; otherwise false.
-     */
-    protected static boolean classifyCornersIntoEdgeCrossingZPlane(Vector3 startCorner, Vector3 endCorner) {
-        double startZ = startCorner.z();
-        double endZ = endCorner.z();
-        return (startZ <= 0 && endZ >= 0) || (startZ >= 0 && endZ <= 0);
-    }
-
-    /**
      * Returns the intersections of cube with z plane.
      *
      * @param corners the corners.
@@ -307,17 +318,6 @@ public abstract class LocalizerPoster {
     protected void doCommonConstructorStuff() {
         validateDirectionCosines(localizerRow, localizerColumn);
         localizerNormal = localizerRow.cross(localizerColumn);
-    }
-
-    /**
-     * Checks whether the equal condition is true.
-     *
-     * @param a the a.
-     * @param b the b.
-     * @return true if the equal condition is true; otherwise false.
-     */
-    private static boolean isEqual(double a, double b) {
-        return Math.abs(a - b) <= EPSILON;
     }
 
     /**

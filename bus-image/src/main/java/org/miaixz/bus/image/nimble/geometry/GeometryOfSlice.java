@@ -98,6 +98,39 @@ public class GeometryOfSlice {
     }
 
     /**
+     * Returns the orientation.
+     *
+     * @param orientation the orientation.
+     * @param quadruped   the quadruped.
+     * @return the orientation.
+     */
+    public static String getOrientation(Vector3 orientation, boolean quadruped) {
+        StringBuilder builder = new StringBuilder();
+        if (orientation != null) {
+            String orientationX = orientation.x() < 0 ? (quadruped ? "Rt" : "R") : (quadruped ? "Le" : Symbol.L);
+            String orientationY = orientation.y() < 0 ? (quadruped ? "V" : "A") : (quadruped ? "D" : "P");
+            String orientationZ = orientation.z() < 0 ? (quadruped ? "Cd" : "F") : (quadruped ? "Cr" : "H");
+
+            double absX = Math.abs(orientation.x());
+            double absY = Math.abs(orientation.y());
+            double absZ = Math.abs(orientation.z());
+            for (int i = 0; i < 3; ++i) {
+                if (absX > 0.0001 && absX > absY && absX > absZ) {
+                    builder.append(orientationX);
+                    absX = 0;
+                } else if (absY > 0.0001 && absY > absX && absY > absZ) {
+                    builder.append(orientationY);
+                    absY = 0;
+                } else if (absZ > 0.0001 && absZ > absX && absZ > absY) {
+                    builder.append(orientationZ);
+                    absZ = 0;
+                }
+            }
+        }
+        return builder.toString();
+    }
+
+    /**
      * Returns the row.
      *
      * @return the row.
@@ -197,39 +230,6 @@ public class GeometryOfSlice {
      */
     public Vector3 getDimensions() {
         return dimensions;
-    }
-
-    /**
-     * Returns the orientation.
-     *
-     * @param orientation the orientation.
-     * @param quadruped   the quadruped.
-     * @return the orientation.
-     */
-    public static String getOrientation(Vector3 orientation, boolean quadruped) {
-        StringBuilder builder = new StringBuilder();
-        if (orientation != null) {
-            String orientationX = orientation.x() < 0 ? (quadruped ? "Rt" : "R") : (quadruped ? "Le" : Symbol.L);
-            String orientationY = orientation.y() < 0 ? (quadruped ? "V" : "A") : (quadruped ? "D" : "P");
-            String orientationZ = orientation.z() < 0 ? (quadruped ? "Cd" : "F") : (quadruped ? "Cr" : "H");
-
-            double absX = Math.abs(orientation.x());
-            double absY = Math.abs(orientation.y());
-            double absZ = Math.abs(orientation.z());
-            for (int i = 0; i < 3; ++i) {
-                if (absX > 0.0001 && absX > absY && absX > absZ) {
-                    builder.append(orientationX);
-                    absX = 0;
-                } else if (absY > 0.0001 && absY > absX && absY > absZ) {
-                    builder.append(orientationY);
-                    absY = 0;
-                } else if (absZ > 0.0001 && absZ > absX && absZ > absY) {
-                    builder.append(orientationZ);
-                    absZ = 0;
-                }
-            }
-        }
-        return builder.toString();
     }
 
     /**

@@ -33,23 +33,6 @@ import org.miaixz.bus.image.nimble.geometry.Vector3;
 public class MprGeometryModule extends DicomModule {
 
     /**
-     * Defines the MprThicknessType values.
-     *
-     * @author Kimi Liu
-     */
-    public enum MprThicknessType {
-        /**
-         * Constant for the thin value.
-         */
-        THIN,
-        /**
-         * Constant for the slab value.
-         */
-        SLAB
-
-    }
-
-    /**
      * Creates a new instance.
      */
     public MprGeometryModule() {
@@ -232,6 +215,23 @@ public class MprGeometryModule extends DicomModule {
             throw new IllegalArgumentException("vector cannot be null");
         }
         dcmItems.setDouble(tag, VR.FD, vector.x(), vector.y(), vector.z());
+    }
+
+    /**
+     * Defines the MprThicknessType values.
+     *
+     * @author Kimi Liu
+     */
+    public enum MprThicknessType {
+        /**
+         * Constant for the thin value.
+         */
+        THIN,
+        /**
+         * Constant for the slab value.
+         */
+        SLAB
+
     }
 
 }

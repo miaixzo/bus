@@ -86,6 +86,19 @@ public enum AxisDirection {
     }
 
     /**
+     * Creates a value from the supplied input.
+     *
+     * @param plane the plane.
+     * @return the operation result.
+     */
+    public static AxisDirection of(String plane) {
+        if (plane == null || plane.isBlank()) {
+            throw new IllegalArgumentException("plane cannot be blank");
+        }
+        return AxisDirection.valueOf(plane.trim().toUpperCase(Locale.ROOT));
+    }
+
+    /**
      * Gets the label.
      *
      * @return the label.
@@ -128,19 +141,6 @@ public enum AxisDirection {
      */
     public boolean isInvertedDirection() {
         return invertedDirection;
-    }
-
-    /**
-     * Creates a value from the supplied input.
-     *
-     * @param plane the plane.
-     * @return the operation result.
-     */
-    public static AxisDirection of(String plane) {
-        if (plane == null || plane.isBlank()) {
-            throw new IllegalArgumentException("plane cannot be blank");
-        }
-        return AxisDirection.valueOf(plane.trim().toUpperCase(Locale.ROOT));
     }
 
 }

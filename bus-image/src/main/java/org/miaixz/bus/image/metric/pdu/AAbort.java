@@ -33,51 +33,42 @@ import org.miaixz.bus.core.lang.Symbol;
 public class AAbort extends IOException {
 
     /**
-     * The serial version uid value.
-     */
-    @Serial
-    private static final long serialVersionUID = 2852275517117L;
-
-    /**
      * The ul serive user value.
      */
     public static final int UL_SERIVE_USER = 0;
-
     /**
      * The ul serive provider value.
      */
     public static final int UL_SERIVE_PROVIDER = 2;
-
     /**
      * The reason not specified value.
      */
     public static final int REASON_NOT_SPECIFIED = 0;
-
     /**
      * The unrecognized pdu value.
      */
     public static final int UNRECOGNIZED_PDU = 1;
-
     /**
      * The unexpected pdu value.
      */
     public static final int UNEXPECTED_PDU = 2;
-
     /**
      * The unrecognized pdu parameter value.
      */
     public static final int UNRECOGNIZED_PDU_PARAMETER = 4;
-
     /**
      * The unexpected pdu parameter value.
      */
     public static final int UNEXPECTED_PDU_PARAMETER = 5;
-
     /**
      * The invalid pdu parameter value value.
      */
     public static final int INVALID_PDU_PARAMETER_VALUE = 6;
-
+    /**
+     * The serial version uid value.
+     */
+    @Serial
+    private static final long serialVersionUID = 2852275517117L;
     /**
      * The sources value.
      */

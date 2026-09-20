@@ -43,6 +43,18 @@ public record VolumeSize(int x, int y, int z) {
     }
 
     /**
+     * Executes the require positive operation.
+     *
+     * @param name  the name.
+     * @param value the value.
+     */
+    private static void requirePositive(String name, int value) {
+        if (value <= 0) {
+            throw new IllegalArgumentException(name + " must be > 0: " + value);
+        }
+    }
+
+    /**
      * Executes the voxel operation.
      *
      * @param channels number of samples per voxel
@@ -60,18 +72,6 @@ public record VolumeSize(int x, int y, int z) {
      */
     public long voxelCount() {
         return Math.multiplyExact(Math.multiplyExact((long) x, y), z);
-    }
-
-    /**
-     * Executes the require positive operation.
-     *
-     * @param name  the name.
-     * @param value the value.
-     */
-    private static void requirePositive(String name, int value) {
-        if (value <= 0) {
-            throw new IllegalArgumentException(name + " must be > 0: " + value);
-        }
     }
 
 }

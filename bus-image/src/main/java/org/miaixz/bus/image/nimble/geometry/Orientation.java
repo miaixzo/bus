@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.image.nimble.geometry;
 
-import java.awt.Color;
+import java.awt.*;
 
 /**
  * Anatomical orientation contract.

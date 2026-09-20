@@ -43,6 +43,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 import org.miaixz.bus.core.center.function.UnaryOperatorX;
+import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;

@@ -27,8 +27,9 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 
-import lombok.*;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.lang.Normal;
