@@ -36,12 +36,16 @@ request/converter/wrapper primitives     feature-specific integration
 
 | 封装                    | 责任                                                         |
 |-------------------------|--------------------------------------------------------------|
-| `org.miaixz.bus.spring` | 运行时上下文 API 和 `SpringBuilder` 外观。                   |
+| `org.miaixz.bus.spring` | `SpringBuilder` 和其他根级 Spring 集成 API。                |
+| `context`               | 静态上下文访问、不可变快照、词法作用域和传播策略。           |
+| `context.task`          | 用于受控跨线程上下文传播的 Spring 任务装饰器。               |
+| `context.spi`           | 有序的认证上下文提供者扩展点。                               |
+| `context.web`           | Servlet 请求、异步和错误调度的上下文生命周期绑定。           |
 | `annotation`            | 合并注释处理、占位符绑定、包装器注释和 `@RequestObject`。    |
 | `aop`                   | 具有 Bean 名称排除的可重用自动代理基础结构。                 |
 | `bean`                  | 聚焦 Bean 查找、注册、元数据、环境、上下文和提供者服务。     |
 | `jdbc`                  | 可重用的数据源解析、池创建、动态路由、路由范围、注释和建议。 |
-| `web`                   | 根 Servlet 请求访问和上下文绑定过滤器。                      |
+| `web`                   | 根 Servlet 请求访问和通用 Web 基础设施。                     |
 | `web.advice`            | 可重用的 MVC 响应建议库实现。                                |
 | `web.converter`         | JSON/文本转换器、类型匹配、注册和 MVC 配置器。               |
 | `web.interceptor`       | 请求拦截助手。                                               |
@@ -55,8 +59,8 @@ request/converter/wrapper primitives     feature-specific integration
 | `boot.listener`         | Spring Boot 配置监听器。                                     |
 | `boot.startup`          | 启动阶段、指标、报告器和 Bean 后处理。                       |
 
-根包有意保持填充状态。 `ContextBuilder`、`ContextManager`、`ContextProvider`、`ContextState`、
-`ContextScope`、`ContextDecorator` 和 `SpringBuilder` 是稳定的公共功能，而不是空命名空间。
+根包由 `SpringBuilder` 和共享 Spring 集成契约组成。运行时上下文类型统一放在专用的 `context` 包下，使静态访问、
+传播、SPI 和 Servlet 绑定具有清晰的架构边界。
 
 `boot.condition` 提供 `@ConditionalOnEnabled` 和 `EnabledCondition`。该条件给出了显式启用 注解优先于相应的属性，同时将具体的注解和属性前缀留给
 依赖 Starter 模块。其 `name` 成员默认为 `enabled`，`matchIfMissing` 默认为 `false`， 条件可以保护配置类型或单个 Bean 方法。
@@ -73,16 +77,18 @@ Spring Bean。
 
 ## 运行时上下文模型
 
-运行时状态由每个 Spring 应用程序上下文的一个 `ContextManager` 拥有。它不存储在全局静态中 应用程序上下文注册表。
+运行时状态保存在类加载器本地、线程隔离的栈中。`ContextBuilder` 是静态只读门面；它不查找 Spring Bean、
+不持有应用上下文、不解析传输对象、不执行身份认证，也不进行 I/O。
 
-| 类型               | 责任                                                              |
-|--------------------|-------------------------------------------------------------------|
-| `ContextManager`   | 拥有当前线程状态并执行捕获、安装、恢复和清除操作。                |
-| `ContextState`     | 不可变的分离快照，包含请求 ID、防御性授权副本和解析的凭证元数据。 |
-| `ContextBuilder`   | 用于请求 ID、授权、租户、凭证、令牌和 API 密钥访问的公共外观。    |
-| `ContextScope`     | `AutoCloseable` 一次恢复先前状态的防护。                          |
-| `ContextDecorator` | Spring `TaskDecorator` 将捕获的状态传播到执行程序任务。           |
-| `ContextProvider`  | 订购的可提供授权状态的扩展点。                                    |
+| 类型                       | 职责                                                                 |
+|----------------------------|----------------------------------------------------------------------|
+| `ContextState`             | 不可变的分离快照，包含请求 ID、防御性授权副本和已解析凭证。           |
+| `ContextBuilder`           | 静态只读访问请求 ID、授权、租户、凭证、Token 和 API Key。             |
+| `ContextScope`             | 线程所有的 `AutoCloseable` 防护，严格按 LIFO 顺序且仅恢复一次。        |
+| `ContextTransfer`          | 显式执行捕获、模式过滤、安装和任务包装。                               |
+| `ContextTransfer.Mode`     | 决定凭证、身份、请求关联信息或空状态能否跨越执行边界。                 |
+| `ContextTaskDecorator`     | Spring `TaskDecorator`，仅在单次任务执行期间安装捕获的快照。           |
+| `ContextProvider`          | 对已标准化初始上下文进行认证的有序 SPI。                               |
 
 `ContextState` 从不保留 `HttpServletRequest`、缓存主体、多部分数据或线程本地容器。代币和 API 密钥凭证在 Servlet
 边界解析一次，并仅保留为不可变凭证值 编辑诊断。这使得快照适合有界异步传播。
@@ -90,13 +96,10 @@ Spring Bean。
 ### 捕获并安装
 
 ```java
-ContextState state = contextBuilder.capture();
+ContextState state = ContextBuilder.capture();
 
-try(
-ContextScope ignored = contextBuilder.install(state)){
-        operation.
-
-run();
+try (ContextScope ignored = ContextTransfer.install(state)) {
+    operation.run();
 }
 ```
 
@@ -105,24 +108,26 @@ run();
 ### 执行器传播
 
 ```java
-Runnable decorated = contextDecorator.decorate(() -> service.process(command));
-executor.
-
-execute(decorated);
+Runnable decorated = ContextTransfer.wrap(() -> service.process(command));
+executor.execute(decorated);
 ```
 
-`ContextDecorator` 在装饰时捕获，执行前安装，执行后恢复。和 当 Spring Boot 任务类存在时，`bus-starter`、`TaskConfiguration`
-默认注册此装饰器。它可以 通过 `bus.context.task.enabled=false` 禁用。
+`ContextTaskDecorator` 在装饰时捕获、在执行前安装并在执行后恢复。`bus-starter` 由 `GeniusStarter` 注册该装饰器，
+并在 Spring Boot 任务类存在时由 `TaskConfiguration` 将其组合到 Boot 管理的执行器中。可通过
+`bus.context.task.enabled=false` 禁用自动执行器集成。
 
 ### 上下文访问
 
 ```java
-String requestId = contextBuilder.getRequestId();
-String tenantId = contextBuilder.getTenantId();
-String token = contextBuilder.getToken();
-String apiKey = contextBuilder.getApiKey();
-Http.Auth.Credential credential = contextBuilder.getCredential();
+String requestId = ContextBuilder.getRequestId();
+String tenantId = ContextBuilder.getTenantId();
+String token = ContextBuilder.getToken();
+String apiKey = ContextBuilder.getApiKey();
+Http.Auth.Credential credential = ContextBuilder.getCredential();
 ```
+
+可空的 `getXxx()` 方法在缺少匹配上下文时返回 `null`。严格访问方法统一使用 Bus 现有异常体系：
+`requireAuthorize()` 和 `requireApiKey()` 抛出 `AuthorizedException`，`requireToken()` 抛出 `TokenException`。
 
 令牌和 API 密钥值独立存储。当两者都存在时，`getCredential()` 更喜欢令牌，而
 `getToken()`和`getApiKey()`继续曝光各自的数值。分辨率如下 `Http.Auth`：标头， 参数、可用的缓存 JSON 正文和

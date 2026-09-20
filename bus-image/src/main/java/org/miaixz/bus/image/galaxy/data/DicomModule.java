@@ -67,6 +67,43 @@ public class DicomModule {
     }
 
     /**
+     * Executes the nested code operation.
+     *
+     * @param attributes the attributes.
+     * @param tag        the tag.
+     * @return the operation result.
+     */
+    protected static Code nestedCode(Attributes attributes, int tag) {
+        Attributes item = attributes.getNestedDataset(tag);
+        return item == null ? null : new Code(item);
+    }
+
+    /**
+     * Executes the map sequence operation.
+     *
+     * @param sequence the sequence.
+     * @param mapper   the mapper.
+     * @param <T>      the mapped value type.
+     * @return the operation result.
+     */
+    protected static <T> List<T> mapSequence(Sequence sequence, FunctionX<Attributes, T> mapper) {
+        if (sequence == null || sequence.isEmpty()) {
+            return List.of();
+        }
+        return sequence.stream().map(mapper).toList();
+    }
+
+    /**
+     * Executes the detached operation.
+     *
+     * @param attributes the attributes.
+     * @return the operation result.
+     */
+    private static Attributes detached(Attributes attributes) {
+        return attributes.getParent() == null ? attributes : new Attributes(attributes);
+    }
+
+    /**
      * Gets the attributes.
      *
      * @return the attributes.
@@ -158,33 +195,6 @@ public class DicomModule {
     }
 
     /**
-     * Executes the nested code operation.
-     *
-     * @param attributes the attributes.
-     * @param tag        the tag.
-     * @return the operation result.
-     */
-    protected static Code nestedCode(Attributes attributes, int tag) {
-        Attributes item = attributes.getNestedDataset(tag);
-        return item == null ? null : new Code(item);
-    }
-
-    /**
-     * Executes the map sequence operation.
-     *
-     * @param sequence the sequence.
-     * @param mapper   the mapper.
-     * @param <T>      the mapped value type.
-     * @return the operation result.
-     */
-    protected static <T> List<T> mapSequence(Sequence sequence, FunctionX<Attributes, T> mapper) {
-        if (sequence == null || sequence.isEmpty()) {
-            return List.of();
-        }
-        return sequence.stream().map(mapper).toList();
-    }
-
-    /**
      * Executes the clear sequence operation.
      *
      * @param tag the tag.
@@ -194,16 +204,6 @@ public class DicomModule {
         if (sequence != null) {
             sequence.clear();
         }
-    }
-
-    /**
-     * Executes the detached operation.
-     *
-     * @param attributes the attributes.
-     * @return the operation result.
-     */
-    private static Attributes detached(Attributes attributes) {
-        return attributes.getParent() == null ? attributes : new Attributes(attributes);
     }
 
 }

@@ -89,17 +89,6 @@ public class ImageioReaderSpi extends ImageReaderSpi {
     }
 
     /**
-     * Gets the description.
-     *
-     * @param locale the locale.
-     * @return the description.
-     */
-    @Override
-    public String getDescription(Locale locale) {
-        return "DICOM Image Reader";
-    }
-
-    /**
      * Executes the register service provider operation.
      *
      * @return true if the condition is met; otherwise false.
@@ -129,6 +118,17 @@ public class ImageioReaderSpi extends ImageReaderSpi {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    /**
+     * Gets the description.
+     *
+     * @param locale the locale.
+     * @return the description.
+     */
+    @Override
+    public String getDescription(Locale locale) {
+        return "DICOM Image Reader";
     }
 
     /**

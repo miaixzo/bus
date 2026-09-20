@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.image.nimble.opencv;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -50,19 +50,17 @@ import org.miaixz.bus.logger.Logger;
 public class ImageIOHandler {
 
     /**
+     * The null source image error value.
+     */
+    public static final String NULL_SOURCE_IMAGE_ERROR = "Source image cannot be null";
+    /**
      * The png compression level value.
      */
     private static final int PNG_COMPRESSION_LEVEL = 9;
-
     /**
      * The thumbnail jpeg quality value.
      */
     private static final int THUMBNAIL_JPEG_QUALITY = 85;
-
-    /**
-     * The null source image error value.
-     */
-    public static final String NULL_SOURCE_IMAGE_ERROR = "Source image cannot be null";
 
     /**
      * Creates a new instance.
@@ -100,20 +98,28 @@ public class ImageIOHandler {
     public static ImageCV readImageWithCvException(Path path, List<String> tags) {
         validateReadablePath(path);
 
-        Mat mat;
         if (tags == null) {
-            mat = Imgcodecs.imread(path.toAbsolutePath().toString());
-            return handleImageConversion(path, mat);
+            return handleImageConversion(path, Imgcodecs.imread(path.toAbsolutePath().toString()));
         }
         MatOfInt metadataTypes = new MatOfInt();
         List<Mat> metadataList = new ArrayList<>();
-        mat = Imgcodecs.imreadWithMetadata(path.toAbsolutePath().toString(), metadataTypes, metadataList);
-
-        List<String> exifTags = MetadataParser.parseExifParseMetadata(metadataList, metadataTypes);
-        tags.clear();
-        tags.addAll(exifTags);
-
-        return handleImageConversion(path, mat);
+        try {
+            var image = handleImageConversion(
+                    path,
+                    Imgcodecs.imreadWithMetadata(path.toAbsolutePath().toString(), metadataTypes, metadataList));
+            try {
+                List<String> exifTags = MetadataParser.parseExifParseMetadata(metadataList, metadataTypes);
+                tags.clear();
+                tags.addAll(exifTags);
+            } catch (RuntimeException e) {
+                image.release();
+                throw e;
+            }
+            return image;
+        } finally {
+            metadataTypes.release();
+            metadataList.forEach(Mat::release);
+        }
     }
 
     /**
@@ -140,8 +146,7 @@ public class ImageIOHandler {
     public static boolean writeImage(RenderedImage source, Path path) {
         Objects.requireNonNull(source, "RenderedImage cannot be null");
         Objects.requireNonNull(path, "Output path cannot be null");
-        try {
-            var mat = ImageConversion.toMat(source);
+        try (var mat = ImageConversion.toMat(source)) {
             return writeImageInternal(mat, path, null);
         } catch (Exception e) {
             Logger.error(
@@ -190,10 +195,11 @@ public class ImageIOHandler {
         var pngPath = ensurePngExtension(path);
         var convertedSource = convertForPngIfNeeded(source);
 
+        var params = new MatOfInt(Imgcodecs.IMWRITE_PNG_COMPRESSION, PNG_COMPRESSION_LEVEL);
         try {
-            var params = new MatOfInt(Imgcodecs.IMWRITE_PNG_COMPRESSION, PNG_COMPRESSION_LEVEL);
             return writeImageInternal(convertedSource, pngPath, params);
         } finally {
+            params.release();
             if (convertedSource != source) {
                 ImageConversion.releaseMat(convertedSource);
             }
@@ -215,17 +221,14 @@ public class ImageIOHandler {
             throw new IllegalArgumentException("Maximum size must be positive: " + maxSize);
         }
 
-        try {
-            var thumbnail = createThumbnail(source, maxSize);
-            var params = new MatOfInt(Imgcodecs.IMWRITE_JPEG_QUALITY, THUMBNAIL_JPEG_QUALITY);
-            var success = writeImageInternal(thumbnail, path, params);
-
-            thumbnail.release();
-            return success;
-
+        var params = new MatOfInt(Imgcodecs.IMWRITE_JPEG_QUALITY, THUMBNAIL_JPEG_QUALITY);
+        try (var thumbnail = createThumbnail(source, maxSize)) {
+            return writeImageInternal(thumbnail, path, params);
         } catch (Exception e) {
             Logger.error(false, "Image", "Error creating thumbnail for path: {}", path.toAbsolutePath(), e);
             return false;
+        } finally {
+            params.release();
         }
     }
 
@@ -265,10 +268,14 @@ public class ImageIOHandler {
      * @return the operation result.
      */
     private static ImageCV handleImageConversion(Path path, Mat mat) {
-        if (mat.empty()) {
-            throw new CvException("Failed to read image or unsupported format: " + path);
+        try {
+            if (mat.empty()) {
+                throw new CvException("Failed to read image or unsupported format: " + path);
+            }
+            return ImageCV.fromMat(mat);
+        } finally {
+            mat.release();
         }
-        return ImageCV.fromMat(mat);
     }
 
     /**
@@ -336,17 +343,13 @@ public class ImageIOHandler {
      * @return the operation result.
      */
     private static Mat convertForPngIfNeeded(Mat source) {
-        var type = source.type();
-        var elemSize = CvType.ELEM_SIZE(type);
-        var channels = CvType.channels(type);
-        var bpp = (elemSize * 8) / channels;
-
-        if (bpp > 16 || !CvType.isInteger(type)) {
-            var dstImg = new Mat();
-            source.convertTo(dstImg, CvType.CV_16SC(channels));
-            return dstImg;
+        var depth = CvType.depth(source.type());
+        if (depth == CvType.CV_8U || depth == CvType.CV_16U) {
+            return source;
         }
-        return source;
+        var dstImg = new Mat();
+        source.convertTo(dstImg, CvType.CV_16UC(source.channels()));
+        return dstImg;
     }
 
     /**
@@ -358,7 +361,7 @@ public class ImageIOHandler {
      */
     private static ImageCV createThumbnail(Mat source, int maxSize) {
         var thumbSize = calculateThumbnailSize(source.cols(), source.rows(), maxSize);
-        return shouldScale(source, thumbSize) ? ImageTransformer.scale(source, thumbSize) : ImageCV.fromMat(source);
+        return createThumbnailFromSize(source, thumbSize);
     }
 
     /**
@@ -410,7 +413,8 @@ public class ImageIOHandler {
      */
     private static Dimension calculateThumbnailSize(int originalWidth, int originalHeight, int maxSize) {
         var scale = Math.min(maxSize / (double) originalHeight, (double) maxSize / originalWidth);
-        return scale < 1.0 ? new Dimension((int) (scale * originalWidth), (int) (scale * originalHeight))
+        return scale < 1.0
+                ? new Dimension(Math.max(1, (int) (scale * originalWidth)), Math.max(1, (int) (scale * originalHeight)))
                 : new Dimension(originalWidth, originalHeight);
     }
 

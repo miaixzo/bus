@@ -57,6 +57,13 @@ public class Lshw {
     }
 
     /**
+     * Creates a new Lshw instance.
+     */
+    public Lshw() {
+        // No initialization required.
+    }
+
+    /**
      * Parse model, serial number, and UUID from lshw system output.
      *
      * @param lines output of {@code lshw -C system}
@@ -81,13 +88,6 @@ public class Lshw {
             }
         }
         return Triplet.of(model, serial, uuid);
-    }
-
-    /**
-     * Creates a new Lshw instance.
-     */
-    public Lshw() {
-        // No initialization required.
     }
 
     /**

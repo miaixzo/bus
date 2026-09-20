@@ -37,86 +37,6 @@ import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 public interface ManifestXml {
 
     /**
-     * DICOM manifest hierarchy levels.
-     *
-     * @author Kimi Liu
-     */
-    enum Level {
-
-        /**
-         * Constant for the patient value.
-         */
-        PATIENT("Patient"),
-        /**
-         * Constant for the study value.
-         */
-        STUDY("Study"),
-        /**
-         * Constant for the series value.
-         */
-        SERIES("Series"),
-        /**
-         * Constant for the instance value.
-         */
-        INSTANCE("Instance"),
-        /**
-         * Constant for the frame value.
-         */
-        FRAME("Frame");
-
-        /**
-         * The tag name value.
-         */
-        private final String tagName;
-
-        /**
-         * Creates a new instance.
-         *
-         * @param tagName the tag name.
-         */
-        Level(String tagName) {
-            this.tagName = tagName;
-        }
-
-        /**
-         * Gets the tag name.
-         *
-         * @return the tag name.
-         */
-        public String getTagName() {
-            return tagName;
-        }
-
-        /**
-         * Returns the string representation.
-         *
-         * @return the string representation.
-         */
-        @Override
-        public String toString() {
-            return tagName;
-        }
-
-    }
-
-    /**
-     * Write this object as XML.
-     *
-     * @param writer output writer
-     * @throws IOException when writing fails
-     */
-    void toXml(Writer writer) throws IOException;
-
-    /**
-     * Executes the name operation.
-     *
-     * @return XML charset name
-     */
-    default String getCharsetEncoding() {
-        return Charset.UTF_8.name();
-    }
-
-    /**
      * Write a DICOM tag keyed XML attribute.
      *
      * @param tag    DICOM tag
@@ -212,6 +132,86 @@ public interface ManifestXml {
             }
         }
         return builder.toString();
+    }
+
+    /**
+     * Write this object as XML.
+     *
+     * @param writer output writer
+     * @throws IOException when writing fails
+     */
+    void toXml(Writer writer) throws IOException;
+
+    /**
+     * Executes the name operation.
+     *
+     * @return XML charset name
+     */
+    default String getCharsetEncoding() {
+        return Charset.UTF_8.name();
+    }
+
+    /**
+     * DICOM manifest hierarchy levels.
+     *
+     * @author Kimi Liu
+     */
+    enum Level {
+
+        /**
+         * Constant for the patient value.
+         */
+        PATIENT("Patient"),
+        /**
+         * Constant for the study value.
+         */
+        STUDY("Study"),
+        /**
+         * Constant for the series value.
+         */
+        SERIES("Series"),
+        /**
+         * Constant for the instance value.
+         */
+        INSTANCE("Instance"),
+        /**
+         * Constant for the frame value.
+         */
+        FRAME("Frame");
+
+        /**
+         * The tag name value.
+         */
+        private final String tagName;
+
+        /**
+         * Creates a new instance.
+         *
+         * @param tagName the tag name.
+         */
+        Level(String tagName) {
+            this.tagName = tagName;
+        }
+
+        /**
+         * Gets the tag name.
+         *
+         * @return the tag name.
+         */
+        public String getTagName() {
+            return tagName;
+        }
+
+        /**
+         * Returns the string representation.
+         *
+         * @return the string representation.
+         */
+        @Override
+        public String toString() {
+            return tagName;
+        }
+
     }
 
 }

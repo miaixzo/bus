@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.image.nimble.opencv.lut;
 
-import java.awt.Color;
+import java.awt.*;
 
 /**
  * Color lookup tables (LUTs) for image processing and visualization. Each LUT defines color transformations with
@@ -85,79 +85,6 @@ public enum ColorLut {
      */
     ColorLut(String name, byte[][] lutTable) {
         this.byteLut = new ByteLut(name, lutTable);
-    }
-
-    /**
-     * Returns the name.
-     *
-     * @return the name.
-     */
-    public String getName() {
-        return byteLut.name();
-    }
-
-    /**
-     * Returns the byte LUT.
-     *
-     * @return the byte LUT.
-     */
-    public ByteLut getByteLut() {
-        return byteLut;
-    }
-
-    /**
-     * Returns the string representation.
-     *
-     * @return the string representation.
-     */
-    @Override
-    public String toString() {
-        return byteLut.name();
-    }
-
-    /**
-     * Channel indices for BGR format.
-     *
-     * @author Kimi Liu
-     */
-    private enum Channel {
-
-        /**
-         * Constant for the blue value.
-         */
-        BLUE(0),
-        /**
-         * Constant for the green value.
-         */
-        GREEN(1),
-        /**
-         * Constant for the red value.
-         */
-        RED(2);
-
-        /**
-         * The index value.
-         */
-        private final int index;
-
-        /**
-         * Creates a new instance.
-         *
-         * @param index the index.
-         */
-        Channel(int index) {
-            this.index = index;
-        }
-
-        /**
-         * Returns the index.
-         *
-         * @return the index.
-         */
-        int getIndex() {
-            return index;
-        }
-
     }
 
     /**
@@ -257,6 +184,79 @@ public enum ColorLut {
             lut[Channel.RED.getIndex()][i] = (byte) color[0];
         }
         return lut;
+    }
+
+    /**
+     * Returns the name.
+     *
+     * @return the name.
+     */
+    public String getName() {
+        return byteLut.name();
+    }
+
+    /**
+     * Returns the byte LUT.
+     *
+     * @return the byte LUT.
+     */
+    public ByteLut getByteLut() {
+        return byteLut;
+    }
+
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
+    @Override
+    public String toString() {
+        return byteLut.name();
+    }
+
+    /**
+     * Channel indices for BGR format.
+     *
+     * @author Kimi Liu
+     */
+    private enum Channel {
+
+        /**
+         * Constant for the blue value.
+         */
+        BLUE(0),
+        /**
+         * Constant for the green value.
+         */
+        GREEN(1),
+        /**
+         * Constant for the red value.
+         */
+        RED(2);
+
+        /**
+         * The index value.
+         */
+        private final int index;
+
+        /**
+         * Creates a new instance.
+         *
+         * @param index the index.
+         */
+        Channel(int index) {
+            this.index = index;
+        }
+
+        /**
+         * Returns the index.
+         *
+         * @return the index.
+         */
+        int getIndex() {
+            return index;
+        }
+
     }
 
 }

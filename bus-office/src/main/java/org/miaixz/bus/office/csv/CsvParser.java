@@ -288,6 +288,8 @@ public class CsvParser extends ComputeIterator<CsvRow> implements Closeable, Ser
                     lineNo++;
                     inComment = false;
                 }
+                // Preserve the comment-line terminator so a following LF in CRLF is not read as an empty row.
+                preChar = c;
                 // Skip any characters within the comment line.
                 continue;
             }
@@ -389,7 +391,7 @@ public class CsvParser extends ComputeIterator<CsvRow> implements Closeable, Ser
      * @return {@code true} if it's a line end, {@code false} otherwise.
      */
     private boolean isLineEnd(final int c, final int preChar) {
-        return (c == Symbol.C_CR || c == Symbol.C_LF) && preChar != Symbol.C_CR;
+        return c == Symbol.C_CR || (c == Symbol.C_LF && preChar != Symbol.C_CR);
     }
 
     /**

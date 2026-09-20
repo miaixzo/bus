@@ -23,6 +23,7 @@ import java.time.OffsetDateTime;
 import java.util.Locale;
 
 import com.sun.jna.platform.win32.COM.Wbemcli;
+import com.sun.jna.platform.win32.COM.WbemcliUtil;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.Variant;
@@ -75,6 +76,42 @@ public class WmiKit {
      */
     public WmiKit() {
         // No initialization required.
+    }
+
+    /**
+     * Returns a WMI result with no rows for a query that was not executed.
+     *
+     * @param <T>          the enum type representing the queried properties
+     * @param propertyEnum the enum class representing the queried properties
+     * @return an empty WMI result
+     */
+    public static <T extends Enum<T>> WmiResult<T> emptyResult(Class<T> propertyEnum) {
+        return WbemcliUtil.INSTANCE.new WmiResult<T>(propertyEnum) {
+
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public Object getValue(T property, int index) {
+                return null;
+            }
+
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public int getVtType(T property) {
+                return Variant.VT_EMPTY;
+            }
+
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public int getCIMType(T property) {
+                return Wbemcli.CIM_EMPTY;
+            }
+        };
     }
 
     /**

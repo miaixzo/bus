@@ -155,6 +155,24 @@ public class WadoParameters extends ArchiveParameters {
     }
 
     /**
+     * Validates the and normalize url.
+     *
+     * @param wadoURL the wado url.
+     * @return the operation result.
+     */
+    private static String validateAndNormalizeUrl(String wadoURL) {
+        Objects.requireNonNull(wadoURL, "WADO URL cannot be null");
+        if (wadoURL.isBlank()) {
+            return Normal.EMPTY;
+        }
+        try {
+            return new URI(wadoURL.trim()).toString();
+        } catch (URISyntaxException exception) {
+            throw new IllegalArgumentException("Invalid WADO URI format: " + wadoURL, exception);
+        }
+    }
+
+    /**
      * Determines whether require only sop instance uid.
      *
      * @return true if the condition is met; otherwise false.
@@ -227,24 +245,6 @@ public class WadoParameters extends ArchiveParameters {
     }
 
     /**
-     * Validates the and normalize url.
-     *
-     * @param wadoURL the wado url.
-     * @return the operation result.
-     */
-    private static String validateAndNormalizeUrl(String wadoURL) {
-        Objects.requireNonNull(wadoURL, "WADO URL cannot be null");
-        if (wadoURL.isBlank()) {
-            return Normal.EMPTY;
-        }
-        try {
-            return new URI(wadoURL.trim()).toString();
-        } catch (URISyntaxException exception) {
-            throw new IllegalArgumentException("Invalid WADO URI format: " + wadoURL, exception);
-        }
-    }
-
-    /**
      * Represents the Builder type.
      *
      * @author Kimi Liu
@@ -252,40 +252,33 @@ public class WadoParameters extends ArchiveParameters {
     public static class Builder {
 
         /**
-         * The archive id value.
-         */
-        private String archiveID = Normal.EMPTY;
-
-        /**
          * The wado url value.
          */
         private final String wadoURL;
-
-        /**
-         * The require only sop instance uid value.
-         */
-        private boolean requireOnlySOPInstanceUID;
-
-        /**
-         * The additional parameters value.
-         */
-        private String additionalParameters;
-
-        /**
-         * The override dicom tags list value.
-         */
-        private String overrideDicomTagsList;
-
-        /**
-         * The web login value.
-         */
-        private String webLogin;
-
         /**
          * The wado rs value.
          */
         private final boolean wadoRS;
-
+        /**
+         * The archive id value.
+         */
+        private String archiveID = Normal.EMPTY;
+        /**
+         * The require only sop instance uid value.
+         */
+        private boolean requireOnlySOPInstanceUID;
+        /**
+         * The additional parameters value.
+         */
+        private String additionalParameters;
+        /**
+         * The override dicom tags list value.
+         */
+        private String overrideDicomTagsList;
+        /**
+         * The web login value.
+         */
+        private String webLogin;
         /**
          * The query mode value.
          */

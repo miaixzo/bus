@@ -33,15 +33,6 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 public interface Editors {
 
     /**
-     * Performs the editing operation on the given DICOM attributes.
-     *
-     * @param attributes The DICOM attributes to be modified.
-     * @param context    The context in which the editor is being applied, which may contain additional information or
-     *                   state.
-     */
-    void apply(Attributes attributes, EditorContext context);
-
-    /**
      * Creates the default bus-image editor for attribute overriding.
      *
      * @param tagToOverride DICOM attributes that should override matching target attributes.
@@ -73,5 +64,14 @@ public interface Editors {
     static Editors defaults(boolean generateUIDs, String globalKey, Attributes tagToOverride) {
         return new DefaultEditors(generateUIDs, globalKey, tagToOverride);
     }
+
+    /**
+     * Performs the editing operation on the given DICOM attributes.
+     *
+     * @param attributes The DICOM attributes to be modified.
+     * @param context    The context in which the editor is being applied, which may contain additional information or
+     *                   state.
+     */
+    void apply(Attributes attributes, EditorContext context);
 
 }

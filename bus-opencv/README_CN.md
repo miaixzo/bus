@@ -57,6 +57,7 @@
 import org.miaixz.bus.opengl.OpenCVKit;
 
 public class Application {
+
     static {
         // 加载 OpenCV 本机库
         OpenCVKit.loadLib();
@@ -65,6 +66,7 @@ public class Application {
     public static void main(String[] args) {
         // 您的代码在这里
     }
+
 }
 ```
 
@@ -210,7 +212,7 @@ public class VideoExample {
 
 ```java
 public class ObjectDetectionExample {
-    
+
     public void detectObjects(String imagePath) {
         Mat image = Imgcodecs.imread(imagePath);
 
@@ -226,7 +228,7 @@ public class ObjectDetectionExample {
                 + " 位置 " + obj.getBoundingBox());
         }
     }
-    
+
 }
 ```
 

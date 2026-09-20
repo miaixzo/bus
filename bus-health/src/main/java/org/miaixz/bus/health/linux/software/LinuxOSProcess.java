@@ -96,37 +96,30 @@ public class LinuxOSProcess extends AbstractOSProcess {
      */
     private final SupplierX<Map<String, String>> environmentVariables = Memoizer
             .memoize(this::queryEnvironmentVariables);
-
-    /**
-     * The path value.
-     */
-    private volatile String path = Normal.EMPTY;
-
     /**
      * The bitness value.
      */
     private final SupplierX<Integer> bitness = Memoizer.memoize(this::queryBitness);
-
-    /**
-     * The userID value.
-     */
-    private volatile String userID;
-
     /**
      * The user value.
      */
     private final SupplierX<String> user = Memoizer.memoize(this::queryUser);
-
-    /**
-     * The groupID value.
-     */
-    private volatile String groupID;
-
     /**
      * The group value.
      */
     private final SupplierX<String> group = Memoizer.memoize(this::queryGroup);
-
+    /**
+     * The path value.
+     */
+    private volatile String path = Normal.EMPTY;
+    /**
+     * The userID value.
+     */
+    private volatile String userID;
+    /**
+     * The groupID value.
+     */
+    private volatile String groupID;
     /**
      * The name value.
      */
@@ -272,6 +265,27 @@ public class LinuxOSProcess extends AbstractOSProcess {
         if (StringKit.isBlank(status.get("State")) && nameEnd > 0 && stat.length() > nameEnd + 2) {
             String statState = String.valueOf(stat.charAt(nameEnd + 2));
             status.put("State", statState);
+        }
+    }
+
+    /**
+     * Parse the affinity mask from taskset output.
+     *
+     * @param tasksetOutput output of {@code taskset -p <pid>}
+     * @return the affinity mask as a long, or 0 if unparseable
+     */
+    static long parseAffinityMask(String tasksetOutput) {
+        // Output:
+        // pid 3283's current affinity mask: 3
+        // pid 9726's current affinity mask: f
+        String[] split = Pattern.SPACES_PATTERN.split(tasksetOutput);
+        if (split.length == 0) {
+            return 0;
+        }
+        try {
+            return new BigInteger(split[split.length - 1], 16).longValue();
+        } catch (NumberFormatException e) {
+            return 0;
         }
     }
 
@@ -723,27 +737,6 @@ public class LinuxOSProcess extends AbstractOSProcess {
         // Would prefer to use native sched_getaffinity call but variable sizing is
         // kernel-dependent and requires C macros, so we use command line instead.
         return parseAffinityMask(Executor.getFirstAnswer("taskset -p " + getProcessID()));
-    }
-
-    /**
-     * Parse the affinity mask from taskset output.
-     *
-     * @param tasksetOutput output of {@code taskset -p <pid>}
-     * @return the affinity mask as a long, or 0 if unparseable
-     */
-    static long parseAffinityMask(String tasksetOutput) {
-        // Output:
-        // pid 3283's current affinity mask: 3
-        // pid 9726's current affinity mask: f
-        String[] split = Pattern.SPACES_PATTERN.split(tasksetOutput);
-        if (split.length == 0) {
-            return 0;
-        }
-        try {
-            return new BigInteger(split[split.length - 1], 16).longValue();
-        } catch (NumberFormatException e) {
-            return 0;
-        }
     }
 
     /**

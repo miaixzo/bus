@@ -21,8 +21,9 @@ package org.miaixz.bus.image;
 
 import java.util.List;
 
-import lombok.*;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.image.metric.Connection;
@@ -295,6 +296,16 @@ public class Option {
     }
 
     /**
+     * Executes the immutable list operation.
+     *
+     * @param values the values.
+     * @return the operation result.
+     */
+    private static List<String> immutableList(List<String> values) {
+        return values == null ? null : List.copyOf(values);
+    }
+
+    /**
      * Creates a copy configured with the async ops.
      *
      * @param maxOpsInvoked   the max ops invoked.
@@ -440,16 +451,6 @@ public class Option {
      */
     public void setTlsProtocols(List<String> tlsProtocols) {
         this.tlsProtocols = immutableList(tlsProtocols);
-    }
-
-    /**
-     * Executes the immutable list operation.
-     *
-     * @param values the values.
-     * @return the operation result.
-     */
-    private static List<String> immutableList(List<String> values) {
-        return values == null ? null : List.copyOf(values);
     }
 
 }

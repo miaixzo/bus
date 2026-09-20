@@ -314,6 +314,83 @@ public class MacOSProcess extends AbstractOSProcess {
     }
 
     /**
+     * Parses the {@code KERN_PROCARGS2} buffer into arguments and environment variables.
+     *
+     * @param procargs the raw sysctl buffer
+     * @param size     the number of valid bytes in the buffer
+     * @return a pair containing the argument list and environment map
+     */
+    static Pair<List<String>, Map<String, String>> parseProcArgs(byte[] procargs, int size) {
+        List<String> args = new ArrayList<>();
+        Map<String, String> env = new LinkedHashMap<>();
+        int limit = Math.min(size, procargs.length);
+        if (limit > Integer.BYTES) {
+            int nargs = (int) Parsing.byteArrayToLong(procargs, Integer.BYTES, false);
+            if (nargs > 0 && nargs <= limit - Integer.BYTES) {
+                int offset = nextNull(procargs, Integer.BYTES, limit);
+                while (offset < limit && procargs[offset] == 0) {
+                    offset++;
+                }
+                for (int i = 0; i < nargs && offset < limit; i++) {
+                    int end = nextNull(procargs, offset, limit);
+                    if (end == limit) {
+                        break;
+                    }
+                    args.add(decode(procargs, offset, end));
+                    offset = end + 1;
+                }
+                while (offset < limit) {
+                    while (offset < limit && procargs[offset] == 0) {
+                        offset++;
+                    }
+                    if (offset >= limit) {
+                        break;
+                    }
+                    int end = nextNull(procargs, offset, limit);
+                    if (end == limit) {
+                        break;
+                    }
+                    String entry = decode(procargs, offset, end);
+                    int idx = entry.indexOf(Symbol.C_EQUAL);
+                    if (idx > 0) {
+                        env.put(entry.substring(0, idx), entry.substring(idx + 1));
+                    }
+                    offset = end + 1;
+                }
+            }
+        }
+        return Pair.of(Collections.unmodifiableList(args), Collections.unmodifiableMap(env));
+    }
+
+    /**
+     * Decodes the byte range as UTF-8.
+     *
+     * @param buffer the source buffer
+     * @param from   the inclusive start offset
+     * @param to     the exclusive end offset
+     * @return the decoded string
+     */
+    private static String decode(byte[] buffer, int from, int to) {
+        return new String(buffer, from, to - from, Charset.UTF_8);
+    }
+
+    /**
+     * Finds the next NUL byte.
+     *
+     * @param buffer the source buffer
+     * @param from   the starting offset
+     * @param limit  the exclusive upper bound
+     * @return the NUL byte index, or {@code limit} if none is found
+     */
+    private static int nextNull(byte[] buffer, int from, int limit) {
+        int index = from;
+        while (index < limit && buffer[index] != 0) {
+            index++;
+        }
+        return index;
+    }
+
+    /**
      * Description inherited from parent class or interface.
      *
      * @return the process name
@@ -405,83 +482,6 @@ public class MacOSProcess extends AbstractOSProcess {
             }
         }
         return Pair.of(Collections.emptyList(), Collections.emptyMap());
-    }
-
-    /**
-     * Parses the {@code KERN_PROCARGS2} buffer into arguments and environment variables.
-     *
-     * @param procargs the raw sysctl buffer
-     * @param size     the number of valid bytes in the buffer
-     * @return a pair containing the argument list and environment map
-     */
-    static Pair<List<String>, Map<String, String>> parseProcArgs(byte[] procargs, int size) {
-        List<String> args = new ArrayList<>();
-        Map<String, String> env = new LinkedHashMap<>();
-        int limit = Math.min(size, procargs.length);
-        if (limit > Integer.BYTES) {
-            int nargs = (int) Parsing.byteArrayToLong(procargs, Integer.BYTES, false);
-            if (nargs > 0 && nargs <= limit - Integer.BYTES) {
-                int offset = nextNull(procargs, Integer.BYTES, limit);
-                while (offset < limit && procargs[offset] == 0) {
-                    offset++;
-                }
-                for (int i = 0; i < nargs && offset < limit; i++) {
-                    int end = nextNull(procargs, offset, limit);
-                    if (end == limit) {
-                        break;
-                    }
-                    args.add(decode(procargs, offset, end));
-                    offset = end + 1;
-                }
-                while (offset < limit) {
-                    while (offset < limit && procargs[offset] == 0) {
-                        offset++;
-                    }
-                    if (offset >= limit) {
-                        break;
-                    }
-                    int end = nextNull(procargs, offset, limit);
-                    if (end == limit) {
-                        break;
-                    }
-                    String entry = decode(procargs, offset, end);
-                    int idx = entry.indexOf(Symbol.C_EQUAL);
-                    if (idx > 0) {
-                        env.put(entry.substring(0, idx), entry.substring(idx + 1));
-                    }
-                    offset = end + 1;
-                }
-            }
-        }
-        return Pair.of(Collections.unmodifiableList(args), Collections.unmodifiableMap(env));
-    }
-
-    /**
-     * Decodes the byte range as UTF-8.
-     *
-     * @param buffer the source buffer
-     * @param from   the inclusive start offset
-     * @param to     the exclusive end offset
-     * @return the decoded string
-     */
-    private static String decode(byte[] buffer, int from, int to) {
-        return new String(buffer, from, to - from, Charset.UTF_8);
-    }
-
-    /**
-     * Finds the next NUL byte.
-     *
-     * @param buffer the source buffer
-     * @param from   the starting offset
-     * @param limit  the exclusive upper bound
-     * @return the NUL byte index, or {@code limit} if none is found
-     */
-    private static int nextNull(byte[] buffer, int from, int limit) {
-        int index = from;
-        while (index < limit && buffer[index] != 0) {
-            index++;
-        }
-        return index;
     }
 
     /**

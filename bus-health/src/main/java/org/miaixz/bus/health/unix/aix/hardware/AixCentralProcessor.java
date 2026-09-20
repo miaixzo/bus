@@ -92,6 +92,22 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
+     * Parses the POWER generation from {@code prtconf}'s processor version line.
+     *
+     * @param prtconf the {@code prtconf} output
+     * @return the POWER generation, or 0 if unavailable
+     */
+    private static int parsePowerVersion(List<String> prtconf) {
+        final String versionMarker = "Processor Version:";
+        for (String line : prtconf) {
+            if (line.startsWith(versionMarker)) {
+                return Parsing.getFirstIntValue(line.substring(versionMarker.length()));
+            }
+        }
+        return 0;
+    }
+
+    /**
      * Queries the processor id.
      *
      * @return the query processor id result
@@ -234,22 +250,6 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
                 // Don't guess
         }
         return caches;
-    }
-
-    /**
-     * Parses the POWER generation from {@code prtconf}'s processor version line.
-     *
-     * @param prtconf the {@code prtconf} output
-     * @return the POWER generation, or 0 if unavailable
-     */
-    private static int parsePowerVersion(List<String> prtconf) {
-        final String versionMarker = "Processor Version:";
-        for (String line : prtconf) {
-            if (line.startsWith(versionMarker)) {
-                return Parsing.getFirstIntValue(line.substring(versionMarker.length()));
-            }
-        }
-        return 0;
     }
 
     /**

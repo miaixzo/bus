@@ -68,7 +68,12 @@ public class MetadataParser {
         int numTags = metadata.rows();
         var result = new ArrayList<String>(numTags);
         for (int i = 0; i < numTags; i++) {
-            result.add(parseTagRow(metadata.row(i)));
+            var row = metadata.row(i);
+            try {
+                result.add(parseTagRow(row));
+            } finally {
+                row.release();
+            }
         }
         return result;
     }
@@ -83,8 +88,7 @@ public class MetadataParser {
         if (row.empty()) {
             return Normal.EMPTY;
         }
-        int byteCount = (int) row.elemSize() * row.cols() * row.channels();
-        var tagBytes = new byte[byteCount];
+        var tagBytes = new byte[(int) (row.total() * row.elemSize())];
         row.get(0, 0, tagBytes);
         return new String(tagBytes, Charset.UTF_8).trim();
     }

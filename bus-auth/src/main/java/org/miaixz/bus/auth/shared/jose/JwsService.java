@@ -114,9 +114,7 @@ public class JwsService {
      * @param allowedAlgorithms          exact case-sensitive JWS algorithm allow-list
      * @param minimumKeyStrengthEnforced whether registered JWA minimum key sizes are enforced
      */
-    public JwsService(
-            final AlgorithmGuard algorithmGuard,
-            final Set<String> allowedAlgorithms,
+    public JwsService(final AlgorithmGuard algorithmGuard, final Set<String> allowedAlgorithms,
             final boolean minimumKeyStrengthEnforced) {
         this.algorithmGuard = Assert.notNull(algorithmGuard, "JWS algorithm guard must not be null");
         Assert.notNull(allowedAlgorithms, "JWS algorithm allowlist must not be null");

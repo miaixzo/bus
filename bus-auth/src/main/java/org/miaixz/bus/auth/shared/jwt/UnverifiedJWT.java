@@ -117,7 +117,7 @@ public final class UnverifiedJWT {
     /**
      * Verifies the original compact token with String key material under an explicit conversion strategy.
      *
-     * @param secret   non-empty String key material
+     * @param secret non-empty String key material
      * @param mode   explicit String-to-key mode
      * @return cryptographically verified JWT
      */

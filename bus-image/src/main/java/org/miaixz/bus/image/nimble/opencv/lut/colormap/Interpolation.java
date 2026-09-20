@@ -17,42 +17,29 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring;
-
-import org.springframework.core.Ordered;
-
-import org.miaixz.bus.core.basic.entity.Authorize;
-import org.miaixz.bus.core.lang.annotation.Nullable;
+package org.miaixz.bus.image.nimble.opencv.lut.colormap;
 
 /**
- * An interface for providing authenticated request context information.
- * <p>
- * Implementations provide an already authenticated {@link Authorize} value. They are not responsible for reading or
- * interpreting raw request headers.
+ * How values between two stops are produced. *
  *
  * @author Kimi Liu
  */
-public interface ContextProvider extends Ordered {
+public enum Interpolation {
 
     /**
-     * Gets the authenticated authorization information for the current user. Implementations must be side-effect free
-     * and must not consume or mutate transport input.
-     *
-     * @return An {@link Authorize} object, or null if not available.
+     * Straight blend between neighbouring stops.
      */
-    @Nullable
-    default Authorize getAuthorize() {
-        return null;
-    }
-
+    LINEAR,
     /**
-     * Orders providers before the first side-effect-free authorization resolution pass.
-     *
-     * @return lowest precedence unless an implementation declares a stronger priority
+     * Each stop holds until the next one: qualitative maps and isodose bands.
      */
-    @Override
-    default int getOrder() {
-        return Ordered.LOWEST_PRECEDENCE;
-    }
+    STEP,
+    /**
+     * Stops are samples of a table, blended linearly; editors show them read-only.
+     */
+    SAMPLED;
 
+    public boolean isStep() {
+        return this == STEP;
+    }
 }

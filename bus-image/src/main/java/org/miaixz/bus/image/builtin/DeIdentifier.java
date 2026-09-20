@@ -21,8 +21,8 @@ package org.miaixz.bus.image.builtin;
 
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.UUID;
 
+import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
@@ -87,9 +87,9 @@ public class DeIdentifier {
             Tag.ReferringPhysicianTelephoneNumbers, Tag.RegionOfResidence, Tag.RequestAttributesSequence,
             Tag.RequestedContrastAgent, Tag.RequestedProcedureComments, Tag.RequestedProcedureID,
             Tag.RequestedProcedureLocation, Tag.RequestingPhysician, Tag.RequestingPhysicianIdentificationSequence, // missing
-                                                                                                                    // in
-                                                                                                                    // Part
-                                                                                                                    // 15
+            // in
+            // Part
+            // 15
             Tag.RequestingService, Tag.RequestingServiceCodeSequence, // missing in Part 15
             Tag.ResponsibleOrganization, Tag.ResponsiblePerson, Tag.ResultsComments,
             Tag.ResultsDistributionListSequence, Tag.ResultsIDIssuer, Tag.ScheduledHumanPerformersSequence,

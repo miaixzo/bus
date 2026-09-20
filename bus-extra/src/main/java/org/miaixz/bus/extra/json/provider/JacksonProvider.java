@@ -51,6 +51,7 @@ import tools.jackson.databind.node.JsonNodeFactory;
 import tools.jackson.databind.node.ObjectNode;
 import tools.jackson.databind.ser.BeanPropertyWriter;
 import tools.jackson.databind.ser.PropertyWriter;
+import tools.jackson.databind.ser.jdk.MapProperty;
 import tools.jackson.databind.ser.std.SimpleBeanPropertyFilter;
 import tools.jackson.databind.ser.std.SimpleFilterProvider;
 
@@ -545,13 +546,17 @@ public class JacksonProvider extends AbstractJsonProvider {
                 tools.jackson.core.JsonGenerator output,
                 SerializationContext context,
                 PropertyWriter property) throws Exception {
-            if (!(property instanceof BeanPropertyWriter beanProperty)) {
+            Object value;
+            if (property instanceof BeanPropertyWriter beanProperty) {
+                value = beanProperty.get(source);
+            } else if (property instanceof MapProperty mapProperty) {
+                value = mapProperty.getValue();
+            } else {
                 property.serializeAsProperty(source, output, context);
                 return;
             }
-            Object value = beanProperty.get(source);
             if ((options.writeNulls() || value != null)
-                    && options.propertyFilter().accept(source, beanProperty.getName(), value)) {
+                    && options.propertyFilter().accept(source, property.getName(), value)) {
                 property.serializeAsProperty(source, output, context);
             } else if (!output.canOmitProperties()) {
                 output.writeName(property.getName());

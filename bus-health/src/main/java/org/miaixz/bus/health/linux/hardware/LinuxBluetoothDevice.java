@@ -20,11 +20,7 @@
 package org.miaixz.bus.health.linux.hardware;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.lang.Normal;

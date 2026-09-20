@@ -152,6 +152,23 @@ public interface NetworkParams {
         }
 
         /**
+         * Converts an address byte array to a display string.
+         *
+         * @param address The address bytes.
+         * @return The display string.
+         */
+        private static String addressToString(byte[] address) {
+            if (address.length > 0) {
+                try {
+                    return InetAddress.getByAddress(address).getHostAddress();
+                } catch (UnknownHostException e) {
+                    // Cannot happen for a length of 4 or 16.
+                }
+            }
+            return "*";
+        }
+
+        /**
          * Gets the destination network address.
          *
          * @return The destination address.
@@ -233,23 +250,6 @@ public interface NetworkParams {
             return "IPRoute [destination=" + addressToString(destination) + "/" + prefixLength + ", gateway="
                     + addressToString(gateway) + ", interfaceName=" + interfaceName + ", interfaceIndex="
                     + interfaceIndex + ", metric=" + metric + ", isGateway=" + isGateway + ", isHost=" + isHost + "]";
-        }
-
-        /**
-         * Converts an address byte array to a display string.
-         *
-         * @param address The address bytes.
-         * @return The display string.
-         */
-        private static String addressToString(byte[] address) {
-            if (address.length > 0) {
-                try {
-                    return InetAddress.getByAddress(address).getHostAddress();
-                } catch (UnknownHostException e) {
-                    // Cannot happen for a length of 4 or 16.
-                }
-            }
-            return "*";
         }
     }
 

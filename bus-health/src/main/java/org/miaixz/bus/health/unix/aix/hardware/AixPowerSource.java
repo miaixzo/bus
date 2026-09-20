@@ -72,16 +72,6 @@ public class AixPowerSource extends AbstractPowerSource {
     }
 
     /**
-     * Queries the power sources.
-     *
-     * @return the query power sources result
-     */
-    @Override
-    protected List<PowerSource> queryPowerSources() {
-        return getPowerSources();
-    }
-
-    /**
      * Gets Battery Information. AIX does not provide any battery statistics, as most servers are not designed to be run
      * on battery.
      *
@@ -89,6 +79,16 @@ public class AixPowerSource extends AbstractPowerSource {
      */
     public static List<PowerSource> getPowerSources() {
         return Collections.emptyList();
+    }
+
+    /**
+     * Queries the power sources.
+     *
+     * @return the query power sources result
+     */
+    @Override
+    protected List<PowerSource> queryPowerSources() {
+        return getPowerSources();
     }
 
 }

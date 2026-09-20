@@ -19,12 +19,7 @@
 */
 package org.miaixz.bus.health.mac;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import java.util.function.DoublePredicate;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
@@ -43,25 +38,21 @@ import org.miaixz.bus.logger.Logger;
 public class SmcKeyIndex {
 
     /**
+     * Maximum fan count supported by the SMC key naming scheme.
+     */
+    public static final int MAX_FANS = 10;
+    /**
      * Apple Silicon GPU cluster temperature key pattern.
      */
     private static final Pattern GPU_TEMPERATURE_KEY = Pattern.compile("^Tg\\d[\\dA-Za-z]$");
-
     /**
      * Fan current-speed key pattern.
      */
     private static final Pattern FAN_SPEED_KEY = Pattern.compile("^F\\dAc$");
-
     /**
      * SMC keys are exactly four characters.
      */
     private static final int KEY_LENGTH = 4;
-
-    /**
-     * Maximum fan count supported by the SMC key naming scheme.
-     */
-    public static final int MAX_FANS = 10;
-
     /**
      * Maximum plausible SMC key count.
      */

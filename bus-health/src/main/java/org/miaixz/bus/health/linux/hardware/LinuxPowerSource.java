@@ -48,43 +48,6 @@ import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
 public class LinuxPowerSource extends AbstractPowerSource {
 
     /**
-     * The Prop enum.
-     *
-     * @author Kimi Liu
-     */
-    enum Prop {
-        POWER_SUPPLY_NAME, POWER_SUPPLY_STATUS, POWER_SUPPLY_CAPACITY, POWER_SUPPLY_PRESENT, POWER_SUPPLY_ONLINE,
-        POWER_SUPPLY_ENERGY_NOW, POWER_SUPPLY_CHARGE_NOW, POWER_SUPPLY_ENERGY_FULL, POWER_SUPPLY_CHARGE_FULL,
-        POWER_SUPPLY_ENERGY_FULL_DESIGN, POWER_SUPPLY_CHARGE_FULL_DESIGN, POWER_SUPPLY_VOLTAGE_NOW,
-        POWER_SUPPLY_POWER_NOW, POWER_SUPPLY_CURRENT_NOW, POWER_SUPPLY_CYCLE_COUNT, POWER_SUPPLY_TECHNOLOGY,
-        POWER_SUPPLY_MODEL_NAME, POWER_SUPPLY_MANUFACTURER, POWER_SUPPLY_SERIAL_NUMBER, POWER_SUPPLY_TEMP,
-        POWER_SUPPLY_TIME_TO_EMPTY_NOW, POWER_SUPPLY_TIME_TO_FULL_NOW, POWER_SUPPLY_MANUFACTURE_YEAR,
-        POWER_SUPPLY_MANUFACTURE_MONTH, POWER_SUPPLY_MANUFACTURE_DAY
-
-    }
-
-    /**
-     * Initialization-on-demand holder: the map is only constructed if the non-udev path is reached, avoiding
-     * unnecessary work on systems where udev is available.
-     *
-     * @author Kimi Liu
-     */
-    private static final class PropByName {
-
-        /**
-         * The MAP constant.
-         */
-        static final Map<String, Prop> MAP = new HashMap<>();
-
-        static {
-            for (Prop p : Prop.values()) {
-                MAP.put(p.name(), p);
-            }
-        }
-
-    }
-
-    /**
      * Creates a new LinuxPowerSource instance.
      *
      * @param psName                     the ps name
@@ -119,16 +82,6 @@ public class LinuxPowerSource extends AbstractPowerSource {
                 psPowerUsageRate, psVoltage, psAmperage, psPowerOnLine, psCharging, psDischarging, psCapacityUnits,
                 psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount, psChemistry, psManufactureDate,
                 psManufacturer, psSerialNumber, psTemperature);
-    }
-
-    /**
-     * Queries the power sources.
-     *
-     * @return the query power sources result
-     */
-    @Override
-    protected List<PowerSource> queryPowerSources() {
-        return getPowerSources();
     }
 
     /**
@@ -308,6 +261,53 @@ public class LinuxPowerSource extends AbstractPowerSource {
                 psPowerUsageRate, psVoltage, psAmperage, false, psCharging, psDischarging, psCapacityUnits,
                 psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount, psChemistry, psManufactureDate,
                 psManufacturer, psSerialNumber, psTemperature);
+    }
+
+    /**
+     * Queries the power sources.
+     *
+     * @return the query power sources result
+     */
+    @Override
+    protected List<PowerSource> queryPowerSources() {
+        return getPowerSources();
+    }
+
+    /**
+     * The Prop enum.
+     *
+     * @author Kimi Liu
+     */
+    enum Prop {
+        POWER_SUPPLY_NAME, POWER_SUPPLY_STATUS, POWER_SUPPLY_CAPACITY, POWER_SUPPLY_PRESENT, POWER_SUPPLY_ONLINE,
+        POWER_SUPPLY_ENERGY_NOW, POWER_SUPPLY_CHARGE_NOW, POWER_SUPPLY_ENERGY_FULL, POWER_SUPPLY_CHARGE_FULL,
+        POWER_SUPPLY_ENERGY_FULL_DESIGN, POWER_SUPPLY_CHARGE_FULL_DESIGN, POWER_SUPPLY_VOLTAGE_NOW,
+        POWER_SUPPLY_POWER_NOW, POWER_SUPPLY_CURRENT_NOW, POWER_SUPPLY_CYCLE_COUNT, POWER_SUPPLY_TECHNOLOGY,
+        POWER_SUPPLY_MODEL_NAME, POWER_SUPPLY_MANUFACTURER, POWER_SUPPLY_SERIAL_NUMBER, POWER_SUPPLY_TEMP,
+        POWER_SUPPLY_TIME_TO_EMPTY_NOW, POWER_SUPPLY_TIME_TO_FULL_NOW, POWER_SUPPLY_MANUFACTURE_YEAR,
+        POWER_SUPPLY_MANUFACTURE_MONTH, POWER_SUPPLY_MANUFACTURE_DAY
+
+    }
+
+    /**
+     * Initialization-on-demand holder: the map is only constructed if the non-udev path is reached, avoiding
+     * unnecessary work on systems where udev is available.
+     *
+     * @author Kimi Liu
+     */
+    private static final class PropByName {
+
+        /**
+         * The MAP constant.
+         */
+        static final Map<String, Prop> MAP = new HashMap<>();
+
+        static {
+            for (Prop p : Prop.values()) {
+                MAP.put(p.name(), p);
+            }
+        }
+
     }
 
 }

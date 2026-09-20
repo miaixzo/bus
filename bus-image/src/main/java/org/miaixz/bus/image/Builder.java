@@ -1117,6 +1117,7 @@ public class Builder {
         return new SupplierEx<>() {
 
             boolean initialized;
+            SupplierEx<T, E> delegate = this::firstTime;
 
             @Override
             public T get() throws E {
@@ -1131,8 +1132,6 @@ public class Builder {
                 }
                 return delegate.get();
             }
-
-            SupplierEx<T, E> delegate = this::firstTime;
         };
     }
 

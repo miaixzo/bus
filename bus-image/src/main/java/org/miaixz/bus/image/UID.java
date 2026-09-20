@@ -24,9 +24,9 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ByteKit;

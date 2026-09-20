@@ -48,7 +48,6 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.ContextBuilder;
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableAuth;
@@ -92,13 +91,12 @@ public class AuthConfiguration {
     /**
      * Creates the MVC method-argument resolver for the current authenticated subject.
      *
-     * @param contextBuilder context-scoped authentication state
      * @return authentication method-argument resolver
      */
     @Bean
     @ConditionalOnMissingBean(AuthMethodResolver.class)
-    public AuthMethodResolver authMethodResolver(ContextBuilder contextBuilder) {
-        return new AuthMethodResolver(contextBuilder);
+    public AuthMethodResolver authMethodResolver() {
+        return new AuthMethodResolver();
     }
 
     /**

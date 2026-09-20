@@ -20,13 +20,16 @@
 package org.miaixz.bus.core.data.id;
 
 import java.io.Serial;
+import java.nio.ByteOrder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.miaixz.bus.core.codec.No128;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -94,6 +97,16 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
 
     @Serial
     private static final long serialVersionUID = 2852276107807L;
+
+    /**
+     * The last UUIDv7 millisecond timestamp and 12-bit sequence packed as a monotonic value.
+     */
+    private static final AtomicLong LAST_V7_TIME = new AtomicLong(0);
+
+    /**
+     * The UUIDv7 sequence counter used when multiple identifiers are generated in the same millisecond.
+     */
+    private static final AtomicLong V7_SEQUENCE = new AtomicLong(0);
 
     /**
      * The id value value.
@@ -198,6 +211,73 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
         md5Bytes[8] &= 0x3f; /* clear variant */
         md5Bytes[8] |= (byte) 0x80; /* set to IETF variant */
         return new UUID(md5Bytes);
+    }
+
+    /**
+     * Static factory to retrieve a type 7 UUID. The generated value uses the Unix epoch millisecond timestamp for
+     * natural ordering and a 12-bit monotonic sequence to keep identifiers ordered within the same millisecond.
+     *
+     * @return A randomly generated {@code UUID} version 7.
+     */
+    public static UUID randomUUID7() {
+        final byte[] randomBytes = new byte[16];
+        Holder.NUMBER_GENERATOR.nextBytes(randomBytes);
+
+        final long[] v7Time = getV7Time();
+        final long milli = v7Time[0];
+        final long sequence = v7Time[1];
+
+        randomBytes[0] = (byte) (milli >> 40);
+        randomBytes[1] = (byte) (milli >> 32);
+        randomBytes[2] = (byte) (milli >> 24);
+        randomBytes[3] = (byte) (milli >> 16);
+        randomBytes[4] = (byte) (milli >> 8);
+        randomBytes[5] = (byte) milli;
+
+        randomBytes[6] = (byte) (0x70 | (0x0f & (sequence >> 8)));
+        randomBytes[7] = (byte) sequence;
+        randomBytes[8] &= 0x3f; /* clear variant */
+        randomBytes[8] |= (byte) 0x80; /* set to IETF variant */
+
+        return new UUID(ByteKit.toLong(randomBytes, 0, ByteOrder.BIG_ENDIAN),
+                ByteKit.toLong(randomBytes, 8, ByteOrder.BIG_ENDIAN));
+    }
+
+    /**
+     * Returns the UUIDv7 timestamp and sequence pair.
+     * <p>
+     * The method follows RFC 9562 section 6.2 method 1 by incrementing a 12-bit counter when more than one identifier
+     * is generated during the same millisecond. If the system clock moves backward, the packed value is advanced from
+     * the last emitted value to preserve monotonic ordering.
+     *
+     * @return A two-element array containing the millisecond timestamp and the 12-bit sequence.
+     */
+    private static long[] getV7Time() {
+        long milli = System.currentTimeMillis();
+        long sequence;
+        final long last = LAST_V7_TIME.get();
+        final long lastMilli = last >> 12;
+
+        if (milli == lastMilli) {
+            sequence = V7_SEQUENCE.incrementAndGet() & 0xfff;
+        } else {
+            sequence = 0;
+            V7_SEQUENCE.set(0);
+        }
+
+        long now = (milli << 12) + sequence;
+
+        while (true) {
+            final long currentLast = LAST_V7_TIME.get();
+            if (now <= currentLast) {
+                now = currentLast + 1;
+                milli = now >> 12;
+                sequence = now & 0xfff;
+            }
+            if (LAST_V7_TIME.compareAndSet(currentLast, now)) {
+                return new long[] { milli, sequence };
+            }
+        }
     }
 
     /**
@@ -450,7 +530,7 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
         }
         final UUID id = (UUID) object;
 
-        final long mostSigBits = this.getLeastSignificantBits();
+        final long mostSigBits = this.getMostSignificantBits();
         final long leastSigBits = this.getLeastSignificantBits();
         return (mostSigBits == id.getMostSignificantBits() && leastSigBits == id.getLeastSignificantBits());
     }
@@ -490,7 +570,17 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
      */
     private static class Holder {
 
+        /**
+         * Shared cryptographically strong random-number generator used by secure UUID factories.
+         */
         static final SecureRandom NUMBER_GENERATOR = RandomKit.getSecureRandom();
+
+        /**
+         * Prevents instantiation of the secure-random holder.
+         */
+        private Holder() {
+            // No initialization required.
+        }
 
     }
 

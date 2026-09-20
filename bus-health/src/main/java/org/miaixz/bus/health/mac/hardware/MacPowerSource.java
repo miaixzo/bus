@@ -97,16 +97,6 @@ public class MacPowerSource extends AbstractPowerSource {
     }
 
     /**
-     * Queries the power sources.
-     *
-     * @return the query power sources result
-     */
-    @Override
-    protected List<PowerSource> queryPowerSources() {
-        return getPowerSources();
-    }
-
-    /**
      * Gets Battery Information.
      *
      * @return An array of PowerSource objects representing batteries, etc.
@@ -303,6 +293,16 @@ public class MacPowerSource extends AbstractPowerSource {
                 powerSourcesInfo.release();
             }
         }
+    }
+
+    /**
+     * Queries the power sources.
+     *
+     * @return the query power sources result
+     */
+    @Override
+    protected List<PowerSource> queryPowerSources() {
+        return getPowerSources();
     }
 
 }

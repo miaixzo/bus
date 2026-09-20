@@ -69,24 +69,74 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     }
 
     /**
-     * The TcpStat enum.
+     * Queries the connections.
      *
-     * @author Kimi Liu
+     * @param protocol the protocol
+     * @param ipver    the ipver
+     * @param pidMap   the pid map
+     * @return the query connections result
      */
-    private enum TcpStat {
-        RtoAlgorithm, RtoMin, RtoMax, MaxConn, ActiveOpens, PassiveOpens, AttemptFails, EstabResets, CurrEstab, InSegs,
-        OutSegs, RetransSegs, InErrs, OutRsts, InCsumErrors;
-
+    private static List<IPConnection> queryConnections(String protocol, int ipver, Map<Long, Integer> pidMap) {
+        List<IPConnection> conns = new ArrayList<>();
+        for (String s : Builder
+                .readFile(ProcPath.NET + Symbol.SLASH + protocol + (ipver == 6 ? Symbol.SIX : Normal.EMPTY))) {
+            if (s.indexOf(Symbol.C_COLON) >= 0) {
+                String[] split = Pattern.SPACES_PATTERN.split(s.trim());
+                if (split.length > 9) {
+                    Pair<byte[], Integer> lAddr = parseIpAddr(split[1]);
+                    Pair<byte[], Integer> fAddr = parseIpAddr(split[2]);
+                    TcpState state = TcpState.fromLinuxState(Parsing.hexStringToInt(split[3], 0));
+                    Pair<Integer, Integer> txQrxQ = parseHexColonHex(split[4]);
+                    long inode = Parsing.parseLongOrDefault(split[9], 0);
+                    conns.add(
+                            new IPConnection(protocol + ipver, lAddr.getLeft(), lAddr.getRight(), fAddr.getLeft(),
+                                    fAddr.getRight(), state, txQrxQ.getLeft(), txQrxQ.getRight(),
+                                    pidMap.getOrDefault(inode, -1)));
+                }
+            }
+        }
+        return conns;
     }
 
     /**
-     * The UdpStat enum.
+     * Parses the ip addr.
      *
-     * @author Kimi Liu
+     * @param s the s
+     * @return the parse ip addr result
      */
-    private enum UdpStat {
-        OutDatagrams, InDatagrams, NoPorts, InErrors, RcvbufErrors, SndbufErrors, InCsumErrors, IgnoredMulti, MemErrors;
+    private static Pair<byte[], Integer> parseIpAddr(String s) {
+        int colon = s.indexOf(Symbol.C_COLON);
+        if (colon > 0 && colon < s.length()) {
+            byte[] first = ByteKit.hexStringToByteArray(s.substring(0, colon));
+            // Bytes are in __be32 endianness. we must invert each set of 4 bytes
+            for (int i = 0; i + 3 < first.length; i += 4) {
+                byte tmp = first[i];
+                first[i] = first[i + 3];
+                first[i + 3] = tmp;
+                tmp = first[i + 1];
+                first[i + 1] = first[i + 2];
+                first[i + 2] = tmp;
+            }
+            int second = Parsing.hexStringToInt(s.substring(colon + 1), 0);
+            return new Pair<>(first, second);
+        }
+        return new Pair<>(Normal.EMPTY_BYTE_ARRAY, 0);
+    }
 
+    /**
+     * Parses the hex colon hex.
+     *
+     * @param s the s
+     * @return the parse hex colon hex result
+     */
+    private static Pair<Integer, Integer> parseHexColonHex(String s) {
+        int colon = s.indexOf(Symbol.C_COLON);
+        if (colon > 0 && colon < s.length()) {
+            int first = Parsing.hexStringToInt(s.substring(0, colon), 0);
+            int second = Parsing.hexStringToInt(s.substring(colon + 1), 0);
+            return new Pair<>(first, second);
+        }
+        return new Pair<>(0, 0);
     }
 
     /**
@@ -216,74 +266,24 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     }
 
     /**
-     * Queries the connections.
+     * The TcpStat enum.
      *
-     * @param protocol the protocol
-     * @param ipver    the ipver
-     * @param pidMap   the pid map
-     * @return the query connections result
+     * @author Kimi Liu
      */
-    private static List<IPConnection> queryConnections(String protocol, int ipver, Map<Long, Integer> pidMap) {
-        List<IPConnection> conns = new ArrayList<>();
-        for (String s : Builder
-                .readFile(ProcPath.NET + Symbol.SLASH + protocol + (ipver == 6 ? Symbol.SIX : Normal.EMPTY))) {
-            if (s.indexOf(Symbol.C_COLON) >= 0) {
-                String[] split = Pattern.SPACES_PATTERN.split(s.trim());
-                if (split.length > 9) {
-                    Pair<byte[], Integer> lAddr = parseIpAddr(split[1]);
-                    Pair<byte[], Integer> fAddr = parseIpAddr(split[2]);
-                    TcpState state = TcpState.fromLinuxState(Parsing.hexStringToInt(split[3], 0));
-                    Pair<Integer, Integer> txQrxQ = parseHexColonHex(split[4]);
-                    long inode = Parsing.parseLongOrDefault(split[9], 0);
-                    conns.add(
-                            new IPConnection(protocol + ipver, lAddr.getLeft(), lAddr.getRight(), fAddr.getLeft(),
-                                    fAddr.getRight(), state, txQrxQ.getLeft(), txQrxQ.getRight(),
-                                    pidMap.getOrDefault(inode, -1)));
-                }
-            }
-        }
-        return conns;
+    private enum TcpStat {
+        RtoAlgorithm, RtoMin, RtoMax, MaxConn, ActiveOpens, PassiveOpens, AttemptFails, EstabResets, CurrEstab, InSegs,
+        OutSegs, RetransSegs, InErrs, OutRsts, InCsumErrors;
+
     }
 
     /**
-     * Parses the ip addr.
+     * The UdpStat enum.
      *
-     * @param s the s
-     * @return the parse ip addr result
+     * @author Kimi Liu
      */
-    private static Pair<byte[], Integer> parseIpAddr(String s) {
-        int colon = s.indexOf(Symbol.C_COLON);
-        if (colon > 0 && colon < s.length()) {
-            byte[] first = ByteKit.hexStringToByteArray(s.substring(0, colon));
-            // Bytes are in __be32 endianness. we must invert each set of 4 bytes
-            for (int i = 0; i + 3 < first.length; i += 4) {
-                byte tmp = first[i];
-                first[i] = first[i + 3];
-                first[i + 3] = tmp;
-                tmp = first[i + 1];
-                first[i + 1] = first[i + 2];
-                first[i + 2] = tmp;
-            }
-            int second = Parsing.hexStringToInt(s.substring(colon + 1), 0);
-            return new Pair<>(first, second);
-        }
-        return new Pair<>(Normal.EMPTY_BYTE_ARRAY, 0);
-    }
+    private enum UdpStat {
+        OutDatagrams, InDatagrams, NoPorts, InErrors, RcvbufErrors, SndbufErrors, InCsumErrors, IgnoredMulti, MemErrors;
 
-    /**
-     * Parses the hex colon hex.
-     *
-     * @param s the s
-     * @return the parse hex colon hex result
-     */
-    private static Pair<Integer, Integer> parseHexColonHex(String s) {
-        int colon = s.indexOf(Symbol.C_COLON);
-        if (colon > 0 && colon < s.length()) {
-            int first = Parsing.hexStringToInt(s.substring(0, colon), 0);
-            int second = Parsing.hexStringToInt(s.substring(colon + 1), 0);
-            return new Pair<>(first, second);
-        }
-        return new Pair<>(0, 0);
     }
 
 }

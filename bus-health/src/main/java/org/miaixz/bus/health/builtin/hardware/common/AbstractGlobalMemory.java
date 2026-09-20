@@ -47,18 +47,6 @@ public abstract class AbstractGlobalMemory implements GlobalMemory {
     }
 
     /**
-     * Returns the physical memory.
-     *
-     * @return the get physical memory result
-     */
-    @Override
-    public List<PhysicalMemory> getPhysicalMemory() {
-        // dmidecode requires sudo permission but is the only option on Linux
-        // and Unix
-        return getPhysicalMemory(Executor.runPrivilegedNative("dmidecode --type 17"));
-    }
-
-    /**
      * Parse physical memory information from dmidecode output.
      *
      * @param dmi output of {@code dmidecode --type 17}
@@ -142,6 +130,18 @@ public abstract class AbstractGlobalMemory implements GlobalMemory {
                             serialNumber));
         }
         return pmList;
+    }
+
+    /**
+     * Returns the physical memory.
+     *
+     * @return the get physical memory result
+     */
+    @Override
+    public List<PhysicalMemory> getPhysicalMemory() {
+        // dmidecode requires sudo permission but is the only option on Linux
+        // and Unix
+        return getPhysicalMemory(Executor.runPrivilegedNative("dmidecode --type 17"));
     }
 
     /**

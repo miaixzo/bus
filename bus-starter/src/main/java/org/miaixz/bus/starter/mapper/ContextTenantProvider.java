@@ -19,10 +19,8 @@
 */
 package org.miaixz.bus.starter.mapper;
 
-import java.util.Objects;
-
 import org.miaixz.bus.mapper.feature.tenant.TenantProvider;
-import org.miaixz.bus.spring.ContextBuilder;
+import org.miaixz.bus.spring.context.ContextBuilder;
 
 /**
  * Adapts the authenticated application context to Mapper tenant isolation.
@@ -32,17 +30,10 @@ import org.miaixz.bus.spring.ContextBuilder;
 public class ContextTenantProvider implements TenantProvider {
 
     /**
-     * Application-context-scoped runtime context facade.
+     * Creates the stateless context-backed tenant provider.
      */
-    private final ContextBuilder contextBuilder;
-
-    /**
-     * Creates a provider bound to the current Spring application context.
-     *
-     * @param contextBuilder authenticated context facade
-     */
-    public ContextTenantProvider(ContextBuilder contextBuilder) {
-        this.contextBuilder = Objects.requireNonNull(contextBuilder, "contextBuilder");
+    public ContextTenantProvider() {
+        // No initialization required.
     }
 
     /**
@@ -52,7 +43,7 @@ public class ContextTenantProvider implements TenantProvider {
      */
     @Override
     public String getTenantId() {
-        return this.contextBuilder.getTenantId();
+        return ContextBuilder.getTenantId();
     }
 
 }

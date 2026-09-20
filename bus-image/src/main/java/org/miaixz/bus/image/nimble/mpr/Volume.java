@@ -96,6 +96,18 @@ public abstract class Volume<T extends Number> {
     }
 
     /**
+     * Linearly interpolates between two double values.
+     *
+     * @param first    the first value.
+     * @param second   the second value.
+     * @param fraction the interpolation fraction.
+     * @return the interpolated value.
+     */
+    private static double lerp(double first, double second, double fraction) {
+        return first * (1 - fraction) + second * fraction;
+    }
+
+    /**
      * Gets the size.
      *
      * @return the size.
@@ -473,18 +485,6 @@ public abstract class Volume<T extends Number> {
             case Byte value -> Byte.toUnsignedInt(value);
             default -> number.doubleValue();
         };
-    }
-
-    /**
-     * Linearly interpolates between two double values.
-     *
-     * @param first    the first value.
-     * @param second   the second value.
-     * @param fraction the interpolation fraction.
-     * @return the interpolated value.
-     */
-    private static double lerp(double first, double second, double fraction) {
-        return first * (1 - fraction) + second * fraction;
     }
 
     /**

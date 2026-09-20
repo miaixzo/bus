@@ -51,71 +51,59 @@ import org.miaixz.bus.logger.Logger;
 public class Connection implements Serializable {
 
     /**
-     * The serial version uid value.
-     */
-    @Serial
-    private static final long serialVersionUID = 2852260616932L;
-
-    /**
      * The no timeout value.
      */
     public static final int NO_TIMEOUT = 0;
-
     /**
      * The synchronous mode value.
      */
     public static final int SYNCHRONOUS_MODE = 1;
-
     /**
      * The not listening value.
      */
     public static final int NOT_LISTENING = -1;
-
     /**
      * The def backlog value.
      */
     public static final int DEF_BACKLOG = 50;
-
     /**
      * The def socketdelay value.
      */
     public static final int DEF_SOCKETDELAY = 50;
-
     /**
      * The def abort timeout value.
      */
     public static final int DEF_ABORT_TIMEOUT = 1000;
-
     /**
      * The def buffersize value.
      */
     public static final int DEF_BUFFERSIZE = 0;
-
     /**
      * The def max pdu length value.
      */
     public static final int DEF_MAX_PDU_LENGTH = 16378;
-
     /**
      * The tls rsa with null sha value.
      */
     public static final String TLS_RSA_WITH_NULL_SHA = "SSL_RSA_WITH_NULL_SHA";
-
     /**
      * The tls rsa with 3 des ede cbc sha value.
      */
     public static final String TLS_RSA_WITH_3DES_EDE_CBC_SHA = "SSL_RSA_WITH_3DES_EDE_CBC_SHA";
-    // to fit into SunJSSE TLS Application Data Length 16408
     /**
      * The tls rsa with aes 128 cbc sha value.
      */
     public static final String TLS_RSA_WITH_AES_128_CBC_SHA = "TLS_RSA_WITH_AES_128_CBC_SHA";
-
+    // to fit into SunJSSE TLS Application Data Length 16408
     /**
      * The default tls protocols value.
      */
     public static final String[] DEFAULT_TLS_PROTOCOLS = { "TLSv1.2" };
-
+    /**
+     * The serial version uid value.
+     */
+    @Serial
+    private static final long serialVersionUID = 2852260616932L;
     /**
      * The tcp handlers value.
      */

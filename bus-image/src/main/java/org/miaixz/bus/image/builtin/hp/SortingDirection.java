@@ -57,6 +57,21 @@ public enum SortingDirection {
     }
 
     /**
+     * Creates a value from the supplied input.
+     *
+     * @param codeString the code string.
+     * @return the operation result.
+     */
+    public static SortingDirection fromString(String codeString) {
+        for (SortingDirection value : values()) {
+            if (value.codeString.equalsIgnoreCase(codeString)) {
+                return value;
+            }
+        }
+        throw new IllegalArgumentException("codeString: " + codeString);
+    }
+
+    /**
      * Gets the code string.
      *
      * @return the code string.
@@ -72,21 +87,6 @@ public enum SortingDirection {
      */
     public int getSign() {
         return sign;
-    }
-
-    /**
-     * Creates a value from the supplied input.
-     *
-     * @param codeString the code string.
-     * @return the operation result.
-     */
-    public static SortingDirection fromString(String codeString) {
-        for (SortingDirection value : values()) {
-            if (value.codeString.equalsIgnoreCase(codeString)) {
-                return value;
-            }
-        }
-        throw new IllegalArgumentException("codeString: " + codeString);
     }
 
 }

@@ -24,8 +24,9 @@
  * Provides shared integration utilities for Spring Framework and Spring Boot applications.
  *
  * <p>
- * Includes annotations, AOP and bean utilities, startup and banner hooks, conditional configuration, JDBC helpers, web
- * advice, converters, interceptors, argument resolvers, request wrappers, and routing support.
+ * Includes annotations, AOP and bean utilities, runtime context propagation, startup and banner hooks, conditional
+ * configuration, JDBC helpers, web advice, converters, interceptors, argument resolvers, request wrappers, and routing
+ * support.
  *
  * @author Kimi Liu
  */
@@ -62,6 +63,10 @@ module bus.spring {
     exports org.miaixz.bus.spring.boot.environment;
     exports org.miaixz.bus.spring.boot.listener;
     exports org.miaixz.bus.spring.boot.startup;
+    exports org.miaixz.bus.spring.context;
+    exports org.miaixz.bus.spring.context.task;
+    exports org.miaixz.bus.spring.context.spi;
+    exports org.miaixz.bus.spring.context.web;
     exports org.miaixz.bus.spring.jdbc;
     exports org.miaixz.bus.spring.web;
     exports org.miaixz.bus.spring.web.advice;

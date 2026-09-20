@@ -17,53 +17,29 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring;
+package org.miaixz.bus.image.nimble.opencv.lut.colormap;
 
 /**
- * Installs a runtime context snapshot for the lifetime of a lexical scope.
- * <p>
- * Scopes may be nested. Closing a scope restores the exact context that was visible before it was opened, and closing
- * the same scope more than once has no effect.
+ * Volume rendering shading settings of a map; absent on 2D-only maps.
  *
+ * @param gradientOpacity opacity factor by gradient magnitude, or null for none
  * @author Kimi Liu
  */
-public class ContextScope implements AutoCloseable {
+public record Lighting(boolean shade, float specularPower, GradientOpacity gradientOpacity) {
 
-    /**
-     * State visible before this scope was installed.
-     */
-    private final ContextState previous;
+    public static final Lighting DEFAULT = new Lighting(true, 10f);
 
-    /**
-     * State manager owning the current thread carrier.
-     */
-    private final ContextManager manager;
-
-    /**
-     * Whether the parent state has already been restored.
-     */
-    private boolean closed;
-
-    /**
-     * Installs the supplied snapshot.
-     *
-     * @param manager  state manager owning the current application context
-     * @param snapshot snapshot to install; {@code null} installs the empty snapshot
-     */
-    public ContextScope(ContextManager manager, ContextState snapshot) {
-        this.manager = manager;
-        this.previous = manager.install(snapshot);
-    }
-
-    /**
-     * Restores the parent context. This operation is idempotent.
-     */
-    @Override
-    public void close() {
-        if (!closed) {
-            closed = true;
-            this.manager.restore(this.previous);
+    public Lighting {
+        if (Float.isNaN(specularPower) || specularPower <= 0f) {
+            throw new IllegalArgumentException("Specular power must be positive: " + specularPower);
         }
     }
 
+    public Lighting(boolean shade, float specularPower) {
+        this(shade, specularPower, null);
+    }
+
+    public Lighting withGradientOpacity(GradientOpacity value) {
+        return new Lighting(shade, specularPower, value);
+    }
 }

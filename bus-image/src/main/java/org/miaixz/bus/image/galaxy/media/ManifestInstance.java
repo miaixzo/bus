@@ -104,6 +104,119 @@ public class ManifestInstance implements ManifestXml, Comparable<ManifestInstanc
     }
 
     /**
+     * Adds the instance.
+     *
+     * @param instances the instances.
+     * @param instance  the instance.
+     */
+    public static void addInstance(Map<String, ManifestInstance> instances, ManifestInstance instance) {
+        if (instances != null && instance != null) {
+            instances.put(buildMapKey(instance.getSopInstanceUID(), instance.getInstanceNumber()), instance);
+        }
+    }
+
+    /**
+     * Gets the instance.
+     *
+     * @param instances      the instances.
+     * @param sopUID         the sop uid.
+     * @param instanceNumber the instance number.
+     * @return the instance.
+     */
+    public static ManifestInstance getInstance(
+            Map<String, ManifestInstance> instances,
+            String sopUID,
+            Integer instanceNumber) {
+        return instances == null || sopUID == null ? null : instances.get(buildMapKey(sopUID, instanceNumber));
+    }
+
+    /**
+     * Removes the instance.
+     *
+     * @param instances      the instances.
+     * @param sopUID         the sop uid.
+     * @param instanceNumber the instance number.
+     * @return the operation result.
+     */
+    public static ManifestInstance removeInstance(
+            Map<String, ManifestInstance> instances,
+            String sopUID,
+            Integer instanceNumber) {
+        return instances == null || sopUID == null ? null : instances.remove(buildMapKey(sopUID, instanceNumber));
+    }
+
+    /**
+     * Executes the compare instance numbers operation.
+     *
+     * @param first  the first.
+     * @param second the second.
+     * @return the operation result.
+     */
+    private static int compareInstanceNumbers(Integer first, Integer second) {
+        if (first != null && second != null) {
+            return first.compareTo(second);
+        }
+        if (first == null && second != null) {
+            return 1;
+        }
+        return first != null ? -1 : 0;
+    }
+
+    /**
+     * Executes the compare normalized ui ds operation.
+     *
+     * @param first  the first.
+     * @param second the second.
+     * @return the operation result.
+     */
+    private static int compareNormalizedUIDs(String first, String second) {
+        int firstLength = first.length();
+        int secondLength = second.length();
+        if (firstLength < secondLength) {
+            return normalizeUID(first, secondLength - firstLength).compareTo(second);
+        }
+        if (firstLength > secondLength) {
+            return first.compareTo(normalizeUID(second, firstLength - secondLength));
+        }
+        return first.compareTo(second);
+    }
+
+    /**
+     * Executes the normalize uid operation.
+     *
+     * @param uid           the uid.
+     * @param paddingLength the padding length.
+     * @return the operation result.
+     */
+    private static String normalizeUID(String uid, int paddingLength) {
+        char[] padding = new char[paddingLength];
+        Arrays.fill(padding, Symbol.C_ZERO);
+        int lastDotIndex = uid.lastIndexOf(Symbol.C_DOT) + 1;
+        return uid.substring(0, lastDotIndex) + new String(padding) + uid.substring(lastDotIndex);
+    }
+
+    /**
+     * Builds the map key.
+     *
+     * @param sopUID         the sop uid.
+     * @param instanceNumber the instance number.
+     * @return the operation result.
+     */
+    private static String buildMapKey(String sopUID, Integer instanceNumber) {
+        return instanceNumber != null ? sopUID + KEY_SEPARATOR + instanceNumber : sopUID;
+    }
+
+    /**
+     * Determines whether text.
+     *
+     * @param value the value.
+     * @return true if the condition is met; otherwise false.
+     */
+    private static boolean hasText(String value) {
+        return value != null && !value.trim().isEmpty();
+    }
+
+    /**
      * Gets the sop instance uid.
      *
      * @return the sop instance uid.
@@ -266,119 +379,6 @@ public class ManifestInstance implements ManifestXml, Comparable<ManifestInstanc
     @Override
     public int hashCode() {
         return Objects.hash(sopInstanceUID, instanceNumber);
-    }
-
-    /**
-     * Adds the instance.
-     *
-     * @param instances the instances.
-     * @param instance  the instance.
-     */
-    public static void addInstance(Map<String, ManifestInstance> instances, ManifestInstance instance) {
-        if (instances != null && instance != null) {
-            instances.put(buildMapKey(instance.getSopInstanceUID(), instance.getInstanceNumber()), instance);
-        }
-    }
-
-    /**
-     * Gets the instance.
-     *
-     * @param instances      the instances.
-     * @param sopUID         the sop uid.
-     * @param instanceNumber the instance number.
-     * @return the instance.
-     */
-    public static ManifestInstance getInstance(
-            Map<String, ManifestInstance> instances,
-            String sopUID,
-            Integer instanceNumber) {
-        return instances == null || sopUID == null ? null : instances.get(buildMapKey(sopUID, instanceNumber));
-    }
-
-    /**
-     * Removes the instance.
-     *
-     * @param instances      the instances.
-     * @param sopUID         the sop uid.
-     * @param instanceNumber the instance number.
-     * @return the operation result.
-     */
-    public static ManifestInstance removeInstance(
-            Map<String, ManifestInstance> instances,
-            String sopUID,
-            Integer instanceNumber) {
-        return instances == null || sopUID == null ? null : instances.remove(buildMapKey(sopUID, instanceNumber));
-    }
-
-    /**
-     * Executes the compare instance numbers operation.
-     *
-     * @param first  the first.
-     * @param second the second.
-     * @return the operation result.
-     */
-    private static int compareInstanceNumbers(Integer first, Integer second) {
-        if (first != null && second != null) {
-            return first.compareTo(second);
-        }
-        if (first == null && second != null) {
-            return 1;
-        }
-        return first != null ? -1 : 0;
-    }
-
-    /**
-     * Executes the compare normalized ui ds operation.
-     *
-     * @param first  the first.
-     * @param second the second.
-     * @return the operation result.
-     */
-    private static int compareNormalizedUIDs(String first, String second) {
-        int firstLength = first.length();
-        int secondLength = second.length();
-        if (firstLength < secondLength) {
-            return normalizeUID(first, secondLength - firstLength).compareTo(second);
-        }
-        if (firstLength > secondLength) {
-            return first.compareTo(normalizeUID(second, firstLength - secondLength));
-        }
-        return first.compareTo(second);
-    }
-
-    /**
-     * Executes the normalize uid operation.
-     *
-     * @param uid           the uid.
-     * @param paddingLength the padding length.
-     * @return the operation result.
-     */
-    private static String normalizeUID(String uid, int paddingLength) {
-        char[] padding = new char[paddingLength];
-        Arrays.fill(padding, Symbol.C_ZERO);
-        int lastDotIndex = uid.lastIndexOf(Symbol.C_DOT) + 1;
-        return uid.substring(0, lastDotIndex) + new String(padding) + uid.substring(lastDotIndex);
-    }
-
-    /**
-     * Builds the map key.
-     *
-     * @param sopUID         the sop uid.
-     * @param instanceNumber the instance number.
-     * @return the operation result.
-     */
-    private static String buildMapKey(String sopUID, Integer instanceNumber) {
-        return instanceNumber != null ? sopUID + KEY_SEPARATOR + instanceNumber : sopUID;
-    }
-
-    /**
-     * Determines whether text.
-     *
-     * @param value the value.
-     * @return true if the condition is met; otherwise false.
-     */
-    private static boolean hasText(String value) {
-        return value != null && !value.trim().isEmpty();
     }
 
 }

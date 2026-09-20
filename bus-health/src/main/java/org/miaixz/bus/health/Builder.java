@@ -19,15 +19,11 @@
 */
 package org.miaixz.bus.health;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.*;
+import java.nio.file.FileSystem;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -380,6 +376,16 @@ public class Builder {
      * Windows configuration: whether to disable all counters on performance counter failure.
      */
     public static final String _WINDOWS_PERF_DISABLE_ALL_ON_FAILURE = "bus.health.windows.perf.disable.all.on.failure";
+
+    /**
+     * Windows configuration: whether to disable Open Hardware Monitor WMI queries.
+     */
+    public static final String _WINDOWS_OHM_DISABLED = "bus.health.windows.ohm.disabled";
+
+    /**
+     * Windows configuration: whether to disable Libre Hardware Monitor WMI queries.
+     */
+    public static final String _WINDOWS_LHM_DISABLED = "bus.health.windows.lhm.disabled";
 
     /**
      * Unix epoch time, used as a default when WMI DateTime queries return no value.

@@ -19,20 +19,14 @@
 */
 package org.miaixz.bus.image.nimble.opencv.lut;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
 
-import javax.swing.Icon;
+import javax.swing.*;
 
+import org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap;
 import org.miaixz.bus.image.nimble.opencv.op.ByteLutCollection;
 
 /**
@@ -41,9 +35,10 @@ import org.miaixz.bus.image.nimble.opencv.op.ByteLutCollection;
  *
  * @param name     the name.
  * @param lutTable the lut table.
+ * @param source   the source color map.
  * @author Kimi Liu
  */
-public record ByteLut(String name, byte[][] lutTable) {
+public record ByteLut(String name, byte[][] lutTable, ColorMap source) {
 
     /**
      * The channel count value.
@@ -65,6 +60,27 @@ public record ByteLut(String name, byte[][] lutTable) {
     private static final byte[][] DEFAULT_GRAY_LUT = createDefaultGrayLut();
 
     /**
+     * Creates a new instance.
+     *
+     * @param name     the name.
+     * @param lutTable the LUT table.
+     */
+    public ByteLut {
+        Objects.requireNonNull(name, "Name cannot be null");
+        validateLutTable(lutTable);
+    }
+
+    /**
+     * Creates a new instance.
+     *
+     * @param name     the name.
+     * @param lutTable the LUT table.
+     */
+    public ByteLut(String name, byte[][] lutTable) {
+        this(name, lutTable, null);
+    }
+
+    /**
      * Creates the default gray LUT.
      *
      * @return the operation result.
@@ -78,17 +94,6 @@ public record ByteLut(String name, byte[][] lutTable) {
             lut[2][i] = value; // Red
         }
         return lut;
-    }
-
-    /**
-     * Creates a new instance.
-     *
-     * @param name     the name.
-     * @param lutTable the LUT table.
-     */
-    public ByteLut {
-        Objects.requireNonNull(name, "Name cannot be null");
-        validateLutTable(lutTable);
     }
 
     /**
@@ -113,6 +118,28 @@ public record ByteLut(String name, byte[][] lutTable) {
     }
 
     /**
+     * Reads the LUT file.
+     *
+     * @param scanner the scanner.
+     * @return the operation result.
+     */
+    public static byte[][] readLutFile(Scanner scanner) {
+        return ByteLutCollection.readLutFile(scanner);
+    }
+
+    /**
+     * Reads the LUT files.
+     *
+     * @param folder the folder.
+     * @return the operation result.
+     */
+    public static List<ByteLut> readLutFiles(Path folder) {
+        List<ByteLut> entries = new ArrayList<>();
+        ByteLutCollection.readLutFilesFromResourcesDir(entries, folder);
+        return List.copyOf(entries);
+    }
+
+    /**
      * Returns the string representation.
      *
      * @return the string representation.
@@ -131,7 +158,7 @@ public record ByteLut(String name, byte[][] lutTable) {
     @Override
     public boolean equals(Object o) {
         return this == o || (o instanceof ByteLut other && Objects.equals(name, other.name)
-                && Arrays.deepEquals(lutTable, other.lutTable));
+                && Arrays.deepEquals(lutTable, other.lutTable) && Objects.equals(source, other.source));
     }
 
     /**
@@ -141,7 +168,7 @@ public record ByteLut(String name, byte[][] lutTable) {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(name, Arrays.deepHashCode(lutTable));
+        return Objects.hash(name, Arrays.deepHashCode(lutTable), source);
     }
 
     /**
@@ -175,29 +202,8 @@ public record ByteLut(String name, byte[][] lutTable) {
      * @return the operation result.
      */
     public ByteLut inverted() {
-        return new ByteLut(name + " inverse", ByteLutCollection.invert(lutTable != null ? lutTable : DEFAULT_GRAY_LUT));
-    }
-
-    /**
-     * Reads the LUT file.
-     *
-     * @param scanner the scanner.
-     * @return the operation result.
-     */
-    public static byte[][] readLutFile(Scanner scanner) {
-        return ByteLutCollection.readLutFile(scanner);
-    }
-
-    /**
-     * Reads the LUT files.
-     *
-     * @param folder the folder.
-     * @return the operation result.
-     */
-    public static List<ByteLut> readLutFiles(Path folder) {
-        List<ByteLut> entries = new ArrayList<>();
-        ByteLutCollection.readLutFilesFromResourcesDir(entries, folder);
-        return List.copyOf(entries);
+        return new ByteLut(name + " inverse", ByteLutCollection.invert(lutTable != null ? lutTable : DEFAULT_GRAY_LUT),
+                source == null ? null : source.reversed());
     }
 
     /**

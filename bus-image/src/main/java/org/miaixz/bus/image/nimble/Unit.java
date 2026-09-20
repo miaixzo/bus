@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.image.nimble;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.center.function.PredicateX;
@@ -154,6 +150,110 @@ public enum Unit {
     }
 
     /**
+     * Gets the by id.
+     *
+     * @param id the id.
+     * @return the by id.
+     */
+    public static Unit getById(int id) {
+        return ID_TO_UNIT.getOrDefault(id, PIXEL);
+    }
+
+    /**
+     * Gets the by name.
+     *
+     * @param name the name.
+     * @return the by name.
+     */
+    public static Optional<Unit> getByName(String name) {
+        return Optional.ofNullable(NAME_TO_UNIT.get(name));
+    }
+
+    /**
+     * Gets the by abbreviation.
+     *
+     * @param abbreviation the abbreviation.
+     * @return the by abbreviation.
+     */
+    public static Optional<Unit> getByAbbreviation(String abbreviation) {
+        return Optional.ofNullable(ABBREV_TO_UNIT.get(abbreviation));
+    }
+
+    /**
+     * Gets the physical units.
+     *
+     * @return the physical units.
+     */
+    public static List<Unit> getPhysicalUnits() {
+        return filtered(unit -> unit != PIXEL);
+    }
+
+    /**
+     * Gets the metric units.
+     *
+     * @return the metric units.
+     */
+    public static List<Unit> getMetricUnits() {
+        return getUnitsBySystem(UnitSystem.METRIC);
+    }
+
+    /**
+     * Gets the imperial units.
+     *
+     * @return the imperial units.
+     */
+    public static List<Unit> getImperialUnits() {
+        return getUnitsBySystem(UnitSystem.IMPERIAL);
+    }
+
+    /**
+     * Gets the units by system.
+     *
+     * @param system the system.
+     * @return the units by system.
+     */
+    public static List<Unit> getUnitsBySystem(UnitSystem system) {
+        return filtered(unit -> unit.system == system);
+    }
+
+    /**
+     * Executes the filtered operation.
+     *
+     * @param filter the filter.
+     * @return the operation result.
+     */
+    private static List<Unit> filtered(PredicateX<Unit> filter) {
+        return Arrays.stream(values()).filter(filter).sorted(Comparator.comparingInt(Unit::getId)).toList();
+    }
+
+    /**
+     * Finds the best unit.
+     *
+     * @param valueInMeters   the value in meters.
+     * @param preferredSystem the preferred system.
+     * @return the operation result.
+     */
+    public static Unit findBestUnit(double valueInMeters, UnitSystem preferredSystem) {
+        return getUnitsBySystem(preferredSystem).stream().filter(unit -> unit != PIXEL)
+                .min(Comparator.comparingDouble(unit -> score(unit.fromMeters(valueInMeters)))).orElse(METER);
+    }
+
+    /**
+     * Executes the score operation.
+     *
+     * @param value the value.
+     * @return the operation result.
+     */
+    private static double score(double value) {
+        double abs = Math.abs(value);
+        if (abs == 0.0) {
+            return 0.0;
+        }
+        double log = Math.abs(Math.log10(abs));
+        return abs >= 0.1 && abs <= 1000.0 ? log : log + 10.0;
+    }
+
+    /**
      * Gets the id.
      *
      * @return the id.
@@ -281,110 +381,6 @@ public enum Unit {
     public List<Unit> getUnitsInSameSystem() {
         return Arrays.stream(values()).filter(unit -> unit.system == system)
                 .sorted(Comparator.comparingInt(Unit::getId)).toList();
-    }
-
-    /**
-     * Gets the by id.
-     *
-     * @param id the id.
-     * @return the by id.
-     */
-    public static Unit getById(int id) {
-        return ID_TO_UNIT.getOrDefault(id, PIXEL);
-    }
-
-    /**
-     * Gets the by name.
-     *
-     * @param name the name.
-     * @return the by name.
-     */
-    public static Optional<Unit> getByName(String name) {
-        return Optional.ofNullable(NAME_TO_UNIT.get(name));
-    }
-
-    /**
-     * Gets the by abbreviation.
-     *
-     * @param abbreviation the abbreviation.
-     * @return the by abbreviation.
-     */
-    public static Optional<Unit> getByAbbreviation(String abbreviation) {
-        return Optional.ofNullable(ABBREV_TO_UNIT.get(abbreviation));
-    }
-
-    /**
-     * Gets the physical units.
-     *
-     * @return the physical units.
-     */
-    public static List<Unit> getPhysicalUnits() {
-        return filtered(unit -> unit != PIXEL);
-    }
-
-    /**
-     * Gets the metric units.
-     *
-     * @return the metric units.
-     */
-    public static List<Unit> getMetricUnits() {
-        return getUnitsBySystem(UnitSystem.METRIC);
-    }
-
-    /**
-     * Gets the imperial units.
-     *
-     * @return the imperial units.
-     */
-    public static List<Unit> getImperialUnits() {
-        return getUnitsBySystem(UnitSystem.IMPERIAL);
-    }
-
-    /**
-     * Gets the units by system.
-     *
-     * @param system the system.
-     * @return the units by system.
-     */
-    public static List<Unit> getUnitsBySystem(UnitSystem system) {
-        return filtered(unit -> unit.system == system);
-    }
-
-    /**
-     * Executes the filtered operation.
-     *
-     * @param filter the filter.
-     * @return the operation result.
-     */
-    private static List<Unit> filtered(PredicateX<Unit> filter) {
-        return Arrays.stream(values()).filter(filter).sorted(Comparator.comparingInt(Unit::getId)).toList();
-    }
-
-    /**
-     * Finds the best unit.
-     *
-     * @param valueInMeters   the value in meters.
-     * @param preferredSystem the preferred system.
-     * @return the operation result.
-     */
-    public static Unit findBestUnit(double valueInMeters, UnitSystem preferredSystem) {
-        return getUnitsBySystem(preferredSystem).stream().filter(unit -> unit != PIXEL)
-                .min(Comparator.comparingDouble(unit -> score(unit.fromMeters(valueInMeters)))).orElse(METER);
-    }
-
-    /**
-     * Executes the score operation.
-     *
-     * @param value the value.
-     * @return the operation result.
-     */
-    private static double score(double value) {
-        double abs = Math.abs(value);
-        if (abs == 0.0) {
-            return 0.0;
-        }
-        double log = Math.abs(Math.log10(abs));
-        return abs >= 0.1 && abs <= 1000.0 ? log : log + 10.0;
     }
 
     /**

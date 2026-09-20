@@ -31,45 +31,38 @@ import java.util.Objects;
 public class KernelData {
 
     /**
-     * The min sigma value.
-     */
-    private static final float MIN_SIGMA = 1.0e-5f;
-
-    /**
      * The none value.
      */
     public static final KernelData NONE = new KernelData("None", KernelType.IDENTITY, 1, 1, new float[] { 1.0f });
-
     /**
      * The mean value.
      */
     public static final KernelData MEAN = new KernelData("Mean", KernelType.SMOOTHING, 3, 3,
             new float[] { 1, 1, 1, 1, 1, 1, 1, 1, 1 }, 9);
-
     /**
      * The blur value.
      */
     public static final KernelData BLUR = new KernelData("Blur", KernelType.SMOOTHING, 3, 3,
             new float[] { 0, 1, 0, 1, 4, 1, 0, 1, 0 }, 8);
-
     /**
      * The sharpen value.
      */
     public static final KernelData SHARPEN = new KernelData("Sharpen", KernelType.SHARPENING, 3, 3,
             new float[] { 0, -1, 0, -1, 8, -1, 0, -1, 0 }, 4);
-
     /**
      * The edge detect value.
      */
     public static final KernelData EDGE_DETECT = new KernelData("Edge Detect", KernelType.EDGE_DETECTION, 3, 3,
             new float[] { 0, -1, 0, -1, 4, -1, 0, -1, 0 });
-
     /**
      * The emboss value.
      */
     public static final KernelData EMBOSS = new KernelData("Emboss", KernelType.SPECIAL_EFFECT, 3, 3,
             new float[] { -5, 0, 0, 0, 1, 0, 0, 0, 5 });
-
+    /**
+     * The min sigma value.
+     */
+    private static final float MIN_SIGMA = 1.0e-5f;
     /**
      * The gaussian 3 value.
      */

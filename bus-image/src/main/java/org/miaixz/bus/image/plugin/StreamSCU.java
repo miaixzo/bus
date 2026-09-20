@@ -113,22 +113,6 @@ public class StreamSCU {
      * A scheduled executor for closing idle associations.
      */
     private final ScheduledExecutorService closeAssociationExecutor = Executors.newSingleThreadScheduledExecutor();
-
-    /**
-     * Additional attributes to be merged.
-     */
-    private Attributes attrs;
-
-    /**
-     * A flag to enable SOP Class Relationship extended negotiation.
-     */
-    private boolean relExtNeg;
-
-    /**
-     * The active DICOM association.
-     */
-    private Association as;
-
     /**
      * The task to be executed for closing an idle association.
      */
@@ -139,26 +123,10 @@ public class StreamSCU {
             close(false);
         }
     };
-
-    /**
-     * The last recorded status code from a C-STORE response.
-     */
-    private int lastStatusCode = Integer.MIN_VALUE;
-
-    /**
-     * A counter for the number of status logs to prevent flooding.
-     */
-    private int nbStatusLog = 0;
-
-    /**
-     * The total number of sub-operations expected.
-     */
-    private int numberOfSuboperations = 0;
-
     /**
      * A factory for creating DIMSE response handlers.
      */
-    private final RSPHandlerFactory rspHandlerFactory = () -> new DimseRSPHandler(as.nextMessageID()) {
+    private final RSPHandlerFactory rspHandlerFactory = () -> new DimseRSPHandler(this.as.nextMessageID()) {
 
         @Override
         public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
@@ -211,7 +179,30 @@ public class StreamSCU {
             Builder.notifyProgession(state.getProgress(), cmd, ps, numberOfSuboperations);
         }
     };
-
+    /**
+     * Additional attributes to be merged.
+     */
+    private Attributes attrs;
+    /**
+     * A flag to enable SOP Class Relationship extended negotiation.
+     */
+    private boolean relExtNeg;
+    /**
+     * The active DICOM association.
+     */
+    private Association as;
+    /**
+     * The last recorded status code from a C-STORE response.
+     */
+    private int lastStatusCode = Integer.MIN_VALUE;
+    /**
+     * A counter for the number of status logs to prevent flooding.
+     */
+    private int nbStatusLog = 0;
+    /**
+     * The total number of sub-operations expected.
+     */
+    private int numberOfSuboperations = 0;
     /**
      * The future result of the scheduled close task.
      */

@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Extends JNA IP Helper API mapping with routing table calls.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface IPHlpAPI extends com.sun.jna.platform.win32.IPHlpAPI {
 
@@ -40,6 +39,22 @@ public interface IPHlpAPI extends com.sun.jna.platform.win32.IPHlpAPI {
      * The IP Helper API instance.
      */
     IPHlpAPI INSTANCE = Native.load("IPHlpAPI", IPHlpAPI.class, W32APIOptions.DEFAULT_OPTIONS);
+
+    /**
+     * Retrieves the IP route entries on the local computer.
+     *
+     * @param family The address family.
+     * @param table  Receives the allocated routing table pointer.
+     * @return {@code NO_ERROR} on success.
+     */
+    int GetIpForwardTable2(short family, PointerByReference table);
+
+    /**
+     * Frees a table allocated by the IP Helper API.
+     *
+     * @param memory The table pointer to free.
+     */
+    void FreeMibTable(Pointer memory);
 
     /**
      * A union of {@code SOCKADDR_IN}, {@code SOCKADDR_IN6}, and {@code ADDRESS_FAMILY}.
@@ -205,21 +220,5 @@ public interface IPHlpAPI extends com.sun.jna.platform.win32.IPHlpAPI {
             super(p);
         }
     }
-
-    /**
-     * Retrieves the IP route entries on the local computer.
-     *
-     * @param family The address family.
-     * @param table  Receives the allocated routing table pointer.
-     * @return {@code NO_ERROR} on success.
-     */
-    int GetIpForwardTable2(short family, PointerByReference table);
-
-    /**
-     * Frees a table allocated by the IP Helper API.
-     *
-     * @param memory The table pointer to free.
-     */
-    void FreeMibTable(Pointer memory);
 
 }

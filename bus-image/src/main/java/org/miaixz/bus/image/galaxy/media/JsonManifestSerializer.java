@@ -50,6 +50,17 @@ public class JsonManifestSerializer {
     }
 
     /**
+     * Gets a DICOM keyword.
+     *
+     * @param tag the tag.
+     * @return the keyword.
+     */
+    private static String keyword(int tag) {
+        String keyword = ElementDictionary.getStandardElementDictionary().keywordOf(tag);
+        return keyword == null || keyword.isBlank() ? Tag.toString(tag) : keyword;
+    }
+
+    /**
      * Writes a manifest as JSON.
      *
      * @param manifest the manifest.
@@ -455,17 +466,6 @@ public class JsonManifestSerializer {
         if (!first) {
             writer.append(',');
         }
-    }
-
-    /**
-     * Gets a DICOM keyword.
-     *
-     * @param tag the tag.
-     * @return the keyword.
-     */
-    private static String keyword(int tag) {
-        String keyword = ElementDictionary.getStandardElementDictionary().keywordOf(tag);
-        return keyword == null || keyword.isBlank() ? Tag.toString(tag) : keyword;
     }
 
 }

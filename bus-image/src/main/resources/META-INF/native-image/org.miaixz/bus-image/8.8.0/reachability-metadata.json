@@ -6988,6 +6988,7 @@
             "org.miaixz.bus.image.galaxy.data.UpdatePolicy",
             "boolean",
             "boolean",
+            "boolean",
             "org.miaixz.bus.image.galaxy.data.Attributes"
           ]
         },
@@ -6995,6 +6996,14 @@
           "name": "addAll",
           "parameterTypes": [
             "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        },
+        {
+          "name": "addAll",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "boolean",
+            "boolean"
           ]
         },
         {
@@ -7158,16 +7167,6 @@
           "parameterTypes": [
             "java.lang.String",
             "int"
-          ]
-        },
-        {
-          "name": "containsBulkData",
-          "parameterTypes": []
-        },
-        {
-          "name": "containsBulkData",
-          "parameterTypes": [
-            "java.lang.Object"
           ]
         },
         {
@@ -8691,12 +8690,6 @@
           "parameterTypes": []
         },
         {
-          "name": "removeAllBulkData",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
           "name": "removeCurveData",
           "parameterTypes": []
         },
@@ -8768,6 +8761,7 @@
             "java.lang.String",
             "int",
             "org.miaixz.bus.image.galaxy.data.Sequence",
+            "boolean",
             "org.miaixz.bus.image.galaxy.data.Attributes"
           ]
         },
@@ -46034,6 +46028,13 @@
           ]
         },
         {
+          "name": "readFully",
+          "parameterTypes": [
+            "java.nio.channels.SeekableByteChannel",
+            "int"
+          ]
+        },
+        {
           "name": "nextSegment",
           "parameterTypes": [
             "java.nio.channels.SeekableByteChannel"
@@ -46793,6 +46794,13 @@
           "parameterTypes": [
             "java.nio.channels.SeekableByteChannel",
             "long"
+          ]
+        },
+        {
+          "name": "readFully",
+          "parameterTypes": [
+            "java.nio.channels.SeekableByteChannel",
+            "int"
           ]
         },
         {
@@ -51114,6 +51122,14 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.ImageAnalyzer$Range",
+      "fields": [
+        {
+          "name": "min"
+        },
+        {
+          "name": "max"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -51123,25 +51139,25 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
+          "name": "toString",
+          "parameterTypes": []
         },
         {
           "name": "hashCode",
           "parameterTypes": []
         },
         {
-          "name": "max",
-          "parameterTypes": []
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
         },
         {
           "name": "min",
           "parameterTypes": []
         },
         {
-          "name": "toString",
+          "name": "max",
           "parameterTypes": []
         }
       ]
@@ -52419,6 +52435,17 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.LookupTableCV",
+      "fields": [
+        {
+          "name": "offsets"
+        },
+        {
+          "name": "data"
+        },
+        {
+          "name": "forceReadingUnsigned"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -52485,16 +52512,201 @@
             "boolean",
             "boolean"
           ]
+        },
+        {
+          "name": "validateByteArrayInput",
+          "parameterTypes": [
+            "byte[][]",
+            "int[]"
+          ]
+        },
+        {
+          "name": "createOffsets",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "getData",
+          "parameterTypes": []
+        },
+        {
+          "name": "getByteData",
+          "parameterTypes": []
+        },
+        {
+          "name": "getByteData",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getShortData",
+          "parameterTypes": []
+        },
+        {
+          "name": "getShortData",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getOffsets",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOffset",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOffset",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getNumBands",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNumEntries",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDataType",
+          "parameterTypes": []
+        },
+        {
+          "name": "lookup",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "lookup",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "extractSourceData",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "int"
+          ]
+        },
+        {
+          "name": "toMat",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "toMat",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "short[]"
+          ]
+        },
+        {
+          "name": "prepareLutContext",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "expandToChannels",
+          "parameterTypes": [
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "expandToChannels",
+          "parameterTypes": [
+            "short[]",
+            "int"
+          ]
+        },
+        {
+          "name": "clampIndex",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "sourceChannels",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "lookupByteToByte",
+          "parameterTypes": [
+            "byte[]",
+            "byte[]",
+            "org.miaixz.bus.image.nimble.opencv.LookupTableCV$LutContext"
+          ]
+        },
+        {
+          "name": "lookupShortToByte",
+          "parameterTypes": [
+            "short[]",
+            "byte[]",
+            "org.miaixz.bus.image.nimble.opencv.LookupTableCV$LutContext",
+            "int"
+          ]
+        },
+        {
+          "name": "lookupByteToShort",
+          "parameterTypes": [
+            "byte[]",
+            "short[]",
+            "org.miaixz.bus.image.nimble.opencv.LookupTableCV$LutContext"
+          ]
+        },
+        {
+          "name": "lookupShortToShort",
+          "parameterTypes": [
+            "short[]",
+            "short[]",
+            "org.miaixz.bus.image.nimble.opencv.LookupTableCV$LutContext",
+            "int"
+          ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.LookupTableCV$LutContext",
+      "fields": [
+        {
+          "name": "numBands"
+        },
+        {
+          "name": "offsets"
+        },
+        {
+          "name": "byteData"
+        },
+        {
+          "name": "shortData"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
-            "int",
             "int",
             "int[]",
             "byte[][]",
@@ -52502,11 +52714,78 @@
           ]
         },
         {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "numBands",
+          "parameterTypes": []
+        },
+        {
+          "name": "offsets",
+          "parameterTypes": []
+        },
+        {
           "name": "byteData",
           "parameterTypes": []
         },
         {
-          "name": "channels",
+          "name": "shortData",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.ByteLut",
+      "fields": [
+        {
+          "name": "name"
+        },
+        {
+          "name": "lutTable"
+        },
+        {
+          "name": "source"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[][]",
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[][]"
+          ]
+        },
+        {
+          "name": "createDefaultGrayLut",
+          "parameterTypes": []
+        },
+        {
+          "name": "validateLutTable",
+          "parameterTypes": [
+            "byte[][]"
+          ]
+        },
+        {
+          "name": "toString",
           "parameterTypes": []
         },
         {
@@ -52520,35 +52799,39 @@
           "parameterTypes": []
         },
         {
-          "name": "isTableDataByte",
-          "parameterTypes": []
-        },
-        {
-          "name": "numBands",
-          "parameterTypes": []
-        },
-        {
-          "name": "offsets",
-          "parameterTypes": []
-        },
-        {
-          "name": "shortData",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.image.nimble.opencv.lut.ByteLut",
-      "methods": [
-        {
-          "name": "<init>",
+          "name": "getIcon",
           "parameterTypes": [
-            "java.lang.String",
-            "byte[][]"
+            "int"
+          ]
+        },
+        {
+          "name": "getIcon",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "inverted",
+          "parameterTypes": []
+        },
+        {
+          "name": "readLutFile",
+          "parameterTypes": [
+            "java.util.Scanner"
+          ]
+        },
+        {
+          "name": "readLutFiles",
+          "parameterTypes": [
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "getColor",
+          "parameterTypes": [
+            "int",
+            "int"
           ]
         },
         {
@@ -52566,41 +52849,7 @@
           ]
         },
         {
-          "name": "createDefaultGrayLut",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getColor",
-          "parameterTypes": [
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "getIcon",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "getIcon",
-          "parameterTypes": [
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "inverted",
+          "name": "name",
           "parameterTypes": []
         },
         {
@@ -52608,35 +52857,24 @@
           "parameterTypes": []
         },
         {
-          "name": "name",
+          "name": "source",
           "parameterTypes": []
-        },
-        {
-          "name": "readLutFile",
-          "parameterTypes": [
-            "java.util.Scanner"
-          ]
-        },
-        {
-          "name": "readLutFiles",
-          "parameterTypes": [
-            "java.nio.file.Path"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "validateLutTable",
-          "parameterTypes": [
-            "byte[][]"
-          ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.lut.ByteLut$LutIcon",
+      "fields": [
+        {
+          "name": "width"
+        },
+        {
+          "name": "height"
+        },
+        {
+          "name": "this$0"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -52645,22 +52883,6 @@
             "int",
             "int"
           ]
-        },
-        {
-          "name": "drawLutBars",
-          "parameterTypes": [
-            "java.awt.Graphics",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "getIconHeight",
-          "parameterTypes": []
-        },
-        {
-          "name": "getIconWidth",
-          "parameterTypes": []
         },
         {
           "name": "paintIcon",
@@ -52676,6 +52898,22 @@
           "parameterTypes": [
             "java.awt.Graphics"
           ]
+        },
+        {
+          "name": "drawLutBars",
+          "parameterTypes": [
+            "java.awt.Graphics",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "getIconWidth",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIconHeight",
+          "parameterTypes": []
         }
       ]
     },
@@ -53013,10 +53251,10 @@
       "type": "org.miaixz.bus.image.nimble.opencv.lut.LutShape",
       "fields": [
         {
-          "name": "explanation"
+          "name": "function"
         },
         {
-          "name": "function"
+          "name": "explanation"
         },
         {
           "name": "lookup"
@@ -53044,18 +53282,10 @@
           ]
         },
         {
-          "name": "equals",
+          "name": "normalizeExplanation",
           "parameterTypes": [
-            "java.lang.Object"
+            "java.lang.String"
           ]
-        },
-        {
-          "name": "getAllPredefined",
-          "parameterTypes": []
-        },
-        {
-          "name": "getExplanation",
-          "parameterTypes": []
         },
         {
           "name": "getFunctionType",
@@ -53066,13 +53296,11 @@
           "parameterTypes": []
         },
         {
-          "name": "getLutShape",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
+          "name": "getExplanation",
+          "parameterTypes": []
         },
         {
-          "name": "hashCode",
+          "name": "toString",
           "parameterTypes": []
         },
         {
@@ -53080,13 +53308,23 @@
           "parameterTypes": []
         },
         {
-          "name": "normalizeExplanation",
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLutShape",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "toString",
+          "name": "getAllPredefined",
           "parameterTypes": []
         }
       ]
@@ -53096,29 +53334,22 @@
       "fields": [
         {
           "name": "description"
-        },
-        {
-          "name": "LINEAR"
-        },
-        {
-          "name": "LOG"
-        },
-        {
-          "name": "LOG_INV"
-        },
-        {
-          "name": "SIGMOID"
-        },
-        {
-          "name": "SIGMOID_NORM"
         }
       ],
       "methods": [
         {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.String",
-            "int",
             "java.lang.String"
           ]
         },
@@ -53131,13 +53362,7 @@
           "parameterTypes": []
         },
         {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
+          "name": "$values",
           "parameterTypes": []
         }
       ]
@@ -53614,6 +53839,19 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "parseExifParseMetadata",
+          "parameterTypes": [
+            "java.util.List",
+            "org.opencv.core.MatOfInt"
+          ]
+        },
+        {
+          "name": "parseTagRow",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
         }
       ]
     },
@@ -54439,6 +54677,20 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.seg.Region",
+      "fields": [
+        {
+          "name": "id"
+        },
+        {
+          "name": "numberOfPixels"
+        },
+        {
+          "name": "segmentList"
+        },
+        {
+          "name": "attributes"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -54460,6 +54712,125 @@
             "java.util.List",
             "long"
           ]
+        },
+        {
+          "name": "generateOrValidateId",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSegmentList",
+          "parameterTypes": []
+        },
+        {
+          "name": "setSegmentList",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "setSegmentList",
+          "parameterTypes": [
+            "java.util.List",
+            "long"
+          ]
+        },
+        {
+          "name": "getAttributes",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAttributes",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.seg.RegionAttributes"
+          ]
+        },
+        {
+          "name": "getNumberOfPixels",
+          "parameterTypes": []
+        },
+        {
+          "name": "hasValidPixelCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "buildSegmentList",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage"
+          ]
+        },
+        {
+          "name": "buildSegmentList",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.opencv.core.Point"
+          ]
+        },
+        {
+          "name": "findContours",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "java.util.List",
+            "org.opencv.core.Mat",
+            "org.opencv.core.Point"
+          ]
+        },
+        {
+          "name": "buildSegmentListFromFloat",
+          "parameterTypes": [
+            "java.util.List",
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "buildSegmentList",
+          "parameterTypes": [
+            "java.util.List",
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "buildSegmentListFromContours",
+          "parameterTypes": [
+            "java.util.List",
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "getArea",
+          "parameterTypes": []
+        },
+        {
+          "name": "calculateArea",
+          "parameterTypes": [
+            "java.util.List",
+            "int"
+          ]
+        },
+        {
+          "name": "polygonArea",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.seg.Segment"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
         }
       ]
     },
@@ -54467,34 +54838,34 @@
       "type": "org.miaixz.bus.image.nimble.opencv.seg.RegionAttributes",
       "fields": [
         {
-          "name": "color"
-        },
-        {
-          "name": "description"
-        },
-        {
-          "name": "filled"
-        },
-        {
           "name": "id"
-        },
-        {
-          "name": "interiorOpacity"
         },
         {
           "name": "label"
         },
         {
-          "name": "lineThickness"
-        },
-        {
-          "name": "numberOfPixels"
+          "name": "description"
         },
         {
           "name": "type"
         },
         {
+          "name": "color"
+        },
+        {
+          "name": "filled"
+        },
+        {
+          "name": "lineThickness"
+        },
+        {
           "name": "visible"
+        },
+        {
+          "name": "interiorOpacity"
+        },
+        {
+          "name": "numberOfPixels"
         }
       ],
       "methods": [
@@ -54514,15 +54885,155 @@
           ]
         },
         {
+          "name": "getId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLabel",
+          "parameterTypes": []
+        },
+        {
+          "name": "setLabel",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getDescription",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDescription",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getType",
+          "parameterTypes": []
+        },
+        {
+          "name": "setType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getColor",
+          "parameterTypes": []
+        },
+        {
+          "name": "setColor",
+          "parameterTypes": [
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "isFilled",
+          "parameterTypes": []
+        },
+        {
+          "name": "setFilled",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "getLineThickness",
+          "parameterTypes": []
+        },
+        {
+          "name": "setLineThickness",
+          "parameterTypes": [
+            "float"
+          ]
+        },
+        {
+          "name": "isVisible",
+          "parameterTypes": []
+        },
+        {
+          "name": "setVisible",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "getInteriorOpacity",
+          "parameterTypes": []
+        },
+        {
+          "name": "setInteriorOpacity",
+          "parameterTypes": [
+            "float"
+          ]
+        },
+        {
+          "name": "getNumberOfPixels",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPrefix",
+          "parameterTypes": []
+        },
+        {
           "name": "addPixels",
           "parameterTypes": [
             "org.miaixz.bus.image.nimble.opencv.seg.Region"
           ]
         },
         {
+          "name": "resetPixelCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "isPixelCountUninitialized",
+          "parameterTypes": []
+        },
+        {
+          "name": "groupRegions",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "getColor",
+          "parameterTypes": [
+            "int[]",
+            "int"
+          ]
+        },
+        {
+          "name": "getColor",
+          "parameterTypes": [
+            "int[]",
+            "int",
+            "float"
+          ]
+        },
+        {
           "name": "clampOpacity",
           "parameterTypes": [
             "float"
+          ]
+        },
+        {
+          "name": "isValidColorArray",
+          "parameterTypes": [
+            "int[]"
+          ]
+        },
+        {
+          "name": "isColorComponent",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "generateColorFromLut",
+          "parameterTypes": [
+            "int",
+            "int"
           ]
         },
         {
@@ -54538,146 +55049,24 @@
           ]
         },
         {
-          "name": "generateColorFromLut",
-          "parameterTypes": [
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "getColor",
-          "parameterTypes": []
-        },
-        {
-          "name": "getColor",
-          "parameterTypes": [
-            "int[]",
-            "int"
-          ]
-        },
-        {
-          "name": "getColor",
-          "parameterTypes": [
-            "int[]",
-            "int",
-            "float"
-          ]
-        },
-        {
-          "name": "getDescription",
-          "parameterTypes": []
-        },
-        {
-          "name": "getId",
-          "parameterTypes": []
-        },
-        {
-          "name": "getInteriorOpacity",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLabel",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLineThickness",
-          "parameterTypes": []
-        },
-        {
-          "name": "getNumberOfPixels",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPrefix",
-          "parameterTypes": []
-        },
-        {
-          "name": "getType",
-          "parameterTypes": []
-        },
-        {
-          "name": "groupRegions",
-          "parameterTypes": [
-            "java.util.Collection"
-          ]
-        },
-        {
           "name": "hashCode",
           "parameterTypes": []
         },
         {
-          "name": "isFilled",
-          "parameterTypes": []
-        },
-        {
-          "name": "isPixelCountUninitialized",
-          "parameterTypes": []
-        },
-        {
-          "name": "isValidColorArray",
-          "parameterTypes": [
-            "int[]"
-          ]
-        },
-        {
-          "name": "isVisible",
-          "parameterTypes": []
-        },
-        {
-          "name": "resetPixelCount",
-          "parameterTypes": []
-        },
-        {
-          "name": "setColor",
-          "parameterTypes": [
-            "java.awt.Color"
-          ]
-        },
-        {
-          "name": "setDescription",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setFilled",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setInteriorOpacity",
-          "parameterTypes": [
-            "float"
-          ]
-        },
-        {
-          "name": "setLabel",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setLineThickness",
-          "parameterTypes": [
-            "float"
-          ]
-        },
-        {
-          "name": "setType",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setVisible",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
           "name": "toString",
           "parameterTypes": []
+        },
+        {
+          "name": "compareTo",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "lambda$groupRegions$0",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -54686,12 +55075,43 @@
       "fields": [
         {
           "name": "children"
+        },
+        {
+          "name": "childrenView"
         }
       ],
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Collection",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "float[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "float[]",
+            "java.awt.geom.AffineTransform",
+            "boolean",
+            "java.awt.Dimension"
+          ]
         },
         {
           "name": "<init>",
@@ -54709,13 +55129,22 @@
           ]
         },
         {
-          "name": "<init>",
+          "name": "setPoints",
           "parameterTypes": [
-            "float[]"
+            "java.util.Collection",
+            "boolean"
           ]
         },
         {
-          "name": "<init>",
+          "name": "setPoints",
+          "parameterTypes": [
+            "float[]",
+            "boolean",
+            "java.awt.Dimension"
+          ]
+        },
+        {
+          "name": "setPoints",
           "parameterTypes": [
             "float[]",
             "java.awt.geom.AffineTransform",
@@ -54724,28 +55153,18 @@
           ]
         },
         {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Collection"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Collection",
-            "boolean"
-          ]
-        },
-        {
-          "name": "addChild",
-          "parameterTypes": [
-            "org.miaixz.bus.image.nimble.opencv.seg.Segment"
-          ]
-        },
-        {
-          "name": "addPointsFromArray",
+          "name": "setPoints",
           "parameterTypes": [
             "double[]",
+            "boolean",
+            "java.awt.Dimension"
+          ]
+        },
+        {
+          "name": "setPoints",
+          "parameterTypes": [
+            "double[]",
+            "java.awt.geom.AffineTransform",
             "boolean",
             "java.awt.Dimension"
           ]
@@ -54758,9 +55177,31 @@
           ]
         },
         {
-          "name": "convertFloatToDouble",
+          "name": "addPointsFromArray",
           "parameterTypes": [
-            "float[]"
+            "double[]",
+            "boolean",
+            "java.awt.Dimension"
+          ]
+        },
+        {
+          "name": "isValidDimension",
+          "parameterTypes": [
+            "java.awt.Dimension"
+          ]
+        },
+        {
+          "name": "isOpenSegment",
+          "parameterTypes": []
+        },
+        {
+          "name": "getChildren",
+          "parameterTypes": []
+        },
+        {
+          "name": "addChild",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.seg.Segment"
           ]
         },
         {
@@ -54770,62 +55211,13 @@
           ]
         },
         {
-          "name": "getChildren",
-          "parameterTypes": []
-        },
-        {
           "name": "hashCode",
           "parameterTypes": []
         },
         {
-          "name": "isOpenSegment",
-          "parameterTypes": []
-        },
-        {
-          "name": "isValidDimension",
+          "name": "convertFloatToDouble",
           "parameterTypes": [
-            "java.awt.Dimension"
-          ]
-        },
-        {
-          "name": "setPoints",
-          "parameterTypes": [
-            "double[]",
-            "boolean",
-            "java.awt.Dimension"
-          ]
-        },
-        {
-          "name": "setPoints",
-          "parameterTypes": [
-            "double[]",
-            "java.awt.geom.AffineTransform",
-            "boolean",
-            "java.awt.Dimension"
-          ]
-        },
-        {
-          "name": "setPoints",
-          "parameterTypes": [
-            "float[]",
-            "boolean",
-            "java.awt.Dimension"
-          ]
-        },
-        {
-          "name": "setPoints",
-          "parameterTypes": [
-            "float[]",
-            "java.awt.geom.AffineTransform",
-            "boolean",
-            "java.awt.Dimension"
-          ]
-        },
-        {
-          "name": "setPoints",
-          "parameterTypes": [
-            "java.util.Collection",
-            "boolean"
+            "float[]"
           ]
         }
       ]
@@ -66628,7 +67020,7 @@
           "name": "toUID",
           "parameterTypes": [
             "java.lang.String",
-            "java.util.UUID"
+            "org.miaixz.bus.core.data.id.UUID"
           ]
         },
         {
@@ -69435,6 +69827,13 @@
           ]
         },
         {
+          "name": "releaseChannels",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.util.List"
+          ]
+        },
+        {
           "name": "updateMinMaxResult",
           "parameterTypes": [
             "org.opencv.core.Core$MinMaxLocResult",
@@ -69443,13 +69842,6 @@
         },
         {
           "name": "buildMeanStdDev",
-          "parameterTypes": [
-            "org.opencv.core.Mat",
-            "org.opencv.core.Mat"
-          ]
-        },
-        {
-          "name": "computeBasicStatistics",
           "parameterTypes": [
             "org.opencv.core.Mat",
             "org.opencv.core.Mat"
@@ -69505,23 +69897,6 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.ImageConversion",
-      "fields": [
-        {
-          "name": "RGB_OFFSETS"
-        },
-        {
-          "name": "BGR_OFFSETS"
-        },
-        {
-          "name": "BGR_RASTER_OFFSETS"
-        },
-        {
-          "name": "BANDED_RGB_OFFSETS"
-        },
-        {
-          "name": "CV_TO_DATABUFFER_TYPE"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
@@ -69645,32 +70020,61 @@
           ]
         },
         {
+          "name": "getRaster",
+          "parameterTypes": [
+            "java.awt.image.RenderedImage",
+            "java.awt.Rectangle"
+          ]
+        },
+        {
+          "name": "isTightlyPacked",
+          "parameterTypes": [
+            "java.awt.image.Raster",
+            "java.awt.image.ComponentSampleModel"
+          ]
+        },
+        {
+          "name": "fromPackedBuffer",
+          "parameterTypes": [
+            "java.awt.image.Raster",
+            "java.awt.image.ComponentSampleModel",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "fromSamples",
+          "parameterTypes": [
+            "java.awt.image.Raster",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "toShorts",
+          "parameterTypes": [
+            "int[]"
+          ]
+        },
+        {
+          "name": "integerDepth",
+          "parameterTypes": [
+            "java.awt.image.Raster",
+            "boolean"
+          ]
+        },
+        {
           "name": "createBinaryMat",
           "parameterTypes": [
             "java.awt.image.Raster"
           ]
         },
         {
-          "name": "getBandOffsets",
-          "parameterTypes": [
-            "java.awt.image.Raster"
-          ]
-        },
-        {
-          "name": "processByteBuffer",
-          "parameterTypes": [
-            "java.awt.image.DataBufferByte",
-            "java.awt.image.Raster",
-            "int[]",
-            "int[]",
-            "boolean"
-          ]
-        },
-        {
           "name": "createBandedRGBMat",
           "parameterTypes": [
             "java.awt.image.DataBufferByte",
-            "java.awt.image.Raster",
+            "int",
+            "int",
             "boolean"
           ]
         },
@@ -69683,44 +70087,9 @@
           ]
         },
         {
-          "name": "processUShortBuffer",
+          "name": "swapRedBlue",
           "parameterTypes": [
-            "java.awt.image.DataBufferUShort",
-            "java.awt.image.Raster",
-            "int[]",
-            "boolean"
-          ]
-        },
-        {
-          "name": "processShortBuffer",
-          "parameterTypes": [
-            "java.awt.image.DataBufferShort",
-            "java.awt.image.Raster",
-            "int[]"
-          ]
-        },
-        {
-          "name": "processIntBuffer",
-          "parameterTypes": [
-            "java.awt.image.DataBufferInt",
-            "java.awt.image.Raster",
-            "int[]"
-          ]
-        },
-        {
-          "name": "processFloatBuffer",
-          "parameterTypes": [
-            "java.awt.image.DataBufferFloat",
-            "java.awt.image.Raster",
-            "int[]"
-          ]
-        },
-        {
-          "name": "processDoubleBuffer",
-          "parameterTypes": [
-            "java.awt.image.DataBufferDouble",
-            "java.awt.image.Raster",
-            "int[]"
+            "org.miaixz.bus.image.nimble.opencv.ImageCV"
           ]
         },
         {
@@ -69730,22 +70099,41 @@
           ]
         },
         {
-          "name": "unpackBinaryData",
+          "name": "unpackBits",
           "parameterTypes": [
-            "java.lang.Object",
+            "byte[]",
             "java.awt.Rectangle",
             "int",
             "int",
             "int",
-            "byte[]",
-            "int"
+            "byte[]"
           ]
         },
         {
-          "name": "extractBitValue",
+          "name": "unpackBits",
           "parameterTypes": [
-            "java.lang.Object",
+            "short[]",
+            "java.awt.Rectangle",
             "int",
+            "int",
+            "int",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "unpackBits",
+          "parameterTypes": [
+            "int[]",
+            "java.awt.Rectangle",
+            "int",
+            "int",
+            "int",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "lambda$isTightlyPacked$0",
+          "parameterTypes": [
             "int"
           ]
         }
@@ -69753,17 +70141,6 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.ImageIOHandler",
-      "fields": [
-        {
-          "name": "PNG_COMPRESSION_LEVEL"
-        },
-        {
-          "name": "THUMBNAIL_JPEG_QUALITY"
-        },
-        {
-          "name": "NULL_SOURCE_IMAGE_ERROR"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
@@ -70074,8 +70451,13 @@
         {
           "name": "createLutMat",
           "parameterTypes": [
-            "org.opencv.core.Mat",
             "byte[][]"
+          ]
+        },
+        {
+          "name": "toBgr",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
           ]
         },
         {
@@ -70298,6 +70680,10 @@
         {
           "name": "getLutShape",
           "parameterTypes": []
+        },
+        {
+          "name": "getOutputBits",
+          "parameterTypes": []
         }
       ]
     },
@@ -70388,6 +70774,13 @@
           ]
         },
         {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.seg.Segment",
+            "int"
+          ]
+        },
+        {
           "name": "getParent",
           "parameterTypes": []
         },
@@ -70396,15 +70789,33 @@
           "parameterTypes": []
         },
         {
-          "name": "createSegment",
+          "name": "toSegment",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "toSegment",
+          "parameterTypes": [
+            "org.opencv.core.MatOfPoint"
+          ]
+        },
+        {
+          "name": "toSegment",
+          "parameterTypes": [
+            "org.opencv.core.MatOfPoint2f"
+          ]
+        },
+        {
+          "name": "toSegment",
           "parameterTypes": [
             "org.opencv.core.Point[]"
           ]
         },
         {
-          "name": "convertToPoint2D",
+          "name": "newSegment",
           "parameterTypes": [
-            "org.opencv.core.Point"
+            "int"
           ]
         }
       ]
@@ -70762,6 +71173,1648 @@
         },
         {
           "name": "createDimseRSPHandlerForNAction",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap",
+      "fields": [
+        {
+          "name": "id"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "type"
+        },
+        {
+          "name": "modalities"
+        },
+        {
+          "name": "defaultForModality"
+        },
+        {
+          "name": "domain"
+        },
+        {
+          "name": "bits"
+        },
+        {
+          "name": "space"
+        },
+        {
+          "name": "interpolation"
+        },
+        {
+          "name": "stops"
+        },
+        {
+          "name": "outside"
+        },
+        {
+          "name": "lighting"
+        },
+        {
+          "name": "metadata"
+        },
+        {
+          "name": "category"
+        },
+        {
+          "name": "tags"
+        },
+        {
+          "name": "hidden"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMapType",
+            "java.util.Set",
+            "boolean",
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMapDomain",
+            "int",
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.InterpolationSpace",
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Interpolation",
+            "java.util.List",
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.OutsideColors",
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Lighting",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.Set",
+            "boolean"
+          ]
+        },
+        {
+          "name": "slug",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sortedCopy",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "builder",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "fromBgrTable",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[][]"
+          ]
+        },
+        {
+          "name": "fromByteLut",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.ByteLut"
+          ]
+        },
+        {
+          "name": "toBuilder",
+          "parameterTypes": []
+        },
+        {
+          "name": "entries",
+          "parameterTypes": []
+        },
+        {
+          "name": "appliesTo",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "hasAlpha",
+          "parameterTypes": []
+        },
+        {
+          "name": "hasMaterial",
+          "parameterTypes": []
+        },
+        {
+          "name": "firstPosition",
+          "parameterTypes": []
+        },
+        {
+          "name": "lastPosition",
+          "parameterTypes": []
+        },
+        {
+          "name": "sampler",
+          "parameterTypes": []
+        },
+        {
+          "name": "sample",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "reversed",
+          "parameterTypes": []
+        },
+        {
+          "name": "mergeAtSamePosition",
+          "parameterTypes": [
+            "java.util.List",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "withName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "withId",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "id",
+          "parameterTypes": []
+        },
+        {
+          "name": "name",
+          "parameterTypes": []
+        },
+        {
+          "name": "type",
+          "parameterTypes": []
+        },
+        {
+          "name": "modalities",
+          "parameterTypes": []
+        },
+        {
+          "name": "defaultForModality",
+          "parameterTypes": []
+        },
+        {
+          "name": "domain",
+          "parameterTypes": []
+        },
+        {
+          "name": "bits",
+          "parameterTypes": []
+        },
+        {
+          "name": "space",
+          "parameterTypes": []
+        },
+        {
+          "name": "interpolation",
+          "parameterTypes": []
+        },
+        {
+          "name": "stops",
+          "parameterTypes": []
+        },
+        {
+          "name": "outside",
+          "parameterTypes": []
+        },
+        {
+          "name": "lighting",
+          "parameterTypes": []
+        },
+        {
+          "name": "metadata",
+          "parameterTypes": []
+        },
+        {
+          "name": "category",
+          "parameterTypes": []
+        },
+        {
+          "name": "tags",
+          "parameterTypes": []
+        },
+        {
+          "name": "hidden",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap$Builder",
+      "fields": [
+        {
+          "name": "id"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "type"
+        },
+        {
+          "name": "modalities"
+        },
+        {
+          "name": "defaultForModality"
+        },
+        {
+          "name": "domain"
+        },
+        {
+          "name": "bits"
+        },
+        {
+          "name": "space"
+        },
+        {
+          "name": "interpolation"
+        },
+        {
+          "name": "stops"
+        },
+        {
+          "name": "outside"
+        },
+        {
+          "name": "lighting"
+        },
+        {
+          "name": "metadata"
+        },
+        {
+          "name": "category"
+        },
+        {
+          "name": "tags"
+        },
+        {
+          "name": "hidden"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap"
+          ]
+        },
+        {
+          "name": "id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "category",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "tags",
+          "parameterTypes": [
+            "java.util.Set"
+          ]
+        },
+        {
+          "name": "tags",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "hidden",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "type",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMapType"
+          ]
+        },
+        {
+          "name": "modalities",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "modalities",
+          "parameterTypes": [
+            "java.util.Set"
+          ]
+        },
+        {
+          "name": "defaultForModality",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "domain",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMapDomain"
+          ]
+        },
+        {
+          "name": "bits",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "space",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.InterpolationSpace"
+          ]
+        },
+        {
+          "name": "interpolation",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Interpolation"
+          ]
+        },
+        {
+          "name": "stop",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorStop"
+          ]
+        },
+        {
+          "name": "stop",
+          "parameterTypes": [
+            "double",
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "stop",
+          "parameterTypes": [
+            "double",
+            "java.awt.Color",
+            "float"
+          ]
+        },
+        {
+          "name": "alphaStop",
+          "parameterTypes": [
+            "double",
+            "float"
+          ]
+        },
+        {
+          "name": "stops",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "outside",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.OutsideColors"
+          ]
+        },
+        {
+          "name": "lighting",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Lighting"
+          ]
+        },
+        {
+          "name": "metadata",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "metadata",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMapCompiler",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "sample",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap",
+            "int"
+          ]
+        },
+        {
+          "name": "sample",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap",
+            "int",
+            "int",
+            "java.util.function.DoubleUnaryOperator"
+          ]
+        },
+        {
+          "name": "windowToDomain",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap",
+            "double",
+            "double"
+          ]
+        },
+        {
+          "name": "toByteLut",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap"
+          ]
+        },
+        {
+          "name": "toBgr",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap",
+            "int"
+          ]
+        },
+        {
+          "name": "toAbgr",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap",
+            "int"
+          ]
+        },
+        {
+          "name": "toRgba",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap",
+            "int"
+          ]
+        },
+        {
+          "name": "toRgba",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap",
+            "int",
+            "int",
+            "java.util.function.DoubleUnaryOperator"
+          ]
+        },
+        {
+          "name": "toLookupTable",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap",
+            "int",
+            "int",
+            "java.util.function.DoubleUnaryOperator",
+            "boolean"
+          ]
+        },
+        {
+          "name": "lookupEntries",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "requireEntries",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "pack",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Rgba[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "interleave",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Rgba[]"
+          ]
+        },
+        {
+          "name": "lambda$windowToDomain$0",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMapDomain",
+            "double",
+            "double",
+            "double"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMapDomain",
+      "fields": [
+        {
+          "name": "kind"
+        },
+        {
+          "name": "unit"
+        },
+        {
+          "name": "min"
+        },
+        {
+          "name": "max"
+        },
+        {
+          "name": "reference"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.DomainKind",
+            "java.lang.String",
+            "double",
+            "double",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "absolute",
+          "parameterTypes": [
+            "java.lang.String",
+            "double",
+            "double"
+          ]
+        },
+        {
+          "name": "fixed",
+          "parameterTypes": [
+            "java.lang.String",
+            "double",
+            "double"
+          ]
+        },
+        {
+          "name": "percent",
+          "parameterTypes": [
+            "java.lang.String",
+            "double",
+            "double"
+          ]
+        },
+        {
+          "name": "span",
+          "parameterTypes": []
+        },
+        {
+          "name": "normalize",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "denormalize",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "isRelative",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "kind",
+          "parameterTypes": []
+        },
+        {
+          "name": "unit",
+          "parameterTypes": []
+        },
+        {
+          "name": "min",
+          "parameterTypes": []
+        },
+        {
+          "name": "max",
+          "parameterTypes": []
+        },
+        {
+          "name": "reference",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMapEdits",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "rescaled",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap",
+            "double",
+            "double"
+          ]
+        },
+        {
+          "name": "anchored",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap",
+            "java.lang.String",
+            "double",
+            "double"
+          ]
+        },
+        {
+          "name": "discretized",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap",
+            "int"
+          ]
+        },
+        {
+          "name": "withThreshold",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap",
+            "double",
+            "double"
+          ]
+        },
+        {
+          "name": "withPalette",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap",
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap"
+          ]
+        },
+        {
+          "name": "withStop",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap",
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorStop"
+          ]
+        },
+        {
+          "name": "withStop",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap",
+            "int",
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorStop"
+          ]
+        },
+        {
+          "name": "withoutStop",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap",
+            "int"
+          ]
+        },
+        {
+          "name": "evenlySpaced",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMapSampler",
+      "fields": [
+        {
+          "name": "map"
+        },
+        {
+          "name": "step"
+        },
+        {
+          "name": "cyclic"
+        },
+        {
+          "name": "first"
+        },
+        {
+          "name": "last"
+        },
+        {
+          "name": "colorPositions"
+        },
+        {
+          "name": "colors"
+        },
+        {
+          "name": "alphaPositions"
+        },
+        {
+          "name": "alphas"
+        },
+        {
+          "name": "materialPositions"
+        },
+        {
+          "name": "materials"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMap"
+          ]
+        },
+        {
+          "name": "positions",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "map",
+          "parameterTypes": []
+        },
+        {
+          "name": "sample",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "material",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "wrap",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "colorAt",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "alphaAt",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "isAcrossSeam",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "seam",
+          "parameterTypes": [
+            "double[]",
+            "double"
+          ]
+        },
+        {
+          "name": "fraction",
+          "parameterTypes": [
+            "double[]",
+            "int",
+            "double"
+          ]
+        },
+        {
+          "name": "segment",
+          "parameterTypes": [
+            "double[]",
+            "double"
+          ]
+        },
+        {
+          "name": "lambda$new$2",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "lambda$new$1",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "lambda$new$0",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorStop"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorMapType",
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "$values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.colormap.ColorStop",
+      "fields": [
+        {
+          "name": "position"
+        },
+        {
+          "name": "color"
+        },
+        {
+          "name": "alpha"
+        },
+        {
+          "name": "material"
+        },
+        {
+          "name": "group"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "double",
+            "java.awt.Color",
+            "java.lang.Float",
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Material",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "double",
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "double",
+            "java.awt.Color",
+            "float"
+          ]
+        },
+        {
+          "name": "ofAlpha",
+          "parameterTypes": [
+            "double",
+            "float"
+          ]
+        },
+        {
+          "name": "hasColor",
+          "parameterTypes": []
+        },
+        {
+          "name": "hasAlpha",
+          "parameterTypes": []
+        },
+        {
+          "name": "hasMaterial",
+          "parameterTypes": []
+        },
+        {
+          "name": "withPosition",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "withColor",
+          "parameterTypes": [
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "withAlpha",
+          "parameterTypes": [
+            "java.lang.Float"
+          ]
+        },
+        {
+          "name": "withMaterial",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Material"
+          ]
+        },
+        {
+          "name": "withGroup",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "position",
+          "parameterTypes": []
+        },
+        {
+          "name": "color",
+          "parameterTypes": []
+        },
+        {
+          "name": "alpha",
+          "parameterTypes": []
+        },
+        {
+          "name": "material",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.colormap.DomainKind",
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "$values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.colormap.GradientOpacity",
+      "fields": [
+        {
+          "name": "points"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "edgeEmphasis",
+          "parameterTypes": [
+            "float"
+          ]
+        },
+        {
+          "name": "emphasis",
+          "parameterTypes": []
+        },
+        {
+          "name": "factorAt",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "table",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "points",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.colormap.GradientOpacity$Point",
+      "fields": [
+        {
+          "name": "magnitude"
+        },
+        {
+          "name": "factor"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "double",
+            "float"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "magnitude",
+          "parameterTypes": []
+        },
+        {
+          "name": "factor",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.colormap.Interpolation",
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "isStep",
+          "parameterTypes": []
+        },
+        {
+          "name": "$values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.colormap.InterpolationSpace",
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "mix",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Rgba",
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Rgba",
+            "double"
+          ]
+        },
+        {
+          "name": "lerp",
+          "parameterTypes": [
+            "float",
+            "float",
+            "float"
+          ]
+        },
+        {
+          "name": "mixHsb",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Rgba",
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Rgba",
+            "float"
+          ]
+        },
+        {
+          "name": "toHsb",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Rgba"
+          ]
+        },
+        {
+          "name": "fromHsb",
+          "parameterTypes": [
+            "float",
+            "float",
+            "float"
+          ]
+        },
+        {
+          "name": "mixLab",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Rgba",
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Rgba",
+            "float"
+          ]
+        },
+        {
+          "name": "lerp",
+          "parameterTypes": [
+            "double",
+            "double",
+            "float"
+          ]
+        },
+        {
+          "name": "rgbToLab",
+          "parameterTypes": [
+            "double",
+            "double",
+            "double"
+          ]
+        },
+        {
+          "name": "labToRgb",
+          "parameterTypes": [
+            "double",
+            "double",
+            "double"
+          ]
+        },
+        {
+          "name": "labF",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "labInverse",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "gamma",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "inverseGamma",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "clamp01",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "$values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.colormap.Lighting",
+      "fields": [
+        {
+          "name": "shade"
+        },
+        {
+          "name": "specularPower"
+        },
+        {
+          "name": "gradientOpacity"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "float",
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.GradientOpacity"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "float"
+          ]
+        },
+        {
+          "name": "withGradientOpacity",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.GradientOpacity"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "shade",
+          "parameterTypes": []
+        },
+        {
+          "name": "specularPower",
+          "parameterTypes": []
+        },
+        {
+          "name": "gradientOpacity",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.colormap.Material",
+      "fields": [
+        {
+          "name": "ambient"
+        },
+        {
+          "name": "diffuse"
+        },
+        {
+          "name": "specular"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "float",
+            "float",
+            "float"
+          ]
+        },
+        {
+          "name": "validate",
+          "parameterTypes": [
+            "float",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "mix",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Material",
+            "double"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "ambient",
+          "parameterTypes": []
+        },
+        {
+          "name": "diffuse",
+          "parameterTypes": []
+        },
+        {
+          "name": "specular",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.colormap.MaterialPreset",
+      "fields": [
+        {
+          "name": "material"
+        },
+        {
+          "name": "specularPower"
+        }
+      ],
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Material",
+            "float"
+          ]
+        },
+        {
+          "name": "material",
+          "parameterTypes": []
+        },
+        {
+          "name": "specularPower",
+          "parameterTypes": []
+        },
+        {
+          "name": "$values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.colormap.OutsideColors",
+      "fields": [
+        {
+          "name": "low"
+        },
+        {
+          "name": "high"
+        },
+        {
+          "name": "nan"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Rgba",
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Rgba",
+            "org.miaixz.bus.image.nimble.opencv.lut.colormap.Rgba"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "low",
+          "parameterTypes": []
+        },
+        {
+          "name": "high",
+          "parameterTypes": []
+        },
+        {
+          "name": "nan",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.colormap.Rgba",
+      "fields": [
+        {
+          "name": "red"
+        },
+        {
+          "name": "green"
+        },
+        {
+          "name": "blue"
+        },
+        {
+          "name": "alpha"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "float",
+            "float",
+            "float",
+            "float"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "withAlpha",
+          "parameterTypes": [
+            "float"
+          ]
+        },
+        {
+          "name": "toColor",
+          "parameterTypes": []
+        },
+        {
+          "name": "red8",
+          "parameterTypes": []
+        },
+        {
+          "name": "green8",
+          "parameterTypes": []
+        },
+        {
+          "name": "blue8",
+          "parameterTypes": []
+        },
+        {
+          "name": "alpha8",
+          "parameterTypes": []
+        },
+        {
+          "name": "to8",
+          "parameterTypes": [
+            "float"
+          ]
+        },
+        {
+          "name": "clamp",
+          "parameterTypes": [
+            "float"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "red",
+          "parameterTypes": []
+        },
+        {
+          "name": "green",
+          "parameterTypes": []
+        },
+        {
+          "name": "blue",
+          "parameterTypes": []
+        },
+        {
+          "name": "alpha",
           "parameterTypes": []
         }
       ]
