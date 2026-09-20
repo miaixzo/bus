@@ -19,12 +19,7 @@
 */
 package org.miaixz.bus.health.builtin.hardware.common;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -119,6 +114,73 @@ public abstract class AbstractUsbDevice implements UsbDevice {
             sb.append(Symbol.C_LF).append(indentUsb(connected, indent + 4));
         }
         return sb.toString();
+    }
+
+    /**
+     * Recursively adds USB devices from {@code list} to {@code deviceList}, depth-first.
+     *
+     * @param deviceList the target list to add devices to
+     * @param list       the source list of devices and their children
+     */
+    protected static void addDevicesToList(List<UsbDevice> deviceList, List<UsbDevice> list) {
+        for (UsbDevice device : list) {
+            deviceList.add(device);
+            addDevicesToList(deviceList, device.getConnectedDevices());
+        }
+    }
+
+    /**
+     * Recursively builds a USB device and its children from attribute maps keyed by device identifier.
+     *
+     * @param id           the identifier of the device to build
+     * @param vid          the inherited vendor ID
+     * @param pid          the inherited product ID
+     * @param nameMap      id to product name
+     * @param vendorMap    id to vendor name
+     * @param vendorIdMap  id to vendor ID
+     * @param productIdMap id to product ID
+     * @param serialMap    id to serial number
+     * @param hubMap       parent id to child ids
+     * @param factory      platform-specific device factory
+     * @return the assembled USB device
+     */
+    protected static UsbDevice buildDeviceTree(
+            String id,
+            String vid,
+            String pid,
+            Map<String, String> nameMap,
+            Map<String, String> vendorMap,
+            Map<String, String> vendorIdMap,
+            Map<String, String> productIdMap,
+            Map<String, String> serialMap,
+            Map<String, List<String>> hubMap,
+            UsbDeviceFactory factory) {
+        String vendorId = vendorIdMap.getOrDefault(id, vid);
+        String productId = productIdMap.getOrDefault(id, pid);
+        List<UsbDevice> connectedDevices = new ArrayList<>();
+        for (String childId : hubMap.getOrDefault(id, Collections.emptyList())) {
+            connectedDevices.add(
+                    buildDeviceTree(
+                            childId,
+                            vendorId,
+                            productId,
+                            nameMap,
+                            vendorMap,
+                            vendorIdMap,
+                            productIdMap,
+                            serialMap,
+                            hubMap,
+                            factory));
+        }
+        Collections.sort(connectedDevices);
+        return factory.create(
+                nameMap.getOrDefault(id, vendorId + Symbol.COLON + productId),
+                vendorMap.getOrDefault(id, Normal.EMPTY),
+                vendorId,
+                productId,
+                serialMap.getOrDefault(id, Normal.EMPTY),
+                id,
+                connectedDevices);
     }
 
     /**
@@ -229,70 +291,13 @@ public abstract class AbstractUsbDevice implements UsbDevice {
     }
 
     /**
-     * Recursively adds USB devices from {@code list} to {@code deviceList}, depth-first.
+     * Returns the to string result.
      *
-     * @param deviceList the target list to add devices to
-     * @param list       the source list of devices and their children
+     * @return the to string result
      */
-    protected static void addDevicesToList(List<UsbDevice> deviceList, List<UsbDevice> list) {
-        for (UsbDevice device : list) {
-            deviceList.add(device);
-            addDevicesToList(deviceList, device.getConnectedDevices());
-        }
-    }
-
-    /**
-     * Recursively builds a USB device and its children from attribute maps keyed by device identifier.
-     *
-     * @param id           the identifier of the device to build
-     * @param vid          the inherited vendor ID
-     * @param pid          the inherited product ID
-     * @param nameMap      id to product name
-     * @param vendorMap    id to vendor name
-     * @param vendorIdMap  id to vendor ID
-     * @param productIdMap id to product ID
-     * @param serialMap    id to serial number
-     * @param hubMap       parent id to child ids
-     * @param factory      platform-specific device factory
-     * @return the assembled USB device
-     */
-    protected static UsbDevice buildDeviceTree(
-            String id,
-            String vid,
-            String pid,
-            Map<String, String> nameMap,
-            Map<String, String> vendorMap,
-            Map<String, String> vendorIdMap,
-            Map<String, String> productIdMap,
-            Map<String, String> serialMap,
-            Map<String, List<String>> hubMap,
-            UsbDeviceFactory factory) {
-        String vendorId = vendorIdMap.getOrDefault(id, vid);
-        String productId = productIdMap.getOrDefault(id, pid);
-        List<UsbDevice> connectedDevices = new ArrayList<>();
-        for (String childId : hubMap.getOrDefault(id, Collections.emptyList())) {
-            connectedDevices.add(
-                    buildDeviceTree(
-                            childId,
-                            vendorId,
-                            productId,
-                            nameMap,
-                            vendorMap,
-                            vendorIdMap,
-                            productIdMap,
-                            serialMap,
-                            hubMap,
-                            factory));
-        }
-        Collections.sort(connectedDevices);
-        return factory.create(
-                nameMap.getOrDefault(id, vendorId + Symbol.COLON + productId),
-                vendorMap.getOrDefault(id, Normal.EMPTY),
-                vendorId,
-                productId,
-                serialMap.getOrDefault(id, Normal.EMPTY),
-                id,
-                connectedDevices);
+    @Override
+    public String toString() {
+        return indentUsb(this, 1);
     }
 
     /**
@@ -324,16 +329,6 @@ public abstract class AbstractUsbDevice implements UsbDevice {
                 String uniqueDeviceId,
                 List<UsbDevice> connectedDevices);
 
-    }
-
-    /**
-     * Returns the to string result.
-     *
-     * @return the to string result
-     */
-    @Override
-    public String toString() {
-        return indentUsb(this, 1);
     }
 
 }

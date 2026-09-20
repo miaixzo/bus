@@ -57,6 +57,73 @@ public class LhmSensor {
     public static final String HARDWARE = "Hardware";
 
     /**
+     * Creates a new LhmSensor instance.
+     */
+    public LhmSensor() {
+        // No initialization required.
+    }
+
+    /**
+     * Queries all sensors of a given type belonging to a specific hardware parent.
+     *
+     * @param parent     the LHM hardware identifier (e.g. {@code /gpu-nvidia/0})
+     * @param sensorType the sensor type string (e.g. {@code "Load"}, {@code "SmallData"})
+     * @return WMI result containing NAME, VALUE, and PARENT columns, or an empty result if LHM queries are disabled
+     */
+    public static WmiResult<LhmSensorProperty> querySensors(String parent, String sensorType) {
+        if (HardwareMonitorDisabled.isWmiDisabled(LHM_NAMESPACE)) {
+            return WmiKit.emptyResult(LhmSensorProperty.class);
+        }
+        WmiQuery<LhmSensorProperty> query = new WmiQuery<>(LHM_NAMESPACE,
+                buildSensorWmiClassNameWithWhere(parent, sensorType), LhmSensorProperty.class);
+        WmiQueryHandler handler = WmiQueryHandler.createInstance();
+        Objects.requireNonNull(handler, "WmiQueryHandler.createInstance() returned null for LhmSensor queries");
+        return handler.queryWMI(query, true);
+    }
+
+    /**
+     * Queries all GPU hardware entries from LHM to discover parent identifiers.
+     *
+     * @return WMI result with IDENTIFIER and NAME columns for all GPU hardware entries, or an empty result if LHM
+     *         queries are disabled
+     */
+    public static WmiResult<LhmHardwareProperty> queryGpuHardware() {
+        if (HardwareMonitorDisabled.isWmiDisabled(LHM_NAMESPACE)) {
+            return WmiKit.emptyResult(LhmHardwareProperty.class);
+        }
+        WmiQuery<LhmHardwareProperty> query = new WmiQuery<>(LHM_NAMESPACE, buildGpuHardwareWmiClassName(),
+                LhmHardwareProperty.class);
+        WmiQueryHandler handler = WmiQueryHandler.createInstance();
+        Objects.requireNonNull(
+                handler,
+                "WmiQueryHandler.createInstance() returned null for LhmSensor hardware queries");
+        return handler.queryWMI(query, true);
+    }
+
+    /**
+     * Builds the WMI class name with WHERE clause for sensor queries.
+     *
+     * @param parent     the LHM hardware identifier (e.g. {@code /gpu-nvidia/0})
+     * @param sensorType the sensor type string (e.g. {@code "Load"}, {@code "SmallData"})
+     * @return the WMI class name with WHERE clause
+     */
+    public static String buildSensorWmiClassNameWithWhere(String parent, String sensorType) {
+        StringBuilder sb = new StringBuilder(SENSOR);
+        sb.append(" WHERE Parent=\"").append(parent);
+        sb.append("\" AND SensorType=\"").append(sensorType).append(Symbol.C_DOUBLE_QUOTES);
+        return sb.toString();
+    }
+
+    /**
+     * Builds the WMI class name with WHERE clause for GPU hardware queries.
+     *
+     * @return the WMI class name with WHERE clause filtering GPU hardware types
+     */
+    public static String buildGpuHardwareWmiClassName() {
+        return HARDWARE + " WHERE HardwareType=\"GpuNvidia\" OR HardwareType=\"GpuAmd\" OR HardwareType=\"GpuIntel\"";
+    }
+
+    /**
      * Sensor properties returned by LHM WMI queries.
      *
      * @author Kimi Liu
@@ -92,66 +159,6 @@ public class LhmSensor {
          */
         NAME;
 
-    }
-
-    /**
-     * Creates a new LhmSensor instance.
-     */
-    public LhmSensor() {
-        // No initialization required.
-    }
-
-    /**
-     * Queries all sensors of a given type belonging to a specific hardware parent.
-     *
-     * @param parent     the LHM hardware identifier (e.g. {@code /gpu-nvidia/0})
-     * @param sensorType the sensor type string (e.g. {@code "Load"}, {@code "SmallData"})
-     * @return WMI result containing NAME, VALUE, and PARENT columns
-     */
-    public static WmiResult<LhmSensorProperty> querySensors(String parent, String sensorType) {
-        WmiQuery<LhmSensorProperty> query = new WmiQuery<>(LHM_NAMESPACE,
-                buildSensorWmiClassNameWithWhere(parent, sensorType), LhmSensorProperty.class);
-        WmiQueryHandler handler = WmiQueryHandler.createInstance();
-        Objects.requireNonNull(handler, "WmiQueryHandler.createInstance() returned null for LhmSensor queries");
-        return handler.queryWMI(query, true);
-    }
-
-    /**
-     * Queries all GPU hardware entries from LHM to discover parent identifiers.
-     *
-     * @return WMI result with IDENTIFIER and NAME columns for all GPU hardware entries
-     */
-    public static WmiResult<LhmHardwareProperty> queryGpuHardware() {
-        WmiQuery<LhmHardwareProperty> query = new WmiQuery<>(LHM_NAMESPACE, buildGpuHardwareWmiClassName(),
-                LhmHardwareProperty.class);
-        WmiQueryHandler handler = WmiQueryHandler.createInstance();
-        Objects.requireNonNull(
-                handler,
-                "WmiQueryHandler.createInstance() returned null for LhmSensor hardware queries");
-        return handler.queryWMI(query, true);
-    }
-
-    /**
-     * Builds the WMI class name with WHERE clause for sensor queries.
-     *
-     * @param parent     the LHM hardware identifier (e.g. {@code /gpu-nvidia/0})
-     * @param sensorType the sensor type string (e.g. {@code "Load"}, {@code "SmallData"})
-     * @return the WMI class name with WHERE clause
-     */
-    public static String buildSensorWmiClassNameWithWhere(String parent, String sensorType) {
-        StringBuilder sb = new StringBuilder(SENSOR);
-        sb.append(" WHERE Parent=\"").append(parent);
-        sb.append("\" AND SensorType=\"").append(sensorType).append(Symbol.C_DOUBLE_QUOTES);
-        return sb.toString();
-    }
-
-    /**
-     * Builds the WMI class name with WHERE clause for GPU hardware queries.
-     *
-     * @return the WMI class name with WHERE clause filtering GPU hardware types
-     */
-    public static String buildGpuHardwareWmiClassName() {
-        return HARDWARE + " WHERE HardwareType=\"GpuNvidia\" OR HardwareType=\"GpuAmd\" OR HardwareType=\"GpuIntel\"";
     }
 
 }

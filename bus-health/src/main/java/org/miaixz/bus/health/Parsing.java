@@ -343,7 +343,7 @@ public class Parsing {
      */
     public static Pointer readPointerFromBuffer(ByteBuffer buff) {
         if (buff.position() <= buff.limit() - Native.POINTER_SIZE) {
-            return Native.POINTER_SIZE == 4 ? new Pointer(buff.getInt()) : new Pointer(buff.getLong());
+            return new Pointer(Native.POINTER_SIZE == 4 ? buff.getInt() : buff.getLong());
         }
         return Pointer.NULL;
     }

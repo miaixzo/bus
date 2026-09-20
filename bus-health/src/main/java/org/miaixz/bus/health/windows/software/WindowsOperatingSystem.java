@@ -90,15 +90,15 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
      */
     private static final boolean WOW = isCurrentWow();
 
+    static {
+        enableDebugPrivilege();
+    }
+
     /**
      * The installedAppsSupplier value.
      */
     private final SupplierX<List<ApplicationInfo>> installedAppsSupplier = Memoizer
             .memoize(WindowsInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
-
-    static {
-        enableDebugPrivilege();
-    }
 
     /*
      * Cache full process stats queries. Second query will only populate if first one returns null.
@@ -364,16 +364,6 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     }
 
     /**
-     * Returns the installed applications.
-     *
-     * @return the get installed applications result
-     */
-    @Override
-    public List<ApplicationInfo> getInstalledApplications() {
-        return installedAppsSupplier.get();
-    }
-
-    /**
      * Is the processor architecture x86?
      *
      * @return true if the processor architecture is Intel x86
@@ -430,6 +420,16 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         }
         HANDLE h = Kernel32.INSTANCE.GetCurrentProcess();
         return h != null && isWow(h);
+    }
+
+    /**
+     * Returns the installed applications.
+     *
+     * @return the get installed applications result
+     */
+    @Override
+    public List<ApplicationInfo> getInstalledApplications() {
+        return installedAppsSupplier.get();
     }
 
     /**

@@ -47,11 +47,7 @@ import org.miaixz.bus.health.windows.WmiKit;
 import org.miaixz.bus.health.windows.driver.LogicalProcessorInformation;
 import org.miaixz.bus.health.windows.driver.perfmon.LoadAverage;
 import org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation;
-import org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation.InterruptsProperty;
-import org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation.ProcessorFrequencyProperty;
-import org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation.ProcessorPerformanceProperty;
-import org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation.ProcessorTickCountProperty;
-import org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation.ProcessorUsageTickCountProperty;
+import org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation.*;
 import org.miaixz.bus.health.windows.driver.perfmon.SystemInformation;
 import org.miaixz.bus.health.windows.driver.perfmon.SystemInformation.ContextSwitchProperty;
 import org.miaixz.bus.health.windows.driver.wmi.Win32Processor;
@@ -105,15 +101,15 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             : null;
     // Populated by initProcessorCounts called by the parent constructor.
     /**
-     * The numaNodeProcToLogicalProcMap value.
-     */
-    private volatile Map<String, Integer> numaNodeProcToLogicalProcMap;
-    // Store the initial query and start the memoizer expiration
-    /**
      * The initialUsageCounters value.
      */
     private final AtomicReference<Map<ProcessorUsageTickCountProperty, List<Long>>> initialUsageCounters = new AtomicReference<>(
             USE_CPU_USAGE_COUNTERS ? processorUsageCounters.get().getRight() : null);
+    // Store the initial query and start the memoizer expiration
+    /**
+     * The numaNodeProcToLogicalProcMap value.
+     */
+    private volatile Map<String, Integer> numaNodeProcToLogicalProcMap;
     // Lazily initialized
     /**
      * Multiplier that converts the processor usage counter base to elapsed clock ticks.
@@ -148,6 +144,70 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
      */
     private static Pair<List<String>, Map<ProcessorUsageTickCountProperty, List<Long>>> queryProcessorUsageCounters() {
         return ProcessorInformation.queryProcessorCapacityCounters();
+    }
+
+    /**
+     * Reports whether every counter list was read and holds at least {@code size} values.
+     *
+     * @param size  the number of processor instances to index
+     * @param lists the counter lists to check
+     * @return {@code true} if all lists are present and long enough
+     */
+    @SafeVarargs
+    private static boolean hasAll(int size, List<Long>... lists) {
+        for (List<Long> list : lists) {
+            if (list == null || list.size() < size) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Enumerates a registry key's subkeys, yielding none rather than throwing if it cannot be read.
+     *
+     * @param path The key to enumerate.
+     * @return The subkey names, or an empty array.
+     */
+    private static String[] registryGetKeys(String path) {
+        try {
+            return Advapi32Util.registryGetKeys(WinReg.HKEY_LOCAL_MACHINE, path);
+        } catch (Win32Exception e) {
+            Logger.debug(false, "Health", "Failed to enumerate registry key {}", path, e);
+            return Normal.EMPTY_STRING_ARRAY;
+        }
+    }
+
+    /**
+     * Reads a registry string, yielding an empty string rather than throwing if it is absent.
+     *
+     * @param path      The key holding the value.
+     * @param valueName The value to read.
+     * @return The value, or an empty string.
+     */
+    private static String registryGetString(String path, String valueName) {
+        try {
+            return Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, path, valueName);
+        } catch (Win32Exception e) {
+            Logger.debug(false, "Health", "Failed to read registry string {} in {}", valueName, path, e);
+            return Normal.EMPTY;
+        }
+    }
+
+    /**
+     * Reads a registry DWORD, yielding zero rather than throwing if it is absent.
+     *
+     * @param path      The key holding the value.
+     * @param valueName The value to read.
+     * @return The value, or zero.
+     */
+    private static long registryGetDword(String path, String valueName) {
+        try {
+            return Advapi32Util.registryGetIntValue(WinReg.HKEY_LOCAL_MACHINE, path, valueName);
+        } catch (Win32Exception e) {
+            Logger.debug(false, "Health", "Failed to read registry DWORD {} in {}", valueName, path, e);
+            return 0L;
+        }
     }
 
     /**
@@ -630,23 +690,6 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * Reports whether every counter list was read and holds at least {@code size} values.
-     *
-     * @param size  the number of processor instances to index
-     * @param lists the counter lists to check
-     * @return {@code true} if all lists are present and long enough
-     */
-    @SafeVarargs
-    private static boolean hasAll(int size, List<Long>... lists) {
-        for (List<Long> list : lists) {
-            if (list == null || list.size() < size) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * Queries the context switches.
      *
      * @return the query context switches result
@@ -665,53 +708,6 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
     @Override
     public long queryInterrupts() {
         return ProcessorInformation.queryInterruptCounters().getOrDefault(InterruptsProperty.INTERRUPTSPERSEC, 0L);
-    }
-
-    /**
-     * Enumerates a registry key's subkeys, yielding none rather than throwing if it cannot be read.
-     *
-     * @param path The key to enumerate.
-     * @return The subkey names, or an empty array.
-     */
-    private static String[] registryGetKeys(String path) {
-        try {
-            return Advapi32Util.registryGetKeys(WinReg.HKEY_LOCAL_MACHINE, path);
-        } catch (Win32Exception e) {
-            Logger.debug(false, "Health", "Failed to enumerate registry key {}", path, e);
-            return Normal.EMPTY_STRING_ARRAY;
-        }
-    }
-
-    /**
-     * Reads a registry string, yielding an empty string rather than throwing if it is absent.
-     *
-     * @param path      The key holding the value.
-     * @param valueName The value to read.
-     * @return The value, or an empty string.
-     */
-    private static String registryGetString(String path, String valueName) {
-        try {
-            return Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, path, valueName);
-        } catch (Win32Exception e) {
-            Logger.debug(false, "Health", "Failed to read registry string {} in {}", valueName, path, e);
-            return Normal.EMPTY;
-        }
-    }
-
-    /**
-     * Reads a registry DWORD, yielding zero rather than throwing if it is absent.
-     *
-     * @param path      The key holding the value.
-     * @param valueName The value to read.
-     * @return The value, or zero.
-     */
-    private static long registryGetDword(String path, String valueName) {
-        try {
-            return Advapi32Util.registryGetIntValue(WinReg.HKEY_LOCAL_MACHINE, path, valueName);
-        } catch (Win32Exception e) {
-            Logger.debug(false, "Health", "Failed to read registry DWORD {} in {}", valueName, path, e);
-            return 0L;
-        }
     }
 
 }

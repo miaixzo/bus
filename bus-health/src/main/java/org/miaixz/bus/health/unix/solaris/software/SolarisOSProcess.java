@@ -83,27 +83,22 @@ public class SolarisOSProcess extends AbstractOSProcess {
      */
     private final SupplierX<SolarisLibc.SolarisPrUsage> prusage = Memoizer
             .memoize(this::queryPrUsage, Memoizer.defaultExpiration());
-
-    /**
-     * The name value.
-     */
-    private volatile String name;
-
-    /**
-     * The path value.
-     */
-    private volatile String path = Normal.EMPTY;
-
-    /**
-     * The commandLineBackup value.
-     */
-    private volatile String commandLineBackup;
-
     /**
      * The commandLine value.
      */
     private final SupplierX<String> commandLine = Memoizer.memoize(this::queryCommandLine);
-
+    /**
+     * The name value.
+     */
+    private volatile String name;
+    /**
+     * The path value.
+     */
+    private volatile String path = Normal.EMPTY;
+    /**
+     * The commandLineBackup value.
+     */
+    private volatile String commandLineBackup;
     /**
      * The user value.
      */

@@ -38,11 +38,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.Formats;
-import org.miaixz.bus.health.Memoizer;
-import org.miaixz.bus.health.Parsing;
+import org.miaixz.bus.health.*;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractCentralProcessor;
 import org.miaixz.bus.health.builtin.jna.ByRef;
@@ -397,6 +393,121 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
+     * Groups IOReport channel names by CPU core type.
+     *
+     * @param channelNames the channel names sampled
+     * @return the grouped channel names
+     */
+    private static Map<Integer, List<String>> groupChannelsByCoreType(Collection<String> channelNames) {
+        Map<Integer, List<String>> groups = new TreeMap<>();
+        for (String channel : CpuFrequencyResidency.orderChannels(channelNames)) {
+            int rank = CpuFrequencyResidency.prefixRank(channel);
+            groups.computeIfAbsent(rank, ignored -> new ArrayList<>()).add(channel);
+        }
+        return groups;
+    }
+
+    /**
+     * Parses a voltage-state table property.
+     *
+     * @param data the raw property value
+     * @return the frequencies in hertz, in ascending order
+     */
+    static long[] parseFrequencyTable(byte[] data) {
+        if (data == null || data.length < Normal._8) {
+            return new long[0];
+        }
+        long[] frequencies = new long[data.length / Normal._8];
+        for (int i = 0; i < frequencies.length; i++) {
+            frequencies[i] = toHz(
+                    Parsing.byteArrayToLong(
+                            Arrays.copyOfRange(data, i * Normal._8, i * Normal._8 + Normal._4),
+                            Normal._4,
+                            false));
+        }
+        return frequencies;
+    }
+
+    /**
+     * Parses the Apple power-manager {@code acc-clusters} property.
+     *
+     * @param data the raw property value
+     * @return voltage-state table numbers in ascending tier order
+     */
+    static int[] parseClusterTables(byte[] data) {
+        if (data == null || data.length < Normal._8) {
+            return new int[0];
+        }
+        int clusters = data.length / Normal._8;
+        int[] tables = new int[clusters];
+        Integer[] order = new Integer[clusters];
+        for (int i = 0; i < clusters; i++) {
+            order[i] = i;
+        }
+        Arrays.sort(
+                order,
+                (left, right) -> Integer.compare(
+                        data[left * Normal._8 + Normal._1] & 0xff,
+                        data[right * Normal._8 + Normal._1] & 0xff));
+        for (int i = 0; i < clusters; i++) {
+            tables[i] = data[order[i] * Normal._8] & 0xff;
+        }
+        return tables;
+    }
+
+    /**
+     * Maps cluster frequencies to efficiency classes.
+     *
+     * @param clusterFrequencies the cluster frequencies in ascending order
+     * @param classCount         the number of efficiency classes
+     * @return the frequency for each efficiency class
+     */
+    static long[] mapClusterFrequencies(long[] clusterFrequencies, int classCount) {
+        int[] indices = CpuFrequencyResidency.alignAtTop(clusterFrequencies.length, classCount);
+        if (indices.length == 0) {
+            long[] byClass = new long[Math.max(classCount, 1)];
+            Arrays.fill(byClass, DEFAULT_FREQUENCY);
+            return byClass;
+        }
+        long[] byClass = new long[indices.length];
+        for (int i = 0; i < indices.length; i++) {
+            byClass[i] = clusterFrequencies[indices[i]];
+        }
+        return byClass;
+    }
+
+    /**
+     * Maps cluster frequency tables to efficiency classes.
+     *
+     * @param clusterTables the cluster tables ordered by maximum frequency
+     * @param classCount    the number of efficiency classes
+     * @return the table for each efficiency class
+     */
+    static long[][] mapClusterTables(long[][] clusterTables, int classCount) {
+        int[] indices = CpuFrequencyResidency.alignAtTop(clusterTables.length, classCount);
+        if (indices.length == 0) {
+            long[][] byClass = new long[Math.max(classCount, 1)][];
+            Arrays.fill(byClass, new long[0]);
+            return byClass;
+        }
+        long[][] byClass = new long[indices.length][];
+        for (int i = 0; i < indices.length; i++) {
+            byClass[i] = clusterTables[indices[i]];
+        }
+        return byClass;
+    }
+
+    /**
+     * Converts a voltage-state table frequency to hertz.
+     *
+     * @param frequency the raw table value
+     * @return the frequency in hertz
+     */
+    static long toHz(long frequency) {
+        return frequency > 0 && frequency < MIN_PLAUSIBLE_HZ ? frequency * 1000L : frequency;
+    }
+
+    /**
      * Description inherited from parent class or interface.
      */
     @Override
@@ -694,21 +805,6 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * Groups IOReport channel names by CPU core type.
-     *
-     * @param channelNames the channel names sampled
-     * @return the grouped channel names
-     */
-    private static Map<Integer, List<String>> groupChannelsByCoreType(Collection<String> channelNames) {
-        Map<Integer, List<String>> groups = new TreeMap<>();
-        for (String channel : CpuFrequencyResidency.orderChannels(channelNames)) {
-            int rank = CpuFrequencyResidency.prefixRank(channel);
-            groups.computeIfAbsent(rank, ignored -> new ArrayList<>()).add(channel);
-        }
-        return groups;
-    }
-
-    /**
      * Groups physical cores by efficiency class.
      *
      * @return the grouped physical processors
@@ -946,96 +1042,6 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * Parses a voltage-state table property.
-     *
-     * @param data the raw property value
-     * @return the frequencies in hertz, in ascending order
-     */
-    static long[] parseFrequencyTable(byte[] data) {
-        if (data == null || data.length < Normal._8) {
-            return new long[0];
-        }
-        long[] frequencies = new long[data.length / Normal._8];
-        for (int i = 0; i < frequencies.length; i++) {
-            frequencies[i] = toHz(
-                    Parsing.byteArrayToLong(
-                            Arrays.copyOfRange(data, i * Normal._8, i * Normal._8 + Normal._4),
-                            Normal._4,
-                            false));
-        }
-        return frequencies;
-    }
-
-    /**
-     * Parses the Apple power-manager {@code acc-clusters} property.
-     *
-     * @param data the raw property value
-     * @return voltage-state table numbers in ascending tier order
-     */
-    static int[] parseClusterTables(byte[] data) {
-        if (data == null || data.length < Normal._8) {
-            return new int[0];
-        }
-        int clusters = data.length / Normal._8;
-        int[] tables = new int[clusters];
-        Integer[] order = new Integer[clusters];
-        for (int i = 0; i < clusters; i++) {
-            order[i] = i;
-        }
-        Arrays.sort(
-                order,
-                (left, right) -> Integer.compare(
-                        data[left * Normal._8 + Normal._1] & 0xff,
-                        data[right * Normal._8 + Normal._1] & 0xff));
-        for (int i = 0; i < clusters; i++) {
-            tables[i] = data[order[i] * Normal._8] & 0xff;
-        }
-        return tables;
-    }
-
-    /**
-     * Maps cluster frequencies to efficiency classes.
-     *
-     * @param clusterFrequencies the cluster frequencies in ascending order
-     * @param classCount         the number of efficiency classes
-     * @return the frequency for each efficiency class
-     */
-    static long[] mapClusterFrequencies(long[] clusterFrequencies, int classCount) {
-        int[] indices = CpuFrequencyResidency.alignAtTop(clusterFrequencies.length, classCount);
-        if (indices.length == 0) {
-            long[] byClass = new long[Math.max(classCount, 1)];
-            Arrays.fill(byClass, DEFAULT_FREQUENCY);
-            return byClass;
-        }
-        long[] byClass = new long[indices.length];
-        for (int i = 0; i < indices.length; i++) {
-            byClass[i] = clusterFrequencies[indices[i]];
-        }
-        return byClass;
-    }
-
-    /**
-     * Maps cluster frequency tables to efficiency classes.
-     *
-     * @param clusterTables the cluster tables ordered by maximum frequency
-     * @param classCount    the number of efficiency classes
-     * @return the table for each efficiency class
-     */
-    static long[][] mapClusterTables(long[][] clusterTables, int classCount) {
-        int[] indices = CpuFrequencyResidency.alignAtTop(clusterTables.length, classCount);
-        if (indices.length == 0) {
-            long[][] byClass = new long[Math.max(classCount, 1)][];
-            Arrays.fill(byClass, new long[0]);
-            return byClass;
-        }
-        long[][] byClass = new long[indices.length][];
-        for (int i = 0; i < indices.length; i++) {
-            byClass[i] = clusterTables[indices[i]];
-        }
-        return byClass;
-    }
-
-    /**
      * Counts the efficiency classes reported by physical processors.
      *
      * @return the efficiency class count
@@ -1067,16 +1073,6 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     protected long getMaxFreqFromByteArray(byte[] data) {
         long[] table = parseFrequencyTable(data);
         return table.length == 0 ? DEFAULT_FREQUENCY : table[table.length - 1];
-    }
-
-    /**
-     * Converts a voltage-state table frequency to hertz.
-     *
-     * @param frequency the raw table value
-     * @return the frequency in hertz
-     */
-    static long toHz(long frequency) {
-        return frequency > 0 && frequency < MIN_PLAUSIBLE_HZ ? frequency * 1000L : frequency;
     }
 
 }

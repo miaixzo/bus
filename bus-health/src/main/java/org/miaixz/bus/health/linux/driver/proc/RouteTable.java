@@ -36,7 +36,6 @@ import org.miaixz.bus.health.linux.ProcPath;
  * Reads the Linux routing table from {@code /proc/net/route} and {@code /proc/net/ipv6_route}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class RouteTable {

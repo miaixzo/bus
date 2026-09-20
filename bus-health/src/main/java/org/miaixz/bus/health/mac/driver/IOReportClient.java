@@ -508,38 +508,6 @@ public class IOReportClient implements IOReportCpuSampler {
     }
 
     /**
-     * Holds the merged state-residency map and the number of IOReport channels that contributed to it.
-     *
-     * @author Kimi Liu
-     */
-    private static final class ChannelStates {
-
-        /**
-         * The states value.
-         */
-        private final Map<String, Long> states;
-
-        /**
-         * Creates a new ChannelStates instance.
-         *
-         * @param states the states
-         */
-        ChannelStates(Map<String, Long> states) {
-            this.states = states;
-        }
-
-        /**
-         * Returns the states.
-         *
-         * @return the get states result
-         */
-        Map<String, Long> getStates() {
-            return states;
-        }
-
-    }
-
-    /**
      * Returns the extract channel states result.
      *
      * @param dict     the dict
@@ -655,6 +623,38 @@ public class IOReportClient implements IOReportCpuSampler {
         } finally {
             channelsKey.release();
         }
+    }
+
+    /**
+     * Holds the merged state-residency map and the number of IOReport channels that contributed to it.
+     *
+     * @author Kimi Liu
+     */
+    private static final class ChannelStates {
+
+        /**
+         * The states value.
+         */
+        private final Map<String, Long> states;
+
+        /**
+         * Creates a new ChannelStates instance.
+         *
+         * @param states the states
+         */
+        ChannelStates(Map<String, Long> states) {
+            this.states = states;
+        }
+
+        /**
+         * Returns the states.
+         *
+         * @return the get states result
+         */
+        Map<String, Long> getStates() {
+            return states;
+        }
+
     }
 
 }

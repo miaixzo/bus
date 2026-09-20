@@ -54,49 +54,41 @@ import org.miaixz.bus.logger.Logger;
 public class WindowsGraphicsCard extends AbstractGraphicsCard {
 
     /**
-     * The IS_VISTA_OR_GREATER constant.
-     */
-    private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
-
-    /**
      * The ADAPTER_STRING constant.
      */
     public static final String ADAPTER_STRING = "HardwareInformation.AdapterString";
-
     /**
      * The DRIVER_DESC constant.
      */
     public static final String DRIVER_DESC = "DriverDesc";
-
     /**
      * The DRIVER_VERSION constant.
      */
     public static final String DRIVER_VERSION = "DriverVersion";
-
     /**
      * The VENDOR constant.
      */
     public static final String VENDOR = "ProviderName";
-
     /**
      * The QW_MEMORY_SIZE constant.
      */
     public static final String QW_MEMORY_SIZE = "HardwareInformation.qwMemorySize";
-
     /**
      * The MATCHING_DEVICE_ID constant.
      */
     public static final String MATCHING_DEVICE_ID = "MatchingDeviceId";
-
     /**
      * The LOCATION_INFORMATION constant.
      */
     public static final String LOCATION_INFORMATION = "LocationInformation";
-
     /**
      * The DISPLAY_DEVICES_REGISTRY_PATH constant.
      */
     public static final String DISPLAY_DEVICES_REGISTRY_PATH = "SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\";
+    /**
+     * The IS_VISTA_OR_GREATER constant.
+     */
+    private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
 
     // PDH instance prefix for this adapter's LUID, e.g. "luid_0x00000000_0x0001234_phys_0"
     // Used to filter GPU Engine and GPU Adapter Memory counter instances.
@@ -143,16 +135,6 @@ public class WindowsGraphicsCard extends AbstractGraphicsCard {
         this.lhmParent = lhmParent;
         this.pciBusNumber = pciBusNumber;
         this.pciBusId = pciBusId;
-    }
-
-    /**
-     * Creates the stats session.
-     *
-     * @return the create stats session result
-     */
-    @Override
-    public GpuStats createStatsSession() {
-        return new WindowsGpuStats(luidPrefix, lhmParent, pciBusNumber, pciBusId, getName());
     }
 
     /**
@@ -558,6 +540,16 @@ public class WindowsGraphicsCard extends AbstractGraphicsCard {
                 "Multiple GPU Adapter Memory instances found ({}); LUID matching not yet implemented for multi-GPU",
                 instances.size());
         return Normal.EMPTY;
+    }
+
+    /**
+     * Creates the stats session.
+     *
+     * @return the create stats session result
+     */
+    @Override
+    public GpuStats createStatsSession() {
+        return new WindowsGpuStats(luidPrefix, lhmParent, pciBusNumber, pciBusId, getName());
     }
 
 }

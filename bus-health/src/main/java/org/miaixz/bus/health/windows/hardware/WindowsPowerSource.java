@@ -147,16 +147,6 @@ public class WindowsPowerSource extends AbstractPowerSource {
     }
 
     /**
-     * Queries the power sources.
-     *
-     * @return the query power sources result
-     */
-    @Override
-    protected List<PowerSource> queryPowerSources() {
-        return getPowerSources();
-    }
-
-    /**
      * Gets Battery Information.
      *
      * @return A list of PowerSource objects representing batteries, etc.
@@ -424,16 +414,11 @@ public class WindowsPowerSource extends AbstractPowerSource {
                                                             }
                                                             // Fallback if BatteryEstimatedTime query failed
                                                             if (psTimeRemainingInstant <= 0 && psPowerUsageRate != 0) {
-                                                                psTimeRemainingInstant = psDischarging
-                                                                        ? Math.max(
-                                                                                0d,
-                                                                                psCurrentCapacity * 3600d
-                                                                                        / Math.abs(psPowerUsageRate))
-                                                                        : Math.max(
-                                                                                0d,
-                                                                                (maxCapacitySafe - psCurrentCapacity)
-                                                                                        * 3600d
-                                                                                        / Math.abs(psPowerUsageRate));
+                                                                psTimeRemainingInstant = Math.max(
+                                                                        0d,
+                                                                        (psDischarging ? psCurrentCapacity
+                                                                                : maxCapacitySafe - psCurrentCapacity)
+                                                                                * 3600d / Math.abs(psPowerUsageRate));
                                                             }
                                                             if (psDischarging && psTimeRemainingInstant > 0) {
                                                                 psTimeRemainingEstimated = psTimeRemainingInstant;
@@ -495,6 +480,16 @@ public class WindowsPowerSource extends AbstractPowerSource {
             String name = CHAR_WIDTH > 1 ? nameBuf.getWideString(0) : nameBuf.getString(0);
             return name.isEmpty() ? Normal.UNKNOWN : name;
         }
+    }
+
+    /**
+     * Queries the power sources.
+     *
+     * @return the query power sources result
+     */
+    @Override
+    protected List<PowerSource> queryPowerSources() {
+        return getPowerSources();
     }
 
 }

@@ -82,41 +82,10 @@ public class WindowsDxgi {
     // -------------------------------------------------------------------------
     // Native function entry point
     // -------------------------------------------------------------------------
-
-    /**
-     * Minimal binding to {@code dxgi.dll} just to call {@code CreateDXGIFactory}.
-     *
-     * @author Kimi Liu
-     */
-    private interface DxgiLib extends StdCallLibrary {
-
-        /**
-         * The INSTANCE value.
-         */
-        DxgiLib INSTANCE = Native.load("dxgi", DxgiLib.class);
-
-        /**
-         * Creates a DXGI factory object.
-         *
-         * @param riid      IID of the factory interface to create (IDXGIFactory)
-         * @param ppFactory receives the factory pointer
-         * @return HRESULT
-         */
-        int CreateDXGIFactory(REFIID riid, PointerByReference ppFactory);
-
-    }
-
     /**
      * The DXGI_AVAILABLE constant.
      */
     private static final boolean DXGI_AVAILABLE;
-
-    /**
-     * Creates a new WindowsDxgi instance.
-     */
-    public WindowsDxgi() {
-        // No initialization required.
-    }
 
     static {
         boolean available = false;
@@ -131,211 +100,12 @@ public class WindowsDxgi {
         DXGI_AVAILABLE = available;
     }
 
-    // -------------------------------------------------------------------------
-    // DXGI_ADAPTER_DESC structure
-    // -------------------------------------------------------------------------
-
     /**
-     * Maps to the Windows {@code DXGI_ADAPTER_DESC} structure.
-     *
-     * <p>
-     * Layout (x64):
-     * <ul>
-     * <li>Description: WCHAR[128] = 256 bytes</li>
-     * <li>VendorId: UINT = 4 bytes</li>
-     * <li>DeviceId: UINT = 4 bytes</li>
-     * <li>SubSysId: UINT = 4 bytes</li>
-     * <li>Revision: UINT = 4 bytes</li>
-     * <li>DedicatedVideoMemory: SIZE_T = 8 bytes (x64)</li>
-     * <li>DedicatedSystemMemory: SIZE_T = 8 bytes</li>
-     * <li>SharedSystemMemory: SIZE_T = 8 bytes</li>
-     * <li>AdapterLuid: LUID = 8 bytes</li>
-     * </ul>
-     *
-     * @author Kimi Liu
+     * Creates a new WindowsDxgi instance.
      */
-    @FieldOrder({ "Description", "VendorId", "DeviceId", "SubSysId", "Revision", "DedicatedVideoMemory",
-            "DedicatedSystemMemory", "SharedSystemMemory", "AdapterLuidLowPart", "AdapterLuidHighPart" })
-    public static class DXGI_ADAPTER_DESC extends Structure {
-
-        /**
-         * The Description value.
-         */
-        public char[] Description = new char[128];
-
-        /**
-         * The VendorId value.
-         */
-        public int VendorId;
-
-        /**
-         * The DeviceId value.
-         */
-        public int DeviceId;
-
-        /**
-         * The SubSysId value.
-         */
-        public int SubSysId;
-
-        /**
-         * The Revision value.
-         */
-        public int Revision;
-        // SIZE_T is pointer-sized; use long (8 bytes on x64, 4 bytes on x86)
-        /**
-         * The DedicatedVideoMemory value.
-         */
-        public com.sun.jna.platform.win32.BaseTSD.SIZE_T DedicatedVideoMemory;
-
-        /**
-         * The DedicatedSystemMemory value.
-         */
-        public com.sun.jna.platform.win32.BaseTSD.SIZE_T DedicatedSystemMemory;
-
-        /**
-         * The SharedSystemMemory value.
-         */
-        public com.sun.jna.platform.win32.BaseTSD.SIZE_T SharedSystemMemory;
-
-        /**
-         * The AdapterLuidLowPart value.
-         */
-        public int AdapterLuidLowPart;
-
-        /**
-         * The AdapterLuidHighPart value.
-         */
-        public int AdapterLuidHighPart;
-
-        /**
-         * Creates a new DXGI_ADAPTER_DESC instance.
-         */
-        public DXGI_ADAPTER_DESC() {
-            // No initialization required.
-        }
-
+    public WindowsDxgi() {
+        // No initialization required.
     }
-
-    // -------------------------------------------------------------------------
-    // IDXGIAdapter vtable wrapper
-    // -------------------------------------------------------------------------
-
-    /**
-     * Wraps an {@code IDXGIAdapter} COM pointer for vtable-based invocation.
-     *
-     * <p>
-     * IDXGIAdapter vtable (inherits IUnknown + IDXGIObject):
-     *
-     * <pre>
-     * slot 0  QueryInterface  (IUnknown)
-     * slot 1  AddRef          (IUnknown)
-     * slot 2  Release         (IUnknown)
-     * slot 3  SetPrivateData  (IDXGIObject)
-     * slot 4  SetPrivateDataInterface (IDXGIObject)
-     * slot 5  GetPrivateData  (IDXGIObject)
-     * slot 6  GetParent       (IDXGIObject)
-     * slot 7  EnumOutputs     (IDXGIAdapter)
-     * slot 8  GetDesc         (IDXGIAdapter)
-     * slot 9  CheckInterfaceSupport (IDXGIAdapter)
-     * </pre>
-     *
-     * @author Kimi Liu
-     */
-    private static final class DxgiAdapter extends COMInvoker {
-
-        /**
-         * Creates a new DxgiAdapter instance.
-         *
-         * @param p the p
-         */
-        DxgiAdapter(Pointer p) {
-            setPointer(p);
-        }
-
-        /**
-         * Returns the get desc result.
-         *
-         * @param desc the desc
-         * @return the get desc result
-         */
-        HRESULT GetDesc(DXGI_ADAPTER_DESC desc) {
-            return (HRESULT) _invokeNativeObject(8, new Object[] { getPointer(), desc.getPointer() }, HRESULT.class);
-        }
-
-        /**
-         * Returns the release result.
-         *
-         * @return the release result
-         */
-        int Release() {
-            return _invokeNativeInt(2, new Object[] { getPointer() });
-        }
-
-    }
-
-    // -------------------------------------------------------------------------
-    // IDXGIFactory vtable wrapper
-    // -------------------------------------------------------------------------
-
-    /**
-     * Wraps an {@code IDXGIFactory} COM pointer for vtable-based invocation.
-     *
-     * <p>
-     * IDXGIFactory vtable (inherits IUnknown + IDXGIObject):
-     *
-     * <pre>
-     * slot 0  QueryInterface  (IUnknown)
-     * slot 1  AddRef          (IUnknown)
-     * slot 2  Release         (IUnknown)
-     * slot 3  SetPrivateData  (IDXGIObject)
-     * slot 4  SetPrivateDataInterface (IDXGIObject)
-     * slot 5  GetPrivateData  (IDXGIObject)
-     * slot 6  GetParent       (IDXGIObject)
-     * slot 7  EnumAdapters    (IDXGIFactory)
-     * </pre>
-     *
-     * @author Kimi Liu
-     */
-    private static final class DxgiFactory extends COMInvoker {
-
-        /**
-         * Creates a new DxgiFactory instance.
-         *
-         * @param p the p
-         */
-        DxgiFactory(Pointer p) {
-            setPointer(p);
-        }
-
-        /**
-         * Returns the enum adapters result.
-         *
-         * @param index     the index
-         * @param ppAdapter the pp adapter
-         * @return the enum adapters result
-         */
-        HRESULT EnumAdapters(int index, PointerByReference ppAdapter) {
-            return (HRESULT) _invokeNativeObject(
-                    7,
-                    new Object[] { getPointer(), index, ppAdapter.getPointer() },
-                    HRESULT.class);
-        }
-
-        /**
-         * Returns the release result.
-         *
-         * @return the release result
-         */
-        int Release() {
-            return _invokeNativeInt(2, new Object[] { getPointer() });
-        }
-
-    }
-
-    // -------------------------------------------------------------------------
-    // Public API
-    // -------------------------------------------------------------------------
 
     /**
      * Enumerates all DXGI display adapters and returns their identity and dedicated video memory.
@@ -421,6 +191,10 @@ public class WindowsDxgi {
         return Collections.unmodifiableList(result);
     }
 
+    // -------------------------------------------------------------------------
+    // DXGI_ADAPTER_DESC structure
+    // -------------------------------------------------------------------------
+
     /**
      * Finds the best-matching DXGI adapter for a given vendor ID, device ID, and adapter name.
      *
@@ -466,6 +240,10 @@ public class WindowsDxgi {
         return null;
     }
 
+    // -------------------------------------------------------------------------
+    // IDXGIAdapter vtable wrapper
+    // -------------------------------------------------------------------------
+
     /**
      * Converts a registry value (REG_QWORD as Long, REG_DWORD as Integer, or REG_BINARY as byte[]) to a VRAM size in
      * bytes. REG_BINARY is interpreted as little-endian.
@@ -494,6 +272,10 @@ public class WindowsDxgi {
         return 0L;
     }
 
+    // -------------------------------------------------------------------------
+    // IDXGIFactory vtable wrapper
+    // -------------------------------------------------------------------------
+
     /**
      * Normalizes an adapter name for fuzzy matching: lower-case, strips {@code (R)}/{@code (TM)}, collapses whitespace.
      *
@@ -506,6 +288,223 @@ public class WindowsDxgi {
         }
         return name.toLowerCase(java.util.Locale.ROOT).replace("(r)", Normal.EMPTY).replace("(tm)", Normal.EMPTY)
                 .replaceAll("\\s+", Symbol.SPACE).trim();
+    }
+
+    // -------------------------------------------------------------------------
+    // Public API
+    // -------------------------------------------------------------------------
+
+    /**
+     * Minimal binding to {@code dxgi.dll} just to call {@code CreateDXGIFactory}.
+     *
+     * @author Kimi Liu
+     */
+    private interface DxgiLib extends StdCallLibrary {
+
+        /**
+         * The INSTANCE value.
+         */
+        DxgiLib INSTANCE = Native.load("dxgi", DxgiLib.class);
+
+        /**
+         * Creates a DXGI factory object.
+         *
+         * @param riid      IID of the factory interface to create (IDXGIFactory)
+         * @param ppFactory receives the factory pointer
+         * @return HRESULT
+         */
+        int CreateDXGIFactory(REFIID riid, PointerByReference ppFactory);
+
+    }
+
+    /**
+     * Maps to the Windows {@code DXGI_ADAPTER_DESC} structure.
+     *
+     * <p>
+     * Layout (x64):
+     * <ul>
+     * <li>Description: WCHAR[128] = 256 bytes</li>
+     * <li>VendorId: UINT = 4 bytes</li>
+     * <li>DeviceId: UINT = 4 bytes</li>
+     * <li>SubSysId: UINT = 4 bytes</li>
+     * <li>Revision: UINT = 4 bytes</li>
+     * <li>DedicatedVideoMemory: SIZE_T = 8 bytes (x64)</li>
+     * <li>DedicatedSystemMemory: SIZE_T = 8 bytes</li>
+     * <li>SharedSystemMemory: SIZE_T = 8 bytes</li>
+     * <li>AdapterLuid: LUID = 8 bytes</li>
+     * </ul>
+     *
+     * @author Kimi Liu
+     */
+    @FieldOrder({ "Description", "VendorId", "DeviceId", "SubSysId", "Revision", "DedicatedVideoMemory",
+            "DedicatedSystemMemory", "SharedSystemMemory", "AdapterLuidLowPart", "AdapterLuidHighPart" })
+    public static class DXGI_ADAPTER_DESC extends Structure {
+
+        /**
+         * The Description value.
+         */
+        public char[] Description = new char[128];
+
+        /**
+         * The VendorId value.
+         */
+        public int VendorId;
+
+        /**
+         * The DeviceId value.
+         */
+        public int DeviceId;
+
+        /**
+         * The SubSysId value.
+         */
+        public int SubSysId;
+
+        /**
+         * The Revision value.
+         */
+        public int Revision;
+        // SIZE_T is pointer-sized; use long (8 bytes on x64, 4 bytes on x86)
+        /**
+         * The DedicatedVideoMemory value.
+         */
+        public com.sun.jna.platform.win32.BaseTSD.SIZE_T DedicatedVideoMemory;
+
+        /**
+         * The DedicatedSystemMemory value.
+         */
+        public com.sun.jna.platform.win32.BaseTSD.SIZE_T DedicatedSystemMemory;
+
+        /**
+         * The SharedSystemMemory value.
+         */
+        public com.sun.jna.platform.win32.BaseTSD.SIZE_T SharedSystemMemory;
+
+        /**
+         * The AdapterLuidLowPart value.
+         */
+        public int AdapterLuidLowPart;
+
+        /**
+         * The AdapterLuidHighPart value.
+         */
+        public int AdapterLuidHighPart;
+
+        /**
+         * Creates a new DXGI_ADAPTER_DESC instance.
+         */
+        public DXGI_ADAPTER_DESC() {
+            // No initialization required.
+        }
+
+    }
+
+    /**
+     * Wraps an {@code IDXGIAdapter} COM pointer for vtable-based invocation.
+     *
+     * <p>
+     * IDXGIAdapter vtable (inherits IUnknown + IDXGIObject):
+     *
+     * <pre>
+     * slot 0  QueryInterface  (IUnknown)
+     * slot 1  AddRef          (IUnknown)
+     * slot 2  Release         (IUnknown)
+     * slot 3  SetPrivateData  (IDXGIObject)
+     * slot 4  SetPrivateDataInterface (IDXGIObject)
+     * slot 5  GetPrivateData  (IDXGIObject)
+     * slot 6  GetParent       (IDXGIObject)
+     * slot 7  EnumOutputs     (IDXGIAdapter)
+     * slot 8  GetDesc         (IDXGIAdapter)
+     * slot 9  CheckInterfaceSupport (IDXGIAdapter)
+     * </pre>
+     *
+     * @author Kimi Liu
+     */
+    private static final class DxgiAdapter extends COMInvoker {
+
+        /**
+         * Creates a new DxgiAdapter instance.
+         *
+         * @param p the p
+         */
+        DxgiAdapter(Pointer p) {
+            setPointer(p);
+        }
+
+        /**
+         * Returns the get desc result.
+         *
+         * @param desc the desc
+         * @return the get desc result
+         */
+        HRESULT GetDesc(DXGI_ADAPTER_DESC desc) {
+            return (HRESULT) _invokeNativeObject(8, new Object[] { getPointer(), desc.getPointer() }, HRESULT.class);
+        }
+
+        /**
+         * Returns the release result.
+         *
+         * @return the release result
+         */
+        int Release() {
+            return _invokeNativeInt(2, new Object[] { getPointer() });
+        }
+
+    }
+
+    /**
+     * Wraps an {@code IDXGIFactory} COM pointer for vtable-based invocation.
+     *
+     * <p>
+     * IDXGIFactory vtable (inherits IUnknown + IDXGIObject):
+     *
+     * <pre>
+     * slot 0  QueryInterface  (IUnknown)
+     * slot 1  AddRef          (IUnknown)
+     * slot 2  Release         (IUnknown)
+     * slot 3  SetPrivateData  (IDXGIObject)
+     * slot 4  SetPrivateDataInterface (IDXGIObject)
+     * slot 5  GetPrivateData  (IDXGIObject)
+     * slot 6  GetParent       (IDXGIObject)
+     * slot 7  EnumAdapters    (IDXGIFactory)
+     * </pre>
+     *
+     * @author Kimi Liu
+     */
+    private static final class DxgiFactory extends COMInvoker {
+
+        /**
+         * Creates a new DxgiFactory instance.
+         *
+         * @param p the p
+         */
+        DxgiFactory(Pointer p) {
+            setPointer(p);
+        }
+
+        /**
+         * Returns the enum adapters result.
+         *
+         * @param index     the index
+         * @param ppAdapter the pp adapter
+         * @return the enum adapters result
+         */
+        HRESULT EnumAdapters(int index, PointerByReference ppAdapter) {
+            return (HRESULT) _invokeNativeObject(
+                    7,
+                    new Object[] { getPointer(), index, ppAdapter.getPointer() },
+                    HRESULT.class);
+        }
+
+        /**
+         * Returns the release result.
+         *
+         * @return the release result
+         */
+        int Release() {
+            return _invokeNativeInt(2, new Object[] { getPointer() });
+        }
+
     }
 
 }

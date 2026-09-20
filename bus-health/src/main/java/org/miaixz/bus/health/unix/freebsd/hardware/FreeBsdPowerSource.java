@@ -80,16 +80,6 @@ public class FreeBsdPowerSource extends AbstractPowerSource {
     }
 
     /**
-     * Queries the power sources.
-     *
-     * @return the query power sources result
-     */
-    @Override
-    protected List<PowerSource> queryPowerSources() {
-        return getPowerSources();
-    }
-
-    /**
      * Gets Battery Information
      *
      * @return A list of PowerSource objects representing batteries, etc.
@@ -196,6 +186,16 @@ public class FreeBsdPowerSource extends AbstractPowerSource {
                 psTimeRemainingInstant, psPowerUsageRate, psVoltage, psAmperage, psPowerOnLine, psCharging,
                 psDischarging, psCapacityUnits, psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount,
                 psChemistry, psManufactureDate, psManufacturer, psSerialNumber, psTemperature);
+    }
+
+    /**
+     * Queries the power sources.
+     *
+     * @return the query power sources result
+     */
+    @Override
+    protected List<PowerSource> queryPowerSources() {
+        return getPowerSources();
     }
 
 }

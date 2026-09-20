@@ -22,11 +22,7 @@ package org.miaixz.bus.health.unix.shared.jna;
 import java.util.Arrays;
 import java.util.List;
 
-import com.sun.jna.Library;
-import com.sun.jna.NativeLong;
-import com.sun.jna.Platform;
-import com.sun.jna.Pointer;
-import com.sun.jna.Structure;
+import com.sun.jna.*;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.platform.unix.LibCAPI;
 import com.sun.jna.ptr.PointerByReference;
@@ -541,17 +537,6 @@ public interface CLibrary extends LibCAPI, Library {
         public ByReference ai_next;
 
         /**
-         * Returns the platform-specific field order.
-         *
-         * @return the field order for the current platform
-         */
-        @Override
-        protected List<String> getFieldOrder() {
-            return Platform.isMac() || Platform.isFreeBSD() || Platform.isOpenBSD() || Platform.isNetBSD()
-                    || Platform.isDragonFlyBSD() ? BSD_ORDER : GLIBC_ORDER;
-        }
-
-        /**
          * Constructs an {@code Addrinfo} object.
          */
         public Addrinfo() {
@@ -566,6 +551,17 @@ public interface CLibrary extends LibCAPI, Library {
         public Addrinfo(Pointer p) {
             super(p);
             read();
+        }
+
+        /**
+         * Returns the platform-specific field order.
+         *
+         * @return the field order for the current platform
+         */
+        @Override
+        protected List<String> getFieldOrder() {
+            return Platform.isMac() || Platform.isFreeBSD() || Platform.isOpenBSD() || Platform.isNetBSD()
+                    || Platform.isDragonFlyBSD() ? BSD_ORDER : GLIBC_ORDER;
         }
 
         /**

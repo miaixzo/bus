@@ -93,22 +93,18 @@ public class AixOSProcess extends AbstractOSProcess {
      * The procCpu value.
      */
     private final SupplierX<perfstat_process_t[]> procCpu;
-
-    /**
-     * The name value.
-     */
-    private volatile String name;
-
-    /**
-     * The commandLineBackup value.
-     */
-    private volatile String commandLineBackup;
-
     /**
      * The commandLine value.
      */
     private final SupplierX<String> commandLine = Memoizer.memoize(this::queryCommandLine);
-
+    /**
+     * The name value.
+     */
+    private volatile String name;
+    /**
+     * The commandLineBackup value.
+     */
+    private volatile String commandLineBackup;
     /**
      * The user value.
      */

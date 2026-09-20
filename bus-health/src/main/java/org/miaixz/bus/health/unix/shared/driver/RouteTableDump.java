@@ -35,119 +35,9 @@ import org.miaixz.bus.health.builtin.software.NetworkParams.IPRoute;
  * Parses routing table dumps returned by {@code NET_RT_DUMP}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class RouteTableDump {
-
-    /**
-     * Platform-specific routing message layouts.
-     */
-    public enum Layout {
-
-        /**
-         * macOS routing message layout.
-         */
-        MACOS(92, -1, 8, 4, -1, 4, 8, 30, 0x20000, 0x400),
-
-        /**
-         * FreeBSD routing message layout.
-         */
-        FREEBSD(152, -1, 8, 4, -1, 8, 8, 28, 0, 0),
-
-        /**
-         * DragonFly BSD routing message layout.
-         */
-        DRAGONFLY(152, -1, 8, 4, -1, 8, 11, 28, 0x20000, 0x400),
-
-        /**
-         * NetBSD routing message layout.
-         */
-        NETBSD(120, -1, 8, 4, -1, 8, 9, 24, 0, 0),
-
-        /**
-         * OpenBSD routing message layout.
-         */
-        OPENBSD(96, 4, 16, 6, 10, 8, 15, 24, 0, 0);
-
-        /**
-         * Header size in bytes.
-         */
-        private final int headerSize;
-
-        /**
-         * Header-length field offset.
-         */
-        private final int hdrLenOffset;
-
-        /**
-         * Flags field offset.
-         */
-        private final int flagsOffset;
-
-        /**
-         * Interface index field offset.
-         */
-        private final int indexOffset;
-
-        /**
-         * Priority field offset.
-         */
-        private final int priorityOffset;
-
-        /**
-         * Sockaddr padding unit.
-         */
-        private final int paddingUnit;
-
-        /**
-         * Maximum RTAX index.
-         */
-        private final int rtaxMax;
-
-        /**
-         * IPv6 address family value.
-         */
-        private final int afInet6;
-
-        /**
-         * Cloned route flag.
-         */
-        private final int clonedFlag;
-
-        /**
-         * Link-info route flag.
-         */
-        private final int linkInfoFlag;
-
-        /**
-         * Creates a new routing dump layout.
-         *
-         * @param headerSize     The header size.
-         * @param hdrLenOffset   The header-length offset.
-         * @param flagsOffset    The flags offset.
-         * @param indexOffset    The interface index offset.
-         * @param priorityOffset The priority offset.
-         * @param paddingUnit    The sockaddr padding unit.
-         * @param rtaxMax        The maximum RTAX index.
-         * @param afInet6        The IPv6 address family value.
-         * @param clonedFlag     The cloned route flag.
-         * @param linkInfoFlag   The link-info route flag.
-         */
-        Layout(int headerSize, int hdrLenOffset, int flagsOffset, int indexOffset, int priorityOffset, int paddingUnit,
-                int rtaxMax, int afInet6, int clonedFlag, int linkInfoFlag) {
-            this.headerSize = headerSize;
-            this.hdrLenOffset = hdrLenOffset;
-            this.flagsOffset = flagsOffset;
-            this.indexOffset = indexOffset;
-            this.priorityOffset = priorityOffset;
-            this.paddingUnit = paddingUnit;
-            this.rtaxMax = rtaxMax;
-            this.afInet6 = afInet6;
-            this.clonedFlag = clonedFlag;
-            this.linkInfoFlag = linkInfoFlag;
-        }
-    }
 
     /**
      * Creates a new RouteTableDump instance.
@@ -359,6 +249,115 @@ public final class RouteTableDump {
      */
     private static int roundUp(int len, int unit) {
         return Normal._1 + ((len - Normal._1) | (unit - Normal._1));
+    }
+
+    /**
+     * Platform-specific routing message layouts.
+     */
+    public enum Layout {
+
+        /**
+         * macOS routing message layout.
+         */
+        MACOS(92, -1, 8, 4, -1, 4, 8, 30, 0x20000, 0x400),
+
+        /**
+         * FreeBSD routing message layout.
+         */
+        FREEBSD(152, -1, 8, 4, -1, 8, 8, 28, 0, 0),
+
+        /**
+         * DragonFly BSD routing message layout.
+         */
+        DRAGONFLY(152, -1, 8, 4, -1, 8, 11, 28, 0x20000, 0x400),
+
+        /**
+         * NetBSD routing message layout.
+         */
+        NETBSD(120, -1, 8, 4, -1, 8, 9, 24, 0, 0),
+
+        /**
+         * OpenBSD routing message layout.
+         */
+        OPENBSD(96, 4, 16, 6, 10, 8, 15, 24, 0, 0);
+
+        /**
+         * Header size in bytes.
+         */
+        private final int headerSize;
+
+        /**
+         * Header-length field offset.
+         */
+        private final int hdrLenOffset;
+
+        /**
+         * Flags field offset.
+         */
+        private final int flagsOffset;
+
+        /**
+         * Interface index field offset.
+         */
+        private final int indexOffset;
+
+        /**
+         * Priority field offset.
+         */
+        private final int priorityOffset;
+
+        /**
+         * Sockaddr padding unit.
+         */
+        private final int paddingUnit;
+
+        /**
+         * Maximum RTAX index.
+         */
+        private final int rtaxMax;
+
+        /**
+         * IPv6 address family value.
+         */
+        private final int afInet6;
+
+        /**
+         * Cloned route flag.
+         */
+        private final int clonedFlag;
+
+        /**
+         * Link-info route flag.
+         */
+        private final int linkInfoFlag;
+
+        /**
+         * Creates a new routing dump layout.
+         *
+         * @param headerSize     The header size.
+         * @param hdrLenOffset   The header-length offset.
+         * @param flagsOffset    The flags offset.
+         * @param indexOffset    The interface index offset.
+         * @param priorityOffset The priority offset.
+         * @param paddingUnit    The sockaddr padding unit.
+         * @param rtaxMax        The maximum RTAX index.
+         * @param afInet6        The IPv6 address family value.
+         * @param clonedFlag     The cloned route flag.
+         * @param linkInfoFlag   The link-info route flag.
+         */
+        Layout(int headerSize, int hdrLenOffset, int flagsOffset, int indexOffset, int priorityOffset, int paddingUnit,
+                int rtaxMax, int afInet6, int clonedFlag, int linkInfoFlag) {
+            this.headerSize = headerSize;
+            this.hdrLenOffset = hdrLenOffset;
+            this.flagsOffset = flagsOffset;
+            this.indexOffset = indexOffset;
+            this.priorityOffset = priorityOffset;
+            this.paddingUnit = paddingUnit;
+            this.rtaxMax = rtaxMax;
+            this.afInet6 = afInet6;
+            this.clonedFlag = clonedFlag;
+            this.linkInfoFlag = linkInfoFlag;
+        }
     }
 
 }

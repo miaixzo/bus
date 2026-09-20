@@ -58,37 +58,9 @@ public class NvmlKit {
     // -------------------------------------------------------------------------
 
     /**
-     * The Holder class.
-     *
-     * @author Kimi Liu
+     * The DEVICE_BUS_IDS constant.
      */
-    private static final class Holder {
-
-        /**
-         * The LIB constant.
-         */
-        static final Nvml.NvmlLibrary LIB;
-
-        /**
-         * The LIBRARY_LOADED constant.
-         */
-        static final boolean LIBRARY_LOADED;
-
-        static {
-            Nvml.NvmlLibrary lib = null;
-            boolean loaded = false;
-            try {
-                lib = Native.load(Platform.isWindows() ? "nvml" : "nvidia-ml", Nvml.NvmlLibrary.class);
-                loaded = true;
-                Logger.debug(false, "Health", "NVML library loaded");
-            } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
-                Logger.debug(false, "Health", "NVML library not available: {}", e.getClass().getSimpleName());
-            }
-            LIB = lib;
-            LIBRARY_LOADED = loaded;
-        }
-
-    }
+    private static final AtomicReference<Set<String>> DEVICE_BUS_IDS = new AtomicReference<>(Collections.emptySet());
 
     // Lazy device enumeration state — written once on first successful enumeration, read-only thereafter.
     // Stores PCI bus ID strings (stable identifiers) rather than Pointer handles, which are only valid
@@ -99,20 +71,11 @@ public class NvmlKit {
     private static volatile boolean devicesEnumerated = false;
 
     /**
-     * The DEVICE_BUS_IDS constant.
-     */
-    private static final AtomicReference<Set<String>> DEVICE_BUS_IDS = new AtomicReference<>(Collections.emptySet());
-
-    /**
      * Creates a new NvmlKit instance.
      */
     public NvmlKit() {
         // No initialization required.
     }
-
-    // -------------------------------------------------------------------------
-    // NVML lifecycle management
-    // -------------------------------------------------------------------------
 
     /**
      * Calls {@code nvmlInit_v2}, incrementing NVML's internal reference count. Every successful call must be paired
@@ -132,6 +95,10 @@ public class NvmlKit {
         Logger.debug(false, "Health", "nvmlInit_v2 failed with code {}", ret);
         return false;
     }
+
+    // -------------------------------------------------------------------------
+    // NVML lifecycle management
+    // -------------------------------------------------------------------------
 
     /**
      * Calls {@code nvmlShutdown}, decrementing the same internal reference count that {@link #nvmlInit()} incremented.
@@ -299,10 +266,6 @@ public class NvmlKit {
         return matches;
     }
 
-    // -------------------------------------------------------------------------
-    // Public API
-    // -------------------------------------------------------------------------
-
     /**
      * Returns whether the NVML native library was successfully loaded. Does not indicate whether any NVIDIA GPU is
      * present or whether {@code nvmlInit_v2} will succeed.
@@ -312,6 +275,10 @@ public class NvmlKit {
     public static boolean isAvailable() {
         return Holder.LIBRARY_LOADED;
     }
+
+    // -------------------------------------------------------------------------
+    // Public API
+    // -------------------------------------------------------------------------
 
     /**
      * Finds the stable PCI bus ID string for the NVML device whose bus ID contains the given fragment. The match is
@@ -646,6 +613,39 @@ public class NvmlKit {
         } finally {
             nvmlUninit();
         }
+    }
+
+    /**
+     * The Holder class.
+     *
+     * @author Kimi Liu
+     */
+    private static final class Holder {
+
+        /**
+         * The LIB constant.
+         */
+        static final Nvml.NvmlLibrary LIB;
+
+        /**
+         * The LIBRARY_LOADED constant.
+         */
+        static final boolean LIBRARY_LOADED;
+
+        static {
+            Nvml.NvmlLibrary lib = null;
+            boolean loaded = false;
+            try {
+                lib = Native.load(Platform.isWindows() ? "nvml" : "nvidia-ml", Nvml.NvmlLibrary.class);
+                loaded = true;
+                Logger.debug(false, "Health", "NVML library loaded");
+            } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
+                Logger.debug(false, "Health", "NVML library not available: {}", e.getClass().getSimpleName());
+            }
+            LIB = lib;
+            LIBRARY_LOADED = loaded;
+        }
+
     }
 
 }

@@ -40,71 +40,58 @@ public class DisplayInfoImpl implements DisplayInfo {
      * Whether this display information synthesizes its EDID.
      */
     private final boolean synthetic;
-
-    /**
-     * The raw or synthesized EDID bytes.
-     */
-    private volatile byte[] edid;
-
     /**
      * The manufacturer ID for synthetic EDID instances.
      */
     private final String manufacturerID;
-
     /**
      * The product ID for synthetic EDID instances.
      */
     private final String productID;
-
     /**
      * The serial number for synthetic EDID instances.
      */
     private final String serialNo;
-
     /**
      * The manufacture week for synthetic EDID instances.
      */
     private final byte week;
-
     /**
      * The manufacture year for synthetic EDID instances.
      */
     private final int year;
-
     /**
      * The EDID version for synthetic EDID instances.
      */
     private final String version;
-
     /**
      * Whether the synthetic display is digital.
      */
     private final boolean digital;
-
     /**
      * The horizontal size in centimeters for synthetic EDID instances.
      */
     private final int hcm;
-
     /**
      * The vertical size in centimeters for synthetic EDID instances.
      */
     private final int vcm;
-
     /**
      * The preferred resolution for synthetic EDID instances.
      */
     private final String preferredResolution;
-
     /**
      * The model name for synthetic EDID instances.
      */
     private final String model;
-
     /**
      * The product serial number descriptor for synthetic EDID instances.
      */
     private final String productSerialNumber;
+    /**
+     * The raw or synthesized EDID bytes.
+     */
+    private volatile byte[] edid;
 
     /**
      * Creates a new display information object from raw EDID bytes.
@@ -161,6 +148,29 @@ public class DisplayInfoImpl implements DisplayInfo {
         this.preferredResolution = preferredResolution;
         this.model = model;
         this.productSerialNumber = productSerialNumber == null ? Normal.EMPTY : productSerialNumber;
+    }
+
+    /**
+     * Sets the serial number while tolerating serial values that are display attributes rather than EDID
+     * round-trippable values.
+     *
+     * @param edid     the EDID byte array to modify
+     * @param serialNo the serial number to set
+     */
+    private static void setSerialNoSafe(byte[] edid, String serialNo) {
+        if (serialNo == null || serialNo.isEmpty()) {
+            return;
+        }
+        try {
+            Edid.setSerialNo(edid, serialNo);
+        } catch (IllegalArgumentException e) {
+            if (serialNo.length() == 8) {
+                long numeric = Parsing.hexStringToLong(serialNo, 0L);
+                if (numeric != 0L) {
+                    Edid.setSerialNo(edid, numeric);
+                }
+            }
+        }
     }
 
     /**
@@ -339,29 +349,6 @@ public class DisplayInfoImpl implements DisplayInfo {
         }
         Edid.updateChecksum(e);
         return e;
-    }
-
-    /**
-     * Sets the serial number while tolerating serial values that are display attributes rather than EDID
-     * round-trippable values.
-     *
-     * @param edid     the EDID byte array to modify
-     * @param serialNo the serial number to set
-     */
-    private static void setSerialNoSafe(byte[] edid, String serialNo) {
-        if (serialNo == null || serialNo.isEmpty()) {
-            return;
-        }
-        try {
-            Edid.setSerialNo(edid, serialNo);
-        } catch (IllegalArgumentException e) {
-            if (serialNo.length() == 8) {
-                long numeric = Parsing.hexStringToLong(serialNo, 0L);
-                if (numeric != 0L) {
-                    Edid.setSerialNo(edid, numeric);
-                }
-            }
-        }
     }
 
     /**

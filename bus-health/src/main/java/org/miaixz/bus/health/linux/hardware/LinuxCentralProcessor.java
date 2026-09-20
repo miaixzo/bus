@@ -444,6 +444,113 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
+     * Queries the system load average from proc.
+     *
+     * @param nelem the nelem
+     * @return the query system load average from proc result
+     */
+    private static double[] querySystemLoadAverageFromProc(int nelem) {
+        double[] average = new double[nelem];
+        String[] parts = Pattern.SPACES_PATTERN.split(Builder.getStringFromFile(ProcPath.LOADAVG).trim());
+        for (int i = 0; i < nelem; i++) {
+            average[i] = i < parts.length ? Parsing.parseDoubleOrDefault(parts[i], -1d) : -1d;
+        }
+        return average;
+    }
+
+    /**
+     * Queries the current freq from sysfs.
+     *
+     * @param freqs the freqs
+     * @return the query current freq from sysfs result
+     */
+    private static boolean queryCurrentFreqFromSysfs(long[] freqs) {
+        long max = 0L;
+        try (Stream<Path> cpuFiles = Files.find(
+                Paths.get(SysPath.CPU),
+                1,
+                (path, basicFileAttributes) -> path.toFile().getName().matches("cpu\\d+"))) {
+            for (Path cpu : (Iterable<Path>) cpuFiles::iterator) {
+                String syspath = cpu.toString();
+                int cpuIdx = Parsing.getFirstIntValue(syspath);
+                if (cpuIdx >= 0 && cpuIdx < freqs.length) {
+                    freqs[cpuIdx] = Builder.getLongFromFile(syspath + "/cpufreq/scaling_cur_freq");
+                    if (freqs[cpuIdx] == 0) {
+                        freqs[cpuIdx] = Builder.getLongFromFile(syspath + "/cpufreq/cpuinfo_cur_freq");
+                    }
+                    if (max < freqs[cpuIdx]) {
+                        max = freqs[cpuIdx];
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // ignore
+        }
+        if (max > 0L) {
+            for (int i = 0; i < freqs.length; i++) {
+                freqs[i] *= 1000L;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Queries the current freq from cpu info.
+     *
+     * @param freqs the freqs
+     * @return the query current freq from cpu info result
+     */
+    private static long[] queryCurrentFreqFromCpuInfo(long[] freqs) {
+        Arrays.fill(freqs, -1);
+        List<String> cpuInfo = Builder.readFile(ProcPath.CPUINFO);
+        int proc = 0;
+        for (String s : cpuInfo) {
+            if (s.toLowerCase(Locale.ROOT).contains("cpu mhz")) {
+                freqs[proc] = Math.round(Parsing.parseLastDouble(s, 0d) * 1_000_000d);
+                if (++proc >= freqs.length) {
+                    break;
+                }
+            }
+        }
+        return freqs;
+    }
+
+    /**
+     * Queries the max freq from sysfs.
+     *
+     * @return the query max freq from sysfs result
+     */
+    private static long queryMaxFreqFromSysfs() {
+        return queryMaxFreqFromCpuFreqPath(SysPath.CPU.substring(0, SysPath.CPU.length() - 1) + "/cpufreq");
+    }
+
+    /**
+     * Queries the max freq from cpu freq path.
+     *
+     * @param cpuFreqPath the cpu freq path
+     * @return the query max freq from cpu freq path result
+     */
+    private static long queryMaxFreqFromCpuFreqPath(String cpuFreqPath) {
+        String policyPrefix = Paths.get(cpuFreqPath, "policy").toString();
+        try (Stream<Path> path = Files.list(Paths.get(cpuFreqPath))) {
+            Optional<Long> maxPolicy = path.filter(p -> p.toString().startsWith(policyPrefix)).map(p -> {
+                long freq = Builder.getLongFromFile(p + "/scaling_max_freq");
+                if (freq == 0) {
+                    freq = Builder.getLongFromFile(p + "/cpuinfo_max_freq");
+                }
+                return freq;
+            }).max(Long::compare);
+            if (maxPolicy.isPresent()) {
+                return maxPolicy.get() * 1000L;
+            }
+        } catch (IOException e) {
+            // ignore
+        }
+        return -1L;
+    }
+
+    /**
      * Queries the system cpu load ticks.
      *
      * @return the query system cpu load ticks result
@@ -648,21 +755,6 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * Queries the system load average from proc.
-     *
-     * @param nelem the nelem
-     * @return the query system load average from proc result
-     */
-    private static double[] querySystemLoadAverageFromProc(int nelem) {
-        double[] average = new double[nelem];
-        String[] parts = Pattern.SPACES_PATTERN.split(Builder.getStringFromFile(ProcPath.LOADAVG).trim());
-        for (int i = 0; i < nelem; i++) {
-            average[i] = i < parts.length ? Parsing.parseDoubleOrDefault(parts[i], -1d) : -1d;
-        }
-        return average;
-    }
-
-    /**
      * Queries the processor cpu load ticks.
      *
      * @return the query processor cpu load ticks result
@@ -744,64 +836,6 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * Queries the current freq from sysfs.
-     *
-     * @param freqs the freqs
-     * @return the query current freq from sysfs result
-     */
-    private static boolean queryCurrentFreqFromSysfs(long[] freqs) {
-        long max = 0L;
-        try (Stream<Path> cpuFiles = Files.find(
-                Paths.get(SysPath.CPU),
-                1,
-                (path, basicFileAttributes) -> path.toFile().getName().matches("cpu\\d+"))) {
-            for (Path cpu : (Iterable<Path>) cpuFiles::iterator) {
-                String syspath = cpu.toString();
-                int cpuIdx = Parsing.getFirstIntValue(syspath);
-                if (cpuIdx >= 0 && cpuIdx < freqs.length) {
-                    freqs[cpuIdx] = Builder.getLongFromFile(syspath + "/cpufreq/scaling_cur_freq");
-                    if (freqs[cpuIdx] == 0) {
-                        freqs[cpuIdx] = Builder.getLongFromFile(syspath + "/cpufreq/cpuinfo_cur_freq");
-                    }
-                    if (max < freqs[cpuIdx]) {
-                        max = freqs[cpuIdx];
-                    }
-                }
-            }
-        } catch (IOException e) {
-            // ignore
-        }
-        if (max > 0L) {
-            for (int i = 0; i < freqs.length; i++) {
-                freqs[i] *= 1000L;
-            }
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Queries the current freq from cpu info.
-     *
-     * @param freqs the freqs
-     * @return the query current freq from cpu info result
-     */
-    private static long[] queryCurrentFreqFromCpuInfo(long[] freqs) {
-        Arrays.fill(freqs, -1);
-        List<String> cpuInfo = Builder.readFile(ProcPath.CPUINFO);
-        int proc = 0;
-        for (String s : cpuInfo) {
-            if (s.toLowerCase(Locale.ROOT).contains("cpu mhz")) {
-                freqs[proc] = Math.round(Parsing.parseLastDouble(s, 0d) * 1_000_000d);
-                if (++proc >= freqs.length) {
-                    break;
-                }
-            }
-        }
-        return freqs;
-    }
-
-    /**
      * Queries the max freq.
      *
      * @return the query max freq result
@@ -840,40 +874,6 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         // And get the highest of existing current frequencies
         return LongStream.concat(LongStream.of(policyMax, lshwMax), Arrays.stream(this.getCurrentFreq())).max()
                 .orElse(-1L);
-    }
-
-    /**
-     * Queries the max freq from sysfs.
-     *
-     * @return the query max freq from sysfs result
-     */
-    private static long queryMaxFreqFromSysfs() {
-        return queryMaxFreqFromCpuFreqPath(SysPath.CPU.substring(0, SysPath.CPU.length() - 1) + "/cpufreq");
-    }
-
-    /**
-     * Queries the max freq from cpu freq path.
-     *
-     * @param cpuFreqPath the cpu freq path
-     * @return the query max freq from cpu freq path result
-     */
-    private static long queryMaxFreqFromCpuFreqPath(String cpuFreqPath) {
-        String policyPrefix = Paths.get(cpuFreqPath, "policy").toString();
-        try (Stream<Path> path = Files.list(Paths.get(cpuFreqPath))) {
-            Optional<Long> maxPolicy = path.filter(p -> p.toString().startsWith(policyPrefix)).map(p -> {
-                long freq = Builder.getLongFromFile(p + "/scaling_max_freq");
-                if (freq == 0) {
-                    freq = Builder.getLongFromFile(p + "/cpuinfo_max_freq");
-                }
-                return freq;
-            }).max(Long::compare);
-            if (maxPolicy.isPresent()) {
-                return maxPolicy.get() * 1000L;
-            }
-        } catch (IOException e) {
-            // ignore
-        }
-        return -1L;
     }
 
     /**

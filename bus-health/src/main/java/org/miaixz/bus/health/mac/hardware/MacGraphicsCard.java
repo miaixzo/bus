@@ -61,16 +61,6 @@ final class MacGraphicsCard extends AbstractGraphicsCard {
     }
 
     /**
-     * Creates the stats session.
-     *
-     * @return the create stats session result
-     */
-    @Override
-    public GpuStats createStatsSession() {
-        return new MacGpuStats(IS_APPLE_SILICON, getName());
-    }
-
-    /**
      * public method used by {@link AbstractHardwareAbstractionLayer} to access the graphics cards.
      *
      * @return List of {@link MacGraphicsCard} objects.
@@ -142,6 +132,16 @@ final class MacGraphicsCard extends AbstractGraphicsCard {
             return SysctlKit.sysctl("hw.memsize", 0L);
         }
         return parsedVram;
+    }
+
+    /**
+     * Creates the stats session.
+     *
+     * @return the create stats session result
+     */
+    @Override
+    public GpuStats createStatsSession() {
+        return new MacGpuStats(IS_APPLE_SILICON, getName());
     }
 
 }

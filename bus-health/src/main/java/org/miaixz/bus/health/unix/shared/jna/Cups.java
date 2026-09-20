@@ -62,6 +62,39 @@ public interface Cups extends Library {
     int CUPS_PRINTER_REMOTE = 0x0002;
 
     /**
+     * Gets all available destinations (printers and classes).
+     *
+     * @param dests Pointer to receive destination array
+     * @return Number of destinations
+     */
+    int cupsGetDests(PointerByReference dests);
+
+    /**
+     * Frees the memory used by a destination array.
+     *
+     * @param num_dests Number of destinations
+     * @param dests     Pointer to destination array
+     */
+    void cupsFreeDests(int num_dests, Pointer dests);
+
+    /**
+     * Gets the default printer name.
+     *
+     * @return Default printer name or null if none
+     */
+    String cupsGetDefault();
+
+    /**
+     * Gets an option value from a destination.
+     *
+     * @param name        Option name
+     * @param num_options Number of options
+     * @param options     Pointer to options array
+     * @return Option value or null if not found
+     */
+    String cupsGetOption(String name, int num_options, Pointer options);
+
+    /**
      * CUPS destination (printer) structure.
      *
      * @author Kimi Liu
@@ -112,38 +145,5 @@ public interface Cups extends Library {
         }
 
     }
-
-    /**
-     * Gets all available destinations (printers and classes).
-     *
-     * @param dests Pointer to receive destination array
-     * @return Number of destinations
-     */
-    int cupsGetDests(PointerByReference dests);
-
-    /**
-     * Frees the memory used by a destination array.
-     *
-     * @param num_dests Number of destinations
-     * @param dests     Pointer to destination array
-     */
-    void cupsFreeDests(int num_dests, Pointer dests);
-
-    /**
-     * Gets the default printer name.
-     *
-     * @return Default printer name or null if none
-     */
-    String cupsGetDefault();
-
-    /**
-     * Gets an option value from a destination.
-     *
-     * @param name        Option name
-     * @param num_options Number of options
-     * @param options     Pointer to options array
-     * @return Option value or null if not found
-     */
-    String cupsGetOption(String name, int num_options, Pointer options);
 
 }

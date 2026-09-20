@@ -45,117 +45,6 @@ import org.miaixz.bus.health.unix.shared.driver.Xwininfo;
 public interface OperatingSystem {
 
     /**
-     * Constants which may be used to filter Process lists in {@link #getProcesses(PredicateX, Comparator, int)},
-     * {@link #getChildProcesses(int, PredicateX, Comparator, int)}, and
-     * {@link #getDescendantProcesses(int, PredicateX, Comparator, int)}.
-     *
-     * @author Kimi Liu
-     */
-    class ProcessFiltering {
-
-        /**
-         * No filtering. Returns all processes.
-         */
-        public static final PredicateX<OSProcess> ALL_PROCESSES = p -> true;
-
-        /**
-         * Exclude processes with {@link OSProcess.State#INVALID} process state.
-         */
-        public static final PredicateX<OSProcess> VALID_PROCESS = p -> !p.getState().equals(OSProcess.State.INVALID);
-
-        /**
-         * Exclude child processes. Only include processes which are their own parent.
-         */
-        public static final PredicateX<OSProcess> NO_PARENT = p -> p.getParentProcessID() == p.getProcessID();
-
-        /**
-         * Only include 64-bit processes.
-         */
-        public static final PredicateX<OSProcess> BITNESS_64 = p -> p.getBitness() == 64;
-
-        /**
-         * Only include 32-bit processes.
-         */
-        public static final PredicateX<OSProcess> BITNESS_32 = p -> p.getBitness() == 32;
-
-        /**
-         * Creates a process-filter definition container.
-         */
-        public ProcessFiltering() {
-            // No initialization required.
-        }
-
-    }
-
-    /**
-     * Constants which may be used to sort Process lists in {@link #getProcesses(PredicateX, Comparator, int)},
-     * {@link #getChildProcesses(int, PredicateX, Comparator, int)}, and
-     * {@link #getDescendantProcesses(int, PredicateX, Comparator, int)}.
-     *
-     * @author Kimi Liu
-     */
-    class ProcessSorting {
-
-        /**
-         * No sorting.
-         */
-        public static final Comparator<OSProcess> NO_SORTING = (p1, p2) -> 0;
-
-        /**
-         * Sort by decreasing cumulative CPU percentage.
-         */
-        public static final Comparator<OSProcess> CPU_DESC = Comparator
-                .comparingDouble(OSProcess::getProcessCpuLoadCumulative).reversed();
-
-        /**
-         * Sort by decreasing Resident Set Size (RSS).
-         */
-        public static final Comparator<OSProcess> RSS_DESC = Comparator.comparingLong(OSProcess::getResidentMemory)
-                .reversed();
-
-        /**
-         * Sort by decreasing private resident memory size
-         */
-        public static final Comparator<OSProcess> PRIVATE_RSS_DESC = Comparator
-                .comparingLong(OSProcess::getPrivateResidentMemory).reversed();
-
-        /**
-         * Sort by up time, newest processes first.
-         */
-        public static final Comparator<OSProcess> UPTIME_ASC = Comparator.comparingLong(OSProcess::getUpTime);
-
-        /**
-         * Sort by up time, oldest processes first.
-         */
-        public static final Comparator<OSProcess> UPTIME_DESC = UPTIME_ASC.reversed();
-
-        /**
-         * Sort by Process Id.
-         */
-        public static final Comparator<OSProcess> PID_ASC = Comparator.comparingInt(OSProcess::getProcessID);
-
-        /**
-         * Sort by Parent Process Id.
-         */
-        public static final Comparator<OSProcess> PARENTPID_ASC = Comparator
-                .comparingInt(OSProcess::getParentProcessID);
-
-        /**
-         * Sort by Process Name (case-insensitive).
-         */
-        public static final Comparator<OSProcess> NAME_ASC = Comparator
-                .comparing(OSProcess::getName, String.CASE_INSENSITIVE_ORDER);
-
-        /**
-         * Creates a process-order definition container.
-         */
-        public ProcessSorting() {
-            // No initialization required.
-        }
-
-    }
-
-    /**
      * Get the Operating System family.
      *
      * @return the family
@@ -442,6 +331,117 @@ public interface OperatingSystem {
     default CgroupInfo getCgroupInfo() {
         return new CgroupInfo() {
         };
+    }
+
+    /**
+     * Constants which may be used to filter Process lists in {@link #getProcesses(PredicateX, Comparator, int)},
+     * {@link #getChildProcesses(int, PredicateX, Comparator, int)}, and
+     * {@link #getDescendantProcesses(int, PredicateX, Comparator, int)}.
+     *
+     * @author Kimi Liu
+     */
+    class ProcessFiltering {
+
+        /**
+         * No filtering. Returns all processes.
+         */
+        public static final PredicateX<OSProcess> ALL_PROCESSES = p -> true;
+
+        /**
+         * Exclude processes with {@link OSProcess.State#INVALID} process state.
+         */
+        public static final PredicateX<OSProcess> VALID_PROCESS = p -> !p.getState().equals(OSProcess.State.INVALID);
+
+        /**
+         * Exclude child processes. Only include processes which are their own parent.
+         */
+        public static final PredicateX<OSProcess> NO_PARENT = p -> p.getParentProcessID() == p.getProcessID();
+
+        /**
+         * Only include 64-bit processes.
+         */
+        public static final PredicateX<OSProcess> BITNESS_64 = p -> p.getBitness() == 64;
+
+        /**
+         * Only include 32-bit processes.
+         */
+        public static final PredicateX<OSProcess> BITNESS_32 = p -> p.getBitness() == 32;
+
+        /**
+         * Creates a process-filter definition container.
+         */
+        public ProcessFiltering() {
+            // No initialization required.
+        }
+
+    }
+
+    /**
+     * Constants which may be used to sort Process lists in {@link #getProcesses(PredicateX, Comparator, int)},
+     * {@link #getChildProcesses(int, PredicateX, Comparator, int)}, and
+     * {@link #getDescendantProcesses(int, PredicateX, Comparator, int)}.
+     *
+     * @author Kimi Liu
+     */
+    class ProcessSorting {
+
+        /**
+         * No sorting.
+         */
+        public static final Comparator<OSProcess> NO_SORTING = (p1, p2) -> 0;
+
+        /**
+         * Sort by decreasing cumulative CPU percentage.
+         */
+        public static final Comparator<OSProcess> CPU_DESC = Comparator
+                .comparingDouble(OSProcess::getProcessCpuLoadCumulative).reversed();
+
+        /**
+         * Sort by decreasing Resident Set Size (RSS).
+         */
+        public static final Comparator<OSProcess> RSS_DESC = Comparator.comparingLong(OSProcess::getResidentMemory)
+                .reversed();
+
+        /**
+         * Sort by decreasing private resident memory size
+         */
+        public static final Comparator<OSProcess> PRIVATE_RSS_DESC = Comparator
+                .comparingLong(OSProcess::getPrivateResidentMemory).reversed();
+
+        /**
+         * Sort by up time, newest processes first.
+         */
+        public static final Comparator<OSProcess> UPTIME_ASC = Comparator.comparingLong(OSProcess::getUpTime);
+
+        /**
+         * Sort by up time, oldest processes first.
+         */
+        public static final Comparator<OSProcess> UPTIME_DESC = UPTIME_ASC.reversed();
+
+        /**
+         * Sort by Process Id.
+         */
+        public static final Comparator<OSProcess> PID_ASC = Comparator.comparingInt(OSProcess::getProcessID);
+
+        /**
+         * Sort by Parent Process Id.
+         */
+        public static final Comparator<OSProcess> PARENTPID_ASC = Comparator
+                .comparingInt(OSProcess::getParentProcessID);
+
+        /**
+         * Sort by Process Name (case-insensitive).
+         */
+        public static final Comparator<OSProcess> NAME_ASC = Comparator
+                .comparing(OSProcess::getName, String.CASE_INSENSITIVE_ORDER);
+
+        /**
+         * Creates a process-order definition container.
+         */
+        public ProcessSorting() {
+            // No initialization required.
+        }
+
     }
 
     /**
