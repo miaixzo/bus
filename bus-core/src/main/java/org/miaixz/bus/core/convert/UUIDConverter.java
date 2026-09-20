@@ -20,7 +20,8 @@
 package org.miaixz.bus.core.convert;
 
 import java.io.Serial;
-import java.util.UUID;
+
+import org.miaixz.bus.core.data.id.UUID;
 
 /**
  * Converter for UUID objects

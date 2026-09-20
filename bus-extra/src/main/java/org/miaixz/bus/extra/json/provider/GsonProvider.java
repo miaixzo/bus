@@ -19,22 +19,23 @@
 */
 package org.miaixz.bus.extra.json.provider;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.lang.reflect.Type;
+import java.util.*;
+
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.extra.json.JsonPropertyFilter;
 import org.miaixz.bus.extra.json.JsonValue;
 import org.miaixz.bus.extra.json.JsonWriteOptions;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.lang.reflect.Type;
-import java.util.*;
 
 /**
  * Provides Bus JSON operations through Gson while confining {@link JsonElement} instances to this provider.
@@ -95,7 +96,7 @@ public class GsonProvider extends AbstractJsonProvider {
         return new GsonBuilder()
                 // Custom deserializer for Map to prevent integers from being parsed as doubles.
                 .registerTypeAdapter(new TypeToken<Map<Object, Object>>() {
-                        }.getType(),
+                }.getType(),
                         // Custom JSON deserializer for Map objects. This deserializer prevents Gson from converting
                         // integer values to doubles during JSON deserialization by ensuring all primitive values are
                         // converted to strings.
@@ -115,7 +116,7 @@ public class GsonProvider extends AbstractJsonProvider {
                         })
                 // Custom deserializer for List to handle mixed-type arrays.
                 .registerTypeAdapter(new TypeToken<List<Object>>() {
-                        }.getType(),
+                }.getType(),
                         // Custom JSON deserializer for List objects. This deserializer handles mixed-type arrays by
                         // processing JSON objects and primitives appropriately, extracting all entries from nested JSON
                         // objects.

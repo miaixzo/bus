@@ -40,6 +40,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.miaixz.bus.core.center.set.ConcurrentHashSet;
+import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
 import org.miaixz.bus.core.lang.tuple.Pair;

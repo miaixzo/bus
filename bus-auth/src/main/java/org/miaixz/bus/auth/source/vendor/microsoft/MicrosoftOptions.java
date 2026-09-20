@@ -25,13 +25,13 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.source.protocol.oauth2.Scope;
 import org.miaixz.bus.auth.source.vendor.Vendor;
 import org.miaixz.bus.auth.source.vendor.VendorOptions;
+import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
