@@ -20,6 +20,7 @@
 package org.miaixz.bus.starter.context;
 
 import java.util.EnumSet;
+import java.util.List;
 
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
@@ -34,8 +35,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 
-import org.miaixz.bus.spring.ContextBuilder;
-import org.miaixz.bus.spring.web.ContextBindingFilter;
+import org.miaixz.bus.spring.context.spi.ContextProvider;
+import org.miaixz.bus.spring.context.web.ContextBindingFilter;
 import org.miaixz.bus.spring.web.RequestContext;
 import org.miaixz.bus.starter.GeniusBuilder;
 
@@ -79,15 +80,15 @@ public class WebConfiguration {
      * The filter obtains or creates the dispatch state, installs it before invoking the filter chain, captures the
      * final state for a later dispatch, and restores the worker thread state when processing finishes.
      *
-     * @param contextBuilder runtime context facade used to create, install, capture, and restore dispatch state
-     * @param requestContext request accessor used to resolve credentials once per request
+     * @param contextProviders ordered authenticated-context providers
+     * @param requestContext   request accessor used to resolve credentials once per request
      * @return a filter that manages runtime context state around the Servlet filter chain
      */
     @Bean
     @ConditionalOnMissingBean(ContextBindingFilter.class)
     @ConditionalOnProperty(prefix = GeniusBuilder.CONTEXT, name = "web.enabled", havingValue = "true", matchIfMissing = true)
-    ContextBindingFilter contextBindingFilter(ContextBuilder contextBuilder, RequestContext requestContext) {
-        return new ContextBindingFilter(contextBuilder, requestContext);
+    ContextBindingFilter contextBindingFilter(List<ContextProvider> contextProviders, RequestContext requestContext) {
+        return new ContextBindingFilter(contextProviders, requestContext);
     }
 
     /**

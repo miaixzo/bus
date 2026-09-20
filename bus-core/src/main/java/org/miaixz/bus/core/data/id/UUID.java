@@ -570,7 +570,17 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
      */
     private static class Holder {
 
+        /**
+         * Shared cryptographically strong random-number generator used by secure UUID factories.
+         */
         static final SecureRandom NUMBER_GENERATOR = RandomKit.getSecureRandom();
+
+        /**
+         * Prevents instantiation of the secure-random holder.
+         */
+        private Holder() {
+            // No initialization required.
+        }
 
     }
 

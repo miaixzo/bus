@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.spring.web.interceptor;
 
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,7 +29,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.ContextBuilder;
+import org.miaixz.bus.spring.context.ContextBuilder;
 import org.miaixz.bus.spring.web.wrapper.CachedBodyRequestWrapper;
 
 /**
@@ -56,17 +55,10 @@ public class SentinelRequestHandler implements HandlerInterceptor {
             + "BODY_BYTES";
 
     /**
-     * Application-context-scoped runtime context facade.
+     * Creates the stateless request lifecycle audit interceptor.
      */
-    private final ContextBuilder contextBuilder;
-
-    /**
-     * Creates a request audit interceptor with Context-scoped correlation state.
-     *
-     * @param contextBuilder application-context-scoped runtime context facade
-     */
-    public SentinelRequestHandler(ContextBuilder contextBuilder) {
-        this.contextBuilder = Objects.requireNonNull(contextBuilder, "contextBuilder");
+    public SentinelRequestHandler() {
+        // No initialization required.
     }
 
     /**
@@ -121,7 +113,7 @@ public class SentinelRequestHandler implements HandlerInterceptor {
      * @return the existing request identifier, or a generated identifier when absent
      */
     private String requestId() {
-        String requestId = contextBuilder.getRequestId();
+        String requestId = ContextBuilder.getRequestId();
         return requestId == null ? Normal.EMPTY : requestId;
     }
 

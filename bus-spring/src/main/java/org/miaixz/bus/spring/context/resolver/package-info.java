@@ -17,53 +17,9 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring;
-
 /**
- * Installs a runtime context snapshot for the lifetime of a lexical scope.
- * <p>
- * Scopes may be nested. Closing a scope restores the exact context that was visible before it was opened, and closing
- * the same scope more than once has no effect.
+ * Internal context resolution mechanics that are not part of the exported module contract.
  *
  * @author Kimi Liu
  */
-public class ContextScope implements AutoCloseable {
-
-    /**
-     * State visible before this scope was installed.
-     */
-    private final ContextState previous;
-
-    /**
-     * State manager owning the current thread carrier.
-     */
-    private final ContextManager manager;
-
-    /**
-     * Whether the parent state has already been restored.
-     */
-    private boolean closed;
-
-    /**
-     * Installs the supplied snapshot.
-     *
-     * @param manager  state manager owning the current application context
-     * @param snapshot snapshot to install; {@code null} installs the empty snapshot
-     */
-    public ContextScope(ContextManager manager, ContextState snapshot) {
-        this.manager = manager;
-        this.previous = manager.install(snapshot);
-    }
-
-    /**
-     * Restores the parent context. This operation is idempotent.
-     */
-    @Override
-    public void close() {
-        if (!closed) {
-            closed = true;
-            this.manager.restore(this.previous);
-        }
-    }
-
-}
+package org.miaixz.bus.spring.context.resolver;

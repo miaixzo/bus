@@ -63,7 +63,7 @@ Infrastructure required by multiple features is enabled independently from produ
 
 | Configuration       | Default                              | Disable property                                      | Responsibility                                                                                                              |
 |---------------------|--------------------------------------|-------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| `GeniusStarter`     | enabled                              | none                                                  | Registers Bean services, environment/provider services, runtime context, and task decorator.                                |
+| `GeniusStarter`     | enabled                              | none                                                  | Registers Bean services, environment/provider services, `SpringBuilder`, and the context task decorator.                    |
 | `TaskConfiguration` | enabled when Boot task classes exist | `bus.context.task.enabled=false`                      | Composes ordered task decorators and propagates runtime context.                                                            |
 | `WebConfiguration`  | enabled for Servlet applications     | `bus.context.web.enabled=false` disables binding only | Registers the shared `RequestContext` and conditionally registers context binding for request, async, and error dispatches. |
 
@@ -75,17 +75,16 @@ Infrastructure required by multiple features is enabled independently from produ
 - `BeanMetadata`;
 - `EnvironmentResolver`;
 - `ProviderRegistry`;
-- `ContextManager`;
-- `ContextBuilder`;
 - `SpringBuilder`;
-- `ContextDecorator`.
+- `ContextTaskDecorator`.
 
-Each uses a concrete `@ConditionalOnMissingBean` contract. Applications can replace one service without replacing the
-entire infrastructure graph.
+Each uses a concrete `@ConditionalOnMissingBean` contract. `ContextBuilder` is deliberately not a Bean: it is a static,
+read-only facade over the context bound to the current execution. Applications can replace one registered service
+without replacing the entire infrastructure graph.
 
 ### Context propagation defaults
 
-`TaskConfiguration` sorts all `TaskDecorator` Beans, removes duplicate instances, ensures one `ContextDecorator`, and
+`TaskConfiguration` sorts all `TaskDecorator` Beans, removes duplicate instances, ensures one `ContextTaskDecorator`, and
 installs a composite decorator on Spring Boot task executors. `WebConfiguration` always supplies the replaceable
 `RequestContext` Bean in Servlet applications and registers `ContextBindingFilter` at
 `Ordered.HIGHEST_PRECEDENCE + 10` for `REQUEST`, `ASYNC`, and `ERROR` dispatches unless binding is disabled.
@@ -508,7 +507,8 @@ current runtime model and also enforces ordering.
 ## Migration rules
 
 - Use `XxxConfiguration`; removed `XxxAutoConfiguration` names must not return.
-- Use `ContextState`, `ContextScope`, and `ContextDecorator` for runtime propagation.
+- Use `ContextBuilder` for static read-only access and `ContextTransfer`, `ContextState`, and `ContextScope` for
+  explicit runtime propagation.
 - Use `GeniusBuilder` for Starter property prefixes.
 - Keep reusable mechanics in `bus-spring` and domain behavior in the owning Bus module.
 - Do not introduce an `internal` package under Starter.
