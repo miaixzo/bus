@@ -24,13 +24,13 @@ import static org.miaixz.bus.notify.FabricX.post;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Symbol;

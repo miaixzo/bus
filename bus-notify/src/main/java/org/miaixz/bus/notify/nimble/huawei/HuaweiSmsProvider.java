@@ -25,6 +25,7 @@ import java.security.MessageDigest;
 import java.util.*;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Normal;
