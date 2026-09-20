@@ -18,8 +18,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Instance-scoped Spring integration facades and context APIs. This root package must not depend on bus-starter or
- * Starter feature activation.
+ * Shared Spring integration facades and root contracts. Runtime context APIs live in the dedicated
+ * {@code org.miaixz.bus.spring.context} package. This package must not depend on bus-starter or Starter feature
+ * activation.
  *
  * @author Kimi Liu
  */

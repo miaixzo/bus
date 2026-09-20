@@ -17,52 +17,42 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring;
+package org.miaixz.bus.spring.context.task;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.task.TaskDecorator;
 
+import org.miaixz.bus.spring.context.ContextTransfer;
+
 /**
- * Propagates the generic runtime context across task execution boundaries.
+ * Captures context at task submission and installs it for task execution.
  *
  * @author Kimi Liu
  */
-public class ContextDecorator implements TaskDecorator, Ordered {
+public final class ContextTaskDecorator implements TaskDecorator, Ordered {
 
     /**
-     * Context facade used to capture and install state.
+     * Creates the stateless task decorator.
      */
-    private final ContextBuilder contextBuilder;
-
-    /**
-     * Creates a stateless runtime context task decorator.
-     *
-     * @param contextBuilder context facade used for propagation
-     */
-    public ContextDecorator(ContextBuilder contextBuilder) {
-        this.contextBuilder = contextBuilder;
+    public ContextTaskDecorator() {
+        // No initialization required.
     }
 
     /**
-     * Captures the submitting thread context and restores the executing thread context after the task finishes.
+     * Captures the submitting thread's complete context and wraps the task with a restoring scope.
      *
-     * @param runnable task to decorate
-     * @return context-aware task
+     * @param runnable task submitted to a Spring-managed executor
+     * @return task that installs the captured context only for its execution
      */
     @Override
     public Runnable decorate(Runnable runnable) {
-        ContextState snapshot = this.contextBuilder.capture();
-        return () -> {
-            try (ContextScope ignored = this.contextBuilder.install(snapshot)) {
-                runnable.run();
-            }
-        };
+        return ContextTransfer.wrap(runnable);
     }
 
     /**
-     * Runs context installation before unordered task decorators.
+     * Gives context capture the highest decorator precedence.
      *
-     * @return highest precedence
+     * @return {@link Ordered#HIGHEST_PRECEDENCE}
      */
     @Override
     public int getOrder() {

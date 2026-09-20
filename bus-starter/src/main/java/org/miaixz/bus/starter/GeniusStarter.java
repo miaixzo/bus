@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.starter;
 
-import java.util.List;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -31,10 +29,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 
-import org.miaixz.bus.spring.ContextBuilder;
-import org.miaixz.bus.spring.ContextDecorator;
-import org.miaixz.bus.spring.ContextManager;
-import org.miaixz.bus.spring.ContextProvider;
 import org.miaixz.bus.spring.SpringBuilder;
 import org.miaixz.bus.spring.bean.BeanMetadata;
 import org.miaixz.bus.spring.bean.BeanProvider;
@@ -42,6 +36,7 @@ import org.miaixz.bus.spring.bean.BeanRegistry;
 import org.miaixz.bus.spring.bean.EnvironmentResolver;
 import org.miaixz.bus.spring.bean.ProviderRegistry;
 import org.miaixz.bus.spring.bean.SpringContext;
+import org.miaixz.bus.spring.context.task.ContextTaskDecorator;
 
 /**
  * Registers shared Spring infrastructure and discovers framework components outside the Starter configuration layer.
@@ -137,30 +132,6 @@ public class GeniusStarter {
     }
 
     /**
-     * Registers the isolated request-context lifecycle manager.
-     *
-     * @return the request-context lifecycle manager
-     */
-    @Bean
-    @ConditionalOnMissingBean(ContextManager.class)
-    ContextManager contextManager() {
-        return new ContextManager();
-    }
-
-    /**
-     * Registers the facade used to build and propagate request context.
-     *
-     * @param contextManager   context manager
-     * @param contextProviders context providers
-     * @return the request-context builder
-     */
-    @Bean
-    @ConditionalOnMissingBean(ContextBuilder.class)
-    ContextBuilder contextBuilder(ContextManager contextManager, List<ContextProvider> contextProviders) {
-        return new ContextBuilder(contextManager, contextProviders);
-    }
-
-    /**
      * Creates the stable Spring facade from collaborators owned by the same application context.
      *
      * @param springContext       application-context holder
@@ -187,13 +158,12 @@ public class GeniusStarter {
     /**
      * Registers the task decorator that propagates request context across executors.
      *
-     * @param contextBuilder application-context-scoped runtime context facade
      * @return the task decorator that propagates request context
      */
     @Bean
-    @ConditionalOnMissingBean(ContextDecorator.class)
-    ContextDecorator contextDecorator(ContextBuilder contextBuilder) {
-        return new ContextDecorator(contextBuilder);
+    @ConditionalOnMissingBean(ContextTaskDecorator.class)
+    ContextTaskDecorator contextTaskDecorator() {
+        return new ContextTaskDecorator();
     }
 
 }

@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring;
+package org.miaixz.bus.spring.context;
 
 import org.miaixz.bus.core.basic.entity.Authorize;
 import org.miaixz.bus.core.lang.EnumValue;
@@ -26,37 +26,37 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Immutable snapshot of the framework request context.
+ * Immutable, transport-free snapshot of the current execution context.
  * <p>
- * Snapshot instances copy authorization data and never retain servlet objects, request caches, or thread-local
- * containers, allowing the captured values to cross execution boundaries safely.
+ * Snapshots never retain Servlet requests, Spring Beans, application contexts, or mutable context containers. The
+ * authenticated subject is defensively copied at construction and access boundaries.
  *
  * @author Kimi Liu
  */
-public class ContextState {
+public final class ContextState {
 
     /**
-     * Shared empty immutable state.
+     * Shared empty state.
      */
     private static final ContextState EMPTY = new ContextState(null, null, null, null);
 
     /**
-     * Captured request correlation identifier.
+     * Normalized request correlation identifier.
      */
     private final String requestId;
 
     /**
-     * Detached captured authorization information.
+     * Detached authenticated subject snapshot.
      */
     private final Authorize authorize;
 
     /**
-     * Captured token credential with its request-source metadata.
+     * Validated Bearer-token credential.
      */
     private final Http.Auth.Credential tokenCredential;
 
     /**
-     * Captured API-key credential with its request-source metadata.
+     * Validated API-key credential.
      */
     private final Http.Auth.Credential apiKeyCredential;
 
@@ -64,122 +64,150 @@ public class ContextState {
      * Creates an immutable detached state.
      *
      * @param requestId        request correlation identifier
-     * @param authorize        authorization information
-     * @param tokenCredential  token credential
+     * @param authorize        authenticated subject
+     * @param tokenCredential  Bearer-token credential
      * @param apiKeyCredential API-key credential
      */
     public ContextState(String requestId, Authorize authorize, Http.Auth.Credential tokenCredential,
             Http.Auth.Credential apiKeyCredential) {
-        this.requestId = requestId;
+        this.requestId = normalize(requestId);
         this.authorize = copy(authorize);
+        validate(tokenCredential, EnumValue.Credential.TOKEN, "token");
+        validate(apiKeyCredential, EnumValue.Credential.API_KEY, "API-key");
         this.tokenCredential = tokenCredential;
         this.apiKeyCredential = apiKeyCredential;
     }
 
     /**
-     * Returns the empty snapshot.
+     * Returns the shared empty state.
      *
-     * @return the empty snapshot
+     * @return empty state
      */
     public static ContextState empty() {
         return EMPTY;
     }
 
     /**
-     * Creates a snapshot from explicit immutable context values.
-     *
-     * @param requestId request correlation identifier
-     * @param authorize authenticated authorization information
-     * @return a detached snapshot
-     */
-    public static ContextState of(String requestId, Authorize authorize) {
-        return of(requestId, authorize, null, null);
-    }
-
-    /**
-     * Creates a snapshot containing identity and request credentials.
+     * Creates a state from explicit values.
      *
      * @param requestId        request correlation identifier
-     * @param authorize        authenticated authorization information
-     * @param tokenCredential  resolved token credential
-     * @param apiKeyCredential resolved API-key credential
-     * @return a detached snapshot
-     * @throws IllegalArgumentException when a credential has the wrong type or a blank value
+     * @param authorize        authenticated subject
+     * @param tokenCredential  Bearer-token credential
+     * @param apiKeyCredential API-key credential
+     * @return immutable state
      */
     public static ContextState of(
             String requestId,
             Authorize authorize,
             Http.Auth.Credential tokenCredential,
             Http.Auth.Credential apiKeyCredential) {
-        validate(tokenCredential, EnumValue.Credential.TOKEN, "token");
-        validate(apiKeyCredential, EnumValue.Credential.API_KEY, "API-key");
-        if (requestId == null && authorize == null && tokenCredential == null && apiKeyCredential == null) {
+        if (StringKit.isBlank(requestId) && authorize == null && tokenCredential == null && apiKeyCredential == null) {
             return EMPTY;
         }
         return new ContextState(requestId, authorize, tokenCredential, apiKeyCredential);
     }
 
     /**
-     * Gets the captured request identifier.
+     * Creates a state containing identity without credentials.
      *
-     * @return the request identifier, or {@code null}
+     * @param requestId request correlation identifier
+     * @param authorize authenticated subject
+     * @return immutable state
+     */
+    public static ContextState of(String requestId, Authorize authorize) {
+        return of(requestId, authorize, null, null);
+    }
+
+    /**
+     * Returns a copy containing the supplied authenticated subject.
+     *
+     * @param value authenticated subject
+     * @return updated immutable state
+     */
+    public ContextState withAuthorize(Authorize value) {
+        return of(this.requestId, value, this.tokenCredential, this.apiKeyCredential);
+    }
+
+    /**
+     * Returns a copy without raw request credentials.
+     *
+     * @return credential-free state
+     */
+    public ContextState withoutCredentials() {
+        return of(this.requestId, this.authorize, null, null);
+    }
+
+    /**
+     * Returns a copy containing only request correlation information.
+     *
+     * @return request-only state
+     */
+    public ContextState requestOnly() {
+        return of(this.requestId, null, null, null);
+    }
+
+    /**
+     * Returns the request correlation identifier.
+     *
+     * @return request identifier, or {@code null} when absent
      */
     public String getRequestId() {
         return requestId;
     }
 
     /**
-     * Gets a detached copy of the captured authorization information.
+     * Returns a defensive copy of the authenticated subject.
      *
-     * @return authorization information, or {@code null}
+     * @return detached authenticated subject, or {@code null} when absent
      */
     public Authorize getAuthorize() {
         return copy(authorize);
     }
 
     /**
-     * Gets the captured token credential without exposing its value through diagnostics.
+     * Returns the validated Bearer-token credential.
      *
-     * @return token credential, or {@code null}
+     * @return Bearer-token credential, or {@code null} when absent
      */
     public Http.Auth.Credential getTokenCredential() {
         return tokenCredential;
     }
 
     /**
-     * Gets the captured API-key credential without exposing its value through diagnostics.
+     * Returns the validated API-key credential.
      *
-     * @return API-key credential, or {@code null}
+     * @return API-key credential, or {@code null} when absent
      */
     public Http.Auth.Credential getApiKeyCredential() {
         return apiKeyCredential;
     }
 
     /**
-     * Tests whether this snapshot contains no context values.
+     * Tests whether this snapshot contains no correlation, identity, or credential values.
      *
-     * @return {@code true} when all context values are absent
+     * @return {@code true} when every context value is absent
      */
     public boolean isEmpty() {
         return requestId == null && authorize == null && tokenCredential == null && apiKeyCredential == null;
     }
 
     /**
-     * Creates a defensive copy of authorization information.
+     * Defensively copies an authenticated subject.
      *
-     * @param authorize source authorization information
-     * @return detached copy, or {@code null}
+     * @param value subject to copy
+     * @return detached subject, or {@code null} when absent
      */
-    private static Authorize copy(Authorize authorize) {
-        return authorize == null ? null : ObjectKit.clone(authorize);
+    private static Authorize copy(Authorize value) {
+        return value == null ? null : ObjectKit.clone(value);
     }
 
     /**
-     * Verifies that a captured credential matches its immutable state slot.
+     * Validates the type and value of one optional credential.
      *
      * @param credential credential to validate
      * @param expected   required credential type
-     * @param label      safe diagnostic label
+     * @param label      human-readable credential label for validation errors
+     * @throws IllegalArgumentException when the credential has an unexpected type or blank value
      */
     private static void validate(Http.Auth.Credential credential, EnumValue.Credential expected, String label) {
         if (credential != null && credential.type() != expected) {
@@ -188,6 +216,16 @@ public class ContextState {
         if (credential != null && StringKit.isBlank(credential.value())) {
             throw new IllegalArgumentException("Expected non-blank " + label + " credential value");
         }
+    }
+
+    /**
+     * Trims a text value and converts blank text to {@code null}.
+     *
+     * @param value value to normalize
+     * @return normalized value, or {@code null} when absent or blank
+     */
+    private static String normalize(String value) {
+        return StringKit.isBlank(value) ? null : value.trim();
     }
 
 }

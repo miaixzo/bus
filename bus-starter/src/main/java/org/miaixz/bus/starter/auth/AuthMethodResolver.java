@@ -27,7 +27,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import org.miaixz.bus.core.basic.entity.Authorize;
 import org.miaixz.bus.core.lang.annotation.Authenticate;
-import org.miaixz.bus.spring.ContextBuilder;
+import org.miaixz.bus.spring.context.ContextBuilder;
 
 /**
  * Argument resolver for authorization, used to automatically inject the current logged-in user's information into
@@ -65,17 +65,10 @@ import org.miaixz.bus.spring.ContextBuilder;
 public class AuthMethodResolver implements HandlerMethodArgumentResolver {
 
     /**
-     * Application-context-scoped runtime context facade.
+     * Creates the stateless authenticated-subject argument resolver.
      */
-    private final ContextBuilder contextBuilder;
-
-    /**
-     * Initializes argument resolution against the runtime context owned by the current application context.
-     *
-     * @param contextBuilder runtime context facade used to obtain the authenticated subject
-     */
-    public AuthMethodResolver(ContextBuilder contextBuilder) {
-        this.contextBuilder = contextBuilder;
+    public AuthMethodResolver() {
+        // No initialization required.
     }
 
     /**
@@ -116,7 +109,7 @@ public class AuthMethodResolver implements HandlerMethodArgumentResolver {
             ModelAndViewContainer modelAndViewContainer,
             NativeWebRequest nativeWebRequest,
             WebDataBinderFactory webDataBinderFactory) {
-        return this.contextBuilder.getAuthorize();
+        return ContextBuilder.getAuthorize();
     }
 
 }

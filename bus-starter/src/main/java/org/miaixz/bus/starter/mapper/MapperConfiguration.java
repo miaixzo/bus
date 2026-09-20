@@ -59,7 +59,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.feature.tenant.TenantProvider;
 import org.miaixz.bus.mapper.provider.MyBatisConfigCustomizer;
-import org.miaixz.bus.spring.ContextBuilder;
 import org.miaixz.bus.spring.bean.BeanProvider;
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.spring.jdbc.DataSourceHolder;
@@ -296,15 +295,14 @@ public class MapperConfiguration implements InitializingBean {
     /**
      * Adapts the authenticated application context when the application has not supplied its own tenant provider.
      *
-     * @param contextBuilder authenticated context facade
      * @return context-backed tenant provider
      */
     @Bean
     @ConditionalOnMissingBean(TenantProvider.class)
     @ConditionalOnProperty(prefix = GeniusBuilder.MAPPER
             + ".tenant", name = "enabled", havingValue = "true", matchIfMissing = false)
-    public TenantProvider contextTenantProvider(ContextBuilder contextBuilder) {
-        return new ContextTenantProvider(contextBuilder);
+    public TenantProvider contextTenantProvider() {
+        return new ContextTenantProvider();
     }
 
     /**

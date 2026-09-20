@@ -17,9 +17,10 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.web;
+package org.miaixz.bus.spring.context.web;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -34,67 +35,75 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.spring.ContextBuilder;
-import org.miaixz.bus.spring.ContextScope;
-import org.miaixz.bus.spring.ContextState;
+import org.miaixz.bus.spring.context.ContextBuilder;
+import org.miaixz.bus.spring.context.ContextScope;
+import org.miaixz.bus.spring.context.ContextState;
+import org.miaixz.bus.spring.context.ContextTransfer;
+import org.miaixz.bus.spring.context.resolver.ContextResolver;
+import org.miaixz.bus.spring.context.spi.ContextProvider;
+import org.miaixz.bus.spring.web.RequestContext;
 
 /**
- * Installs and restores an immutable runtime Context for every Servlet dispatch.
+ * Installs one immutable runtime context around every supported Servlet dispatch.
  *
  * @author Kimi Liu
  */
-public class ContextBindingFilter implements Filter {
+public final class ContextBindingFilter implements Filter {
 
     /**
-     * Request attribute carrying immutable context state across dispatches.
+     * Servlet request attribute containing the immutable context state shared across dispatches.
      */
     public static final String STATE_ATTRIBUTE = ContextBindingFilter.class.getName() + ".STATE";
+
     /**
-     * Request attribute preventing duplicate filtering within one dispatch.
+     * Servlet request attribute preventing duplicate binding within one dispatch.
      */
     private static final String FILTERED_ATTRIBUTE = ContextBindingFilter.class.getName() + ".FILTERED";
+
     /**
-     * Request attribute preventing duplicate asynchronous listener registration.
+     * Servlet request attribute marking that asynchronous cleanup has been registered.
      */
     private static final String ASYNC_LISTENER_ATTRIBUTE = ContextBindingFilter.class.getName() + ".ASYNC_LISTENER";
 
     /**
-     * Context facade used for state capture and installation.
+     * Resolver that combines normalized credentials with ordered authentication providers.
      */
-    private final ContextBuilder contextBuilder;
+    private final ContextResolver resolver;
 
     /**
-     * Request accessor used only at the Servlet integration boundary.
+     * Stateless request-boundary accessor used to normalize HTTP headers.
      */
     private final RequestContext requestContext;
 
     /**
-     * Creates a Context binding filter using the owning Context facade.
+     * Creates a filter using a default stateless request accessor.
      *
-     * @param contextBuilder application-context-scoped facade
+     * @param providers ordered authenticated-context providers
      */
-    public ContextBindingFilter(ContextBuilder contextBuilder) {
-        this(contextBuilder, new RequestContext());
+    public ContextBindingFilter(List<ContextProvider> providers) {
+        this(providers, new RequestContext());
     }
 
     /**
-     * Creates a Context binding filter using explicit context and request collaborators.
+     * Creates a filter from its context providers and request-boundary accessor.
      *
-     * @param contextBuilder application-context-scoped facade
-     * @param requestContext request value accessor
+     * @param providers      ordered authenticated-context providers
+     * @param requestContext stateless accessor used to normalize HTTP headers
+     * @throws NullPointerException when {@code requestContext} is {@code null}
      */
-    public ContextBindingFilter(ContextBuilder contextBuilder, RequestContext requestContext) {
-        this.contextBuilder = Objects.requireNonNull(contextBuilder, "contextBuilder");
+    public ContextBindingFilter(List<ContextProvider> providers, RequestContext requestContext) {
+        this.resolver = new ContextResolver(providers);
         this.requestContext = Objects.requireNonNull(requestContext, "requestContext");
     }
 
     /**
-     * Installs one dispatch state and always restores the worker thread's parent state.
+     * Resolves, installs, captures, and finally removes context state around one Servlet dispatch.
      *
      * @param request  incoming Servlet request
      * @param response outgoing Servlet response
-     * @param chain    downstream filter chain
+     * @param chain    remaining filter chain
      * @throws ServletException when the request is not HTTP or downstream processing fails
      * @throws IOException      when downstream I/O fails
      */
@@ -114,12 +123,12 @@ public class ContextBindingFilter implements Filter {
         boolean completed = false;
         try {
             ContextState state = resolveState(httpRequest);
-            try (ContextScope ignored = this.contextBuilder.install(state)) {
+            try (ContextScope ignored = ContextTransfer.install(state)) {
                 try {
                     chain.doFilter(httpRequest, httpResponse);
                     completed = true;
                 } finally {
-                    httpRequest.setAttribute(STATE_ATTRIBUTE, this.contextBuilder.capture());
+                    httpRequest.setAttribute(STATE_ATTRIBUTE, ContextBuilder.capture());
                 }
             }
         } finally {
@@ -129,10 +138,10 @@ public class ContextBindingFilter implements Filter {
     }
 
     /**
-     * Resolves or creates the immutable state for a Servlet dispatch.
+     * Reuses a state from an earlier dispatch or resolves a new state for an initial request.
      *
      * @param request current HTTP request
-     * @return state assigned to the dispatch
+     * @return immutable state for this dispatch
      */
     private ContextState resolveState(HttpServletRequest request) {
         Object existing = request.getAttribute(STATE_ATTRIBUTE);
@@ -142,28 +151,22 @@ public class ContextBindingFilter implements Filter {
         if (request.getDispatcherType() != DispatcherType.REQUEST) {
             return ContextState.empty();
         }
-        ContextState state;
-        try (ContextScope ignored = this.contextBuilder.install(ContextState.empty())) {
-            this.contextBuilder.setRequestId();
-            Map<String, String> headers = this.requestContext.getHeaders(request);
-            Http.Auth.Credential tokenCredential = Http.Auth.bearerCredential(headers);
-            Http.Auth.Credential apiKeyCredential = Http.Auth.apiKeyCredential(headers);
-            this.contextBuilder.setTokenCredential(tokenCredential);
-            this.contextBuilder.setApiKeyCredential(apiKeyCredential);
-            this.contextBuilder.getAuthorize();
-            state = this.contextBuilder.capture();
-        }
+
+        Map<String, String> headers = this.requestContext.getHeaders(request);
+        Http.Auth.Credential tokenCredential = Http.Auth.bearerCredential(headers);
+        Http.Auth.Credential apiKeyCredential = Http.Auth.apiKeyCredential(headers);
+        ContextState state = this.resolver.resolve(ID.objectId(), tokenCredential, apiKeyCredential);
         request.setAttribute(STATE_ATTRIBUTE, state);
         return state;
     }
 
     /**
-     * Creates the synchronous completion, error redispatch, and asynchronous continuation.
+     * Completes synchronous cleanup or registers cleanup for an active asynchronous lifecycle.
      *
      * @param request   current HTTP request
-     * @param completed whether the downstream filter chain completed normally
+     * @param completed whether the downstream chain returned normally
      */
-    private void finishDispatch(HttpServletRequest request, boolean completed) {
+    private static void finishDispatch(HttpServletRequest request, boolean completed) {
         if (request.isAsyncStarted()) {
             registerAsyncListener(request);
             return;
@@ -172,19 +175,18 @@ public class ContextBindingFilter implements Filter {
         if (type == DispatcherType.ERROR || completed) {
             cleanup(request);
         }
-        // A failed REQUEST retains its final state for the container's ERROR redispatch.
     }
 
     /**
-     * Registers exactly one cleanup listener for an asynchronous request.
+     * Registers exactly one listener to retain state across and clean state after asynchronous dispatches.
      *
-     * @param request asynchronous HTTP request
+     * @param request request with an active asynchronous context
      */
-    private void registerAsyncListener(HttpServletRequest request) {
+    private static void registerAsyncListener(HttpServletRequest request) {
         if (request.getAttribute(ASYNC_LISTENER_ATTRIBUTE) != null) {
             return;
         }
-        ContextAsyncListener listener = new ContextAsyncListener(this.contextBuilder);
+        ContextAsyncListener listener = new ContextAsyncListener();
         request.setAttribute(ASYNC_LISTENER_ATTRIBUTE, listener);
         try {
             request.getAsyncContext().addListener(listener);
@@ -194,9 +196,9 @@ public class ContextBindingFilter implements Filter {
     }
 
     /**
-     * Removes all context lifecycle request attributes.
+     * Removes context-lifecycle attributes from a completed request.
      *
-     * @param request Servlet request to clean
+     * @param request request whose context lifecycle has completed
      */
     private static void cleanup(ServletRequest request) {
         request.removeAttribute(STATE_ATTRIBUTE);
@@ -204,26 +206,19 @@ public class ContextBindingFilter implements Filter {
     }
 
     /**
-     * Maintains the final state across asynchronous cycles and cleans every terminal path.
+     * Retains immutable state across asynchronous restarts and clears it at terminal events.
      */
     private static final class ContextAsyncListener implements AsyncListener {
 
         /**
-         * Context facade used to capture state at asynchronous redispatch.
+         * Creates the stateless asynchronous lifecycle listener.
          */
-        private final ContextBuilder contextBuilder;
-
-        /**
-         * Creates an asynchronous context lifecycle listener.
-         *
-         * @param contextBuilder application-context-scoped facade
-         */
-        private ContextAsyncListener(ContextBuilder contextBuilder) {
-            this.contextBuilder = contextBuilder;
+        private ContextAsyncListener() {
+            // No initialization required.
         }
 
         /**
-         * Removes context attributes after asynchronous processing completes.
+         * Clears request context attributes after successful asynchronous completion.
          *
          * @param event asynchronous completion event
          */
@@ -233,7 +228,7 @@ public class ContextBindingFilter implements Filter {
         }
 
         /**
-         * Removes context attributes after asynchronous processing times out.
+         * Clears request context attributes after an asynchronous timeout.
          *
          * @param event asynchronous timeout event
          */
@@ -243,7 +238,7 @@ public class ContextBindingFilter implements Filter {
         }
 
         /**
-         * Removes context attributes after asynchronous processing fails.
+         * Clears request context attributes after an asynchronous error.
          *
          * @param event asynchronous error event
          */
@@ -253,15 +248,19 @@ public class ContextBindingFilter implements Filter {
         }
 
         /**
-         * Carries the latest immutable state into a newly started asynchronous cycle.
+         * Preserves the current immutable state and follows the restarted asynchronous cycle.
          *
          * @param event asynchronous restart event
          */
         @Override
         public void onStartAsync(AsyncEvent event) {
-            event.getSuppliedRequest().setAttribute(STATE_ATTRIBUTE, this.contextBuilder.capture());
+            ServletRequest request = event.getSuppliedRequest();
+            if (ContextBuilder.isPresent()) {
+                request.setAttribute(STATE_ATTRIBUTE, ContextBuilder.capture());
+            }
             event.getAsyncContext().addListener(this);
         }
+
     }
 
 }

@@ -33,7 +33,7 @@ import org.springframework.core.task.TaskDecorator;
 import org.springframework.core.task.support.CompositeTaskDecorator;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import org.miaixz.bus.spring.ContextDecorator;
+import org.miaixz.bus.spring.context.task.ContextTaskDecorator;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
@@ -70,16 +70,16 @@ public class TaskConfiguration {
 
         Set<TaskDecorator> seen = Collections.newSetFromMap(new IdentityHashMap<>());
         List<TaskDecorator> unique = new ArrayList<>(ordered.size());
-        boolean contextDecoratorAdded = false;
+        boolean contextTaskDecoratorAdded = false;
         for (TaskDecorator decorator : ordered) {
             if (!seen.add(decorator)) {
                 continue;
             }
-            if (decorator instanceof ContextDecorator) {
-                if (contextDecoratorAdded) {
+            if (decorator instanceof ContextTaskDecorator) {
+                if (contextTaskDecoratorAdded) {
                     continue;
                 }
-                contextDecoratorAdded = true;
+                contextTaskDecoratorAdded = true;
             }
             unique.add(decorator);
         }

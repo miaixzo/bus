@@ -39,12 +39,16 @@ Spring APIs are required and activation will be provided by the application.
 
 | Package                 | Responsibility                                                                                       |
 |-------------------------|------------------------------------------------------------------------------------------------------|
-| `org.miaixz.bus.spring` | Runtime context APIs and the `SpringBuilder` facade.                                                 |
+| `org.miaixz.bus.spring` | `SpringBuilder` and other root Spring integration APIs.                                              |
+| `context`               | Static context access, immutable snapshots, lexical scopes, and propagation policies.               |
+| `context.task`          | Spring task decoration for bounded cross-thread context propagation.                                 |
+| `context.spi`           | Ordered authenticated-context provider extension point.                                             |
+| `context.web`           | Servlet request, async, and error-dispatch context lifecycle binding.                                |
 | `annotation`            | Merged annotation handling, placeholder binding, wrapper annotations, and `@RequestObject`.          |
 | `aop`                   | Reusable auto-proxy infrastructure with Bean-name exclusions.                                        |
 | `bean`                  | Focused Bean lookup, registration, metadata, environment, context, and provider services.            |
 | `jdbc`                  | Reusable datasource resolution, pool creation, dynamic routing, route scope, annotation, and advice. |
-| `web`                   | Root Servlet request access and context-binding filter.                                              |
+| `web`                   | Root Servlet request access and general web infrastructure.                                          |
 | `web.advice`            | Reusable MVC response advice base implementation.                                                    |
 | `web.converter`         | JSON/text converters, type matching, registration, and MVC configurers.                              |
 | `web.interceptor`       | Request interception helpers.                                                                        |
@@ -58,8 +62,9 @@ Spring APIs are required and activation will be provided by the application.
 | `boot.listener`         | Spring Boot configuration listeners.                                                                 |
 | `boot.startup`          | Startup stages, metrics, reporters, and Bean post-processing.                                        |
 
-The root package intentionally remains populated. `ContextBuilder`, `ContextManager`, `ContextProvider`, `ContextState`,
-`ContextScope`, `ContextDecorator`, and `SpringBuilder` are stable public capabilities rather than an empty namespace.
+The root package intentionally remains populated by `SpringBuilder` and the shared Spring integration contracts.
+Runtime context types live below the dedicated `context` package so static access, propagation, SPI, and Servlet
+binding have explicit architectural boundaries.
 
 `boot.condition` provides `@ConditionalOnEnabled` and `EnabledCondition`. The condition gives an explicit enable
 annotation priority over the corresponding property, while leaving concrete annotations and property prefixes to the
@@ -79,17 +84,19 @@ Starter assembly. `bus-starter` supplies only the supported prefix order, defaul
 
 ## Runtime context model
 
-Runtime state is owned by one `ContextManager` per Spring application context. It is not stored in a global static
-application-context registry.
+Runtime state is held in a classloader-local, thread-confined stack. `ContextBuilder` is a static, read-only facade; it
+does not resolve Spring Beans, retain an application context, parse transport objects, authenticate users, or perform
+I/O.
 
-| Type               | Responsibility                                                                                                       |
-|--------------------|----------------------------------------------------------------------------------------------------------------------|
-| `ContextManager`   | Owns the current thread state and performs capture, install, restore, and clear operations.                          |
-| `ContextState`     | Immutable detached snapshot containing request ID, a defensive authorization copy, and resolved credential metadata. |
-| `ContextBuilder`   | Public facade for request IDs, authorization, tenant, credential, token, and API key access.                         |
-| `ContextScope`     | `AutoCloseable` guard that restores the previous state exactly once.                                                 |
-| `ContextDecorator` | Spring `TaskDecorator` that propagates captured state to executor tasks.                                             |
-| `ContextProvider`  | Ordered extension point that can supply authorization state.                                                         |
+| Type                       | Responsibility                                                                                                       |
+|----------------------------|----------------------------------------------------------------------------------------------------------------------|
+| `ContextState`             | Immutable detached snapshot containing request ID, a defensive authorization copy, and resolved credentials.        |
+| `ContextBuilder`           | Static read-only access to request ID, authorization, tenant, credential, token, and API key values.                 |
+| `ContextScope`             | Thread-owned `AutoCloseable` guard that restores the previous state exactly once and in LIFO order.                  |
+| `ContextTransfer`          | Explicit capture, mode filtering, installation, and task wrapping operations.                                        |
+| `ContextTransfer.Mode`     | Selects whether credentials, identity, request correlation, or no values may cross an execution boundary.            |
+| `ContextTaskDecorator`     | Spring `TaskDecorator` that installs a captured snapshot only for one executor task.                                 |
+| `ContextProvider`          | Ordered SPI that authenticates an already normalized initial context.                                                |
 
 `ContextState` never retains `HttpServletRequest`, cached bodies, multipart data, or a thread-local container. Token and
 API-key credentials are resolved once at the Servlet boundary and retained only as immutable credential values with
@@ -98,13 +105,10 @@ redacted diagnostics. This makes the snapshot suitable for bounded asynchronous 
 ### Capture and install
 
 ```java
-ContextState state = contextBuilder.capture();
+ContextState state = ContextBuilder.capture();
 
-try(
-ContextScope ignored = contextBuilder.install(state)){
-        operation.
-
-run();
+try (ContextScope ignored = ContextTransfer.install(state)) {
+    operation.run();
 }
 ```
 
@@ -113,25 +117,28 @@ Closing the scope restores the worker thread's previous state, including when th
 ### Executor propagation
 
 ```java
-Runnable decorated = contextDecorator.decorate(() -> service.process(command));
-executor.
-
-execute(decorated);
+Runnable decorated = ContextTransfer.wrap(() -> service.process(command));
+executor.execute(decorated);
 ```
 
-`ContextDecorator` captures at decoration time, installs before execution, and restores afterward. With
-`bus-starter`, `TaskConfiguration` registers this decorator by default when Spring Boot task classes are present. It can
-be disabled with `bus.context.task.enabled=false`.
+`ContextTaskDecorator` captures at decoration time, installs before execution, and restores afterward. With
+`bus-starter`, `GeniusStarter` registers the decorator and `TaskConfiguration` composes it into Boot-managed executors
+when Spring Boot task classes are present. Automatic executor integration can be disabled with
+`bus.context.task.enabled=false`.
 
 ### Context access
 
 ```java
-String requestId = contextBuilder.getRequestId();
-String tenantId = contextBuilder.getTenantId();
-String token = contextBuilder.getToken();
-String apiKey = contextBuilder.getApiKey();
-Http.Auth.Credential credential = contextBuilder.getCredential();
+String requestId = ContextBuilder.getRequestId();
+String tenantId = ContextBuilder.getTenantId();
+String token = ContextBuilder.getToken();
+String apiKey = ContextBuilder.getApiKey();
+Http.Auth.Credential credential = ContextBuilder.getCredential();
 ```
+
+Nullable `getXxx()` methods return `null` outside a matching context. Strict accessors use the existing Bus exception
+hierarchy: `requireAuthorize()` and `requireApiKey()` throw `AuthorizedException`, while `requireToken()` throws
+`TokenException`.
 
 Token and API-key values are stored independently. `getCredential()` prefers the token when both are present, while
 `getToken()` and `getApiKey()` continue to expose their respective values. Resolution follows `Http.Auth`: headers,

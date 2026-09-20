@@ -63,7 +63,7 @@ META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
 
 | 配置 | 默认值 | 禁用属性 | 职责 |
 |---------------------|--------------------------------------|-------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| `GeniusStarter` | 已启用 | 无 | 注册 Bean 服务、环境/提供者服务、运行时上下文和任务装饰器。                                |
+| `GeniusStarter` | 已启用 | 无 | 注册 Bean 服务、环境/提供者服务、`SpringBuilder` 和上下文任务装饰器。                       |
 | `TaskConfiguration` | 当引导任务类存在时启用 | `bus.context.task.enabled=false` | 组成有序任务装饰器并传播运行时上下文。                                                            |
 | `WebConfiguration` | 为 Servlet 应用程序启用 | `bus.context.web.enabled=false` 仅禁用绑定 | 注册共享 `RequestContext` 并有条件地注册请求、异步和错误调度的上下文绑定。 |
 
@@ -75,17 +75,15 @@ META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
 - `BeanMetadata`；
 - `EnvironmentResolver`；
 - `ProviderRegistry`；
-- `ContextManager`；
-- `ContextBuilder`；
 - `SpringBuilder`；
-- `ContextDecorator`。
+- `ContextTaskDecorator`。
 
-每个都使用具体的 `@ConditionalOnMissingBean` 合约。应用程序可以替换一项服务而不替换其他服务
-整个基础设施图。
+每项都使用具体的 `@ConditionalOnMissingBean` 合约。`ContextBuilder` 刻意不注册为 Bean：它是当前执行上下文的
+静态只读门面。应用程序可以替换一项已注册服务，而无需替换整个基础设施图。
 
 ### 上下文传播默认值
 
-`TaskConfiguration` 对所有 `TaskDecorator` Bean 进行排序，删除重复实例，确保有一个 `ContextDecorator`，并且
+`TaskConfiguration` 对所有 `TaskDecorator` Bean 进行排序，删除重复实例，确保有一个 `ContextTaskDecorator`，并且
 在 Spring Boot 任务执行器上安装复合装饰器。 `WebConfiguration`始终提供可更换的
 `RequestContext` Servlet 应用程序中的 Bean 并在以下位置注册 `ContextBindingFilter`
 除非禁用绑定，否则将调度 `REQUEST`、`ASYNC` 和 `ERROR` 的 `Ordered.HIGHEST_PRECEDENCE + 10`。
@@ -507,7 +505,8 @@ Abarth 元数据审计根据以下内容解析每个配置的类、构造函数�
 ## 迁移规则
 
 - 使用`XxxConfiguration`；已删除的 `XxxAutoConfiguration` 名称不得返回。
-- 使用 `ContextState`、`ContextScope` 和 `ContextDecorator` 进行运行时传播。
+- 使用 `ContextBuilder` 进行静态只读访问，使用 `ContextTransfer`、`ContextState` 和 `ContextScope`
+  进行显式运行时传播。
 - 使用 `GeniusBuilder` 作为 Starter 属性前缀。
 - 将可重用机制保留在 `bus-spring` 中，并将域行为保留在所属Bus模块中。
 - 不要在 Starter 下引入 `internal` 包。
