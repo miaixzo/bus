@@ -109,12 +109,6 @@ public class CGetForward implements AutoCloseable {
      * The service for the StreamSCU.
      */
     private final Centre streamSCUService;
-
-    /**
-     * The priority of the C-GET operation.
-     */
-    private int priority;
-
     /**
      * The C-STORE SCP to handle incoming images.
      */
@@ -244,7 +238,10 @@ public class CGetForward implements AutoCloseable {
 
         }
     };
-
+    /**
+     * The priority of the C-GET operation.
+     */
+    private int priority;
     /**
      * The information model for the C-GET operation.
      */

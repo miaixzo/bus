@@ -52,21 +52,6 @@ public enum MipProjection {
     /**
      * Executes the apply operation.
      *
-     * @param sources the sources.
-     * @return the operation result.
-     */
-    public PlanarImage apply(List<PlanarImage> sources) {
-        return switch (this) {
-            case NONE -> null;
-            case MIN -> ImageCV.minStack(validateSources(sources));
-            case MEAN -> ImageCV.meanStack(validateSources(sources));
-            case MAX -> ImageCV.maxStack(validateSources(sources));
-        };
-    }
-
-    /**
-     * Executes the apply operation.
-     *
      * @param projection the projection.
      * @param sources    the sources.
      * @return the operation result.
@@ -86,6 +71,21 @@ public enum MipProjection {
             throw new IllegalArgumentException("sources cannot be empty");
         }
         return sources;
+    }
+
+    /**
+     * Executes the apply operation.
+     *
+     * @param sources the sources.
+     * @return the operation result.
+     */
+    public PlanarImage apply(List<PlanarImage> sources) {
+        return switch (this) {
+            case NONE -> null;
+            case MIN -> ImageCV.minStack(validateSources(sources));
+            case MEAN -> ImageCV.meanStack(validateSources(sources));
+            case MAX -> ImageCV.maxStack(validateSources(sources));
+        };
     }
 
 }

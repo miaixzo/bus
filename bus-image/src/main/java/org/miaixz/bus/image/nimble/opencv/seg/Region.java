@@ -21,18 +21,14 @@ package org.miaixz.bus.image.nimble.opencv.seg;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
-import org.opencv.core.Point;
+import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
+import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 
@@ -119,6 +115,162 @@ public class Region {
     }
 
     /**
+     * Builds the segment list.
+     *
+     * @param binary the binary.
+     * @return the operation result.
+     */
+    public static List<Segment> buildSegmentList(PlanarImage binary) {
+        return buildSegmentList(binary, null);
+    }
+
+    /**
+     * Builds the segment list.
+     *
+     * @param binary the binary.
+     * @param offset the offset.
+     * @return the operation result.
+     */
+    public static List<Segment> buildSegmentList(PlanarImage binary, Point offset) {
+        if (binary == null) {
+            return List.of();
+        }
+        var contours = new ArrayList<MatOfPoint>();
+        var hierarchy = new Mat();
+        try {
+            findContours(binary, contours, hierarchy, offset);
+            return buildSegmentList(contours, hierarchy);
+        } finally {
+            hierarchy.release();
+            contours.forEach(Mat::release);
+        }
+    }
+
+    /**
+     * Finds the contours.
+     *
+     * @param binary    the binary.
+     * @param contours  the contours.
+     * @param hierarchy the hierarchy.
+     * @param offset    the offset.
+     */
+    private static void findContours(PlanarImage binary, List<MatOfPoint> contours, Mat hierarchy, Point offset) {
+        if (offset == null) {
+            Imgproc.findContours(binary.toMat(), contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+        } else {
+            Imgproc.findContours(
+                    binary.toMat(),
+                    contours,
+                    hierarchy,
+                    Imgproc.RETR_TREE,
+                    Imgproc.CHAIN_APPROX_SIMPLE,
+                    offset);
+        }
+    }
+
+    /**
+     * Builds the segment list from float.
+     *
+     * @param contours  the contours.
+     * @param hierarchy the hierarchy.
+     * @return the operation result.
+     */
+    public static List<Segment> buildSegmentListFromFloat(List<MatOfPoint2f> contours, Mat hierarchy) {
+        return buildSegmentListFromContours(contours, hierarchy);
+    }
+
+    /**
+     * Builds the segment list.
+     *
+     * @param contours  the contours.
+     * @param hierarchy the hierarchy.
+     * @return the operation result.
+     */
+    public static List<Segment> buildSegmentList(List<MatOfPoint> contours, Mat hierarchy) {
+        return buildSegmentListFromContours(contours, hierarchy);
+    }
+
+    /**
+     * Builds the segment list from contours.
+     *
+     * @param contours  the contours.
+     * @param hierarchy the hierarchy.
+     * @return the operation result.
+     */
+    private static List<Segment> buildSegmentListFromContours(List<? extends Mat> contours, Mat hierarchy) {
+        if (contours == null || hierarchy == null || contours.isEmpty()) {
+            return List.of();
+        }
+        int count = contours.size();
+        if (CvType.depth(hierarchy.type()) != CvType.CV_32S || hierarchy.total() * hierarchy.channels() < 4L * count) {
+            throw new IllegalArgumentException("Hierarchy must hold 4 int values per contour");
+        }
+        var hierarchyData = new int[count * 4];
+        hierarchy.get(0, 0, hierarchyData);
+
+        var segments = new Segment[count];
+        for (int i = 0; i < count; i++) {
+            segments[i] = ContourTopology.toSegment(contours.get(i));
+        }
+
+        var rootSegments = new ArrayList<Segment>();
+        for (int i = 0; i < count; i++) {
+            var segment = segments[i];
+            if (segment == null) {
+                continue;
+            }
+            int parentIndex = hierarchyData[i * 4 + HIERARCHY_PARENT_INDEX];
+            if (parentIndex < 0) {
+                rootSegments.add(segment);
+            } else if (parentIndex < count && segments[parentIndex] != null) {
+                segments[parentIndex].addChild(segment);
+            }
+        }
+        return rootSegments;
+    }
+
+    /**
+     * Calculates the area.
+     *
+     * @param segments the segments.
+     * @param level    the level.
+     * @return the operation result.
+     */
+    private static double calculateArea(List<Segment> segments, int level) {
+        if (segments.isEmpty()) {
+            return 0.0;
+        }
+
+        double totalArea = 0.0;
+        for (var segment : segments) {
+            double segmentArea = polygonArea(segment);
+            // Alternate signs for holes: positive for even levels, negative for odd levels
+            totalArea += (level % 2 == 0) ? segmentArea : -segmentArea;
+            totalArea += calculateArea(segment.children, level + 1);
+        }
+        return totalArea;
+    }
+
+    /**
+     * Executes the polygon area operation.
+     *
+     * @param segment the segment.
+     * @return the operation result.
+     */
+    private static double polygonArea(Segment segment) {
+        if (segment == null || segment.size() < 3) {
+            return 0.0;
+        }
+        double area = 0.0;
+        Point2D previous = segment.get(segment.size() - 1);
+        for (Point2D current : segment) {
+            area += previous.getX() * current.getY() - current.getX() * previous.getY();
+            previous = current;
+        }
+        return Math.abs(area) / 2.0;
+    }
+
+    /**
      * Returns the ID.
      *
      * @return the ID.
@@ -133,7 +285,7 @@ public class Region {
      * @return the segment list.
      */
     public List<Segment> getSegmentList() {
-        return segmentList != null ? List.copyOf(segmentList) : List.of();
+        return Collections.unmodifiableList(segmentList);
     }
 
     /**
@@ -193,221 +345,12 @@ public class Region {
     }
 
     /**
-     * Builds the segment list.
-     *
-     * @param binary the binary.
-     * @return the operation result.
-     */
-    public static List<Segment> buildSegmentList(PlanarImage binary) {
-        return buildSegmentList(binary, null);
-    }
-
-    /**
-     * Builds the segment list.
-     *
-     * @param binary the binary.
-     * @param offset the offset.
-     * @return the operation result.
-     */
-    public static List<Segment> buildSegmentList(PlanarImage binary, Point offset) {
-        if (binary == null) {
-            return List.of();
-        }
-        var contours = new ArrayList<MatOfPoint>();
-        var hierarchy = new Mat();
-        findContours(binary, contours, hierarchy, offset);
-        return buildSegmentList(contours, hierarchy);
-    }
-
-    /**
-     * Finds the contours.
-     *
-     * @param binary    the binary.
-     * @param contours  the contours.
-     * @param hierarchy the hierarchy.
-     * @param offset    the offset.
-     */
-    private static void findContours(PlanarImage binary, List<MatOfPoint> contours, Mat hierarchy, Point offset) {
-        if (offset == null) {
-            Imgproc.findContours(binary.toMat(), contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-        } else {
-            Imgproc.findContours(
-                    binary.toMat(),
-                    contours,
-                    hierarchy,
-                    Imgproc.RETR_TREE,
-                    Imgproc.CHAIN_APPROX_SIMPLE,
-                    offset);
-        }
-    }
-
-    /**
-     * Builds the segment list from float.
-     *
-     * @param contours  the contours.
-     * @param hierarchy the hierarchy.
-     * @return the operation result.
-     */
-    public static List<Segment> buildSegmentListFromFloat(List<MatOfPoint2f> contours, Mat hierarchy) {
-        return buildSegmentListFromContours(contours, hierarchy);
-    }
-
-    /**
-     * Builds the segment list.
-     *
-     * @param contours  the contours.
-     * @param hierarchy the hierarchy.
-     * @return the operation result.
-     */
-    public static List<Segment> buildSegmentList(List<MatOfPoint> contours, Mat hierarchy) {
-        return buildSegmentListFromContours(contours, hierarchy);
-    }
-
-    /**
-     * Builds the segment list from contours.
-     *
-     * @param contours  the contours.
-     * @param hierarchy the hierarchy.
-     * @return the operation result.
-     */
-    private static List<Segment> buildSegmentListFromContours(List<? extends Mat> contours, Mat hierarchy) {
-        if (contours == null || hierarchy == null || contours.isEmpty()) {
-            return List.of();
-        }
-        var contourMap = createContourTopologyMap(contours, hierarchy);
-        return extractRootSegments(contourMap, contours.size());
-    }
-
-    /**
-     * Creates the contour topology map.
-     *
-     * @param contours  the contours.
-     * @param hierarchy the hierarchy.
-     * @return the operation result.
-     */
-    private static Map<Integer, ContourTopology> createContourTopologyMap(List<? extends Mat> contours, Mat hierarchy) {
-        var contourMap = new HashMap<Integer, ContourTopology>();
-        var hierarchyData = new int[4];
-        for (int i = 0; i < contours.size(); i++) {
-            hierarchy.get(0, i, hierarchyData);
-            var topology = createContourTopology(contours.get(i), hierarchyData[HIERARCHY_PARENT_INDEX]);
-            if (topology != null) {
-                contourMap.put(i, topology);
-            }
-        }
-        return contourMap;
-    }
-
-    /**
-     * Creates the contour topology.
-     *
-     * @param contour     the contour.
-     * @param parentIndex the parent index.
-     * @return the operation result.
-     */
-    private static ContourTopology createContourTopology(Mat contour, int parentIndex) {
-        if (contour instanceof MatOfPoint matOfPoint) {
-            return new ContourTopology(matOfPoint, parentIndex);
-        } else if (contour instanceof MatOfPoint2f matOfPoint2f) {
-            return new ContourTopology(matOfPoint2f, parentIndex);
-        }
-        return null;
-    }
-
-    /**
-     * Extracts the root segments.
-     *
-     * @param contourMap   the contour map.
-     * @param contourCount the contour count.
-     * @return the operation result.
-     */
-    private static List<Segment> extractRootSegments(Map<Integer, ContourTopology> contourMap, int contourCount) {
-        var segmentList = new ArrayList<Segment>();
-        for (int i = 0; i < contourCount; i++) {
-            var segment = buildSegmentWithChildren(contourMap, i);
-            if (segment != null) {
-                segmentList.add(segment);
-            }
-        }
-        return segmentList;
-    }
-
-    /**
-     * Builds the segment with children.
-     *
-     * @param contourMap the contour map.
-     * @param index      the index.
-     * @return the operation result.
-     */
-    private static Segment buildSegmentWithChildren(Map<Integer, ContourTopology> contourMap, int index) {
-        var contourTopology = contourMap.get(index);
-        if (contourTopology == null) {
-            return null;
-        }
-        int parentIndex = contourTopology.getParent();
-
-        if (parentIndex >= 0) {
-            var parent = contourMap.get(parentIndex);
-            if (parent != null) {
-                parent.getSegment().addChild(contourTopology.getSegment());
-            }
-            return null; // Not a root segment
-        }
-        return contourTopology.getSegment(); // Root segment
-    }
-
-    /**
      * Returns the area.
      *
      * @return the area.
      */
     public double getArea() {
         return hasValidPixelCount() ? numberOfPixels : Math.round(calculateArea(segmentList, 0));
-    }
-
-    /**
-     * Calculates the area.
-     *
-     * @param segments the segments.
-     * @param level    the level.
-     * @return the operation result.
-     */
-    private static double calculateArea(List<Segment> segments, int level) {
-        if (segments.isEmpty()) {
-            return 0.0;
-        }
-
-        double totalArea = 0.0;
-        for (var segment : segments) {
-            double segmentArea = polygonArea(segment);
-            // Alternate signs for holes: positive for even levels, negative for odd levels
-            totalArea += (level % 2 == 0) ? segmentArea : -segmentArea;
-            totalArea += calculateArea(segment.children, level + 1);
-        }
-        return totalArea;
-    }
-
-    /**
-     * Executes the polygon area operation.
-     *
-     * @param segment the segment.
-     * @return the operation result.
-     */
-    private static double polygonArea(Segment segment) {
-        if (segment == null || segment.size() < 3) {
-            return 0.0;
-        }
-        double area = 0.0;
-        int vertexCount = segment.size();
-
-        for (int i = 0; i < vertexCount; i++) {
-            Point2D current = segment.get(i);
-            Point2D next = segment.get((i + 1) % vertexCount);
-
-            // Shoelace formula: sum of (x_i * y_{i+1} - x_{i+1} * y_i)
-            area += current.getX() * next.getY() - next.getX() * current.getY();
-        }
-        return Math.abs(area) / 2.0;
     }
 
     /**

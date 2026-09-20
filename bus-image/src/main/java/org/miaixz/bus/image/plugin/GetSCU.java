@@ -103,57 +103,14 @@ public class GetSCU implements AutoCloseable {
      * The overall status of the C-GET operation.
      */
     private final Status state;
-
-    /**
-     * The priority of the C-GET request.
-     */
-    private int priority;
-
-    /**
-     * The information model to be used for the query.
-     */
-    private InformationModel model;
-
-    /**
-     * The directory to store the retrieved DICOM files.
-     */
-    private File storageDir;
-
-    /**
-     * A filter for attributes to be included from an input file.
-     */
-    private int[] inFilter = DEF_IN_FILTER;
-
-    /**
-     * The active DICOM association.
-     */
-    private Association as;
-
-    /**
-     * The number of milliseconds after which to cancel the request.
-     */
-    private int cancelAfter;
-
-    /**
-     * The handler for DIMSE responses.
-     */
-    private DimseRSPHandler rspHandler;
-
     /**
      * Ensures that only one C-CANCEL request is sent.
      */
     private final AtomicBoolean cancelSent = new AtomicBoolean();
-
     /**
      * The cancel listener registered with the progress object.
      */
     private final CancelListener cancelListener = this::handleCancel;
-
-    /**
-     * The total size in bytes of all retrieved files.
-     */
-    private long totalSize = 0;
-
     /**
      * The C-STORE SCP implementation to handle incoming storage requests.
      */
@@ -185,6 +142,38 @@ public class GetSCU implements AutoCloseable {
             updateProgress(as, null);
         }
     };
+    /**
+     * The priority of the C-GET request.
+     */
+    private int priority;
+    /**
+     * The information model to be used for the query.
+     */
+    private InformationModel model;
+    /**
+     * The directory to store the retrieved DICOM files.
+     */
+    private File storageDir;
+    /**
+     * A filter for attributes to be included from an input file.
+     */
+    private int[] inFilter = DEF_IN_FILTER;
+    /**
+     * The active DICOM association.
+     */
+    private Association as;
+    /**
+     * The number of milliseconds after which to cancel the request.
+     */
+    private int cancelAfter;
+    /**
+     * The handler for DIMSE responses.
+     */
+    private DimseRSPHandler rspHandler;
+    /**
+     * The total size in bytes of all retrieved files.
+     */
+    private long totalSize = 0;
 
     /**
      * Constructs a new {@code GetSCU} instance with no progress handler.

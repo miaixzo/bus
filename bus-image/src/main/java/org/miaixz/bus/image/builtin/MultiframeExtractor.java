@@ -54,33 +54,6 @@ public class MultiframeExtractor {
             Tag.DimensionIndexSequence, Tag.NumberOfFrames, Tag.SharedFunctionalGroupsSequence,
             Tag.PerFrameFunctionalGroupsSequence, Tag.PixelData };
 
-    /**
-     * The preserve series instance UID value.
-     */
-    private boolean preserveSeriesInstanceUID;
-
-    /**
-     * The instance number format value.
-     */
-    private String instanceNumberFormat = "%s%04d";
-
-    /**
-     * The UID mapper value.
-     */
-    private UIDMapper uidMapper = new HashUIDMapper();
-
-    /**
-     * The nof accessor value.
-     */
-    private NumberOfFramesAccessor nofAccessor = new NumberOfFramesAccessor();
-
-    /**
-     * Constructs a new MultiframeExtractor instance.
-     */
-    public MultiframeExtractor() {
-        // No initialization required.
-    }
-
     static {
         impls.put(UID.EnhancedCTImageStorage.uid, Impl.EnhancedCTImageExtractor);
         impls.put(UID.EnhancedMRImageStorage.uid, Impl.EnhancedMRImageExtractor);
@@ -102,6 +75,30 @@ public class MultiframeExtractor {
         impls.put(UID.XRayAngiographicImageStorage.uid, Impl.XRayAngiographicImageExtractor);
         impls.put(UID.XRayRadiofluoroscopicImageStorage.uid, Impl.XRayRadiofluoroscopicImageExtractor);
         impls.put(UID.RTImageStorage.uid, Impl.RTImageExtractor);
+    }
+
+    /**
+     * The preserve series instance UID value.
+     */
+    private boolean preserveSeriesInstanceUID;
+    /**
+     * The instance number format value.
+     */
+    private String instanceNumberFormat = "%s%04d";
+    /**
+     * The UID mapper value.
+     */
+    private UIDMapper uidMapper = new HashUIDMapper();
+    /**
+     * The nof accessor value.
+     */
+    private NumberOfFramesAccessor nofAccessor = new NumberOfFramesAccessor();
+
+    /**
+     * Constructs a new MultiframeExtractor instance.
+     */
+    public MultiframeExtractor() {
+        // No initialization required.
     }
 
     /**

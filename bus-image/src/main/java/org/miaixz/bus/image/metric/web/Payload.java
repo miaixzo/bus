@@ -35,20 +35,6 @@ import java.util.Objects;
 public interface Payload {
 
     /**
-     * Executes the size operation.
-     *
-     * @return the operation result.
-     */
-    long size();
-
-    /**
-     * Executes the new input stream operation.
-     *
-     * @return the operation result.
-     */
-    InputStream newInputStream();
-
-    /**
      * Executes the of bytes operation.
      *
      * @param data the data.
@@ -77,6 +63,54 @@ public interface Payload {
      */
     static Payload empty() {
         return EmptyPayload.INSTANCE;
+    }
+
+    /**
+     * Executes the size operation.
+     *
+     * @return the operation result.
+     */
+    long size();
+
+    /**
+     * Executes the new input stream operation.
+     *
+     * @return the operation result.
+     */
+    InputStream newInputStream();
+
+    /**
+     * Defines the EmptyPayload values.
+     *
+     * @author Kimi Liu
+     */
+    enum EmptyPayload implements Payload {
+
+        /**
+         * The instance value.
+         */
+        INSTANCE;
+
+        /**
+         * Executes the size operation.
+         *
+         * @return the operation result.
+         */
+        @Override
+        public long size() {
+            return 0;
+        }
+
+        /**
+         * Executes the new input stream operation.
+         *
+         * @return the operation result.
+         */
+        @Override
+        public InputStream newInputStream() {
+            return InputStream.nullInputStream();
+        }
+
     }
 
     /**
@@ -161,40 +195,6 @@ public interface Payload {
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
-        }
-
-    }
-
-    /**
-     * Defines the EmptyPayload values.
-     *
-     * @author Kimi Liu
-     */
-    enum EmptyPayload implements Payload {
-
-        /**
-         * The instance value.
-         */
-        INSTANCE;
-
-        /**
-         * Executes the size operation.
-         *
-         * @return the operation result.
-         */
-        @Override
-        public long size() {
-            return 0;
-        }
-
-        /**
-         * Executes the new input stream operation.
-         *
-         * @return the operation result.
-         */
-        @Override
-        public InputStream newInputStream() {
-            return InputStream.nullInputStream();
         }
 
     }

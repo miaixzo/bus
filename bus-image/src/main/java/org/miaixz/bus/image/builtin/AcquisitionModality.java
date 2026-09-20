@@ -224,13 +224,6 @@ public class AcquisitionModality {
      */
     private static final Map<String, Code> MODALITIES = new HashMap<>(50);
 
-    /**
-     * Constructs a new AcquisitionModality instance.
-     */
-    public AcquisitionModality() {
-        // No initialization required.
-    }
-
     static {
         Code[] codes = { Autorefraction, BoneMineralDensitometry, UltrasoundBoneDensitometry, CardiacElectrophysiology,
                 ComputedRadiography, ComputedTomography, DigitalRadiography, Electrocardiography, Endoscopy,
@@ -245,6 +238,13 @@ public class AcquisitionModality {
             MODALITIES.put(code.getCodeValue(), code);
         }
 
+    }
+
+    /**
+     * Constructs a new AcquisitionModality instance.
+     */
+    public AcquisitionModality() {
+        // No initialization required.
     }
 
     /**

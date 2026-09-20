@@ -85,4 +85,13 @@ public interface WlParams extends WlPresentation {
      */
     LutShape getLutShape();
 
+    /**
+     * Gets the output bit depth for the window/level transformation.
+     *
+     * @return the output bit depth
+     */
+    default int getOutputBits() {
+        return 8;
+    }
+
 }

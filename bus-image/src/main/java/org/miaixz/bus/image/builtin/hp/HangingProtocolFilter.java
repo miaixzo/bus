@@ -67,6 +67,66 @@ public enum HangingProtocolFilter {
     private static final double EPSILON = 1e-8;
 
     /**
+     * Executes the value of code operation.
+     *
+     * @param codeString the code string.
+     * @return the operation result.
+     */
+    public static HangingProtocolFilter valueOfCode(String codeString) {
+        return HangingProtocolFilter.valueOf(codeString);
+    }
+
+    /**
+     * Executes the contains operation.
+     *
+     * @param params the params.
+     * @param value  the value.
+     * @return true if the condition is met; otherwise false.
+     */
+    private static boolean contains(String[] params, String value) {
+        return Arrays.asList(params).contains(value);
+    }
+
+    /**
+     * Executes the contains operation.
+     *
+     * @param params the params.
+     * @param value  the value.
+     * @return true if the condition is met; otherwise false.
+     */
+    private static boolean contains(double[] params, double value) {
+        return Arrays.stream(params).anyMatch(param -> Math.abs(param - value) <= EPSILON);
+    }
+
+    /**
+     * Executes the selected operation.
+     *
+     * @param values      the values.
+     * @param valueNumber the value number.
+     * @return the operation result.
+     */
+    private static java.util.stream.Stream<String> selected(String[] values, int valueNumber) {
+        if (valueNumber > 0) {
+            return java.util.stream.Stream.of(values[valueNumber - 1]);
+        }
+        return Arrays.stream(values);
+    }
+
+    /**
+     * Executes the selected operation.
+     *
+     * @param values      the values.
+     * @param valueNumber the value number.
+     * @return the operation result.
+     */
+    private static java.util.stream.DoubleStream selected(double[] values, int valueNumber) {
+        if (valueNumber > 0) {
+            return java.util.stream.DoubleStream.of(values[valueNumber - 1]);
+        }
+        return Arrays.stream(values);
+    }
+
+    /**
      * Executes the matches operation.
      *
      * @param values      the values.
@@ -121,72 +181,12 @@ public enum HangingProtocolFilter {
     }
 
     /**
-     * Executes the value of code operation.
-     *
-     * @param codeString the code string.
-     * @return the operation result.
-     */
-    public static HangingProtocolFilter valueOfCode(String codeString) {
-        return HangingProtocolFilter.valueOf(codeString);
-    }
-
-    /**
      * Gets the code string.
      *
      * @return the code string.
      */
     public String getCodeString() {
         return name();
-    }
-
-    /**
-     * Executes the contains operation.
-     *
-     * @param params the params.
-     * @param value  the value.
-     * @return true if the condition is met; otherwise false.
-     */
-    private static boolean contains(String[] params, String value) {
-        return Arrays.asList(params).contains(value);
-    }
-
-    /**
-     * Executes the contains operation.
-     *
-     * @param params the params.
-     * @param value  the value.
-     * @return true if the condition is met; otherwise false.
-     */
-    private static boolean contains(double[] params, double value) {
-        return Arrays.stream(params).anyMatch(param -> Math.abs(param - value) <= EPSILON);
-    }
-
-    /**
-     * Executes the selected operation.
-     *
-     * @param values      the values.
-     * @param valueNumber the value number.
-     * @return the operation result.
-     */
-    private static java.util.stream.Stream<String> selected(String[] values, int valueNumber) {
-        if (valueNumber > 0) {
-            return java.util.stream.Stream.of(values[valueNumber - 1]);
-        }
-        return Arrays.stream(values);
-    }
-
-    /**
-     * Executes the selected operation.
-     *
-     * @param values      the values.
-     * @param valueNumber the value number.
-     * @return the operation result.
-     */
-    private static java.util.stream.DoubleStream selected(double[] values, int valueNumber) {
-        if (valueNumber > 0) {
-            return java.util.stream.DoubleStream.of(values[valueNumber - 1]);
-        }
-        return Arrays.stream(values);
     }
 
 }

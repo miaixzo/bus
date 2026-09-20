@@ -21,24 +21,14 @@ package org.miaixz.bus.image.nimble.opencv;
 
 import static org.miaixz.bus.image.nimble.opencv.ImageIOHandler.NULL_SOURCE_IMAGE_ERROR;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.Shape;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
+import org.opencv.core.*;
 import org.opencv.core.Point;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 /**
@@ -166,11 +156,18 @@ public class ImageTransformer {
             throw new IllegalArgumentException("LUT must have 256 entries per channel");
         }
 
-        Mat lutMat = createLutMat(source, lut);
-        var result = new ImageCV();
-        Core.LUT(source, lutMat, result);
-
-        return result;
+        var lutMat = createLutMat(lut);
+        var input = lut.length > 1 && source.channels() < lut.length ? toBgr(source) : source;
+        try {
+            var result = new ImageCV();
+            Core.LUT(input, lutMat, result);
+            return result;
+        } finally {
+            lutMat.release();
+            if (input != source) {
+                input.release();
+            }
+        }
     }
 
     /**
@@ -237,7 +234,7 @@ public class ImageTransformer {
     public static ImageCV bitwiseAnd(Mat source, int src2Cst) {
         ImageIOHandler.validateSource(source);
 
-        try (var mask = new ImageCV(source.size(), source.type(), new Scalar(src2Cst))) {
+        try (var mask = new ImageCV(source.size(), source.type(), Scalar.all(src2Cst))) {
             var result = new ImageCV();
 
             Core.bitwise_and(source, mask, result);
@@ -308,8 +305,8 @@ public class ImageTransformer {
      * @param matrix        the 2x3 affine transformation matrix:
      *
      *                      <pre>
-     *                                    [a b tx]
-     *                                    [c d ty]
+     *                                                         [a b tx]
+     *                                                         [c d ty]
      *                      </pre>
      *                      <p>
      *                      where (a,b,c,d) define rotation/scaling/shearing and (tx,ty) define translation
@@ -405,8 +402,9 @@ public class ImageTransformer {
     public static ImageCV overlay(Mat source, RenderedImage imgOverlay, Color color) {
         Objects.requireNonNull(imgOverlay, "Overlay image cannot be null");
 
-        var overlayMat = ImageConversion.toMat(imgOverlay);
-        return overlay(source, overlayMat, color);
+        try (var overlayMat = ImageConversion.toMat(imgOverlay)) {
+            return overlay(source, overlayMat, color);
+        }
     }
 
     /**
@@ -426,10 +424,13 @@ public class ImageTransformer {
         Objects.requireNonNull(shape, "Shape cannot be null");
         Objects.requireNonNull(color, "Color cannot be null");
 
-        var srcImg = ImageConversion.toMat(source);
         var contours = ImageAnalyzer.transformShapeToContour(shape, true);
-        Imgproc.fillPoly(srcImg, contours, getMaxColor(srcImg, color));
-        return ImageConversion.toBufferedImage((PlanarImage) srcImg);
+        try (var srcImg = ImageConversion.toMat(source)) {
+            Imgproc.fillPoly(srcImg, contours, getMaxColor(srcImg, color));
+            return ImageConversion.toBufferedImage((PlanarImage) srcImg);
+        } finally {
+            contours.forEach(Mat::release);
+        }
     }
 
     /**
@@ -475,17 +476,17 @@ public class ImageTransformer {
         Objects.requireNonNull(shape, "Shutter shape cannot be null");
         Objects.requireNonNull(color, "Shutter color cannot be null");
 
-        // Convert shape to contour mask
         List<MatOfPoint> contours = ImageAnalyzer.transformShapeToContour(shape, true);
-
         Mat mask = Mat.zeros(source.size(), CvType.CV_8UC1);
-        Imgproc.fillPoly(mask, contours, new Scalar(1));
-
-        // Apply shutter color outside the shape
-        Scalar scalar = getMaxColor(source, color);
-        ImageCV dstImg = new ImageCV(source.size(), source.type(), scalar);
-        source.copyTo(dstImg, mask);
-        return dstImg;
+        try {
+            Imgproc.fillPoly(mask, contours, new Scalar(1));
+            ImageCV dstImg = new ImageCV(source.size(), source.type(), getMaxColor(source, color));
+            source.copyTo(dstImg, mask);
+            return dstImg;
+        } finally {
+            mask.release();
+            contours.forEach(Mat::release);
+        }
     }
 
     /**
@@ -520,31 +521,33 @@ public class ImageTransformer {
     /**
      * Creates the lut mat.
      *
-     * @param source the source.
-     * @param lut    the lut.
+     * @param lut the lut.
      * @return the operation result.
      */
-    private static Mat createLutMat(Mat source, byte[][] lut) {
-        int lutCh = Objects.requireNonNull(lut).length;
-        Mat lutMat;
-
-        if (lutCh > 1) {
-            lutMat = new Mat();
-            List<Mat> lutList = new ArrayList<>(lutCh);
-            for (int i = 0; i < lutCh; i++) {
-                Mat l = new Mat(1, 256, CvType.CV_8U);
-                l.put(0, 0, lut[i]);
-                lutList.add(l);
+    private static Mat createLutMat(byte[][] lut) {
+        int channels = Objects.requireNonNull(lut).length;
+        var data = new byte[256 * channels];
+        for (int channel = 0; channel < channels; channel++) {
+            byte[] table = lut[channel];
+            for (int i = 0; i < 256; i++) {
+                data[i * channels + channel] = table[i];
             }
-            Core.merge(lutList, lutMat);
-            if (source.channels() < lut.length) {
-                Imgproc.cvtColor(source.clone(), source, Imgproc.COLOR_GRAY2BGR);
-            }
-        } else {
-            lutMat = new Mat(1, 256, CvType.CV_8UC1);
-            lutMat.put(0, 0, lut[0]);
         }
+        var lutMat = new Mat(1, 256, CvType.CV_8UC(channels));
+        lutMat.put(0, 0, data);
         return lutMat;
+    }
+
+    /**
+     * Converts a grayscale image to BGR.
+     *
+     * @param gray the grayscale image.
+     * @return the BGR image.
+     */
+    private static ImageCV toBgr(Mat gray) {
+        var bgr = new ImageCV();
+        Imgproc.cvtColor(gray, bgr, Imgproc.COLOR_GRAY2BGR);
+        return bgr;
     }
 
     /**
@@ -556,10 +559,9 @@ public class ImageTransformer {
      * @return the operation result.
      */
     private static ImageCV applyGrayscaleOverlay(Mat source, Mat imgOverlay, Integer maxVal) {
-        var colorMat = new Mat(source.size(), source.type(), new Scalar(maxVal));
         var result = new ImageCV();
         source.copyTo(result);
-        colorMat.copyTo(result, imgOverlay);
+        result.setTo(new Scalar(maxVal), imgOverlay);
         return result;
     }
 
@@ -572,25 +574,22 @@ public class ImageTransformer {
      * @return the operation result.
      */
     private static ImageCV applyColorOverlay(Mat source, Mat imgOverlay, Color color) {
-        var result = new ImageCV();
-
-        if (source.channels() < 3) {
-            Imgproc.cvtColor(source, result, Imgproc.COLOR_GRAY2BGR);
-        } else {
+        var result = source.channels() < 3 ? toBgr(source) : new ImageCV();
+        if (source.channels() >= 3) {
             source.copyTo(result);
         }
 
-        var colorImg = new Mat(result.size(), CvType.CV_8UC3,
-                new Scalar(color.getBlue(), color.getGreen(), color.getRed()));
+        var scalar = new Scalar(color.getBlue(), color.getGreen(), color.getRed());
         double alpha = color.getAlpha() / 255.0;
 
         if (alpha < 1.0) {
-            var overlay = new ImageCV();
-            result.copyTo(overlay);
-            colorImg.copyTo(overlay, imgOverlay);
-            Core.addWeighted(overlay, alpha, result, 1 - alpha, 0, result);
+            try (var overlay = new ImageCV()) {
+                result.copyTo(overlay);
+                overlay.setTo(scalar, imgOverlay);
+                Core.addWeighted(overlay, alpha, result, 1 - alpha, 0, result);
+            }
         } else {
-            colorImg.copyTo(result, imgOverlay);
+            result.setTo(scalar, imgOverlay);
         }
 
         return result;

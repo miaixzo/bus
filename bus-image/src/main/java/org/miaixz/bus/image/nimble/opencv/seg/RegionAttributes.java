@@ -19,15 +19,10 @@
 */
 package org.miaixz.bus.image.nimble.opencv.seg;
 
-import java.awt.Color;
+import java.awt.*;
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -86,51 +81,42 @@ public class RegionAttributes implements Comparable<RegionAttributes> {
      * The ID value.
      */
     private final int id;
-
-    /**
-     * The label value.
-     */
-    private String label;
-
-    /**
-     * The description value.
-     */
-    private String description;
-
-    /**
-     * The type value.
-     */
-    private String type;
-
-    /**
-     * The color value.
-     */
-    private Color color;
-
-    /**
-     * The filled value.
-     */
-    private boolean filled = true;
-
-    /**
-     * The line thickness value.
-     */
-    private float lineThickness = DEFAULT_LINE_THICKNESS;
-
-    /**
-     * The visible value.
-     */
-    private boolean visible = true;
-
-    /**
-     * The interior opacity value.
-     */
-    private float interiorOpacity = DEFAULT_OPACITY;
-
     /**
      * The number of pixels value.
      */
     protected long numberOfPixels = UNINITIALIZED_PIXEL_COUNT;
+    /**
+     * The label value.
+     */
+    private String label;
+    /**
+     * The description value.
+     */
+    private String description;
+    /**
+     * The type value.
+     */
+    private String type;
+    /**
+     * The color value.
+     */
+    private Color color;
+    /**
+     * The filled value.
+     */
+    private boolean filled = true;
+    /**
+     * The line thickness value.
+     */
+    private float lineThickness = DEFAULT_LINE_THICKNESS;
+    /**
+     * The visible value.
+     */
+    private boolean visible = true;
+    /**
+     * The interior opacity value.
+     */
+    private float interiorOpacity = DEFAULT_OPACITY;
 
     /**
      * Creates a new instance.
@@ -153,6 +139,103 @@ public class RegionAttributes implements Comparable<RegionAttributes> {
         this.id = id;
         setLabel(label);
         this.color = color;
+    }
+
+    /**
+     * Executes the group regions operation.
+     *
+     * @param regions the regions.
+     * @param <E>     the region attribute type
+     * @return the operation result.
+     */
+    public static <E extends RegionAttributes> Map<String, List<E>> groupRegions(Collection<E> regions) {
+        if (regions == null || regions.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        Map<String, List<E>> groupedRegions = new HashMap<>();
+        for (E region : regions) {
+            String prefix = region.getPrefix();
+            groupedRegions.computeIfAbsent(prefix, k -> new ArrayList<>()).add(region);
+        }
+        // Sort each group
+        groupedRegions.values().forEach(Collections::sort);
+        return groupedRegions;
+    }
+
+    /**
+     * Returns the color.
+     *
+     * @param colorRgb  the color RGB.
+     * @param contourID the contour ID.
+     * @return the color.
+     */
+    public static Color getColor(int[] colorRgb, int contourID) {
+        return getColor(colorRgb, contourID, DEFAULT_OPACITY);
+    }
+
+    /**
+     * Returns the color.
+     *
+     * @param colorRgb  the color RGB.
+     * @param contourID the contour ID.
+     * @param opacity   the opacity.
+     * @return the color.
+     */
+    public static Color getColor(int[] colorRgb, int contourID, float opacity) {
+        int alphaValue = Math.round(clampOpacity(opacity) * 255f);
+
+        if (isValidColorArray(colorRgb)) {
+            return new Color(colorRgb[0], colorRgb[1], colorRgb[2], alphaValue);
+        }
+
+        return generateColorFromLut(contourID, alphaValue);
+    }
+
+    /**
+     * Executes the clamp opacity operation.
+     *
+     * @param opacity the opacity.
+     * @return the operation result.
+     */
+    private static float clampOpacity(float opacity) {
+        return Math.max(MIN_OPACITY, Math.min(MAX_OPACITY, opacity));
+    }
+
+    /**
+     * Checks whether the valid color array condition is true.
+     *
+     * @param colorRgb the color RGB.
+     * @return true if the valid color array condition is true; otherwise false.
+     */
+    private static boolean isValidColorArray(int[] colorRgb) {
+        return colorRgb != null && colorRgb.length >= 3 && isColorComponent(colorRgb[0])
+                && isColorComponent(colorRgb[1]) && isColorComponent(colorRgb[2]);
+    }
+
+    /**
+     * Checks whether the value is a valid color component.
+     *
+     * @param value the color component value.
+     * @return true if the value is valid; otherwise false.
+     */
+    private static boolean isColorComponent(int value) {
+        return value >= 0 && value <= 255;
+    }
+
+    /**
+     * Generates the color from LUT.
+     *
+     * @param contourID  the contour ID.
+     * @param alphaValue the alpha value.
+     * @return the operation result.
+     */
+    private static Color generateColorFromLut(int contourID, int alphaValue) {
+        byte[][] lut = ColorLut.MULTICOLOR.getByteLut().lutTable();
+        int lutIndex = Math.abs(contourID) % lut[0].length;
+
+        return new Color(Byte.toUnsignedInt(lut[0][lutIndex]), Byte.toUnsignedInt(lut[1][lutIndex]),
+                Byte.toUnsignedInt(lut[2][lutIndex]), alphaValue);
     }
 
     /**
@@ -335,8 +418,8 @@ public class RegionAttributes implements Comparable<RegionAttributes> {
 
         int earliest = label.length();
         for (String separator : LABEL_SEPARATORS) {
-            int index = label.indexOf(separator);
-            if (index > MIN_PREFIX_LENGTH && index < earliest) {
+            int index = label.indexOf(separator, MIN_PREFIX_LENGTH + 1);
+            if (index >= 0 && index < earliest) {
                 earliest = index;
             }
         }
@@ -377,92 +460,6 @@ public class RegionAttributes implements Comparable<RegionAttributes> {
      */
     private boolean isPixelCountUninitialized() {
         return numberOfPixels < 0;
-    }
-
-    /**
-     * Executes the group regions operation.
-     *
-     * @param regions the regions.
-     * @param <E>     the region attribute type
-     * @return the operation result.
-     */
-    public static <E extends RegionAttributes> Map<String, List<E>> groupRegions(Collection<E> regions) {
-        if (regions == null || regions.isEmpty()) {
-            return Collections.emptyMap();
-        }
-
-        Map<String, List<E>> groupedRegions = new HashMap<>();
-        for (E region : regions) {
-            String prefix = region.getPrefix();
-            groupedRegions.computeIfAbsent(prefix, k -> new ArrayList<>()).add(region);
-        }
-        // Sort each group
-        groupedRegions.values().forEach(Collections::sort);
-        return groupedRegions;
-    }
-
-    /**
-     * Returns the color.
-     *
-     * @param colorRgb  the color RGB.
-     * @param contourID the contour ID.
-     * @return the color.
-     */
-    public static Color getColor(int[] colorRgb, int contourID) {
-        return getColor(colorRgb, contourID, DEFAULT_OPACITY);
-    }
-
-    /**
-     * Returns the color.
-     *
-     * @param colorRgb  the color RGB.
-     * @param contourID the contour ID.
-     * @param opacity   the opacity.
-     * @return the color.
-     */
-    public static Color getColor(int[] colorRgb, int contourID, float opacity) {
-        int alphaValue = Math.round(clampOpacity(opacity) * 255f);
-
-        if (isValidColorArray(colorRgb)) {
-            return new Color(colorRgb[0], colorRgb[1], colorRgb[2], alphaValue);
-        }
-
-        return generateColorFromLut(contourID, alphaValue);
-    }
-
-    /**
-     * Executes the clamp opacity operation.
-     *
-     * @param opacity the opacity.
-     * @return the operation result.
-     */
-    private static float clampOpacity(float opacity) {
-        return Math.max(MIN_OPACITY, Math.min(MAX_OPACITY, opacity));
-    }
-
-    /**
-     * Checks whether the valid color array condition is true.
-     *
-     * @param colorRgb the color RGB.
-     * @return true if the valid color array condition is true; otherwise false.
-     */
-    private static boolean isValidColorArray(int[] colorRgb) {
-        return colorRgb != null && colorRgb.length >= 3;
-    }
-
-    /**
-     * Generates the color from LUT.
-     *
-     * @param contourID  the contour ID.
-     * @param alphaValue the alpha value.
-     * @return the operation result.
-     */
-    private static Color generateColorFromLut(int contourID, int alphaValue) {
-        byte[][] lut = ColorLut.MULTICOLOR.getByteLut().lutTable();
-        int lutIndex = Math.abs(contourID) % lut[0].length;
-
-        return new Color(Byte.toUnsignedInt(lut[0][lutIndex]), Byte.toUnsignedInt(lut[1][lutIndex]),
-                Byte.toUnsignedInt(lut[2][lutIndex]), alphaValue);
     }
 
     /**

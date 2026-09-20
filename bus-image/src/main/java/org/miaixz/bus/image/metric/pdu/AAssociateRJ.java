@@ -33,71 +33,58 @@ import org.miaixz.bus.core.lang.Symbol;
 public class AAssociateRJ extends IOException {
 
     /**
-     * The serial version uid value.
-     */
-    @Serial
-    private static final long serialVersionUID = 2852275733131L;
-
-    /**
      * The result rejected permanent value.
      */
     public static final int RESULT_REJECTED_PERMANENT = 1;
-
     /**
      * The result rejected transient value.
      */
     public static final int RESULT_REJECTED_TRANSIENT = 2;
-
     /**
      * The source service user value.
      */
     public static final int SOURCE_SERVICE_USER = 1;
-
     /**
      * The source service provider acse value.
      */
     public static final int SOURCE_SERVICE_PROVIDER_ACSE = 2;
-
     /**
      * The source service provider pres value.
      */
     public static final int SOURCE_SERVICE_PROVIDER_PRES = 3;
-
     /**
      * The reason no reason given value.
      */
     public static final int REASON_NO_REASON_GIVEN = 1;
-
     /**
      * The reason app ctx name not supported value.
      */
     public static final int REASON_APP_CTX_NAME_NOT_SUPPORTED = 2;
-
     /**
      * The reason calling aet not recognized value.
      */
     public static final int REASON_CALLING_AET_NOT_RECOGNIZED = 3;
-
     /**
      * The reason called aet not recognized value.
      */
     public static final int REASON_CALLED_AET_NOT_RECOGNIZED = 7;
-
     /**
      * The reason protocol version not supported value.
      */
     public static final int REASON_PROTOCOL_VERSION_NOT_SUPPORTED = 2;
-
     /**
      * The reason temporary congestion value.
      */
     public static final int REASON_TEMPORARY_CONGESTION = 1;
-
     /**
      * The reason local limit exceeded value.
      */
     public static final int REASON_LOCAL_LIMIT_EXCEEDED = 2;
-
+    /**
+     * The serial version uid value.
+     */
+    @Serial
+    private static final long serialVersionUID = 2852275733131L;
     /**
      * The results value.
      */

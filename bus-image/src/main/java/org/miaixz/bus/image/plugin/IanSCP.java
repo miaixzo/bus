@@ -51,17 +51,6 @@ public class IanSCP extends Device {
      * The network connection configuration.
      */
     private final Connection conn = new Connection();
-
-    /**
-     * The directory to store received IAN objects.
-     */
-    private File storageDir;
-
-    /**
-     * The status code to be returned in the N-CREATE-RSP.
-     */
-    private int status;
-
     /**
      * The ImageService implementation that handles the N-CREATE-RQ for IAN.
      */
@@ -77,6 +66,14 @@ public class IanSCP extends Device {
             as.tryWriteDimseRSP(pc, rsp, rspAttrs);
         }
     };
+    /**
+     * The directory to store received IAN objects.
+     */
+    private File storageDir;
+    /**
+     * The status code to be returned in the N-CREATE-RSP.
+     */
+    private int status;
 
     /**
      * Constructs a new {@code IanSCP} device, initializing the Application Entity and registering the IAN and C-ECHO

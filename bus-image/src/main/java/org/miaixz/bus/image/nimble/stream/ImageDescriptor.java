@@ -221,6 +221,24 @@ public class ImageDescriptor {
     }
 
     /**
+     * Gets the lut module.
+     *
+     * @param list    the list.
+     * @param baseLut the base lut.
+     * @param frame   the frame.
+     * @return the lut module.
+     */
+    private static <T> T getLutModule(List<T> list, T baseLut, int frame) {
+        if (frame < 0 || frame >= list.size()) {
+            if (frame != 0) {
+                Logger.error(false, "Image", "Invalid frame index for LUT: frameIndex={}", frame);
+            }
+            return baseLut;
+        }
+        return list.get(frame) != null ? list.get(frame) : baseLut;
+    }
+
+    /**
      * Gets the rows.
      *
      * @return the rows.
@@ -539,24 +557,6 @@ public class ImageDescriptor {
      */
     public VoiLutModule getVoiLutForFrame(int frame) {
         return getLutModule(voiLutPerFrame, voiLUT, frame);
-    }
-
-    /**
-     * Gets the lut module.
-     *
-     * @param list    the list.
-     * @param baseLut the base lut.
-     * @param frame   the frame.
-     * @return the lut module.
-     */
-    private static <T> T getLutModule(List<T> list, T baseLut, int frame) {
-        if (frame < 0 || frame >= list.size()) {
-            if (frame != 0) {
-                Logger.error(false, "Image", "Invalid frame index for LUT: frameIndex={}", frame);
-            }
-            return baseLut;
-        }
-        return list.get(frame) != null ? list.get(frame) : baseLut;
     }
 
     /**

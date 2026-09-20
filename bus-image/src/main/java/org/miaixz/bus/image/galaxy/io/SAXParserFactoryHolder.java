@@ -40,13 +40,6 @@ public class SAXParserFactoryHolder {
      */
     public static final SAXParserFactory factory;
 
-    /**
-     * Constructs a new {@code SAXParserFactoryHolder} instance.
-     */
-    public SAXParserFactoryHolder() {
-        // No initialization required.
-    }
-
     static {
         factory = SAXParserFactory.newInstance();
         try {
@@ -62,6 +55,13 @@ public class SAXParserFactoryHolder {
                     "All implementations are required to support the XMLConstants.FEATURE_SECURE_PROCESSING feature",
                     e);
         }
+    }
+
+    /**
+     * Constructs a new {@code SAXParserFactoryHolder} instance.
+     */
+    public SAXParserFactoryHolder() {
+        // No initialization required.
     }
 
 }

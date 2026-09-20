@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.image.galaxy.media;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -144,6 +140,46 @@ public class ArchiveParameters {
         this.additionalParameters = hasText(additionalParameters) ? additionalParameters : Normal.EMPTY;
         this.httpTags = new ArrayList<>(2);
         this.overrideDicomTagIDList = parseOverrideTags(overrideDicomTagsList);
+    }
+
+    /**
+     * Parses the override tags.
+     *
+     * @param overrideDicomTagsList the override dicom tags list.
+     * @return the operation result.
+     */
+    private static int[] parseOverrideTags(String overrideDicomTagsList) {
+        String[] tagStrings = overrideDicomTagsList == null ? Normal.EMPTY_STRING_ARRAY
+                : Arrays.stream(overrideDicomTagsList.split(TAG_DELIMITER)).map(String::trim)
+                        .filter(ArchiveParameters::hasText).toArray(String[]::new);
+        if (tagStrings.length == 0) {
+            return null;
+        }
+        return Arrays.stream(tagStrings).mapToInt(ArchiveParameters::parseTagId).filter(tagId -> tagId != -1).toArray();
+    }
+
+    /**
+     * Parses the tag id.
+     *
+     * @param tagString the tag string.
+     * @return the operation result.
+     */
+    private static int parseTagId(String tagString) {
+        try {
+            return Integer.decode(tagString);
+        } catch (NumberFormatException exception) {
+            return -1;
+        }
+    }
+
+    /**
+     * Determines whether text.
+     *
+     * @param value the value.
+     * @return true if the condition is met; otherwise false.
+     */
+    private static boolean hasText(String value) {
+        return value != null && !value.trim().isEmpty();
     }
 
     /**
@@ -273,46 +309,6 @@ public class ArchiveParameters {
         return "ArchiveParameters{" + "archiveID='" + archiveID + '\'' + ", baseURL='" + baseURL + '\'' + ", webLogin='"
                 + webLogin + '\'' + ", additionalParameters='" + additionalParameters + '\'' + ", overrideTags="
                 + Arrays.toString(overrideDicomTagIDList) + ", httpTagCount=" + httpTags.size() + '}';
-    }
-
-    /**
-     * Parses the override tags.
-     *
-     * @param overrideDicomTagsList the override dicom tags list.
-     * @return the operation result.
-     */
-    private static int[] parseOverrideTags(String overrideDicomTagsList) {
-        String[] tagStrings = overrideDicomTagsList == null ? Normal.EMPTY_STRING_ARRAY
-                : Arrays.stream(overrideDicomTagsList.split(TAG_DELIMITER)).map(String::trim)
-                        .filter(ArchiveParameters::hasText).toArray(String[]::new);
-        if (tagStrings.length == 0) {
-            return null;
-        }
-        return Arrays.stream(tagStrings).mapToInt(ArchiveParameters::parseTagId).filter(tagId -> tagId != -1).toArray();
-    }
-
-    /**
-     * Parses the tag id.
-     *
-     * @param tagString the tag string.
-     * @return the operation result.
-     */
-    private static int parseTagId(String tagString) {
-        try {
-            return Integer.decode(tagString);
-        } catch (NumberFormatException exception) {
-            return -1;
-        }
-    }
-
-    /**
-     * Determines whether text.
-     *
-     * @param value the value.
-     * @return true if the condition is met; otherwise false.
-     */
-    private static boolean hasText(String value) {
-        return value != null && !value.trim().isEmpty();
     }
 
 }

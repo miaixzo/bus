@@ -27,8 +27,8 @@ import org.miaixz.bus.core.lang.Symbol;
  * transforms a string into a phonetic representation, useful for comparing words that sound alike but may have
  * different spellings.
  *
- * @see <a href="http://www.uni-koeln.de/phil-fak/phonetik/Lehre/MA-Arbeiten/magister_wilz.pdf">Martin Wilz</a>
  * @author Kimi Liu
+ * @see <a href="http://www.uni-koeln.de/phil-fak/phonetik/Lehre/MA-Arbeiten/magister_wilz.pdf">Martin Wilz</a>
  */
 public class Phonem implements FuzzyString {
 

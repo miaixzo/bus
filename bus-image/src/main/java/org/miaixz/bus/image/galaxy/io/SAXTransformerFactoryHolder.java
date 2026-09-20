@@ -38,13 +38,6 @@ public class SAXTransformerFactoryHolder {
      */
     public static final SAXTransformerFactory factory;
 
-    /**
-     * Constructs a new {@code SAXTransformerFactoryHolder} instance.
-     */
-    public SAXTransformerFactoryHolder() {
-        // No initialization required.
-    }
-
     static {
         factory = (SAXTransformerFactory) TransformerFactory.newInstance();
         try {
@@ -66,6 +59,13 @@ public class SAXTransformerFactoryHolder {
                         "javax.xml.accessExternalStylesheet",
                         "JAVAX_XML_ACCESS_EXTERNAL_STYLESHEET",
                         "file"));
+    }
+
+    /**
+     * Constructs a new {@code SAXTransformerFactoryHolder} instance.
+     */
+    public SAXTransformerFactoryHolder() {
+        // No initialization required.
     }
 
 }

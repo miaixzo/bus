@@ -21,11 +21,7 @@ package org.miaixz.bus.image.galaxy.media;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import org.miaixz.bus.core.lang.Symbol;
 
@@ -67,6 +63,35 @@ public class ManifestQueryResult extends Manifest {
     }
 
     /**
+     * Writes an HTTP tag.
+     *
+     * @param writer the writer.
+     * @param tag    the HTTP tag.
+     * @throws IOException if the operation cannot be completed.
+     */
+    private static void writeHttpTag(Writer writer, HttpTag tag) throws IOException {
+        writer.append(Symbol.LF).append(Symbol.LT).append(ArchiveParameters.TAG_HTTP_TAG).append(Symbol.SPACE);
+        ManifestXml.addXmlAttribute("key", tag.getKey(), writer);
+        ManifestXml.addXmlAttribute("value", tag.getValue(), writer);
+        writer.append("/>");
+    }
+
+    /**
+     * Writes a viewer message.
+     *
+     * @param writer  the writer.
+     * @param message the message.
+     * @throws IOException if the operation cannot be completed.
+     */
+    private static void writeViewerMessage(Writer writer, ViewerMessage message) throws IOException {
+        writer.append(Symbol.LF).append(Symbol.LT).append(ViewerMessage.TAG_DOCUMENT_MSG).append(Symbol.SPACE);
+        ManifestXml.addXmlAttribute(ViewerMessage.MSG_ATTRIBUTE_TITLE, message.title(), writer);
+        ManifestXml.addXmlAttribute(ViewerMessage.MSG_ATTRIBUTE_DESC, message.message(), writer);
+        ManifestXml.addXmlAttribute(ViewerMessage.MSG_ATTRIBUTE_LEVEL, message.level().name(), writer);
+        writer.append("/>");
+    }
+
+    /**
      * Gets the wado parameters.
      *
      * @return the wado parameters.
@@ -82,6 +107,16 @@ public class ManifestQueryResult extends Manifest {
      */
     public ViewerMessage getViewerMessage() {
         return viewerMessages.isEmpty() ? null : viewerMessages.get(0);
+    }
+
+    /**
+     * Sets the viewer message.
+     *
+     * @param viewerMessage the viewer message.
+     */
+    public void setViewerMessage(ViewerMessage viewerMessage) {
+        viewerMessages.clear();
+        addViewerMessage(viewerMessage);
     }
 
     /**
@@ -102,16 +137,6 @@ public class ManifestQueryResult extends Manifest {
         if (viewerMessage != null) {
             viewerMessages.add(viewerMessage);
         }
-    }
-
-    /**
-     * Sets the viewer message.
-     *
-     * @param viewerMessage the viewer message.
-     */
-    public void setViewerMessage(ViewerMessage viewerMessage) {
-        viewerMessages.clear();
-        addViewerMessage(viewerMessage);
     }
 
     /**
@@ -180,35 +205,6 @@ public class ManifestQueryResult extends Manifest {
             patient.toXml(writer);
         }
         writer.append("\n</").append(ArchiveParameters.TAG_ARC_QUERY).append(Symbol.GT);
-    }
-
-    /**
-     * Writes an HTTP tag.
-     *
-     * @param writer the writer.
-     * @param tag    the HTTP tag.
-     * @throws IOException if the operation cannot be completed.
-     */
-    private static void writeHttpTag(Writer writer, HttpTag tag) throws IOException {
-        writer.append(Symbol.LF).append(Symbol.LT).append(ArchiveParameters.TAG_HTTP_TAG).append(Symbol.SPACE);
-        ManifestXml.addXmlAttribute("key", tag.getKey(), writer);
-        ManifestXml.addXmlAttribute("value", tag.getValue(), writer);
-        writer.append("/>");
-    }
-
-    /**
-     * Writes a viewer message.
-     *
-     * @param writer  the writer.
-     * @param message the message.
-     * @throws IOException if the operation cannot be completed.
-     */
-    private static void writeViewerMessage(Writer writer, ViewerMessage message) throws IOException {
-        writer.append(Symbol.LF).append(Symbol.LT).append(ViewerMessage.TAG_DOCUMENT_MSG).append(Symbol.SPACE);
-        ManifestXml.addXmlAttribute(ViewerMessage.MSG_ATTRIBUTE_TITLE, message.title(), writer);
-        ManifestXml.addXmlAttribute(ViewerMessage.MSG_ATTRIBUTE_DESC, message.message(), writer);
-        ManifestXml.addXmlAttribute(ViewerMessage.MSG_ATTRIBUTE_LEVEL, message.level().name(), writer);
-        writer.append("/>");
     }
 
     /**

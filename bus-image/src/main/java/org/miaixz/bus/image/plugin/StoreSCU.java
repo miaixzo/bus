@@ -60,7 +60,6 @@ import org.miaixz.bus.logger.Logger;
  * attribute editing and transfer syntax adaptation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StoreSCU implements AutoCloseable {
 
@@ -107,52 +106,42 @@ public class StoreSCU implements AutoCloseable {
      * The overall status and progress of the C-STORE operation.
      */
     private final Status state;
-
-    /**
-     * Additional attributes to be merged into each object before sending.
-     */
-    private Attributes attrs;
-
-    /**
-     * A suffix to be appended to SOP Instance UIDs if they are modified.
-     */
-    private String uidSuffix;
-
-    /**
-     * A flag to enable SOP Class Relationship extended negotiation.
-     */
-    private boolean relExtNeg;
-
-    /**
-     * The priority of the C-STORE request.
-     */
-    private int priority;
-
-    /**
-     * The prefix for the temporary file name.
-     */
-    private String tmpPrefix = DEFAULT_TMP_PREFIX;
-
-    /**
-     * The suffix for the temporary file name.
-     */
-    private String tmpSuffix;
-
-    /**
-     * The directory for the temporary file.
-     */
-    private File tmpDir;
-
-    /**
-     * The temporary file used to store the list of files to be sent.
-     */
-    private File tmpFile;
-
     /**
      * The temporary directory created by this instance.
      */
     private final File ownedTmpDir;
-
+    /**
+     * Additional attributes to be merged into each object before sending.
+     */
+    private Attributes attrs;
+    /**
+     * A suffix to be appended to SOP Instance UIDs if they are modified.
+     */
+    private String uidSuffix;
+    /**
+     * A flag to enable SOP Class Relationship extended negotiation.
+     */
+    private boolean relExtNeg;
+    /**
+     * The priority of the C-STORE request.
+     */
+    private int priority;
+    /**
+     * The prefix for the temporary file name.
+     */
+    private String tmpPrefix = DEFAULT_TMP_PREFIX;
+    /**
+     * The suffix for the temporary file name.
+     */
+    private String tmpSuffix;
+    /**
+     * The directory for the temporary file.
+     */
+    private File tmpDir;
+    /**
+     * The temporary file used to store the list of files to be sent.
+     */
+    private File tmpFile;
     /**
      * Whether the temporary file was created by this instance.
      */
@@ -177,29 +166,6 @@ public class StoreSCU implements AutoCloseable {
      * A factory for creating DIMSE response handlers for each C-STORE request.
      */
     private RSPHandlerFactory rspHandlerFactory = this::createDefaultRspHandler;
-
-    /**
-     * Creates the default response handler for a C-STORE operation.
-     *
-     * @param file the file being sent.
-     * @return the response handler.
-     */
-    private DimseRSPHandler createDefaultRspHandler(File file) {
-        return new DimseRSPHandler(as.nextMessageID()) {
-
-            @Override
-            public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
-                super.onDimseRSP(as, cmd, data);
-                onCStoreRSP(cmd, file);
-
-                ImageProgress progress = state.getProgress();
-                if (progress != null) {
-                    progress.setProcessedFile(file);
-                    progress.setAttributes(cmd);
-                }
-            }
-        };
-    }
 
     /**
      * Constructs a new {@code StoreSCU} instance.
@@ -230,6 +196,29 @@ public class StoreSCU implements AutoCloseable {
         } catch (IOException e) {
             throw new InternalException(e);
         }
+    }
+
+    /**
+     * Creates the default response handler for a C-STORE operation.
+     *
+     * @param file the file being sent.
+     * @return the response handler.
+     */
+    private DimseRSPHandler createDefaultRspHandler(File file) {
+        return new DimseRSPHandler(as.nextMessageID()) {
+
+            @Override
+            public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
+                super.onDimseRSP(as, cmd, data);
+                onCStoreRSP(cmd, file);
+
+                ImageProgress progress = state.getProgress();
+                if (progress != null) {
+                    progress.setProcessedFile(file);
+                    progress.setAttributes(cmd);
+                }
+            }
+        };
     }
 
     /**
@@ -769,7 +758,6 @@ public class StoreSCU implements AutoCloseable {
      * A factory for creating DIMSE response handlers for C-STORE operations.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface RSPHandlerFactory {
 

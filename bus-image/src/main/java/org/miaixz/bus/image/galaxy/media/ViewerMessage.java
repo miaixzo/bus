@@ -213,6 +213,23 @@ public record ViewerMessage(String title, String message, Level level) {
         }
 
         /**
+         * Executes the from xml value operation.
+         *
+         * @param xmlValue the xml value.
+         * @return the operation result.
+         */
+        public static Level fromXmlValue(String xmlValue) {
+            if (xmlValue == null) {
+                return INFO;
+            }
+            return switch (xmlValue.toLowerCase(Locale.ROOT)) {
+                case "warning", "warn" -> WARN;
+                case "error", "err" -> ERROR;
+                default -> INFO;
+            };
+        }
+
+        /**
          * Gets the display name.
          *
          * @return the display name.
@@ -228,23 +245,6 @@ public record ViewerMessage(String title, String message, Level level) {
          */
         public String getXmlValue() {
             return xmlValue;
-        }
-
-        /**
-         * Executes the from xml value operation.
-         *
-         * @param xmlValue the xml value.
-         * @return the operation result.
-         */
-        public static Level fromXmlValue(String xmlValue) {
-            if (xmlValue == null) {
-                return INFO;
-            }
-            return switch (xmlValue.toLowerCase(Locale.ROOT)) {
-                case "warning", "warn" -> WARN;
-                case "error", "err" -> ERROR;
-                default -> INFO;
-            };
         }
 
         /**

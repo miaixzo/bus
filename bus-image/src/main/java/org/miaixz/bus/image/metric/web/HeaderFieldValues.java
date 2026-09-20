@@ -19,12 +19,7 @@
 */
 package org.miaixz.bus.image.metric.web;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -49,6 +44,26 @@ public class HeaderFieldValues {
     public HeaderFieldValues(String headerFieldValue) {
         Objects.requireNonNull(headerFieldValue, "Header field value cannot be null");
         this.parsedValues = parseHeaderFieldValue(headerFieldValue);
+    }
+
+    /**
+     * Executes the normalize key operation.
+     *
+     * @param key the key.
+     * @return the operation result.
+     */
+    private static String normalizeKey(String key) {
+        return key == null ? Normal.EMPTY : key.toLowerCase(java.util.Locale.ROOT);
+    }
+
+    /**
+     * Determines whether text.
+     *
+     * @param value the value.
+     * @return true if the condition is met; otherwise false.
+     */
+    private static boolean hasText(String value) {
+        return value != null && !value.isBlank();
     }
 
     /**
@@ -104,26 +119,6 @@ public class HeaderFieldValues {
             return new ArrayList<>();
         }
         return new FieldValueParser(content).parseAll();
-    }
-
-    /**
-     * Executes the normalize key operation.
-     *
-     * @param key the key.
-     * @return the operation result.
-     */
-    private static String normalizeKey(String key) {
-        return key == null ? Normal.EMPTY : key.toLowerCase(java.util.Locale.ROOT);
-    }
-
-    /**
-     * Determines whether text.
-     *
-     * @param value the value.
-     * @return true if the condition is met; otherwise false.
-     */
-    private static boolean hasText(String value) {
-        return value != null && !value.isBlank();
     }
 
     /**

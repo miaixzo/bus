@@ -19,16 +19,7 @@
 */
 package org.miaixz.bus.image.builtin;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.image.Tag;
@@ -46,1978 +37,1280 @@ import org.miaixz.bus.image.galaxy.data.VR;
 public class AnatomicRegion {
 
     /**
-     * Provides metadata for an anatomic category.
-     *
-     * @author Kimi Liu
-     */
-    public interface CategoryBuilder {
-
-        /**
-         * Returns the DICOM context UID for the category.
-         *
-         * @return the DICOM context UID.
-         */
-        String getContextUID();
-
-        /**
-         * Returns the DICOM context identifier for the category.
-         *
-         * @return the DICOM context identifier.
-         */
-        String getIdentifier();
-
-        /**
-         * Returns the display title for the category.
-         *
-         * @return the display title.
-         */
-        String getTitle();
-
-    }
-
-    /**
-     * Represents a custom anatomic category.
-     *
-     * @author Kimi Liu
-     */
-    public static class OtherCategory implements CategoryBuilder {
-
-        /**
-         * The context UID value.
-         */
-        private final String contextUID;
-
-        /**
-         * The context identifier value.
-         */
-        private final String identifier;
-
-        /**
-         * The title value.
-         */
-        private final String title;
-
-        /**
-         * Creates a new custom anatomic category.
-         *
-         * @param contextUID the context UID.
-         * @param identifier the context identifier.
-         * @param title      the display title.
-         */
-        public OtherCategory(String contextUID, String identifier, String title) {
-            this.contextUID = Objects.requireNonNull(contextUID, "contextUID must not be null");
-            this.identifier = Objects.requireNonNull(identifier, "identifier must not be null");
-            this.title = Objects.requireNonNull(title, "title must not be null");
-            validateIdentifier(identifier);
-        }
-
-        /**
-         * Returns the DICOM context UID for the category.
-         *
-         * @return the DICOM context UID.
-         */
-        @Override
-        public String getContextUID() {
-            return contextUID;
-        }
-
-        /**
-         * Returns the DICOM context identifier for the category.
-         *
-         * @return the DICOM context identifier.
-         */
-        @Override
-        public String getIdentifier() {
-            return identifier;
-        }
-
-        /**
-         * Returns the display title for the category.
-         *
-         * @return the display title.
-         */
-        @Override
-        public String getTitle() {
-            return title;
-        }
-
-        /**
-         * Returns the string representation.
-         *
-         * @return the string representation.
-         */
-        @Override
-        public String toString() {
-            return getTitle();
-        }
-
-        /**
-         * Compares this category with another object for equality.
-         *
-         * @param object the object.
-         * @return true if the categories have the same context UID.
-         */
-        @Override
-        public boolean equals(Object object) {
-            return object instanceof OtherCategory other && Objects.equals(contextUID, other.contextUID);
-        }
-
-        /**
-         * Returns the hash code.
-         *
-         * @return the hash code.
-         */
-        @Override
-        public int hashCode() {
-            return Objects.hashCode(contextUID);
-        }
-
-    }
-
-    /**
-     * Represents a private extension of a standard anatomic category.
-     *
-     * @author Kimi Liu
-     */
-    public static final class ExtendedCategory implements CategoryBuilder {
-
-        /**
-         * The base category value.
-         */
-        private final Category baseCategory;
-
-        /**
-         * The extension creator UID value.
-         */
-        private final String extensionCreatorUID;
-
-        /**
-         * The title value.
-         */
-        private final String title;
-
-        /**
-         * Creates a new extended anatomic category.
-         *
-         * @param baseCategory        the base category.
-         * @param extensionCreatorUID the extension creator UID.
-         * @param title               the display title.
-         */
-        public ExtendedCategory(Category baseCategory, String extensionCreatorUID, String title) {
-            this.baseCategory = Objects.requireNonNull(baseCategory, "baseCategory must not be null");
-            this.extensionCreatorUID = Objects
-                    .requireNonNull(extensionCreatorUID, "extensionCreatorUID must not be null");
-            this.title = Objects.requireNonNull(title, "title must not be null");
-        }
-
-        /**
-         * Returns the DICOM context UID for the category.
-         *
-         * @return the DICOM context UID.
-         */
-        @Override
-        public String getContextUID() {
-            return baseCategory.getContextUID();
-        }
-
-        /**
-         * Returns the DICOM context identifier for the category.
-         *
-         * @return the DICOM context identifier.
-         */
-        @Override
-        public String getIdentifier() {
-            return baseCategory.getIdentifier();
-        }
-
-        /**
-         * Returns the display title for the category.
-         *
-         * @return the display title.
-         */
-        @Override
-        public String getTitle() {
-            return title;
-        }
-
-        /**
-         * Returns the standard category extended by this category.
-         *
-         * @return the standard category.
-         */
-        public Category getBaseCategory() {
-            return baseCategory;
-        }
-
-        /**
-         * Returns the extension creator UID.
-         *
-         * @return the extension creator UID.
-         */
-        public String getExtensionCreatorUID() {
-            return extensionCreatorUID;
-        }
-
-        /**
-         * Returns the string representation.
-         *
-         * @return the string representation.
-         */
-        @Override
-        public String toString() {
-            return getTitle();
-        }
-
-        /**
-         * Compares this category with another object for equality.
-         *
-         * @param object the object.
-         * @return true if the base category and extension creator UID are equal.
-         */
-        @Override
-        public boolean equals(Object object) {
-            return object instanceof ExtendedCategory other && baseCategory == other.baseCategory
-                    && Objects.equals(extensionCreatorUID, other.extensionCreatorUID);
-        }
-
-        /**
-         * Returns the hash code.
-         *
-         * @return the hash code.
-         */
-        @Override
-        public int hashCode() {
-            return Objects.hash(baseCategory, extensionCreatorUID);
-        }
-
-    }
-
-    /**
-     * Defines standard DICOM anatomic categories.
-     *
-     * @author Kimi Liu
-     */
-    public enum Category implements CategoryBuilder {
-
-        /**
-         * Surface anatomical structures.
-         */
-        SURFACE("1.2.840.10008.6.1.1268", "CID 4029", "Surface anatomical structures"),
-
-        /**
-         * All anatomical regions.
-         */
-        ALL_REGIONS("1.2.840.10008.6.1.2", "CID 4", "All anatomical regions"),
-
-        /**
-         * Commonly used anatomical regions.
-         */
-        COMMON("1.2.840.10008.6.1.308", "CID 4031", "Common anatomical regions"),
-
-        /**
-         * Endoscopic anatomical regions.
-         */
-        ENDOSCOPY("1.2.840.10008.6.1.311", "CID 4040", "Endoscopic anatomical regions");
-
-        /**
-         * The context UID lookup value.
-         */
-        private static final Map<String, Category> UID_LOOKUP = createUidLookup();
-
-        /**
-         * The context UID value.
-         */
-        private final String contextUID;
-
-        /**
-         * The context identifier value.
-         */
-        private final String identifier;
-
-        /**
-         * The title value.
-         */
-        private final String title;
-
-        /**
-         * Creates a standard DICOM anatomic category.
-         *
-         * @param contextUID the context UID.
-         * @param identifier the context identifier.
-         * @param title      the display title.
-         */
-        Category(String contextUID, String identifier, String title) {
-            this.contextUID = Objects.requireNonNull(contextUID, "contextUID must not be null");
-            this.identifier = Objects.requireNonNull(identifier, "identifier must not be null");
-            this.title = Objects.requireNonNull(title, "title must not be null");
-            validateIdentifier(identifier);
-        }
-
-        /**
-         * Creates the context UID lookup.
-         *
-         * @return the context UID lookup.
-         */
-        private static Map<String, Category> createUidLookup() {
-            Map<String, Category> map = new LinkedHashMap<>();
-            for (Category category : values()) {
-                map.put(category.getContextUID(), category);
-            }
-            return Collections.unmodifiableMap(map);
-        }
-
-        /**
-         * Returns the DICOM context UID for the category.
-         *
-         * @return the DICOM context UID.
-         */
-        @Override
-        public String getContextUID() {
-            return contextUID;
-        }
-
-        /**
-         * Returns the DICOM context identifier for the category.
-         *
-         * @return the DICOM context identifier.
-         */
-        @Override
-        public String getIdentifier() {
-            return identifier;
-        }
-
-        /**
-         * Returns the display title for the category.
-         *
-         * @return the display title.
-         */
-        @Override
-        public String getTitle() {
-            return title;
-        }
-
-        /**
-         * Returns the display title for the requested locale.
-         *
-         * @param locale the requested locale.
-         * @return the display title.
-         */
-        public String getTitle(Locale locale) {
-            return title;
-        }
-
-        /**
-         * Returns the string representation.
-         *
-         * @return the string representation.
-         */
-        @Override
-        public String toString() {
-            return getTitle();
-        }
-
-        /**
-         * Finds a standard category by context UID.
-         *
-         * @param uid the context UID.
-         * @return the matching category.
-         */
-        public static Optional<Category> fromContextUID(String uid) {
-            return Optional.ofNullable(UID_LOOKUP.get(uid));
-        }
-
-    }
-
-    /**
      * The abdomen value.
      */
     public static final Code Abdomen = new Code("818981001", "SCT", null, "Abdomen");
-
     /**
      * The abdomen pelvis value.
      */
     public static final Code AbdomenPelvis = new Code("818982008", "SCT", null, "Abdomen and Pelvis");
-
     /**
      * The abdominal aorta value.
      */
     public static final Code AbdominalAorta = new Code("7832008", "SCT", null, "Abdomen aorta");
-
     /**
      * The acromioclavicular joint value.
      */
     public static final Code AcromioclavicularJoint = new Code("85856004", "SCT", null, "Acromioclavicular joint");
-
     /**
      * The adrenal gland value.
      */
     public static final Code AdrenalGland = new Code("23451007", "SCT", null, "Adrenal gland");
-
     /**
      * The amniotic fluid value.
      */
     public static final Code AmnioticFluid = new Code("77012006", "SCT", null, "Amniotic fluid");
-
     /**
      * The ankle joint value.
      */
     public static final Code AnkleJoint = new Code("70258002", "SCT", null, "Ankle joint");
-
     /**
      * The antecubital vein value.
      */
     public static final Code AntecubitalVein = new Code("128553008", "SCT", null, "Antecubital vein");
-
     /**
      * The anterior cardiac vein value.
      */
     public static final Code AnteriorCardiacVein = new Code("194996006", "SCT", null, "Anterior cardiac vein");
-
     /**
      * The anterior cerebral artery value.
      */
     public static final Code AnteriorCerebralArtery = new Code("60176003", "SCT", null, "Anterior cerebral artery");
-
     /**
      * The anterior communicating artery value.
      */
     public static final Code AnteriorCommunicatingArtery = new Code("8012006", "SCT", null,
             "Anterior communicating artery");
-
     /**
      * The anterior spinal artery value.
      */
     public static final Code AnteriorSpinalArtery = new Code("17388009", "SCT", null, "Anterior spinal artery");
-
     /**
      * The anterior tibial artery value.
      */
     public static final Code AnteriorTibialArtery = new Code("68053000", "SCT", null, "Anterior tibial artery");
-
     /**
      * The anus rectum sigmoid colon value.
      */
     public static final Code AnusRectumSigmoidColon = new Code("110612005", "SCT", null,
             "Anus, rectum and sigmoid colon");
-
     /**
      * The aorta value.
      */
     public static final Code Aorta = new Code("15825003", "SCT", null, "Aorta");
-
     /**
      * The aortic arch value.
      */
     public static final Code AorticArch = new Code("57034009", "SCT", null, "Aortic arch");
-
     /**
      * The appendix value.
      */
     public static final Code Appendix = new Code("66754008", "SCT", null, "Appendix");
-
     /**
      * The artery value.
      */
     public static final Code Artery = new Code("51114001", "SCT", null, "Artery");
-
     /**
      * The ascending aorta value.
      */
     public static final Code AscendingAorta = new Code("54247002", "SCT", null, "Ascending aorta");
-
     /**
      * The ascending colon value.
      */
     public static final Code AscendingColon = new Code("9040008", "SCT", null, "Ascending colon");
-
     /**
      * The axilla value.
      */
     public static final Code Axilla = new Code("91470000", "SCT", null, "Axilla");
-
     /**
      * The axillary artery value.
      */
     public static final Code AxillaryArtery = new Code("67937003", "SCT", null, "Axillary Artery");
-
     /**
      * The axillary vein value.
      */
     public static final Code AxillaryVein = new Code("68705008", "SCT", null, "Axillary vein");
-
     /**
      * The azygos vein value.
      */
     public static final Code AzygosVein = new Code("72107004", "SCT", null, "Azygos vein");
-
     /**
      * The back value.
      */
     public static final Code Back = new Code("77568009", "SCT", null, "Back");
-
     /**
      * The basilar artery value.
      */
     public static final Code BasilarArtery = new Code("59011009", "SCT", null, "Basilar artery");
-
     /**
      * The bile duct value.
      */
     public static final Code BileDuct = new Code("28273000", "SCT", null, "Bile Duct");
-
     /**
      * The biliary tract value.
      */
     public static final Code BiliaryTract = new Code("34707002", "SCT", null, "Biliary tract");
-
     /**
      * The bladder value.
      */
     public static final Code Bladder = new Code("89837001", "SCT", null, "Bladder");
-
     /**
      * The bladder urethra value.
      */
     public static final Code BladderUrethra = new Code("110837003", "SCT", null, "Bladder and urethra");
-
     /**
      * The brachial artery value.
      */
     public static final Code BrachialArtery = new Code("17137000", "SCT", null, "Brachial artery");
-
     /**
      * The brachial vein value.
      */
     public static final Code BrachialVein = new Code("20115005", "SCT", null, "Brachial vein");
-
     /**
      * The brain value.
      */
     public static final Code Brain = new Code("12738006", "SCT", null, "Brain");
-
     /**
      * The breast value.
      */
     public static final Code Breast = new Code("76752008", "SCT", null, "Breast");
-
     /**
      * The bronchus value.
      */
     public static final Code Bronchus = new Code("955009", "SCT", null, "Bronchus");
-
     /**
      * The buttock value.
      */
     public static final Code Buttock = new Code("46862004", "SCT", null, "Buttock");
-
     /**
      * The calcaneus value.
      */
     public static final Code Calcaneus = new Code("80144004", "SCT", null, "Calcaneus");
-
     /**
      * The calf of leg value.
      */
     public static final Code CalfOfLeg = new Code("53840002", "SCT", null, "Calf of leg");
-
     /**
      * The carotid artery value.
      */
     public static final Code CarotidArtery = new Code("69105007", "SCT", null, "Carotid Artery");
-
     /**
      * The carotid bulb value.
      */
     public static final Code CarotidBulb = new Code("21479005", "SCT", null, "Carotid Bulb");
-
     /**
      * The celiac artery value.
      */
     public static final Code CeliacArtery = new Code("57850000", "SCT", null, "Celiac artery");
-
     /**
      * The cephalic vein value.
      */
     public static final Code CephalicVein = new Code("20699002", "SCT", null, "Cephalic vein");
-
     /**
      * The cerebellum value.
      */
     public static final Code Cerebellum = new Code("113305005", "SCT", null, "Cerebellum");
-
     /**
      * The cerebral artery value.
      */
     public static final Code CerebralArtery = new Code("88556005", "SCT", null, "Cerebral artery");
-
     /**
      * The cerebral hemisphere value.
      */
     public static final Code CerebralHemisphere = new Code("372073000", "SCT", null, "Cerebral hemisphere");
-
     /**
      * The cervical spine value.
      */
     public static final Code CervicalSpine = new Code("122494005", "SCT", null, "Cervical spine");
-
     /**
      * The cervico thoracic spine value.
      */
     public static final Code CervicoThoracicSpine = new Code("1217257000", "SCT", null, "Cervico-thoracic spine");
-
     /**
      * The cervix value.
      */
     public static final Code Cervix = new Code("71252005", "SCT", null, "Cervix");
-
     /**
      * The cheek value.
      */
     public static final Code Cheek = new Code("60819002", "SCT", null, "Cheek");
-
     /**
      * The chest value.
      */
     public static final Code Chest = new Code("43799004", "SCT", null, "Chest");
-
     /**
      * The chest abdomen value.
      */
     public static final Code ChestAbdomen = new Code("416550000", "SCT", null, "Chest and Abdomen");
-
     /**
      * The chest abdomen pelvis value.
      */
     public static final Code ChestAbdomenPelvis = new Code("416775004", "SCT", null, "Chest, Abdomen and Pelvis");
-
     /**
      * The choroid plexus value.
      */
     public static final Code ChoroidPlexus = new Code("80621003", "SCT", null, "Choroid plexus");
-
     /**
      * The circle of willis value.
      */
     public static final Code CircleOfWillis = new Code("11279006", "SCT", null, "Circle of Willis");
-
     /**
      * The clavicle value.
      */
     public static final Code Clavicle = new Code("51299004", "SCT", null, "Clavicle");
-
     /**
      * The coccyx value.
      */
     public static final Code Coccyx = new Code("64688005", "SCT", null, "Coccyx");
-
     /**
      * The colon value.
      */
     public static final Code Colon = new Code("71854001", "SCT", null, "Colon");
-
     /**
      * The common bile duct value.
      */
     public static final Code CommonBileDuct = new Code("79741001", "SCT", null, "Common bile duct");
-
     /**
      * The common carotid artery value.
      */
     public static final Code CommonCarotidArtery = new Code("32062004", "SCT", null, "Common carotid artery");
-
     /**
      * The common femoral artery value.
      */
     public static final Code CommonFemoralArtery = new Code("181347005", "SCT", null, "Common femoral artery");
-
     /**
      * The common femoral vein value.
      */
     public static final Code CommonFemoralVein = new Code("397363009", "SCT", null, "Common femoral vein");
-
     /**
      * The common iliac artery value.
      */
     public static final Code CommonIliacArtery = new Code("73634005", "SCT", null, "Common iliac artery");
-
     /**
      * The common iliac vein value.
      */
     public static final Code CommonIliacVein = new Code("46027005", "SCT", null, "Common iliac vein");
-
     /**
      * The cornea value.
      */
     public static final Code Cornea = new Code("28726007", "SCT", null, "Cornea");
-
     /**
      * The coronary artery value.
      */
     public static final Code CoronaryArtery = new Code("41801008", "SCT", null, "Coronary artery");
-
     /**
      * The coronary sinus value.
      */
     public static final Code CoronarySinus = new Code("90219004", "SCT", null, "Coronary sinus");
-
     /**
      * The descending aorta value.
      */
     public static final Code DescendingAorta = new Code("32672002", "SCT", null, "Descending aorta");
-
     /**
      * The descending colon value.
      */
     public static final Code DescendingColon = new Code("32622004", "SCT", null, "Descending colon");
-
     /**
      * The duodenum value.
      */
     public static final Code Duodenum = new Code("38848004", "SCT", null, "Duodenum");
-
     /**
      * The ear value.
      */
     public static final Code Ear = new Code("117590005", "SCT", null, "Ear");
-
     /**
      * The elbow joint value.
      */
     public static final Code ElbowJoint = new Code("16953009", "SCT", null, "Elbow joint");
-
     /**
      * The endo arterial value.
      */
     public static final Code EndoArterial = new Code("51114001", "SCT", null, "Endo-arterial");
-
     /**
      * The endo cardiac value.
      */
     public static final Code EndoCardiac = new Code("80891009", "SCT", null, "Endo-cardiac");
-
     /**
      * The endo esophageal value.
      */
     public static final Code EndoEsophageal = new Code("32849002", "SCT", null, "Endo-esophageal");
-
     /**
      * The endometrium value.
      */
     public static final Code Endometrium = new Code("2739003", "SCT", null, "Endometrium");
-
     /**
      * The endo nasal value.
      */
     public static final Code EndoNasal = new Code("53342003", "SCT", null, "Endo-nasal");
-
     /**
      * The endo nasopharyngeal value.
      */
     public static final Code EndoNasopharyngeal = new Code("18962004", "SCT", null, "Endo-nasopharyngeal");
-
     /**
      * The endo rectal value.
      */
     public static final Code EndoRectal = new Code("34402009", "SCT", null, "Endo-rectal");
-
     /**
      * The endo renal value.
      */
     public static final Code EndoRenal = new Code("64033007", "SCT", null, "Endo-renal");
-
     /**
      * The endo ureteric value.
      */
     public static final Code EndoUreteric = new Code("87953007", "SCT", null, "Endo-ureteric");
-
     /**
      * The endo urethral value.
      */
     public static final Code EndoUrethral = new Code("13648007", "SCT", null, "Endo-urethral");
-
     /**
      * The endo vaginal value.
      */
     public static final Code EndoVaginal = new Code("76784001", "SCT", null, "Endo-vaginal");
-
     /**
      * The endo vascular value.
      */
     public static final Code EndoVascular = new Code("59820001", "SCT", null, "Endo-vascular");
-
     /**
      * The endo venous value.
      */
     public static final Code EndoVenous = new Code("29092000", "SCT", null, "Endo-venous");
-
     /**
      * The endo vesical value.
      */
     public static final Code EndoVesical = new Code("48367006", "SCT", null, "Endo-vesical");
-
     /**
      * The entire body value.
      */
     public static final Code EntireBody = new Code("38266002", "SCT", null, "Entire body");
-
     /**
      * The epididymis value.
      */
     public static final Code Epididymis = new Code("87644002", "SCT", null, "Epididymis");
-
     /**
      * The epigastric region value.
      */
     public static final Code EpigastricRegion = new Code("27947004", "SCT", null, "Epigastric region");
-
     /**
      * The esophagus value.
      */
     public static final Code Esophagus = new Code("32849002", "SCT", null, "Esophagus");
-
     /**
      * The external auditory canal value.
      */
     public static final Code ExternalAuditoryCanal = new Code("84301002", "SCT", null, "External auditory canal");
-
     /**
      * The external carotid artery value.
      */
     public static final Code ExternalCarotidArtery = new Code("22286001", "SCT", null, "External carotid artery");
-
     /**
      * The external iliac artery value.
      */
     public static final Code ExternalIliacArtery = new Code("113269004", "SCT", null, "External iliac artery");
-
     /**
      * The external iliac vein value.
      */
     public static final Code ExternalIliacVein = new Code("63507001", "SCT", null, "External iliac vein");
-
     /**
      * The external jugular vein value.
      */
     public static final Code ExternalJugularVein = new Code("71585003", "SCT", null, "External jugular vein");
-
     /**
      * The extremity value.
      */
     public static final Code Extremity = new Code("66019005", "SCT", null, "Extremity");
-
     /**
      * The eye value.
      */
     public static final Code Eye = new Code("81745001", "SCT", null, "Eye");
-
     /**
      * The eyelid value.
      */
     public static final Code Eyelid = new Code("80243003", "SCT", null, "Eyelid");
-
     /**
      * The face value.
      */
     public static final Code Face = new Code("89545001", "SCT", null, "Face");
-
     /**
      * The facial artery value.
      */
     public static final Code FacialArtery = new Code("23074001", "SCT", null, "Facial artery");
-
     /**
      * The femoral artery value.
      */
     public static final Code FemoralArtery = new Code("7657000", "SCT", null, "Femoral artery");
-
     /**
      * The femoral vein value.
      */
     public static final Code FemoralVein = new Code("83419000", "SCT", null, "Femoral vein");
-
     /**
      * The femur value.
      */
     public static final Code Femur = new Code("71341001", "SCT", null, "Femur");
-
     /**
      * The fibula value.
      */
     public static final Code Fibula = new Code("87342007", "SCT", null, "Fibula");
-
     /**
      * The finger value.
      */
     public static final Code Finger = new Code("7569003", "SCT", null, "Finger");
-
     /**
      * The flank value.
      */
     public static final Code Flank = new Code("58602004", "SCT", null, "Flank");
-
     /**
      * The fontanel skull value.
      */
     public static final Code FontanelSkull = new Code("79361005", "SCT", null, "Fontanel of skull");
-
     /**
      * The foot value.
      */
     public static final Code Foot = new Code("56459004", "SCT", null, "Foot");
-
     /**
      * The forearm value.
      */
     public static final Code Forearm = new Code("14975008", "SCT", null, "Forearm");
-
     /**
      * The fourth ventricle value.
      */
     public static final Code FourthVentricle = new Code("35918002", "SCT", null, "Fourth Ventricle");
-
     /**
      * The gallbladder value.
      */
     public static final Code Gallbladder = new Code("28231008", "SCT", null, "Gallbladder");
-
     /**
      * The gastric vein value.
      */
     public static final Code GastricVein = new Code("110568007", "SCT", null, "Gastric vein");
-
     /**
      * The genicular artery value.
      */
     public static final Code GenicularArtery = new Code("128559007", "SCT", null, "Genicular artery");
-
     /**
      * The gestational sac value.
      */
     public static final Code GestationalSac = new Code("300571009", "SCT", null, "Gestational sac");
-
     /**
      * The gluteal region value.
      */
     public static final Code GlutealRegion = new Code("46862004", "SCT", null, "Gluteal region");
-
     /**
      * The great saphenous vein value.
      */
     public static final Code GreatSaphenousVein = new Code("60734001", "SCT", null, "Great saphenous vein");
-
     /**
      * The hand value.
      */
     public static final Code Hand = new Code("85562004", "SCT", null, "Hand");
-
     /**
      * The head value.
      */
     public static final Code Head = new Code("69536005", "SCT", null, "Head");
-
     /**
      * The head neck value.
      */
     public static final Code HeadNeck = new Code("774007", "SCT", null, "Head and Neck");
-
     /**
      * The heart value.
      */
     public static final Code Heart = new Code("80891009", "SCT", null, "Heart");
-
     /**
      * The hepatic artery value.
      */
     public static final Code HepaticArtery = new Code("76015000", "SCT", null, "Hepatic artery");
-
     /**
      * The hepatic vein value.
      */
     public static final Code HepaticVein = new Code("8993003", "SCT", null, "Hepatic vein");
-
     /**
      * The hip joint value.
      */
     public static final Code HipJoint = new Code("24136001", "SCT", null, "Hip joint");
-
     /**
      * The humerus value.
      */
     public static final Code Humerus = new Code("85050009", "SCT", null, "Humerus");
-
     /**
      * The hypogastric region value.
      */
     public static final Code HypogastricRegion = new Code("11708003", "SCT", null, "Hypogastric region");
-
     /**
      * The hypopharynx value.
      */
     public static final Code Hypopharynx = new Code("81502006", "SCT", null, "Hypopharynx");
-
     /**
      * The ileum value.
      */
     public static final Code Ileum = new Code("34516001", "SCT", null, "Ileum");
-
     /**
      * The iliac artery value.
      */
     public static final Code IliacArtery = new Code("10293006", "SCT", null, "Iliac artery");
-
     /**
      * The iliac vein value.
      */
     public static final Code IliacVein = new Code("244411005", "SCT", null, "Iliac vein");
-
     /**
      * The ilium value.
      */
     public static final Code Ilium = new Code("22356005", "SCT", null, "Ilium");
-
     /**
      * The inferior mesentric artery value.
      */
     public static final Code InferiorMesentricArtery = new Code("33795007", "SCT", null, "Inferior mesenteric artery");
-
     /**
      * The inferior vena cava value.
      */
     public static final Code InferiorVenaCava = new Code("64131007", "SCT", null, "Inferior vena cava");
-
     /**
      * The inguinal region value.
      */
     public static final Code InguinalRegion = new Code("26893007", "SCT", null, "Inguinal region");
-
     /**
      * The innominate artery value.
      */
     public static final Code InnominateArtery = new Code("12691009", "SCT", null, "Innominate artery");
-
     /**
      * The innominate vein value.
      */
     public static final Code InnominateVein = new Code("8887007", "SCT", null, "Innominate vein");
-
     /**
      * The internal auditory canal value.
      */
     public static final Code InternalAuditoryCanal = new Code("361078006", "SCT", null, "Internal Auditory Canal");
-
     /**
      * The internal carotid artery value.
      */
     public static final Code InternalCarotidArtery = new Code("86117002", "SCT", null, "Internal carotid artery");
-
     /**
      * The internal iliac artery value.
      */
     public static final Code InternalIliacArtery = new Code("90024005", "SCT", null, "Internal iliac artery");
-
     /**
      * The internal jugular vein value.
      */
     public static final Code InternalJugularVein = new Code("12123001", "SCT", null, "Internal jugular vein");
-
     /**
      * The internal mammary artery value.
      */
     public static final Code InternalMammaryArtery = new Code("86117002", "SCT", null, "Internal mammary artery");
-
     /**
      * The intracranial value.
      */
     public static final Code Intracranial = new Code("1101003", "SCT", null, "Intracranial");
-
     /**
      * The jaw region value.
      */
     public static final Code JawRegion = new Code("661005", "SCT", null, "Jaw region");
-
     /**
      * The jejunum value.
      */
     public static final Code Jejunum = new Code("21306003", "SCT", null, "Jejunum");
-
     /**
      * The joint value.
      */
     public static final Code Joint = new Code("39352004", "SCT", null, "Joint");
-
     /**
      * The kidney value.
      */
     public static final Code Kidney = new Code("64033007", "SCT", null, "Kidney");
-
     /**
      * The knee value.
      */
     public static final Code Knee = new Code("72696002", "SCT", null, "Knee");
-
     /**
      * The lacrimal artery value.
      */
     public static final Code LacrimalArtery = new Code("59749000", "SCT", null, "Lacrimal artery");
-
     /**
      * The large intestine value.
      */
     public static final Code LargeIntestine = new Code("14742008", "SCT", null, "Large intestine");
-
     /**
      * The larynx value.
      */
     public static final Code Larynx = new Code("4596009", "SCT", null, "Larynx");
-
     /**
      * The lateral ventricle value.
      */
     public static final Code LateralVentricle = new Code("66720007", "SCT", null, "Lateral Ventricle");
-
     /**
      * The left atrium value.
      */
     public static final Code LeftAtrium = new Code("82471001", "SCT", null, "Left atrium");
-
     /**
      * The left femoral artery value.
      */
     public static final Code LeftFemoralArtery = new Code("113270003", "SCT", null, "Left femoral artery");
-
     /**
      * The left hepatic vein value.
      */
     public static final Code LeftHepaticVein = new Code("273202007", "SCT", null, "Left hepatic vein");
-
     /**
      * The left hypochondriac region value.
      */
     public static final Code LeftHypochondriacRegion = new Code("133945003", "SCT", null, "Left hypochondriac region");
-
     /**
      * The left inguinal region value.
      */
     public static final Code LeftInguinalRegion = new Code("85119005", "SCT", null, "Left inguinal region");
-
     /**
      * The left lower quadrant abdomen value.
      */
     public static final Code LeftLowerQuadrantAbdomen = new Code("68505006", "SCT", null,
             "Left lower quadrant of abdomen");
-
     /**
      * The left lumbar region value.
      */
     public static final Code LeftLumbarRegion = new Code("1017210004", "SCT", null, "Left lumbar region");
-
     /**
      * The left portal vein value.
      */
     public static final Code LeftPortalVein = new Code("70253006", "SCT", null, "Left portal vein");
-
     /**
      * The left pulmonary artery value.
      */
     public static final Code LeftPulmonaryArtery = new Code("50408007", "SCT", null, "Left pulmonary artery");
-
     /**
      * The left upper quadrant abdomen value.
      */
     public static final Code LeftUpperQuadrantAbdomen = new Code("86367003", "SCT", null,
             "Left upper quadrant of abdomen");
-
     /**
      * The left ventricle value.
      */
     public static final Code LeftVentricle = new Code("87878005", "SCT", null, "Left ventricle");
-
     /**
      * The lingual artery value.
      */
     public static final Code LingualArtery = new Code("113264009", "SCT", null, "Lingual artery");
-
     /**
      * The liver value.
      */
     public static final Code Liver = new Code("10200004", "SCT", null, "Liver");
-
     /**
      * The lower leg value.
      */
     public static final Code LowerLeg = new Code("30021000", "SCT", null, "Lower leg");
-
     /**
      * The lower limb value.
      */
     public static final Code LowerLimb = new Code("61685007", "SCT", null, "Lower limb");
-
     /**
      * The lumbar artery value.
      */
     public static final Code LumbarArtery = new Code("34635009", "SCT", null, "Lumbar artery");
-
     /**
      * The lumbar region value.
      */
     public static final Code LumbarRegion = new Code("52612000", "SCT", null, "Lumbar region");
-
     /**
      * The lumbar spine value.
      */
     public static final Code LumbarSpine = new Code("122496007", "SCT", null, "Lumbar spine");
-
     /**
      * The lumbo sacral spine value.
      */
     public static final Code LumboSacralSpine = new Code("1217253001", "SCT", null, "Lumbo-sacral spine");
-
     /**
      * The lumen blood vessel value.
      */
     public static final Code LumenBloodVessel = new Code("91747007", "SCT", null, "Lumen of blood vessel");
-
     /**
      * The lung value.
      */
     public static final Code Lung = new Code("39607008", "SCT", null, "Lung");
-
     /**
      * The mandible value.
      */
     public static final Code Mandible = new Code("91609006", "SCT", null, "Mandible");
-
     /**
      * The mastoid bone value.
      */
     public static final Code MastoidBone = new Code("59066005", "SCT", null, "Mastoid Bone");
-
     /**
      * The maxilla value.
      */
     public static final Code Maxilla = new Code("70925003", "SCT", null, "Maxilla");
-
     /**
      * The mediastinum value.
      */
     public static final Code Mediastinum = new Code("72410000", "SCT", null, "Mediastinum");
-
     /**
      * The mesenteric artery value.
      */
     public static final Code MesentericArtery = new Code("86570000", "SCT", null, "Mesenteric artery");
-
     /**
      * The mesenteric vein value.
      */
     public static final Code MesentericVein = new Code("128583004", "SCT", null, "Mesenteric vein");
-
     /**
      * The middle cerebral artery value.
      */
     public static final Code MiddleCerebralArtery = new Code("17232002", "SCT", null, "Middle cerebral artery");
-
     /**
      * The middle hepatic vein value.
      */
     public static final Code MiddleHepaticVein = new Code("273099000", "SCT", null, "Middle hepatic vein");
-
     /**
      * The morisons pouch value.
      */
     public static final Code MorisonsPouch = new Code("243977002", "SCT", null, "Morisons Pouch");
-
     /**
      * The mouth value.
      */
     public static final Code Mouth = new Code("123851003", "SCT", null, "Mouth");
-
     /**
      * The nasopharynx value.
      */
     public static final Code Nasopharynx = new Code("360955006", "SCT", null, "Nasopharynx");
-
     /**
      * The neck value.
      */
     public static final Code Neck = new Code("45048000", "SCT", null, "Neck");
-
     /**
      * The neck chest value.
      */
     public static final Code NeckChest = new Code("417437006", "SCT", null, "Neck and Chest");
-
     /**
      * The neck chest abdomen value.
      */
     public static final Code NeckChestAbdomen = new Code("416152001", "SCT", null, "Neck, Chest and Abdomen");
-
     /**
      * The neck chest abdomen pelvis value.
      */
     public static final Code NeckChestAbdomenPelvis = new Code("416319003", "SCT", null,
             "Neck, Chest, Abdomen and Pelvis");
-
     /**
      * The nose value.
      */
     public static final Code Nose = new Code("45206002", "SCT", null, "Nose");
-
     /**
      * The occipital artery value.
      */
     public static final Code OccipitalArtery = new Code("31145008", "SCT", null, "Occipital artery");
-
     /**
      * The occipital vein value.
      */
     public static final Code OccipitalVein = new Code("32114007", "SCT", null, "Occipital vein");
-
     /**
      * The ophthalmic artery value.
      */
     public static final Code OphthalmicArtery = new Code("53549008", "SCT", null, "Ophthalmic artery");
-
     /**
      * The optic canal value.
      */
     public static final Code OpticCanal = new Code("55024004", "SCT", null, "Optic canal");
-
     /**
      * The orbital structure value.
      */
     public static final Code OrbitalStructure = new Code("363654007", "SCT", null, "Orbital structure");
-
     /**
      * The ovary value.
      */
     public static final Code Ovary = new Code("15497006", "SCT", null, "Ovary");
-
     /**
      * The pancreas value.
      */
     public static final Code Pancreas = new Code("15776009", "SCT", null, "Pancreas");
-
     /**
      * The pancreatic duct value.
      */
     public static final Code PancreaticDuct = new Code("69930009", "SCT", null, "Pancreatic duct");
-
     /**
      * The pancreatic duct bile duct systems value.
      */
     public static final Code PancreaticDuctBileDuctSystems = new Code("110621006", "SCT", null,
             "Pancreatic duct and bile duct systems");
-
     /**
      * The parasternal value.
      */
     public static final Code Parasternal = new Code("91691001", "SCT", null, "Parasternal");
-
     /**
      * The parathyroid value.
      */
     public static final Code Parathyroid = new Code("111002", "SCT", null, "Parathyroid");
-
     /**
      * The parotid gland value.
      */
     public static final Code ParotidGland = new Code("45289007", "SCT", null, "Parotid gland");
-
     /**
      * The patella value.
      */
     public static final Code Patella = new Code("64234005", "SCT", null, "Patella");
-
     /**
      * The pelvis value.
      */
     public static final Code Pelvis = new Code("816092008", "SCT", null, "Pelvis");
-
     /**
      * The pelvis lower extremities value.
      */
     public static final Code PelvisLowerExtremities = new Code("1231522001", "SCT", null,
             "Pelvis and lower extremities");
-
     /**
      * The penile artery value.
      */
     public static final Code PenileArtery = new Code("282044005", "SCT", null, "Penile artery");
-
     /**
      * The penis value.
      */
     public static final Code Penis = new Code("18911002", "SCT", null, "Penis");
-
     /**
      * The perineum value.
      */
     public static final Code Perineum = new Code("38864007", "SCT", null, "Perineum");
-
     /**
      * The peroneal artery value.
      */
     public static final Code PeronealArtery = new Code("8821006", "SCT", null, "Peroneal artery");
-
     /**
      * The phantom value.
      */
     public static final Code Phantom = new Code("706342009", "SCT", null, "Phantom");
-
     /**
      * The pharynx value.
      */
     public static final Code Pharynx = new Code("54066008", "SCT", null, "Pharynx");
-
     /**
      * The pharynx larynx value.
      */
     public static final Code PharynxLarynx = new Code("312535008", "SCT", null, "Pharynx and Larynx");
-
     /**
      * The placenta value.
      */
     public static final Code Placenta = new Code("78067005", "SCT", null, "Placenta");
-
     /**
      * The popliteal artery value.
      */
     public static final Code PoplitealArtery = new Code("43899006", "SCT", null, "Popliteal artery");
-
     /**
      * The popliteal fossa value.
      */
     public static final Code PoplitealFossa = new Code("32361000", "SCT", null, "Popliteal fossa");
-
     /**
      * The popliteal vein value.
      */
     public static final Code PoplitealVein = new Code("56849005", "SCT", null, "Popliteal vein");
-
     /**
      * The portal vein value.
      */
     public static final Code PortalVein = new Code("32764006", "SCT", null, "Portal vein");
-
     /**
      * The posterior cerebral artery value.
      */
     public static final Code PosteriorCerebralArtery = new Code("70382005", "SCT", null, "Posterior cerebral artery");
-
     /**
      * The posterior communicating artery value.
      */
     public static final Code PosteriorCommunicatingArtery = new Code("43119007", "SCT", null,
             "Posterior communicating artery");
-
     /**
      * The posterior tibial artery value.
      */
     public static final Code PosteriorTibialArtery = new Code("13363002", "SCT", null, "Posterior tibial artery");
-
     /**
      * The profunda femoris artery value.
      */
     public static final Code ProfundaFemorisArtery = new Code("31677005", "SCT", null, "Profunda femoris artery");
-
     /**
      * The profunda femoris vein value.
      */
     public static final Code ProfundaFemorisVein = new Code("23438002", "SCT", null, "Profunda femoris vein");
-
     /**
      * The prostate value.
      */
     public static final Code Prostate = new Code("41216001", "SCT", null, "Prostate");
-
     /**
      * The pulmonary artery value.
      */
     public static final Code PulmonaryArtery = new Code("81040000", "SCT", null, "Pulmonary artery");
-
     /**
      * The pulmonary vein value.
      */
     public static final Code PulmonaryVein = new Code("122972007", "SCT", null, "Pulmonary vein");
-
     /**
      * The radial artery value.
      */
     public static final Code RadialArtery = new Code("45631007", "SCT", null, "Radial artery");
-
     /**
      * The radius value.
      */
     public static final Code Radius = new Code("62413002", "SCT", null, "Radius");
-
     /**
      * The radius ulna value.
      */
     public static final Code RadiusUlna = new Code("110535000", "SCT", null, "Radius and ulna");
-
     /**
      * The rectouterine pouch value.
      */
     public static final Code RectouterinePouch = new Code("53843000", "SCT", null, "Rectouterine pouch");
-
     /**
      * The rectum value.
      */
     public static final Code Rectum = new Code("34402009", "SCT", null, "Rectum");
-
     /**
      * The renal artery value.
      */
     public static final Code RenalArtery = new Code("2841007", "SCT", null, "Renal artery");
-
     /**
      * The renal vein value.
      */
     public static final Code RenalVein = new Code("56400007", "SCT", null, "Renal vein");
-
     /**
      * The retroperitoneum value.
      */
     public static final Code Retroperitoneum = new Code("82849001", "SCT", null, "Retroperitoneum");
-
     /**
      * The rib value.
      */
     public static final Code Rib = new Code("113197003", "SCT", null, "Rib");
-
     /**
      * The right atrium value.
      */
     public static final Code RightAtrium = new Code("73829009", "SCT", null, "Right atrium");
-
     /**
      * The right femoral artery value.
      */
     public static final Code RightFemoralArtery = new Code("69833005", "SCT", null, "Right femoral artery");
-
     /**
      * The right hepatic vein value.
      */
     public static final Code RightHepaticVein = new Code("272998002", "SCT", null, "Right hepatic vein");
-
     /**
      * The right hypochondriac region value.
      */
     public static final Code RightHypochondriacRegion = new Code("133946002", "SCT", null,
             "Right hypochondriac region");
-
     /**
      * The right inguinal region value.
      */
     public static final Code RightInguinalRegion = new Code("37117007", "SCT", null, "Right inguinal region");
-
     /**
      * The right lower quadrant abdomen value.
      */
     public static final Code RightLowerQuadrantAbdomen = new Code("48544008", "SCT", null,
             "Right lower quadrant of abdomen");
-
     /**
      * The right lumbar region value.
      */
     public static final Code RightLumbarRegion = new Code("1017211000", "SCT", null, "Right lumbar region");
-
     /**
      * The right portal vein value.
      */
     public static final Code RightPortalVein = new Code("73931004", "SCT", null, "Right portal vein");
-
     /**
      * The right pulmonary artery value.
      */
     public static final Code RightPulmonaryArtery = new Code("78480002", "SCT", null, "Right pulmonary artery");
-
     /**
      * The right upper quadrant abdomen value.
      */
     public static final Code RightUpperQuadrantAbdomen = new Code("50519007", "SCT", null,
             "Right upper quadrant of abdomen");
-
     /**
      * The right ventricle value.
      */
     public static final Code RightVentricle = new Code("53085002", "SCT", null, "Right ventricle");
-
     /**
      * The sacroiliac joint value.
      */
     public static final Code SacroiliacJoint = new Code("39723000", "SCT", null, "Sacroiliac joint");
-
     /**
      * The sacrum value.
      */
     public static final Code Sacrum = new Code("54735007", "SCT", null, "Sacrum");
-
     /**
      * The saphenofemoral junction value.
      */
     public static final Code SaphenofemoralJunction = new Code("128587003", "SCT", null, "Saphenofemoral junction");
-
     /**
      * The saphenous vein value.
      */
     public static final Code SaphenousVein = new Code("362072009", "SCT", null, "Saphenous vein");
-
     /**
      * The scalp value.
      */
     public static final Code Scalp = new Code("41695006", "SCT", null, "Scalp");
-
     /**
      * The scapula value.
      */
     public static final Code Scapula = new Code("79601000", "SCT", null, "Scapula");
-
     /**
      * The sclera value.
      */
     public static final Code Sclera = new Code("18619003", "SCT", null, "Sclera");
-
     /**
      * The scrotum value.
      */
     public static final Code Scrotum = new Code("20233005", "SCT", null, "Scrotum");
-
     /**
      * The sella turcica value.
      */
     public static final Code SellaTurcica = new Code("42575006", "SCT", null, "Sella turcica");
-
     /**
      * The seminal vesicle value.
      */
     public static final Code SeminalVesicle = new Code("64739004", "SCT", null, "Seminal vesicle");
-
     /**
      * The sesamoid bones foot value.
      */
     public static final Code SesamoidBonesFoot = new Code("58742003", "SCT", null, "Sesamoid bones of foot");
-
     /**
      * The shoulder value.
      */
     public static final Code Shoulder = new Code("16982005", "SCT", null, "Shoulder");
-
     /**
      * The sigmoid colon value.
      */
     public static final Code SigmoidColon = new Code("60184004", "SCT", null, "Sigmoid Colon");
-
     /**
      * The skull value.
      */
     public static final Code Skull = new Code("89546000", "SCT", null, "Skull");
-
     /**
      * The small intestine value.
      */
     public static final Code SmallIntestine = new Code("30315005", "SCT", null, "Small Intestine");
-
     /**
      * The spinal cord value.
      */
     public static final Code SpinalCord = new Code("2748008", "SCT", null, "Spinal Cord");
-
     /**
      * The spine value.
      */
     public static final Code Spine = new Code("421060004", "SCT", null, "Spine");
-
     /**
      * The spleen value.
      */
     public static final Code Spleen = new Code("78961009", "SCT", null, "Spleen");
-
     /**
      * The splenic artery value.
      */
     public static final Code SplenicArtery = new Code("22083002", "SCT", null, "Splenic artery");
-
     /**
      * The splenic vein value.
      */
     public static final Code SplenicVein = new Code("35819009", "SCT", null, "Splenic vein");
-
     /**
      * The sternoclavicular joint value.
      */
     public static final Code SternoclavicularJoint = new Code("7844006", "SCT", null, "Sternoclavicular joint");
-
     /**
      * The sternum value.
      */
     public static final Code Sternum = new Code("56873002", "SCT", null, "Sternum");
-
     /**
      * The stomach value.
      */
     public static final Code Stomach = new Code("69695003", "SCT", null, "Stomach");
-
     /**
      * The subclavian artery value.
      */
     public static final Code SubclavianArtery = new Code("36765005", "SCT", null, "Subclavian artery");
-
     /**
      * The subclavian vein value.
      */
     public static final Code SubclavianVein = new Code("9454009", "SCT", null, "Subclavian vein");
-
     /**
      * The subcostal value.
      */
     public static final Code Subcostal = new Code("19695001", "SCT", null, "Subcostal");
-
     /**
      * The submandibular gland value.
      */
     public static final Code SubmandibularGland = new Code("54019009", "SCT", null, "Submandibular gland");
-
     /**
      * The superficial femoral artery value.
      */
     public static final Code SuperficialFemoralArtery = new Code("181349008", "SCT", null,
             "Superficial femoral artery");
-
     /**
      * The superficial femoral vein value.
      */
     public static final Code SuperficialFemoralVein = new Code("397364003", "SCT", null, "Superficial femoral vein");
-
     /**
      * The superior left pulmonary vein value.
      */
     public static final Code SuperiorLeftPulmonaryVein = new Code("43863001", "SCT", null,
             "Superior left pulmonary vein");
-
     /**
      * The superior mesenteric artery value.
      */
     public static final Code SuperiorMesentericArtery = new Code("42258001", "SCT", null, "Superior mesenteric artery");
-
     /**
      * The superior right pulmonary vein value.
      */
     public static final Code SuperiorRightPulmonaryVein = new Code("8629005", "SCT", null,
             "Superior right pulmonary vein");
-
     /**
      * The superior thyroid artery value.
      */
     public static final Code SuperiorThyroidArtery = new Code("72021004", "SCT", null, "Superior thyroid artery");
-
     /**
      * The superior vena cava value.
      */
     public static final Code SuperiorVenaCava = new Code("48345005", "SCT", null, "Superior vena cava");
-
     /**
      * The supraclavicular region neck value.
      */
     public static final Code SupraclavicularRegionNeck = new Code("77621008", "SCT", null,
             "Supraclavicular region of neck");
-
     /**
      * The suprapubic region value.
      */
     public static final Code SuprapubicRegion = new Code("11708003", "SCT", null, "Suprapubic region");
-
     /**
      * The temporomandibular joint value.
      */
     public static final Code TemporomandibularJoint = new Code("53620006", "SCT", null, "Temporomandibular joint");
-
     /**
      * The testis value.
      */
     public static final Code Testis = new Code("40689003", "SCT", null, "Testis");
-
     /**
      * The thalamus value.
      */
     public static final Code Thalamus = new Code("42695009", "SCT", null, "Thalamus");
-
     /**
      * The thigh value.
      */
     public static final Code Thigh = new Code("68367000", "SCT", null, "Thigh");
-
     /**
      * The third ventricle value.
      */
     public static final Code ThirdVentricle = new Code("49841001", "SCT", null, "Third ventricle");
-
     /**
      * The thoracic aorta value.
      */
     public static final Code ThoracicAorta = new Code("113262008", "SCT", null, "Thoracic aorta");
-
     /**
      * The thoracic spine value.
      */
     public static final Code ThoracicSpine = new Code("122495006", "SCT", null, "Thoracic spine");
-
     /**
      * The thoraco lumbar spine value.
      */
     public static final Code ThoracoLumbarSpine = new Code("1217256009", "SCT", null, "Thoraco-lumbar spine");
-
     /**
      * The thorax value.
      */
     public static final Code Thorax = new Code("43799004", "SCT", null, "Thorax");
-
     /**
      * The thumb value.
      */
     public static final Code Thumb = new Code("76505004", "SCT", null, "Thumb");
-
     /**
      * The thymus value.
      */
     public static final Code Thymus = new Code("9875009", "SCT", null, "Thymus");
-
     /**
      * The thyroid value.
      */
     public static final Code Thyroid = new Code("69748006", "SCT", null, "Thyroid");
-
     /**
      * The tibia value.
      */
     public static final Code Tibia = new Code("12611008", "SCT", null, "Tibia");
-
     /**
      * The tibia fibula value.
      */
     public static final Code TibiaFibula = new Code("110536004", "SCT", null, "Tibia and fibula");
-
     /**
      * The toe value.
      */
     public static final Code Toe = new Code("29707007", "SCT", null, "Toe");
-
     /**
      * The tongue value.
      */
     public static final Code Tongue = new Code("21974007", "SCT", null, "Tongue");
-
     /**
      * The trachea value.
      */
     public static final Code Trachea = new Code("44567001", "SCT", null, "Trachea");
-
     /**
      * The trachea bronchus value.
      */
     public static final Code TracheaBronchus = new Code("110726009", "SCT", null, "Trachea and bronchus");
-
     /**
      * The transverse colon value.
      */
     public static final Code TransverseColon = new Code("485005", "SCT", null, "Transverse colon");
-
     /**
      * The ulna value.
      */
     public static final Code Ulna = new Code("23416004", "SCT", null, "Ulna");
-
     /**
      * The ulnar artery value.
      */
     public static final Code UlnarArtery = new Code("44984001", "SCT", null, "Ulnar artery");
-
     /**
      * The umbilical artery value.
      */
     public static final Code UmbilicalArtery = new Code("50536004", "SCT", null, "Umbilical artery");
-
     /**
      * The umbilical region value.
      */
     public static final Code UmbilicalRegion = new Code("90290004", "SCT", null, "Umbilical region");
-
     /**
      * The umbilical vein value.
      */
     public static final Code UmbilicalVein = new Code("284639000", "SCT", null, "Umbilical vein");
-
     /**
      * The upper arm value.
      */
     public static final Code UpperArm = new Code("40983000", "SCT", null, "Upper arm");
-
     /**
      * The upper limb value.
      */
     public static final Code UpperLimb = new Code("53120007", "SCT", null, "Upper limb");
-
     /**
      * The upper urinary tract value.
      */
     public static final Code UpperUrinaryTract = new Code("431491007", "SCT", null, "Upper urinary tract");
-
     /**
      * The ureter value.
      */
     public static final Code Ureter = new Code("87953007", "SCT", null, "Ureter");
-
     /**
      * The urethra value.
      */
     public static final Code Urethra = new Code("13648007", "SCT", null, "Urethra");
-
     /**
      * The uterus value.
      */
     public static final Code Uterus = new Code("35039007", "SCT", null, "Uterus");
-
     /**
      * The vagina value.
      */
     public static final Code Vagina = new Code("76784001", "SCT", null, "Vagina");
-
     /**
      * The vein value.
      */
     public static final Code Vein = new Code("29092000", "SCT", null, "Vein");
-
     /**
      * The vertebral artery value.
      */
     public static final Code VertebralArtery = new Code("85234005", "SCT", null, "Vertebral Artery");
-
     /**
      * The vulva value.
      */
     public static final Code Vulva = new Code("45292006", "SCT", null, "Vulva");
-
     /**
      * The wrist joint value.
      */
     public static final Code WristJoint = new Code("74670003", "SCT", null, "Wrist joint");
-
     /**
      * The zygoma value.
      */
     public static final Code Zygoma = new Code("13881006", "SCT", null, "Zygoma");
-
     /**
      * The body part examined value.
      */
     private static final Map<String, Code> BODY_PART_EXAMINED = new LinkedHashMap<>();
-
     /**
      * The DICOM code values for surface region entries currently present in this class.
      */
     private static final Set<String> SURFACE_REGION_CODES = Set.of("28726007", "18619003");
-
     /**
      * The DICOM code values for common region entries currently present in this class.
      */
@@ -2117,7 +1410,6 @@ public class AnatomicRegion {
             "13648007",
             "74670003",
             "13881006");
-
     /**
      * The DICOM code values for endoscopic region entries currently present in this class.
      */
@@ -2153,34 +1445,23 @@ public class AnatomicRegion {
             "110726009",
             "431491007",
             "87953007");
-
     /**
      * The VR.CS value pattern.
      */
     private static final String VR_CS_PATTERN = "[A-Z0-9 _]*";
-
     /**
      * The maximum context identifier length value.
      */
     private static final int MAX_IDENTIFIER_LENGTH = 16;
-
     /**
      * The standard category map value.
      */
     private static final Map<CategoryBuilder, List<Code>> STANDARD_CATEGORIES;
-
     /**
      * The extension category map value.
      */
     private static final AtomicReference<Map<CategoryBuilder, List<Code>>> EXTENSION_CATEGORIES = new AtomicReference<>(
             Map.of());
-
-    /**
-     * Constructs a new AnatomicRegion instance.
-     */
-    public AnatomicRegion() {
-        // No initialization required.
-    }
 
     static {
         BODY_PART_EXAMINED.put("ABDOMEN", Abdomen);
@@ -2498,6 +1779,13 @@ public class AnatomicRegion {
         BODY_PART_EXAMINED.put("ZYGOMA", Zygoma);
 
         STANDARD_CATEGORIES = createCategoryMap();
+    }
+
+    /**
+     * Constructs a new AnatomicRegion instance.
+     */
+    public AnatomicRegion() {
+        // No initialization required.
     }
 
     /**
@@ -2850,6 +2138,389 @@ public class AnatomicRegion {
     public static Code removeCode(String bodyPartExamined) {
         String normalized = normalizeBodyPartExamined(bodyPartExamined);
         return normalized == null ? null : BODY_PART_EXAMINED.remove(normalized);
+    }
+
+    /**
+     * Defines standard DICOM anatomic categories.
+     *
+     * @author Kimi Liu
+     */
+    public enum Category implements CategoryBuilder {
+
+        /**
+         * Surface anatomical structures.
+         */
+        SURFACE("1.2.840.10008.6.1.1268", "CID 4029", "Surface anatomical structures"),
+
+        /**
+         * All anatomical regions.
+         */
+        ALL_REGIONS("1.2.840.10008.6.1.2", "CID 4", "All anatomical regions"),
+
+        /**
+         * Commonly used anatomical regions.
+         */
+        COMMON("1.2.840.10008.6.1.308", "CID 4031", "Common anatomical regions"),
+
+        /**
+         * Endoscopic anatomical regions.
+         */
+        ENDOSCOPY("1.2.840.10008.6.1.311", "CID 4040", "Endoscopic anatomical regions");
+
+        /**
+         * The context UID lookup value.
+         */
+        private static final Map<String, Category> UID_LOOKUP = createUidLookup();
+
+        /**
+         * The context UID value.
+         */
+        private final String contextUID;
+
+        /**
+         * The context identifier value.
+         */
+        private final String identifier;
+
+        /**
+         * The title value.
+         */
+        private final String title;
+
+        /**
+         * Creates a standard DICOM anatomic category.
+         *
+         * @param contextUID the context UID.
+         * @param identifier the context identifier.
+         * @param title      the display title.
+         */
+        Category(String contextUID, String identifier, String title) {
+            this.contextUID = Objects.requireNonNull(contextUID, "contextUID must not be null");
+            this.identifier = Objects.requireNonNull(identifier, "identifier must not be null");
+            this.title = Objects.requireNonNull(title, "title must not be null");
+            validateIdentifier(identifier);
+        }
+
+        /**
+         * Creates the context UID lookup.
+         *
+         * @return the context UID lookup.
+         */
+        private static Map<String, Category> createUidLookup() {
+            Map<String, Category> map = new LinkedHashMap<>();
+            for (Category category : values()) {
+                map.put(category.getContextUID(), category);
+            }
+            return Collections.unmodifiableMap(map);
+        }
+
+        /**
+         * Finds a standard category by context UID.
+         *
+         * @param uid the context UID.
+         * @return the matching category.
+         */
+        public static Optional<Category> fromContextUID(String uid) {
+            return Optional.ofNullable(UID_LOOKUP.get(uid));
+        }
+
+        /**
+         * Returns the DICOM context UID for the category.
+         *
+         * @return the DICOM context UID.
+         */
+        @Override
+        public String getContextUID() {
+            return contextUID;
+        }
+
+        /**
+         * Returns the DICOM context identifier for the category.
+         *
+         * @return the DICOM context identifier.
+         */
+        @Override
+        public String getIdentifier() {
+            return identifier;
+        }
+
+        /**
+         * Returns the display title for the category.
+         *
+         * @return the display title.
+         */
+        @Override
+        public String getTitle() {
+            return title;
+        }
+
+        /**
+         * Returns the display title for the requested locale.
+         *
+         * @param locale the requested locale.
+         * @return the display title.
+         */
+        public String getTitle(Locale locale) {
+            return title;
+        }
+
+        /**
+         * Returns the string representation.
+         *
+         * @return the string representation.
+         */
+        @Override
+        public String toString() {
+            return getTitle();
+        }
+
+    }
+
+    /**
+     * Provides metadata for an anatomic category.
+     *
+     * @author Kimi Liu
+     */
+    public interface CategoryBuilder {
+
+        /**
+         * Returns the DICOM context UID for the category.
+         *
+         * @return the DICOM context UID.
+         */
+        String getContextUID();
+
+        /**
+         * Returns the DICOM context identifier for the category.
+         *
+         * @return the DICOM context identifier.
+         */
+        String getIdentifier();
+
+        /**
+         * Returns the display title for the category.
+         *
+         * @return the display title.
+         */
+        String getTitle();
+
+    }
+
+    /**
+     * Represents a custom anatomic category.
+     *
+     * @author Kimi Liu
+     */
+    public static class OtherCategory implements CategoryBuilder {
+
+        /**
+         * The context UID value.
+         */
+        private final String contextUID;
+
+        /**
+         * The context identifier value.
+         */
+        private final String identifier;
+
+        /**
+         * The title value.
+         */
+        private final String title;
+
+        /**
+         * Creates a new custom anatomic category.
+         *
+         * @param contextUID the context UID.
+         * @param identifier the context identifier.
+         * @param title      the display title.
+         */
+        public OtherCategory(String contextUID, String identifier, String title) {
+            this.contextUID = Objects.requireNonNull(contextUID, "contextUID must not be null");
+            this.identifier = Objects.requireNonNull(identifier, "identifier must not be null");
+            this.title = Objects.requireNonNull(title, "title must not be null");
+            validateIdentifier(identifier);
+        }
+
+        /**
+         * Returns the DICOM context UID for the category.
+         *
+         * @return the DICOM context UID.
+         */
+        @Override
+        public String getContextUID() {
+            return contextUID;
+        }
+
+        /**
+         * Returns the DICOM context identifier for the category.
+         *
+         * @return the DICOM context identifier.
+         */
+        @Override
+        public String getIdentifier() {
+            return identifier;
+        }
+
+        /**
+         * Returns the display title for the category.
+         *
+         * @return the display title.
+         */
+        @Override
+        public String getTitle() {
+            return title;
+        }
+
+        /**
+         * Returns the string representation.
+         *
+         * @return the string representation.
+         */
+        @Override
+        public String toString() {
+            return getTitle();
+        }
+
+        /**
+         * Compares this category with another object for equality.
+         *
+         * @param object the object.
+         * @return true if the categories have the same context UID.
+         */
+        @Override
+        public boolean equals(Object object) {
+            return object instanceof OtherCategory other && Objects.equals(contextUID, other.contextUID);
+        }
+
+        /**
+         * Returns the hash code.
+         *
+         * @return the hash code.
+         */
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(contextUID);
+        }
+
+    }
+
+    /**
+     * Represents a private extension of a standard anatomic category.
+     *
+     * @author Kimi Liu
+     */
+    public static final class ExtendedCategory implements CategoryBuilder {
+
+        /**
+         * The base category value.
+         */
+        private final Category baseCategory;
+
+        /**
+         * The extension creator UID value.
+         */
+        private final String extensionCreatorUID;
+
+        /**
+         * The title value.
+         */
+        private final String title;
+
+        /**
+         * Creates a new extended anatomic category.
+         *
+         * @param baseCategory        the base category.
+         * @param extensionCreatorUID the extension creator UID.
+         * @param title               the display title.
+         */
+        public ExtendedCategory(Category baseCategory, String extensionCreatorUID, String title) {
+            this.baseCategory = Objects.requireNonNull(baseCategory, "baseCategory must not be null");
+            this.extensionCreatorUID = Objects
+                    .requireNonNull(extensionCreatorUID, "extensionCreatorUID must not be null");
+            this.title = Objects.requireNonNull(title, "title must not be null");
+        }
+
+        /**
+         * Returns the DICOM context UID for the category.
+         *
+         * @return the DICOM context UID.
+         */
+        @Override
+        public String getContextUID() {
+            return baseCategory.getContextUID();
+        }
+
+        /**
+         * Returns the DICOM context identifier for the category.
+         *
+         * @return the DICOM context identifier.
+         */
+        @Override
+        public String getIdentifier() {
+            return baseCategory.getIdentifier();
+        }
+
+        /**
+         * Returns the display title for the category.
+         *
+         * @return the display title.
+         */
+        @Override
+        public String getTitle() {
+            return title;
+        }
+
+        /**
+         * Returns the standard category extended by this category.
+         *
+         * @return the standard category.
+         */
+        public Category getBaseCategory() {
+            return baseCategory;
+        }
+
+        /**
+         * Returns the extension creator UID.
+         *
+         * @return the extension creator UID.
+         */
+        public String getExtensionCreatorUID() {
+            return extensionCreatorUID;
+        }
+
+        /**
+         * Returns the string representation.
+         *
+         * @return the string representation.
+         */
+        @Override
+        public String toString() {
+            return getTitle();
+        }
+
+        /**
+         * Compares this category with another object for equality.
+         *
+         * @param object the object.
+         * @return true if the base category and extension creator UID are equal.
+         */
+        @Override
+        public boolean equals(Object object) {
+            return object instanceof ExtendedCategory other && baseCategory == other.baseCategory
+                    && Objects.equals(extensionCreatorUID, other.extensionCreatorUID);
+        }
+
+        /**
+         * Returns the hash code.
+         *
+         * @return the hash code.
+         */
+        @Override
+        public int hashCode() {
+            return Objects.hash(baseCategory, extensionCreatorUID);
+        }
+
     }
 
 }

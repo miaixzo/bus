@@ -214,6 +214,22 @@ public class JPEGParser implements XPEGParser {
     }
 
     /**
+     * Reads data into the parser buffer.
+     *
+     * @param channel the channel.
+     * @param length  the length.
+     * @throws IOException if the operation cannot be completed.
+     */
+    private void readFully(SeekableByteChannel channel, int length) throws IOException {
+        SafeBuffer.clear(buf).limit(length);
+        while (buf.hasRemaining()) {
+            if (channel.read(buf) == -1)
+                throw new IOException("JPEG stream truncated");
+        }
+        SafeBuffer.rewind(buf);
+    }
+
+    /**
      * Reads the u short.
      *
      * @param channel the channel.
@@ -221,9 +237,7 @@ public class JPEGParser implements XPEGParser {
      * @throws IOException if the operation cannot be completed.
      */
     private int readUShort(SeekableByteChannel channel) throws IOException {
-        SafeBuffer.clear(buf).limit(2);
-        channel.read(buf);
-        SafeBuffer.rewind(buf);
+        readFully(channel, 2);
         return buf.getShort() & 0xffff;
     }
 
@@ -235,9 +249,7 @@ public class JPEGParser implements XPEGParser {
      * @throws IOException if the operation cannot be completed.
      */
     private int readInt(SeekableByteChannel channel) throws IOException {
-        SafeBuffer.clear(buf).limit(4);
-        channel.read(buf);
-        SafeBuffer.rewind(buf);
+        readFully(channel, 4);
         return buf.getInt();
     }
 
@@ -249,9 +261,7 @@ public class JPEGParser implements XPEGParser {
      * @throws IOException if the operation cannot be completed.
      */
     private long readLong(SeekableByteChannel channel) throws IOException {
-        SafeBuffer.clear(buf);
-        channel.read(buf);
-        SafeBuffer.rewind(buf);
+        readFully(channel, 8);
         return buf.getLong();
     }
 

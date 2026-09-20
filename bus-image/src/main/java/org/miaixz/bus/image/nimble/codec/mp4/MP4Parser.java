@@ -352,7 +352,13 @@ public class MP4Parser implements XPEGParser {
         long pos = channel.position();
         long type = readLong(channel);
         long size = type >>> 32;
-        return new Box((int) type, pos + (size == 0 ? remaining : size == 1 ? readLong(channel) : size));
+        if (size == 1)
+            size = readLong(channel);
+        if (size < 0 || size > remaining)
+            throw new IOException(String.format("Invalid MP4 box size at position %d", pos));
+        if (size == 0)
+            size = remaining;
+        return new Box((int) type, pos + size);
     }
 
     /**
@@ -392,6 +398,22 @@ public class MP4Parser implements XPEGParser {
     }
 
     /**
+     * Reads data into the parser buffer.
+     *
+     * @param channel the channel.
+     * @param length  the length.
+     * @throws IOException if the operation cannot be completed.
+     */
+    private void readFully(SeekableByteChannel channel, int length) throws IOException {
+        SafeBuffer.clear(buf).limit(length);
+        while (buf.hasRemaining()) {
+            if (channel.read(buf) < 1)
+                throw new IOException("MPEG-4 stream truncated");
+        }
+        SafeBuffer.rewind(buf);
+    }
+
+    /**
      * Reads the byte.
      *
      * @param channel the channel.
@@ -399,9 +421,7 @@ public class MP4Parser implements XPEGParser {
      * @throws IOException if the operation cannot be completed.
      */
     private byte readByte(SeekableByteChannel channel) throws IOException {
-        SafeBuffer.clear(buf).limit(1);
-        channel.read(buf);
-        SafeBuffer.rewind(buf);
+        readFully(channel, 1);
         return buf.get();
     }
 
@@ -413,9 +433,7 @@ public class MP4Parser implements XPEGParser {
      * @throws IOException if the operation cannot be completed.
      */
     private short readShort(SeekableByteChannel channel) throws IOException {
-        SafeBuffer.clear(buf).limit(2);
-        channel.read(buf);
-        SafeBuffer.rewind(buf);
+        readFully(channel, 2);
         return buf.getShort();
     }
 
@@ -427,9 +445,7 @@ public class MP4Parser implements XPEGParser {
      * @throws IOException if the operation cannot be completed.
      */
     private int readInt(SeekableByteChannel channel) throws IOException {
-        SafeBuffer.clear(buf).limit(4);
-        channel.read(buf);
-        SafeBuffer.rewind(buf);
+        readFully(channel, 4);
         return buf.getInt();
     }
 
@@ -441,9 +457,7 @@ public class MP4Parser implements XPEGParser {
      * @throws IOException if the operation cannot be completed.
      */
     private long readLong(SeekableByteChannel channel) throws IOException {
-        SafeBuffer.clear(buf);
-        channel.read(buf);
-        SafeBuffer.rewind(buf);
+        readFully(channel, 8);
         return buf.getLong();
     }
 

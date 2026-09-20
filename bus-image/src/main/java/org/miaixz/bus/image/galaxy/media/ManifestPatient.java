@@ -21,15 +21,8 @@ package org.miaixz.bus.image.galaxy.media;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -87,6 +80,26 @@ public class ManifestPatient implements ManifestXml, Comparable<ManifestPatient>
         this.patientID = Objects.requireNonNull(patientID, "Patient ID cannot be null");
         this.issuerOfPatientID = issuerOfPatientID;
         this.studies = new HashMap<>();
+    }
+
+    /**
+     * Executes the normalize patient sex operation.
+     *
+     * @param sex the sex.
+     * @return the operation result.
+     */
+    private static String normalizePatientSex(String sex) {
+        if (sex == null) {
+            return null;
+        }
+        String upperSex = sex.toUpperCase(Locale.ROOT);
+        if (upperSex.startsWith("M")) {
+            return "M";
+        }
+        if (upperSex.startsWith("F")) {
+            return "F";
+        }
+        return "O";
     }
 
     /**
@@ -307,26 +320,6 @@ public class ManifestPatient implements ManifestXml, Comparable<ManifestPatient>
     @Override
     public int hashCode() {
         return Objects.hash(patientID, issuerOfPatientID);
-    }
-
-    /**
-     * Executes the normalize patient sex operation.
-     *
-     * @param sex the sex.
-     * @return the operation result.
-     */
-    private static String normalizePatientSex(String sex) {
-        if (sex == null) {
-            return null;
-        }
-        String upperSex = sex.toUpperCase(Locale.ROOT);
-        if (upperSex.startsWith("M")) {
-            return "M";
-        }
-        if (upperSex.startsWith("F")) {
-            return "F";
-        }
-        return "O";
     }
 
 }

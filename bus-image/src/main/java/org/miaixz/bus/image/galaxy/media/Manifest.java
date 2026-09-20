@@ -22,12 +22,7 @@ package org.miaixz.bus.image.galaxy.media;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -81,6 +76,16 @@ public class Manifest implements ManifestXml {
         if (patients != null) {
             patients.forEach(this::addPatient);
         }
+    }
+
+    /**
+     * Executes the query result operation.
+     *
+     * @param wadoParameters the wado parameters.
+     * @return the operation result.
+     */
+    public static ManifestQueryResult queryResult(WadoParameters wadoParameters) {
+        return new ManifestQueryResult(wadoParameters);
     }
 
     /**
@@ -161,16 +166,6 @@ public class Manifest implements ManifestXml {
      */
     public boolean hasPatients() {
         return !patients.isEmpty();
-    }
-
-    /**
-     * Executes the query result operation.
-     *
-     * @param wadoParameters the wado parameters.
-     * @return the operation result.
-     */
-    public static ManifestQueryResult queryResult(WadoParameters wadoParameters) {
-        return new ManifestQueryResult(wadoParameters);
     }
 
     /**

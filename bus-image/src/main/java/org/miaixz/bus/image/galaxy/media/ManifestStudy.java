@@ -22,15 +22,8 @@ package org.miaixz.bus.image.galaxy.media;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -91,6 +84,72 @@ public class ManifestStudy implements ManifestXml, Comparable<ManifestStudy> {
     public ManifestStudy(String studyInstanceUID) {
         this.studyInstanceUID = Objects.requireNonNull(studyInstanceUID, "Study Instance UID cannot be null");
         this.seriesMap = new HashMap<>();
+    }
+
+    /**
+     * Executes the compare study date times operation.
+     *
+     * @param first  the first.
+     * @param second the second.
+     * @return the operation result.
+     */
+    private static int compareStudyDateTimes(ManifestStudy first, ManifestStudy second) {
+        String firstDateTime = normalizeDateTime(first.studyDate, first.studyTime);
+        String secondDateTime = normalizeDateTime(second.studyDate, second.studyTime);
+        if (firstDateTime != null && secondDateTime != null) {
+            return secondDateTime.compareTo(firstDateTime);
+        }
+        if (firstDateTime == null && secondDateTime != null) {
+            return 1;
+        }
+        return firstDateTime != null ? -1 : 0;
+    }
+
+    /**
+     * Executes the compare study descriptions operation.
+     *
+     * @param first  the first.
+     * @param second the second.
+     * @return the operation result.
+     */
+    private static int compareStudyDescriptions(String first, String second) {
+        if (first != null && second != null) {
+            return Collator.getInstance(Locale.ROOT).compare(first, second);
+        }
+        if (first == null && second != null) {
+            return 1;
+        }
+        return first != null ? -1 : 0;
+    }
+
+    /**
+     * Executes the normalize date time operation.
+     *
+     * @param date the date.
+     * @param time the time.
+     * @return the operation result.
+     */
+    private static String normalizeDateTime(String date, String time) {
+        String normalizedDate = digitsOnly(date);
+        if (normalizedDate == null) {
+            return null;
+        }
+        String normalizedTime = digitsOnly(time);
+        return normalizedDate + (normalizedTime == null ? Normal.EMPTY : normalizedTime);
+    }
+
+    /**
+     * Executes the digits only operation.
+     *
+     * @param value the value.
+     * @return the operation result.
+     */
+    private static String digitsOnly(String value) {
+        if (value == null) {
+            return null;
+        }
+        String digits = value.replaceAll("\\D", Normal.EMPTY);
+        return digits.isEmpty() ? null : digits;
     }
 
     /**
@@ -332,72 +391,6 @@ public class ManifestStudy implements ManifestXml, Comparable<ManifestStudy> {
     @Override
     public int hashCode() {
         return Objects.hash(studyInstanceUID);
-    }
-
-    /**
-     * Executes the compare study date times operation.
-     *
-     * @param first  the first.
-     * @param second the second.
-     * @return the operation result.
-     */
-    private static int compareStudyDateTimes(ManifestStudy first, ManifestStudy second) {
-        String firstDateTime = normalizeDateTime(first.studyDate, first.studyTime);
-        String secondDateTime = normalizeDateTime(second.studyDate, second.studyTime);
-        if (firstDateTime != null && secondDateTime != null) {
-            return secondDateTime.compareTo(firstDateTime);
-        }
-        if (firstDateTime == null && secondDateTime != null) {
-            return 1;
-        }
-        return firstDateTime != null ? -1 : 0;
-    }
-
-    /**
-     * Executes the compare study descriptions operation.
-     *
-     * @param first  the first.
-     * @param second the second.
-     * @return the operation result.
-     */
-    private static int compareStudyDescriptions(String first, String second) {
-        if (first != null && second != null) {
-            return Collator.getInstance(Locale.ROOT).compare(first, second);
-        }
-        if (first == null && second != null) {
-            return 1;
-        }
-        return first != null ? -1 : 0;
-    }
-
-    /**
-     * Executes the normalize date time operation.
-     *
-     * @param date the date.
-     * @param time the time.
-     * @return the operation result.
-     */
-    private static String normalizeDateTime(String date, String time) {
-        String normalizedDate = digitsOnly(date);
-        if (normalizedDate == null) {
-            return null;
-        }
-        String normalizedTime = digitsOnly(time);
-        return normalizedDate + (normalizedTime == null ? Normal.EMPTY : normalizedTime);
-    }
-
-    /**
-     * Executes the digits only operation.
-     *
-     * @param value the value.
-     * @return the operation result.
-     */
-    private static String digitsOnly(String value) {
-        if (value == null) {
-            return null;
-        }
-        String digits = value.replaceAll("\\D", Normal.EMPTY);
-        return digits.isEmpty() ? null : digits;
     }
 
 }

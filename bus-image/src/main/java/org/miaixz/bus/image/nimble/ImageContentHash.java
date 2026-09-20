@@ -22,20 +22,14 @@ package org.miaixz.bus.image.nimble;
 import java.util.Objects;
 
 import org.opencv.core.Mat;
-import org.opencv.img_hash.AverageHash;
-import org.opencv.img_hash.BlockMeanHash;
-import org.opencv.img_hash.ColorMomentHash;
-import org.opencv.img_hash.ImgHashBase;
-import org.opencv.img_hash.MarrHildrethHash;
-import org.opencv.img_hash.PHash;
-import org.opencv.img_hash.RadialVarianceHash;
+import org.opencv.img_hash.*;
 
 /**
  * Algorithms to compare image content of two images.
  *
+ * @author Kimi Liu
  * @see <a href="http://qtandopencv.blogspot.com/2016/06/introduction-to-image-hash-module-of.html">Hash for pixel
  *      data</a>
- * @author Kimi Liu
  */
 public enum ImageContentHash {
 

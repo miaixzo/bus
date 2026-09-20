@@ -19,10 +19,11 @@
 */
 package org.miaixz.bus.image.nimble.opencv.seg;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.*;
+import java.util.List;
 
 /**
  * Represents a geometric segment containing a series of 2D points. Extends ArrayList to provide direct point
@@ -36,6 +37,11 @@ public class Segment extends ArrayList<Point2D> {
      * The children value.
      */
     protected final List<Segment> children = new ArrayList<>();
+
+    /**
+     * The immutable children view.
+     */
+    private final List<Segment> childrenView = Collections.unmodifiableList(children);
 
     /**
      * Creates a new instance.
@@ -107,17 +113,36 @@ public class Segment extends ArrayList<Point2D> {
     }
 
     /**
+     * Converts the float to double.
+     *
+     * @param floatArray the float array.
+     * @return the operation result.
+     */
+    public static double[] convertFloatToDouble(float[] floatArray) {
+        if (floatArray == null) {
+            return null;
+        }
+        var doubleArray = new double[floatArray.length];
+        for (int i = 0; i < floatArray.length; i++) {
+            doubleArray[i] = floatArray[i];
+        }
+        return doubleArray;
+    }
+
+    /**
      * Sets the points.
      *
      * @param point2DList the point 2 d list.
      * @param forceClose  the force close.
      */
     public void setPoints(Collection<? extends Point2D> point2DList, boolean forceClose) {
-        clear();
         if (point2DList == null || point2DList.isEmpty()) {
+            clear();
             return;
         }
-        addAll(point2DList);
+        var points = new ArrayList<Point2D>(point2DList);
+        clear();
+        addAll(points);
         if (forceClose && isOpenSegment()) {
             Point2D firstPoint = get(0);
             add(new Point2D.Double(firstPoint.getX(), firstPoint.getY()));
@@ -207,10 +232,12 @@ public class Segment extends ArrayList<Point2D> {
         ensureCapacity(pointCount + (forceClose ? 1 : 0));
 
         boolean shouldScale = isValidDimension(dim);
+        double scaleX = shouldScale ? dim.width : 1.0;
+        double scaleY = shouldScale ? dim.height : 1.0;
 
         for (int i = 0; i < pointCount; i++) {
-            double x = shouldScale ? pts[i * 2] * dim.width : pts[i * 2];
-            double y = shouldScale ? pts[i * 2 + 1] * dim.height : pts[i * 2 + 1];
+            double x = pts[i * 2] * scaleX;
+            double y = pts[i * 2 + 1] * scaleY;
             add(new Point2D.Double(x, y));
         }
 
@@ -245,7 +272,7 @@ public class Segment extends ArrayList<Point2D> {
      * @return the children.
      */
     public List<Segment> getChildren() {
-        return List.copyOf(children);
+        return childrenView;
     }
 
     /**
@@ -284,23 +311,6 @@ public class Segment extends ArrayList<Point2D> {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), children);
-    }
-
-    /**
-     * Converts the float to double.
-     *
-     * @param floatArray the float array.
-     * @return the operation result.
-     */
-    public static double[] convertFloatToDouble(float[] floatArray) {
-        if (floatArray == null) {
-            return null;
-        }
-        var doubleArray = new double[floatArray.length];
-        for (int i = 0; i < floatArray.length; i++) {
-            doubleArray[i] = floatArray[i];
-        }
-        return doubleArray;
     }
 
 }

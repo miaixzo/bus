@@ -23,11 +23,7 @@ import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.nio.ByteOrder;
 
-import javax.imageio.IIOException;
-import javax.imageio.IIOImage;
-import javax.imageio.ImageTypeSpecifier;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
+import javax.imageio.*;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageOutputStream;
@@ -59,6 +55,43 @@ abstract class AbstractNativeImageWriter extends ImageWriter {
      */
     AbstractNativeImageWriter(ImageWriterSpi originatingProvider) {
         super(originatingProvider);
+    }
+
+    /**
+     * Requires an image descriptor from the stream.
+     *
+     * @param stream the image output stream
+     * @return the image descriptor
+     */
+    private static ImageDescriptor requireImageDescriptor(ImageOutputStream stream) {
+        if (!(stream instanceof BytesWithImageImageDescriptor)) {
+            throw new IllegalArgumentException("stream does not implement BytesWithImageImageDescriptor!");
+        }
+        return ((BytesWithImageImageDescriptor) stream).getImageDescriptor();
+    }
+
+    /**
+     * Gets the native color model for one or multiple channels.
+     *
+     * @param channels the channel count
+     * @return the native color model
+     */
+    static int monochromeOrRgb(int channels) {
+        return channels == 1 ? Imgcodecs.EPI_Monochrome2 : Imgcodecs.EPI_RGB;
+    }
+
+    /**
+     * Rejects chroma-subsampled photometric interpretations for true-lossless encoding.
+     *
+     * @param lossless whether compression is lossless
+     * @param pi       the photometric interpretation
+     */
+    static void rejectChromaSubsampledLossless(boolean lossless, Photometric pi) {
+        if (lossless && (Photometric.YBR_FULL_422 == pi || Photometric.YBR_PARTIAL_422 == pi
+                || Photometric.YBR_PARTIAL_420 == pi || Photometric.YBR_ICT == pi || Photometric.YBR_RCT == pi)) {
+            throw new IllegalArgumentException(
+                    "True lossless encoder: Photometric interpretation is not supported: " + pi);
+        }
     }
 
     /**
@@ -155,43 +188,6 @@ abstract class AbstractNativeImageWriter extends ImageWriter {
             throw new IllegalArgumentException("output is not an ImageOutputStream!");
         }
         return (ImageOutputStream) output;
-    }
-
-    /**
-     * Requires an image descriptor from the stream.
-     *
-     * @param stream the image output stream
-     * @return the image descriptor
-     */
-    private static ImageDescriptor requireImageDescriptor(ImageOutputStream stream) {
-        if (!(stream instanceof BytesWithImageImageDescriptor)) {
-            throw new IllegalArgumentException("stream does not implement BytesWithImageImageDescriptor!");
-        }
-        return ((BytesWithImageImageDescriptor) stream).getImageDescriptor();
-    }
-
-    /**
-     * Gets the native color model for one or multiple channels.
-     *
-     * @param channels the channel count
-     * @return the native color model
-     */
-    static int monochromeOrRgb(int channels) {
-        return channels == 1 ? Imgcodecs.EPI_Monochrome2 : Imgcodecs.EPI_RGB;
-    }
-
-    /**
-     * Rejects chroma-subsampled photometric interpretations for true-lossless encoding.
-     *
-     * @param lossless whether compression is lossless
-     * @param pi       the photometric interpretation
-     */
-    static void rejectChromaSubsampledLossless(boolean lossless, Photometric pi) {
-        if (lossless && (Photometric.YBR_FULL_422 == pi || Photometric.YBR_PARTIAL_422 == pi
-                || Photometric.YBR_PARTIAL_420 == pi || Photometric.YBR_ICT == pi || Photometric.YBR_RCT == pi)) {
-            throw new IllegalArgumentException(
-                    "True lossless encoder: Photometric interpretation is not supported: " + pi);
-        }
     }
 
     /**

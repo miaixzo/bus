@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.image.nimble.geometry;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -55,6 +55,136 @@ public class PatientOrientation {
      */
     public PatientOrientation() {
         // No initialization required.
+    }
+
+    /**
+     * Returns the biped x orientation.
+     *
+     * @param vector the vector.
+     * @return the biped x orientation.
+     */
+    public static Biped getBipedXOrientation(Vector3 vector) {
+        Objects.requireNonNull(vector, VECTOR_CANNOT_BE_NULL);
+        return vector.x() < 0 ? Biped.R : Biped.L;
+    }
+
+    /**
+     * Returns the biped y orientation.
+     *
+     * @param vector the vector.
+     * @return the biped y orientation.
+     */
+    public static Biped getBipedYOrientation(Vector3 vector) {
+        Objects.requireNonNull(vector, VECTOR_CANNOT_BE_NULL);
+        return vector.y() < 0 ? Biped.A : Biped.P;
+    }
+
+    /**
+     * Returns the biped z orientation.
+     *
+     * @param vector the vector.
+     * @return the biped z orientation.
+     */
+    public static Biped getBipedZOrientation(Vector3 vector) {
+        Objects.requireNonNull(vector, VECTOR_CANNOT_BE_NULL);
+        return vector.z() < 0 ? Biped.F : Biped.H;
+    }
+
+    /**
+     * Returns the quadruped x orientation.
+     *
+     * @param vector the vector.
+     * @return the quadruped x orientation.
+     */
+    public static Quadruped getQuadrupedXOrientation(Vector3 vector) {
+        Objects.requireNonNull(vector, VECTOR_CANNOT_BE_NULL);
+        return vector.x() < 0 ? Quadruped.RT : Quadruped.LE;
+    }
+
+    /**
+     * Returns the quadruped y orientation.
+     *
+     * @param vector the vector.
+     * @return the quadruped y orientation.
+     */
+    public static Quadruped getQuadrupedYOrientation(Vector3 vector) {
+        Objects.requireNonNull(vector, VECTOR_CANNOT_BE_NULL);
+        return vector.y() < 0 ? Quadruped.V : Quadruped.D;
+    }
+
+    /**
+     * Returns the quadruped z orientation.
+     *
+     * @param vector the vector.
+     * @return the quadruped z orientation.
+     */
+    public static Quadruped getQuadrupedZOrientation(Vector3 vector) {
+        Objects.requireNonNull(vector, VECTOR_CANNOT_BE_NULL);
+        return vector.z() < 0 ? Quadruped.CD : Quadruped.CR;
+    }
+
+    /**
+     * Returns the axis orientation.
+     *
+     * @param vector    the vector.
+     * @param axis      the axis.
+     * @param quadruped the quadruped.
+     * @return the axis orientation.
+     */
+    public static Orientation getAxisOrientation(Vector3 vector, Axis axis, boolean quadruped) {
+        Objects.requireNonNull(vector, VECTOR_CANNOT_BE_NULL);
+        Objects.requireNonNull(axis, "Axis cannot be null");
+        return switch (axis) {
+            case X -> quadruped ? getQuadrupedXOrientation(vector) : getBipedXOrientation(vector);
+            case Y -> quadruped ? getQuadrupedYOrientation(vector) : getBipedYOrientation(vector);
+            case Z -> quadruped ? getQuadrupedZOrientation(vector) : getBipedZOrientation(vector);
+        };
+    }
+
+    /**
+     * Returns the opposite orientation.
+     *
+     * @param orientation the orientation.
+     * @return the opposite orientation.
+     */
+    public static Biped getOppositeOrientation(Biped orientation) {
+        Objects.requireNonNull(orientation, "Orientation cannot be null");
+        return switch (orientation) {
+            case R -> Biped.L;
+            case L -> Biped.R;
+            case A -> Biped.P;
+            case P -> Biped.A;
+            case F -> Biped.H;
+            case H -> Biped.F;
+        };
+    }
+
+    /**
+     * Returns the opposite orientation.
+     *
+     * @param orientation the orientation.
+     * @return the opposite orientation.
+     */
+    public static Quadruped getOppositeOrientation(Quadruped orientation) {
+        Objects.requireNonNull(orientation, "Orientation cannot be null");
+        return switch (orientation) {
+            case RT -> Quadruped.LE;
+            case LE -> Quadruped.RT;
+            case V -> Quadruped.D;
+            case D -> Quadruped.V;
+            case CD -> Quadruped.CR;
+            case CR -> Quadruped.CD;
+        };
+    }
+
+    /**
+     * Checks whether the text condition is true.
+     *
+     * @param value the value.
+     * @return true if the text condition is true; otherwise false.
+     */
+    private static boolean hasText(String value) {
+        return value != null && !value.trim().isEmpty();
     }
 
     /**
@@ -280,136 +410,6 @@ public class PatientOrientation {
          */
         Z
 
-    }
-
-    /**
-     * Returns the biped x orientation.
-     *
-     * @param vector the vector.
-     * @return the biped x orientation.
-     */
-    public static Biped getBipedXOrientation(Vector3 vector) {
-        Objects.requireNonNull(vector, VECTOR_CANNOT_BE_NULL);
-        return vector.x() < 0 ? Biped.R : Biped.L;
-    }
-
-    /**
-     * Returns the biped y orientation.
-     *
-     * @param vector the vector.
-     * @return the biped y orientation.
-     */
-    public static Biped getBipedYOrientation(Vector3 vector) {
-        Objects.requireNonNull(vector, VECTOR_CANNOT_BE_NULL);
-        return vector.y() < 0 ? Biped.A : Biped.P;
-    }
-
-    /**
-     * Returns the biped z orientation.
-     *
-     * @param vector the vector.
-     * @return the biped z orientation.
-     */
-    public static Biped getBipedZOrientation(Vector3 vector) {
-        Objects.requireNonNull(vector, VECTOR_CANNOT_BE_NULL);
-        return vector.z() < 0 ? Biped.F : Biped.H;
-    }
-
-    /**
-     * Returns the quadruped x orientation.
-     *
-     * @param vector the vector.
-     * @return the quadruped x orientation.
-     */
-    public static Quadruped getQuadrupedXOrientation(Vector3 vector) {
-        Objects.requireNonNull(vector, VECTOR_CANNOT_BE_NULL);
-        return vector.x() < 0 ? Quadruped.RT : Quadruped.LE;
-    }
-
-    /**
-     * Returns the quadruped y orientation.
-     *
-     * @param vector the vector.
-     * @return the quadruped y orientation.
-     */
-    public static Quadruped getQuadrupedYOrientation(Vector3 vector) {
-        Objects.requireNonNull(vector, VECTOR_CANNOT_BE_NULL);
-        return vector.y() < 0 ? Quadruped.V : Quadruped.D;
-    }
-
-    /**
-     * Returns the quadruped z orientation.
-     *
-     * @param vector the vector.
-     * @return the quadruped z orientation.
-     */
-    public static Quadruped getQuadrupedZOrientation(Vector3 vector) {
-        Objects.requireNonNull(vector, VECTOR_CANNOT_BE_NULL);
-        return vector.z() < 0 ? Quadruped.CD : Quadruped.CR;
-    }
-
-    /**
-     * Returns the axis orientation.
-     *
-     * @param vector    the vector.
-     * @param axis      the axis.
-     * @param quadruped the quadruped.
-     * @return the axis orientation.
-     */
-    public static Orientation getAxisOrientation(Vector3 vector, Axis axis, boolean quadruped) {
-        Objects.requireNonNull(vector, VECTOR_CANNOT_BE_NULL);
-        Objects.requireNonNull(axis, "Axis cannot be null");
-        return switch (axis) {
-            case X -> quadruped ? getQuadrupedXOrientation(vector) : getBipedXOrientation(vector);
-            case Y -> quadruped ? getQuadrupedYOrientation(vector) : getBipedYOrientation(vector);
-            case Z -> quadruped ? getQuadrupedZOrientation(vector) : getBipedZOrientation(vector);
-        };
-    }
-
-    /**
-     * Returns the opposite orientation.
-     *
-     * @param orientation the orientation.
-     * @return the opposite orientation.
-     */
-    public static Biped getOppositeOrientation(Biped orientation) {
-        Objects.requireNonNull(orientation, "Orientation cannot be null");
-        return switch (orientation) {
-            case R -> Biped.L;
-            case L -> Biped.R;
-            case A -> Biped.P;
-            case P -> Biped.A;
-            case F -> Biped.H;
-            case H -> Biped.F;
-        };
-    }
-
-    /**
-     * Returns the opposite orientation.
-     *
-     * @param orientation the orientation.
-     * @return the opposite orientation.
-     */
-    public static Quadruped getOppositeOrientation(Quadruped orientation) {
-        Objects.requireNonNull(orientation, "Orientation cannot be null");
-        return switch (orientation) {
-            case RT -> Quadruped.LE;
-            case LE -> Quadruped.RT;
-            case V -> Quadruped.D;
-            case D -> Quadruped.V;
-            case CD -> Quadruped.CR;
-            case CR -> Quadruped.CD;
-        };
-    }
-
-    /**
-     * Checks whether the text condition is true.
-     *
-     * @param value the value.
-     * @return true if the text condition is true; otherwise false.
-     */
-    private static boolean hasText(String value) {
-        return value != null && !value.trim().isEmpty();
     }
 
 }

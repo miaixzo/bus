@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.image.nimble.geometry;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.Objects;
 
 /**
@@ -39,60 +39,6 @@ public class ImageOrientation {
      */
     public ImageOrientation() {
         // No initialization required.
-    }
-
-    /**
-     * Anatomical planes.
-     *
-     * @author Kimi Liu
-     */
-    public enum Plan {
-
-        /**
-         * Constant for the unknown value.
-         */
-        UNKNOWN("Unknown"),
-        /**
-         * Constant for the transverse value.
-         */
-        TRANSVERSE("Axial"),
-        /**
-         * Constant for the sagittal value.
-         */
-        SAGITTAL("Sagittal"),
-        /**
-         * Constant for the coronal value.
-         */
-        CORONAL("Coronal"),
-        /**
-         * Constant for the oblique value.
-         */
-        OBLIQUE("Oblique");
-
-        /**
-         * The display name value.
-         */
-        private final String displayName;
-
-        /**
-         * Creates a new instance.
-         *
-         * @param displayName the display name.
-         */
-        Plan(String displayName) {
-            this.displayName = displayName;
-        }
-
-        /**
-         * Returns the string representation.
-         *
-         * @return the string representation.
-         */
-        @Override
-        public String toString() {
-            return displayName;
-        }
-
     }
 
     /**
@@ -274,6 +220,60 @@ public class ImageOrientation {
     private static boolean isColorCombination(Color first, Color second, Color expectedFirst, Color expectedSecond) {
         return (first.equals(expectedFirst) && second.equals(expectedSecond))
                 || (first.equals(expectedSecond) && second.equals(expectedFirst));
+    }
+
+    /**
+     * Anatomical planes.
+     *
+     * @author Kimi Liu
+     */
+    public enum Plan {
+
+        /**
+         * Constant for the unknown value.
+         */
+        UNKNOWN("Unknown"),
+        /**
+         * Constant for the transverse value.
+         */
+        TRANSVERSE("Axial"),
+        /**
+         * Constant for the sagittal value.
+         */
+        SAGITTAL("Sagittal"),
+        /**
+         * Constant for the coronal value.
+         */
+        CORONAL("Coronal"),
+        /**
+         * Constant for the oblique value.
+         */
+        OBLIQUE("Oblique");
+
+        /**
+         * The display name value.
+         */
+        private final String displayName;
+
+        /**
+         * Creates a new instance.
+         *
+         * @param displayName the display name.
+         */
+        Plan(String displayName) {
+            this.displayName = displayName;
+        }
+
+        /**
+         * Returns the string representation.
+         *
+         * @return the string representation.
+         */
+        @Override
+        public String toString() {
+            return displayName;
+        }
+
     }
 
     /**

@@ -64,15 +64,15 @@ public class Transcoder {
      */
     private static final ImageReadParam IMAGE_READ_PARAM = new ImageReadParam();
 
+    static {
+        IMAGE_READ_PARAM.setReleaseImageAfterProcessing(true);
+    }
+
     /**
      * Constructs a new {@code Transcoder} instance.
      */
     public Transcoder() {
         // No initialization required.
-    }
-
-    static {
-        IMAGE_READ_PARAM.setReleaseImageAfterProcessing(true);
     }
 
     /**

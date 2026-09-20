@@ -36,9 +36,9 @@ import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
  * <li>Shape mode indicating the mathematical function used
  * </ul>
  *
+ * @author Kimi Liu
  * @see LookupTableCV
  * @see LutShape
- * @author Kimi Liu
  */
 public interface PresentationStateLut {
 

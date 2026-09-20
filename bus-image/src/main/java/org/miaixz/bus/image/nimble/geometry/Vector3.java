@@ -143,6 +143,42 @@ public record Vector3(double x, double y, double z) {
     }
 
     /**
+     * Executes the normalize zero operation.
+     *
+     * @param value the value.
+     * @return the operation result.
+     */
+    private static double normalizeZero(double value) {
+        return value == 0.0 ? 0.0 : value;
+    }
+
+    /**
+     * Validates the array bounds.
+     *
+     * @param coordinates the coordinates.
+     * @param offset      the offset.
+     */
+    private static void validateArrayBounds(double[] coordinates, int offset) {
+        if (offset < 0) {
+            throw new ArrayIndexOutOfBoundsException("Offset cannot be negative: " + offset);
+        }
+        if (coordinates.length < offset + 3) {
+            throw new IllegalArgumentException(
+                    "Array must contain at least %d elements, but has %d".formatted(offset + 3, coordinates.length));
+        }
+    }
+
+    /**
+     * Determines whether zero.
+     *
+     * @param value the value.
+     * @return true if the condition is met; otherwise false.
+     */
+    private static boolean isZero(double value) {
+        return Math.abs(value) < EPSILON;
+    }
+
+    /**
      * Executes the magnitude operation.
      *
      * @return vector magnitude
@@ -270,42 +306,6 @@ public record Vector3(double x, double y, double z) {
     @Override
     public String toString() {
         return "Vector3(%.6f, %.6f, %.6f)".formatted(x, y, z);
-    }
-
-    /**
-     * Executes the normalize zero operation.
-     *
-     * @param value the value.
-     * @return the operation result.
-     */
-    private static double normalizeZero(double value) {
-        return value == 0.0 ? 0.0 : value;
-    }
-
-    /**
-     * Validates the array bounds.
-     *
-     * @param coordinates the coordinates.
-     * @param offset      the offset.
-     */
-    private static void validateArrayBounds(double[] coordinates, int offset) {
-        if (offset < 0) {
-            throw new ArrayIndexOutOfBoundsException("Offset cannot be negative: " + offset);
-        }
-        if (coordinates.length < offset + 3) {
-            throw new IllegalArgumentException(
-                    "Array must contain at least %d elements, but has %d".formatted(offset + 3, coordinates.length));
-        }
-    }
-
-    /**
-     * Determines whether zero.
-     *
-     * @param value the value.
-     * @return true if the condition is met; otherwise false.
-     */
-    private static boolean isZero(double value) {
-        return Math.abs(value) < EPSILON;
     }
 
 }

@@ -20,8 +20,8 @@
 package org.miaixz.bus.image.nimble.opencv.seg;
 
 import java.awt.geom.Point2D;
-import java.util.Arrays;
 
+import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
@@ -51,7 +51,7 @@ public class ContourTopology {
      * @param parent  the parent.
      */
     public ContourTopology(MatOfPoint contour, int parent) {
-        this(contour.toArray(), parent);
+        this(toSegment(contour), parent);
     }
 
     /**
@@ -61,7 +61,7 @@ public class ContourTopology {
      * @param parent  the parent.
      */
     public ContourTopology(MatOfPoint2f contour, int parent) {
-        this(contour.toArray(), parent);
+        this(toSegment(contour), parent);
     }
 
     /**
@@ -71,8 +71,98 @@ public class ContourTopology {
      * @param parent the parent.
      */
     public ContourTopology(Point[] points, int parent) {
+        this(toSegment(points), parent);
+    }
+
+    /**
+     * Creates a new instance.
+     *
+     * @param segment the segment.
+     * @param parent  the parent.
+     */
+    private ContourTopology(Segment segment, int parent) {
         this.parent = parent;
-        this.segment = createSegment(points);
+        this.segment = segment;
+    }
+
+    /**
+     * Converts the contour to a segment.
+     *
+     * @param contour the contour.
+     * @return the segment, or null when the contour type is unsupported.
+     */
+    static Segment toSegment(Mat contour) {
+        if (contour instanceof MatOfPoint matOfPoint) {
+            return toSegment(matOfPoint);
+        }
+        if (contour instanceof MatOfPoint2f matOfPoint2f) {
+            return toSegment(matOfPoint2f);
+        }
+        return null;
+    }
+
+    /**
+     * Converts the integer contour to a segment.
+     *
+     * @param contour the contour.
+     * @return the segment.
+     */
+    static Segment toSegment(MatOfPoint contour) {
+        int count = (int) contour.total();
+        var segment = newSegment(count);
+        if (count > 0) {
+            var data = new int[count * 2];
+            contour.get(0, 0, data);
+            for (int i = 0; i < data.length; i += 2) {
+                segment.add(new Point2D.Double(data[i], data[i + 1]));
+            }
+        }
+        return segment;
+    }
+
+    /**
+     * Converts the floating point contour to a segment.
+     *
+     * @param contour the contour.
+     * @return the segment.
+     */
+    static Segment toSegment(MatOfPoint2f contour) {
+        int count = (int) contour.total();
+        var segment = newSegment(count);
+        if (count > 0) {
+            var data = new float[count * 2];
+            contour.get(0, 0, data);
+            for (int i = 0; i < data.length; i += 2) {
+                segment.add(new Point2D.Double(data[i], data[i + 1]));
+            }
+        }
+        return segment;
+    }
+
+    /**
+     * Converts points to a segment.
+     *
+     * @param points the points.
+     * @return the segment.
+     */
+    private static Segment toSegment(Point[] points) {
+        var segment = newSegment(points.length);
+        for (Point point : points) {
+            segment.add(new Point2D.Double(point.x, point.y));
+        }
+        return segment;
+    }
+
+    /**
+     * Creates a segment with the expected capacity.
+     *
+     * @param capacity the expected capacity.
+     * @return the segment.
+     */
+    private static Segment newSegment(int capacity) {
+        var segment = new Segment();
+        segment.ensureCapacity(capacity);
+        return segment;
     }
 
     /**
@@ -91,26 +181,6 @@ public class ContourTopology {
      */
     public Segment getSegment() {
         return segment;
-    }
-
-    /**
-     * Creates the segment.
-     *
-     * @param points the points.
-     * @return the operation result.
-     */
-    private Segment createSegment(Point[] points) {
-        return new Segment(Arrays.stream(points).map(this::convertToPoint2D).toList());
-    }
-
-    /**
-     * Converts the to point 2 d.
-     *
-     * @param point the point.
-     * @return the operation result.
-     */
-    private Point2D.Double convertToPoint2D(Point point) {
-        return new Point2D.Double(point.x, point.y);
     }
 
 }

@@ -132,33 +132,6 @@ public class ImageAdapter {
     }
 
     /**
-     * Finds the image minimum and maximum values.
-     *
-     * @param image      Planar image.
-     * @param frameIndex Frame index.
-     * @return Minimum and maximum value result.
-     */
-    private MinMaxLocResult findMinMaxValues(PlanarImage image, int frameIndex) {
-        // This function can be called multiple times from inner class Load. min and max will only be calculated once.
-        MinMaxLocResult val = getMinMaxValues(image, desc, frameIndex);
-        // Cannot trust SmallestImagePixelValue and LargestImagePixelValue values! So need to search for minimum and
-        // maximum values
-        int bitsAllocated = desc.getBitsAllocated();
-        if (bitsStored < bitsAllocated) {
-            boolean isSigned = desc.isSigned();
-            int minInValue = isSigned ? -(1 << (bitsStored - 1)) : 0;
-            int maxInValue = isSigned ? (1 << (bitsStored - 1)) - 1 : (1 << bitsStored) - 1;
-            if (val.minVal < minInValue || val.maxVal > maxInValue) {
-                // When image contains values outside the stored bits, bits stored will be replaced by bits allocated,
-                // to have a LUT that can handle all values.
-                // Before finding minimum and maximum values, overlays in pixel data should be masked.
-                setBitsStored(bitsAllocated);
-            }
-        }
-        return val;
-    }
-
-    /**
      * Computes the image minimum and maximum values while excluding the supplied padding range.
      *
      * @param paddingValueMin Padding value excluded from the minimum value search.
@@ -180,6 +153,33 @@ public class ImageAdapter {
             // Maximum value+1 to display correct value
             if (val != null && val.minVal == val.maxVal) {
                 val.maxVal += 1.0;
+            }
+        }
+        return val;
+    }
+
+    /**
+     * Finds the image minimum and maximum values.
+     *
+     * @param image      Planar image.
+     * @param frameIndex Frame index.
+     * @return Minimum and maximum value result.
+     */
+    private MinMaxLocResult findMinMaxValues(PlanarImage image, int frameIndex) {
+        // This function can be called multiple times from inner class Load. min and max will only be calculated once.
+        MinMaxLocResult val = getMinMaxValues(image, desc, frameIndex);
+        // Cannot trust SmallestImagePixelValue and LargestImagePixelValue values! So need to search for minimum and
+        // maximum values
+        int bitsAllocated = desc.getBitsAllocated();
+        if (bitsStored < bitsAllocated) {
+            boolean isSigned = desc.isSigned();
+            int minInValue = isSigned ? -(1 << (bitsStored - 1)) : 0;
+            int maxInValue = isSigned ? (1 << (bitsStored - 1)) - 1 : (1 << bitsStored) - 1;
+            if (val.minVal < minInValue || val.maxVal > maxInValue) {
+                // When image contains values outside the stored bits, bits stored will be replaced by bits allocated,
+                // to have a LUT that can handle all values.
+                // Before finding minimum and maximum values, overlays in pixel data should be masked.
+                setBitsStored(bitsAllocated);
             }
         }
         return val;

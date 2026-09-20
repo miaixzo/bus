@@ -92,25 +92,6 @@ public class DefaultEditors implements Editors {
     }
 
     /**
-     * Executes the apply operation.
-     *
-     * @param attributes the attributes.
-     * @param context    the context.
-     */
-    @Override
-    public void apply(Attributes attributes, EditorContext context) {
-        if (attributes == null) {
-            return;
-        }
-        if (generateUIDs) {
-            generateNewUIDs(attributes);
-        }
-        if (tagToOverride != null && !tagToOverride.isEmpty()) {
-            attributes.update(UpdatePolicy.OVERWRITE, tagToOverride, null);
-        }
-    }
-
-    /**
      * Creates the hmac.
      *
      * @param globalKey the global key.
@@ -142,6 +123,38 @@ public class DefaultEditors implements Editors {
     }
 
     /**
+     * Determines whether supported uid tag.
+     *
+     * @param tag the tag.
+     * @return true if the condition is met; otherwise false.
+     */
+    private static boolean isSupportedUidTag(int tag) {
+        return switch (tag) {
+            case Tag.StudyInstanceUID, Tag.SeriesInstanceUID, Tag.SOPInstanceUID, Tag.AffectedSOPInstanceUID, Tag.FailedSOPInstanceUIDList, Tag.MediaStorageSOPInstanceUID, Tag.ReferencedSOPInstanceUID, Tag.ReferencedSOPInstanceUIDInFile, Tag.RequestedSOPInstanceUID, Tag.MultiFrameSourceSOPInstanceUID -> true;
+            default -> false;
+        };
+    }
+
+    /**
+     * Executes the apply operation.
+     *
+     * @param attributes the attributes.
+     * @param context    the context.
+     */
+    @Override
+    public void apply(Attributes attributes, EditorContext context) {
+        if (attributes == null) {
+            return;
+        }
+        if (generateUIDs) {
+            generateNewUIDs(attributes);
+        }
+        if (tagToOverride != null && !tagToOverride.isEmpty()) {
+            attributes.update(UpdatePolicy.OVERWRITE, tagToOverride, null);
+        }
+    }
+
+    /**
      * Executes the generate new ui ds operation.
      *
      * @param attributes the attributes.
@@ -157,19 +170,6 @@ public class DefaultEditors implements Editors {
         } catch (Exception e) {
             throw new IllegalStateException("Failed to generate UIDs", e);
         }
-    }
-
-    /**
-     * Determines whether supported uid tag.
-     *
-     * @param tag the tag.
-     * @return true if the condition is met; otherwise false.
-     */
-    private static boolean isSupportedUidTag(int tag) {
-        return switch (tag) {
-            case Tag.StudyInstanceUID, Tag.SeriesInstanceUID, Tag.SOPInstanceUID, Tag.AffectedSOPInstanceUID, Tag.FailedSOPInstanceUIDList, Tag.MediaStorageSOPInstanceUID, Tag.ReferencedSOPInstanceUID, Tag.ReferencedSOPInstanceUIDInFile, Tag.RequestedSOPInstanceUID, Tag.MultiFrameSourceSOPInstanceUID -> true;
-            default -> false;
-        };
     }
 
     /**

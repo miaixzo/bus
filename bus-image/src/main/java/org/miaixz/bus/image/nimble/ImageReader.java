@@ -76,6 +76,28 @@ import org.miaixz.bus.logger.Logger;
 public class ImageReader extends javax.imageio.ImageReader {
 
     /**
+     * Bulk data descriptor.
+     */
+    public static final BulkDataDescriptor BULK_DATA_DESCRIPTOR = (itemPointer, privateCreator, tag, vr, length) -> {
+        int tagNormalized = Tag.normalizeRepeatingGroup(tag);
+        if (tagNormalized == Tag.WaveformData) {
+            return itemPointer.size() == 1 && itemPointer.get(0).sequenceTag == Tag.WaveformSequence;
+        } else if (BULK_TAGS.contains(tagNormalized)) {
+            return itemPointer.isEmpty();
+        }
+        if (Tag.isPrivateTag(tag)) {
+            return length > 1000; // Do not read private values exceeding 1KB into memory
+        }
+        return switch (vr) {
+            case OB, OD, OF, OL, OW, UN -> length > 64;
+            default -> false;
+        };
+    };
+    /**
+     * Mapping from series UID to float image conversion state.
+     */
+    private static final Map<String, Boolean> series2FloatImages = new ConcurrentHashMap<>();
+    /**
      * DICOM tags that should be handled as bulk data.
      */
     public static Set<Integer> BULK_TAGS = Set.of(
@@ -99,56 +121,29 @@ public class ImageReader extends javax.imageio.ImageReader {
             Tag.FloatPixelData,
             Tag.DoubleFloatPixelData,
             Tag.PixelData);
-
-    /**
-     * Bulk data descriptor.
-     */
-    public static final BulkDataDescriptor BULK_DATA_DESCRIPTOR = (itemPointer, privateCreator, tag, vr, length) -> {
-        int tagNormalized = Tag.normalizeRepeatingGroup(tag);
-        if (tagNormalized == Tag.WaveformData) {
-            return itemPointer.size() == 1 && itemPointer.get(0).sequenceTag == Tag.WaveformSequence;
-        } else if (BULK_TAGS.contains(tagNormalized)) {
-            return itemPointer.isEmpty();
-        }
-        if (Tag.isPrivateTag(tag)) {
-            return length > 1000; // Do not read private values exceeding 1KB into memory
-        }
-        return switch (vr) {
-            case OB, OD, OF, OL, OW, UN -> length > 64;
-            default -> false;
-        };
-    };
-
-    /**
-     * Mapping from series UID to float image conversion state.
-     */
-    private static final Map<String, Boolean> series2FloatImages = new ConcurrentHashMap<>();
-
     /**
      * Whether float image conversion is allowed.
      */
     private static boolean allowFloatImageConversion = false;
-
-    /**
-     * Fragment position list.
-     */
-    private final ArrayList<Integer> fragmentsPositions = new ArrayList<>();
-
-    /**
-     * Byte data with image descriptor.
-     */
-    private BytesWithImageDescriptor bdis;
-
-    /**
-     * DICOM image file input stream.
-     */
-    private ImageFileInputStream dis;
 
     static {
         // Load local OpenCV library
         OpenCVNativeLoader loader = new OpenCVNativeLoader();
         loader.init();
     }
+
+    /**
+     * Fragment position list.
+     */
+    private final ArrayList<Integer> fragmentsPositions = new ArrayList<>();
+    /**
+     * Byte data with image descriptor.
+     */
+    private BytesWithImageDescriptor bdis;
+    /**
+     * DICOM image file input stream.
+     */
+    private ImageFileInputStream dis;
 
     /**
      * Creates a new instance.
@@ -272,6 +267,115 @@ public class ImageReader extends javax.imageio.ImageReader {
             case UID.ImplicitVRLittleEndian, UID.ExplicitVRLittleEndian, UID.ExplicitVRBigEndian, UID.RLELossless, UID.JPEGBaseline8Bit, UID.JPEGExtended12Bit, UID.JPEGSpectralSelectionNonHierarchical68, UID.JPEGFullProgressionNonHierarchical1012, UID.JPEGLossless, UID.JPEGLosslessSV1, UID.JPEGLSLossless, UID.JPEGLSNearLossless, UID.JPEG2000Lossless, UID.JPEG2000, UID.JPEG2000MCLossless, UID.JPEG2000MC -> true;
             default -> false;
         };
+    }
+
+    /**
+     * Handles values outside the LUT range.
+     *
+     * @param input      Input image.
+     * @param desc       Image descriptor.
+     * @param frameIndex Frame index.
+     * @param forceFloat Whether conversion to float is forced.
+     * @return Processed image.
+     */
+    static PlanarImage rangeOutsideLut(PlanarImage input, ImageDescriptor desc, int frameIndex, boolean forceFloat) {
+        ModalityLutModule modalityLut = desc.getModalityLutForFrame(frameIndex);
+        boolean reset = modalityLut.isReset();
+        boolean forceToFloat = forceFloat || reset;
+        OptionalDouble rescaleSlope = modalityLut.getRescaleSlope();
+        if (forceToFloat || rescaleSlope.isPresent()) {
+            double slope = rescaleSlope.orElse(1.0);
+            double intercept = modalityLut.getRescaleIntercept().orElse(0.0);
+            Core.MinMaxLocResult minMax = ImageAdapter.getMinMaxValues(input, desc, frameIndex);
+            Pair<Double, Double> rescale = getRescaleSlopeAndIntercept(slope, intercept, minMax);
+            if (forceToFloat || slope < 0.5 || rangeOutsideLut(rescale, desc)) {
+                if (!reset) {
+                    desc.resetModalityLutForFrame(frameIndex);
+                }
+                ImageCV dstImg = new ImageCV();
+                boolean invertLUT = desc.getPhotometricInterpretation() == Photometric.MONOCHROME1;
+                double alpha = slope;
+                double beta = intercept;
+                if (invertLUT) {
+                    alpha = -slope;
+                    beta = rescale.getRight() + rescale.getLeft() - intercept;
+                }
+                input.toImageCV().convertTo(dstImg, CvType.CV_32F, alpha, beta);
+                return dstImg;
+            }
+        }
+        return input;
+    }
+
+    /**
+     * Determines whether values are outside the LUT range.
+     *
+     * @param rescale Rescale parameters.
+     * @param desc    Image descriptor.
+     * @return true if values are outside the LUT range; otherwise false.
+     */
+    private static boolean rangeOutsideLut(Pair<Double, Double> rescale, ImageDescriptor desc) {
+        boolean outputSigned = rescale.getLeft() < 0 || desc.isSigned();
+        Pair<Double, Double> minMax = RGBImageVoiLut.getMinMax(desc.getBitsAllocated(), outputSigned);
+        return rescale.getLeft() + 1 < minMax.getLeft() || rescale.getRight() - 1 > minMax.getRight();
+    }
+
+    /**
+     * Gets the rescale slope and intercept.
+     *
+     * @param slope     Slope.
+     * @param intercept Intercept.
+     * @param minMax    Minimum and maximum value result.
+     * @return Rescale slope and intercept pair.
+     */
+    private static Pair<Double, Double> getRescaleSlopeAndIntercept(
+            double slope,
+            double intercept,
+            Core.MinMaxLocResult minMax) {
+        double min = minMax.minVal * slope + intercept;
+        double max = minMax.maxVal * slope + intercept;
+        return new Pair<>(Math.min(min, max), Math.max(min, max));
+    }
+
+    /**
+     * Adds a series-to-float-image mapping.
+     *
+     * @param seriesInstanceUID  Series instance UID.
+     * @param forceToFloatImages Whether conversion to float images is forced.
+     */
+    public static void addSeriesToFloatImages(String seriesInstanceUID, Boolean forceToFloatImages) {
+        series2FloatImages.put(seriesInstanceUID, forceToFloatImages);
+    }
+
+    /**
+     * Gets the force-to-float-image setting.
+     *
+     * @param seriesInstanceUID Series instance UID.
+     * @return Whether conversion to float images is forced.
+     */
+    public static Boolean getForceToFloatImages(String seriesInstanceUID) {
+        return series2FloatImages.get(seriesInstanceUID);
+    }
+
+    /**
+     * Removes a series-to-float-image mapping.
+     *
+     * @param seriesInstanceUID Series instance UID.
+     */
+    public static void removeSeriesToFloatImages(String seriesInstanceUID) {
+        series2FloatImages.remove(seriesInstanceUID);
+    }
+
+    /**
+     * Allows conversion to float images when the modality LUT result falls outside the original image type range.
+     * <p>
+     * Note: conversion is disabled by default. If conversion is enabled, <code>
+     * removeSeriesToFloatImages()</code> must be called when the series is released.
+     *
+     * @param allowFloatImageConversion Whether conversion to float images is allowed.
+     */
+    public static void setAllowFloatImageConversion(boolean allowFloatImageConversion) {
+        ImageReader.allowFloatImageConversion = allowFloatImageConversion;
     }
 
     /**
@@ -548,6 +652,7 @@ public class ImageReader extends javax.imageio.ImageReader {
             suppliers.add(new SupplierEx<>() {
 
                 boolean initialized;
+                SupplierEx<PlanarImage, IOException> delegate = this::firstTime;
 
                 @Override
                 public PlanarImage get() throws IOException {
@@ -569,8 +674,6 @@ public class ImageReader extends javax.imageio.ImageReader {
                     }
                     return delegate.get();
                 }
-
-                SupplierEx<PlanarImage, IOException> delegate = this::firstTime;
             });
         }
         return suppliers;
@@ -652,74 +755,6 @@ public class ImageReader extends javax.imageio.ImageReader {
             img.release();
         }
         return out;
-    }
-
-    /**
-     * Handles values outside the LUT range.
-     *
-     * @param input      Input image.
-     * @param desc       Image descriptor.
-     * @param frameIndex Frame index.
-     * @param forceFloat Whether conversion to float is forced.
-     * @return Processed image.
-     */
-    static PlanarImage rangeOutsideLut(PlanarImage input, ImageDescriptor desc, int frameIndex, boolean forceFloat) {
-        ModalityLutModule modalityLut = desc.getModalityLutForFrame(frameIndex);
-        boolean reset = modalityLut.isReset();
-        boolean forceToFloat = forceFloat || reset;
-        OptionalDouble rescaleSlope = modalityLut.getRescaleSlope();
-        if (forceToFloat || rescaleSlope.isPresent()) {
-            double slope = rescaleSlope.orElse(1.0);
-            double intercept = modalityLut.getRescaleIntercept().orElse(0.0);
-            Core.MinMaxLocResult minMax = ImageAdapter.getMinMaxValues(input, desc, frameIndex);
-            Pair<Double, Double> rescale = getRescaleSlopeAndIntercept(slope, intercept, minMax);
-            if (forceToFloat || slope < 0.5 || rangeOutsideLut(rescale, desc)) {
-                if (!reset) {
-                    desc.resetModalityLutForFrame(frameIndex);
-                }
-                ImageCV dstImg = new ImageCV();
-                boolean invertLUT = desc.getPhotometricInterpretation() == Photometric.MONOCHROME1;
-                double alpha = slope;
-                double beta = intercept;
-                if (invertLUT) {
-                    alpha = -slope;
-                    beta = rescale.getRight() + rescale.getLeft() - intercept;
-                }
-                input.toImageCV().convertTo(dstImg, CvType.CV_32F, alpha, beta);
-                return dstImg;
-            }
-        }
-        return input;
-    }
-
-    /**
-     * Determines whether values are outside the LUT range.
-     *
-     * @param rescale Rescale parameters.
-     * @param desc    Image descriptor.
-     * @return true if values are outside the LUT range; otherwise false.
-     */
-    private static boolean rangeOutsideLut(Pair<Double, Double> rescale, ImageDescriptor desc) {
-        boolean outputSigned = rescale.getLeft() < 0 || desc.isSigned();
-        Pair<Double, Double> minMax = RGBImageVoiLut.getMinMax(desc.getBitsAllocated(), outputSigned);
-        return rescale.getLeft() + 1 < minMax.getLeft() || rescale.getRight() - 1 > minMax.getRight();
-    }
-
-    /**
-     * Gets the rescale slope and intercept.
-     *
-     * @param slope     Slope.
-     * @param intercept Intercept.
-     * @param minMax    Minimum and maximum value result.
-     * @return Rescale slope and intercept pair.
-     */
-    private static Pair<Double, Double> getRescaleSlopeAndIntercept(
-            double slope,
-            double intercept,
-            Core.MinMaxLocResult minMax) {
-        double min = minMax.minVal * slope + intercept;
-        double max = minMax.maxVal * slope + intercept;
-        return new Pair<>(Math.min(min, max), Math.max(min, max));
     }
 
     /**
@@ -980,47 +1015,6 @@ public class ImageReader extends javax.imageio.ImageReader {
             throw new IOException("Neither fragments nor BulkData!");
         }
         return new ExtendSegmentedInputImageStream(dis.getPath(), offsets, length, desc);
-    }
-
-    /**
-     * Adds a series-to-float-image mapping.
-     *
-     * @param seriesInstanceUID  Series instance UID.
-     * @param forceToFloatImages Whether conversion to float images is forced.
-     */
-    public static void addSeriesToFloatImages(String seriesInstanceUID, Boolean forceToFloatImages) {
-        series2FloatImages.put(seriesInstanceUID, forceToFloatImages);
-    }
-
-    /**
-     * Gets the force-to-float-image setting.
-     *
-     * @param seriesInstanceUID Series instance UID.
-     * @return Whether conversion to float images is forced.
-     */
-    public static Boolean getForceToFloatImages(String seriesInstanceUID) {
-        return series2FloatImages.get(seriesInstanceUID);
-    }
-
-    /**
-     * Removes a series-to-float-image mapping.
-     *
-     * @param seriesInstanceUID Series instance UID.
-     */
-    public static void removeSeriesToFloatImages(String seriesInstanceUID) {
-        series2FloatImages.remove(seriesInstanceUID);
-    }
-
-    /**
-     * Allows conversion to float images when the modality LUT result falls outside the original image type range.
-     * <p>
-     * Note: conversion is disabled by default. If conversion is enabled, <code>
-     * removeSeriesToFloatImages()</code> must be called when the series is released.
-     *
-     * @param allowFloatImageConversion Whether conversion to float images is allowed.
-     */
-    public static void setAllowFloatImageConversion(boolean allowFloatImageConversion) {
-        ImageReader.allowFloatImageConversion = allowFloatImageConversion;
     }
 
 }

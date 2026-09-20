@@ -23,13 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.Range;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.core.Size;
+import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
 import org.miaixz.bus.core.center.function.BinaryOperatorX;
@@ -143,65 +137,6 @@ public class ImageCV extends Mat implements PlanarImage {
      */
     public ImageCV(Mat m, Rect roi) {
         super(m, roi);
-    }
-
-    /**
-     * Executes the physical bytes operation.
-     *
-     * @return the operation result.
-     */
-    @Override
-    public long physicalBytes() {
-        return total() * elemSize();
-    }
-
-    /**
-     * Executes the release operation.
-     */
-    @Override
-    public synchronized void release() {
-        if (!released) {
-            super.release();
-            this.released = true;
-        }
-    }
-
-    /**
-     * Checks whether the released condition is true.
-     *
-     * @return true if the released condition is true; otherwise false.
-     */
-    @Override
-    public boolean isReleased() {
-        return released;
-    }
-
-    /**
-     * Checks whether the released after processing condition is true.
-     *
-     * @return true if the released after processing condition is true; otherwise false.
-     */
-    @Override
-    public boolean isReleasedAfterProcessing() {
-        return releasedAfterProcessing;
-    }
-
-    /**
-     * Sets the released after processing.
-     *
-     * @param releasedAfterProcessing the released after processing.
-     */
-    @Override
-    public void setReleasedAfterProcessing(boolean releasedAfterProcessing) {
-        this.releasedAfterProcessing = releasedAfterProcessing;
-    }
-
-    /**
-     * Executes the close operation.
-     */
-    @Override
-    public void close() {
-        release();
     }
 
     /**
@@ -378,6 +313,65 @@ public class ImageCV extends Mat implements PlanarImage {
     private static boolean hasSameDimensions(PlanarImage image, PlanarImage reference) {
         return image.width() == reference.width() && image.height() == reference.height()
                 && image.type() == reference.type();
+    }
+
+    /**
+     * Executes the physical bytes operation.
+     *
+     * @return the operation result.
+     */
+    @Override
+    public long physicalBytes() {
+        return total() * elemSize();
+    }
+
+    /**
+     * Executes the release operation.
+     */
+    @Override
+    public synchronized void release() {
+        if (!released) {
+            super.release();
+            this.released = true;
+        }
+    }
+
+    /**
+     * Checks whether the released condition is true.
+     *
+     * @return true if the released condition is true; otherwise false.
+     */
+    @Override
+    public boolean isReleased() {
+        return released;
+    }
+
+    /**
+     * Checks whether the released after processing condition is true.
+     *
+     * @return true if the released after processing condition is true; otherwise false.
+     */
+    @Override
+    public boolean isReleasedAfterProcessing() {
+        return releasedAfterProcessing;
+    }
+
+    /**
+     * Sets the released after processing.
+     *
+     * @param releasedAfterProcessing the released after processing.
+     */
+    @Override
+    public void setReleasedAfterProcessing(boolean releasedAfterProcessing) {
+        this.releasedAfterProcessing = releasedAfterProcessing;
+    }
+
+    /**
+     * Executes the close operation.
+     */
+    @Override
+    public void close() {
+        release();
     }
 
 }

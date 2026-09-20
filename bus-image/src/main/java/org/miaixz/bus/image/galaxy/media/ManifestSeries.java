@@ -21,14 +21,8 @@ package org.miaixz.bus.image.galaxy.media;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
@@ -113,6 +107,52 @@ public class ManifestSeries implements ManifestXml, Comparable<ManifestSeries> {
     public ManifestSeries(String seriesInstanceUID) {
         this.seriesInstanceUID = Objects.requireNonNull(seriesInstanceUID, "Series Instance UID cannot be null");
         this.instances = new HashMap<>();
+    }
+
+    /**
+     * Executes the compare series numbers operation.
+     *
+     * @param first  the first.
+     * @param second the second.
+     * @return the operation result.
+     */
+    private static int compareSeriesNumbers(String first, String second) {
+        Integer firstValue = parseInteger(first);
+        Integer secondValue = parseInteger(second);
+        if (firstValue != null && secondValue != null) {
+            return firstValue.compareTo(secondValue);
+        }
+        if (firstValue == null && secondValue != null) {
+            return 1;
+        }
+        return firstValue != null ? -1 : 0;
+    }
+
+    /**
+     * Parses the integer.
+     *
+     * @param value the value.
+     * @return the operation result.
+     */
+    private static Integer parseInteger(String value) {
+        if (!hasText(value)) {
+            return null;
+        }
+        try {
+            return Integer.valueOf(value.trim());
+        } catch (NumberFormatException exception) {
+            return null;
+        }
+    }
+
+    /**
+     * Determines whether text.
+     *
+     * @param value the value.
+     * @return true if the condition is met; otherwise false.
+     */
+    private static boolean hasText(String value) {
+        return value != null && !value.trim().isEmpty();
     }
 
     /**
@@ -377,52 +417,6 @@ public class ManifestSeries implements ManifestXml, Comparable<ManifestSeries> {
      */
     private String getCompressionRateString() {
         return wadoCompression > MIN_COMPRESSION ? String.valueOf(wadoCompression) : null;
-    }
-
-    /**
-     * Executes the compare series numbers operation.
-     *
-     * @param first  the first.
-     * @param second the second.
-     * @return the operation result.
-     */
-    private static int compareSeriesNumbers(String first, String second) {
-        Integer firstValue = parseInteger(first);
-        Integer secondValue = parseInteger(second);
-        if (firstValue != null && secondValue != null) {
-            return firstValue.compareTo(secondValue);
-        }
-        if (firstValue == null && secondValue != null) {
-            return 1;
-        }
-        return firstValue != null ? -1 : 0;
-    }
-
-    /**
-     * Parses the integer.
-     *
-     * @param value the value.
-     * @return the operation result.
-     */
-    private static Integer parseInteger(String value) {
-        if (!hasText(value)) {
-            return null;
-        }
-        try {
-            return Integer.valueOf(value.trim());
-        } catch (NumberFormatException exception) {
-            return null;
-        }
-    }
-
-    /**
-     * Determines whether text.
-     *
-     * @param value the value.
-     * @return true if the condition is met; otherwise false.
-     */
-    private static boolean hasText(String value) {
-        return value != null && !value.trim().isEmpty();
     }
 
 }
