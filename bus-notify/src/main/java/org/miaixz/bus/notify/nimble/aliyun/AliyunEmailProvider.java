@@ -24,9 +24,9 @@ import static org.miaixz.bus.notify.FabricX.get;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;

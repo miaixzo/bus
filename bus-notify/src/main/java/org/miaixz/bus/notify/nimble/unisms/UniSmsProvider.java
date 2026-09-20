@@ -24,6 +24,7 @@ import static org.miaixz.bus.notify.FabricX.post;
 import java.util.*;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
