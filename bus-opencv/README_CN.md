@@ -57,6 +57,7 @@
 import org.miaixz.bus.opengl.OpenCVKit;
 
 public class Application {
+
     static {
         // 加载 OpenCV 本机库
         OpenCVKit.loadLib();
@@ -65,6 +66,7 @@ public class Application {
     public static void main(String[] args) {
         // 您的代码在这里
     }
+
 }
 ```
 

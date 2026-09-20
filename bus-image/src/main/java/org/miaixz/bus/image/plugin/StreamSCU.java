@@ -126,7 +126,7 @@ public class StreamSCU {
     /**
      * A factory for creating DIMSE response handlers.
      */
-    private final RSPHandlerFactory rspHandlerFactory = () -> new DimseRSPHandler(as.nextMessageID()) {
+    private final RSPHandlerFactory rspHandlerFactory = () -> new DimseRSPHandler(this.as.nextMessageID()) {
 
         @Override
         public void onDimseRSP(Association as, Attributes cmd, Attributes data) {

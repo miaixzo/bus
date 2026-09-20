@@ -82,7 +82,7 @@ public class ImageReader extends javax.imageio.ImageReader {
         int tagNormalized = Tag.normalizeRepeatingGroup(tag);
         if (tagNormalized == Tag.WaveformData) {
             return itemPointer.size() == 1 && itemPointer.get(0).sequenceTag == Tag.WaveformSequence;
-        } else if (BULK_TAGS.contains(tagNormalized)) {
+        } else if (ImageReader.BULK_TAGS.contains(tagNormalized)) {
             return itemPointer.isEmpty();
         }
         if (Tag.isPrivateTag(tag)) {
