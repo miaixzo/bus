@@ -34,7 +34,10 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.health.*;
+import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.health.Executor;
+import org.miaixz.bus.health.Memoizer;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSFileStore;
 import org.miaixz.bus.health.builtin.software.common.AbstractFileSystem;
 import org.miaixz.bus.health.unix.solaris.KstatKit;
@@ -51,34 +54,30 @@ import org.miaixz.bus.health.unix.solaris.KstatKit.KstatChain;
 public class SolarisFileSystem extends AbstractFileSystem {
 
     /**
-     * The fileDesc value.
-     */
-    private final SupplierX<Pair<Long, Long>> fileDesc = Memoizer
-            .memoize(SolarisFileSystem::queryFileDescriptors, Memoizer.defaultExpiration());
-
-    /**
      * The FS_PATH_EXCLUDES constant.
      */
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(Builder._UNIX_SOLARIS_FS_PATH_EXCLUDES);
-
     /**
      * The FS_PATH_INCLUDES constant.
      */
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Builder._UNIX_SOLARIS_FS_PATH_INCLUDES);
-
     /**
      * The FS_VOLUME_EXCLUDES constant.
      */
     private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(Builder._UNIX_SOLARIS_FS_VOLUME_EXCLUDES);
-
     /**
      * The FS_VOLUME_INCLUDES constant.
      */
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Builder._UNIX_SOLARIS_FS_VOLUME_INCLUDES);
+    /**
+     * The fileDesc value.
+     */
+    private final SupplierX<Pair<Long, Long>> fileDesc = Memoizer
+            .memoize(SolarisFileSystem::queryFileDescriptors, Memoizer.defaultExpiration());
 
     /**
      * Creates a new SolarisFileSystem instance.

@@ -46,6 +46,32 @@ public class GpuInformation {
     static final String GPU_ADAPTER_MEMORY = "GPU Adapter Memory";
 
     /**
+     * Creates a new GpuInformation instance.
+     */
+    public GpuInformation() {
+        // No initialization required.
+    }
+
+    /**
+     * Queries GPU Engine running time counters for all instances.
+     *
+     * @return pair of instance name list and counter value map
+     */
+    public static Pair<List<String>, Map<GpuEngineProperty, List<Long>>> queryGpuEngineCounters() {
+        return PerfCounterWildcardQuery.queryInstancesAndValuesFromPDH(GpuEngineProperty.class, GPU_ENGINE);
+    }
+
+    /**
+     * Queries GPU Adapter Memory counters for all instances.
+     *
+     * @return pair of instance name list and counter value map
+     */
+    public static Pair<List<String>, Map<GpuAdapterMemoryProperty, List<Long>>> queryGpuAdapterMemoryCounters() {
+        return PerfCounterWildcardQuery
+                .queryInstancesAndValuesFromPDH(GpuAdapterMemoryProperty.class, GPU_ADAPTER_MEMORY);
+    }
+
+    /**
      * GPU Engine running time counter properties. Instance names have the form:
      * {@code pid_<PID>_luid_0x<HIGH>_0x<LOW>_phys_0_eng_<N>_engtype_<TYPE>}
      *
@@ -140,32 +166,6 @@ public class GpuInformation {
             return counter;
         }
 
-    }
-
-    /**
-     * Creates a new GpuInformation instance.
-     */
-    public GpuInformation() {
-        // No initialization required.
-    }
-
-    /**
-     * Queries GPU Engine running time counters for all instances.
-     *
-     * @return pair of instance name list and counter value map
-     */
-    public static Pair<List<String>, Map<GpuEngineProperty, List<Long>>> queryGpuEngineCounters() {
-        return PerfCounterWildcardQuery.queryInstancesAndValuesFromPDH(GpuEngineProperty.class, GPU_ENGINE);
-    }
-
-    /**
-     * Queries GPU Adapter Memory counters for all instances.
-     *
-     * @return pair of instance name list and counter value map
-     */
-    public static Pair<List<String>, Map<GpuAdapterMemoryProperty, List<Long>>> queryGpuAdapterMemoryCounters() {
-        return PerfCounterWildcardQuery
-                .queryInstancesAndValuesFromPDH(GpuAdapterMemoryProperty.class, GPU_ADAPTER_MEMORY);
     }
 
 }

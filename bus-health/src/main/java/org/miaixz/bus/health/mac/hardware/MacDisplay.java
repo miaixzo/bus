@@ -24,13 +24,7 @@ import java.util.List;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.CoreFoundation;
-import com.sun.jna.platform.mac.CoreFoundation.CFBooleanRef;
-import com.sun.jna.platform.mac.CoreFoundation.CFDataRef;
-import com.sun.jna.platform.mac.CoreFoundation.CFDictionaryRef;
-import com.sun.jna.platform.mac.CoreFoundation.CFIndex;
-import com.sun.jna.platform.mac.CoreFoundation.CFNumberRef;
-import com.sun.jna.platform.mac.CoreFoundation.CFStringRef;
-import com.sun.jna.platform.mac.CoreFoundation.CFTypeRef;
+import com.sun.jna.platform.mac.CoreFoundation.*;
 import com.sun.jna.platform.mac.IOKit.IOIterator;
 import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
@@ -114,16 +108,6 @@ final class MacDisplay extends AbstractDisplay {
         super(displayInfo);
         this.devicePort = devicePort;
         Logger.debug(false, "Health", "Initialized MacDisplay (synthetic)");
-    }
-
-    /**
-     * Gets the platform-specific device port name.
-     *
-     * @return The platform-specific device port name.
-     */
-    @Override
-    public String getDevicePort() {
-        return this.devicePort;
     }
 
     /**
@@ -565,6 +549,16 @@ final class MacDisplay extends AbstractDisplay {
      */
     private static String getStringValueOrUnknown(String value) {
         return StringKit.isBlank(value) ? Normal.UNKNOWN : value;
+    }
+
+    /**
+     * Gets the platform-specific device port name.
+     *
+     * @return The platform-specific device port name.
+     */
+    @Override
+    public String getDevicePort() {
+        return this.devicePort;
     }
 
 }

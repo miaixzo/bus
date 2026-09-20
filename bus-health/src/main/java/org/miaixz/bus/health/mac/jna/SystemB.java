@@ -41,6 +41,54 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      * Singleton instance of the SystemB library.
      */
     SystemB INSTANCE = Native.load("System", SystemB.class);
+    /**
+     * Command to list file descriptors for a process.
+     */
+    int PROC_PIDLISTFDS = 1;
+    /**
+     * File descriptor type for a socket.
+     */
+    int PROX_FDTYPE_SOCKET = 2;
+    /**
+     * Command to get socket information for a process file descriptor.
+     */
+    int PROC_PIDFDSOCKETINFO = 3;
+    /**
+     * Number of timers in the TCP socket info structure.
+     */
+    int TSI_T_NTIMERS = 4;
+    /**
+     * Socket information flag for internet sockets.
+     */
+    int SOCKINFO_IN = 1;
+    /**
+     * Socket information flag for TCP sockets.
+     */
+    int SOCKINFO_TCP = 2;
+    /**
+     * Size of the ut_user field in the utmpx structure.
+     */
+    int UTX_USERSIZE = 256;
+    /**
+     * Size of the ut_line field in the utmpx structure.
+     */
+    int UTX_LINESIZE = 32;
+    /**
+     * Size of the ut_id field in the utmpx structure.
+     */
+    int UTX_IDSIZE = 4;
+    /**
+     * Size of the ut_host field in the utmpx structure.
+     */
+    int UTX_HOSTSIZE = 256;
+    /**
+     * The Internet Protocol version 4 (IPv4) address family.
+     */
+    int AF_INET = 2;
+    /**
+     * The Internet Protocol version 6 (IPv6) address family.
+     */
+    int AF_INET6 = 30;
 
     /**
      * Returns the vm deallocate result.
@@ -69,6 +117,37 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      * @return 0 on success; -1 on failure
      */
     int getrusage(int who, Rusage rusage);
+
+    /**
+     * Returns the statfs64 result.
+     *
+     * @param path the path
+     * @param buf  the buf
+     * @return the statfs64 result
+     */
+    int statfs64(String path, com.sun.jna.platform.mac.SystemB.Statfs buf);
+
+    /**
+     * Reads a line from the current file position in the utmp file. It returns a pointer to a structure containing the
+     * fields of the line.
+     * <p>
+     * Not thread safe.
+     *
+     * @return a {@link MacUtmpx} on success, and NULL on failure (which includes the "record not found" case).
+     */
+    MacUtmpx getutxent();
+
+    /**
+     * Retrieves information about a file descriptor for a process.
+     *
+     * @param pid        The process ID.
+     * @param fd         The file descriptor.
+     * @param flavor     The type of information to retrieve.
+     * @param buffer     A {@link Structure} to store the retrieved information.
+     * @param buffersize The size of the buffer.
+     * @return An integer result code.
+     */
+    int proc_pidfdinfo(int pid, int fd, int flavor, Structure buffer, int buffersize);
 
     /**
      * JNA wrapper for the rusage structure.
@@ -178,97 +257,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
         }
 
     }
-
-    /**
-     * Returns the statfs64 result.
-     *
-     * @param path the path
-     * @param buf  the buf
-     * @return the statfs64 result
-     */
-    int statfs64(String path, com.sun.jna.platform.mac.SystemB.Statfs buf);
-
-    /**
-     * Command to list file descriptors for a process.
-     */
-    int PROC_PIDLISTFDS = 1;
-
-    /**
-     * File descriptor type for a socket.
-     */
-    int PROX_FDTYPE_SOCKET = 2;
-
-    /**
-     * Command to get socket information for a process file descriptor.
-     */
-    int PROC_PIDFDSOCKETINFO = 3;
-
-    /**
-     * Number of timers in the TCP socket info structure.
-     */
-    int TSI_T_NTIMERS = 4;
-
-    /**
-     * Socket information flag for internet sockets.
-     */
-    int SOCKINFO_IN = 1;
-
-    /**
-     * Socket information flag for TCP sockets.
-     */
-    int SOCKINFO_TCP = 2;
-
-    /**
-     * Size of the ut_user field in the utmpx structure.
-     */
-    int UTX_USERSIZE = 256;
-
-    /**
-     * Size of the ut_line field in the utmpx structure.
-     */
-    int UTX_LINESIZE = 32;
-
-    /**
-     * Size of the ut_id field in the utmpx structure.
-     */
-    int UTX_IDSIZE = 4;
-
-    /**
-     * Size of the ut_host field in the utmpx structure.
-     */
-    int UTX_HOSTSIZE = 256;
-
-    /**
-     * The Internet Protocol version 4 (IPv4) address family.
-     */
-    int AF_INET = 2;
-
-    /**
-     * The Internet Protocol version 6 (IPv6) address family.
-     */
-    int AF_INET6 = 30;
-
-    /**
-     * Reads a line from the current file position in the utmp file. It returns a pointer to a structure containing the
-     * fields of the line.
-     * <p>
-     * Not thread safe.
-     *
-     * @return a {@link MacUtmpx} on success, and NULL on failure (which includes the "record not found" case).
-     */
-    MacUtmpx getutxent();
-
-    /**
-     * Retrieves information about a file descriptor for a process.
-     *
-     * @param pid        The process ID.
-     * @param fd         The file descriptor.
-     * @param flavor     The type of information to retrieve.
-     * @param buffer     A {@link Structure} to store the retrieved information.
-     * @param buffersize The size of the buffer.
-     * @return An integer result code.
-     */
-    int proc_pidfdinfo(int pid, int fd, int flavor, Structure buffer, int buffersize);
 
     /**
      * JNA wrapper for the Mac utmpx structure.

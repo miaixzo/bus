@@ -41,6 +41,23 @@ public class Win32Printer {
     public static final String WIN32_PRINTER = "Win32_Printer";
 
     /**
+     * Creates a new Win32Printer instance.
+     */
+    public Win32Printer() {
+        // No initialization required.
+    }
+
+    /**
+     * Queries printer information.
+     *
+     * @return Information regarding printers
+     */
+    public static WmiResult<PrinterProperty> queryPrinters() {
+        WmiQuery<PrinterProperty> printerQuery = new WmiQuery<>(WIN32_PRINTER, PrinterProperty.class);
+        return Objects.requireNonNull(WmiQueryHandler.createInstance()).queryWMI(printerQuery);
+    }
+
+    /**
      * Printer properties from WMI
      *
      * @author Kimi Liu
@@ -79,23 +96,6 @@ public class Win32Printer {
          */
         DESCRIPTION;
 
-    }
-
-    /**
-     * Creates a new Win32Printer instance.
-     */
-    public Win32Printer() {
-        // No initialization required.
-    }
-
-    /**
-     * Queries printer information.
-     *
-     * @return Information regarding printers
-     */
-    public static WmiResult<PrinterProperty> queryPrinters() {
-        WmiQuery<PrinterProperty> printerQuery = new WmiQuery<>(WIN32_PRINTER, PrinterProperty.class);
-        return Objects.requireNonNull(WmiQueryHandler.createInstance()).queryWMI(printerQuery);
     }
 
 }

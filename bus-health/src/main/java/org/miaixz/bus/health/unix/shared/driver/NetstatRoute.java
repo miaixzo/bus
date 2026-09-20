@@ -35,7 +35,6 @@ import org.miaixz.bus.health.builtin.software.NetworkParams.IPRoute;
  * Queries and parses routing tables from {@code netstat}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class NetstatRoute {

@@ -207,13 +207,6 @@ public class MacFileSystem extends AbstractFileSystem {
      */
     protected static final Map<Integer, String> OPTIONS_MAP = new HashMap<>();
 
-    /**
-     * Constructs a new {@code MacFileSystem} instance.
-     */
-    public MacFileSystem() {
-        // No initialization required.
-    }
-
     static {
         OPTIONS_MAP.put(MNT_SYNCHRONOUS, "synchronous");
         OPTIONS_MAP.put(MNT_NOEXEC, "noexec");
@@ -236,6 +229,13 @@ public class MacFileSystem extends AbstractFileSystem {
         OPTIONS_MAP.put(MNT_DEFWRITE, "defwrite");
         OPTIONS_MAP.put(MNT_MULTILABEL, "multilabel");
         OPTIONS_MAP.put(MNT_NOATIME, "noatime");
+    }
+
+    /**
+     * Constructs a new {@code MacFileSystem} instance.
+     */
+    public MacFileSystem() {
+        // No initialization required.
     }
 
     /**

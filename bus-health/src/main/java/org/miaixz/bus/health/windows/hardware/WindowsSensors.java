@@ -39,7 +39,8 @@ import org.miaixz.bus.health.windows.driver.wmi.*;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Sensors from WMI or Open Hardware Monitor
+ * Windows sensors queried from hardware-monitor WMI namespaces, the optional {@code jLibreHardwareMonitor} library, or
+ * WMI.
  *
  * @author Kimi Liu
  */
@@ -62,51 +63,76 @@ final class WindowsSensors extends AbstractSensors {
     private static final String JLIBREHARDWAREMONITOR_PACKAGE = "io.github.pandalxb.jlibrehardwaremonitor";
 
     /**
-     * Queries the cpu temperature.
-     *
-     * @return the query cpu temperature result
+     * Open Hardware Monitor's hardware type for a processor.
      */
-    @Override
-    public double queryCpuTemperature() {
-        // Attempt to fetch value from Open Hardware Monitor if it is running,
-        // as it will give the most accurate results and the time to query (or
-        // attempt) is trivial
-        double tempC = getTempFromOHM();
-        if (tempC > 0d) {
-            return tempC;
+    private static final String OHM_CPU = "CPU";
+
+    /**
+     * Libre Hardware Monitor's hardware type for a processor.
+     */
+    private static final String LHM_CPU = "Cpu";
+
+    /**
+     * The temperature sensor type.
+     */
+    private static final String TEMPERATURE = "Temperature";
+
+    /**
+     * The fan sensor type.
+     */
+    private static final String FAN = "Fan";
+
+    /**
+     * The voltage sensor type.
+     */
+    private static final String VOLTAGE = "Voltage";
+
+    /**
+     * Whether the optional jLibreHardwareMonitor dependency is available.
+     */
+    private static final boolean LHM_JAR_PRESENT = isLhmJarPresent();
+
+    /**
+     * Tests whether the optional jLibreHardwareMonitor dependency is available without initializing it.
+     *
+     * @return {@code true} when the dependency is available
+     */
+    private static boolean isLhmJarPresent() {
+        try {
+            Class.forName(
+                    JLIBREHARDWAREMONITOR_PACKAGE + ".config.ComputerConfig",
+                    false,
+                    WindowsSensors.class.getClassLoader());
+            return true;
+        } catch (ClassNotFoundException e) {
+            Logger.debug(
+                    false,
+                    "Health",
+                    "jLibreHardwareMonitor is not on the class path. Sensor data will come from other sources.");
+            return false;
         }
-
-        // Fetch value from library LibreHardwareMonitorLib.dll(.NET 4.7.2 and above) or OpenHardwareMonitorLib.dll(.NET
-        // 2.0)
-        // without applications running
-        tempC = getTempFromLHM();
-        if (tempC > 0d) {
-            return tempC;
-        }
-
-        // If we get this far, OHM is not running. Try from WMI
-        tempC = getTempFromWMI();
-
-        // Other fallbacks to WMI are unreliable so we omit them
-        // Win32_TemperatureProbe is the official location but is not currently
-        // populated and is "reserved for future use"
-        return tempC;
     }
 
     /**
-     * Returns the temp from ohm.
+     * Returns the temperature from a hardware monitor's WMI namespace.
      *
-     * @return the get temp from ohm result
+     * @param namespace   the hardware-monitor WMI namespace
+     * @param cpuTypeName the monitor-specific CPU hardware type
+     * @return the CPU temperature, or zero if unavailable
      */
-    private static double getTempFromOHM() {
-        WmiResult<OhmSensor.ValueProperty> ohmSensors = getOhmSensors(
-                "Hardware",
-                "CPU",
-                "Temperature",
+    private static double getTempFromMonitorWmi(String namespace, String cpuTypeName) {
+        if (HardwareMonitorDisabled.isWmiDisabled(namespace)) {
+            return 0;
+        }
+        WmiResult<OhmSensor.ValueProperty> ohmSensors = getHardwareMonitorSensors(
+                namespace,
+                OhmHardware.HARDWARE,
+                cpuTypeName,
+                TEMPERATURE,
                 (h, ohmHardware) -> {
-                    String cpuIdentifier = selectOhmCpuIdentifier(ohmHardware, false);
+                    String cpuIdentifier = selectOhmCpuIdentifier(ohmHardware);
                     if (!cpuIdentifier.isEmpty()) {
-                        return OhmSensor.querySensorValue(h, cpuIdentifier, "Temperature");
+                        return OhmSensor.querySensorValue(h, namespace, cpuIdentifier, TEMPERATURE);
                     }
                     return null;
                 });
@@ -121,14 +147,14 @@ final class WindowsSensors extends AbstractSensors {
     }
 
     /**
-     * Returns the temp from lhm.
+     * Returns the temperature from the optional jLibreHardwareMonitor dependency.
      *
-     * @return the get temp from lhm result
+     * @return the CPU temperature, or zero if unavailable
      */
-    private static double getTempFromLHM() {
-        return getAverageValueFromLHM(
+    private static double getTempFromLhmJar() {
+        return getAverageValueFromLhmJar(
                 "CPU",
-                "Temperature",
+                TEMPERATURE,
                 (name, value) -> !name.contains("Max") && !name.contains("Average") && value > 0);
     }
 
@@ -156,50 +182,28 @@ final class WindowsSensors extends AbstractSensors {
     }
 
     /**
-     * Queries the fan speeds.
+     * Returns fan speeds from a hardware monitor's WMI namespace.
      *
-     * @return the query fan speeds result
+     * @param namespace   the hardware-monitor WMI namespace
+     * @param cpuTypeName the monitor-specific CPU hardware type
+     * @return fan speeds, or an empty array if unavailable
      */
-    @Override
-    public int[] queryFanSpeeds() {
-        // Attempt to fetch value from Open Hardware Monitor if it is running
-        int[] fanSpeeds = getFansFromOHM();
-        if (fanSpeeds.length > 0) {
-            return fanSpeeds;
+    private static int[] getFansFromMonitorWmi(String namespace, String cpuTypeName) {
+        if (HardwareMonitorDisabled.isWmiDisabled(namespace)) {
+            return Normal.EMPTY_INT_ARRAY;
         }
-
-        // Fetch value from library LibreHardwareMonitorLib.dll(.NET 4.7.2 and above) or OpenHardwareMonitorLib.dll(.NET
-        // 2.0)
-        // without applications running
-        fanSpeeds = getFansFromLHM();
-        if (fanSpeeds.length > 0) {
-            return fanSpeeds;
-        }
-
-        // If we get this far, OHM is not running.
-        // Try to get from conventional WMI
-        fanSpeeds = getFansFromWMI();
-        if (fanSpeeds.length > 0) {
-            return fanSpeeds;
-        }
-
-        // Default
-        return Normal.EMPTY_INT_ARRAY;
-    }
-
-    /**
-     * Returns the fans from ohm.
-     *
-     * @return the get fans from ohm result
-     */
-    private static int[] getFansFromOHM() {
-        WmiResult<OhmSensor.ValueProperty> ohmSensors = getOhmSensors("Hardware", "CPU", "Fan", (h, ohmHardware) -> {
-            String cpuIdentifier = WmiKit.getString(ohmHardware, OhmHardware.IdentifierProperty.IDENTIFIER, 0);
-            if (!cpuIdentifier.isEmpty()) {
-                return OhmSensor.querySensorValue(h, cpuIdentifier, "Fan");
-            }
-            return null;
-        });
+        WmiResult<OhmSensor.ValueProperty> ohmSensors = getHardwareMonitorSensors(
+                namespace,
+                OhmHardware.HARDWARE,
+                cpuTypeName,
+                FAN,
+                (h, ohmHardware) -> {
+                    String cpuIdentifier = selectOhmCpuIdentifier(ohmHardware);
+                    if (!cpuIdentifier.isEmpty()) {
+                        return OhmSensor.querySensorValue(h, namespace, cpuIdentifier, FAN);
+                    }
+                    return null;
+                });
         if (ohmSensors != null && ohmSensors.getResultCount() > 0) {
             int[] fanSpeeds = new int[ohmSensors.getResultCount()];
             for (int i = 0; i < ohmSensors.getResultCount(); i++) {
@@ -211,12 +215,12 @@ final class WindowsSensors extends AbstractSensors {
     }
 
     /**
-     * Returns the fans from lhm.
+     * Returns fan speeds from the optional jLibreHardwareMonitor dependency.
      *
-     * @return the get fans from lhm result
+     * @return fan speeds, or an empty array if unavailable
      */
-    private static int[] getFansFromLHM() {
-        List<?> sensors = getLhmSensors("SuperIO", "Fan");
+    private static int[] getFansFromLhmJar() {
+        List<?> sensors = queryLhmJarSensors("SuperIO", FAN);
         if (sensors == null || sensors.isEmpty()) {
             return Normal.EMPTY_INT_ARRAY;
         }
@@ -267,47 +271,29 @@ final class WindowsSensors extends AbstractSensors {
     }
 
     /**
-     * Queries the cpu voltage.
+     * Returns CPU voltage from a hardware monitor's WMI namespace.
      *
-     * @return the query cpu voltage result
+     * @param namespace   the hardware-monitor WMI namespace
+     * @param cpuTypeName the monitor-specific CPU hardware type
+     * @return CPU voltage, or zero if unavailable
      */
-    @Override
-    public double queryCpuVoltage() {
-        // Attempt to fetch value from Open Hardware Monitor if it is running
-        double volts = getVoltsFromOHM();
-        if (volts > 0d) {
-            return volts;
+    private static double getVoltsFromMonitorWmi(String namespace, String cpuTypeName) {
+        if (HardwareMonitorDisabled.isWmiDisabled(namespace)) {
+            return 0d;
         }
-
-        // Fetch value from library LibreHardwareMonitorLib.dll(.NET 4.7.2 and above) or OpenHardwareMonitorLib.dll(.NET
-        // 2.0)
-        // without applications running
-        volts = getVoltsFromLHM();
-        if (volts > 0d) {
-            return volts;
-        }
-
-        // If we get this far, OHM is not running.
-        // Try to get from conventional WMI
-        volts = getVoltsFromWMI();
-
-        return volts;
-    }
-
-    /**
-     * Returns the volts from ohm.
-     *
-     * @return the get volts from ohm result
-     */
-    private static double getVoltsFromOHM() {
-        WmiResult<OhmSensor.ValueProperty> ohmSensors = getOhmSensors(
-                "Sensor",
-                "Voltage",
-                "Voltage",
+        // Find the processor hardware first, then query its voltage sensors. The Hardware table has no SensorType
+        // property, so querying it directly for SensorType="Voltage" can never match.
+        WmiResult<OhmSensor.ValueProperty> ohmSensors = getHardwareMonitorSensors(
+                namespace,
+                OhmHardware.HARDWARE,
+                cpuTypeName,
+                VOLTAGE,
                 (h, ohmHardware) -> {
-                    String cpuIdentifier = selectOhmCpuIdentifier(ohmHardware, true);
-                    // Now fetch sensor
-                    return OhmSensor.querySensorValue(h, cpuIdentifier, "Voltage");
+                    String cpuIdentifier = selectOhmCpuIdentifier(ohmHardware);
+                    if (!cpuIdentifier.isEmpty()) {
+                        return OhmSensor.querySensorValue(h, namespace, cpuIdentifier, VOLTAGE);
+                    }
+                    return null;
                 });
         if (ohmSensors != null && ohmSensors.getResultCount() > 0) {
             return WmiKit.getFloat(ohmSensors, OhmSensor.ValueProperty.VALUE, 0);
@@ -316,14 +302,14 @@ final class WindowsSensors extends AbstractSensors {
     }
 
     /**
-     * Returns the volts from lhm.
+     * Returns CPU voltage from the optional jLibreHardwareMonitor dependency.
      *
-     * @return the get volts from lhm result
+     * @return CPU voltage, or zero if unavailable
      */
-    private static double getVoltsFromLHM() {
-        return getAverageValueFromLHM(
+    private static double getVoltsFromLhmJar() {
+        return getAverageValueFromLhmJar(
                 "SuperIO",
-                "Voltage",
+                VOLTAGE,
                 (name, value) -> name.toLowerCase(Locale.ROOT).contains("vcore") && value > 0);
     }
 
@@ -361,36 +347,27 @@ final class WindowsSensors extends AbstractSensors {
     }
 
     /**
-     * Selects a CPU hardware identifier from an Open Hardware Monitor result.
+     * Selects the first identifier from an already filtered hardware-monitor result.
      *
-     * @param ohmHardware the OHM hardware identifier result
-     * @param searchCpu   whether to prefer identifiers containing {@code cpu}
+     * @param ohmHardware the hardware identifier result
      * @return the selected identifier, or an empty string if no identifier is available
      */
-    private static String selectOhmCpuIdentifier(
-            WmiResult<OhmHardware.IdentifierProperty> ohmHardware,
-            boolean searchCpu) {
-        if (searchCpu) {
-            for (int i = 0; i < ohmHardware.getResultCount(); i++) {
-                String id = WmiKit.getString(ohmHardware, OhmHardware.IdentifierProperty.IDENTIFIER, i);
-                if (id.toLowerCase(Locale.ROOT).contains("cpu")) {
-                    return id;
-                }
-            }
-        }
+    private static String selectOhmCpuIdentifier(WmiResult<OhmHardware.IdentifierProperty> ohmHardware) {
         return WmiKit.getString(ohmHardware, OhmHardware.IdentifierProperty.IDENTIFIER, 0);
     }
 
     /**
-     * Returns the ohm sensors.
+     * Returns sensors from a hardware monitor's WMI namespace.
      *
+     * @param namespace           the hardware-monitor WMI namespace
      * @param typeToQuery         the type to query
      * @param typeName            the type name
      * @param sensorType          the sensor type
      * @param querySensorFunction the query sensor function
-     * @return the get ohm sensors result
+     * @return the hardware-monitor sensor result, or {@code null} if unavailable
      */
-    private static WmiResult<OhmSensor.ValueProperty> getOhmSensors(
+    private static WmiResult<OhmSensor.ValueProperty> getHardwareMonitorSensors(
+            String namespace,
             String typeToQuery,
             String typeName,
             String sensorType,
@@ -401,9 +378,13 @@ final class WindowsSensors extends AbstractSensors {
         try {
             comInit = h.initCOM();
             WmiResult<OhmHardware.IdentifierProperty> ohmHardware = OhmHardware
-                    .queryHwIdentifier(h, typeToQuery, typeName);
+                    .queryHwIdentifier(h, namespace, typeToQuery, typeName);
             if (ohmHardware.getResultCount() > 0) {
-                Logger.debug(false, "Health", "Found {} data in Open Hardware Monitor", sensorType);
+                if (OhmHardware.OHM_NAMESPACE.equals(namespace)) {
+                    Logger.debug(false, "Health", "Found {} data in Open Hardware Monitor", sensorType);
+                } else {
+                    Logger.debug(false, "Health", "Found {} data in Libre Hardware Monitor", sensorType);
+                }
                 ohmSensors = querySensorFunction.apply(h, ohmHardware);
             }
         } catch (COMException e) {
@@ -417,18 +398,18 @@ final class WindowsSensors extends AbstractSensors {
     }
 
     /**
-     * Returns the average value from lhm.
+     * Returns the average value from the optional jLibreHardwareMonitor dependency.
      *
      * @param hardwareType        the hardware type
      * @param sensorType          the sensor type
      * @param sensorValidFunction the sensor valid function
      * @return the get average value from lhm result
      */
-    private static double getAverageValueFromLHM(
+    private static double getAverageValueFromLhmJar(
             String hardwareType,
             String sensorType,
             BiPredicateX<String, Double> sensorValidFunction) {
-        List<?> sensors = getLhmSensors(hardwareType, sensorType);
+        List<?> sensors = queryLhmJarSensors(hardwareType, sensorType);
         if (sensors == null || sensors.isEmpty()) {
             return 0;
         }
@@ -457,13 +438,16 @@ final class WindowsSensors extends AbstractSensors {
     }
 
     /**
-     * Returns the lhm sensors.
+     * Returns sensors from the optional jLibreHardwareMonitor dependency.
      *
      * @param hardwareType the hardware type
      * @param sensorType   the sensor type
      * @return the get lhm sensors result
      */
-    private static List<?> getLhmSensors(String hardwareType, String sensorType) {
+    private static List<?> queryLhmJarSensors(String hardwareType, String sensorType) {
+        if (!LHM_JAR_PRESENT) {
+            return Collections.emptyList();
+        }
         try {
             Class<?> computerConfigClass = Class.forName(JLIBREHARDWAREMONITOR_PACKAGE + ".config.ComputerConfig");
             Class<?> libreHardwareManagerClass = Class
@@ -484,12 +468,118 @@ final class WindowsSensors extends AbstractSensors {
 
             Method querySensorsMethod = libreHardwareManagerClass.getMethod("querySensors", String.class, String.class);
             return (List<?>) querySensorsMethod.invoke(instance, hardwareType, sensorType);
-        } catch (ClassNotFoundException e) {
-            Logger.trace(false, "Health", "jLibreHardwareMonitor not available: {}", e.getClass().getSimpleName());
         } catch (Exception e) {
             Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getClass().getSimpleName());
         }
         return Collections.emptyList();
+    }
+
+    /**
+     * Queries the CPU temperature.
+     *
+     * @return the query cpu temperature result
+     */
+    @Override
+    public double queryCpuTemperature() {
+        // Attempt to fetch value from Open Hardware Monitor if it is running,
+        // as it will give the most accurate results and the time to query (or
+        // attempt) is trivial
+        double tempC = getTempFromMonitorWmi(OhmHardware.OHM_NAMESPACE, OHM_CPU);
+        if (tempC > 0d) {
+            return tempC;
+        }
+
+        // Then Libre Hardware Monitor, the maintained successor, which publishes the same schema
+        tempC = getTempFromMonitorWmi(LhmSensor.LHM_NAMESPACE, LHM_CPU);
+        if (tempC > 0d) {
+            return tempC;
+        }
+
+        // Fetch value from library LibreHardwareMonitorLib.dll(.NET 4.7.2 and above) or OpenHardwareMonitorLib.dll(.NET
+        // 2.0)
+        // without applications running
+        tempC = getTempFromLhmJar();
+        if (tempC > 0d) {
+            return tempC;
+        }
+
+        // If no hardware monitor supplied a value, try conventional WMI
+        tempC = getTempFromWMI();
+
+        // Other fallbacks to WMI are unreliable so we omit them
+        // Win32_TemperatureProbe is the official location but is not currently
+        // populated and is "reserved for future use"
+        return tempC;
+    }
+
+    /**
+     * Queries the fan speeds.
+     *
+     * @return the query fan speeds result
+     */
+    @Override
+    public int[] queryFanSpeeds() {
+        // Attempt to fetch value from Open Hardware Monitor if it is running
+        int[] fanSpeeds = getFansFromMonitorWmi(OhmHardware.OHM_NAMESPACE, OHM_CPU);
+        if (fanSpeeds.length > 0) {
+            return fanSpeeds;
+        }
+
+        // Then Libre Hardware Monitor, the maintained successor, which publishes the same schema
+        fanSpeeds = getFansFromMonitorWmi(LhmSensor.LHM_NAMESPACE, LHM_CPU);
+        if (fanSpeeds.length > 0) {
+            return fanSpeeds;
+        }
+
+        // Fetch value from library LibreHardwareMonitorLib.dll(.NET 4.7.2 and above) or OpenHardwareMonitorLib.dll(.NET
+        // 2.0)
+        // without applications running
+        fanSpeeds = getFansFromLhmJar();
+        if (fanSpeeds.length > 0) {
+            return fanSpeeds;
+        }
+
+        // If no hardware monitor supplied a value, try conventional WMI
+        fanSpeeds = getFansFromWMI();
+        if (fanSpeeds.length > 0) {
+            return fanSpeeds;
+        }
+
+        // Default
+        return Normal.EMPTY_INT_ARRAY;
+    }
+
+    /**
+     * Queries the CPU voltage.
+     *
+     * @return the query cpu voltage result
+     */
+    @Override
+    public double queryCpuVoltage() {
+        // Attempt to fetch value from Open Hardware Monitor if it is running
+        double volts = getVoltsFromMonitorWmi(OhmHardware.OHM_NAMESPACE, OHM_CPU);
+        if (volts > 0d) {
+            return volts;
+        }
+
+        // Then Libre Hardware Monitor, the maintained successor, which publishes the same schema
+        volts = getVoltsFromMonitorWmi(LhmSensor.LHM_NAMESPACE, LHM_CPU);
+        if (volts > 0d) {
+            return volts;
+        }
+
+        // Fetch value from library LibreHardwareMonitorLib.dll(.NET 4.7.2 and above) or OpenHardwareMonitorLib.dll(.NET
+        // 2.0)
+        // without applications running
+        volts = getVoltsFromLhmJar();
+        if (volts > 0d) {
+            return volts;
+        }
+
+        // If no hardware monitor supplied a value, try conventional WMI
+        volts = getVoltsFromWMI();
+
+        return volts;
     }
 
 }

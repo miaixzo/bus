@@ -97,6 +97,26 @@ public abstract class AbstractPrinter implements Printer {
     }
 
     /**
+     * Returns the redact port name result.
+     *
+     * @param portName the port name
+     * @return the redact port name result
+     */
+    private static String redactPortName(String portName) {
+        if (portName == null || portName.isEmpty()) {
+            return Normal.EMPTY;
+        }
+        int schemeEnd = portName.indexOf("://");
+        if (schemeEnd > 0) {
+            int atIndex = portName.indexOf(Symbol.C_AT, schemeEnd + 3);
+            if (atIndex > schemeEnd + 3) {
+                return portName.substring(0, schemeEnd + 3) + "***" + portName.substring(atIndex);
+            }
+        }
+        return portName;
+    }
+
+    /**
      * Returns the name.
      *
      * @return the get name result
@@ -186,26 +206,6 @@ public abstract class AbstractPrinter implements Printer {
         return "Printer [name=" + name + ", driverName=" + driverName + ", description=" + description + ", status="
                 + status + ", statusReason=" + statusReason + ", isDefault=" + isDefault + ", isLocal=" + isLocal
                 + ", portName=" + redactPortName(portName) + "]";
-    }
-
-    /**
-     * Returns the redact port name result.
-     *
-     * @param portName the port name
-     * @return the redact port name result
-     */
-    private static String redactPortName(String portName) {
-        if (portName == null || portName.isEmpty()) {
-            return Normal.EMPTY;
-        }
-        int schemeEnd = portName.indexOf("://");
-        if (schemeEnd > 0) {
-            int atIndex = portName.indexOf(Symbol.C_AT, schemeEnd + 3);
-            if (atIndex > schemeEnd + 3) {
-                return portName.substring(0, schemeEnd + 3) + "***" + portName.substring(atIndex);
-            }
-        }
-        return portName;
     }
 
 }

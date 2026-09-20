@@ -83,131 +83,106 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
      */
     private final SupplierX<Map<String, String>> environmentVariables = Memoizer
             .memoize(this::queryEnvironmentVariables);
-
-    /**
-     * The path value.
-     */
-    private volatile String path = Normal.EMPTY;
-
-    /**
-     * The name value.
-     */
-    private volatile String name;
-
-    /**
-     * The state value.
-     */
-    private volatile State state = State.INVALID;
-
-    /**
-     * The user value.
-     */
-    private volatile String user;
-
-    /**
-     * The userID value.
-     */
-    private volatile String userID;
-
-    /**
-     * The group value.
-     */
-    private volatile String group;
-
-    /**
-     * The groupID value.
-     */
-    private volatile String groupID;
-
-    /**
-     * The parentProcessID value.
-     */
-    private volatile int parentProcessID;
-
-    /**
-     * The threadCount value.
-     */
-    private volatile int threadCount;
-
-    /**
-     * The priority value.
-     */
-    private volatile int priority;
-
-    /**
-     * The virtualSize value.
-     */
-    private volatile long virtualSize;
-
-    /**
-     * The residentSetSize value.
-     */
-    private volatile long residentSetSize;
-
-    /**
-     * The kernelTime value.
-     */
-    private volatile long kernelTime;
-
-    /**
-     * The userTime value.
-     */
-    private volatile long userTime;
-
-    /**
-     * The startTime value.
-     */
-    private volatile long startTime;
-
-    /**
-     * The upTime value.
-     */
-    private volatile long upTime;
-
-    /**
-     * The bytesRead value.
-     */
-    private volatile long bytesRead;
-
-    /**
-     * The bytesWritten value.
-     */
-    private volatile long bytesWritten;
-
-    /**
-     * The minorFaults value.
-     */
-    private volatile long minorFaults;
-
-    /**
-     * The majorFaults value.
-     */
-    private volatile long majorFaults;
-
-    /**
-     * The contextSwitches value.
-     */
-    private volatile long contextSwitches;
-
-    /**
-     * The voluntaryContextSwitches value.
-     */
-    private volatile long voluntaryContextSwitches;
-
-    /**
-     * The involuntaryContextSwitches value.
-     */
-    private volatile long involuntaryContextSwitches;
-
-    /**
-     * The commandLineBackup value.
-     */
-    private volatile String commandLineBackup;
-
     /**
      * The commandLine value.
      */
     private final SupplierX<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+    /**
+     * The path value.
+     */
+    private volatile String path = Normal.EMPTY;
+    /**
+     * The name value.
+     */
+    private volatile String name;
+    /**
+     * The state value.
+     */
+    private volatile State state = State.INVALID;
+    /**
+     * The user value.
+     */
+    private volatile String user;
+    /**
+     * The userID value.
+     */
+    private volatile String userID;
+    /**
+     * The group value.
+     */
+    private volatile String group;
+    /**
+     * The groupID value.
+     */
+    private volatile String groupID;
+    /**
+     * The parentProcessID value.
+     */
+    private volatile int parentProcessID;
+    /**
+     * The threadCount value.
+     */
+    private volatile int threadCount;
+    /**
+     * The priority value.
+     */
+    private volatile int priority;
+    /**
+     * The virtualSize value.
+     */
+    private volatile long virtualSize;
+    /**
+     * The residentSetSize value.
+     */
+    private volatile long residentSetSize;
+    /**
+     * The kernelTime value.
+     */
+    private volatile long kernelTime;
+    /**
+     * The userTime value.
+     */
+    private volatile long userTime;
+    /**
+     * The startTime value.
+     */
+    private volatile long startTime;
+    /**
+     * The upTime value.
+     */
+    private volatile long upTime;
+    /**
+     * The bytesRead value.
+     */
+    private volatile long bytesRead;
+    /**
+     * The bytesWritten value.
+     */
+    private volatile long bytesWritten;
+    /**
+     * The minorFaults value.
+     */
+    private volatile long minorFaults;
+    /**
+     * The majorFaults value.
+     */
+    private volatile long majorFaults;
+    /**
+     * The contextSwitches value.
+     */
+    private volatile long contextSwitches;
+    /**
+     * The voluntaryContextSwitches value.
+     */
+    private volatile long voluntaryContextSwitches;
+    /**
+     * The involuntaryContextSwitches value.
+     */
+    private volatile long involuntaryContextSwitches;
+    /**
+     * The commandLineBackup value.
+     */
+    private volatile String commandLineBackup;
 
     /**
      * Creates a new FreeBsdOSProcess instance.
@@ -220,6 +195,17 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         super(pid);
         this.os = os;
         updateAttributes(psMap);
+    }
+
+    /**
+     * Clamps a freshly parsed CPU-time counter so it never falls below the value already reported.
+     *
+     * @param previous The value last reported.
+     * @param parsed   The value just parsed from {@code ps}.
+     * @return {@code parsed}, or {@code previous} if that would be a decrease.
+     */
+    static long monotonic(long previous, long parsed) {
+        return Math.max(previous, parsed);
     }
 
     /**
@@ -782,17 +768,6 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         this.contextSwitches = this.voluntaryContextSwitches + this.involuntaryContextSwitches;
         this.commandLineBackup = psMap.get(FreeBsdOperatingSystem.PsKeywords.ARGS);
         return true;
-    }
-
-    /**
-     * Clamps a freshly parsed CPU-time counter so it never falls below the value already reported.
-     *
-     * @param previous The value last reported.
-     * @param parsed   The value just parsed from {@code ps}.
-     * @return {@code parsed}, or {@code previous} if that would be a decrease.
-     */
-    static long monotonic(long previous, long parsed) {
-        return Math.max(previous, parsed);
     }
 
     /**

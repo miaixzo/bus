@@ -53,67 +53,31 @@ import org.miaixz.bus.health.mac.jna.SystemB;
 public class SmcKit {
 
     /**
-     * Instance of IOKit.
-     */
-    private static final IOKit IO = IOKit.INSTANCE;
-
-    /**
-     * Reports a connection failure once rather than on every sensor query.
-     */
-    private static final SmcOpenFailure OPEN_FAILURE = new SmcOpenFailure();
-
-    /**
-     * Thread-safe map for caching info retrieved by a key necessary for subsequent calls.
-     */
-    private static Map<Integer, SMCKeyDataKeyInfo> keyInfoCache = new ConcurrentHashMap<>();
-
-    /**
-     * Byte array used for matching return type
-     */
-    private static final byte[] DATATYPE_SP78 = Parsing.asciiStringToByteArray("sp78", 5);
-
-    /**
-     * Byte array used for matching FPE2 return type.
-     */
-    private static final byte[] DATATYPE_FPE2 = Parsing.asciiStringToByteArray("fpe2", 5);
-
-    /**
-     * Byte array used for matching FLT return type.
-     */
-    private static final byte[] DATATYPE_FLT = Parsing.asciiStringToByteArray("flt ", 5);
-
-    /**
      * SMC key for the number of fans.
      */
     public static final String SMC_KEY_FAN_NUM = "FNum";
-
     /**
      * SMC key for fan speed, where %d is the fan index.
      */
     public static final String SMC_KEY_FAN_SPEED = "F%dAc";
-
     /**
      * SMC key for CPU temperature.
      */
     public static final String SMC_KEY_CPU_TEMP = "TC0P";
-
     /**
      * SMC key for CPU voltage.
      */
     public static final String SMC_KEY_CPU_VOLTAGE = "VC0C";
-
     /**
      * Apple Silicon CPU-die aggregate temperature keys, tried in order until one returns a plausible value.
      */
     public static final List<String> SMC_KEYS_CPU_TEMP_AGGREGATE_AS = Collections
             .unmodifiableList(Arrays.asList("TCMb", "TCMz"));
-
     /**
      * Apple Silicon CPU temperature keys, tried in order until one returns a plausible value.
      */
     public static final List<String> SMC_KEYS_CPU_TEMP_AS = Collections
             .unmodifiableList(Arrays.asList("Tp09", "Tp0T", "Tp01", "Tp05", "Tp0D"));
-
     /**
      * Fallback Apple Silicon GPU temperature keys, used when runtime discovery cannot complete.
      */
@@ -134,64 +98,92 @@ public class SmcKit {
                     "Tg0S",
                     "Tg0y",
                     "Tg0z"));
-
     /**
      * SMC key whose value is the number of keys in the key index.
      */
     public static final String SMC_KEY_COUNT = "#KEY";
-
-    /**
-     * Prefix shared by Apple Silicon GPU cluster temperature keys.
-     */
-    private static final String GPU_KEY_PREFIX = "Tg";
-
-    /**
-     * Prefix shared by fan keys.
-     */
-    private static final String FAN_KEY_PREFIX = "F";
-
-    /**
-     * GPU temperature keys, discovered on first use.
-     */
-    private static final SmcKeyCache GPU_KEYS = new SmcKeyCache(Builder._MAC_SENSORS_GPUTEMPERATURE_KEYS,
-            "GPU temperature", SMC_KEYS_GPU_TEMP_AS);
-
-    /**
-     * Fan speed keys, discovered on first use.
-     */
-    private static final SmcKeyCache FAN_KEYS = new SmcKeyCache(Builder._MAC_SENSORS_FANSPEED_KEYS, "fan speed",
-            Collections.emptyList());
-
     /**
      * SMC key for CPU voltage.
      */
     public static final String SMC_KEY_CPU_VOLTAGE_AS = "VP0C";
-
     /**
      * CPU voltage keys, tried in order until one returns a plausible value.
      */
     public static final List<String> SMC_KEYS_CPU_VOLTAGE = Collections
             .unmodifiableList(Arrays.asList(SMC_KEY_CPU_VOLTAGE_AS, SMC_KEY_CPU_VOLTAGE));
-
     /**
      * SMC command to read bytes.
      */
     public static final byte SMC_CMD_READ_BYTES = 5;
-
     /**
      * SMC command to read a key name at an index in the key index.
      */
     public static final byte SMC_CMD_READ_INDEX = 8;
-
     /**
      * SMC command to read key information.
      */
     public static final byte SMC_CMD_READ_KEYINFO = 9;
-
     /**
      * Kernel index for SMC.
      */
     public static final int KERNEL_INDEX_SMC = 2;
+    /**
+     * Lowest reading accepted as a genuine temperature, in degrees Celsius.
+     */
+    public static final double MIN_PLAUSIBLE_TEMPERATURE = 15d;
+    /**
+     * Lowest reading accepted as a plausible CPU voltage, in volts.
+     */
+    public static final double MIN_PLAUSIBLE_VOLTAGE = SmcSensorValues.MIN_PLAUSIBLE_VOLTAGE;
+    /**
+     * Instance of IOKit.
+     */
+    private static final IOKit IO = IOKit.INSTANCE;
+    /**
+     * Reports a connection failure once rather than on every sensor query.
+     */
+    private static final SmcOpenFailure OPEN_FAILURE = new SmcOpenFailure();
+    /**
+     * Byte array used for matching return type
+     */
+    private static final byte[] DATATYPE_SP78 = Parsing.asciiStringToByteArray("sp78", 5);
+    /**
+     * Byte array used for matching FPE2 return type.
+     */
+    private static final byte[] DATATYPE_FPE2 = Parsing.asciiStringToByteArray("fpe2", 5);
+    /**
+     * Byte array used for matching FLT return type.
+     */
+    private static final byte[] DATATYPE_FLT = Parsing.asciiStringToByteArray("flt ", 5);
+    /**
+     * Prefix shared by Apple Silicon GPU cluster temperature keys.
+     */
+    private static final String GPU_KEY_PREFIX = "Tg";
+    /**
+     * Prefix shared by fan keys.
+     */
+    private static final String FAN_KEY_PREFIX = "F";
+    /**
+     * GPU temperature keys, discovered on first use.
+     */
+    private static final SmcKeyCache GPU_KEYS = new SmcKeyCache(Builder._MAC_SENSORS_GPUTEMPERATURE_KEYS,
+            "GPU temperature", SMC_KEYS_GPU_TEMP_AS);
+    /**
+     * Fan speed keys, discovered on first use.
+     */
+    private static final SmcKeyCache FAN_KEYS = new SmcKeyCache(Builder._MAC_SENSORS_FANSPEED_KEYS, "fan speed",
+            Collections.emptyList());
+    /**
+     * Thread-safe map for caching info retrieved by a key necessary for subsequent calls.
+     */
+    private static Map<Integer, SMCKeyDataKeyInfo> keyInfoCache = new ConcurrentHashMap<>();
+
+    /**
+     * Keeps macOS SMC queries on the static API.
+     */
+    public SmcKit() {
+        // No initialization required.
+    }
 
     /**
      * Open a connection to SMC.
@@ -276,11 +268,6 @@ public class SmcKit {
         }
         return 0d;
     }
-
-    /**
-     * Lowest reading accepted as a genuine temperature, in degrees Celsius.
-     */
-    public static final double MIN_PLAUSIBLE_TEMPERATURE = 15d;
 
     /**
      * Tests whether a reading is plausible as a temperature.
@@ -408,18 +395,6 @@ public class SmcKit {
         List<String> configured = SmcKeyIndex
                 .parseConfiguredKeys(Builder.get(Builder._MAC_SENSORS_CPUVOLTAGE_KEYS, ""));
         return configured.isEmpty() ? SMC_KEYS_CPU_VOLTAGE : configured;
-    }
-
-    /**
-     * Lowest reading accepted as a plausible CPU voltage, in volts.
-     */
-    public static final double MIN_PLAUSIBLE_VOLTAGE = SmcSensorValues.MIN_PLAUSIBLE_VOLTAGE;
-
-    /**
-     * Keeps macOS SMC queries on the static API.
-     */
-    public SmcKit() {
-        // No initialization required.
     }
 
     /**

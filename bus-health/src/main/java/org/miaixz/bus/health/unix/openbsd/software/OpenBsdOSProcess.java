@@ -103,52 +103,42 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
      * The bitness value.
      */
     private final int bitness;
-
-    /**
-     * The state value.
-     */
-    private volatile OSProcess.State state = OSProcess.State.INVALID;
-
-    /**
-     * The name value.
-     */
-    private volatile String name;
-
-    /**
-     * The path value.
-     */
-    private volatile String path = Normal.EMPTY;
-
-    /**
-     * The user value.
-     */
-    private volatile String user;
-
-    /**
-     * The userID value.
-     */
-    private volatile String userID;
-
-    /**
-     * The group value.
-     */
-    private volatile String group;
-
-    /**
-     * The groupID value.
-     */
-    private volatile String groupID;
-
-    /**
-     * The commandLineBackup value.
-     */
-    private volatile String commandLineBackup;
-
     /**
      * The commandLine value.
      */
     private final SupplierX<String> commandLine = Memoizer.memoize(this::queryCommandLine);
-
+    /**
+     * The state value.
+     */
+    private volatile OSProcess.State state = OSProcess.State.INVALID;
+    /**
+     * The name value.
+     */
+    private volatile String name;
+    /**
+     * The path value.
+     */
+    private volatile String path = Normal.EMPTY;
+    /**
+     * The user value.
+     */
+    private volatile String user;
+    /**
+     * The userID value.
+     */
+    private volatile String userID;
+    /**
+     * The group value.
+     */
+    private volatile String group;
+    /**
+     * The groupID value.
+     */
+    private volatile String groupID;
+    /**
+     * The commandLineBackup value.
+     */
+    private volatile String commandLineBackup;
     /**
      * The parentProcessID value.
      */
@@ -244,6 +234,17 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         this.bitness = Native.LONG_SIZE * 8;
         updateThreadCount();
         updateAttributes(psMap);
+    }
+
+    /**
+     * Clamps a freshly parsed CPU-time counter so it never falls below the value already reported.
+     *
+     * @param previous The value last reported.
+     * @param parsed   The value just parsed from {@code ps}.
+     * @return {@code parsed}, or {@code previous} if that would be a decrease.
+     */
+    static long monotonic(long previous, long parsed) {
+        return Math.max(previous, parsed);
     }
 
     /**
@@ -792,17 +793,6 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         this.contextSwitches = this.voluntaryContextSwitches + this.involuntaryContextSwitches;
         this.commandLineBackup = psMap.get(PsKeywords.ARGS);
         return true;
-    }
-
-    /**
-     * Clamps a freshly parsed CPU-time counter so it never falls below the value already reported.
-     *
-     * @param previous The value last reported.
-     * @param parsed   The value just parsed from {@code ps}.
-     * @return {@code parsed}, or {@code previous} if that would be a decrease.
-     */
-    static long monotonic(long previous, long parsed) {
-        return Math.max(previous, parsed);
     }
 
     /**

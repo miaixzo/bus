@@ -60,74 +60,20 @@ public class AdlKit {
     // -------------------------------------------------------------------------
 
     /**
-     * The Holder class.
-     *
-     * @author Kimi Liu
-     */
-    private static final class Holder {
-
-        /**
-         * The LIB constant.
-         */
-        static final Adl.AdlLibrary LIB;
-
-        /**
-         * The LIBRARY_LOADED constant.
-         */
-        static final boolean LIBRARY_LOADED;
-        // Strong reference prevents GC of the callback while ADL holds a native function pointer to it.
-        // Uses raw Pointer (not Memory) because ADL frees the native allocation directly via C free().
-        // Memory's destructor would double-free the same address.
-        /**
-         * The MALLOC_CB constant.
-         */
-        static final Adl.AdlMallocCallback MALLOC_CB;
-
-        static {
-            Adl.AdlLibrary lib = null;
-            boolean loaded = false;
-            Adl.AdlMallocCallback cb = null;
-            try {
-                try {
-                    lib = Native.load("atiadlxx", Adl.AdlLibrary.class);
-                } catch (UnsatisfiedLinkError e) {
-                    lib = Native.load("atiadlxy", Adl.AdlLibrary.class);
-                }
-                cb = size -> {
-                    if (size <= 0) {
-                        return Pointer.NULL;
-                    }
-                    long addr = Native.malloc(size);
-                    return addr == 0L ? Pointer.NULL : new Pointer(addr);
-                };
-                loaded = true;
-                Logger.debug(false, "Health", "ADL library loaded");
-            } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
-                Logger.debug(false, "Health", "ADL library not available: {}", e.getClass().getSimpleName());
-            }
-            LIB = lib;
-            LIBRARY_LOADED = loaded;
-            MALLOC_CB = cb;
-        }
-
-    }
-
-    // Lazy adapter enumeration state — written once, read-only thereafter
-    /**
      * The ENUM_LOCK constant.
      */
     private static final Object ENUM_LOCK = new Object();
 
-    /**
-     * The adaptersEnumerated value.
-     */
-    private static volatile boolean adaptersEnumerated = false;
-
+    // Lazy adapter enumeration state — written once, read-only thereafter
     /**
      * The BUS_TO_INDEX constant.
      */
     private static final AtomicReference<Map<Integer, Integer>> BUS_TO_INDEX = new AtomicReference<>(
             Collections.emptyMap());
+    /**
+     * The adaptersEnumerated value.
+     */
+    private static volatile boolean adaptersEnumerated = false;
 
     /**
      * Creates a new AdlKit instance.
@@ -135,10 +81,6 @@ public class AdlKit {
     public AdlKit() {
         // No initialization required.
     }
-
-    // -------------------------------------------------------------------------
-    // ADL lifecycle management
-    // -------------------------------------------------------------------------
 
     /**
      * Calls {@code ADL2_Main_Control_Create}, incrementing ADL's internal reference count. Every successful call must
@@ -160,6 +102,10 @@ public class AdlKit {
         Logger.debug(false, "Health", "ADL2_Main_Control_Create failed with code {}", ret);
         return null;
     }
+
+    // -------------------------------------------------------------------------
+    // ADL lifecycle management
+    // -------------------------------------------------------------------------
 
     /**
      * Calls {@code ADL2_Main_Control_Destroy}, decrementing the same internal reference count that {@link #adlInit()}
@@ -309,10 +255,6 @@ public class AdlKit {
         return raw < Normal._0 ? Normal.__1 : raw / Normal._100;
     }
 
-    // -------------------------------------------------------------------------
-    // Public API
-    // -------------------------------------------------------------------------
-
     /**
      * Returns whether the ADL native library was successfully loaded. Does not indicate whether any AMD GPU is present
      * or whether {@code ADL2_Main_Control_Create} will succeed.
@@ -322,6 +264,10 @@ public class AdlKit {
     public static boolean isAvailable() {
         return Holder.LIBRARY_LOADED;
     }
+
+    // -------------------------------------------------------------------------
+    // Public API
+    // -------------------------------------------------------------------------
 
     /**
      * Finds the ADL adapter index for the given PCI bus number.
@@ -466,6 +412,59 @@ public class AdlKit {
         } finally {
             adlUninit(ctx);
         }
+    }
+
+    /**
+     * The Holder class.
+     *
+     * @author Kimi Liu
+     */
+    private static final class Holder {
+
+        /**
+         * The LIB constant.
+         */
+        static final Adl.AdlLibrary LIB;
+
+        /**
+         * The LIBRARY_LOADED constant.
+         */
+        static final boolean LIBRARY_LOADED;
+        // Strong reference prevents GC of the callback while ADL holds a native function pointer to it.
+        // Uses raw Pointer (not Memory) because ADL frees the native allocation directly via C free().
+        // Memory's destructor would double-free the same address.
+        /**
+         * The MALLOC_CB constant.
+         */
+        static final Adl.AdlMallocCallback MALLOC_CB;
+
+        static {
+            Adl.AdlLibrary lib = null;
+            boolean loaded = false;
+            Adl.AdlMallocCallback cb = null;
+            try {
+                try {
+                    lib = Native.load("atiadlxx", Adl.AdlLibrary.class);
+                } catch (UnsatisfiedLinkError e) {
+                    lib = Native.load("atiadlxy", Adl.AdlLibrary.class);
+                }
+                cb = size -> {
+                    if (size <= 0) {
+                        return Pointer.NULL;
+                    }
+                    long addr = Native.malloc(size);
+                    return addr == 0L ? Pointer.NULL : new Pointer(addr);
+                };
+                loaded = true;
+                Logger.debug(false, "Health", "ADL library loaded");
+            } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
+                Logger.debug(false, "Health", "ADL library not available: {}", e.getClass().getSimpleName());
+            }
+            LIB = lib;
+            LIBRARY_LOADED = loaded;
+            MALLOC_CB = cb;
+        }
+
     }
 
 }

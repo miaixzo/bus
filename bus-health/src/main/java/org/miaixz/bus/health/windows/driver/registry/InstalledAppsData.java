@@ -51,13 +51,6 @@ public class InstalledAppsData {
      */
     private static final int[] ACCESS_FLAGS = { KEY_WOW64_64KEY, KEY_WOW64_32KEY };
 
-    /**
-     * Creates a new InstalledAppsData instance.
-     */
-    public InstalledAppsData() {
-        // No initialization required.
-    }
-
     static {
         REGISTRY_PATHS.put(
                 HKEY_LOCAL_MACHINE,
@@ -66,6 +59,13 @@ public class InstalledAppsData {
                         "SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall"));
 
         REGISTRY_PATHS.put(HKEY_CURRENT_USER, Arrays.asList("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall"));
+    }
+
+    /**
+     * Creates a new InstalledAppsData instance.
+     */
+    public InstalledAppsData() {
+        // No initialization required.
     }
 
     /**

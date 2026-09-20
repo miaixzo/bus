@@ -54,37 +54,6 @@ import org.miaixz.bus.logger.Logger;
 final class WindowsNetworkParams extends AbstractNetworkParams {
 
     /**
-     * A route row read from the IP Helper API.
-     */
-    public static final class RouteRow {
-
-        /**
-         * Destination prefix address bytes.
-         */
-        public byte[] destination = Normal.EMPTY_BYTE_ARRAY;
-
-        /**
-         * Destination prefix length.
-         */
-        public int prefixLength = -1;
-
-        /**
-         * Next hop address bytes.
-         */
-        public byte[] nextHop = Normal.EMPTY_BYTE_ARRAY;
-
-        /**
-         * Outgoing interface index.
-         */
-        public int interfaceIndex = -1;
-
-        /**
-         * Route metric.
-         */
-        public long metric = -1L;
-    }
-
-    /**
      * Parses the ipv4 route.
      *
      * @return the parse ipv4 route result
@@ -114,6 +83,64 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
             }
         }
         return Normal.EMPTY;
+    }
+
+    /**
+     * Tests whether an address is unspecified.
+     *
+     * @param address The address bytes.
+     * @return {@code true} if all bytes are zero.
+     */
+    private static boolean isUnspecified(byte[] address) {
+        for (byte b : address) {
+            if (b != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Reads route rows from a native routing table.
+     *
+     * @param table The native routing table pointer.
+     * @return The route rows.
+     */
+    private static List<RouteRow> readRows(Pointer table) {
+        int numEntries = table.getInt(0);
+        if (numEntries <= 0) {
+            return new ArrayList<>();
+        }
+        int rowSize = new MIB_IPFORWARD_ROW2().size();
+        List<RouteRow> rows = new ArrayList<>(numEntries);
+        for (int i = 0; i < numEntries; i++) {
+            MIB_IPFORWARD_ROW2 row = Structure
+                    .newInstance(MIB_IPFORWARD_ROW2.class, table.share(8L + (long) i * rowSize));
+            row.read();
+            RouteRow out = new RouteRow();
+            out.destination = addressBytes(row.DestinationPrefix.Prefix);
+            out.prefixLength = row.DestinationPrefix.PrefixLength & 0xff;
+            out.nextHop = addressBytes(row.NextHop);
+            out.interfaceIndex = row.InterfaceIndex;
+            out.metric = Parsing.unsignedIntToLong(row.Metric);
+            rows.add(out);
+        }
+        return rows;
+    }
+
+    /**
+     * Reads address bytes from a socket address.
+     *
+     * @param address The socket address.
+     * @return The address bytes.
+     */
+    private static byte[] addressBytes(SOCKADDR_INET address) {
+        if (address.si_family == IPHlpAPI.AF_INET) {
+            return Parsing.parseIntToIP(address.ipv4AddrOrFlowInfo);
+        } else if (address.si_family == IPHlpAPI.AF_INET6) {
+            return Arrays.copyOf(address.ipv6Addr, 16);
+        }
+        return Normal.EMPTY_BYTE_ARRAY;
     }
 
     /**
@@ -180,21 +207,6 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
     }
 
     /**
-     * Tests whether an address is unspecified.
-     *
-     * @param address The address bytes.
-     * @return {@code true} if all bytes are zero.
-     */
-    private static boolean isUnspecified(byte[] address) {
-        for (byte b : address) {
-            if (b != 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * Queries route rows from the IP Helper API.
      *
      * @return The route rows.
@@ -214,49 +226,6 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
                 org.miaixz.bus.health.windows.jna.IPHlpAPI.INSTANCE.FreeMibTable(table);
             }
         }
-    }
-
-    /**
-     * Reads route rows from a native routing table.
-     *
-     * @param table The native routing table pointer.
-     * @return The route rows.
-     */
-    private static List<RouteRow> readRows(Pointer table) {
-        int numEntries = table.getInt(0);
-        if (numEntries <= 0) {
-            return new ArrayList<>();
-        }
-        int rowSize = new MIB_IPFORWARD_ROW2().size();
-        List<RouteRow> rows = new ArrayList<>(numEntries);
-        for (int i = 0; i < numEntries; i++) {
-            MIB_IPFORWARD_ROW2 row = Structure
-                    .newInstance(MIB_IPFORWARD_ROW2.class, table.share(8L + (long) i * rowSize));
-            row.read();
-            RouteRow out = new RouteRow();
-            out.destination = addressBytes(row.DestinationPrefix.Prefix);
-            out.prefixLength = row.DestinationPrefix.PrefixLength & 0xff;
-            out.nextHop = addressBytes(row.NextHop);
-            out.interfaceIndex = row.InterfaceIndex;
-            out.metric = Parsing.unsignedIntToLong(row.Metric);
-            rows.add(out);
-        }
-        return rows;
-    }
-
-    /**
-     * Reads address bytes from a socket address.
-     *
-     * @param address The socket address.
-     * @return The address bytes.
-     */
-    private static byte[] addressBytes(SOCKADDR_INET address) {
-        if (address.si_family == IPHlpAPI.AF_INET) {
-            return Parsing.parseIntToIP(address.ipv4AddrOrFlowInfo);
-        } else if (address.si_family == IPHlpAPI.AF_INET6) {
-            return Arrays.copyOf(address.ipv6Addr, 16);
-        }
-        return Normal.EMPTY_BYTE_ARRAY;
     }
 
     /**
@@ -318,6 +287,37 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
                 return list.toArray(Normal.EMPTY_STRING_ARRAY);
             }
         }
+    }
+
+    /**
+     * A route row read from the IP Helper API.
+     */
+    public static final class RouteRow {
+
+        /**
+         * Destination prefix address bytes.
+         */
+        public byte[] destination = Normal.EMPTY_BYTE_ARRAY;
+
+        /**
+         * Destination prefix length.
+         */
+        public int prefixLength = -1;
+
+        /**
+         * Next hop address bytes.
+         */
+        public byte[] nextHop = Normal.EMPTY_BYTE_ARRAY;
+
+        /**
+         * Outgoing interface index.
+         */
+        public int interfaceIndex = -1;
+
+        /**
+         * Route metric.
+         */
+        public long metric = -1L;
     }
 
 }

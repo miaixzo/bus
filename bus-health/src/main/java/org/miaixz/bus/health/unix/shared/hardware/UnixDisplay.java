@@ -94,26 +94,6 @@ public class UnixDisplay extends AbstractDisplay {
     }
 
     /**
-     * Gets the platform-specific device port name.
-     *
-     * @return the platform-specific device port name
-     */
-    @Override
-    public String getDevicePort() {
-        return this.devicePort;
-    }
-
-    /**
-     * Gets the X11 output name for this display.
-     *
-     * @return the X11 output name, or an empty optional if unavailable
-     */
-    @Override
-    public Optional<String> getOutputName() {
-        return Xrandr.findOutputName(this.xrandrData.get(), this.connectorId, this.getDisplayInfo().getEdid());
-    }
-
-    /**
      * Gets display information.
      *
      * @return A list of {@link Display} objects representing monitors and other display devices.
@@ -156,6 +136,26 @@ public class UnixDisplay extends AbstractDisplay {
             displays.add(new UnixDisplay(drm.getRight(), drm.getLeft(), drm.getMiddle(), sharedData));
         }
         return displays;
+    }
+
+    /**
+     * Gets the platform-specific device port name.
+     *
+     * @return the platform-specific device port name
+     */
+    @Override
+    public String getDevicePort() {
+        return this.devicePort;
+    }
+
+    /**
+     * Gets the X11 output name for this display.
+     *
+     * @return the X11 output name, or an empty optional if unavailable
+     */
+    @Override
+    public Optional<String> getOutputName() {
+        return Xrandr.findOutputName(this.xrandrData.get(), this.connectorId, this.getDisplayInfo().getEdid());
     }
 
 }

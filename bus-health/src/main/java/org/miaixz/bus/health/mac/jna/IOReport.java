@@ -44,31 +44,6 @@ public interface IOReport extends Library {
     IOReport INSTANCE = Native.load("IOReport", IOReport.class);
 
     /**
-     * Opaque handle returned by {@link #IOReportCreateSubscription}.
-     *
-     * @author Kimi Liu
-     */
-    class IOReportSubscriptionRef extends CFTypeRef {
-
-        /**
-         * Creates a new IOReportSubscriptionRef instance.
-         */
-        public IOReportSubscriptionRef() {
-            super();
-        }
-
-        /**
-         * Creates a new IOReportSubscriptionRef instance.
-         *
-         * @param p the p
-         */
-        public IOReportSubscriptionRef(Pointer p) {
-            super(p);
-        }
-
-    }
-
-    /**
      * Returns a mutable dictionary describing all channels in the given group (and optional subgroup).
      *
      * @param group    channel group name (e.g. {@code "GPU Stats"})
@@ -189,5 +164,30 @@ public interface IOReport extends Library {
      * @return residency ticks
      */
     long IOReportStateGetResidency(CFDictionaryRef channel, int index);
+
+    /**
+     * Opaque handle returned by {@link #IOReportCreateSubscription}.
+     *
+     * @author Kimi Liu
+     */
+    class IOReportSubscriptionRef extends CFTypeRef {
+
+        /**
+         * Creates a new IOReportSubscriptionRef instance.
+         */
+        public IOReportSubscriptionRef() {
+            super();
+        }
+
+        /**
+         * Creates a new IOReportSubscriptionRef instance.
+         *
+         * @param p the p
+         */
+        public IOReportSubscriptionRef(Pointer p) {
+            super(p);
+        }
+
+    }
 
 }

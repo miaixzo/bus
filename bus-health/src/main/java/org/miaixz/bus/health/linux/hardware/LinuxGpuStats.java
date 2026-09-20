@@ -105,6 +105,45 @@ final class LinuxGpuStats implements GpuStats {
     }
 
     /**
+     * Returns the resolve hwmon path result.
+     *
+     * @param drmDevicePath the drm device path
+     * @return the resolve hwmon path result
+     */
+    private static String resolveHwmonPath(String drmDevicePath) {
+        if (drmDevicePath.isEmpty()) {
+            return Normal.EMPTY;
+        }
+        File hwmonDir = new File(drmDevicePath + "/hwmon");
+        File[] entries = hwmonDir.listFiles(f -> f.getName().startsWith("hwmon"));
+        if (entries != null && entries.length > 0) {
+            return entries[0].getAbsolutePath();
+        }
+        return Normal.EMPTY;
+    }
+
+    /**
+     * Parses the dpm active mhz.
+     *
+     * @param path the path
+     * @return the parse dpm active mhz result
+     */
+    private static long parseDpmActiveMhz(String path) {
+        for (String line : Builder.readFile(path, false)) {
+            if (line.endsWith(Symbol.STAR)) {
+                int mhzIdx = line.toLowerCase(Locale.ROOT).indexOf("mhz");
+                if (mhzIdx > 0) {
+                    int start = line.lastIndexOf(Symbol.C_SPACE, mhzIdx - 1);
+                    if (start >= 0) {
+                        return Parsing.parseLongOrDefault(line.substring(start + 1, mhzIdx), -1L);
+                    }
+                }
+            }
+        }
+        return -1L;
+    }
+
+    /**
      * Closes this resource.
      */
     @Override
@@ -383,45 +422,6 @@ final class LinuxGpuStats implements GpuStats {
         }
         nvmlDeviceId = id != null ? id : Normal.EMPTY;
         return id;
-    }
-
-    /**
-     * Returns the resolve hwmon path result.
-     *
-     * @param drmDevicePath the drm device path
-     * @return the resolve hwmon path result
-     */
-    private static String resolveHwmonPath(String drmDevicePath) {
-        if (drmDevicePath.isEmpty()) {
-            return Normal.EMPTY;
-        }
-        File hwmonDir = new File(drmDevicePath + "/hwmon");
-        File[] entries = hwmonDir.listFiles(f -> f.getName().startsWith("hwmon"));
-        if (entries != null && entries.length > 0) {
-            return entries[0].getAbsolutePath();
-        }
-        return Normal.EMPTY;
-    }
-
-    /**
-     * Parses the dpm active mhz.
-     *
-     * @param path the path
-     * @return the parse dpm active mhz result
-     */
-    private static long parseDpmActiveMhz(String path) {
-        for (String line : Builder.readFile(path, false)) {
-            if (line.endsWith(Symbol.STAR)) {
-                int mhzIdx = line.toLowerCase(Locale.ROOT).indexOf("mhz");
-                if (mhzIdx > 0) {
-                    int start = line.lastIndexOf(Symbol.C_SPACE, mhzIdx - 1);
-                    if (start >= 0) {
-                        return Parsing.parseLongOrDefault(line.substring(start + 1, mhzIdx), -1L);
-                    }
-                }
-            }
-        }
-        return -1L;
     }
 
 }

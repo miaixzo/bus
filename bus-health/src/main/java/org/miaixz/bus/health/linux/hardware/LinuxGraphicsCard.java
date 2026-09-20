@@ -73,151 +73,6 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
     private final String pciBusId;
 
     /**
-     * Parsed graphics card attributes used to construct graphics card instances.
-     *
-     * @author Kimi Liu
-     */
-    static final class Attrs {
-
-        /**
-         * The name value.
-         */
-        private final String name;
-
-        /**
-         * The deviceId value.
-         */
-        private final String deviceId;
-
-        /**
-         * The vendor value.
-         */
-        private final String vendor;
-
-        /**
-         * The versionInfo value.
-         */
-        private final String versionInfo;
-
-        /**
-         * The vram value.
-         */
-        private final long vram;
-
-        /**
-         * The drmDevicePath value.
-         */
-        private final String drmDevicePath;
-
-        /**
-         * The driverName value.
-         */
-        private final String driverName;
-
-        /**
-         * The pciBusId value.
-         */
-        private final String pciBusId;
-
-        /**
-         * Creates a new Attrs instance.
-         *
-         * @param name          the name
-         * @param deviceId      the device id
-         * @param vendor        the vendor
-         * @param versionInfo   the version info
-         * @param vram          the vram
-         * @param drmDevicePath the drm device path
-         * @param driverName    the driver name
-         * @param pciBusId      the pci bus id
-         */
-        Attrs(String name, String deviceId, String vendor, String versionInfo, long vram, String drmDevicePath,
-                String driverName, String pciBusId) {
-            this.name = name;
-            this.deviceId = deviceId;
-            this.vendor = vendor;
-            this.versionInfo = versionInfo;
-            this.vram = vram;
-            this.drmDevicePath = drmDevicePath;
-            this.driverName = driverName;
-            this.pciBusId = pciBusId;
-        }
-
-        /**
-         * Returns the name.
-         *
-         * @return the name
-         */
-        String getName() {
-            return name;
-        }
-
-        /**
-         * Returns the device id.
-         *
-         * @return the device id
-         */
-        String getDeviceId() {
-            return deviceId;
-        }
-
-        /**
-         * Returns the vendor.
-         *
-         * @return the vendor
-         */
-        String getVendor() {
-            return vendor;
-        }
-
-        /**
-         * Returns the version info.
-         *
-         * @return the version info
-         */
-        String getVersionInfo() {
-            return versionInfo;
-        }
-
-        /**
-         * Returns the vram.
-         *
-         * @return the vram
-         */
-        long getVram() {
-            return vram;
-        }
-
-        /**
-         * Returns the drm device path.
-         *
-         * @return the drm device path
-         */
-        String getDrmDevicePath() {
-            return drmDevicePath;
-        }
-
-        /**
-         * Returns the driver name.
-         *
-         * @return the driver name
-         */
-        String getDriverName() {
-            return driverName;
-        }
-
-        /**
-         * Returns the pci bus id.
-         *
-         * @return the pci bus id
-         */
-        String getPciBusId() {
-            return pciBusId;
-        }
-
-    }
-
-    /**
      * Constructor for LinuxGraphicsCard
      *
      * @param name          The name
@@ -235,16 +90,6 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         this.drmDevicePath = drmDevicePath;
         this.driverName = driverName;
         this.pciBusId = pciBusId;
-    }
-
-    /**
-     * Creates the stats session.
-     *
-     * @return the create stats session result
-     */
-    @Override
-    public GpuStats createStatsSession() {
-        return new LinuxGpuStats(drmDevicePath, driverName, pciBusId, getName());
     }
 
     /**
@@ -425,8 +270,6 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         return vram;
     }
 
-    // Slower, use as backup
-
     /**
      * Returns the graphics cards from lshw.
      *
@@ -508,6 +351,8 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         return findDrmInfo(pciSlot, DRM_PATH);
     }
 
+    // Slower, use as backup
+
     /**
      * Finds the sysfs DRM device path, driver name, and PCI bus ID for a GPU.
      *
@@ -577,6 +422,161 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         // e.g. "../../../bus/pci/drivers/amdgpu"; the last path segment is the driver name.
         String name = new File(target).getName();
         return name.isEmpty() ? target : name;
+    }
+
+    /**
+     * Creates the stats session.
+     *
+     * @return the create stats session result
+     */
+    @Override
+    public GpuStats createStatsSession() {
+        return new LinuxGpuStats(drmDevicePath, driverName, pciBusId, getName());
+    }
+
+    /**
+     * Parsed graphics card attributes used to construct graphics card instances.
+     *
+     * @author Kimi Liu
+     */
+    static final class Attrs {
+
+        /**
+         * The name value.
+         */
+        private final String name;
+
+        /**
+         * The deviceId value.
+         */
+        private final String deviceId;
+
+        /**
+         * The vendor value.
+         */
+        private final String vendor;
+
+        /**
+         * The versionInfo value.
+         */
+        private final String versionInfo;
+
+        /**
+         * The vram value.
+         */
+        private final long vram;
+
+        /**
+         * The drmDevicePath value.
+         */
+        private final String drmDevicePath;
+
+        /**
+         * The driverName value.
+         */
+        private final String driverName;
+
+        /**
+         * The pciBusId value.
+         */
+        private final String pciBusId;
+
+        /**
+         * Creates a new Attrs instance.
+         *
+         * @param name          the name
+         * @param deviceId      the device id
+         * @param vendor        the vendor
+         * @param versionInfo   the version info
+         * @param vram          the vram
+         * @param drmDevicePath the drm device path
+         * @param driverName    the driver name
+         * @param pciBusId      the pci bus id
+         */
+        Attrs(String name, String deviceId, String vendor, String versionInfo, long vram, String drmDevicePath,
+                String driverName, String pciBusId) {
+            this.name = name;
+            this.deviceId = deviceId;
+            this.vendor = vendor;
+            this.versionInfo = versionInfo;
+            this.vram = vram;
+            this.drmDevicePath = drmDevicePath;
+            this.driverName = driverName;
+            this.pciBusId = pciBusId;
+        }
+
+        /**
+         * Returns the name.
+         *
+         * @return the name
+         */
+        String getName() {
+            return name;
+        }
+
+        /**
+         * Returns the device id.
+         *
+         * @return the device id
+         */
+        String getDeviceId() {
+            return deviceId;
+        }
+
+        /**
+         * Returns the vendor.
+         *
+         * @return the vendor
+         */
+        String getVendor() {
+            return vendor;
+        }
+
+        /**
+         * Returns the version info.
+         *
+         * @return the version info
+         */
+        String getVersionInfo() {
+            return versionInfo;
+        }
+
+        /**
+         * Returns the vram.
+         *
+         * @return the vram
+         */
+        long getVram() {
+            return vram;
+        }
+
+        /**
+         * Returns the drm device path.
+         *
+         * @return the drm device path
+         */
+        String getDrmDevicePath() {
+            return drmDevicePath;
+        }
+
+        /**
+         * Returns the driver name.
+         *
+         * @return the driver name
+         */
+        String getDriverName() {
+            return driverName;
+        }
+
+        /**
+         * Returns the pci bus id.
+         *
+         * @return the pci bus id
+         */
+        String getPciBusId() {
+            return pciBusId;
+        }
+
     }
 
 }

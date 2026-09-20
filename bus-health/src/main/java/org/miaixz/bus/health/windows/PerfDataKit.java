@@ -244,29 +244,25 @@ public class PerfDataKit {
     public static class PerfCounter {
 
         /**
+         * Suffix appended to counter names to indicate that the SecondValue (base) should be read.
+         */
+        public static final String BASE_SUFFIX = "_Base";
+        /**
          * The object value.
          */
         private final String object;
-
         /**
          * The instance value.
          */
         private final String instance;
-
         /**
          * The counter value.
          */
         private final String counter;
-
         /**
          * The baseCounter value.
          */
         private final boolean baseCounter;
-
-        /**
-         * Suffix appended to counter names to indicate that the SecondValue (base) should be read.
-         */
-        public static final String BASE_SUFFIX = "_Base";
 
         /**
          * Creates a new PerfCounter instance.
@@ -280,6 +276,29 @@ public class PerfDataKit {
             this.instance = instanceName;
             this.baseCounter = isBase(counterName);
             this.counter = stripBaseSuffix(counterName);
+        }
+
+        /**
+         * Strips the {@link #BASE_SUFFIX} from a counter name if present.
+         *
+         * @param counterName The counter name, possibly ending with {@code _Base}.
+         * @return The counter name without the suffix, or the original name if the suffix is not present.
+         */
+        public static String stripBaseSuffix(String counterName) {
+            if (isBase(counterName)) {
+                return counterName.substring(0, counterName.length() - BASE_SUFFIX.length());
+            }
+            return counterName;
+        }
+
+        /**
+         * Tests whether a counter name has the {@link #BASE_SUFFIX}.
+         *
+         * @param counterName The counter name to test.
+         * @return true if the counter name ends with {@code _Base}.
+         */
+        public static boolean isBase(String counterName) {
+            return counterName.endsWith(BASE_SUFFIX);
         }
 
         /**
@@ -331,29 +350,6 @@ public class PerfDataKit {
             }
             sb.append(Symbol.C_BACKSLASH).append(counter);
             return sb.toString();
-        }
-
-        /**
-         * Strips the {@link #BASE_SUFFIX} from a counter name if present.
-         *
-         * @param counterName The counter name, possibly ending with {@code _Base}.
-         * @return The counter name without the suffix, or the original name if the suffix is not present.
-         */
-        public static String stripBaseSuffix(String counterName) {
-            if (isBase(counterName)) {
-                return counterName.substring(0, counterName.length() - BASE_SUFFIX.length());
-            }
-            return counterName;
-        }
-
-        /**
-         * Tests whether a counter name has the {@link #BASE_SUFFIX}.
-         *
-         * @param counterName The counter name to test.
-         * @return true if the counter name ends with {@code _Base}.
-         */
-        public static boolean isBase(String counterName) {
-            return counterName.endsWith(BASE_SUFFIX);
         }
 
         /**

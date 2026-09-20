@@ -93,74 +93,6 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
     }
 
     /**
-     * Returns the available.
-     *
-     * @return the get available result
-     */
-    @Override
-    public long getAvailable() {
-        return available.get();
-    }
-
-    /**
-     * Returns the total.
-     *
-     * @return the get total result
-     */
-    @Override
-    public long getTotal() {
-        return total.get();
-    }
-
-    /**
-     * Returns the page size.
-     *
-     * @return the get page size result
-     */
-    @Override
-    public long getPageSize() {
-        return pageSize.get();
-    }
-
-    /**
-     * Returns the virtual memory.
-     *
-     * @return the get virtual memory result
-     */
-    @Override
-    public VirtualMemory getVirtualMemory() {
-        return vm.get();
-    }
-
-    /**
-     * Queries the vm stats.
-     *
-     * @return the query vm stats result
-     */
-    private long queryVmStats() {
-        try (Struct.CloseableVMStatistics vmStats = new Struct.CloseableVMStatistics();
-                ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(
-                        vmStats.size() / SystemB.INT_SIZE)) {
-            if (0 != SystemB.INSTANCE
-                    .host_statistics(SystemB.INSTANCE.mach_host_self(), SystemB.HOST_VM_INFO, vmStats, size)) {
-                Logger.error(false, "Health", "Failed to get host VM info. Error code: {}", Native.getLastError());
-                return 0L;
-            }
-            return (vmStats.free_count + vmStats.inactive_count) * getPageSize();
-        }
-    }
-
-    /**
-     * Returns the physical memory.
-     *
-     * @return the get physical memory result
-     */
-    @Override
-    public List<PhysicalMemory> getPhysicalMemory() {
-        return parseSystemProfilerMemory(Executor.runNative("system_profiler SPMemoryDataType"));
-    }
-
-    /**
      * Parses the output of {@code system_profiler SPMemoryDataType} into physical memory objects.
      *
      * @param lines the output lines from system profiler
@@ -272,6 +204,74 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
         }
 
         return pmList;
+    }
+
+    /**
+     * Returns the available.
+     *
+     * @return the get available result
+     */
+    @Override
+    public long getAvailable() {
+        return available.get();
+    }
+
+    /**
+     * Returns the total.
+     *
+     * @return the get total result
+     */
+    @Override
+    public long getTotal() {
+        return total.get();
+    }
+
+    /**
+     * Returns the page size.
+     *
+     * @return the get page size result
+     */
+    @Override
+    public long getPageSize() {
+        return pageSize.get();
+    }
+
+    /**
+     * Returns the virtual memory.
+     *
+     * @return the get virtual memory result
+     */
+    @Override
+    public VirtualMemory getVirtualMemory() {
+        return vm.get();
+    }
+
+    /**
+     * Queries the vm stats.
+     *
+     * @return the query vm stats result
+     */
+    private long queryVmStats() {
+        try (Struct.CloseableVMStatistics vmStats = new Struct.CloseableVMStatistics();
+                ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(
+                        vmStats.size() / SystemB.INT_SIZE)) {
+            if (0 != SystemB.INSTANCE
+                    .host_statistics(SystemB.INSTANCE.mach_host_self(), SystemB.HOST_VM_INFO, vmStats, size)) {
+                Logger.error(false, "Health", "Failed to get host VM info. Error code: {}", Native.getLastError());
+                return 0L;
+            }
+            return (vmStats.free_count + vmStats.inactive_count) * getPageSize();
+        }
+    }
+
+    /**
+     * Returns the physical memory.
+     *
+     * @return the get physical memory result
+     */
+    @Override
+    public List<PhysicalMemory> getPhysicalMemory() {
+        return parseSystemProfilerMemory(Executor.runNative("system_profiler SPMemoryDataType"));
     }
 
     /**

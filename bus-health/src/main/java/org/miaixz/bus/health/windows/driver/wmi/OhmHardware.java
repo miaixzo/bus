@@ -28,9 +28,15 @@ import org.miaixz.bus.health.windows.WmiKit;
 import org.miaixz.bus.health.windows.WmiQueryHandler;
 
 /**
- * Queries Open Hardware Monitor WMI data for Hardware
+ * Queries hardware-monitor WMI data for hardware identifiers.
+ *
+ * <p>
+ * Open Hardware Monitor and Libre Hardware Monitor publish the same {@code Hardware} schema in separate namespaces.
+ * Their {@code HardwareType} values differ: LHM renames OHM's {@code Mainboard} to {@code Motherboard}, {@code RAM} to
+ * {@code Memory}, and {@code HDD} to {@code Storage}.
  *
  * @author Kimi Liu
+ * @see LhmSensor#LHM_NAMESPACE
  */
 @ThreadSafe
 public class OhmHardware {
@@ -46,7 +52,7 @@ public class OhmHardware {
     public static final String HARDWARE = "Hardware";
 
     /**
-     * Keeps Open Hardware Monitor hardware queries on the static API.
+     * Keeps hardware-monitor queries on the static API.
      */
     public OhmHardware() {
         // No initialization required.
@@ -56,17 +62,34 @@ public class OhmHardware {
      * Queries the hardware identifiers for a monitored type.
      *
      * @param h           An instantiated {@link WmiQueryHandler}. User should have already initialized COM.
+     * @param namespace   the WMI namespace to query, either {@link #OHM_NAMESPACE} or {@link LhmSensor#LHM_NAMESPACE}
      * @param typeToQuery which type to filter based on
      * @param typeName    the name of the type
-     * @return The sensor value.
+     * @return the hardware identifier result
+     */
+    public static WmiResult<IdentifierProperty> queryHwIdentifier(
+            WmiQueryHandler h,
+            String namespace,
+            String typeToQuery,
+            String typeName) {
+        WmiQuery<IdentifierProperty> hwIdentifierQuery = new WmiQuery<>(namespace,
+                buildHardwareWmiClassNameWithWhere(typeToQuery, typeName), IdentifierProperty.class);
+        return h.queryWMI(hwIdentifierQuery, false);
+    }
+
+    /**
+     * Queries Open Hardware Monitor identifiers using its default namespace.
+     *
+     * @param h           an instantiated {@link WmiQueryHandler}; COM must already be initialized
+     * @param typeToQuery which type to filter based on
+     * @param typeName    the name of the type
+     * @return the hardware identifier result
      */
     public static WmiResult<IdentifierProperty> queryHwIdentifier(
             WmiQueryHandler h,
             String typeToQuery,
             String typeName) {
-        WmiQuery<IdentifierProperty> cpuIdentifierQuery = new WmiQuery<>(OHM_NAMESPACE,
-                buildHardwareWmiClassNameWithWhere(typeToQuery, typeName), IdentifierProperty.class);
-        return h.queryWMI(cpuIdentifierQuery, false);
+        return queryHwIdentifier(h, OHM_NAMESPACE, typeToQuery, typeName);
     }
 
     /**

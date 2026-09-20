@@ -93,16 +93,6 @@ final class WindowsDisplay extends AbstractDisplay {
     }
 
     /**
-     * Gets the platform-specific device port name.
-     *
-     * @return the platform-specific device port name
-     */
-    @Override
-    public String getDevicePort() {
-        return this.devicePort;
-    }
-
-    /**
      * Gets Display Information
      *
      * @return An array of Display objects representing monitors, etc.
@@ -317,6 +307,16 @@ final class WindowsDisplay extends AbstractDisplay {
                 map.put(key, DisplayConnector.connectorName(outputTechnology, connectorInstance));
             }
         }
+    }
+
+    /**
+     * Gets the platform-specific device port name.
+     *
+     * @return the platform-specific device port name
+     */
+    @Override
+    public String getDevicePort() {
+        return this.devicePort;
     }
 
 }

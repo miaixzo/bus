@@ -28,7 +28,7 @@ import org.miaixz.bus.health.windows.WmiKit;
 import org.miaixz.bus.health.windows.WmiQueryHandler;
 
 /**
- * Queries Open Hardware Monitor WMI data for Sensors
+ * Queries hardware-monitor WMI data for sensor values.
  *
  * @author Kimi Liu
  */
@@ -46,24 +46,41 @@ public class OhmSensor {
     public static final String SENSOR = "Sensor";
 
     /**
-     * Keeps Open Hardware Monitor sensor queries on the static API.
+     * Keeps hardware-monitor sensor queries on the static API.
      */
     public OhmSensor() {
         // No initialization required.
     }
 
     /**
-     * Queries the sensor value of an hardware identifier and sensor type.
+     * Queries the sensor value of a hardware identifier and sensor type.
      *
      * @param h          An instantiated {@link WmiQueryHandler}. User should have already initialized COM.
+     * @param namespace  the WMI namespace to query, either {@link #OHM_NAMESPACE} or {@link LhmSensor#LHM_NAMESPACE}
      * @param identifier The identifier whose value to query.
      * @param sensorType The type of sensor to query.
      * @return The sensor value.
      */
-    public static WmiResult<ValueProperty> querySensorValue(WmiQueryHandler h, String identifier, String sensorType) {
-        WmiQuery<ValueProperty> ohmSensorQuery = new WmiQuery<>(OHM_NAMESPACE,
+    public static WmiResult<ValueProperty> querySensorValue(
+            WmiQueryHandler h,
+            String namespace,
+            String identifier,
+            String sensorType) {
+        WmiQuery<ValueProperty> ohmSensorQuery = new WmiQuery<>(namespace,
                 buildSensorWmiClassNameWithWhere(identifier, sensorType), ValueProperty.class);
         return h.queryWMI(ohmSensorQuery, false);
+    }
+
+    /**
+     * Queries an Open Hardware Monitor sensor using its default namespace.
+     *
+     * @param h          an instantiated {@link WmiQueryHandler}; COM must already be initialized
+     * @param identifier the hardware identifier whose value to query
+     * @param sensorType the sensor type to query
+     * @return the sensor value result
+     */
+    public static WmiResult<ValueProperty> querySensorValue(WmiQueryHandler h, String identifier, String sensorType) {
+        return querySensorValue(h, OHM_NAMESPACE, identifier, sensorType);
     }
 
     /**

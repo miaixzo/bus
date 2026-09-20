@@ -109,82 +109,66 @@ public class WindowsOSProcess extends AbstractOSProcess {
      * The tcb value.
      */
     private final AtomicReference<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> tcb = new AtomicReference<>();
-
-    /**
-     * The name value.
-     */
-    private volatile String name;
-
     /**
      * The userInfo value.
      */
     private final SupplierX<Pair<String, String>> userInfo = Memoizer.memoize(this::queryUserInfo);
-
-    /**
-     * The path value.
-     */
-    private volatile String path = Normal.EMPTY;
-
-    /**
-     * The state value.
-     */
-    private volatile OSProcess.State state = OSProcess.State.INVALID;
-
-    /**
-     * The parentProcessID value.
-     */
-    private volatile int parentProcessID;
-
-    /**
-     * The threadCount value.
-     */
-    private volatile int threadCount;
-
-    /**
-     * The priority value.
-     */
-    private volatile int priority;
-
-    /**
-     * The virtualSize value.
-     */
-    private volatile long virtualSize;
-
-    /**
-     * The workingSetSize value.
-     */
-    private volatile long workingSetSize;
-
-    /**
-     * The privateWorkingSetSize value.
-     */
-    private volatile long privateWorkingSetSize;
-
-    /**
-     * The kernelTime value.
-     */
-    private volatile long kernelTime;
-
-    /**
-     * The userTime value.
-     */
-    private volatile long userTime;
-
-    /**
-     * The startTime value.
-     */
-    private volatile long startTime;
-
     /**
      * The commandLine value.
      */
     private final SupplierX<String> commandLine = Memoizer.memoize(this::queryCommandLine);
-
     /**
      * The args value.
      */
     private final SupplierX<List<String>> args = Memoizer.memoize(this::queryArguments);
-
+    /**
+     * The name value.
+     */
+    private volatile String name;
+    /**
+     * The path value.
+     */
+    private volatile String path = Normal.EMPTY;
+    /**
+     * The state value.
+     */
+    private volatile OSProcess.State state = OSProcess.State.INVALID;
+    /**
+     * The parentProcessID value.
+     */
+    private volatile int parentProcessID;
+    /**
+     * The threadCount value.
+     */
+    private volatile int threadCount;
+    /**
+     * The priority value.
+     */
+    private volatile int priority;
+    /**
+     * The virtualSize value.
+     */
+    private volatile long virtualSize;
+    /**
+     * The workingSetSize value.
+     */
+    private volatile long workingSetSize;
+    /**
+     * The privateWorkingSetSize value.
+     */
+    private volatile long privateWorkingSetSize;
+    /**
+     * The kernelTime value.
+     */
+    private volatile long kernelTime;
+    /**
+     * The userTime value.
+     */
+    private volatile long userTime;
+    /**
+     * The startTime value.
+     */
+    private volatile long startTime;
     /**
      * The upTime value.
      */

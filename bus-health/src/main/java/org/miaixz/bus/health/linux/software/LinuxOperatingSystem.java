@@ -35,7 +35,10 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
-import org.miaixz.bus.health.*;
+import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.health.Executor;
+import org.miaixz.bus.health.Memoizer;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.health.builtin.software.*;
 import org.miaixz.bus.health.builtin.software.common.AbstractOperatingSystem;
@@ -132,17 +135,6 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      */
     private static final int[] PPID_INDEX = { 3 };
 
-    /**
-     * The installedAppsSupplier value.
-     */
-    private final SupplierX<List<ApplicationInfo>> installedAppsSupplier = Memoizer
-            .memoize(LinuxInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
-
-    /**
-     * The cgroupInfoSupplier value.
-     */
-    private final SupplierX<CgroupInfo> cgroupInfoSupplier = Memoizer.memoize(LinuxCgroupInfo::new);
-
     static {
         boolean hasUdev = false;
         boolean hasGettid = false;
@@ -218,6 +210,16 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
             PAGE_SIZE = Parsing.parseLongOrDefault(Executor.getFirstAnswer("getconf PAGE_SIZE"), 4096L);
         }
     }
+
+    /**
+     * The installedAppsSupplier value.
+     */
+    private final SupplierX<List<ApplicationInfo>> installedAppsSupplier = Memoizer
+            .memoize(LinuxInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
+    /**
+     * The cgroupInfoSupplier value.
+     */
+    private final SupplierX<CgroupInfo> cgroupInfoSupplier = Memoizer.memoize(LinuxCgroupInfo::new);
 
     /**
      * <p>

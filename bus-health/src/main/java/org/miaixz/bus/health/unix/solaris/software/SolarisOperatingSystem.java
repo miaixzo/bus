@@ -80,19 +80,6 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
      */
     private static final long BOOTTIME = querySystemBootTime();
 
-    /**
-     * The uptimeSupplier value.
-     */
-    private final SupplierX<Long> uptimeSupplier = Memoizer
-            .memoize(SolarisOperatingSystem::queryUptime, Memoizer.defaultExpiration());
-
-    /**
-     * Creates a new SolarisOperatingSystem instance.
-     */
-    public SolarisOperatingSystem() {
-        // No initialization required.
-    }
-
     static {
         String[] split = Pattern.SPACES_PATTERN.split(Executor.getFirstAnswer("uname -rv"));
         VERSION = split[0];
@@ -109,6 +96,19 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
             // 11.3 or earlier, no kstat2
         }
         HAS_KSTAT2 = lib != null;
+    }
+
+    /**
+     * The uptimeSupplier value.
+     */
+    private final SupplierX<Long> uptimeSupplier = Memoizer
+            .memoize(SolarisOperatingSystem::queryUptime, Memoizer.defaultExpiration());
+
+    /**
+     * Creates a new SolarisOperatingSystem instance.
+     */
+    public SolarisOperatingSystem() {
+        // No initialization required.
     }
 
     /**

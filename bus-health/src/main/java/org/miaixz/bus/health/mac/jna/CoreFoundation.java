@@ -46,6 +46,35 @@ public interface CoreFoundation extends com.sun.jna.platform.mac.CoreFoundation 
     CFLocale CFLocaleCopyCurrent();
 
     /**
+     * Creates a new CFDateFormatter object, localized to the given locale, which will format dates to the given date
+     * and time styles.
+     *
+     * @param allocator The allocator to use to allocate memory for the new object. Pass {@code null} or
+     *                  {@code kCFAllocatorDefault} to use the current default allocator.
+     * @param locale    The locale to use for localization. If {@code null} uses the default system locale. Use
+     *                  {@link #CFLocaleCopyCurrent()} to specify the locale of the current user.
+     * @param dateStyle The date style to use when formatting dates.
+     * @param timeStyle The time style to use when formatting times.
+     * @return A new date formatter, localized to the given locale, which will format dates to the given date and time
+     *         styles. Returns {@code null} if there was a problem creating the object.
+     *         <p>
+     *         This reference must be released with {@link #CFRelease} to avoid leaking references.
+     */
+    CFDateFormatter CFDateFormatterCreate(
+            CFAllocatorRef allocator,
+            CFLocale locale,
+            CFIndex dateStyle,
+            CFIndex timeStyle);
+
+    /**
+     * Returns a format string for the given date formatter object.
+     *
+     * @param formatter The date formatter to examine.
+     * @return The format string for {@code formatter}.
+     */
+    CFStringRef CFDateFormatterGetFormat(CFDateFormatter formatter);
+
+    /**
      * Enum of values used for {@link CFDateFormatterStyle} in {@link #CFDateFormatterCreate}. Use
      * {@link CFDateFormatterStyle#index} for the expected integer value corresponding to the C-style enum.
      *
@@ -84,34 +113,5 @@ public interface CoreFoundation extends com.sun.jna.platform.mac.CoreFoundation 
         }
 
     }
-
-    /**
-     * Creates a new CFDateFormatter object, localized to the given locale, which will format dates to the given date
-     * and time styles.
-     *
-     * @param allocator The allocator to use to allocate memory for the new object. Pass {@code null} or
-     *                  {@code kCFAllocatorDefault} to use the current default allocator.
-     * @param locale    The locale to use for localization. If {@code null} uses the default system locale. Use
-     *                  {@link #CFLocaleCopyCurrent()} to specify the locale of the current user.
-     * @param dateStyle The date style to use when formatting dates.
-     * @param timeStyle The time style to use when formatting times.
-     * @return A new date formatter, localized to the given locale, which will format dates to the given date and time
-     *         styles. Returns {@code null} if there was a problem creating the object.
-     *         <p>
-     *         This reference must be released with {@link #CFRelease} to avoid leaking references.
-     */
-    CFDateFormatter CFDateFormatterCreate(
-            CFAllocatorRef allocator,
-            CFLocale locale,
-            CFIndex dateStyle,
-            CFIndex timeStyle);
-
-    /**
-     * Returns a format string for the given date formatter object.
-     *
-     * @param formatter The date formatter to examine.
-     * @return The format string for {@code formatter}.
-     */
-    CFStringRef CFDateFormatterGetFormat(CFDateFormatter formatter);
 
 }

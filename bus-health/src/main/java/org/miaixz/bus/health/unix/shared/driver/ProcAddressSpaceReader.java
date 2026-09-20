@@ -111,6 +111,18 @@ public class ProcAddressSpaceReader implements AutoCloseable {
     }
 
     /**
+     * Decodes a pointer-sized value from a buffer.
+     *
+     * @param buffer    the buffer to read from
+     * @param offset    the offset within the buffer
+     * @param increment the pointer size in bytes
+     * @return the decoded pointer value
+     */
+    private static long decodePointer(Memory buffer, long offset, long increment) {
+        return increment == 8 ? buffer.getLong(offset) : Integer.toUnsignedLong(buffer.getInt(offset));
+    }
+
+    /**
      * Reads a pointer-sized value at the requested address.
      *
      * @param addr      the address to read
@@ -157,18 +169,6 @@ public class ProcAddressSpaceReader implements AutoCloseable {
         this.bufStart = newStart;
         this.bufValid = true;
         return true;
-    }
-
-    /**
-     * Decodes a pointer-sized value from a buffer.
-     *
-     * @param buffer    the buffer to read from
-     * @param offset    the offset within the buffer
-     * @param increment the pointer size in bytes
-     * @return the decoded pointer value
-     */
-    private static long decodePointer(Memory buffer, long offset, long increment) {
-        return increment == 8 ? buffer.getLong(offset) : Integer.toUnsignedLong(buffer.getInt(offset));
     }
 
     /**

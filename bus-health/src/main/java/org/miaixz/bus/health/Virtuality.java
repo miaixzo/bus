@@ -33,7 +33,6 @@ import org.miaixz.bus.health.builtin.hardware.NetworkIF;
  * Identifies a virtualized or containerized environment from hardware signatures.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Virtuality {
