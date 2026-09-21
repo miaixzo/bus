@@ -96,7 +96,7 @@ public class DateConverter extends AbstractConverter implements MatcherConverter
     }
 
     @Override
-    protected java.util.Date convertInternal(final Class<?> targetClass, final Object value) {
+    protected Date convertInternal(final Class<?> targetClass, final Object value) {
         if (value == null || (value instanceof CharSequence && StringKit.isBlank(value.toString()))) {
             return null;
         }
@@ -122,12 +122,12 @@ public class DateConverter extends AbstractConverter implements MatcherConverter
     }
 
     /**
-     * Converts java.util.Date to subtype
+     * Converts Date to subtype
      *
      * @param date the Date
      * @return the target type object
      */
-    private java.util.Date wrap(final Class<?> targetClass, final Date date) {
+    private Date wrap(final Class<?> targetClass, final Date date) {
         if (targetClass == date.getClass()) {
             return date;
         }
@@ -138,7 +138,7 @@ public class DateConverter extends AbstractConverter implements MatcherConverter
     /**
      * Converts timestamp to subtype, supporting:
      * <ul>
-     * <li>{@link java.util.Date}</li>
+     * <li>{@link Date}</li>
      * <li>{@link DateTime}</li>
      * <li>{@link java.sql.Date}</li>
      * <li>{@link java.sql.Time}</li>
@@ -148,10 +148,10 @@ public class DateConverter extends AbstractConverter implements MatcherConverter
      * @param mills the timestamp in milliseconds
      * @return the target type object
      */
-    private java.util.Date wrap(final Class<?> targetClass, final long mills) {
+    private Date wrap(final Class<?> targetClass, final long mills) {
         // Return specified type
-        if (java.util.Date.class == targetClass) {
-            return new java.util.Date(mills);
+        if (Date.class == targetClass) {
+            return new Date(mills);
         }
         if (DateTime.class == targetClass) {
             return DateKit.date(mills);

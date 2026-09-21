@@ -31,6 +31,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -118,12 +120,12 @@ public class DnsDotEndpoint implements AutoCloseable, Lifecycle {
     /**
      * Start guard.
      */
-    private final java.util.concurrent.atomic.AtomicBoolean started;
+    private final AtomicBoolean started;
 
     /**
      * Close guard.
      */
-    private final java.util.concurrent.atomic.AtomicBoolean closed;
+    private final AtomicBoolean closed;
 
     /**
      * AIO channel group owned by this endpoint after startup.
@@ -164,8 +166,8 @@ public class DnsDotEndpoint implements AutoCloseable, Lifecycle {
         this.handler = handler;
         this.rawChannels = ConcurrentHashMap.newKeySet();
         this.tlsChannels = ConcurrentHashMap.newKeySet();
-        this.started = new java.util.concurrent.atomic.AtomicBoolean();
-        this.closed = new java.util.concurrent.atomic.AtomicBoolean();
+        this.started = new AtomicBoolean();
+        this.closed = new AtomicBoolean();
     }
 
     /**
@@ -482,7 +484,7 @@ public class DnsDotEndpoint implements AutoCloseable, Lifecycle {
             throw new IOException("DNS-over-TLS operation was interrupted", e);
         } catch (final ExecutionException e) {
             throw new IOException("DNS-over-TLS operation failed", e.getCause());
-        } catch (final java.util.concurrent.TimeoutException e) {
+        } catch (final TimeoutException e) {
             throw new IOException("DNS-over-TLS operation timed out", e);
         }
     }

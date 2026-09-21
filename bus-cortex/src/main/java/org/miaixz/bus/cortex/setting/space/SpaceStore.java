@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.cortex.setting.space;
 
-import org.miaixz.bus.core.lang.EnumValue;
-import org.miaixz.bus.cortex.Suite;
-import org.miaixz.bus.cortex.Trait;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.cortex.Suite;
+import org.miaixz.bus.cortex.Trait;
 
 /**
  * Durable directory contract for shared logical spaces.

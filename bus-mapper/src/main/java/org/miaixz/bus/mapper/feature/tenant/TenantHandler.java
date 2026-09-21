@@ -21,6 +21,7 @@ package org.miaixz.bus.mapper.feature.tenant;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -171,7 +172,7 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
         String modeValue = properties.getProperty(
                 datasourceTenantScope + Args.TENANT_MODE,
                 properties.getProperty(sharedTenantScope + Args.TENANT_MODE, Isolation.COLUMN.name()));
-        Isolation mode = Isolation.valueOf(modeValue.trim().toUpperCase(java.util.Locale.ROOT));
+        Isolation mode = Isolation.valueOf(modeValue.trim().toUpperCase(Locale.ROOT));
         String ignoreMappersStr = properties.getProperty(
                 datasourceTenantScope + Args.TENANT_IGNORE_MAPPERS,
                 properties.getProperty(sharedTenantScope + Args.TENANT_IGNORE_MAPPERS, Normal.EMPTY));
@@ -422,13 +423,13 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
         if (sql == null || tenantColumn == null || tenantColumn.isBlank()) {
             return false;
         }
-        String lowerSql = sql.toLowerCase(java.util.Locale.ROOT);
+        String lowerSql = sql.toLowerCase(Locale.ROOT);
         int whereIndex = lowerSql.indexOf(" where ");
         if (whereIndex < 0) {
             return false;
         }
         String whereClause = lowerSql.substring(whereIndex);
-        String column = tenantColumn.toLowerCase(java.util.Locale.ROOT);
+        String column = tenantColumn.toLowerCase(Locale.ROOT);
         return whereClause.contains(column + Symbol.SPACE + Symbol.EQUAL)
                 || whereClause.contains(column + Symbol.EQUAL);
     }

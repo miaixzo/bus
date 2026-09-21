@@ -24,6 +24,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.yaml.snakeyaml.DumperOptions;
 
@@ -291,14 +292,14 @@ public class Yaml {
 
     /**
      * Replaces placeholders in the format {@code ${key}} or {@code ${key:defaultValue}} within a string. The values are
-     * resolved from system properties, environment variables, and the provided {@link java.util.Properties} object, in
-     * that order.
+     * resolved from system properties, environment variables, and the provided {@link Properties} object, in that
+     * order.
      *
      * @param properties The properties object to use for resolving placeholders.
      * @param value      The string containing placeholders.
      * @return The string with placeholders replaced.
      */
-    public static String replaceRefValue(java.util.Properties properties, String value) {
+    public static String replaceRefValue(Properties properties, String value) {
         Logger.debug(
                 true,
                 "Setting",

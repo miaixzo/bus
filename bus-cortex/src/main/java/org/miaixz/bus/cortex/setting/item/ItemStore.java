@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex.setting.item;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +55,7 @@ public interface ItemStore {
         if (entries == null || entries.isEmpty()) {
             return List.of();
         }
-        java.util.ArrayList<Item> result = new java.util.ArrayList<>(entries.size());
+        List<Item> result = new ArrayList<>(entries.size());
         for (Item entry : entries) {
             if (entry != null) {
                 result.add(save(entry));

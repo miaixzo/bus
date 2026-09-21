@@ -19,13 +19,15 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
+import java.util.EventListener;
+
 /**
  * This interface defines an event listener for the event fired when a WebHook notification has been received from a
  * GitLab server.
  *
  * @author Kimi Liu
  */
-public interface WebHookListener extends java.util.EventListener {
+public interface WebHookListener extends EventListener {
 
     /**
      * This method is called when a WebHook build event has been received.

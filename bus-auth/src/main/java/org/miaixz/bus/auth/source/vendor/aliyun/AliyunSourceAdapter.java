@@ -290,8 +290,8 @@ public class AliyunSourceAdapter implements VendorAdapter {
         try {
             return Keeper.getRSAPublicKey(new BigInteger(1, modulus), new BigInteger(1, exponent));
         } finally {
-            java.util.Arrays.fill(modulus, (byte) 0);
-            java.util.Arrays.fill(exponent, (byte) 0);
+            Arrays.fill(modulus, (byte) 0);
+            Arrays.fill(exponent, (byte) 0);
         }
     }
 

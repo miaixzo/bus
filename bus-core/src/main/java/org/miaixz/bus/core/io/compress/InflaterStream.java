@@ -23,21 +23,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
 import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Wrapper implementation for {@link java.util.zip.InflaterInputStream}, providing decompression using the "deflate"
- * algorithm. Reference: org.apache.hc.client5.http.entity.DeflateInputStream
+ * Wrapper implementation for {@link InflaterInputStream}, providing decompression using the "deflate" algorithm.
+ * Reference: org.apache.hc.client5.http.entity.DeflateInputStream
  *
  * @author Kimi Liu
  */
 public class InflaterStream extends InputStream {
 
     /**
-     * The underlying {@link java.util.zip.InflaterInputStream}.
+     * The underlying {@link InflaterInputStream}.
      */
-    private final java.util.zip.InflaterInputStream in;
+    private final InflaterInputStream in;
 
     /**
      * Constructs a new InflaterStream with a default buffer size of 512 bytes.
@@ -52,7 +53,7 @@ public class InflaterStream extends InputStream {
      * Constructs a new InflaterStream with a specified buffer size.
      *
      * @param wrapped The input stream to be wrapped and decompressed.
-     * @param size    The buffer size for the internal {@link java.util.zip.InflaterInputStream}.
+     * @param size    The buffer size for the internal {@link InflaterInputStream}.
      * @throws InternalException if an unexpected end of stream occurs or an I/O error happens during stream
      *                           initialization.
      */
@@ -80,7 +81,7 @@ public class InflaterStream extends InputStream {
         if (compressionMethod == 8 && compressionInfo <= 7 && ((b1 << 8) | b2) % 31 == 0) {
             nowrap = false;
         }
-        in = new java.util.zip.InflaterInputStream(pushback, new Inflater(nowrap), size);
+        in = new InflaterInputStream(pushback, new Inflater(nowrap), size);
     }
 
     /**

@@ -22,6 +22,7 @@ package org.miaixz.bus.auth.source.vendor.proginn;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -150,7 +151,7 @@ public class ProginnSourceAdapter implements VendorAdapter {
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), targets.token(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                options.clientId(), java.util.Set.of(options.redirectUri().getOrNull()),
+                options.clientId(), Set.of(options.redirectUri().getOrNull()),
                 Endpoint.Authentication.CLIENT_SECRET_POST, Optional.of(options.credential()), false, false);
         final OAuth2Client oauthClient = new OAuth2Client(
                 new AuthorizationClient(oauthSettings,

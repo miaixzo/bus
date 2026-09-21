@@ -19,6 +19,7 @@
 */
 package org.opencv.core;
 
+import java.util.Arrays;
 //javadoc:Scalar_
 /**
  * The scalar class.
@@ -91,7 +92,7 @@ public class Scalar {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + java.util.Arrays.hashCode(val);
+        result = prime * result + Arrays.hashCode(val);
         return result;
     }
 
@@ -102,7 +103,7 @@ public class Scalar {
         if (!(obj instanceof Scalar))
             return false;
         Scalar it = (Scalar) obj;
-        if (!java.util.Arrays.equals(val, it.val))
+        if (!Arrays.equals(val, it.val))
             return false;
         return true;
     }

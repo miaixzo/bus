@@ -17,22 +17,22 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.setting.item;
+package org.miaixz.bus.cortex.setting.revision;
 
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Converts string-based {@code setting.item.revision} numbers at storage boundaries.
+ * Converts string-based {@code setting.revision} numbers at storage boundaries.
  *
  * @author Kimi Liu
  */
-public class ItemRevisionNumbers {
+public class RevisionNumbers {
 
     /**
      * Keeps configuration revision-number handling on the static API.
      */
-    public ItemRevisionNumbers() {
+    public RevisionNumbers() {
         // No initialization required.
     }
 
@@ -65,7 +65,7 @@ public class ItemRevisionNumbers {
                     "Cortex",
                     e,
                     "Cortex operation failed: provider={}, recoverable={}, exception={}",
-                    "ItemRevisionNumbers",
+                    "RevisionNumbers",
                     false,
                     e.getClass().getSimpleName());
             throw new IllegalArgumentException("Setting item revision must be numeric: " + revision, e);

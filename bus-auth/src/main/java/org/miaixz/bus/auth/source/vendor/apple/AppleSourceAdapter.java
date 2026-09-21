@@ -833,7 +833,7 @@ public class AppleSourceAdapter implements VendorAdapter {
                         .sign(JoseHeader.protectedOnly(new JsonValue.ObjectValue(headers)), payload, privateKey);
                 return Outcome.succeeded(clientSecretJws.compact(new JwsService.Jws(payload, List.of(signature))));
             } finally {
-                java.util.Arrays.fill(payload, (byte) 0);
+                Arrays.fill(payload, (byte) 0);
             }
         } catch (RuntimeException cause) {
             return failed("Sign in with Apple client-secret signing failed");

@@ -17,8 +17,9 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.setting.item.revision;
+package org.miaixz.bus.cortex.setting.revision;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,19 +27,19 @@ import org.miaixz.bus.cortex.Suite;
 import org.miaixz.bus.cortex.Trait;
 
 /**
- * History store abstraction for {@code setting.item.revision} snapshots.
+ * History store abstraction for {@code setting.revision} snapshots.
  *
  * @author Kimi Liu
  */
-public interface ItemRevisionStore {
+public interface RevisionStore {
 
     /**
-     * Persists one {@code setting.item.revision} snapshot.
+     * Persists one {@code setting.revision} snapshot.
      *
      * @param revision revision snapshot
      * @return stored revision
      */
-    ItemRevision save(ItemRevision revision);
+    Revision save(Revision revision);
 
     /**
      * Saves a batch of revision snapshots.
@@ -46,12 +47,12 @@ public interface ItemRevisionStore {
      * @param revisions revision snapshots
      * @return stored revision snapshots
      */
-    default List<ItemRevision> saveAll(List<ItemRevision> revisions) {
+    default List<Revision> saveAll(List<Revision> revisions) {
         if (revisions == null || revisions.isEmpty()) {
             return List.of();
         }
-        java.util.ArrayList<ItemRevision> result = new java.util.ArrayList<>(revisions.size());
-        for (ItemRevision revision : revisions) {
+        List<Revision> result = new ArrayList<>(revisions.size());
+        for (Revision revision : revisions) {
             if (revision != null) {
                 result.add(save(revision));
             }
@@ -70,7 +71,7 @@ public interface ItemRevisionStore {
      * @param revision revision number
      * @return deleted revision snapshot, or {@code null} when absent
      */
-    ItemRevision delete(String space, String group, String data_id, String profile, String revision);
+    Revision delete(String space, String group, String data_id, String profile, String revision);
 
     /**
      * Finds one concrete revision.
@@ -82,10 +83,10 @@ public interface ItemRevisionStore {
      * @param revision revision number
      * @return matching revision or {@code null}
      */
-    ItemRevision find(String space, String group, String data_id, String profile, String revision);
+    Revision find(String space, String group, String data_id, String profile, String revision);
 
     /**
-     * Queries all known {@code setting.item.revision} snapshots for one entry.
+     * Queries all known {@code setting.revision} snapshots for one entry.
      *
      * @param space   space
      * @param group   setting group
@@ -93,7 +94,7 @@ public interface ItemRevisionStore {
      * @param profile optional profile
      * @return revisions ordered from newest to oldest
      */
-    List<ItemRevision> query(String space, String group, String data_id, String profile);
+    List<Revision> query(String space, String group, String data_id, String profile);
 
     /**
      * Lists a page of revisions.
@@ -106,8 +107,8 @@ public interface ItemRevisionStore {
      * @param limit   page size
      * @return paged revisions
      */
-    default List<ItemRevision> list(String space, String group, String data_id, String profile, int offset, int limit) {
-        List<ItemRevision> revisions = query(space, group, data_id, profile);
+    default List<Revision> list(String space, String group, String data_id, String profile, int offset, int limit) {
+        List<Revision> revisions = query(space, group, data_id, profile);
         if (revisions == null || revisions.isEmpty()) {
             return List.of();
         }
@@ -134,9 +135,9 @@ public interface ItemRevisionStore {
      * Marks one revision as a rollback of another revision and persists the updated metadata.
      *
      * <p>
-     * ItemRevision stores are primarily append-oriented, but rollback metadata is assigned only after the rollback
-     * publish succeeds. Implementations must therefore update the already-written revision snapshot atomically when
-     * their backing storage supports it, or fail without mutating state when it does not.
+     * Revision stores are primarily append-oriented, but rollback metadata is assigned only after the rollback publish
+     * succeeds. Implementations must therefore update the already-written revision snapshot atomically when their
+     * backing storage supports it, or fail without mutating state when it does not.
      *
      * @param space    space
      * @param group    setting group
@@ -146,14 +147,14 @@ public interface ItemRevisionStore {
      * @param revert   source revision number
      * @return updated revision, or {@code null} when the revision does not exist
      */
-    default ItemRevision markRollback(
+    default Revision markRollback(
             String space,
             String group,
             String data_id,
             String profile,
             String revision,
             String revert) {
-        ItemRevision snapshot = find(space, group, data_id, profile, revision);
+        Revision snapshot = find(space, group, data_id, profile, revision);
         if (snapshot == null) {
             return null;
         }
@@ -170,8 +171,8 @@ public interface ItemRevisionStore {
      * @param profile profile
      * @return latest revision or {@code null}
      */
-    default ItemRevision latest(String space, String group, String data_id, String profile) {
-        List<ItemRevision> revisions = list(space, group, data_id, profile, 0, 1);
+    default Revision latest(String space, String group, String data_id, String profile) {
+        List<Revision> revisions = list(space, group, data_id, profile, 0, 1);
         return revisions.isEmpty() ? null : revisions.getFirst();
     }
 

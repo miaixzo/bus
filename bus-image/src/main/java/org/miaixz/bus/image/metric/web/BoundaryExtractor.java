@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.image.metric.web;
 
+import java.util.Locale;
+
 import org.miaixz.bus.core.lang.Charset;
 
 /**
@@ -77,7 +79,7 @@ public class BoundaryExtractor {
      * @return true if the condition is met; otherwise false.
      */
     private static boolean hasRequiredType(HeaderFieldValues parser, String requiredType) {
-        String normalized = requiredType.toLowerCase(java.util.Locale.ROOT);
+        String normalized = requiredType.toLowerCase(Locale.ROOT);
         return parser.hasKey(normalized)
                 || parser.getValues().stream().anyMatch(map -> map.containsValue(requiredType));
     }

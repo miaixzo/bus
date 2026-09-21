@@ -93,7 +93,7 @@ public class RuntimeItemOverlayService {
     }
 
     /**
-     * Publishes one runtime overlay without creating {@code setting.item.revision} snapshots.
+     * Publishes one runtime overlay without creating {@code setting.revision} snapshots.
      *
      * @param space   space
      * @param group   setting group
@@ -133,7 +133,7 @@ public class RuntimeItemOverlayService {
     }
 
     /**
-     * Warms one runtime overlay snapshot without creating {@code setting.item.revision} snapshots.
+     * Warms one runtime overlay snapshot without creating {@code setting.revision} snapshots.
      *
      * @param entries snapshot entries
      */

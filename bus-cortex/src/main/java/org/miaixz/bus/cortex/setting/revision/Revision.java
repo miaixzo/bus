@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.setting.item.revision;
+package org.miaixz.bus.cortex.setting.revision;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +34,7 @@ import org.miaixz.bus.cortex.setting.item.Item;
 @Getter
 @Setter
 @SuperBuilder
-public class ItemRevision extends Item {
+public class Revision extends Item {
 
     /**
      * Immutable operation represented by a revision.
@@ -106,9 +106,9 @@ public class ItemRevision extends Item {
     private String revert;
 
     /**
-     * Creates an empty {@code setting.item.revision} snapshot.
+     * Creates an empty {@code setting.revision} snapshot.
      */
-    public ItemRevision() {
+    public Revision() {
         super();
         setType(Type.ITEM_REVISION.key());
     }

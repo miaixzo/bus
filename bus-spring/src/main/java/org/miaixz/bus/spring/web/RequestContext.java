@@ -21,6 +21,7 @@ package org.miaixz.bus.spring.web;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -503,7 +504,7 @@ public class RequestContext {
      */
     public boolean isMultipartContent(HttpServletRequest request) {
         String contentType = request == null ? null : request.getContentType();
-        return contentType != null && contentType.toLowerCase(java.util.Locale.ROOT).startsWith("multipart/");
+        return contentType != null && contentType.toLowerCase(Locale.ROOT).startsWith("multipart/");
     }
 
     /**

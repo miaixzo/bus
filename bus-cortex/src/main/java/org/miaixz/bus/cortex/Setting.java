@@ -26,11 +26,10 @@ import lombok.experimental.SuperBuilder;
 /**
  * Shared base class for objects in the setting domain.
  * <p>
- * Concrete resources such as {@code setting.item.Item}, {@code setting.item.revision.ItemRevision},
- * {@code setting.app.App}, {@code setting.space.Space}, and {@code setting.profile.Profile} own their resource-specific
- * fields directly. This base keeps only the shared identity and audit skeleton inherited from {@link Nature}, plus a
- * small descriptive field reused across setting-domain resources. The inherited {@code type} field is the single
- * resource-type source of truth.
+ * Concrete resources such as {@code setting.item.Item}, {@code setting.revision.Revision}, {@code setting.app.App},
+ * {@code setting.space.Space}, and {@code setting.profile.Profile} own their resource-specific fields directly. This
+ * base keeps only the shared identity and audit skeleton inherited from {@link Nature}, plus a small descriptive field
+ * reused across setting-domain resources. The inherited {@code type} field is the single resource-type source of truth.
  * </p>
  *
  * @author Kimi Liu

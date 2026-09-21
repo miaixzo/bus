@@ -22,6 +22,7 @@ package org.miaixz.bus.core.center.map;
 import java.io.Serial;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
 
@@ -49,7 +50,7 @@ public class FixedLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
     /**
      * An optional listener that is called when an entry is removed due to the capacity being exceeded.
      */
-    private ConsumerX<java.util.Map.Entry<K, V>> removeListener;
+    private ConsumerX<Entry<K, V>> removeListener;
 
     /**
      * Constructs a {@code FixedLinkedHashMap} with the specified capacity.
@@ -97,7 +98,7 @@ public class FixedLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
      *         removed.
      */
     @Override
-    protected boolean removeEldestEntry(final java.util.Map.Entry<K, V> eldest) {
+    protected boolean removeEldestEntry(final Entry<K, V> eldest) {
         if (size() > this.capacity) {
             if (null != removeListener) {
                 removeListener.accept(eldest);

@@ -19,8 +19,11 @@
 */
 package org.miaixz.bus.starter.jdbc;
 
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -170,7 +173,7 @@ public class JdbcConfiguration {
      * @param sources partially created datasource mapping
      */
     private static void close(Map<Object, Object> sources) {
-        java.util.Set<Object> released = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
+        Set<Object> released = Collections.newSetFromMap(new IdentityHashMap<>());
         RuntimeException failure = null;
         for (Object source : sources.values()) {
             if (!released.add(source) || !(source instanceof AutoCloseable closeable)) {

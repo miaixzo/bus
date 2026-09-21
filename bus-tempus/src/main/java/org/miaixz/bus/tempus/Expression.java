@@ -846,7 +846,7 @@ public class Expression implements Serializable, Cloneable {
      * @param set expression values
      * @return summary string
      */
-    protected String getExpressionSetSummary(java.util.Set<Integer> set) {
+    protected String getExpressionSetSummary(Set<Integer> set) {
 
         if (set.contains(NO_SPEC)) {
             return Symbol.QUESTION_MARK;
@@ -878,7 +878,7 @@ public class Expression implements Serializable, Cloneable {
      * @param list expression values
      * @return summary string
      */
-    protected String getExpressionSetSummary(java.util.ArrayList<Integer> list) {
+    protected String getExpressionSetSummary(ArrayList<Integer> list) {
 
         if (list.contains(NO_SPEC)) {
             return Symbol.QUESTION_MARK;

@@ -22,6 +22,7 @@ package org.miaixz.bus.auth.source.vendor;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Context;
@@ -96,7 +97,7 @@ public class StandardAdapter implements VendorAdapter {
             copy.add(value);
         }
         final Set<Capability.Key> declared = variant.capabilityManifest().capabilities().stream().map(Capability::key)
-                .collect(java.util.stream.Collectors.toUnmodifiableSet());
+                .collect(Collectors.toUnmodifiableSet());
         if (!declared.containsAll(keys)) {
             throw new ValidateException("Standard Vendor protocol bindings must be declared by the manifest");
         }

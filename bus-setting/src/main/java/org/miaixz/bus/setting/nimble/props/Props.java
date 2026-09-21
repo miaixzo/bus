@@ -28,6 +28,8 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.center.function.FunctionX;
@@ -47,12 +49,12 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.Setting;
 
 /**
- * A wrapper class for reading and handling {@code .properties} files. It extends {@code java.util.Properties} with
- * additional convenience methods for typed data retrieval, automatic reloading, and bean mapping.
+ * A wrapper class for reading and handling {@code .properties} files. It extends {@code Properties} with additional
+ * convenience methods for typed data retrieval, automatic reloading, and bean mapping.
  *
  * @author Kimi Liu
  */
-public class Props extends java.util.Properties implements TypeGetter<CharSequence> {
+public class Props extends Properties implements TypeGetter<CharSequence> {
 
     @Serial
     private static final long serialVersionUID = 2852230820065L;
@@ -145,11 +147,11 @@ public class Props extends java.util.Properties implements TypeGetter<CharSequen
     }
 
     /**
-     * Constructs a {@code Props} object from an existing {@link java.util.Properties} object.
+     * Constructs a {@code Props} object from an existing {@link Properties} object.
      *
      * @param properties The properties to copy.
      */
-    public Props(final java.util.Properties properties) {
+    public Props(final Properties properties) {
         if (MapKit.isNotEmpty(properties)) {
             this.putAll(properties);
         }
@@ -579,7 +581,7 @@ public class Props extends java.util.Properties implements TypeGetter<CharSequen
         int boundCount = 0;
         int ignoredCount = 0;
 
-        for (final java.util.Map.Entry<Object, Object> entry : this.entrySet()) {
+        for (final Entry<Object, Object> entry : this.entrySet()) {
             String key = (String) entry.getKey();
             if (!StringKit.startWith(key, prefix)) {
                 continue; // Ignore properties that don't match the prefix

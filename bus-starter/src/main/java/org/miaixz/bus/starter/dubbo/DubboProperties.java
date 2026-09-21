@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.dubbo;
 
+import java.util.Arrays;
+
 import lombok.Getter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -88,8 +90,8 @@ public class DubboProperties {
      */
     @Override
     public String toString() {
-        return "DubboProperties[enabled=" + enabled + ", basePackages=" + java.util.Arrays.toString(basePackages)
-                + ", basePackageClasses=" + java.util.Arrays.toString(basePackageClasses) + "]";
+        return "DubboProperties[enabled=" + enabled + ", basePackages=" + Arrays.toString(basePackages)
+                + ", basePackageClasses=" + Arrays.toString(basePackageClasses) + "]";
     }
 
 }

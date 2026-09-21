@@ -341,7 +341,7 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tok
         for (String label : ascii.split("\\.", -1)) {
             dnsLabel(label);
         }
-        return ascii.toLowerCase(java.util.Locale.ROOT);
+        return ascii.toLowerCase(Locale.ROOT);
     }
 
     /**
@@ -362,7 +362,7 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tok
                         .allMatch(character -> Character.isLetterOrDigit(character) || character == Symbol.C_MINUS)) {
             throw new ValidateException("Vendor instance must be one canonical DNS label");
         }
-        return ascii.toLowerCase(java.util.Locale.ROOT);
+        return ascii.toLowerCase(Locale.ROOT);
     }
 
     /**

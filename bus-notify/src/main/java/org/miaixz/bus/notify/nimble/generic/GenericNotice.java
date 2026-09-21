@@ -20,6 +20,7 @@
 package org.miaixz.bus.notify.nimble.generic;
 
 import java.io.File;
+import java.util.Properties;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -255,13 +256,13 @@ public class GenericNotice extends Notice {
     /**
      * Retrieves SMTP-related properties.
      *
-     * @return A {@link java.util.Properties} object containing SMTP configuration.
+     * @return A {@link Properties} object containing SMTP configuration.
      */
-    public java.util.Properties getSmtpProps() {
+    public Properties getSmtpProps() {
         // Global system parameters
         System.setProperty(SPLIT_LONG_PARAMS, String.valueOf(this.splitlongparameters));
 
-        final java.util.Properties p = new java.util.Properties();
+        final Properties p = new Properties();
         p.put(MAIL_PROTOCOL, "smtp");
         p.put(SMTP_HOST, this.host);
         p.put(SMTP_PORT, String.valueOf(this.port));

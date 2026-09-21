@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -604,7 +605,7 @@ public class DnsNsec3ProofValidator {
         if (bits > 0) {
             output.append(BASE32_HEX[(buffer << (5 - bits)) & 0x1f]);
         }
-        return output.toString().toLowerCase(java.util.Locale.ROOT);
+        return output.toString().toLowerCase(Locale.ROOT);
     }
 
     /**
@@ -934,7 +935,7 @@ public class DnsNsec3ProofValidator {
         if (value == null || value.isBlank()) {
             throw new ProtocolException("DNSSEC NSEC3 hash label must not be blank");
         }
-        return value.toLowerCase(java.util.Locale.ROOT);
+        return value.toLowerCase(Locale.ROOT);
     }
 
 }

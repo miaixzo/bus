@@ -80,7 +80,22 @@ public enum Type {
     /**
      * Version snapshot definition.
      */
-    VERSION(Normal._10, "Version snapshot", Domain.VERSION);
+    VERSION(Normal._10, "Version snapshot", Domain.VERSION),
+
+    /**
+     * Registered runtime instance resource.
+     */
+    INSTANCE(11, "Setting runtime instance", Domain.SETTING),
+
+    /**
+     * Runtime configuration watch resource.
+     */
+    WATCH(12, "Setting runtime watch", Domain.SETTING),
+
+    /**
+     * Governed configuration rollout resource.
+     */
+    ROLLOUT(13, "Setting rollout", Domain.SETTING);
 
     /**
      * Stable numeric identifier used for persistence, indexing and business comparison.
@@ -183,7 +198,7 @@ public enum Type {
     /**
      * Returns whether this value is a setting-domain resource type.
      *
-     * @return {@code true} for setting directory, item, revision, and binding resource types
+     * @return {@code true} for setting directory, item, revision, binding, instance, watch, and rollout resource types
      */
     public boolean isSetting() {
         return domain == Domain.SETTING;

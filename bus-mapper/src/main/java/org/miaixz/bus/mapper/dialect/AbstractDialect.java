@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -952,7 +953,7 @@ public abstract class AbstractDialect implements Dialect {
             return new SqlTypeDescriptor().jdbcType(JdbcType.DATE).typeName("DATE");
         }
         if (javaType == LocalTime.class || javaType == LocalDateTime.class || javaType == Instant.class
-                || javaType == java.util.Date.class) {
+                || javaType == Date.class) {
             return new SqlTypeDescriptor().jdbcType(JdbcType.TIMESTAMP).typeName("TIMESTAMP");
         }
         if (javaType == byte[].class || javaType == Byte[].class) {
@@ -1373,7 +1374,7 @@ public abstract class AbstractDialect implements Dialect {
         if (javaType == LocalTime.class) {
             return new SqlTypeDescriptor().jdbcType(JdbcType.TIME).typeName("TIME");
         }
-        if (javaType == LocalDateTime.class || javaType == java.util.Date.class) {
+        if (javaType == LocalDateTime.class || javaType == Date.class) {
             return new SqlTypeDescriptor().jdbcType(JdbcType.TIMESTAMP).typeName(timestampName);
         }
         if (javaType == Instant.class) {

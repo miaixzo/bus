@@ -20,6 +20,7 @@
 package org.miaixz.bus.cortex.registry;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -192,7 +193,7 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
         snapshot.setComponent("health-probe");
         snapshot.setStatus(isRunning() ? "running" : "stopped");
         snapshot.setMetrics(
-                java.util.Map.of(
+                Map.of(
                         "running",
                         isRunning(),
                         "probeCount",

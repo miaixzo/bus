@@ -23,7 +23,7 @@ import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemBindingProjection;
 import org.miaixz.bus.cortex.setting.item.ItemExposure;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
-import org.miaixz.bus.cortex.setting.item.revision.ItemRevision;
+import org.miaixz.bus.cortex.setting.revision.Revision;
 
 /**
  * Masks sensitive setting values for management views and audit-safe output.
@@ -84,16 +84,16 @@ public class SecretMasker {
     }
 
     /**
-     * Returns a masked copy for {@code setting.item.revision} management responses.
+     * Returns a masked copy for {@code setting.revision} management responses.
      *
      * @param revision source revision
      * @return masked copy
      */
-    public ItemRevision mask(ItemRevision revision) {
+    public Revision mask(Revision revision) {
         if (revision == null) {
             return null;
         }
-        ItemRevision copy = ItemRevision.builder().item_id(revision.getItem_id()).space_id(revision.getSpace_id())
+        Revision copy = Revision.builder().item_id(revision.getItem_id()).space_id(revision.getSpace_id())
                 .group(revision.getGroup()).data_id(revision.getData_id())
                 .profile_ids(ItemBindingProjection.normalizedProfileIds(revision))
                 .app_ids(ItemBindingProjection.normalizedAppIds(revision)).content(revision.getContent())

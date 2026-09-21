@@ -841,7 +841,7 @@ public class MetadataCodec {
         final String subtype = media.subtype();
         return subtype != null && (("application".equalsIgnoreCase(type) && "xml".equalsIgnoreCase(subtype))
                 || ("text".equalsIgnoreCase(type) && "xml".equalsIgnoreCase(subtype))
-                || subtype.toLowerCase(java.util.Locale.ROOT).endsWith("+xml"));
+                || subtype.toLowerCase(Locale.ROOT).endsWith("+xml"));
     }
 
     /**

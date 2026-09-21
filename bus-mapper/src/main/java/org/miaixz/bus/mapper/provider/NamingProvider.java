@@ -19,7 +19,10 @@
 */
 package org.miaixz.bus.mapper.provider;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 import lombok.Getter;
 
@@ -160,12 +163,12 @@ public class NamingProvider implements Provider<String> {
      *
      * @return set of available naming style names
      */
-    public static java.util.Set<String> getAvailableStyles() {
-        java.util.Set<String> styles = java.util.HashSet.newHashSet(EnumValue.Naming.values().length);
+    public static Set<String> getAvailableStyles() {
+        Set<String> styles = HashSet.newHashSet(EnumValue.Naming.values().length);
         for (EnumValue.Naming naming : EnumValue.Naming.values()) {
             styles.add(naming.name().toLowerCase());
         }
-        return java.util.Collections.unmodifiableSet(styles);
+        return Collections.unmodifiableSet(styles);
     }
 
     /**
