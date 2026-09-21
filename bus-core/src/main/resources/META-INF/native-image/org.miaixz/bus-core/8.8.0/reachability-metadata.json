@@ -12114,6 +12114,32 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Variant",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Visibility",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.core.lang.EnumValue$Zoom",
       "methods": [
         {

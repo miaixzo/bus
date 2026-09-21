@@ -13859,7 +13859,16 @@
           "name": "code"
         },
         {
+          "name": "description"
+        },
+        {
           "name": "name"
+        },
+        {
+          "name": "variant"
+        },
+        {
+          "name": "visibility"
         }
       ],
       "methods": [
@@ -13886,6 +13895,34 @@
           "parameterTypes": []
         },
         {
+          "name": "getType",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVariant",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVisibility",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDescription",
+          "parameterTypes": []
+        },
+        {
+          "name": "isVariant",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.EnumValue$Variant"
+          ]
+        },
+        {
+          "name": "isVisibility",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.EnumValue$Visibility"
+          ]
+        },
+        {
           "name": "setCode",
           "parameterTypes": [
             "java.lang.String"
@@ -13893,6 +13930,30 @@
         },
         {
           "name": "setName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setType",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setVariant",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setVisibility",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setDescription",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -13913,9 +13974,27 @@
           ]
         },
         {
+          "name": "description",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "name",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "variant",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "visibility",
+          "parameterTypes": [
+            "java.lang.Integer"
           ]
         },
         {
@@ -13937,36 +14016,6 @@
         },
         {
           "name": "self",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.space.Space$Scope",
-      "fields": [
-        {
-          "name": "PRIVATE"
-        },
-        {
-          "name": "PUBLIC"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
           "parameterTypes": []
         }
       ]
@@ -14881,6 +14930,10 @@
           "parameterTypes": []
         },
         {
+          "name": "isSpace",
+          "parameterTypes": []
+        },
+        {
           "name": "isVersion",
           "parameterTypes": []
         },
@@ -14969,6 +15022,9 @@
         },
         {
           "name": "SETTING"
+        },
+        {
+          "name": "SPACE"
         },
         {
           "name": "VERSION"

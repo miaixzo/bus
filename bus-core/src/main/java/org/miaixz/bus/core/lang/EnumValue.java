@@ -1023,6 +1023,79 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
+     * Enumeration for logical space variants.
+     *
+     * @author Kimi Liu
+     */
+    @Getter
+    enum Variant {
+
+        /**
+         * Namespace containing configuration and service resources.
+         */
+        NAMESPACE(1),
+
+        /**
+         * Collaborative workspace containing members and workspace-owned resources.
+         */
+        WORKSPACE(2);
+
+        /**
+         * Stable persisted code for the space variant.
+         */
+        private final int code;
+
+        /**
+         * Constructs a logical space variant.
+         *
+         * @param code stable persisted code
+         */
+        Variant(int code) {
+            this.code = code;
+        }
+
+    }
+
+    /**
+     * Enumeration for resource visibility boundaries.
+     *
+     * @author Kimi Liu
+     */
+    @Getter
+    enum Visibility {
+
+        /**
+         * Visible only to the owner and explicitly authorized principals.
+         */
+        PRIVATE(1),
+
+        /**
+         * Visible outside the owning tenant when the resource policy permits it.
+         */
+        PUBLIC(2),
+
+        /**
+         * Visible to authorized principals in the owning tenant.
+         */
+        TENANT(3);
+
+        /**
+         * Stable persisted code for the visibility boundary.
+         */
+        private final int code;
+
+        /**
+         * Constructs a resource visibility boundary.
+         *
+         * @param code stable persisted code
+         */
+        Visibility(int code) {
+            this.code = code;
+        }
+
+    }
+
+    /**
      * Enumeration for image zooming/scaling modes.
      *
      * @author Kimi Liu

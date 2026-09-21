@@ -81,7 +81,7 @@ public class DefaultCurator implements Curator {
      *
      * @param settingCuratorService curator application service
      * @param watchManager          watch manager for subscription support
-     * @param space_id              setting space identifier
+     * @param space_id              logical space identifier
      */
     public DefaultCurator(ItemCuratorService settingCuratorService, WatchManager watchManager, String space_id) {
         this(settingCuratorService, watchManager, space_id, null);
@@ -92,7 +92,7 @@ public class DefaultCurator implements Curator {
      *
      * @param settingCuratorService        curator application service
      * @param watchManager                 watch manager for subscription support
-     * @param space_id                     setting space identifier
+     * @param space_id                     logical space identifier
      * @param runtimeSettingOverlayService runtime overlay service
      */
     public DefaultCurator(ItemCuratorService settingCuratorService, WatchManager watchManager, String space_id,
