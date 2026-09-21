@@ -456,7 +456,7 @@ org.miaixz.bus.cortex
 ├── bridge/        bus-vortex 同步（VortexBridge, SyncEvent, ApiAssetsConverter）
 ├── guard/         安全防护（RateLimiter, CircuitBreaker, AccessTokenStore, AccessGuard, SpaceGuard）
 ├── builtin/       默认实现（CompositeProber, DefaultPublisher, DefaultNotifier）
-└── magic/         工具类（IdGenerator, Sequence, Fingerprint, AuditLogger, InstanceState）
+└── magic/         工具类（IdGenerator, Sequence, Fingerprint, AuditLogger）
 ```
 
 -----

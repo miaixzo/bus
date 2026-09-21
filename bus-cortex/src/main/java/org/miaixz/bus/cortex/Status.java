@@ -38,6 +38,90 @@ import lombok.experimental.SuperBuilder;
 public class Status {
 
     /**
+     * Health lifecycle reported by trusted probes.
+     */
+    public enum Health {
+        /**
+         * The service instance is reachable and healthy.
+         */
+        UP,
+        /**
+         * The service instance is unreachable or unhealthy.
+         */
+        DOWN,
+        /**
+         * No reliable probe result is currently available.
+         */
+        UNKNOWN,
+        /**
+         * The service instance is still starting and is not ready for normal traffic.
+         */
+        STARTING,
+        /**
+         * The service instance has intentionally been removed from normal traffic for maintenance.
+         */
+        MAINTENANCE
+    }
+
+    /**
+     * Lifecycle state exposed by managed resources.
+     */
+    public enum Resource {
+        /**
+         * The resource is enabled and may participate in normal operations.
+         */
+        ACTIVE,
+        /**
+         * The resource is retained but disabled for normal operations.
+         */
+        DISABLED,
+        /**
+         * The resource has been archived and is no longer active.
+         */
+        ARCHIVED
+    }
+
+    /**
+     * Result of applying a revision to a target.
+     */
+    public enum Apply {
+        /**
+         * The target has not yet acknowledged the active revision.
+         */
+        PENDING,
+        /**
+         * The target acknowledged and applied the active revision successfully.
+         */
+        APPLIED,
+        /**
+         * The target reported that applying the active revision failed.
+         */
+        FAILED,
+        /**
+         * No reliable target evidence is available for the active revision.
+         */
+        UNKNOWN
+    }
+
+    /**
+     * Availability of a projected capability or target.
+     */
+    public enum Availability {
+        /**
+         * The requested capability or projection is available.
+         */
+        AVAILABLE,
+        /**
+         * The requested capability or projection is unavailable.
+         */
+        UNAVAILABLE,
+        /**
+         * Availability cannot be established from reliable evidence.
+         */
+        UNKNOWN
+    }
+
+    /**
      * Whether the instance is considered healthy.
      */
     private boolean healthy;
@@ -103,7 +187,7 @@ public class Status {
         r.latencyMs = latencyMs;
         r.message = "OK";
         r.source = source;
-        r.state = "UP";
+        r.state = Health.UP.name();
         r.timestamp = System.currentTimeMillis();
         return r;
     }
@@ -131,7 +215,7 @@ public class Status {
         r.latencyMs = 0L;
         r.message = message;
         r.source = source;
-        r.state = "DOWN";
+        r.state = Health.DOWN.name();
         r.timestamp = System.currentTimeMillis();
         return r;
     }
