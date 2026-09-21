@@ -23,11 +23,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CodingErrorAction;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.center.function.SupplierX;
@@ -37,11 +33,7 @@ import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.DataCodec;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.logger.Logger;
@@ -213,6 +205,28 @@ public class Callout {
     }
 
     /**
+     * Local replacement for the previous HTTP result state categories used by Callout.
+     */
+    private enum ResultState {
+
+        /**
+         * A response was received and decoded.
+         */
+        RESPONDED,
+
+        /**
+         * The call timed out before producing a usable response.
+         */
+        TIMEOUT,
+
+        /**
+         * Transport, cancellation, protocol, or decode failure.
+         */
+        FAILED
+
+    }
+
+    /**
      * Shared current-fabric HTTP execution context for one timeout bucket.
      *
      * @author Kimi Liu
@@ -320,28 +334,6 @@ public class Callout {
                         failure.getClass().getSimpleName());
             }
         }
-
-    }
-
-    /**
-     * Local replacement for the previous HTTP result state categories used by Callout.
-     */
-    private enum ResultState {
-
-        /**
-         * A response was received and decoded.
-         */
-        RESPONDED,
-
-        /**
-         * The call timed out before producing a usable response.
-         */
-        TIMEOUT,
-
-        /**
-         * Transport, cancellation, protocol, or decode failure.
-         */
-        FAILED
 
     }
 

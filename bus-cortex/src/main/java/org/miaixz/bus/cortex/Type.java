@@ -136,103 +136,6 @@ public enum Type {
     }
 
     /**
-     * Returns the stable numeric key for compact persistence and indexing.
-     *
-     * @return stable numeric key
-     */
-    public int key() {
-        return key;
-    }
-
-    /**
-     * Returns the stable numeric key for bean/JSON access.
-     *
-     * @return stable numeric key
-     */
-    public int getKey() {
-        return key;
-    }
-
-    /**
-     * Returns the human-readable type description.
-     *
-     * @return type description
-     */
-    public String desc() {
-        return desc;
-    }
-
-    /**
-     * Returns the human-readable type description for bean/JSON access.
-     *
-     * @return type description
-     */
-    public String getDesc() {
-        return desc;
-    }
-
-    /**
-     * Returns the cache-key segment used by registry and current version storage.
-     *
-     * @return cache-key segment
-     */
-    public String segment() {
-        return switch (this) {
-            case API -> "service";
-            case MCP -> "mcp";
-            case PROMPT -> "prompt";
-            case VERSION -> "version";
-            default -> throw new IllegalStateException("Space and setting types do not have cache key segments");
-        };
-    }
-
-    /**
-     * Returns whether this value is a registry asset type.
-     *
-     * @return {@code true} for API, MCP, and PROMPT
-     */
-    public boolean isRegistry() {
-        return domain == Domain.REGISTRY;
-    }
-
-    /**
-     * Returns whether this value is a setting-domain resource type.
-     *
-     * @return {@code true} for setting directory, item, revision, binding, instance, watch, and rollout resource types
-     */
-    public boolean isSetting() {
-        return domain == Domain.SETTING;
-    }
-
-    /**
-     * Returns whether this value identifies the shared logical-space resource.
-     *
-     * @return {@code true} for SPACE
-     */
-    public boolean isSpace() {
-        return domain == Domain.SPACE;
-    }
-
-    /**
-     * Returns whether this value is a version-domain resource type.
-     *
-     * @return {@code true} for VERSION
-     */
-    public boolean isVersion() {
-        return domain == Domain.VERSION;
-    }
-
-    /**
-     * Returns whether the supplied type has the same stable key.
-     *
-     * @param type candidate type
-     * @return {@code true} when both types share the same key
-     */
-    public boolean is(Type type) {
-        return type != null && key == type.key;
-    }
-
-    /**
      * Returns whether two types share the same stable key.
      *
      * @param left  first type
@@ -388,6 +291,103 @@ public enum Type {
             throw new IllegalArgumentException("Unsupported registry type: " + type);
         }
         return type;
+    }
+
+    /**
+     * Returns the stable numeric key for compact persistence and indexing.
+     *
+     * @return stable numeric key
+     */
+    public int key() {
+        return key;
+    }
+
+    /**
+     * Returns the stable numeric key for bean/JSON access.
+     *
+     * @return stable numeric key
+     */
+    public int getKey() {
+        return key;
+    }
+
+    /**
+     * Returns the human-readable type description.
+     *
+     * @return type description
+     */
+    public String desc() {
+        return desc;
+    }
+
+    /**
+     * Returns the human-readable type description for bean/JSON access.
+     *
+     * @return type description
+     */
+    public String getDesc() {
+        return desc;
+    }
+
+    /**
+     * Returns the cache-key segment used by registry and current version storage.
+     *
+     * @return cache-key segment
+     */
+    public String segment() {
+        return switch (this) {
+            case API -> "service";
+            case MCP -> "mcp";
+            case PROMPT -> "prompt";
+            case VERSION -> "version";
+            default -> throw new IllegalStateException("Space and setting types do not have cache key segments");
+        };
+    }
+
+    /**
+     * Returns whether this value is a registry asset type.
+     *
+     * @return {@code true} for API, MCP, and PROMPT
+     */
+    public boolean isRegistry() {
+        return domain == Domain.REGISTRY;
+    }
+
+    /**
+     * Returns whether this value is a setting-domain resource type.
+     *
+     * @return {@code true} for setting directory, item, revision, binding, instance, watch, and rollout resource types
+     */
+    public boolean isSetting() {
+        return domain == Domain.SETTING;
+    }
+
+    /**
+     * Returns whether this value identifies the shared logical-space resource.
+     *
+     * @return {@code true} for SPACE
+     */
+    public boolean isSpace() {
+        return domain == Domain.SPACE;
+    }
+
+    /**
+     * Returns whether this value is a version-domain resource type.
+     *
+     * @return {@code true} for VERSION
+     */
+    public boolean isVersion() {
+        return domain == Domain.VERSION;
+    }
+
+    /**
+     * Returns whether the supplied type has the same stable key.
+     *
+     * @param type candidate type
+     * @return {@code true} when both types share the same key
+     */
+    public boolean is(Type type) {
+        return type != null && key == type.key;
     }
 
     /**

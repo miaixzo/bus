@@ -18,9 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides OSGi integration utilities for OpenCV.
- * <p>
- * This package contains classes and utilities for using OpenCV within an OSGi (Open Services Gateway initiative)
- * framework, enabling dynamic module loading and service registration.
+ * Persistent runtime-instance entities and durable store contracts for configuration-center implementations.
+ *
+ * @author Kimi Liu
  */
-package org.opencv.osgi;
+package org.miaixz.bus.cortex.setting.instance;
