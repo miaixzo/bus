@@ -19,12 +19,7 @@
 */
 package org.miaixz.bus.sensitive;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -74,6 +69,22 @@ public class Sanitizer implements Operator {
      */
     public Sanitizer() {
         // No initialization required.
+    }
+
+    /**
+     * Normalizes common field-name styles into one policy lookup key.
+     *
+     * @param key field name
+     * @return normalized field name
+     */
+    private static String normalize(String key) {
+        if (key == null || key.isBlank()) {
+            return Normal.EMPTY;
+        }
+        String lowerCase = key.trim().toLowerCase(Locale.ROOT);
+        StringBuilder normalized = new StringBuilder(lowerCase.length());
+        lowerCase.chars().filter(Character::isLetterOrDigit).forEach(normalized::appendCodePoint);
+        return normalized.toString();
     }
 
     /**
@@ -225,22 +236,6 @@ public class Sanitizer implements Operator {
             return sanitized;
         }
         return value;
-    }
-
-    /**
-     * Normalizes common field-name styles into one policy lookup key.
-     *
-     * @param key field name
-     * @return normalized field name
-     */
-    private static String normalize(String key) {
-        if (key == null || key.isBlank()) {
-            return Normal.EMPTY;
-        }
-        String lowerCase = key.trim().toLowerCase(Locale.ROOT);
-        StringBuilder normalized = new StringBuilder(lowerCase.length());
-        lowerCase.chars().filter(Character::isLetterOrDigit).forEach(normalized::appendCodePoint);
-        return normalized.toString();
     }
 
 }

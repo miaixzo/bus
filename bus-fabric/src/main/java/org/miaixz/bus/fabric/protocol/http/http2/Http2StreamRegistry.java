@@ -55,20 +55,33 @@ final class Http2StreamRegistry {
     private static final int SEGMENT_MASK = SEGMENT_SIZE - 1;
 
     /**
-     * Volatile directory of lazily allocated atomic stream segments.
-     */
-    private volatile AtomicReferenceArray<Http2Stream>[] segments;
-
-    /**
      * Atomic count incremented and decremented with successful slot publication and removal.
      */
     private final AtomicInteger active = new AtomicInteger();
+
+    /**
+     * Volatile directory of lazily allocated atomic stream segments.
+     */
+    private volatile AtomicReferenceArray<Http2Stream>[] segments;
 
     /**
      * Creates a registry with one empty directory position and no allocated segments.
      */
     Http2StreamRegistry() {
         segments = (AtomicReferenceArray<Http2Stream>[]) new AtomicReferenceArray<?>[1];
+    }
+
+    /**
+     * Converts a valid stream identifier to its compact raw slot index.
+     *
+     * @param streamId stream identifier
+     * @return compact index
+     */
+    private static int index(final int streamId) {
+        if (streamId <= 0) {
+            throw new ValidateException("HTTP/2 stream id must be positive");
+        }
+        return streamId - 1;
     }
 
     /**
@@ -279,19 +292,6 @@ final class Http2StreamRegistry {
             }
             return segment;
         }
-    }
-
-    /**
-     * Converts a valid stream identifier to its compact raw slot index.
-     *
-     * @param streamId stream identifier
-     * @return compact index
-     */
-    private static int index(final int streamId) {
-        if (streamId <= 0) {
-            throw new ValidateException("HTTP/2 stream id must be positive");
-        }
-        return streamId - 1;
     }
 
     /**

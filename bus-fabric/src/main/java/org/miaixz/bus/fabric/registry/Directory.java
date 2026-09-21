@@ -160,6 +160,53 @@ public class Directory implements AutoCloseable {
     }
 
     /**
+     * Closes one directory-owned resource and aggregates failures without skipping later resources.
+     *
+     * @param resource resource to close
+     * @param failure  first failure, or null
+     * @return first failure with later failures suppressed
+     */
+    private static Throwable closeResource(final AutoCloseable resource, final Throwable failure) {
+        Throwable result = failure;
+        try {
+            resource.close();
+        } catch (final Throwable current) {
+            if (result == null) {
+                result = current;
+            } else {
+                result.addSuppressed(current);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Validates registry names.
+     *
+     * @param name candidate registry or service name
+     * @return trimmed, non-blank, single-line name
+     * @throws ValidateException if {@code name} is blank or contains a carriage return or line feed
+     */
+    private static String validateName(final String name) {
+        if (StringKit.isBlank(name) || StringKit.containsAny(name, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException("Registry name must be non-blank and single-line");
+        }
+        return name.trim();
+    }
+
+    /**
+     * Validates and returns a required reference.
+     *
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Registers or replaces a ledger under a normalized name.
      * <p>
      * A replaced ledger is not closed by this operation.
@@ -329,27 +376,6 @@ public class Directory implements AutoCloseable {
     }
 
     /**
-     * Closes one directory-owned resource and aggregates failures without skipping later resources.
-     *
-     * @param resource resource to close
-     * @param failure  first failure, or null
-     * @return first failure with later failures suppressed
-     */
-    private static Throwable closeResource(final AutoCloseable resource, final Throwable failure) {
-        Throwable result = failure;
-        try {
-            resource.close();
-        } catch (final Throwable current) {
-            if (result == null) {
-                result = current;
-            } else {
-                result.addSuppressed(current);
-            }
-        }
-        return result;
-    }
-
-    /**
      * Rejects access after directory ownership has ended.
      *
      * @throws StatefulException if this directory is closed
@@ -358,32 +384,6 @@ public class Directory implements AutoCloseable {
         if (closed.get()) {
             throw new StatefulException("Registry directory is closed");
         }
-    }
-
-    /**
-     * Validates registry names.
-     *
-     * @param name candidate registry or service name
-     * @return trimmed, non-blank, single-line name
-     * @throws ValidateException if {@code name} is blank or contains a carriage return or line feed
-     */
-    private static String validateName(final String name) {
-        if (StringKit.isBlank(name) || StringKit.containsAny(name, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Registry name must be non-blank and single-line");
-        }
-        return name.trim();
-    }
-
-    /**
-     * Validates and returns a required reference.
-     *
-     * @param value reference to validate
-     * @param name  logical reference name used in the validation message
-     * @param <T>   reference type
-     * @return the validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

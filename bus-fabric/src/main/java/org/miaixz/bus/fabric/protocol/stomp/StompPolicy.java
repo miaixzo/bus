@@ -78,6 +78,26 @@ public record StompPolicy(Duration clientSendHeartbeat, Duration clientReceiveHe
     }
 
     /**
+     * Validates one heartbeat duration and its wire millisecond representation.
+     *
+     * @param value duration candidate
+     * @param name  component name
+     * @return validated duration
+     */
+    private static Duration heartbeat(final Duration value, final String name) {
+        final Duration checked = Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+        if (checked.isNegative()) {
+            throw new ValidateException(name + " must not be negative");
+        }
+        try {
+            checked.toMillis();
+        } catch (final ArithmeticException e) {
+            throw new ValidateException(name + " is too large", e);
+        }
+        return checked;
+    }
+
+    /**
      * Adds this complete policy to an option snapshot.
      *
      * @param options option source
@@ -104,26 +124,6 @@ public record StompPolicy(Duration clientSendHeartbeat, Duration clientReceiveHe
      */
     long clientReceiveHeartbeatMillis() {
         return clientReceiveHeartbeat.toMillis();
-    }
-
-    /**
-     * Validates one heartbeat duration and its wire millisecond representation.
-     *
-     * @param value duration candidate
-     * @param name  component name
-     * @return validated duration
-     */
-    private static Duration heartbeat(final Duration value, final String name) {
-        final Duration checked = Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-        if (checked.isNegative()) {
-            throw new ValidateException(name + " must not be negative");
-        }
-        try {
-            checked.toMillis();
-        } catch (final ArithmeticException e) {
-            throw new ValidateException(name + " is too large", e);
-        }
-        return checked;
     }
 
 }

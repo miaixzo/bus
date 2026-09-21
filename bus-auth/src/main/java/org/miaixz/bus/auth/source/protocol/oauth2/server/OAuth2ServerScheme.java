@@ -42,6 +42,7 @@ public class OAuth2ServerScheme implements ProtocolScheme<OAuth2ServerOptions> {
      * Stable Source type identifier.
      */
     public static final String ID = "oauth2-server";
+
     /**
      * Processes an authorization request for an authenticated resource owner.
      */
@@ -51,6 +52,7 @@ public class OAuth2ServerScheme implements ProtocolScheme<OAuth2ServerOptions> {
             Response.class,
             Capability.Interaction.REDIRECT,
             Capability.Security.SUBJECT_AUTHENTICATED);
+
     /**
      * Executes every enabled grant at the single token endpoint.
      */
@@ -60,6 +62,7 @@ public class OAuth2ServerScheme implements ProtocolScheme<OAuth2ServerOptions> {
             Response.class,
             Capability.Interaction.DIRECT,
             Capability.Security.PUBLIC);
+
     /**
      * Returns RFC 7662 token state to an authenticated protected resource.
      */
@@ -69,6 +72,7 @@ public class OAuth2ServerScheme implements ProtocolScheme<OAuth2ServerOptions> {
             Response.class,
             Capability.Interaction.DIRECT,
             Capability.Security.PUBLIC);
+
     /**
      * Revokes a token according to RFC 7009 client rules.
      */
@@ -78,6 +82,7 @@ public class OAuth2ServerScheme implements ProtocolScheme<OAuth2ServerOptions> {
             Response.class,
             Capability.Interaction.DIRECT,
             Capability.Security.PUBLIC);
+
     /**
      * Issues device and user codes for RFC 8628 authorization.
      */
@@ -87,6 +92,7 @@ public class OAuth2ServerScheme implements ProtocolScheme<OAuth2ServerOptions> {
             Response.class,
             Capability.Interaction.DEVICE,
             Capability.Security.PUBLIC);
+
     /**
      * Publishes RFC 8414 authorization server metadata.
      */
@@ -96,11 +102,13 @@ public class OAuth2ServerScheme implements ProtocolScheme<OAuth2ServerOptions> {
             Response.class,
             Capability.Interaction.DIRECT,
             Capability.Security.PUBLIC);
+
     /**
      * Exact OAuth 2.x server operations implemented by this scheme.
      */
     private static final Capability.Manifest MANIFEST = new Capability.Manifest(List
             .of(AUTHORIZATION, TOKEN, INTROSPECTION, REVOCATION, DEVICE_AUTHORIZATION, AUTHORIZATION_SERVER_METADATA));
+
     /**
      * Formal standards implemented by the OAuth 2.x authorization server.
      */
@@ -117,6 +125,7 @@ public class OAuth2ServerScheme implements ProtocolScheme<OAuth2ServerOptions> {
                     citation("rfc9207", "Authorization response issuer"),
                     citation("rfc9700", "OAuth 2.0 security best current practice")),
             "OAuth 2.x Authorization Server");
+
     /**
      * Management form containing protocol options but no Store or runtime dependencies.
      */

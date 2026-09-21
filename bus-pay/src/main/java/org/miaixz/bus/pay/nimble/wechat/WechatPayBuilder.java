@@ -55,9 +55,11 @@ import org.miaixz.bus.pay.magic.Message;
 public class WechatPayBuilder {
 
     private static final String OS = Keys.get(Keys.OS_NAME) + Symbol.SLASH + Keys.get(Keys.OS_VERSION);
+
     private static final String VERSION = Keys.get(Keys.JAVA_VERSION);
 
     private static final String FIELD_SIGN = "sign";
+
     private static final String FIELD_SIGN_TYPE = "sign_type";
 
     /**

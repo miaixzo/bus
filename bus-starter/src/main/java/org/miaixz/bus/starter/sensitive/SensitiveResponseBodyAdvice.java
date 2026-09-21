@@ -21,12 +21,7 @@ package org.miaixz.bus.starter.sensitive;
 
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.WeakHashMap;
+import java.util.*;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.core.io.Resource;
@@ -42,7 +37,10 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.entity.Result;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.*;
+import org.miaixz.bus.core.xyz.FieldKit;
+import org.miaixz.bus.core.xyz.MethodKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.sensitive.Builder;
 import org.miaixz.bus.sensitive.magic.annotation.Privacy;
@@ -75,6 +73,56 @@ public class SensitiveResponseBodyAdvice extends BaseAdvice
      */
     public SensitiveResponseBodyAdvice(SensitiveProperties properties) {
         this.properties = Objects.requireNonNull(properties, "properties");
+    }
+
+    /**
+     * Determines whether the response has already been desensitized.
+     *
+     * @param body        response body being evaluated
+     * @param contentType content type
+     * @param response    current HTTP response
+     * @return {@code true} when the response must not be processed again
+     */
+    private static boolean shouldSkip(Object body, MediaType contentType, ServerHttpResponse response) {
+        if (body instanceof byte[] || body instanceof InputStream || body instanceof Resource
+                || body instanceof ResponseBodyEmitter || body instanceof StreamingResponseBody) {
+            return true;
+        }
+        if (contentType != null && (MediaType.TEXT_EVENT_STREAM.isCompatibleWith(contentType)
+                || MediaType.APPLICATION_OCTET_STREAM.isCompatibleWith(contentType))) {
+            return true;
+        }
+        String disposition = response.getHeaders().getFirst("Content-Disposition");
+        return StringKit.isNotEmpty(disposition);
+    }
+
+    /**
+     * Sets a value on a bean property using its setter method.
+     *
+     * @param entity The bean instance.
+     * @param field  The name of the property.
+     * @param value  The value to set.
+     * @param <T>    The type of the bean.
+     */
+    private static <T> void setValue(T entity, String field, Object value) {
+        if (FieldKit.hasField(entity.getClass(), field)) {
+            MethodKit.invokeSetter(entity, field, value);
+        }
+    }
+
+    /**
+     * Gets a value from a bean property using its getter method.
+     *
+     * @param entity The bean instance.
+     * @param field  The name of the property.
+     * @param <T>    The type of the bean.
+     * @return The value of the property, or {@code null}.
+     */
+    private static <T> Object getValue(T entity, String field) {
+        if (FieldKit.hasField(entity.getClass(), field)) {
+            return MethodKit.invokeGetter(entity, field);
+        }
+        return null;
     }
 
     /**
@@ -184,27 +232,6 @@ public class SensitiveResponseBodyAdvice extends BaseAdvice
     }
 
     /**
-     * Determines whether the response has already been desensitized.
-     *
-     * @param body        response body being evaluated
-     * @param contentType content type
-     * @param response    current HTTP response
-     * @return {@code true} when the response must not be processed again
-     */
-    private static boolean shouldSkip(Object body, MediaType contentType, ServerHttpResponse response) {
-        if (body instanceof byte[] || body instanceof InputStream || body instanceof Resource
-                || body instanceof ResponseBodyEmitter || body instanceof StreamingResponseBody) {
-            return true;
-        }
-        if (contentType != null && (MediaType.TEXT_EVENT_STREAM.isCompatibleWith(contentType)
-                || MediaType.APPLICATION_OCTET_STREAM.isCompatibleWith(contentType))) {
-            return true;
-        }
-        String disposition = response.getHeaders().getFirst("Content-Disposition");
-        return StringKit.isNotEmpty(disposition);
-    }
-
-    /**
      * Processes a single object for desensitization and encryption.
      *
      * @param sensitive      The {@link Sensitive} annotation instance.
@@ -269,35 +296,6 @@ public class SensitiveResponseBodyAdvice extends BaseAdvice
             }
         }
         return map;
-    }
-
-    /**
-     * Sets a value on a bean property using its setter method.
-     *
-     * @param entity The bean instance.
-     * @param field  The name of the property.
-     * @param value  The value to set.
-     * @param <T>    The type of the bean.
-     */
-    private static <T> void setValue(T entity, String field, Object value) {
-        if (FieldKit.hasField(entity.getClass(), field)) {
-            MethodKit.invokeSetter(entity, field, value);
-        }
-    }
-
-    /**
-     * Gets a value from a bean property using its getter method.
-     *
-     * @param entity The bean instance.
-     * @param field  The name of the property.
-     * @param <T>    The type of the bean.
-     * @return The value of the property, or {@code null}.
-     */
-    private static <T> Object getValue(T entity, String field) {
-        if (FieldKit.hasField(entity.getClass(), field)) {
-            return MethodKit.invokeGetter(entity, field);
-        }
-        return null;
     }
 
 }

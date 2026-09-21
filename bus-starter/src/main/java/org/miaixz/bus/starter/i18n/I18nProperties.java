@@ -45,10 +45,12 @@ public class I18nProperties {
      * Whether the i18n integration is enabled.
      */
     private final boolean enabled;
+
     /**
      * Character encoding used when loading message bundles.
      */
     private final String defaultEncoding;
+
     /**
      * Ordered message bundle base names searched by Spring.
      */

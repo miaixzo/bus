@@ -81,6 +81,34 @@ public record StompMessage(String destination, Headers headers, Payload payload)
     }
 
     /**
+     * Validates single-line text.
+     *
+     * @param value token text to validate
+     * @param name  logical field name included in the validation error
+     * @return unchanged non-blank, single-line token
+     * @throws ValidateException if the token is blank or contains a line break
+     */
+    static String validateToken(final String value, final String name) {
+        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException(name + " must be non-blank and single-line");
+        }
+        return value;
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
+     */
+    static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Returns destination.
      *
      * @return validated STOMP destination
@@ -141,34 +169,6 @@ public record StompMessage(String destination, Headers headers, Payload payload)
      */
     public String text(final Charset charset, final long maxBytes) {
         return payload.text(require(charset, "Charset"), maxBytes);
-    }
-
-    /**
-     * Validates single-line text.
-     *
-     * @param value token text to validate
-     * @param name  logical field name included in the validation error
-     * @return unchanged non-blank, single-line token
-     * @throws ValidateException if the token is blank or contains a line break
-     */
-    static String validateToken(final String value, final String name) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException(name + " must be non-blank and single-line");
-        }
-        return value;
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  logical field name included in the validation error
-     * @param <T>   reference type
-     * @return validated non-null reference
-     * @throws ValidateException if {@code value} is {@code null}
-     */
-    static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

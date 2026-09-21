@@ -164,29 +164,34 @@ import org.miaixz.bus.core.xyz.StringKit;
 
 // 字符串验证
 boolean isEmpty = StringKit.isEmpty("");        // true
-boolean isBlank = StringKit.isBlank("  ");      // true
+        boolean isBlank = StringKit.isBlank("  ");      // true
 
-// 字符串格式化
-String formatted = StringKit.format("Hello, {}!", "World");  // "Hello, World!"
+        // 字符串格式化
+        String formatted = StringKit.format("Hello, {}!", "World");  // "Hello, World!"
 
-// 字符串操作
-String trimmed = StringKit.trim("  hello  ");              // "hello"
-String upper = StringKit.upperCase("hello");               // "HELLO"
-String substring = StringKit.sub("hello", 0, 3);          // "hel"
+        // 字符串操作
+        String trimmed = StringKit.trim("  hello  ");              // "hello"
+        String upper = StringKit.upperCase("hello");               // "HELLO"
+        String substring = StringKit.sub("hello", 0, 3);          // "hel"
 
-// 字符串模板
-Map<String, Object> params = new HashMap<>();
-params.put("name", "John");
-params.put("age", 25);
-String result = StringKit.format("Name: ${name}, Age: ${age}", params);
+        // 字符串模板
+        Map<String, Object> params = new HashMap<>();
+params.
+
+        put("name","John");
+params.
+
+        put("age",25);
+
+        String result = StringKit.format("Name: ${name}, Age: ${age}", params);
 // "Name: John, Age: 25"
 
-// 文本相似度
-double similarity = StringKitSimilarity.similarity("hello", "hallo");  // 0.8
+        // 文本相似度
+        double similarity = StringKitSimilarity.similarity("hello", "hallo");  // 0.8
 
-// 编码/解码
-String base64 = StringKit.encodeBase64("hello");     // "aGVsbG8="
-String decoded = StringKit.decodeBase64(base64);      // "hello"
+        // 编码/解码
+        String base64 = StringKit.encodeBase64("hello");     // "aGVsbG8="
+        String decoded = StringKit.decodeBase64(base64);      // "hello"
 ```
 
 ### 2. 集合操作
@@ -389,39 +394,39 @@ import org.miaixz.bus.core.center.crypto.SecureUtil;
 
 // 哈希算法
 String md5 = HashKit.md5("password");                     // MD5哈希
-String sha1 = HashKit.sha1("password");                    // SHA-1哈希
-String sha256 = HashKit.sha256("password");                // SHA-256哈希
-String sha512 = HashKit.sha512("password");                // SHA-512哈希
+        String sha1 = HashKit.sha1("password");                    // SHA-1哈希
+        String sha256 = HashKit.sha256("password");                // SHA-256哈希
+        String sha512 = HashKit.sha512("password");                // SHA-512哈希
 
-// CRC校验和
-long crc16 = HashKit.crc16("data");                       // CRC-16
-long crc32 = HashKit.crc32("data");                       // CRC-32
+        // CRC校验和
+        long crc16 = HashKit.crc16("data");                       // CRC-16
+        long crc32 = HashKit.crc32("data");                       // CRC-32
 
-// MurmurHash(非加密,快速)
-int murmur3 = HashKit.murmur3("data");                    // MurmurHash3
+        // MurmurHash(非加密,快速)
+        int murmur3 = HashKit.murmur3("data");                    // MurmurHash3
 
-// Base64编码/解码
-String encoded = Base64.encode("hello");                  // "aGVsbG8="
-String decoded = Base64.decode(encoded);                  // "hello"
+        // Base64编码/解码
+        String encoded = Base64.encode("hello");                  // "aGVsbG8="
+        String decoded = Base64.decode(encoded);                  // "hello"
 
-// Hex编码/解码
-String hex = StringKit.encodeHex("hello");                // "68656c6c6f"
-String decodedHex = StringKit.decodeHex(hex);             // "hello"
+        // Hex编码/解码
+        String hex = StringKit.encodeHex("hello");                // "68656c6c6f"
+        String decodedHex = StringKit.decodeHex(hex);             // "hello"
 
-// URL编码/解码
-String urlEncoded = StringKit.encodeUrl("hello world");   // "hello+world"
-String urlDecoded = StringKit.decodeUrl(urlEncoded);      // "hello world"
+        // URL编码/解码
+        String urlEncoded = StringKit.encodeUrl("hello world");   // "hello+world"
+        String urlDecoded = StringKit.decodeUrl(urlEncoded);      // "hello world"
 
-// 安全密码哈希(BCrypt)
-String bcryptHash = SecureUtil.bcrypt("password");        // $2a$10$...
-boolean matches = SecureUtil.bcryptMatch("password", bcryptHash);  // true
+        // 安全密码哈希(BCrypt)
+        String bcryptHash = SecureUtil.bcrypt("password");        // $2a$10$...
+        boolean matches = SecureUtil.bcryptMatch("password", bcryptHash);  // true
 
-// PBKDF2
-String pbkdf2Hash = SecureUtil.pbkdf2("password", "salt", 10000);
+        // PBKDF2
+        String pbkdf2Hash = SecureUtil.pbkdf2("password", "salt", 10000);
 
-// 数据脱敏
-String masked = Masking.maskMobile("13800138000");        // "138****8000"
-String emailMasked = Masking.maskEmail("user@example.com");  // "u***@example.com"
+        // 数据脱敏
+        String masked = Masking.maskMobile("13800138000");        // "138****8000"
+        String emailMasked = Masking.maskEmail("user@example.com");  // "u***@example.com"
 ```
 
 ### 7. 反射与Bean操作

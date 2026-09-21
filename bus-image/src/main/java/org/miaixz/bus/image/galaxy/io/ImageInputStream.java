@@ -121,6 +121,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      * The undefined length value.
      */
     private static final int UNDEFINED_LENGTH = -1;
+
     // Length of the buffer used for readFully(short[], int, int)
     /**
      * The byte buf length value.

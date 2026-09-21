@@ -63,10 +63,12 @@ public class RequestObjectArgumentResolver implements HandlerMethodArgumentResol
      * Request attribute used to share one bounded body across multiple controller parameters.
      */
     private static final String BODY_ATTRIBUTE = RequestObjectArgumentResolver.class.getName() + ".BODY";
+
     /**
      * Matcher that determines which parameters support automatic binding.
      */
     private final AutoBindingTypeMatcher matcher;
+
     /**
      * Options controlling request-object binding behavior.
      */
@@ -81,6 +83,77 @@ public class RequestObjectArgumentResolver implements HandlerMethodArgumentResol
     public RequestObjectArgumentResolver(AutoBindingTypeMatcher matcher, RequestBindingOptions options) {
         this.matcher = Objects.requireNonNull(matcher, "matcher");
         this.options = Objects.requireNonNull(options, "options");
+    }
+
+    /**
+     * Returns whether this request carries the single JSON source owned by this resolver.
+     *
+     * @param request current HTTP request
+     * @return {@code true} for JSON POST, PUT, or PATCH requests
+     */
+    private static boolean isJsonBodyRequest(HttpServletRequest request) {
+        if (!MediaType.isJson(request.getContentType())) {
+            return false;
+        }
+        String method = request.getMethod();
+        return Http.Method.POST.value().equals(method) || Http.Method.PUT.value().equals(method)
+                || Http.Method.PATCH.value().equals(method);
+    }
+
+    /**
+     * Applies Bean Validation to an object created directly from a JSON body.
+     */
+    private static void validate(
+            MethodParameter parameter,
+            Object target,
+            NativeWebRequest webRequest,
+            WebDataBinderFactory binderFactory) throws Exception {
+        if (!requiresValidation(parameter)) {
+            return;
+        }
+        String name = parameter.getParameterName() == null ? parameter.getParameterType().getSimpleName()
+                : parameter.getParameterName();
+        WebDataBinder binder = binderFactory.createBinder(webRequest, target, name);
+        binder.validate();
+        if (binder.getBindingResult().hasErrors()) {
+            throw new MethodArgumentNotValidException(parameter, binder.getBindingResult());
+        }
+    }
+
+    /**
+     * Adds multipart fields and files to the binding value map.
+     *
+     * @param values           destination binding value map
+     * @param multipartRequest source multipart request
+     */
+    private static void addMultipartValues(MutablePropertyValues values, MultipartHttpServletRequest multipartRequest) {
+        if (multipartRequest == null) {
+            return;
+        }
+        for (Map.Entry<String, List<MultipartFile>> entry : multipartRequest.getMultiFileMap().entrySet()) {
+            List<MultipartFile> files = entry.getValue();
+            if (files.size() == 1) {
+                values.add(entry.getKey(), files.get(0));
+            } else if (!files.isEmpty()) {
+                values.add(entry.getKey(), List.copyOf(files));
+            }
+        }
+    }
+
+    /**
+     * Determines whether the resolved argument requires Bean Validation.
+     *
+     * @param parameter controller method parameter to inspect
+     * @return {@code true} when validation annotations are present
+     */
+    private static boolean requiresValidation(MethodParameter parameter) {
+        for (Annotation annotation : parameter.getParameterAnnotations()) {
+            Class<? extends Annotation> type = annotation.annotationType();
+            if (type == Validated.class || "Valid".equals(type.getSimpleName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -187,77 +260,6 @@ public class RequestObjectArgumentResolver implements HandlerMethodArgumentResol
         byte[] resolved = body == null ? Normal.EMPTY_BYTE_ARRAY : body;
         request.setAttribute(BODY_ATTRIBUTE, resolved);
         return resolved;
-    }
-
-    /**
-     * Returns whether this request carries the single JSON source owned by this resolver.
-     *
-     * @param request current HTTP request
-     * @return {@code true} for JSON POST, PUT, or PATCH requests
-     */
-    private static boolean isJsonBodyRequest(HttpServletRequest request) {
-        if (!MediaType.isJson(request.getContentType())) {
-            return false;
-        }
-        String method = request.getMethod();
-        return Http.Method.POST.value().equals(method) || Http.Method.PUT.value().equals(method)
-                || Http.Method.PATCH.value().equals(method);
-    }
-
-    /**
-     * Applies Bean Validation to an object created directly from a JSON body.
-     */
-    private static void validate(
-            MethodParameter parameter,
-            Object target,
-            NativeWebRequest webRequest,
-            WebDataBinderFactory binderFactory) throws Exception {
-        if (!requiresValidation(parameter)) {
-            return;
-        }
-        String name = parameter.getParameterName() == null ? parameter.getParameterType().getSimpleName()
-                : parameter.getParameterName();
-        WebDataBinder binder = binderFactory.createBinder(webRequest, target, name);
-        binder.validate();
-        if (binder.getBindingResult().hasErrors()) {
-            throw new MethodArgumentNotValidException(parameter, binder.getBindingResult());
-        }
-    }
-
-    /**
-     * Adds multipart fields and files to the binding value map.
-     *
-     * @param values           destination binding value map
-     * @param multipartRequest source multipart request
-     */
-    private static void addMultipartValues(MutablePropertyValues values, MultipartHttpServletRequest multipartRequest) {
-        if (multipartRequest == null) {
-            return;
-        }
-        for (Map.Entry<String, List<MultipartFile>> entry : multipartRequest.getMultiFileMap().entrySet()) {
-            List<MultipartFile> files = entry.getValue();
-            if (files.size() == 1) {
-                values.add(entry.getKey(), files.get(0));
-            } else if (!files.isEmpty()) {
-                values.add(entry.getKey(), List.copyOf(files));
-            }
-        }
-    }
-
-    /**
-     * Determines whether the resolved argument requires Bean Validation.
-     *
-     * @param parameter controller method parameter to inspect
-     * @return {@code true} when validation annotations are present
-     */
-    private static boolean requiresValidation(MethodParameter parameter) {
-        for (Annotation annotation : parameter.getParameterAnnotations()) {
-            Class<? extends Annotation> type = annotation.annotationType();
-            if (type == Validated.class || "Valid".equals(type.getSimpleName())) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

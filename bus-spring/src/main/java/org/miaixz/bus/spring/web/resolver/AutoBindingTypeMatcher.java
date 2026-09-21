@@ -31,13 +31,7 @@ import jakarta.servlet.ServletResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Declares the type boundary for automatic application request-object binding.
@@ -51,21 +45,6 @@ public class AutoBindingTypeMatcher {
      */
     public AutoBindingTypeMatcher() {
         // No initialization required.
-    }
-
-    /**
-     * Returns true for an unclaimed, application-owned request object parameter.
-     *
-     * @param parameter controller method parameter
-     * @return {@code true} when automatic request-object binding is allowed
-     */
-    public boolean matches(MethodParameter parameter) {
-        Objects.requireNonNull(parameter, "parameter");
-        if (hasExplicitBindingAnnotation(parameter)) {
-            return false;
-        }
-        Class<?> type = parameter.getParameterType();
-        return !isFrameworkType(type) && !isSimpleType(type);
     }
 
     /**
@@ -130,6 +109,21 @@ public class AutoBindingTypeMatcher {
                 || Number.class.isAssignableFrom(type) || Boolean.class == type || Character.class == type
                 || Temporal.class.isAssignableFrom(type) || Collection.class.isAssignableFrom(type)
                 || Map.class.isAssignableFrom(type);
+    }
+
+    /**
+     * Returns true for an unclaimed, application-owned request object parameter.
+     *
+     * @param parameter controller method parameter
+     * @return {@code true} when automatic request-object binding is allowed
+     */
+    public boolean matches(MethodParameter parameter) {
+        Objects.requireNonNull(parameter, "parameter");
+        if (hasExplicitBindingAnnotation(parameter)) {
+            return false;
+        }
+        Class<?> type = parameter.getParameterType();
+        return !isFrameworkType(type) && !isSimpleType(type);
     }
 
 }

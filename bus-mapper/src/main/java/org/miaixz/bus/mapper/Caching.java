@@ -176,6 +176,38 @@ public class Caching extends XMLLanguageDriver {
     }
 
     /**
+     * Gets the configuration-local SQL source cache.
+     *
+     * @param configuration the MyBatis configuration
+     * @return the configuration-local cache
+     */
+    private static Map<String, SqlSource> configurationCache(Configuration configuration) {
+        synchronized (CONFIGURATION_CACHE_KEY_MAP) {
+            return CONFIGURATION_CACHE_KEY_MAP.computeIfAbsent(configuration, k -> new ConcurrentHashMap<>());
+        }
+    }
+
+    /**
+     * Clears cached SQL sources for a single MyBatis configuration.
+     *
+     * @param configuration the MyBatis configuration to clear
+     */
+    public static void clear(Configuration configuration) {
+        synchronized (CONFIGURATION_CACHE_KEY_MAP) {
+            CONFIGURATION_CACHE_KEY_MAP.remove(configuration);
+        }
+    }
+
+    /**
+     * Clears cached SQL sources for all MyBatis configurations.
+     */
+    public static void clearAll() {
+        synchronized (CONFIGURATION_CACHE_KEY_MAP) {
+            CONFIGURATION_CACHE_KEY_MAP.clear();
+        }
+    }
+
+    /**
      * Creates an {@link SqlSource}. If a cached version exists, it is reused; otherwise, a new instance is created and
      * cached. This method uses the script parameter as a key to look up pre-parsed SQL metadata.
      *
@@ -235,38 +267,6 @@ public class Caching extends XMLLanguageDriver {
             });
         } else {
             return super.createSqlSource(configuration, script, parameterType);
-        }
-    }
-
-    /**
-     * Gets the configuration-local SQL source cache.
-     *
-     * @param configuration the MyBatis configuration
-     * @return the configuration-local cache
-     */
-    private static Map<String, SqlSource> configurationCache(Configuration configuration) {
-        synchronized (CONFIGURATION_CACHE_KEY_MAP) {
-            return CONFIGURATION_CACHE_KEY_MAP.computeIfAbsent(configuration, k -> new ConcurrentHashMap<>());
-        }
-    }
-
-    /**
-     * Clears cached SQL sources for a single MyBatis configuration.
-     *
-     * @param configuration the MyBatis configuration to clear
-     */
-    public static void clear(Configuration configuration) {
-        synchronized (CONFIGURATION_CACHE_KEY_MAP) {
-            CONFIGURATION_CACHE_KEY_MAP.remove(configuration);
-        }
-    }
-
-    /**
-     * Clears cached SQL sources for all MyBatis configurations.
-     */
-    public static void clearAll() {
-        synchronized (CONFIGURATION_CACHE_KEY_MAP) {
-            CONFIGURATION_CACHE_KEY_MAP.clear();
         }
     }
 

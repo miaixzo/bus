@@ -74,8 +74,8 @@ import org.miaixz.bus.core.xyz.*;
  * the attribute in {@code c} being directly overridden by {@code a}.</li>
  * </ul>
  *
- * @see MetaAnnotatedElement
  * @author Kimi Liu
+ * @see MetaAnnotatedElement
  */
 public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> {
 

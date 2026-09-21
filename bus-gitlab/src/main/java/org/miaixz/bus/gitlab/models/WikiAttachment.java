@@ -31,106 +31,24 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class WikiAttachment implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852283267221L;
-
-    /**
-     * The link class.
-     *
-     * @author Kimi Liu
-     */
-    public static class Link implements Serializable {
-
-        /**
-         * The serial version uid value.
-         */
-        @Serial
-        private static final long serialVersionUID = 2852283337059L;
-
-        /**
-         * The url value.
-         */
-        private String url;
-        /**
-         * The markdown value.
-         */
-        private String markdown;
-
-        /**
-         * Constructs a new {@code Link} instance.
-         */
-        public Link() {
-            // No initialization required.
-        }
-
-        /**
-         * Returns the url.
-         *
-         * @return the result
-         */
-
-        public String getUrl() {
-            return url;
-        }
-
-        /**
-         * Sets the url.
-         *
-         * @param url the url value
-         */
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        /**
-         * Returns the markdown.
-         *
-         * @return the result
-         */
-
-        public String getMarkdown() {
-            return markdown;
-        }
-
-        /**
-         * Sets the markdown.
-         *
-         * @param markdown the markdown value
-         */
-
-        public void setMarkdown(String markdown) {
-            this.markdown = markdown;
-        }
-
-        /**
-         * Returns the string.
-         *
-         * @return the result
-         */
-
-        @Override
-        public String toString() {
-            return (JacksonJson.toJsonString(this));
-        }
-
-    }
 
     /**
      * The file name value.
      */
     private String fileName;
+
     /**
      * The file path value.
      */
     private String filePath;
+
     /**
      * The branch value.
      */
     private String branch;
+
     /**
      * The link value.
      */
@@ -232,6 +150,86 @@ public class WikiAttachment implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    /**
+     * The link class.
+     *
+     * @author Kimi Liu
+     */
+    public static class Link implements Serializable {
+
+        @Serial
+        private static final long serialVersionUID = 2852283337059L;
+
+        /**
+         * The url value.
+         */
+        private String url;
+
+        /**
+         * The markdown value.
+         */
+        private String markdown;
+
+        /**
+         * Constructs a new {@code Link} instance.
+         */
+        public Link() {
+            // No initialization required.
+        }
+
+        /**
+         * Returns the url.
+         *
+         * @return the result
+         */
+
+        public String getUrl() {
+            return url;
+        }
+
+        /**
+         * Sets the url.
+         *
+         * @param url the url value
+         */
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        /**
+         * Returns the markdown.
+         *
+         * @return the result
+         */
+
+        public String getMarkdown() {
+            return markdown;
+        }
+
+        /**
+         * Sets the markdown.
+         *
+         * @param markdown the markdown value
+         */
+
+        public void setMarkdown(String markdown) {
+            this.markdown = markdown;
+        }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
+
+        @Override
+        public String toString() {
+            return (JacksonJson.toJsonString(this));
+        }
+
     }
 
 }

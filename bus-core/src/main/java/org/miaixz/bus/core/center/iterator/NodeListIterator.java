@@ -31,8 +31,8 @@ import org.miaixz.bus.core.lang.Assert;
  * An {@link Iterator} wrapper for {@link NodeList}. This iterator allows iterating over the nodes in a
  * {@link NodeList}. The {@link #remove()} method is not supported by this iterator.
  *
- * @see NodeList
  * @author Kimi Liu
+ * @see NodeList
  */
 public class NodeListIterator implements ResettableIterator<Node> {
 

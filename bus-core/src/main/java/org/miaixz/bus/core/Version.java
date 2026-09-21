@@ -29,7 +29,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.CompareKit;
 

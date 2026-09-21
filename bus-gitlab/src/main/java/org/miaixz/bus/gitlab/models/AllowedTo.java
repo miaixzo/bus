@@ -20,8 +20,6 @@
 package org.miaixz.bus.gitlab.models;
 
 import java.io.Serial;
-
-import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -32,9 +30,6 @@ import java.io.Serializable;
  */
 public class AllowedTo implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852235756710L;
 
@@ -42,10 +37,12 @@ public class AllowedTo implements Serializable {
      * The access level value.
      */
     private AccessLevel accessLevel;
+
     /**
      * The user id value.
      */
     private Long userId;
+
     /**
      * The group id value.
      */

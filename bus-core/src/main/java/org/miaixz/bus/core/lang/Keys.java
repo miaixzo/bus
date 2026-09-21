@@ -287,13 +287,6 @@ public class Keys {
      */
     public static final boolean IS_GRAALVM_NATIVE;
 
-    /**
-     * Constructs a new Keys instance.
-     */
-    public Keys() {
-        // No initialization required.
-    }
-
     static {
         // Set UTF-8 as default encoding system-wide
         System.setProperty("file.encoding", Charset.DEFAULT_UTF_8);
@@ -310,6 +303,13 @@ public class Keys {
         IS_OPENJ9 = jvmName.contains("OpenJ9");
         // Initialize GraalVM Native Image flag.
         IS_GRAALVM_NATIVE = null != System.getProperty("org.graalvm.nativeimage.imagecode");
+    }
+
+    /**
+     * Constructs a new Keys instance.
+     */
+    public Keys() {
+        // No initialization required.
     }
 
     /**

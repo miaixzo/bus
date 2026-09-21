@@ -36,15 +36,15 @@ public class CallerKit {
      */
     private static final Caller INSTANCE;
 
+    static {
+        INSTANCE = tryCreateCaller();
+    }
+
     /**
      * Keeps call-stack inspection on the static API.
      */
     public CallerKit() {
         // No initialization required.
-    }
-
-    static {
-        INSTANCE = tryCreateCaller();
     }
 
     /**

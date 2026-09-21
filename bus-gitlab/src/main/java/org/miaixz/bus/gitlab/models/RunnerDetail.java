@@ -36,9 +36,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class RunnerDetail extends Runner {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852280720196L;
 
@@ -46,34 +43,42 @@ public class RunnerDetail extends Runner {
      * The architecture value.
      */
     private String architecture;
+
     /**
      * The platform value.
      */
     private String platform;
+
     /**
      * The contacted at value.
      */
     private Date contactedAt;
+
     /**
      * The projects value.
      */
     private List<Project> projects;
+
     /**
      * The token value.
      */
     private String token;
+
     /**
      * The revision value.
      */
     private String revision;
+
     /**
      * The tag list value.
      */
     private List<String> tagList;
+
     /**
      * The version value.
      */
     private String version;
+
     /**
      * The access level value.
      */
@@ -84,69 +89,6 @@ public class RunnerDetail extends Runner {
      */
     public RunnerDetail() {
         // No initialization required.
-    }
-
-    /**
-     * Enumeration representing the access level for a GitLab CI/CD runner.
-     * <p>
-     * This enum defines the protection level for runners, determining which types of projects and branches the runner
-     * can execute jobs for. Access levels control security and resource usage by restricting runner availability based
-     * on reference protection.
-     * </p>
-     *
-     * @author Kimi Liu
-     */
-    public enum RunnerAccessLevel {
-
-        /**
-         * The not protected defines.
-         */
-        NOT_PROTECTED,
-        /**
-         * The ref protected defines.
-         */
-        REF_PROTECTED;
-
-        /**
-         * The enum codec value.
-         */
-        private static JacksonJsonEnumCodec<RunnerAccessLevel> enumCodec = new JacksonJsonEnumCodec<>(
-                RunnerAccessLevel.class);
-
-        /**
-         * Returns the value.
-         *
-         * @param value the value value
-         * @return the result
-         */
-
-        @JsonCreator
-        public static RunnerAccessLevel forValue(String value) {
-            return enumCodec.forValue(value);
-        }
-
-        /**
-         * Returns the value.
-         *
-         * @return the result
-         */
-
-        @JsonValue
-        public String toValue() {
-            return (enumCodec.toString(this));
-        }
-
-        /**
-         * Returns the string.
-         *
-         * @return the result
-         */
-
-        @Override
-        public String toString() {
-            return (enumCodec.toString(this));
-        }
-
     }
 
     /**
@@ -446,6 +388,69 @@ public class RunnerDetail extends Runner {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    /**
+     * Enumeration representing the access level for a GitLab CI/CD runner.
+     * <p>
+     * This enum defines the protection level for runners, determining which types of projects and branches the runner
+     * can execute jobs for. Access levels control security and resource usage by restricting runner availability based
+     * on reference protection.
+     * </p>
+     *
+     * @author Kimi Liu
+     */
+    public enum RunnerAccessLevel {
+
+        /**
+         * The not protected defines.
+         */
+        NOT_PROTECTED,
+        /**
+         * The ref protected defines.
+         */
+        REF_PROTECTED;
+
+        /**
+         * The enum codec value.
+         */
+        private static JacksonJsonEnumCodec<RunnerAccessLevel> enumCodec = new JacksonJsonEnumCodec<>(
+                RunnerAccessLevel.class);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
+
+        @JsonCreator
+        public static RunnerAccessLevel forValue(String value) {
+            return enumCodec.forValue(value);
+        }
+
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
+        @JsonValue
+        public String toValue() {
+            return (enumCodec.toString(this));
+        }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
+
+        @Override
+        public String toString() {
+            return (enumCodec.toString(this));
+        }
+
     }
 
 }

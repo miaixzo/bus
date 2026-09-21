@@ -57,6 +57,60 @@ public class Socks5UdpCodec implements UdpDatagramCodec {
     }
 
     /**
+     * Resolves the SOCKS5 address-type byte for an encoded host.
+     *
+     * @param host    original host text
+     * @param address encoded address bytes
+     * @return {@code 0x01} for IPv4, {@code 0x04} for IPv6, or {@code 0x03} for a domain name
+     */
+    private static byte type(final String host, final byte[] address) {
+        if (ipv4(host) != null) {
+            return 0x01;
+        }
+        return host.indexOf(Symbol.C_COLON) >= 0 && address.length == 16 ? (byte) 0x04 : (byte) 0x03;
+    }
+
+    /**
+     * Encodes a target host using the byte representation required by its SOCKS5 address type.
+     *
+     * @param host IPv4, IPv6, or domain-name host text
+     * @return raw IP bytes or UTF-8 domain-name bytes
+     * @throws ProtocolException if IPv6 text is invalid or a domain name exceeds 255 encoded bytes
+     */
+    private static byte[] address(final String host) {
+        final byte[] ipv4 = ipv4(host);
+        if (ipv4 != null) {
+            return ipv4;
+        }
+        if (host.indexOf(Symbol.C_COLON) >= 0) {
+            try {
+                return InetAddress.getByName(host).getAddress();
+            } catch (final UnknownHostException e) {
+                throw new ProtocolException("Invalid IPv6 SOCKS target", e);
+            }
+        }
+        final byte[] value = ByteString.encodeString(host, Charset.UTF_8).toByteArray();
+        if (value.length > 255) {
+            throw new ProtocolException("SOCKS target host is too long");
+        }
+        return value;
+    }
+
+    /**
+     * Attempts to encode an IPv4 literal without resolving domain names.
+     *
+     * @param host possible IPv4 literal
+     * @return four IPv4 bytes, or {@code null} when {@code host} is not an IPv4 literal
+     */
+    private static byte[] ipv4(final String host) {
+        try {
+            return ByteBuffer.allocate(Integer.BYTES).putInt((int) NetKit.ipv4ToLong(host)).array();
+        } catch (final RuntimeException ignored) {
+            return null;
+        }
+    }
+
+    /**
      * Returns the physical relay endpoint supplied by the SOCKS server.
      *
      * @return non-null UDP relay address
@@ -118,60 +172,6 @@ public class Socks5UdpCodec implements UdpDatagramCodec {
         final byte[] body = new byte[packet.remaining()];
         packet.get(body);
         return Payload.of(body);
-    }
-
-    /**
-     * Resolves the SOCKS5 address-type byte for an encoded host.
-     *
-     * @param host    original host text
-     * @param address encoded address bytes
-     * @return {@code 0x01} for IPv4, {@code 0x04} for IPv6, or {@code 0x03} for a domain name
-     */
-    private static byte type(final String host, final byte[] address) {
-        if (ipv4(host) != null) {
-            return 0x01;
-        }
-        return host.indexOf(Symbol.C_COLON) >= 0 && address.length == 16 ? (byte) 0x04 : (byte) 0x03;
-    }
-
-    /**
-     * Encodes a target host using the byte representation required by its SOCKS5 address type.
-     *
-     * @param host IPv4, IPv6, or domain-name host text
-     * @return raw IP bytes or UTF-8 domain-name bytes
-     * @throws ProtocolException if IPv6 text is invalid or a domain name exceeds 255 encoded bytes
-     */
-    private static byte[] address(final String host) {
-        final byte[] ipv4 = ipv4(host);
-        if (ipv4 != null) {
-            return ipv4;
-        }
-        if (host.indexOf(Symbol.C_COLON) >= 0) {
-            try {
-                return InetAddress.getByName(host).getAddress();
-            } catch (final UnknownHostException e) {
-                throw new ProtocolException("Invalid IPv6 SOCKS target", e);
-            }
-        }
-        final byte[] value = ByteString.encodeString(host, Charset.UTF_8).toByteArray();
-        if (value.length > 255) {
-            throw new ProtocolException("SOCKS target host is too long");
-        }
-        return value;
-    }
-
-    /**
-     * Attempts to encode an IPv4 literal without resolving domain names.
-     *
-     * @param host possible IPv4 literal
-     * @return four IPv4 bytes, or {@code null} when {@code host} is not an IPv4 literal
-     */
-    private static byte[] ipv4(final String host) {
-        try {
-            return ByteBuffer.allocate(Integer.BYTES).putInt((int) NetKit.ipv4ToLong(host)).array();
-        } catch (final RuntimeException ignored) {
-            return null;
-        }
     }
 
 }

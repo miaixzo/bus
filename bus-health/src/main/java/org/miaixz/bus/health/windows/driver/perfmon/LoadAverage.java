@@ -41,6 +41,7 @@ public class LoadAverage {
     private static final double[] EXP_WEIGHT = new double[] {
             // 1-, 5-, and 15-minute exponential smoothing weight
             Math.exp(-5d / 60d), Math.exp(-5d / 300d), Math.exp(-5d / 900d) };
+
     // Daemon thread for Load Average
     /**
      * The loadAvgThread value.

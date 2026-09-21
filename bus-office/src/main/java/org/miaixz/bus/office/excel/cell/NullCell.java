@@ -92,17 +92,6 @@ public class NullCell implements Cell {
     /**
      * This operation is not supported for a NullCell.
      *
-     * @param cellType The type to set.
-     * @throws UnsupportedOperationException always
-     */
-    @Override
-    public void setCellType(final CellType cellType) {
-        throw new UnsupportedOperationException("Can not set any thing to null cell!");
-    }
-
-    /**
-     * This operation is not supported for a NullCell.
-     *
      * @throws UnsupportedOperationException always
      */
     @Override
@@ -116,6 +105,17 @@ public class NullCell implements Cell {
     @Override
     public CellType getCellType() {
         return null;
+    }
+
+    /**
+     * This operation is not supported for a NullCell.
+     *
+     * @param cellType The type to set.
+     * @throws UnsupportedOperationException always
+     */
+    @Override
+    public void setCellType(final CellType cellType) {
+        throw new UnsupportedOperationException("Can not set any thing to null cell!");
     }
 
     /**

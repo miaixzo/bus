@@ -52,6 +52,23 @@ final class Http2ConnectionLifecycle implements Lifecycle {
     }
 
     /**
+     * Validates the deliberately small HTTP/2 public transition graph.
+     *
+     * @param current current state
+     * @param next    target state
+     */
+    private static void validate(final State current, final State next) {
+        final boolean valid = current == next
+                || current == State.STARTING && (next == State.RUNNING || next == State.CLOSING || next == State.FAILED)
+                || current == State.RUNNING && (next == State.CLOSING || next == State.CLOSED || next == State.FAILED)
+                || current == State.CLOSING && (next == State.CLOSED || next == State.FAILED)
+                || current.terminal() && current == next;
+        if (!valid) {
+            throw new StatefulException("Invalid HTTP/2 lifecycle transition: " + current + " -> " + next);
+        }
+    }
+
+    /**
      * Returns the current lifecycle state.
      *
      * @return lifecycle state
@@ -111,23 +128,6 @@ final class Http2ConnectionLifecycle implements Lifecycle {
             if (state.compareAndSet(current, update)) {
                 return;
             }
-        }
-    }
-
-    /**
-     * Validates the deliberately small HTTP/2 public transition graph.
-     *
-     * @param current current state
-     * @param next    target state
-     */
-    private static void validate(final State current, final State next) {
-        final boolean valid = current == next
-                || current == State.STARTING && (next == State.RUNNING || next == State.CLOSING || next == State.FAILED)
-                || current == State.RUNNING && (next == State.CLOSING || next == State.CLOSED || next == State.FAILED)
-                || current == State.CLOSING && (next == State.CLOSED || next == State.FAILED)
-                || current.terminal() && current == next;
-        if (!valid) {
-            throw new StatefulException("Invalid HTTP/2 lifecycle transition: " + current + " -> " + next);
         }
     }
 

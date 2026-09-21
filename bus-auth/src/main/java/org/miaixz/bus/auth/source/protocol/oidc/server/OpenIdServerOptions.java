@@ -75,6 +75,7 @@ public record OpenIdServerOptions(OAuth2ServerOptions oauth2Options, Optional<En
      * Minimum whole-second lifetime representable as a JWT NumericDate interval.
      */
     private static final Duration MINIMUM_ID_TOKEN_LIFETIME = Duration.ofSeconds(1);
+
     /**
      * Maximum ID Token lifetime permitted by the OpenID Provider security policy.
      */
@@ -343,50 +344,62 @@ public record OpenIdServerOptions(OAuth2ServerOptions oauth2Options, Optional<En
          * Immutable OAuth authorization-server options extended by this profile.
          */
         private final OAuth2ServerOptions oauth2;
+
         /**
          * OpenID Provider discovery endpoint.
          */
         private Endpoint discoveryEndpoint;
+
         /**
          * UserInfo endpoint.
          */
         private Endpoint userInfoEndpoint;
+
         /**
          * Relying-party initiated end-session endpoint.
          */
         private Endpoint endSessionEndpoint;
+
         /**
          * OpenID Provider JWK Set endpoint.
          */
         private Endpoint jwkSetEndpoint;
+
         /**
          * External ID Token signing-key identifier.
          */
         private String signingKeyId;
+
         /**
          * ID Token signing algorithm.
          */
         private JwaAlgorithm signingAlgorithm;
+
         /**
          * ID Token lifetime.
          */
         private Duration idTokenLifetime = Duration.ofMinutes(5);
+
         /**
          * Supported subject-identifier types.
          */
         private Set<SubjectType> subjectTypes = Set.of(SubjectType.PUBLIC);
+
         /**
          * Optional external pairwise-subject key identifier.
          */
         private String pairwiseKeyId;
+
         /**
          * Scope-to-claim publication mapping.
          */
         private Map<String, Set<String>> scopeClaims = Map.of("openid", Set.of(JwtClaims.SUBJECT));
+
         /**
          * Supported ID Token key-management algorithms.
          */
         private Set<JwaAlgorithm> encryptionAlgorithms = Set.of();
+
         /**
          * Supported ID Token content-encryption methods.
          */

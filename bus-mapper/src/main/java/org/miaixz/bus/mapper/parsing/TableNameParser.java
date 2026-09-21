@@ -158,97 +158,6 @@ public class TableNameParser {
     }
 
     /**
-     * Accepts a new visitor and visits the table names in the current SQL.
-     * <p>
-     * This uses the visitor pattern, allowing for easy modification without changing the original SQL. It also
-     * conveniently provides the index of table names.
-     *
-     * @param visitor The visitor.
-     */
-    public void accept(TableNameVisitor visitor) {
-        int index = 0;
-        String first = tokens.get(index).getValue();
-        if (isOracleSpecialDelete(first, tokens, index)) {
-            visitNameToken(safeGetToken(index + 1), visitor);
-        } else if (isCreateIndex(first, tokens, index)) {
-            String value = tokens.get(index + 4).getValue();
-            if ("ON".equalsIgnoreCase(value)) {
-                visitNameToken(safeGetToken(index + 5), visitor);
-            } else {
-                visitNameToken(safeGetToken(index + 4), visitor);
-            }
-        } else if (isCreateTableIfNotExist(first, tokens, index)) {
-            visitNameToken(safeGetToken(index + 5), visitor);
-        } else {
-            while (hasMoreTokens(tokens, index)) {
-                String current = tokens.get(index++).getValue();
-                if (isFromToken(current)) {
-                    processFromToken(tokens, index, visitor);
-                } else if (isOnDuplicateKeyUpdate(current, index)) {
-                    index = skipDuplicateKeyUpdateIndex(index);
-                } else if (concerned.contains(current.toLowerCase())) {
-                    if (hasMoreTokens(tokens, index)) {
-                        SqlToken next = tokens.get(index++);
-                        if (TOKEN_UPDATE.equalsIgnoreCase(current) && IGNORE.equalsIgnoreCase(next.getValue())) {
-                            next = tokens.get(index++);
-                        }
-                        visitNameToken(next, visitor);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Safely retrieves an {@link SqlToken} by index.
-     *
-     * @param index The index.
-     * @return The {@link SqlToken} if within bounds, otherwise null.
-     */
-    private SqlToken safeGetToken(int index) {
-        return index < tokens.size() ? tokens.get(index) : null;
-    }
-
-    /**
-     * Visitor interface for table names.
-     *
-     * @author Kimi Liu
-     */
-    public interface TableNameVisitor {
-
-        /**
-         * Visits a token representing a table name.
-         *
-         * @param name The token representing the table name.
-         */
-        void visit(SqlToken name);
-
-    }
-
-    /**
-     * Fetches all SQL tokens from the SQL statement.
-     *
-     * @param sql The SQL statement.
-     * @return A list of {@link SqlToken} objects.
-     */
-    private List<SqlToken> fetchAllTokens(String sql) {
-        List<SqlToken> tokens = new ArrayList<>();
-        Matcher matcher = NON_SQL_TOKEN_PATTERN.matcher(sql);
-        int last = 0;
-        while (matcher.find()) {
-            int start = matcher.start();
-            if (start != last) {
-                tokens.add(new SqlToken(last, start, sql.substring(last, start)));
-            }
-            last = matcher.end();
-        }
-        if (last != sql.length()) {
-            tokens.add(new SqlToken(last, sql.length(), sql.substring(last)));
-        }
-        return tokens;
-    }
-
-    /**
      * Checks if it's an Oracle-specific DELETE statement (where DELETE is not followed by FROM or *).
      *
      * @param current The current token.
@@ -267,61 +176,6 @@ public class TableNameParser {
     }
 
     /**
-     * Checks if the statement is a CREATE INDEX statement.
-     *
-     * @param current The current token.
-     * @param tokens  The list of tokens.
-     * @param index   The current index.
-     * @return {@code true} if it's a CREATE INDEX statement, {@code false} otherwise.
-     */
-    private boolean isCreateIndex(String current, List<SqlToken> tokens, int index) {
-        if (TOKEN_CREATE.equalsIgnoreCase(current) && hasMoreTokens(tokens, index + 4)) {
-            String next = tokens.get(index + 1).getValue();
-            if (INDEX_TYPES.contains(next.toUpperCase())) {
-                next = tokens.get(index + 2).getValue();
-            }
-            return TOKEN_INDEX.equalsIgnoreCase(next);
-        }
-        return false;
-    }
-
-    /**
-     * Checks if the statement is a CREATE TABLE IF NOT EXISTS statement.
-     *
-     * @param current The current token.
-     * @param tokens  The list of tokens.
-     * @param index   The current index.
-     * @return {@code true} if it's a CREATE TABLE IF NOT EXISTS statement, {@code false} otherwise.
-     */
-    private boolean isCreateTableIfNotExist(String current, List<SqlToken> tokens, int index) {
-        if (TOKEN_CREATE.equalsIgnoreCase(current) && hasMoreTokens(tokens, index + 5)) {
-            StringBuilder tableIfNotExist = new StringBuilder();
-            for (int i = index; i <= index + 4; i++) {
-                tableIfNotExist.append(tokens.get(i).getValue());
-            }
-            return "createtableifnotexists".equalsIgnoreCase(tableIfNotExist.toString());
-        }
-        return false;
-    }
-
-    /**
-     * Checks if the statement contains MySQL's ON DUPLICATE KEY UPDATE syntax.
-     *
-     * @param current The current token.
-     * @param index   The current index.
-     * @return {@code true} if it's an ON DUPLICATE KEY UPDATE clause, {@code false} otherwise.
-     */
-    private boolean isOnDuplicateKeyUpdate(String current, int index) {
-        if (KEYWORD_DUPLICATE.equalsIgnoreCase(current)) {
-            if (hasMoreTokens(tokens, index++)) {
-                String next = tokens.get(index).getValue();
-                return KEYWORD_UPDATE.equalsIgnoreCase(next);
-            }
-        }
-        return false;
-    }
-
-    /**
      * Checks if the current token is a "FROM" keyword.
      *
      * @param currentToken The current token.
@@ -329,17 +183,6 @@ public class TableNameParser {
      */
     private static boolean isFromToken(String currentToken) {
         return KEYWORD_FROM.equalsIgnoreCase(currentToken);
-    }
-
-    /**
-     * Skips tokens related to MySQL's ON DUPLICATE KEY UPDATE clause.
-     *
-     * @param index The current index.
-     * @return The new index after skipping.
-     */
-    private int skipDuplicateKeyUpdateIndex(int index) {
-        // "on duplicate key update" is a fixed MySQL syntax, just skip it.
-        return index + 2;
     }
 
     /**
@@ -459,6 +302,147 @@ public class TableNameParser {
     }
 
     /**
+     * Accepts a new visitor and visits the table names in the current SQL.
+     * <p>
+     * This uses the visitor pattern, allowing for easy modification without changing the original SQL. It also
+     * conveniently provides the index of table names.
+     *
+     * @param visitor The visitor.
+     */
+    public void accept(TableNameVisitor visitor) {
+        int index = 0;
+        String first = tokens.get(index).getValue();
+        if (isOracleSpecialDelete(first, tokens, index)) {
+            visitNameToken(safeGetToken(index + 1), visitor);
+        } else if (isCreateIndex(first, tokens, index)) {
+            String value = tokens.get(index + 4).getValue();
+            if ("ON".equalsIgnoreCase(value)) {
+                visitNameToken(safeGetToken(index + 5), visitor);
+            } else {
+                visitNameToken(safeGetToken(index + 4), visitor);
+            }
+        } else if (isCreateTableIfNotExist(first, tokens, index)) {
+            visitNameToken(safeGetToken(index + 5), visitor);
+        } else {
+            while (hasMoreTokens(tokens, index)) {
+                String current = tokens.get(index++).getValue();
+                if (isFromToken(current)) {
+                    processFromToken(tokens, index, visitor);
+                } else if (isOnDuplicateKeyUpdate(current, index)) {
+                    index = skipDuplicateKeyUpdateIndex(index);
+                } else if (concerned.contains(current.toLowerCase())) {
+                    if (hasMoreTokens(tokens, index)) {
+                        SqlToken next = tokens.get(index++);
+                        if (TOKEN_UPDATE.equalsIgnoreCase(current) && IGNORE.equalsIgnoreCase(next.getValue())) {
+                            next = tokens.get(index++);
+                        }
+                        visitNameToken(next, visitor);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Safely retrieves an {@link SqlToken} by index.
+     *
+     * @param index The index.
+     * @return The {@link SqlToken} if within bounds, otherwise null.
+     */
+    private SqlToken safeGetToken(int index) {
+        return index < tokens.size() ? tokens.get(index) : null;
+    }
+
+    /**
+     * Fetches all SQL tokens from the SQL statement.
+     *
+     * @param sql The SQL statement.
+     * @return A list of {@link SqlToken} objects.
+     */
+    private List<SqlToken> fetchAllTokens(String sql) {
+        List<SqlToken> tokens = new ArrayList<>();
+        Matcher matcher = NON_SQL_TOKEN_PATTERN.matcher(sql);
+        int last = 0;
+        while (matcher.find()) {
+            int start = matcher.start();
+            if (start != last) {
+                tokens.add(new SqlToken(last, start, sql.substring(last, start)));
+            }
+            last = matcher.end();
+        }
+        if (last != sql.length()) {
+            tokens.add(new SqlToken(last, sql.length(), sql.substring(last)));
+        }
+        return tokens;
+    }
+
+    /**
+     * Checks if the statement is a CREATE INDEX statement.
+     *
+     * @param current The current token.
+     * @param tokens  The list of tokens.
+     * @param index   The current index.
+     * @return {@code true} if it's a CREATE INDEX statement, {@code false} otherwise.
+     */
+    private boolean isCreateIndex(String current, List<SqlToken> tokens, int index) {
+        if (TOKEN_CREATE.equalsIgnoreCase(current) && hasMoreTokens(tokens, index + 4)) {
+            String next = tokens.get(index + 1).getValue();
+            if (INDEX_TYPES.contains(next.toUpperCase())) {
+                next = tokens.get(index + 2).getValue();
+            }
+            return TOKEN_INDEX.equalsIgnoreCase(next);
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the statement is a CREATE TABLE IF NOT EXISTS statement.
+     *
+     * @param current The current token.
+     * @param tokens  The list of tokens.
+     * @param index   The current index.
+     * @return {@code true} if it's a CREATE TABLE IF NOT EXISTS statement, {@code false} otherwise.
+     */
+    private boolean isCreateTableIfNotExist(String current, List<SqlToken> tokens, int index) {
+        if (TOKEN_CREATE.equalsIgnoreCase(current) && hasMoreTokens(tokens, index + 5)) {
+            StringBuilder tableIfNotExist = new StringBuilder();
+            for (int i = index; i <= index + 4; i++) {
+                tableIfNotExist.append(tokens.get(i).getValue());
+            }
+            return "createtableifnotexists".equalsIgnoreCase(tableIfNotExist.toString());
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the statement contains MySQL's ON DUPLICATE KEY UPDATE syntax.
+     *
+     * @param current The current token.
+     * @param index   The current index.
+     * @return {@code true} if it's an ON DUPLICATE KEY UPDATE clause, {@code false} otherwise.
+     */
+    private boolean isOnDuplicateKeyUpdate(String current, int index) {
+        if (KEYWORD_DUPLICATE.equalsIgnoreCase(current)) {
+            if (hasMoreTokens(tokens, index++)) {
+                String next = tokens.get(index).getValue();
+                return KEYWORD_UPDATE.equalsIgnoreCase(next);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Skips tokens related to MySQL's ON DUPLICATE KEY UPDATE clause.
+     *
+     * @param index The current index.
+     * @return The new index after skipping.
+     */
+    private int skipDuplicateKeyUpdateIndex(int index) {
+        // "on duplicate key update" is a fixed MySQL syntax, just skip it.
+        return index + 2;
+    }
+
+    /**
      * Parses tables from the SQL statement.
      *
      * @return A collection of table names extracted from the SQL.
@@ -471,6 +455,22 @@ public class TableNameParser {
             tableMap.putIfAbsent(name.toLowerCase(), name);
         });
         return new HashSet<>(tableMap.values());
+    }
+
+    /**
+     * Visitor interface for table names.
+     *
+     * @author Kimi Liu
+     */
+    public interface TableNameVisitor {
+
+        /**
+         * Visits a token representing a table name.
+         *
+         * @param name The token representing the table name.
+         */
+        void visit(SqlToken name);
+
     }
 
     /**

@@ -95,6 +95,141 @@ public class HttpRetry implements HttpStage {
     }
 
     /**
+     * Only network-owner-confirmed safe delivery states can be replayed.
+     *
+     * @param failure structured exchange failure
+     * @return {@code true} when delivery is known safe to repeat
+     */
+    private static boolean retryableDelivery(final HttpChain.ExchangeFailure failure) {
+        return failure.deliveryState() == HttpChain.DeliveryState.NOT_SENT
+                || failure.deliveryState() == HttpChain.DeliveryState.PEER_CONFIRMED_UNPROCESSED;
+    }
+
+    /**
+     * Certificate/protocol/cancellation failures are never automatically recovered.
+     *
+     * @param failure structured exchange failure
+     * @return {@code true} when the failure category allows retry
+     */
+    private static boolean retryableReason(final HttpChain.ExchangeFailure failure) {
+        return failure.reason() != HttpChain.FailureReason.TLS && failure.reason() != HttpChain.FailureReason.PROTOCOL
+                && failure.reason() != HttpChain.FailureReason.CANCELLED;
+    }
+
+    /**
+     * RFC idempotent method set used by automatic transport retries.
+     *
+     * @param method HTTP method to classify
+     * @return {@code true} when the method is idempotent
+     */
+    private static boolean idempotent(final Http.Method method) {
+        return switch (method) {
+            case GET, HEAD, PUT, DELETE, OPTIONS, TRACE -> true;
+            default -> false;
+        };
+    }
+
+    /**
+     * Selects redirect method.
+     *
+     * @param code   redirect response status
+     * @param method original request method
+     * @return original method for 307, 308, GET, or HEAD; otherwise GET
+     */
+    private static Http.Method redirectMethod(final int code, final Http.Method method) {
+        if (code == Http.Status.TEMPORARY_REDIRECT || code == Http.Status.PERMANENT_REDIRECT
+                || method == Http.Method.GET || method == Http.Method.HEAD) {
+            return method;
+        }
+        return Http.Method.GET;
+    }
+
+    /**
+     * Returns whether a redirect must preserve the original request body.
+     *
+     * @param code   redirect response status
+     * @param method original request method
+     * @return {@code true} for body-capable methods redirected by status 307 or 308
+     */
+    private static boolean preserveBody(final int code, final Http.Method method) {
+        return (code == Http.Status.TEMPORARY_REDIRECT || code == Http.Status.PERMANENT_REDIRECT)
+                && method.permitsBody();
+    }
+
+    /**
+     * Removes request headers that must be recalculated for redirects.
+     *
+     * @param headers original request headers
+     * @param from    original request URL
+     * @param to      resolved redirect URL
+     * @return headers without body framing fields and, for cross-origin redirects, credential fields
+     */
+    private static Headers redirectHeaders(final Headers headers, final UnoUrl from, final UnoUrl to) {
+        Headers current = headers.without(Http.Header.CONTENT_LENGTH).without(Http.Header.CONTENT_TYPE);
+        if (!sameOrigin(from, to)) {
+            current = current.without(Http.Header.AUTHORIZATION).without(Http.Header.PROXY_AUTHORIZATION)
+                    .without(Http.Header.COOKIE);
+        }
+        return current;
+    }
+
+    /**
+     * Returns whether two URLs share scheme, host, and port.
+     *
+     * @param first  first URL
+     * @param second second URL
+     * @return {@code true} when scheme and port match and host names are equal ignoring case
+     */
+    private static boolean sameOrigin(final UnoUrl first, final UnoUrl second) {
+        return first.address().scheme().equals(second.address().scheme())
+                && first.address().host().equalsIgnoreCase(second.address().host())
+                && first.address().port() == second.address().port();
+    }
+
+    /**
+     * Creates a fresh immutable request snapshot for every guarded network attempt. Replaying through the connect stage
+     * then performs a new DNS lookup and cannot retain a previous attempt's address conclusion.
+     *
+     * @param request request about to enter the replayable chain
+     * @return original unguarded request or a fresh guarded request snapshot
+     */
+    private static HttpRequest addressPolicyAttempt(final HttpRequest request) {
+        final AddressPolicy addressPolicy = request.tag(AddressPolicy.class);
+        return addressPolicy == null ? request : request.toBuilder().tag(AddressPolicy.class, addressPolicy).build();
+    }
+
+    /**
+     * Carries an installed address policy across redirect and authentication follow-ups without storing any DNS result
+     * or selected numeric address in the follow-up request.
+     *
+     * @param source   request whose explicit policy governs the exchange
+     * @param followUp candidate follow-up, possibly {@code null}
+     * @return policy-preserving follow-up or {@code null}
+     */
+    private static HttpRequest inheritAddressPolicy(final HttpRequest source, final HttpRequest followUp) {
+        if (followUp == null) {
+            return null;
+        }
+        final AddressPolicy addressPolicy = source.tag(AddressPolicy.class);
+        return addressPolicy == null ? followUp : followUp.toBuilder().tag(AddressPolicy.class, addressPolicy).build();
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
+    }
+
+    /**
      * Executes retries and follow-ups.
      *
      * @param request initial request to execute and potentially replay
@@ -273,41 +408,6 @@ public class HttpRetry implements HttpStage {
     }
 
     /**
-     * Only network-owner-confirmed safe delivery states can be replayed.
-     *
-     * @param failure structured exchange failure
-     * @return {@code true} when delivery is known safe to repeat
-     */
-    private static boolean retryableDelivery(final HttpChain.ExchangeFailure failure) {
-        return failure.deliveryState() == HttpChain.DeliveryState.NOT_SENT
-                || failure.deliveryState() == HttpChain.DeliveryState.PEER_CONFIRMED_UNPROCESSED;
-    }
-
-    /**
-     * Certificate/protocol/cancellation failures are never automatically recovered.
-     *
-     * @param failure structured exchange failure
-     * @return {@code true} when the failure category allows retry
-     */
-    private static boolean retryableReason(final HttpChain.ExchangeFailure failure) {
-        return failure.reason() != HttpChain.FailureReason.TLS && failure.reason() != HttpChain.FailureReason.PROTOCOL
-                && failure.reason() != HttpChain.FailureReason.CANCELLED;
-    }
-
-    /**
-     * RFC idempotent method set used by automatic transport retries.
-     *
-     * @param method HTTP method to classify
-     * @return {@code true} when the method is idempotent
-     */
-    private static boolean idempotent(final Http.Method method) {
-        return switch (method) {
-            case GET, HEAD, PUT, DELETE, OPTIONS, TRACE -> true;
-            default -> false;
-        };
-    }
-
-    /**
      * Returns stage name.
      *
      * @return stable retry-stage identifier
@@ -363,106 +463,6 @@ public class HttpRetry implements HttpStage {
             case Http.Status.UNAUTHORIZED, Http.Status.PROXY_AUTHENTICATION_REQUIRED -> followUps < Normal._20;
             default -> false;
         };
-    }
-
-    /**
-     * Selects redirect method.
-     *
-     * @param code   redirect response status
-     * @param method original request method
-     * @return original method for 307, 308, GET, or HEAD; otherwise GET
-     */
-    private static Http.Method redirectMethod(final int code, final Http.Method method) {
-        if (code == Http.Status.TEMPORARY_REDIRECT || code == Http.Status.PERMANENT_REDIRECT
-                || method == Http.Method.GET || method == Http.Method.HEAD) {
-            return method;
-        }
-        return Http.Method.GET;
-    }
-
-    /**
-     * Returns whether a redirect must preserve the original request body.
-     *
-     * @param code   redirect response status
-     * @param method original request method
-     * @return {@code true} for body-capable methods redirected by status 307 or 308
-     */
-    private static boolean preserveBody(final int code, final Http.Method method) {
-        return (code == Http.Status.TEMPORARY_REDIRECT || code == Http.Status.PERMANENT_REDIRECT)
-                && method.permitsBody();
-    }
-
-    /**
-     * Removes request headers that must be recalculated for redirects.
-     *
-     * @param headers original request headers
-     * @param from    original request URL
-     * @param to      resolved redirect URL
-     * @return headers without body framing fields and, for cross-origin redirects, credential fields
-     */
-    private static Headers redirectHeaders(final Headers headers, final UnoUrl from, final UnoUrl to) {
-        Headers current = headers.without(Http.Header.CONTENT_LENGTH).without(Http.Header.CONTENT_TYPE);
-        if (!sameOrigin(from, to)) {
-            current = current.without(Http.Header.AUTHORIZATION).without(Http.Header.PROXY_AUTHORIZATION)
-                    .without(Http.Header.COOKIE);
-        }
-        return current;
-    }
-
-    /**
-     * Returns whether two URLs share scheme, host, and port.
-     *
-     * @param first  first URL
-     * @param second second URL
-     * @return {@code true} when scheme and port match and host names are equal ignoring case
-     */
-    private static boolean sameOrigin(final UnoUrl first, final UnoUrl second) {
-        return first.address().scheme().equals(second.address().scheme())
-                && first.address().host().equalsIgnoreCase(second.address().host())
-                && first.address().port() == second.address().port();
-    }
-
-    /**
-     * Creates a fresh immutable request snapshot for every guarded network attempt. Replaying through the connect stage
-     * then performs a new DNS lookup and cannot retain a previous attempt's address conclusion.
-     *
-     * @param request request about to enter the replayable chain
-     * @return original unguarded request or a fresh guarded request snapshot
-     */
-    private static HttpRequest addressPolicyAttempt(final HttpRequest request) {
-        final AddressPolicy addressPolicy = request.tag(AddressPolicy.class);
-        return addressPolicy == null ? request : request.toBuilder().tag(AddressPolicy.class, addressPolicy).build();
-    }
-
-    /**
-     * Carries an installed address policy across redirect and authentication follow-ups without storing any DNS result
-     * or selected numeric address in the follow-up request.
-     *
-     * @param source   request whose explicit policy governs the exchange
-     * @param followUp candidate follow-up, possibly {@code null}
-     * @return policy-preserving follow-up or {@code null}
-     */
-    private static HttpRequest inheritAddressPolicy(final HttpRequest source, final HttpRequest followUp) {
-        if (followUp == null) {
-            return null;
-        }
-        final AddressPolicy addressPolicy = source.tag(AddressPolicy.class);
-        return addressPolicy == null ? followUp : followUp.toBuilder().tag(AddressPolicy.class, addressPolicy).build();
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  logical field name included in the validation error
-     * @param <T>   reference type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
     }
 
 }

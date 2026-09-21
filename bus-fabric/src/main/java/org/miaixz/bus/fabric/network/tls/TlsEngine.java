@@ -169,6 +169,33 @@ public class TlsEngine implements AutoCloseable {
     }
 
     /**
+     * Bounds provider size hints before they reach buffer allocators.
+     *
+     * @param providerHint buffer size reported by the TLS provider
+     * @return validated allocation size
+     */
+    private static int bufferHint(final int providerHint) {
+        if (providerHint <= 0) {
+            throw new SocketException("TLS provider returned an invalid buffer size");
+        }
+        return Math.min(providerHint, (int) Normal.MEBI);
+    }
+
+    /**
+     * Returns peer certificates or an empty chain.
+     *
+     * @param session SSL session
+     * @return peer certificates
+     */
+    private static List<Certificate> peerCertificates(final SSLSession session) {
+        try {
+            return Arrays.asList(session.getPeerCertificates());
+        } catch (final SSLPeerUnverifiedException e) {
+            return List.of();
+        }
+    }
+
+    /**
      * Returns the wrapped engine.
      *
      * @return wrapped JDK engine
@@ -379,33 +406,6 @@ public class TlsEngine implements AutoCloseable {
         } else if (stable && result.getHandshakeStatus() != SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING
                 && result.getHandshakeStatus() != SSLEngineResult.HandshakeStatus.FINISHED) {
             stable = false;
-        }
-    }
-
-    /**
-     * Bounds provider size hints before they reach buffer allocators.
-     *
-     * @param providerHint buffer size reported by the TLS provider
-     * @return validated allocation size
-     */
-    private static int bufferHint(final int providerHint) {
-        if (providerHint <= 0) {
-            throw new SocketException("TLS provider returned an invalid buffer size");
-        }
-        return Math.min(providerHint, (int) Normal.MEBI);
-    }
-
-    /**
-     * Returns peer certificates or an empty chain.
-     *
-     * @param session SSL session
-     * @return peer certificates
-     */
-    private static List<Certificate> peerCertificates(final SSLSession session) {
-        try {
-            return Arrays.asList(session.getPeerCertificates());
-        } catch (final SSLPeerUnverifiedException e) {
-            return List.of();
         }
     }
 

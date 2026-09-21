@@ -116,10 +116,10 @@ import reactor.netty.http.server.HttpServer;
  * <li>LLM (protocol 6): Large language model proxying</li>
  * </ul>
  *
+ * @author Kimi Liu
  * @see Router
  * @see Executor
  * @see Strategy
- * @author Kimi Liu
  */
 @EnableConfigurationProperties(value = { VortexProperties.class })
 @Configuration(proxyBeanMethods = false)

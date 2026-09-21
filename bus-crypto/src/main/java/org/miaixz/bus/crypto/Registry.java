@@ -41,13 +41,6 @@ public class Registry {
      */
     private static final Map<String, Provider> ALGORITHM_CACHE = new ConcurrentHashMap<>();
 
-    /**
-     * Constructs a new Registry instance.
-     */
-    public Registry() {
-        // No initialization required.
-    }
-
     static {
         register(new AESProvider());
         register(new DESProvider());
@@ -55,6 +48,13 @@ public class Registry {
         register(new RSAProvider());
         register(new SM2Provider());
         register(new SM4Provider());
+    }
+
+    /**
+     * Constructs a new Registry instance.
+     */
+    public Registry() {
+        // No initialization required.
     }
 
     /**

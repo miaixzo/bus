@@ -47,9 +47,6 @@ import tools.jackson.databind.node.ValueNode;
 @Setter
 public abstract class AbstractIssue implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852235017309L;
 
@@ -62,38 +59,47 @@ public abstract class AbstractIssue implements Serializable {
      * The assignee value.
      */
     private Assignee assignee;
+
     /**
      * The assignees value.
      */
     private List<Assignee> assignees;
+
     /**
      * The author value.
      */
     private Author author;
+
     /**
      * The confidential value.
      */
     private Boolean confidential;
+
     /**
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The updated at value.
      */
     private Date updatedAt;
+
     /**
      * The closed at value.
      */
     private Date closedAt;
+
     /**
      * The closed by value.
      */
     private User closedBy;
+
     /**
      * The description value.
      */
     private String description;
+
     /**
      * The due date value.
      */
@@ -121,58 +127,72 @@ public abstract class AbstractIssue implements Serializable {
      * The iid value.
      */
     private Long iid;
+
     /**
      * The labels value.
      */
     private List<String> labels;
+
     /**
      * The milestone value.
      */
     private Milestone milestone;
+
     /**
      * The project id value.
      */
     private Long projectId;
+
     /**
      * The state value.
      */
     private IssueState state;
+
     /**
      * The title value.
      */
     private String title;
+
     /**
      * The user notes count value.
      */
     private Integer userNotesCount;
+
     /**
      * The web url value.
      */
     private String webUrl;
+
     /**
      * The severity value.
      */
     private String severity;
+
     /**
      * The weight value.
      */
     private Integer weight;
+
     /**
      * The discussion locked value.
      */
     private Boolean discussionLocked;
+
     /**
      * The time stats value.
      */
     private TimeStats timeStats;
+
     /**
      * The issue type value.
      */
     private String issueType;
+
     /**
      * The epic value.
      */
     private IssueEpic epic;
+
     /**
      * The imported value.
      */
@@ -182,34 +202,42 @@ public abstract class AbstractIssue implements Serializable {
      * The upvotes value.
      */
     private Integer upvotes;
+
     /**
      * The downvotes value.
      */
     private Integer downvotes;
+
     /**
      * The merge requests count value.
      */
     private Integer mergeRequestsCount;
+
     /**
      * The has tasks value.
      */
     private Boolean hasTasks;
+
     /**
      * The task status value.
      */
     private String taskStatus;
+
     /**
      * The imported from value.
      */
     private String importedFrom;
+
     /**
      * The health status value.
      */
     private String healthStatus;
+
     /**
      * The iteration value.
      */
     private Iteration iteration;
+
     /**
      * The task completion status value.
      */
@@ -309,9 +337,6 @@ public abstract class AbstractIssue implements Serializable {
     @Setter
     public static class TaskCompletionStatus implements Serializable {
 
-        /**
-         * The serial version uid value.
-         */
         @Serial
         private static final long serialVersionUID = 2852235115381L;
 
@@ -319,6 +344,7 @@ public abstract class AbstractIssue implements Serializable {
          * The count value.
          */
         private Integer count;
+
         /**
          * The completed count value.
          */

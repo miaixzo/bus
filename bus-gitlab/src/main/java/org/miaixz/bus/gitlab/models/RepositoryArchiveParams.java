@@ -30,6 +30,7 @@ public class RepositoryArchiveParams {
      * The sha value.
      */
     private String sha;
+
     /**
      * The path value.
      */

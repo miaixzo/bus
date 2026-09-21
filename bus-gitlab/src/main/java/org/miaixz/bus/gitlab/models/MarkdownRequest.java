@@ -29,9 +29,6 @@ import java.io.Serializable;
  */
 public class MarkdownRequest implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852261307076L;
 
@@ -39,10 +36,12 @@ public class MarkdownRequest implements Serializable {
      * The text value.
      */
     private String text;
+
     /**
      * The gfm value.
      */
     private boolean gfm;
+
     /**
      * The project value.
      */

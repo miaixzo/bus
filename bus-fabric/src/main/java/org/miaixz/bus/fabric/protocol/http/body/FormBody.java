@@ -80,24 +80,6 @@ public class FormBody implements RequestBody {
     }
 
     /**
-     * Returns form media.
-     *
-     * @return canonical form media type
-     */
-    public MediaType media() {
-        return media;
-    }
-
-    /**
-     * Returns form payload.
-     *
-     * @return repeatable lazily encoded form payload
-     */
-    public Payload payload() {
-        return payload;
-    }
-
-    /**
      * Encodes entries to UTF-8 form bytes.
      *
      * @param entries immutable ordered form entries
@@ -174,6 +156,24 @@ public class FormBody implements RequestBody {
                 i += 2;
             }
         }
+    }
+
+    /**
+     * Returns form media.
+     *
+     * @return canonical form media type
+     */
+    public MediaType media() {
+        return media;
+    }
+
+    /**
+     * Returns form payload.
+     *
+     * @return repeatable lazily encoded form payload
+     */
+    public Payload payload() {
+        return payload;
     }
 
     /**

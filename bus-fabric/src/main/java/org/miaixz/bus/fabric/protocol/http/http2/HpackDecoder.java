@@ -83,6 +83,52 @@ final class HpackDecoder {
     private static final Map<String, Integer> STATIC_NAME_INDEX = staticNameIndex();
 
     /**
+     * HPACK Huffman codes for byte symbols.
+     */
+    private static final int[] HUFFMAN_CODES = { 0x1ff8, 0x7fffd8, 0xfffffe2, 0xfffffe3, 0xfffffe4, 0xfffffe5,
+            0xfffffe6, 0xfffffe7, 0xfffffe8, 0xffffea, 0x3ffffffc, 0xfffffe9, 0xfffffea, 0x3ffffffd, 0xfffffeb,
+            0xfffffec, 0xfffffed, 0xfffffee, 0xfffffef, 0xffffff0, 0xffffff1, 0xffffff2, 0x3ffffffe, 0xffffff3,
+            0xffffff4, 0xffffff5, 0xffffff6, 0xffffff7, 0xffffff8, 0xffffff9, 0xffffffa, 0xffffffb, 0x14, 0x3f8, 0x3f9,
+            0xffa, 0x1ff9, 0x15, 0xf8, 0x7fa, 0x3fa, 0x3fb, 0xf9, 0x7fb, 0xfa, 0x16, 0x17, 0x18, 0x0, 0x1, 0x2, 0x19,
+            0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x5c, 0xfb, 0x7ffc, 0x20, 0xffb, 0x3fc, 0x1ffa, 0x21, 0x5d, 0x5e, 0x5f,
+            0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6a, 0x6b, 0x6c, 0x6d, 0x6e, 0x6f, 0x70, 0x71,
+            0x72, 0xfc, 0x73, 0xfd, 0x1ffb, 0x7fff0, 0x1ffc, 0x3ffc, 0x22, 0x7ffd, 0x3, 0x23, 0x4, 0x24, 0x5, 0x25,
+            0x26, 0x27, 0x6, 0x74, 0x75, 0x28, 0x29, 0x2a, 0x7, 0x2b, 0x76, 0x2c, 0x8, 0x9, 0x2d, 0x77, 0x78, 0x79,
+            0x7a, 0x7b, 0x7ffe, 0x7fc, 0x3ffd, 0x1ffd, 0xffffffc, 0xfffe6, 0x3fffd2, 0xfffe7, 0xfffe8, 0x3fffd3,
+            0x3fffd4, 0x3fffd5, 0x7fffd9, 0x3fffd6, 0x7fffda, 0x7fffdb, 0x7fffdc, 0x7fffdd, 0x7fffde, 0xffffeb,
+            0x7fffdf, 0xffffec, 0xffffed, 0x3fffd7, 0x7fffe0, 0xffffee, 0x7fffe1, 0x7fffe2, 0x7fffe3, 0x7fffe4,
+            0x1fffdc, 0x3fffd8, 0x7fffe5, 0x3fffd9, 0x7fffe6, 0x7fffe7, 0xffffef, 0x3fffda, 0x1fffdd, 0xfffe9, 0x3fffdb,
+            0x3fffdc, 0x7fffe8, 0x7fffe9, 0x1fffde, 0x7fffea, 0x3fffdd, 0x3fffde, 0xfffff0, 0x1fffdf, 0x3fffdf,
+            0x7fffeb, 0x7fffec, 0x1fffe0, 0x1fffe1, 0x3fffe0, 0x1fffe2, 0x7fffed, 0x3fffe1, 0x7fffee, 0x7fffef, 0xfffea,
+            0x3fffe2, 0x3fffe3, 0x3fffe4, 0x7ffff0, 0x3fffe5, 0x3fffe6, 0x7ffff1, 0x3ffffe0, 0x3ffffe1, 0xfffeb,
+            0x7fff1, 0x3fffe7, 0x7ffff2, 0x3fffe8, 0x1ffffec, 0x3ffffe2, 0x3ffffe3, 0x3ffffe4, 0x7ffffde, 0x7ffffdf,
+            0x3ffffe5, 0xfffff1, 0x1ffffed, 0x7fff2, 0x1fffe3, 0x3ffffe6, 0x7ffffe0, 0x7ffffe1, 0x3ffffe7, 0x7ffffe2,
+            0xfffff2, 0x1fffe4, 0x1fffe5, 0x3ffffe8, 0x3ffffe9, 0xffffffd, 0x7ffffe3, 0x7ffffe4, 0x7ffffe5, 0xfffec,
+            0xfffff3, 0xfffed, 0x1fffe6, 0x3fffe9, 0x1fffe7, 0x1fffe8, 0x7ffff3, 0x3fffea, 0x3fffeb, 0x1ffffee,
+            0x1ffffef, 0xfffff4, 0xfffff5, 0x3ffffea, 0x7ffff4, 0x3ffffeb, 0x7ffffe6, 0x3ffffec, 0x3ffffed, 0x7ffffe7,
+            0x7ffffe8, 0x7ffffe9, 0x7ffffea, 0x7ffffeb, 0xffffffe, 0x7ffffec, 0x7ffffed, 0x7ffffee, 0x7ffffef,
+            0x7fffff0, 0x3ffffee };
+
+    /**
+     * HPACK Huffman code lengths for byte symbols.
+     */
+    private static final byte[] HUFFMAN_LENGTHS = { 13, 23, 28, 28, 28, 28, 28, 28, 28, 24, 30, 28, 28, 30, 28, 28, 28,
+            28, 28, 28, 28, 28, 30, 28, 28, 28, 28, 28, 28, 28, 28, 28, 6, 10, 10, 12, 13, 6, 8, 11, 10, 10, 8, 11, 8,
+            6, 6, 6, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 7, 8, 15, 6, 12, 10, 13, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+            7, 7, 7, 7, 7, 7, 7, 7, 8, 7, 8, 13, 19, 13, 14, 6, 15, 5, 6, 5, 6, 5, 6, 6, 6, 5, 7, 7, 6, 6, 6, 5, 6, 7,
+            6, 5, 5, 6, 7, 7, 7, 7, 7, 15, 11, 14, 13, 28, 20, 22, 20, 20, 22, 22, 22, 23, 22, 23, 23, 23, 23, 23, 24,
+            23, 24, 24, 22, 23, 24, 23, 23, 23, 23, 21, 22, 23, 22, 23, 23, 24, 22, 21, 20, 22, 22, 23, 23, 21, 23, 22,
+            22, 24, 21, 22, 23, 23, 21, 21, 22, 21, 23, 22, 23, 23, 20, 22, 22, 22, 23, 22, 22, 23, 26, 26, 20, 19, 22,
+            23, 22, 25, 26, 26, 26, 27, 27, 26, 24, 25, 19, 21, 26, 27, 27, 26, 27, 24, 21, 21, 26, 26, 28, 27, 27, 27,
+            20, 24, 20, 21, 22, 21, 21, 23, 22, 22, 25, 25, 24, 24, 26, 23, 26, 27, 26, 26, 27, 27, 27, 27, 27, 28, 27,
+            27, 27, 27, 27, 26 };
+
+    /**
+     * Huffman decoding root.
+     */
+    private static final HuffmanNode HUFFMAN_ROOT = huffmanRoot();
+
+    /**
      * Dynamic-table entries ordered from newest to oldest.
      */
     private final ArrayList<Http2Header> dynamicTable;
@@ -146,6 +192,420 @@ final class HpackDecoder {
      * Maximum fields in one decompressed block.
      */
     private int maxHeaderCount;
+
+    /**
+     * Creates a codec.
+     */
+    HpackDecoder() {
+        this.dynamicTable = new ArrayList<>();
+        this.dynamicExactIndex = new HashMap<>();
+        this.dynamicNameIndex = new HashMap<>();
+        this.dynamicSequences = new ArrayList<>();
+        this.writer = new ByteWriter(Normal._128);
+        this.tableSize = Normal._4096;
+        this.maxTableSize = Normal._4096;
+        this.maxHeaderBlockBytes = Builder.BYTES_64_KIB;
+        this.maxHeaderListSize = Builder.BYTES_64_KIB;
+        this.maxHeaderFieldBytes = Normal._16384;
+        this.maxHeaderCount = 256;
+    }
+
+    /**
+     * Calculates entry size.
+     *
+     * @param header header field whose HPACK entry size is requested
+     * @return HPACK entry size in bytes, including the fixed overhead
+     */
+    private static int size(final Http2Header header) {
+        return header.hpackSize();
+    }
+
+    /**
+     * Writes an HPACK string using Huffman coding only when it shortens the value.
+     *
+     * @param output HPACK destination writer
+     * @param value  text to encode as UTF-8
+     */
+    private static void writeString(final ByteWriter output, final String value) {
+        final byte[] bytes = value.getBytes(Charset.UTF_8);
+        final int huffmanLength = huffmanLength(bytes);
+        if (huffmanLength < bytes.length) {
+            writeInteger(output, huffmanLength, Normal._128, Normal._7);
+            writeHuffman(output, bytes);
+        } else {
+            writeInteger(output, bytes.length, Normal._0, Normal._7);
+            output.write(bytes);
+        }
+    }
+
+    /**
+     * Returns the encoded Huffman byte count, saturated on overflow.
+     *
+     * @param bytes uncompressed UTF-8 bytes
+     * @return encoded Huffman length in bytes
+     */
+    private static int huffmanLength(final byte[] bytes) {
+        long bits = Normal._0;
+        for (final byte value : bytes) {
+            bits += HUFFMAN_LENGTHS[value & Builder.UNSIGNED_BYTE_MASK];
+        }
+        final long length = (bits + Normal._7) >>> Normal._3;
+        return length > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) length;
+    }
+
+    /**
+     * Writes an RFC 7541 Huffman sequence with EOS-prefix padding.
+     *
+     * @param output encoded destination
+     * @param bytes  uncompressed UTF-8 bytes
+     */
+    private static void writeHuffman(final ByteWriter output, final byte[] bytes) {
+        long pending = Normal._0;
+        int pendingBits = Normal._0;
+        for (final byte value : bytes) {
+            final int symbol = value & Builder.UNSIGNED_BYTE_MASK;
+            final int length = HUFFMAN_LENGTHS[symbol];
+            pending = (pending << length) | (HUFFMAN_CODES[symbol] & Builder.UNSIGNED_INT_MASK);
+            pendingBits += length;
+            while (pendingBits >= Normal._8) {
+                pendingBits -= Normal._8;
+                output.write((int) (pending >>> pendingBits));
+                pending &= pendingBits == Normal._0 ? Normal._0 : (1L << pendingBits) - Normal._1;
+            }
+        }
+        if (pendingBits != Normal._0) {
+            output.write((int) ((pending << (Normal._8 - pendingBits)) | (0xff >>> pendingBits)));
+        }
+    }
+
+    /**
+     * Reads a string.
+     *
+     * @param input    HPACK input positioned at a string length prefix
+     * @param maxBytes maximum decoded string bytes
+     * @return decoded UTF-8 string
+     */
+    private static String readString(final Buffer input, final int maxBytes) {
+        if (input.size() == Normal._0) {
+            throw new ProtocolException("Truncated HPACK string");
+        }
+        final boolean huffman = (input.getByte(Normal._0) & Normal._128) != 0;
+        final int length = readInteger(input, Normal._7);
+        if (!huffman && length > maxBytes) {
+            throw new ProtocolException("HPACK string exceeds max size");
+        }
+        if (input.size() < length) {
+            throw new ProtocolException("Truncated HPACK string bytes");
+        }
+        final ByteString bytes = readByteString(input, length);
+        if (huffman) {
+            return new ByteString(decodeHuffman(bytes, maxBytes)).string(Charset.UTF_8);
+        }
+        return bytes.string(Charset.UTF_8);
+    }
+
+    /**
+     * Safely adds positive byte counts.
+     *
+     * @param left  left value
+     * @param right right value
+     * @return sum
+     */
+    private static int safeAdd(final int left, final int right) {
+        final long sum = (long) left + right;
+        if (sum > Integer.MAX_VALUE) {
+            throw new ProtocolException("HPACK header size overflow");
+        }
+        return (int) sum;
+    }
+
+    /**
+     * Writes an HPACK integer.
+     *
+     * @param output     HPACK destination writer
+     * @param value      non-negative integer to encode
+     * @param prefixMask representation bits placed above the integer prefix
+     * @param prefixBits number of low-order bits available in the first byte
+     */
+    private static void writeInteger(
+            final ByteWriter output,
+            final int value,
+            final int prefixMask,
+            final int prefixBits) {
+        final int maxPrefix = (Normal._1 << prefixBits) - Normal._1;
+        if (value < maxPrefix) {
+            output.write(prefixMask | value);
+            return;
+        }
+        output.write(prefixMask | maxPrefix);
+        int remaining = value - maxPrefix;
+        while (remaining >= Normal._128) {
+            output.write((remaining & Builder.UNSIGNED_7_BIT_MASK) | Normal._128);
+            remaining >>>= Normal._7;
+        }
+        output.write(remaining);
+    }
+
+    /**
+     * Reads an HPACK integer.
+     *
+     * @param input      HPACK input positioned at the integer's first byte
+     * @param prefixBits number of low-order integer bits in the first byte
+     * @return decoded non-negative HPACK integer
+     */
+    private static int readInteger(final Buffer input, final int prefixBits) {
+        if (input.size() == Normal._0) {
+            throw new ProtocolException("Truncated HPACK integer");
+        }
+        final int first = input.readByte() & Builder.UNSIGNED_BYTE_MASK;
+        final int maxPrefix = (Normal._1 << prefixBits) - Normal._1;
+        long value = first & maxPrefix;
+        if (value < maxPrefix) {
+            return (int) value;
+        }
+        int shift = Normal._0;
+        while (input.size() > Normal._0) {
+            final int next = input.readByte() & Builder.UNSIGNED_BYTE_MASK;
+            value += (long) (next & Builder.UNSIGNED_7_BIT_MASK) << shift;
+            if (value > Integer.MAX_VALUE) {
+                throw new ProtocolException("HPACK integer overflow");
+            }
+            if ((next & Normal._128) == Normal._0) {
+                return (int) value;
+            }
+            shift += Normal._7;
+            if (shift > Normal._28) {
+                throw new ProtocolException("HPACK integer overflow");
+            }
+        }
+        throw new ProtocolException("Truncated HPACK integer continuation");
+    }
+
+    /**
+     * Reads a fixed number of bytes from a core buffer.
+     *
+     * @param input  source buffer consumed by the read
+     * @param length exact number of bytes to read
+     * @return byte string containing the requested bytes
+     */
+    private static ByteString readByteString(final Buffer input, final int length) {
+        try {
+            return input.readByteString(length);
+        } catch (final EOFException e) {
+            throw new ProtocolException("Truncated HPACK bytes", e);
+        }
+    }
+
+    /**
+     * Validates pseudo-header order.
+     *
+     * @param headers decoded or pending header fields in wire order
+     */
+    private static void validatePseudoOrder(final List<Http2Header> headers) {
+        boolean regular = false;
+        for (final Http2Header header : headers) {
+            if (header.pseudo()) {
+                if (regular) {
+                    throw new ProtocolException("HTTP/2 pseudo headers must precede regular headers");
+                }
+            } else {
+                regular = true;
+            }
+        }
+    }
+
+    /**
+     * Builds the static name index map.
+     *
+     * @return name index map
+     */
+    private static Map<String, Integer> staticNameIndex() {
+        final HashMap<String, Integer> indexes = new HashMap<>(STATIC_NAMES.length << Normal._1);
+        for (int i = Normal._0; i < STATIC_NAMES.length; i++) {
+            indexes.putIfAbsent(STATIC_NAMES[i], i + Normal._1);
+        }
+        return Map.copyOf(indexes);
+    }
+
+    /**
+     * Finds a static exact index without allocating lookup keys.
+     *
+     * @param name  header name to match
+     * @param value header value to match
+     * @return one-based exact static-table index, or zero when absent
+     */
+    private static int staticExactIndex(final String name, final String value) {
+        return switch (name) {
+            case Http.Header.PSEUDO_METHOD -> {
+                if (Http.Method.GET.value().equals(value)) {
+                    yield Normal._2;
+                }
+                if (Http.Method.POST.value().equals(value)) {
+                    yield Normal._3;
+                }
+                yield Normal._0;
+            }
+            case Http.Header.PSEUDO_PATH -> switch (value) {
+                case Symbol.SLASH -> Normal._4;
+                case Symbol.SLASH + "index.html" -> Normal._5;
+                default -> Normal._0;
+            };
+            case Http.Header.PSEUDO_SCHEME -> {
+                if (Protocol.HTTP.name.equals(value)) {
+                    yield Normal._6;
+                }
+                if (Protocol.HTTPS.name.equals(value)) {
+                    yield Normal._7;
+                }
+                yield Normal._0;
+            }
+            case Http.Header.PSEUDO_STATUS -> {
+                if ("200".equals(value)) {
+                    yield Normal._8;
+                }
+                if ("204".equals(value)) {
+                    yield Normal._9;
+                }
+                if ("206".equals(value)) {
+                    yield Normal._10;
+                }
+                if ("304".equals(value)) {
+                    yield Normal._11;
+                }
+                if ("400".equals(value)) {
+                    yield Normal._12;
+                }
+                if ("404".equals(value)) {
+                    yield Normal._13;
+                }
+                if ("500".equals(value)) {
+                    yield Normal._14;
+                }
+                yield Normal._0;
+            }
+            case "accept-encoding" -> "gzip, deflate".equals(value) ? Normal._16 : Normal._0;
+            default -> emptyStaticIndex(name, value);
+        };
+    }
+
+    /**
+     * Finds an exact empty-value static index.
+     *
+     * @param name  header name to locate in the static table
+     * @param value candidate value, which must be empty
+     * @return one-based empty-value static-table index, or zero when absent
+     */
+    private static int emptyStaticIndex(final String name, final String value) {
+        if (!value.isEmpty()) {
+            return Normal._0;
+        }
+        final Integer index = STATIC_NAME_INDEX.get(name);
+        return index != null && STATIC_VALUES[index - Normal._1].isEmpty() ? index : Normal._0;
+    }
+
+    /**
+     * Returns UTF-8 byte length without allocating bytes.
+     *
+     * @param value text whose encoded length is calculated
+     * @return number of bytes required by its UTF-8 encoding
+     */
+    private static int utf8Length(final String value) {
+        int length = Normal._0;
+        for (int i = Normal._0; i < value.length(); i++) {
+            final char current = value.charAt(i);
+            if (current < Normal._128) {
+                length++;
+            } else if (current < Normal._2048) {
+                length += Normal._2;
+            } else if (Character.isHighSurrogate(current) && i + Normal._1 < value.length()
+                    && Character.isLowSurrogate(value.charAt(i + Normal._1))) {
+                length += Normal._4;
+                i++;
+            } else {
+                length += Normal._3;
+            }
+        }
+        return length;
+    }
+
+    /**
+     * Decodes an HPACK Huffman string with a decoded-byte budget.
+     *
+     * @param bytes    encoded bytes
+     * @param maxBytes decoded byte budget
+     * @return decoded bytes
+     */
+    private static byte[] decodeHuffman(final ByteString bytes, final int maxBytes) {
+        final ByteArrayOutputStream output = new ByteArrayOutputStream(Math.min(bytes.size(), maxBytes));
+        HuffmanNode node = HUFFMAN_ROOT;
+        int residualBits = Normal._0;
+        int residualValue = Normal._0;
+        for (int byteIndex = Normal._0; byteIndex < bytes.size(); byteIndex++) {
+            final byte current = bytes.getByte(byteIndex);
+            final int value = current & Builder.UNSIGNED_BYTE_MASK;
+            for (int bitIndex = Normal._7; bitIndex >= Normal._0; bitIndex--) {
+                final int bit = (value >>> bitIndex) & Normal._1;
+                node = bit == Normal._0 ? node.zero : node.one;
+                if (node == null) {
+                    throw new ProtocolException("Invalid HPACK Huffman code");
+                }
+                residualBits++;
+                residualValue = (residualValue << 1) | bit;
+                if (node.symbol >= Normal._0) {
+                    if (output.size() >= maxBytes) {
+                        throw new ProtocolException("HPACK Huffman string exceeds max size");
+                    }
+                    output.write(node.symbol);
+                    node = HUFFMAN_ROOT;
+                    residualBits = Normal._0;
+                    residualValue = Normal._0;
+                } else if (residualBits > Normal._30) {
+                    throw new ProtocolException("Invalid HPACK Huffman EOS");
+                }
+            }
+        }
+        if (node != HUFFMAN_ROOT) {
+            if (residualBits > Normal._7 || residualValue != (Normal._1 << residualBits) - Normal._1) {
+                throw new ProtocolException("Invalid HPACK Huffman padding");
+            }
+        }
+        return output.toByteArray();
+    }
+
+    /**
+     * Builds the HPACK Huffman decoding tree.
+     *
+     * @return root node
+     */
+    private static HuffmanNode huffmanRoot() {
+        final HuffmanNode root = new HuffmanNode();
+        for (int symbol = Normal._0; symbol < HUFFMAN_CODES.length; symbol++) {
+            HuffmanNode node = root;
+            final int code = HUFFMAN_CODES[symbol];
+            final int length = HUFFMAN_LENGTHS[symbol];
+            for (int bit = length - Normal._1; bit >= Normal._0; bit--) {
+                if (node.symbol >= Normal._0) {
+                    throw new IllegalStateException("Invalid HPACK Huffman prefix table");
+                }
+                if (((code >>> bit) & Normal._1) == Normal._0) {
+                    if (node.zero == null) {
+                        node.zero = new HuffmanNode();
+                    }
+                    node = node.zero;
+                } else {
+                    if (node.one == null) {
+                        node.one = new HuffmanNode();
+                    }
+                    node = node.one;
+                }
+            }
+            if (node.symbol >= Normal._0 || node.zero != null || node.one != null) {
+                throw new IllegalStateException("Invalid HPACK Huffman table");
+            }
+            node.symbol = symbol;
+        }
+        return root;
+    }
 
     /**
      * Encodes headers.
@@ -568,466 +1028,6 @@ final class HpackDecoder {
         dynamicExactIndex.clear();
         dynamicNameIndex.clear();
         tableBytes = Normal._0;
-    }
-
-    /**
-     * Calculates entry size.
-     *
-     * @param header header field whose HPACK entry size is requested
-     * @return HPACK entry size in bytes, including the fixed overhead
-     */
-    private static int size(final Http2Header header) {
-        return header.hpackSize();
-    }
-
-    /**
-     * Writes an HPACK string using Huffman coding only when it shortens the value.
-     *
-     * @param output HPACK destination writer
-     * @param value  text to encode as UTF-8
-     */
-    private static void writeString(final ByteWriter output, final String value) {
-        final byte[] bytes = value.getBytes(Charset.UTF_8);
-        final int huffmanLength = huffmanLength(bytes);
-        if (huffmanLength < bytes.length) {
-            writeInteger(output, huffmanLength, Normal._128, Normal._7);
-            writeHuffman(output, bytes);
-        } else {
-            writeInteger(output, bytes.length, Normal._0, Normal._7);
-            output.write(bytes);
-        }
-    }
-
-    /**
-     * Returns the encoded Huffman byte count, saturated on overflow.
-     *
-     * @param bytes uncompressed UTF-8 bytes
-     * @return encoded Huffman length in bytes
-     */
-    private static int huffmanLength(final byte[] bytes) {
-        long bits = Normal._0;
-        for (final byte value : bytes) {
-            bits += HUFFMAN_LENGTHS[value & Builder.UNSIGNED_BYTE_MASK];
-        }
-        final long length = (bits + Normal._7) >>> Normal._3;
-        return length > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) length;
-    }
-
-    /**
-     * Writes an RFC 7541 Huffman sequence with EOS-prefix padding.
-     *
-     * @param output encoded destination
-     * @param bytes  uncompressed UTF-8 bytes
-     */
-    private static void writeHuffman(final ByteWriter output, final byte[] bytes) {
-        long pending = Normal._0;
-        int pendingBits = Normal._0;
-        for (final byte value : bytes) {
-            final int symbol = value & Builder.UNSIGNED_BYTE_MASK;
-            final int length = HUFFMAN_LENGTHS[symbol];
-            pending = (pending << length) | (HUFFMAN_CODES[symbol] & Builder.UNSIGNED_INT_MASK);
-            pendingBits += length;
-            while (pendingBits >= Normal._8) {
-                pendingBits -= Normal._8;
-                output.write((int) (pending >>> pendingBits));
-                pending &= pendingBits == Normal._0 ? Normal._0 : (1L << pendingBits) - Normal._1;
-            }
-        }
-        if (pendingBits != Normal._0) {
-            output.write((int) ((pending << (Normal._8 - pendingBits)) | (0xff >>> pendingBits)));
-        }
-    }
-
-    /**
-     * Reads a string.
-     *
-     * @param input    HPACK input positioned at a string length prefix
-     * @param maxBytes maximum decoded string bytes
-     * @return decoded UTF-8 string
-     */
-    private static String readString(final Buffer input, final int maxBytes) {
-        if (input.size() == Normal._0) {
-            throw new ProtocolException("Truncated HPACK string");
-        }
-        final boolean huffman = (input.getByte(Normal._0) & Normal._128) != 0;
-        final int length = readInteger(input, Normal._7);
-        if (!huffman && length > maxBytes) {
-            throw new ProtocolException("HPACK string exceeds max size");
-        }
-        if (input.size() < length) {
-            throw new ProtocolException("Truncated HPACK string bytes");
-        }
-        final ByteString bytes = readByteString(input, length);
-        if (huffman) {
-            return new ByteString(decodeHuffman(bytes, maxBytes)).string(Charset.UTF_8);
-        }
-        return bytes.string(Charset.UTF_8);
-    }
-
-    /**
-     * Safely adds positive byte counts.
-     *
-     * @param left  left value
-     * @param right right value
-     * @return sum
-     */
-    private static int safeAdd(final int left, final int right) {
-        final long sum = (long) left + right;
-        if (sum > Integer.MAX_VALUE) {
-            throw new ProtocolException("HPACK header size overflow");
-        }
-        return (int) sum;
-    }
-
-    /**
-     * Writes an HPACK integer.
-     *
-     * @param output     HPACK destination writer
-     * @param value      non-negative integer to encode
-     * @param prefixMask representation bits placed above the integer prefix
-     * @param prefixBits number of low-order bits available in the first byte
-     */
-    private static void writeInteger(
-            final ByteWriter output,
-            final int value,
-            final int prefixMask,
-            final int prefixBits) {
-        final int maxPrefix = (Normal._1 << prefixBits) - Normal._1;
-        if (value < maxPrefix) {
-            output.write(prefixMask | value);
-            return;
-        }
-        output.write(prefixMask | maxPrefix);
-        int remaining = value - maxPrefix;
-        while (remaining >= Normal._128) {
-            output.write((remaining & Builder.UNSIGNED_7_BIT_MASK) | Normal._128);
-            remaining >>>= Normal._7;
-        }
-        output.write(remaining);
-    }
-
-    /**
-     * Reads an HPACK integer.
-     *
-     * @param input      HPACK input positioned at the integer's first byte
-     * @param prefixBits number of low-order integer bits in the first byte
-     * @return decoded non-negative HPACK integer
-     */
-    private static int readInteger(final Buffer input, final int prefixBits) {
-        if (input.size() == Normal._0) {
-            throw new ProtocolException("Truncated HPACK integer");
-        }
-        final int first = input.readByte() & Builder.UNSIGNED_BYTE_MASK;
-        final int maxPrefix = (Normal._1 << prefixBits) - Normal._1;
-        long value = first & maxPrefix;
-        if (value < maxPrefix) {
-            return (int) value;
-        }
-        int shift = Normal._0;
-        while (input.size() > Normal._0) {
-            final int next = input.readByte() & Builder.UNSIGNED_BYTE_MASK;
-            value += (long) (next & Builder.UNSIGNED_7_BIT_MASK) << shift;
-            if (value > Integer.MAX_VALUE) {
-                throw new ProtocolException("HPACK integer overflow");
-            }
-            if ((next & Normal._128) == Normal._0) {
-                return (int) value;
-            }
-            shift += Normal._7;
-            if (shift > Normal._28) {
-                throw new ProtocolException("HPACK integer overflow");
-            }
-        }
-        throw new ProtocolException("Truncated HPACK integer continuation");
-    }
-
-    /**
-     * Reads a fixed number of bytes from a core buffer.
-     *
-     * @param input  source buffer consumed by the read
-     * @param length exact number of bytes to read
-     * @return byte string containing the requested bytes
-     */
-    private static ByteString readByteString(final Buffer input, final int length) {
-        try {
-            return input.readByteString(length);
-        } catch (final EOFException e) {
-            throw new ProtocolException("Truncated HPACK bytes", e);
-        }
-    }
-
-    /**
-     * Validates pseudo-header order.
-     *
-     * @param headers decoded or pending header fields in wire order
-     */
-    private static void validatePseudoOrder(final List<Http2Header> headers) {
-        boolean regular = false;
-        for (final Http2Header header : headers) {
-            if (header.pseudo()) {
-                if (regular) {
-                    throw new ProtocolException("HTTP/2 pseudo headers must precede regular headers");
-                }
-            } else {
-                regular = true;
-            }
-        }
-    }
-
-    /**
-     * Builds the static name index map.
-     *
-     * @return name index map
-     */
-    private static Map<String, Integer> staticNameIndex() {
-        final HashMap<String, Integer> indexes = new HashMap<>(STATIC_NAMES.length << Normal._1);
-        for (int i = Normal._0; i < STATIC_NAMES.length; i++) {
-            indexes.putIfAbsent(STATIC_NAMES[i], i + Normal._1);
-        }
-        return Map.copyOf(indexes);
-    }
-
-    /**
-     * Finds a static exact index without allocating lookup keys.
-     *
-     * @param name  header name to match
-     * @param value header value to match
-     * @return one-based exact static-table index, or zero when absent
-     */
-    private static int staticExactIndex(final String name, final String value) {
-        return switch (name) {
-            case Http.Header.PSEUDO_METHOD -> {
-                if (Http.Method.GET.value().equals(value)) {
-                    yield Normal._2;
-                }
-                if (Http.Method.POST.value().equals(value)) {
-                    yield Normal._3;
-                }
-                yield Normal._0;
-            }
-            case Http.Header.PSEUDO_PATH -> switch (value) {
-                case Symbol.SLASH -> Normal._4;
-                case Symbol.SLASH + "index.html" -> Normal._5;
-                default -> Normal._0;
-            };
-            case Http.Header.PSEUDO_SCHEME -> {
-                if (Protocol.HTTP.name.equals(value)) {
-                    yield Normal._6;
-                }
-                if (Protocol.HTTPS.name.equals(value)) {
-                    yield Normal._7;
-                }
-                yield Normal._0;
-            }
-            case Http.Header.PSEUDO_STATUS -> {
-                if ("200".equals(value)) {
-                    yield Normal._8;
-                }
-                if ("204".equals(value)) {
-                    yield Normal._9;
-                }
-                if ("206".equals(value)) {
-                    yield Normal._10;
-                }
-                if ("304".equals(value)) {
-                    yield Normal._11;
-                }
-                if ("400".equals(value)) {
-                    yield Normal._12;
-                }
-                if ("404".equals(value)) {
-                    yield Normal._13;
-                }
-                if ("500".equals(value)) {
-                    yield Normal._14;
-                }
-                yield Normal._0;
-            }
-            case "accept-encoding" -> "gzip, deflate".equals(value) ? Normal._16 : Normal._0;
-            default -> emptyStaticIndex(name, value);
-        };
-    }
-
-    /**
-     * Finds an exact empty-value static index.
-     *
-     * @param name  header name to locate in the static table
-     * @param value candidate value, which must be empty
-     * @return one-based empty-value static-table index, or zero when absent
-     */
-    private static int emptyStaticIndex(final String name, final String value) {
-        if (!value.isEmpty()) {
-            return Normal._0;
-        }
-        final Integer index = STATIC_NAME_INDEX.get(name);
-        return index != null && STATIC_VALUES[index - Normal._1].isEmpty() ? index : Normal._0;
-    }
-
-    /**
-     * Returns UTF-8 byte length without allocating bytes.
-     *
-     * @param value text whose encoded length is calculated
-     * @return number of bytes required by its UTF-8 encoding
-     */
-    private static int utf8Length(final String value) {
-        int length = Normal._0;
-        for (int i = Normal._0; i < value.length(); i++) {
-            final char current = value.charAt(i);
-            if (current < Normal._128) {
-                length++;
-            } else if (current < Normal._2048) {
-                length += Normal._2;
-            } else if (Character.isHighSurrogate(current) && i + Normal._1 < value.length()
-                    && Character.isLowSurrogate(value.charAt(i + Normal._1))) {
-                length += Normal._4;
-                i++;
-            } else {
-                length += Normal._3;
-            }
-        }
-        return length;
-    }
-
-    /**
-     * HPACK Huffman codes for byte symbols.
-     */
-    private static final int[] HUFFMAN_CODES = { 0x1ff8, 0x7fffd8, 0xfffffe2, 0xfffffe3, 0xfffffe4, 0xfffffe5,
-            0xfffffe6, 0xfffffe7, 0xfffffe8, 0xffffea, 0x3ffffffc, 0xfffffe9, 0xfffffea, 0x3ffffffd, 0xfffffeb,
-            0xfffffec, 0xfffffed, 0xfffffee, 0xfffffef, 0xffffff0, 0xffffff1, 0xffffff2, 0x3ffffffe, 0xffffff3,
-            0xffffff4, 0xffffff5, 0xffffff6, 0xffffff7, 0xffffff8, 0xffffff9, 0xffffffa, 0xffffffb, 0x14, 0x3f8, 0x3f9,
-            0xffa, 0x1ff9, 0x15, 0xf8, 0x7fa, 0x3fa, 0x3fb, 0xf9, 0x7fb, 0xfa, 0x16, 0x17, 0x18, 0x0, 0x1, 0x2, 0x19,
-            0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x5c, 0xfb, 0x7ffc, 0x20, 0xffb, 0x3fc, 0x1ffa, 0x21, 0x5d, 0x5e, 0x5f,
-            0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6a, 0x6b, 0x6c, 0x6d, 0x6e, 0x6f, 0x70, 0x71,
-            0x72, 0xfc, 0x73, 0xfd, 0x1ffb, 0x7fff0, 0x1ffc, 0x3ffc, 0x22, 0x7ffd, 0x3, 0x23, 0x4, 0x24, 0x5, 0x25,
-            0x26, 0x27, 0x6, 0x74, 0x75, 0x28, 0x29, 0x2a, 0x7, 0x2b, 0x76, 0x2c, 0x8, 0x9, 0x2d, 0x77, 0x78, 0x79,
-            0x7a, 0x7b, 0x7ffe, 0x7fc, 0x3ffd, 0x1ffd, 0xffffffc, 0xfffe6, 0x3fffd2, 0xfffe7, 0xfffe8, 0x3fffd3,
-            0x3fffd4, 0x3fffd5, 0x7fffd9, 0x3fffd6, 0x7fffda, 0x7fffdb, 0x7fffdc, 0x7fffdd, 0x7fffde, 0xffffeb,
-            0x7fffdf, 0xffffec, 0xffffed, 0x3fffd7, 0x7fffe0, 0xffffee, 0x7fffe1, 0x7fffe2, 0x7fffe3, 0x7fffe4,
-            0x1fffdc, 0x3fffd8, 0x7fffe5, 0x3fffd9, 0x7fffe6, 0x7fffe7, 0xffffef, 0x3fffda, 0x1fffdd, 0xfffe9, 0x3fffdb,
-            0x3fffdc, 0x7fffe8, 0x7fffe9, 0x1fffde, 0x7fffea, 0x3fffdd, 0x3fffde, 0xfffff0, 0x1fffdf, 0x3fffdf,
-            0x7fffeb, 0x7fffec, 0x1fffe0, 0x1fffe1, 0x3fffe0, 0x1fffe2, 0x7fffed, 0x3fffe1, 0x7fffee, 0x7fffef, 0xfffea,
-            0x3fffe2, 0x3fffe3, 0x3fffe4, 0x7ffff0, 0x3fffe5, 0x3fffe6, 0x7ffff1, 0x3ffffe0, 0x3ffffe1, 0xfffeb,
-            0x7fff1, 0x3fffe7, 0x7ffff2, 0x3fffe8, 0x1ffffec, 0x3ffffe2, 0x3ffffe3, 0x3ffffe4, 0x7ffffde, 0x7ffffdf,
-            0x3ffffe5, 0xfffff1, 0x1ffffed, 0x7fff2, 0x1fffe3, 0x3ffffe6, 0x7ffffe0, 0x7ffffe1, 0x3ffffe7, 0x7ffffe2,
-            0xfffff2, 0x1fffe4, 0x1fffe5, 0x3ffffe8, 0x3ffffe9, 0xffffffd, 0x7ffffe3, 0x7ffffe4, 0x7ffffe5, 0xfffec,
-            0xfffff3, 0xfffed, 0x1fffe6, 0x3fffe9, 0x1fffe7, 0x1fffe8, 0x7ffff3, 0x3fffea, 0x3fffeb, 0x1ffffee,
-            0x1ffffef, 0xfffff4, 0xfffff5, 0x3ffffea, 0x7ffff4, 0x3ffffeb, 0x7ffffe6, 0x3ffffec, 0x3ffffed, 0x7ffffe7,
-            0x7ffffe8, 0x7ffffe9, 0x7ffffea, 0x7ffffeb, 0xffffffe, 0x7ffffec, 0x7ffffed, 0x7ffffee, 0x7ffffef,
-            0x7fffff0, 0x3ffffee };
-
-    /**
-     * HPACK Huffman code lengths for byte symbols.
-     */
-    private static final byte[] HUFFMAN_LENGTHS = { 13, 23, 28, 28, 28, 28, 28, 28, 28, 24, 30, 28, 28, 30, 28, 28, 28,
-            28, 28, 28, 28, 28, 30, 28, 28, 28, 28, 28, 28, 28, 28, 28, 6, 10, 10, 12, 13, 6, 8, 11, 10, 10, 8, 11, 8,
-            6, 6, 6, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 7, 8, 15, 6, 12, 10, 13, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-            7, 7, 7, 7, 7, 7, 7, 7, 8, 7, 8, 13, 19, 13, 14, 6, 15, 5, 6, 5, 6, 5, 6, 6, 6, 5, 7, 7, 6, 6, 6, 5, 6, 7,
-            6, 5, 5, 6, 7, 7, 7, 7, 7, 15, 11, 14, 13, 28, 20, 22, 20, 20, 22, 22, 22, 23, 22, 23, 23, 23, 23, 23, 24,
-            23, 24, 24, 22, 23, 24, 23, 23, 23, 23, 21, 22, 23, 22, 23, 23, 24, 22, 21, 20, 22, 22, 23, 23, 21, 23, 22,
-            22, 24, 21, 22, 23, 23, 21, 21, 22, 21, 23, 22, 23, 23, 20, 22, 22, 22, 23, 22, 22, 23, 26, 26, 20, 19, 22,
-            23, 22, 25, 26, 26, 26, 27, 27, 26, 24, 25, 19, 21, 26, 27, 27, 26, 27, 24, 21, 21, 26, 26, 28, 27, 27, 27,
-            20, 24, 20, 21, 22, 21, 21, 23, 22, 22, 25, 25, 24, 24, 26, 23, 26, 27, 26, 26, 27, 27, 27, 27, 27, 28, 27,
-            27, 27, 27, 27, 26 };
-
-    /**
-     * Huffman decoding root.
-     */
-    private static final HuffmanNode HUFFMAN_ROOT = huffmanRoot();
-
-    /**
-     * Creates a codec.
-     */
-    HpackDecoder() {
-        this.dynamicTable = new ArrayList<>();
-        this.dynamicExactIndex = new HashMap<>();
-        this.dynamicNameIndex = new HashMap<>();
-        this.dynamicSequences = new ArrayList<>();
-        this.writer = new ByteWriter(Normal._128);
-        this.tableSize = Normal._4096;
-        this.maxTableSize = Normal._4096;
-        this.maxHeaderBlockBytes = Builder.BYTES_64_KIB;
-        this.maxHeaderListSize = Builder.BYTES_64_KIB;
-        this.maxHeaderFieldBytes = Normal._16384;
-        this.maxHeaderCount = 256;
-    }
-
-    /**
-     * Decodes an HPACK Huffman string with a decoded-byte budget.
-     *
-     * @param bytes    encoded bytes
-     * @param maxBytes decoded byte budget
-     * @return decoded bytes
-     */
-    private static byte[] decodeHuffman(final ByteString bytes, final int maxBytes) {
-        final ByteArrayOutputStream output = new ByteArrayOutputStream(Math.min(bytes.size(), maxBytes));
-        HuffmanNode node = HUFFMAN_ROOT;
-        int residualBits = Normal._0;
-        int residualValue = Normal._0;
-        for (int byteIndex = Normal._0; byteIndex < bytes.size(); byteIndex++) {
-            final byte current = bytes.getByte(byteIndex);
-            final int value = current & Builder.UNSIGNED_BYTE_MASK;
-            for (int bitIndex = Normal._7; bitIndex >= Normal._0; bitIndex--) {
-                final int bit = (value >>> bitIndex) & Normal._1;
-                node = bit == Normal._0 ? node.zero : node.one;
-                if (node == null) {
-                    throw new ProtocolException("Invalid HPACK Huffman code");
-                }
-                residualBits++;
-                residualValue = (residualValue << 1) | bit;
-                if (node.symbol >= Normal._0) {
-                    if (output.size() >= maxBytes) {
-                        throw new ProtocolException("HPACK Huffman string exceeds max size");
-                    }
-                    output.write(node.symbol);
-                    node = HUFFMAN_ROOT;
-                    residualBits = Normal._0;
-                    residualValue = Normal._0;
-                } else if (residualBits > Normal._30) {
-                    throw new ProtocolException("Invalid HPACK Huffman EOS");
-                }
-            }
-        }
-        if (node != HUFFMAN_ROOT) {
-            if (residualBits > Normal._7 || residualValue != (Normal._1 << residualBits) - Normal._1) {
-                throw new ProtocolException("Invalid HPACK Huffman padding");
-            }
-        }
-        return output.toByteArray();
-    }
-
-    /**
-     * Builds the HPACK Huffman decoding tree.
-     *
-     * @return root node
-     */
-    private static HuffmanNode huffmanRoot() {
-        final HuffmanNode root = new HuffmanNode();
-        for (int symbol = Normal._0; symbol < HUFFMAN_CODES.length; symbol++) {
-            HuffmanNode node = root;
-            final int code = HUFFMAN_CODES[symbol];
-            final int length = HUFFMAN_LENGTHS[symbol];
-            for (int bit = length - Normal._1; bit >= Normal._0; bit--) {
-                if (node.symbol >= Normal._0) {
-                    throw new IllegalStateException("Invalid HPACK Huffman prefix table");
-                }
-                if (((code >>> bit) & Normal._1) == Normal._0) {
-                    if (node.zero == null) {
-                        node.zero = new HuffmanNode();
-                    }
-                    node = node.zero;
-                } else {
-                    if (node.one == null) {
-                        node.one = new HuffmanNode();
-                    }
-                    node = node.one;
-                }
-            }
-            if (node.symbol >= Normal._0 || node.zero != null || node.one != null) {
-                throw new IllegalStateException("Invalid HPACK Huffman table");
-            }
-            node.symbol = symbol;
-        }
-        return root;
     }
 
     /**

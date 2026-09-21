@@ -103,64 +103,6 @@ public class Tags {
     }
 
     /**
-     * Returns tags with one value replaced.
-     *
-     * @param key   tag key to validate
-     * @param value tag value to validate and sanitize
-     * @return new immutable set in which the normalized key maps to the sanitized value
-     * @throws ValidateException if either token is blank or contains a line break
-     */
-    public Tags with(final String key, final String value) {
-        final String checkedKey = normalize(key, "Tag key");
-        final String checkedValue = sanitizeValue(checkedKey, normalize(value, "Tag value"));
-        final Map<String, String> copy = MapKit.newHashMap(values.size() + 1, true);
-        copy.putAll(values);
-        copy.put(checkedKey, checkedValue);
-        return new Tags(copy);
-    }
-
-    /**
-     * Returns tags with all values from another tag set.
-     *
-     * @param other tag set whose mappings replace entries with the same key
-     * @return immutable union, reusing either operand when the other is empty
-     * @throws ValidateException if {@code other} is {@code null}
-     */
-    public Tags merge(final Tags other) {
-        final Tags checked = Assert.notNull(other, () -> new ValidateException("Other tags must not be null"));
-        if (checked.values.isEmpty()) {
-            return this;
-        }
-        if (values.isEmpty()) {
-            return checked;
-        }
-        final Map<String, String> copy = MapKit.newHashMap(values.size() + checked.values.size(), true);
-        copy.putAll(values);
-        copy.putAll(checked.values);
-        return new Tags(copy);
-    }
-
-    /**
-     * Returns a tag value.
-     *
-     * @param key tag key to validate before lookup
-     * @return sanitized tag content, or {@code null} when the key is absent
-     * @throws ValidateException if the key is blank or contains a line break
-     */
-    public String get(final String key) {
-        return values.get(normalize(key, "Tag key"));
-    }
-
-    /**
-     * Returns a tag snapshot.
-     *
-     * @return immutable map backing this tag set
-     */
-    public Map<String, String> asMap() {
-        return values;
-    }
-
-    /**
      * Validates and normalizes a tag token.
      *
      * @param value tag token to validate and optionally intern in the bounded cache
@@ -467,6 +409,64 @@ public class Tags {
      */
     private static String fingerprint(final String value) {
         return Builder.sha256(value).substring(0, 12);
+    }
+
+    /**
+     * Returns tags with one value replaced.
+     *
+     * @param key   tag key to validate
+     * @param value tag value to validate and sanitize
+     * @return new immutable set in which the normalized key maps to the sanitized value
+     * @throws ValidateException if either token is blank or contains a line break
+     */
+    public Tags with(final String key, final String value) {
+        final String checkedKey = normalize(key, "Tag key");
+        final String checkedValue = sanitizeValue(checkedKey, normalize(value, "Tag value"));
+        final Map<String, String> copy = MapKit.newHashMap(values.size() + 1, true);
+        copy.putAll(values);
+        copy.put(checkedKey, checkedValue);
+        return new Tags(copy);
+    }
+
+    /**
+     * Returns tags with all values from another tag set.
+     *
+     * @param other tag set whose mappings replace entries with the same key
+     * @return immutable union, reusing either operand when the other is empty
+     * @throws ValidateException if {@code other} is {@code null}
+     */
+    public Tags merge(final Tags other) {
+        final Tags checked = Assert.notNull(other, () -> new ValidateException("Other tags must not be null"));
+        if (checked.values.isEmpty()) {
+            return this;
+        }
+        if (values.isEmpty()) {
+            return checked;
+        }
+        final Map<String, String> copy = MapKit.newHashMap(values.size() + checked.values.size(), true);
+        copy.putAll(values);
+        copy.putAll(checked.values);
+        return new Tags(copy);
+    }
+
+    /**
+     * Returns a tag value.
+     *
+     * @param key tag key to validate before lookup
+     * @return sanitized tag content, or {@code null} when the key is absent
+     * @throws ValidateException if the key is blank or contains a line break
+     */
+    public String get(final String key) {
+        return values.get(normalize(key, "Tag key"));
+    }
+
+    /**
+     * Returns a tag snapshot.
+     *
+     * @return immutable map backing this tag set
+     */
+    public Map<String, String> asMap() {
+        return values;
     }
 
 }

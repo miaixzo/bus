@@ -30,9 +30,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
  */
 public class PageException extends UncheckedException {
 
-    /**
-     * The serialization version identifier.
-     */
     @Serial
     private static final long serialVersionUID = 2852262770632L;
 

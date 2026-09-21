@@ -28,8 +28,8 @@ import org.miaixz.bus.gitlab.models.IssueEvent;
 /**
  * This class provides an entry point to all the GitLab Resource state events API
  *
- * @see <a href="https://docs.gitlab.com/ce/api/resource_state_events.html">Resource state events API at GitLab</a>
  * @author Kimi Liu
+ * @see <a href="https://docs.gitlab.com/ce/api/resource_state_events.html">Resource state events API at GitLab</a>
  */
 public class ResourceStateEventsApi extends AbstractApi {
 

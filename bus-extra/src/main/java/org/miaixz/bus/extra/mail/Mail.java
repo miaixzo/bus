@@ -122,6 +122,24 @@ public class Mail implements Builder<MimeMessage> {
     private PrintStream debugOutput;
 
     /**
+     * Constructs a new {@code Mail} instance using the global mail account.
+     */
+    public Mail() {
+        this(GlobalMailAccount.INSTANCE.getAccount());
+    }
+
+    /**
+     * Constructs a new {@code Mail} instance with the specified mail account. If the provided account is null, the
+     * global mail account configuration is used.
+     *
+     * @param mailAccount The mail account to use. If null, the global account is used.
+     */
+    public Mail(MailAccount mailAccount) {
+        mailAccount = (null != mailAccount) ? mailAccount : GlobalMailAccount.INSTANCE.getAccount();
+        this.mailAccount = mailAccount.defaultIfEmpty();
+    }
+
+    /**
      * Creates a new {@code Mail} instance with the specified mail account.
      *
      * @param mailAccount The mail account configuration.
@@ -138,24 +156,6 @@ public class Mail implements Builder<MimeMessage> {
      */
     public static Mail of() {
         return new Mail();
-    }
-
-    /**
-     * Constructs a new {@code Mail} instance using the global mail account.
-     */
-    public Mail() {
-        this(GlobalMailAccount.INSTANCE.getAccount());
-    }
-
-    /**
-     * Constructs a new {@code Mail} instance with the specified mail account. If the provided account is null, the
-     * global mail account configuration is used.
-     *
-     * @param mailAccount The mail account to use. If null, the global account is used.
-     */
-    public Mail(MailAccount mailAccount) {
-        mailAccount = (null != mailAccount) ? mailAccount : GlobalMailAccount.INSTANCE.getAccount();
-        this.mailAccount = mailAccount.defaultIfEmpty();
     }
 
     /**

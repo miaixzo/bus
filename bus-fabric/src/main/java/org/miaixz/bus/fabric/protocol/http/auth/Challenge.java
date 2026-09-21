@@ -80,16 +80,6 @@ public record Challenge(String scheme, String realm, Map<String, String> paramet
     }
 
     /**
-     * Returns immutable challenge parameters.
-     *
-     * @return challenge parameters
-     */
-    @Override
-    public Map<String, String> parameters() {
-        return parameters;
-    }
-
-    /**
      * Parses comma separated auth parameters.
      *
      * @param source     parameter source
@@ -268,6 +258,16 @@ public record Challenge(String scheme, String realm, Map<String, String> paramet
         return Character.isLetterOrDigit(value) || (Symbol.NOT + Symbol.HASH + Symbol.DOLLAR + Symbol.PERCENT
                 + Symbol.AND + Symbol.SINGLE_QUOTE + Symbol.STAR + Symbol.PLUS + Symbol.MINUS + Symbol.DOT
                 + Symbol.CARET + Symbol.UNDERLINE + Symbol.BACKTICK + Symbol.OR + Symbol.TILDE).indexOf(value) >= 0;
+    }
+
+    /**
+     * Returns immutable challenge parameters.
+     *
+     * @return challenge parameters
+     */
+    @Override
+    public Map<String, String> parameters() {
+        return parameters;
     }
 
     /**

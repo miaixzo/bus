@@ -111,156 +111,6 @@ public class HttpBridge implements HttpStage {
     }
 
     /**
-     * Prepares request headers, proceeds, and receives the response.
-     *
-     * @param request request whose protocol headers are prepared
-     * @param chain   remaining exchange chain to execute
-     * @return response after optional gzip decoding and cookie persistence
-     * @throws ValidateException if the request or chain is {@code null}
-     */
-    @Override
-    public HttpResponse execute(final HttpRequest request, final HttpChain chain) {
-        final HttpRequest prepared = prepare(request);
-        final HttpResponse response = receive(require(chain, "HTTP chain").proceed(prepared));
-        save(response);
-        return response;
-    }
-
-    /**
-     * Prepares protocol headers.
-     *
-     * @param request request to normalize for transport
-     * @return original request when no changes are required, otherwise a copy with missing protocol headers added
-     * @throws ProtocolException if a positive body length conflicts with {@code Content-Length} or the URL scheme is
-     *                           unsupported
-     * @throws ValidateException if the request or URL host is invalid
-     */
-    public HttpRequest prepare(final HttpRequest request) {
-        final HttpRequest source = require(request, "HTTP request");
-        final PreparedRequest cached = preparedRequest;
-        if (cached != null && (cookies == null || cookies.isEmpty()) && cached.matches(source)) {
-            return cached.prepared;
-        }
-        final Headers headers = source.headers();
-        final long bodyLength = source.body().length();
-        final long declaredLength = bodyLength > Normal._0 ? declaredLength(headers) : Normal.__1;
-        if (declaredLength >= Normal._0 && declaredLength != bodyLength) {
-            throw new ProtocolException("Content-Length does not match body length");
-        }
-        final boolean addHost = !headers.contains(Http.Header.HOST);
-        final boolean addConnection = !headers.contains(Http.Header.CONNECTION);
-        final boolean addEncoding = !headers.contains(Http.Header.ACCEPT_ENCODING);
-        final boolean addAgent = !headers.contains(Http.Header.USER_AGENT);
-        final boolean addLength = bodyLength > Normal._0 && declaredLength < Normal._0;
-        final boolean addChunked = bodyLength < Normal._0 && !headers.contains(Http.Header.TRANSFER_ENCODING);
-        final String cookie = cookies == null || headers.contains(Http.Header.COOKIE) ? null
-                : cookieValue(source.url(), cookies.load(source.url()));
-        if (!addHost && !addConnection && !addEncoding && !addAgent && !addLength && !addChunked && cookie == null) {
-            return source;
-        }
-        final Headers.Builder builder = headers.newBuilder();
-        if (addHost) {
-            builder.add(Http.Header.HOST, hostValue(source.url()));
-        }
-        if (addConnection) {
-            builder.add(Http.Header.CONNECTION, Http.Header.CONNECTION_KEEP_ALIVE);
-        }
-        if (addEncoding) {
-            builder.add(Http.Header.ACCEPT_ENCODING, Http.Header.CONTENT_CODING_GZIP);
-        }
-        if (addAgent) {
-            builder.add(Http.Header.USER_AGENT, userAgent);
-        }
-        if (addLength) {
-            builder.add(Http.Header.CONTENT_LENGTH, Long.toString(bodyLength));
-        } else if (addChunked) {
-            builder.remove(Http.Header.CONTENT_LENGTH)
-                    .add(Http.Header.TRANSFER_ENCODING, Http.Header.TRANSFER_CODING_CHUNKED);
-        }
-        if (cookie != null) {
-            builder.add(Http.Header.COOKIE, cookie);
-        }
-        final HttpRequest prepared = source.toBuilder().headers(builder.build()).build();
-        if (cookie == null && (cookies == null || cookies.isEmpty()) && source.tag() == null) {
-            preparedRequest = new PreparedRequest(source, prepared);
-        }
-        return prepared;
-    }
-
-    /**
-     * One immutable request-shape cache entry for repeated cookie-free calls.
-     *
-     * @param source   source request shape
-     * @param prepared fully prepared immutable request
-     */
-    private record PreparedRequest(HttpRequest source, HttpRequest prepared) {
-
-        /**
-         * Returns whether a request is value-identical for all fields changed or observed by this bridge.
-         */
-        private boolean matches(final HttpRequest candidate) {
-            return source.method() == candidate.method() && source.url().toString().equals(candidate.url().toString())
-                    && source.bodyLength() == Normal._0 && candidate.bodyLength() == Normal._0
-                    && source.proxy().equals(candidate.proxy()) && sameTimeout(source.timeout(), candidate.timeout())
-                    && candidate.tag() == null && sameHeaders(source.headers(), candidate.headers());
-        }
-
-        /**
-         * Compares ordered header pairs without materializing map views.
-         */
-        private static boolean sameHeaders(final Headers left, final Headers right) {
-            final int size = left.size();
-            if (size != right.size()) {
-                return false;
-            }
-            for (int index = Normal._0; index < size; index++) {
-                if (!left.name(index).equals(right.name(index)) || !left.value(index).equals(right.value(index))) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        /**
-         * Compares timeout values because Timeout intentionally has identity equality.
-         */
-        private static boolean sameTimeout(final Timeout left, final Timeout right) {
-            return left.connect().equals(right.connect()) && left.read().equals(right.read())
-                    && left.write().equals(right.write()) && left.call().equals(right.call())
-                    && left.ping().equals(right.ping()) && left.close().equals(right.close());
-        }
-    }
-
-    /**
-     * Receives and decodes a response.
-     *
-     * @param response transport response to inspect
-     * @return original response when not gzip encoded, otherwise a copy with a streaming gzip-decoded body
-     * @throws ValidateException if {@code response} is {@code null}
-     */
-    public HttpResponse receive(final HttpResponse response) {
-        final HttpResponse source = require(response, "HTTP response");
-        if (!gzip(source.headers())) {
-            return source;
-        }
-        final Headers headers = source.headers().without(Http.Header.CONTENT_ENCODING)
-                .without(Http.Header.CONTENT_LENGTH);
-        final PayloadBody body = PayloadBody
-                .of(Payload.source(new GzipSource(source.body().source()), Normal.__1), source.body().media());
-        return source.toBuilder().headers(headers).body(body).build();
-    }
-
-    /**
-     * Returns stage name.
-     *
-     * @return stable bridge-stage identifier
-     */
-    @Override
-    public String name() {
-        return name;
-    }
-
-    /**
      * Parses declared Content-Length.
      *
      * @param headers request headers to inspect
@@ -383,17 +233,6 @@ public class HttpBridge implements HttpStage {
     }
 
     /**
-     * Saves response cookies when an automatic store is configured.
-     *
-     * @param response decoded response whose request URL and headers are persisted
-     */
-    private void save(final HttpResponse response) {
-        if (cookies != null) {
-            cookies.save(response.request().url(), response.headers());
-        }
-    }
-
-    /**
      * Validates a default User-Agent value.
      *
      * @param value fallback {@code User-Agent} text to validate
@@ -421,6 +260,167 @@ public class HttpBridge implements HttpStage {
             throw new ValidateException(name + " must not be null");
         }
         return value;
+    }
+
+    /**
+     * Prepares request headers, proceeds, and receives the response.
+     *
+     * @param request request whose protocol headers are prepared
+     * @param chain   remaining exchange chain to execute
+     * @return response after optional gzip decoding and cookie persistence
+     * @throws ValidateException if the request or chain is {@code null}
+     */
+    @Override
+    public HttpResponse execute(final HttpRequest request, final HttpChain chain) {
+        final HttpRequest prepared = prepare(request);
+        final HttpResponse response = receive(require(chain, "HTTP chain").proceed(prepared));
+        save(response);
+        return response;
+    }
+
+    /**
+     * Prepares protocol headers.
+     *
+     * @param request request to normalize for transport
+     * @return original request when no changes are required, otherwise a copy with missing protocol headers added
+     * @throws ProtocolException if a positive body length conflicts with {@code Content-Length} or the URL scheme is
+     *                           unsupported
+     * @throws ValidateException if the request or URL host is invalid
+     */
+    public HttpRequest prepare(final HttpRequest request) {
+        final HttpRequest source = require(request, "HTTP request");
+        final PreparedRequest cached = preparedRequest;
+        if (cached != null && (cookies == null || cookies.isEmpty()) && cached.matches(source)) {
+            return cached.prepared;
+        }
+        final Headers headers = source.headers();
+        final long bodyLength = source.body().length();
+        final long declaredLength = bodyLength > Normal._0 ? declaredLength(headers) : Normal.__1;
+        if (declaredLength >= Normal._0 && declaredLength != bodyLength) {
+            throw new ProtocolException("Content-Length does not match body length");
+        }
+        final boolean addHost = !headers.contains(Http.Header.HOST);
+        final boolean addConnection = !headers.contains(Http.Header.CONNECTION);
+        final boolean addEncoding = !headers.contains(Http.Header.ACCEPT_ENCODING);
+        final boolean addAgent = !headers.contains(Http.Header.USER_AGENT);
+        final boolean addLength = bodyLength > Normal._0 && declaredLength < Normal._0;
+        final boolean addChunked = bodyLength < Normal._0 && !headers.contains(Http.Header.TRANSFER_ENCODING);
+        final String cookie = cookies == null || headers.contains(Http.Header.COOKIE) ? null
+                : cookieValue(source.url(), cookies.load(source.url()));
+        if (!addHost && !addConnection && !addEncoding && !addAgent && !addLength && !addChunked && cookie == null) {
+            return source;
+        }
+        final Headers.Builder builder = headers.newBuilder();
+        if (addHost) {
+            builder.add(Http.Header.HOST, hostValue(source.url()));
+        }
+        if (addConnection) {
+            builder.add(Http.Header.CONNECTION, Http.Header.CONNECTION_KEEP_ALIVE);
+        }
+        if (addEncoding) {
+            builder.add(Http.Header.ACCEPT_ENCODING, Http.Header.CONTENT_CODING_GZIP);
+        }
+        if (addAgent) {
+            builder.add(Http.Header.USER_AGENT, userAgent);
+        }
+        if (addLength) {
+            builder.add(Http.Header.CONTENT_LENGTH, Long.toString(bodyLength));
+        } else if (addChunked) {
+            builder.remove(Http.Header.CONTENT_LENGTH)
+                    .add(Http.Header.TRANSFER_ENCODING, Http.Header.TRANSFER_CODING_CHUNKED);
+        }
+        if (cookie != null) {
+            builder.add(Http.Header.COOKIE, cookie);
+        }
+        final HttpRequest prepared = source.toBuilder().headers(builder.build()).build();
+        if (cookie == null && (cookies == null || cookies.isEmpty()) && source.tag() == null) {
+            preparedRequest = new PreparedRequest(source, prepared);
+        }
+        return prepared;
+    }
+
+    /**
+     * Receives and decodes a response.
+     *
+     * @param response transport response to inspect
+     * @return original response when not gzip encoded, otherwise a copy with a streaming gzip-decoded body
+     * @throws ValidateException if {@code response} is {@code null}
+     */
+    public HttpResponse receive(final HttpResponse response) {
+        final HttpResponse source = require(response, "HTTP response");
+        if (!gzip(source.headers())) {
+            return source;
+        }
+        final Headers headers = source.headers().without(Http.Header.CONTENT_ENCODING)
+                .without(Http.Header.CONTENT_LENGTH);
+        final PayloadBody body = PayloadBody
+                .of(Payload.source(new GzipSource(source.body().source()), Normal.__1), source.body().media());
+        return source.toBuilder().headers(headers).body(body).build();
+    }
+
+    /**
+     * Returns stage name.
+     *
+     * @return stable bridge-stage identifier
+     */
+    @Override
+    public String name() {
+        return name;
+    }
+
+    /**
+     * Saves response cookies when an automatic store is configured.
+     *
+     * @param response decoded response whose request URL and headers are persisted
+     */
+    private void save(final HttpResponse response) {
+        if (cookies != null) {
+            cookies.save(response.request().url(), response.headers());
+        }
+    }
+
+    /**
+     * One immutable request-shape cache entry for repeated cookie-free calls.
+     *
+     * @param source   source request shape
+     * @param prepared fully prepared immutable request
+     */
+    private record PreparedRequest(HttpRequest source, HttpRequest prepared) {
+
+        /**
+         * Compares ordered header pairs without materializing map views.
+         */
+        private static boolean sameHeaders(final Headers left, final Headers right) {
+            final int size = left.size();
+            if (size != right.size()) {
+                return false;
+            }
+            for (int index = Normal._0; index < size; index++) {
+                if (!left.name(index).equals(right.name(index)) || !left.value(index).equals(right.value(index))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /**
+         * Compares timeout values because Timeout intentionally has identity equality.
+         */
+        private static boolean sameTimeout(final Timeout left, final Timeout right) {
+            return left.connect().equals(right.connect()) && left.read().equals(right.read())
+                    && left.write().equals(right.write()) && left.call().equals(right.call())
+                    && left.ping().equals(right.ping()) && left.close().equals(right.close());
+        }
+
+        /**
+         * Returns whether a request is value-identical for all fields changed or observed by this bridge.
+         */
+        private boolean matches(final HttpRequest candidate) {
+            return source.method() == candidate.method() && source.url().toString().equals(candidate.url().toString())
+                    && source.bodyLength() == Normal._0 && candidate.bodyLength() == Normal._0
+                    && source.proxy().equals(candidate.proxy()) && sameTimeout(source.timeout(), candidate.timeout())
+                    && candidate.tag() == null && sameHeaders(source.headers(), candidate.headers());
+        }
     }
 
 }

@@ -149,6 +149,32 @@ public class DnsMetrics {
     }
 
     /**
+     * Returns the normalized transport token.
+     *
+     * @param transport listener transport
+     * @return lower-case transport token
+     */
+    private static String transportName(final DnsTransport transport) {
+        if (transport == null) {
+            throw new ValidateException("DNS metric transport must not be null");
+        }
+        return transport.name().toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Returns the normalized response-code token.
+     *
+     * @param responseCode response code
+     * @return lower-case response-code token
+     */
+    private static String rcodeName(final DnsResponseCode responseCode) {
+        if (responseCode == null) {
+            throw new ValidateException("DNS metric response code must not be null");
+        }
+        return responseCode.name().toLowerCase(Locale.ROOT);
+    }
+
+    /**
      * Returns whether metric recording is enabled.
      *
      * @return true when metrics are enabled
@@ -302,32 +328,6 @@ public class DnsMetrics {
      */
     private void timing(final String name, final Duration duration) {
         meter.timing(name, duration);
-    }
-
-    /**
-     * Returns the normalized transport token.
-     *
-     * @param transport listener transport
-     * @return lower-case transport token
-     */
-    private static String transportName(final DnsTransport transport) {
-        if (transport == null) {
-            throw new ValidateException("DNS metric transport must not be null");
-        }
-        return transport.name().toLowerCase(Locale.ROOT);
-    }
-
-    /**
-     * Returns the normalized response-code token.
-     *
-     * @param responseCode response code
-     * @return lower-case response-code token
-     */
-    private static String rcodeName(final DnsResponseCode responseCode) {
-        if (responseCode == null) {
-            throw new ValidateException("DNS metric response code must not be null");
-        }
-        return responseCode.name().toLowerCase(Locale.ROOT);
     }
 
     /**

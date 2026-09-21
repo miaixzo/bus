@@ -65,18 +65,22 @@ public class GitLabApiClient implements AutoCloseable {
      */
 
     protected static final String PRIVATE_TOKEN_HEADER = "PRIVATE-TOKEN";
+
     /**
      * The job token header value.
      */
     protected static final String JOB_TOKEN_HEADER = "JOB-TOKEN";
+
     /**
      * The sudo header value.
      */
     protected static final String SUDO_HEADER = "Sudo";
+
     /**
      * The authorization header value.
      */
     protected static final String AUTHORIZATION_HEADER = Http.Header.AUTHORIZATION;
+
     /**
      * The x gitlab token header value.
      */
@@ -86,54 +90,67 @@ public class GitLabApiClient implements AutoCloseable {
      * The client config value.
      */
     private ClientConfig clientConfig;
+
     /**
      * The api client value.
      */
     private Client apiClient;
+
     /**
      * The base url value.
      */
     private String baseUrl;
+
     /**
      * The host url value.
      */
     private String hostUrl;
+
     /**
      * The token type value.
      */
     private TokenType tokenType = TokenType.PRIVATE;
+
     /**
      * The auth token value.
      */
     private SupplierX<String> authToken;
+
     /**
      * The secret token value.
      */
     private String secretToken;
+
     /**
      * The ignore certificate errors value.
      */
     private boolean ignoreCertificateErrors;
+
     /**
      * The open ssl context value.
      */
     private SSLContext openSslContext;
+
     /**
      * The open hostname verifier value.
      */
     private HostnameVerifier openHostnameVerifier;
+
     /**
      * The sudo as id value.
      */
     private Long sudoAsId;
+
     /**
      * The connect timeout value.
      */
     private Integer connectTimeout;
+
     /**
      * The read timeout value.
      */
     private Integer readTimeout;
+
     /**
      * The user agent header value.
      */

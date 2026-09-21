@@ -32,18 +32,22 @@ public class ProjectLicense {
      * The key value.
      */
     private String key;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The nickname value.
      */
     private String nickname;
+
     /**
      * The html url value.
      */
     private String htmlUrl;
+
     /**
      * The source url value.
      */

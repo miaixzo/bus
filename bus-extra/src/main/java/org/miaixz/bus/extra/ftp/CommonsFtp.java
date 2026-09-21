@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.extra.ftp;
 
-import java.io.File;
-import java.io.FilterInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -1086,6 +1082,25 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
+     * Closes the FTP connection and releases all resources. This method is designed to be overridden by subclasses for
+     * custom cleanup logic. When overriding, ensure the method is idempotent and all resources are properly released.
+     * <p>
+     * Subclasses should call {@code super.close()} to ensure proper cleanup of inherited resources.
+     *
+     * @throws IOException if an I/O error occurs during disconnection.
+     */
+    @Override
+    public void close() throws IOException {
+        if (null != this.client) {
+            this.client.logout();
+            if (this.client.isConnected()) {
+                this.client.disconnect();
+            }
+            this.client = null;
+        }
+    }
+
+    /**
      * Completes the pending FTP transfer when the returned stream is closed.
      */
     private class PendingCommandInputStream extends FilterInputStream {
@@ -1121,25 +1136,6 @@ public class CommonsFtp extends AbstractFtp {
             }
         }
 
-    }
-
-    /**
-     * Closes the FTP connection and releases all resources. This method is designed to be overridden by subclasses for
-     * custom cleanup logic. When overriding, ensure the method is idempotent and all resources are properly released.
-     * <p>
-     * Subclasses should call {@code super.close()} to ensure proper cleanup of inherited resources.
-     *
-     * @throws IOException if an I/O error occurs during disconnection.
-     */
-    @Override
-    public void close() throws IOException {
-        if (null != this.client) {
-            this.client.logout();
-            if (this.client.isConnected()) {
-                this.client.disconnect();
-            }
-            this.client = null;
-        }
     }
 
 }

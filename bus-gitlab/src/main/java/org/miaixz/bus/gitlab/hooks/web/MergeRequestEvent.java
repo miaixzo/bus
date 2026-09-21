@@ -34,16 +34,15 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class MergeRequestEvent extends AbstractEvent {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852232811512L;
+
     /**
      * The x gitlab event value.
      */
 
     public static final String X_GITLAB_EVENT = "Merge Request Hook";
+
     /**
      * The object kind value.
      */
@@ -53,30 +52,37 @@ public class MergeRequestEvent extends AbstractEvent {
      * The user value.
      */
     private EventUser user;
+
     /**
      * The project value.
      */
     private EventProject project;
+
     /**
      * The repository value.
      */
     private EventRepository repository;
+
     /**
      * The object attributes value.
      */
     private ObjectAttributes objectAttributes;
+
     /**
      * The labels value.
      */
     private List<EventLabel> labels;
+
     /**
      * The changes value.
      */
     private MergeRequestChanges changes;
+
     /**
      * The assignees value.
      */
     private List<Assignee> assignees;
+
     /**
      * The reviewers value.
      */
@@ -272,6 +278,17 @@ public class MergeRequestEvent extends AbstractEvent {
     }
 
     /**
+     * Returns the string.
+     *
+     * @return the result
+     */
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
+    }
+
+    /**
      * The object attributes class.
      *
      * @author Kimi Liu
@@ -285,17 +302,6 @@ public class MergeRequestEvent extends AbstractEvent {
             // No initialization required.
         }
 
-    }
-
-    /**
-     * Returns the string.
-     *
-     * @return the result
-     */
-
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
     }
 
 }

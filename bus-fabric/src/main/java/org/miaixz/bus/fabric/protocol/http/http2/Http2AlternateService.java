@@ -132,21 +132,6 @@ public record Http2AlternateService(String origin, String value) {
     }
 
     /**
-     * Encodes this value as immutable ALTSVC payload bytes.
-     *
-     * @return immutable bytes containing the two-byte origin length, origin, and Alt-Svc field content
-     */
-    public ByteString encodeBytes() {
-        final ByteString originBytes = ByteString.encodeUtf8(origin);
-        final ByteString valueBytes = ByteString.encodeUtf8(value);
-        final Buffer payload = new Buffer();
-        payload.writeShort(originBytes.size());
-        payload.write(originBytes);
-        payload.write(valueBytes);
-        return payload.readByteString();
-    }
-
-    /**
      * Validates stream-specific ALTSVC origin rules.
      *
      * @param streamId non-negative connection ({@code 0}) or application stream identifier
@@ -201,6 +186,21 @@ public record Http2AlternateService(String origin, String value) {
         final Buffer view = new Buffer();
         payload.copyTo(view, offset, byteCount);
         return view.readByteString();
+    }
+
+    /**
+     * Encodes this value as immutable ALTSVC payload bytes.
+     *
+     * @return immutable bytes containing the two-byte origin length, origin, and Alt-Svc field content
+     */
+    public ByteString encodeBytes() {
+        final ByteString originBytes = ByteString.encodeUtf8(origin);
+        final ByteString valueBytes = ByteString.encodeUtf8(value);
+        final Buffer payload = new Buffer();
+        payload.writeShort(originBytes.size());
+        payload.write(originBytes);
+        payload.write(valueBytes);
+        return payload.readByteString();
     }
 
 }

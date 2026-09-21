@@ -63,16 +63,6 @@ class LZWEncoder {
     private final int initCodeSize;
 
     /**
-     * The number of remaining pixels to be processed.
-     */
-    private int remaining;
-
-    /**
-     * The current pixel being processed.
-     */
-    private int curPixel;
-
-    /**
      * The current number of bits per code.
      */
     int n_bits; // number of bits/code
@@ -151,6 +141,16 @@ class LZWEncoder {
      * The accumulator for the packet.
      */
     byte[] accum = new byte[256];
+
+    /**
+     * The number of remaining pixels to be processed.
+     */
+    private int remaining;
+
+    /**
+     * The current pixel being processed.
+     */
+    private int curPixel;
 
     /**
      * Constructor for LZWEncoder.

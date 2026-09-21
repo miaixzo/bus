@@ -31,9 +31,6 @@ import org.miaixz.bus.image.UID;
  */
 public class NoPresentationException extends IOException {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852273099158L;
 

@@ -37,9 +37,6 @@ import org.miaixz.bus.image.metric.TransferCapability;
  */
 public class AttributeCoercion implements Serializable, Comparable<AttributeCoercion> {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852262397936L;
 
@@ -230,9 +227,6 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
      */
     private static class Condition implements Serializable, Comparable<Condition> {
 
-        /**
-         * The serial version uid value.
-         */
         @Serial
         private static final long serialVersionUID = 2852262539097L;
 

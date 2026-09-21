@@ -30,6 +30,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 /**
  * Enumeration for weeks, corresponding to the int values of weeks in {@link Calendar}.
  *
+ * @author Kimi Liu
  * @see #SUNDAY
  * @see #MONDAY
  * @see #TUESDAY
@@ -37,7 +38,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @see #THURSDAY
  * @see #FRIDAY
  * @see #SATURDAY
- * @author Kimi Liu
  */
 public enum Week {
 

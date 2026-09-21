@@ -29,9 +29,6 @@ import java.io.Serial;
  */
 public class Contributor extends AbstractUser<Contributor> {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852250837816L;
 
@@ -39,10 +36,12 @@ public class Contributor extends AbstractUser<Contributor> {
      * The commits value.
      */
     private Integer commits;
+
     /**
      * The additions value.
      */
     private Integer additions;
+
     /**
      * The deletions value.
      */

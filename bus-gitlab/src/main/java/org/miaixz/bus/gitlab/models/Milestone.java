@@ -34,9 +34,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
  */
 public class Milestone implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852265609811L;
 
@@ -44,6 +41,7 @@ public class Milestone implements Serializable {
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The description value.
      */
@@ -65,34 +63,42 @@ public class Milestone implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The iid value.
      */
     private Long iid;
+
     /**
      * The project id value.
      */
     private Long projectId;
+
     /**
      * The group id value.
      */
     private Long groupId;
+
     /**
      * The state value.
      */
     private String state;
+
     /**
      * The title value.
      */
     private String title;
+
     /**
      * The updated at value.
      */
     private Date updatedAt;
+
     /**
      * The expired value.
      */
     private Boolean expired;
+
     /**
      * The web url value.
      */

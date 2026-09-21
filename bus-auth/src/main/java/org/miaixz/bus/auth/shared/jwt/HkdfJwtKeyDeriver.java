@@ -54,18 +54,22 @@ public final class HkdfJwtKeyDeriver implements JwtKeyDeriver {
      * Stable public name of this derivation contract.
      */
     public static final String VERSION = "HKDF_SHA256_V1";
+
     /**
      * Shared stateless profile instance.
      */
     public static final HkdfJwtKeyDeriver INSTANCE = new HkdfJwtKeyDeriver();
+
     /**
      * Versioned public HKDF salt used for JWT String key separation.
      */
     private static final byte[] SALT = "bus-auth:jwt:key:v1".getBytes(Charset.UTF_8);
+
     /**
      * HS256-specific HKDF context.
      */
     private static final byte[] HS256_INFO = JwaAlgorithm.HS256.name().getBytes(Charset.UTF_8);
+
     /**
      * First HKDF expand-block counter.
      */
@@ -76,6 +80,23 @@ public final class HkdfJwtKeyDeriver implements JwtKeyDeriver {
      */
     public HkdfJwtKeyDeriver() {
         // No mutable state.
+    }
+
+    /**
+     * Computes one dependency-free HMAC-SHA-256 step through the mandatory JCA algorithm.
+     *
+     * @param key  HMAC key bytes
+     * @param data input bytes
+     * @return newly allocated MAC result
+     */
+    private static byte[] hmac(final byte[] key, final byte[] data) {
+        try {
+            final Mac mac = Mac.getInstance(Algorithm.HMACSHA256.getValue());
+            mac.init(new SecretKeySpec(key, Algorithm.HMACSHA256.getValue()));
+            return mac.doFinal(data);
+        } catch (GeneralSecurityException cause) {
+            throw new CryptoException("JWT HKDF-SHA-256 key derivation is unavailable", cause);
+        }
     }
 
     /**
@@ -107,23 +128,6 @@ public final class HkdfJwtKeyDeriver implements JwtKeyDeriver {
             if (derived != null) {
                 Arrays.fill(derived, (byte) 0);
             }
-        }
-    }
-
-    /**
-     * Computes one dependency-free HMAC-SHA-256 step through the mandatory JCA algorithm.
-     *
-     * @param key  HMAC key bytes
-     * @param data input bytes
-     * @return newly allocated MAC result
-     */
-    private static byte[] hmac(final byte[] key, final byte[] data) {
-        try {
-            final Mac mac = Mac.getInstance(Algorithm.HMACSHA256.getValue());
-            mac.init(new SecretKeySpec(key, Algorithm.HMACSHA256.getValue()));
-            return mac.doFinal(data);
-        } catch (GeneralSecurityException cause) {
-            throw new CryptoException("JWT HKDF-SHA-256 key derivation is unavailable", cause);
         }
     }
 

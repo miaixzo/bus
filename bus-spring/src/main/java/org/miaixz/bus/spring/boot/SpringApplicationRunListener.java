@@ -52,6 +52,7 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
      * Bean name for the startup collector.
      */
     private static final String COLLECTOR_BEAN_NAME = "busSpringStartupCollector";
+
     /**
      * Bean name for the startup lifecycle component.
      */
@@ -61,10 +62,12 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
      * Guards the one-time evaluation of the startup reporting switch.
      */
     private final AtomicBoolean activationChecked = new AtomicBoolean();
+
     /**
      * Guards the one-time registration of startup reporting components.
      */
     private final AtomicBoolean componentsRegistered = new AtomicBoolean();
+
     /**
      * Guards completion of the startup report.
      */
@@ -74,14 +77,17 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
      * Collector allocated after startup metrics are enabled.
      */
     private SpringStartupCollector startupCollector;
+
     /**
      * Timestamp at which the prepared environment enabled startup metrics.
      */
     private long environmentPreparedTime;
+
     /**
      * Timestamp at which application-context preparation completed.
      */
     private long contextPreparedTime;
+
     /**
      * Timestamp at which application-context loading completed.
      */

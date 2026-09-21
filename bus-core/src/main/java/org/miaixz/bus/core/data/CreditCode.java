@@ -66,18 +66,18 @@ public class CreditCode {
      */
     private static final Map<Character, Integer> CODE_INDEX_MAP;
 
-    /**
-     * Keeps unified social credit-code validation on the static API.
-     */
-    public CreditCode() {
-        // No initialization required.
-    }
-
     static {
         CODE_INDEX_MAP = new ConcurrentHashMap<>();
         for (int i = 0; i < BASE_CODE_ARRAY.length; i++) {
             CODE_INDEX_MAP.put(BASE_CODE_ARRAY[i], i);
         }
+    }
+
+    /**
+     * Keeps unified social credit-code validation on the static API.
+     */
+    public CreditCode() {
+        // No initialization required.
     }
 
     /**

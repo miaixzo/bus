@@ -71,9 +71,6 @@ import org.miaixz.bus.mapper.Order;
 @Getter
 public class Sort implements Serializable, Iterable<Order> {
 
-    /**
-     * Serialization version UID for compatibility.
-     */
     @Serial
     private static final long serialVersionUID = 2852292629096L;
 

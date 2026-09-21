@@ -48,7 +48,7 @@ public class BigExcelReader implements AutoCloseable {
 
     /**
      * Shared stackless termination signal used to stop SAX iteration at the configured end row.
-     *
+     * <p>
      * Identity comparison prevents termination exceptions raised by user handlers from being consumed.
      */
     private static final TerminateException END_OF_READ = new TerminateException("Excel end row reached");
@@ -59,14 +59,14 @@ public class BigExcelReader implements AutoCloseable {
     private final File sourceFile;
 
     /**
-     * Source stream when reading from stream.
-     */
-    private InputStream sourceStream;
-
-    /**
      * Sheet selector, -1 means all sheets.
      */
     private final String idOrRidOrSheetName;
+
+    /**
+     * Source stream when reading from stream.
+     */
+    private InputStream sourceStream;
 
     /**
      * Read configuration.

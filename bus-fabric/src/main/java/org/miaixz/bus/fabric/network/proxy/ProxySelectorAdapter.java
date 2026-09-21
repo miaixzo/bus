@@ -87,6 +87,31 @@ public class ProxySelectorAdapter {
     }
 
     /**
+     * Converts one JDK proxy decision into the route-level proxy model used by fabric connectors.
+     *
+     * @param proxy non-null JDK proxy returned by {@link ProxySelector#select(URI)}
+     * @return direct, HTTP, or SOCKS plan using the proxy host string and port
+     * @throws ValidateException if {@code proxy} is {@code null}
+     * @throws ProtocolException if a non-direct proxy address is not an {@link InetSocketAddress}
+     */
+    private static ProxyPlan plan(final Proxy proxy) {
+        final Proxy current = Assert.notNull(proxy, () -> new ValidateException("Proxy must not be null"));
+        if (current.type() == Proxy.Type.DIRECT) {
+            return ProxyPlan.direct();
+        }
+        if (!(current.address() instanceof InetSocketAddress address)) {
+            throw new ProtocolException("ProxySelector returned unsupported address");
+        }
+        final String host = address.getHostString();
+        final int port = address.getPort();
+        return switch (current.type()) {
+            case HTTP -> ProxyPlan.http(new Address(Protocol.HTTP.name, host, port, Symbol.SLASH));
+            case SOCKS -> ProxyPlan.socks(new Address(Protocol.TCP.name, host, port, Symbol.SLASH));
+            case DIRECT -> ProxyPlan.direct();
+        };
+    }
+
+    /**
      * Converts a fabric URL to a URI and selects ordered proxy plans for it.
      *
      * @param url fabric URL passed to the wrapped selector as a URI
@@ -135,31 +160,6 @@ public class ProxySelectorAdapter {
                 Assert.notNull(uri, () -> new ValidateException("URI must not be null")),
                 Assert.notNull(address, () -> new ValidateException("Socket address must not be null")),
                 Assert.notNull(failure, () -> new ValidateException("Failure must not be null")));
-    }
-
-    /**
-     * Converts one JDK proxy decision into the route-level proxy model used by fabric connectors.
-     *
-     * @param proxy non-null JDK proxy returned by {@link ProxySelector#select(URI)}
-     * @return direct, HTTP, or SOCKS plan using the proxy host string and port
-     * @throws ValidateException if {@code proxy} is {@code null}
-     * @throws ProtocolException if a non-direct proxy address is not an {@link InetSocketAddress}
-     */
-    private static ProxyPlan plan(final Proxy proxy) {
-        final Proxy current = Assert.notNull(proxy, () -> new ValidateException("Proxy must not be null"));
-        if (current.type() == Proxy.Type.DIRECT) {
-            return ProxyPlan.direct();
-        }
-        if (!(current.address() instanceof InetSocketAddress address)) {
-            throw new ProtocolException("ProxySelector returned unsupported address");
-        }
-        final String host = address.getHostString();
-        final int port = address.getPort();
-        return switch (current.type()) {
-            case HTTP -> ProxyPlan.http(new Address(Protocol.HTTP.name, host, port, Symbol.SLASH));
-            case SOCKS -> ProxyPlan.socks(new Address(Protocol.TCP.name, host, port, Symbol.SLASH));
-            case DIRECT -> ProxyPlan.direct();
-        };
     }
 
 }

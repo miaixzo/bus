@@ -66,6 +66,11 @@ public class Cancellation {
     }
 
     /**
+     * Whether callers can transition this scope to cancelled.
+     */
+    private final boolean cancellable;
+
+    /**
      * Lazily allocated concurrent deque of registered cancellation callbacks.
      */
     private volatile ConcurrentLinkedDeque<Runnable> callbacks;
@@ -79,11 +84,6 @@ public class Cancellation {
      * Cause supplied by the invocation that won cancellation, published after the state transition.
      */
     private volatile Throwable cause;
-
-    /**
-     * Whether callers can transition this scope to cancelled.
-     */
-    private final boolean cancellable;
 
     /**
      * Creates an active cancellation scope without allocating callback storage.
@@ -118,6 +118,57 @@ public class Cancellation {
      */
     public static Cancellation none() {
         return NONE;
+    }
+
+    /**
+     * Runs a callback without allowing cleanup failures to block cancellation.
+     *
+     * @param callback cancellation cleanup action to invoke
+     */
+    private static void run(final Runnable callback) {
+        try {
+            callback.run();
+        } catch (final RuntimeException e) {
+            Logger.warn(false, "Fabric", e, "Cancellation cleanup failed: exception={}", e.getClass().getSimpleName());
+        }
+    }
+
+    /**
+     * Closes a resource without allowing cleanup failures to block cancellation.
+     *
+     * @param resource cancellation-owned resource to close
+     */
+    private static void close(final AutoCloseable resource) {
+        try {
+            resource.close();
+        } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Fabric",
+                    e,
+                    "Cancellation resource cleanup failed: resource={}, exception={}",
+                    resource.getClass().getName(),
+                    e.getClass().getSimpleName());
+        }
+    }
+
+    /**
+     * Performs no work for registrations whose callback has already run.
+     */
+    private static void noop() {
+        // no-op
+    }
+
+    /**
+     * Validates and returns a required reference.
+     *
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -255,57 +306,6 @@ public class Cancellation {
             run(callback);
         }
         CALLBACKS.compareAndSet(this, queue, null);
-    }
-
-    /**
-     * Runs a callback without allowing cleanup failures to block cancellation.
-     *
-     * @param callback cancellation cleanup action to invoke
-     */
-    private static void run(final Runnable callback) {
-        try {
-            callback.run();
-        } catch (final RuntimeException e) {
-            Logger.warn(false, "Fabric", e, "Cancellation cleanup failed: exception={}", e.getClass().getSimpleName());
-        }
-    }
-
-    /**
-     * Closes a resource without allowing cleanup failures to block cancellation.
-     *
-     * @param resource cancellation-owned resource to close
-     */
-    private static void close(final AutoCloseable resource) {
-        try {
-            resource.close();
-        } catch (final Exception e) {
-            Logger.warn(
-                    false,
-                    "Fabric",
-                    e,
-                    "Cancellation resource cleanup failed: resource={}, exception={}",
-                    resource.getClass().getName(),
-                    e.getClass().getSimpleName());
-        }
-    }
-
-    /**
-     * Performs no work for registrations whose callback has already run.
-     */
-    private static void noop() {
-        // no-op
-    }
-
-    /**
-     * Validates and returns a required reference.
-     *
-     * @param value reference to validate
-     * @param name  logical reference name used in the validation message
-     * @param <T>   reference type
-     * @return the validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

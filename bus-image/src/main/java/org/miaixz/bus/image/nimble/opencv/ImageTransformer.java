@@ -305,8 +305,8 @@ public class ImageTransformer {
      * @param matrix        the 2x3 affine transformation matrix:
      *
      *                      <pre>
-     *                                                         [a b tx]
-     *                                                         [c d ty]
+     *                                                                              [a b tx]
+     *                                                                              [c d ty]
      *                      </pre>
      *                      <p>
      *                      where (a,b,c,d) define rotation/scaling/shearing and (tx,ty) define translation

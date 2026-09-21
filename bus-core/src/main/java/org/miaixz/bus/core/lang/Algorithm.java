@@ -305,9 +305,9 @@ public enum Algorithm {
      * Enumeration for cryptographic algorithm modes. These modes describe how block ciphers (not stream ciphers)
      * process plaintext in blocks during encryption.
      *
+     * @author Kimi Liu
      * @see <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Cipher"> Cipher
      *      section in Standard Names for Java Cryptography Architecture</a>
-     * @author Kimi Liu
      */
     public enum Mode {
         /**

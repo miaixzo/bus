@@ -119,6 +119,33 @@ final class DefaultLedger<T> implements Ledger<T> {
     }
 
     /**
+     * Validates binding keys.
+     *
+     * @param key binding key to validate and normalize
+     * @return trimmed, non-blank, single-line key
+     * @throws ValidateException if the key is blank or contains a line break
+     */
+    private static String validateKey(final String key) {
+        if (StringKit.isBlank(key) || StringKit.containsAny(key, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException("Registry key must be non-blank and single-line");
+        }
+        return key.trim();
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  logical reference name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Stores or replaces a binding by key.
      *
      * @param binding non-null validated binding that replaces any entry with the same key
@@ -182,33 +209,6 @@ final class DefaultLedger<T> implements Ledger<T> {
     @Override
     public int size() {
         return bindings.size();
-    }
-
-    /**
-     * Validates binding keys.
-     *
-     * @param key binding key to validate and normalize
-     * @return trimmed, non-blank, single-line key
-     * @throws ValidateException if the key is blank or contains a line break
-     */
-    private static String validateKey(final String key) {
-        if (StringKit.isBlank(key) || StringKit.containsAny(key, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Registry key must be non-blank and single-line");
-        }
-        return key.trim();
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  logical reference name included in the validation error
-     * @param <T>   reference type
-     * @return validated non-null reference
-     * @throws ValidateException if {@code value} is {@code null}
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

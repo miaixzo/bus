@@ -97,16 +97,6 @@ public class NamingProvider implements Provider<String> {
     }
 
     /**
-     * Returns the stable lower-case naming strategy key represented by this provider.
-     *
-     * @return naming strategy key used to select this provider
-     */
-    @Override
-    public String type() {
-        return naming.name().toLowerCase(Locale.ROOT);
-    }
-
-    /**
      * Gets the default naming style handler instance.
      *
      * @return The default naming style implementation.
@@ -169,6 +159,16 @@ public class NamingProvider implements Provider<String> {
             styles.add(naming.name().toLowerCase());
         }
         return Collections.unmodifiableSet(styles);
+    }
+
+    /**
+     * Returns the stable lower-case naming strategy key represented by this provider.
+     *
+     * @return naming strategy key used to select this provider
+     */
+    @Override
+    public String type() {
+        return naming.name().toLowerCase(Locale.ROOT);
     }
 
     /**

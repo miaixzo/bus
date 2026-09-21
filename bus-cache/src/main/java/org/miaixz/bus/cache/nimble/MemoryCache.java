@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cache.nimble;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.*;
@@ -56,70 +57,86 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
      * Maximum live entry count.
      */
     private final long maximumSize;
+
     /**
      * Global expire-after-write duration in milliseconds.
      */
     private final long expireAfterWrite;
+
     /**
      * Global expire-after-access duration in milliseconds.
      */
     private final long expireAfterAccess;
+
     /**
      * Millisecond time source.
      */
     private final LongSupplier clock;
+
     /**
      * Whether asynchronous atomic operations are enabled.
      */
     private final boolean atomicMode;
-    /**
-     * Current periodic prune task.
-     */
-    private ScheduledFuture<?> pruneFuture;
-    /**
-     * Atomic-mode terminal state.
-     */
-    private boolean closed;
-    /**
-     * Approximate number of queued write tokens.
-     */
-    private long writeTokenCount;
+
     /**
      * Total read request count.
      */
     private final LongAdder requestCount = new LongAdder();
+
     /**
      * Successful read count.
      */
     private final LongAdder hitCount = new LongAdder();
+
     /**
      * Monotonic sequence assigned to write tokens.
      */
     private final AtomicLong writeSequence = new AtomicLong();
+
     /**
      * Monitor protecting the per-instance prune future.
      */
     private final Object pruneMonitor = new Object();
+
     /**
      * Stored cache entries.
      */
     private final ConcurrentHashMap<K, Entry<V>> cache;
+
     /**
      * Independent numeric counters.
      */
     private final ConcurrentHashMap<K, AtomicLong> counters = new ConcurrentHashMap<>();
+
     /**
      * Write-order tokens used for bounded eviction.
      */
     private final Queue<WriteToken<K, V>> writeOrder = new ConcurrentLinkedQueue<>();
+
     /**
      * Serializes mutations that update entry and eviction state together.
      */
     private final ReentrantLock mutationLock = new ReentrantLock();
+
     /**
      * Coordinates atomic operations with atomic-mode close.
      */
     private final ReentrantReadWriteLock lifecycleLock = new ReentrantReadWriteLock();
+
+    /**
+     * Current periodic prune task.
+     */
+    private ScheduledFuture<?> pruneFuture;
+
+    /**
+     * Atomic-mode terminal state.
+     */
+    private boolean closed;
+
+    /**
+     * Approximate number of queued write tokens.
+     */
+    private long writeTokenCount;
 
     /**
      * Constructs a cache with 1000 entries, a three-minute write lifetime, and periodic pruning. Expire-after-access is
@@ -224,6 +241,160 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
                 expireAfterAccess,
                 initialCapacity,
                 pruneEnabled);
+    }
+
+    /**
+     * Parses prefixed cache properties without mutating the supplied object.
+     *
+     * @param properties non-null cache properties
+     * @return parsed configuration; numeric range validation occurs in the full constructor
+     * @throws NullPointerException  when {@code properties} is {@code null}
+     * @throws NumberFormatException when a numeric property is malformed
+     */
+    private static Configuration configuration(Properties properties) {
+        Objects.requireNonNull(properties, "properties");
+        String prefix = properties.getProperty("prefix", Normal.EMPTY);
+        long maximumSize = longProperty(properties, prefix + "maximumSize", 1000L);
+        long expireAfterWrite = longProperty(properties, prefix + "expireAfterWrite", 180_000L);
+        long expireAfterAccess = longProperty(properties, prefix + "expireAfterAccess", 0L);
+        int initialCapacity = intProperty(properties, prefix + "initialCapacity", 16);
+        String prune = properties.getProperty(prefix + "schedulePrune");
+        boolean pruneEnabled = StringKit.isEmpty(prune) || Boolean.parseBoolean(prune);
+        return new Configuration(maximumSize, expireAfterWrite, expireAfterAccess, initialCapacity, pruneEnabled);
+    }
+
+    /**
+     * Reads one long property, returning its default when absent or empty.
+     *
+     * @param properties   cache properties
+     * @param key          property key
+     * @param defaultValue default value
+     * @return parsed property value or {@code defaultValue}
+     * @throws NumberFormatException when a non-empty value is not a valid {@code long}
+     */
+    private static long longProperty(Properties properties, String key, long defaultValue) {
+        String value = properties.getProperty(key);
+        return StringKit.isEmpty(value) ? defaultValue : Long.parseLong(value);
+    }
+
+    /**
+     * Reads one integer property, returning its default when absent or empty.
+     *
+     * @param properties   cache properties
+     * @param key          property key
+     * @param defaultValue default value
+     * @return parsed property value or {@code defaultValue}
+     * @throws NumberFormatException when a non-empty value is not a valid {@code int}
+     */
+    private static int intProperty(Properties properties, String key, int defaultValue) {
+        String value = properties.getProperty(key);
+        return StringKit.isEmpty(value) ? defaultValue : Integer.parseInt(value);
+    }
+
+    /**
+     * Chooses the shortest positive global expiration as the prune delay.
+     *
+     * @param writeExpire  non-negative write expiration in milliseconds
+     * @param accessExpire non-negative access expiration in milliseconds
+     * @return shortest positive expiration, or zero when both policies are disabled
+     */
+    private static long pruneDelay(long writeExpire, long accessExpire) {
+        if (writeExpire <= 0L) {
+            return accessExpire;
+        }
+        if (accessExpire <= 0L) {
+            return writeExpire;
+        }
+        return Math.min(writeExpire, accessExpire);
+    }
+
+    /**
+     * Validates a per-entry expiration value accepted by ordinary writes.
+     *
+     * @param expire lifetime in milliseconds, {@link CacheExpire#NO}, or {@link CacheExpire#FOREVER}
+     * @throws IllegalArgumentException when the value is below the no-cache sentinel
+     */
+    private static void validateEntryExpire(long expire) {
+        if (expire < CacheExpire.NO) {
+            throw new IllegalArgumentException("expire must be -1, 0, or greater than zero");
+        }
+    }
+
+    /**
+     * Validates the positive TTL required by atomic create and replace operations.
+     *
+     * @param ttlMillis time to live in milliseconds
+     * @throws IllegalArgumentException when {@code ttlMillis} is not positive
+     */
+    private static void requirePositiveTtl(long ttlMillis) {
+        if (ttlMillis <= 0L) {
+            throw new IllegalArgumentException("ttlMillis must be greater than zero");
+        }
+    }
+
+    /**
+     * Requires one positive numeric value.
+     *
+     * @param value value
+     * @param name  value name
+     * @throws IllegalArgumentException when the value is not positive
+     */
+    private static void requirePositive(long value, String name) {
+        if (value <= 0L) {
+            throw new IllegalArgumentException(name + " must be greater than zero");
+        }
+    }
+
+    /**
+     * Requires one non-negative numeric value.
+     *
+     * @param value value
+     * @param name  value name
+     * @throws IllegalArgumentException when the value is negative
+     */
+    private static void requireNonNegative(long value, String name) {
+        if (value < 0L) {
+            throw new IllegalArgumentException(name + " must not be negative");
+        }
+    }
+
+    /**
+     * Adds a positive duration to a time value and saturates at {@link Long#MAX_VALUE} instead of overflowing.
+     *
+     * @param value     base time in milliseconds
+     * @param increment non-negative duration in milliseconds
+     * @return mathematical sum or {@link Long#MAX_VALUE} when the sum would overflow
+     */
+    private static long safeAdd(long value, long increment) {
+        return increment > 0L && value > Long.MAX_VALUE - increment ? Long.MAX_VALUE : value + increment;
+    }
+
+    /**
+     * Defensively copies mutable byte-array values and preserves all other value references.
+     *
+     * @param value source value
+     * @param <T>   value type
+     * @return copied byte array or the original non-array value
+     */
+    private static <T> T copyValue(T value) {
+        if (value instanceof byte[] bytes) {
+            return (T) Arrays.copyOf(bytes, bytes.length);
+        }
+        return value;
+    }
+
+    /**
+     * Compares byte arrays by content and all other values through {@link Objects#equals(Object, Object)}.
+     *
+     * @param current  current value
+     * @param expected expected value
+     * @return equality result
+     */
+    private static boolean valuesEqual(Object current, Object expected) {
+        if (current instanceof byte[] currentBytes && expected instanceof byte[] expectedBytes) {
+            return Arrays.equals(currentBytes, expectedBytes);
+        }
+        return Objects.equals(current, expected);
     }
 
     /**
@@ -837,157 +1008,53 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * Parses prefixed cache properties without mutating the supplied object.
-     *
-     * @param properties non-null cache properties
-     * @return parsed configuration; numeric range validation occurs in the full constructor
-     * @throws NullPointerException  when {@code properties} is {@code null}
-     * @throws NumberFormatException when a numeric property is malformed
+     * Shared bounded daemon scheduler used for periodic ordinary-cache pruning. Each cache instance owns and can cancel
+     * only its own returned {@link ScheduledFuture}.
      */
-    private static Configuration configuration(Properties properties) {
-        Objects.requireNonNull(properties, "properties");
-        String prefix = properties.getProperty("prefix", Normal.EMPTY);
-        long maximumSize = longProperty(properties, prefix + "maximumSize", 1000L);
-        long expireAfterWrite = longProperty(properties, prefix + "expireAfterWrite", 180_000L);
-        long expireAfterAccess = longProperty(properties, prefix + "expireAfterAccess", 0L);
-        int initialCapacity = intProperty(properties, prefix + "initialCapacity", 16);
-        String prune = properties.getProperty(prefix + "schedulePrune");
-        boolean pruneEnabled = StringKit.isEmpty(prune) || Boolean.parseBoolean(prune);
-        return new Configuration(maximumSize, expireAfterWrite, expireAfterAccess, initialCapacity, pruneEnabled);
-    }
+    private enum CacheScheduler {
 
-    /**
-     * Reads one long property, returning its default when absent or empty.
-     *
-     * @param properties   cache properties
-     * @param key          property key
-     * @param defaultValue default value
-     * @return parsed property value or {@code defaultValue}
-     * @throws NumberFormatException when a non-empty value is not a valid {@code long}
-     */
-    private static long longProperty(Properties properties, String key, long defaultValue) {
-        String value = properties.getProperty(key);
-        return StringKit.isEmpty(value) ? defaultValue : Long.parseLong(value);
-    }
+        /**
+         * Shared scheduler instance.
+         */
+        INSTANCE;
 
-    /**
-     * Reads one integer property, returning its default when absent or empty.
-     *
-     * @param properties   cache properties
-     * @param key          property key
-     * @param defaultValue default value
-     * @return parsed property value or {@code defaultValue}
-     * @throws NumberFormatException when a non-empty value is not a valid {@code int}
-     */
-    private static int intProperty(Properties properties, String key, int defaultValue) {
-        String value = properties.getProperty(key);
-        return StringKit.isEmpty(value) ? defaultValue : Integer.parseInt(value);
-    }
+        /**
+         * Worker name sequence.
+         */
+        private final AtomicInteger taskNumber = new AtomicInteger(1);
 
-    /**
-     * Chooses the shortest positive global expiration as the prune delay.
-     *
-     * @param writeExpire  non-negative write expiration in milliseconds
-     * @param accessExpire non-negative access expiration in milliseconds
-     * @return shortest positive expiration, or zero when both policies are disabled
-     */
-    private static long pruneDelay(long writeExpire, long accessExpire) {
-        if (writeExpire <= 0L) {
-            return accessExpire;
+        /**
+         * Bounded scheduled executor.
+         */
+        private final ScheduledThreadPoolExecutor executor;
+
+        /**
+         * Creates a one- or two-thread daemon scheduler based on available processors and configures canceled tasks for
+         * immediate queue removal.
+         */
+        CacheScheduler() {
+            int threads = Math.max(1, Math.min(2, Runtime.getRuntime().availableProcessors()));
+            this.executor = new ScheduledThreadPoolExecutor(threads, runnable -> {
+                Thread thread = new Thread(runnable, "MemoryCache-Prune-" + taskNumber.getAndIncrement());
+                thread.setDaemon(true);
+                return thread;
+            });
+            this.executor.setRemoveOnCancelPolicy(true);
+            this.executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
         }
-        if (accessExpire <= 0L) {
-            return writeExpire;
-        }
-        return Math.min(writeExpire, accessExpire);
-    }
 
-    /**
-     * Validates a per-entry expiration value accepted by ordinary writes.
-     *
-     * @param expire lifetime in milliseconds, {@link CacheExpire#NO}, or {@link CacheExpire#FOREVER}
-     * @throws IllegalArgumentException when the value is below the no-cache sentinel
-     */
-    private static void validateEntryExpire(long expire) {
-        if (expire < CacheExpire.NO) {
-            throw new IllegalArgumentException("expire must be -1, 0, or greater than zero");
+        /**
+         * Schedules one fixed-delay prune task. Fixed delay prevents a slow full-cache scan from accumulating catch-up
+         * executions.
+         *
+         * @param task  non-null prune task
+         * @param delay positive initial and recurring delay in milliseconds
+         * @return future that controls the scheduled task
+         */
+        private ScheduledFuture<?> schedule(Runnable task, long delay) {
+            return executor.scheduleWithFixedDelay(task, delay, delay, TimeUnit.MILLISECONDS);
         }
-    }
 
-    /**
-     * Validates the positive TTL required by atomic create and replace operations.
-     *
-     * @param ttlMillis time to live in milliseconds
-     * @throws IllegalArgumentException when {@code ttlMillis} is not positive
-     */
-    private static void requirePositiveTtl(long ttlMillis) {
-        if (ttlMillis <= 0L) {
-            throw new IllegalArgumentException("ttlMillis must be greater than zero");
-        }
-    }
-
-    /**
-     * Requires one positive numeric value.
-     *
-     * @param value value
-     * @param name  value name
-     * @throws IllegalArgumentException when the value is not positive
-     */
-    private static void requirePositive(long value, String name) {
-        if (value <= 0L) {
-            throw new IllegalArgumentException(name + " must be greater than zero");
-        }
-    }
-
-    /**
-     * Requires one non-negative numeric value.
-     *
-     * @param value value
-     * @param name  value name
-     * @throws IllegalArgumentException when the value is negative
-     */
-    private static void requireNonNegative(long value, String name) {
-        if (value < 0L) {
-            throw new IllegalArgumentException(name + " must not be negative");
-        }
-    }
-
-    /**
-     * Adds a positive duration to a time value and saturates at {@link Long#MAX_VALUE} instead of overflowing.
-     *
-     * @param value     base time in milliseconds
-     * @param increment non-negative duration in milliseconds
-     * @return mathematical sum or {@link Long#MAX_VALUE} when the sum would overflow
-     */
-    private static long safeAdd(long value, long increment) {
-        return increment > 0L && value > Long.MAX_VALUE - increment ? Long.MAX_VALUE : value + increment;
-    }
-
-    /**
-     * Defensively copies mutable byte-array values and preserves all other value references.
-     *
-     * @param value source value
-     * @param <T>   value type
-     * @return copied byte array or the original non-array value
-     */
-    private static <T> T copyValue(T value) {
-        if (value instanceof byte[] bytes) {
-            return (T) Arrays.copyOf(bytes, bytes.length);
-        }
-        return value;
-    }
-
-    /**
-     * Compares byte arrays by content and all other values through {@link Objects#equals(Object, Object)}.
-     *
-     * @param current  current value
-     * @param expected expected value
-     * @return equality result
-     */
-    private static boolean valuesEqual(Object current, Object expected) {
-        if (current instanceof byte[] currentBytes && expected instanceof byte[] expectedBytes) {
-            return Arrays.equals(currentBytes, expectedBytes);
-        }
-        return Objects.equals(current, expected);
     }
 
     /**
@@ -999,18 +1066,22 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
          * Maximum entry count.
          */
         private final long maximumSize;
+
         /**
          * Global write expiration.
          */
         private final long expireAfterWrite;
+
         /**
          * Global access expiration.
          */
         private final long expireAfterAccess;
+
         /**
          * Initial map capacity.
          */
         private final int initialCapacity;
+
         /**
          * Periodic prune flag.
          */
@@ -1043,30 +1114,34 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
      */
     private static final class Entry<V> implements Serializable {
 
-        /**
-         * Serialization identifier.
-         */
+        @Serial
         private static final long serialVersionUID = 2801356892053L;
+
         /**
          * Stored value.
          */
         private final V value;
+
         /**
          * Entry creation time.
          */
         private final long writeTime;
+
         /**
          * Per-entry atomic deadline.
          */
         private final long deadline;
+
         /**
          * Forever-entry flag.
          */
         private final boolean forever;
+
         /**
          * Write ordering sequence.
          */
         private final long sequence;
+
         /**
          * Most recent standard-cache access time.
          */
@@ -1138,6 +1213,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
          * Cache key.
          */
         private final K key;
+
         /**
          * Exact entry written for the key.
          */
@@ -1152,55 +1228,6 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
         private WriteToken(K key, Entry<V> entry) {
             this.key = key;
             this.entry = entry;
-        }
-
-    }
-
-    /**
-     * Shared bounded daemon scheduler used for periodic ordinary-cache pruning. Each cache instance owns and can cancel
-     * only its own returned {@link ScheduledFuture}.
-     */
-    private enum CacheScheduler {
-
-        /**
-         * Shared scheduler instance.
-         */
-        INSTANCE;
-
-        /**
-         * Worker name sequence.
-         */
-        private final AtomicInteger taskNumber = new AtomicInteger(1);
-        /**
-         * Bounded scheduled executor.
-         */
-        private final ScheduledThreadPoolExecutor executor;
-
-        /**
-         * Creates a one- or two-thread daemon scheduler based on available processors and configures canceled tasks for
-         * immediate queue removal.
-         */
-        CacheScheduler() {
-            int threads = Math.max(1, Math.min(2, Runtime.getRuntime().availableProcessors()));
-            this.executor = new ScheduledThreadPoolExecutor(threads, runnable -> {
-                Thread thread = new Thread(runnable, "MemoryCache-Prune-" + taskNumber.getAndIncrement());
-                thread.setDaemon(true);
-                return thread;
-            });
-            this.executor.setRemoveOnCancelPolicy(true);
-            this.executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
-        }
-
-        /**
-         * Schedules one fixed-delay prune task. Fixed delay prevents a slow full-cache scan from accumulating catch-up
-         * executions.
-         *
-         * @param task  non-null prune task
-         * @param delay positive initial and recurring delay in milliseconds
-         * @return future that controls the scheduled task
-         */
-        private ScheduledFuture<?> schedule(Runnable task, long delay) {
-            return executor.scheduleWithFixedDelay(task, delay, delay, TimeUnit.MILLISECONDS);
         }
 
     }

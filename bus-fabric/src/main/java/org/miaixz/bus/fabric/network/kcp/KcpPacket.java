@@ -341,31 +341,6 @@ public record KcpPacket(int version, Type type, long sequence, long acknowledgem
     }
 
     /**
-     * Encodes this packet to datagram bytes.
-     *
-     * @return datagram bytes
-     */
-    public byte[] datagram() {
-        if (version == Normal._0) {
-            throw new ProtocolException("Legacy KCP packets are decode-only");
-        }
-        final Buffer buffer = new Buffer();
-        buffer.writeByte(version);
-        buffer.writeByte(type.wire);
-        buffer.writeInt((int) sequence);
-        buffer.writeInt((int) acknowledgement);
-        buffer.writeShort(window);
-        buffer.writeLong(timestamp);
-        if (version == Normal._2) {
-            buffer.writeInt((int) messageId);
-            buffer.writeShort(fragmentIndex);
-            buffer.writeShort(fragmentCount);
-        }
-        buffer.write(payloadBytes);
-        return buffer.readByteArray();
-    }
-
-    /**
      * Builds a decoded packet and maps validation failures to wire protocol failures.
      *
      * @param version         wire version
@@ -436,6 +411,31 @@ public record KcpPacket(int version, Type type, long sequence, long acknowledgem
             case Normal._2 -> Builder.KCP_PACKET_V2_MAX_PAYLOAD;
             default -> throw new ValidateException("Unsupported KCP version");
         };
+    }
+
+    /**
+     * Encodes this packet to datagram bytes.
+     *
+     * @return datagram bytes
+     */
+    public byte[] datagram() {
+        if (version == Normal._0) {
+            throw new ProtocolException("Legacy KCP packets are decode-only");
+        }
+        final Buffer buffer = new Buffer();
+        buffer.writeByte(version);
+        buffer.writeByte(type.wire);
+        buffer.writeInt((int) sequence);
+        buffer.writeInt((int) acknowledgement);
+        buffer.writeShort(window);
+        buffer.writeLong(timestamp);
+        if (version == Normal._2) {
+            buffer.writeInt((int) messageId);
+            buffer.writeShort(fragmentIndex);
+            buffer.writeShort(fragmentCount);
+        }
+        buffer.write(payloadBytes);
+        return buffer.readByteArray();
     }
 
     /**

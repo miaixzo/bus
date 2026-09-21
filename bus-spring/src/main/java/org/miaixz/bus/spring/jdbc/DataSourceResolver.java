@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.spring.jdbc;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
@@ -77,21 +73,6 @@ public class DataSourceResolver {
         }
         this.environment = environment;
         this.prefixes = List.copyOf(normalized);
-    }
-
-    /**
-     * Resolves the first configured complete datasource mapping.
-     *
-     * @return validated datasource mapping
-     */
-    public DataSourceMapping resolve() {
-        Binder binder = Binder.get(this.environment);
-        for (String prefix : this.prefixes) {
-            if (hasUrl(binder, prefix)) {
-                return resolve(binder, prefix);
-            }
-        }
-        throw new IllegalStateException("JDBC requires a datasource URL under one of: " + this.prefixes);
     }
 
     /**
@@ -167,6 +148,21 @@ public class DataSourceResolver {
      */
     private static String property(String prefix, String name) {
         return prefix + Symbol.DOT + name;
+    }
+
+    /**
+     * Resolves the first configured complete datasource mapping.
+     *
+     * @return validated datasource mapping
+     */
+    public DataSourceMapping resolve() {
+        Binder binder = Binder.get(this.environment);
+        for (String prefix : this.prefixes) {
+            if (hasUrl(binder, prefix)) {
+                return resolve(binder, prefix);
+            }
+        }
+        throw new IllegalStateException("JDBC requires a datasource URL under one of: " + this.prefixes);
     }
 
 }

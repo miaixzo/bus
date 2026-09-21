@@ -29,6 +29,7 @@ public class MatOfKeyPoint extends Mat {
 
     // 32FC7
     private static final int _depth = CvType.CV_32F;
+
     private static final int _channels = 7;
 
     public MatOfKeyPoint() {
@@ -42,10 +43,6 @@ public class MatOfKeyPoint extends Mat {
         // FIXME: do we need release() here?
     }
 
-    public static MatOfKeyPoint fromNativeAddr(long addr) {
-        return new MatOfKeyPoint(addr);
-    }
-
     public MatOfKeyPoint(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -56,6 +53,10 @@ public class MatOfKeyPoint extends Mat {
     public MatOfKeyPoint(KeyPoint... a) {
         super();
         fromArray(a);
+    }
+
+    public static MatOfKeyPoint fromNativeAddr(long addr) {
+        return new MatOfKeyPoint(addr);
     }
 
     public void alloc(int elemNumber) {

@@ -132,123 +132,6 @@ public class TlsSettings {
     }
 
     /**
-     * Returns TLS version snapshot.
-     *
-     * @return immutable TLS protocol-name snapshot in preference order
-     */
-    public List<String> versions() {
-        return versions;
-    }
-
-    /**
-     * Returns cipher suite snapshot.
-     *
-     * @return immutable enabled cipher-suite snapshot in preference order
-     */
-    public List<String> ciphers() {
-        return ciphers;
-    }
-
-    /**
-     * Returns whether client authentication is enabled.
-     *
-     * @return {@code true} when the configured mode requests or requires a client certificate
-     */
-    public boolean clientAuth() {
-        return clientAuth.enabled();
-    }
-
-    /**
-     * Returns client authentication mode.
-     *
-     * @return client authentication mode
-     */
-    public TlsClientAuth clientAuthMode() {
-        return clientAuth;
-    }
-
-    /**
-     * Returns whether hostname verification is enabled.
-     *
-     * @return {@code true} when peer hostname verification is enabled
-     */
-    public boolean verifyHostname() {
-        return verifyHostname;
-    }
-
-    /**
-     * Returns the certificate policy.
-     *
-     * @return certificate policy
-     */
-    public CertificatePolicy certificate() {
-        return certificate;
-    }
-
-    /**
-     * Returns ALPN application protocol snapshot.
-     *
-     * @return immutable ALPN identifier snapshot in preference order
-     */
-    public List<String> applicationProtocols() {
-        return applicationProtocols;
-    }
-
-    /**
-     * Returns whether TLS extensions such as SNI and ALPN are enabled.
-     *
-     * @return {@code true} when SNI and ALPN extensions may be configured
-     */
-    public boolean supportsTlsExtensions() {
-        return tlsExtensions;
-    }
-
-    /**
-     * Returns whether another object has the same complete TLS configuration identity.
-     *
-     * @param object other object
-     * @return true when the complete configuration is equivalent
-     */
-    @Override
-    public boolean equals(final Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (!(object instanceof TlsSettings other) || hashCode != other.hashCode) {
-            return false;
-        }
-        return verifyHostname == other.verifyHostname && tlsExtensions == other.tlsExtensions
-                && clientAuth == other.clientAuth && certificateIdentity == other.certificateIdentity
-                && versions.equals(other.versions) && ciphers.equals(other.ciphers)
-                && applicationProtocols.equals(other.applicationProtocols);
-    }
-
-    /**
-     * Returns the precomputed complete TLS configuration hash.
-     *
-     * @return configuration hash
-     */
-    @Override
-    public int hashCode() {
-        return hashCode;
-    }
-
-    /**
-     * Computes the complete TLS configuration hash once during construction.
-     *
-     * @return configuration hash
-     */
-    private int computeHashCode() {
-        int result = versions.hashCode();
-        result = 31 * result + ciphers.hashCode();
-        result = 31 * result + clientAuth.hashCode();
-        result = 31 * result + Boolean.hashCode(verifyHostname);
-        result = 31 * result + System.identityHashCode(certificateIdentity);
-        result = 31 * result + applicationProtocols.hashCode();
-        return 31 * result + Boolean.hashCode(tlsExtensions);
-    }
-
-    /**
      * Returns default cipher suites from the current JDK TLS engine.
      *
      * @return immutable snapshot of cipher suites enabled by a default JDK TLS engine
@@ -375,6 +258,123 @@ public class TlsSettings {
             throw new ValidateException(name + " must be non-blank and single-line");
         }
         return value.trim();
+    }
+
+    /**
+     * Returns TLS version snapshot.
+     *
+     * @return immutable TLS protocol-name snapshot in preference order
+     */
+    public List<String> versions() {
+        return versions;
+    }
+
+    /**
+     * Returns cipher suite snapshot.
+     *
+     * @return immutable enabled cipher-suite snapshot in preference order
+     */
+    public List<String> ciphers() {
+        return ciphers;
+    }
+
+    /**
+     * Returns whether client authentication is enabled.
+     *
+     * @return {@code true} when the configured mode requests or requires a client certificate
+     */
+    public boolean clientAuth() {
+        return clientAuth.enabled();
+    }
+
+    /**
+     * Returns client authentication mode.
+     *
+     * @return client authentication mode
+     */
+    public TlsClientAuth clientAuthMode() {
+        return clientAuth;
+    }
+
+    /**
+     * Returns whether hostname verification is enabled.
+     *
+     * @return {@code true} when peer hostname verification is enabled
+     */
+    public boolean verifyHostname() {
+        return verifyHostname;
+    }
+
+    /**
+     * Returns the certificate policy.
+     *
+     * @return certificate policy
+     */
+    public CertificatePolicy certificate() {
+        return certificate;
+    }
+
+    /**
+     * Returns ALPN application protocol snapshot.
+     *
+     * @return immutable ALPN identifier snapshot in preference order
+     */
+    public List<String> applicationProtocols() {
+        return applicationProtocols;
+    }
+
+    /**
+     * Returns whether TLS extensions such as SNI and ALPN are enabled.
+     *
+     * @return {@code true} when SNI and ALPN extensions may be configured
+     */
+    public boolean supportsTlsExtensions() {
+        return tlsExtensions;
+    }
+
+    /**
+     * Returns whether another object has the same complete TLS configuration identity.
+     *
+     * @param object other object
+     * @return true when the complete configuration is equivalent
+     */
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof TlsSettings other) || hashCode != other.hashCode) {
+            return false;
+        }
+        return verifyHostname == other.verifyHostname && tlsExtensions == other.tlsExtensions
+                && clientAuth == other.clientAuth && certificateIdentity == other.certificateIdentity
+                && versions.equals(other.versions) && ciphers.equals(other.ciphers)
+                && applicationProtocols.equals(other.applicationProtocols);
+    }
+
+    /**
+     * Returns the precomputed complete TLS configuration hash.
+     *
+     * @return configuration hash
+     */
+    @Override
+    public int hashCode() {
+        return hashCode;
+    }
+
+    /**
+     * Computes the complete TLS configuration hash once during construction.
+     *
+     * @return configuration hash
+     */
+    private int computeHashCode() {
+        int result = versions.hashCode();
+        result = 31 * result + ciphers.hashCode();
+        result = 31 * result + clientAuth.hashCode();
+        result = 31 * result + Boolean.hashCode(verifyHostname);
+        result = 31 * result + System.identityHashCode(certificateIdentity);
+        result = 31 * result + applicationProtocols.hashCode();
+        return 31 * result + Boolean.hashCode(tlsExtensions);
     }
 
     /**

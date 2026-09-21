@@ -72,104 +72,6 @@ public class StreamProxyConnector {
     }
 
     /**
-     * Establishes the selected proxy route over an already connected proxy transport.
-     * <p>
-     * Direct routes require no handshake. HTTP routes use CONNECT and SOCKS routes use SOCKS5 CONNECT. Transport I/O
-     * failures are converted to structured route failures before any application data is sent; authentication and
-     * protocol failures retain their dedicated exception types.
-     *
-     * @param connection   established transport connected to the selected proxy
-     * @param target       logical destination requested by the application protocol
-     * @param proxy        resolved direct, HTTP, or SOCKS route plan
-     * @param timeout      connect, read, and write timeout policy for the handshake
-     * @param cancellation cancellation scope governing the handshake
-     * @throws ConnectionException if intermediary communication fails before application-data delivery
-     * @throws AuthorizedException if the intermediary requires or rejects authentication
-     * @throws ProtocolException   if the resolved plan or intermediary response violates its protocol
-     */
-    public void connect(
-            final Connection connection,
-            final Address target,
-            final ProxyPlan proxy,
-            final Timeout timeout,
-            final Cancellation cancellation) {
-        try {
-            if (proxy.isDirect()) {
-                return;
-            }
-            if (proxy.isHttp()) {
-                httpConnect(connection, target, proxy.authorization(), timeout, cancellation);
-                return;
-            }
-            if (proxy.isSocks()) {
-                socksConnect(connection, target, timeout, cancellation);
-                return;
-            }
-            throw new ProtocolException("Stream connector requires a resolved proxy plan");
-        } catch (final ConnectionException e) {
-            throw e;
-        } catch (final SocketException e) {
-            throw routeFailure(proxy, Phase.ROUTE_NEGOTIATION, "Unable to negotiate stream proxy route", e);
-        }
-    }
-
-    /**
-     * Opens a SOCKS5 UDP ASSOCIATE control session and returns its relay address.
-     *
-     * @param connection   established stream transport connected to the SOCKS server
-     * @param proxy        resolved SOCKS route used to create the control transport
-     * @param timeout      read and write timeout policy for the SOCKS handshake
-     * @param cancellation cancellation scope governing the handshake
-     * @return UDP relay address advertised by the SOCKS server
-     * @throws ConnectionException if control-channel communication fails before datagram delivery
-     * @throws AuthorizedException if the SOCKS server selects an unsupported authentication method
-     * @throws ProtocolException   if the server returns an invalid or unsuccessful response
-     */
-    public Address udpAssociate(
-            final Connection connection,
-            final ProxyPlan proxy,
-            final Timeout timeout,
-            final Cancellation cancellation) {
-        try {
-            writeAll(
-                    connection.sink(),
-                    new Buffer().write(new byte[] { SOCKS_VERSION, 0x01, 0x00 }),
-                    timeout,
-                    cancellation);
-            final byte[] selection = readExact(connection.source(), 2, timeout, cancellation);
-            if (selection[0] != SOCKS_VERSION || selection[1] != 0x00) {
-                throw new AuthorizedException("SOCKS proxy requires an unsupported authentication method");
-            }
-            writeAll(
-                    connection.sink(),
-                    new Buffer()
-                            .write(new byte[] { SOCKS_VERSION, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }),
-                    timeout,
-                    cancellation);
-            final byte[] header = readExact(connection.source(), 4, timeout, cancellation);
-            if (header[0] != SOCKS_VERSION || header[1] != 0x00 || header[2] != 0x00) {
-                throw new ProtocolException("SOCKS5 UDP ASSOCIATE failed with reply " + (header[1] & 0xff));
-            }
-            final String host = switch (header[3]) {
-                case 0x01 -> addressText(readExact(connection.source(), 4, timeout, cancellation));
-                case 0x03 -> new String(readExact(
-                        connection.source(),
-                        readExact(connection.source(), 1, timeout, cancellation)[0] & 0xff,
-                        timeout,
-                        cancellation), Charset.UTF_8);
-                case 0x04 -> addressText(readExact(connection.source(), 16, timeout, cancellation));
-                default -> throw new ProtocolException("Unsupported SOCKS UDP relay address type");
-            };
-            final byte[] port = readExact(connection.source(), 2, timeout, cancellation);
-            return new Address(Protocol.UDP.name, host, ((port[0] & 0xff) << 8) | (port[1] & 0xff), Symbol.SLASH);
-        } catch (final ConnectionException e) {
-            throw e;
-        } catch (final SocketException e) {
-            throw routeFailure(proxy, Phase.ROUTE_NEGOTIATION, "Unable to negotiate SOCKS UDP relay", e);
-        }
-    }
-
-    /**
      * Creates a structured, pre-delivery intermediary failure for ordered route selection.
      *
      * @param proxy   resolved route that failed
@@ -439,6 +341,104 @@ public class StreamProxyConnector {
             return InetAddress.getByAddress(bytes).getHostAddress();
         } catch (final UnknownHostException e) {
             throw new ProtocolException("Invalid SOCKS relay address", e);
+        }
+    }
+
+    /**
+     * Establishes the selected proxy route over an already connected proxy transport.
+     * <p>
+     * Direct routes require no handshake. HTTP routes use CONNECT and SOCKS routes use SOCKS5 CONNECT. Transport I/O
+     * failures are converted to structured route failures before any application data is sent; authentication and
+     * protocol failures retain their dedicated exception types.
+     *
+     * @param connection   established transport connected to the selected proxy
+     * @param target       logical destination requested by the application protocol
+     * @param proxy        resolved direct, HTTP, or SOCKS route plan
+     * @param timeout      connect, read, and write timeout policy for the handshake
+     * @param cancellation cancellation scope governing the handshake
+     * @throws ConnectionException if intermediary communication fails before application-data delivery
+     * @throws AuthorizedException if the intermediary requires or rejects authentication
+     * @throws ProtocolException   if the resolved plan or intermediary response violates its protocol
+     */
+    public void connect(
+            final Connection connection,
+            final Address target,
+            final ProxyPlan proxy,
+            final Timeout timeout,
+            final Cancellation cancellation) {
+        try {
+            if (proxy.isDirect()) {
+                return;
+            }
+            if (proxy.isHttp()) {
+                httpConnect(connection, target, proxy.authorization(), timeout, cancellation);
+                return;
+            }
+            if (proxy.isSocks()) {
+                socksConnect(connection, target, timeout, cancellation);
+                return;
+            }
+            throw new ProtocolException("Stream connector requires a resolved proxy plan");
+        } catch (final ConnectionException e) {
+            throw e;
+        } catch (final SocketException e) {
+            throw routeFailure(proxy, Phase.ROUTE_NEGOTIATION, "Unable to negotiate stream proxy route", e);
+        }
+    }
+
+    /**
+     * Opens a SOCKS5 UDP ASSOCIATE control session and returns its relay address.
+     *
+     * @param connection   established stream transport connected to the SOCKS server
+     * @param proxy        resolved SOCKS route used to create the control transport
+     * @param timeout      read and write timeout policy for the SOCKS handshake
+     * @param cancellation cancellation scope governing the handshake
+     * @return UDP relay address advertised by the SOCKS server
+     * @throws ConnectionException if control-channel communication fails before datagram delivery
+     * @throws AuthorizedException if the SOCKS server selects an unsupported authentication method
+     * @throws ProtocolException   if the server returns an invalid or unsuccessful response
+     */
+    public Address udpAssociate(
+            final Connection connection,
+            final ProxyPlan proxy,
+            final Timeout timeout,
+            final Cancellation cancellation) {
+        try {
+            writeAll(
+                    connection.sink(),
+                    new Buffer().write(new byte[] { SOCKS_VERSION, 0x01, 0x00 }),
+                    timeout,
+                    cancellation);
+            final byte[] selection = readExact(connection.source(), 2, timeout, cancellation);
+            if (selection[0] != SOCKS_VERSION || selection[1] != 0x00) {
+                throw new AuthorizedException("SOCKS proxy requires an unsupported authentication method");
+            }
+            writeAll(
+                    connection.sink(),
+                    new Buffer()
+                            .write(new byte[] { SOCKS_VERSION, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }),
+                    timeout,
+                    cancellation);
+            final byte[] header = readExact(connection.source(), 4, timeout, cancellation);
+            if (header[0] != SOCKS_VERSION || header[1] != 0x00 || header[2] != 0x00) {
+                throw new ProtocolException("SOCKS5 UDP ASSOCIATE failed with reply " + (header[1] & 0xff));
+            }
+            final String host = switch (header[3]) {
+                case 0x01 -> addressText(readExact(connection.source(), 4, timeout, cancellation));
+                case 0x03 -> new String(readExact(
+                        connection.source(),
+                        readExact(connection.source(), 1, timeout, cancellation)[0] & 0xff,
+                        timeout,
+                        cancellation), Charset.UTF_8);
+                case 0x04 -> addressText(readExact(connection.source(), 16, timeout, cancellation));
+                default -> throw new ProtocolException("Unsupported SOCKS UDP relay address type");
+            };
+            final byte[] port = readExact(connection.source(), 2, timeout, cancellation);
+            return new Address(Protocol.UDP.name, host, ((port[0] & 0xff) << 8) | (port[1] & 0xff), Symbol.SLASH);
+        } catch (final ConnectionException e) {
+            throw e;
+        } catch (final SocketException e) {
+            throw routeFailure(proxy, Phase.ROUTE_NEGOTIATION, "Unable to negotiate SOCKS UDP relay", e);
         }
     }
 

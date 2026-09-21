@@ -169,78 +169,6 @@ public class DnsSnapshot {
     }
 
     /**
-     * Returns the snapshot identifier.
-     *
-     * @return non-blank snapshot identifier
-     */
-    public String snapshotId() {
-        return snapshotId;
-    }
-
-    /**
-     * Returns the snapshot version.
-     *
-     * @return non-negative snapshot version
-     */
-    public long version() {
-        return version;
-    }
-
-    /**
-     * Returns the creation time.
-     *
-     * @return snapshot creation time
-     */
-    public Instant createdAt() {
-        return createdAt;
-    }
-
-    /**
-     * Returns the DNS views.
-     *
-     * @return immutable DNS views
-     */
-    public List<DnsView> views() {
-        return views;
-    }
-
-    /**
-     * Returns global upstream DNS servers.
-     *
-     * @return immutable upstream DNS servers
-     */
-    public List<DnsUpstream> upstreams() {
-        return upstreams;
-    }
-
-    /**
-     * Returns global policy rules.
-     *
-     * @return immutable policy rules
-     */
-    public List<DnsPolicyRule> policies() {
-        return policies;
-    }
-
-    /**
-     * Returns DNSSEC trust anchors.
-     *
-     * @return immutable trust anchors
-     */
-    public List<DnsTrustAnchor> dnssecTrustAnchors() {
-        return dnssecTrustAnchors;
-    }
-
-    /**
-     * Returns TSIG shared-secret keys.
-     *
-     * @return immutable TSIG keys
-     */
-    public List<DnsTsigKey> tsigKeys() {
-        return tsigKeys;
-    }
-
-    /**
      * Validates and copies snapshot views.
      *
      * @param views source views
@@ -356,6 +284,78 @@ public class DnsSnapshot {
                 throw new ValidateException("DNS snapshot contains inactive DNSSEC signing key");
             }
         }
+    }
+
+    /**
+     * Returns the snapshot identifier.
+     *
+     * @return non-blank snapshot identifier
+     */
+    public String snapshotId() {
+        return snapshotId;
+    }
+
+    /**
+     * Returns the snapshot version.
+     *
+     * @return non-negative snapshot version
+     */
+    public long version() {
+        return version;
+    }
+
+    /**
+     * Returns the creation time.
+     *
+     * @return snapshot creation time
+     */
+    public Instant createdAt() {
+        return createdAt;
+    }
+
+    /**
+     * Returns the DNS views.
+     *
+     * @return immutable DNS views
+     */
+    public List<DnsView> views() {
+        return views;
+    }
+
+    /**
+     * Returns global upstream DNS servers.
+     *
+     * @return immutable upstream DNS servers
+     */
+    public List<DnsUpstream> upstreams() {
+        return upstreams;
+    }
+
+    /**
+     * Returns global policy rules.
+     *
+     * @return immutable policy rules
+     */
+    public List<DnsPolicyRule> policies() {
+        return policies;
+    }
+
+    /**
+     * Returns DNSSEC trust anchors.
+     *
+     * @return immutable trust anchors
+     */
+    public List<DnsTrustAnchor> dnssecTrustAnchors() {
+        return dnssecTrustAnchors;
+    }
+
+    /**
+     * Returns TSIG shared-secret keys.
+     *
+     * @return immutable TSIG keys
+     */
+    public List<DnsTsigKey> tsigKeys() {
+        return tsigKeys;
     }
 
 }

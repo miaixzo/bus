@@ -455,6 +455,7 @@ public class PipelineApi extends AbstractApi implements Constants {
              */
 
             public String ref;
+
             /**
              * The variables value.
              */
@@ -1291,10 +1292,9 @@ public class PipelineApi extends AbstractApi implements Constants {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param pipelineId      the pipeline ID to get the list of bridges for
+     * @param scope           the scope value
      * @return a Stream containing the bridges for the specified project ID
      * @throws RelevantException if any exception occurs during execution
-     *
-     * @param scope the scope value
      */
     public Stream<Bridge> getBridgesStream(Object projectIdOrPath, long pipelineId, JobScope scope)
             throws RelevantException {

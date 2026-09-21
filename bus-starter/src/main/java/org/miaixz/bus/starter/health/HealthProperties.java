@@ -49,6 +49,7 @@ public class HealthProperties {
      * Whether the health integration is enabled.
      */
     private final boolean enabled;
+
     /**
      * Health detail identifiers exposed by the Bus health indicator.
      */

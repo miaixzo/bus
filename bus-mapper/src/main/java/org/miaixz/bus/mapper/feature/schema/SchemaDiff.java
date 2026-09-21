@@ -25,11 +25,7 @@ import lombok.experimental.Accessors;
 
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.Charter.Risk;
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
-import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
-import org.miaixz.bus.mapper.parsing.IndexMeta;
-import org.miaixz.bus.mapper.parsing.PrimaryKeyMeta;
-import org.miaixz.bus.mapper.parsing.TableMeta;
+import org.miaixz.bus.mapper.parsing.*;
 
 /**
  * Schema difference between entity metadata and a database snapshot.

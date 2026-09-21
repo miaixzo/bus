@@ -61,6 +61,22 @@ public class DubboScannerRegistrar implements ImportBeanDefinitionRegistrar, Env
     }
 
     /**
+     * Returns whether an application or another Dubbo integration already registered the service processor.
+     *
+     * @param registry current Bean definition registry
+     * @return {@code true} when a Dubbo service annotation processor is already registered
+     */
+    private static boolean containsServiceProcessor(BeanDefinitionRegistry registry) {
+        String processorName = ServiceAnnotationPostProcessor.class.getName();
+        for (String beanName : registry.getBeanDefinitionNames()) {
+            if (processorName.equals(registry.getBeanDefinition(beanName).getBeanClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Initializes Dubbo infrastructure and registers its service annotation processor.
      *
      * @param importingClassMetadata metadata of the importing Dubbo configuration
@@ -126,22 +142,6 @@ public class DubboScannerRegistrar implements ImportBeanDefinitionRegistrar, Env
             basePackages.add(applicationBasePackage);
         }
         return basePackages;
-    }
-
-    /**
-     * Returns whether an application or another Dubbo integration already registered the service processor.
-     *
-     * @param registry current Bean definition registry
-     * @return {@code true} when a Dubbo service annotation processor is already registered
-     */
-    private static boolean containsServiceProcessor(BeanDefinitionRegistry registry) {
-        String processorName = ServiceAnnotationPostProcessor.class.getName();
-        for (String beanName : registry.getBeanDefinitionNames()) {
-            if (processorName.equals(registry.getBeanDefinition(beanName).getBeanClassName())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

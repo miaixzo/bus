@@ -35,9 +35,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
  */
 public class ProjectAccessToken implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852270950370L;
 
@@ -45,10 +42,12 @@ public class ProjectAccessToken implements Serializable {
      * The user id value.
      */
     private Long userId;
+
     /**
      * The scopes value.
      */
     private List<Constants.ProjectAccessTokenScope> scopes;
+
     /**
      * The name value.
      */
@@ -64,26 +63,32 @@ public class ProjectAccessToken implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The active value.
      */
     private Boolean active;
+
     /**
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The revoked value.
      */
     private Boolean revoked;
+
     /**
      * The access level value.
      */
     private Long accessLevel;
+
     /**
      * The last used at value.
      */
     private Date lastUsedAt;
+
     /**
      * The token value.
      */

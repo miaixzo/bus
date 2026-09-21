@@ -111,6 +111,15 @@ public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, in
     }
 
     /**
+     * Creates a policy builder.
+     *
+     * @return new builder initialized with the default policy values
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
      * Adds this policy to an immutable option snapshot.
      *
      * @param options option source
@@ -119,15 +128,6 @@ public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, in
     @Override
     public Options from(final Options options) {
         return Assert.notNull(options, () -> new ValidateException("Options must not be null")).with(OPTION, this);
-    }
-
-    /**
-     * Creates a policy builder.
-     *
-     * @return new builder initialized with the default policy values
-     */
-    public static Builder builder() {
-        return new Builder();
     }
 
     /**
@@ -248,6 +248,28 @@ public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, in
         }
 
         /**
+         * Validates durations.
+         *
+         * @param value duration to validate
+         * @param name  logical duration name used in validation messages
+         * @return the same non-null, non-negative duration after nanosecond-range validation
+         * @throws ValidateException if the duration is null, negative, or outside signed nanosecond range
+         */
+        private static Duration validateDuration(final Duration value, final String name) {
+            final Duration current = Assert
+                    .notNull(value, () -> new ValidateException(name + " must be non-null and non-negative"));
+            Assert.isFalse(
+                    current.isNegative(),
+                    () -> new ValidateException(name + " must be non-null and non-negative"));
+            try {
+                current.toNanos();
+            } catch (final ArithmeticException e) {
+                throw new ValidateException(name + " must fit in signed nanoseconds");
+            }
+            return current;
+        }
+
+        /**
          * Sets maximum idle connections.
          *
          * @param value non-negative maximum idle connection count
@@ -338,28 +360,6 @@ public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, in
                     () -> new ValidateException("Max idle must not exceed max connections"));
             return new PoolPolicy(maxIdle, keepAlive, maxConnections, maxConnectionsPerDestination, acquireTimeout,
                     staleCheckAfter);
-        }
-
-        /**
-         * Validates durations.
-         *
-         * @param value duration to validate
-         * @param name  logical duration name used in validation messages
-         * @return the same non-null, non-negative duration after nanosecond-range validation
-         * @throws ValidateException if the duration is null, negative, or outside signed nanosecond range
-         */
-        private static Duration validateDuration(final Duration value, final String name) {
-            final Duration current = Assert
-                    .notNull(value, () -> new ValidateException(name + " must be non-null and non-negative"));
-            Assert.isFalse(
-                    current.isNegative(),
-                    () -> new ValidateException(name + " must be non-null and non-negative"));
-            try {
-                current.toNanos();
-            } catch (final ArithmeticException e) {
-                throw new ValidateException(name + " must fit in signed nanoseconds");
-            }
-            return current;
         }
 
     }

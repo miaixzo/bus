@@ -31,9 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Identity implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852256910511L;
 
@@ -41,10 +38,12 @@ public class Identity implements Serializable {
      * The provider value.
      */
     private String provider;
+
     /**
      * The extern uid value.
      */
     private String externUid;
+
     /**
      * The saml provider id value.
      */

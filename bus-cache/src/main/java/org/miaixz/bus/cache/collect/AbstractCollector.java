@@ -74,11 +74,6 @@ public abstract class AbstractCollector implements Collector, AutoCloseable {
     private final Lock lock = new ReentrantLock();
 
     /**
-     * A flag to indicate whether the collector service has been shut down.
-     */
-    private volatile boolean isShutdown = false;
-
-    /**
      * A queue for pending hit count increments.
      */
     private final BlockingQueue<CachePair<String, Integer>> hitQueue = new LinkedTransferQueue<>();
@@ -97,6 +92,11 @@ public abstract class AbstractCollector implements Collector, AutoCloseable {
      * A collection of SQL statements loaded from a configuration file.
      */
     private final Properties sqls;
+
+    /**
+     * A flag to indicate whether the collector service has been shut down.
+     */
+    private volatile boolean isShutdown = false;
 
     /**
      * Initializes the collector with database connection details.

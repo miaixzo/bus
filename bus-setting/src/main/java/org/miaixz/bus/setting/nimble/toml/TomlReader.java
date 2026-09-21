@@ -549,8 +549,8 @@ public class TomlReader {
         }
         final String text;
         if (data.charAt(pos) == Symbol.C_CR && pos + 1 < data.length() && data.charAt(pos + 1) == Symbol.C_LF) { // Starts
-                                                                                                                 // with
-                                                                                                                 // "\r\n"
+            // with
+            // "\r\n"
             text = data.substring(pos + 2, index);
             line++;
         } else if (data.charAt(pos) == Symbol.C_LF) { // Starts with '\n'

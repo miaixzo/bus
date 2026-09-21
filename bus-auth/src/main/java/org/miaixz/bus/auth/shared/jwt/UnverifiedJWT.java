@@ -42,10 +42,12 @@ public final class UnverifiedJWT {
      * Sensitive original compact representation used for later verification.
      */
     private final String compact;
+
     /**
      * Untrusted parsed protected JOSE Header.
      */
     private final JoseHeader header;
+
     /**
      * Untrusted parsed JWT Claims Set.
      */

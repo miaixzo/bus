@@ -88,6 +88,18 @@ final class Http2FrameWriter implements AutoCloseable {
     }
 
     /**
+     * Writes an unsigned 24-bit frame length.
+     *
+     * @param target output batch receiving three big-endian bytes
+     * @param value  non-negative frame length that fits in 24 bits
+     */
+    private static void writeMedium(final Buffer target, final int value) {
+        target.writeByte(value >>> 16);
+        target.writeByte(value >>> 8);
+        target.writeByte(value);
+    }
+
+    /**
      * Updates the peer-advertised maximum frame payload.
      *
      * @param value peer-advertised payload limit from 16,384 through 16,777,215 bytes
@@ -199,18 +211,6 @@ final class Http2FrameWriter implements AutoCloseable {
         if (flush) {
             sink.flush();
         }
-    }
-
-    /**
-     * Writes an unsigned 24-bit frame length.
-     *
-     * @param target output batch receiving three big-endian bytes
-     * @param value  non-negative frame length that fits in 24 bits
-     */
-    private static void writeMedium(final Buffer target, final int value) {
-        target.writeByte(value >>> 16);
-        target.writeByte(value >>> 8);
-        target.writeByte(value);
     }
 
     /**

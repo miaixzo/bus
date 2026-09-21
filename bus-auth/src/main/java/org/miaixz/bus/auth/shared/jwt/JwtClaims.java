@@ -51,26 +51,32 @@ public class JwtClaims {
      * Registered issuer claim name.
      */
     public static final String ISSUER = "iss";
+
     /**
      * Registered subject claim name.
      */
     public static final String SUBJECT = "sub";
+
     /**
      * Registered audience claim name.
      */
     public static final String AUDIENCE = "aud";
+
     /**
      * Registered expiration time claim name.
      */
     public static final String EXPIRATION = "exp";
+
     /**
      * Registered not-before claim name.
      */
     public static final String NOT_BEFORE = "nbf";
+
     /**
      * Registered issued-at claim name.
      */
     public static final String ISSUED_AT = "iat";
+
     /**
      * Registered JWT identifier claim name.
      */
@@ -80,6 +86,7 @@ public class JwtClaims {
      * Explicit RFC 7519 registered claim values.
      */
     private final Registered registered;
+
     /**
      * Private or public extension claims not registered by RFC 7519.
      */

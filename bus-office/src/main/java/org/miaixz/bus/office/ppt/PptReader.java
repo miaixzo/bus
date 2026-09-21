@@ -19,7 +19,10 @@
 */
 package org.miaixz.bus.office.ppt;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +73,24 @@ public class PptReader implements Closeable {
      */
     public PptReader(final XMLSlideShow ppt) {
         this.ppt = ppt;
+    }
+
+    /**
+     * Reads all text content from a given slide.
+     *
+     * @param slide The {@link XSLFSlide} to read text from.
+     * @return The text content of the slide.
+     */
+    public static String readSlideText(final XSLFSlide slide) {
+        final StringBuilder sb = new StringBuilder();
+        for (final XSLFShape shape : slide.getShapes()) {
+            if (shape instanceof XSLFTextShape textShape) {
+                for (final XSLFTextParagraph paragraph : textShape.getTextParagraphs()) {
+                    sb.append(paragraph.getText()).append(Symbol.C_LF);
+                }
+            }
+        }
+        return sb.toString().trim();
     }
 
     /**
@@ -153,24 +174,6 @@ public class PptReader implements Closeable {
      */
     public String readText(final int index) {
         return readSlideText(getSlide(index));
-    }
-
-    /**
-     * Reads all text content from a given slide.
-     *
-     * @param slide The {@link XSLFSlide} to read text from.
-     * @return The text content of the slide.
-     */
-    public static String readSlideText(final XSLFSlide slide) {
-        final StringBuilder sb = new StringBuilder();
-        for (final XSLFShape shape : slide.getShapes()) {
-            if (shape instanceof XSLFTextShape textShape) {
-                for (final XSLFTextParagraph paragraph : textShape.getTextParagraphs()) {
-                    sb.append(paragraph.getText()).append(Symbol.C_LF);
-                }
-            }
-        }
-        return sb.toString().trim();
     }
 
     /**

@@ -91,6 +91,19 @@ public class ConnectionRegistry implements AutoCloseable {
     }
 
     /**
+     * Validates required values.
+     *
+     * @param value reference to validate
+     * @param name  logical reference name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Registers an active connection.
      *
      * @param destination destination bucket under which the physical connection is registered
@@ -253,19 +266,6 @@ public class ConnectionRegistry implements AutoCloseable {
         if (failure != null) {
             throw failure;
         }
-    }
-
-    /**
-     * Validates required values.
-     *
-     * @param value reference to validate
-     * @param name  logical reference name included in the validation error
-     * @param <T>   reference type
-     * @return validated non-null reference
-     * @throws ValidateException if {@code value} is {@code null}
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**

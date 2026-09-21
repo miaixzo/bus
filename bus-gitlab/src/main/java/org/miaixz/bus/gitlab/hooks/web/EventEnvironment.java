@@ -32,10 +32,12 @@ public class EventEnvironment {
      * The name value.
      */
     private String name;
+
     /**
      * The action value.
      */
     private String action;
+
     /**
      * The deployment tier value.
      */

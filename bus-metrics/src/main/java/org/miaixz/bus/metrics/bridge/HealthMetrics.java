@@ -114,6 +114,51 @@ public class HealthMetrics {
     }
 
     /**
+     * Returns the delta between current and previous tick counts for the given tick type.
+     *
+     * @param curr current tick array
+     * @param prev previous tick array
+     * @param type the CPU tick type to compute delta for
+     * @return tick delta
+     */
+    private static long delta(long[] curr, long[] prev, CentralProcessor.TickType type) {
+        return curr[type.getIndex()] - prev[type.getIndex()];
+    }
+
+    /**
+     * Rounds a double value to 2 decimal places.
+     *
+     * @param v the value to round
+     * @return value rounded to 2 decimal places
+     */
+    private static double round2(double v) {
+        return Math.round(v * 100.0) / 100.0;
+    }
+
+    // ── Internals ─────────────────────────────────────────────────────────
+
+    /**
+     * Sums a network statistic (bytes or packets, sent or received) across all network interfaces.
+     *
+     * @param p       Bus Health collector
+     * @param sent    true for sent, false for received
+     * @param packets true for packet count, false for byte count
+     * @return total value across all interfaces
+     */
+    private static double networkStat(Collector p, boolean sent, boolean packets) {
+        List<NetworkIF> nets = p.getHardware().getNetworkIFs();
+        long sum = 0;
+        for (NetworkIF n : nets) {
+            if (packets) {
+                sum += sent ? n.getPacketsSent() : n.getPacketsRecv();
+            } else {
+                sum += sent ? n.getBytesSent() : n.getBytesRecv();
+            }
+        }
+        return (double) sum;
+    }
+
+    /**
      * Register all health-backed gauges and start the background refresh scheduler.
      */
     public void register() {
@@ -202,8 +247,6 @@ public class HealthMetrics {
                 refreshSeconds);
     }
 
-    // ── Internals ─────────────────────────────────────────────────────────
-
     /**
      * Refreshes CPU tick-based usage metrics by computing deltas from the previous tick snapshot.
      */
@@ -240,49 +283,6 @@ public class HealthMetrics {
                     "Health CPU metrics refresh failed: exception={}",
                     e.getClass().getSimpleName());
         }
-    }
-
-    /**
-     * Returns the delta between current and previous tick counts for the given tick type.
-     *
-     * @param curr current tick array
-     * @param prev previous tick array
-     * @param type the CPU tick type to compute delta for
-     * @return tick delta
-     */
-    private static long delta(long[] curr, long[] prev, CentralProcessor.TickType type) {
-        return curr[type.getIndex()] - prev[type.getIndex()];
-    }
-
-    /**
-     * Rounds a double value to 2 decimal places.
-     *
-     * @param v the value to round
-     * @return value rounded to 2 decimal places
-     */
-    private static double round2(double v) {
-        return Math.round(v * 100.0) / 100.0;
-    }
-
-    /**
-     * Sums a network statistic (bytes or packets, sent or received) across all network interfaces.
-     *
-     * @param p       Bus Health collector
-     * @param sent    true for sent, false for received
-     * @param packets true for packet count, false for byte count
-     * @return total value across all interfaces
-     */
-    private static double networkStat(Collector p, boolean sent, boolean packets) {
-        List<NetworkIF> nets = p.getHardware().getNetworkIFs();
-        long sum = 0;
-        for (NetworkIF n : nets) {
-            if (packets) {
-                sum += sent ? n.getPacketsSent() : n.getPacketsRecv();
-            } else {
-                sum += sent ? n.getBytesSent() : n.getBytesRecv();
-            }
-        }
-        return (double) sum;
     }
 
     /**

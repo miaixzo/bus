@@ -8,7 +8,8 @@
 
 ## 📖 Project Introduction
 
-**Bus OpenCV** provides a simplified Java interface to OpenCV (Open Source Computer Vision Library), making it easy to perform computer vision tasks, image processing, and video analysis in your Java applications.
+**Bus OpenCV** provides a simplified Java interface to OpenCV (Open Source Computer Vision Library), making it easy to
+perform computer vision tasks, image processing, and video analysis in your Java applications.
 
 -----
 
@@ -44,6 +45,7 @@
 ### Maven Dependency
 
 ```xml
+
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-opencv</artifactId>
@@ -128,11 +130,11 @@ public class FaceDetectionExample {
         // Draw rectangles around faces
         for (Rect rect : faces.toArray()) {
             Imgproc.rectangle(
-                image,
-                new Point(rect.x, rect.y),
-                new Point(rect.x + rect.width, rect.y + rect.height),
-                new Scalar(0, 255, 0),
-                2
+                    image,
+                    new Point(rect.x, rect.y),
+                    new Point(rect.x + rect.width, rect.y + rect.height),
+                    new Scalar(0, 255, 0),
+                    2
             );
         }
 
@@ -182,10 +184,10 @@ public class VideoExample {
 
         // Create video writer
         VideoWriter writer = new VideoWriter(
-            outputPath,
-            Videoio_fourcc('m', 'p', '4', 'v'),
-            fps,
-            new Size(width, height)
+                outputPath,
+                Videoio_fourcc('m', 'p', '4', 'v'),
+                fps,
+                new Size(width, height)
         );
 
         Mat frame = new Mat();
@@ -216,14 +218,14 @@ public class ObjectDetectionExample {
 
         // Detect specific objects using trained models
         List<DetectedObject> objects = ObjectDetector.detect(
-            image,
-            ObjectDetector.HAAR_CASCADE_FRONTALFACE
+                image,
+                ObjectDetector.HAAR_CASCADE_FRONTALFACE
         );
 
         // Process detected objects
         for (DetectedObject obj : objects) {
             System.out.println("Detected: " + obj.getLabel()
-                + " at " + obj.getBoundingBox());
+                    + " at " + obj.getBoundingBox());
         }
     }
 
@@ -264,16 +266,19 @@ extend:
 ```java
 // Always release Mat resources when done
 Mat image = Imgcodecs.imread("image.jpg");
-try {
-    // Process image
-} finally {
-    image.release();
+try{
+        // Process image
+        }finally{
+        image.
+
+release();
 }
 
 // Or use try-with-resources pattern
-try (Mat image = Imgcodecs.imread("image.jpg")) {
-    // Process image
-}
+        try(
+Mat image = Imgcodecs.imread("image.jpg")){
+        // Process image
+        }
 ```
 
 ### Parallel Processing
@@ -281,10 +286,16 @@ try (Mat image = Imgcodecs.imread("image.jpg")) {
 ```java
 // Process multiple images in parallel
 List<String> imagePaths = Arrays.asList("img1.jpg", "img2.jpg", "img3.jpg");
-imagePaths.parallelStream().forEach(path -> {
-    Mat image = Imgcodecs.imread(path);
-    // Process image
-    image.release();
+imagePaths.
+
+parallelStream().
+
+forEach(path ->{
+Mat image = Imgcodecs.imread(path);
+// Process image
+    image.
+
+release();
 });
 ```
 
@@ -293,9 +304,9 @@ imagePaths.parallelStream().forEach(path -> {
 ## 🔄 Version Compatibility
 
 | Bus OpenCV Version | OpenCV Version | JDK Version |
-|:---|:---|:---|
-| 8.x | 4.x | 17+ |
-| 7.x | 4.x | 11+ |
+|:-------------------|:---------------|:------------|
+| 8.x                | 4.x            | 17+         |
+| 7.x                | 4.x            | 11+         |
 
 -----
 
@@ -303,32 +314,32 @@ imagePaths.parallelStream().forEach(path -> {
 
 ### Image Operations
 
-| Operation | Method | Description |
-|:---|:---|:---|
-| Load Image | `Imgcodecs.imread()` | Load image from file |
-| Save Image | `Imgcodecs.imwrite()` | Save image to file |
-| Resize | `Imgproc.resize()` | Resize image |
-| Rotate | `Imgproc.rotate()` | Rotate image |
-| Crop | `Mat.submat()` | Crop image region |
-| Flip | `Imgproc.flip()` | Flip image |
+| Operation  | Method                | Description          |
+|:-----------|:----------------------|:---------------------|
+| Load Image | `Imgcodecs.imread()`  | Load image from file |
+| Save Image | `Imgcodecs.imwrite()` | Save image to file   |
+| Resize     | `Imgproc.resize()`    | Resize image         |
+| Rotate     | `Imgproc.rotate()`    | Rotate image         |
+| Crop       | `Mat.submat()`        | Crop image region    |
+| Flip       | `Imgproc.flip()`      | Flip image           |
 
 ### Filter Operations
 
-| Filter | Method | Description |
-|:---|:---|:---|
-| Gaussian Blur | `GaussianBlur()` | Blur image |
-| Median Blur | `medianBlur()` | Median filtering |
+| Filter           | Method              | Description               |
+|:-----------------|:--------------------|:--------------------------|
+| Gaussian Blur    | `GaussianBlur()`    | Blur image                |
+| Median Blur      | `medianBlur()`      | Median filtering          |
 | Bilateral Filter | `bilateralFilter()` | Edge-preserving smoothing |
-| Box Filter | `boxFilter()` | Box filtering |
+| Box Filter       | `boxFilter()`       | Box filtering             |
 
 ### Feature Detection
 
-| Feature | Method | Description |
-|:---|:---|:---|
-| Corners | `goodFeaturesToTrack()` | Detect corner features |
-| Edges | `Canny()` | Detect edges |
-| Contours | `findContours()` | Find contours |
-| Lines | `HoughLines()` | Detect lines |
+| Feature  | Method                  | Description            |
+|:---------|:------------------------|:-----------------------|
+| Corners  | `goodFeaturesToTrack()` | Detect corner features |
+| Edges    | `Canny()`               | Detect edges           |
+| Contours | `findContours()`        | Find contours          |
+| Lines    | `HoughLines()`          | Detect lines           |
 
 -----
 

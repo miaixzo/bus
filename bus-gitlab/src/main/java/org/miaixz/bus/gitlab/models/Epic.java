@@ -33,9 +33,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
  */
 public class Epic extends AbstractEpic<Epic> {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852252677578L;
 
@@ -43,6 +40,7 @@ public class Epic extends AbstractEpic<Epic> {
      * The start date is fixed value.
      */
     private Boolean startDateIsFixed;
+
     /**
      * The due date is fixed value.
      */

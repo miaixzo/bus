@@ -71,6 +71,27 @@ public class LimiterConfiguration {
     }
 
     /**
+     * Creates the {@link LimiterScanner} bean, which is a post-processor that scans for limiter annotations and creates
+     * proxies for the annotated beans.
+     *
+     * @param beanFactory current Bean factory containing the application base-package registration
+     * @return limiter scanner restricted to the application base packages
+     */
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    @ConditionalOnMissingBean(LimiterScanner.class)
+    public static LimiterScanner scanner(BeanFactory beanFactory) {
+        if (!AutoConfigurationPackages.has(beanFactory)) {
+            throw new IllegalStateException("Limiter requires Spring Boot application base-package registration");
+        }
+        List<String> basePackages = AutoConfigurationPackages.get(beanFactory);
+        if (basePackages.isEmpty()) {
+            throw new IllegalStateException("Limiter requires at least one Spring Boot application base package");
+        }
+        return new LimiterScanner(basePackages);
+    }
+
+    /**
      * Creates the {@link LimiterService} bean, which initializes the global limiter context.
      *
      * @return A new {@link LimiterService} instance.
@@ -130,27 +151,6 @@ public class LimiterConfiguration {
     @ConditionalOnMissingBean(MethodProvider.class)
     public MethodProvider methodProvider() {
         return new MethodProvider();
-    }
-
-    /**
-     * Creates the {@link LimiterScanner} bean, which is a post-processor that scans for limiter annotations and creates
-     * proxies for the annotated beans.
-     *
-     * @param beanFactory current Bean factory containing the application base-package registration
-     * @return limiter scanner restricted to the application base packages
-     */
-    @Bean
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    @ConditionalOnMissingBean(LimiterScanner.class)
-    public static LimiterScanner scanner(BeanFactory beanFactory) {
-        if (!AutoConfigurationPackages.has(beanFactory)) {
-            throw new IllegalStateException("Limiter requires Spring Boot application base-package registration");
-        }
-        List<String> basePackages = AutoConfigurationPackages.get(beanFactory);
-        if (basePackages.isEmpty()) {
-            throw new IllegalStateException("Limiter requires at least one Spring Boot application base package");
-        }
-        return new LimiterScanner(basePackages);
     }
 
 }

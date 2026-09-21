@@ -119,6 +119,43 @@ public final class ContextState {
     }
 
     /**
+     * Defensively copies an authenticated subject.
+     *
+     * @param value subject to copy
+     * @return detached subject, or {@code null} when absent
+     */
+    private static Authorize copy(Authorize value) {
+        return value == null ? null : ObjectKit.clone(value);
+    }
+
+    /**
+     * Validates the type and value of one optional credential.
+     *
+     * @param credential credential to validate
+     * @param expected   required credential type
+     * @param label      human-readable credential label for validation errors
+     * @throws IllegalArgumentException when the credential has an unexpected type or blank value
+     */
+    private static void validate(Http.Auth.Credential credential, EnumValue.Credential expected, String label) {
+        if (credential != null && credential.type() != expected) {
+            throw new IllegalArgumentException("Expected " + label + " credential");
+        }
+        if (credential != null && StringKit.isBlank(credential.value())) {
+            throw new IllegalArgumentException("Expected non-blank " + label + " credential value");
+        }
+    }
+
+    /**
+     * Trims a text value and converts blank text to {@code null}.
+     *
+     * @param value value to normalize
+     * @return normalized value, or {@code null} when absent or blank
+     */
+    private static String normalize(String value) {
+        return StringKit.isBlank(value) ? null : value.trim();
+    }
+
+    /**
      * Returns a copy containing the supplied authenticated subject.
      *
      * @param value authenticated subject
@@ -189,43 +226,6 @@ public final class ContextState {
      */
     public boolean isEmpty() {
         return requestId == null && authorize == null && tokenCredential == null && apiKeyCredential == null;
-    }
-
-    /**
-     * Defensively copies an authenticated subject.
-     *
-     * @param value subject to copy
-     * @return detached subject, or {@code null} when absent
-     */
-    private static Authorize copy(Authorize value) {
-        return value == null ? null : ObjectKit.clone(value);
-    }
-
-    /**
-     * Validates the type and value of one optional credential.
-     *
-     * @param credential credential to validate
-     * @param expected   required credential type
-     * @param label      human-readable credential label for validation errors
-     * @throws IllegalArgumentException when the credential has an unexpected type or blank value
-     */
-    private static void validate(Http.Auth.Credential credential, EnumValue.Credential expected, String label) {
-        if (credential != null && credential.type() != expected) {
-            throw new IllegalArgumentException("Expected " + label + " credential");
-        }
-        if (credential != null && StringKit.isBlank(credential.value())) {
-            throw new IllegalArgumentException("Expected non-blank " + label + " credential value");
-        }
-    }
-
-    /**
-     * Trims a text value and converts blank text to {@code null}.
-     *
-     * @param value value to normalize
-     * @return normalized value, or {@code null} when absent or blank
-     */
-    private static String normalize(String value) {
-        return StringKit.isBlank(value) ? null : value.trim();
     }
 
 }

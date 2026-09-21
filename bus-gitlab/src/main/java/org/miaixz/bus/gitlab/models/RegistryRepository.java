@@ -32,9 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class RegistryRepository implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852277202989L;
 
@@ -42,18 +39,22 @@ public class RegistryRepository implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The path value.
      */
     private String path;
+
     /**
      * The location value.
      */
     private String location;
+
     /**
      * The created at value.
      */

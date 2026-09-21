@@ -96,6 +96,123 @@ public class DnsValidationCache {
     }
 
     /**
+     * Builds a validation key.
+     *
+     * @param kind    validation kind
+     * @param owner   owner name
+     * @param type    record type code
+     * @param records records
+     * @return validation key
+     */
+    private static Key key(final Kind kind, final String owner, final int type, final List<DnsRecord> records) {
+        if (kind == null) {
+            throw new ValidateException("DNS validation cache kind must not be null");
+        }
+        return new Key(kind, DnsName.normalize(owner), type, recordsHash(records));
+    }
+
+    /**
+     * Returns all DNSSEC-relevant response records.
+     *
+     * @param decoded decoded response
+     * @return response records
+     */
+    private static List<DnsRecord> responseRecords(final DnsDecodedResponse decoded) {
+        if (decoded == null) {
+            throw new ValidateException("DNS validation cache response must not be null");
+        }
+        final ArrayList<DnsRecord> records = new ArrayList<>();
+        records.addAll(decoded.answers());
+        records.addAll(decoded.authorities());
+        records.addAll(decoded.additionals());
+        return List.copyOf(records);
+    }
+
+    /**
+     * Finds nearest RRSIG expiration when available.
+     *
+     * @param records response records
+     * @return nearest expiration, or {@code null}
+     */
+    private static Instant nearestRrsigExpiration(final List<DnsRecord> records) {
+        Instant nearest = null;
+        for (final DnsRecord record : records) {
+            if (record.typeCode() == DnsRecordType.RRSIG.code() && record.wireData().length >= 12) {
+                final long expiration = DnsCodec.readUnsignedInt(record.wireData(), 8);
+                final Instant instant = Instant.ofEpochSecond(expiration);
+                nearest = nearest == null || instant.isBefore(nearest) ? instant : nearest;
+            }
+        }
+        return nearest;
+    }
+
+    /**
+     * Computes a stable records hash.
+     *
+     * @param records records to hash
+     * @return records hash
+     */
+    private static int recordsHash(final List<DnsRecord> records) {
+        if (records == null || records.isEmpty()) {
+            throw new ValidateException("DNS validation cache records must not be empty");
+        }
+        final ArrayList<byte[]> canonicalRecords = new ArrayList<>();
+        for (final DnsRecord record : records) {
+            if (record == null) {
+                throw new ValidateException("DNS validation cache records must not contain null");
+            }
+            canonicalRecords.add(recordHashBytes(record));
+        }
+        canonicalRecords.sort(DnsCodec::compareUnsignedBytes);
+        final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        for (final byte[] canonicalRecord : canonicalRecords) {
+            bytes.writeBytes(canonicalRecord);
+        }
+        return Arrays.hashCode(bytes.toByteArray());
+    }
+
+    /**
+     * Builds canonical bytes for one record cache-key component.
+     *
+     * @param record record to encode
+     * @return canonical record bytes
+     */
+    private static byte[] recordHashBytes(final DnsRecord record) {
+        final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        bytes.writeBytes(record.name().getBytes(Charset.US_ASCII));
+        bytes.write((record.typeCode() >>> 8) & 0xff);
+        bytes.write(record.typeCode() & 0xff);
+        bytes.write((record.recordClass() >>> 8) & 0xff);
+        bytes.write(record.recordClass() & 0xff);
+        bytes.writeBytes(record.wireData());
+        return bytes.toByteArray();
+    }
+
+    /**
+     * Returns the smaller duration.
+     *
+     * @param first  first duration
+     * @param second second duration
+     * @return smaller duration
+     */
+    private static Duration min(final Duration first, final Duration second) {
+        return first.compareTo(second) <= 0 ? first : second;
+    }
+
+    /**
+     * Validates current instant.
+     *
+     * @param now current instant
+     * @return validated instant
+     */
+    private static Instant validateNow(final Instant now) {
+        if (now == null) {
+            throw new ValidateException("DNS validation cache clock instant must not be null");
+        }
+        return now;
+    }
+
+    /**
      * Returns whether a successful validation result exists.
      *
      * @param kind    validation kind
@@ -207,39 +324,6 @@ public class DnsValidationCache {
     }
 
     /**
-     * Builds a validation key.
-     *
-     * @param kind    validation kind
-     * @param owner   owner name
-     * @param type    record type code
-     * @param records records
-     * @return validation key
-     */
-    private static Key key(final Kind kind, final String owner, final int type, final List<DnsRecord> records) {
-        if (kind == null) {
-            throw new ValidateException("DNS validation cache kind must not be null");
-        }
-        return new Key(kind, DnsName.normalize(owner), type, recordsHash(records));
-    }
-
-    /**
-     * Returns all DNSSEC-relevant response records.
-     *
-     * @param decoded decoded response
-     * @return response records
-     */
-    private static List<DnsRecord> responseRecords(final DnsDecodedResponse decoded) {
-        if (decoded == null) {
-            throw new ValidateException("DNS validation cache response must not be null");
-        }
-        final ArrayList<DnsRecord> records = new ArrayList<>();
-        records.addAll(decoded.answers());
-        records.addAll(decoded.authorities());
-        records.addAll(decoded.additionals());
-        return List.copyOf(records);
-    }
-
-    /**
      * Computes an effective validation TTL.
      *
      * @param records         validated records
@@ -260,90 +344,6 @@ public class DnsValidationCache {
             ttl = min(ttl, Duration.between(now, rrsigExpiration));
         }
         return min(ttl, maxTtl);
-    }
-
-    /**
-     * Finds nearest RRSIG expiration when available.
-     *
-     * @param records response records
-     * @return nearest expiration, or {@code null}
-     */
-    private static Instant nearestRrsigExpiration(final List<DnsRecord> records) {
-        Instant nearest = null;
-        for (final DnsRecord record : records) {
-            if (record.typeCode() == DnsRecordType.RRSIG.code() && record.wireData().length >= 12) {
-                final long expiration = DnsCodec.readUnsignedInt(record.wireData(), 8);
-                final Instant instant = Instant.ofEpochSecond(expiration);
-                nearest = nearest == null || instant.isBefore(nearest) ? instant : nearest;
-            }
-        }
-        return nearest;
-    }
-
-    /**
-     * Computes a stable records hash.
-     *
-     * @param records records to hash
-     * @return records hash
-     */
-    private static int recordsHash(final List<DnsRecord> records) {
-        if (records == null || records.isEmpty()) {
-            throw new ValidateException("DNS validation cache records must not be empty");
-        }
-        final ArrayList<byte[]> canonicalRecords = new ArrayList<>();
-        for (final DnsRecord record : records) {
-            if (record == null) {
-                throw new ValidateException("DNS validation cache records must not contain null");
-            }
-            canonicalRecords.add(recordHashBytes(record));
-        }
-        canonicalRecords.sort(DnsCodec::compareUnsignedBytes);
-        final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        for (final byte[] canonicalRecord : canonicalRecords) {
-            bytes.writeBytes(canonicalRecord);
-        }
-        return Arrays.hashCode(bytes.toByteArray());
-    }
-
-    /**
-     * Builds canonical bytes for one record cache-key component.
-     *
-     * @param record record to encode
-     * @return canonical record bytes
-     */
-    private static byte[] recordHashBytes(final DnsRecord record) {
-        final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        bytes.writeBytes(record.name().getBytes(Charset.US_ASCII));
-        bytes.write((record.typeCode() >>> 8) & 0xff);
-        bytes.write(record.typeCode() & 0xff);
-        bytes.write((record.recordClass() >>> 8) & 0xff);
-        bytes.write(record.recordClass() & 0xff);
-        bytes.writeBytes(record.wireData());
-        return bytes.toByteArray();
-    }
-
-    /**
-     * Returns the smaller duration.
-     *
-     * @param first  first duration
-     * @param second second duration
-     * @return smaller duration
-     */
-    private static Duration min(final Duration first, final Duration second) {
-        return first.compareTo(second) <= 0 ? first : second;
-    }
-
-    /**
-     * Validates current instant.
-     *
-     * @param now current instant
-     * @return validated instant
-     */
-    private static Instant validateNow(final Instant now) {
-        if (now == null) {
-            throw new ValidateException("DNS validation cache clock instant must not be null");
-        }
-        return now;
     }
 
     /**

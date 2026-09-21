@@ -24,14 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import jakarta.servlet.AsyncEvent;
-import jakarta.servlet.AsyncListener;
-import jakarta.servlet.DispatcherType;
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
+import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -99,6 +92,51 @@ public final class ContextBindingFilter implements Filter {
     }
 
     /**
+     * Completes synchronous cleanup or registers cleanup for an active asynchronous lifecycle.
+     *
+     * @param request   current HTTP request
+     * @param completed whether the downstream chain returned normally
+     */
+    private static void finishDispatch(HttpServletRequest request, boolean completed) {
+        if (request.isAsyncStarted()) {
+            registerAsyncListener(request);
+            return;
+        }
+        DispatcherType type = request.getDispatcherType();
+        if (type == DispatcherType.ERROR || completed) {
+            cleanup(request);
+        }
+    }
+
+    /**
+     * Registers exactly one listener to retain state across and clean state after asynchronous dispatches.
+     *
+     * @param request request with an active asynchronous context
+     */
+    private static void registerAsyncListener(HttpServletRequest request) {
+        if (request.getAttribute(ASYNC_LISTENER_ATTRIBUTE) != null) {
+            return;
+        }
+        ContextAsyncListener listener = new ContextAsyncListener();
+        request.setAttribute(ASYNC_LISTENER_ATTRIBUTE, listener);
+        try {
+            request.getAsyncContext().addListener(listener);
+        } catch (IllegalStateException ignored) {
+            cleanup(request);
+        }
+    }
+
+    /**
+     * Removes context-lifecycle attributes from a completed request.
+     *
+     * @param request request whose context lifecycle has completed
+     */
+    private static void cleanup(ServletRequest request) {
+        request.removeAttribute(STATE_ATTRIBUTE);
+        request.removeAttribute(ASYNC_LISTENER_ATTRIBUTE);
+    }
+
+    /**
      * Resolves, installs, captures, and finally removes context state around one Servlet dispatch.
      *
      * @param request  incoming Servlet request
@@ -158,51 +196,6 @@ public final class ContextBindingFilter implements Filter {
         ContextState state = this.resolver.resolve(ID.objectId(), tokenCredential, apiKeyCredential);
         request.setAttribute(STATE_ATTRIBUTE, state);
         return state;
-    }
-
-    /**
-     * Completes synchronous cleanup or registers cleanup for an active asynchronous lifecycle.
-     *
-     * @param request   current HTTP request
-     * @param completed whether the downstream chain returned normally
-     */
-    private static void finishDispatch(HttpServletRequest request, boolean completed) {
-        if (request.isAsyncStarted()) {
-            registerAsyncListener(request);
-            return;
-        }
-        DispatcherType type = request.getDispatcherType();
-        if (type == DispatcherType.ERROR || completed) {
-            cleanup(request);
-        }
-    }
-
-    /**
-     * Registers exactly one listener to retain state across and clean state after asynchronous dispatches.
-     *
-     * @param request request with an active asynchronous context
-     */
-    private static void registerAsyncListener(HttpServletRequest request) {
-        if (request.getAttribute(ASYNC_LISTENER_ATTRIBUTE) != null) {
-            return;
-        }
-        ContextAsyncListener listener = new ContextAsyncListener();
-        request.setAttribute(ASYNC_LISTENER_ATTRIBUTE, listener);
-        try {
-            request.getAsyncContext().addListener(listener);
-        } catch (IllegalStateException ignored) {
-            cleanup(request);
-        }
-    }
-
-    /**
-     * Removes context-lifecycle attributes from a completed request.
-     *
-     * @param request request whose context lifecycle has completed
-     */
-    private static void cleanup(ServletRequest request) {
-        request.removeAttribute(STATE_ATTRIBUTE);
-        request.removeAttribute(ASYNC_LISTENER_ATTRIBUTE);
     }
 
     /**

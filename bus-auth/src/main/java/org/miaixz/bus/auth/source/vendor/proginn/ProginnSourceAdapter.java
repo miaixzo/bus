@@ -585,7 +585,6 @@ public class ProginnSourceAdapter implements VendorAdapter {
      * @param nickname optional display name
      * @param avatar   optional avatar URL
      * @param email    optional email address
-     *
      * @author Kimi Liu
      */
     private record ProfileWire(String uid, String nickname, String avatar, String email) {

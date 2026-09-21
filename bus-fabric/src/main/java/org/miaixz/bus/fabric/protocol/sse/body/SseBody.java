@@ -153,6 +153,50 @@ public class SseBody implements ResponseBody, ProgressBody {
     }
 
     /**
+     * Validates a required value.
+     *
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Appends event data as SSE data lines without regex allocation.
+     *
+     * @param builder destination receiving one {@code data:} field per logical line
+     * @param data    event data split on line-feed characters
+     */
+    private static void appendData(final StringBuilder builder, final String data) {
+        int start = Normal._0;
+        while (true) {
+            final int end = data.indexOf(Symbol.C_LF, start);
+            if (end < Normal._0) {
+                appendDataLine(builder, data, start, data.length());
+                return;
+            }
+            appendDataLine(builder, data, start, end);
+            start = end + Normal._1;
+        }
+    }
+
+    /**
+     * Appends one SSE data line.
+     *
+     * @param builder destination receiving the serialized data field
+     * @param data    complete event data string
+     * @param start   inclusive start index of the logical line
+     * @param end     exclusive end index of the logical line
+     */
+    private static void appendDataLine(final StringBuilder builder, final String data, final int start, final int end) {
+        builder.append(Builder.SSE_BODY_DATA_PREFIX).append(data, start, end).append(Symbol.LF);
+    }
+
+    /**
      * Opens this SSE body as an event stream reader.
      *
      * @return reader consuming a newly opened source from the current payload view
@@ -244,50 +288,6 @@ public class SseBody implements ResponseBody, ProgressBody {
             progress.stepRate(rate);
         }
         return this;
-    }
-
-    /**
-     * Validates a required value.
-     *
-     * @param value reference to validate
-     * @param name  logical field name included in the validation error
-     * @param <T>   reference type
-     * @return validated non-null reference
-     * @throws ValidateException if {@code value} is {@code null}
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-    }
-
-    /**
-     * Appends event data as SSE data lines without regex allocation.
-     *
-     * @param builder destination receiving one {@code data:} field per logical line
-     * @param data    event data split on line-feed characters
-     */
-    private static void appendData(final StringBuilder builder, final String data) {
-        int start = Normal._0;
-        while (true) {
-            final int end = data.indexOf(Symbol.C_LF, start);
-            if (end < Normal._0) {
-                appendDataLine(builder, data, start, data.length());
-                return;
-            }
-            appendDataLine(builder, data, start, end);
-            start = end + Normal._1;
-        }
-    }
-
-    /**
-     * Appends one SSE data line.
-     *
-     * @param builder destination receiving the serialized data field
-     * @param data    complete event data string
-     * @param start   inclusive start index of the logical line
-     * @param end     exclusive end index of the logical line
-     */
-    private static void appendDataLine(final StringBuilder builder, final String data, final int start, final int end) {
-        builder.append(Builder.SSE_BODY_DATA_PREFIX).append(data, start, end).append(Symbol.LF);
     }
 
 }

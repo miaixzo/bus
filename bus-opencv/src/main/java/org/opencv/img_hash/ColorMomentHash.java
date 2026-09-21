@@ -20,9 +20,10 @@
 package org.opencv.img_hash;
 
 // C++: class ColorMomentHash
+
 /**
  * Image hash based on color moments.
- *
+ * <p>
  * See CITE: tang2012perceptual for details.
  */
 public class ColorMomentHash extends ImgHashBase {

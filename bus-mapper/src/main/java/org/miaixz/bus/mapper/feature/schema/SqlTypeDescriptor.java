@@ -89,6 +89,50 @@ public class SqlTypeDescriptor {
     }
 
     /**
+     * Tests whether a SQL type supports a length parameter.
+     *
+     * @param type the normalized SQL type name
+     * @return {@code true} when length is supported
+     */
+    public static boolean supportsLength(String type) {
+        String normalized = normalizeTypeName(type);
+        return normalized.contains("CHAR") || "VARCHAR".equals(normalized) || "CHAR".equals(normalized);
+    }
+
+    /**
+     * Tests whether a SQL type supports precision and scale parameters.
+     *
+     * @param type the normalized SQL type name
+     * @return {@code true} when precision is supported
+     */
+    public static boolean supportsPrecision(String type) {
+        String normalized = normalizeTypeName(type);
+        return normalized.contains("DECIMAL") || normalized.contains("NUMERIC");
+    }
+
+    /**
+     * Normalizes database-specific type aliases.
+     *
+     * @param value the source SQL type name
+     * @return the normalized SQL type name
+     */
+    public static String normalizeTypeName(String value) {
+        if (value == null || value.isBlank()) {
+            return Normal.EMPTY;
+        }
+        String type = value.trim().toUpperCase(Locale.ROOT);
+        return switch (type) {
+            case "INT4" -> "INTEGER";
+            case "INT8" -> "BIGINT";
+            case "BOOL" -> "BOOLEAN";
+            case "CHARACTER VARYING", "VARCHAR2" -> "VARCHAR";
+            case "CHARACTER" -> "CHAR";
+            case "DOUBLE PRECISION" -> "DOUBLE";
+            default -> type;
+        };
+    }
+
+    /**
      * Builds the normalized SQL type definition.
      *
      * @return the SQL type definition
@@ -134,50 +178,6 @@ public class SqlTypeDescriptor {
         }
         return Objects.equals(length, other.length) && Objects.equals(precision, other.precision)
                 && Objects.equals(scale, other.scale);
-    }
-
-    /**
-     * Tests whether a SQL type supports a length parameter.
-     *
-     * @param type the normalized SQL type name
-     * @return {@code true} when length is supported
-     */
-    public static boolean supportsLength(String type) {
-        String normalized = normalizeTypeName(type);
-        return normalized.contains("CHAR") || "VARCHAR".equals(normalized) || "CHAR".equals(normalized);
-    }
-
-    /**
-     * Tests whether a SQL type supports precision and scale parameters.
-     *
-     * @param type the normalized SQL type name
-     * @return {@code true} when precision is supported
-     */
-    public static boolean supportsPrecision(String type) {
-        String normalized = normalizeTypeName(type);
-        return normalized.contains("DECIMAL") || normalized.contains("NUMERIC");
-    }
-
-    /**
-     * Normalizes database-specific type aliases.
-     *
-     * @param value the source SQL type name
-     * @return the normalized SQL type name
-     */
-    public static String normalizeTypeName(String value) {
-        if (value == null || value.isBlank()) {
-            return Normal.EMPTY;
-        }
-        String type = value.trim().toUpperCase(Locale.ROOT);
-        return switch (type) {
-            case "INT4" -> "INTEGER";
-            case "INT8" -> "BIGINT";
-            case "BOOL" -> "BOOLEAN";
-            case "CHARACTER VARYING", "VARCHAR2" -> "VARCHAR";
-            case "CHARACTER" -> "CHAR";
-            case "DOUBLE PRECISION" -> "DOUBLE";
-            default -> type;
-        };
     }
 
 }

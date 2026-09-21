@@ -21,11 +21,7 @@ package org.opencv.imgcodecs;
 
 import java.util.List;
 
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
-import org.opencv.core.MatOfDouble;
-import org.opencv.core.MatOfInt;
-import org.opencv.core.Range;
+import org.opencv.core.*;
 import org.opencv.utils.Converters;
 
 // C++: class Imgcodecs
@@ -118,15 +114,16 @@ public class Imgcodecs {
             IMWRITE_PAM_FORMAT_GRAYSCALE = 2, IMWRITE_PAM_FORMAT_GRAYSCALE_ALPHA = 3, IMWRITE_PAM_FORMAT_RGB = 4,
             IMWRITE_PAM_FORMAT_RGB_ALPHA = 5;
 
-    // C++: enum ImwritePNGFilterFlags (cv.ImwritePNGFilterFlags)
+    // C++: enum ImwritePNGFlags (cv.ImwritePNGFlags)
+    public static final int IMWRITE_PNG_STRATEGY_DEFAULT = 0, IMWRITE_PNG_STRATEGY_FILTERED = 1,
+            IMWRITE_PNG_STRATEGY_HUFFMAN_ONLY = 2, IMWRITE_PNG_STRATEGY_RLE = 3, IMWRITE_PNG_STRATEGY_FIXED = 4; // C++:
+                                                                                                                 // enum
+                                                                                                                 // ImwritePNGFilterFlags
+                                                                                                                 // (cv.ImwritePNGFilterFlags)
     public static final int IMWRITE_PNG_FILTER_NONE = 8, IMWRITE_PNG_FILTER_SUB = 16, IMWRITE_PNG_FILTER_UP = 32,
             IMWRITE_PNG_FILTER_AVG = 64, IMWRITE_PNG_FILTER_PAETH = 128,
             IMWRITE_PNG_FAST_FILTERS = (IMWRITE_PNG_FILTER_NONE | IMWRITE_PNG_FILTER_SUB | IMWRITE_PNG_FILTER_UP),
             IMWRITE_PNG_ALL_FILTERS = (IMWRITE_PNG_FAST_FILTERS | IMWRITE_PNG_FILTER_AVG | IMWRITE_PNG_FILTER_PAETH);
-
-    // C++: enum ImwritePNGFlags (cv.ImwritePNGFlags)
-    public static final int IMWRITE_PNG_STRATEGY_DEFAULT = 0, IMWRITE_PNG_STRATEGY_FILTERED = 1,
-            IMWRITE_PNG_STRATEGY_HUFFMAN_ONLY = 2, IMWRITE_PNG_STRATEGY_RLE = 3, IMWRITE_PNG_STRATEGY_FIXED = 4;
 
     // C++: enum ImwriteTiffCompressionFlags (cv.ImwriteTiffCompressionFlags)
     public static final int IMWRITE_TIFF_COMPRESSION_NONE = 1, IMWRITE_TIFF_COMPRESSION_CCITTRLE = 2,
@@ -162,19 +159,15 @@ public class Imgcodecs {
     // C++: enum interleavemode (cv.interleavemode)
     public static final int ILV_NONE = 0, ILV_LINE = 1, ILV_SAMPLE = 2;
 
-    //
-    // C++: Mat cv::imread(String filename, int flags = IMREAD_UNCHANGED)
-    //
-
     /**
      * Loads an image from a file.
-     *
+     * <p>
      * imread
-     *
+     * <p>
      * The {@code imread} function loads an image from the specified file and returns OpenCV matrix. If the image cannot
      * be read (because of a missing file, improper permissions, or unsupported/invalid format), the function returns an
      * empty matrix.
-     *
+     * <p>
      * Currently, the following file formats are supported:
      *
      * <ul>
@@ -226,15 +219,19 @@ public class Imgcodecs {
         return new Mat(imread_0(filename, flags));
     }
 
+    //
+    // C++: Mat cv::imread(String filename, int flags = IMREAD_UNCHANGED)
+    //
+
     /**
      * Loads an image from a file.
-     *
+     * <p>
      * imread
-     *
+     * <p>
      * The {@code imread} function loads an image from the specified file and returns OpenCV matrix. If the image cannot
      * be read (because of a missing file, improper permissions, or unsupported/invalid format), the function returns an
      * empty matrix.
-     *
+     * <p>
      * Currently, the following file formats are supported:
      *
      * <ul>
@@ -285,14 +282,9 @@ public class Imgcodecs {
         return new Mat(imread_1(filename));
     }
 
-    //
-    // C++: Mat cv::dicomJpgFileRead(String filename, vector_double segposition, vector_double seglength, int dicomflags
-    // = 0, int flags = IMREAD_UNCHANGED)
-    //
-
     /**
      * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from file segments.
-     *
+     * <p>
      * The function dicomJpgRead loads a DICOM image from the specified file into Mat.
      *
      * @param filename    Name of file to be loaded.
@@ -315,9 +307,14 @@ public class Imgcodecs {
                 dicomJpgFileRead_0(filename, segposition_mat.nativeObj, seglength_mat.nativeObj, dicomflags, flags));
     }
 
+    //
+    // C++: Mat cv::dicomJpgFileRead(String filename, vector_double segposition, vector_double seglength, int dicomflags
+    // = 0, int flags = IMREAD_UNCHANGED)
+    //
+
     /**
      * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from file segments.
-     *
+     * <p>
      * The function dicomJpgRead loads a DICOM image from the specified file into Mat.
      *
      * @param filename    Name of file to be loaded.
@@ -339,7 +336,7 @@ public class Imgcodecs {
 
     /**
      * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from file segments.
-     *
+     * <p>
      * The function dicomJpgRead loads a DICOM image from the specified file into Mat.
      *
      * @param filename    Name of file to be loaded.
@@ -353,13 +350,9 @@ public class Imgcodecs {
         return new Mat(dicomJpgFileRead_2(filename, segposition_mat.nativeObj, seglength_mat.nativeObj));
     }
 
-    //
-    // C++: Mat cv::dicomJpgMatRead(Mat buf, int dicomflags = 0, int flags = IMREAD_UNCHANGED)
-    //
-
     /**
      * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from Mat.
-     *
+     * <p>
      * The function dicomJpgRead loads a DICOM image from a specified byte array into Mat.
      *
      * @param buf        the raw byte data of jpg image (1 raw, x column).
@@ -372,9 +365,13 @@ public class Imgcodecs {
         return new Mat(dicomJpgMatRead_0(buf.nativeObj, dicomflags, flags));
     }
 
+    //
+    // C++: Mat cv::dicomJpgMatRead(Mat buf, int dicomflags = 0, int flags = IMREAD_UNCHANGED)
+    //
+
     /**
      * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from Mat.
-     *
+     * <p>
      * The function dicomJpgRead loads a DICOM image from a specified byte array into Mat.
      *
      * @param buf        the raw byte data of jpg image (1 raw, x column).
@@ -388,7 +385,7 @@ public class Imgcodecs {
 
     /**
      * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from Mat.
-     *
+     * <p>
      * The function dicomJpgRead loads a DICOM image from a specified byte array into Mat.
      *
      * @param buf the raw byte data of jpg image (1 raw, x column).
@@ -398,14 +395,9 @@ public class Imgcodecs {
         return new Mat(dicomJpgMatRead_2(buf.nativeObj));
     }
 
-    //
-    // C++: Mat cv::dicomRawFileRead(String filename, vector_double segposition, vector_double seglength, vector_int
-    // dicomparams, String colormodel)
-    //
-
     /**
      * Loads a raw image (include RLE compressed image) from file segments.
-     *
+     * <p>
      * The function dicomRawRead loads a DICOM image from the specified file into Mat.
      *
      * @param filename    Name of file to be loaded.
@@ -433,12 +425,13 @@ public class Imgcodecs {
     }
 
     //
-    // C++: Mat cv::dicomRawMatRead(Mat buf, vector_int dicomParams, String colormodel)
+    // C++: Mat cv::dicomRawFileRead(String filename, vector_double segposition, vector_double seglength, vector_int
+    // dicomparams, String colormodel)
     //
 
     /**
      * Loads a raw image (include RLE compressed image) from Mat.
-     *
+     * <p>
      * The function dicomRawRead loads a DICOM image from a specified byte array into Mat.
      *
      * @param buf         the raw byte data of jpg image (1 raw, x column).
@@ -453,7 +446,7 @@ public class Imgcodecs {
     }
 
     //
-    // C++: Mat cv::dicomJpgWrite(Mat image, vector_int dicomParams, String colormodel)
+    // C++: Mat cv::dicomRawMatRead(Mat buf, vector_int dicomParams, String colormodel)
     //
 
     /**
@@ -470,13 +463,12 @@ public class Imgcodecs {
     }
 
     //
-    // C++: Mat cv::imreadWithMetadata(String filename, vector_int& metadataTypes, vector_Mat& metadata, int flags =
-    // IMREAD_UNCHANGED)
+    // C++: Mat cv::dicomJpgWrite(Mat image, vector_int dicomParams, String colormodel)
     //
 
     /**
      * Reads an image from a file along with associated metadata.
-     *
+     * <p>
      * This function behaves similarly to cv::imread(), loading an image from the specified file. In addition to the
      * image pixel data, it also attempts to extract any available metadata embedded in the file (such as EXIF, XMP,
      * etc.), depending on file format support.
@@ -499,9 +491,14 @@ public class Imgcodecs {
         return retVal;
     }
 
+    //
+    // C++: Mat cv::imreadWithMetadata(String filename, vector_int& metadataTypes, vector_Mat& metadata, int flags =
+    // IMREAD_UNCHANGED)
+    //
+
     /**
      * Reads an image from a file along with associated metadata.
-     *
+     * <p>
      * This function behaves similarly to cv::imread(), loading an image from the specified file. In addition to the
      * image pixel data, it also attempts to extract any available metadata embedded in the file (such as EXIF, XMP,
      * etc.), depending on file format support.
@@ -522,13 +519,9 @@ public class Imgcodecs {
         return retVal;
     }
 
-    //
-    // C++: bool cv::imreadmulti(String filename, vector_Mat& mats, int flags = IMREAD_ANYCOLOR)
-    //
-
     /**
      * Loads a multi-page image from a file.
-     *
+     * <p>
      * The function imreadmulti loads a multi-page image from the specified file into a vector of Mat objects.
      *
      * @param filename Name of file to be loaded.
@@ -544,9 +537,13 @@ public class Imgcodecs {
         return retVal;
     }
 
+    //
+    // C++: bool cv::imreadmulti(String filename, vector_Mat& mats, int flags = IMREAD_ANYCOLOR)
+    //
+
     /**
      * Loads a multi-page image from a file.
-     *
+     * <p>
      * The function imreadmulti loads a multi-page image from the specified file into a vector of Mat objects.
      *
      * @param filename Name of file to be loaded.
@@ -561,13 +558,9 @@ public class Imgcodecs {
         return retVal;
     }
 
-    //
-    // C++: bool cv::imreadmulti(String filename, vector_Mat& mats, int start, int count, int flags = IMREAD_ANYCOLOR)
-    //
-
     /**
      * Loads images of a multi-page image from a file.
-     *
+     * <p>
      * The function imreadmulti loads a specified range from a multi-page image from the specified file into a vector of
      * Mat objects.
      *
@@ -586,9 +579,13 @@ public class Imgcodecs {
         return retVal;
     }
 
+    //
+    // C++: bool cv::imreadmulti(String filename, vector_Mat& mats, int start, int count, int flags = IMREAD_ANYCOLOR)
+    //
+
     /**
      * Loads images of a multi-page image from a file.
-     *
+     * <p>
      * The function imreadmulti loads a specified range from a multi-page image from the specified file into a vector of
      * Mat objects.
      *
@@ -606,13 +603,9 @@ public class Imgcodecs {
         return retVal;
     }
 
-    //
-    // C++: bool cv::imreadanimation(String filename, Animation& animation, int start = 0, int count = INT16_MAX)
-    //
-
     /**
      * Loads frames from an animated image file into an Animation structure.
-     *
+     * <p>
      * The function imreadanimation loads frames from an animated image file (e.g., GIF, AVIF, APNG, WEBP) into the
      * provided Animation struct.
      *
@@ -627,9 +620,13 @@ public class Imgcodecs {
         return imreadanimation_0(filename, animation.getNativeObjAddr(), start, count);
     }
 
+    //
+    // C++: bool cv::imreadanimation(String filename, Animation& animation, int start = 0, int count = INT16_MAX)
+    //
+
     /**
      * Loads frames from an animated image file into an Animation structure.
-     *
+     * <p>
      * The function imreadanimation loads frames from an animated image file (e.g., GIF, AVIF, APNG, WEBP) into the
      * provided Animation struct.
      *
@@ -645,27 +642,22 @@ public class Imgcodecs {
 
     /**
      * Loads frames from an animated image file into an Animation structure.
-     *
+     * <p>
      * The function imreadanimation loads frames from an animated image file (e.g., GIF, AVIF, APNG, WEBP) into the
      * provided Animation struct.
      *
      * @param filename  A string containing the path to the file.
      * @param animation A reference to an Animation structure where the loaded frames will be stored. It should be
      *                  initialized before the function is called.
-     *
      * @return Returns true if the file was successfully loaded and frames were extracted; returns false otherwise.
      */
     public static boolean imreadanimation(String filename, Animation animation) {
         return imreadanimation_2(filename, animation.getNativeObjAddr());
     }
 
-    //
-    // C++: bool cv::imdecodeanimation(Mat buf, Animation& animation, int start = 0, int count = INT16_MAX)
-    //
-
     /**
      * Loads frames from an animated image buffer into an Animation structure.
-     *
+     * <p>
      * The function imdecodeanimation loads frames from an animated image buffer (e.g., GIF, AVIF, APNG, WEBP) into the
      * provided Animation struct.
      *
@@ -680,9 +672,13 @@ public class Imgcodecs {
         return imdecodeanimation_0(buf.nativeObj, animation.getNativeObjAddr(), start, count);
     }
 
+    //
+    // C++: bool cv::imdecodeanimation(Mat buf, Animation& animation, int start = 0, int count = INT16_MAX)
+    //
+
     /**
      * Loads frames from an animated image buffer into an Animation structure.
-     *
+     * <p>
      * The function imdecodeanimation loads frames from an animated image buffer (e.g., GIF, AVIF, APNG, WEBP) into the
      * provided Animation struct.
      *
@@ -698,27 +694,22 @@ public class Imgcodecs {
 
     /**
      * Loads frames from an animated image buffer into an Animation structure.
-     *
+     * <p>
      * The function imdecodeanimation loads frames from an animated image buffer (e.g., GIF, AVIF, APNG, WEBP) into the
      * provided Animation struct.
      *
      * @param buf       A reference to an InputArray containing the image buffer.
      * @param animation A reference to an Animation structure where the loaded frames will be stored. It should be
      *                  initialized before the function is called.
-     *
      * @return Returns true if the buffer was successfully loaded and frames were extracted; returns false otherwise.
      */
     public static boolean imdecodeanimation(Mat buf, Animation animation) {
         return imdecodeanimation_2(buf.nativeObj, animation.getNativeObjAddr());
     }
 
-    //
-    // C++: bool cv::imwriteanimation(String filename, Animation animation, vector_int params = std::vector<int>())
-    //
-
     /**
      * Saves an Animation to a specified file.
-     *
+     * <p>
      * The function imwriteanimation saves the provided Animation data to the specified file in an animated format.
      * Supported formats depend on the implementation and may include formats like GIF, AVIF, APNG, or WEBP.
      *
@@ -728,7 +719,6 @@ public class Imgcodecs {
      * @param params    Optional format-specific parameters encoded as pairs (paramId_1, paramValue_1, paramId_2,
      *                  paramValue_2, ...). These parameters are used to specify additional options for the encoding
      *                  process. Refer to {@code cv::ImwriteFlags} for details on possible parameters.
-     *
      * @return Returns true if the animation was successfully saved; returns false otherwise.
      */
     public static boolean imwriteanimation(String filename, Animation animation, MatOfInt params) {
@@ -736,9 +726,13 @@ public class Imgcodecs {
         return imwriteanimation_0(filename, animation.getNativeObjAddr(), params_mat.nativeObj);
     }
 
+    //
+    // C++: bool cv::imwriteanimation(String filename, Animation animation, vector_int params = std::vector<int>())
+    //
+
     /**
      * Saves an Animation to a specified file.
-     *
+     * <p>
      * The function imwriteanimation saves the provided Animation data to the specified file in an animated format.
      * Supported formats depend on the implementation and may include formats like GIF, AVIF, APNG, or WEBP.
      *
@@ -747,21 +741,15 @@ public class Imgcodecs {
      * @param animation A constant reference to an Animation struct containing the frames and metadata to be saved.
      *                  These parameters are used to specify additional options for the encoding process. Refer to
      *                  {@code cv::ImwriteFlags} for details on possible parameters.
-     *
      * @return Returns true if the animation was successfully saved; returns false otherwise.
      */
     public static boolean imwriteanimation(String filename, Animation animation) {
         return imwriteanimation_1(filename, animation.getNativeObjAddr());
     }
 
-    //
-    // C++: bool cv::imencodeanimation(String ext, Animation animation, vector_uchar& buf, vector_int params =
-    // std::vector<int>())
-    //
-
     /**
      * Encodes an Animation to a memory buffer.
-     *
+     * <p>
      * The function imencodeanimation encodes the provided Animation data into a memory buffer in an animated format.
      * Supported formats depend on the implementation and may include formats like GIF, AVIF, APNG, or WEBP.
      *
@@ -771,7 +759,6 @@ public class Imgcodecs {
      * @param params    Optional format-specific parameters encoded as pairs (paramId_1, paramValue_1, paramId_2,
      *                  paramValue_2, ...). These parameters are used to specify additional options for the encoding
      *                  process. Refer to {@code cv::ImwriteFlags} for details on possible parameters.
-     *
      * @return Returns true if the animation was successfully encoded; returns false otherwise.
      */
     public static boolean imencodeanimation(String ext, Animation animation, MatOfByte buf, MatOfInt params) {
@@ -780,9 +767,14 @@ public class Imgcodecs {
         return imencodeanimation_0(ext, animation.getNativeObjAddr(), buf_mat.nativeObj, params_mat.nativeObj);
     }
 
+    //
+    // C++: bool cv::imencodeanimation(String ext, Animation animation, vector_uchar& buf, vector_int params =
+    // std::vector<int>())
+    //
+
     /**
      * Encodes an Animation to a memory buffer.
-     *
+     * <p>
      * The function imencodeanimation encodes the provided Animation data into a memory buffer in an animated format.
      * Supported formats depend on the implementation and may include formats like GIF, AVIF, APNG, or WEBP.
      *
@@ -791,7 +783,6 @@ public class Imgcodecs {
      * @param buf       A reference to a vector of unsigned chars where the encoded data will be stored. paramValue_1,
      *                  paramId_2, paramValue_2, ...). These parameters are used to specify additional options for the
      *                  encoding process. Refer to {@code cv::ImwriteFlags} for details on possible parameters.
-     *
      * @return Returns true if the animation was successfully encoded; returns false otherwise.
      */
     public static boolean imencodeanimation(String ext, Animation animation, MatOfByte buf) {
@@ -799,13 +790,9 @@ public class Imgcodecs {
         return imencodeanimation_1(ext, animation.getNativeObjAddr(), buf_mat.nativeObj);
     }
 
-    //
-    // C++: size_t cv::imcount(String filename, int flags = IMREAD_ANYCOLOR)
-    //
-
     /**
      * Returns the number of images inside the given file
-     *
+     * <p>
      * The function imcount returns the number of pages in a multi-page image (e.g. TIFF), the number of frames in an
      * animation (e.g. AVIF), and 1 otherwise. If the image cannot be decoded, 0 is returned.
      *
@@ -819,9 +806,13 @@ public class Imgcodecs {
         return imcount_0(filename, flags);
     }
 
+    //
+    // C++: size_t cv::imcount(String filename, int flags = IMREAD_ANYCOLOR)
+    //
+
     /**
      * Returns the number of images inside the given file
-     *
+     * <p>
      * The function imcount returns the number of pages in a multi-page image (e.g. TIFF), the number of frames in an
      * animation (e.g. AVIF), and 1 otherwise. If the image cannot be decoded, 0 is returned.
      *
@@ -833,13 +824,9 @@ public class Imgcodecs {
         return imcount_1(filename);
     }
 
-    //
-    // C++: bool cv::imwrite(String filename, Mat img, vector_int params = std::vector<int>())
-    //
-
     /**
      * Saves an image to a specified file.
-     *
+     * <p>
      * The function imwrite saves the image to the specified file. The image format is chosen based on the filename
      * extension (see cv::imread for the list of extensions). In general, only 8-bit unsigned (CV_8U) single-channel or
      * 3-channel (with 'BGR' channel order) images can be saved using this function, with these exceptions:
@@ -902,14 +889,14 @@ public class Imgcodecs {
      * Fully transparent pixels should have an alpha value of 0, while fully opaque pixels should have an alpha value of
      * 255 (8-bit) / 1023 (10-bit) / 4095 (12-bit) (see the code sample below).</li>
      * </ul>
-     *
+     * <p>
      * If the image format is not supported, the image will be converted to 8-bit unsigned (CV_8U) and saved that way.
      * </li>
      * </ul>
-     *
+     * <p>
      * If the format, depth or channel order is different, use Mat::convertTo and cv::cvtColor to convert it before
      * saving. Or, use the universal FileStorage I/O functions to save the image to XML or YAML format.
-     *
+     * <p>
      * The sample below shows how to create a BGRA image, how to set custom compression parameters and save it to a PNG
      * file. It also demonstrates how to save multiple images in a TIFF file: INCLUDE: snippets/imgcodecs_imwrite.cpp
      *
@@ -924,9 +911,13 @@ public class Imgcodecs {
         return imwrite_0(filename, img.nativeObj, params_mat.nativeObj);
     }
 
+    //
+    // C++: bool cv::imwrite(String filename, Mat img, vector_int params = std::vector<int>())
+    //
+
     /**
      * Saves an image to a specified file.
-     *
+     * <p>
      * The function imwrite saves the image to the specified file. The image format is chosen based on the filename
      * extension (see cv::imread for the list of extensions). In general, only 8-bit unsigned (CV_8U) single-channel or
      * 3-channel (with 'BGR' channel order) images can be saved using this function, with these exceptions:
@@ -989,14 +980,14 @@ public class Imgcodecs {
      * Fully transparent pixels should have an alpha value of 0, while fully opaque pixels should have an alpha value of
      * 255 (8-bit) / 1023 (10-bit) / 4095 (12-bit) (see the code sample below).</li>
      * </ul>
-     *
+     * <p>
      * If the image format is not supported, the image will be converted to 8-bit unsigned (CV_8U) and saved that way.
      * </li>
      * </ul>
-     *
+     * <p>
      * If the format, depth or channel order is different, use Mat::convertTo and cv::cvtColor to convert it before
      * saving. Or, use the universal FileStorage I/O functions to save the image to XML or YAML format.
-     *
+     * <p>
      * The sample below shows how to create a BGRA image, how to set custom compression parameters and save it to a PNG
      * file. It also demonstrates how to save multiple images in a TIFF file: INCLUDE: snippets/imgcodecs_imwrite.cpp
      *
@@ -1008,14 +999,9 @@ public class Imgcodecs {
         return imwrite_1(filename, img.nativeObj);
     }
 
-    //
-    // C++: bool cv::imwriteWithMetadata(String filename, Mat img, vector_int metadataTypes, vector_Mat metadata,
-    // vector_int params = std::vector<int>())
-    //
-
     /**
      * Saves an image to a specified file with metadata
-     *
+     * <p>
      * The function imwriteWithMetadata saves the image to the specified file. It does the same thing as imwrite, but
      * additionally writes metadata if the corresponding format supports it.
      *
@@ -1044,9 +1030,14 @@ public class Imgcodecs {
                 params_mat.nativeObj);
     }
 
+    //
+    // C++: bool cv::imwriteWithMetadata(String filename, Mat img, vector_int metadataTypes, vector_Mat metadata,
+    // vector_int params = std::vector<int>())
+    //
+
     /**
      * Saves an image to a specified file with metadata
-     *
+     * <p>
      * The function imwriteWithMetadata saves the image to the specified file. It does the same thing as imwrite, but
      * additionally writes metadata if the corresponding format supports it.
      *
@@ -1062,31 +1053,27 @@ public class Imgcodecs {
         return imwriteWithMetadata_1(filename, img.nativeObj, metadataTypes_mat.nativeObj, metadata_mat.nativeObj);
     }
 
-    //
-    // C++: bool cv::imwritemulti(String filename, vector_Mat img, vector_int params = std::vector<int>())
-    //
-
     public static boolean imwritemulti(String filename, List<Mat> img, MatOfInt params) {
         Mat img_mat = Converters.vector_Mat_to_Mat(img);
         Mat params_mat = params;
         return imwritemulti_0(filename, img_mat.nativeObj, params_mat.nativeObj);
     }
 
+    //
+    // C++: bool cv::imwritemulti(String filename, vector_Mat img, vector_int params = std::vector<int>())
+    //
+
     public static boolean imwritemulti(String filename, List<Mat> img) {
         Mat img_mat = Converters.vector_Mat_to_Mat(img);
         return imwritemulti_1(filename, img_mat.nativeObj);
     }
 
-    //
-    // C++: Mat cv::imdecode(Mat buf, int flags)
-    //
-
     /**
      * Reads an image from a buffer in memory.
-     *
+     * <p>
      * The function imdecode reads an image from the specified buffer in the memory. If the buffer is too short or
      * contains invalid data, the function returns an empty matrix ( Mat::data==NULL ).
-     *
+     * <p>
      * See cv::imread for the list of supported formats and flags description.
      *
      * <b>Note:</b> In the case of color images, the decoded images will have the channels stored in <b>B G R</b> order.
@@ -1100,16 +1087,15 @@ public class Imgcodecs {
     }
 
     //
-    // C++: Mat cv::imdecodeWithMetadata(Mat buf, vector_int& metadataTypes, vector_Mat& metadata, int flags =
-    // IMREAD_ANYCOLOR)
+    // C++: Mat cv::imdecode(Mat buf, int flags)
     //
 
     /**
      * Reads an image from a memory buffer and extracts associated metadata.
-     *
+     * <p>
      * This function decodes an image from the specified memory buffer. If the buffer is too short or contains invalid
      * data, the function returns an empty matrix ( Mat::data==NULL ).
-     *
+     * <p>
      * See cv::imread for the list of supported formats and flags description.
      *
      * <b>Note:</b> In the case of color images, the decoded images will have the channels stored in <b>B G R</b> order.
@@ -1130,12 +1116,17 @@ public class Imgcodecs {
         return retVal;
     }
 
+    //
+    // C++: Mat cv::imdecodeWithMetadata(Mat buf, vector_int& metadataTypes, vector_Mat& metadata, int flags =
+    // IMREAD_ANYCOLOR)
+    //
+
     /**
      * Reads an image from a memory buffer and extracts associated metadata.
-     *
+     * <p>
      * This function decodes an image from the specified memory buffer. If the buffer is too short or contains invalid
      * data, the function returns an empty matrix ( Mat::data==NULL ).
-     *
+     * <p>
      * See cv::imread for the list of supported formats and flags description.
      *
      * <b>Note:</b> In the case of color images, the decoded images will have the channels stored in <b>B G R</b> order.
@@ -1155,16 +1146,12 @@ public class Imgcodecs {
         return retVal;
     }
 
-    //
-    // C++: bool cv::imdecodemulti(Mat buf, int flags, vector_Mat& mats, Range range = Range::all())
-    //
-
     /**
      * Reads a multi-page image from a buffer in memory.
-     *
+     * <p>
      * The function imdecodemulti reads a multi-page image from the specified buffer in the memory. If the buffer is too
      * short or contains invalid data, the function returns false.
-     *
+     * <p>
      * See cv::imreadmulti for the list of supported formats and flags description.
      *
      * <b>Note:</b> In the case of color images, the decoded images will have the channels stored in <b>B G R</b> order.
@@ -1183,12 +1170,16 @@ public class Imgcodecs {
         return retVal;
     }
 
+    //
+    // C++: bool cv::imdecodemulti(Mat buf, int flags, vector_Mat& mats, Range range = Range::all())
+    //
+
     /**
      * Reads a multi-page image from a buffer in memory.
-     *
+     * <p>
      * The function imdecodemulti reads a multi-page image from the specified buffer in the memory. If the buffer is too
      * short or contains invalid data, the function returns false.
-     *
+     * <p>
      * See cv::imreadmulti for the list of supported formats and flags description.
      *
      * <b>Note:</b> In the case of color images, the decoded images will have the channels stored in <b>B G R</b> order.
@@ -1206,13 +1197,9 @@ public class Imgcodecs {
         return retVal;
     }
 
-    //
-    // C++: bool cv::imencode(String ext, Mat img, vector_uchar& buf, vector_int params = std::vector<int>())
-    //
-
     /**
      * Encodes an image into a memory buffer.
-     *
+     * <p>
      * The function imencode compresses the image and stores it in the memory buffer that is resized to fit the result.
      * See cv::imwrite for the list of supported formats and flags description.
      *
@@ -1228,9 +1215,13 @@ public class Imgcodecs {
         return imencode_0(ext, img.nativeObj, buf_mat.nativeObj, params_mat.nativeObj);
     }
 
+    //
+    // C++: bool cv::imencode(String ext, Mat img, vector_uchar& buf, vector_int params = std::vector<int>())
+    //
+
     /**
      * Encodes an image into a memory buffer.
-     *
+     * <p>
      * The function imencode compresses the image and stores it in the memory buffer that is resized to fit the result.
      * See cv::imwrite for the list of supported formats and flags description.
      *
@@ -1244,14 +1235,9 @@ public class Imgcodecs {
         return imencode_1(ext, img.nativeObj, buf_mat.nativeObj);
     }
 
-    //
-    // C++: bool cv::imencodeWithMetadata(String ext, Mat img, vector_int metadataTypes, vector_Mat metadata,
-    // vector_uchar& buf, vector_int params = std::vector<int>())
-    //
-
     /**
      * Encodes an image into a memory buffer.
-     *
+     * <p>
      * The function imencode compresses the image and stores it in the memory buffer that is resized to fit the result.
      * See cv::imwrite for the list of supported formats and flags description.
      *
@@ -1283,9 +1269,14 @@ public class Imgcodecs {
                 params_mat.nativeObj);
     }
 
+    //
+    // C++: bool cv::imencodeWithMetadata(String ext, Mat img, vector_int metadataTypes, vector_Mat metadata,
+    // vector_uchar& buf, vector_int params = std::vector<int>())
+    //
+
     /**
      * Encodes an image into a memory buffer.
-     *
+     * <p>
      * The function imencode compresses the image and stores it in the memory buffer that is resized to fit the result.
      * See cv::imwrite for the list of supported formats and flags description.
      *
@@ -1313,14 +1304,9 @@ public class Imgcodecs {
                 buf_mat.nativeObj);
     }
 
-    //
-    // C++: bool cv::imencodemulti(String ext, vector_Mat imgs, vector_uchar& buf, vector_int params =
-    // std::vector<int>())
-    //
-
     /**
      * Encodes array of images into a memory buffer.
-     *
+     * <p>
      * The function is analog to cv::imencode for in-memory multi-page image compression. See cv::imwrite for the list
      * of supported formats and flags description.
      *
@@ -1337,9 +1323,14 @@ public class Imgcodecs {
         return imencodemulti_0(ext, imgs_mat.nativeObj, buf_mat.nativeObj, params_mat.nativeObj);
     }
 
+    //
+    // C++: bool cv::imencodemulti(String ext, vector_Mat imgs, vector_uchar& buf, vector_int params =
+    // std::vector<int>())
+    //
+
     /**
      * Encodes array of images into a memory buffer.
-     *
+     * <p>
      * The function is analog to cv::imencode for in-memory multi-page image compression. See cv::imwrite for the list
      * of supported formats and flags description.
      *
@@ -1354,13 +1345,9 @@ public class Imgcodecs {
         return imencodemulti_1(ext, imgs_mat.nativeObj, buf_mat.nativeObj);
     }
 
-    //
-    // C++: bool cv::haveImageReader(String filename)
-    //
-
     /**
      * Checks if the specified image file can be decoded by OpenCV.
-     *
+     * <p>
      * The function haveImageReader checks if OpenCV is capable of reading the specified file. This can be useful for
      * verifying support for a given image format before attempting to load an image.
      *
@@ -1370,7 +1357,7 @@ public class Imgcodecs {
      *         <b>Note:</b> The function checks the availability of image codecs that are either built into OpenCV or
      *         dynamically loaded. It does not load the image codec implementation and decode data, but uses signature
      *         check. If the file cannot be opened or the format is unsupported, the function will return false.
-     *
+     *         <p>
      *         SEE: cv::haveImageWriter, cv::imread, cv::imdecode
      */
     public static boolean haveImageReader(String filename) {
@@ -1378,12 +1365,12 @@ public class Imgcodecs {
     }
 
     //
-    // C++: bool cv::haveImageWriter(String filename)
+    // C++: bool cv::haveImageReader(String filename)
     //
 
     /**
      * Checks if the specified image file or specified file extension can be encoded by OpenCV.
-     *
+     * <p>
      * The function haveImageWriter checks if OpenCV is capable of writing images with the specified file extension.
      * This can be useful for verifying support for a given image format before attempting to save an image.
      *
@@ -1394,12 +1381,16 @@ public class Imgcodecs {
      *         <b>Note:</b> The function checks the availability of image codecs that are either built into OpenCV or
      *         dynamically loaded. It does not check for the actual existence of the file but rather the ability to
      *         write files of the given type.
-     *
+     *         <p>
      *         SEE: cv::haveImageReader, cv::imwrite, cv::imencode
      */
     public static boolean haveImageWriter(String filename) {
         return haveImageWriter_0(filename);
     }
+
+    //
+    // C++: bool cv::haveImageWriter(String filename)
+    //
 
     // C++: Mat cv::imread(String filename, int flags = IMREAD_UNCHANGED)
     private static native long imread_0(String filename, int flags);

@@ -21,11 +21,7 @@ package org.miaixz.bus.auth.worker;
 
 import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Dispatcher;
-import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.*;
 
 /**
  * Defines the executable capability worker produced for one compiled Source Blueprint entry.

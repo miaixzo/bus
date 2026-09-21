@@ -36,98 +36,44 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class EventLabel implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852231062892L;
-
-    /**
-     * The label type enum.
-     *
-     * @author Kimi Liu
-     */
-    public enum LabelType {
-
-        /**
-         * The project label label type.
-         */
-        PROJECT_LABEL,
-        /**
-         * The group label label type.
-         */
-        GROUP_LABEL;
-
-        /**
-         * The enum codec value.
-         */
-        private static JacksonJsonEnumCodec<LabelType> enumCodec = new JacksonJsonEnumCodec<>(LabelType.class, true,
-                true);
-
-        /**
-         * Returns the value.
-         *
-         * @param value the value value
-         * @return the result
-         */
-
-        @JsonCreator
-        public static LabelType forValue(String value) {
-            return enumCodec.forValue(value);
-        }
-
-        /**
-         * Returns the value.
-         *
-         * @return the result
-         */
-
-        @JsonValue
-        public String toValue() {
-            return (enumCodec.toString(this));
-        }
-
-        /**
-         * Returns the string.
-         *
-         * @return the result
-         */
-
-        @Override
-        public String toString() {
-            return (enumCodec.toString(this));
-        }
-
-    }
 
     /**
      * The id value.
      */
     private Long id;
+
     /**
      * The title value.
      */
     private String title;
+
     /**
      * The color value.
      */
     private String color;
+
     /**
      * The project id value.
      */
     private Long projectId;
+
     /**
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The updated at value.
      */
     private Date updatedAt;
+
     /**
      * The template value.
      */
     private Boolean template;
+
     /**
      * The description value.
      */
@@ -137,6 +83,7 @@ public class EventLabel implements Serializable {
      * The type field.
      */
     private LabelType type;
+
     /**
      * The group id value.
      */
@@ -358,6 +305,64 @@ public class EventLabel implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    /**
+     * The label type enum.
+     *
+     * @author Kimi Liu
+     */
+    public enum LabelType {
+
+        /**
+         * The project label label type.
+         */
+        PROJECT_LABEL,
+        /**
+         * The group label label type.
+         */
+        GROUP_LABEL;
+
+        /**
+         * The enum codec value.
+         */
+        private static JacksonJsonEnumCodec<LabelType> enumCodec = new JacksonJsonEnumCodec<>(LabelType.class, true,
+                true);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
+
+        @JsonCreator
+        public static LabelType forValue(String value) {
+            return enumCodec.forValue(value);
+        }
+
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
+        @JsonValue
+        public String toValue() {
+            return (enumCodec.toString(this));
+        }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
+
+        @Override
+        public String toString() {
+            return (enumCodec.toString(this));
+        }
+
     }
 
 }

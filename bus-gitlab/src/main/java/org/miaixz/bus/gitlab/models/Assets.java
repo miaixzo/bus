@@ -33,9 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Assets implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852237093233L;
 
@@ -43,14 +40,17 @@ public class Assets implements Serializable {
      * The count value.
      */
     private Integer count;
+
     /**
      * The sources value.
      */
     private List<Source> sources;
+
     /**
      * The links value.
      */
     private List<Link> links;
+
     /**
      * The evidence file path value.
      */
@@ -161,9 +161,6 @@ public class Assets implements Serializable {
      */
     public static class Source implements Serializable {
 
-        /**
-         * The serial version uid value.
-         */
         @Serial
         private static final long serialVersionUID = 2852237123112L;
 
@@ -171,6 +168,7 @@ public class Assets implements Serializable {
          * The format value.
          */
         private ArchiveFormat format;
+
         /**
          * The url value.
          */
@@ -250,14 +248,17 @@ public class Assets implements Serializable {
          * The id value.
          */
         private Long id;
+
         /**
          * The name value.
          */
         private String name;
+
         /**
          * The url value.
          */
         private String url;
+
         /**
          * The external value.
          */

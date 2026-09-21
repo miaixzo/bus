@@ -36,17 +36,6 @@ public class MailAuthenticator extends Authenticator {
     private final PasswordAuthentication auth;
 
     /**
-     * Creates a new {@code MailAuthenticator} instance with the given username and password.
-     *
-     * @param user The username for authentication.
-     * @param pass The password for authentication.
-     * @return A new {@code MailAuthenticator} instance.
-     */
-    public static MailAuthenticator of(final String user, final String pass) {
-        return new MailAuthenticator(user, pass);
-    }
-
-    /**
      * Constructs a new {@code MailAuthenticator} from a {@link MailAccount} object.
      *
      * @param mailAccount The {@link MailAccount} containing the username and password.
@@ -72,6 +61,17 @@ public class MailAuthenticator extends Authenticator {
      */
     public MailAuthenticator(final PasswordAuthentication auth) {
         this.auth = auth;
+    }
+
+    /**
+     * Creates a new {@code MailAuthenticator} instance with the given username and password.
+     *
+     * @param user The username for authentication.
+     * @param pass The password for authentication.
+     * @return A new {@code MailAuthenticator} instance.
+     */
+    public static MailAuthenticator of(final String user, final String pass) {
+        return new MailAuthenticator(user, pass);
     }
 
     /**

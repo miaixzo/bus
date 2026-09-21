@@ -23,11 +23,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.RecordComponent;
-import java.lang.reflect.Type;
-import java.lang.reflect.WildcardType;
+import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
@@ -50,24 +46,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @author Kimi Liu
  */
 public class JsonRecordVerifier<T extends Record> {
-
-    /**
-     * Associates a record component with an exact JSON member that is not a legal or suitable Java identifier.
-     *
-     * @author Kimi Liu
-     */
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.RECORD_COMPONENT)
-    public @interface Member {
-
-        /**
-         * Returns the exact case-sensitive JSON member name.
-         *
-         * @return exact JSON member name
-         */
-        String value();
-
-    }
 
     /**
      * Record class that owns the accepted member names.
@@ -111,38 +89,6 @@ public class JsonRecordVerifier<T extends Record> {
      */
     public static <T extends Record> JsonRecordVerifier<T> of(final Class<T> type) {
         return new JsonRecordVerifier<>(type);
-    }
-
-    /**
-     * Requires the supplied JSON object to match the names, presence rules, and value types declared by the associated
-     * record.
-     *
-     * @param value JSON object to validate
-     * @return unchanged validated object
-     * @throws IllegalArgumentException if {@code value} is {@code null}
-     * @throws ValidateException        if the object contains an unknown member, omits a required member, or supplies a
-     *                                  value whose JSON shape conflicts with the declared component type
-     */
-    public JsonValue.ObjectValue validate(final JsonValue.ObjectValue value) {
-        final JsonValue.ObjectValue object = Assert.notNull(value, "JSON record verifier value must not be null");
-        for (String member : object.values().keySet()) {
-            if (!members.containsKey(member)) {
-                throw new ValidateException(
-                        "JSON object contains a member not declared by " + type.getName() + ": " + member);
-            }
-        }
-        members.forEach((member, component) -> {
-            final JsonValue memberValue = object.values().get(member);
-            if (memberValue == null) {
-                if (!isOptional(component.getGenericType())) {
-                    throw new ValidateException(
-                            "JSON object omits required member declared by " + type.getName() + ": " + member);
-                }
-                return;
-            }
-            validateValue(type.getName() + "." + member, memberValue, component.getGenericType());
-        });
-        return object;
     }
 
     /**
@@ -349,6 +295,56 @@ public class JsonRecordVerifier<T extends Record> {
             throw new ValidateException("JSON member " + path + " requires " + expectedType.getSimpleName()
                     + " but received " + value.getClass().getSimpleName());
         }
+    }
+
+    /**
+     * Requires the supplied JSON object to match the names, presence rules, and value types declared by the associated
+     * record.
+     *
+     * @param value JSON object to validate
+     * @return unchanged validated object
+     * @throws IllegalArgumentException if {@code value} is {@code null}
+     * @throws ValidateException        if the object contains an unknown member, omits a required member, or supplies a
+     *                                  value whose JSON shape conflicts with the declared component type
+     */
+    public JsonValue.ObjectValue validate(final JsonValue.ObjectValue value) {
+        final JsonValue.ObjectValue object = Assert.notNull(value, "JSON record verifier value must not be null");
+        for (String member : object.values().keySet()) {
+            if (!members.containsKey(member)) {
+                throw new ValidateException(
+                        "JSON object contains a member not declared by " + type.getName() + ": " + member);
+            }
+        }
+        members.forEach((member, component) -> {
+            final JsonValue memberValue = object.values().get(member);
+            if (memberValue == null) {
+                if (!isOptional(component.getGenericType())) {
+                    throw new ValidateException(
+                            "JSON object omits required member declared by " + type.getName() + ": " + member);
+                }
+                return;
+            }
+            validateValue(type.getName() + "." + member, memberValue, component.getGenericType());
+        });
+        return object;
+    }
+
+    /**
+     * Associates a record component with an exact JSON member that is not a legal or suitable Java identifier.
+     *
+     * @author Kimi Liu
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.RECORD_COMPONENT)
+    public @interface Member {
+
+        /**
+         * Returns the exact case-sensitive JSON member name.
+         *
+         * @return exact JSON member name
+         */
+        String value();
+
     }
 
 }

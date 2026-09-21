@@ -1957,22 +1957,22 @@ public interface Constants {
         ZIP;
 
         /**
-         * The value value.
-         */
-        private final String value;
-
-        /**
          * The values map value.
          */
         private static Map<String, ArchiveFormat> valuesMap = new HashMap<String, ArchiveFormat>(8);
 
-        ArchiveFormat() {
-            this.value = name().toLowerCase().replace(Symbol.C_UNDERLINE, Symbol.C_DOT);
-        }
-
         static {
             for (ArchiveFormat archiveFormat : ArchiveFormat.values())
                 valuesMap.put(archiveFormat.value, archiveFormat);
+        }
+
+        /**
+         * The value value.
+         */
+        private final String value;
+
+        ArchiveFormat() {
+            this.value = name().toLowerCase().replace(Symbol.C_UNDERLINE, Symbol.C_DOT);
         }
 
         /**
@@ -2840,134 +2840,6 @@ public interface Constants {
     }
 
     /**
-     * Enum for the search scope when doing a globalSearch() with the SearchApi.
-     *
-     * @author Kimi Liu
-     * @param <T> the value type
-     */
-    public static class SearchScope<T> {
-
-        /**
-         * Search scope for projects.
-         */
-        public static final SearchScope<Project> PROJECTS = new SearchScope<>("projects", Project.class);
-        /**
-         * Search scope for issues.
-         */
-        public static final SearchScope<Issue> ISSUES = new SearchScope<>("issues", Issue.class);
-        /**
-         * Search scope for merge requests.
-         */
-        public static final SearchScope<MergeRequest> MERGE_REQUESTS = new SearchScope<>("merge_requests",
-                MergeRequest.class);
-        /**
-         * Search scope for milestones.
-         */
-        public static final SearchScope<Milestone> MILESTONES = new SearchScope<>("milestones", Milestone.class);
-        /**
-         * Search scope for snippet titles.
-         */
-        public static final SearchScope<Snippet> SNIPPET_TITLES = new SearchScope<>("snippet_titles", Snippet.class);
-        /**
-         * Search scope for snippet blobs.
-         */
-        public static final SearchScope<Snippet> SNIPPET_BLOBS = new SearchScope<>("snippet_blobs", Snippet.class);
-        /**
-         * Search scope for users.
-         */
-        public static final SearchScope<User> USERS = new SearchScope<>("users", User.class);
-        /**
-         * Search scope for blobs.
-         */
-        public static final SearchScope<SearchBlob> BLOBS = new SearchScope<>("blobs", SearchBlob.class);
-        /**
-         * Search scope for commits.
-         */
-        public static final SearchScope<Commit> COMMITS = new SearchScope<>("commits", Commit.class);
-        /**
-         * Search scope for wiki blobs.
-         */
-        public static final SearchScope<SearchBlob> WIKI_BLOBS = new SearchScope<>("wiki_blobs", SearchBlob.class);
-        /**
-         * The json lookup value.
-         */
-        private static final Map jsonLookup = Arrays
-                .stream(
-                        new SearchScope[] { PROJECTS, ISSUES, MERGE_REQUESTS, MILESTONES, SNIPPET_TITLES, SNIPPET_BLOBS,
-                                USERS, BLOBS, COMMITS, WIKI_BLOBS })
-                .collect(Collectors.toMap(searchScope -> searchScope.jsonName, FunctionX.identity()));
-        /**
-         * The json name value.
-         */
-        private final String jsonName;
-        /**
-         * The result type value.
-         */
-        private final Class<T> resultType;
-
-        public SearchScope(String jsonName, Class<T> resultType) {
-            this.jsonName = jsonName;
-            this.resultType = resultType;
-        }
-
-        /**
-         * Returns the value.
-         *
-         * @param <T>   the search result type
-         * @param value the value value
-         * @return the result
-         */
-
-        @JsonCreator
-        public static <T> SearchScope<T> forValue(String value) {
-            return (SearchScope<T>) jsonLookup.get(value);
-        }
-
-        /**
-         * Executes the values operation.
-         *
-         * @return the result
-         */
-
-        public static Set<String> values() {
-            return jsonLookup.keySet();
-        }
-
-        /**
-         * Returns the result type.
-         *
-         * @return the result
-         */
-
-        public Class<T> getResultType() {
-            return resultType;
-        }
-
-        /**
-         * Returns the value.
-         *
-         * @return the result
-         */
-
-        @JsonValue
-        public String toValue() {
-            return jsonName;
-        }
-
-        /**
-         * Returns the string.
-         *
-         * @return the result
-         */
-
-        @Override
-        public String toString() {
-            return jsonName;
-        }
-
-    }
-
-    /**
      * Enum for the build_git_strategy of the project instance.
      *
      * @author Kimi Liu
@@ -3309,10 +3181,150 @@ public interface Constants {
     }
 
     /**
+     * Enum for the search scope when doing a globalSearch() with the SearchApi.
+     *
+     * @param <T> the value type
+     * @author Kimi Liu
+     */
+    public static class SearchScope<T> {
+
+        /**
+         * Search scope for projects.
+         */
+        public static final SearchScope<Project> PROJECTS = new SearchScope<>("projects", Project.class);
+
+        /**
+         * Search scope for issues.
+         */
+        public static final SearchScope<Issue> ISSUES = new SearchScope<>("issues", Issue.class);
+
+        /**
+         * Search scope for merge requests.
+         */
+        public static final SearchScope<MergeRequest> MERGE_REQUESTS = new SearchScope<>("merge_requests",
+                MergeRequest.class);
+
+        /**
+         * Search scope for milestones.
+         */
+        public static final SearchScope<Milestone> MILESTONES = new SearchScope<>("milestones", Milestone.class);
+
+        /**
+         * Search scope for snippet titles.
+         */
+        public static final SearchScope<Snippet> SNIPPET_TITLES = new SearchScope<>("snippet_titles", Snippet.class);
+
+        /**
+         * Search scope for snippet blobs.
+         */
+        public static final SearchScope<Snippet> SNIPPET_BLOBS = new SearchScope<>("snippet_blobs", Snippet.class);
+
+        /**
+         * Search scope for users.
+         */
+        public static final SearchScope<User> USERS = new SearchScope<>("users", User.class);
+
+        /**
+         * Search scope for blobs.
+         */
+        public static final SearchScope<SearchBlob> BLOBS = new SearchScope<>("blobs", SearchBlob.class);
+
+        /**
+         * Search scope for commits.
+         */
+        public static final SearchScope<Commit> COMMITS = new SearchScope<>("commits", Commit.class);
+
+        /**
+         * Search scope for wiki blobs.
+         */
+        public static final SearchScope<SearchBlob> WIKI_BLOBS = new SearchScope<>("wiki_blobs", SearchBlob.class);
+
+        /**
+         * The json lookup value.
+         */
+        private static final Map jsonLookup = Arrays
+                .stream(
+                        new SearchScope[] { PROJECTS, ISSUES, MERGE_REQUESTS, MILESTONES, SNIPPET_TITLES, SNIPPET_BLOBS,
+                                USERS, BLOBS, COMMITS, WIKI_BLOBS })
+                .collect(Collectors.toMap(searchScope -> searchScope.jsonName, FunctionX.identity()));
+
+        /**
+         * The json name value.
+         */
+        private final String jsonName;
+
+        /**
+         * The result type value.
+         */
+        private final Class<T> resultType;
+
+        public SearchScope(String jsonName, Class<T> resultType) {
+            this.jsonName = jsonName;
+            this.resultType = resultType;
+        }
+
+        /**
+         * Returns the value.
+         *
+         * @param <T>   the search result type
+         * @param value the value value
+         * @return the result
+         */
+
+        @JsonCreator
+        public static <T> SearchScope<T> forValue(String value) {
+            return (SearchScope<T>) jsonLookup.get(value);
+        }
+
+        /**
+         * Executes the values operation.
+         *
+         * @return the result
+         */
+
+        public static Set<String> values() {
+            return jsonLookup.keySet();
+        }
+
+        /**
+         * Returns the result type.
+         *
+         * @return the result
+         */
+
+        public Class<T> getResultType() {
+            return resultType;
+        }
+
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
+        @JsonValue
+        public String toValue() {
+            return jsonName;
+        }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
+
+        @Override
+        public String toString() {
+            return jsonName;
+        }
+
+    }
+
+    /**
      * Enum for the search scope when doing a groupSearch() with the SearchApi.
      *
-     * @author Kimi Liu
      * @param <T> the value type
+     * @author Kimi Liu
      */
     public static class GroupSearchScope<T> {
 
@@ -3320,47 +3332,58 @@ public interface Constants {
          * Group search scope for projects.
          */
         public static final GroupSearchScope<Project> PROJECTS = new GroupSearchScope<>("projects", Project.class);
+
         /**
          * Group search scope for issues.
          */
         public static final GroupSearchScope<Issue> ISSUES = new GroupSearchScope<>("issues", Issue.class);
+
         /**
          * Group search scope for merge requests.
          */
         public static final GroupSearchScope<MergeRequest> MERGE_REQUESTS = new GroupSearchScope<>("merge_requests",
                 MergeRequest.class);
+
         /**
          * Group search scope for milestones.
          */
         public static final GroupSearchScope<Milestone> MILESTONES = new GroupSearchScope<>("milestones",
                 Milestone.class);
+
         /**
          * Group search scope for wiki blobs.
          */
         public static final GroupSearchScope<SearchBlob> WIKI_BLOBS = new GroupSearchScope<>("wiki_blobs",
                 SearchBlob.class);
+
         /**
          * Group search scope for commits.
          */
         public static final GroupSearchScope<Commit> COMMITS = new GroupSearchScope<>("commits", Commit.class);
+
         /**
          * Group search scope for blobs.
          */
         public static final GroupSearchScope<SearchBlob> BLOBS = new GroupSearchScope<>("blobs", SearchBlob.class);
+
         /**
          * Group search scope for notes.
          */
         public static final GroupSearchScope<Note> NOTES = new GroupSearchScope<>("notes", Note.class);
+
         /**
          * Group search scope for users.
          */
         public static final GroupSearchScope<User> USERS = new GroupSearchScope<>("users", User.class);
+
         private static final Map jsonLookup = Arrays
                 .stream(
                         new GroupSearchScope[] { PROJECTS, ISSUES, MERGE_REQUESTS, MILESTONES, WIKI_BLOBS, COMMITS,
                                 BLOBS, NOTES, USERS, })
                 .collect(Collectors.toMap(searchScope -> searchScope.jsonName, FunctionX.identity()));
+
         private final String jsonName;
+
         private final Class<T> resultType;
 
         /**
@@ -3435,8 +3458,8 @@ public interface Constants {
     /**
      * Enum for the search scope when doing a projectSearch() with the SearchApi.
      *
-     * @author Kimi Liu
      * @param <T> the value type
+     * @author Kimi Liu
      */
     public static class ProjectSearchScope<T> {
 
@@ -3444,43 +3467,53 @@ public interface Constants {
          * Project search scope for blobs.
          */
         public static final ProjectSearchScope<SearchBlob> BLOBS = new ProjectSearchScope<>("blobs", SearchBlob.class);
+
         /**
          * Project search scope for commits.
          */
         public static final ProjectSearchScope<Commit> COMMITS = new ProjectSearchScope<>("commits", Commit.class);
+
         /**
          * Project search scope for issues.
          */
         public static final ProjectSearchScope<Issue> ISSUES = new ProjectSearchScope<>("issues", Issue.class);
+
         /**
          * Project search scope for merge requests.
          */
         public static final ProjectSearchScope<MergeRequest> MERGE_REQUESTS = new ProjectSearchScope<>("merge_requests",
                 MergeRequest.class);
+
         /**
          * Project search scope for milestones.
          */
         public static final ProjectSearchScope<Milestone> MILESTONES = new ProjectSearchScope<>("milestones",
                 Milestone.class);
+
         /**
          * Project search scope for notes.
          */
         public static final ProjectSearchScope<Note> NOTES = new ProjectSearchScope<>("notes", Note.class);
+
         /**
          * Project search scope for wiki blobs.
          */
         public static final ProjectSearchScope<SearchBlob> WIKI_BLOBS = new ProjectSearchScope<>("wiki_blobs",
                 SearchBlob.class);
+
         /**
          * Project search scope for users.
          */
         public static final ProjectSearchScope<User> USERS = new ProjectSearchScope<>("users", User.class);
+
         private static final Map jsonLookup = Arrays
                 .stream(
                         new ProjectSearchScope[] { BLOBS, COMMITS, ISSUES, MERGE_REQUESTS, MILESTONES, NOTES,
                                 WIKI_BLOBS, USERS })
                 .collect(Collectors.toMap(searchScope -> searchScope.jsonName, FunctionX.identity()));
+
         private final String jsonName;
+
         private final Class<T> resultType;
 
         /**

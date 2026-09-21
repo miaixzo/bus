@@ -29,7 +29,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
  * Immutable activation settings for automatic Bus response envelopes.
- *
+ * <p>
  * Switches for response envelope advice.
  *
  * @author Kimi Liu

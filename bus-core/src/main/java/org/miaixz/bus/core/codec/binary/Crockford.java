@@ -36,9 +36,9 @@ import org.miaixz.bus.core.lang.Symbol;
  * <p>
  * This class operates directly on byte streams, and not character streams.
  *
+ * @author Kimi Liu
  * @see <a href="http://www.ietf.org/rfc/rfc4648.txt">RFC 4648</a>
  * @see <a href="http://www.crockford.com/wrmg/base32.html">Douglas Crockford's Base32 Encoding</a>
- * @author Kimi Liu
  */
 public class Crockford {
 
@@ -46,7 +46,9 @@ public class Crockford {
      * Mask used to extract 8 bits, used in decoding bytes
      */
     protected static final int MASK_8BITS = 0xff;
+
     private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
+
     private static final int DEFAULT_BUFFER_RESIZE_FACTOR = 2;
 
     /**
@@ -59,7 +61,9 @@ public class Crockford {
      * which is converted into eight BASE32 characters.
      */
     private static final int BITS_PER_ENCODED_BYTE = 5;
+
     private static final int BYTES_PER_ENCODED_BLOCK = 8;
+
     private static final int BYTES_PER_UNENCODED_BLOCK = 5;
 
     /**

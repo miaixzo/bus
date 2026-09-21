@@ -31,9 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class ProjectTemplate implements Serializable {
 
-    /**
-     * Serialization version identifier.
-     */
     @Serial
     private static final long serialVersionUID = 2852260153908L;
 

@@ -33,14 +33,14 @@ import org.miaixz.bus.gitlab.models.*;
 
 /**
  * This class implements the client side API for the GitLab Epics and Epic Issues API calls.
- *
+ * <p>
  * NOTE: - If a user is not a member of a group and the group is private, a GET request on that group will result to a
  * 404 status code. - Epics are available only in Ultimate. If epics feature is not available a 403 status code will be
  * returned.
  *
+ * @author Kimi Liu
  * @see <a href="https://docs.gitlab.com/ee/api/epics.html">GitLab Epics API Documentaion</a>
  * @see <a href="https://docs.gitlab.com/ee/api/epic_issues.html">GitLab Epic Issues API Documentation</a>
- * @author Kimi Liu
  */
 public class EpicsApi extends AbstractApi {
 

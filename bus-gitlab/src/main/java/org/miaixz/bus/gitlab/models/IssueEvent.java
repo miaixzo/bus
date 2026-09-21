@@ -35,86 +35,34 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class IssueEvent implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852257573191L;
-
-    /**
-     * Enum to use for specifying the state events resource type.
-     *
-     * @author Kimi Liu
-     */
-    public enum ResourceType {
-
-        /**
-         * Issue resource type.
-         */
-        ISSUE;
-
-        /**
-         * The enum codec value.
-         */
-        private static JacksonJsonEnumCodec<ResourceType> enumCodec = new JacksonJsonEnumCodec<>(ResourceType.class,
-                true, true);
-
-        /**
-         * Returns the value.
-         *
-         * @param value the value value
-         * @return the result
-         */
-
-        @JsonCreator
-        public static ResourceType forValue(String value) {
-            return enumCodec.forValue(value);
-        }
-
-        /**
-         * Returns the value.
-         *
-         * @return the result
-         */
-
-        @JsonValue
-        public String toValue() {
-            return (enumCodec.toString(this));
-        }
-
-        /**
-         * Returns the string.
-         *
-         * @return the result
-         */
-
-        @Override
-        public String toString() {
-            return (enumCodec.toString(this));
-        }
-
-    }
 
     /**
      * The id value.
      */
     private Long id;
+
     /**
      * The user value.
      */
     private User user;
+
     /**
      * The created at value.
      */
     private String createdAt;
+
     /**
      * The resource type value.
      */
     private ResourceType resourceType;
+
     /**
      * The resource id value.
      */
     private Long resourceId;
+
     /**
      * The state value.
      */
@@ -256,6 +204,60 @@ public class IssueEvent implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    /**
+     * Enum to use for specifying the state events resource type.
+     *
+     * @author Kimi Liu
+     */
+    public enum ResourceType {
+
+        /**
+         * Issue resource type.
+         */
+        ISSUE;
+
+        /**
+         * The enum codec value.
+         */
+        private static JacksonJsonEnumCodec<ResourceType> enumCodec = new JacksonJsonEnumCodec<>(ResourceType.class,
+                true, true);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
+
+        @JsonCreator
+        public static ResourceType forValue(String value) {
+            return enumCodec.forValue(value);
+        }
+
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
+        @JsonValue
+        public String toValue() {
+            return (enumCodec.toString(this));
+        }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
+
+        @Override
+        public String toString() {
+            return (enumCodec.toString(this));
+        }
+
     }
 
 }

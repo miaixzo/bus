@@ -35,9 +35,9 @@ import org.miaixz.bus.gitlab.models.Milestone;
 /**
  * This class implements the client side API for the GitLab milestones calls.
  *
+ * @author Kimi Liu
  * @see <a href="https://docs.gitlab.com/ce/api/milestones.html">Project milestones API</a>
  * @see <a href="https://docs.gitlab.com/ce/api/group_milestones.html">Group milestones API</a>
- * @author Kimi Liu
  */
 public class MilestonesApi extends AbstractApi {
 
@@ -674,10 +674,9 @@ public class MilestonesApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param milestoneId     the milestone ID to get the merge requests for
+     * @param itemsPerPage    the items per page value
      * @return a Pager of merge requests associated with the specified milestone
      * @throws RelevantException if any exception occurs
-     *
-     * @param itemsPerPage the items per page value
      */
     public Pager<MergeRequest> getMergeRequest(Object projectIdOrPath, Long milestoneId, int itemsPerPage)
             throws RelevantException {

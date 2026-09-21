@@ -111,13 +111,6 @@ public class ReflectKit {
      */
     private static final WeakConcurrentMap<Class<?>, Constructor<?>[]> CONSTRUCTORS_CACHE = new WeakConcurrentMap<>();
 
-    /**
-     * Creates an instance for reflection-based member and type operations.
-     */
-    public ReflectKit() {
-        // No initialization required.
-    }
-
     static {
         PRIMITIVE_TABLE.put(void.class, JVM_VOID, "void");
         PRIMITIVE_TABLE.put(boolean.class, JVM_BOOLEAN, "boolean");
@@ -128,6 +121,13 @@ public class ReflectKit {
         PRIMITIVE_TABLE.put(int.class, JVM_INT, "int");
         PRIMITIVE_TABLE.put(long.class, JVM_LONG, "long");
         PRIMITIVE_TABLE.put(short.class, JVM_SHORT, "short");
+    }
+
+    /**
+     * Creates an instance for reflection-based member and type operations.
+     */
+    public ReflectKit() {
+        // No initialization required.
     }
 
     /**

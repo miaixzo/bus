@@ -44,8 +44,8 @@ import org.miaixz.bus.core.xyz.ZoneKit;
  * Thread-safe date parser, replacing {@link java.text.SimpleDateFormat}, used to convert date strings to {@link Date}
  * objects.
  *
- * @see FastDatePrinter
  * @author Kimi Liu
+ * @see FastDatePrinter
  */
 public class FastDateParser extends SimpleDatePrinter implements PositionDateParser {
 
@@ -340,6 +340,29 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
             }
             return CACHES[field];
         }
+    }
+
+    /**
+     * Tests whether to skip the given time zone, true if ZoneUtil.getTimeZone().
+     * <p>
+     * On Java 25 and up, skips short IDs if {@code ignoreTimeZoneShortIDs} is true.
+     * </p>
+     * <p>
+     * This method is package private only for testing.
+     * </p>
+     *
+     * @param tzId the ID to test.
+     * @return Whether to skip the given time zone ID.
+     */
+    static boolean skipTimeZone(final String tzId) {
+        if (Keys.IS_AT_LEAST_JDK25) {
+            // In JDK25+, all three-letter abbreviations are invalid
+            // See: https://stackoverflow.com/questions/41672825/which-three-letter-time-zone-ids-are-not-deprecated
+            if (tzId.length() == 3) {
+                return true;
+            }
+        }
+        return ZoneId.GMT.name().equalsIgnoreCase(tzId);
     }
 
     /**
@@ -874,29 +897,6 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
             return iValue;
         }
 
-    }
-
-    /**
-     * Tests whether to skip the given time zone, true if ZoneUtil.getTimeZone().
-     * <p>
-     * On Java 25 and up, skips short IDs if {@code ignoreTimeZoneShortIDs} is true.
-     * </p>
-     * <p>
-     * This method is package private only for testing.
-     * </p>
-     *
-     * @param tzId the ID to test.
-     * @return Whether to skip the given time zone ID.
-     */
-    static boolean skipTimeZone(final String tzId) {
-        if (Keys.IS_AT_LEAST_JDK25) {
-            // In JDK25+, all three-letter abbreviations are invalid
-            // See: https://stackoverflow.com/questions/41672825/which-three-letter-time-zone-ids-are-not-deprecated
-            if (tzId.length() == 3) {
-                return true;
-            }
-        }
-        return ZoneId.GMT.name().equalsIgnoreCase(tzId);
     }
 
     /**

@@ -34,8 +34,8 @@ import org.miaixz.bus.vortex.strategy.LimiterStrategy;
  * {@link #acquire()} method throws an exception, allowing the request to be rejected quickly with a "Too Many Requests"
  * error.
  *
- * @see LimiterStrategy
  * @author Kimi Liu
+ * @see LimiterStrategy
  */
 @Getter
 @Setter

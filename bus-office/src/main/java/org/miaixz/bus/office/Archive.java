@@ -20,12 +20,7 @@
 package org.miaixz.bus.office;
 
 import java.io.*;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -156,14 +151,14 @@ public class Archive {
         private final int previewRows;
 
         /**
-         * Whether {@link #finish()} has already been called.
-         */
-        private boolean finished;
-
-        /**
          * Mutable segment states keyed by segment index.
          */
         private final Map<Integer, SegmentState> states = new LinkedHashMap<>();
+
+        /**
+         * Whether {@link #finish()} has already been called.
+         */
+        private boolean finished;
 
         /**
          * Creates an archive writer without a preview row limit.

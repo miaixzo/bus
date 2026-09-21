@@ -50,9 +50,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, InvocationHandler, Serializable {
 
-    /**
-     * The serialization version identifier for this class.
-     */
     @Serial
     private static final long serialVersionUID = 2852275756380L;
 

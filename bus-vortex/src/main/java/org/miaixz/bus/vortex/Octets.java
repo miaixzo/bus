@@ -25,11 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferLimitException;
-import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.core.io.buffer.NettyDataBufferFactory;
-import org.springframework.core.io.buffer.PooledDataBuffer;
+import org.springframework.core.io.buffer.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -309,12 +305,126 @@ public class Octets {
     }
 
     /**
+     * Releases one buffer only when ownership is still active.
+     *
+     * @param buffer buffer to release
+     */
+    public static void release(DataBuffer buffer) {
+        if (buffer instanceof PooledDataBuffer pooled && pooled.isAllocated()) {
+            pooled.release();
+        }
+    }
+
+    /**
+     * Drains a body that cannot be forwarded and releases every received pooled buffer.
+     *
+     * @param body source body
+     * @return completion after the source has been consumed
+     */
+    public static Mono<Void> discard(Flux<? extends DataBuffer> body) {
+        if (body == null) {
+            return Mono.empty();
+        }
+        return body.doOnNext(Octets::release).doOnDiscard(PooledDataBuffer.class, DataBufferUtils::release).then();
+    }
+
+    /**
+     * Exposes a buffered body as bounded direct chunks for a backpressure-aware network write.
+     * <p>
+     * Each heap segment is copied into a bounded direct buffer from the unified Vortex allocator. This avoids the JDK
+     * NIO heap-to-direct temporary-buffer cache; the network write owns and reference-count releases each direct
+     * buffer. This publisher does not close the body; use {@link #chunksAndClose(BufferedBody)} when transferring body
+     * ownership to the network response.
+     * </p>
+     *
+     * @param body buffered body
+     * @return lazily generated direct write chunks
+     */
+    public static Flux<DataBuffer> chunks(BufferedBody body) {
+        if (body == null) {
+            return Flux.error(new IllegalArgumentException("body must not be null"));
+        }
+        byte[][] segments = body.segments();
+        return Flux.<DataBuffer, int[]>generate(() -> new int[2], (cursor, sink) -> {
+            if (cursor[0] >= segments.length) {
+                sink.complete();
+                return cursor;
+            }
+            byte[] segment = segments[cursor[0]];
+            int length = Math.min(WRITE_CHUNK_SIZE, segment.length - cursor[1]);
+            DataBuffer writeBuffer = WRITE_BUFFER_FACTORY.allocateBuffer(length);
+            writeBuffer.write(segment, cursor[1], length);
+            sink.next(writeBuffer);
+            cursor[1] += length;
+            if (cursor[1] >= segment.length) {
+                cursor[0]++;
+                cursor[1] = 0;
+            }
+            return cursor;
+        }).doOnDiscard(PooledDataBuffer.class, DataBufferUtils::release);
+    }
+
+    /**
+     * Transfers a buffered body to a network write and closes its logical-byte lease on every terminal signal.
+     *
+     * @param body buffered body whose ownership is transferred to the returned publisher
+     * @return bounded direct-buffer chunks tied to the body lifecycle
+     */
+    public static Flux<DataBuffer> chunksAndClose(BufferedBody body) {
+        return chunks(body).doFinally(signal -> body.close());
+    }
+
+    /**
+     * Attaches a buffered body's ownership to the complete server-response write lifecycle.
+     * <p>
+     * The wrapper also supports explicit cleanup when a response is abandoned before its body publisher is subscribed.
+     *
+     * @param response built server response
+     * @param body     buffered body retained by that response
+     * @return response that closes the body after writing or explicit abandonment
+     */
+    public static ServerResponse own(ServerResponse response, BufferedBody body) {
+        if (response == null || body == null) {
+            throw new IllegalArgumentException("response and body are required");
+        }
+        return new OwnedServerResponse(response, body);
+    }
+
+    /**
+     * Builds an owned response while closing the body if response construction fails or is cancelled.
+     *
+     * @param response response construction publisher
+     * @param body     buffered body retained by the response
+     * @return safely owned response publisher
+     */
+    public static Mono<ServerResponse> own(Mono<ServerResponse> response, BufferedBody body) {
+        if (response == null || body == null) {
+            return Mono.error(new IllegalArgumentException("response and body are required"));
+        }
+        return response.map(value -> own(value, body)).doOnError(error -> body.close()).doOnCancel(body::close)
+                .doOnDiscard(ServerResponse.class, Octets::closeOwnedResponse);
+    }
+
+    /**
+     * Releases a response-owned buffered body when the response will never be written.
+     *
+     * @param response potentially owned response
+     */
+    public static void closeOwnedResponse(ServerResponse response) {
+        if (response instanceof OwnedServerResponse owned) {
+            owned.close();
+        }
+    }
+
+    /**
      * Owns the leases acquired while an unknown-length response grows across heap segments.
      */
     private static final class SegmentedReservation implements AutoCloseable {
 
         private final List<AsyncByteBudget.Lease> leases = new ArrayList<>();
+
         private long bytes;
+
         private boolean closed;
 
         private synchronized long bytes() {
@@ -439,123 +549,12 @@ public class Octets {
     }
 
     /**
-     * Releases one buffer only when ownership is still active.
-     *
-     * @param buffer buffer to release
-     */
-    public static void release(DataBuffer buffer) {
-        if (buffer instanceof PooledDataBuffer pooled && pooled.isAllocated()) {
-            pooled.release();
-        }
-    }
-
-    /**
-     * Drains a body that cannot be forwarded and releases every received pooled buffer.
-     *
-     * @param body source body
-     * @return completion after the source has been consumed
-     */
-    public static Mono<Void> discard(Flux<? extends DataBuffer> body) {
-        if (body == null) {
-            return Mono.empty();
-        }
-        return body.doOnNext(Octets::release).doOnDiscard(PooledDataBuffer.class, DataBufferUtils::release).then();
-    }
-
-    /**
-     * Exposes a buffered body as bounded direct chunks for a backpressure-aware network write.
-     * <p>
-     * Each heap segment is copied into a bounded direct buffer from the unified Vortex allocator. This avoids the JDK
-     * NIO heap-to-direct temporary-buffer cache; the network write owns and reference-count releases each direct
-     * buffer. This publisher does not close the body; use {@link #chunksAndClose(BufferedBody)} when transferring body
-     * ownership to the network response.
-     * </p>
-     *
-     * @param body buffered body
-     * @return lazily generated direct write chunks
-     */
-    public static Flux<DataBuffer> chunks(BufferedBody body) {
-        if (body == null) {
-            return Flux.error(new IllegalArgumentException("body must not be null"));
-        }
-        byte[][] segments = body.segments();
-        return Flux.<DataBuffer, int[]>generate(() -> new int[2], (cursor, sink) -> {
-            if (cursor[0] >= segments.length) {
-                sink.complete();
-                return cursor;
-            }
-            byte[] segment = segments[cursor[0]];
-            int length = Math.min(WRITE_CHUNK_SIZE, segment.length - cursor[1]);
-            DataBuffer writeBuffer = WRITE_BUFFER_FACTORY.allocateBuffer(length);
-            writeBuffer.write(segment, cursor[1], length);
-            sink.next(writeBuffer);
-            cursor[1] += length;
-            if (cursor[1] >= segment.length) {
-                cursor[0]++;
-                cursor[1] = 0;
-            }
-            return cursor;
-        }).doOnDiscard(PooledDataBuffer.class, DataBufferUtils::release);
-    }
-
-    /**
-     * Transfers a buffered body to a network write and closes its logical-byte lease on every terminal signal.
-     *
-     * @param body buffered body whose ownership is transferred to the returned publisher
-     * @return bounded direct-buffer chunks tied to the body lifecycle
-     */
-    public static Flux<DataBuffer> chunksAndClose(BufferedBody body) {
-        return chunks(body).doFinally(signal -> body.close());
-    }
-
-    /**
-     * Attaches a buffered body's ownership to the complete server-response write lifecycle.
-     * <p>
-     * The wrapper also supports explicit cleanup when a response is abandoned before its body publisher is subscribed.
-     *
-     * @param response built server response
-     * @param body     buffered body retained by that response
-     * @return response that closes the body after writing or explicit abandonment
-     */
-    public static ServerResponse own(ServerResponse response, BufferedBody body) {
-        if (response == null || body == null) {
-            throw new IllegalArgumentException("response and body are required");
-        }
-        return new OwnedServerResponse(response, body);
-    }
-
-    /**
-     * Builds an owned response while closing the body if response construction fails or is cancelled.
-     *
-     * @param response response construction publisher
-     * @param body     buffered body retained by the response
-     * @return safely owned response publisher
-     */
-    public static Mono<ServerResponse> own(Mono<ServerResponse> response, BufferedBody body) {
-        if (response == null || body == null) {
-            return Mono.error(new IllegalArgumentException("response and body are required"));
-        }
-        return response.map(value -> own(value, body)).doOnError(error -> body.close()).doOnCancel(body::close)
-                .doOnDiscard(ServerResponse.class, Octets::closeOwnedResponse);
-    }
-
-    /**
-     * Releases a response-owned buffered body when the response will never be written.
-     *
-     * @param response potentially owned response
-     */
-    public static void closeOwnedResponse(ServerResponse response) {
-        if (response instanceof OwnedServerResponse owned) {
-            owned.close();
-        }
-    }
-
-    /**
      * Delegating response that makes buffered-body ownership span the actual network write.
      */
     private static final class OwnedServerResponse implements ServerResponse, AutoCloseable {
 
         private final ServerResponse delegate;
+
         private final BufferedBody body;
 
         private OwnedServerResponse(ServerResponse delegate, BufferedBody body) {
@@ -595,11 +594,6 @@ public class Octets {
     public static class BufferedBody implements AutoCloseable {
 
         /**
-         * Current segmented representation; cleared after discard or close.
-         */
-        private volatile byte[][] segments;
-
-        /**
          * Declared and verified logical body length.
          */
         private final int length;
@@ -608,6 +602,11 @@ public class Octets {
          * Logical-byte lease retained while an equivalent representation remains live.
          */
         private final AutoCloseable reservation;
+
+        /**
+         * Current segmented representation; cleared after discard or close.
+         */
+        private volatile byte[][] segments;
 
         /**
          * Lazily created contiguous representation for parsers; cleared after discard or close.

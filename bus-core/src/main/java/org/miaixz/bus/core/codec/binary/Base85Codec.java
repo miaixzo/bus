@@ -38,11 +38,13 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  */
 public class Base85Codec implements Encoder<byte[], byte[]>, Decoder<byte[], byte[]>, Serializable {
 
-    /**
-     * The serialization identifier for this codec implementation.
-     */
     @Serial
     private static final long serialVersionUID = 2852283255072L;
+
+    /**
+     * The shared Base85 codec instance.
+     */
+    public static final Base85Codec INSTANCE = new Base85Codec();
 
     /**
      * The number of raw bytes processed by a full Base85 block.
@@ -53,11 +55,6 @@ public class Base85Codec implements Encoder<byte[], byte[]>, Decoder<byte[], byt
      * The number of encoded characters produced by a full Base85 block.
      */
     private static final int ENCODED_CHUNK_SIZE = 5;
-
-    /**
-     * The shared Base85 codec instance.
-     */
-    public static final Base85Codec INSTANCE = new Base85Codec();
 
     /**
      * Creates a new {@code Base85Codec} instance.
@@ -122,11 +119,10 @@ public class Base85Codec implements Encoder<byte[], byte[]>, Decoder<byte[], byt
          */
         private static final byte[] STANDARD = new byte[85];
 
-        static {
-            for (int i = 0; i < STANDARD.length; i++) {
-                STANDARD[i] = (byte) ('!' + i);
-            }
-        }
+        /**
+         * The shared encoder for the Ascii85 alphabet.
+         */
+        public static final Base85Encoder STANDARD_ENCODER = new Base85Encoder(STANDARD);
 
         /**
          * The ZeroMQ Z85 alphabet.
@@ -138,14 +134,15 @@ public class Base85Codec implements Encoder<byte[], byte[]>, Decoder<byte[], byt
                 ']', '{', '}', '@', '%', '$', '#' };
 
         /**
-         * The shared encoder for the Ascii85 alphabet.
-         */
-        public static final Base85Encoder STANDARD_ENCODER = new Base85Encoder(STANDARD);
-
-        /**
          * The shared encoder for the ZeroMQ Z85 alphabet.
          */
         public static final Base85Encoder Z85_ENCODER = new Base85Encoder(Z85);
+
+        static {
+            for (int i = 0; i < STANDARD.length; i++) {
+                STANDARD[i] = (byte) ('!' + i);
+            }
+        }
 
         /**
          * The alphabet used to convert Base85 digits to bytes.
@@ -159,6 +156,16 @@ public class Base85Codec implements Encoder<byte[], byte[]>, Decoder<byte[], byt
          */
         public Base85Encoder(final byte[] alphabet) {
             this.alphabet = alphabet;
+        }
+
+        /**
+         * Estimates the encoded byte length for the specified input length.
+         *
+         * @param inputLength The input byte length.
+         * @return The estimated encoded byte length.
+         */
+        private static int estimateOutputLength(final int inputLength) {
+            return (int) Math.ceil(inputLength * ENCODED_CHUNK_SIZE / (double) CHUNK_SIZE);
         }
 
         /**
@@ -214,16 +221,6 @@ public class Base85Codec implements Encoder<byte[], byte[]>, Decoder<byte[], byt
             }
         }
 
-        /**
-         * Estimates the encoded byte length for the specified input length.
-         *
-         * @param inputLength The input byte length.
-         * @return The estimated encoded byte length.
-         */
-        private static int estimateOutputLength(final int inputLength) {
-            return (int) Math.ceil(inputLength * ENCODED_CHUNK_SIZE / (double) CHUNK_SIZE);
-        }
-
     }
 
     /**
@@ -261,6 +258,29 @@ public class Base85Codec implements Encoder<byte[], byte[]>, Decoder<byte[], byt
             for (int i = 0; i < alphabet.length; i++) {
                 this.lookupTable[alphabet[i] & 0xff] = (byte) i;
             }
+        }
+
+        /**
+         * Writes decoded bytes from one unsigned 32-bit tuple.
+         *
+         * @param out       The output stream receiving decoded bytes.
+         * @param tuple     The decoded unsigned 32-bit tuple.
+         * @param byteCount The number of decoded bytes to emit.
+         */
+        private static void writeDecodedTuple(final ByteArrayOutputStream out, final long tuple, final int byteCount) {
+            for (int i = CHUNK_SIZE - 1; i >= CHUNK_SIZE - byteCount; i--) {
+                out.write((int) ((tuple >> (i * 8)) & 0xff));
+            }
+        }
+
+        /**
+         * Estimates the decoded byte length for the specified encoded length.
+         *
+         * @param encodedLength The encoded byte length.
+         * @return The estimated decoded byte length.
+         */
+        private static int estimateDecodedLength(final int encodedLength) {
+            return (int) Math.ceil(encodedLength * CHUNK_SIZE / (double) ENCODED_CHUNK_SIZE);
         }
 
         /**
@@ -306,29 +326,6 @@ public class Base85Codec implements Encoder<byte[], byte[]>, Decoder<byte[], byt
             }
 
             return out.toByteArray();
-        }
-
-        /**
-         * Writes decoded bytes from one unsigned 32-bit tuple.
-         *
-         * @param out       The output stream receiving decoded bytes.
-         * @param tuple     The decoded unsigned 32-bit tuple.
-         * @param byteCount The number of decoded bytes to emit.
-         */
-        private static void writeDecodedTuple(final ByteArrayOutputStream out, final long tuple, final int byteCount) {
-            for (int i = CHUNK_SIZE - 1; i >= CHUNK_SIZE - byteCount; i--) {
-                out.write((int) ((tuple >> (i * 8)) & 0xff));
-            }
-        }
-
-        /**
-         * Estimates the decoded byte length for the specified encoded length.
-         *
-         * @param encodedLength The encoded byte length.
-         * @return The estimated decoded byte length.
-         */
-        private static int estimateDecodedLength(final int encodedLength) {
-            return (int) Math.ceil(encodedLength * CHUNK_SIZE / (double) ENCODED_CHUNK_SIZE);
         }
 
     }

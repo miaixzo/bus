@@ -240,10 +240,10 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
     /**
      * Anti-aliasing options.
      *
+     * @author Kimi Liu
      * @see RenderingHints#VALUE_ANTIALIAS_ON
      * @see RenderingHints#VALUE_ANTIALIAS_OFF
      * @see RenderingHints#VALUE_ANTIALIAS_DEFAULT
-     * @author Kimi Liu
      */
     public enum Antialias {
 
@@ -283,10 +283,10 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
     /**
      * Text anti-aliasing options.
      *
+     * @author Kimi Liu
      * @see RenderingHints#VALUE_TEXT_ANTIALIAS_ON
      * @see RenderingHints#VALUE_TEXT_ANTIALIAS_OFF
      * @see RenderingHints#VALUE_TEXT_ANTIALIAS_DEFAULT
-     * @author Kimi Liu
      */
     public enum TextAntialias {
 
@@ -346,10 +346,10 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
     /**
      * Color rendering methods.
      *
+     * @author Kimi Liu
      * @see RenderingHints#VALUE_COLOR_RENDER_SPEED
      * @see RenderingHints#VALUE_COLOR_RENDER_QUALITY
      * @see RenderingHints#VALUE_COLOR_RENDER_DEFAULT
-     * @author Kimi Liu
      */
     public enum ColorRender {
 
@@ -389,10 +389,10 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
     /**
      * Rendering techniques.
      *
+     * @author Kimi Liu
      * @see RenderingHints#VALUE_RENDER_SPEED
      * @see RenderingHints#VALUE_RENDER_QUALITY
      * @see RenderingHints#VALUE_RENDER_DEFAULT
-     * @author Kimi Liu
      */
     public enum Render {
 
@@ -433,10 +433,10 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
      * Dithering options. Dithering is the process of synthesizing a wider range of colors from a limited set by
      * coloring adjacent pixels to create the illusion of a new color.
      *
+     * @author Kimi Liu
      * @see RenderingHints#VALUE_DITHER_ENABLE
      * @see RenderingHints#VALUE_DITHER_DISABLE
      * @see RenderingHints#VALUE_DITHER_DEFAULT
-     * @author Kimi Liu
      */
     public enum Dither {
 
@@ -476,10 +476,10 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
     /**
      * Font metrics options.
      *
+     * @author Kimi Liu
      * @see RenderingHints#VALUE_FRACTIONALMETRICS_ON
      * @see RenderingHints#VALUE_FRACTIONALMETRICS_OFF
      * @see RenderingHints#VALUE_FRACTIONALMETRICS_DEFAULT
-     * @author Kimi Liu
      */
     public enum FractionalMetrics {
 
@@ -521,10 +521,10 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
      * target pixel positions. In such cases, the color value of each transformed pixel must be determined from the
      * surrounding pixels. Interpolation is the process of achieving this.
      *
+     * @author Kimi Liu
      * @see RenderingHints#VALUE_INTERPOLATION_BICUBIC
      * @see RenderingHints#VALUE_INTERPOLATION_BILINEAR
      * @see RenderingHints#VALUE_INTERPOLATION_NEAREST_NEIGHBOR
-     * @author Kimi Liu
      */
     public enum Interpolation {
 
@@ -564,10 +564,10 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
     /**
      * Alpha compositing adjustment.
      *
+     * @author Kimi Liu
      * @see RenderingHints#VALUE_ALPHA_INTERPOLATION_SPEED
      * @see RenderingHints#VALUE_ALPHA_INTERPOLATION_QUALITY
      * @see RenderingHints#VALUE_ALPHA_INTERPOLATION_DEFAULT
-     * @author Kimi Liu
      */
     public enum AlphaInterpolation {
 
@@ -607,10 +607,10 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
     /**
      * Stroke normalization control.
      *
+     * @author Kimi Liu
      * @see RenderingHints#VALUE_STROKE_NORMALIZE
      * @see RenderingHints#VALUE_STROKE_PURE
      * @see RenderingHints#VALUE_STROKE_DEFAULT
-     * @author Kimi Liu
      */
     public enum StrokeControl {
 

@@ -153,6 +153,17 @@ final class SystemAioProvider implements AioProvider {
     }
 
     /**
+     * Rejects resource creation after the group starts closing.
+     *
+     * @param group channel group
+     */
+    private static void ensureOpen(final AioGroup group) {
+        if (!group.opened()) {
+            throw new StatefulException("AIO group is closed");
+        }
+    }
+
+    /**
      * Opens a client channel.
      *
      * @param group open asynchronous channel group owning the client channel
@@ -219,17 +230,6 @@ final class SystemAioProvider implements AioProvider {
                     options == null ? SocketOptions.defaults() : options);
         } catch (final RuntimeException e) {
             throw new InternalException("Unable to open TCP server", e);
-        }
-    }
-
-    /**
-     * Rejects resource creation after the group starts closing.
-     *
-     * @param group channel group
-     */
-    private static void ensureOpen(final AioGroup group) {
-        if (!group.opened()) {
-            throw new StatefulException("AIO group is closed");
         }
     }
 

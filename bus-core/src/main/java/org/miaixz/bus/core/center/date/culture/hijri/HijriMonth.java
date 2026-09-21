@@ -38,18 +38,6 @@ public class HijriMonth extends MonthParts {
             "舍尔邦月", "赖买丹月", "闪瓦鲁月", "都尔喀尔德月", "都尔黑哲月" };
 
     /**
-     * Validates a Hijri year and month.
-     *
-     * @param year  Hijri year
-     * @param month Hijri month, 1-12
-     * @throws IllegalArgumentException if the month or year is invalid
-     */
-    public static void validate(int year, int month) {
-        validateRange(month, 1, 12, "hijri month");
-        HijriYear.validate(year);
-    }
-
-    /**
      * Constructs a Hijri month.
      *
      * @param year  Hijri year
@@ -59,6 +47,18 @@ public class HijriMonth extends MonthParts {
         validate(year, month);
         this.year = year;
         this.month = month;
+    }
+
+    /**
+     * Validates a Hijri year and month.
+     *
+     * @param year  Hijri year
+     * @param month Hijri month, 1-12
+     * @throws IllegalArgumentException if the month or year is invalid
+     */
+    public static void validate(int year, int month) {
+        validateRange(month, 1, 12, "hijri month");
+        HijriYear.validate(year);
     }
 
     /**

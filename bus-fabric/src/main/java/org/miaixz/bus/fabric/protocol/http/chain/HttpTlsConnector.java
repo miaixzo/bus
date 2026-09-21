@@ -85,6 +85,46 @@ final class HttpTlsConnector {
     }
 
     /**
+     * Waits for the Dispatcher-owned handshake future.
+     */
+    private static TlsHandshake await(
+            final CompletableFuture<TlsHandshake> future,
+            final Timeout timeout,
+            final Cancellation cancellation) {
+        final Runnable unregister = cancellation.onCancel(() -> future.cancel(true));
+        try {
+            return timeout.connect().isZero() ? future.get()
+                    : future.get(timeout.connect().toNanos(), TimeUnit.NANOSECONDS);
+        } catch (final java.util.concurrent.TimeoutException e) {
+            future.cancel(true);
+            throw new TimeoutException("TLS handshake timed out", e);
+        } catch (final InterruptedException e) {
+            future.cancel(true);
+            Thread.currentThread().interrupt();
+            throw new SocketException("TLS handshake interrupted", e);
+        } catch (final ExecutionException e) {
+            final Throwable cause = e.getCause();
+            throw cause instanceof RuntimeException runtime ? runtime
+                    : new SocketException("TLS handshake failed", cause);
+        } finally {
+            unregister.run();
+        }
+    }
+
+    /**
+     * Maps negotiated ALPN to the supported HTTP protocol.
+     */
+    private static Protocol protocol(final String value) {
+        if (value == null || value.isBlank() || Protocol.HTTP_1_1.name.equalsIgnoreCase(value)) {
+            return Protocol.HTTP_1_1;
+        }
+        if (Protocol.HTTP_2.name.equalsIgnoreCase(value)) {
+            return Protocol.HTTP_2;
+        }
+        throw new ProtocolException("Unsupported negotiated application protocol: " + value);
+    }
+
+    /**
      * Upgrades a conduit-based connection.
      *
      * @param raw          connected transport
@@ -135,46 +175,6 @@ final class HttpTlsConnector {
         } finally {
             unregister.run();
         }
-    }
-
-    /**
-     * Waits for the Dispatcher-owned handshake future.
-     */
-    private static TlsHandshake await(
-            final CompletableFuture<TlsHandshake> future,
-            final Timeout timeout,
-            final Cancellation cancellation) {
-        final Runnable unregister = cancellation.onCancel(() -> future.cancel(true));
-        try {
-            return timeout.connect().isZero() ? future.get()
-                    : future.get(timeout.connect().toNanos(), TimeUnit.NANOSECONDS);
-        } catch (final java.util.concurrent.TimeoutException e) {
-            future.cancel(true);
-            throw new TimeoutException("TLS handshake timed out", e);
-        } catch (final InterruptedException e) {
-            future.cancel(true);
-            Thread.currentThread().interrupt();
-            throw new SocketException("TLS handshake interrupted", e);
-        } catch (final ExecutionException e) {
-            final Throwable cause = e.getCause();
-            throw cause instanceof RuntimeException runtime ? runtime
-                    : new SocketException("TLS handshake failed", cause);
-        } finally {
-            unregister.run();
-        }
-    }
-
-    /**
-     * Maps negotiated ALPN to the supported HTTP protocol.
-     */
-    private static Protocol protocol(final String value) {
-        if (value == null || value.isBlank() || Protocol.HTTP_1_1.name.equalsIgnoreCase(value)) {
-            return Protocol.HTTP_1_1;
-        }
-        if (Protocol.HTTP_2.name.equalsIgnoreCase(value)) {
-            return Protocol.HTTP_2;
-        }
-        throw new ProtocolException("Unsupported negotiated application protocol: " + value);
     }
 
     /**

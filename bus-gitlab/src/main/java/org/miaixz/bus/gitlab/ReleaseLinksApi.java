@@ -32,8 +32,8 @@ import org.miaixz.bus.gitlab.models.ReleaseLinkParams;
 /**
  * This class provides an entry point to all the GitLab ReleaseLinks API calls.
  *
- * @see <a href="https://docs.gitlab.com/ce/api/releases/links.html">ReleaseLinks API at GitLab</a>
  * @author Kimi Liu
+ * @see <a href="https://docs.gitlab.com/ce/api/releases/links.html">ReleaseLinks API at GitLab</a>
  */
 public class ReleaseLinksApi extends AbstractApi {
 

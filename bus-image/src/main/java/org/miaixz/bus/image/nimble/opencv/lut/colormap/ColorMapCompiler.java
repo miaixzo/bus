@@ -34,6 +34,7 @@ import org.miaixz.bus.image.nimble.opencv.lut.ByteLut;
 public final class ColorMapCompiler {
 
     public static final int BYTE_LUT_ENTRIES = 256;
+
     public static final int MAX_LOOKUP_ENTRIES = 1 << ColorMap.MAX_BITS;
 
     private ColorMapCompiler() {

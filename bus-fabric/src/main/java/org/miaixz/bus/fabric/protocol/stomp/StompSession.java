@@ -169,16 +169,6 @@ public class StompSession implements Session {
     private final AtomicBoolean terminating;
 
     /**
-     * Last successfully written frame or heartbeat timestamp.
-     */
-    private volatile long lastWriteNanos;
-
-    /**
-     * Last received frame or heartbeat timestamp.
-     */
-    private volatile long lastReadNanos;
-
-    /**
      * Maximum bytes allowed when materializing session payloads.
      */
     private final long materializeMaxBytes;
@@ -187,6 +177,16 @@ public class StompSession implements Session {
      * Lifecycle scope.
      */
     private final SessionLifecycle scope;
+
+    /**
+     * Last successfully written frame or heartbeat timestamp.
+     */
+    private volatile long lastWriteNanos;
+
+    /**
+     * Last received frame or heartbeat timestamp.
+     */
+    private volatile long lastReadNanos;
 
     /**
      * Creates an opened session.
@@ -338,6 +338,59 @@ public class StompSession implements Session {
         this.scope.open(this);
         scheduleOutboundHeartbeat();
         scheduleInboundDeadline();
+    }
+
+    /**
+     * Applies a destination prefix when absent.
+     *
+     * @param prefix      STOMP destination namespace prefix
+     * @param destination destination to normalize
+     * @return normalized destination
+     */
+    private static String prefixed(final String prefix, final String destination) {
+        final String value = StompMessage.validateToken(destination, "STOMP destination");
+        if (value.equals(prefix) || value.startsWith(prefix + Symbol.SLASH)) {
+            return value;
+        }
+        return value.charAt(Normal._0) == Symbol.C_SLASH ? prefix + value : prefix + Symbol.SLASH + value;
+    }
+
+    /**
+     * Atomically replaces a heartbeat handle and clears it after terminal completion.
+     *
+     * @param reference owned handle reference
+     * @param created   replacement handle
+     */
+    private static void replaceHandle(final AtomicReference<DispatchHandle> reference, final DispatchHandle created) {
+        final DispatchHandle previous = reference.getAndSet(created);
+        if (previous != null) {
+            previous.cancel();
+        }
+        created.future().whenComplete((ignored, cause) -> reference.compareAndSet(created, null));
+    }
+
+    /**
+     * Cancels and clears one owned heartbeat handle.
+     *
+     * @param reference handle reference
+     */
+    private static void cancelHandle(final AtomicReference<DispatchHandle> reference) {
+        final DispatchHandle handle = reference.getAndSet(null);
+        if (handle != null) {
+            handle.cancel();
+        }
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  field name
+     * @param <T>   value type
+     * @return the validated reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -932,21 +985,6 @@ public class StompSession implements Session {
     }
 
     /**
-     * Applies a destination prefix when absent.
-     *
-     * @param prefix      STOMP destination namespace prefix
-     * @param destination destination to normalize
-     * @return normalized destination
-     */
-    private static String prefixed(final String prefix, final String destination) {
-        final String value = StompMessage.validateToken(destination, "STOMP destination");
-        if (value.equals(prefix) || value.startsWith(prefix + Symbol.SLASH)) {
-            return value;
-        }
-        return value.charAt(Normal._0) == Symbol.C_SLASH ? prefix + value : prefix + Symbol.SLASH + value;
-    }
-
-    /**
      * Writes a frame.
      *
      * @param frame STOMP frame to encode and write
@@ -1261,20 +1299,6 @@ public class StompSession implements Session {
     }
 
     /**
-     * Atomically replaces a heartbeat handle and clears it after terminal completion.
-     *
-     * @param reference owned handle reference
-     * @param created   replacement handle
-     */
-    private static void replaceHandle(final AtomicReference<DispatchHandle> reference, final DispatchHandle created) {
-        final DispatchHandle previous = reference.getAndSet(created);
-        if (previous != null) {
-            previous.cancel();
-        }
-        created.future().whenComplete((ignored, cause) -> reference.compareAndSet(created, null));
-    }
-
-    /**
      * Terminates the session after cancelling both heartbeat handles exactly once.
      *
      * @param termination requested terminal path
@@ -1376,18 +1400,6 @@ public class StompSession implements Session {
     }
 
     /**
-     * Cancels and clears one owned heartbeat handle.
-     *
-     * @param reference handle reference
-     */
-    private static void cancelHandle(final AtomicReference<DispatchHandle> reference) {
-        final DispatchHandle handle = reference.getAndSet(null);
-        if (handle != null) {
-            handle.cancel();
-        }
-    }
-
-    /**
      * Returns monotonic elapsed nanoseconds without exposing negative clock movement.
      *
      * @param activityNanos activity timestamp
@@ -1449,15 +1461,25 @@ public class StompSession implements Session {
     }
 
     /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  field name
-     * @param <T>   value type
-     * @return the validated reference
+     * Session terminal path selected by the termination guard owner.
      */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    private enum Termination {
+
+        /**
+         * Normal close after best-effort DISCONNECT.
+         */
+        CLOSE,
+
+        /**
+         * Explicit cancellation.
+         */
+        CANCEL,
+
+        /**
+         * Protocol, transport, or heartbeat failure.
+         */
+        FAIL
+
     }
 
     /**
@@ -1511,28 +1533,6 @@ public class StompSession implements Session {
         protected String dispatchKey() {
             return "stomp:receipt";
         }
-
-    }
-
-    /**
-     * Session terminal path selected by the termination guard owner.
-     */
-    private enum Termination {
-
-        /**
-         * Normal close after best-effort DISCONNECT.
-         */
-        CLOSE,
-
-        /**
-         * Explicit cancellation.
-         */
-        CANCEL,
-
-        /**
-         * Protocol, transport, or heartbeat failure.
-         */
-        FAIL
 
     }
 

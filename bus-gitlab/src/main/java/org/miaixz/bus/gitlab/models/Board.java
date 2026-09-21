@@ -32,9 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Board implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852238266102L;
 
@@ -42,42 +39,52 @@ public class Board implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The hide backlog list value.
      */
     private Boolean hideBacklogList;
+
     /**
      * The hide closed list value.
      */
     private Boolean hideClosedList;
+
     /**
      * The project value.
      */
     private Project project;
+
     /**
      * The lists value.
      */
     private List<BoardList> lists;
+
     /**
      * The group value.
      */
     private Group group;
+
     /**
      * The milestone value.
      */
     private Milestone milestone;
+
     /**
      * The assignee value.
      */
     private Assignee assignee;
+
     /**
      * The labels value.
      */
     private List<Label> labels;
+
     /**
      * The weight value.
      */

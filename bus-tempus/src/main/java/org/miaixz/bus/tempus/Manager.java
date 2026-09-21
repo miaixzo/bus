@@ -43,14 +43,14 @@ public class Manager implements Serializable {
     private static final long serialVersionUID = 2852287209701L;
 
     /**
-     * List of running task executors.
-     */
-    private final List<Executor> executors = new ArrayList<>();
-
-    /**
      * List of task launchers.
      */
     protected final List<Launcher> launchers = new ArrayList<>();
+
+    /**
+     * List of running task executors.
+     */
+    private final List<Executor> executors = new ArrayList<>();
 
     /**
      * The scheduler that this manager belongs to.

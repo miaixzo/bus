@@ -31,9 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class MergeRequestDiff extends MergeRequestVersion {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852262933296L;
 
@@ -41,6 +38,7 @@ public class MergeRequestDiff extends MergeRequestVersion {
      * The commits value.
      */
     private List<Commit> commits;
+
     /**
      * The diffs value.
      */

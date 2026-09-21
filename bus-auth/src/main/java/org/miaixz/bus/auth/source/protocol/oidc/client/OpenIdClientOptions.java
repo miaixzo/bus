@@ -215,22 +215,27 @@ public record OpenIdClientOptions(OAuth2ClientOptions oauth2Options, Optional<En
          * Immutable OAuth client options extended by this OpenID profile.
          */
         private final OAuth2ClientOptions oauth2Options;
+
         /**
          * Accepted ID Token signing algorithms in caller order.
          */
         private final Set<JwaAlgorithm> signingAlgorithms = new LinkedHashSet<>();
+
         /**
          * Optional OpenID Provider discovery endpoint.
          */
         private Optional<Endpoint> discoveryEndpoint = Optional.empty();
+
         /**
          * Optional UserInfo endpoint.
          */
         private Optional<Endpoint> userInfoEndpoint = Optional.empty();
+
         /**
          * Optional provider JWK Set endpoint.
          */
         private Optional<Endpoint> jwkSetEndpoint = Optional.empty();
+
         /**
          * Optional relying-party initiated end-session endpoint.
          */

@@ -34,9 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class EpicIssue extends AbstractIssue {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852253051692L;
 
@@ -50,6 +47,7 @@ public class EpicIssue extends AbstractIssue {
      * The epic issue id value.
      */
     private Long epicIssueId;
+
     /**
      * The relative position value.
      */

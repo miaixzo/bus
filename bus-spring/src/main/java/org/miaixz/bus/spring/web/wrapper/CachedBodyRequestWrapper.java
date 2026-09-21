@@ -58,6 +58,37 @@ public class CachedBodyRequestWrapper extends HttpServletRequestWrapper {
     }
 
     /**
+     * Reads a request body without retaining bytes beyond the hard limit.
+     *
+     * @param request source HTTP request
+     * @param limit   maximum body size in bytes
+     * @return complete bounded body
+     * @throws IOException when reading fails or the body exceeds the limit
+     */
+    private static byte[] readBounded(HttpServletRequest request, int limit) throws IOException {
+        int initial = request.getContentLength() > 0 ? Math.min(request.getContentLength(), Math.min(limit, 8192)) : 0;
+        ByteArrayOutputStream output = new ByteArrayOutputStream(initial);
+        byte[] buffer = new byte[Math.min(8192, limit)];
+        int total = 0;
+        try {
+            ServletInputStream input = request.getInputStream();
+            int count;
+            while ((count = input.read(buffer)) != -1) {
+                if (count > limit - total) {
+                    output.reset();
+                    throw new RelevantException(ErrorCode._413, "Request body exceeds the configured limit");
+                }
+                output.write(buffer, 0, count);
+                total += count;
+            }
+            return output.toByteArray();
+        } catch (IOException | RuntimeException failure) {
+            output.reset();
+            throw failure;
+        }
+    }
+
+    /**
      * Returns a defensive copy of the cached bytes.
      *
      * @return detached cached body
@@ -110,37 +141,6 @@ public class CachedBodyRequestWrapper extends HttpServletRequestWrapper {
             return java.nio.charset.Charset.forName(encoding);
         } catch (RuntimeException ignored) {
             return Charset.UTF_8;
-        }
-    }
-
-    /**
-     * Reads a request body without retaining bytes beyond the hard limit.
-     *
-     * @param request source HTTP request
-     * @param limit   maximum body size in bytes
-     * @return complete bounded body
-     * @throws IOException when reading fails or the body exceeds the limit
-     */
-    private static byte[] readBounded(HttpServletRequest request, int limit) throws IOException {
-        int initial = request.getContentLength() > 0 ? Math.min(request.getContentLength(), Math.min(limit, 8192)) : 0;
-        ByteArrayOutputStream output = new ByteArrayOutputStream(initial);
-        byte[] buffer = new byte[Math.min(8192, limit)];
-        int total = 0;
-        try {
-            ServletInputStream input = request.getInputStream();
-            int count;
-            while ((count = input.read(buffer)) != -1) {
-                if (count > limit - total) {
-                    output.reset();
-                    throw new RelevantException(ErrorCode._413, "Request body exceeds the configured limit");
-                }
-                output.write(buffer, 0, count);
-                total += count;
-            }
-            return output.toByteArray();
-        } catch (IOException | RuntimeException failure) {
-            output.reset();
-            throw failure;
         }
     }
 

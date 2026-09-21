@@ -39,14 +39,6 @@ import org.miaixz.bus.fabric.network.tls.cert.CertificatePolicy;
 public interface SslContextFactoryAdapter {
 
     /**
-     * Creates an SSL context.
-     *
-     * @return SSL context produced for the caller
-     * @throws Exception when context creation fails
-     */
-    SSLContext create() throws Exception;
-
-    /**
      * Wraps a callable SSL context factory.
      *
      * @param factory non-null callable invoked for each {@link #create()} request
@@ -66,15 +58,6 @@ public interface SslContextFactoryAdapter {
         final SSLContext checkedContext = Assert
                 .notNull(context, () -> new ValidateException("SSL context must not be null"));
         return () -> checkedContext;
-    }
-
-    /**
-     * Creates a current TLS context.
-     *
-     * @return validated fabric TLS context created from this adapter's SSL context
-     */
-    default TlsContext tlsContext() {
-        return tlsContext(this);
     }
 
     /**
@@ -106,6 +89,23 @@ public interface SslContextFactoryAdapter {
                 .clientAuth(
                         Assert.notNull(clientAuth, () -> new ValidateException("Client auth mode must not be null")))
                 .build();
+    }
+
+    /**
+     * Creates an SSL context.
+     *
+     * @return SSL context produced for the caller
+     * @throws Exception when context creation fails
+     */
+    SSLContext create() throws Exception;
+
+    /**
+     * Creates a current TLS context.
+     *
+     * @return validated fabric TLS context created from this adapter's SSL context
+     */
+    default TlsContext tlsContext() {
+        return tlsContext(this);
     }
 
 }

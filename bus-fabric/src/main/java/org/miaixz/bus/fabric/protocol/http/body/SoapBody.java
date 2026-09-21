@@ -107,74 +107,6 @@ public class SoapBody implements RequestBody {
     }
 
     /**
-     * Returns SOAPAction.
-     *
-     * @return explicit SOAPAction or one derived from the operation namespace and name
-     */
-    public String action() {
-        return action.isBlank() ? defaultAction(namespace, method) : action;
-    }
-
-    /**
-     * Returns the envelope text.
-     *
-     * @return XML envelope
-     */
-    public String xml() {
-        final StringBuilder builder = new StringBuilder(256);
-        builder.append("<?xml version=\"1.0\" encoding=\"").append(charset.name()).append("\"?>");
-        builder.append(Symbol.C_LT).append(SOAP_BODY_SOAP_PREFIX).append(":Envelope xmlns:")
-                .append(SOAP_BODY_SOAP_PREFIX).append("=\"").append(SOAP_BODY_SOAP_NAMESPACE)
-                .append(Symbol.C_DOUBLE_QUOTES);
-        if (!namespace.isBlank()) {
-            builder.append(" xmlns:").append(SOAP_METHOD_PREFIX).append("=\"").append(escapeAttribute(namespace))
-                    .append(Symbol.C_DOUBLE_QUOTES);
-        }
-        builder.append(Symbol.C_GT);
-        if (!headers.isEmpty()) {
-            builder.append(Symbol.C_LT).append(SOAP_BODY_SOAP_PREFIX).append(":Header>");
-            appendElements(builder, headers);
-            builder.append("</").append(SOAP_BODY_SOAP_PREFIX).append(":Header>");
-        }
-        builder.append(Symbol.C_LT).append(SOAP_BODY_SOAP_PREFIX).append(":Body>");
-        appendOpen(builder, method, !namespace.isBlank());
-        appendElements(builder, params);
-        appendClose(builder, method, !namespace.isBlank());
-        builder.append("</").append(SOAP_BODY_SOAP_PREFIX).append(":Body>");
-        builder.append("</").append(SOAP_BODY_SOAP_PREFIX).append(":Envelope>");
-        return builder.toString();
-    }
-
-    /**
-     * Returns the payload body.
-     *
-     * @return payload body
-     */
-    public PayloadBody body() {
-        return PayloadBody.of(payload(), media());
-    }
-
-    /**
-     * Returns SOAP media.
-     *
-     * @return XML media type carrying the configured charset
-     */
-    @Override
-    public MediaType media() {
-        return MediaType.TEXT_XML_TYPE.withCharset(charset);
-    }
-
-    /**
-     * Returns SOAP payload.
-     *
-     * @return repeatable payload containing the serialized SOAP envelope
-     */
-    @Override
-    public Payload payload() {
-        return Payload.of(xml(), charset);
-    }
-
-    /**
      * Appends map entries as XML elements.
      *
      * @param builder target builder
@@ -300,21 +232,79 @@ public class SoapBody implements RequestBody {
     }
 
     /**
+     * Returns SOAPAction.
+     *
+     * @return explicit SOAPAction or one derived from the operation namespace and name
+     */
+    public String action() {
+        return action.isBlank() ? defaultAction(namespace, method) : action;
+    }
+
+    /**
+     * Returns the envelope text.
+     *
+     * @return XML envelope
+     */
+    public String xml() {
+        final StringBuilder builder = new StringBuilder(256);
+        builder.append("<?xml version=\"1.0\" encoding=\"").append(charset.name()).append("\"?>");
+        builder.append(Symbol.C_LT).append(SOAP_BODY_SOAP_PREFIX).append(":Envelope xmlns:")
+                .append(SOAP_BODY_SOAP_PREFIX).append("=\"").append(SOAP_BODY_SOAP_NAMESPACE)
+                .append(Symbol.C_DOUBLE_QUOTES);
+        if (!namespace.isBlank()) {
+            builder.append(" xmlns:").append(SOAP_METHOD_PREFIX).append("=\"").append(escapeAttribute(namespace))
+                    .append(Symbol.C_DOUBLE_QUOTES);
+        }
+        builder.append(Symbol.C_GT);
+        if (!headers.isEmpty()) {
+            builder.append(Symbol.C_LT).append(SOAP_BODY_SOAP_PREFIX).append(":Header>");
+            appendElements(builder, headers);
+            builder.append("</").append(SOAP_BODY_SOAP_PREFIX).append(":Header>");
+        }
+        builder.append(Symbol.C_LT).append(SOAP_BODY_SOAP_PREFIX).append(":Body>");
+        appendOpen(builder, method, !namespace.isBlank());
+        appendElements(builder, params);
+        appendClose(builder, method, !namespace.isBlank());
+        builder.append("</").append(SOAP_BODY_SOAP_PREFIX).append(":Body>");
+        builder.append("</").append(SOAP_BODY_SOAP_PREFIX).append(":Envelope>");
+        return builder.toString();
+    }
+
+    /**
+     * Returns the payload body.
+     *
+     * @return payload body
+     */
+    public PayloadBody body() {
+        return PayloadBody.of(payload(), media());
+    }
+
+    /**
+     * Returns SOAP media.
+     *
+     * @return XML media type carrying the configured charset
+     */
+    @Override
+    public MediaType media() {
+        return MediaType.TEXT_XML_TYPE.withCharset(charset);
+    }
+
+    /**
+     * Returns SOAP payload.
+     *
+     * @return repeatable payload containing the serialized SOAP envelope
+     */
+    @Override
+    public Payload payload() {
+        return Payload.of(xml(), charset);
+    }
+
+    /**
      * SOAP envelope builder.
      *
      * @author Kimi Liu
      */
     public static class Builder {
-
-        /**
-         * Candidate operation namespace URI.
-         */
-        private String namespace;
-
-        /**
-         * Candidate operation local name.
-         */
-        private String method;
 
         /**
          * Mutable insertion-ordered SOAP header elements.
@@ -325,6 +315,16 @@ public class SoapBody implements RequestBody {
          * Mutable insertion-ordered operation parameter elements.
          */
         private final Map<String, Object> params = new LinkedHashMap<>();
+
+        /**
+         * Candidate operation namespace URI.
+         */
+        private String namespace;
+
+        /**
+         * Candidate operation local name.
+         */
+        private String method;
 
         /**
          * XML character encoding candidate.

@@ -32,12 +32,12 @@ import org.miaixz.bus.gitlab.models.BoardList;
 
 /**
  * This class implements the client side API for the GitLab Issue Boards API calls.
- *
+ * <p>
  * NOTE: If a user is not a member of a group and the group is private, a GET request on that group will result to a 404
  * status code.
  *
- * @see <a href="https://docs.gitlab.com/ce/api/boards.html">GitLab Issue Boards API Documentaion</a>
  * @author Kimi Liu
+ * @see <a href="https://docs.gitlab.com/ce/api/boards.html">GitLab Issue Boards API Documentaion</a>
  */
 public class BoardsApi extends AbstractApi {
 

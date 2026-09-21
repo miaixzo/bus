@@ -37,9 +37,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
  */
 public class Iteration implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852259131760L;
 
@@ -47,34 +44,42 @@ public class Iteration implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The iid value.
      */
     private Long iid;
+
     /**
      * The sequence value.
      */
     private Long sequence;
+
     /**
      * The group id value.
      */
     private Long groupId;
+
     /**
      * The title value.
      */
     private String title;
+
     /**
      * The description value.
      */
     private String description;
+
     /**
      * The state value.
      */
     private IterationState state;
+
     /**
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The updated at value.
      */
@@ -85,81 +90,12 @@ public class Iteration implements Serializable {
      */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date startDate;
+
     /**
      * The due date value.
      */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date dueDate;
-
-    /**
-     * The iteration state enum.
-     *
-     * @author Kimi Liu
-     */
-    public enum IterationState {
-
-        /**
-         * The upcomming iteration state.
-         */
-        UPCOMMING(1),
-        /**
-         * The current iteration state.
-         */
-        CURRENT(2),
-        /**
-         * The closed iteration state.
-         */
-        CLOSED(3);
-
-        /**
-         * The value value.
-         */
-        private int value;
-
-        IterationState(int value) {
-            this.value = value;
-        }
-
-        /**
-         * Executes the from int value operation.
-         *
-         * @param value the value value
-         * @return the result
-         */
-
-        @JsonCreator
-        public static IterationState fromIntValue(int value) {
-            for (IterationState it : values()) {
-                if (it.value == value) {
-                    return it;
-                }
-            }
-            throw new IllegalArgumentException("No enum found for value: " + value);
-        }
-
-        /**
-         * Returns the int value.
-         *
-         * @return the result
-         */
-
-        @JsonValue
-        public int toIntValue() {
-            return this.value;
-        }
-
-        /**
-         * Returns the string.
-         *
-         * @return the result
-         */
-
-        @Override
-        public String toString() {
-            return name();
-        }
-
-    }
 
     /**
      * The web url value.
@@ -422,6 +358,76 @@ public class Iteration implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    /**
+     * The iteration state enum.
+     *
+     * @author Kimi Liu
+     */
+    public enum IterationState {
+
+        /**
+         * The upcomming iteration state.
+         */
+        UPCOMMING(1),
+        /**
+         * The current iteration state.
+         */
+        CURRENT(2),
+        /**
+         * The closed iteration state.
+         */
+        CLOSED(3);
+
+        /**
+         * The value value.
+         */
+        private int value;
+
+        IterationState(int value) {
+            this.value = value;
+        }
+
+        /**
+         * Executes the from int value operation.
+         *
+         * @param value the value value
+         * @return the result
+         */
+
+        @JsonCreator
+        public static IterationState fromIntValue(int value) {
+            for (IterationState it : values()) {
+                if (it.value == value) {
+                    return it;
+                }
+            }
+            throw new IllegalArgumentException("No enum found for value: " + value);
+        }
+
+        /**
+         * Returns the int value.
+         *
+         * @return the result
+         */
+
+        @JsonValue
+        public int toIntValue() {
+            return this.value;
+        }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
+
+        @Override
+        public String toString() {
+            return name();
+        }
+
     }
 
 }

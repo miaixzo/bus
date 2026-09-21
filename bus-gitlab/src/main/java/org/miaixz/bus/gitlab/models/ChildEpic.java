@@ -30,9 +30,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class ChildEpic extends AbstractEpic<ChildEpic> {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852239105250L;
 

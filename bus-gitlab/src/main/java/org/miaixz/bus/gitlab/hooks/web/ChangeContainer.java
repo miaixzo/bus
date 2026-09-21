@@ -38,6 +38,7 @@ public class ChangeContainer<T> {
      * The previous value.
      */
     private T previous;
+
     /**
      * The current value.
      */

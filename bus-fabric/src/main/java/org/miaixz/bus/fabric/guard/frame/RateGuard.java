@@ -78,6 +78,32 @@ public class RateGuard implements GuardRule {
     }
 
     /**
+     * Multiplies with saturation.
+     *
+     * @param seconds non-negative complete elapsed seconds
+     * @param bytes   positive bytes refilled per second
+     * @return product, or {@link Long#MAX_VALUE} when multiplication would overflow
+     */
+    private static long safeMultiply(final long seconds, final long bytes) {
+        if (seconds > Long.MAX_VALUE / bytes) {
+            return Long.MAX_VALUE;
+        }
+        return seconds * bytes;
+    }
+
+    /**
+     * Validates bytes per second.
+     *
+     * @param bytesPerSecond candidate bucket capacity and refill rate
+     * @return unchanged positive rate
+     * @throws ValidateException if {@code bytesPerSecond} is not positive
+     */
+    private static long validateBytesPerSecond(final long bytesPerSecond) {
+        Assert.isTrue(bytesPerSecond > Normal._0, () -> new ValidateException("Frame rate must be greater than zero"));
+        return bytesPerSecond;
+    }
+
+    /**
      * Refills from the system clock and atomically consumes frame-byte tokens without waiting.
      *
      * @param bytes non-negative token count requested by one frame
@@ -171,32 +197,6 @@ public class RateGuard implements GuardRule {
                 return;
             }
         }
-    }
-
-    /**
-     * Multiplies with saturation.
-     *
-     * @param seconds non-negative complete elapsed seconds
-     * @param bytes   positive bytes refilled per second
-     * @return product, or {@link Long#MAX_VALUE} when multiplication would overflow
-     */
-    private static long safeMultiply(final long seconds, final long bytes) {
-        if (seconds > Long.MAX_VALUE / bytes) {
-            return Long.MAX_VALUE;
-        }
-        return seconds * bytes;
-    }
-
-    /**
-     * Validates bytes per second.
-     *
-     * @param bytesPerSecond candidate bucket capacity and refill rate
-     * @return unchanged positive rate
-     * @throws ValidateException if {@code bytesPerSecond} is not positive
-     */
-    private static long validateBytesPerSecond(final long bytesPerSecond) {
-        Assert.isTrue(bytesPerSecond > Normal._0, () -> new ValidateException("Frame rate must be greater than zero"));
-        return bytesPerSecond;
     }
 
 }

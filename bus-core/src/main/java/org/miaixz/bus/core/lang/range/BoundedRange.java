@@ -107,8 +107,8 @@ import org.miaixz.bus.core.lang.Assert;
  * non-factory methods, it is necessary to check with {@link #isEmpty()} before performing operations.
  *
  * @param <T> the type of the boundary values, which must be comparable
- * @see Bound
  * @author Kimi Liu
+ * @see Bound
  */
 public class BoundedRange<T extends Comparable<? super T>> implements PredicateX<T> {
 

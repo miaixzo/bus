@@ -157,6 +157,7 @@ public class LinuxHWDiskStore extends AbstractHWDiskStore {
      * The UDEV_STAT_ORDERS constant.
      */
     private static final int[] UDEV_STAT_ORDERS = new int[UdevStat.values().length];
+
     // There are at least 11 elements in udev stat output or sometimes 15. We want
     // the rightmost 11 or 15 if there is leading text.
     /**

@@ -113,17 +113,6 @@ final class DefaultDispatcher implements Dispatcher {
     private final Map<DispatchHandle, Channel> registry;
 
     /**
-     * Creates a production dispatcher.
-     *
-     * @param observer event observer receiving dispatcher failures
-     * @return dispatcher
-     */
-    static DefaultDispatcher create(final EventObserver observer) {
-        return new DefaultDispatcher(new DispatchQueue(DispatchLimit.defaults()), DispatchWorker.create(),
-                ThreadKit.newScheduledExecutor(Normal._1), createBackgroundExecutor(), observer);
-    }
-
-    /**
      * Creates a compatibility dispatcher with owned background resources.
      *
      * @param queue     short-task dispatch queue
@@ -161,6 +150,122 @@ final class DefaultDispatcher implements Dispatcher {
         if (Logger.isInfoEnabled()) {
             Logger.info(true, "Fabric", "Dispatcher initialized: backgroundLimit={}", MAX_BACKGROUND);
         }
+    }
+
+    /**
+     * Creates a production dispatcher.
+     *
+     * @param observer event observer receiving dispatcher failures
+     * @return dispatcher
+     */
+    static DefaultDispatcher create(final EventObserver observer) {
+        return new DefaultDispatcher(new DispatchQueue(DispatchLimit.defaults()), DispatchWorker.create(),
+                ThreadKit.newScheduledExecutor(Normal._1), createBackgroundExecutor(), observer);
+    }
+
+    /**
+     * Fails a queued handle through the required running transition.
+     *
+     * @param handle queued handle to transition through failure
+     * @param cause  original failure
+     */
+    private static void failQueued(final DispatchHandle handle, final Throwable cause) {
+        if (handle.markRunning()) {
+            handle.fail(cause);
+        }
+    }
+
+    /**
+     * Fails a running handle while tolerating a concurrent terminal winner.
+     *
+     * @param handle running handle to fail
+     * @param cause  original failure
+     */
+    private static void failRunning(final DispatchHandle handle, final Throwable cause) {
+        if (handle.state() != State.RUNNING) {
+            return;
+        }
+        try {
+            handle.fail(cause);
+        } catch (final StatefulException ignored) {
+            // Another terminal transition won.
+        }
+    }
+
+    private static String topFrame(final Thread runner) {
+        if (runner == null)
+            return "not-running";
+        final StackTraceElement[] stack = runner.getStackTrace();
+        if (stack.length == 0)
+            return runner.getState().name();
+        return Arrays.stream(stack).limit(12L).map(StackTraceElement::toString).collect(Collectors.joining("<-"));
+    }
+
+    /**
+     * Waits for one executor without direct thread sleeping.
+     *
+     * @param executor executor whose termination is awaited
+     * @param name     resource name
+     */
+    private static void awaitTermination(final ExecutorService executor, final String name) {
+        final long start = System.nanoTime();
+        while (!executor.isTerminated()) {
+            if (System.nanoTime() - start >= CLOSE_WAIT_NANOS) {
+                throw new StatefulException(name + " did not stop in time");
+            }
+            if (!ThreadKit.sleep(Normal._1)) {
+                throw new StatefulException("Interrupted while closing " + name.toLowerCase());
+            }
+        }
+    }
+
+    /**
+     * Creates the dedicated virtual-thread background executor.
+     *
+     * @return executor
+     */
+    private static ExecutorService createBackgroundExecutor() {
+        return Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name("fabric-background-", Normal._0).factory());
+    }
+
+    /**
+     * Unwraps one completion wrapper.
+     *
+     * @param cause failure that may wrap the original cause
+     * @return original cause
+     */
+    private static Throwable unwrap(final Throwable cause) {
+        return cause instanceof CompletionException completion && completion.getCause() != null ? completion.getCause()
+                : cause;
+    }
+
+    /**
+     * Aggregates cleanup failures.
+     *
+     * @param failure current failure
+     * @param next    next failure
+     * @return primary failure
+     */
+    private static RuntimeException append(final RuntimeException failure, final RuntimeException next) {
+        if (failure == null) {
+            return next;
+        }
+        if (failure != next) {
+            failure.addSuppressed(next);
+        }
+        return failure;
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  diagnostic parameter name
+     * @param <T>   value type
+     * @return the validated reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -787,35 +892,6 @@ final class DefaultDispatcher implements Dispatcher {
     }
 
     /**
-     * Fails a queued handle through the required running transition.
-     *
-     * @param handle queued handle to transition through failure
-     * @param cause  original failure
-     */
-    private static void failQueued(final DispatchHandle handle, final Throwable cause) {
-        if (handle.markRunning()) {
-            handle.fail(cause);
-        }
-    }
-
-    /**
-     * Fails a running handle while tolerating a concurrent terminal winner.
-     *
-     * @param handle running handle to fail
-     * @param cause  original failure
-     */
-    private static void failRunning(final DispatchHandle handle, final Throwable cause) {
-        if (handle.state() != State.RUNNING) {
-            return;
-        }
-        try {
-            handle.fail(cause);
-        } catch (final StatefulException ignored) {
-            // Another terminal transition won.
-        }
-    }
-
-    /**
      * Closes the delayed scheduler with ThreadKit-based waiting.
      *
      * @param failure current failure
@@ -875,33 +951,6 @@ final class DefaultDispatcher implements Dispatcher {
             background.clear();
         }
         return current;
-    }
-
-    private static String topFrame(final Thread runner) {
-        if (runner == null)
-            return "not-running";
-        final StackTraceElement[] stack = runner.getStackTrace();
-        if (stack.length == 0)
-            return runner.getState().name();
-        return Arrays.stream(stack).limit(12L).map(StackTraceElement::toString).collect(Collectors.joining("<-"));
-    }
-
-    /**
-     * Waits for one executor without direct thread sleeping.
-     *
-     * @param executor executor whose termination is awaited
-     * @param name     resource name
-     */
-    private static void awaitTermination(final ExecutorService executor, final String name) {
-        final long start = System.nanoTime();
-        while (!executor.isTerminated()) {
-            if (System.nanoTime() - start >= CLOSE_WAIT_NANOS) {
-                throw new StatefulException(name + " did not stop in time");
-            }
-            if (!ThreadKit.sleep(Normal._1)) {
-                throw new StatefulException("Interrupted while closing " + name.toLowerCase());
-            }
-        }
     }
 
     /**
@@ -979,55 +1028,6 @@ final class DefaultDispatcher implements Dispatcher {
         if (scope.state() != State.RUNNING) {
             throw new StatefulException("Dispatcher is closed");
         }
-    }
-
-    /**
-     * Creates the dedicated virtual-thread background executor.
-     *
-     * @return executor
-     */
-    private static ExecutorService createBackgroundExecutor() {
-        return Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name("fabric-background-", Normal._0).factory());
-    }
-
-    /**
-     * Unwraps one completion wrapper.
-     *
-     * @param cause failure that may wrap the original cause
-     * @return original cause
-     */
-    private static Throwable unwrap(final Throwable cause) {
-        return cause instanceof CompletionException completion && completion.getCause() != null ? completion.getCause()
-                : cause;
-    }
-
-    /**
-     * Aggregates cleanup failures.
-     *
-     * @param failure current failure
-     * @param next    next failure
-     * @return primary failure
-     */
-    private static RuntimeException append(final RuntimeException failure, final RuntimeException next) {
-        if (failure == null) {
-            return next;
-        }
-        if (failure != next) {
-            failure.addSuppressed(next);
-        }
-        return failure;
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  diagnostic parameter name
-     * @param <T>   value type
-     * @return the validated reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**

@@ -33,9 +33,6 @@ import org.miaixz.bus.extra.nlp.NLPWord;
  */
 public class MynlpWord implements NLPWord {
 
-    /**
-     * The serialization version identifier for this class.
-     */
     @Serial
     private static final long serialVersionUID = 2852286667336L;
 

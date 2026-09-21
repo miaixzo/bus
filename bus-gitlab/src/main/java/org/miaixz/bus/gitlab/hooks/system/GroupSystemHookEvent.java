@@ -31,20 +31,20 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class GroupSystemHookEvent extends AbstractSystemHookEvent {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852292752260L;
+
     /**
      * The group create event value.
      */
 
     public static final String GROUP_CREATE_EVENT = "group_create";
+
     /**
      * The group destroy event value.
      */
     public static final String GROUP_DESTROY_EVENT = "group_destroy";
+
     /**
      * The group rename event value.
      */
@@ -54,42 +54,52 @@ public class GroupSystemHookEvent extends AbstractSystemHookEvent {
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The updated at value.
      */
     private Date updatedAt;
+
     /**
      * The event name value.
      */
     private String eventName;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The path value.
      */
     private String path;
+
     /**
      * The full path value.
      */
     private String fullPath;
+
     /**
      * The group id value.
      */
     private Long groupId;
+
     /**
      * The owner email value.
      */
     private String ownerEmail;
+
     /**
      * The owner name value.
      */
     private String ownerName;
+
     /**
      * The old path value.
      */
     private String oldPath;
+
     /**
      * The old full path value.
      */

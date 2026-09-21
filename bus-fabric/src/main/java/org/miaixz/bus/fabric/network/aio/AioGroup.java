@@ -132,6 +132,64 @@ public class AioGroup implements AutoCloseable {
     }
 
     /**
+     * Closes partially created resources before reporting a factory failure.
+     *
+     * @param group          JDK group, when created
+     * @param dispatcher     runtime dispatcher
+     * @param ownsDispatcher true when the dispatcher was created for this group
+     * @param cause          creation failure receiving cleanup failures as suppressed exceptions
+     */
+    private static void closeAfterCreateFailure(
+            final AsynchronousChannelGroup group,
+            final Dispatcher dispatcher,
+            final boolean ownsDispatcher,
+            final Throwable cause) {
+        if (group != null) {
+            try {
+                group.shutdownNow();
+            } catch (final IOException | RuntimeException e) {
+                cause.addSuppressed(e);
+            }
+        }
+        if (ownsDispatcher) {
+            try {
+                dispatcher.close();
+            } catch (final RuntimeException e) {
+                cause.addSuppressed(e);
+            }
+        }
+    }
+
+    /**
+     * Adds a cleanup failure to an existing failure.
+     *
+     * @param current current failure, when present
+     * @param next    next cleanup failure
+     * @return failure to throw
+     */
+    private static RuntimeException append(final RuntimeException current, final RuntimeException next) {
+        if (current == null) {
+            return next;
+        }
+        current.addSuppressed(next);
+        return current;
+    }
+
+    /**
+     * Validates the JDK asynchronous channel group thread count.
+     *
+     * @param ioThreads requested thread count
+     * @return validated thread count
+     */
+    private static int validateThreadCount(final int ioThreads) {
+        return Assert.checkBetween(
+                ioThreads,
+                Normal._1,
+                Normal._256,
+                () -> new ValidateException("AIO thread count out of range"));
+    }
+
+    /**
      * Returns the runtime dispatcher borrowed by channels.
      *
      * @return runtime dispatcher
@@ -238,64 +296,6 @@ public class AioGroup implements AutoCloseable {
             Thread.currentThread().interrupt();
             throw new InternalException("Interrupted while awaiting AIO termination", e);
         }
-    }
-
-    /**
-     * Closes partially created resources before reporting a factory failure.
-     *
-     * @param group          JDK group, when created
-     * @param dispatcher     runtime dispatcher
-     * @param ownsDispatcher true when the dispatcher was created for this group
-     * @param cause          creation failure receiving cleanup failures as suppressed exceptions
-     */
-    private static void closeAfterCreateFailure(
-            final AsynchronousChannelGroup group,
-            final Dispatcher dispatcher,
-            final boolean ownsDispatcher,
-            final Throwable cause) {
-        if (group != null) {
-            try {
-                group.shutdownNow();
-            } catch (final IOException | RuntimeException e) {
-                cause.addSuppressed(e);
-            }
-        }
-        if (ownsDispatcher) {
-            try {
-                dispatcher.close();
-            } catch (final RuntimeException e) {
-                cause.addSuppressed(e);
-            }
-        }
-    }
-
-    /**
-     * Adds a cleanup failure to an existing failure.
-     *
-     * @param current current failure, when present
-     * @param next    next cleanup failure
-     * @return failure to throw
-     */
-    private static RuntimeException append(final RuntimeException current, final RuntimeException next) {
-        if (current == null) {
-            return next;
-        }
-        current.addSuppressed(next);
-        return current;
-    }
-
-    /**
-     * Validates the JDK asynchronous channel group thread count.
-     *
-     * @param ioThreads requested thread count
-     * @return validated thread count
-     */
-    private static int validateThreadCount(final int ioThreads) {
-        return Assert.checkBetween(
-                ioThreads,
-                Normal._1,
-                Normal._256,
-                () -> new ValidateException("AIO thread count out of range"));
     }
 
 }

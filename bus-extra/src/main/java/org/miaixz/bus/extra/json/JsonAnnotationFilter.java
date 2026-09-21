@@ -67,28 +67,6 @@ public class JsonAnnotationFilter implements JsonPropertyFilter {
     }
 
     /**
-     * Determines whether the decorator contains a caller rule in addition to mandatory annotation filtering.
-     *
-     * @return {@code true} when a custom filter is configured
-     */
-    public boolean hasDelegateFilter() {
-        return delegate != JsonPropertyFilter.ALWAYS;
-    }
-
-    /**
-     * Applies mandatory annotation rules followed by the caller-supplied filter.
-     *
-     * @param source owning object, or {@code null} when unavailable
-     * @param name   Java property name
-     * @param value  current property value
-     * @return {@code true} when both annotation and caller rules include the property
-     */
-    @Override
-    public boolean accept(Object source, String name, Object value) {
-        return !isIgnored(source, name) && delegate.accept(source, name, value);
-    }
-
-    /**
      * Resolves a JavaBean property and evaluates its field and getter annotations.
      *
      * @param source owning object
@@ -131,6 +109,28 @@ public class JsonAnnotationFilter implements JsonPropertyFilter {
             AnnotatedElement element,
             Class<? extends java.lang.annotation.Annotation> annotationType) {
         return element != null && element.isAnnotationPresent(annotationType);
+    }
+
+    /**
+     * Determines whether the decorator contains a caller rule in addition to mandatory annotation filtering.
+     *
+     * @return {@code true} when a custom filter is configured
+     */
+    public boolean hasDelegateFilter() {
+        return delegate != JsonPropertyFilter.ALWAYS;
+    }
+
+    /**
+     * Applies mandatory annotation rules followed by the caller-supplied filter.
+     *
+     * @param source owning object, or {@code null} when unavailable
+     * @param name   Java property name
+     * @param value  current property value
+     * @return {@code true} when both annotation and caller rules include the property
+     */
+    @Override
+    public boolean accept(Object source, String name, Object value) {
+        return !isIgnored(source, name) && delegate.accept(source, name, value);
     }
 
 }

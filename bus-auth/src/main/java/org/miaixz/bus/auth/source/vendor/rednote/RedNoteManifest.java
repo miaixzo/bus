@@ -58,6 +58,7 @@ public class RedNoteManifest implements VendorManifest<RedNoteOptions> {
      * Stable RedNote platform routing identifier.
      */
     public static final Vendor.Id ID = new Vendor.Id("rednote");
+
     /**
      * Starts an exact RedNote marketing authorization interaction.
      */
@@ -65,6 +66,7 @@ public class RedNoteManifest implements VendorManifest<RedNoteOptions> {
             Capability.Key.application("vendor.rednote.marketing_authorize"), MarketingAuthorizationRequest.class,
             Url.class, Capability.Direction.CLIENT, Set.of(Capability.Interaction.REDIRECT),
             Capability.Security.PUBLIC);
+
     /**
      * Exchanges or refreshes an exact RedNote marketing platform token.
      */
@@ -72,14 +74,17 @@ public class RedNoteManifest implements VendorManifest<RedNoteOptions> {
             Capability.Key.application("vendor.rednote.marketing_token"), MarketingTokenRequest.class,
             MarketingTokenResponse.class, Capability.Direction.CLIENT, Set.of(Capability.Interaction.DIRECT),
             Capability.Security.CLIENT_AUTHENTICATED);
+
     /**
      * Stable marketing authorization variant identifier.
      */
     public static final Vendor.Variant MARKETING = new Vendor.Variant("marketing");
+
     /**
      * RedNote form authentication using application identifier and secret fields.
      */
     private static final Endpoint.Authentication APP_SECRET_FORM = new Endpoint.Authentication("app_secret_form");
+
     /**
      * Exact authorization-only RedNote capability set.
      */

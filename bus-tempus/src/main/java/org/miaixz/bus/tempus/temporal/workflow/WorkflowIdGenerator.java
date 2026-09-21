@@ -35,6 +35,27 @@ import org.miaixz.bus.crypto.Builder;
 public interface WorkflowIdGenerator {
 
     /**
+     * Normalizes a workflow identifier component into the restricted character set used by this framework.
+     *
+     * @param value the raw component value
+     * @return the normalized component, or {@code null} when no usable content remains
+     */
+    private static String normalizeComponent(String value) {
+        if (value == null) {
+            return null;
+        }
+        String normalized = value.trim().replaceAll("[^A-Za-z0-9._:-]+", Symbol.UNDERLINE);
+        normalized = normalized.replaceAll("_+", Symbol.UNDERLINE);
+        if (!StringKit.hasText(normalized)) {
+            return null;
+        }
+        if (normalized.length() <= Normal._128) {
+            return normalized;
+        }
+        return normalized.substring(0, 64) + Symbol.UNDERLINE + Builder.sha256Hex(normalized).substring(0, 16);
+    }
+
+    /**
      * Generates a workflow identifier with an optional prefix.
      * <p>
      * The default implementation uses the prefix followed by a colon and a generated object identifier. If the prefix
@@ -71,27 +92,6 @@ public interface WorkflowIdGenerator {
             return normalizedStableKey;
         }
         return normalizedPrefix + Symbol.C_COLON + normalizedStableKey;
-    }
-
-    /**
-     * Normalizes a workflow identifier component into the restricted character set used by this framework.
-     *
-     * @param value the raw component value
-     * @return the normalized component, or {@code null} when no usable content remains
-     */
-    private static String normalizeComponent(String value) {
-        if (value == null) {
-            return null;
-        }
-        String normalized = value.trim().replaceAll("[^A-Za-z0-9._:-]+", Symbol.UNDERLINE);
-        normalized = normalized.replaceAll("_+", Symbol.UNDERLINE);
-        if (!StringKit.hasText(normalized)) {
-            return null;
-        }
-        if (normalized.length() <= Normal._128) {
-            return normalized;
-        }
-        return normalized.substring(0, 64) + Symbol.UNDERLINE + Builder.sha256Hex(normalized).substring(0, 16);
     }
 
 }

@@ -19,13 +19,7 @@
 */
 package org.miaixz.bus.core.net.tls;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -55,11 +49,6 @@ public class TlsCipherSuite {
     private static final int PREFIX_LENGTH = Normal._4;
 
     /**
-     * Known instances by Java name.
-     */
-    private static final Map<String, TlsCipherSuite> INSTANCES = new LinkedHashMap<>();
-
-    /**
      * Comparator that treats TLS_ and SSL_ prefixed Java names consistently.
      */
     public static final Comparator<String> ORDER_BY_NAME = (left, right) -> {
@@ -72,6 +61,11 @@ public class TlsCipherSuite {
         }
         return Integer.compare(left.length(), right.length());
     };
+
+    /**
+     * Known instances by Java name.
+     */
+    private static final Map<String, TlsCipherSuite> INSTANCES = new LinkedHashMap<>();
 
     /**
      * TLS 1.3 AES-128 GCM suite with SHA-256 transcript hashing.
@@ -242,15 +236,6 @@ public class TlsCipherSuite {
     }
 
     /**
-     * Returns the Java name.
-     *
-     * @return Java name
-     */
-    public String javaName() {
-        return javaName;
-    }
-
-    /**
      * Returns an alternate SSL_/TLS_ Java name.
      *
      * @param javaName Java name
@@ -289,6 +274,15 @@ public class TlsCipherSuite {
             throw new ValidateException("TLS cipher name must be non-blank and single-line");
         }
         return javaName.trim();
+    }
+
+    /**
+     * Returns the Java name.
+     *
+     * @return Java name
+     */
+    public String javaName() {
+        return javaName;
     }
 
     @Override

@@ -23,18 +23,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.AlgorithmParameters;
-import java.security.GeneralSecurityException;
-import java.security.KeyFactory;
-import java.security.MessageDigest;
-import java.security.PublicKey;
-import java.security.Signature;
-import java.security.spec.ECGenParameterSpec;
-import java.security.spec.ECParameterSpec;
-import java.security.spec.ECPoint;
-import java.security.spec.ECPublicKeySpec;
-import java.security.spec.RSAPublicKeySpec;
-import java.security.spec.X509EncodedKeySpec;
+import java.security.*;
+import java.security.spec.*;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -45,12 +35,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.dns.cache.DnsValidationCache;
 import org.miaixz.bus.fabric.network.dns.cache.DnsValidationCache.Kind;
-import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
-import org.miaixz.bus.fabric.network.dns.message.DnsDecodedResponse;
-import org.miaixz.bus.fabric.network.dns.message.DnsName;
-import org.miaixz.bus.fabric.network.dns.message.DnsQuery;
-import org.miaixz.bus.fabric.network.dns.message.DnsResponse;
-import org.miaixz.bus.fabric.network.dns.message.DnsResponseCode;
+import org.miaixz.bus.fabric.network.dns.message.*;
 import org.miaixz.bus.fabric.network.dns.record.DnsRecord;
 import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
 import org.miaixz.bus.fabric.network.dns.zone.DnsTrustAnchor;
@@ -230,101 +215,6 @@ public class DnsDnssecChainValidator {
     }
 
     /**
-     * Validates a decoded DNSSEC response against the configured chain policy.
-     *
-     * @param query   original query
-     * @param decoded decoded response
-     * @return DNS response with AD set only for secure validated data
-     */
-    public DnsResponse validate(final DnsQuery query, final DnsDecodedResponse decoded) {
-        if (query == null) {
-            throw new ValidateException("DNSSEC chain query must not be null");
-        }
-        if (decoded == null) {
-            throw new ValidateException("DNSSEC chain response must not be null");
-        }
-        if (query.checkingDisabled() || !query.dnssecOk() || !containsDnssecMaterial(decoded)) {
-            return decoded.toResponse(query);
-        }
-        final Instant now = Instant.now(clock);
-        try {
-            if (validationCache.containsResponse(decoded, now)) {
-                return authenticated(query, decoded);
-            }
-            if (nsecProofValidator.negativeResponse(decoded) && !provesNegative(decoded, now)) {
-                return DnsResponse.empty(query, DnsResponseCode.SERVFAIL, false);
-            }
-            if (!secure(decoded, now)) {
-                return insecure(query, decoded, now);
-            }
-            validationCache.putResponseSuccess(decoded, now);
-            cacheSectionResults(decoded, now);
-            return authenticated(query, decoded);
-        } catch (final RuntimeException e) {
-            return DnsResponse.empty(query, DnsResponseCode.SERVFAIL, false);
-        }
-    }
-
-    /**
-     * Returns whether a response is secure under the current trust anchors.
-     *
-     * @param decoded decoded response
-     * @param now     current instant
-     * @return true when the response is secure
-     */
-    private boolean secure(final DnsDecodedResponse decoded, final Instant now) {
-        final List<DnsRecord> records = records(decoded);
-        final List<DnsRecord> dnskeys = recordsOfType(records, DnsRecordType.DNSKEY);
-        final List<DnsRecord> dsRecords = recordsOfType(records, DnsRecordType.DS);
-        return !trustAnchors.isEmpty() && algorithmsEnabled(records) && signaturesCurrent(records, now)
-                && answersCovered(decoded.answers()) && trustAnchorMatches(dnskeys, dsRecords)
-                && dsDigestValid(dnskeys, dsRecords) && signingKeysAvailable(records, dnskeys)
-                && cryptographicSignaturesValid(records, dnskeys);
-    }
-
-    /**
-     * Caches section-level validation successes.
-     *
-     * @param decoded decoded response
-     * @param now     current instant
-     */
-    private void cacheSectionResults(final DnsDecodedResponse decoded, final Instant now) {
-        cacheKind(Kind.RRSET, decoded.question().name(), decoded.question().typeCode(), decoded.answers(), now);
-        cacheKind(
-                Kind.DNSKEY,
-                DnsName.ROOT,
-                DnsRecordType.DNSKEY.code(),
-                recordsOfType(records(decoded), DnsRecordType.DNSKEY),
-                now);
-        cacheKind(
-                Kind.DS,
-                DnsName.ROOT,
-                DnsRecordType.DS.code(),
-                recordsOfType(records(decoded), DnsRecordType.DS),
-                now);
-    }
-
-    /**
-     * Caches one validation-result kind.
-     *
-     * @param kind    validation cache kind
-     * @param owner   owner name
-     * @param type    record type code
-     * @param records validated records
-     * @param now     current instant
-     */
-    private void cacheKind(
-            final Kind kind,
-            final String owner,
-            final int type,
-            final List<DnsRecord> records,
-            final Instant now) {
-        if (!records.isEmpty()) {
-            validationCache.putSuccess(kind, owner, type, records, nearestRrsigExpiration(records), now);
-        }
-    }
-
-    /**
      * Creates an authenticated response.
      *
      * @param query   original query
@@ -334,103 +224,6 @@ public class DnsDnssecChainValidator {
     private static DnsResponse authenticated(final DnsQuery query, final DnsDecodedResponse decoded) {
         return new DnsResponse(query, decoded.responseCode(), false, true, decoded.truncated(), decoded.answers(),
                 decoded.authorities(), decoded.additionals(), true, null);
-    }
-
-    /**
-     * Creates the deterministic validation failure response.
-     *
-     * @param query   original query
-     * @param decoded decoded response
-     * @param now     current instant
-     * @return SERVFAIL or insecure response
-     */
-    private DnsResponse insecure(final DnsQuery query, final DnsDecodedResponse decoded, final Instant now) {
-        if (provesInsecureDelegation(decoded, now)) {
-            return decoded.toResponse(query);
-        }
-        return DnsResponse.empty(query, DnsResponseCode.SERVFAIL, false);
-    }
-
-    /**
-     * Returns whether NSEC or NSEC3 records prove a negative response.
-     *
-     * @param decoded decoded response
-     * @param now     current instant
-     * @return true when negative proof validates
-     */
-    private boolean provesNegative(final DnsDecodedResponse decoded, final Instant now) {
-        return provesNsecNegative(decoded, now) || provesNsec3Negative(decoded, now);
-    }
-
-    /**
-     * Returns whether NSEC or NSEC3 records prove insecure delegation.
-     *
-     * @param decoded decoded response
-     * @param now     current instant
-     * @return true when insecure delegation proof validates
-     */
-    private boolean provesInsecureDelegation(final DnsDecodedResponse decoded, final Instant now) {
-        return provesNsecInsecureDelegation(decoded, now) || provesNsec3InsecureDelegation(decoded, now);
-    }
-
-    /**
-     * Returns whether NSEC records prove a negative response.
-     *
-     * @param decoded decoded response
-     * @param now     current instant
-     * @return true when NSEC proof validates
-     */
-    private boolean provesNsecNegative(final DnsDecodedResponse decoded, final Instant now) {
-        try {
-            return nsecProofValidator.provesNegative(decoded, now);
-        } catch (final RuntimeException e) {
-            return false;
-        }
-    }
-
-    /**
-     * Returns whether NSEC3 records prove a negative response.
-     *
-     * @param decoded decoded response
-     * @param now     current instant
-     * @return true when NSEC3 proof validates
-     */
-    private boolean provesNsec3Negative(final DnsDecodedResponse decoded, final Instant now) {
-        try {
-            return nsec3ProofValidator.provesNegative(decoded, now);
-        } catch (final RuntimeException e) {
-            return false;
-        }
-    }
-
-    /**
-     * Returns whether NSEC records prove insecure delegation.
-     *
-     * @param decoded decoded response
-     * @param now     current instant
-     * @return true when NSEC proof validates
-     */
-    private boolean provesNsecInsecureDelegation(final DnsDecodedResponse decoded, final Instant now) {
-        try {
-            return nsecProofValidator.provesInsecureDelegation(decoded, now);
-        } catch (final RuntimeException e) {
-            return false;
-        }
-    }
-
-    /**
-     * Returns whether NSEC3 records prove insecure delegation.
-     *
-     * @param decoded decoded response
-     * @param now     current instant
-     * @return true when NSEC3 proof validates
-     */
-    private boolean provesNsec3InsecureDelegation(final DnsDecodedResponse decoded, final Instant now) {
-        try {
-            return nsec3ProofValidator.provesInsecureDelegation(decoded, now);
-        } catch (final RuntimeException e) {
-            return false;
-        }
     }
 
     /**
@@ -611,26 +404,6 @@ public class DnsDnssecChainValidator {
         for (final DnsRecord signature : records) {
             if (signature.typeCode() == DnsRecordType.RRSIG.code() && signature.name().equals(answer.name())
                     && typeCovered(signature) == answer.typeCode()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Returns whether configured anchors match response-carried chain material.
-     *
-     * @param dnskeys   DNSKEY records
-     * @param dsRecords DS records
-     * @return true when at least one trust anchor matches
-     */
-    private boolean trustAnchorMatches(final List<DnsRecord> dnskeys, final List<DnsRecord> dsRecords) {
-        for (final DnsTrustAnchor trustAnchor : trustAnchors) {
-            if (trustAnchor.type() == DnsRecordType.DNSKEY && dnskeyAnchorMatches(trustAnchor, dnskeys)) {
-                return true;
-            }
-            if (trustAnchor.type() == DnsRecordType.DS
-                    && (dsAnchorMatches(trustAnchor, dsRecords) || dnskeyMatchesDsAnchor(trustAnchor, dnskeys))) {
                 return true;
             }
         }
@@ -1230,6 +1003,218 @@ public class DnsDnssecChainValidator {
             throw new ProtocolException("DNSSEC RRSIG RDATA is truncated");
         }
         return DnsCodec.readUnsignedShort(data, RRSIG_KEY_TAG_OFFSET);
+    }
+
+    /**
+     * Validates a decoded DNSSEC response against the configured chain policy.
+     *
+     * @param query   original query
+     * @param decoded decoded response
+     * @return DNS response with AD set only for secure validated data
+     */
+    public DnsResponse validate(final DnsQuery query, final DnsDecodedResponse decoded) {
+        if (query == null) {
+            throw new ValidateException("DNSSEC chain query must not be null");
+        }
+        if (decoded == null) {
+            throw new ValidateException("DNSSEC chain response must not be null");
+        }
+        if (query.checkingDisabled() || !query.dnssecOk() || !containsDnssecMaterial(decoded)) {
+            return decoded.toResponse(query);
+        }
+        final Instant now = Instant.now(clock);
+        try {
+            if (validationCache.containsResponse(decoded, now)) {
+                return authenticated(query, decoded);
+            }
+            if (nsecProofValidator.negativeResponse(decoded) && !provesNegative(decoded, now)) {
+                return DnsResponse.empty(query, DnsResponseCode.SERVFAIL, false);
+            }
+            if (!secure(decoded, now)) {
+                return insecure(query, decoded, now);
+            }
+            validationCache.putResponseSuccess(decoded, now);
+            cacheSectionResults(decoded, now);
+            return authenticated(query, decoded);
+        } catch (final RuntimeException e) {
+            return DnsResponse.empty(query, DnsResponseCode.SERVFAIL, false);
+        }
+    }
+
+    /**
+     * Returns whether a response is secure under the current trust anchors.
+     *
+     * @param decoded decoded response
+     * @param now     current instant
+     * @return true when the response is secure
+     */
+    private boolean secure(final DnsDecodedResponse decoded, final Instant now) {
+        final List<DnsRecord> records = records(decoded);
+        final List<DnsRecord> dnskeys = recordsOfType(records, DnsRecordType.DNSKEY);
+        final List<DnsRecord> dsRecords = recordsOfType(records, DnsRecordType.DS);
+        return !trustAnchors.isEmpty() && algorithmsEnabled(records) && signaturesCurrent(records, now)
+                && answersCovered(decoded.answers()) && trustAnchorMatches(dnskeys, dsRecords)
+                && dsDigestValid(dnskeys, dsRecords) && signingKeysAvailable(records, dnskeys)
+                && cryptographicSignaturesValid(records, dnskeys);
+    }
+
+    /**
+     * Caches section-level validation successes.
+     *
+     * @param decoded decoded response
+     * @param now     current instant
+     */
+    private void cacheSectionResults(final DnsDecodedResponse decoded, final Instant now) {
+        cacheKind(Kind.RRSET, decoded.question().name(), decoded.question().typeCode(), decoded.answers(), now);
+        cacheKind(
+                Kind.DNSKEY,
+                DnsName.ROOT,
+                DnsRecordType.DNSKEY.code(),
+                recordsOfType(records(decoded), DnsRecordType.DNSKEY),
+                now);
+        cacheKind(
+                Kind.DS,
+                DnsName.ROOT,
+                DnsRecordType.DS.code(),
+                recordsOfType(records(decoded), DnsRecordType.DS),
+                now);
+    }
+
+    /**
+     * Caches one validation-result kind.
+     *
+     * @param kind    validation cache kind
+     * @param owner   owner name
+     * @param type    record type code
+     * @param records validated records
+     * @param now     current instant
+     */
+    private void cacheKind(
+            final Kind kind,
+            final String owner,
+            final int type,
+            final List<DnsRecord> records,
+            final Instant now) {
+        if (!records.isEmpty()) {
+            validationCache.putSuccess(kind, owner, type, records, nearestRrsigExpiration(records), now);
+        }
+    }
+
+    /**
+     * Creates the deterministic validation failure response.
+     *
+     * @param query   original query
+     * @param decoded decoded response
+     * @param now     current instant
+     * @return SERVFAIL or insecure response
+     */
+    private DnsResponse insecure(final DnsQuery query, final DnsDecodedResponse decoded, final Instant now) {
+        if (provesInsecureDelegation(decoded, now)) {
+            return decoded.toResponse(query);
+        }
+        return DnsResponse.empty(query, DnsResponseCode.SERVFAIL, false);
+    }
+
+    /**
+     * Returns whether NSEC or NSEC3 records prove a negative response.
+     *
+     * @param decoded decoded response
+     * @param now     current instant
+     * @return true when negative proof validates
+     */
+    private boolean provesNegative(final DnsDecodedResponse decoded, final Instant now) {
+        return provesNsecNegative(decoded, now) || provesNsec3Negative(decoded, now);
+    }
+
+    /**
+     * Returns whether NSEC or NSEC3 records prove insecure delegation.
+     *
+     * @param decoded decoded response
+     * @param now     current instant
+     * @return true when insecure delegation proof validates
+     */
+    private boolean provesInsecureDelegation(final DnsDecodedResponse decoded, final Instant now) {
+        return provesNsecInsecureDelegation(decoded, now) || provesNsec3InsecureDelegation(decoded, now);
+    }
+
+    /**
+     * Returns whether NSEC records prove a negative response.
+     *
+     * @param decoded decoded response
+     * @param now     current instant
+     * @return true when NSEC proof validates
+     */
+    private boolean provesNsecNegative(final DnsDecodedResponse decoded, final Instant now) {
+        try {
+            return nsecProofValidator.provesNegative(decoded, now);
+        } catch (final RuntimeException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Returns whether NSEC3 records prove a negative response.
+     *
+     * @param decoded decoded response
+     * @param now     current instant
+     * @return true when NSEC3 proof validates
+     */
+    private boolean provesNsec3Negative(final DnsDecodedResponse decoded, final Instant now) {
+        try {
+            return nsec3ProofValidator.provesNegative(decoded, now);
+        } catch (final RuntimeException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Returns whether NSEC records prove insecure delegation.
+     *
+     * @param decoded decoded response
+     * @param now     current instant
+     * @return true when NSEC proof validates
+     */
+    private boolean provesNsecInsecureDelegation(final DnsDecodedResponse decoded, final Instant now) {
+        try {
+            return nsecProofValidator.provesInsecureDelegation(decoded, now);
+        } catch (final RuntimeException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Returns whether NSEC3 records prove insecure delegation.
+     *
+     * @param decoded decoded response
+     * @param now     current instant
+     * @return true when NSEC3 proof validates
+     */
+    private boolean provesNsec3InsecureDelegation(final DnsDecodedResponse decoded, final Instant now) {
+        try {
+            return nsec3ProofValidator.provesInsecureDelegation(decoded, now);
+        } catch (final RuntimeException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Returns whether configured anchors match response-carried chain material.
+     *
+     * @param dnskeys   DNSKEY records
+     * @param dsRecords DS records
+     * @return true when at least one trust anchor matches
+     */
+    private boolean trustAnchorMatches(final List<DnsRecord> dnskeys, final List<DnsRecord> dsRecords) {
+        for (final DnsTrustAnchor trustAnchor : trustAnchors) {
+            if (trustAnchor.type() == DnsRecordType.DNSKEY && dnskeyAnchorMatches(trustAnchor, dnskeys)) {
+                return true;
+            }
+            if (trustAnchor.type() == DnsRecordType.DS
+                    && (dsAnchorMatches(trustAnchor, dsRecords) || dnskeyMatchesDsAnchor(trustAnchor, dnskeys))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

@@ -63,26 +63,32 @@ public class RedirectManager {
      * Exact configured Source identifier owning this redirect flow.
      */
     private final String sourceId;
+
     /**
      * Validated exact Vendor options for the configured Source.
      */
     private final VendorOptions<?> vendorOptions;
+
     /**
      * Whether the selected OpenID Connect variant requires a nonce.
      */
     private final boolean nonceEnabled;
+
     /**
      * Whether the selected variant and options require PKCE.
      */
     private final boolean pkceEnabled;
+
     /**
      * Policy-bound PKCE generator, or {@code null} when PKCE is disabled.
      */
     private final PkceGenerator pkceGenerator;
+
     /**
      * Number of random bytes used for generated state and nonce values.
      */
     private final int randomBytes;
+
     /**
      * Source-isolated one-time correlation persistence coordinator.
      */

@@ -31,8 +31,8 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
  * for finding minimum and maximum elements.
  *
  * @param <T> The type of the operands and result of the operator.
- * @see BinaryOperator
  * @author Kimi Liu
+ * @see BinaryOperator
  */
 @FunctionalInterface
 public interface BinaryOperatorX<T> extends BinaryOperator<T>, Serializable {

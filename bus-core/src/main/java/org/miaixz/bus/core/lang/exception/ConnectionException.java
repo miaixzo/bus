@@ -34,9 +34,6 @@ import java.util.Objects;
  */
 public class ConnectionException extends SocketException {
 
-    /**
-     * The serialization version identifier.
-     */
     @Serial
     private static final long serialVersionUID = 2852299832471L;
 

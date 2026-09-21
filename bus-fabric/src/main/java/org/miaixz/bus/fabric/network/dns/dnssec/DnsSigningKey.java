@@ -107,6 +107,79 @@ public class DnsSigningKey {
     }
 
     /**
+     * Computes the DNSKEY key tag defined for DNSSEC key material.
+     *
+     * @param rdata DNSKEY RDATA bytes
+     * @return unsigned 16-bit DNSKEY key tag
+     */
+    public static int keyTag(final byte[] rdata) {
+        if (rdata == null) {
+            throw new ValidateException("DNSSEC DNSKEY RDATA must not be null");
+        }
+        long sum = 0L;
+        for (int index = 0; index < rdata.length; index++) {
+            sum += (index & Normal._1) == Normal._0 ? DnsCodec.readUnsignedByte(rdata, index) << Byte.SIZE
+                    : DnsCodec.readUnsignedByte(rdata, index);
+        }
+        sum += (sum >> Short.SIZE) & Normal._65535;
+        return (int) (sum & Normal._65535);
+    }
+
+    /**
+     * Validates public DNSKEY RDATA bytes.
+     *
+     * @param rdata     DNSKEY RDATA bytes
+     * @param algorithm expected algorithm code
+     * @param keyTag    expected key tag
+     * @return copied DNSKEY RDATA bytes
+     */
+    private static byte[] validateDnskeyRdata(final byte[] rdata, final int algorithm, final int keyTag) {
+        if (rdata == null) {
+            throw new ValidateException("DNSSEC signing key DNSKEY RDATA must not be null");
+        }
+        if (rdata.length <= DNSKEY_FIXED_BYTES) {
+            throw new ValidateException("DNSSEC signing key DNSKEY RDATA must contain public key bytes");
+        }
+        if (DnsCodec.readUnsignedByte(rdata, 2) != DNSKEY_PROTOCOL_DNSSEC) {
+            throw new ValidateException("DNSSEC signing key DNSKEY protocol must be 3");
+        }
+        if (DnsCodec.readUnsignedByte(rdata, 3) != algorithm) {
+            throw new ValidateException("DNSSEC signing key algorithm does not match DNSKEY RDATA");
+        }
+        if (keyTag(rdata) != keyTag) {
+            throw new ValidateException("DNSSEC signing key tag does not match DNSKEY RDATA");
+        }
+        return Arrays.copyOf(rdata, rdata.length);
+    }
+
+    /**
+     * Validates private key bytes.
+     *
+     * @param privateKeyBytes private key bytes
+     * @return copied private key bytes
+     */
+    private static byte[] validatePrivateKey(final byte[] privateKeyBytes) {
+        if (privateKeyBytes == null || privateKeyBytes.length == 0) {
+            throw new ValidateException("DNSSEC signing key private key bytes must not be empty");
+        }
+        return Arrays.copyOf(privateKeyBytes, privateKeyBytes.length);
+    }
+
+    /**
+     * Validates an instant.
+     *
+     * @param instant instant to validate
+     * @param name    diagnostic name
+     * @return validated instant
+     */
+    private static Instant validateInstant(final Instant instant, final String name) {
+        if (instant == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return instant;
+    }
+
+    /**
      * Returns the DNSKEY owner name.
      *
      * @return canonical key owner name
@@ -131,25 +204,6 @@ public class DnsSigningKey {
      */
     public int keyTag() {
         return keyTag;
-    }
-
-    /**
-     * Computes the DNSKEY key tag defined for DNSSEC key material.
-     *
-     * @param rdata DNSKEY RDATA bytes
-     * @return unsigned 16-bit DNSKEY key tag
-     */
-    public static int keyTag(final byte[] rdata) {
-        if (rdata == null) {
-            throw new ValidateException("DNSSEC DNSKEY RDATA must not be null");
-        }
-        long sum = 0L;
-        for (int index = 0; index < rdata.length; index++) {
-            sum += (index & Normal._1) == Normal._0 ? DnsCodec.readUnsignedByte(rdata, index) << Byte.SIZE
-                    : DnsCodec.readUnsignedByte(rdata, index);
-        }
-        sum += (sum >> Short.SIZE) & Normal._65535;
-        return (int) (sum & Normal._65535);
     }
 
     /**
@@ -207,60 +261,6 @@ public class DnsSigningKey {
      */
     public DnsRecord dnskeyRecord(final long ttl) {
         return DnsRecord.raw(keyName, DnsRecordType.DNSKEY.code(), DnsRecord.CLASS_IN, ttl, publicDnskeyRdata());
-    }
-
-    /**
-     * Validates public DNSKEY RDATA bytes.
-     *
-     * @param rdata     DNSKEY RDATA bytes
-     * @param algorithm expected algorithm code
-     * @param keyTag    expected key tag
-     * @return copied DNSKEY RDATA bytes
-     */
-    private static byte[] validateDnskeyRdata(final byte[] rdata, final int algorithm, final int keyTag) {
-        if (rdata == null) {
-            throw new ValidateException("DNSSEC signing key DNSKEY RDATA must not be null");
-        }
-        if (rdata.length <= DNSKEY_FIXED_BYTES) {
-            throw new ValidateException("DNSSEC signing key DNSKEY RDATA must contain public key bytes");
-        }
-        if (DnsCodec.readUnsignedByte(rdata, 2) != DNSKEY_PROTOCOL_DNSSEC) {
-            throw new ValidateException("DNSSEC signing key DNSKEY protocol must be 3");
-        }
-        if (DnsCodec.readUnsignedByte(rdata, 3) != algorithm) {
-            throw new ValidateException("DNSSEC signing key algorithm does not match DNSKEY RDATA");
-        }
-        if (keyTag(rdata) != keyTag) {
-            throw new ValidateException("DNSSEC signing key tag does not match DNSKEY RDATA");
-        }
-        return Arrays.copyOf(rdata, rdata.length);
-    }
-
-    /**
-     * Validates private key bytes.
-     *
-     * @param privateKeyBytes private key bytes
-     * @return copied private key bytes
-     */
-    private static byte[] validatePrivateKey(final byte[] privateKeyBytes) {
-        if (privateKeyBytes == null || privateKeyBytes.length == 0) {
-            throw new ValidateException("DNSSEC signing key private key bytes must not be empty");
-        }
-        return Arrays.copyOf(privateKeyBytes, privateKeyBytes.length);
-    }
-
-    /**
-     * Validates an instant.
-     *
-     * @param instant instant to validate
-     * @param name    diagnostic name
-     * @return validated instant
-     */
-    private static Instant validateInstant(final Instant instant, final String name) {
-        if (instant == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return instant;
     }
 
 }

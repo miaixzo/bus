@@ -70,6 +70,25 @@ public class NioBufferAllocator implements AutoCloseable {
     private volatile boolean closed;
 
     /**
+     * Creates a NIO buffer allocator.
+     *
+     * @param bufferSize the reusable buffer size
+     * @param maxIdle    the maximum idle buffer count
+     * @param direct     whether buffers should be direct
+     */
+    public NioBufferAllocator(int bufferSize, int maxIdle, boolean direct) {
+        if (bufferSize <= 0) {
+            throw new IllegalArgumentException("bufferSize <= 0: " + bufferSize);
+        }
+        if (maxIdle < 0) {
+            throw new IllegalArgumentException("maxIdle < 0: " + maxIdle);
+        }
+        this.bufferSize = bufferSize;
+        this.maxIdle = maxIdle;
+        this.direct = direct;
+    }
+
+    /**
      * Creates a heap buffer allocator with the default settings.
      *
      * @return a heap NIO buffer allocator
@@ -107,25 +126,6 @@ public class NioBufferAllocator implements AutoCloseable {
      */
     public static NioBufferAllocator direct(int bufferSize, int maxIdle) {
         return new NioBufferAllocator(bufferSize, maxIdle, true);
-    }
-
-    /**
-     * Creates a NIO buffer allocator.
-     *
-     * @param bufferSize the reusable buffer size
-     * @param maxIdle    the maximum idle buffer count
-     * @param direct     whether buffers should be direct
-     */
-    public NioBufferAllocator(int bufferSize, int maxIdle, boolean direct) {
-        if (bufferSize <= 0) {
-            throw new IllegalArgumentException("bufferSize <= 0: " + bufferSize);
-        }
-        if (maxIdle < 0) {
-            throw new IllegalArgumentException("maxIdle < 0: " + maxIdle);
-        }
-        this.bufferSize = bufferSize;
-        this.maxIdle = maxIdle;
-        this.direct = direct;
     }
 
     /**

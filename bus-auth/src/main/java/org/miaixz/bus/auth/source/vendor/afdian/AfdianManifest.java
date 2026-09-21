@@ -49,16 +49,19 @@ public class AfdianManifest implements VendorManifest<AfdianOptions> {
      * Stable Afdian platform identifier.
      */
     public static final Vendor.Id ID = new Vendor.Id("afdian");
+
     /**
      * Stable default Afdian authorization variant.
      */
     public static final Vendor.Variant DEFAULT = new Vendor.Variant(Normal.DEFAULT);
+
     /**
      * Afdian browser-only Source authentication manifest.
      */
     private static final Capability.Manifest CAPABILITIES = new Capability.Manifest(List.of(
             SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
             SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT))));
+
     /**
      * Complete immutable Afdian variant manifest.
      */

@@ -35,10 +35,9 @@ import java.util.*;
  * iterator risks arbitrary, non-deterministic behavior at an undetermined time in the future.
  *
  * @param <E> the type of elements held in this collection
+ * @author Kimi Liu
  * @see <a href="http://code.google.com/p/concurrentlinkedhashmap/">
  *      http://code.google.com/p/concurrentlinkedhashmap/</a>
- *
- * @author Kimi Liu
  */
 public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> implements Deque<E> {
 

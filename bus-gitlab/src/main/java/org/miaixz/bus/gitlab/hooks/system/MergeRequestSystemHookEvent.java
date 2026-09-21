@@ -30,16 +30,15 @@ import org.miaixz.bus.gitlab.hooks.web.MergeRequestEvent;
  */
 public class MergeRequestSystemHookEvent extends MergeRequestEvent implements SystemHookEvent {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852292895308L;
+
     /**
      * The x gitlab event value.
      */
 
     public static final String X_GITLAB_EVENT = "System Hook";
+
     /**
      * The merge request event value.
      */

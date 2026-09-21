@@ -60,6 +60,59 @@ public class Http2Settings {
     }
 
     /**
+     * Validates id.
+     *
+     * @param id candidate standard setting identifier
+     * @throws ValidateException if the identifier is outside {@code 1..6}
+     */
+    private static void validateId(final int id) {
+        if (id < Http.Setting.HEADER_TABLE_SIZE_ID || id > Http.Setting.MAX_HEADER_LIST_SIZE_ID) {
+            throw new ValidateException("HTTP/2 setting id must be between 1 and 6");
+        }
+    }
+
+    /**
+     * Validates value.
+     *
+     * @param id    validated standard setting identifier
+     * @param value candidate unsigned wire value
+     * @throws ValidateException if the value exceeds uint32 or violates setting-specific constraints
+     */
+    private static void validateValue(final int id, final long value) {
+        if (value < Normal._0 || value > Builder.UNSIGNED_INT_MASK) {
+            throw new ValidateException("HTTP/2 setting value must be an unsigned 32-bit integer");
+        }
+        if (id == Http.Setting.ENABLE_PUSH_ID && value != Normal._0 && value != Normal._1) {
+            throw new ValidateException("HTTP/2 enable push must be 0 or 1");
+        }
+        if (id == Http.Setting.INITIAL_WINDOW_SIZE_ID && value > Integer.MAX_VALUE) {
+            throw new ValidateException("HTTP/2 initial window is too large");
+        }
+        if (id == Http.Setting.MAX_FRAME_SIZE_ID
+                && (value < Normal._16384 || value > (int) (Builder.BYTES_16_MIB - Normal._1))) {
+            throw new ValidateException("HTTP/2 max frame size is out of range");
+        }
+    }
+
+    /**
+     * Returns a default value.
+     *
+     * @param id standard setting identifier
+     * @return protocol default, using uint32 maximum for unspecified unbounded limits
+     * @throws ValidateException if the identifier is outside {@code 1..6}
+     */
+    private static long defaultValue(final int id) {
+        return switch (id) {
+            case Http.Setting.HEADER_TABLE_SIZE_ID -> Normal._4096;
+            case Http.Setting.ENABLE_PUSH_ID -> Normal._1;
+            case Http.Setting.MAX_CONCURRENT_STREAMS_ID, Http.Setting.MAX_HEADER_LIST_SIZE_ID -> Builder.UNSIGNED_INT_MASK;
+            case Http.Setting.INITIAL_WINDOW_SIZE_ID -> Http.Setting.DEFAULT_INITIAL_WINDOW_SIZE;
+            case Http.Setting.MAX_FRAME_SIZE_ID -> Normal._16384;
+            default -> throw new ValidateException("HTTP/2 setting id must be between 1 and 6");
+        };
+    }
+
+    /**
      * Sets a value.
      *
      * @param id    standard setting identifier in the inclusive range {@code 1..6}
@@ -226,59 +279,6 @@ public class Http2Settings {
             }
         }
         return ids;
-    }
-
-    /**
-     * Validates id.
-     *
-     * @param id candidate standard setting identifier
-     * @throws ValidateException if the identifier is outside {@code 1..6}
-     */
-    private static void validateId(final int id) {
-        if (id < Http.Setting.HEADER_TABLE_SIZE_ID || id > Http.Setting.MAX_HEADER_LIST_SIZE_ID) {
-            throw new ValidateException("HTTP/2 setting id must be between 1 and 6");
-        }
-    }
-
-    /**
-     * Validates value.
-     *
-     * @param id    validated standard setting identifier
-     * @param value candidate unsigned wire value
-     * @throws ValidateException if the value exceeds uint32 or violates setting-specific constraints
-     */
-    private static void validateValue(final int id, final long value) {
-        if (value < Normal._0 || value > Builder.UNSIGNED_INT_MASK) {
-            throw new ValidateException("HTTP/2 setting value must be an unsigned 32-bit integer");
-        }
-        if (id == Http.Setting.ENABLE_PUSH_ID && value != Normal._0 && value != Normal._1) {
-            throw new ValidateException("HTTP/2 enable push must be 0 or 1");
-        }
-        if (id == Http.Setting.INITIAL_WINDOW_SIZE_ID && value > Integer.MAX_VALUE) {
-            throw new ValidateException("HTTP/2 initial window is too large");
-        }
-        if (id == Http.Setting.MAX_FRAME_SIZE_ID
-                && (value < Normal._16384 || value > (int) (Builder.BYTES_16_MIB - Normal._1))) {
-            throw new ValidateException("HTTP/2 max frame size is out of range");
-        }
-    }
-
-    /**
-     * Returns a default value.
-     *
-     * @param id standard setting identifier
-     * @return protocol default, using uint32 maximum for unspecified unbounded limits
-     * @throws ValidateException if the identifier is outside {@code 1..6}
-     */
-    private static long defaultValue(final int id) {
-        return switch (id) {
-            case Http.Setting.HEADER_TABLE_SIZE_ID -> Normal._4096;
-            case Http.Setting.ENABLE_PUSH_ID -> Normal._1;
-            case Http.Setting.MAX_CONCURRENT_STREAMS_ID, Http.Setting.MAX_HEADER_LIST_SIZE_ID -> Builder.UNSIGNED_INT_MASK;
-            case Http.Setting.INITIAL_WINDOW_SIZE_ID -> Http.Setting.DEFAULT_INITIAL_WINDOW_SIZE;
-            case Http.Setting.MAX_FRAME_SIZE_ID -> Normal._16384;
-            default -> throw new ValidateException("HTTP/2 setting id must be between 1 and 6");
-        };
     }
 
 }

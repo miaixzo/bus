@@ -304,6 +304,46 @@ public class DnsUpstream {
     }
 
     /**
+     * Normalizes a DNS-over-HTTPS endpoint URI.
+     *
+     * @param endpoint candidate DoH endpoint
+     * @return normalized endpoint URI
+     */
+    private static URI normalizeDohEndpoint(final URI endpoint) {
+        if (endpoint == null || endpoint.getScheme() == null || endpoint.getHost() == null) {
+            throw new ValidateException("DNS-over-HTTPS upstream URI must be absolute");
+        }
+        final String scheme = endpoint.getScheme().toLowerCase(Locale.ROOT);
+        if (!Protocol.HTTPS.name.equals(scheme) && !Protocol.HTTP.name.equals(scheme)) {
+            throw new ValidateException("DNS-over-HTTPS upstream URI scheme must be http or https");
+        }
+        if (endpoint.getRawQuery() != null || endpoint.getRawFragment() != null) {
+            throw new ValidateException("DNS-over-HTTPS upstream URI must not contain query or fragment");
+        }
+        final String path = endpoint.getRawPath() == null || endpoint.getRawPath().isBlank() ? DnsDohServer.PATH
+                : endpoint.getRawPath();
+        try {
+            return new URI(scheme, endpoint.getUserInfo(), endpoint.getHost(), effectivePort(endpoint), path, null,
+                    null);
+        } catch (final URISyntaxException e) {
+            throw new ValidateException("DNS-over-HTTPS upstream URI is invalid", e);
+        }
+    }
+
+    /**
+     * Resolves the effective URI port after applying the scheme default.
+     *
+     * @param endpoint normalized or candidate endpoint URI
+     * @return effective TCP port
+     */
+    private static int effectivePort(final URI endpoint) {
+        if (endpoint.getPort() > 0) {
+            return endpoint.getPort();
+        }
+        return Protocol.HTTP.name.equalsIgnoreCase(endpoint.getScheme()) ? 80 : 443;
+    }
+
+    /**
      * Returns the upstream host.
      *
      * @return upstream host or address literal
@@ -391,46 +431,6 @@ public class DnsUpstream {
      */
     public String healthKey() {
         return target() + Symbol.OR + transport;
-    }
-
-    /**
-     * Normalizes a DNS-over-HTTPS endpoint URI.
-     *
-     * @param endpoint candidate DoH endpoint
-     * @return normalized endpoint URI
-     */
-    private static URI normalizeDohEndpoint(final URI endpoint) {
-        if (endpoint == null || endpoint.getScheme() == null || endpoint.getHost() == null) {
-            throw new ValidateException("DNS-over-HTTPS upstream URI must be absolute");
-        }
-        final String scheme = endpoint.getScheme().toLowerCase(Locale.ROOT);
-        if (!Protocol.HTTPS.name.equals(scheme) && !Protocol.HTTP.name.equals(scheme)) {
-            throw new ValidateException("DNS-over-HTTPS upstream URI scheme must be http or https");
-        }
-        if (endpoint.getRawQuery() != null || endpoint.getRawFragment() != null) {
-            throw new ValidateException("DNS-over-HTTPS upstream URI must not contain query or fragment");
-        }
-        final String path = endpoint.getRawPath() == null || endpoint.getRawPath().isBlank() ? DnsDohServer.PATH
-                : endpoint.getRawPath();
-        try {
-            return new URI(scheme, endpoint.getUserInfo(), endpoint.getHost(), effectivePort(endpoint), path, null,
-                    null);
-        } catch (final URISyntaxException e) {
-            throw new ValidateException("DNS-over-HTTPS upstream URI is invalid", e);
-        }
-    }
-
-    /**
-     * Resolves the effective URI port after applying the scheme default.
-     *
-     * @param endpoint normalized or candidate endpoint URI
-     * @return effective TCP port
-     */
-    private static int effectivePort(final URI endpoint) {
-        if (endpoint.getPort() > 0) {
-            return endpoint.getPort();
-        }
-        return Protocol.HTTP.name.equalsIgnoreCase(endpoint.getScheme()) ? 80 : 443;
     }
 
 }

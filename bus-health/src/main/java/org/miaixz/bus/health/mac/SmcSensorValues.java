@@ -33,6 +33,7 @@ public class SmcSensorValues {
      * Lowest reading accepted as a plausible CPU voltage, in volts.
      */
     public static final double MIN_PLAUSIBLE_VOLTAGE = 0.2;
+
     /**
      * SMC data type reporting a fixed-point value with two fractional bits.
      */

@@ -36,34 +36,42 @@ public class EventCommit {
      * The id value.
      */
     private String id;
+
     /**
      * The message value.
      */
     private String message;
+
     /**
      * The title value.
      */
     private String title;
+
     /**
      * The timestamp value.
      */
     private Date timestamp;
+
     /**
      * The url value.
      */
     private String url;
+
     /**
      * The author value.
      */
     private Author author;
+
     /**
      * The added value.
      */
     private List<String> added;
+
     /**
      * The modified value.
      */
     private List<String> modified;
+
     /**
      * The removed value.
      */

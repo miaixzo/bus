@@ -31,24 +31,25 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class UserSystemHookEvent extends AbstractSystemHookEvent {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852229925117L;
+
     /**
      * The user create event value.
      */
 
     public static final String USER_CREATE_EVENT = "user_create";
+
     /**
      * The user destroy event value.
      */
     public static final String USER_DESTROY_EVENT = "user_destroy";
+
     /**
      * The user rename event value.
      */
     public static final String USER_RENAME_EVENT = "user_rename";
+
     /**
      * The user failed login event value.
      */
@@ -58,34 +59,42 @@ public class UserSystemHookEvent extends AbstractSystemHookEvent {
      * The event name value.
      */
     private String eventName;
+
     /**
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The updated at value.
      */
     private Date updatedAt;
+
     /**
      * The email value.
      */
     private String email;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The username value.
      */
     private String username;
+
     /**
      * The user id value.
      */
     private Long userId;
+
     /**
      * The old username value.
      */
     private String oldUsername;
+
     /**
      * The state value.
      */

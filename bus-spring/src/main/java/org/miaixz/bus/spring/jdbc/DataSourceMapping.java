@@ -37,6 +37,7 @@ public class DataSourceMapping {
      * Primary routing name.
      */
     private final String primary;
+
     /**
      * Immutable datasource definitions keyed by routing name.
      */

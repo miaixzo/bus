@@ -55,14 +55,14 @@ public class Selector {
     private final Map<Route, Backoff> failures;
 
     /**
-     * Observer receiving route readiness and backoff events.
-     */
-    private volatile EventObserver observer;
-
-    /**
      * Runtime clock used for route state and observation events.
      */
     private final Clock clock;
+
+    /**
+     * Observer receiving route readiness and backoff events.
+     */
+    private volatile EventObserver observer;
 
     /**
      * Creates an empty route selector.
@@ -92,6 +92,48 @@ public class Selector {
         this.failures = new HashMap<>();
         this.observer = EventObserver.safe(require(observer, "Route observer"));
         this.clock = require(clock, "Clock");
+    }
+
+    /**
+     * Validates route references.
+     *
+     * @param route route reference to validate
+     */
+    private static void require(final Route route) {
+        Assert.notNull(route, () -> new ValidateException("Route must not be null"));
+    }
+
+    /**
+     * Validates clock references.
+     *
+     * @param clock clock reference to validate
+     */
+    private static void require(final Clock clock) {
+        Assert.notNull(clock, () -> new ValidateException("Clock must not be null"));
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Returns exponential backoff for a failure count.
+     *
+     * @param failures failure count
+     * @return exponentially increasing retry delay capped by the selector maximum
+     */
+    private static Duration backoff(final int failures) {
+        final int shift = Math.min(Normal._8, Math.max(Normal._0, failures - Normal._1));
+        final Duration backoff = Builder.DURATION_1_SECOND.multipliedBy(1L << shift);
+        return backoff.compareTo(Builder.SELECTOR_MAX_BACKOFF) > 0 ? Builder.SELECTOR_MAX_BACKOFF : backoff;
     }
 
     /**
@@ -234,24 +276,6 @@ public class Selector {
     }
 
     /**
-     * Validates route references.
-     *
-     * @param route route reference to validate
-     */
-    private static void require(final Route route) {
-        Assert.notNull(route, () -> new ValidateException("Route must not be null"));
-    }
-
-    /**
-     * Validates clock references.
-     *
-     * @param clock clock reference to validate
-     */
-    private static void require(final Clock clock) {
-        Assert.notNull(clock, () -> new ValidateException("Clock must not be null"));
-    }
-
-    /**
      * Emits a route event.
      *
      * @param marker   route event marker
@@ -270,30 +294,6 @@ public class Selector {
                 FabricEvent.builder(marker, clock).tag(Builder.TAG_OPERATION_ID, route.id())
                         .tag(Builder.TAG_KEY, route.id()).tag(Builder.TAG_ATTEMPT, Integer.toString(attempts))
                         .tag(Builder.TAG_DELAY, delay.toString()).build());
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  field name included in the validation failure
-     * @param <T>   reference type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-    }
-
-    /**
-     * Returns exponential backoff for a failure count.
-     *
-     * @param failures failure count
-     * @return exponentially increasing retry delay capped by the selector maximum
-     */
-    private static Duration backoff(final int failures) {
-        final int shift = Math.min(Normal._8, Math.max(Normal._0, failures - Normal._1));
-        final Duration backoff = Builder.DURATION_1_SECOND.multipliedBy(1L << shift);
-        return backoff.compareTo(Builder.SELECTOR_MAX_BACKOFF) > 0 ? Builder.SELECTOR_MAX_BACKOFF : backoff;
     }
 
 }

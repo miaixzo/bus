@@ -19,6 +19,13 @@
 */
 package org.miaixz.bus.setting;
 
+import java.io.File;
+import java.io.Serial;
+import java.net.URL;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.util.*;
+
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.convert.Convert;
@@ -34,13 +41,6 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.magic.AbstractSetting;
 import org.miaixz.bus.setting.magic.GroupedMap;
 import org.miaixz.bus.setting.nimble.props.Props;
-
-import java.io.File;
-import java.io.Serial;
-import java.net.URL;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.util.*;
 
 /**
  * Handles {@code .setting} files, which are an enhanced version of Java's {@code .properties} files with backward

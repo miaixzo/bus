@@ -100,6 +100,63 @@ public class HttpCacheControl {
     }
 
     /**
+     * Parses one directive token.
+     *
+     * @param token      individual directive token, or {@code null} to ignore
+     * @param directives insertion-ordered target map in which the first normalized name wins
+     */
+    private static void parseDirective(final String token, final Map<String, String> directives) {
+        final String trimmed = token == null ? Normal.EMPTY : token.trim();
+        if (trimmed.isEmpty()) {
+            return;
+        }
+        final int equals = trimmed.indexOf(Symbol.C_EQUAL);
+        final String name = equals < 0 ? trimmed : trimmed.substring(0, equals).trim();
+        final String value = equals < 0 ? Normal.EMPTY : unquote(trimmed.substring(equals + 1).trim());
+        directives.putIfAbsent(normalizeName(name), value);
+    }
+
+    /**
+     * Removes optional surrounding quotes.
+     *
+     * @param value directive value to inspect
+     * @return value without one matching pair of surrounding double quotes, or the unchanged value
+     */
+    private static String unquote(final String value) {
+        if (value.length() >= 2 && value.charAt(0) == Symbol.C_DOUBLE_QUOTES
+                && value.charAt(value.length() - 1) == Symbol.C_DOUBLE_QUOTES) {
+            return value.substring(1, value.length() - 1);
+        }
+        return value;
+    }
+
+    /**
+     * Normalizes a directive name.
+     *
+     * @param name directive name to validate
+     * @return trimmed lower-case directive name
+     * @throws ValidateException if {@code name} is blank or contains a carriage return or line feed
+     */
+    private static String normalizeName(final String name) {
+        if (StringKit.isBlank(name) || StringKit.containsAny(name, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException("Cache-Control directive must be non-blank and single-line");
+        }
+        return name.trim().toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Validates and returns a required reference.
+     *
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Returns whether the no-cache directive exists.
      *
      * @return {@code true} when {@code no-cache} is present
@@ -245,23 +302,6 @@ public class HttpCacheControl {
     }
 
     /**
-     * Parses one directive token.
-     *
-     * @param token      individual directive token, or {@code null} to ignore
-     * @param directives insertion-ordered target map in which the first normalized name wins
-     */
-    private static void parseDirective(final String token, final Map<String, String> directives) {
-        final String trimmed = token == null ? Normal.EMPTY : token.trim();
-        if (trimmed.isEmpty()) {
-            return;
-        }
-        final int equals = trimmed.indexOf(Symbol.C_EQUAL);
-        final String name = equals < 0 ? trimmed : trimmed.substring(0, equals).trim();
-        final String value = equals < 0 ? Normal.EMPTY : unquote(trimmed.substring(equals + 1).trim());
-        directives.putIfAbsent(normalizeName(name), value);
-    }
-
-    /**
      * Returns a directive seconds value.
      *
      * @param directive       normalized directive key to read
@@ -284,46 +324,6 @@ public class HttpCacheControl {
         } catch (final NumberFormatException e) {
             throw new ProtocolException("Invalid Cache-Control seconds", e);
         }
-    }
-
-    /**
-     * Removes optional surrounding quotes.
-     *
-     * @param value directive value to inspect
-     * @return value without one matching pair of surrounding double quotes, or the unchanged value
-     */
-    private static String unquote(final String value) {
-        if (value.length() >= 2 && value.charAt(0) == Symbol.C_DOUBLE_QUOTES
-                && value.charAt(value.length() - 1) == Symbol.C_DOUBLE_QUOTES) {
-            return value.substring(1, value.length() - 1);
-        }
-        return value;
-    }
-
-    /**
-     * Normalizes a directive name.
-     *
-     * @param name directive name to validate
-     * @return trimmed lower-case directive name
-     * @throws ValidateException if {@code name} is blank or contains a carriage return or line feed
-     */
-    private static String normalizeName(final String name) {
-        if (StringKit.isBlank(name) || StringKit.containsAny(name, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Cache-Control directive must be non-blank and single-line");
-        }
-        return name.trim().toLowerCase(Locale.ROOT);
-    }
-
-    /**
-     * Validates and returns a required reference.
-     *
-     * @param value reference to validate
-     * @param name  logical reference name used in the validation message
-     * @param <T>   reference type
-     * @return the validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

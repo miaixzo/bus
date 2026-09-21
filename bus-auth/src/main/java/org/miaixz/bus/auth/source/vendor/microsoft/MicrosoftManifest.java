@@ -76,14 +76,17 @@ public class MicrosoftManifest implements VendorManifest<MicrosoftOptions> {
      * Microsoft China Graph application-permission enterprise variant.
      */
     public static final Vendor.Variant ENTERPRISE_CHINA = new Vendor.Variant("enterprise-china");
+
     /**
      * Sole global Graph application-permission scope accepted by the enterprise Variant.
      */
     static final String GLOBAL_APPLICATION_SCOPE = "https://graph.microsoft.com/.default";
+
     /**
      * Sole China Graph application-permission scope accepted by the enterprise Variant.
      */
     static final String CHINA_APPLICATION_SCOPE = "https://microsoftgraph.chinacloudapi.cn/.default";
+
     /**
      * Exact Source authentication and public OAuth operations shared by both clouds.
      */
@@ -92,11 +95,13 @@ public class MicrosoftManifest implements VendorManifest<MicrosoftOptions> {
             SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT)),
             OAuth2ClientScheme.AUTHORIZATION,
             OAuth2ClientScheme.TOKEN));
+
     /**
      * Ordered compatibility scopes plus the least-privileged Graph permission required by {@code /me}.
      */
     private static final List<String> DEFAULT_SCOPES = List
             .of("profile", "email", "openid", "offline_access", "User.Read");
+
     /**
      * Exact Realm coverage description shared by both isolated Graph clouds.
      */

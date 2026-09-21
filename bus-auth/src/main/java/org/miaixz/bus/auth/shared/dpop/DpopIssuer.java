@@ -59,6 +59,7 @@ public class DpopIssuer {
      * Profile-scoped shared JWS execution service.
      */
     private final JwsService jwsService;
+
     /**
      * Fabric clock used for the proof NumericDate.
      */

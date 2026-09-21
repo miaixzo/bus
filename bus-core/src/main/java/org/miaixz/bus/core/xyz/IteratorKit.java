@@ -24,11 +24,7 @@ import java.util.*;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import org.miaixz.bus.core.center.function.BiConsumerX;
-import org.miaixz.bus.core.center.function.ConsumerX;
-import org.miaixz.bus.core.center.function.FunctionX;
-import org.miaixz.bus.core.center.function.PredicateX;
-import org.miaixz.bus.core.center.function.UnaryOperatorX;
+import org.miaixz.bus.core.center.function.*;
 import org.miaixz.bus.core.center.iterator.*;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Symbol;

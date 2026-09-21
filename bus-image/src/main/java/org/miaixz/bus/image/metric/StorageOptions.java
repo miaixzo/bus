@@ -31,9 +31,6 @@ import org.miaixz.bus.image.metric.pdu.ExtendedNegotiation;
  */
 public class StorageOptions implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852261697969L;
 

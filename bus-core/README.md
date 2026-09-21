@@ -167,29 +167,34 @@ import org.miaixz.bus.core.xyz.StringKit;
 
 // String validation
 boolean isEmpty = StringKit.isEmpty("");        // true
-boolean isBlank = StringKit.isBlank("  ");      // true
+        boolean isBlank = StringKit.isBlank("  ");      // true
 
-// String formatting
-String formatted = StringKit.format("Hello, {}!", "World");  // "Hello, World!"
+        // String formatting
+        String formatted = StringKit.format("Hello, {}!", "World");  // "Hello, World!"
 
-// String manipulation
-String trimmed = StringKit.trim("  hello  ");              // "hello"
-String upper = StringKit.upperCase("hello");               // "HELLO"
-String substring = StringKit.sub("hello", 0, 3);          // "hel"
+        // String manipulation
+        String trimmed = StringKit.trim("  hello  ");              // "hello"
+        String upper = StringKit.upperCase("hello");               // "HELLO"
+        String substring = StringKit.sub("hello", 0, 3);          // "hel"
 
-// String templates
-Map<String, Object> params = new HashMap<>();
-params.put("name", "John");
-params.put("age", 25);
-String result = StringKit.format("Name: ${name}, Age: ${age}", params);
+        // String templates
+        Map<String, Object> params = new HashMap<>();
+params.
+
+        put("name","John");
+params.
+
+        put("age",25);
+
+        String result = StringKit.format("Name: ${name}, Age: ${age}", params);
 // "Name: John, Age: 25"
 
-// Text similarity
-double similarity = StringKitSimilarity.similarity("hello", "hallo");  // 0.8
+        // Text similarity
+        double similarity = StringKitSimilarity.similarity("hello", "hallo");  // 0.8
 
-// Encoding/Decoding
-String base64 = StringKit.encodeBase64("hello");     // "aGVsbG8="
-String decoded = StringKit.decodeBase64(base64);      // "hello"
+        // Encoding/Decoding
+        String base64 = StringKit.encodeBase64("hello");     // "aGVsbG8="
+        String decoded = StringKit.decodeBase64(base64);      // "hello"
 ```
 
 ### 2. Collection Operations
@@ -397,39 +402,39 @@ import org.miaixz.bus.core.center.crypto.SecureUtil;
 
 // Hash algorithms
 String md5 = HashKit.md5("password");                     // MD5 hash
-String sha1 = HashKit.sha1("password");                    // SHA-1 hash
-String sha256 = HashKit.sha256("password");                // SHA-256 hash
-String sha512 = HashKit.sha512("password");                // SHA-512 hash
+        String sha1 = HashKit.sha1("password");                    // SHA-1 hash
+        String sha256 = HashKit.sha256("password");                // SHA-256 hash
+        String sha512 = HashKit.sha512("password");                // SHA-512 hash
 
-// CRC checksum
-long crc16 = HashKit.crc16("data");                       // CRC-16
-long crc32 = HashKit.crc32("data");                       // CRC-32
+        // CRC checksum
+        long crc16 = HashKit.crc16("data");                       // CRC-16
+        long crc32 = HashKit.crc32("data");                       // CRC-32
 
-// MurmurHash (non-cryptographic, fast)
-int murmur3 = HashKit.murmur3("data");                    // MurmurHash3
+        // MurmurHash (non-cryptographic, fast)
+        int murmur3 = HashKit.murmur3("data");                    // MurmurHash3
 
-// Base64 encoding/decoding
-String encoded = Base64.encode("hello");                  // "aGVsbG8="
-String decoded = Base64.decode(encoded);                  // "hello"
+        // Base64 encoding/decoding
+        String encoded = Base64.encode("hello");                  // "aGVsbG8="
+        String decoded = Base64.decode(encoded);                  // "hello"
 
-// Hex encoding/decoding
-String hex = StringKit.encodeHex("hello");                // "68656c6c6f"
-String decodedHex = StringKit.decodeHex(hex);             // "hello"
+        // Hex encoding/decoding
+        String hex = StringKit.encodeHex("hello");                // "68656c6c6f"
+        String decodedHex = StringKit.decodeHex(hex);             // "hello"
 
-// URL encoding/decoding
-String urlEncoded = StringKit.encodeUrl("hello world");   // "hello+world"
-String urlDecoded = StringKit.decodeUrl(urlEncoded);      // "hello world"
+        // URL encoding/decoding
+        String urlEncoded = StringKit.encodeUrl("hello world");   // "hello+world"
+        String urlDecoded = StringKit.decodeUrl(urlEncoded);      // "hello world"
 
-// Secure password hashing (BCrypt)
-String bcryptHash = SecureUtil.bcrypt("password");        // $2a$10$...
-boolean matches = SecureUtil.bcryptMatch("password", bcryptHash);  // true
+        // Secure password hashing (BCrypt)
+        String bcryptHash = SecureUtil.bcrypt("password");        // $2a$10$...
+        boolean matches = SecureUtil.bcryptMatch("password", bcryptHash);  // true
 
-// PBKDF2
-String pbkdf2Hash = SecureUtil.pbkdf2("password", "salt", 10000);
+        // PBKDF2
+        String pbkdf2Hash = SecureUtil.pbkdf2("password", "salt", 10000);
 
-// Data masking
-String masked = Masking.maskMobile("13800138000");        // "138****8000"
-String emailMasked = Masking.maskEmail("user@example.com");  // "u***@example.com"
+        // Data masking
+        String masked = Masking.maskMobile("13800138000");        // "138****8000"
+        String emailMasked = Masking.maskEmail("user@example.com");  // "u***@example.com"
 ```
 
 ### 7. Reflection & Bean Operations

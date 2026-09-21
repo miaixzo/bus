@@ -711,7 +711,6 @@ public class TaobaoSourceAdapter implements VendorAdapter {
      * @param userId          optional Taobao user identifier value
      * @param openUid         optional Taobao OpenUID value
      * @param encodedNickname optional URL-encoded nickname value
-     *
      * @author Kimi Liu
      */
     private record TokenIdentity(JsonValue userId, JsonValue openUid, JsonValue encodedNickname) {

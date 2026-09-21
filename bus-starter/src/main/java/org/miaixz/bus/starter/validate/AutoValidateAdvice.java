@@ -56,24 +56,6 @@ public class AutoValidateAdvice {
     private final ValidationExecutor validationExecutor;
 
     /**
-     * Executes validation without exposing the object being validated to reporting code.
-     */
-    @FunctionalInterface
-    public interface ValidationExecutor {
-
-        /**
-         * Validates one intercepted method argument.
-         *
-         * @param value       intercepted argument value
-         * @param annotations validation annotations
-         * @param context     validation context
-         * @param name        parameter name
-         */
-        void validate(Object value, Annotation[] annotations, Context context, String name);
-
-    }
-
-    /**
      * Initializes validation advice backed by the standard Bus validation executor.
      */
     public AutoValidateAdvice() {
@@ -178,6 +160,24 @@ public class AutoValidateAdvice {
                 "AutoValidateAdvice used with a non-proceeding join point type: {}. The original method cannot be executed by this advice.",
                 joinPoint.getKind());
         return null;
+    }
+
+    /**
+     * Executes validation without exposing the object being validated to reporting code.
+     */
+    @FunctionalInterface
+    public interface ValidationExecutor {
+
+        /**
+         * Validates one intercepted method argument.
+         *
+         * @param value       intercepted argument value
+         * @param annotations validation annotations
+         * @param context     validation context
+         * @param name        parameter name
+         */
+        void validate(Object value, Annotation[] annotations, Context context, String name);
+
     }
 
 }

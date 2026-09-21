@@ -43,8 +43,8 @@ import org.miaixz.bus.core.xyz.MethodKit;
  * {@link AnnotationMapping#getResolvedAttributeValue(String, Class)}.
  *
  * @param <T> The type of the annotation being proxied.
- * @see AnnotationMapping
  * @author Kimi Liu
+ * @see AnnotationMapping
  */
 public class AnnotationMappingProxy<T extends Annotation> implements InvocationHandler {
 

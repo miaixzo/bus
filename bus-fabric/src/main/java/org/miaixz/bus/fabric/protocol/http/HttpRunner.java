@@ -29,11 +29,7 @@ import java.util.concurrent.CancellationException;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.io.source.AssignSource;
 import org.miaixz.bus.core.io.source.Source;
-import org.miaixz.bus.core.lang.exception.ConnectionException;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.exception.StatefulException;
-import org.miaixz.bus.core.lang.exception.TimeoutException;
-import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.exception.*;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
@@ -72,14 +68,6 @@ public class HttpRunner {
      */
     private static final VarHandle EXECUTED;
 
-    static {
-        try {
-            EXECUTED = MethodHandles.lookup().findVarHandle(HttpRunner.class, "executed", boolean.class);
-        } catch (final ReflectiveOperationException e) {
-            throw new ExceptionInInitializerError(e);
-        }
-    }
-
     /**
      * Context-scoped immutable pipeline service prefix.
      */
@@ -90,15 +78,18 @@ public class HttpRunner {
      */
     private static volatile PipelineCache pipelineCache;
 
+    static {
+        try {
+            EXECUTED = MethodHandles.lookup().findVarHandle(HttpRunner.class, "executed", boolean.class);
+        } catch (final ReflectiveOperationException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
     /**
      * Execution specification.
      */
     private final HttpSpec spec;
-
-    /**
-     * Single execution guard.
-     */
-    private volatile boolean executed;
 
     /**
      * Stable operation identifier shared by every event in this exchange.
@@ -164,6 +155,11 @@ public class HttpRunner {
      * Whether lifecycle events have a non-noop observer and therefore require publication.
      */
     private final boolean observed;
+
+    /**
+     * Single execution guard.
+     */
+    private volatile boolean executed;
 
     /**
      * Creates an HTTP runner.
@@ -309,6 +305,110 @@ public class HttpRunner {
     }
 
     /**
+     * Finds a timeout in a bounded causal chain.
+     *
+     * @param failure failure candidate
+     * @return timeout cause, or {@code null}
+     */
+    private static Throwable timeoutCause(final Throwable failure) {
+        Throwable current = failure;
+        for (int depth = 0; current != null && depth < 16; depth++) {
+            if (current instanceof TimeoutException || current instanceof SocketTimeoutException) {
+                return current;
+            }
+            final Throwable next = current.getCause();
+            if (next == current) {
+                break;
+            }
+            current = next;
+        }
+        return null;
+    }
+
+    /**
+     * Returns the response filter tag for a request.
+     *
+     * @param request request whose lifecycle tag selects ordinary HTTP or SOAP response tagging
+     * @return response filter tag
+     */
+    private static String responseTag(final HttpRequest request) {
+        return Builder.HTTP_TAG_SOAP_REQUEST.equals(request.tag()) ? Builder.HTTP_TAG_SOAP_RESPONSE
+                : Builder.HTTP_TAG_RESPONSE;
+    }
+
+    /**
+     * Returns configured HTTP cache, if present.
+     *
+     * @param context runtime context containing HTTP options
+     * @return cache or null
+     */
+    private static HttpCache cache(final Context context) {
+        return context.options().get(HttpCache.OPTION);
+    }
+
+    /**
+     * Returns configured cookie jar, if present.
+     *
+     * @param context runtime context containing HTTP options and services
+     * @return cookie jar or null
+     */
+    private static CookieJar cookieJar(final Context context) {
+        if (context.options().contains(CookieJar.OPTION)) {
+            return context.options().get(CookieJar.OPTION);
+        }
+        return context.reactor().directory()
+                .service(CookieJar.OPTION.name(), CookieJar.class, () -> CookieJar.memory(context.clock()));
+    }
+
+    /**
+     * Returns configured HTTP authenticator.
+     *
+     * @param context runtime context containing HTTP options
+     * @return authenticator
+     */
+    private static HttpAuthenticator authenticator(final Context context) {
+        final HttpAuthenticator value = context.options().get(HttpAuthenticator.OPTION);
+        return value == null ? HttpAuthenticator.none() : value;
+    }
+
+    /**
+     * Returns configured HTTP User-Agent.
+     *
+     * @param context runtime context containing HTTP options
+     * @return User-Agent
+     */
+    private static String userAgent(final Context context) {
+        final String value = context.options().get(Builder.OPTION_HTTP_USER_AGENT);
+        return value == null || value.isBlank() ? HttpBridge.defaultUserAgent() : value;
+    }
+
+    /**
+     * Returns the complete configured TLS policy.
+     *
+     * @param context runtime context containing TLS options
+     * @return configured or shared default TLS policy
+     */
+    private static TlsPolicy tlsPolicy(final Context context) {
+        return TlsPolicy.resolve(context.options());
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
+     */
+    private static <T> T require(final T value, final String name) {
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
+    }
+
+    /**
      * Executes this exchange once with a new cancellation scope.
      *
      * @return filtered HTTP response from the configured context-scoped stage chain
@@ -372,27 +472,6 @@ public class HttpRunner {
             }
             throw e;
         }
-    }
-
-    /**
-     * Finds a timeout in a bounded causal chain.
-     *
-     * @param failure failure candidate
-     * @return timeout cause, or {@code null}
-     */
-    private static Throwable timeoutCause(final Throwable failure) {
-        Throwable current = failure;
-        for (int depth = 0; current != null && depth < 16; depth++) {
-            if (current instanceof TimeoutException || current instanceof SocketTimeoutException) {
-                return current;
-            }
-            final Throwable next = current.getCause();
-            if (next == current) {
-                break;
-            }
-            current = next;
-        }
-        return null;
     }
 
     /**
@@ -540,73 +619,6 @@ public class HttpRunner {
     }
 
     /**
-     * Returns the response filter tag for a request.
-     *
-     * @param request request whose lifecycle tag selects ordinary HTTP or SOAP response tagging
-     * @return response filter tag
-     */
-    private static String responseTag(final HttpRequest request) {
-        return Builder.HTTP_TAG_SOAP_REQUEST.equals(request.tag()) ? Builder.HTTP_TAG_SOAP_RESPONSE
-                : Builder.HTTP_TAG_RESPONSE;
-    }
-
-    /**
-     * Returns configured HTTP cache, if present.
-     *
-     * @param context runtime context containing HTTP options
-     * @return cache or null
-     */
-    private static HttpCache cache(final Context context) {
-        return context.options().get(HttpCache.OPTION);
-    }
-
-    /**
-     * Returns configured cookie jar, if present.
-     *
-     * @param context runtime context containing HTTP options and services
-     * @return cookie jar or null
-     */
-    private static CookieJar cookieJar(final Context context) {
-        if (context.options().contains(CookieJar.OPTION)) {
-            return context.options().get(CookieJar.OPTION);
-        }
-        return context.reactor().directory()
-                .service(CookieJar.OPTION.name(), CookieJar.class, () -> CookieJar.memory(context.clock()));
-    }
-
-    /**
-     * Returns configured HTTP authenticator.
-     *
-     * @param context runtime context containing HTTP options
-     * @return authenticator
-     */
-    private static HttpAuthenticator authenticator(final Context context) {
-        final HttpAuthenticator value = context.options().get(HttpAuthenticator.OPTION);
-        return value == null ? HttpAuthenticator.none() : value;
-    }
-
-    /**
-     * Returns configured HTTP User-Agent.
-     *
-     * @param context runtime context containing HTTP options
-     * @return User-Agent
-     */
-    private static String userAgent(final Context context) {
-        final String value = context.options().get(Builder.OPTION_HTTP_USER_AGENT);
-        return value == null || value.isBlank() ? HttpBridge.defaultUserAgent() : value;
-    }
-
-    /**
-     * Returns the complete configured TLS policy.
-     *
-     * @param context runtime context containing TLS options
-     * @return configured or shared default TLS policy
-     */
-    private static TlsPolicy tlsPolicy(final Context context) {
-        return TlsPolicy.resolve(context.options());
-    }
-
-    /**
      * Emits an observation event.
      *
      * @param marker   HTTP lifecycle marker to publish
@@ -627,22 +639,6 @@ public class HttpRunner {
             builder = builder.cause(cause);
         }
         spec.observer().emit(builder.build());
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  logical field name included in the validation error
-     * @param <T>   reference type
-     * @return validated non-null reference
-     * @throws ValidateException if {@code value} is {@code null}
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
     }
 
     /**

@@ -23,18 +23,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.AlgorithmParameters;
-import java.security.GeneralSecurityException;
-import java.security.KeyFactory;
-import java.security.MessageDigest;
-import java.security.PublicKey;
-import java.security.Signature;
-import java.security.spec.ECGenParameterSpec;
-import java.security.spec.ECParameterSpec;
-import java.security.spec.ECPoint;
-import java.security.spec.ECPublicKeySpec;
-import java.security.spec.RSAPublicKeySpec;
-import java.security.spec.X509EncodedKeySpec;
+import java.security.*;
+import java.security.spec.*;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -44,12 +34,7 @@ import java.util.List;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.dns.cache.DnsValidationCache;
-import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
-import org.miaixz.bus.fabric.network.dns.message.DnsDecodedResponse;
-import org.miaixz.bus.fabric.network.dns.message.DnsName;
-import org.miaixz.bus.fabric.network.dns.message.DnsQuery;
-import org.miaixz.bus.fabric.network.dns.message.DnsResponse;
-import org.miaixz.bus.fabric.network.dns.message.DnsResponseCode;
+import org.miaixz.bus.fabric.network.dns.message.*;
 import org.miaixz.bus.fabric.network.dns.record.DnsRecord;
 import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
 import org.miaixz.bus.fabric.network.dns.zone.DnsTrustAnchor;
@@ -236,61 +221,6 @@ public class DnsDnssecValidator {
     }
 
     /**
-     * Validates a decoded response and returns a response suitable for the original query.
-     *
-     * @param query   original query
-     * @param decoded decoded upstream response
-     * @return DNS response with AD set only when DNSSEC material validates
-     */
-    public DnsResponse validate(final DnsQuery query, final DnsDecodedResponse decoded) {
-        return chainValidator.validate(query, decoded);
-    }
-
-    /**
-     * Validates a decoded response using the local single-response DNSSEC checks.
-     *
-     * @param query   original query
-     * @param decoded decoded upstream response
-     * @return DNS response with AD set only when local DNSSEC material validates
-     */
-    public DnsResponse validateLocal(final DnsQuery query, final DnsDecodedResponse decoded) {
-        if (query == null) {
-            throw new ValidateException("DNSSEC validation query must not be null");
-        }
-        if (decoded == null) {
-            throw new ValidateException("DNSSEC validation response must not be null");
-        }
-        if (query.checkingDisabled() || !query.dnssecOk() || !containsDnssecMaterial(decoded)) {
-            return decoded.toResponse(query);
-        }
-        final Instant now = Instant.now(clock);
-        if (validationCache.containsResponse(decoded, now)) {
-            return new DnsResponse(query, decoded.responseCode(), false, true, decoded.truncated(), decoded.answers(),
-                    decoded.authorities(), decoded.additionals(), true, null);
-        }
-        try {
-            if (!allSignaturesCurrent(decoded) || !answersCovered(decoded.answers())
-                    || !cryptographicSignaturesValid(decoded, trustAnchors)) {
-                return DnsResponse.empty(query, DnsResponseCode.SERVFAIL, false);
-            }
-            validationCache.putResponseSuccess(decoded, now);
-            return new DnsResponse(query, decoded.responseCode(), false, true, decoded.truncated(), decoded.answers(),
-                    decoded.authorities(), decoded.additionals(), true, null);
-        } catch (final RuntimeException e) {
-            return DnsResponse.empty(query, DnsResponseCode.SERVFAIL, false);
-        }
-    }
-
-    /**
-     * Returns the validation-result cache owned by this validator.
-     *
-     * @return validation cache
-     */
-    public DnsValidationCache validationCache() {
-        return validationCache;
-    }
-
-    /**
      * Returns whether decoded sections contain DNSSEC records.
      *
      * @param decoded decoded response
@@ -314,49 +244,6 @@ public class DnsDnssecValidator {
             }
         }
         return false;
-    }
-
-    /**
-     * Returns whether every RRSIG in the decoded response is inside its validity window.
-     *
-     * @param decoded decoded response
-     * @return true when all signatures are current
-     */
-    private boolean allSignaturesCurrent(final DnsDecodedResponse decoded) {
-        return signaturesCurrent(decoded.answers()) && signaturesCurrent(decoded.authorities())
-                && signaturesCurrent(decoded.additionals());
-    }
-
-    /**
-     * Returns whether RRSIG records in a list are inside their validity window.
-     *
-     * @param records records to scan
-     * @return true when all signatures are current
-     */
-    private boolean signaturesCurrent(final List<DnsRecord> records) {
-        for (final DnsRecord record : records) {
-            if (record.typeCode() == DnsRecordType.RRSIG.code() && !signatureCurrent(record)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Returns whether a single RRSIG is currently valid.
-     *
-     * @param record RRSIG record
-     * @return true when now is between inception and expiration
-     */
-    private boolean signatureCurrent(final DnsRecord record) {
-        final byte[] data = record.wireData();
-        if (data.length < RRSIG_FIXED_BYTES) {
-            throw new ProtocolException("DNSSEC RRSIG RDATA is truncated");
-        }
-        final long expiration = DnsCodec.readUnsignedInt(data, RRSIG_EXPIRATION_OFFSET);
-        final long inception = DnsCodec.readUnsignedInt(data, RRSIG_INCEPTION_OFFSET);
-        final long now = Instant.now(clock).getEpochSecond();
-        return inception <= now && now <= expiration;
     }
 
     /**
@@ -992,6 +879,104 @@ public class DnsDnssecValidator {
     private static boolean dnssecType(final DnsRecordType type) {
         return type == DnsRecordType.DS || type == DnsRecordType.DNSKEY || type == DnsRecordType.RRSIG
                 || type == DnsRecordType.NSEC || type == DnsRecordType.NSEC3 || type == DnsRecordType.NSEC3PARAM;
+    }
+
+    /**
+     * Validates a decoded response and returns a response suitable for the original query.
+     *
+     * @param query   original query
+     * @param decoded decoded upstream response
+     * @return DNS response with AD set only when DNSSEC material validates
+     */
+    public DnsResponse validate(final DnsQuery query, final DnsDecodedResponse decoded) {
+        return chainValidator.validate(query, decoded);
+    }
+
+    /**
+     * Validates a decoded response using the local single-response DNSSEC checks.
+     *
+     * @param query   original query
+     * @param decoded decoded upstream response
+     * @return DNS response with AD set only when local DNSSEC material validates
+     */
+    public DnsResponse validateLocal(final DnsQuery query, final DnsDecodedResponse decoded) {
+        if (query == null) {
+            throw new ValidateException("DNSSEC validation query must not be null");
+        }
+        if (decoded == null) {
+            throw new ValidateException("DNSSEC validation response must not be null");
+        }
+        if (query.checkingDisabled() || !query.dnssecOk() || !containsDnssecMaterial(decoded)) {
+            return decoded.toResponse(query);
+        }
+        final Instant now = Instant.now(clock);
+        if (validationCache.containsResponse(decoded, now)) {
+            return new DnsResponse(query, decoded.responseCode(), false, true, decoded.truncated(), decoded.answers(),
+                    decoded.authorities(), decoded.additionals(), true, null);
+        }
+        try {
+            if (!allSignaturesCurrent(decoded) || !answersCovered(decoded.answers())
+                    || !cryptographicSignaturesValid(decoded, trustAnchors)) {
+                return DnsResponse.empty(query, DnsResponseCode.SERVFAIL, false);
+            }
+            validationCache.putResponseSuccess(decoded, now);
+            return new DnsResponse(query, decoded.responseCode(), false, true, decoded.truncated(), decoded.answers(),
+                    decoded.authorities(), decoded.additionals(), true, null);
+        } catch (final RuntimeException e) {
+            return DnsResponse.empty(query, DnsResponseCode.SERVFAIL, false);
+        }
+    }
+
+    /**
+     * Returns the validation-result cache owned by this validator.
+     *
+     * @return validation cache
+     */
+    public DnsValidationCache validationCache() {
+        return validationCache;
+    }
+
+    /**
+     * Returns whether every RRSIG in the decoded response is inside its validity window.
+     *
+     * @param decoded decoded response
+     * @return true when all signatures are current
+     */
+    private boolean allSignaturesCurrent(final DnsDecodedResponse decoded) {
+        return signaturesCurrent(decoded.answers()) && signaturesCurrent(decoded.authorities())
+                && signaturesCurrent(decoded.additionals());
+    }
+
+    /**
+     * Returns whether RRSIG records in a list are inside their validity window.
+     *
+     * @param records records to scan
+     * @return true when all signatures are current
+     */
+    private boolean signaturesCurrent(final List<DnsRecord> records) {
+        for (final DnsRecord record : records) {
+            if (record.typeCode() == DnsRecordType.RRSIG.code() && !signatureCurrent(record)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns whether a single RRSIG is currently valid.
+     *
+     * @param record RRSIG record
+     * @return true when now is between inception and expiration
+     */
+    private boolean signatureCurrent(final DnsRecord record) {
+        final byte[] data = record.wireData();
+        if (data.length < RRSIG_FIXED_BYTES) {
+            throw new ProtocolException("DNSSEC RRSIG RDATA is truncated");
+        }
+        final long expiration = DnsCodec.readUnsignedInt(data, RRSIG_EXPIRATION_OFFSET);
+        final long inception = DnsCodec.readUnsignedInt(data, RRSIG_INCEPTION_OFFSET);
+        final long now = Instant.now(clock).getEpochSecond();
+        return inception <= now && now <= expiration;
     }
 
     /**

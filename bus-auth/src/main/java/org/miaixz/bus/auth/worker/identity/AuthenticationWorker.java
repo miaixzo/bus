@@ -249,7 +249,6 @@ public class AuthenticationWorker {
      * Supplies one asynchronous project-port invocation.
      *
      * @param <T> successful project-port value type
-     *
      * @author Kimi Liu
      */
     @FunctionalInterface

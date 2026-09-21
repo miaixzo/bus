@@ -90,6 +90,52 @@ final class SocketRunner {
     }
 
     /**
+     * Creates a structured connection failure before the socket session can deliver application data.
+     *
+     * @param proxy   resolved route used by the failed attempt
+     * @param phase   lifecycle phase in which the attempt failed
+     * @param scope   route, target, or configuration component responsible for the failure
+     * @param message human-readable failure description
+     * @param cause   underlying transport or handshake failure
+     * @return structured connection failure with a non-started delivery state
+     */
+    private static ConnectionException connectionFailure(
+            final ProxyPlan proxy,
+            final ConnectionException.Phase phase,
+            final ConnectionException.Scope scope,
+            final String message,
+            final Throwable cause) {
+        return new ConnectionException(phase, scope, ConnectionException.Delivery.NOT_STARTED, proxy.id(), message,
+                cause);
+    }
+
+    /**
+     * Closes the TLS channel and always attempts to close the raw connection afterward.
+     *
+     * @param raw raw connection
+     * @param tls TLS channel
+     */
+    private static void closeTls(final Connection raw, final TlsChannel tls) {
+        try {
+            tls.close();
+        } finally {
+            raw.close();
+        }
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Opens a socket session.
      *
      * @return opened session using the transport selected from the target scheme
@@ -220,26 +266,6 @@ final class SocketRunner {
             case KCP -> openKcp(opening, cancellation, proxy);
             default -> throw new ProtocolException("Socket exchange does not support transport: " + transport);
         };
-    }
-
-    /**
-     * Creates a structured connection failure before the socket session can deliver application data.
-     *
-     * @param proxy   resolved route used by the failed attempt
-     * @param phase   lifecycle phase in which the attempt failed
-     * @param scope   route, target, or configuration component responsible for the failure
-     * @param message human-readable failure description
-     * @param cause   underlying transport or handshake failure
-     * @return structured connection failure with a non-started delivery state
-     */
-    private static ConnectionException connectionFailure(
-            final ProxyPlan proxy,
-            final ConnectionException.Phase phase,
-            final ConnectionException.Scope scope,
-            final String message,
-            final Throwable cause) {
-        return new ConnectionException(phase, scope, ConnectionException.Delivery.NOT_STARTED, proxy.id(), message,
-                cause);
     }
 
     /**
@@ -605,20 +631,6 @@ final class SocketRunner {
     }
 
     /**
-     * Closes the TLS channel and always attempts to close the raw connection afterward.
-     *
-     * @param raw raw connection
-     * @param tls TLS channel
-     */
-    private static void closeTls(final Connection raw, final TlsChannel tls) {
-        try {
-            tls.close();
-        } finally {
-            raw.close();
-        }
-    }
-
-    /**
      * Prepares the socket opening message.
      *
      * @return filtered opening message
@@ -701,18 +713,6 @@ final class SocketRunner {
             event.cause(cause);
         }
         spec.observer().emit(event.build());
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  logical field name included in the validation error
-     * @param <T>   reference type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**

@@ -51,6 +51,18 @@ public abstract class WeekParts extends MonthParts {
     }
 
     /**
+     * Validates the week components.
+     *
+     * @param index the week index to validate (0-5)
+     * @param start the starting weekday to validate (0-6)
+     * @throws IllegalArgumentException if index or start is out of valid range
+     */
+    public static void validate(int index, int start) {
+        validateRange(index, 0, 5, "week index");
+        validateRange(start, 0, 6, "week start");
+    }
+
+    /**
      * Gets the week index.
      *
      * @return the week index (0-5)
@@ -66,18 +78,6 @@ public abstract class WeekParts extends MonthParts {
      */
     public Week getStart() {
         return Week.fromIndex(start);
-    }
-
-    /**
-     * Validates the week components.
-     *
-     * @param index the week index to validate (0-5)
-     * @param start the starting weekday to validate (0-6)
-     * @throws IllegalArgumentException if index or start is out of valid range
-     */
-    public static void validate(int index, int start) {
-        validateRange(index, 0, 5, "week index");
-        validateRange(start, 0, 6, "week start");
     }
 
 }

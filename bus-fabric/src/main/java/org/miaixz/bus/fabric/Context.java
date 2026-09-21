@@ -101,6 +101,22 @@ public class Context implements AutoCloseable {
     }
 
     /**
+     * Validates non-null values.
+     *
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
+     */
+    private static <T> T require(final T value, final String name) {
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
+    }
+
+    /**
      * Returns the shared reactor.
      *
      * @return reactor shared by this context and its derived views
@@ -164,22 +180,6 @@ public class Context implements AutoCloseable {
         if (closed.compareAndSet(false, true)) {
             runtime.release();
         }
-    }
-
-    /**
-     * Validates non-null values.
-     *
-     * @param value reference to validate
-     * @param name  logical reference name used in the validation message
-     * @param <T>   reference type
-     * @return the validated non-null reference
-     * @throws ValidateException if {@code value} is {@code null}
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
     }
 
     /**

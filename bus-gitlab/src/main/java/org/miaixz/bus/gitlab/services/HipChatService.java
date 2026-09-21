@@ -32,32 +32,35 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
  */
 public class HipChatService extends NotificationService {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852285062156L;
+
     /**
      * The token prop value.
      */
 
     public static final String TOKEN_PROP = "token";
+
     /**
      * The color prop value.
      */
     public static final String COLOR_PROP = "color";
+
     /**
      * The notify prop value.
      */
     public static final String NOTIFY_PROP = "notify";
+
     /**
      * The room prop value.
      */
     public static final String ROOM_PROP = "room";
+
     /**
      * The api version prop value.
      */
     public static final String API_VERSION_PROP = "api_version";
+
     /**
      * The server prop value.
      */

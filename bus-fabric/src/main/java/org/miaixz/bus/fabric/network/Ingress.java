@@ -148,6 +148,59 @@ public class Ingress implements Connection, Conduit {
     }
 
     /**
+     * Returns a bounded channel read capacity.
+     *
+     * @param byteCount requested byte count
+     * @return read capacity
+     */
+    private static int readCapacity(final long byteCount) {
+        return toIntSize(Math.min(byteCount, Normal._8192));
+    }
+
+    /**
+     * Converts a long byte count to an int size accepted by JDK buffers.
+     *
+     * @param byteCount byte count
+     * @return int size
+     */
+    private static int toIntSize(final long byteCount) {
+        return (int) Math.min(byteCount, Integer.MAX_VALUE);
+    }
+
+    /**
+     * Awaits a core IO operation and converts checked failures.
+     *
+     * @param future  operation future
+     * @param message failure message
+     * @return byte count
+     * @throws IOException when the operation fails
+     */
+    private static long await(final CompletableFuture<Long> future, final String message) throws IOException {
+        try {
+            final Long value = Assert.notNull(future, () -> new ValidateException("IO future must not be null")).get();
+            if (value == null) {
+                throw new SocketException("Ingress IO future returned a null byte count");
+            }
+            return value;
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IOException(message, e);
+        } catch (final ExecutionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof IOException io) {
+                throw io;
+            }
+            if (cause instanceof RuntimeException runtime) {
+                throw runtime;
+            }
+            if (cause instanceof Error error) {
+                throw error;
+            }
+            throw new IOException(message, cause);
+        }
+    }
+
+    /**
      * Returns the ingress destination.
      *
      * @return destination
@@ -358,26 +411,6 @@ public class Ingress implements Connection, Conduit {
     }
 
     /**
-     * Returns a bounded channel read capacity.
-     *
-     * @param byteCount requested byte count
-     * @return read capacity
-     */
-    private static int readCapacity(final long byteCount) {
-        return toIntSize(Math.min(byteCount, Normal._8192));
-    }
-
-    /**
-     * Converts a long byte count to an int size accepted by JDK buffers.
-     *
-     * @param byteCount byte count
-     * @return int size
-     */
-    private static int toIntSize(final long byteCount) {
-        return (int) Math.min(byteCount, Integer.MAX_VALUE);
-    }
-
-    /**
      * Performs one physical blocking channel read under the current ingress read timeout.
      *
      * @param target writable native destination
@@ -468,39 +501,6 @@ public class Ingress implements Connection, Conduit {
             } catch (final IOException ignored) {
                 // Timeout has already won.
             }
-        }
-    }
-
-    /**
-     * Awaits a core IO operation and converts checked failures.
-     *
-     * @param future  operation future
-     * @param message failure message
-     * @return byte count
-     * @throws IOException when the operation fails
-     */
-    private static long await(final CompletableFuture<Long> future, final String message) throws IOException {
-        try {
-            final Long value = Assert.notNull(future, () -> new ValidateException("IO future must not be null")).get();
-            if (value == null) {
-                throw new SocketException("Ingress IO future returned a null byte count");
-            }
-            return value;
-        } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new IOException(message, e);
-        } catch (final ExecutionException e) {
-            final Throwable cause = e.getCause();
-            if (cause instanceof IOException io) {
-                throw io;
-            }
-            if (cause instanceof RuntimeException runtime) {
-                throw runtime;
-            }
-            if (cause instanceof Error error) {
-                throw error;
-            }
-            throw new IOException(message, cause);
         }
     }
 

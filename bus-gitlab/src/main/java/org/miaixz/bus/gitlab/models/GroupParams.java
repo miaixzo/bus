@@ -35,9 +35,6 @@ import org.miaixz.bus.gitlab.models.Constants.SubgroupCreationLevel;
  */
 public class GroupParams implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852256333908L;
 
@@ -45,82 +42,102 @@ public class GroupParams implements Serializable {
      * The name value.
      */
     private String name;
+
     /**
      * The path value.
      */
     private String path;
+
     /**
      * The description value.
      */
     private String description;
+
     /**
      * The visibility value.
      */
     private String visibility;
+
     /**
      * The share with group lock value.
      */
     private Boolean shareWithGroupLock;
+
     /**
      * The require two factor authentication value.
      */
     private Boolean requireTwoFactorAuthentication;
+
     /**
      * The two factor grace period value.
      */
     private Integer twoFactorGracePeriod;
+
     /**
      * The project creation level value.
      */
     private ProjectCreationLevel projectCreationLevel;
+
     /**
      * The auto devops enabled value.
      */
     private Boolean autoDevopsEnabled;
+
     /**
      * The subgroup creation level value.
      */
     private SubgroupCreationLevel subgroupCreationLevel;
+
     /**
      * The emails disabled value.
      */
     private Boolean emailsDisabled;
+
     /**
      * The lfs enabled value.
      */
     private Boolean lfsEnabled;
+
     /**
      * The request access enabled value.
      */
     private Boolean requestAccessEnabled;
+
     /**
      * The parent id value.
      */
     private Long parentId;
+
     /**
      * The shared runners minutes limit value.
      */
     private Integer sharedRunnersMinutesLimit;
+
     /**
      * The extra shared runners minutes limit value.
      */
     private Integer extraSharedRunnersMinutesLimit;
+
     /**
      * The default branch protection value.
      */
     private DefaultBranchProtectionLevel defaultBranchProtection;
+
     /**
      * The prevent sharing groups outside hierarchy value.
      */
     private Boolean preventSharingGroupsOutsideHierarchy;
+
     /**
      * The prevent forking outside group value.
      */
     private Boolean preventForkingOutsideGroup;
+
     /**
      * The membership lock value.
      */
     private Boolean membershipLock;
+
     /**
      * The file template project id value.
      */

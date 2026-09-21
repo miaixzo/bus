@@ -24,7 +24,8 @@ import java.net.UnknownHostException;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import org.springframework.core.io.buffer.DataBuffer;

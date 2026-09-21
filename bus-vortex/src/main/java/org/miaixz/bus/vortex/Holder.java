@@ -63,11 +63,6 @@ import reactor.netty.resources.LoopResources;
 public class Holder {
 
     /**
-     * The key used to store the Performance configuration in {@link Instances}.
-     */
-    private static final String PERFORMANCE_KEY = "vortex:performance";
-
-    /**
      * The key used to store the ConnectionProvider in {@link Instances}.
      */
     public static final String CONNECTION_PROVIDER_KEY = "vortex:connection-provider";
@@ -106,6 +101,11 @@ public class Holder {
      * Key for the sampled heap and direct-memory pressure state.
      */
     public static final String MEMORY_PRESSURE_KEY = "vortex:memory-pressure";
+
+    /**
+     * The key used to store the Performance configuration in {@link Instances}.
+     */
+    private static final String PERFORMANCE_KEY = "vortex:performance";
 
     /**
      * Marker key to track initialization status.

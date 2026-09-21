@@ -52,18 +52,22 @@ public class DpopProof {
      * Required DPoP proof media type value.
      */
     public static final String TYPE = "dpop+jwt";
+
     /**
      * HTTP method claim name.
      */
     public static final String HTTP_METHOD = "htm";
+
     /**
      * HTTP target URI claim name.
      */
     public static final String HTTP_URI = "htu";
+
     /**
      * Access-token hash claim name.
      */
     public static final String ACCESS_TOKEN_HASH = "ath";
+
     /**
      * Authorization server nonce claim name.
      */
@@ -73,14 +77,17 @@ public class DpopProof {
      * Replayable compact JWS retained for protocol transmission only.
      */
     private final String compact;
+
     /**
      * Integrity-protected DPoP JOSE header.
      */
     private final JoseHeader header;
+
     /**
      * Complete DPoP Claims Set including extension claims.
      */
     private final JwtClaims claims;
+
     /**
      * Validated public asymmetric JWK embedded in the protected header.
      */

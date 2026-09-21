@@ -43,18 +43,22 @@ public class AsyncByteBudget implements AutoCloseable {
      * Maximum logical bytes that active leases may own together.
      */
     private final long limitBytes;
+
     /**
      * Protects usage and waiter-queue transitions.
      */
     private final ReentrantLock lock = new ReentrantLock();
+
     /**
      * FIFO queue of acquisitions that could not be satisfied immediately.
      */
     private final ArrayDeque<Waiter> waiters = new ArrayDeque<>();
+
     /**
      * Logical bytes currently owned by live leases.
      */
     private long usedBytes;
+
     /**
      * Whether new acquisitions have been permanently disabled.
      */
@@ -70,6 +74,23 @@ public class AsyncByteBudget implements AutoCloseable {
             throw new IllegalArgumentException("limitBytes must be positive");
         }
         this.limitBytes = limitBytes;
+    }
+
+    /**
+     * Delivers a granted lease, returning it when cancellation won the delivery race.
+     *
+     * @param waiter pending acquisition receiving the result
+     * @param lease  capacity granted to the waiter
+     */
+    private static void deliver(Waiter waiter, Lease lease) {
+        if (waiter.cancelled.get()) {
+            lease.close();
+        } else {
+            Sinks.EmitResult emitted = waiter.result.tryEmitValue(lease);
+            if (emitted.isFailure()) {
+                lease.close();
+            }
+        }
     }
 
     /**
@@ -175,23 +196,6 @@ public class AsyncByteBudget implements AutoCloseable {
     }
 
     /**
-     * Delivers a granted lease, returning it when cancellation won the delivery race.
-     *
-     * @param waiter pending acquisition receiving the result
-     * @param lease  capacity granted to the waiter
-     */
-    private static void deliver(Waiter waiter, Lease lease) {
-        if (waiter.cancelled.get()) {
-            lease.close();
-        } else {
-            Sinks.EmitResult emitted = waiter.result.tryEmitValue(lease);
-            if (emitted.isFailure()) {
-                lease.close();
-            }
-        }
-    }
-
-    /**
      * Returns the immutable budget limit.
      *
      * @return immutable maximum concurrent logical bytes
@@ -291,14 +295,14 @@ public class AsyncByteBudget implements AutoCloseable {
         private final AsyncByteBudget budget;
 
         /**
-         * Exact logical bytes charged to the budget.
-         */
-        private long bytes;
-
-        /**
          * Ensures capacity is returned only once.
          */
         private final AtomicBoolean closed = new AtomicBoolean();
+
+        /**
+         * Exact logical bytes charged to the budget.
+         */
+        private long bytes;
 
         /**
          * Creates an ownership token for capacity already charged to the budget.

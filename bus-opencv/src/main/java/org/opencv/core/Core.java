@@ -30,40 +30,17 @@ import org.opencv.utils.Converters;
  */
 public class Core {
 
-    // these constants are wrapped inside functions to prevent inlining
-    private static String getVersion() {
-        return "4.13.0";
-    }
-
-    private static String getNativeLibraryName() {
-        return "opencv_java";
-    }
-
-    private static int getVersionMajorJ() {
-        return 4;
-    }
-
-    private static int getVersionMinorJ() {
-        return 13;
-    }
-
-    private static int getVersionRevisionJ() {
-        return 0;
-    }
-
-    private static String getVersionStatusJ() {
-        return "";
-    }
-
     public static final String VERSION = getVersion();
-    public static final String NATIVE_LIBRARY_NAME = getNativeLibraryName();
-    public static final int VERSION_MAJOR = getVersionMajorJ();
-    public static final int VERSION_MINOR = getVersionMinorJ();
-    public static final int VERSION_REVISION = getVersionRevisionJ();
-    public static final String VERSION_STATUS = getVersionStatusJ();
 
-    private static final int CV_8U = 0, CV_8S = 1, CV_16U = 2, CV_16S = 3, CV_32S = 4, CV_32F = 5, CV_64F = 6,
-            CV_USRTYPE1 = 7;
+    public static final String NATIVE_LIBRARY_NAME = getNativeLibraryName();
+
+    public static final int VERSION_MAJOR = getVersionMajorJ();
+
+    public static final int VERSION_MINOR = getVersionMinorJ();
+
+    public static final int VERSION_REVISION = getVersionRevisionJ();
+
+    public static final String VERSION_STATUS = getVersionStatusJ();
 
     // C++: enum <unnamed>
     public static final int SVD_MODIFY_A = 1, SVD_NO_UV = 2, SVD_FULL_UV = 4, FILLED = -1, REDUCE_SUM = 0,
@@ -87,10 +64,6 @@ public class Core {
     // C++: enum DecompTypes (cv.DecompTypes)
     public static final int DECOMP_LU = 0, DECOMP_SVD = 1, DECOMP_EIG = 2, DECOMP_CHOLESKY = 3, DECOMP_QR = 4,
             DECOMP_NORMAL = 16;
-
-    // C++: enum DftFlags (cv.DftFlags)
-    public static final int DFT_INVERSE = 1, DFT_SCALE = 2, DFT_ROWS = 4, DFT_COMPLEX_OUTPUT = 16, DFT_REAL_OUTPUT = 32,
-            DFT_COMPLEX_INPUT = 64, DCT_INVERSE = DFT_INVERSE, DCT_ROWS = DFT_ROWS;
 
     // C++: enum Code (cv.Error.Code)
     public static final int StsOk = 0, StsBackTrace = -1, StsError = -2, StsInternal = -3, StsNoMem = -4,
@@ -130,7 +103,9 @@ public class Core {
             Param_UCHAR = 11, Param_SCALAR = 12;
 
     // C++: enum ReduceTypes (cv.ReduceTypes)
-    public static final int REDUCE_SUM2 = 4;
+    public static final int REDUCE_SUM2 = 4; // C++: enum DftFlags (cv.DftFlags)
+    public static final int DFT_INVERSE = 1, DFT_SCALE = 2, DFT_ROWS = 4, DFT_COMPLEX_OUTPUT = 16, DFT_REAL_OUTPUT = 32,
+            DFT_COMPLEX_INPUT = 64, DCT_INVERSE = DFT_INVERSE, DCT_ROWS = DFT_ROWS;
 
     // C++: enum RotateFlags (cv.RotateFlags)
     public static final int ROTATE_90_CLOCKWISE = 0, ROTATE_180 = 1, ROTATE_90_COUNTERCLOCKWISE = 2;
@@ -138,13 +113,37 @@ public class Core {
     // C++: enum SortFlags (cv.SortFlags)
     public static final int SORT_EVERY_ROW = 0, SORT_EVERY_COLUMN = 1, SORT_ASCENDING = 0, SORT_DESCENDING = 16;
 
-    //
-    // C++: float cv::cubeRoot(float val)
-    //
+    private static final int CV_8U = 0, CV_8S = 1, CV_16U = 2, CV_16S = 3, CV_32S = 4, CV_32F = 5, CV_64F = 6,
+            CV_USRTYPE1 = 7;
+
+    // these constants are wrapped inside functions to prevent inlining
+    private static String getVersion() {
+        return "4.13.0";
+    }
+
+    private static String getNativeLibraryName() {
+        return "opencv_java";
+    }
+
+    private static int getVersionMajorJ() {
+        return 4;
+    }
+
+    private static int getVersionMinorJ() {
+        return 13;
+    }
+
+    private static int getVersionRevisionJ() {
+        return 0;
+    }
+
+    private static String getVersionStatusJ() {
+        return "";
+    }
 
     /**
      * Computes the cube root of an argument.
-     *
+     * <p>
      * The function cubeRoot computes \(\sqrt[3]{\texttt{val}}\). Negative arguments are handled correctly. NaN and Inf
      * are not handled. The accuracy approaches the maximum possible accuracy for single-precision data.
      *
@@ -156,12 +155,12 @@ public class Core {
     }
 
     //
-    // C++: float cv::fastAtan2(float y, float x)
+    // C++: float cv::cubeRoot(float val)
     //
 
     /**
      * Calculates the angle of a 2D vector in degrees.
-     *
+     * <p>
      * The function fastAtan2 calculates the full-range angle of an input 2D vector. The angle is measured in degrees
      * and varies from 0 to 360 degrees. The accuracy is about 0.3 degrees.
      *
@@ -174,7 +173,7 @@ public class Core {
     }
 
     //
-    // C++: bool cv::ipp::useIPP()
+    // C++: float cv::fastAtan2(float y, float x)
     //
 
     /**
@@ -187,7 +186,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::ipp::setUseIPP(bool flag)
+    // C++: bool cv::ipp::useIPP()
     //
 
     public static void setUseIPP(boolean flag) {
@@ -195,7 +194,7 @@ public class Core {
     }
 
     //
-    // C++: String cv::ipp::getIppVersion()
+    // C++: void cv::ipp::setUseIPP(bool flag)
     //
 
     public static String getIppVersion() {
@@ -203,7 +202,7 @@ public class Core {
     }
 
     //
-    // C++: bool cv::ipp::useIPP_NotExact()
+    // C++: String cv::ipp::getIppVersion()
     //
 
     public static boolean useIPP_NotExact() {
@@ -211,7 +210,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::ipp::setUseIPP_NotExact(bool flag)
+    // C++: bool cv::ipp::useIPP_NotExact()
     //
 
     public static void setUseIPP_NotExact(boolean flag) {
@@ -219,18 +218,18 @@ public class Core {
     }
 
     //
-    // C++: int cv::borderInterpolate(int p, int len, int borderType)
+    // C++: void cv::ipp::setUseIPP_NotExact(bool flag)
     //
 
     /**
      * Computes the source location of an extrapolated pixel.
-     *
+     * <p>
      * The function computes and returns the coordinate of a donor pixel corresponding to the specified extrapolated
      * pixel when using the specified extrapolation border mode. For example, if you use cv::BORDER_WRAP mode in the
      * horizontal direction, cv::BORDER_REFLECT_101 in the vertical direction and want to compute value of the "virtual"
      * pixel Point(-5, 100) in a floating-point image img, it looks like: <code>
-     *     float val = img.at&lt;float&gt;(borderInterpolate(100, img.rows, cv::BORDER_REFLECT_101),
-     *                               borderInterpolate(-5, img.cols, cv::BORDER_WRAP));
+     * float val = img.at&lt;float&gt;(borderInterpolate(100, img.rows, cv::BORDER_REFLECT_101),
+     * borderInterpolate(-5, img.cols, cv::BORDER_WRAP));
      * </code> Normally, the function is not called directly. It is used inside filtering functions and also in
      * copyMakeBorder.
      *
@@ -238,7 +237,7 @@ public class Core {
      * @param len        Length of the array along the corresponding axis.
      * @param borderType Border type, one of the #BorderTypes, except for #BORDER_TRANSPARENT and #BORDER_ISOLATED. When
      *                   borderType==#BORDER_CONSTANT, the function always returns -1, regardless of p and len.
-     *
+     *                   <p>
      *                   SEE: copyMakeBorder
      * @return automatically generated
      */
@@ -247,35 +246,34 @@ public class Core {
     }
 
     //
-    // C++: void cv::copyMakeBorder(Mat src, Mat& dst, int top, int bottom, int left, int right, int borderType, Scalar
-    // value = Scalar())
+    // C++: int cv::borderInterpolate(int p, int len, int borderType)
     //
 
     /**
      * Forms a border around an image.
-     *
+     * <p>
      * The function copies the source image into the middle of the destination image. The areas to the left, to the
      * right, above and below the copied source image will be filled with extrapolated pixels. This is not what
      * filtering functions based on it do (they extrapolate pixels on-fly), but what other more complex functions,
      * including your own, may do to simplify image boundary handling.
-     *
+     * <p>
      * The function supports the mode when src is already in the middle of dst . In this case, the function does not
      * copy src itself but simply constructs the border, for example:
      *
      * <code>
-     *     // let border be the same in all directions
-     *     int border=2;
-     *     // constructs a larger image to fit both the image and the border
-     *     Mat gray_buf(rgb.rows + border*2, rgb.cols + border*2, rgb.depth());
-     *     // select the middle part of it w/o copying data
-     *     Mat gray(gray_canvas, Rect(border, border, rgb.cols, rgb.rows));
-     *     // convert image from RGB to grayscale
-     *     cvtColor(rgb, gray, COLOR_RGB2GRAY);
-     *     // form a border in-place
-     *     copyMakeBorder(gray, gray_buf, border, border,
-     *                    border, border, BORDER_REPLICATE);
-     *     // now do some custom filtering ...
-     *     ...
+     * // let border be the same in all directions
+     * int border=2;
+     * // constructs a larger image to fit both the image and the border
+     * Mat gray_buf(rgb.rows + border*2, rgb.cols + border*2, rgb.depth());
+     * // select the middle part of it w/o copying data
+     * Mat gray(gray_canvas, Rect(border, border, rgb.cols, rgb.rows));
+     * // convert image from RGB to grayscale
+     * cvtColor(rgb, gray, COLOR_RGB2GRAY);
+     * // form a border in-place
+     * copyMakeBorder(gray, gray_buf, border, border,
+     * border, border, BORDER_REPLICATE);
+     * // now do some custom filtering ...
+     * ...
      * </code> <b>Note:</b> When the source image is a part (ROI) of a bigger image, the function will try to use the
      * pixels outside of the ROI to form a border. To disable this feature and always do extrapolation, as if src was
      * not a ROI, use borderType | #BORDER_ISOLATED.
@@ -291,7 +289,7 @@ public class Core {
      *                   to be built.
      * @param borderType Border type. See borderInterpolate for details.
      * @param value      Border value if borderType==BORDER_CONSTANT .
-     *
+     *                   <p>
      *                   SEE: borderInterpolate
      */
     public static void copyMakeBorder(
@@ -317,31 +315,36 @@ public class Core {
                 value.val[3]);
     }
 
+    //
+    // C++: void cv::copyMakeBorder(Mat src, Mat& dst, int top, int bottom, int left, int right, int borderType, Scalar
+    // value = Scalar())
+    //
+
     /**
      * Forms a border around an image.
-     *
+     * <p>
      * The function copies the source image into the middle of the destination image. The areas to the left, to the
      * right, above and below the copied source image will be filled with extrapolated pixels. This is not what
      * filtering functions based on it do (they extrapolate pixels on-fly), but what other more complex functions,
      * including your own, may do to simplify image boundary handling.
-     *
+     * <p>
      * The function supports the mode when src is already in the middle of dst . In this case, the function does not
      * copy src itself but simply constructs the border, for example:
      *
      * <code>
-     *     // let border be the same in all directions
-     *     int border=2;
-     *     // constructs a larger image to fit both the image and the border
-     *     Mat gray_buf(rgb.rows + border*2, rgb.cols + border*2, rgb.depth());
-     *     // select the middle part of it w/o copying data
-     *     Mat gray(gray_canvas, Rect(border, border, rgb.cols, rgb.rows));
-     *     // convert image from RGB to grayscale
-     *     cvtColor(rgb, gray, COLOR_RGB2GRAY);
-     *     // form a border in-place
-     *     copyMakeBorder(gray, gray_buf, border, border,
-     *                    border, border, BORDER_REPLICATE);
-     *     // now do some custom filtering ...
-     *     ...
+     * // let border be the same in all directions
+     * int border=2;
+     * // constructs a larger image to fit both the image and the border
+     * Mat gray_buf(rgb.rows + border*2, rgb.cols + border*2, rgb.depth());
+     * // select the middle part of it w/o copying data
+     * Mat gray(gray_canvas, Rect(border, border, rgb.cols, rgb.rows));
+     * // convert image from RGB to grayscale
+     * cvtColor(rgb, gray, COLOR_RGB2GRAY);
+     * // form a border in-place
+     * copyMakeBorder(gray, gray_buf, border, border,
+     * border, border, BORDER_REPLICATE);
+     * // now do some custom filtering ...
+     * ...
      * </code> <b>Note:</b> When the source image is a part (ROI) of a bigger image, the function will try to use the
      * pixels outside of the ROI to form a border. To disable this feature and always do extrapolation, as if src was
      * not a ROI, use borderType | #BORDER_ISOLATED.
@@ -356,20 +359,16 @@ public class Core {
      *                   extrapolate. For example, top=1, bottom=1, left=1, right=1 mean that 1 pixel-wide border needs
      *                   to be built.
      * @param borderType Border type. See borderInterpolate for details.
-     *
+     *                   <p>
      *                   SEE: borderInterpolate
      */
     public static void copyMakeBorder(Mat src, Mat dst, int top, int bottom, int left, int right, int borderType) {
         copyMakeBorder_1(src.nativeObj, dst.nativeObj, top, bottom, left, right, borderType);
     }
 
-    //
-    // C++: void cv::add(Mat src1, Mat src2, Mat& dst, Mat mask = Mat(), int dtype = -1)
-    //
-
     /**
      * Calculates the per-element sum of two arrays or an array and a scalar.
-     *
+     * <p>
      * The function add calculates:
      * <ul>
      * <li>Sum of two arrays when both input arrays have the same size and the same number of channels:
@@ -383,7 +382,7 @@ public class Core {
      * \texttt{if mask}(I) \ne0\) where {@code I} is a multi-dimensional index of array elements. In case of
      * multi-channel arrays, each channel is processed independently.</li>
      * </ul>
-     *
+     * <p>
      * The first function in the list above can be replaced with matrix expressions: <code>
      *     dst = src1 + src2;
      *     dst += src1; // equivalent to add(dst, src1, dst);
@@ -410,9 +409,13 @@ public class Core {
         add_0(src1.nativeObj, src2.nativeObj, dst.nativeObj, mask.nativeObj, dtype);
     }
 
+    //
+    // C++: void cv::add(Mat src1, Mat src2, Mat& dst, Mat mask = Mat(), int dtype = -1)
+    //
+
     /**
      * Calculates the per-element sum of two arrays or an array and a scalar.
-     *
+     * <p>
      * The function add calculates:
      * <ul>
      * <li>Sum of two arrays when both input arrays have the same size and the same number of channels:
@@ -426,7 +429,7 @@ public class Core {
      * \texttt{if mask}(I) \ne0\) where {@code I} is a multi-dimensional index of array elements. In case of
      * multi-channel arrays, each channel is processed independently.</li>
      * </ul>
-     *
+     * <p>
      * The first function in the list above can be replaced with matrix expressions: <code>
      *     dst = src1 + src2;
      *     dst += src1; // equivalent to add(dst, src1, dst);
@@ -453,7 +456,7 @@ public class Core {
 
     /**
      * Calculates the per-element sum of two arrays or an array and a scalar.
-     *
+     * <p>
      * The function add calculates:
      * <ul>
      * <li>Sum of two arrays when both input arrays have the same size and the same number of channels:
@@ -467,7 +470,7 @@ public class Core {
      * \texttt{if mask}(I) \ne0\) where {@code I} is a multi-dimensional index of array elements. In case of
      * multi-channel arrays, each channel is processed independently.</li>
      * </ul>
-     *
+     * <p>
      * The first function in the list above can be replaced with matrix expressions: <code>
      *     dst = src1 + src2;
      *     dst += src1; // equivalent to add(dst, src1, dst);
@@ -491,13 +494,9 @@ public class Core {
         add_2(src1.nativeObj, src2.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::subtract(Mat src1, Mat src2, Mat& dst, Mat mask = Mat(), int dtype = -1)
-    //
-
     /**
      * Calculates the per-element difference between two arrays or array and a scalar.
-     *
+     * <p>
      * The function subtract calculates:
      * <ul>
      * <li>Difference between two arrays, when both input arrays have the same size and the same number of channels:
@@ -514,7 +513,7 @@ public class Core {
      * multi-dimensional index of array elements. In case of multi-channel arrays, each channel is processed
      * independently.</li>
      * </ul>
-     *
+     * <p>
      * The first function in the list above can be replaced with matrix expressions: <code>
      *     dst = src1 - src2;
      *     dst -= src1; // equivalent to subtract(dst, src1, dst);
@@ -539,9 +538,13 @@ public class Core {
         subtract_0(src1.nativeObj, src2.nativeObj, dst.nativeObj, mask.nativeObj, dtype);
     }
 
+    //
+    // C++: void cv::subtract(Mat src1, Mat src2, Mat& dst, Mat mask = Mat(), int dtype = -1)
+    //
+
     /**
      * Calculates the per-element difference between two arrays or array and a scalar.
-     *
+     * <p>
      * The function subtract calculates:
      * <ul>
      * <li>Difference between two arrays, when both input arrays have the same size and the same number of channels:
@@ -558,7 +561,7 @@ public class Core {
      * multi-dimensional index of array elements. In case of multi-channel arrays, each channel is processed
      * independently.</li>
      * </ul>
-     *
+     * <p>
      * The first function in the list above can be replaced with matrix expressions: <code>
      *     dst = src1 - src2;
      *     dst -= src1; // equivalent to subtract(dst, src1, dst);
@@ -584,7 +587,7 @@ public class Core {
 
     /**
      * Calculates the per-element difference between two arrays or array and a scalar.
-     *
+     * <p>
      * The function subtract calculates:
      * <ul>
      * <li>Difference between two arrays, when both input arrays have the same size and the same number of channels:
@@ -601,7 +604,7 @@ public class Core {
      * multi-dimensional index of array elements. In case of multi-channel arrays, each channel is processed
      * independently.</li>
      * </ul>
-     *
+     * <p>
      * The first function in the list above can be replaced with matrix expressions: <code>
      *     dst = src1 - src2;
      *     dst -= src1; // equivalent to subtract(dst, src1, dst);
@@ -624,19 +627,15 @@ public class Core {
         subtract_2(src1.nativeObj, src2.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::multiply(Mat src1, Mat src2, Mat& dst, double scale = 1, int dtype = -1)
-    //
-
     /**
      * Calculates the per-element scaled product of two arrays.
-     *
+     * <p>
      * The function multiply calculates the per-element product of two arrays:
-     *
+     * <p>
      * \(\texttt{dst} (I)= \texttt{saturate} ( \texttt{scale} \cdot \texttt{src1} (I) \cdot \texttt{src2} (I))\)
-     *
+     * <p>
      * There is also a REF: MatrixExpressions -friendly variant of the first function. See Mat::mul .
-     *
+     * <p>
      * For a not-per-element matrix product, see gemm .
      *
      * <b>Note:</b> Saturation is not applied when the output array has the depth CV_32S. You may even get result of an
@@ -655,15 +654,19 @@ public class Core {
         multiply_0(src1.nativeObj, src2.nativeObj, dst.nativeObj, scale, dtype);
     }
 
+    //
+    // C++: void cv::multiply(Mat src1, Mat src2, Mat& dst, double scale = 1, int dtype = -1)
+    //
+
     /**
      * Calculates the per-element scaled product of two arrays.
-     *
+     * <p>
      * The function multiply calculates the per-element product of two arrays:
-     *
+     * <p>
      * \(\texttt{dst} (I)= \texttt{saturate} ( \texttt{scale} \cdot \texttt{src1} (I) \cdot \texttt{src2} (I))\)
-     *
+     * <p>
      * There is also a REF: MatrixExpressions -friendly variant of the first function. See Mat::mul .
-     *
+     * <p>
      * For a not-per-element matrix product, see gemm .
      *
      * <b>Note:</b> Saturation is not applied when the output array has the depth CV_32S. You may even get result of an
@@ -683,13 +686,13 @@ public class Core {
 
     /**
      * Calculates the per-element scaled product of two arrays.
-     *
+     * <p>
      * The function multiply calculates the per-element product of two arrays:
-     *
+     * <p>
      * \(\texttt{dst} (I)= \texttt{saturate} ( \texttt{scale} \cdot \texttt{src1} (I) \cdot \texttt{src2} (I))\)
-     *
+     * <p>
      * There is also a REF: MatrixExpressions -friendly variant of the first function. See Mat::mul .
-     *
+     * <p>
      * For a not-per-element matrix product, see gemm .
      *
      * <b>Note:</b> Saturation is not applied when the output array has the depth CV_32S. You may even get result of an
@@ -706,18 +709,14 @@ public class Core {
         multiply_2(src1.nativeObj, src2.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::divide(Mat src1, Mat src2, Mat& dst, double scale = 1, int dtype = -1)
-    //
-
     /**
      * Performs per-element division of two arrays or a scalar by an array.
-     *
+     * <p>
      * The function cv::divide divides one array by another: \(\texttt{dst(I) = saturate(src1(I)*scale/src2(I))}\) or a
      * scalar by an array when there is no src1 : \(\texttt{dst(I) = saturate(scale/src2(I))}\)
-     *
+     * <p>
      * Different channels of multi-channel arrays are processed independently.
-     *
+     * <p>
      * For integer types when src2(I) is zero, dst(I) will also be zero.
      *
      * <b>Note:</b> In case of floating point data there is no special defined behavior for zero src2(I) values. Regular
@@ -741,14 +740,18 @@ public class Core {
         divide_0(src1.nativeObj, src2.nativeObj, dst.nativeObj, scale, dtype);
     }
 
+    //
+    // C++: void cv::divide(Mat src1, Mat src2, Mat& dst, double scale = 1, int dtype = -1)
+    //
+
     /**
      * Performs per-element division of two arrays or a scalar by an array.
-     *
+     * <p>
      * The function cv::divide divides one array by another: \(\texttt{dst(I) = saturate(src1(I)*scale/src2(I))}\) or a
      * scalar by an array when there is no src1 : \(\texttt{dst(I) = saturate(scale/src2(I))}\)
-     *
+     * <p>
      * Different channels of multi-channel arrays are processed independently.
-     *
+     * <p>
      * For integer types when src2(I) is zero, dst(I) will also be zero.
      *
      * <b>Note:</b> In case of floating point data there is no special defined behavior for zero src2(I) values. Regular
@@ -772,12 +775,12 @@ public class Core {
 
     /**
      * Performs per-element division of two arrays or a scalar by an array.
-     *
+     * <p>
      * The function cv::divide divides one array by another: \(\texttt{dst(I) = saturate(src1(I)*scale/src2(I))}\) or a
      * scalar by an array when there is no src1 : \(\texttt{dst(I) = saturate(scale/src2(I))}\)
-     *
+     * <p>
      * Different channels of multi-channel arrays are processed independently.
-     *
+     * <p>
      * For integer types when src2(I) is zero, dst(I) will also be zero.
      *
      * <b>Note:</b> In case of floating point data there is no special defined behavior for zero src2(I) values. Regular
@@ -798,32 +801,28 @@ public class Core {
         divide_2(src1.nativeObj, src2.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::divide(double scale, Mat src2, Mat& dst, int dtype = -1)
-    //
-
     public static void divide(double scale, Mat src2, Mat dst, int dtype) {
         divide_3(scale, src2.nativeObj, dst.nativeObj, dtype);
     }
+
+    //
+    // C++: void cv::divide(double scale, Mat src2, Mat& dst, int dtype = -1)
+    //
 
     public static void divide(double scale, Mat src2, Mat dst) {
         divide_4(scale, src2.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::scaleAdd(Mat src1, double alpha, Mat src2, Mat& dst)
-    //
-
     /**
      * Calculates the sum of a scaled array and another array.
-     *
+     * <p>
      * The function scaleAdd is one of the classical primitive linear algebra operations, known as DAXPY or SAXPY in
      * [BLAS](http://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms). It calculates the sum of a scaled array
      * and another array: \(\texttt{dst} (I)= \texttt{scale} \cdot \texttt{src1} (I) + \texttt{src2} (I)\) The function
      * can also be emulated with a matrix expression, for example: <code>
-     *     Mat A(3, 3, CV_64F);
-     *     ...
-     *     A.row(0) = A.row(1)*2 + A.row(2);
+     * Mat A(3, 3, CV_64F);
+     * ...
+     * A.row(0) = A.row(1)*2 + A.row(2);
      * </code>
      *
      * @param src1  first input array.
@@ -837,17 +836,17 @@ public class Core {
     }
 
     //
-    // C++: void cv::addWeighted(Mat src1, double alpha, Mat src2, double beta, double gamma, Mat& dst, int dtype = -1)
+    // C++: void cv::scaleAdd(Mat src1, double alpha, Mat src2, Mat& dst)
     //
 
     /**
      * Calculates the weighted sum of two arrays.
-     *
+     * <p>
      * The function addWeighted calculates the weighted sum of two arrays as follows: \(\texttt{dst} (I)=
      * \texttt{saturate} ( \texttt{src1} (I)* \texttt{alpha} + \texttt{src2} (I)* \texttt{beta} + \texttt{gamma} )\)
      * where I is a multi-dimensional index of array elements. In case of multi-channel arrays, each channel is
      * processed independently. The function can be replaced with a matrix expression: <code>
-     *     dst = src1*alpha + src2*beta + gamma;
+     * dst = src1*alpha + src2*beta + gamma;
      * </code> <b>Note:</b> Saturation is not applied when the output array has the depth CV_32S. You may even get
      * result of an incorrect sign in the case of overflow.
      *
@@ -864,14 +863,18 @@ public class Core {
         addWeighted_0(src1.nativeObj, alpha, src2.nativeObj, beta, gamma, dst.nativeObj, dtype);
     }
 
+    //
+    // C++: void cv::addWeighted(Mat src1, double alpha, Mat src2, double beta, double gamma, Mat& dst, int dtype = -1)
+    //
+
     /**
      * Calculates the weighted sum of two arrays.
-     *
+     * <p>
      * The function addWeighted calculates the weighted sum of two arrays as follows: \(\texttt{dst} (I)=
      * \texttt{saturate} ( \texttt{src1} (I)* \texttt{alpha} + \texttt{src2} (I)* \texttt{beta} + \texttt{gamma} )\)
      * where I is a multi-dimensional index of array elements. In case of multi-channel arrays, each channel is
      * processed independently. The function can be replaced with a matrix expression: <code>
-     *     dst = src1*alpha + src2*beta + gamma;
+     * dst = src1*alpha + src2*beta + gamma;
      * </code> <b>Note:</b> Saturation is not applied when the output array has the depth CV_32S. You may even get
      * result of an incorrect sign in the case of overflow.
      *
@@ -887,25 +890,21 @@ public class Core {
         addWeighted_1(src1.nativeObj, alpha, src2.nativeObj, beta, gamma, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::convertScaleAbs(Mat src, Mat& dst, double alpha = 1, double beta = 0)
-    //
-
     /**
      * Scales, calculates absolute values, and converts the result to 8-bit.
-     *
+     * <p>
      * On each element of the input array, the function convertScaleAbs performs three operations sequentially: scaling,
      * taking an absolute value, conversion to an unsigned 8-bit type: \(\texttt{dst} (I)=
      * \texttt{saturate\_cast&lt;uchar&gt;} (| \texttt{src} (I)* \texttt{alpha} + \texttt{beta} |)\) In case of
      * multi-channel arrays, the function processes each channel independently. When the output is not 8-bit, the
      * operation can be emulated by calling the Mat::convertTo method (or by using matrix expressions) and then by
      * calculating an absolute value of the result. For example: <code>
-     *     Mat_&lt;float&gt; A(30,30);
-     *     randu(A, Scalar(-100), Scalar(100));
-     *     Mat_&lt;float&gt; B = A*5 + 3;
-     *     B = abs(B);
-     *     // Mat_&lt;float&gt; B = abs(A*5+3) will also do the job,
-     *     // but it will allocate a temporary matrix
+     * Mat_&lt;float&gt; A(30,30);
+     * randu(A, Scalar(-100), Scalar(100));
+     * Mat_&lt;float&gt; B = A*5 + 3;
+     * B = abs(B);
+     * // Mat_&lt;float&gt; B = abs(A*5+3) will also do the job,
+     * // but it will allocate a temporary matrix
      * </code>
      *
      * @param src   input array.
@@ -917,21 +916,25 @@ public class Core {
         convertScaleAbs_0(src.nativeObj, dst.nativeObj, alpha, beta);
     }
 
+    //
+    // C++: void cv::convertScaleAbs(Mat src, Mat& dst, double alpha = 1, double beta = 0)
+    //
+
     /**
      * Scales, calculates absolute values, and converts the result to 8-bit.
-     *
+     * <p>
      * On each element of the input array, the function convertScaleAbs performs three operations sequentially: scaling,
      * taking an absolute value, conversion to an unsigned 8-bit type: \(\texttt{dst} (I)=
      * \texttt{saturate\_cast&lt;uchar&gt;} (| \texttt{src} (I)* \texttt{alpha} + \texttt{beta} |)\) In case of
      * multi-channel arrays, the function processes each channel independently. When the output is not 8-bit, the
      * operation can be emulated by calling the Mat::convertTo method (or by using matrix expressions) and then by
      * calculating an absolute value of the result. For example: <code>
-     *     Mat_&lt;float&gt; A(30,30);
-     *     randu(A, Scalar(-100), Scalar(100));
-     *     Mat_&lt;float&gt; B = A*5 + 3;
-     *     B = abs(B);
-     *     // Mat_&lt;float&gt; B = abs(A*5+3) will also do the job,
-     *     // but it will allocate a temporary matrix
+     * Mat_&lt;float&gt; A(30,30);
+     * randu(A, Scalar(-100), Scalar(100));
+     * Mat_&lt;float&gt; B = A*5 + 3;
+     * B = abs(B);
+     * // Mat_&lt;float&gt; B = abs(A*5+3) will also do the job,
+     * // but it will allocate a temporary matrix
      * </code>
      *
      * @param src   input array.
@@ -944,19 +947,19 @@ public class Core {
 
     /**
      * Scales, calculates absolute values, and converts the result to 8-bit.
-     *
+     * <p>
      * On each element of the input array, the function convertScaleAbs performs three operations sequentially: scaling,
      * taking an absolute value, conversion to an unsigned 8-bit type: \(\texttt{dst} (I)=
      * \texttt{saturate\_cast&lt;uchar&gt;} (| \texttt{src} (I)* \texttt{alpha} + \texttt{beta} |)\) In case of
      * multi-channel arrays, the function processes each channel independently. When the output is not 8-bit, the
      * operation can be emulated by calling the Mat::convertTo method (or by using matrix expressions) and then by
      * calculating an absolute value of the result. For example: <code>
-     *     Mat_&lt;float&gt; A(30,30);
-     *     randu(A, Scalar(-100), Scalar(100));
-     *     Mat_&lt;float&gt; B = A*5 + 3;
-     *     B = abs(B);
-     *     // Mat_&lt;float&gt; B = abs(A*5+3) will also do the job,
-     *     // but it will allocate a temporary matrix
+     * Mat_&lt;float&gt; A(30,30);
+     * randu(A, Scalar(-100), Scalar(100));
+     * Mat_&lt;float&gt; B = A*5 + 3;
+     * B = abs(B);
+     * // Mat_&lt;float&gt; B = abs(A*5+3) will also do the job,
+     * // but it will allocate a temporary matrix
      * </code>
      *
      * @param src input array.
@@ -966,13 +969,9 @@ public class Core {
         convertScaleAbs_2(src.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::convertFp16(Mat src, Mat& dst)
-    //
-
     /**
      * Converts an array to half precision floating number.
-     *
+     * <p>
      * This function converts FP32 (single precision floating point) from/to FP16 (half precision floating point).
      * CV_16S format is used to represent FP16 data. There are two use modes (src -&gt; dst): CV_32F -&gt; CV_16S and
      * CV_16S -&gt; CV_32F. The input array has to have type of CV_32F or CV_16S to represent the bit depth. If the
@@ -989,12 +988,12 @@ public class Core {
     }
 
     //
-    // C++: void cv::LUT(Mat src, Mat lut, Mat& dst)
+    // C++: void cv::convertFp16(Mat src, Mat& dst)
     //
 
     /**
      * Performs a look-up table transform of an array.
-     *
+     * <p>
      * The function LUT fills the output array with values from the look-up table. Indices of the entries are taken from
      * the input array. That is, the function processes each element of src as follows: \(\texttt{dst} (I) \leftarrow
      * \texttt{lut(src(I) + d)}\) where \(d = \forkthree{0}{if \(\texttt{src}\) has depth \(\texttt{CV_8U}\) or
@@ -1014,12 +1013,12 @@ public class Core {
     }
 
     //
-    // C++: Scalar cv::sum(Mat src)
+    // C++: void cv::LUT(Mat src, Mat lut, Mat& dst)
     //
 
     /**
      * Calculates the sum of array elements.
-     *
+     * <p>
      * The function cv::sum calculates and returns the sum of array elements, independently for each channel.
      *
      * @param src input array that must have from 1 to 4 channels. SEE: countNonZero, mean, meanStdDev, norm, minMaxLoc,
@@ -1031,14 +1030,14 @@ public class Core {
     }
 
     //
-    // C++: bool cv::hasNonZero(Mat src)
+    // C++: Scalar cv::sum(Mat src)
     //
 
     /**
      * Checks for the presence of at least one non-zero array element.
-     *
+     * <p>
      * The function returns whether there are non-zero elements in src
-     *
+     * <p>
      * The function do not work with multi-channel arrays. If you need to check non-zero array elements across all the
      * channels, use Mat::reshape first to reinterpret the array as single-channel. Or you may extract the particular
      * channel using either extractImageCOI, or mixChannels, or split.
@@ -1058,14 +1057,14 @@ public class Core {
     }
 
     //
-    // C++: int cv::countNonZero(Mat src)
+    // C++: bool cv::hasNonZero(Mat src)
     //
 
     /**
      * Counts non-zero array elements.
-     *
+     * <p>
      * The function returns the number of non-zero elements in src : \(\sum _{I: \; \texttt{src} (I) \ne0 } 1\)
-     *
+     * <p>
      * The function do not work with multi-channel arrays. If you need to count non-zero array elements across all the
      * channels, use Mat::reshape first to reinterpret the array as single-channel. Or you may extract the particular
      * channel using either extractImageCOI, or mixChannels, or split.
@@ -1085,29 +1084,29 @@ public class Core {
     }
 
     //
-    // C++: void cv::findNonZero(Mat src, Mat& idx)
+    // C++: int cv::countNonZero(Mat src)
     //
 
     /**
      * Returns the list of locations of non-zero pixels
-     *
+     * <p>
      * Given a binary matrix (likely returned from an operation such as threshold(), compare(), &gt;, ==, etc, return
      * all of the non-zero indices as a cv::Mat or std::vector&lt;cv::Point&gt; (x,y) For example: <code>
-     *     cv::Mat binaryImage; // input, binary image
-     *     cv::Mat locations;   // output, locations of non-zero pixels
-     *     cv::findNonZero(binaryImage, locations);
+     * cv::Mat binaryImage; // input, binary image
+     * cv::Mat locations;   // output, locations of non-zero pixels
+     * cv::findNonZero(binaryImage, locations);
      *
-     *     // access pixel coordinates
-     *     Point pnt = locations.at&lt;Point&gt;(i);
+     * // access pixel coordinates
+     * Point pnt = locations.at&lt;Point&gt;(i);
      * </code> or <code>
-     *     cv::Mat binaryImage; // input, binary image
-     *     vector&lt;Point&gt; locations;   // output, locations of non-zero pixels
-     *     cv::findNonZero(binaryImage, locations);
+     * cv::Mat binaryImage; // input, binary image
+     * vector&lt;Point&gt; locations;   // output, locations of non-zero pixels
+     * cv::findNonZero(binaryImage, locations);
      *
-     *     // access pixel coordinates
-     *     Point pnt = locations[i];
+     * // access pixel coordinates
+     * Point pnt = locations[i];
      * </code>
-     *
+     * <p>
      * The function do not work with multi-channel arrays. If you need to find non-zero elements across all the
      * channels, use Mat::reshape first to reinterpret the array as single-channel. Or you may extract the particular
      * channel using either extractImageCOI, or mixChannels, or split.
@@ -1127,12 +1126,12 @@ public class Core {
     }
 
     //
-    // C++: Scalar cv::mean(Mat src, Mat mask = Mat())
+    // C++: void cv::findNonZero(Mat src, Mat& idx)
     //
 
     /**
      * Calculates an average (mean) of array elements.
-     *
+     * <p>
      * The function cv::mean calculates the mean value M of array elements, independently for each channel, and return
      * it: \(\begin{array}{l} N = \sum _{I: \; \texttt{mask} (I) \ne 0} 1 \\ M_c = \left ( \sum _{I: \; \texttt{mask}
      * (I) \ne 0}{ \texttt{mtx} (I)_c} \right )/N \end{array}\) When all the mask elements are 0's, the function returns
@@ -1146,9 +1145,13 @@ public class Core {
         return new Scalar(mean_0(src.nativeObj, mask.nativeObj));
     }
 
+    //
+    // C++: Scalar cv::mean(Mat src, Mat mask = Mat())
+    //
+
     /**
      * Calculates an average (mean) of array elements.
-     *
+     * <p>
      * The function cv::mean calculates the mean value M of array elements, independently for each channel, and return
      * it: \(\begin{array}{l} N = \sum _{I: \; \texttt{mask} (I) \ne 0} 1 \\ M_c = \left ( \sum _{I: \; \texttt{mask}
      * (I) \ne 0}{ \texttt{mtx} (I)_c} \right )/N \end{array}\) When all the mask elements are 0's, the function returns
@@ -1162,13 +1165,9 @@ public class Core {
         return new Scalar(mean_1(src.nativeObj));
     }
 
-    //
-    // C++: void cv::meanStdDev(Mat src, vector_double& mean, vector_double& stddev, Mat mask = Mat())
-    //
-
     /**
      * Calculates a mean and standard deviation of array elements.
-     *
+     * <p>
      * The function cv::meanStdDev calculates the mean and the standard deviation M of array elements independently for
      * each channel and returns it via the output parameters: \(\begin{array}{l} N = \sum _{I, \texttt{mask} (I) \ne 0}
      * 1 \\ \texttt{mean} _c = \frac{\sum_{ I: \; \texttt{mask}(I) \ne 0} \texttt{src} (I)_c}{N} \\ \texttt{stddev} _c =
@@ -1189,9 +1188,13 @@ public class Core {
         meanStdDev_0(src.nativeObj, mean_mat.nativeObj, stddev_mat.nativeObj, mask.nativeObj);
     }
 
+    //
+    // C++: void cv::meanStdDev(Mat src, vector_double& mean, vector_double& stddev, Mat mask = Mat())
+    //
+
     /**
      * Calculates a mean and standard deviation of array elements.
-     *
+     * <p>
      * The function cv::meanStdDev calculates the mean and the standard deviation M of array elements independently for
      * each channel and returns it via the output parameters: \(\begin{array}{l} N = \sum _{I, \texttt{mask} (I) \ne 0}
      * 1 \\ \texttt{mean} _c = \frac{\sum_{ I: \; \texttt{mask}(I) \ne 0} \texttt{src} (I)_c}{N} \\ \texttt{stddev} _c =
@@ -1212,16 +1215,12 @@ public class Core {
         meanStdDev_1(src.nativeObj, mean_mat.nativeObj, stddev_mat.nativeObj);
     }
 
-    //
-    // C++: double cv::norm(Mat src1, int normType = NORM_L2, Mat mask = Mat())
-    //
-
     /**
      * Calculates the absolute norm of an array.
-     *
+     * <p>
      * This version of #norm calculates the absolute norm of src1. The type of norm to calculate is specified using
      * #NormTypes.
-     *
+     * <p>
      * As example for one array consider the function \(r(x)= \begin{pmatrix} x \\ 1-x \end{pmatrix}, x \in [-1;1]\).
      * The \( L_{1}, L_{2} \) and \( L_{\infty} \) norm for the sample value \(r(-1) = \begin{pmatrix} -1 \\ 2
      * \end{pmatrix}\) is calculated as follows \(align*} \| r(-1) \|_{L_1} &amp;= |-1| + |2| = 3 \\ \| r(-1) \|_{L_2}
@@ -1232,14 +1231,14 @@ public class Core {
      * functions \(\| r(x) \|_{L_1}, \| r(x) \|_{L_2}\) and \(\| r(x) \|_{L_\infty}\). It is notable that the \( L_{1}
      * \) norm forms the upper and the \( L_{\infty} \) norm forms the lower border for the example function \( r(x) \).
      * ![Graphs for the different norm functions from the above example](pics/NormTypes_OneArray_1-2-INF.png)
-     *
+     * <p>
      * When the mask parameter is specified and it is not empty, the norm is
-     *
+     * <p>
      * If normType is not specified, #NORM_L2 is used. calculated only over the region specified by the mask.
-     *
+     * <p>
      * Multi-channel input arrays are treated as single-channel arrays, that is, the results for all channels are
      * combined.
-     *
+     * <p>
      * Hamming norms can only be calculated with CV_8U depth arrays.
      *
      * @param src1     first input array.
@@ -1251,12 +1250,16 @@ public class Core {
         return norm_0(src1.nativeObj, normType, mask.nativeObj);
     }
 
+    //
+    // C++: double cv::norm(Mat src1, int normType = NORM_L2, Mat mask = Mat())
+    //
+
     /**
      * Calculates the absolute norm of an array.
-     *
+     * <p>
      * This version of #norm calculates the absolute norm of src1. The type of norm to calculate is specified using
      * #NormTypes.
-     *
+     * <p>
      * As example for one array consider the function \(r(x)= \begin{pmatrix} x \\ 1-x \end{pmatrix}, x \in [-1;1]\).
      * The \( L_{1}, L_{2} \) and \( L_{\infty} \) norm for the sample value \(r(-1) = \begin{pmatrix} -1 \\ 2
      * \end{pmatrix}\) is calculated as follows \(align*} \| r(-1) \|_{L_1} &amp;= |-1| + |2| = 3 \\ \| r(-1) \|_{L_2}
@@ -1267,14 +1270,14 @@ public class Core {
      * functions \(\| r(x) \|_{L_1}, \| r(x) \|_{L_2}\) and \(\| r(x) \|_{L_\infty}\). It is notable that the \( L_{1}
      * \) norm forms the upper and the \( L_{\infty} \) norm forms the lower border for the example function \( r(x) \).
      * ![Graphs for the different norm functions from the above example](pics/NormTypes_OneArray_1-2-INF.png)
-     *
+     * <p>
      * When the mask parameter is specified and it is not empty, the norm is
-     *
+     * <p>
      * If normType is not specified, #NORM_L2 is used. calculated only over the region specified by the mask.
-     *
+     * <p>
      * Multi-channel input arrays are treated as single-channel arrays, that is, the results for all channels are
      * combined.
-     *
+     * <p>
      * Hamming norms can only be calculated with CV_8U depth arrays.
      *
      * @param src1     first input array.
@@ -1287,10 +1290,10 @@ public class Core {
 
     /**
      * Calculates the absolute norm of an array.
-     *
+     * <p>
      * This version of #norm calculates the absolute norm of src1. The type of norm to calculate is specified using
      * #NormTypes.
-     *
+     * <p>
      * As example for one array consider the function \(r(x)= \begin{pmatrix} x \\ 1-x \end{pmatrix}, x \in [-1;1]\).
      * The \( L_{1}, L_{2} \) and \( L_{\infty} \) norm for the sample value \(r(-1) = \begin{pmatrix} -1 \\ 2
      * \end{pmatrix}\) is calculated as follows \(align*} \| r(-1) \|_{L_1} &amp;= |-1| + |2| = 3 \\ \| r(-1) \|_{L_2}
@@ -1301,14 +1304,14 @@ public class Core {
      * functions \(\| r(x) \|_{L_1}, \| r(x) \|_{L_2}\) and \(\| r(x) \|_{L_\infty}\). It is notable that the \( L_{1}
      * \) norm forms the upper and the \( L_{\infty} \) norm forms the lower border for the example function \( r(x) \).
      * ![Graphs for the different norm functions from the above example](pics/NormTypes_OneArray_1-2-INF.png)
-     *
+     * <p>
      * When the mask parameter is specified and it is not empty, the norm is
-     *
+     * <p>
      * If normType is not specified, #NORM_L2 is used. calculated only over the region specified by the mask.
-     *
+     * <p>
      * Multi-channel input arrays are treated as single-channel arrays, that is, the results for all channels are
      * combined.
-     *
+     * <p>
      * Hamming norms can only be calculated with CV_8U depth arrays.
      *
      * @param src1 first input array.
@@ -1318,13 +1321,9 @@ public class Core {
         return norm_2(src1.nativeObj);
     }
 
-    //
-    // C++: double cv::norm(Mat src1, Mat src2, int normType = NORM_L2, Mat mask = Mat())
-    //
-
     /**
      * Calculates an absolute difference norm or a relative difference norm.
-     *
+     * <p>
      * This version of cv::norm calculates the absolute difference norm or the relative difference norm of arrays src1
      * and src2. The type of norm to calculate is specified using #NormTypes.
      *
@@ -1338,9 +1337,13 @@ public class Core {
         return norm_3(src1.nativeObj, src2.nativeObj, normType, mask.nativeObj);
     }
 
+    //
+    // C++: double cv::norm(Mat src1, Mat src2, int normType = NORM_L2, Mat mask = Mat())
+    //
+
     /**
      * Calculates an absolute difference norm or a relative difference norm.
-     *
+     * <p>
      * This version of cv::norm calculates the absolute difference norm or the relative difference norm of arrays src1
      * and src2. The type of norm to calculate is specified using #NormTypes.
      *
@@ -1355,7 +1358,7 @@ public class Core {
 
     /**
      * Calculates an absolute difference norm or a relative difference norm.
-     *
+     * <p>
      * This version of cv::norm calculates the absolute difference norm or the relative difference norm of arrays src1
      * and src2. The type of norm to calculate is specified using #NormTypes.
      *
@@ -1367,20 +1370,16 @@ public class Core {
         return norm_5(src1.nativeObj, src2.nativeObj);
     }
 
-    //
-    // C++: double cv::PSNR(Mat src1, Mat src2, double R = 255.)
-    //
-
     /**
      * Computes the Peak Signal-to-Noise Ratio (PSNR) image quality metric.
-     *
+     * <p>
      * This function calculates the Peak Signal-to-Noise Ratio (PSNR) image quality metric in decibels (dB), between two
      * input arrays src1 and src2. The arrays must have the same type.
-     *
+     * <p>
      * The PSNR is calculated as follows:
-     *
+     * <p>
      * \( \texttt{PSNR} = 10 \cdot \log_{10}{\left( \frac{R^2}{MSE} \right) } \)
-     *
+     * <p>
      * where R is the maximum integer value of depth (e.g. 255 in the case of CV_8U data) and MSE is the mean squared
      * error between the two arrays.
      *
@@ -1393,16 +1392,20 @@ public class Core {
         return PSNR_0(src1.nativeObj, src2.nativeObj, R);
     }
 
+    //
+    // C++: double cv::PSNR(Mat src1, Mat src2, double R = 255.)
+    //
+
     /**
      * Computes the Peak Signal-to-Noise Ratio (PSNR) image quality metric.
-     *
+     * <p>
      * This function calculates the Peak Signal-to-Noise Ratio (PSNR) image quality metric in decibels (dB), between two
      * input arrays src1 and src2. The arrays must have the same type.
-     *
+     * <p>
      * The PSNR is calculated as follows:
-     *
+     * <p>
      * \( \texttt{PSNR} = 10 \cdot \log_{10}{\left( \frac{R^2}{MSE} \right) } \)
-     *
+     * <p>
      * where R is the maximum integer value of depth (e.g. 255 in the case of CV_8U data) and MSE is the mean squared
      * error between the two arrays.
      *
@@ -1414,14 +1417,9 @@ public class Core {
         return PSNR_1(src1.nativeObj, src2.nativeObj);
     }
 
-    //
-    // C++: void cv::batchDistance(Mat src1, Mat src2, Mat& dist, int dtype, Mat& nidx, int normType = NORM_L2, int K =
-    // 0, Mat mask = Mat(), int update = 0, bool crosscheck = false)
-    //
-
     /**
      * naive nearest neighbor finder
-     *
+     * <p>
      * see http://en.wikipedia.org/wiki/Nearest_neighbor_search TODO: document
      *
      * @param src1       automatically generated
@@ -1459,9 +1457,14 @@ public class Core {
                 crosscheck);
     }
 
+    //
+    // C++: void cv::batchDistance(Mat src1, Mat src2, Mat& dist, int dtype, Mat& nidx, int normType = NORM_L2, int K =
+    // 0, Mat mask = Mat(), int update = 0, bool crosscheck = false)
+    //
+
     /**
      * naive nearest neighbor finder
-     *
+     * <p>
      * see http://en.wikipedia.org/wiki/Nearest_neighbor_search TODO: document
      *
      * @param src1     automatically generated
@@ -1498,7 +1501,7 @@ public class Core {
 
     /**
      * naive nearest neighbor finder
-     *
+     * <p>
      * see http://en.wikipedia.org/wiki/Nearest_neighbor_search TODO: document
      *
      * @param src1     automatically generated
@@ -1524,7 +1527,7 @@ public class Core {
 
     /**
      * naive nearest neighbor finder
-     *
+     * <p>
      * see http://en.wikipedia.org/wiki/Nearest_neighbor_search TODO: document
      *
      * @param src1     automatically generated
@@ -1541,7 +1544,7 @@ public class Core {
 
     /**
      * naive nearest neighbor finder
-     *
+     * <p>
      * see http://en.wikipedia.org/wiki/Nearest_neighbor_search TODO: document
      *
      * @param src1     automatically generated
@@ -1557,7 +1560,7 @@ public class Core {
 
     /**
      * naive nearest neighbor finder
-     *
+     * <p>
      * see http://en.wikipedia.org/wiki/Nearest_neighbor_search TODO: document
      *
      * @param src1  automatically generated
@@ -1570,54 +1573,49 @@ public class Core {
         batchDistance_5(src1.nativeObj, src2.nativeObj, dist.nativeObj, dtype, nidx.nativeObj);
     }
 
-    //
-    // C++: void cv::normalize(Mat src, Mat& dst, double alpha = 1, double beta = 0, int norm_type = NORM_L2, int dtype
-    // = -1, Mat mask = Mat())
-    //
-
     /**
      * Normalizes the norm or value range of an array.
-     *
+     * <p>
      * The function cv::normalize normalizes scale and shift the input array elements so that \(\| \texttt{dst} \|
      * _{L_p}= \texttt{alpha}\) (where p=Inf, 1 or 2) when normType=NORM_INF, NORM_L1, or NORM_L2, respectively; or so
      * that \(\min _I \texttt{dst} (I)= \texttt{alpha} , \, \, \max _I \texttt{dst} (I)= \texttt{beta}\)
-     *
+     * <p>
      * when normType=NORM_MINMAX (for dense arrays only). The optional mask specifies a sub-array to be normalized. This
      * means that the norm or min-n-max are calculated over the sub-array, and then this sub-array is modified to be
      * normalized. If you want to only use the mask to calculate the norm or min-max but modify the whole array, you can
      * use norm and Mat::convertTo.
-     *
+     * <p>
      * In case of sparse matrices, only the non-zero values are analyzed and transformed. Because of this, the range
      * transformation for sparse matrices is not allowed since it can shift the zero level.
-     *
+     * <p>
      * Possible usage with some positive example data: <code>
-     *     vector&lt;double&gt; positiveData = { 2.0, 8.0, 10.0 };
-     *     vector&lt;double&gt; normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
+     * vector&lt;double&gt; positiveData = { 2.0, 8.0, 10.0 };
+     * vector&lt;double&gt; normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
      *
-     *     // Norm to probability (total count)
-     *     // sum(numbers) = 20.0
-     *     // 2.0      0.1     (2.0/20.0)
-     *     // 8.0      0.4     (8.0/20.0)
-     *     // 10.0     0.5     (10.0/20.0)
-     *     normalize(positiveData, normalizedData_l1, 1.0, 0.0, NORM_L1);
+     * // Norm to probability (total count)
+     * // sum(numbers) = 20.0
+     * // 2.0      0.1     (2.0/20.0)
+     * // 8.0      0.4     (8.0/20.0)
+     * // 10.0     0.5     (10.0/20.0)
+     * normalize(positiveData, normalizedData_l1, 1.0, 0.0, NORM_L1);
      *
-     *     // Norm to unit vector: ||positiveData|| = 1.0
-     *     // 2.0      0.15
-     *     // 8.0      0.62
-     *     // 10.0     0.77
-     *     normalize(positiveData, normalizedData_l2, 1.0, 0.0, NORM_L2);
+     * // Norm to unit vector: ||positiveData|| = 1.0
+     * // 2.0      0.15
+     * // 8.0      0.62
+     * // 10.0     0.77
+     * normalize(positiveData, normalizedData_l2, 1.0, 0.0, NORM_L2);
      *
-     *     // Norm to max element
-     *     // 2.0      0.2     (2.0/10.0)
-     *     // 8.0      0.8     (8.0/10.0)
-     *     // 10.0     1.0     (10.0/10.0)
-     *     normalize(positiveData, normalizedData_inf, 1.0, 0.0, NORM_INF);
+     * // Norm to max element
+     * // 2.0      0.2     (2.0/10.0)
+     * // 8.0      0.8     (8.0/10.0)
+     * // 10.0     1.0     (10.0/10.0)
+     * normalize(positiveData, normalizedData_inf, 1.0, 0.0, NORM_INF);
      *
-     *     // Norm to range [0.0;1.0]
-     *     // 2.0      0.0     (shift to left border)
-     *     // 8.0      0.75    (6.0/8.0)
-     *     // 10.0     1.0     (shift to right border)
-     *     normalize(positiveData, normalizedData_minmax, 1.0, 0.0, NORM_MINMAX);
+     * // Norm to range [0.0;1.0]
+     * // 2.0      0.0     (shift to left border)
+     * // 8.0      0.75    (6.0/8.0)
+     * // 10.0     1.0     (shift to right border)
+     * normalize(positiveData, normalizedData_minmax, 1.0, 0.0, NORM_MINMAX);
      * </code>
      *
      * <b>Note:</b> Due to rounding issues, min-max normalization can result in values outside provided boundaries. If
@@ -1642,49 +1640,54 @@ public class Core {
         normalize_0(src.nativeObj, dst.nativeObj, alpha, beta, norm_type, dtype, mask.nativeObj);
     }
 
+    //
+    // C++: void cv::normalize(Mat src, Mat& dst, double alpha = 1, double beta = 0, int norm_type = NORM_L2, int dtype
+    // = -1, Mat mask = Mat())
+    //
+
     /**
      * Normalizes the norm or value range of an array.
-     *
+     * <p>
      * The function cv::normalize normalizes scale and shift the input array elements so that \(\| \texttt{dst} \|
      * _{L_p}= \texttt{alpha}\) (where p=Inf, 1 or 2) when normType=NORM_INF, NORM_L1, or NORM_L2, respectively; or so
      * that \(\min _I \texttt{dst} (I)= \texttt{alpha} , \, \, \max _I \texttt{dst} (I)= \texttt{beta}\)
-     *
+     * <p>
      * when normType=NORM_MINMAX (for dense arrays only). The optional mask specifies a sub-array to be normalized. This
      * means that the norm or min-n-max are calculated over the sub-array, and then this sub-array is modified to be
      * normalized. If you want to only use the mask to calculate the norm or min-max but modify the whole array, you can
      * use norm and Mat::convertTo.
-     *
+     * <p>
      * In case of sparse matrices, only the non-zero values are analyzed and transformed. Because of this, the range
      * transformation for sparse matrices is not allowed since it can shift the zero level.
-     *
+     * <p>
      * Possible usage with some positive example data: <code>
-     *     vector&lt;double&gt; positiveData = { 2.0, 8.0, 10.0 };
-     *     vector&lt;double&gt; normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
+     * vector&lt;double&gt; positiveData = { 2.0, 8.0, 10.0 };
+     * vector&lt;double&gt; normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
      *
-     *     // Norm to probability (total count)
-     *     // sum(numbers) = 20.0
-     *     // 2.0      0.1     (2.0/20.0)
-     *     // 8.0      0.4     (8.0/20.0)
-     *     // 10.0     0.5     (10.0/20.0)
-     *     normalize(positiveData, normalizedData_l1, 1.0, 0.0, NORM_L1);
+     * // Norm to probability (total count)
+     * // sum(numbers) = 20.0
+     * // 2.0      0.1     (2.0/20.0)
+     * // 8.0      0.4     (8.0/20.0)
+     * // 10.0     0.5     (10.0/20.0)
+     * normalize(positiveData, normalizedData_l1, 1.0, 0.0, NORM_L1);
      *
-     *     // Norm to unit vector: ||positiveData|| = 1.0
-     *     // 2.0      0.15
-     *     // 8.0      0.62
-     *     // 10.0     0.77
-     *     normalize(positiveData, normalizedData_l2, 1.0, 0.0, NORM_L2);
+     * // Norm to unit vector: ||positiveData|| = 1.0
+     * // 2.0      0.15
+     * // 8.0      0.62
+     * // 10.0     0.77
+     * normalize(positiveData, normalizedData_l2, 1.0, 0.0, NORM_L2);
      *
-     *     // Norm to max element
-     *     // 2.0      0.2     (2.0/10.0)
-     *     // 8.0      0.8     (8.0/10.0)
-     *     // 10.0     1.0     (10.0/10.0)
-     *     normalize(positiveData, normalizedData_inf, 1.0, 0.0, NORM_INF);
+     * // Norm to max element
+     * // 2.0      0.2     (2.0/10.0)
+     * // 8.0      0.8     (8.0/10.0)
+     * // 10.0     1.0     (10.0/10.0)
+     * normalize(positiveData, normalizedData_inf, 1.0, 0.0, NORM_INF);
      *
-     *     // Norm to range [0.0;1.0]
-     *     // 2.0      0.0     (shift to left border)
-     *     // 8.0      0.75    (6.0/8.0)
-     *     // 10.0     1.0     (shift to right border)
-     *     normalize(positiveData, normalizedData_minmax, 1.0, 0.0, NORM_MINMAX);
+     * // Norm to range [0.0;1.0]
+     * // 2.0      0.0     (shift to left border)
+     * // 8.0      0.75    (6.0/8.0)
+     * // 10.0     1.0     (shift to right border)
+     * normalize(positiveData, normalizedData_minmax, 1.0, 0.0, NORM_MINMAX);
      * </code>
      *
      * <b>Note:</b> Due to rounding issues, min-max normalization can result in values outside provided boundaries. If
@@ -1711,47 +1714,47 @@ public class Core {
 
     /**
      * Normalizes the norm or value range of an array.
-     *
+     * <p>
      * The function cv::normalize normalizes scale and shift the input array elements so that \(\| \texttt{dst} \|
      * _{L_p}= \texttt{alpha}\) (where p=Inf, 1 or 2) when normType=NORM_INF, NORM_L1, or NORM_L2, respectively; or so
      * that \(\min _I \texttt{dst} (I)= \texttt{alpha} , \, \, \max _I \texttt{dst} (I)= \texttt{beta}\)
-     *
+     * <p>
      * when normType=NORM_MINMAX (for dense arrays only). The optional mask specifies a sub-array to be normalized. This
      * means that the norm or min-n-max are calculated over the sub-array, and then this sub-array is modified to be
      * normalized. If you want to only use the mask to calculate the norm or min-max but modify the whole array, you can
      * use norm and Mat::convertTo.
-     *
+     * <p>
      * In case of sparse matrices, only the non-zero values are analyzed and transformed. Because of this, the range
      * transformation for sparse matrices is not allowed since it can shift the zero level.
-     *
+     * <p>
      * Possible usage with some positive example data: <code>
-     *     vector&lt;double&gt; positiveData = { 2.0, 8.0, 10.0 };
-     *     vector&lt;double&gt; normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
+     * vector&lt;double&gt; positiveData = { 2.0, 8.0, 10.0 };
+     * vector&lt;double&gt; normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
      *
-     *     // Norm to probability (total count)
-     *     // sum(numbers) = 20.0
-     *     // 2.0      0.1     (2.0/20.0)
-     *     // 8.0      0.4     (8.0/20.0)
-     *     // 10.0     0.5     (10.0/20.0)
-     *     normalize(positiveData, normalizedData_l1, 1.0, 0.0, NORM_L1);
+     * // Norm to probability (total count)
+     * // sum(numbers) = 20.0
+     * // 2.0      0.1     (2.0/20.0)
+     * // 8.0      0.4     (8.0/20.0)
+     * // 10.0     0.5     (10.0/20.0)
+     * normalize(positiveData, normalizedData_l1, 1.0, 0.0, NORM_L1);
      *
-     *     // Norm to unit vector: ||positiveData|| = 1.0
-     *     // 2.0      0.15
-     *     // 8.0      0.62
-     *     // 10.0     0.77
-     *     normalize(positiveData, normalizedData_l2, 1.0, 0.0, NORM_L2);
+     * // Norm to unit vector: ||positiveData|| = 1.0
+     * // 2.0      0.15
+     * // 8.0      0.62
+     * // 10.0     0.77
+     * normalize(positiveData, normalizedData_l2, 1.0, 0.0, NORM_L2);
      *
-     *     // Norm to max element
-     *     // 2.0      0.2     (2.0/10.0)
-     *     // 8.0      0.8     (8.0/10.0)
-     *     // 10.0     1.0     (10.0/10.0)
-     *     normalize(positiveData, normalizedData_inf, 1.0, 0.0, NORM_INF);
+     * // Norm to max element
+     * // 2.0      0.2     (2.0/10.0)
+     * // 8.0      0.8     (8.0/10.0)
+     * // 10.0     1.0     (10.0/10.0)
+     * normalize(positiveData, normalizedData_inf, 1.0, 0.0, NORM_INF);
      *
-     *     // Norm to range [0.0;1.0]
-     *     // 2.0      0.0     (shift to left border)
-     *     // 8.0      0.75    (6.0/8.0)
-     *     // 10.0     1.0     (shift to right border)
-     *     normalize(positiveData, normalizedData_minmax, 1.0, 0.0, NORM_MINMAX);
+     * // Norm to range [0.0;1.0]
+     * // 2.0      0.0     (shift to left border)
+     * // 8.0      0.75    (6.0/8.0)
+     * // 10.0     1.0     (shift to right border)
+     * normalize(positiveData, normalizedData_minmax, 1.0, 0.0, NORM_MINMAX);
      * </code>
      *
      * <b>Note:</b> Due to rounding issues, min-max normalization can result in values outside provided boundaries. If
@@ -1776,47 +1779,47 @@ public class Core {
 
     /**
      * Normalizes the norm or value range of an array.
-     *
+     * <p>
      * The function cv::normalize normalizes scale and shift the input array elements so that \(\| \texttt{dst} \|
      * _{L_p}= \texttt{alpha}\) (where p=Inf, 1 or 2) when normType=NORM_INF, NORM_L1, or NORM_L2, respectively; or so
      * that \(\min _I \texttt{dst} (I)= \texttt{alpha} , \, \, \max _I \texttt{dst} (I)= \texttt{beta}\)
-     *
+     * <p>
      * when normType=NORM_MINMAX (for dense arrays only). The optional mask specifies a sub-array to be normalized. This
      * means that the norm or min-n-max are calculated over the sub-array, and then this sub-array is modified to be
      * normalized. If you want to only use the mask to calculate the norm or min-max but modify the whole array, you can
      * use norm and Mat::convertTo.
-     *
+     * <p>
      * In case of sparse matrices, only the non-zero values are analyzed and transformed. Because of this, the range
      * transformation for sparse matrices is not allowed since it can shift the zero level.
-     *
+     * <p>
      * Possible usage with some positive example data: <code>
-     *     vector&lt;double&gt; positiveData = { 2.0, 8.0, 10.0 };
-     *     vector&lt;double&gt; normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
+     * vector&lt;double&gt; positiveData = { 2.0, 8.0, 10.0 };
+     * vector&lt;double&gt; normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
      *
-     *     // Norm to probability (total count)
-     *     // sum(numbers) = 20.0
-     *     // 2.0      0.1     (2.0/20.0)
-     *     // 8.0      0.4     (8.0/20.0)
-     *     // 10.0     0.5     (10.0/20.0)
-     *     normalize(positiveData, normalizedData_l1, 1.0, 0.0, NORM_L1);
+     * // Norm to probability (total count)
+     * // sum(numbers) = 20.0
+     * // 2.0      0.1     (2.0/20.0)
+     * // 8.0      0.4     (8.0/20.0)
+     * // 10.0     0.5     (10.0/20.0)
+     * normalize(positiveData, normalizedData_l1, 1.0, 0.0, NORM_L1);
      *
-     *     // Norm to unit vector: ||positiveData|| = 1.0
-     *     // 2.0      0.15
-     *     // 8.0      0.62
-     *     // 10.0     0.77
-     *     normalize(positiveData, normalizedData_l2, 1.0, 0.0, NORM_L2);
+     * // Norm to unit vector: ||positiveData|| = 1.0
+     * // 2.0      0.15
+     * // 8.0      0.62
+     * // 10.0     0.77
+     * normalize(positiveData, normalizedData_l2, 1.0, 0.0, NORM_L2);
      *
-     *     // Norm to max element
-     *     // 2.0      0.2     (2.0/10.0)
-     *     // 8.0      0.8     (8.0/10.0)
-     *     // 10.0     1.0     (10.0/10.0)
-     *     normalize(positiveData, normalizedData_inf, 1.0, 0.0, NORM_INF);
+     * // Norm to max element
+     * // 2.0      0.2     (2.0/10.0)
+     * // 8.0      0.8     (8.0/10.0)
+     * // 10.0     1.0     (10.0/10.0)
+     * normalize(positiveData, normalizedData_inf, 1.0, 0.0, NORM_INF);
      *
-     *     // Norm to range [0.0;1.0]
-     *     // 2.0      0.0     (shift to left border)
-     *     // 8.0      0.75    (6.0/8.0)
-     *     // 10.0     1.0     (shift to right border)
-     *     normalize(positiveData, normalizedData_minmax, 1.0, 0.0, NORM_MINMAX);
+     * // Norm to range [0.0;1.0]
+     * // 2.0      0.0     (shift to left border)
+     * // 8.0      0.75    (6.0/8.0)
+     * // 10.0     1.0     (shift to right border)
+     * normalize(positiveData, normalizedData_minmax, 1.0, 0.0, NORM_MINMAX);
      * </code>
      *
      * <b>Note:</b> Due to rounding issues, min-max normalization can result in values outside provided boundaries. If
@@ -1840,47 +1843,47 @@ public class Core {
 
     /**
      * Normalizes the norm or value range of an array.
-     *
+     * <p>
      * The function cv::normalize normalizes scale and shift the input array elements so that \(\| \texttt{dst} \|
      * _{L_p}= \texttt{alpha}\) (where p=Inf, 1 or 2) when normType=NORM_INF, NORM_L1, or NORM_L2, respectively; or so
      * that \(\min _I \texttt{dst} (I)= \texttt{alpha} , \, \, \max _I \texttt{dst} (I)= \texttt{beta}\)
-     *
+     * <p>
      * when normType=NORM_MINMAX (for dense arrays only). The optional mask specifies a sub-array to be normalized. This
      * means that the norm or min-n-max are calculated over the sub-array, and then this sub-array is modified to be
      * normalized. If you want to only use the mask to calculate the norm or min-max but modify the whole array, you can
      * use norm and Mat::convertTo.
-     *
+     * <p>
      * In case of sparse matrices, only the non-zero values are analyzed and transformed. Because of this, the range
      * transformation for sparse matrices is not allowed since it can shift the zero level.
-     *
+     * <p>
      * Possible usage with some positive example data: <code>
-     *     vector&lt;double&gt; positiveData = { 2.0, 8.0, 10.0 };
-     *     vector&lt;double&gt; normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
+     * vector&lt;double&gt; positiveData = { 2.0, 8.0, 10.0 };
+     * vector&lt;double&gt; normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
      *
-     *     // Norm to probability (total count)
-     *     // sum(numbers) = 20.0
-     *     // 2.0      0.1     (2.0/20.0)
-     *     // 8.0      0.4     (8.0/20.0)
-     *     // 10.0     0.5     (10.0/20.0)
-     *     normalize(positiveData, normalizedData_l1, 1.0, 0.0, NORM_L1);
+     * // Norm to probability (total count)
+     * // sum(numbers) = 20.0
+     * // 2.0      0.1     (2.0/20.0)
+     * // 8.0      0.4     (8.0/20.0)
+     * // 10.0     0.5     (10.0/20.0)
+     * normalize(positiveData, normalizedData_l1, 1.0, 0.0, NORM_L1);
      *
-     *     // Norm to unit vector: ||positiveData|| = 1.0
-     *     // 2.0      0.15
-     *     // 8.0      0.62
-     *     // 10.0     0.77
-     *     normalize(positiveData, normalizedData_l2, 1.0, 0.0, NORM_L2);
+     * // Norm to unit vector: ||positiveData|| = 1.0
+     * // 2.0      0.15
+     * // 8.0      0.62
+     * // 10.0     0.77
+     * normalize(positiveData, normalizedData_l2, 1.0, 0.0, NORM_L2);
      *
-     *     // Norm to max element
-     *     // 2.0      0.2     (2.0/10.0)
-     *     // 8.0      0.8     (8.0/10.0)
-     *     // 10.0     1.0     (10.0/10.0)
-     *     normalize(positiveData, normalizedData_inf, 1.0, 0.0, NORM_INF);
+     * // Norm to max element
+     * // 2.0      0.2     (2.0/10.0)
+     * // 8.0      0.8     (8.0/10.0)
+     * // 10.0     1.0     (10.0/10.0)
+     * normalize(positiveData, normalizedData_inf, 1.0, 0.0, NORM_INF);
      *
-     *     // Norm to range [0.0;1.0]
-     *     // 2.0      0.0     (shift to left border)
-     *     // 8.0      0.75    (6.0/8.0)
-     *     // 10.0     1.0     (shift to right border)
-     *     normalize(positiveData, normalizedData_minmax, 1.0, 0.0, NORM_MINMAX);
+     * // Norm to range [0.0;1.0]
+     * // 2.0      0.0     (shift to left border)
+     * // 8.0      0.75    (6.0/8.0)
+     * // 10.0     1.0     (shift to right border)
+     * normalize(positiveData, normalizedData_minmax, 1.0, 0.0, NORM_MINMAX);
      * </code>
      *
      * <b>Note:</b> Due to rounding issues, min-max normalization can result in values outside provided boundaries. If
@@ -1903,47 +1906,47 @@ public class Core {
 
     /**
      * Normalizes the norm or value range of an array.
-     *
+     * <p>
      * The function cv::normalize normalizes scale and shift the input array elements so that \(\| \texttt{dst} \|
      * _{L_p}= \texttt{alpha}\) (where p=Inf, 1 or 2) when normType=NORM_INF, NORM_L1, or NORM_L2, respectively; or so
      * that \(\min _I \texttt{dst} (I)= \texttt{alpha} , \, \, \max _I \texttt{dst} (I)= \texttt{beta}\)
-     *
+     * <p>
      * when normType=NORM_MINMAX (for dense arrays only). The optional mask specifies a sub-array to be normalized. This
      * means that the norm or min-n-max are calculated over the sub-array, and then this sub-array is modified to be
      * normalized. If you want to only use the mask to calculate the norm or min-max but modify the whole array, you can
      * use norm and Mat::convertTo.
-     *
+     * <p>
      * In case of sparse matrices, only the non-zero values are analyzed and transformed. Because of this, the range
      * transformation for sparse matrices is not allowed since it can shift the zero level.
-     *
+     * <p>
      * Possible usage with some positive example data: <code>
-     *     vector&lt;double&gt; positiveData = { 2.0, 8.0, 10.0 };
-     *     vector&lt;double&gt; normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
+     * vector&lt;double&gt; positiveData = { 2.0, 8.0, 10.0 };
+     * vector&lt;double&gt; normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
      *
-     *     // Norm to probability (total count)
-     *     // sum(numbers) = 20.0
-     *     // 2.0      0.1     (2.0/20.0)
-     *     // 8.0      0.4     (8.0/20.0)
-     *     // 10.0     0.5     (10.0/20.0)
-     *     normalize(positiveData, normalizedData_l1, 1.0, 0.0, NORM_L1);
+     * // Norm to probability (total count)
+     * // sum(numbers) = 20.0
+     * // 2.0      0.1     (2.0/20.0)
+     * // 8.0      0.4     (8.0/20.0)
+     * // 10.0     0.5     (10.0/20.0)
+     * normalize(positiveData, normalizedData_l1, 1.0, 0.0, NORM_L1);
      *
-     *     // Norm to unit vector: ||positiveData|| = 1.0
-     *     // 2.0      0.15
-     *     // 8.0      0.62
-     *     // 10.0     0.77
-     *     normalize(positiveData, normalizedData_l2, 1.0, 0.0, NORM_L2);
+     * // Norm to unit vector: ||positiveData|| = 1.0
+     * // 2.0      0.15
+     * // 8.0      0.62
+     * // 10.0     0.77
+     * normalize(positiveData, normalizedData_l2, 1.0, 0.0, NORM_L2);
      *
-     *     // Norm to max element
-     *     // 2.0      0.2     (2.0/10.0)
-     *     // 8.0      0.8     (8.0/10.0)
-     *     // 10.0     1.0     (10.0/10.0)
-     *     normalize(positiveData, normalizedData_inf, 1.0, 0.0, NORM_INF);
+     * // Norm to max element
+     * // 2.0      0.2     (2.0/10.0)
+     * // 8.0      0.8     (8.0/10.0)
+     * // 10.0     1.0     (10.0/10.0)
+     * normalize(positiveData, normalizedData_inf, 1.0, 0.0, NORM_INF);
      *
-     *     // Norm to range [0.0;1.0]
-     *     // 2.0      0.0     (shift to left border)
-     *     // 8.0      0.75    (6.0/8.0)
-     *     // 10.0     1.0     (shift to right border)
-     *     normalize(positiveData, normalizedData_minmax, 1.0, 0.0, NORM_MINMAX);
+     * // Norm to range [0.0;1.0]
+     * // 2.0      0.0     (shift to left border)
+     * // 8.0      0.75    (6.0/8.0)
+     * // 10.0     1.0     (shift to right border)
+     * normalize(positiveData, normalizedData_minmax, 1.0, 0.0, NORM_MINMAX);
      * </code>
      *
      * <b>Note:</b> Due to rounding issues, min-max normalization can result in values outside provided boundaries. If
@@ -1962,10 +1965,6 @@ public class Core {
         normalize_5(src.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::reduceArgMin(Mat src, Mat& dst, int axis, bool lastIndex = false)
-    //
-
     /**
      * Finds indices of min elements along provided axis
      *
@@ -1982,6 +1981,10 @@ public class Core {
         reduceArgMin_0(src.nativeObj, dst.nativeObj, axis, lastIndex);
     }
 
+    //
+    // C++: void cv::reduceArgMin(Mat src, Mat& dst, int axis, bool lastIndex = false)
+    //
+
     /**
      * Finds indices of min elements along provided axis
      *
@@ -1996,10 +1999,6 @@ public class Core {
     public static void reduceArgMin(Mat src, Mat dst, int axis) {
         reduceArgMin_1(src.nativeObj, dst.nativeObj, axis);
     }
-
-    //
-    // C++: void cv::reduceArgMax(Mat src, Mat& dst, int axis, bool lastIndex = false)
-    //
 
     /**
      * Finds indices of max elements along provided axis
@@ -2017,6 +2016,10 @@ public class Core {
         reduceArgMax_0(src.nativeObj, dst.nativeObj, axis, lastIndex);
     }
 
+    //
+    // C++: void cv::reduceArgMax(Mat src, Mat& dst, int axis, bool lastIndex = false)
+    //
+
     /**
      * Finds indices of max elements along provided axis
      *
@@ -2032,22 +2035,18 @@ public class Core {
         reduceArgMax_1(src.nativeObj, dst.nativeObj, axis);
     }
 
-    //
-    // C++: void cv::reduce(Mat src, Mat& dst, int dim, int rtype, int dtype = -1)
-    //
-
     /**
      * Reduces a matrix to a vector.
-     *
+     * <p>
      * The function #reduce reduces the matrix to a vector by treating the matrix rows/columns as a set of 1D vectors
      * and performing the specified operation on the vectors until a single row/column is obtained. For example, the
      * function can be used to compute horizontal and vertical projections of a raster image. In case of #REDUCE_MAX and
      * #REDUCE_MIN, the output image should have the same type as the source one. In case of #REDUCE_SUM, #REDUCE_SUM2
      * and #REDUCE_AVG, the output may have a larger element bit-depth to preserve accuracy. And multi-channel arrays
      * are also supported in these two reduction modes.
-     *
+     * <p>
      * The following code demonstrates its usage for a single channel matrix. SNIPPET: snippets/core_reduce.cpp example
-     *
+     * <p>
      * And the following code demonstrates its usage for a two-channel matrix. SNIPPET: snippets/core_reduce.cpp
      * example2
      *
@@ -2063,18 +2062,22 @@ public class Core {
         reduce_0(src.nativeObj, dst.nativeObj, dim, rtype, dtype);
     }
 
+    //
+    // C++: void cv::reduce(Mat src, Mat& dst, int dim, int rtype, int dtype = -1)
+    //
+
     /**
      * Reduces a matrix to a vector.
-     *
+     * <p>
      * The function #reduce reduces the matrix to a vector by treating the matrix rows/columns as a set of 1D vectors
      * and performing the specified operation on the vectors until a single row/column is obtained. For example, the
      * function can be used to compute horizontal and vertical projections of a raster image. In case of #REDUCE_MAX and
      * #REDUCE_MIN, the output image should have the same type as the source one. In case of #REDUCE_SUM, #REDUCE_SUM2
      * and #REDUCE_AVG, the output may have a larger element bit-depth to preserve accuracy. And multi-channel arrays
      * are also supported in these two reduction modes.
-     *
+     * <p>
      * The following code demonstrates its usage for a single channel matrix. SNIPPET: snippets/core_reduce.cpp example
-     *
+     * <p>
      * And the following code demonstrates its usage for a two-channel matrix. SNIPPET: snippets/core_reduce.cpp
      * example2
      *
@@ -2089,10 +2092,6 @@ public class Core {
         reduce_1(src.nativeObj, dst.nativeObj, dim, rtype);
     }
 
-    //
-    // C++: void cv::merge(vector_Mat mv, Mat& dst)
-    //
-
     /**
      *
      * @param mv  input vector of matrices to be merged; all the matrices in mv must have the same size and the same
@@ -2106,7 +2105,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::split(Mat m, vector_Mat& mv)
+    // C++: void cv::merge(vector_Mat mv, Mat& dst)
     //
 
     /**
@@ -2122,7 +2121,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::mixChannels(vector_Mat src, vector_Mat dst, vector_int fromTo)
+    // C++: void cv::split(Mat m, vector_Mat& mv)
     //
 
     /**
@@ -2146,7 +2145,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::extractChannel(Mat src, Mat& dst, int coi)
+    // C++: void cv::mixChannels(vector_Mat src, vector_Mat dst, vector_int fromTo)
     //
 
     /**
@@ -2161,7 +2160,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::insertChannel(Mat src, Mat& dst, int coi)
+    // C++: void cv::extractChannel(Mat src, Mat& dst, int coi)
     //
 
     /**
@@ -2176,12 +2175,12 @@ public class Core {
     }
 
     //
-    // C++: void cv::flip(Mat src, Mat& dst, int flipCode)
+    // C++: void cv::insertChannel(Mat src, Mat& dst, int coi)
     //
 
     /**
      * Flips a 2D array around vertical, horizontal, or both axes.
-     *
+     * <p>
      * The function cv::flip flips the array in one of three different ways (row and column indices are 0-based):
      * \(\texttt{dst} _{ij} = \left\{ \begin{array}{l l} \texttt{src} _{\texttt{src.rows}-i-1,j} &amp; if\;
      * \texttt{flipCode} = 0 \\ \texttt{src} _{i, \texttt{src.cols} -j-1} &amp; if\; \texttt{flipCode} &gt; 0 \\
@@ -2205,7 +2204,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::flipND(Mat src, Mat& dst, int axis)
+    // C++: void cv::flip(Mat src, Mat& dst, int flipCode)
     //
 
     /**
@@ -2220,7 +2219,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::broadcast(Mat src, Mat shape, Mat& dst)
+    // C++: void cv::flipND(Mat src, Mat& dst, int axis)
     //
 
     /**
@@ -2235,7 +2234,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::rotate(Mat src, Mat& dst, int rotateCode)
+    // C++: void cv::broadcast(Mat src, Mat shape, Mat& dst)
     //
 
     /**
@@ -2254,12 +2253,12 @@ public class Core {
     }
 
     //
-    // C++: void cv::repeat(Mat src, int ny, int nx, Mat& dst)
+    // C++: void cv::rotate(Mat src, Mat& dst, int rotateCode)
     //
 
     /**
      * Fills the output array with repeated copies of the input array.
-     *
+     * <p>
      * The function cv::repeat duplicates the input array one or more times along each of the two axes: \(\texttt{dst}
      * _{ij}= \texttt{src} _{i\mod src.rows, \; j\mod src.cols }\) The second variant of the function is more convenient
      * to use with REF: MatrixExpressions.
@@ -2274,24 +2273,24 @@ public class Core {
     }
 
     //
-    // C++: void cv::hconcat(vector_Mat src, Mat& dst)
+    // C++: void cv::repeat(Mat src, int ny, int nx, Mat& dst)
     //
 
     /**
      *
      * <code>
-     *     std::vector&lt;cv::Mat&gt; matrices = { cv::Mat(4, 1, CV_8UC1, cv::Scalar(1)),
-     *                                       cv::Mat(4, 1, CV_8UC1, cv::Scalar(2)),
-     *                                       cv::Mat(4, 1, CV_8UC1, cv::Scalar(3)),};
+     * std::vector&lt;cv::Mat&gt; matrices = { cv::Mat(4, 1, CV_8UC1, cv::Scalar(1)),
+     * cv::Mat(4, 1, CV_8UC1, cv::Scalar(2)),
+     * cv::Mat(4, 1, CV_8UC1, cv::Scalar(3)),};
      *
-     *     cv::Mat out;
-     *     cv::hconcat( matrices, out );
-     *     //out:
-     *     //[1, 2, 3;
-     *     // 1, 2, 3;
-     *     // 1, 2, 3;
-     *     // 1, 2, 3]
-     *  </code>
+     * cv::Mat out;
+     * cv::hconcat( matrices, out );
+     * //out:
+     * //[1, 2, 3;
+     * // 1, 2, 3;
+     * // 1, 2, 3;
+     * // 1, 2, 3]
+     * </code>
      *
      * @param src input array or vector of matrices. all of the matrices must have the same number of rows and the same
      *            depth.
@@ -2304,23 +2303,23 @@ public class Core {
     }
 
     //
-    // C++: void cv::vconcat(vector_Mat src, Mat& dst)
+    // C++: void cv::hconcat(vector_Mat src, Mat& dst)
     //
 
     /**
      *
      * <code>
-     *     std::vector&lt;cv::Mat&gt; matrices = { cv::Mat(1, 4, CV_8UC1, cv::Scalar(1)),
-     *                                       cv::Mat(1, 4, CV_8UC1, cv::Scalar(2)),
-     *                                       cv::Mat(1, 4, CV_8UC1, cv::Scalar(3)),};
+     * std::vector&lt;cv::Mat&gt; matrices = { cv::Mat(1, 4, CV_8UC1, cv::Scalar(1)),
+     * cv::Mat(1, 4, CV_8UC1, cv::Scalar(2)),
+     * cv::Mat(1, 4, CV_8UC1, cv::Scalar(3)),};
      *
-     *     cv::Mat out;
-     *     cv::vconcat( matrices, out );
-     *     //out:
-     *     //[1,   1,   1,   1;
-     *     // 2,   2,   2,   2;
-     *     // 3,   3,   3,   3]
-     *  </code>
+     * cv::Mat out;
+     * cv::vconcat( matrices, out );
+     * //out:
+     * //[1,   1,   1,   1;
+     * // 2,   2,   2,   2;
+     * // 3,   3,   3,   3]
+     * </code>
      *
      * @param src input array or vector of matrices. all of the matrices must have the same number of cols and the same
      *            depth
@@ -2333,13 +2332,13 @@ public class Core {
     }
 
     //
-    // C++: void cv::bitwise_and(Mat src1, Mat src2, Mat& dst, Mat mask = Mat())
+    // C++: void cv::vconcat(vector_Mat src, Mat& dst)
     //
 
     /**
      * computes bitwise conjunction of the two arrays (dst = src1 &amp; src2) Calculates the per-element bit-wise
      * conjunction of two arrays or an array and a scalar.
-     *
+     * <p>
      * The function cv::bitwise_and calculates the per-element bit-wise logical conjunction for: Two arrays when src1
      * and src2 have the same size: \(\texttt{dst} (I) = \texttt{src1} (I) \wedge \texttt{src2} (I) \quad \texttt{if
      * mask} (I) \ne0\) An array and a scalar when src2 is constructed from Scalar or has the same number of elements as
@@ -2360,10 +2359,14 @@ public class Core {
         bitwise_and_0(src1.nativeObj, src2.nativeObj, dst.nativeObj, mask.nativeObj);
     }
 
+    //
+    // C++: void cv::bitwise_and(Mat src1, Mat src2, Mat& dst, Mat mask = Mat())
+    //
+
     /**
      * computes bitwise conjunction of the two arrays (dst = src1 &amp; src2) Calculates the per-element bit-wise
      * conjunction of two arrays or an array and a scalar.
-     *
+     * <p>
      * The function cv::bitwise_and calculates the per-element bit-wise logical conjunction for: Two arrays when src1
      * and src2 have the same size: \(\texttt{dst} (I) = \texttt{src1} (I) \wedge \texttt{src2} (I) \quad \texttt{if
      * mask} (I) \ne0\) An array and a scalar when src2 is constructed from Scalar or has the same number of elements as
@@ -2383,13 +2386,9 @@ public class Core {
         bitwise_and_1(src1.nativeObj, src2.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::bitwise_or(Mat src1, Mat src2, Mat& dst, Mat mask = Mat())
-    //
-
     /**
      * Calculates the per-element bit-wise disjunction of two arrays or an array and a scalar.
-     *
+     * <p>
      * The function cv::bitwise_or calculates the per-element bit-wise logical disjunction for: Two arrays when src1 and
      * src2 have the same size: \(\texttt{dst} (I) = \texttt{src1} (I) \vee \texttt{src2} (I) \quad \texttt{if mask} (I)
      * \ne0\) An array and a scalar when src2 is constructed from Scalar or has the same number of elements as
@@ -2410,9 +2409,13 @@ public class Core {
         bitwise_or_0(src1.nativeObj, src2.nativeObj, dst.nativeObj, mask.nativeObj);
     }
 
+    //
+    // C++: void cv::bitwise_or(Mat src1, Mat src2, Mat& dst, Mat mask = Mat())
+    //
+
     /**
      * Calculates the per-element bit-wise disjunction of two arrays or an array and a scalar.
-     *
+     * <p>
      * The function cv::bitwise_or calculates the per-element bit-wise logical disjunction for: Two arrays when src1 and
      * src2 have the same size: \(\texttt{dst} (I) = \texttt{src1} (I) \vee \texttt{src2} (I) \quad \texttt{if mask} (I)
      * \ne0\) An array and a scalar when src2 is constructed from Scalar or has the same number of elements as
@@ -2432,13 +2435,9 @@ public class Core {
         bitwise_or_1(src1.nativeObj, src2.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::bitwise_xor(Mat src1, Mat src2, Mat& dst, Mat mask = Mat())
-    //
-
     /**
      * Calculates the per-element bit-wise "exclusive or" operation on two arrays or an array and a scalar.
-     *
+     * <p>
      * The function cv::bitwise_xor calculates the per-element bit-wise logical "exclusive-or" operation for: Two arrays
      * when src1 and src2 have the same size: \(\texttt{dst} (I) = \texttt{src1} (I) \oplus \texttt{src2} (I) \quad
      * \texttt{if mask} (I) \ne0\) An array and a scalar when src2 is constructed from Scalar or has the same number of
@@ -2459,9 +2458,13 @@ public class Core {
         bitwise_xor_0(src1.nativeObj, src2.nativeObj, dst.nativeObj, mask.nativeObj);
     }
 
+    //
+    // C++: void cv::bitwise_xor(Mat src1, Mat src2, Mat& dst, Mat mask = Mat())
+    //
+
     /**
      * Calculates the per-element bit-wise "exclusive or" operation on two arrays or an array and a scalar.
-     *
+     * <p>
      * The function cv::bitwise_xor calculates the per-element bit-wise logical "exclusive-or" operation for: Two arrays
      * when src1 and src2 have the same size: \(\texttt{dst} (I) = \texttt{src1} (I) \oplus \texttt{src2} (I) \quad
      * \texttt{if mask} (I) \ne0\) An array and a scalar when src2 is constructed from Scalar or has the same number of
@@ -2481,13 +2484,9 @@ public class Core {
         bitwise_xor_1(src1.nativeObj, src2.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::bitwise_not(Mat src, Mat& dst, Mat mask = Mat())
-    //
-
     /**
      * Inverts every bit of an array.
-     *
+     * <p>
      * The function cv::bitwise_not calculates per-element bit-wise inversion of the input array: \(\texttt{dst} (I) =
      * \neg \texttt{src} (I)\) In case of a floating-point input array, its machine-specific bit representation (usually
      * IEEE754-compliant) is used for the operation. In case of multi-channel arrays, each channel is processed
@@ -2502,9 +2501,13 @@ public class Core {
         bitwise_not_0(src.nativeObj, dst.nativeObj, mask.nativeObj);
     }
 
+    //
+    // C++: void cv::bitwise_not(Mat src, Mat& dst, Mat mask = Mat())
+    //
+
     /**
      * Inverts every bit of an array.
-     *
+     * <p>
      * The function cv::bitwise_not calculates per-element bit-wise inversion of the input array: \(\texttt{dst} (I) =
      * \neg \texttt{src} (I)\) In case of a floating-point input array, its machine-specific bit representation (usually
      * IEEE754-compliant) is used for the operation. In case of multi-channel arrays, each channel is processed
@@ -2518,13 +2521,9 @@ public class Core {
         bitwise_not_1(src.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::absdiff(Mat src1, Mat src2, Mat& dst)
-    //
-
     /**
      * Calculates the per-element absolute difference between two arrays or between an array and a scalar.
-     *
+     * <p>
      * The function cv::absdiff calculates: Absolute difference between two arrays when they have the same size and
      * type: \(\texttt{dst}(I) = \texttt{saturate} (| \texttt{src1}(I) - \texttt{src2}(I)|)\) Absolute difference
      * between an array and a scalar when the second array is constructed from Scalar or has as many elements as the
@@ -2546,7 +2545,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::copyTo(Mat src, Mat& dst, Mat mask)
+    // C++: void cv::absdiff(Mat src1, Mat src2, Mat& dst)
     //
 
     /**
@@ -2565,12 +2564,12 @@ public class Core {
     }
 
     //
-    // C++: void cv::inRange(Mat src, Scalar lowerb, Scalar upperb, Mat& dst)
+    // C++: void cv::copyTo(Mat src, Mat& dst, Mat mask)
     //
 
     /**
      * Checks if array elements lie between the elements of two other arrays.
-     *
+     * <p>
      * The function checks the range as follows:
      * <ul>
      * <li>For every element of a single-channel input array: \(\texttt{dst} (I)= \texttt{lowerb} (I)_0 \leq
@@ -2579,10 +2578,10 @@ public class Core {
      * \texttt{upperb} (I)_0 \land \texttt{lowerb} (I)_1 \leq \texttt{src} (I)_1 \leq \texttt{upperb} (I)_1\)</li>
      * <li>and so forth.</li>
      * </ul>
-     *
+     * <p>
      * That is, dst (I) is set to 255 (all 1 -bits) if src (I) is within the specified 1D, 2D, 3D, ... box and 0
      * otherwise.
-     *
+     * <p>
      * When the lower and/or upper boundary parameters are scalars, the indexes (I) at lowerb and upperb in the above
      * formulas should be omitted.
      *
@@ -2606,12 +2605,12 @@ public class Core {
     }
 
     //
-    // C++: void cv::compare(Mat src1, Mat src2, Mat& dst, int cmpop)
+    // C++: void cv::inRange(Mat src, Scalar lowerb, Scalar upperb, Mat& dst)
     //
 
     /**
      * Performs the per-element comparison of two arrays or an array and scalar value.
-     *
+     * <p>
      * The function compares: Elements of two arrays when src1 and src2 have the same size: \(\texttt{dst} (I) =
      * \texttt{src1} (I) \,\texttt{cmpop}\, \texttt{src2} (I)\) Elements of src1 with a scalar src2 when src2 is
      * constructed from Scalar or has a single element: \(\texttt{dst} (I) = \texttt{src1}(I) \,\texttt{cmpop}\,
@@ -2619,9 +2618,9 @@ public class Core {
      * \(\texttt{dst} (I) = \texttt{src1} \,\texttt{cmpop}\, \texttt{src2} (I)\) When the comparison result is true, the
      * corresponding element of output array is set to 255. The comparison operations can be replaced with the
      * equivalent matrix expressions: <code>
-     *     Mat dst1 = src1 &gt;= src2;
-     *     Mat dst2 = src1 &lt; 8;
-     *     ...
+     * Mat dst1 = src1 &gt;= src2;
+     * Mat dst2 = src1 &lt; 8;
+     * ...
      * </code>
      *
      * @param src1  first input array or a scalar; when it is an array, it must have a single channel.
@@ -2636,12 +2635,12 @@ public class Core {
     }
 
     //
-    // C++: void cv::min(Mat src1, Mat src2, Mat& dst)
+    // C++: void cv::compare(Mat src1, Mat src2, Mat& dst, int cmpop)
     //
 
     /**
      * Calculates per-element minimum of two arrays or an array and a scalar.
-     *
+     * <p>
      * The function cv::min calculates the per-element minimum of two arrays: \(\texttt{dst} (I)= \min ( \texttt{src1}
      * (I), \texttt{src2} (I))\) or array and a scalar: \(\texttt{dst} (I)= \min ( \texttt{src1} (I), \texttt{value} )\)
      *
@@ -2654,12 +2653,12 @@ public class Core {
     }
 
     //
-    // C++: void cv::max(Mat src1, Mat src2, Mat& dst)
+    // C++: void cv::min(Mat src1, Mat src2, Mat& dst)
     //
 
     /**
      * Calculates per-element maximum of two arrays or an array and a scalar.
-     *
+     * <p>
      * The function cv::max calculates the per-element maximum of two arrays: \(\texttt{dst} (I)= \max ( \texttt{src1}
      * (I), \texttt{src2} (I))\) or array and a scalar: \(\texttt{dst} (I)= \max ( \texttt{src1} (I), \texttt{value} )\)
      *
@@ -2673,12 +2672,12 @@ public class Core {
     }
 
     //
-    // C++: void cv::sqrt(Mat src, Mat& dst)
+    // C++: void cv::max(Mat src1, Mat src2, Mat& dst)
     //
 
     /**
      * Calculates a square root of array elements.
-     *
+     * <p>
      * The function cv::sqrt calculates a square root of each input array element. In case of multi-channel arrays, each
      * channel is processed independently. The accuracy is approximately the same as of the built-in std::sqrt .
      *
@@ -2690,23 +2689,23 @@ public class Core {
     }
 
     //
-    // C++: void cv::pow(Mat src, double power, Mat& dst)
+    // C++: void cv::sqrt(Mat src, Mat& dst)
     //
 
     /**
      * Raises every array element to a power.
-     *
+     * <p>
      * The function cv::pow raises every element of the input array to power : \(\texttt{dst} (I) =
      * \fork{\texttt{src}(I)^{power}}{if \(\texttt{power}\) is integer}{|\texttt{src}(I)|^{power}}{otherwise}\)
-     *
+     * <p>
      * So, for a non-integer power exponent, the absolute values of input array elements are used. However, it is
      * possible to get true values for negative values using some extra operations. In the example below, computing the
      * 5th root of array src shows: <code>
-     *     Mat mask = src &lt; 0;
-     *     pow(src, 1./5, dst);
-     *     subtract(Scalar::all(0), dst, dst, mask);
+     * Mat mask = src &lt; 0;
+     * pow(src, 1./5, dst);
+     * subtract(Scalar::all(0), dst, dst, mask);
      * </code> For some values of power, such as integer values, 0.5 and -0.5, specialized faster algorithms are used.
-     *
+     * <p>
      * Special values (NaN, Inf) are not handled.
      *
      * @param src   input array.
@@ -2718,15 +2717,15 @@ public class Core {
     }
 
     //
-    // C++: void cv::exp(Mat src, Mat& dst)
+    // C++: void cv::pow(Mat src, double power, Mat& dst)
     //
 
     /**
      * Calculates the exponent of every array element.
-     *
+     * <p>
      * The function cv::exp calculates the exponent of every element of the input array: \(\texttt{dst} [I] = e^{ src(I)
      * }\)
-     *
+     * <p>
      * The maximum relative error is about 7e-6 for single-precision input and less than 1e-10 for double-precision
      * input. Currently, the function converts denormalized values to zeros on output. Special values (NaN, Inf) are not
      * handled.
@@ -2740,15 +2739,15 @@ public class Core {
     }
 
     //
-    // C++: void cv::log(Mat src, Mat& dst)
+    // C++: void cv::exp(Mat src, Mat& dst)
     //
 
     /**
      * Calculates the natural logarithm of every array element.
-     *
+     * <p>
      * The function cv::log calculates the natural logarithm of every element of the input array: \(\texttt{dst} (I) =
      * \log (\texttt{src}(I)) \)
-     *
+     * <p>
      * Output on zero, negative and special (NaN, Inf) values is undefined.
      *
      * @param src input array.
@@ -2760,16 +2759,16 @@ public class Core {
     }
 
     //
-    // C++: void cv::polarToCart(Mat magnitude, Mat angle, Mat& x, Mat& y, bool angleInDegrees = false)
+    // C++: void cv::log(Mat src, Mat& dst)
     //
 
     /**
      * Calculates x and y coordinates of 2D vectors from their magnitude and angle.
-     *
+     * <p>
      * The function cv::polarToCart calculates the Cartesian coordinates of each 2D vector represented by the
      * corresponding elements of magnitude and angle: \(\begin{array}{l} \texttt{x} (I) = \texttt{magnitude} (I) \cos (
      * \texttt{angle} (I)) \\ \texttt{y} (I) = \texttt{magnitude} (I) \sin ( \texttt{angle} (I)) \\ \end{array}\)
-     *
+     * <p>
      * The relative accuracy of the estimated coordinates is about 1e-6.
      *
      * @param magnitude      input floating-point array of magnitudes of 2D vectors; it can be an empty matrix (=Mat()),
@@ -2785,13 +2784,17 @@ public class Core {
         polarToCart_0(magnitude.nativeObj, angle.nativeObj, x.nativeObj, y.nativeObj, angleInDegrees);
     }
 
+    //
+    // C++: void cv::polarToCart(Mat magnitude, Mat angle, Mat& x, Mat& y, bool angleInDegrees = false)
+    //
+
     /**
      * Calculates x and y coordinates of 2D vectors from their magnitude and angle.
-     *
+     * <p>
      * The function cv::polarToCart calculates the Cartesian coordinates of each 2D vector represented by the
      * corresponding elements of magnitude and angle: \(\begin{array}{l} \texttt{x} (I) = \texttt{magnitude} (I) \cos (
      * \texttt{angle} (I)) \\ \texttt{y} (I) = \texttt{magnitude} (I) \sin ( \texttt{angle} (I)) \\ \end{array}\)
-     *
+     * <p>
      * The relative accuracy of the estimated coordinates is about 1e-6.
      *
      * @param magnitude input floating-point array of magnitudes of 2D vectors; it can be an empty matrix (=Mat()), in
@@ -2806,17 +2809,13 @@ public class Core {
         polarToCart_1(magnitude.nativeObj, angle.nativeObj, x.nativeObj, y.nativeObj);
     }
 
-    //
-    // C++: void cv::cartToPolar(Mat x, Mat y, Mat& magnitude, Mat& angle, bool angleInDegrees = false)
-    //
-
     /**
      * Calculates the magnitude and angle of 2D vectors.
-     *
+     * <p>
      * The function cv::cartToPolar calculates either the magnitude, angle, or both for every 2D vector (x(I),y(I)):
      * \(\begin{array}{l} \texttt{magnitude} (I)= \sqrt{\texttt{x}(I)^2+\texttt{y}(I)^2} , \\ \texttt{angle} (I)=
      * \texttt{atan2} ( \texttt{y} (I), \texttt{x} (I))[ \cdot180 / \pi ] \end{array}\)
-     *
+     * <p>
      * The angles are calculated with accuracy about 0.3 degrees. For the point (0,0), the angle is set to 0.
      *
      * @param x              array of x-coordinates; this must be a single-precision or double-precision floating-point
@@ -2832,13 +2831,17 @@ public class Core {
         cartToPolar_0(x.nativeObj, y.nativeObj, magnitude.nativeObj, angle.nativeObj, angleInDegrees);
     }
 
+    //
+    // C++: void cv::cartToPolar(Mat x, Mat y, Mat& magnitude, Mat& angle, bool angleInDegrees = false)
+    //
+
     /**
      * Calculates the magnitude and angle of 2D vectors.
-     *
+     * <p>
      * The function cv::cartToPolar calculates either the magnitude, angle, or both for every 2D vector (x(I),y(I)):
      * \(\begin{array}{l} \texttt{magnitude} (I)= \sqrt{\texttt{x}(I)^2+\texttt{y}(I)^2} , \\ \texttt{angle} (I)=
      * \texttt{atan2} ( \texttt{y} (I), \texttt{x} (I))[ \cdot180 / \pi ] \end{array}\)
-     *
+     * <p>
      * The angles are calculated with accuracy about 0.3 degrees. For the point (0,0), the angle is set to 0.
      *
      * @param x         array of x-coordinates; this must be a single-precision or double-precision floating-point
@@ -2853,16 +2856,12 @@ public class Core {
         cartToPolar_1(x.nativeObj, y.nativeObj, magnitude.nativeObj, angle.nativeObj);
     }
 
-    //
-    // C++: void cv::phase(Mat x, Mat y, Mat& angle, bool angleInDegrees = false)
-    //
-
     /**
      * Calculates the rotation angle of 2D vectors.
-     *
+     * <p>
      * The function cv::phase calculates the rotation angle of each 2D vector that is formed from the corresponding
      * elements of x and y : \(\texttt{angle} (I) = \texttt{atan2} ( \texttt{y} (I), \texttt{x} (I))\)
-     *
+     * <p>
      * The angle estimation accuracy is about 0.3 degrees. When x(I)=y(I)=0 , the corresponding angle(I) is set to 0.
      *
      * @param x              input floating-point array of x-coordinates of 2D vectors.
@@ -2876,12 +2875,16 @@ public class Core {
         phase_0(x.nativeObj, y.nativeObj, angle.nativeObj, angleInDegrees);
     }
 
+    //
+    // C++: void cv::phase(Mat x, Mat y, Mat& angle, bool angleInDegrees = false)
+    //
+
     /**
      * Calculates the rotation angle of 2D vectors.
-     *
+     * <p>
      * The function cv::phase calculates the rotation angle of each 2D vector that is formed from the corresponding
      * elements of x and y : \(\texttt{angle} (I) = \texttt{atan2} ( \texttt{y} (I), \texttt{x} (I))\)
-     *
+     * <p>
      * The angle estimation accuracy is about 0.3 degrees. When x(I)=y(I)=0 , the corresponding angle(I) is set to 0.
      *
      * @param x     input floating-point array of x-coordinates of 2D vectors.
@@ -2893,13 +2896,9 @@ public class Core {
         phase_1(x.nativeObj, y.nativeObj, angle.nativeObj);
     }
 
-    //
-    // C++: void cv::magnitude(Mat x, Mat y, Mat& magnitude)
-    //
-
     /**
      * Calculates the magnitude of 2D vectors.
-     *
+     * <p>
      * The function cv::magnitude calculates the magnitude of 2D vectors formed from the corresponding elements of x and
      * y arrays: \(\texttt{dst} (I) = \sqrt{\texttt{x}(I)^2 + \texttt{y}(I)^2}\)
      *
@@ -2912,13 +2911,12 @@ public class Core {
     }
 
     //
-    // C++: bool cv::checkRange(Mat a, bool quiet = true, _hidden_ * pos = 0, double minVal = -DBL_MAX, double maxVal =
-    // DBL_MAX)
+    // C++: void cv::magnitude(Mat x, Mat y, Mat& magnitude)
     //
 
     /**
      * Checks every element of an input array for invalid values.
-     *
+     * <p>
      * The function cv::checkRange checks that every array element is neither NaN nor infinite. When minVal &gt;
      * <ul>
      * <li>DBL_MAX and maxVal &lt; DBL_MAX, the function also checks that each value is between minVal and maxVal. In
@@ -2938,9 +2936,14 @@ public class Core {
         return checkRange_0(a.nativeObj, quiet, minVal, maxVal);
     }
 
+    //
+    // C++: bool cv::checkRange(Mat a, bool quiet = true, _hidden_ * pos = 0, double minVal = -DBL_MAX, double maxVal =
+    // DBL_MAX)
+    //
+
     /**
      * Checks every element of an input array for invalid values.
-     *
+     * <p>
      * The function cv::checkRange checks that every array element is neither NaN nor infinite. When minVal &gt;
      * <ul>
      * <li>DBL_MAX and maxVal &lt; DBL_MAX, the function also checks that each value is between minVal and maxVal. In
@@ -2961,7 +2964,7 @@ public class Core {
 
     /**
      * Checks every element of an input array for invalid values.
-     *
+     * <p>
      * The function cv::checkRange checks that every array element is neither NaN nor infinite. When minVal &gt;
      * <ul>
      * <li>DBL_MAX and maxVal &lt; DBL_MAX, the function also checks that each value is between minVal and maxVal. In
@@ -2981,7 +2984,7 @@ public class Core {
 
     /**
      * Checks every element of an input array for invalid values.
-     *
+     * <p>
      * The function cv::checkRange checks that every array element is neither NaN nor infinite. When minVal &gt;
      * <ul>
      * <li>DBL_MAX and maxVal &lt; DBL_MAX, the function also checks that each value is between minVal and maxVal. In
@@ -2997,13 +3000,9 @@ public class Core {
         return checkRange_4(a.nativeObj);
     }
 
-    //
-    // C++: void cv::patchNaNs(Mat& a, double val = 0)
-    //
-
     /**
      * Replaces NaNs (Not-a-Number values) in a matrix with the specified value.
-     *
+     * <p>
      * This function modifies the input matrix in-place. The input matrix must be of type {@code CV_32F} or
      * {@code CV_64F}; other types are not supported.
      *
@@ -3014,9 +3013,13 @@ public class Core {
         patchNaNs_0(a.nativeObj, val);
     }
 
+    //
+    // C++: void cv::patchNaNs(Mat& a, double val = 0)
+    //
+
     /**
      * Replaces NaNs (Not-a-Number values) in a matrix with the specified value.
-     *
+     * <p>
      * This function modifies the input matrix in-place. The input matrix must be of type {@code CV_32F} or
      * {@code CV_64F}; other types are not supported.
      *
@@ -3026,21 +3029,17 @@ public class Core {
         patchNaNs_1(a.nativeObj);
     }
 
-    //
-    // C++: void cv::gemm(Mat src1, Mat src2, double alpha, Mat src3, double beta, Mat& dst, int flags = 0)
-    //
-
     /**
      * Performs generalized matrix multiplication.
-     *
+     * <p>
      * The function cv::gemm performs generalized matrix multiplication similar to the gemm functions in BLAS level 3.
      * For example, {@code gemm(src1, src2, alpha, src3, beta, dst, GEMM_1_T + GEMM_3_T)} corresponds to \(\texttt{dst}
      * = \texttt{alpha} \cdot \texttt{src1} ^T \cdot \texttt{src2} + \texttt{beta} \cdot \texttt{src3} ^T\)
-     *
+     * <p>
      * In case of complex (two-channel) data, performed a complex matrix multiplication.
-     *
+     * <p>
      * The function can be replaced with a matrix expression. For example, the above call can be replaced with: <code>
-     *     dst = alpha*src1.t()*src2 + beta*src3.t();
+     * dst = alpha*src1.t()*src2 + beta*src3.t();
      * </code>
      *
      * @param src1  first multiplied input matrix that could be real(CV_32FC1, CV_64FC1) or complex(CV_32FC2, CV_64FC2).
@@ -3056,17 +3055,21 @@ public class Core {
         gemm_0(src1.nativeObj, src2.nativeObj, alpha, src3.nativeObj, beta, dst.nativeObj, flags);
     }
 
+    //
+    // C++: void cv::gemm(Mat src1, Mat src2, double alpha, Mat src3, double beta, Mat& dst, int flags = 0)
+    //
+
     /**
      * Performs generalized matrix multiplication.
-     *
+     * <p>
      * The function cv::gemm performs generalized matrix multiplication similar to the gemm functions in BLAS level 3.
      * For example, {@code gemm(src1, src2, alpha, src3, beta, dst, GEMM_1_T + GEMM_3_T)} corresponds to \(\texttt{dst}
      * = \texttt{alpha} \cdot \texttt{src1} ^T \cdot \texttt{src2} + \texttt{beta} \cdot \texttt{src3} ^T\)
-     *
+     * <p>
      * In case of complex (two-channel) data, performed a complex matrix multiplication.
-     *
+     * <p>
      * The function can be replaced with a matrix expression. For example, the above call can be replaced with: <code>
-     *     dst = alpha*src1.t()*src2 + beta*src3.t();
+     * dst = alpha*src1.t()*src2 + beta*src3.t();
      * </code>
      *
      * @param src1  first multiplied input matrix that could be real(CV_32FC1, CV_64FC1) or complex(CV_32FC2, CV_64FC2).
@@ -3082,13 +3085,9 @@ public class Core {
         gemm_1(src1.nativeObj, src2.nativeObj, alpha, src3.nativeObj, beta, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::mulTransposed(Mat src, Mat& dst, bool aTa, Mat delta = Mat(), double scale = 1, int dtype = -1)
-    //
-
     /**
      * Calculates the product of a matrix and its transposition.
-     *
+     * <p>
      * The function cv::mulTransposed calculates the product of src and its transposition: \(\texttt{dst} =
      * \texttt{scale} ( \texttt{src} - \texttt{delta} )^T ( \texttt{src} - \texttt{delta} )\) if aTa=true, and
      * \(\texttt{dst} = \texttt{scale} ( \texttt{src} - \texttt{delta} ) ( \texttt{src} - \texttt{delta} )^T\)
@@ -3113,9 +3112,13 @@ public class Core {
         mulTransposed_0(src.nativeObj, dst.nativeObj, aTa, delta.nativeObj, scale, dtype);
     }
 
+    //
+    // C++: void cv::mulTransposed(Mat src, Mat& dst, bool aTa, Mat delta = Mat(), double scale = 1, int dtype = -1)
+    //
+
     /**
      * Calculates the product of a matrix and its transposition.
-     *
+     * <p>
      * The function cv::mulTransposed calculates the product of src and its transposition: \(\texttt{dst} =
      * \texttt{scale} ( \texttt{src} - \texttt{delta} )^T ( \texttt{src} - \texttt{delta} )\) if aTa=true, and
      * \(\texttt{dst} = \texttt{scale} ( \texttt{src} - \texttt{delta} ) ( \texttt{src} - \texttt{delta} )^T\)
@@ -3141,7 +3144,7 @@ public class Core {
 
     /**
      * Calculates the product of a matrix and its transposition.
-     *
+     * <p>
      * The function cv::mulTransposed calculates the product of src and its transposition: \(\texttt{dst} =
      * \texttt{scale} ( \texttt{src} - \texttt{delta} )^T ( \texttt{src} - \texttt{delta} )\) if aTa=true, and
      * \(\texttt{dst} = \texttt{scale} ( \texttt{src} - \texttt{delta} ) ( \texttt{src} - \texttt{delta} )^T\)
@@ -3166,7 +3169,7 @@ public class Core {
 
     /**
      * Calculates the product of a matrix and its transposition.
-     *
+     * <p>
      * The function cv::mulTransposed calculates the product of src and its transposition: \(\texttt{dst} =
      * \texttt{scale} ( \texttt{src} - \texttt{delta} )^T ( \texttt{src} - \texttt{delta} )\) if aTa=true, and
      * \(\texttt{dst} = \texttt{scale} ( \texttt{src} - \texttt{delta} ) ( \texttt{src} - \texttt{delta} )^T\)
@@ -3188,13 +3191,9 @@ public class Core {
         mulTransposed_3(src.nativeObj, dst.nativeObj, aTa);
     }
 
-    //
-    // C++: void cv::transpose(Mat src, Mat& dst)
-    //
-
     /**
      * Transposes a matrix.
-     *
+     * <p>
      * The function cv::transpose transposes the matrix src : \(\texttt{dst} (i,j) = \texttt{src} (j,i)\) <b>Note:</b>
      * No complex conjugation is done in case of a complex matrix. It should be done separately if needed.
      *
@@ -3206,7 +3205,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::transposeND(Mat src, vector_int order, Mat& dst)
+    // C++: void cv::transpose(Mat src, Mat& dst)
     //
 
     /**
@@ -3225,19 +3224,19 @@ public class Core {
     }
 
     //
-    // C++: void cv::transform(Mat src, Mat& dst, Mat m)
+    // C++: void cv::transposeND(Mat src, vector_int order, Mat& dst)
     //
 
     /**
      * Performs the matrix transformation of every array element.
-     *
+     * <p>
      * The function cv::transform performs the matrix transformation of every element of the array src and stores the
      * results in dst : \(\texttt{dst} (I) = \texttt{m} \cdot \texttt{src} (I)\) (when m.cols=src.channels() ), or
      * \(\texttt{dst} (I) = \texttt{m} \cdot [ \texttt{src} (I); 1]\) (when m.cols=src.channels()+1 )
-     *
+     * <p>
      * Every element of the N -channel array src is interpreted as N -element vector that is transformed using the M x N
      * or M x (N+1) matrix m to M-element vector - the corresponding element of the output array dst .
-     *
+     * <p>
      * The function may be used for geometrical transformation of N -dimensional points, arbitrary linear color space
      * transformation (such as various kinds of RGB to YUV transforms), shuffling the image channels, and so forth.
      *
@@ -3251,17 +3250,17 @@ public class Core {
     }
 
     //
-    // C++: void cv::perspectiveTransform(Mat src, Mat& dst, Mat m)
+    // C++: void cv::transform(Mat src, Mat& dst, Mat m)
     //
 
     /**
      * Performs the perspective matrix transformation of vectors.
-     *
+     * <p>
      * The function cv::perspectiveTransform transforms every element of src by treating it as a 2D or 3D vector, in the
      * following way: \((x, y, z) \rightarrow (x'/w, y'/w, z'/w)\) where \((x', y', z', w') = \texttt{mat} \cdot
      * \begin{bmatrix} x &amp; y &amp; z &amp; 1 \end{bmatrix}\) and \(w = \fork{w'}{if \(w' \ne
      * 0\)}{\infty}{otherwise}\)
-     *
+     * <p>
      * Here a 3D vector transformation is shown. In case of a 2D vector transformation, the z component is omitted.
      *
      * <b>Note:</b> The function transforms a sparse set of 2D or 3D vectors. If you want to transform an image using
@@ -3280,12 +3279,12 @@ public class Core {
     }
 
     //
-    // C++: void cv::completeSymm(Mat& m, bool lowerToUpper = false)
+    // C++: void cv::perspectiveTransform(Mat src, Mat& dst, Mat m)
     //
 
     /**
      * Copies the lower or the upper half of a square matrix to its another half.
-     *
+     * <p>
      * The function cv::completeSymm copies the lower or the upper half of a square matrix to its another half. The
      * matrix diagonal remains unchanged:
      * <ul>
@@ -3301,9 +3300,13 @@ public class Core {
         completeSymm_0(m.nativeObj, lowerToUpper);
     }
 
+    //
+    // C++: void cv::completeSymm(Mat& m, bool lowerToUpper = false)
+    //
+
     /**
      * Copies the lower or the upper half of a square matrix to its another half.
-     *
+     * <p>
      * The function cv::completeSymm copies the lower or the upper half of a square matrix to its another half. The
      * matrix diagonal remains unchanged:
      * <ul>
@@ -3318,19 +3321,15 @@ public class Core {
         completeSymm_1(m.nativeObj);
     }
 
-    //
-    // C++: void cv::setIdentity(Mat& mtx, Scalar s = Scalar(1))
-    //
-
     /**
      * Initializes a scaled identity matrix.
-     *
+     * <p>
      * The function cv::setIdentity initializes a scaled identity matrix: \(\texttt{mtx} (i,j)= \fork{\texttt{value}}{
      * if \(i=j\)}{0}{otherwise}\)
-     *
+     * <p>
      * The function can also be emulated using the matrix initializers and the matrix expressions: <code>
-     *     Mat A = Mat::eye(4, 3, CV_32F)*5;
-     *     // A will be set to [[5, 0, 0], [0, 5, 0], [0, 0, 5], [0, 0, 0]]
+     * Mat A = Mat::eye(4, 3, CV_32F)*5;
+     * // A will be set to [[5, 0, 0], [0, 5, 0], [0, 0, 5], [0, 0, 0]]
      * </code>
      *
      * @param mtx matrix to initialize (not necessarily square).
@@ -3340,15 +3339,19 @@ public class Core {
         setIdentity_0(mtx.nativeObj, s.val[0], s.val[1], s.val[2], s.val[3]);
     }
 
+    //
+    // C++: void cv::setIdentity(Mat& mtx, Scalar s = Scalar(1))
+    //
+
     /**
      * Initializes a scaled identity matrix.
-     *
+     * <p>
      * The function cv::setIdentity initializes a scaled identity matrix: \(\texttt{mtx} (i,j)= \fork{\texttt{value}}{
      * if \(i=j\)}{0}{otherwise}\)
-     *
+     * <p>
      * The function can also be emulated using the matrix initializers and the matrix expressions: <code>
-     *     Mat A = Mat::eye(4, 3, CV_32F)*5;
-     *     // A will be set to [[5, 0, 0], [0, 5, 0], [0, 0, 5], [0, 0, 0]]
+     * Mat A = Mat::eye(4, 3, CV_32F)*5;
+     * // A will be set to [[5, 0, 0], [0, 5, 0], [0, 0, 5], [0, 0, 0]]
      * </code>
      *
      * @param mtx matrix to initialize (not necessarily square). SEE: Mat::zeros, Mat::ones, Mat::setTo, Mat::operator=
@@ -3357,17 +3360,13 @@ public class Core {
         setIdentity_1(mtx.nativeObj);
     }
 
-    //
-    // C++: double cv::determinant(Mat mtx)
-    //
-
     /**
      * Returns the determinant of a square floating-point matrix.
-     *
+     * <p>
      * The function cv::determinant calculates and returns the determinant of the specified matrix. For small matrices (
      * mtx.cols=mtx.rows&lt;=3 ), the direct method is used. For larger matrices, the function uses LU factorization
      * with partial pivoting.
-     *
+     * <p>
      * For symmetric positively-determined matrices, it is also possible to use eigen decomposition to calculate the
      * determinant.
      *
@@ -3380,12 +3379,12 @@ public class Core {
     }
 
     //
-    // C++: Scalar cv::trace(Mat mtx)
+    // C++: double cv::determinant(Mat mtx)
     //
 
     /**
      * Returns the trace of a matrix.
-     *
+     * <p>
      * The function cv::trace returns the sum of the diagonal elements of the matrix mtx . \(\mathrm{tr} ( \texttt{mtx}
      * ) = \sum _i \texttt{mtx} (i,i)\)
      *
@@ -3397,23 +3396,23 @@ public class Core {
     }
 
     //
-    // C++: double cv::invert(Mat src, Mat& dst, int flags = DECOMP_LU)
+    // C++: Scalar cv::trace(Mat mtx)
     //
 
     /**
      * Finds the inverse or pseudo-inverse of a matrix.
-     *
+     * <p>
      * The function cv::invert inverts the matrix src and stores the result in dst . When the matrix src is singular or
      * non-square, the function calculates the pseudo-inverse matrix (the dst matrix) so that norm(src\*dst - I) is
      * minimal, where I is an identity matrix.
-     *
+     * <p>
      * In case of the #DECOMP_LU method, the function returns non-zero value if the inverse has been successfully
      * calculated and 0 if src is singular.
-     *
+     * <p>
      * In case of the #DECOMP_SVD method, the function returns the inverse condition number of src (the ratio of the
      * smallest singular value to the largest singular value) and 0 if src is singular. The SVD method calculates a
      * pseudo-inverse matrix if src is singular.
-     *
+     * <p>
      * Similarly to #DECOMP_LU, the method #DECOMP_CHOLESKY works only with non-singular square matrices that should
      * also be symmetrical and positively defined. In this case, the function stores the inverted matrix in dst and
      * returns non-zero. Otherwise, it returns 0.
@@ -3427,20 +3426,24 @@ public class Core {
         return invert_0(src.nativeObj, dst.nativeObj, flags);
     }
 
+    //
+    // C++: double cv::invert(Mat src, Mat& dst, int flags = DECOMP_LU)
+    //
+
     /**
      * Finds the inverse or pseudo-inverse of a matrix.
-     *
+     * <p>
      * The function cv::invert inverts the matrix src and stores the result in dst . When the matrix src is singular or
      * non-square, the function calculates the pseudo-inverse matrix (the dst matrix) so that norm(src\*dst - I) is
      * minimal, where I is an identity matrix.
-     *
+     * <p>
      * In case of the #DECOMP_LU method, the function returns non-zero value if the inverse has been successfully
      * calculated and 0 if src is singular.
-     *
+     * <p>
      * In case of the #DECOMP_SVD method, the function returns the inverse condition number of src (the ratio of the
      * smallest singular value to the largest singular value) and 0 if src is singular. The SVD method calculates a
      * pseudo-inverse matrix if src is singular.
-     *
+     * <p>
      * Similarly to #DECOMP_LU, the method #DECOMP_CHOLESKY works only with non-singular square matrices that should
      * also be symmetrical and positively defined. In this case, the function stores the inverted matrix in dst and
      * returns non-zero. Otherwise, it returns 0.
@@ -3453,17 +3456,13 @@ public class Core {
         return invert_1(src.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: bool cv::solve(Mat src1, Mat src2, Mat& dst, int flags = DECOMP_LU)
-    //
-
     /**
      * Solves one or more linear systems or least-squares problems.
-     *
+     * <p>
      * The function cv::solve solves a linear system or least-squares problem (the latter is possible with SVD or QR
      * methods, or by specifying the flag #DECOMP_NORMAL ): \(\texttt{dst} = \arg \min _X \| \texttt{src1} \cdot
      * \texttt{X} - \texttt{src2} \|\)
-     *
+     * <p>
      * If #DECOMP_LU or #DECOMP_CHOLESKY method is used, the function returns 1 if src1 (or
      * \(\texttt{src1}^T\texttt{src1}\) ) is non-singular. Otherwise, it returns 0. In the latter case, dst is not
      * valid. Other methods find a pseudo-solution in case of a singular left-hand side part.
@@ -3481,13 +3480,17 @@ public class Core {
         return solve_0(src1.nativeObj, src2.nativeObj, dst.nativeObj, flags);
     }
 
+    //
+    // C++: bool cv::solve(Mat src1, Mat src2, Mat& dst, int flags = DECOMP_LU)
+    //
+
     /**
      * Solves one or more linear systems or least-squares problems.
-     *
+     * <p>
      * The function cv::solve solves a linear system or least-squares problem (the latter is possible with SVD or QR
      * methods, or by specifying the flag #DECOMP_NORMAL ): \(\texttt{dst} = \arg \min _X \| \texttt{src1} \cdot
      * \texttt{X} - \texttt{src2} \|\)
-     *
+     * <p>
      * If #DECOMP_LU or #DECOMP_CHOLESKY method is used, the function returns 1 if src1 (or
      * \(\texttt{src1}^T\texttt{src1}\) ) is non-singular. Otherwise, it returns 0. In the latter case, dst is not
      * valid. Other methods find a pseudo-solution in case of a singular left-hand side part.
@@ -3504,13 +3507,9 @@ public class Core {
         return solve_1(src1.nativeObj, src2.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::sort(Mat src, Mat& dst, int flags)
-    //
-
     /**
      * Sorts each row or each column of a matrix.
-     *
+     * <p>
      * The function cv::sort sorts each matrix row or each matrix column in ascending or descending order. So you should
      * pass two operation flags to get desired behaviour. If you want to sort matrix rows or columns lexicographically,
      * you can use STL std::sort generic function with the proper comparison predicate.
@@ -3524,20 +3523,20 @@ public class Core {
     }
 
     //
-    // C++: void cv::sortIdx(Mat src, Mat& dst, int flags)
+    // C++: void cv::sort(Mat src, Mat& dst, int flags)
     //
 
     /**
      * Sorts each row or each column of a matrix.
-     *
+     * <p>
      * The function cv::sortIdx sorts each matrix row or each matrix column in the ascending or descending order. So you
      * should pass two operation flags to get desired behaviour. Instead of reordering the elements themselves, it
      * stores the indices of sorted elements in the output array. For example: <code>
-     *     Mat A = Mat::eye(3,3,CV_32F), B;
-     *     sortIdx(A, B, SORT_EVERY_ROW + SORT_ASCENDING);
-     *     // B will probably contain
-     *     // (because of equal elements in A some permutations are possible):
-     *     // [[1, 2, 0], [0, 2, 1], [0, 1, 2]]
+     * Mat A = Mat::eye(3,3,CV_32F), B;
+     * sortIdx(A, B, SORT_EVERY_ROW + SORT_ASCENDING);
+     * // B will probably contain
+     * // (because of equal elements in A some permutations are possible):
+     * // [[1, 2, 0], [0, 2, 1], [0, 1, 2]]
      * </code>
      *
      * @param src   input single-channel array.
@@ -3549,12 +3548,12 @@ public class Core {
     }
 
     //
-    // C++: int cv::solveCubic(Mat coeffs, Mat& roots)
+    // C++: void cv::sortIdx(Mat src, Mat& dst, int flags)
     //
 
     /**
      * Finds the real roots of a cubic equation.
-     *
+     * <p>
      * The function solveCubic finds the real roots of a cubic equation:
      * <ul>
      * <li>if coeffs is a 4-element vector: \(\texttt{coeffs} [0] x^3 + \texttt{coeffs} [1] x^2 + \texttt{coeffs} [2] x
@@ -3562,7 +3561,7 @@ public class Core {
      * <li>if coeffs is a 3-element vector: \(x^3 + \texttt{coeffs} [0] x^2 + \texttt{coeffs} [1] x + \texttt{coeffs}
      * [2] = 0\)</li>
      * </ul>
-     *
+     * <p>
      * The roots are stored in the roots array.
      *
      * @param coeffs equation coefficients, an array of 3 or 4 elements.
@@ -3574,12 +3573,12 @@ public class Core {
     }
 
     //
-    // C++: double cv::solvePoly(Mat coeffs, Mat& roots, int maxIters = 300)
+    // C++: int cv::solveCubic(Mat coeffs, Mat& roots)
     //
 
     /**
      * Finds the real or complex roots of a polynomial equation.
-     *
+     * <p>
      * The function cv::solvePoly finds real and complex roots of a polynomial equation: \(\texttt{coeffs} [n] x^{n} +
      * \texttt{coeffs} [n-1] x^{n-1} + ... + \texttt{coeffs} [1] x + \texttt{coeffs} [0] = 0\)
      *
@@ -3592,9 +3591,13 @@ public class Core {
         return solvePoly_0(coeffs.nativeObj, roots.nativeObj, maxIters);
     }
 
+    //
+    // C++: double cv::solvePoly(Mat coeffs, Mat& roots, int maxIters = 300)
+    //
+
     /**
      * Finds the real or complex roots of a polynomial equation.
-     *
+     * <p>
      * The function cv::solvePoly finds real and complex roots of a polynomial equation: \(\texttt{coeffs} [n] x^{n} +
      * \texttt{coeffs} [n-1] x^{n-1} + ... + \texttt{coeffs} [1] x + \texttt{coeffs} [0] = 0\)
      *
@@ -3606,16 +3609,12 @@ public class Core {
         return solvePoly_1(coeffs.nativeObj, roots.nativeObj);
     }
 
-    //
-    // C++: bool cv::eigen(Mat src, Mat& eigenvalues, Mat& eigenvectors = Mat())
-    //
-
     /**
      * Calculates eigenvalues and eigenvectors of a symmetric matrix.
-     *
+     * <p>
      * The function cv::eigen calculates just eigenvalues, or eigenvalues and eigenvectors of the symmetric matrix src:
      * <code>
-     *     src*eigenvectors.row(i).t() = eigenvalues.at&lt;srcType&gt;(i)*eigenvectors.row(i).t()
+     * src*eigenvectors.row(i).t() = eigenvalues.at&lt;srcType&gt;(i)*eigenvectors.row(i).t()
      * </code>
      *
      * <b>Note:</b> Use cv::eigenNonSymmetric for calculation of real eigenvalues and eigenvectors of non-symmetric
@@ -3634,12 +3633,16 @@ public class Core {
         return eigen_0(src.nativeObj, eigenvalues.nativeObj, eigenvectors.nativeObj);
     }
 
+    //
+    // C++: bool cv::eigen(Mat src, Mat& eigenvalues, Mat& eigenvectors = Mat())
+    //
+
     /**
      * Calculates eigenvalues and eigenvectors of a symmetric matrix.
-     *
+     * <p>
      * The function cv::eigen calculates just eigenvalues, or eigenvalues and eigenvectors of the symmetric matrix src:
      * <code>
-     *     src*eigenvectors.row(i).t() = eigenvalues.at&lt;srcType&gt;(i)*eigenvectors.row(i).t()
+     * src*eigenvectors.row(i).t() = eigenvalues.at&lt;srcType&gt;(i)*eigenvectors.row(i).t()
      * </code>
      *
      * <b>Note:</b> Use cv::eigenNonSymmetric for calculation of real eigenvalues and eigenvectors of non-symmetric
@@ -3656,17 +3659,13 @@ public class Core {
         return eigen_1(src.nativeObj, eigenvalues.nativeObj);
     }
 
-    //
-    // C++: void cv::eigenNonSymmetric(Mat src, Mat& eigenvalues, Mat& eigenvectors)
-    //
-
     /**
      * Calculates eigenvalues and eigenvectors of a non-symmetric matrix (real eigenvalues only).
      *
      * <b>Note:</b> Assumes real eigenvalues.
-     *
+     * <p>
      * The function calculates eigenvalues and eigenvectors (optional) of the square matrix src: <code>
-     *     src*eigenvectors.row(i).t() = eigenvalues.at&lt;srcType&gt;(i)*eigenvectors.row(i).t()
+     * src*eigenvectors.row(i).t() = eigenvalues.at&lt;srcType&gt;(i)*eigenvectors.row(i).t()
      * </code>
      *
      * @param src          input matrix (CV_32FC1 or CV_64FC1 type).
@@ -3679,7 +3678,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::calcCovarMatrix(Mat samples, Mat& covar, Mat& mean, int flags, int ctype = CV_64F)
+    // C++: void cv::eigenNonSymmetric(Mat src, Mat& eigenvalues, Mat& eigenvectors)
     //
 
     /**
@@ -3696,6 +3695,10 @@ public class Core {
         calcCovarMatrix_0(samples.nativeObj, covar.nativeObj, mean.nativeObj, flags, ctype);
     }
 
+    //
+    // C++: void cv::calcCovarMatrix(Mat samples, Mat& covar, Mat& mean, int flags, int ctype = CV_64F)
+    //
+
     /**
      *
      * <b>Note:</b> use #COVAR_ROWS or #COVAR_COLS flag
@@ -3709,10 +3712,6 @@ public class Core {
         calcCovarMatrix_1(samples.nativeObj, covar.nativeObj, mean.nativeObj, flags);
     }
 
-    //
-    // C++: void cv::PCACompute(Mat data, Mat& mean, Mat& eigenvectors, int maxComponents = 0)
-    //
-
     /**
      * wrap PCA::operator()
      *
@@ -3725,6 +3724,10 @@ public class Core {
         PCACompute_0(data.nativeObj, mean.nativeObj, eigenvectors.nativeObj, maxComponents);
     }
 
+    //
+    // C++: void cv::PCACompute(Mat data, Mat& mean, Mat& eigenvectors, int maxComponents = 0)
+    //
+
     /**
      * wrap PCA::operator()
      *
@@ -3735,10 +3738,6 @@ public class Core {
     public static void PCACompute(Mat data, Mat mean, Mat eigenvectors) {
         PCACompute_1(data.nativeObj, mean.nativeObj, eigenvectors.nativeObj);
     }
-
-    //
-    // C++: void cv::PCACompute(Mat data, Mat& mean, Mat& eigenvectors, Mat& eigenvalues, int maxComponents = 0)
-    //
 
     /**
      * wrap PCA::operator() and add eigenvalues output parameter
@@ -3753,6 +3752,10 @@ public class Core {
         PCACompute2_0(data.nativeObj, mean.nativeObj, eigenvectors.nativeObj, eigenvalues.nativeObj, maxComponents);
     }
 
+    //
+    // C++: void cv::PCACompute(Mat data, Mat& mean, Mat& eigenvectors, Mat& eigenvalues, int maxComponents = 0)
+    //
+
     /**
      * wrap PCA::operator() and add eigenvalues output parameter
      *
@@ -3764,10 +3767,6 @@ public class Core {
     public static void PCACompute2(Mat data, Mat mean, Mat eigenvectors, Mat eigenvalues) {
         PCACompute2_1(data.nativeObj, mean.nativeObj, eigenvectors.nativeObj, eigenvalues.nativeObj);
     }
-
-    //
-    // C++: void cv::PCACompute(Mat data, Mat& mean, Mat& eigenvectors, double retainedVariance)
-    //
 
     /**
      * wrap PCA::operator()
@@ -3782,7 +3781,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::PCACompute(Mat data, Mat& mean, Mat& eigenvectors, Mat& eigenvalues, double retainedVariance)
+    // C++: void cv::PCACompute(Mat data, Mat& mean, Mat& eigenvectors, double retainedVariance)
     //
 
     /**
@@ -3799,7 +3798,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::PCAProject(Mat data, Mat mean, Mat eigenvectors, Mat& result)
+    // C++: void cv::PCACompute(Mat data, Mat& mean, Mat& eigenvectors, Mat& eigenvalues, double retainedVariance)
     //
 
     /**
@@ -3815,7 +3814,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::PCABackProject(Mat data, Mat mean, Mat eigenvectors, Mat& result)
+    // C++: void cv::PCAProject(Mat data, Mat mean, Mat eigenvectors, Mat& result)
     //
 
     /**
@@ -3831,7 +3830,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::SVDecomp(Mat src, Mat& w, Mat& u, Mat& vt, int flags = 0)
+    // C++: void cv::PCABackProject(Mat data, Mat mean, Mat eigenvectors, Mat& result)
     //
 
     /**
@@ -3847,6 +3846,10 @@ public class Core {
         SVDecomp_0(src.nativeObj, w.nativeObj, u.nativeObj, vt.nativeObj, flags);
     }
 
+    //
+    // C++: void cv::SVDecomp(Mat src, Mat& w, Mat& u, Mat& vt, int flags = 0)
+    //
+
     /**
      * wrap SVD::compute
      *
@@ -3858,10 +3861,6 @@ public class Core {
     public static void SVDecomp(Mat src, Mat w, Mat u, Mat vt) {
         SVDecomp_1(src.nativeObj, w.nativeObj, u.nativeObj, vt.nativeObj);
     }
-
-    //
-    // C++: void cv::SVBackSubst(Mat w, Mat u, Mat vt, Mat rhs, Mat& dst)
-    //
 
     /**
      * wrap SVD::backSubst
@@ -3877,12 +3876,12 @@ public class Core {
     }
 
     //
-    // C++: double cv::Mahalanobis(Mat v1, Mat v2, Mat icovar)
+    // C++: void cv::SVBackSubst(Mat w, Mat u, Mat vt, Mat rhs, Mat& dst)
     //
 
     /**
      * Calculates the Mahalanobis distance between two vectors.
-     *
+     * <p>
      * The function cv::Mahalanobis calculates and returns the weighted distance between two vectors: \(d( \texttt{vec1}
      * , \texttt{vec2} )=
      * \sqrt{\sum_{i,j}{\texttt{icovar(i,j)}\cdot(\texttt{vec1}(I)-\texttt{vec2}(I))\cdot(\texttt{vec1(j)}-\texttt{vec2(j)})}
@@ -3899,12 +3898,12 @@ public class Core {
     }
 
     //
-    // C++: void cv::dft(Mat src, Mat& dst, int flags = 0, int nonzeroRows = 0)
+    // C++: double cv::Mahalanobis(Mat v1, Mat v2, Mat icovar)
     //
 
     /**
      * Performs a forward or inverse Discrete Fourier transform of a 1D or 2D floating-point array.
-     *
+     * <p>
      * The function cv::dft performs one of the following:
      * <ul>
      * <li>Forward the Fourier transform of a 1D vector of N elements: \(Y = F^{(N)} \cdot X,\) where
@@ -3916,7 +3915,7 @@ public class Core {
      * <li>Inverse the 2D Fourier transform of a M x N matrix: \(\begin{array}{l} X'= \left (F^{(M)} \right )^* \cdot Y
      * \cdot \left (F^{(N)} \right )^* \\ X = \frac{1}{M \cdot N} \cdot X' \end{array}\)</li>
      * </ul>
-     *
+     * <p>
      * In case of real (single-channel) data, the output spectrum of the forward Fourier transform or input spectrum of
      * the inverse Fourier transform can be represented in a packed format called *CCS* (complex-conjugate-symmetrical).
      * It was borrowed from IPL (Intel\* Image Processing Library). Here is how 2D *CCS* spectrum looks:
@@ -3929,9 +3928,9 @@ public class Core {
      * Y_{M-2,1} &amp; Im Y_{M-2,1} &amp; \hdotsfor{3} &amp; Re Y_{M-2,N/2-1} &amp; Im Y_{M-2,N/2-1}&amp; Im
      * Y_{M/2-1,N/2} \\ Re Y_{M/2,0} &amp; Re Y_{M-1,1} &amp; Im Y_{M-1,1} &amp; \hdotsfor{3} &amp; Re Y_{M-1,N/2-1}
      * &amp; Im Y_{M-1,N/2-1}&amp; Re Y_{M/2,N/2} \end{bmatrix}\)
-     *
+     * <p>
      * In case of 1D transform of a real vector, the output looks like the first row of the matrix above.
-     *
+     * <p>
      * So, the function chooses an operation mode depending on the flags and size of the input array:
      * <ul>
      * <li>If #DFT_ROWS is set or the input array has a single row or single column, the function performs a 1D forward
@@ -3952,13 +3951,13 @@ public class Core {
      * output is a real array of the same size as input. The function performs a 1D or 2D inverse transformation of the
      * whole input array or each individual row, depending on the flags #DFT_INVERSE and #DFT_ROWS.</li>
      * </ul>
-     *
+     * <p>
      * If #DFT_SCALE is set, the scaling is done after the transformation.
-     *
+     * <p>
      * Unlike dct, the function supports arrays of arbitrary size. But only those arrays are processed efficiently,
      * whose sizes can be factorized in a product of small prime numbers (2, 3, and 5 in the current implementation).
      * Such an efficient DFT size can be calculated using the getOptimalDFTSize method.
-     *
+     * <p>
      * The sample below illustrates how to calculate a DFT-based convolution of two 2D real arrays: <code>
      *     void convolveDFT(InputArray A, InputArray B, OutputArray C)
      *     {
@@ -4015,7 +4014,7 @@ public class Core {
      * <li>If different tiles in C can be calculated in parallel and, thus, the convolution is done by parts, the loop
      * can be threaded.</li>
      * </ul>
-     *
+     * <p>
      * All of the above improvements have been implemented in #matchTemplate and #filter2D . Therefore, by using them,
      * you can get the performance even better than with the above theoretically optimal implementation. Though, those
      * two functions actually calculate cross-correlation, not convolution, so you need to "flip" the second convolution
@@ -4042,9 +4041,13 @@ public class Core {
         dft_0(src.nativeObj, dst.nativeObj, flags, nonzeroRows);
     }
 
+    //
+    // C++: void cv::dft(Mat src, Mat& dst, int flags = 0, int nonzeroRows = 0)
+    //
+
     /**
      * Performs a forward or inverse Discrete Fourier transform of a 1D or 2D floating-point array.
-     *
+     * <p>
      * The function cv::dft performs one of the following:
      * <ul>
      * <li>Forward the Fourier transform of a 1D vector of N elements: \(Y = F^{(N)} \cdot X,\) where
@@ -4056,7 +4059,7 @@ public class Core {
      * <li>Inverse the 2D Fourier transform of a M x N matrix: \(\begin{array}{l} X'= \left (F^{(M)} \right )^* \cdot Y
      * \cdot \left (F^{(N)} \right )^* \\ X = \frac{1}{M \cdot N} \cdot X' \end{array}\)</li>
      * </ul>
-     *
+     * <p>
      * In case of real (single-channel) data, the output spectrum of the forward Fourier transform or input spectrum of
      * the inverse Fourier transform can be represented in a packed format called *CCS* (complex-conjugate-symmetrical).
      * It was borrowed from IPL (Intel\* Image Processing Library). Here is how 2D *CCS* spectrum looks:
@@ -4069,9 +4072,9 @@ public class Core {
      * Y_{M-2,1} &amp; Im Y_{M-2,1} &amp; \hdotsfor{3} &amp; Re Y_{M-2,N/2-1} &amp; Im Y_{M-2,N/2-1}&amp; Im
      * Y_{M/2-1,N/2} \\ Re Y_{M/2,0} &amp; Re Y_{M-1,1} &amp; Im Y_{M-1,1} &amp; \hdotsfor{3} &amp; Re Y_{M-1,N/2-1}
      * &amp; Im Y_{M-1,N/2-1}&amp; Re Y_{M/2,N/2} \end{bmatrix}\)
-     *
+     * <p>
      * In case of 1D transform of a real vector, the output looks like the first row of the matrix above.
-     *
+     * <p>
      * So, the function chooses an operation mode depending on the flags and size of the input array:
      * <ul>
      * <li>If #DFT_ROWS is set or the input array has a single row or single column, the function performs a 1D forward
@@ -4092,13 +4095,13 @@ public class Core {
      * output is a real array of the same size as input. The function performs a 1D or 2D inverse transformation of the
      * whole input array or each individual row, depending on the flags #DFT_INVERSE and #DFT_ROWS.</li>
      * </ul>
-     *
+     * <p>
      * If #DFT_SCALE is set, the scaling is done after the transformation.
-     *
+     * <p>
      * Unlike dct, the function supports arrays of arbitrary size. But only those arrays are processed efficiently,
      * whose sizes can be factorized in a product of small prime numbers (2, 3, and 5 in the current implementation).
      * Such an efficient DFT size can be calculated using the getOptimalDFTSize method.
-     *
+     * <p>
      * The sample below illustrates how to calculate a DFT-based convolution of two 2D real arrays: <code>
      *     void convolveDFT(InputArray A, InputArray B, OutputArray C)
      *     {
@@ -4155,7 +4158,7 @@ public class Core {
      * <li>If different tiles in C can be calculated in parallel and, thus, the convolution is done by parts, the loop
      * can be threaded.</li>
      * </ul>
-     *
+     * <p>
      * All of the above improvements have been implemented in #matchTemplate and #filter2D . Therefore, by using them,
      * you can get the performance even better than with the above theoretically optimal implementation. Though, those
      * two functions actually calculate cross-correlation, not convolution, so you need to "flip" the second convolution
@@ -4183,7 +4186,7 @@ public class Core {
 
     /**
      * Performs a forward or inverse Discrete Fourier transform of a 1D or 2D floating-point array.
-     *
+     * <p>
      * The function cv::dft performs one of the following:
      * <ul>
      * <li>Forward the Fourier transform of a 1D vector of N elements: \(Y = F^{(N)} \cdot X,\) where
@@ -4195,7 +4198,7 @@ public class Core {
      * <li>Inverse the 2D Fourier transform of a M x N matrix: \(\begin{array}{l} X'= \left (F^{(M)} \right )^* \cdot Y
      * \cdot \left (F^{(N)} \right )^* \\ X = \frac{1}{M \cdot N} \cdot X' \end{array}\)</li>
      * </ul>
-     *
+     * <p>
      * In case of real (single-channel) data, the output spectrum of the forward Fourier transform or input spectrum of
      * the inverse Fourier transform can be represented in a packed format called *CCS* (complex-conjugate-symmetrical).
      * It was borrowed from IPL (Intel\* Image Processing Library). Here is how 2D *CCS* spectrum looks:
@@ -4208,9 +4211,9 @@ public class Core {
      * Y_{M-2,1} &amp; Im Y_{M-2,1} &amp; \hdotsfor{3} &amp; Re Y_{M-2,N/2-1} &amp; Im Y_{M-2,N/2-1}&amp; Im
      * Y_{M/2-1,N/2} \\ Re Y_{M/2,0} &amp; Re Y_{M-1,1} &amp; Im Y_{M-1,1} &amp; \hdotsfor{3} &amp; Re Y_{M-1,N/2-1}
      * &amp; Im Y_{M-1,N/2-1}&amp; Re Y_{M/2,N/2} \end{bmatrix}\)
-     *
+     * <p>
      * In case of 1D transform of a real vector, the output looks like the first row of the matrix above.
-     *
+     * <p>
      * So, the function chooses an operation mode depending on the flags and size of the input array:
      * <ul>
      * <li>If #DFT_ROWS is set or the input array has a single row or single column, the function performs a 1D forward
@@ -4231,13 +4234,13 @@ public class Core {
      * output is a real array of the same size as input. The function performs a 1D or 2D inverse transformation of the
      * whole input array or each individual row, depending on the flags #DFT_INVERSE and #DFT_ROWS.</li>
      * </ul>
-     *
+     * <p>
      * If #DFT_SCALE is set, the scaling is done after the transformation.
-     *
+     * <p>
      * Unlike dct, the function supports arrays of arbitrary size. But only those arrays are processed efficiently,
      * whose sizes can be factorized in a product of small prime numbers (2, 3, and 5 in the current implementation).
      * Such an efficient DFT size can be calculated using the getOptimalDFTSize method.
-     *
+     * <p>
      * The sample below illustrates how to calculate a DFT-based convolution of two 2D real arrays: <code>
      *     void convolveDFT(InputArray A, InputArray B, OutputArray C)
      *     {
@@ -4294,7 +4297,7 @@ public class Core {
      * <li>If different tiles in C can be calculated in parallel and, thus, the convolution is done by parts, the loop
      * can be threaded.</li>
      * </ul>
-     *
+     * <p>
      * All of the above improvements have been implemented in #matchTemplate and #filter2D . Therefore, by using them,
      * you can get the performance even better than with the above theoretically optimal implementation. Though, those
      * two functions actually calculate cross-correlation, not convolution, so you need to "flip" the second convolution
@@ -4319,13 +4322,9 @@ public class Core {
         dft_2(src.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::idft(Mat src, Mat& dst, int flags = 0, int nonzeroRows = 0)
-    //
-
     /**
      * Calculates the inverse Discrete Fourier Transform of a 1D or 2D array.
-     *
+     * <p>
      * idft(src, dst, flags) is equivalent to dft(src, dst, flags | #DFT_INVERSE) . <b>Note:</b> None of dft and idft
      * scales the result by default. So, you should pass #DFT_SCALE to one of dft or idft explicitly to make these
      * transforms mutually inverse. SEE: dft, dct, idct, mulSpectrums, getOptimalDFTSize
@@ -4340,9 +4339,13 @@ public class Core {
         idft_0(src.nativeObj, dst.nativeObj, flags, nonzeroRows);
     }
 
+    //
+    // C++: void cv::idft(Mat src, Mat& dst, int flags = 0, int nonzeroRows = 0)
+    //
+
     /**
      * Calculates the inverse Discrete Fourier Transform of a 1D or 2D array.
-     *
+     * <p>
      * idft(src, dst, flags) is equivalent to dft(src, dst, flags | #DFT_INVERSE) . <b>Note:</b> None of dft and idft
      * scales the result by default. So, you should pass #DFT_SCALE to one of dft or idft explicitly to make these
      * transforms mutually inverse. SEE: dft, dct, idct, mulSpectrums, getOptimalDFTSize
@@ -4357,7 +4360,7 @@ public class Core {
 
     /**
      * Calculates the inverse Discrete Fourier Transform of a 1D or 2D array.
-     *
+     * <p>
      * idft(src, dst, flags) is equivalent to dft(src, dst, flags | #DFT_INVERSE) . <b>Note:</b> None of dft and idft
      * scales the result by default. So, you should pass #DFT_SCALE to one of dft or idft explicitly to make these
      * transforms mutually inverse. SEE: dft, dct, idct, mulSpectrums, getOptimalDFTSize
@@ -4369,13 +4372,9 @@ public class Core {
         idft_2(src.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::dct(Mat src, Mat& dst, int flags = 0)
-    //
-
     /**
      * Performs a forward or inverse discrete Cosine transform of 1D or 2D array.
-     *
+     * <p>
      * The function cv::dct performs a forward or inverse discrete Cosine transform (DCT) of a 1D or 2D floating-point
      * array:
      * <ul>
@@ -4388,7 +4387,7 @@ public class Core {
      * <li>Forward 2D Cosine transform of M x N matrix: \(Y = C^{(N)} \cdot X \cdot \left (C^{(N)} \right )^T\)</li>
      * <li>Inverse 2D Cosine transform of M x N matrix: \(X = \left (C^{(N)} \right )^T \cdot X \cdot C^{(N)}\)</li>
      * </ul>
-     *
+     * <p>
      * The function chooses the mode of operation by looking at the flags and size of the input array:
      * <ul>
      * <li>If (flags &amp; #DCT_INVERSE) == 0, the function does a forward 1D or 2D transform. Otherwise, it is an
@@ -4414,9 +4413,13 @@ public class Core {
         dct_0(src.nativeObj, dst.nativeObj, flags);
     }
 
+    //
+    // C++: void cv::dct(Mat src, Mat& dst, int flags = 0)
+    //
+
     /**
      * Performs a forward or inverse discrete Cosine transform of 1D or 2D array.
-     *
+     * <p>
      * The function cv::dct performs a forward or inverse discrete Cosine transform (DCT) of a 1D or 2D floating-point
      * array:
      * <ul>
@@ -4429,7 +4432,7 @@ public class Core {
      * <li>Forward 2D Cosine transform of M x N matrix: \(Y = C^{(N)} \cdot X \cdot \left (C^{(N)} \right )^T\)</li>
      * <li>Inverse 2D Cosine transform of M x N matrix: \(X = \left (C^{(N)} \right )^T \cdot X \cdot C^{(N)}\)</li>
      * </ul>
-     *
+     * <p>
      * The function chooses the mode of operation by looking at the flags and size of the input array:
      * <ul>
      * <li>If (flags &amp; #DCT_INVERSE) == 0, the function does a forward 1D or 2D transform. Otherwise, it is an
@@ -4454,13 +4457,9 @@ public class Core {
         dct_1(src.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::idct(Mat src, Mat& dst, int flags = 0)
-    //
-
     /**
      * Calculates the inverse Discrete Cosine Transform of a 1D or 2D array.
-     *
+     * <p>
      * idct(src, dst, flags) is equivalent to dct(src, dst, flags | DCT_INVERSE).
      *
      * @param src   input floating-point single-channel array.
@@ -4471,9 +4470,13 @@ public class Core {
         idct_0(src.nativeObj, dst.nativeObj, flags);
     }
 
+    //
+    // C++: void cv::idct(Mat src, Mat& dst, int flags = 0)
+    //
+
     /**
      * Calculates the inverse Discrete Cosine Transform of a 1D or 2D array.
-     *
+     * <p>
      * idct(src, dst, flags) is equivalent to dct(src, dst, flags | DCT_INVERSE).
      *
      * @param src input floating-point single-channel array.
@@ -4483,16 +4486,12 @@ public class Core {
         idct_1(src.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::mulSpectrums(Mat a, Mat b, Mat& c, int flags, bool conjB = false)
-    //
-
     /**
      * Performs the per-element multiplication of two Fourier spectrums.
-     *
+     * <p>
      * The function cv::mulSpectrums performs the per-element multiplication of the two CCS-packed or complex matrices
      * that are results of a real or complex Fourier transform.
-     *
+     * <p>
      * The function, together with dft and idft, may be used to calculate convolution (pass conjB=false ) or correlation
      * (pass conjB=true ) of two arrays rapidly. When the arrays are complex, they are simply multiplied (per element)
      * with an optional conjugation of the second-array elements. When the arrays are real, they are assumed to be
@@ -4511,12 +4510,16 @@ public class Core {
         mulSpectrums_0(a.nativeObj, b.nativeObj, c.nativeObj, flags, conjB);
     }
 
+    //
+    // C++: void cv::mulSpectrums(Mat a, Mat b, Mat& c, int flags, bool conjB = false)
+    //
+
     /**
      * Performs the per-element multiplication of two Fourier spectrums.
-     *
+     * <p>
      * The function cv::mulSpectrums performs the per-element multiplication of the two CCS-packed or complex matrices
      * that are results of a real or complex Fourier transform.
-     *
+     * <p>
      * The function, together with dft and idft, may be used to calculate convolution (pass conjB=false ) or correlation
      * (pass conjB=true ) of two arrays rapidly. When the arrays are complex, they are simply multiplied (per element)
      * with an optional conjugation of the second-array elements. When the arrays are real, they are assumed to be
@@ -4533,25 +4536,21 @@ public class Core {
         mulSpectrums_1(a.nativeObj, b.nativeObj, c.nativeObj, flags);
     }
 
-    //
-    // C++: int cv::getOptimalDFTSize(int vecsize)
-    //
-
     /**
      * Returns the optimal DFT size for a given vector size.
-     *
+     * <p>
      * DFT performance is not a monotonic function of a vector size. Therefore, when you calculate convolution of two
      * arrays or perform the spectral analysis of an array, it usually makes sense to pad the input data with zeros to
      * get a bit larger array that can be transformed much faster than the original one. Arrays whose size is a
      * power-of-two (2, 4, 8, 16, 32, ...) are the fastest to process. Though, the arrays whose size is a product of
      * 2's, 3's, and 5's (for example, 300 = 5\*5\*3\*2\*2) are also processed quite efficiently.
-     *
+     * <p>
      * The function cv::getOptimalDFTSize returns the minimum number N that is greater than or equal to vecsize so that
      * the DFT of a vector of size N can be processed efficiently. In the current implementation N = 2 ^p^ \* 3 ^q^ \* 5
      * ^r^ for some integer p, q, r.
-     *
+     * <p>
      * The function returns a negative number if vecsize is too large (very close to INT_MAX ).
-     *
+     * <p>
      * While the function cannot be used directly to estimate the optimal vector size for DCT transform (since the
      * current DCT implementation supports only even-size vectors), it can be easily processed as
      * getOptimalDFTSize((vecsize+1)/2)\*2.
@@ -4564,12 +4563,12 @@ public class Core {
     }
 
     //
-    // C++: void cv::setRNGSeed(int seed)
+    // C++: int cv::getOptimalDFTSize(int vecsize)
     //
 
     /**
      * Sets state of default random number generator.
-     *
+     * <p>
      * The function cv::setRNGSeed sets state of default random number generator to custom value.
      *
      * @param seed new state for default random number generator SEE: RNG, randu, randn
@@ -4579,12 +4578,12 @@ public class Core {
     }
 
     //
-    // C++: void cv::randu(Mat& dst, double low, double high)
+    // C++: void cv::setRNGSeed(int seed)
     //
 
     /**
      * Generates a single uniformly-distributed random number or an array of random numbers.
-     *
+     * <p>
      * Non-template variant of the function fills the matrix dst with uniformly-distributed random numbers from the
      * specified range: \(\texttt{low} _c \leq \texttt{dst} (I)_c &lt; \texttt{high} _c\)
      *
@@ -4597,12 +4596,12 @@ public class Core {
     }
 
     //
-    // C++: void cv::randn(Mat& dst, double mean, double stddev)
+    // C++: void cv::randu(Mat& dst, double low, double high)
     //
 
     /**
      * Fills the array with normally distributed random numbers.
-     *
+     * <p>
      * The function cv::randn fills the matrix dst with normally distributed random numbers with the specified mean
      * vector and the standard deviation matrix. The generated random numbers are clipped to fit the value range of the
      * output array data type.
@@ -4617,12 +4616,12 @@ public class Core {
     }
 
     //
-    // C++: void cv::randShuffle(Mat& dst, double iterFactor = 1., RNG* rng = 0)
+    // C++: void cv::randn(Mat& dst, double mean, double stddev)
     //
 
     /**
      * Shuffles the array elements randomly.
-     *
+     * <p>
      * The function cv::randShuffle shuffles the specified 1D array by randomly choosing pairs of elements and swapping
      * them. The number of such swap operations will be dst.rows\*dst.cols\*iterFactor .
      *
@@ -4634,9 +4633,13 @@ public class Core {
         randShuffle_0(dst.nativeObj, iterFactor);
     }
 
+    //
+    // C++: void cv::randShuffle(Mat& dst, double iterFactor = 1., RNG* rng = 0)
+    //
+
     /**
      * Shuffles the array elements randomly.
-     *
+     * <p>
      * The function cv::randShuffle shuffles the specified 1D array by randomly choosing pairs of elements and swapping
      * them. The number of such swap operations will be dst.rows\*dst.cols\*iterFactor .
      *
@@ -4646,14 +4649,9 @@ public class Core {
         randShuffle_2(dst.nativeObj);
     }
 
-    //
-    // C++: double cv::kmeans(Mat data, int K, Mat& bestLabels, TermCriteria criteria, int attempts, int flags, Mat&
-    // centers = Mat())
-    //
-
     /**
      * Finds centers of clusters and groups input samples around the clusters.
-     *
+     * <p>
      * The function kmeans implements a k-means algorithm that finds the centers of cluster_count clusters and groups
      * the input samples around the clusters. As an output, \(\texttt{bestLabels}_i\) contains a 0-based cluster index
      * for the sample stored in the \(i^{th}\) row of the samples matrix.
@@ -4708,9 +4706,14 @@ public class Core {
                 centers.nativeObj);
     }
 
+    //
+    // C++: double cv::kmeans(Mat data, int K, Mat& bestLabels, TermCriteria criteria, int attempts, int flags, Mat&
+    // centers = Mat())
+    //
+
     /**
      * Finds centers of clusters and groups input samples around the clusters.
-     *
+     * <p>
      * The function kmeans implements a k-means algorithm that finds the centers of cluster_count clusters and groups
      * the input samples around the clusters. As an output, \(\texttt{bestLabels}_i\) contains a 0-based cluster index
      * for the sample stored in the \(i^{th}\) row of the samples matrix.
@@ -4756,17 +4759,41 @@ public class Core {
                 flags);
     }
 
+    /**
+     * Returns the number of threads used by OpenCV for parallel regions.
+     * <p>
+     * Always returns 1 if OpenCV is built without threading support.
+     * <p>
+     * The exact meaning of return value depends on the threading framework used by OpenCV library:
+     * <ul>
+     * <li>{@code TBB} - The number of threads, that OpenCV will try to use for parallel regions. If there is any
+     * tbb::thread_scheduler_init in user code conflicting with OpenCV, then function returns default number of threads
+     * used by TBB library.</li>
+     * <li>{@code OpenMP} - An upper bound on the number of threads that could be used to form a new team.</li>
+     * <li>{@code Concurrency} - The number of threads, that OpenCV will try to use for parallel regions.</li>
+     * <li>{@code GCD} - Unsupported; returns the GCD thread pool limit (512) for compatibility.</li>
+     * <li>{@code C=} - The number of threads, that OpenCV will try to use for parallel regions, if before called
+     * setNumThreads with threads &gt; 0, otherwise returns the number of logical CPUs, available for the process. SEE:
+     * setNumThreads, getThreadNum</li>
+     * </ul>
+     *
+     * @return automatically generated
+     */
+    public static int getNumThreads() {
+        return getNumThreads_0();
+    }
+
     //
     // C++: void cv::setNumThreads(int nthreads)
     //
 
     /**
      * OpenCV will try to set the number of threads for subsequent parallel regions.
-     *
+     * <p>
      * If threads == 1, OpenCV will disable threading optimizations and run all it's functions sequentially. Passing
      * threads &lt; 0 will reset threads number to system default. The function is not thread-safe. It must not be
      * called in parallel region or concurrent threads.
-     *
+     * <p>
      * OpenCV will try to run its functions with specified threads number, but some behaviour differs from framework:
      * <ul>
      * <li>{@code TBB} - User-defined parallel constructions will run with the same threads number, if another is not
@@ -4789,39 +4816,12 @@ public class Core {
     //
 
     /**
-     * Returns the number of threads used by OpenCV for parallel regions.
-     *
-     * Always returns 1 if OpenCV is built without threading support.
-     *
-     * The exact meaning of return value depends on the threading framework used by OpenCV library:
-     * <ul>
-     * <li>{@code TBB} - The number of threads, that OpenCV will try to use for parallel regions. If there is any
-     * tbb::thread_scheduler_init in user code conflicting with OpenCV, then function returns default number of threads
-     * used by TBB library.</li>
-     * <li>{@code OpenMP} - An upper bound on the number of threads that could be used to form a new team.</li>
-     * <li>{@code Concurrency} - The number of threads, that OpenCV will try to use for parallel regions.</li>
-     * <li>{@code GCD} - Unsupported; returns the GCD thread pool limit (512) for compatibility.</li>
-     * <li>{@code C=} - The number of threads, that OpenCV will try to use for parallel regions, if before called
-     * setNumThreads with threads &gt; 0, otherwise returns the number of logical CPUs, available for the process. SEE:
-     * setNumThreads, getThreadNum</li>
-     * </ul>
-     *
-     * @return automatically generated
-     */
-    public static int getNumThreads() {
-        return getNumThreads_0();
-    }
-
-    //
-    // C++: int cv::getThreadNum()
-    //
-
-    /**
      * Returns the index of the currently executed thread within the current parallel region. Always returns 0 if called
      * outside of parallel region.
      *
+     * @return automatically generated
      * @deprecated Current implementation doesn't corresponding to this documentation.
-     *
+     *             <p>
      *             The exact meaning of the return value depends on the threading framework used by OpenCV library:
      *             <ul>
      *             <li>{@code TBB} - Unsupported with current 4.1 TBB release. Maybe will be supported in future.</li>
@@ -4831,7 +4831,6 @@ public class Core {
      *             <li>{@code GCD} - System calling thread's ID. Never returns 0 inside parallel region.</li>
      *             <li>{@code C=} - The index of the current parallel task. SEE: setNumThreads, getNumThreads</li>
      *             </ul>
-     * @return automatically generated
      */
     @Deprecated
     public static int getThreadNum() {
@@ -4839,12 +4838,12 @@ public class Core {
     }
 
     //
-    // C++: String cv::getBuildInformation()
+    // C++: int cv::getThreadNum()
     //
 
     /**
      * Returns full configuration time cmake output.
-     *
+     * <p>
      * Returned value is raw cmake output including version control system revision, compiler version, compiler flags,
      * enabled modules and third party libraries, etc. Output format depends on target architecture.
      *
@@ -4855,14 +4854,14 @@ public class Core {
     }
 
     //
-    // C++: String cv::getVersionString()
+    // C++: String cv::getBuildInformation()
     //
 
     /**
      * Returns library version string
-     *
+     * <p>
      * For example "3.4.1-dev".
-     *
+     * <p>
      * SEE: getMajorVersion, getMinorVersion, getRevisionVersion
      *
      * @return automatically generated
@@ -4872,7 +4871,7 @@ public class Core {
     }
 
     //
-    // C++: int cv::getVersionMajor()
+    // C++: String cv::getVersionString()
     //
 
     /**
@@ -4885,7 +4884,7 @@ public class Core {
     }
 
     //
-    // C++: int cv::getVersionMinor()
+    // C++: int cv::getVersionMajor()
     //
 
     /**
@@ -4898,7 +4897,7 @@ public class Core {
     }
 
     //
-    // C++: int cv::getVersionRevision()
+    // C++: int cv::getVersionMinor()
     //
 
     /**
@@ -4911,12 +4910,12 @@ public class Core {
     }
 
     //
-    // C++: int64 cv::getTickCount()
+    // C++: int cv::getVersionRevision()
     //
 
     /**
      * Returns the number of ticks.
-     *
+     * <p>
      * The function returns the number of ticks after the certain event (for example, when the machine was turned on).
      * It can be used to initialize RNG or to measure a function execution time by reading the tick count before and
      * after the function call. SEE: getTickFrequency, TickMeter
@@ -4928,17 +4927,17 @@ public class Core {
     }
 
     //
-    // C++: double cv::getTickFrequency()
+    // C++: int64 cv::getTickCount()
     //
 
     /**
      * Returns the number of ticks per second.
-     *
+     * <p>
      * The function returns the number of ticks per second. That is, the following code computes the execution time in
      * seconds: <code>
-     *     double t = (double)getTickCount();
-     *     // do something ...
-     *     t = ((double)getTickCount() - t)/getTickFrequency();
+     * double t = (double)getTickCount();
+     * // do something ...
+     * t = ((double)getTickCount() - t)/getTickFrequency();
      * </code> SEE: getTickCount, TickMeter
      *
      * @return automatically generated
@@ -4948,12 +4947,12 @@ public class Core {
     }
 
     //
-    // C++: int64 cv::getCPUTickCount()
+    // C++: double cv::getTickFrequency()
     //
 
     /**
      * Returns the number of CPU ticks.
-     *
+     * <p>
      * The function returns the current number of CPU ticks on some architectures (such as x86, x64, PowerPC). On other
      * platforms the function is equivalent to getTickCount. It can also be used for very accurate time measurements, as
      * well as for RNG initialization. Note that in case of multi-CPU systems a thread, from which getCPUTickCount is
@@ -4970,12 +4969,12 @@ public class Core {
     }
 
     //
-    // C++: bool cv::checkHardwareSupport(int feature)
+    // C++: int64 cv::getCPUTickCount()
     //
 
     /**
      * Returns true if the specified feature is supported by the host hardware.
-     *
+     * <p>
      * The function returns true if the host hardware supports the specified feature. When user calls
      * setUseOptimized(false), the subsequent calls to checkHardwareSupport() will return false until
      * setUseOptimized(true) is called. This way user can dynamically switch on and off the optimized code in OpenCV.
@@ -4988,12 +4987,12 @@ public class Core {
     }
 
     //
-    // C++: String cv::getHardwareFeatureName(int feature)
+    // C++: bool cv::checkHardwareSupport(int feature)
     //
 
     /**
      * Returns feature name by ID
-     *
+     * <p>
      * Returns empty string if feature is not defined
      *
      * @param feature automatically generated
@@ -5004,12 +5003,12 @@ public class Core {
     }
 
     //
-    // C++: string cv::getCPUFeaturesLine()
+    // C++: String cv::getHardwareFeatureName(int feature)
     //
 
     /**
      * Returns list of CPU features enabled during compilation.
-     *
+     * <p>
      * Returned value is a string containing space separated list of CPU features with following markers:
      *
      * <ul>
@@ -5017,7 +5016,7 @@ public class Core {
      * <li>prefix {@code *} - features enabled in dispatcher</li>
      * <li>suffix {@code ?} - features enabled but not available in HW</li>
      * </ul>
-     *
+     * <p>
      * Example: {@code SSE SSE2 SSE3 *SSE4.1 *SSE4.2 *FP16 *AVX *AVX2 *AVX512-SKX?}
      *
      * @return automatically generated
@@ -5027,7 +5026,7 @@ public class Core {
     }
 
     //
-    // C++: int cv::getNumberOfCPUs()
+    // C++: string cv::getCPUFeaturesLine()
     //
 
     /**
@@ -5040,7 +5039,7 @@ public class Core {
     }
 
     //
-    // C++: AlgorithmHint cv::getDefaultAlgorithmHint()
+    // C++: int cv::getNumberOfCPUs()
     //
 
     public static int getDefaultAlgorithmHint() {
@@ -5048,18 +5047,18 @@ public class Core {
     }
 
     //
-    // C++: void cv::setUseOptimized(bool onoff)
+    // C++: AlgorithmHint cv::getDefaultAlgorithmHint()
     //
 
     /**
      * Enables or disables the optimized code.
-     *
+     * <p>
      * The function can be used to dynamically turn on and off optimized dispatched code (code that uses SSE4.2,
      * AVX/AVX2, and other instructions on the platforms that support it). It sets a global flag that is further checked
      * by OpenCV functions. Since the flag is not checked in the inner OpenCV loops, it is only safe to call the
      * function on the very top level in your application where you can be sure that no other OpenCV function is
      * currently executed.
-     *
+     * <p>
      * By default, the optimized code is enabled unless you disable it in CMake. The current status can be retrieved
      * using useOptimized.
      *
@@ -5071,12 +5070,12 @@ public class Core {
     }
 
     //
-    // C++: bool cv::useOptimized()
+    // C++: void cv::setUseOptimized(bool onoff)
     //
 
     /**
      * Returns the status of optimized code usage.
-     *
+     * <p>
      * The function returns true if the optimized code is enabled. Otherwise, it returns false.
      *
      * @return automatically generated
@@ -5086,21 +5085,21 @@ public class Core {
     }
 
     //
-    // C++: String cv::samples::findFile(String relative_path, bool required = true, bool silentMode = false)
+    // C++: bool cv::useOptimized()
     //
 
     /**
      * Try to find requested data file
-     *
+     * <p>
      * Search directories:
-     *
+     * <p>
      * 1. Directories passed via {@code addSamplesDataSearchPath()} 2. OPENCV_SAMPLES_DATA_PATH_HINT environment
      * variable 3. OPENCV_SAMPLES_DATA_PATH environment variable If parameter value is not empty and nothing is found
      * then stop searching. 4. Detects build/install path based on: a. current working directory (CWD) b. and/or binary
      * module location (opencv_core/opencv_world, doesn't work with static linkage) 5. Scan
      * {@code &lt;source&gt;/{,data,samples/data}} directories if build directory is detected or the current directory
      * is in source tree. 6. Scan {@code &lt;install&gt;/share/OpenCV} directory if install directory is detected.
-     *
+     * <p>
      * SEE: cv::utils::findDataFile
      *
      * @param relative_path Relative path to data file
@@ -5113,18 +5112,22 @@ public class Core {
         return findFile_0(relative_path, required, silentMode);
     }
 
+    //
+    // C++: String cv::samples::findFile(String relative_path, bool required = true, bool silentMode = false)
+    //
+
     /**
      * Try to find requested data file
-     *
+     * <p>
      * Search directories:
-     *
+     * <p>
      * 1. Directories passed via {@code addSamplesDataSearchPath()} 2. OPENCV_SAMPLES_DATA_PATH_HINT environment
      * variable 3. OPENCV_SAMPLES_DATA_PATH environment variable If parameter value is not empty and nothing is found
      * then stop searching. 4. Detects build/install path based on: a. current working directory (CWD) b. and/or binary
      * module location (opencv_core/opencv_world, doesn't work with static linkage) 5. Scan
      * {@code &lt;source&gt;/{,data,samples/data}} directories if build directory is detected or the current directory
      * is in source tree. 6. Scan {@code &lt;install&gt;/share/OpenCV} directory if install directory is detected.
-     *
+     * <p>
      * SEE: cv::utils::findDataFile
      *
      * @param relative_path Relative path to data file
@@ -5138,16 +5141,16 @@ public class Core {
 
     /**
      * Try to find requested data file
-     *
+     * <p>
      * Search directories:
-     *
+     * <p>
      * 1. Directories passed via {@code addSamplesDataSearchPath()} 2. OPENCV_SAMPLES_DATA_PATH_HINT environment
      * variable 3. OPENCV_SAMPLES_DATA_PATH environment variable If parameter value is not empty and nothing is found
      * then stop searching. 4. Detects build/install path based on: a. current working directory (CWD) b. and/or binary
      * module location (opencv_core/opencv_world, doesn't work with static linkage) 5. Scan
      * {@code &lt;source&gt;/{,data,samples/data}} directories if build directory is detected or the current directory
      * is in source tree. 6. Scan {@code &lt;install&gt;/share/OpenCV} directory if install directory is detected.
-     *
+     * <p>
      * SEE: cv::utils::findDataFile
      *
      * @param relative_path Relative path to data file If true, function prints information message and raises
@@ -5158,25 +5161,21 @@ public class Core {
         return findFile_2(relative_path);
     }
 
-    //
-    // C++: String cv::samples::findFileOrKeep(String relative_path, bool silentMode = false)
-    //
-
     public static String findFileOrKeep(String relative_path, boolean silentMode) {
         return findFileOrKeep_0(relative_path, silentMode);
     }
+
+    //
+    // C++: String cv::samples::findFileOrKeep(String relative_path, bool silentMode = false)
+    //
 
     public static String findFileOrKeep(String relative_path) {
         return findFileOrKeep_1(relative_path);
     }
 
-    //
-    // C++: void cv::samples::addSamplesDataSearchPath(String path)
-    //
-
     /**
      * Override search data path by adding new search location
-     *
+     * <p>
      * Use this only to override default behavior Passed paths are used in LIFO order.
      *
      * @param path Path to used samples data
@@ -5186,12 +5185,12 @@ public class Core {
     }
 
     //
-    // C++: void cv::samples::addSamplesDataSearchSubDirectory(String subdir)
+    // C++: void cv::samples::addSamplesDataSearchPath(String path)
     //
 
     /**
      * Append samples search data sub directory
-     *
+     * <p>
      * General usage is to add OpenCV modules name ({@code &lt;opencv_contrib&gt;/modules/&lt;name&gt;/samples/data}
      * -&gt; {@code &lt;name&gt;/samples/data} + {@code modules/&lt;name&gt;/samples/data}). Passed subdirectories are
      * used in LIFO order.
@@ -5203,7 +5202,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::setErrorVerbosity(bool verbose)
+    // C++: void cv::samples::addSamplesDataSearchSubDirectory(String subdir)
     //
 
     public static void setErrorVerbosity(boolean verbose) {
@@ -5211,12 +5210,16 @@ public class Core {
     }
 
     //
-    // C++: void cv::add(Mat src1, Scalar src2, Mat& dst, Mat mask = Mat(), int dtype = -1)
+    // C++: void cv::setErrorVerbosity(bool verbose)
     //
 
     public static void add(Mat src1, Scalar src2, Mat dst, Mat mask, int dtype) {
         add_3(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, mask.nativeObj, dtype);
     }
+
+    //
+    // C++: void cv::add(Mat src1, Scalar src2, Mat& dst, Mat mask = Mat(), int dtype = -1)
+    //
 
     public static void add(Mat src1, Scalar src2, Mat dst, Mat mask) {
         add_4(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, mask.nativeObj);
@@ -5225,10 +5228,6 @@ public class Core {
     public static void add(Mat src1, Scalar src2, Mat dst) {
         add_5(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
     }
-
-    //
-    // C++: void cv::subtract(Mat src1, Scalar src2, Mat& dst, Mat mask = Mat(), int dtype = -1)
-    //
 
     public static void subtract(Mat src1, Scalar src2, Mat dst, Mat mask, int dtype) {
         subtract_3(
@@ -5242,6 +5241,10 @@ public class Core {
                 dtype);
     }
 
+    //
+    // C++: void cv::subtract(Mat src1, Scalar src2, Mat& dst, Mat mask = Mat(), int dtype = -1)
+    //
+
     public static void subtract(Mat src1, Scalar src2, Mat dst, Mat mask) {
         subtract_4(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, mask.nativeObj);
     }
@@ -5250,13 +5253,13 @@ public class Core {
         subtract_5(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
     }
 
-    //
-    // C++: void cv::multiply(Mat src1, Scalar src2, Mat& dst, double scale = 1, int dtype = -1)
-    //
-
     public static void multiply(Mat src1, Scalar src2, Mat dst, double scale, int dtype) {
         multiply_3(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, scale, dtype);
     }
+
+    //
+    // C++: void cv::multiply(Mat src1, Scalar src2, Mat& dst, double scale = 1, int dtype = -1)
+    //
 
     public static void multiply(Mat src1, Scalar src2, Mat dst, double scale) {
         multiply_4(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, scale);
@@ -5266,13 +5269,13 @@ public class Core {
         multiply_5(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
     }
 
-    //
-    // C++: void cv::divide(Mat src1, Scalar src2, Mat& dst, double scale = 1, int dtype = -1)
-    //
-
     public static void divide(Mat src1, Scalar src2, Mat dst, double scale, int dtype) {
         divide_5(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, scale, dtype);
     }
+
+    //
+    // C++: void cv::divide(Mat src1, Scalar src2, Mat& dst, double scale = 1, int dtype = -1)
+    //
 
     public static void divide(Mat src1, Scalar src2, Mat dst, double scale) {
         divide_6(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, scale);
@@ -5282,16 +5285,12 @@ public class Core {
         divide_7(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
     }
 
-    //
-    // C++: void cv::absdiff(Mat src1, Scalar src2, Mat& dst)
-    //
-
     public static void absdiff(Mat src1, Scalar src2, Mat dst) {
         absdiff_1(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
     }
 
     //
-    // C++: void cv::compare(Mat src1, Scalar src2, Mat& dst, int cmpop)
+    // C++: void cv::absdiff(Mat src1, Scalar src2, Mat& dst)
     //
 
     public static void compare(Mat src1, Scalar src2, Mat dst, int cmpop) {
@@ -5299,7 +5298,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::min(Mat src1, Scalar src2, Mat& dst)
+    // C++: void cv::compare(Mat src1, Scalar src2, Mat& dst, int cmpop)
     //
 
     public static void min(Mat src1, Scalar src2, Mat dst) {
@@ -5307,36 +5306,18 @@ public class Core {
     }
 
     //
-    // C++: void cv::max(Mat src1, Scalar src2, Mat& dst)
+    // C++: void cv::min(Mat src1, Scalar src2, Mat& dst)
     //
 
     public static void max(Mat src1, Scalar src2, Mat dst) {
         max_1(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
     }
 
-// manual port
-    /**
-     * The min max loc result class.
-     */
-    public static class MinMaxLocResult {
+    //
+    // C++: void cv::max(Mat src1, Scalar src2, Mat& dst)
+    //
 
-        public double minVal;
-        public double maxVal;
-        public Point minLoc;
-        public Point maxLoc;
-
-        public MinMaxLocResult() {
-            minVal = 0;
-            maxVal = 0;
-            minLoc = new Point();
-            maxLoc = new Point();
-        }
-
-    }
-
-// C++: minMaxLoc(Mat src, double* minVal, double* maxVal=0, Point* minLoc=0, Point* maxLoc=0, InputArray mask=noArray())
-
-//javadoc: minMaxLoc(src, mask)
+    // javadoc: minMaxLoc(src, mask)
     public static MinMaxLocResult minMaxLoc(Mat src, Mat mask) {
         MinMaxLocResult res = new MinMaxLocResult();
         long maskNativeObj = 0;
@@ -5353,10 +5334,14 @@ public class Core {
         return res;
     }
 
-//javadoc: minMaxLoc(src)
+// manual port
+
+    // javadoc: minMaxLoc(src)
     public static MinMaxLocResult minMaxLoc(Mat src) {
         return minMaxLoc(src, null);
     }
+
+// C++: minMaxLoc(Mat src, double* minVal, double* maxVal=0, Point* minLoc=0, Point* maxLoc=0, InputArray mask=noArray())
 
     // C++: float cv::cubeRoot(float val)
     private static native float cubeRoot_0(float val);
@@ -6082,11 +6067,11 @@ public class Core {
             int attempts,
             int flags);
 
-    // C++: void cv::setNumThreads(int nthreads)
-    private static native void setNumThreads_0(int nthreads);
-
     // C++: int cv::getNumThreads()
     private static native int getNumThreads_0();
+
+    // C++: void cv::setNumThreads(int nthreads)
+    private static native void setNumThreads_0(int nthreads);
 
     // C++: int cv::getThreadNum()
     private static native int getThreadNum_0();
@@ -6307,5 +6292,27 @@ public class Core {
             long dst_nativeObj);
 
     private static native double[] n_minMaxLocManual(long src_nativeObj, long mask_nativeObj);
+
+    /**
+     * The min max loc result class.
+     */
+    public static class MinMaxLocResult {
+
+        public double minVal;
+
+        public double maxVal;
+
+        public Point minLoc;
+
+        public Point maxLoc;
+
+        public MinMaxLocResult() {
+            minVal = 0;
+            maxVal = 0;
+            minLoc = new Point();
+            maxLoc = new Point();
+        }
+
+    }
 
 }

@@ -34,6 +34,7 @@ public class PkceMethod {
      * SHA-256 followed by unpadded Base64URL derivation method.
      */
     public static final PkceMethod S256 = new PkceMethod("S256");
+
     /**
      * Plain verifier compatibility method, disabled unless explicitly allowed.
      */

@@ -105,6 +105,22 @@ public class AioServer implements AutoCloseable {
     }
 
     /**
+     * Closes a partially transferred channel.
+     *
+     * @param channel closeable channel
+     */
+    private static void closeOpened(final AutoCloseable channel) {
+        if (channel == null) {
+            return;
+        }
+        try {
+            channel.close();
+        } catch (final Exception ignored) {
+            // The start or accept failure remains authoritative.
+        }
+    }
+
+    /**
      * Binds and starts accepting channels.
      *
      * @param consumer accepted-channel consumer
@@ -226,22 +242,6 @@ public class AioServer implements AutoCloseable {
         lifecycle.close(this);
         server = null;
         consumer = null;
-    }
-
-    /**
-     * Closes a partially transferred channel.
-     *
-     * @param channel closeable channel
-     */
-    private static void closeOpened(final AutoCloseable channel) {
-        if (channel == null) {
-            return;
-        }
-        try {
-            channel.close();
-        } catch (final Exception ignored) {
-            // The start or accept failure remains authoritative.
-        }
     }
 
 }

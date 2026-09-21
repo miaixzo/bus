@@ -25,7 +25,9 @@ import java.util.Set;
 
 import org.miaixz.bus.cache.builtin.CacheInfoContainer;
 import org.miaixz.bus.cache.builtin.SpelCalculator;
-import org.miaixz.bus.cache.magic.*;
+import org.miaixz.bus.cache.magic.AnnoHolder;
+import org.miaixz.bus.cache.magic.CacheExpire;
+import org.miaixz.bus.cache.magic.CachePair;
 import org.miaixz.bus.cache.magic.MethodHolder;
 import org.miaixz.bus.cache.magic.annotation.Cached;
 import org.miaixz.bus.cache.magic.annotation.CachedGet;
@@ -127,6 +129,27 @@ public class Complex {
                 cachedGet.condition(),
                 method,
                 args);
+    }
+
+    /**
+     * Determines if caching should be active based on multiple conditions.
+     *
+     * @param openStat  The global cache switch status.
+     * @param expire    The expiration policy for the specific operation.
+     * @param condition A SpEL expression that must evaluate to {@code true}.
+     * @param method    The target method.
+     * @param args      The method's arguments.
+     * @return {@code true} if all conditions for caching are met.
+     */
+    private static boolean doIsSwitchOn(boolean openStat, int expire, String condition, Method method, Object[] args) {
+        if (!openStat) {
+            return false;
+        }
+        if (expire == CacheExpire.NO) {
+            return false;
+        }
+        // Evaluate the SpEL condition
+        return (boolean) SpelCalculator.calcSpelValueWithContext(condition, Builder.getArgNames(method), args, true);
     }
 
     /**
@@ -272,27 +295,6 @@ public class Complex {
      */
     public void setMultiCacheReader(AbstractReader multiCacheReader) {
         this.multiCacheReader = multiCacheReader;
-    }
-
-    /**
-     * Determines if caching should be active based on multiple conditions.
-     *
-     * @param openStat  The global cache switch status.
-     * @param expire    The expiration policy for the specific operation.
-     * @param condition A SpEL expression that must evaluate to {@code true}.
-     * @param method    The target method.
-     * @param args      The method's arguments.
-     * @return {@code true} if all conditions for caching are met.
-     */
-    private static boolean doIsSwitchOn(boolean openStat, int expire, String condition, Method method, Object[] args) {
-        if (!openStat) {
-            return false;
-        }
-        if (expire == CacheExpire.NO) {
-            return false;
-        }
-        // Evaluate the SpEL condition
-        return (boolean) SpelCalculator.calcSpelValueWithContext(condition, Builder.getArgNames(method), args, true);
     }
 
     /**

@@ -247,18 +247,22 @@ public class PerfDataKit {
          * Suffix appended to counter names to indicate that the SecondValue (base) should be read.
          */
         public static final String BASE_SUFFIX = "_Base";
+
         /**
          * The object value.
          */
         private final String object;
+
         /**
          * The instance value.
          */
         private final String instance;
+
         /**
          * The counter value.
          */
         private final String counter;
+
         /**
          * The baseCounter value.
          */

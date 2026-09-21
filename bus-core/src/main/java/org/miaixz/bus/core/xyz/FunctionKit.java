@@ -19,14 +19,7 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.center.function.BiConsumerX;
-import org.miaixz.bus.core.center.function.BiPredicateX;
-import org.miaixz.bus.core.center.function.Consumer3X;
-import org.miaixz.bus.core.center.function.ConsumerX;
-import org.miaixz.bus.core.center.function.FunctionX;
-import org.miaixz.bus.core.center.function.PredicateX;
-import org.miaixz.bus.core.center.function.SupplierX;
-import org.miaixz.bus.core.center.function.UnaryOperatorX;
+import org.miaixz.bus.core.center.function.*;
 
 /**
  * Functional operations.

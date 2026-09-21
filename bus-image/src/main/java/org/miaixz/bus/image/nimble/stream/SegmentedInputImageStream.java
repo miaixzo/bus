@@ -70,6 +70,7 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
      * Constants for the first segment, last segment values.
      */
     private int firstSegment = 1, lastSegment = Integer.MAX_VALUE;
+
     // The end of the current segment, in streamPos units, not in underlying stream units
     /**
      * The cur segment end value.

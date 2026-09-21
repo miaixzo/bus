@@ -48,53 +48,65 @@ public class LdapServerScheme implements ProtocolScheme<LdapServerOptions> {
      * Stable Source type identifier for LDAP directory servers.
      */
     public static final String ID = "ldap-server";
+
     /**
      * Establishes connection authentication using the standard Bind operation.
      */
     public static final Capability<LdapMessage, LdapMessage> BIND = message(Ldap.BIND);
+
     /**
      * Terminates an LDAP connection without a protocol response.
      */
     public static final Capability<LdapMessage, Void> UNBIND = empty(Ldap.UNBIND);
+
     /**
      * Produces ordered Search entry/reference messages followed by SearchResultDone.
      */
     public static final Capability<LdapMessage, List<LdapMessage>> SEARCH = new Capability<>(Ldap.SEARCH,
             LdapMessage.class, messageListType(), Capability.Direction.SERVER, Set.of(Capability.Interaction.DIRECT),
             Capability.Security.PUBLIC);
+
     /**
      * Applies the standard atomic Modify operation.
      */
     public static final Capability<LdapMessage, LdapMessage> MODIFY = message(Ldap.MODIFY);
+
     /**
      * Applies the standard Add operation.
      */
     public static final Capability<LdapMessage, LdapMessage> ADD = message(Ldap.ADD);
+
     /**
      * Applies the standard Delete operation.
      */
     public static final Capability<LdapMessage, LdapMessage> DELETE = message(Ldap.DELETE);
+
     /**
      * Applies the standard Modify DN operation.
      */
     public static final Capability<LdapMessage, LdapMessage> MODIFY_DN = message(Ldap.MODIFY_DN);
+
     /**
      * Applies the standard Compare operation.
      */
     public static final Capability<LdapMessage, LdapMessage> COMPARE = message(Ldap.COMPARE);
+
     /**
      * Requests operation cancellation without a protocol response.
      */
     public static final Capability<LdapMessage, Void> ABANDON = empty(Ldap.ABANDON);
+
     /**
      * Applies an LDAP extended operation, including the standard StartTLS request.
      */
     public static final Capability<LdapMessage, LdapMessage> EXTENDED = message(Ldap.EXTENDED);
+
     /**
      * Complete ordered LDAPv3 server-role Source capability manifest.
      */
     private static final Capability.Manifest MANIFEST = new Capability.Manifest(
             List.of(BIND, UNBIND, SEARCH, MODIFY, ADD, DELETE, MODIFY_DN, COMPARE, ABANDON, EXTENDED));
+
     /**
      * Formal LDAPv3 specifications implemented by the directory server.
      */
@@ -104,6 +116,7 @@ public class LdapServerScheme implements ProtocolScheme<LdapServerOptions> {
                     citation("https://www.rfc-editor.org/rfc/rfc4511", "LDAP Protocol"),
                     citation("https://www.rfc-editor.org/rfc/rfc4513", "LDAP Authentication Methods and Security")),
             "LDAPv3 Directory Server");
+
     /**
      * External management form containing only Bind, StartTLS, search, message, and BER limits.
      */

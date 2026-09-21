@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.cortex.registry;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Symbol;
@@ -1165,6 +1161,22 @@ public class RegistryControlService {
     }
 
     /**
+     * Resolves the concrete registry implementation for the requested type.
+     *
+     * @param type target registry type
+     * @return matching concrete registry
+     */
+    private StoreBackedRegistry<? extends Assets> registry(Type type) {
+        Type effective = type == null ? Type.API : type;
+        return switch (effective) {
+            case API -> apiRegistry;
+            case MCP -> mcpRegistry;
+            case PROMPT -> promptRegistry;
+            default -> throw new IllegalArgumentException("Unsupported admin registry type: " + effective);
+        };
+    }
+
+    /**
      * Control-service backed operations exposed to registry batch executors.
      *
      * @author Kimi Liu
@@ -1237,22 +1249,6 @@ public class RegistryControlService {
             return registry == null ? null : registry.store();
         }
 
-    }
-
-    /**
-     * Resolves the concrete registry implementation for the requested type.
-     *
-     * @param type target registry type
-     * @return matching concrete registry
-     */
-    private StoreBackedRegistry<? extends Assets> registry(Type type) {
-        Type effective = type == null ? Type.API : type;
-        return switch (effective) {
-            case API -> apiRegistry;
-            case MCP -> mcpRegistry;
-            case PROMPT -> promptRegistry;
-            default -> throw new IllegalArgumentException("Unsupported admin registry type: " + effective);
-        };
     }
 
 }

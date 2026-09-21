@@ -118,22 +118,27 @@ public class Radius {
          * Access-Request Code.
          */
         public static final int ACCESS_REQUEST = Normal._1;
+
         /**
          * Access-Accept Code.
          */
         public static final int ACCESS_ACCEPT = Normal._2;
+
         /**
          * Access-Reject Code.
          */
         public static final int ACCESS_REJECT = Normal._3;
+
         /**
          * Accounting-Request Code.
          */
         public static final int ACCOUNTING_REQUEST = Normal._4;
+
         /**
          * Accounting-Response Code.
          */
         public static final int ACCOUNTING_RESPONSE = Normal._5;
+
         /**
          * Access-Challenge Code.
          */
@@ -159,54 +164,67 @@ public class Radius {
          * User-Name Attribute Type.
          */
         public static final int USER_NAME = Normal._1;
+
         /**
          * User-Password Attribute Type.
          */
         public static final int USER_PASSWORD = Normal._2;
+
         /**
          * CHAP-Password Attribute Type.
          */
         public static final int CHAP_PASSWORD = Normal._3;
+
         /**
          * NAS-IP-Address Attribute Type.
          */
         public static final int NAS_IP_ADDRESS = Normal._4;
+
         /**
          * Reply-Message Attribute Type.
          */
         public static final int REPLY_MESSAGE = Normal._18;
+
         /**
          * State Attribute Type.
          */
         public static final int STATE = Normal._24;
+
         /**
          * Vendor-Specific Attribute Type.
          */
         public static final int VENDOR_SPECIFIC = Normal._26;
+
         /**
          * NAS-Identifier Attribute Type.
          */
         public static final int NAS_IDENTIFIER = Normal._32;
+
         /**
          * Proxy-State Attribute Type.
          */
         public static final int PROXY_STATE = Normal._33;
+
         /**
          * Acct-Status-Type Attribute Type.
          */
         public static final int ACCT_STATUS_TYPE = Normal._40;
+
         /**
          * CHAP-Challenge Attribute Type.
          */
         public static final int CHAP_CHALLENGE = Normal._60;
+
         /**
          * EAP-Message Attribute Type.
          */
         public static final int EAP_MESSAGE = Normal._79;
+
         /**
          * Message-Authenticator Attribute Type.
          */
         public static final int MESSAGE_AUTHENTICATOR = Normal._80;
+
         /**
          * Error-Cause Attribute Type.
          */

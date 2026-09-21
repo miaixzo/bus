@@ -83,6 +83,40 @@ public class RabbitMQProvider implements MQProvider, Closeable {
     }
 
     /**
+     * Creates a RabbitMQ {@link ConnectionFactory} based on the provided generic {@link MQConfig}. It extracts the
+     * broker URL from the {@link MQConfig} and sets it on the factory.
+     *
+     * @param config The {@link MQConfig} object, containing necessary connection information.
+     * @return The configured RabbitMQ {@link ConnectionFactory}.
+     * @throws MQueueException if an error occurs during factory creation or URI setting.
+     */
+    private static ConnectionFactory createFactory(final MQConfig config) {
+        final ConnectionFactory factory = new ConnectionFactory();
+        try {
+            Logger.info(
+                    true,
+                    "Extra",
+                    "RabbitMQ connection factory configuration started: brokerPresent={}",
+                    config != null && config.getBrokerUrl() != null);
+            factory.setUri(config.getBrokerUrl());
+            Logger.info(
+                    false,
+                    "Extra",
+                    "RabbitMQ connection factory configured: brokerPresent={}",
+                    config != null && config.getBrokerUrl() != null);
+        } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "RabbitMQ connection factory configuration failed: exception={}",
+                    e.getClass().getSimpleName());
+            throw new MQueueException(e);
+        }
+        return factory;
+    }
+
+    /**
      * Initializes the RabbitMQ provider using the provided {@link MQConfig}. This method creates a
      * {@link ConnectionFactory} from the {@link MQConfig} and then establishes a connection to the RabbitMQ broker.
      *
@@ -212,40 +246,6 @@ public class RabbitMQProvider implements MQProvider, Closeable {
                     e.getClass().getSimpleName());
             throw new MQueueException(e);
         }
-    }
-
-    /**
-     * Creates a RabbitMQ {@link ConnectionFactory} based on the provided generic {@link MQConfig}. It extracts the
-     * broker URL from the {@link MQConfig} and sets it on the factory.
-     *
-     * @param config The {@link MQConfig} object, containing necessary connection information.
-     * @return The configured RabbitMQ {@link ConnectionFactory}.
-     * @throws MQueueException if an error occurs during factory creation or URI setting.
-     */
-    private static ConnectionFactory createFactory(final MQConfig config) {
-        final ConnectionFactory factory = new ConnectionFactory();
-        try {
-            Logger.info(
-                    true,
-                    "Extra",
-                    "RabbitMQ connection factory configuration started: brokerPresent={}",
-                    config != null && config.getBrokerUrl() != null);
-            factory.setUri(config.getBrokerUrl());
-            Logger.info(
-                    false,
-                    "Extra",
-                    "RabbitMQ connection factory configured: brokerPresent={}",
-                    config != null && config.getBrokerUrl() != null);
-        } catch (final Exception e) {
-            Logger.warn(
-                    false,
-                    "Extra",
-                    e,
-                    "RabbitMQ connection factory configuration failed: exception={}",
-                    e.getClass().getSimpleName());
-            throw new MQueueException(e);
-        }
-        return factory;
     }
 
 }

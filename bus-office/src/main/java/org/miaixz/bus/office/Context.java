@@ -42,7 +42,7 @@ public class Context {
      * <pre>
      * compressed size / uncompressed size
      * </pre>
-     *
+     * <p>
      * The default value in POI is 0.01 (i.e., minimum compression to 1%). If the compression ratio of a file in the
      * document is less than this value, an error will be reported. If there are indeed files with high compression
      * ratios in the document, this global method can be used to customize the ratio to avoid errors.

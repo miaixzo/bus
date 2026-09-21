@@ -21,11 +21,7 @@ package org.miaixz.bus.auth.registry;
 
 import java.util.*;
 
-import org.miaixz.bus.auth.Blueprint;
-import org.miaixz.bus.auth.Library;
-import org.miaixz.bus.auth.Provider;
-import org.miaixz.bus.auth.Roster;
-import org.miaixz.bus.auth.Source;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.core.basic.entity.Entity;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;

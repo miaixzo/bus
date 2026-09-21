@@ -61,132 +61,6 @@ final class HpackEncoder {
     }
 
     /**
-     * Encodes a request without first constructing a complete {@link Http2Header} list.
-     *
-     * @param method    request method
-     * @param scheme    request scheme
-     * @param authority request authority
-     * @param path      request path
-     * @param headers   regular request headers
-     * @param target    frame-batch destination
-     */
-    void encodeRequest(
-            final String method,
-            final String scheme,
-            final String authority,
-            final String path,
-            final Headers headers,
-            final Buffer target) {
-        require(target, "HPACK output");
-        int bytes = 0;
-        bytes = encodeField(Http.Header.PSEUDO_METHOD, method, false, target, bytes);
-        bytes = encodeField(Http.Header.PSEUDO_SCHEME, scheme, false, target, bytes);
-        bytes = encodeField(Http.Header.PSEUDO_AUTHORITY, authority, false, target, bytes);
-        bytes = encodeField(Http.Header.PSEUDO_PATH, path, false, target, bytes);
-        if (headers != null) {
-            for (int index = 0; index < headers.size(); index++) {
-                final String name = headers.name(index);
-                if (!hopByHop(name) && !name.startsWith(Symbol.COLON)) {
-                    bytes = encodeField(name, headers.value(index), sensitive(name), target, bytes);
-                }
-            }
-        }
-    }
-
-    /**
-     * Encodes an already ordered compatibility header sequence directly into a target.
-     *
-     * @param headers ordered fields
-     * @param target  destination buffer
-     */
-    void encode(final List<Http2Header> headers, final Buffer target) {
-        require(headers, "HPACK headers");
-        require(target, "HPACK output");
-        int bytes = 0;
-        boolean regularSeen = false;
-        for (final Http2Header header : headers) {
-            require(header, "HPACK header");
-            if (header.pseudo() && regularSeen) {
-                throw new ProtocolException("HTTP/2 pseudo-header follows a regular header");
-            }
-            regularSeen |= !header.pseudo();
-            bytes = encodeField(header.name(), header.value(), header.sensitive(), target, bytes);
-        }
-    }
-
-    /**
-     * Sets the effective dynamic-table capacity.
-     *
-     * @param bytes capacity bytes
-     */
-    void tableSize(final int bytes) {
-        dynamicTable.capacityBytes(bytes);
-    }
-
-    /**
-     * Sets the decompressed header-list budget.
-     *
-     * @param bytes positive budget
-     */
-    void maxHeaderListBytes(final int bytes) {
-        if (bytes <= 0) {
-            throw new ValidateException("HPACK header-list limit must be positive");
-        }
-        maxHeaderListBytes = bytes;
-    }
-
-    /**
-     * Encodes one header and returns the updated list-size total.
-     *
-     * @param name      field name
-     * @param value     field value
-     * @param sensitive whether indexing is prohibited
-     * @param target    destination
-     * @param total     preceding list bytes
-     * @return updated list bytes
-     */
-    private int encodeField(
-            final String name,
-            final String value,
-            final boolean sensitive,
-            final Buffer target,
-            final int total) {
-        if (name == null || value == null) {
-            throw new ValidateException("HPACK field name and value must not be null");
-        }
-        final long next = (long) total + 32L + utf8Length(name) + utf8Length(value);
-        if (next > maxHeaderListBytes) {
-            throw new ProtocolException("HPACK header list exceeds maximum");
-        }
-        final int staticExact = staticExactIndex(name, value);
-        if (!sensitive && staticExact != 0) {
-            writeInteger(target, staticExact, 0x80, 7);
-            return (int) next;
-        }
-        final int dynamicExact = dynamicTable.findExact(name, value);
-        if (!sensitive && dynamicExact != 0) {
-            writeInteger(target, Normal._61 + dynamicExact, 0x80, 7);
-            return (int) next;
-        }
-        int nameIndex = staticNameIndex(name);
-        if (nameIndex == 0) {
-            final int dynamicName = dynamicTable.findName(name);
-            nameIndex = dynamicName == 0 ? 0 : Normal._61 + dynamicName;
-        }
-        final int prefix = sensitive ? 0x10 : 0x40;
-        final int prefixBits = sensitive ? 4 : 6;
-        writeInteger(target, nameIndex, prefix, prefixBits);
-        if (nameIndex == 0) {
-            writeString(target, name);
-        }
-        writeString(target, value);
-        if (!sensitive) {
-            dynamicTable.insert(Http2Header.of(name, value));
-        }
-        return (int) next;
-    }
-
-    /**
      * Writes an HPACK integer.
      *
      * @param target     destination
@@ -342,6 +216,132 @@ final class HpackEncoder {
             throw new ValidateException(label + " must not be null");
         }
         return value;
+    }
+
+    /**
+     * Encodes a request without first constructing a complete {@link Http2Header} list.
+     *
+     * @param method    request method
+     * @param scheme    request scheme
+     * @param authority request authority
+     * @param path      request path
+     * @param headers   regular request headers
+     * @param target    frame-batch destination
+     */
+    void encodeRequest(
+            final String method,
+            final String scheme,
+            final String authority,
+            final String path,
+            final Headers headers,
+            final Buffer target) {
+        require(target, "HPACK output");
+        int bytes = 0;
+        bytes = encodeField(Http.Header.PSEUDO_METHOD, method, false, target, bytes);
+        bytes = encodeField(Http.Header.PSEUDO_SCHEME, scheme, false, target, bytes);
+        bytes = encodeField(Http.Header.PSEUDO_AUTHORITY, authority, false, target, bytes);
+        bytes = encodeField(Http.Header.PSEUDO_PATH, path, false, target, bytes);
+        if (headers != null) {
+            for (int index = 0; index < headers.size(); index++) {
+                final String name = headers.name(index);
+                if (!hopByHop(name) && !name.startsWith(Symbol.COLON)) {
+                    bytes = encodeField(name, headers.value(index), sensitive(name), target, bytes);
+                }
+            }
+        }
+    }
+
+    /**
+     * Encodes an already ordered compatibility header sequence directly into a target.
+     *
+     * @param headers ordered fields
+     * @param target  destination buffer
+     */
+    void encode(final List<Http2Header> headers, final Buffer target) {
+        require(headers, "HPACK headers");
+        require(target, "HPACK output");
+        int bytes = 0;
+        boolean regularSeen = false;
+        for (final Http2Header header : headers) {
+            require(header, "HPACK header");
+            if (header.pseudo() && regularSeen) {
+                throw new ProtocolException("HTTP/2 pseudo-header follows a regular header");
+            }
+            regularSeen |= !header.pseudo();
+            bytes = encodeField(header.name(), header.value(), header.sensitive(), target, bytes);
+        }
+    }
+
+    /**
+     * Sets the effective dynamic-table capacity.
+     *
+     * @param bytes capacity bytes
+     */
+    void tableSize(final int bytes) {
+        dynamicTable.capacityBytes(bytes);
+    }
+
+    /**
+     * Sets the decompressed header-list budget.
+     *
+     * @param bytes positive budget
+     */
+    void maxHeaderListBytes(final int bytes) {
+        if (bytes <= 0) {
+            throw new ValidateException("HPACK header-list limit must be positive");
+        }
+        maxHeaderListBytes = bytes;
+    }
+
+    /**
+     * Encodes one header and returns the updated list-size total.
+     *
+     * @param name      field name
+     * @param value     field value
+     * @param sensitive whether indexing is prohibited
+     * @param target    destination
+     * @param total     preceding list bytes
+     * @return updated list bytes
+     */
+    private int encodeField(
+            final String name,
+            final String value,
+            final boolean sensitive,
+            final Buffer target,
+            final int total) {
+        if (name == null || value == null) {
+            throw new ValidateException("HPACK field name and value must not be null");
+        }
+        final long next = (long) total + 32L + utf8Length(name) + utf8Length(value);
+        if (next > maxHeaderListBytes) {
+            throw new ProtocolException("HPACK header list exceeds maximum");
+        }
+        final int staticExact = staticExactIndex(name, value);
+        if (!sensitive && staticExact != 0) {
+            writeInteger(target, staticExact, 0x80, 7);
+            return (int) next;
+        }
+        final int dynamicExact = dynamicTable.findExact(name, value);
+        if (!sensitive && dynamicExact != 0) {
+            writeInteger(target, Normal._61 + dynamicExact, 0x80, 7);
+            return (int) next;
+        }
+        int nameIndex = staticNameIndex(name);
+        if (nameIndex == 0) {
+            final int dynamicName = dynamicTable.findName(name);
+            nameIndex = dynamicName == 0 ? 0 : Normal._61 + dynamicName;
+        }
+        final int prefix = sensitive ? 0x10 : 0x40;
+        final int prefixBits = sensitive ? 4 : 6;
+        writeInteger(target, nameIndex, prefix, prefixBits);
+        if (nameIndex == 0) {
+            writeString(target, name);
+        }
+        writeString(target, value);
+        if (!sensitive) {
+            dynamicTable.insert(Http2Header.of(name, value));
+        }
+        return (int) next;
     }
 
 }

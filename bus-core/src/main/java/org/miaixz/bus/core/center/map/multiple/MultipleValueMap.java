@@ -22,11 +22,7 @@ package org.miaixz.bus.core.center.map.multiple;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.miaixz.bus.core.center.function.BiConsumerX;
-import org.miaixz.bus.core.center.function.BiFunctionX;
-import org.miaixz.bus.core.center.function.BiPredicateX;
-import org.miaixz.bus.core.center.function.PredicateX;
-import org.miaixz.bus.core.center.function.UnaryOperatorX;
+import org.miaixz.bus.core.center.function.*;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.CollKit;
 
@@ -49,11 +45,11 @@ import org.miaixz.bus.core.xyz.CollKit;
  *
  * @param <K> The type of keys in the map.
  * @param <V> The type of values stored in the collections.
+ * @author Kimi Liu
  * @see AbstractCollValueMap
  * @see CollectionValueMap
  * @see ListValueMap
  * @see SetValueMap
- * @author Kimi Liu
  */
 public interface MultipleValueMap<K, V> extends Map<K, Collection<V>> {
 

@@ -43,9 +43,9 @@ import reactor.core.publisher.Mono;
  * It is ordered to run late in the chain, after authentication and authorization, to ensure that system resources are
  * spent on validating legitimate, authenticated traffic.
  *
+ * @author Kimi Liu
  * @see Limiter
  * @see LimiterRegistry
- * @author Kimi Liu
  */
 @org.springframework.core.annotation.Order(Order.FOURTH)
 public class LimiterStrategy extends AbstractStrategy {

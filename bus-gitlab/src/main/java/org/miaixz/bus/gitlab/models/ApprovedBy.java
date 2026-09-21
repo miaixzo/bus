@@ -34,9 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class ApprovedBy implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852236797551L;
 
@@ -44,6 +41,7 @@ public class ApprovedBy implements Serializable {
      * The user value.
      */
     private User user;
+
     /**
      * The group value.
      */

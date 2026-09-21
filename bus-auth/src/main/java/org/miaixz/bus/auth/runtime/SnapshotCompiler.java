@@ -55,6 +55,7 @@ final class SnapshotCompiler {
      * Frozen Source driver index keyed by stable Source scheme identifier.
      */
     private final SourceLookup sourceLookup;
+
     /**
      * Externally supplied runtime services used to create each capability-limited Source service view.
      */
@@ -287,14 +288,17 @@ final class SnapshotCompiler {
          * Blueprint kind that failed compilation.
          */
         private final Blueprint.Kind kind;
+
         /**
          * Safe Blueprint entry identifier.
          */
         private final String id;
+
         /**
          * Safe failing field name.
          */
         private final String field;
+
         /**
          * Safe failure description exposed in reports.
          */

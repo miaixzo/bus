@@ -41,6 +41,19 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 public interface HttpStage {
 
     /**
+     * Normalizes a stage name.
+     *
+     * @param name non-blank, single-line stage name
+     * @return trimmed stage name converted to lowercase with the root locale
+     */
+    private static String normalizeName(final String name) {
+        Assert.isFalse(
+                StringKit.isBlank(name) || StringKit.containsAny(name, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("HTTP stage name must be non-blank and single-line"));
+        return StringKit.trim(name).toLowerCase(Locale.ROOT);
+    }
+
+    /**
      * Returns the stage name.
      *
      * @return trimmed lowercase simple class name, or {@code http-stage} for an unnamed implementation
@@ -66,19 +79,6 @@ public interface HttpStage {
      */
     default boolean network() {
         return false;
-    }
-
-    /**
-     * Normalizes a stage name.
-     *
-     * @param name non-blank, single-line stage name
-     * @return trimmed stage name converted to lowercase with the root locale
-     */
-    private static String normalizeName(final String name) {
-        Assert.isFalse(
-                StringKit.isBlank(name) || StringKit.containsAny(name, Symbol.C_CR, Symbol.C_LF),
-                () -> new ValidateException("HTTP stage name must be non-blank and single-line"));
-        return StringKit.trim(name).toLowerCase(Locale.ROOT);
     }
 
 }

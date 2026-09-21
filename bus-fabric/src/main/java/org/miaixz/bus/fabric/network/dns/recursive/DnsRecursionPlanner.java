@@ -58,28 +58,6 @@ public class DnsRecursionPlanner {
     }
 
     /**
-     * Builds an immutable plan for one decoded client query.
-     *
-     * @param query decoded client query
-     * @return immutable recursion plan
-     */
-    public DnsRecursionPlan plan(final DnsQuery query) {
-        if (query == null) {
-            throw new ValidateException("DNS recursion plan query must not be null");
-        }
-        return DnsRecursionPlan.create(query.question(), query.question(), rootHints, List.of());
-    }
-
-    /**
-     * Returns the immutable root-hint upstreams captured by this planner.
-     *
-     * @return root-hint upstreams
-     */
-    public List<DnsUpstream> rootHints() {
-        return rootHints;
-    }
-
-    /**
      * Validates and copies root-hint upstreams.
      *
      * @param rootHints source root hints
@@ -143,6 +121,28 @@ public class DnsRecursionPlanner {
         }
         final String prefix = active.substring(0, active.length() - owner.length());
         return DnsName.normalize(prefix + target);
+    }
+
+    /**
+     * Builds an immutable plan for one decoded client query.
+     *
+     * @param query decoded client query
+     * @return immutable recursion plan
+     */
+    public DnsRecursionPlan plan(final DnsQuery query) {
+        if (query == null) {
+            throw new ValidateException("DNS recursion plan query must not be null");
+        }
+        return DnsRecursionPlan.create(query.question(), query.question(), rootHints, List.of());
+    }
+
+    /**
+     * Returns the immutable root-hint upstreams captured by this planner.
+     *
+     * @return root-hint upstreams
+     */
+    public List<DnsUpstream> rootHints() {
+        return rootHints;
     }
 
     /**
@@ -215,6 +215,41 @@ public class DnsRecursionPlanner {
                 final List<DnsUpstream> rootHints,
                 final List<DnsAliasStep> aliases) {
             return new DnsRecursionPlan(originalQuestion, activeQuestion, rootHints, aliases);
+        }
+
+        /**
+         * Creates minimized steps for one active question.
+         *
+         * @param question active question
+         * @return immutable minimized steps
+         */
+        private static List<DnsRecursionStep> stepsFor(final DnsQuestion question) {
+            final List<String> names = DnsRecursionPlanner.minimizedNames(question.name());
+            final ArrayList<DnsRecursionStep> result = new ArrayList<>(names.size());
+            for (int index = 0; index < names.size(); index++) {
+                result.add(
+                        new DnsRecursionStep(index, names.get(index), DnsRecordType.NS.code(), question.recordClass(),
+                                index == 0));
+            }
+            return List.copyOf(result);
+        }
+
+        /**
+         * Validates and copies alias transitions.
+         *
+         * @param aliases source aliases
+         * @return immutable aliases
+         */
+        private static List<DnsAliasStep> immutableAliases(final List<DnsAliasStep> aliases) {
+            if (aliases == null) {
+                throw new ValidateException("DNS recursion aliases must not be null");
+            }
+            for (final DnsAliasStep alias : aliases) {
+                if (alias == null) {
+                    throw new ValidateException("DNS recursion aliases must not contain null");
+                }
+            }
+            return List.copyOf(aliases);
         }
 
         /**
@@ -303,41 +338,6 @@ public class DnsRecursionPlanner {
                 names.add(step.queryName());
             }
             return List.copyOf(names);
-        }
-
-        /**
-         * Creates minimized steps for one active question.
-         *
-         * @param question active question
-         * @return immutable minimized steps
-         */
-        private static List<DnsRecursionStep> stepsFor(final DnsQuestion question) {
-            final List<String> names = DnsRecursionPlanner.minimizedNames(question.name());
-            final ArrayList<DnsRecursionStep> result = new ArrayList<>(names.size());
-            for (int index = 0; index < names.size(); index++) {
-                result.add(
-                        new DnsRecursionStep(index, names.get(index), DnsRecordType.NS.code(), question.recordClass(),
-                                index == 0));
-            }
-            return List.copyOf(result);
-        }
-
-        /**
-         * Validates and copies alias transitions.
-         *
-         * @param aliases source aliases
-         * @return immutable aliases
-         */
-        private static List<DnsAliasStep> immutableAliases(final List<DnsAliasStep> aliases) {
-            if (aliases == null) {
-                throw new ValidateException("DNS recursion aliases must not be null");
-            }
-            for (final DnsAliasStep alias : aliases) {
-                if (alias == null) {
-                    throw new ValidateException("DNS recursion aliases must not contain null");
-                }
-            }
-            return List.copyOf(aliases);
         }
 
     }

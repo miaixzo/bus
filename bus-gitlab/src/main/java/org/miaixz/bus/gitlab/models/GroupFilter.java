@@ -35,9 +35,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class GroupFilter implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852256129063L;
 
@@ -45,42 +42,52 @@ public class GroupFilter implements Serializable {
      * The skip groups value.
      */
     private List<Long> skipGroups;
+
     /**
      * The all available value.
      */
     private Boolean allAvailable;
+
     /**
      * The search value.
      */
     private String search;
+
     /**
      * The order by value.
      */
     private GroupOrderBy orderBy;
+
     /**
      * The sort value.
      */
     private SortOrder sort;
+
     /**
      * The statistics value.
      */
     private Boolean statistics;
+
     /**
      * The with custom attributes value.
      */
     private Boolean withCustomAttributes;
+
     /**
      * The owned value.
      */
     private Boolean owned;
+
     /**
      * The access level value.
      */
     private AccessLevel accessLevel;
+
     /**
      * The top level only value.
      */
     private Boolean topLevelOnly;
+
     /**
      * The custom attributes filter value.
      */

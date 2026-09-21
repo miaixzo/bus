@@ -285,6 +285,90 @@ public class LifecycleScope {
     }
 
     /**
+     * Returns whether one public lifecycle state may move to another.
+     *
+     * @param current current state
+     * @param next    requested state
+     * @return {@code true} when the generic work or resource lifecycle permits the transition
+     */
+    private static boolean canTransit(final State current, final State next) {
+        if (current.terminal()) {
+            return false;
+        }
+        return switch (current) {
+            case NEW -> next == State.QUEUED || next == State.STARTING || next == State.RUNNING || next == State.CLOSING
+                    || next == State.CLOSED || next == State.CANCELLED || next == State.FAILED;
+            case QUEUED -> next == State.STARTING || next == State.RUNNING || next == State.COMPLETED
+                    || next == State.CLOSING || next == State.CLOSED || next == State.CANCELLED || next == State.FAILED;
+            case STARTING -> next == State.RUNNING || next == State.CLOSING || next == State.CLOSED
+                    || next == State.CANCELLED || next == State.FAILED;
+            case RUNNING -> next == State.CLOSING || next == State.COMPLETED || next == State.CLOSED
+                    || next == State.CANCELLED || next == State.FAILED;
+            case CLOSING -> next == State.CLOSED || next == State.CANCELLED || next == State.FAILED;
+            case UNKNOWN -> false;
+            default -> false;
+        };
+    }
+
+    /**
+     * Selects the protocol-specific cancellation marker for a session.
+     *
+     * @param openMarker    session-open marker used to identify the protocol family, or {@code null}
+     * @param failureMarker session-failure marker used as a second family hint and fallback, or {@code null}
+     * @return cancellation marker or the failure marker when no dedicated marker exists
+     */
+    private static ObservationMarker cancellationMarker(
+            final ObservationMarker openMarker,
+            final ObservationMarker failureMarker) {
+        if (openMarker == ObservationMarker.SOCKET_OPEN || failureMarker == ObservationMarker.SOCKET_FAILED) {
+            return ObservationMarker.SOCKET_CANCELLED;
+        }
+        if (openMarker == ObservationMarker.WEBSOCKET_OPEN || failureMarker == ObservationMarker.WEBSOCKET_FAILED) {
+            return ObservationMarker.WEBSOCKET_CANCELLED;
+        }
+        if (openMarker == ObservationMarker.SSE_OPEN || failureMarker == ObservationMarker.SSE_FAILED) {
+            return ObservationMarker.SSE_CANCELLED;
+        }
+        if (openMarker == ObservationMarker.STOMP_OPEN || failureMarker == ObservationMarker.STOMP_FAILED) {
+            return ObservationMarker.STOMP_CANCELLED;
+        }
+        if (openMarker == ObservationMarker.TLS_HANDSHAKE || failureMarker == ObservationMarker.TLS_FAILED) {
+            return ObservationMarker.TLS_CANCELLED;
+        }
+        return failureMarker;
+    }
+
+    /**
+     * Returns a safe source name.
+     *
+     * @param value source object to describe, or {@code null}
+     * @return fully qualified source class name, or {@code unknown} for a null source
+     */
+    private static String sourceName(final Object value) {
+        return value == null ? "unknown" : value.getClass().getName();
+    }
+
+    /**
+     * Returns the no-op listener.
+     *
+     * @return singleton no-operation listener
+     */
+    private static Listener<Object> noopListener() {
+        return NoopListener.INSTANCE;
+    }
+
+    /**
+     * Casts a listener to the internal object listener type.
+     *
+     * @param listener typed listener to adapt, or {@code null}
+     * @param <T>      callback source type accepted by the listener
+     * @return the same listener cast to the internal object type, or the no-op singleton when null
+     */
+    private static <T> Listener<Object> cast(final Listener<? super T> listener) {
+        return listener == null ? noopListener() : (Listener<Object>) listener;
+    }
+
+    /**
      * Returns the current lifecycle state.
      *
      * @return current authoritative lifecycle status
@@ -486,32 +570,6 @@ public class LifecycleScope {
     }
 
     /**
-     * Returns whether one public lifecycle state may move to another.
-     *
-     * @param current current state
-     * @param next    requested state
-     * @return {@code true} when the generic work or resource lifecycle permits the transition
-     */
-    private static boolean canTransit(final State current, final State next) {
-        if (current.terminal()) {
-            return false;
-        }
-        return switch (current) {
-            case NEW -> next == State.QUEUED || next == State.STARTING || next == State.RUNNING || next == State.CLOSING
-                    || next == State.CLOSED || next == State.CANCELLED || next == State.FAILED;
-            case QUEUED -> next == State.STARTING || next == State.RUNNING || next == State.COMPLETED
-                    || next == State.CLOSING || next == State.CLOSED || next == State.CANCELLED || next == State.FAILED;
-            case STARTING -> next == State.RUNNING || next == State.CLOSING || next == State.CLOSED
-                    || next == State.CANCELLED || next == State.FAILED;
-            case RUNNING -> next == State.CLOSING || next == State.COMPLETED || next == State.CLOSED
-                    || next == State.CANCELLED || next == State.FAILED;
-            case CLOSING -> next == State.CLOSED || next == State.CANCELLED || next == State.FAILED;
-            case UNKNOWN -> false;
-            default -> false;
-        };
-    }
-
-    /**
      * Cancels the shared scope when requested, closes owned resources, emits the terminal event, and invokes exactly
      * one terminal listener callback.
      *
@@ -610,64 +668,6 @@ public class LifecycleScope {
      */
     private Object select(final Object candidate) {
         return candidate == null ? source : candidate;
-    }
-
-    /**
-     * Selects the protocol-specific cancellation marker for a session.
-     *
-     * @param openMarker    session-open marker used to identify the protocol family, or {@code null}
-     * @param failureMarker session-failure marker used as a second family hint and fallback, or {@code null}
-     * @return cancellation marker or the failure marker when no dedicated marker exists
-     */
-    private static ObservationMarker cancellationMarker(
-            final ObservationMarker openMarker,
-            final ObservationMarker failureMarker) {
-        if (openMarker == ObservationMarker.SOCKET_OPEN || failureMarker == ObservationMarker.SOCKET_FAILED) {
-            return ObservationMarker.SOCKET_CANCELLED;
-        }
-        if (openMarker == ObservationMarker.WEBSOCKET_OPEN || failureMarker == ObservationMarker.WEBSOCKET_FAILED) {
-            return ObservationMarker.WEBSOCKET_CANCELLED;
-        }
-        if (openMarker == ObservationMarker.SSE_OPEN || failureMarker == ObservationMarker.SSE_FAILED) {
-            return ObservationMarker.SSE_CANCELLED;
-        }
-        if (openMarker == ObservationMarker.STOMP_OPEN || failureMarker == ObservationMarker.STOMP_FAILED) {
-            return ObservationMarker.STOMP_CANCELLED;
-        }
-        if (openMarker == ObservationMarker.TLS_HANDSHAKE || failureMarker == ObservationMarker.TLS_FAILED) {
-            return ObservationMarker.TLS_CANCELLED;
-        }
-        return failureMarker;
-    }
-
-    /**
-     * Returns a safe source name.
-     *
-     * @param value source object to describe, or {@code null}
-     * @return fully qualified source class name, or {@code unknown} for a null source
-     */
-    private static String sourceName(final Object value) {
-        return value == null ? "unknown" : value.getClass().getName();
-    }
-
-    /**
-     * Returns the no-op listener.
-     *
-     * @return singleton no-operation listener
-     */
-    private static Listener<Object> noopListener() {
-        return NoopListener.INSTANCE;
-    }
-
-    /**
-     * Casts a listener to the internal object listener type.
-     *
-     * @param listener typed listener to adapt, or {@code null}
-     * @param <T>      callback source type accepted by the listener
-     * @return the same listener cast to the internal object type, or the no-op singleton when null
-     */
-    private static <T> Listener<Object> cast(final Listener<? super T> listener) {
-        return listener == null ? noopListener() : (Listener<Object>) listener;
     }
 
     /**

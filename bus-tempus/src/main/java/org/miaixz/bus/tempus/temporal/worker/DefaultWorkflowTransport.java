@@ -71,6 +71,98 @@ public class DefaultWorkflowTransport implements WorkflowTransport {
     }
 
     /**
+     * Finds a compatible {@link WorkflowClient#newInstance} factory method for the specified service stubs type.
+     *
+     * @param serviceStubsType runtime service stubs type
+     * @return matched factory method
+     */
+    private static Method findWorkflowClientFactory(Class<?> serviceStubsType) {
+        for (Method candidate : MethodKit.getPublicMethods(WorkflowClient.class)) {
+            if (!"newInstance".equals(candidate.getName()) || candidate.getParameterCount() != 1) {
+                continue;
+            }
+            Class<?> parameterType = candidate.getParameterTypes()[0];
+            if (parameterType.isAssignableFrom(serviceStubsType)) {
+                Logger.debug(
+                        false,
+                        "Tempus",
+                        "Workflow client factory lookup completed: stubsType={}, mode=singleArg",
+                        serviceStubsType.getName());
+                return candidate;
+            }
+        }
+        Logger.warn(
+                false,
+                "Tempus",
+                "Workflow client factory lookup failed: stubsType={}, mode=singleArg",
+                serviceStubsType.getName());
+        throw new IllegalStateException("No WorkflowClient.newInstance method accepts " + serviceStubsType.getName());
+    }
+
+    /**
+     * Finds a compatible two-argument {@link WorkflowClient#newInstance} factory method for the specified service stubs
+     * type.
+     *
+     * @param serviceStubsType runtime service stubs type
+     * @return matched factory method
+     */
+    private static Method findWorkflowClientFactoryWithOptions(Class<?> serviceStubsType) {
+        for (Method candidate : MethodKit.getPublicMethods(WorkflowClient.class)) {
+            if (!"newInstance".equals(candidate.getName()) || candidate.getParameterCount() != 2) {
+                continue;
+            }
+            Class<?>[] parameterTypes = candidate.getParameterTypes();
+            if (parameterTypes[0].isAssignableFrom(serviceStubsType)
+                    && WorkflowClientOptions.class.isAssignableFrom(parameterTypes[1])) {
+                Logger.debug(
+                        false,
+                        "Tempus",
+                        "Workflow client factory lookup completed: stubsType={}, mode=withOptions",
+                        serviceStubsType.getName());
+                return candidate;
+            }
+        }
+        Logger.warn(
+                false,
+                "Tempus",
+                "Workflow client factory lookup failed: stubsType={}, mode=withOptions",
+                serviceStubsType.getName());
+        throw new IllegalStateException(
+                "No WorkflowClient.newInstance(stubs, options) method accepts " + serviceStubsType.getName());
+    }
+
+    /**
+     * Returns the shutdown transport state name.
+     *
+     * @return shutdown transport state name
+     */
+    private static String shutdownTransportState() {
+        return WorkflowTransportState.SHUTDOWN.value();
+    }
+
+    /**
+     * Returns the unknown transport state name.
+     *
+     * @return unknown transport state name
+     */
+    private static String unknownTransportState() {
+        return WorkflowTransportState.UNKNOWN.value();
+    }
+
+    /**
+     * Configures a Temporal managed channel to bypass the JVM network proxy.
+     *
+     * @param channelBuilder Temporal managed channel builder
+     */
+    private static void configureDirectChannel(Object channelBuilder) {
+        ClassLoader loader = channelBuilder.getClass().getClassLoader();
+        Class<?> detectorType = ClassKit.forName(PROXY_DETECTOR, loader);
+        Object detector = java.lang.reflect.Proxy
+                .newProxyInstance(loader, new Class<?>[] { detectorType }, (proxy, method, arguments) -> null);
+        MethodKit.invoke(channelBuilder, "proxyDetector", detector);
+    }
+
+    /**
      * Creates a Temporal transport handle from the binding endpoint.
      *
      * @param binding Temporal binding configuration
@@ -412,67 +504,6 @@ public class DefaultWorkflowTransport implements WorkflowTransport {
     }
 
     /**
-     * Finds a compatible {@link WorkflowClient#newInstance} factory method for the specified service stubs type.
-     *
-     * @param serviceStubsType runtime service stubs type
-     * @return matched factory method
-     */
-    private static Method findWorkflowClientFactory(Class<?> serviceStubsType) {
-        for (Method candidate : MethodKit.getPublicMethods(WorkflowClient.class)) {
-            if (!"newInstance".equals(candidate.getName()) || candidate.getParameterCount() != 1) {
-                continue;
-            }
-            Class<?> parameterType = candidate.getParameterTypes()[0];
-            if (parameterType.isAssignableFrom(serviceStubsType)) {
-                Logger.debug(
-                        false,
-                        "Tempus",
-                        "Workflow client factory lookup completed: stubsType={}, mode=singleArg",
-                        serviceStubsType.getName());
-                return candidate;
-            }
-        }
-        Logger.warn(
-                false,
-                "Tempus",
-                "Workflow client factory lookup failed: stubsType={}, mode=singleArg",
-                serviceStubsType.getName());
-        throw new IllegalStateException("No WorkflowClient.newInstance method accepts " + serviceStubsType.getName());
-    }
-
-    /**
-     * Finds a compatible two-argument {@link WorkflowClient#newInstance} factory method for the specified service stubs
-     * type.
-     *
-     * @param serviceStubsType runtime service stubs type
-     * @return matched factory method
-     */
-    private static Method findWorkflowClientFactoryWithOptions(Class<?> serviceStubsType) {
-        for (Method candidate : MethodKit.getPublicMethods(WorkflowClient.class)) {
-            if (!"newInstance".equals(candidate.getName()) || candidate.getParameterCount() != 2) {
-                continue;
-            }
-            Class<?>[] parameterTypes = candidate.getParameterTypes();
-            if (parameterTypes[0].isAssignableFrom(serviceStubsType)
-                    && WorkflowClientOptions.class.isAssignableFrom(parameterTypes[1])) {
-                Logger.debug(
-                        false,
-                        "Tempus",
-                        "Workflow client factory lookup completed: stubsType={}, mode=withOptions",
-                        serviceStubsType.getName());
-                return candidate;
-            }
-        }
-        Logger.warn(
-                false,
-                "Tempus",
-                "Workflow client factory lookup failed: stubsType={}, mode=withOptions",
-                serviceStubsType.getName());
-        throw new IllegalStateException(
-                "No WorkflowClient.newInstance(stubs, options) method accepts " + serviceStubsType.getName());
-    }
-
-    /**
      * Waits for termination when the service stubs implementation exposes {@code awaitTermination(long, TimeUnit)}.
      *
      * @param target  target object
@@ -602,37 +633,6 @@ public class DefaultWorkflowTransport implements WorkflowTransport {
         Assert.isTrue(
                 serviceStubsType.isInstance(serviceStubs),
                 "serviceStubs must be a WorkflowServiceStubs instance");
-    }
-
-    /**
-     * Returns the shutdown transport state name.
-     *
-     * @return shutdown transport state name
-     */
-    private static String shutdownTransportState() {
-        return WorkflowTransportState.SHUTDOWN.value();
-    }
-
-    /**
-     * Returns the unknown transport state name.
-     *
-     * @return unknown transport state name
-     */
-    private static String unknownTransportState() {
-        return WorkflowTransportState.UNKNOWN.value();
-    }
-
-    /**
-     * Configures a Temporal managed channel to bypass the JVM network proxy.
-     *
-     * @param channelBuilder Temporal managed channel builder
-     */
-    private static void configureDirectChannel(Object channelBuilder) {
-        ClassLoader loader = channelBuilder.getClass().getClassLoader();
-        Class<?> detectorType = ClassKit.forName(PROXY_DETECTOR, loader);
-        Object detector = java.lang.reflect.Proxy
-                .newProxyInstance(loader, new Class<?>[] { detectorType }, (proxy, method, arguments) -> null);
-        MethodKit.invoke(channelBuilder, "proxyDetector", detector);
     }
 
 }

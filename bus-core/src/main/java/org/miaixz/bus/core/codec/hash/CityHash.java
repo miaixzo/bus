@@ -38,18 +38,22 @@ import org.miaixz.bus.core.xyz.ByteKit;
  */
 public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]> {
 
-    // Some primes between 2^63 and 2^64 for various uses.
-    private static final long k0 = 0xc3a5c85c97cb3127L;
-    private static final long k1 = 0xb492b66fbe98f273L;
-    private static final long k2 = 0x9ae16a3b2f90404fL;
-    // Magic numbers for 32-bit hashing. Copied from Murmur3.
-    private static final int c1 = 0xcc9e2d51;
-    private static final int c2 = 0x1b873593;
-
     /**
      * Singleton instance of the CityHash.
      */
     public static final CityHash INSTANCE = new CityHash();
+
+    // Some primes between 2^63 and 2^64 for various uses.
+    private static final long k0 = 0xc3a5c85c97cb3127L;
+
+    private static final long k1 = 0xb492b66fbe98f273L;
+
+    private static final long k2 = 0x9ae16a3b2f90404fL;
+
+    // Magic numbers for 32-bit hashing. Copied from Murmur3.
+    private static final int c1 = 0xcc9e2d51;
+
+    private static final int c2 = 0x1b873593;
 
     /**
      * Creates the shared CityHash implementation.

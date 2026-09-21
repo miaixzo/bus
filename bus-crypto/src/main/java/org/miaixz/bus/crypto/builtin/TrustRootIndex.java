@@ -20,12 +20,7 @@
 package org.miaixz.bus.crypto.builtin;
 
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.security.auth.x500.X500Principal;
 

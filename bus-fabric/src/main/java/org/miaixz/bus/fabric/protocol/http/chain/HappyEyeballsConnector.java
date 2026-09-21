@@ -60,6 +60,18 @@ final class HappyEyeballsConnector {
     }
 
     /**
+     * Converts asynchronous wrapper failures to the protocol runtime exception.
+     */
+    private static RuntimeException unwrap(final Throwable cause) {
+        Throwable current = cause;
+        while (current instanceof CompletionException || current instanceof ExecutionException) {
+            current = current.getCause();
+        }
+        return current instanceof RuntimeException runtime ? runtime
+                : new SocketException("Socket connect failed", current);
+    }
+
+    /**
      * Races the selected address candidates and cancels every loser immediately after the first success.
      *
      * @param candidates stable candidate order
@@ -197,18 +209,6 @@ final class HappyEyeballsConnector {
             }
         });
         return result;
-    }
-
-    /**
-     * Converts asynchronous wrapper failures to the protocol runtime exception.
-     */
-    private static RuntimeException unwrap(final Throwable cause) {
-        Throwable current = cause;
-        while (current instanceof CompletionException || current instanceof ExecutionException) {
-            current = current.getCause();
-        }
-        return current instanceof RuntimeException runtime ? runtime
-                : new SocketException("Socket connect failed", current);
     }
 
     /**

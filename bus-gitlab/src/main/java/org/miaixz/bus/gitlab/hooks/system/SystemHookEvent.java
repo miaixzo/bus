@@ -65,13 +65,6 @@ public interface SystemHookEvent extends Serializable {
     String getEventName();
 
     /**
-     * Sets the request url.
-     *
-     * @param requestUrl the request url value
-     */
-    void setRequestUrl(String requestUrl);
-
-    /**
      * Returns the request url.
      *
      * @return the result
@@ -81,11 +74,11 @@ public interface SystemHookEvent extends Serializable {
     String getRequestUrl();
 
     /**
-     * Sets the request query string.
+     * Sets the request url.
      *
-     * @param requestQueryString the request query string value
+     * @param requestUrl the request url value
      */
-    void setRequestQueryString(String requestQueryString);
+    void setRequestUrl(String requestUrl);
 
     /**
      * Returns the request query string.
@@ -97,11 +90,11 @@ public interface SystemHookEvent extends Serializable {
     String getRequestQueryString();
 
     /**
-     * Sets the request secret token.
+     * Sets the request query string.
      *
-     * @param requestSecretToken the request secret token value
+     * @param requestQueryString the request query string value
      */
-    void setRequestSecretToken(String requestSecretToken);
+    void setRequestQueryString(String requestQueryString);
 
     /**
      * Returns the request secret token.
@@ -112,10 +105,18 @@ public interface SystemHookEvent extends Serializable {
     @JsonIgnore
     String getRequestSecretToken();
 
+    /**
+     * Sets the request secret token.
+     *
+     * @param requestSecretToken the request secret token value
+     */
+    void setRequestSecretToken(String requestSecretToken);
+
 }
 
 // All of the following class definitions are needed to make the above work.
 // Jackson has a tough time mapping the same class to multiple IDs
+
 /**
  * The create project system hook event class.
  *
@@ -123,9 +124,6 @@ public interface SystemHookEvent extends Serializable {
  */
 class CreateProjectSystemHookEvent extends ProjectSystemHookEvent {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852228078820L;
 

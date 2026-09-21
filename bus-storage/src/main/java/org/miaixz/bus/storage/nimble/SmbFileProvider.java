@@ -849,42 +849,6 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * Closes the SMB file handle together with the returned stream.
-     */
-    private static class SmbFileInputStream extends FilterInputStream {
-
-        private final com.hierynomus.smbj.share.File file;
-
-        private SmbFileInputStream(InputStream inputStream, com.hierynomus.smbj.share.File file) {
-            super(inputStream);
-            this.file = file;
-        }
-
-        @Override
-        public void close() throws IOException {
-            IOException failure = null;
-            try {
-                super.close();
-            } catch (IOException e) {
-                failure = e;
-            }
-            try {
-                file.close();
-            } catch (Exception e) {
-                if (failure == null) {
-                    failure = new IOException(e);
-                } else {
-                    failure.addSuppressed(e);
-                }
-            }
-            if (failure != null) {
-                throw failure;
-            }
-        }
-
-    }
-
-    /**
      * Parses the server address from the given endpoint string, ensuring no port information is included.
      *
      * @param endpoint The SMB server address, e.g., {@code smb://hostname:port/share} or {@code hostname/share}.
@@ -1008,6 +972,42 @@ public class SmbFileProvider extends AbstractProvider {
                     e);
             throw new InternalException("Failed to create directory: " + dirPath, e);
         }
+    }
+
+    /**
+     * Closes the SMB file handle together with the returned stream.
+     */
+    private static class SmbFileInputStream extends FilterInputStream {
+
+        private final com.hierynomus.smbj.share.File file;
+
+        private SmbFileInputStream(InputStream inputStream, com.hierynomus.smbj.share.File file) {
+            super(inputStream);
+            this.file = file;
+        }
+
+        @Override
+        public void close() throws IOException {
+            IOException failure = null;
+            try {
+                super.close();
+            } catch (IOException e) {
+                failure = e;
+            }
+            try {
+                file.close();
+            } catch (Exception e) {
+                if (failure == null) {
+                    failure = new IOException(e);
+                } else {
+                    failure.addSuppressed(e);
+                }
+            }
+            if (failure != null) {
+                throw failure;
+            }
+        }
+
     }
 
 }

@@ -32,9 +32,6 @@ import java.net.URISyntaxException;
  */
 public class InstanceLocator implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852276716582L;
 

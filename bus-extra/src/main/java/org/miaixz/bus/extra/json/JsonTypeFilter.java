@@ -33,14 +33,6 @@ public interface JsonTypeFilter {
     JsonTypeFilter ALWAYS = type -> true;
 
     /**
-     * Determines whether a target class may be deserialized.
-     *
-     * @param type requested target class
-     * @return {@code true} when the type is accepted; {@code false} otherwise
-     */
-    boolean accept(Class<?> type);
-
-    /**
      * Returns the shared filter that accepts every target class.
      *
      * @return always-accept type filter
@@ -48,5 +40,13 @@ public interface JsonTypeFilter {
     static JsonTypeFilter always() {
         return ALWAYS;
     }
+
+    /**
+     * Determines whether a target class may be deserialized.
+     *
+     * @param type requested target class
+     * @return {@code true} when the type is accepted; {@code false} otherwise
+     */
+    boolean accept(Class<?> type);
 
 }

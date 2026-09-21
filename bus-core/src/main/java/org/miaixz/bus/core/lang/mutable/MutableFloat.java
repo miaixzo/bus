@@ -26,8 +26,8 @@ import org.miaixz.bus.core.xyz.CompareKit;
 /**
  * A mutable {@code float} wrapper.
  *
- * @see Float
  * @author Kimi Liu
+ * @see Float
  */
 public class MutableFloat extends Number implements Comparable<MutableFloat>, Mutable<Number> {
 

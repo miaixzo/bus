@@ -133,6 +133,215 @@ public class Http {
     }
 
     /**
+     * HTTP methods and Bus registry routing verbs shared by Bus modules.
+     * <p>
+     * Each value carries the integer {@code verb} code used by registry assets together with its wire or routing token.
+     * {@link #ALL}, {@link #NONE}, {@link #BEFORE}, and {@link #AFTER} are Bus routing controls rather than HTTP
+     * request methods. The remaining values model standard HTTP or WebDAV methods.
+     * </p>
+     *
+     * @author Kimi Liu
+     */
+    public enum Method {
+
+        /**
+         * Wildcard method used to match every HTTP method.
+         */
+        ALL(0, "ALL", false, false),
+        /**
+         * Sentinel value representing no HTTP method.
+         */
+        NONE(-1, "NONE", false, false),
+        /**
+         * GET request.
+         */
+        GET(1, "GET", false, false),
+        /**
+         * POST request.
+         */
+        POST(2, "POST", true, true),
+        /**
+         * HEAD request.
+         */
+        HEAD(3, "HEAD", false, false),
+        /**
+         * PUT request.
+         */
+        PUT(4, "PUT", true, true),
+        /**
+         * PATCH request.
+         */
+        PATCH(5, "PATCH", true, true),
+        /**
+         * DELETE request.
+         */
+        DELETE(6, "DELETE", false, false),
+        /**
+         * OPTIONS request.
+         */
+        OPTIONS(7, "OPTIONS", false, false),
+        /**
+         * TRACE request.
+         */
+        TRACE(8, "TRACE", false, false),
+        /**
+         * CONNECT request.
+         */
+        CONNECT(9, "CONNECT", false, false),
+        /**
+         * Custom method invoked before the primary operation.
+         */
+        BEFORE(10, "BEFORE", false, false),
+        /**
+         * Custom method invoked after the primary operation.
+         */
+        AFTER(11, "AFTER", false, false),
+        /**
+         * WebDAV resource move method.
+         */
+        MOVE(12, "MOVE", false, false),
+        /**
+         * WebDAV property update method.
+         */
+        PROPPATCH(13, "PROPPATCH", true, true),
+        /**
+         * WebDAV report generation method.
+         */
+        REPORT(14, "REPORT", true, true),
+        /**
+         * WebDAV property retrieval method.
+         */
+        PROPFIND(15, "PROPFIND", true, false);
+
+        /**
+         * Lookup table keyed by registry verb code.
+         */
+        private static final Map<Integer, Method> BY_VERB = Stream.of(values())
+                .collect(Collectors.toUnmodifiableMap(Method::verb, FunctionX.identity()));
+
+        /**
+         * Lookup table keyed by upper-cased method token.
+         */
+        private static final Map<String, Method> BY_VALUE = Stream.of(values())
+                .collect(Collectors.toUnmodifiableMap(Method::value, FunctionX.identity()));
+
+        /**
+         * Registry verb code used by stored assets.
+         */
+        private final int verb;
+
+        /**
+         * HTTP wire token or Bus routing token.
+         */
+        private final String value;
+
+        /**
+         * Whether request content is permitted by the Bus HTTP client policy.
+         */
+        private final boolean permitsBody;
+
+        /**
+         * Whether request content is required by the Bus HTTP client policy.
+         */
+        private final boolean requiresBody;
+
+        /**
+         * Creates one canonical HTTP method mapping.
+         *
+         * @param verb         registry verb code
+         * @param value        HTTP method token
+         * @param permitsBody  whether the method permits a request body
+         * @param requiresBody whether the method requires a request body
+         */
+        Method(final int verb, final String value, final boolean permitsBody, final boolean requiresBody) {
+            this.verb = verb;
+            this.value = value;
+            this.permitsBody = permitsBody;
+            this.requiresBody = requiresBody;
+        }
+
+        /**
+         * Resolves one method from the persisted registry verb code.
+         *
+         * @param verb registry verb code
+         * @return canonical method
+         * @throws IllegalArgumentException when the verb is unsupported
+         */
+        public static Method of(int verb) {
+            Method method = BY_VERB.get(verb);
+            if (method == null) {
+                throw new IllegalArgumentException("Unsupported HTTP verb: " + verb);
+            }
+            return method;
+        }
+
+        /**
+         * Resolves one method from a raw HTTP method token.
+         *
+         * @param method raw method token
+         * @return canonical method
+         * @throws IllegalArgumentException when the token is blank or unsupported
+         */
+        public static Method of(String method) {
+            if (method == null || method.isBlank()) {
+                throw new IllegalArgumentException("HTTP method cannot be blank");
+            }
+            Method resolved = BY_VALUE.get(method.trim().toUpperCase(Locale.ROOT));
+            if (resolved == null) {
+                throw new IllegalArgumentException("Unsupported HTTP method: " + method);
+            }
+            return resolved;
+        }
+
+        /**
+         * Returns the registry verb code.
+         *
+         * @return verb code
+         */
+        public int verb() {
+            return this.verb;
+        }
+
+        /**
+         * Returns the HTTP wire token or Bus routing token.
+         *
+         * @return method token
+         */
+        public String value() {
+            return this.value;
+        }
+
+        /**
+         * Returns whether this method permits request content.
+         *
+         * @return {@code true} when request content is allowed
+         */
+        public boolean permitsBody() {
+            return this.permitsBody;
+        }
+
+        /**
+         * Returns whether this method requires request content.
+         *
+         * @return {@code true} when request content is required
+         */
+        public boolean requiresBody() {
+            return this.requiresBody;
+        }
+
+        /**
+         * Returns whether the supplied token resolves to this canonical method.
+         *
+         * @param method raw method token
+         * @return {@code true} when the token resolves to this method
+         */
+        public boolean matches(String method) {
+            return method != null && this == BY_VALUE.get(method.trim().toUpperCase(Locale.ROOT));
+        }
+
+    }
+
+    /**
      * HTTP response status codes.
      */
     public static class Status {
@@ -997,254 +1206,317 @@ public class Http {
          * Resource retrieval path.
          */
         public static final String GET = "/get";
+
         /**
          * Resource creation path.
          */
         public static final String CREATE = "/create";
+
         /**
          * Resource deletion path.
          */
         public static final String DELETE = "/delete";
+
         /**
          * Resource removal path.
          */
         public static final String REMOVE = "/remove";
+
         /**
          * Resource update path.
          */
         public static final String UPDATE = "/update";
+
         /**
          * Resource save path.
          */
         public static final String SAVE = "/save";
+
         /**
          * Resource addition path.
          */
         public static final String ADD = "/add";
+
         /**
          * Resource editing path.
          */
         public static final String EDIT = "/edit";
+
         /**
          * Resource detail path.
          */
         public static final String VIEW = "/view";
+
         /**
          * Resource list path.
          */
         public static final String LIST = "/list";
+
         /**
          * Resource query path.
          */
         public static final String QUERY = "/query";
+
         /**
          * Resource search path.
          */
         public static final String SEARCH = "/search";
+
         /**
          * Paginated resource path.
          */
         public static final String PAGE = "/page";
+
         /**
          * Data extraction path.
          */
         public static final String EXTRACT = "/extract";
+
         /**
          * Resource preview path.
          */
         public static final String PREVIEW = "/preview";
+
         /**
          * Registry base path.
          */
         public static final String REGISTRY = "/registry";
+
         /**
          * Registry push path.
          */
         public static final String PUSH = "/push";
+
         /**
          * Registry pull path.
          */
         public static final String PULL = "/pull";
+
         /**
          * Data fetch path.
          */
         public static final String FETCH = "/fetch";
+
         /**
          * Upload path.
          */
         public static final String UPLOAD = "/upload";
+
         /**
          * Download path.
          */
         public static final String DOWNLOAD = "/download";
+
         /**
          * Image manifest path.
          */
         public static final String MANIFESTS = "/manifests";
+
         /**
          * Version tag path.
          */
         public static final String TAGS = "/tags";
+
         /**
          * Repository catalog path.
          */
         public static final String CATALOG = "/catalog";
+
         /**
          * Upload initiation path.
          */
         public static final String INITIATE = "/initiate";
+
         /**
          * Upload completion path.
          */
         public static final String COMPLETE = "/complete";
+
         /**
          * Upload part path.
          */
         public static final String PART = "/part";
+
         /**
          * Health check path.
          */
         public static final String HEALTH = "/health";
+
         /**
          * Liveness probe path.
          */
         public static final String LIVENESS = "/liveness";
+
         /**
          * Readiness probe path.
          */
         public static final String READINESS = "/readiness";
+
         /**
          * Metrics export path.
          */
         public static final String METRICS = "/metrics";
+
         /**
          * System information path.
          */
         public static final String INFO = "/info";
+
         /**
          * Reachability check path.
          */
         public static final String PING = "/ping";
+
         /**
          * Log access path.
          */
         public static final String LOGS = "/logs";
+
         /**
          * Heap dump path.
          */
         public static final String HEAP_DUMP = "/dump";
+
         /**
          * Thread dump path.
          */
         public static final String THREAD_DUMP = "/threaddump";
+
         /**
          * Environment information path.
          */
         public static final String ENV = "/env";
+
         /**
          * Task trigger path.
          */
         public static final String TRIGGER = "/trigger";
+
         /**
          * Operation status path.
          */
         public static final String STATUS = "/status";
+
         /**
          * Operation cancellation path.
          */
         public static final String CANCEL = "/cancel";
+
         /**
          * Configuration path.
          */
         public static final String CONFIG = "/config";
+
         /**
          * Data synchronization path.
          */
         public static final String SYNC = "/sync";
+
         /**
          * Batch operation path.
          */
         public static final String BATCH = "/batch";
+
         /**
          * Bulk import path.
          */
         public static final String IMPORT = "/import";
+
         /**
          * Bulk export path.
          */
         public static final String EXPORT = "/export";
+
         /**
          * Operation retry path.
          */
         public static final String RETRY = "/retry";
+
         /**
          * Operation rollback path.
          */
         public static final String ROLLBACK = "/rollback";
+
         /**
          * Authentication entry path.
          */
         public static final String AUTH = "/auth";
+
         /**
          * Token issue path.
          */
         public static final String TOKEN = "/token";
+
         /**
          * Token revocation path.
          */
         public static final String REVOKE = "/revoke";
+
         /**
          * Verification path.
          */
         public static final String VERIFY = "/verify";
+
         /**
          * Current user path.
          */
         public static final String ME = "/me";
+
         /**
          * Public key path.
          */
         public static final String KEYS = "/keys";
+
         /**
          * Authorization path.
          */
         public static final String AUTHORIZE = "/authorize";
+
         /**
          * Token introspection path.
          */
         public static final String INTROSPECT = "/introspect";
+
         /**
          * Session management path.
          */
         public static final String SESSION = "/session";
+
         /**
          * Resource metadata path.
          */
         public static final String METADATA = "/metadata";
+
         /**
          * API capabilities path.
          */
         public static final String CAPABILITIES = "/capabilities";
+
         /**
          * WebSocket entry path.
          */
         public static final String WEBSOCKET = "/ws";
+
         /**
          * Event stream path.
          */
         public static final String EVENTS = "/events";
+
         /**
          * Webhook callback path.
          */
         public static final String WEBHOOK = "/webhook";
+
         /**
          * Resource subscription path.
          */
         public static final String SUBSCRIBE = "/subscribe";
+
         /**
          * Message publication path.
          */
         public static final String PUBLISH = "/publish";
+
         /**
          * OpenID Connect discovery path.
          */
@@ -1254,18 +1526,22 @@ public class Http {
          * OAuth 2.0 Authorization Server Metadata well-known path defined by RFC 8414.
          */
         public static final String AUTHORIZATION_SERVER_METADATA = "/.well-known/oauth-authorization-server";
+
         /**
          * Security policy discovery path.
          */
         public static final String SECURITY_TXT = "/.well-known/security.txt";
+
         /**
          * Web crawler instruction path.
          */
         public static final String ROBOTS_TXT = "/robots.txt";
+
         /**
          * Search engine sitemap path.
          */
         public static final String SITEMAP_XML = "/sitemap.xml";
+
         /**
          * Website icon path.
          */
@@ -1330,11 +1606,6 @@ public class Http {
         public static final String API_KEY_HEADER = "X-API-Key";
 
         /**
-         * Metadata label used for credentials without an explicit authorization scheme.
-         */
-        private static final String RAW_SCHEME = "Raw";
-
-        /**
          * Supported access-token header names for platform-specific token guards.
          * <p>
          * Strict Bearer parsing still accepts only {@link Header#AUTHORIZATION}.
@@ -1356,6 +1627,11 @@ public class Http {
                 "X-API-KEY",
                 "API-KEY",
                 "API-ID");
+
+        /**
+         * Metadata label used for credentials without an explicit authorization scheme.
+         */
+        private static final String RAW_SCHEME = "Raw";
 
         /**
          * Creates an HTTP authentication namespace instance.
@@ -1695,215 +1971,6 @@ public class Http {
          */
         public WebSocket() {
             // No initialization required.
-        }
-
-    }
-
-    /**
-     * HTTP methods and Bus registry routing verbs shared by Bus modules.
-     * <p>
-     * Each value carries the integer {@code verb} code used by registry assets together with its wire or routing token.
-     * {@link #ALL}, {@link #NONE}, {@link #BEFORE}, and {@link #AFTER} are Bus routing controls rather than HTTP
-     * request methods. The remaining values model standard HTTP or WebDAV methods.
-     * </p>
-     *
-     * @author Kimi Liu
-     */
-    public enum Method {
-
-        /**
-         * Wildcard method used to match every HTTP method.
-         */
-        ALL(0, "ALL", false, false),
-        /**
-         * Sentinel value representing no HTTP method.
-         */
-        NONE(-1, "NONE", false, false),
-        /**
-         * GET request.
-         */
-        GET(1, "GET", false, false),
-        /**
-         * POST request.
-         */
-        POST(2, "POST", true, true),
-        /**
-         * HEAD request.
-         */
-        HEAD(3, "HEAD", false, false),
-        /**
-         * PUT request.
-         */
-        PUT(4, "PUT", true, true),
-        /**
-         * PATCH request.
-         */
-        PATCH(5, "PATCH", true, true),
-        /**
-         * DELETE request.
-         */
-        DELETE(6, "DELETE", false, false),
-        /**
-         * OPTIONS request.
-         */
-        OPTIONS(7, "OPTIONS", false, false),
-        /**
-         * TRACE request.
-         */
-        TRACE(8, "TRACE", false, false),
-        /**
-         * CONNECT request.
-         */
-        CONNECT(9, "CONNECT", false, false),
-        /**
-         * Custom method invoked before the primary operation.
-         */
-        BEFORE(10, "BEFORE", false, false),
-        /**
-         * Custom method invoked after the primary operation.
-         */
-        AFTER(11, "AFTER", false, false),
-        /**
-         * WebDAV resource move method.
-         */
-        MOVE(12, "MOVE", false, false),
-        /**
-         * WebDAV property update method.
-         */
-        PROPPATCH(13, "PROPPATCH", true, true),
-        /**
-         * WebDAV report generation method.
-         */
-        REPORT(14, "REPORT", true, true),
-        /**
-         * WebDAV property retrieval method.
-         */
-        PROPFIND(15, "PROPFIND", true, false);
-
-        /**
-         * Lookup table keyed by registry verb code.
-         */
-        private static final Map<Integer, Method> BY_VERB = Stream.of(values())
-                .collect(Collectors.toUnmodifiableMap(Method::verb, FunctionX.identity()));
-
-        /**
-         * Lookup table keyed by upper-cased method token.
-         */
-        private static final Map<String, Method> BY_VALUE = Stream.of(values())
-                .collect(Collectors.toUnmodifiableMap(Method::value, FunctionX.identity()));
-
-        /**
-         * Registry verb code used by stored assets.
-         */
-        private final int verb;
-
-        /**
-         * HTTP wire token or Bus routing token.
-         */
-        private final String value;
-
-        /**
-         * Whether request content is permitted by the Bus HTTP client policy.
-         */
-        private final boolean permitsBody;
-
-        /**
-         * Whether request content is required by the Bus HTTP client policy.
-         */
-        private final boolean requiresBody;
-
-        /**
-         * Creates one canonical HTTP method mapping.
-         *
-         * @param verb         registry verb code
-         * @param value        HTTP method token
-         * @param permitsBody  whether the method permits a request body
-         * @param requiresBody whether the method requires a request body
-         */
-        Method(final int verb, final String value, final boolean permitsBody, final boolean requiresBody) {
-            this.verb = verb;
-            this.value = value;
-            this.permitsBody = permitsBody;
-            this.requiresBody = requiresBody;
-        }
-
-        /**
-         * Returns the registry verb code.
-         *
-         * @return verb code
-         */
-        public int verb() {
-            return this.verb;
-        }
-
-        /**
-         * Returns the HTTP wire token or Bus routing token.
-         *
-         * @return method token
-         */
-        public String value() {
-            return this.value;
-        }
-
-        /**
-         * Returns whether this method permits request content.
-         *
-         * @return {@code true} when request content is allowed
-         */
-        public boolean permitsBody() {
-            return this.permitsBody;
-        }
-
-        /**
-         * Returns whether this method requires request content.
-         *
-         * @return {@code true} when request content is required
-         */
-        public boolean requiresBody() {
-            return this.requiresBody;
-        }
-
-        /**
-         * Resolves one method from the persisted registry verb code.
-         *
-         * @param verb registry verb code
-         * @return canonical method
-         * @throws IllegalArgumentException when the verb is unsupported
-         */
-        public static Method of(int verb) {
-            Method method = BY_VERB.get(verb);
-            if (method == null) {
-                throw new IllegalArgumentException("Unsupported HTTP verb: " + verb);
-            }
-            return method;
-        }
-
-        /**
-         * Resolves one method from a raw HTTP method token.
-         *
-         * @param method raw method token
-         * @return canonical method
-         * @throws IllegalArgumentException when the token is blank or unsupported
-         */
-        public static Method of(String method) {
-            if (method == null || method.isBlank()) {
-                throw new IllegalArgumentException("HTTP method cannot be blank");
-            }
-            Method resolved = BY_VALUE.get(method.trim().toUpperCase(Locale.ROOT));
-            if (resolved == null) {
-                throw new IllegalArgumentException("Unsupported HTTP method: " + method);
-            }
-            return resolved;
-        }
-
-        /**
-         * Returns whether the supplied token resolves to this canonical method.
-         *
-         * @param method raw method token
-         * @return {@code true} when the token resolves to this method
-         */
-        public boolean matches(String method) {
-            return method != null && this == BY_VALUE.get(method.trim().toUpperCase(Locale.ROOT));
         }
 
     }

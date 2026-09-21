@@ -146,6 +146,15 @@ public class PageContext {
     }
 
     /**
+     * Sets the {@link Pageable} object for the current thread.
+     *
+     * @param pageable the pageable to set
+     */
+    public static void setLocalPage(Pageable pageable) {
+        LOCAL_PAGE.set(pageable);
+    }
+
+    /**
      * Gets whether to perform a count query for the current thread.
      *
      * @return {@code true} if count should be performed, {@code false} otherwise
@@ -153,15 +162,6 @@ public class PageContext {
     public static boolean getLocalCount() {
         Boolean count = LOCAL_COUNT.get();
         return count != null && count;
-    }
-
-    /**
-     * Sets the {@link Pageable} object for the current thread.
-     *
-     * @param pageable the pageable to set
-     */
-    public static void setLocalPage(Pageable pageable) {
-        LOCAL_PAGE.set(pageable);
     }
 
     /**

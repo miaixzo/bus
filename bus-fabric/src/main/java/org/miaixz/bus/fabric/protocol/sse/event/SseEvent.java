@@ -67,46 +67,6 @@ public record SseEvent(String id, String event, String data, Duration retry) {
     }
 
     /**
-     * Returns the event identifier.
-     *
-     * @return validated event identifier, or null when absent
-     */
-    @Override
-    public String id() {
-        return id;
-    }
-
-    /**
-     * Returns the event type.
-     *
-     * @return explicit event type or the SSE default event name
-     */
-    @Override
-    public String event() {
-        return event;
-    }
-
-    /**
-     * Returns event data.
-     *
-     * @return normalized non-null event data
-     */
-    @Override
-    public String data() {
-        return data;
-    }
-
-    /**
-     * Returns retry directive.
-     *
-     * @return non-negative reconnection delay, or null when absent
-     */
-    @Override
-    public Duration retry() {
-        return retry;
-    }
-
-    /**
      * Normalizes an event type.
      *
      * @param value event type candidate, or null
@@ -185,6 +145,46 @@ public record SseEvent(String id, String event, String data, Duration retry) {
                 value != null && value.isNegative(),
                 () -> new ValidateException("SSE retry must be non-negative"));
         return value;
+    }
+
+    /**
+     * Returns the event identifier.
+     *
+     * @return validated event identifier, or null when absent
+     */
+    @Override
+    public String id() {
+        return id;
+    }
+
+    /**
+     * Returns the event type.
+     *
+     * @return explicit event type or the SSE default event name
+     */
+    @Override
+    public String event() {
+        return event;
+    }
+
+    /**
+     * Returns event data.
+     *
+     * @return normalized non-null event data
+     */
+    @Override
+    public String data() {
+        return data;
+    }
+
+    /**
+     * Returns retry directive.
+     *
+     * @return non-negative reconnection delay, or null when absent
+     */
+    @Override
+    public Duration retry() {
+        return retry;
     }
 
 }

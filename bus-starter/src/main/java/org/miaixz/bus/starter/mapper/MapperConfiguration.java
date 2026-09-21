@@ -21,7 +21,9 @@ package org.miaixz.bus.starter.mapper;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -104,14 +106,14 @@ public class MapperConfiguration implements InitializingBean {
     private final MapperProperties properties;
 
     /**
-     * Spring resource pattern resolver used to resolve mapper XML locations.
-     */
-    private ResourcePatternResolver mapperResourceResolver;
-
-    /**
      * Provider for optional MyBatis configuration customizers.
      */
     private final ObjectProvider<List<MyBatisConfigCustomizer>> configurationCustomizersProvider;
+
+    /**
+     * Spring resource pattern resolver used to resolve mapper XML locations.
+     */
+    private ResourcePatternResolver mapperResourceResolver;
 
     /**
      * Creates the Mapper integration configuration from its required collaborators.
@@ -130,19 +132,6 @@ public class MapperConfiguration implements InitializingBean {
     }
 
     /**
-     * Creates the Mapper observer that synchronizes dialect state with JDBC route changes.
-     *
-     * @param dataSourceHolder application-context-scoped datasource routing state
-     * @return datasource route listener for Mapper dialects
-     */
-    @Bean(destroyMethod = "close")
-    @ConditionalOnMissingBean(DialectListener.class)
-    @ConditionalOnBean(DataSourceHolder.class)
-    public DialectListener dialectListener(DataSourceHolder dataSourceHolder) {
-        return new DialectListener(dataSourceHolder);
-    }
-
-    /**
      * Creates the infrastructure processor that binds both default and user-supplied MyBatis factories to datasource
      * dialect routing.
      *
@@ -153,6 +142,51 @@ public class MapperConfiguration implements InitializingBean {
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public static DialectBinding dialectBinding(ObjectProvider<DialectListener> dialectListeners) {
         return new DialectBinding(dialectListeners);
+    }
+
+    /**
+     * Registers the {@link BeanFactoryInitializationAotProcessor} that scans for {@link MapperFactoryBean} definitions
+     * and registers runtime hints.
+     * <p>
+     * <strong>JVM Mode:</strong> Instantiated but not executed (AOT processors are ignored) <strong>Native Image
+     * Mode:</strong> Executed during native-image compilation
+     *
+     * @param environment Spring environment used for early mapper property binding
+     * @return the AOT processor bean
+     */
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    @ConditionalOnMissingBean(MapperAotProcessors.MyBatisBeanFactoryInitializationAotProcessor.class)
+    static MapperAotProcessors.MyBatisBeanFactoryInitializationAotProcessor myBatisBeanFactoryInitializationAotProcessor(
+            Environment environment) {
+        return new MapperAotProcessors.MyBatisBeanFactoryInitializationAotProcessor(environment);
+    }
+
+    /**
+     * Registers a BeanFactoryPostProcessor to fix MapperFactoryBean definitions at runtime.
+     * <p>
+     * This is needed when AOT-generated bean definitions set {@code mapperInterface} as a class name string.
+     *
+     * @return the bean factory post-processor
+     */
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    @ConditionalOnMissingBean(MapperAotProcessors.MapperInterfaceStringToClassConverter.class)
+    static MapperAotProcessors.MapperInterfaceStringToClassConverter mapperInterfaceStringToClassConverter() {
+        return new MapperAotProcessors.MapperInterfaceStringToClassConverter();
+    }
+
+    /**
+     * Creates the Mapper observer that synchronizes dialect state with JDBC route changes.
+     *
+     * @param dataSourceHolder application-context-scoped datasource routing state
+     * @return datasource route listener for Mapper dialects
+     */
+    @Bean(destroyMethod = "close")
+    @ConditionalOnMissingBean(DialectListener.class)
+    @ConditionalOnBean(DataSourceHolder.class)
+    public DialectListener dialectListener(DataSourceHolder dataSourceHolder) {
+        return new DialectListener(dataSourceHolder);
     }
 
     /**
@@ -303,38 +337,6 @@ public class MapperConfiguration implements InitializingBean {
             + ".tenant", name = "enabled", havingValue = "true", matchIfMissing = false)
     public TenantProvider contextTenantProvider() {
         return new ContextTenantProvider();
-    }
-
-    /**
-     * Registers the {@link BeanFactoryInitializationAotProcessor} that scans for {@link MapperFactoryBean} definitions
-     * and registers runtime hints.
-     * <p>
-     * <strong>JVM Mode:</strong> Instantiated but not executed (AOT processors are ignored) <strong>Native Image
-     * Mode:</strong> Executed during native-image compilation
-     *
-     * @param environment Spring environment used for early mapper property binding
-     * @return the AOT processor bean
-     */
-    @Bean
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    @ConditionalOnMissingBean(MapperAotProcessors.MyBatisBeanFactoryInitializationAotProcessor.class)
-    static MapperAotProcessors.MyBatisBeanFactoryInitializationAotProcessor myBatisBeanFactoryInitializationAotProcessor(
-            Environment environment) {
-        return new MapperAotProcessors.MyBatisBeanFactoryInitializationAotProcessor(environment);
-    }
-
-    /**
-     * Registers a BeanFactoryPostProcessor to fix MapperFactoryBean definitions at runtime.
-     * <p>
-     * This is needed when AOT-generated bean definitions set {@code mapperInterface} as a class name string.
-     *
-     * @return the bean factory post-processor
-     */
-    @Bean
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    @ConditionalOnMissingBean(MapperAotProcessors.MapperInterfaceStringToClassConverter.class)
-    static MapperAotProcessors.MapperInterfaceStringToClassConverter mapperInterfaceStringToClassConverter() {
-        return new MapperAotProcessors.MapperInterfaceStringToClassConverter();
     }
 
     /**

@@ -35,34 +35,42 @@ public class EventSnippet {
      * The id value.
      */
     private Long id;
+
     /**
      * The title value.
      */
     private String title;
+
     /**
      * The content value.
      */
     private String content;
+
     /**
      * The author id value.
      */
     private Long authorId;
+
     /**
      * The project id value.
      */
     private Long projectId;
+
     /**
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The updated at value.
      */
     private Date updatedAt;
+
     /**
      * The file name value.
      */
     private String fileName;
+
     /**
      * The expires at value.
      */
@@ -72,6 +80,7 @@ public class EventSnippet {
      * The type field.
      */
     private String type;
+
     /**
      * The visibility level value.
      */

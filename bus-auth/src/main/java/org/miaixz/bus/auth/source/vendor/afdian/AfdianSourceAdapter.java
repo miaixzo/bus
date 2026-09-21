@@ -65,30 +65,37 @@ public class AfdianSourceAdapter implements VendorAdapter {
      * Source identifier.
      */
     private final String sourceId;
+
     /**
      * Selected Afdian manifest.
      */
     private final VendorManifest.Variant variant;
+
     /**
      * Validated Afdian options.
      */
     private final AfdianOptions options;
+
     /**
      * External runtime dependencies.
      */
     private final SourceServices services;
+
     /**
      * Shared browser security lifecycle.
      */
     private final RedirectManager redirectManager;
+
     /**
      * Strict query codec.
      */
     private final QueryCodec queryCodec = new QueryCodec();
+
     /**
      * Strict form codec.
      */
     private final FormCodec formCodec = new FormCodec();
+
     /**
      * Standard OAuth 2.x authorization response decoder.
      */

@@ -67,6 +67,95 @@ public class AffixRewriteHandler extends ScopedProviderHandler<Object, AffixRule
     }
 
     /**
+     * Resolves datasource, shared, and default affix settings into executable rules.
+     * <p>
+     * Datasource values take precedence over shared values, which take precedence over default values. A supplied
+     * provider controls prefix and suffix values while property-based ignore lists remain effective.
+     *
+     * @param datasourceKey effective datasource key
+     * @param properties    flattened Mapper properties
+     * @param provider      optional dynamic affix value provider
+     * @return resolved affix rules, or {@code null} when neither values nor a provider are configured
+     */
+    public static AffixRuleConfig resolveConfig(
+            String datasourceKey,
+            Properties properties,
+            AffixValueProvider provider) {
+        if (properties == null && provider == null) {
+            return null;
+        }
+        if (properties == null) {
+            return AffixRuleConfig.builder().provider(provider).prefixIgnore(Collections.emptyList())
+                    .suffixIgnore(Collections.emptyList()).build();
+        }
+
+        String key = StringKit.isNotEmpty(datasourceKey) ? datasourceKey : Normal.DEFAULT;
+        String datasourceAffixScope = key + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT;
+        String sharedAffixScope = Args.SHARED_KEY + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT;
+        String defaultAffixScope = Normal.DEFAULT + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT;
+        String prefixValue = properties.getProperty(
+                datasourceAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
+                properties.getProperty(
+                        sharedAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
+                        properties.getProperty(
+                                defaultAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
+                                Normal.EMPTY)));
+        String suffixValue = properties.getProperty(
+                datasourceAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
+                properties.getProperty(
+                        sharedAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
+                        properties.getProperty(
+                                defaultAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
+                                Normal.EMPTY)));
+        String prefixIgnore = properties.getProperty(
+                datasourceAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_IGNORE,
+                properties.getProperty(
+                        sharedAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_IGNORE,
+                        properties.getProperty(
+                                defaultAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_IGNORE,
+                                Normal.EMPTY)));
+        String suffixIgnore = properties.getProperty(
+                datasourceAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_IGNORE,
+                properties.getProperty(
+                        sharedAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_IGNORE,
+                        properties.getProperty(
+                                defaultAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_IGNORE,
+                                Normal.EMPTY)));
+
+        List<String> prefixIgnoreTables = StringKit.isNotEmpty(prefixIgnore)
+                ? Arrays.stream(prefixIgnore.split(Symbol.COMMA)).map(String::trim).filter(ObjectKit::isNotEmpty)
+                        .collect(Collectors.toList())
+                : Collections.emptyList();
+        List<String> suffixIgnoreTables = StringKit.isNotEmpty(suffixIgnore)
+                ? Arrays.stream(suffixIgnore.split(Symbol.COMMA)).map(String::trim).filter(ObjectKit::isNotEmpty)
+                        .collect(Collectors.toList())
+                : Collections.emptyList();
+        if (provider == null && StringKit.isEmpty(prefixValue) && StringKit.isEmpty(suffixValue)) {
+            return null;
+        }
+
+        AffixValueProvider resolvedProvider = provider;
+        if (resolvedProvider == null) {
+            String configuredPrefix = prefixValue;
+            String configuredSuffix = suffixValue;
+            resolvedProvider = new AffixValueProvider() {
+
+                @Override
+                public String getPrefix() {
+                    return configuredPrefix;
+                }
+
+                @Override
+                public String getSuffix() {
+                    return configuredSuffix;
+                }
+            };
+        }
+        return AffixRuleConfig.builder().provider(resolvedProvider).prefixIgnore(prefixIgnoreTables)
+                .suffixIgnore(suffixIgnoreTables).build();
+    }
+
+    /**
      * Returns the flattened property scope used to configure affix rewriting.
      *
      * @return the {@code affix} property scope
@@ -163,95 +252,6 @@ public class AffixRewriteHandler extends ScopedProviderHandler<Object, AffixRule
     @Override
     protected AffixRuleConfig resolve(String datasourceKey, Properties properties, AffixValueProvider provider) {
         return resolveConfig(datasourceKey, properties, provider);
-    }
-
-    /**
-     * Resolves datasource, shared, and default affix settings into executable rules.
-     * <p>
-     * Datasource values take precedence over shared values, which take precedence over default values. A supplied
-     * provider controls prefix and suffix values while property-based ignore lists remain effective.
-     *
-     * @param datasourceKey effective datasource key
-     * @param properties    flattened Mapper properties
-     * @param provider      optional dynamic affix value provider
-     * @return resolved affix rules, or {@code null} when neither values nor a provider are configured
-     */
-    public static AffixRuleConfig resolveConfig(
-            String datasourceKey,
-            Properties properties,
-            AffixValueProvider provider) {
-        if (properties == null && provider == null) {
-            return null;
-        }
-        if (properties == null) {
-            return AffixRuleConfig.builder().provider(provider).prefixIgnore(Collections.emptyList())
-                    .suffixIgnore(Collections.emptyList()).build();
-        }
-
-        String key = StringKit.isNotEmpty(datasourceKey) ? datasourceKey : Normal.DEFAULT;
-        String datasourceAffixScope = key + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT;
-        String sharedAffixScope = Args.SHARED_KEY + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT;
-        String defaultAffixScope = Normal.DEFAULT + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT;
-        String prefixValue = properties.getProperty(
-                datasourceAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
-                properties.getProperty(
-                        sharedAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
-                        properties.getProperty(
-                                defaultAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
-                                Normal.EMPTY)));
-        String suffixValue = properties.getProperty(
-                datasourceAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
-                properties.getProperty(
-                        sharedAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
-                        properties.getProperty(
-                                defaultAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
-                                Normal.EMPTY)));
-        String prefixIgnore = properties.getProperty(
-                datasourceAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_IGNORE,
-                properties.getProperty(
-                        sharedAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_IGNORE,
-                        properties.getProperty(
-                                defaultAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_IGNORE,
-                                Normal.EMPTY)));
-        String suffixIgnore = properties.getProperty(
-                datasourceAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_IGNORE,
-                properties.getProperty(
-                        sharedAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_IGNORE,
-                        properties.getProperty(
-                                defaultAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_IGNORE,
-                                Normal.EMPTY)));
-
-        List<String> prefixIgnoreTables = StringKit.isNotEmpty(prefixIgnore)
-                ? Arrays.stream(prefixIgnore.split(Symbol.COMMA)).map(String::trim).filter(ObjectKit::isNotEmpty)
-                        .collect(Collectors.toList())
-                : Collections.emptyList();
-        List<String> suffixIgnoreTables = StringKit.isNotEmpty(suffixIgnore)
-                ? Arrays.stream(suffixIgnore.split(Symbol.COMMA)).map(String::trim).filter(ObjectKit::isNotEmpty)
-                        .collect(Collectors.toList())
-                : Collections.emptyList();
-        if (provider == null && StringKit.isEmpty(prefixValue) && StringKit.isEmpty(suffixValue)) {
-            return null;
-        }
-
-        AffixValueProvider resolvedProvider = provider;
-        if (resolvedProvider == null) {
-            String configuredPrefix = prefixValue;
-            String configuredSuffix = suffixValue;
-            resolvedProvider = new AffixValueProvider() {
-
-                @Override
-                public String getPrefix() {
-                    return configuredPrefix;
-                }
-
-                @Override
-                public String getSuffix() {
-                    return configuredSuffix;
-                }
-            };
-        }
-        return AffixRuleConfig.builder().provider(resolvedProvider).prefixIgnore(prefixIgnoreTables)
-                .suffixIgnore(suffixIgnoreTables).build();
     }
 
     /**

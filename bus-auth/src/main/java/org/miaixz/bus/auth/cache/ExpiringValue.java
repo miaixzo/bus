@@ -40,9 +40,6 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public record ExpiringValue<T>(T value, Instant expiresAt) implements Serializable {
 
-    /**
-     * Stable serialization version for expiring cache values.
-     */
     @Serial
     private static final long serialVersionUID = 2852230011506L;
 

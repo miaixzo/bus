@@ -45,6 +45,30 @@ public class EmailProvider extends AbstractProvider {
     }
 
     /**
+     * Masks the given email address.
+     *
+     * @param email  The email address to mask.
+     * @param shadow The character to use for masking.
+     * @return The masked email address.
+     */
+    private static String email(final String email, final String shadow) {
+        if (StringKit.isEmpty(email)) {
+            return null;
+        }
+
+        final int prefixLength = 3;
+
+        final int atIndex = email.indexOf(Symbol.AT);
+        String middle = StringKit.fill(4, shadow);
+
+        if (atIndex > 0) {
+            int middleLength = atIndex - prefixLength;
+            middle = StringKit.repeat(shadow, middleLength);
+        }
+        return StringKit.build(email, middle, prefixLength);
+    }
+
+    /**
      * Returns the masking strategy used to register this email provider.
      *
      * @return {@link EnumValue.Masking#EMAIL}
@@ -68,30 +92,6 @@ public class EmailProvider extends AbstractProvider {
         }
         final Shield shield = context.getShield();
         return email(ObjectKit.isNull(object) ? Normal.EMPTY : object.toString(), shield.shadow());
-    }
-
-    /**
-     * Masks the given email address.
-     *
-     * @param email  The email address to mask.
-     * @param shadow The character to use for masking.
-     * @return The masked email address.
-     */
-    private static String email(final String email, final String shadow) {
-        if (StringKit.isEmpty(email)) {
-            return null;
-        }
-
-        final int prefixLength = 3;
-
-        final int atIndex = email.indexOf(Symbol.AT);
-        String middle = StringKit.fill(4, shadow);
-
-        if (atIndex > 0) {
-            int middleLength = atIndex - prefixLength;
-            middle = StringKit.repeat(shadow, middleLength);
-        }
-        return StringKit.build(email, middle, prefixLength);
     }
 
 }

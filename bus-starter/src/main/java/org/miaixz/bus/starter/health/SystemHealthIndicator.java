@@ -63,23 +63,6 @@ public class SystemHealthIndicator implements HealthIndicator {
     }
 
     /**
-     * Reports system health without changing application availability state.
-     *
-     * @return current health result
-     */
-    @Override
-    public Health health() {
-        if (details.isEmpty()) {
-            return Health.up().build();
-        }
-        try {
-            return Health.up().withDetails(collector.get(details)).build();
-        } catch (RuntimeException e) {
-            return Health.down(e).build();
-        }
-    }
-
-    /**
      * Builds the case-insensitive mapping of supported health detail identifiers.
      *
      * @return immutable map from lowercase identifiers to canonical identifiers
@@ -117,6 +100,23 @@ public class SystemHealthIndicator implements HealthIndicator {
             }
         }
         return List.copyOf(normalized);
+    }
+
+    /**
+     * Reports system health without changing application availability state.
+     *
+     * @return current health result
+     */
+    @Override
+    public Health health() {
+        if (details.isEmpty()) {
+            return Health.up().build();
+        }
+        try {
+            return Health.up().withDetails(collector.get(details)).build();
+        } catch (RuntimeException e) {
+            return Health.down(e).build();
+        }
     }
 
 }

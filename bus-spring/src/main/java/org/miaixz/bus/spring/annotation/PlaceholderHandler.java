@@ -39,10 +39,12 @@ public class PlaceholderHandler implements InvocationHandler {
      * Source annotation receiving delegated invocations.
      */
     private final Annotation delegate;
+
     /**
      * Binder used to resolve placeholder values.
      */
     private final PlaceholderBinder binder;
+
     /**
      * Environment supplying placeholder properties.
      */

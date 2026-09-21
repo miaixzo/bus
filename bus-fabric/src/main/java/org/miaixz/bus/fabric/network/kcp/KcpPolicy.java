@@ -167,6 +167,92 @@ public class KcpPolicy implements Policy {
     }
 
     /**
+     * Validates the supported wire format version.
+     *
+     * @param value wire version candidate
+     * @return validated wire version
+     */
+    private static int wireVersion(final int value) {
+        if (value != Normal._1 && value != Normal._2) {
+            throw new ValidateException("KCP wire version must be 1 or 2");
+        }
+        return value;
+    }
+
+    /**
+     * Validates a KCP packet window size.
+     *
+     * @param value window size candidate
+     * @param name  logical field name used in validation messages
+     * @return validated window size
+     */
+    private static int window(final int value, final String name) {
+        return Assert.checkBetween(
+                value,
+                Normal._1,
+                Normal._65535,
+                () -> new ValidateException(name + " must be between 1 and 65535"));
+    }
+
+    /**
+     * Validates a positive integer limit.
+     *
+     * @param value limit candidate
+     * @param name  logical field name used in validation messages
+     * @return validated positive limit
+     */
+    private static int positive(final int value, final String name) {
+        if (value <= Normal._0) {
+            throw new ValidateException(name + " must be positive");
+        }
+        return value;
+    }
+
+    /**
+     * Validates a positive long limit.
+     *
+     * @param value limit candidate
+     * @param name  logical field name used in validation messages
+     * @return validated positive limit
+     */
+    private static long positive(final long value, final String name) {
+        if (value <= Normal.LONG_ZERO) {
+            throw new ValidateException(name + " must be positive");
+        }
+        return value;
+    }
+
+    /**
+     * Validates a non-negative duration.
+     *
+     * @param value duration candidate
+     * @param name  logical field name used in validation messages
+     * @return validated duration
+     */
+    private static Duration duration(final Duration value, final String name) {
+        final Duration checked = Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+        if (checked.isNegative()) {
+            throw new ValidateException(name + " must not be negative");
+        }
+        return checked;
+    }
+
+    /**
+     * Converts a duration to its exact millisecond representation.
+     *
+     * @param value validated duration
+     * @param name  logical field name used in validation messages
+     * @return duration in milliseconds
+     */
+    private static long millis(final Duration value, final String name) {
+        try {
+            return value.toMillis();
+        } catch (final ArithmeticException e) {
+            throw new ValidateException(name + " is too large", e);
+        }
+    }
+
+    /**
      * Adds this complete KCP policy to an immutable option snapshot.
      *
      * @param options option source
@@ -292,92 +378,6 @@ public class KcpPolicy implements Policy {
      */
     public long maxSourceReassemblyBytes() {
         return maxSourceReassemblyBytes;
-    }
-
-    /**
-     * Validates the supported wire format version.
-     *
-     * @param value wire version candidate
-     * @return validated wire version
-     */
-    private static int wireVersion(final int value) {
-        if (value != Normal._1 && value != Normal._2) {
-            throw new ValidateException("KCP wire version must be 1 or 2");
-        }
-        return value;
-    }
-
-    /**
-     * Validates a KCP packet window size.
-     *
-     * @param value window size candidate
-     * @param name  logical field name used in validation messages
-     * @return validated window size
-     */
-    private static int window(final int value, final String name) {
-        return Assert.checkBetween(
-                value,
-                Normal._1,
-                Normal._65535,
-                () -> new ValidateException(name + " must be between 1 and 65535"));
-    }
-
-    /**
-     * Validates a positive integer limit.
-     *
-     * @param value limit candidate
-     * @param name  logical field name used in validation messages
-     * @return validated positive limit
-     */
-    private static int positive(final int value, final String name) {
-        if (value <= Normal._0) {
-            throw new ValidateException(name + " must be positive");
-        }
-        return value;
-    }
-
-    /**
-     * Validates a positive long limit.
-     *
-     * @param value limit candidate
-     * @param name  logical field name used in validation messages
-     * @return validated positive limit
-     */
-    private static long positive(final long value, final String name) {
-        if (value <= Normal.LONG_ZERO) {
-            throw new ValidateException(name + " must be positive");
-        }
-        return value;
-    }
-
-    /**
-     * Validates a non-negative duration.
-     *
-     * @param value duration candidate
-     * @param name  logical field name used in validation messages
-     * @return validated duration
-     */
-    private static Duration duration(final Duration value, final String name) {
-        final Duration checked = Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-        if (checked.isNegative()) {
-            throw new ValidateException(name + " must not be negative");
-        }
-        return checked;
-    }
-
-    /**
-     * Converts a duration to its exact millisecond representation.
-     *
-     * @param value validated duration
-     * @param name  logical field name used in validation messages
-     * @return duration in milliseconds
-     */
-    private static long millis(final Duration value, final String name) {
-        try {
-            return value.toMillis();
-        } catch (final ArithmeticException e) {
-            throw new ValidateException(name + " is too large", e);
-        }
     }
 
     /**

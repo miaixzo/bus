@@ -88,6 +88,16 @@ final class Http2StreamBuffer {
     private final LongConsumer consumed;
 
     /**
+     * Number of published DATA bytes not yet transferred to the application.
+     */
+    private final AtomicLong queuedBytes = new AtomicLong();
+
+    /**
+     * Half-limit threshold, with a minimum of one byte, for reporting consumed credit.
+     */
+    private final long reportThreshold;
+
+    /**
      * Connection-reader-owned monotonic position of the next publication.
      */
     private volatile long producerIndex;
@@ -96,11 +106,6 @@ final class Http2StreamBuffer {
      * Request-thread-owned monotonic position of the next slot to consume.
      */
     private volatile long consumerIndex;
-
-    /**
-     * Number of published DATA bytes not yet transferred to the application.
-     */
-    private final AtomicLong queuedBytes = new AtomicLong();
 
     /**
      * Request thread currently parked for input or terminal-state publication.
@@ -126,11 +131,6 @@ final class Http2StreamBuffer {
      * Application-consumed bytes accumulated since the previous flow-control callback.
      */
     private long unreportedConsumed;
-
-    /**
-     * Half-limit threshold, with a minimum of one byte, for reporting consumed credit.
-     */
-    private final long reportThreshold;
 
     /**
      * Creates a bounded stream buffer.

@@ -80,18 +80,22 @@ public record OAuth2ServerOptions(String issuer, Optional<Endpoint> authorizatio
      * Maximum authorization code lifetime permitted by the frozen server policy.
      */
     private static final Duration MAXIMUM_AUTHORIZATION_CODE_LIFETIME = Duration.ofMinutes(10);
+
     /**
      * Maximum device authorization lifetime permitted by the frozen server policy.
      */
     private static final Duration MAXIMUM_DEVICE_CODE_LIFETIME = Duration.ofMinutes(15);
+
     /**
      * Minimum RFC 8628 device polling interval permitted by the frozen server policy.
      */
     private static final Duration MINIMUM_DEVICE_POLLING_INTERVAL = Duration.ofSeconds(5);
+
     /**
      * Minimum whole-second lifetime representable by standard expires_in and positive Store TTL values.
      */
     private static final Duration MINIMUM_TOKEN_LIFETIME = Duration.ofSeconds(1);
+
     /**
      * Grant variants implemented by the authorization-server token service.
      */
@@ -101,6 +105,7 @@ public record OAuth2ServerOptions(String issuer, Optional<Endpoint> authorizatio
             GrantType.CLIENT_CREDENTIALS,
             GrantType.TOKEN_EXCHANGE,
             GrantType.DEVICE_CODE);
+
     /**
      * Client authentication methods implemented by the authorization-server endpoint adapter.
      */
@@ -419,74 +424,92 @@ public record OAuth2ServerOptions(String issuer, Optional<Endpoint> authorizatio
          * Exact HTTPS authorization-server issuer.
          */
         private final String issuer;
+
         /**
          * Authorization endpoint configuration.
          */
         private Endpoint authorizationEndpoint;
+
         /**
          * Token endpoint configuration.
          */
         private Endpoint tokenEndpoint;
+
         /**
          * Token introspection endpoint configuration.
          */
         private Endpoint introspectionEndpoint;
+
         /**
          * Token revocation endpoint configuration.
          */
         private Endpoint revocationEndpoint;
+
         /**
          * Device authorization endpoint configuration.
          */
         private Endpoint deviceAuthorizationEndpoint;
+
         /**
          * User-facing device verification URI.
          */
         private String deviceVerificationUri;
+
         /**
          * Authorization-server metadata endpoint configuration.
          */
         private Endpoint metadataEndpoint;
+
         /**
          * Supported OAuth scopes.
          */
         private Set<String> scopes = Set.of();
+
         /**
          * Supported OAuth grant types.
          */
         private Set<GrantType> grants = Set.of();
+
         /**
          * Supported client authentication methods.
          */
         private Set<ClientAuthenticationMethod> authenticationMethods = Set.of();
+
         /**
          * Authorization-code lifetime.
          */
         private Duration authorizationCodeLifetime = Duration.ofMinutes(5);
+
         /**
          * Access-token lifetime.
          */
         private Duration accessTokenLifetime = Duration.ofMinutes(5);
+
         /**
          * Refresh-token lifetime.
          */
         private Duration refreshTokenLifetime = Duration.ofDays(30);
+
         /**
          * Device-code lifetime.
          */
         private Duration deviceCodeLifetime = Duration.ofMinutes(10);
+
         /**
          * Minimum device polling interval.
          */
         private Duration devicePollingInterval = Duration.ofSeconds(5);
+
         /**
          * Whether authorization-code requests require PKCE.
          */
         private boolean pkceRequired = true;
+
         /**
          * Whether refresh-token rotation is mandatory.
          */
         private boolean refreshTokenRotationRequired = true;
+
         /**
          * Whether federated JWT client authentication is enabled.
          */

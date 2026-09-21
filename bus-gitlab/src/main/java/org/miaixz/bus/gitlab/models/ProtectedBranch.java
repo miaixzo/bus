@@ -32,9 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class ProtectedBranch implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852275321353L;
 
@@ -42,26 +39,32 @@ public class ProtectedBranch implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The push access levels value.
      */
     private List<BranchAccessLevel> pushAccessLevels;
+
     /**
      * The merge access levels value.
      */
     private List<BranchAccessLevel> mergeAccessLevels;
+
     /**
      * The unprotect access levels value.
      */
     private List<BranchAccessLevel> unprotectAccessLevels;
+
     /**
      * The code owner approval required value.
      */
     private Boolean codeOwnerApprovalRequired;
+
     /**
      * The allow force push value.
      */
@@ -72,6 +75,17 @@ public class ProtectedBranch implements Serializable {
      */
     public ProtectedBranch() {
         // No initialization required.
+    }
+
+    /**
+     * Returns whether the valid is enabled.
+     *
+     * @param branch the branch value
+     * @return the result
+     */
+
+    public static boolean isValid(ProtectedBranch branch) {
+        return (branch != null && branch.getName() != null);
     }
 
     /**
@@ -172,17 +186,6 @@ public class ProtectedBranch implements Serializable {
 
     public void setUnprotectAccessLevels(List<BranchAccessLevel> unprotectAccessLevels) {
         this.unprotectAccessLevels = unprotectAccessLevels;
-    }
-
-    /**
-     * Returns whether the valid is enabled.
-     *
-     * @param branch the branch value
-     * @return the result
-     */
-
-    public static boolean isValid(ProtectedBranch branch) {
-        return (branch != null && branch.getName() != null);
     }
 
     /**

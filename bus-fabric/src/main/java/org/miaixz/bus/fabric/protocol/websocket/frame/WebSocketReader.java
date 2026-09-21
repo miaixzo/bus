@@ -69,68 +69,6 @@ public class WebSocketReader {
     }
 
     /**
-     * Reads and validates one complete WebSocket frame.
-     *
-     * @return validated immutable frame with an unmasked payload snapshot
-     */
-    public WebSocketFrame next() {
-        final int first = readByte();
-        final int second = readByte();
-        if ((first & Builder.WEBSOCKET_RSV_MASK) != Normal._0) {
-            throw new ProtocolException("WebSocket RSV bits must be zero");
-        }
-        final boolean fin = (first & Normal._128) != Normal._0;
-        final int opcode = first & Builder.WEBSOCKET_OPCODE_MASK;
-        final boolean control = opcode >= Normal._8;
-        final boolean masked = (second & Normal._128) != Normal._0;
-        if (masked != expectMasked) {
-            throw new ProtocolException("Unexpected WebSocket mask direction");
-        }
-        final int marker = second & Builder.UNSIGNED_7_BIT_MASK;
-        final long length = payloadLength(marker);
-        validateControl(fin, control, length);
-        if (length > Builder.BYTES_16_MIB) {
-            throw new ProtocolException("WebSocket frame exceeds the 16 MiB limit");
-        }
-        final byte[] mask = masked ? readBytes(Normal._4) : null;
-        final Buffer payload = readBuffer((int) length);
-        if (mask != null) {
-            unmask(payload, mask, length);
-        }
-        final ByteString bytes = payload.readByteString();
-        validateText(opcode, fin, bytes);
-        validateClose(opcode, bytes);
-        return new WebSocketFrame(opcode, fin, bytes, control);
-    }
-
-    /**
-     * Decodes a canonical payload length.
-     *
-     * @param marker seven-bit length marker from the second frame-header byte
-     * @return decoded non-negative payload length after canonical-encoding validation
-     */
-    private long payloadLength(final int marker) {
-        if (marker < Builder.WEBSOCKET_LENGTH_16_MARKER) {
-            return marker;
-        }
-        if (marker == Builder.WEBSOCKET_LENGTH_16_MARKER) {
-            final int length = readUnsignedShort();
-            if (length < Builder.WEBSOCKET_LENGTH_16_MARKER) {
-                throw new ProtocolException("WebSocket payload length uses non-canonical 16-bit encoding");
-            }
-            return length;
-        }
-        final long length = readLong();
-        if (length < Normal.LONG_ZERO) {
-            throw new ProtocolException("WebSocket 64-bit payload length has its reserved bit set");
-        }
-        if (length <= Normal._65535) {
-            throw new ProtocolException("WebSocket payload length uses non-canonical 64-bit encoding");
-        }
-        return length;
-    }
-
-    /**
      * Validates control-frame fragmentation and length rules.
      *
      * @param fin     whether the frame carries the FIN bit
@@ -196,6 +134,110 @@ public class WebSocketReader {
         } catch (final CharacterCodingException e) {
             throw new ProtocolException(field + " is invalid UTF-8; close code 1007 is required", e);
         }
+    }
+
+    /**
+     * Applies the four-byte WebSocket mask in place.
+     *
+     * @param payload mutable payload buffer to transform in place
+     * @param mask    four-byte masking key
+     * @param length  number of payload bytes to transform
+     */
+    private static void unmask(final Buffer payload, final byte[] mask, final long length) {
+        if (length == Normal.LONG_ZERO) {
+            return;
+        }
+        final Buffer.UnsafeCursor cursor = new Buffer.UnsafeCursor();
+        payload.readAndWriteUnsafe(cursor);
+        try {
+            long processed = Normal.LONG_ZERO;
+            int available = cursor.seek(Normal.LONG_ZERO);
+            while (available != Normal.__1 && processed < length) {
+                for (int index = cursor.start; index < cursor.end && processed < length; index++) {
+                    cursor.data[index] = (byte) (cursor.data[index] ^ mask[(int) (processed & Normal._3)]);
+                    processed++;
+                }
+                if (processed < length) {
+                    available = cursor.next();
+                }
+            }
+        } finally {
+            cursor.close();
+        }
+    }
+
+    /**
+     * Validates a required reference.
+     *
+     * @param value reference to validate
+     * @param name  field label included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Reads and validates one complete WebSocket frame.
+     *
+     * @return validated immutable frame with an unmasked payload snapshot
+     */
+    public WebSocketFrame next() {
+        final int first = readByte();
+        final int second = readByte();
+        if ((first & Builder.WEBSOCKET_RSV_MASK) != Normal._0) {
+            throw new ProtocolException("WebSocket RSV bits must be zero");
+        }
+        final boolean fin = (first & Normal._128) != Normal._0;
+        final int opcode = first & Builder.WEBSOCKET_OPCODE_MASK;
+        final boolean control = opcode >= Normal._8;
+        final boolean masked = (second & Normal._128) != Normal._0;
+        if (masked != expectMasked) {
+            throw new ProtocolException("Unexpected WebSocket mask direction");
+        }
+        final int marker = second & Builder.UNSIGNED_7_BIT_MASK;
+        final long length = payloadLength(marker);
+        validateControl(fin, control, length);
+        if (length > Builder.BYTES_16_MIB) {
+            throw new ProtocolException("WebSocket frame exceeds the 16 MiB limit");
+        }
+        final byte[] mask = masked ? readBytes(Normal._4) : null;
+        final Buffer payload = readBuffer((int) length);
+        if (mask != null) {
+            unmask(payload, mask, length);
+        }
+        final ByteString bytes = payload.readByteString();
+        validateText(opcode, fin, bytes);
+        validateClose(opcode, bytes);
+        return new WebSocketFrame(opcode, fin, bytes, control);
+    }
+
+    /**
+     * Decodes a canonical payload length.
+     *
+     * @param marker seven-bit length marker from the second frame-header byte
+     * @return decoded non-negative payload length after canonical-encoding validation
+     */
+    private long payloadLength(final int marker) {
+        if (marker < Builder.WEBSOCKET_LENGTH_16_MARKER) {
+            return marker;
+        }
+        if (marker == Builder.WEBSOCKET_LENGTH_16_MARKER) {
+            final int length = readUnsignedShort();
+            if (length < Builder.WEBSOCKET_LENGTH_16_MARKER) {
+                throw new ProtocolException("WebSocket payload length uses non-canonical 16-bit encoding");
+            }
+            return length;
+        }
+        final long length = readLong();
+        if (length < Normal.LONG_ZERO) {
+            throw new ProtocolException("WebSocket 64-bit payload length has its reserved bit set");
+        }
+        if (length <= Normal._65535) {
+            throw new ProtocolException("WebSocket payload length uses non-canonical 64-bit encoding");
+        }
+        return length;
     }
 
     /**
@@ -272,48 +314,6 @@ public class WebSocketReader {
         } catch (final IOException e) {
             throw new SocketException("Unable to read WebSocket frame", e);
         }
-    }
-
-    /**
-     * Applies the four-byte WebSocket mask in place.
-     *
-     * @param payload mutable payload buffer to transform in place
-     * @param mask    four-byte masking key
-     * @param length  number of payload bytes to transform
-     */
-    private static void unmask(final Buffer payload, final byte[] mask, final long length) {
-        if (length == Normal.LONG_ZERO) {
-            return;
-        }
-        final Buffer.UnsafeCursor cursor = new Buffer.UnsafeCursor();
-        payload.readAndWriteUnsafe(cursor);
-        try {
-            long processed = Normal.LONG_ZERO;
-            int available = cursor.seek(Normal.LONG_ZERO);
-            while (available != Normal.__1 && processed < length) {
-                for (int index = cursor.start; index < cursor.end && processed < length; index++) {
-                    cursor.data[index] = (byte) (cursor.data[index] ^ mask[(int) (processed & Normal._3)]);
-                    processed++;
-                }
-                if (processed < length) {
-                    available = cursor.next();
-                }
-            }
-        } finally {
-            cursor.close();
-        }
-    }
-
-    /**
-     * Validates a required reference.
-     *
-     * @param value reference to validate
-     * @param name  field label included in the validation error
-     * @param <T>   reference type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

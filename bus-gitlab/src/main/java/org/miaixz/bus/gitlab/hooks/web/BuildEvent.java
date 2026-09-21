@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
+import java.io.Serial;
 import java.util.Date;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -33,15 +34,15 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class BuildEvent extends AbstractEvent {
 
-    /**
-     * The serial version uid value.
-     */
+    @Serial
     private static final long serialVersionUID = 2815283069125L;
+
     /**
      * The job hook x gitlab event value.
      */
 
     public static final String JOB_HOOK_X_GITLAB_EVENT = "Job Hook";
+
     /**
      * The object kind value.
      */
@@ -51,50 +52,62 @@ public class BuildEvent extends AbstractEvent {
      * The ref value.
      */
     private String ref;
+
     /**
      * The tag value.
      */
     private Boolean tag;
+
     /**
      * The before sha value.
      */
     private String beforeSha;
+
     /**
      * The sha value.
      */
     private String sha;
+
     /**
      * The retries count value.
      */
     private Integer retriesCount;
+
     /**
      * The build id value.
      */
     private Long buildId;
+
     /**
      * The build name value.
      */
     private String buildName;
+
     /**
      * The build stage value.
      */
     private String buildStage;
+
     /**
      * The build status value.
      */
     private String buildStatus;
+
     /**
      * The build created at value.
      */
     private Date buildCreatedAt;
+
     /**
      * The build started at value.
      */
     private Date buildStartedAt;
+
     /**
      * The build finished at value.
      */
     private Date buildFinishedAt;
+
     /**
      * The build duration value.
      */
@@ -104,14 +117,17 @@ public class BuildEvent extends AbstractEvent {
      * The build queued duration value.
      */
     private Float buildQueuedDuration;
+
     /**
      * The build allow failure value.
      */
     private Boolean buildAllowFailure;
+
     /**
      * The build failure reason value.
      */
     private String buildFailureReason;
+
     /**
      * The project id value.
      */
@@ -121,26 +137,32 @@ public class BuildEvent extends AbstractEvent {
      * The pipeline id value.
      */
     private Long pipelineId;
+
     /**
      * The project name value.
      */
     private String projectName;
+
     /**
      * The user value.
      */
     private EventUser user;
+
     /**
      * The commit value.
      */
     private BuildCommit commit;
+
     /**
      * The repository value.
      */
     private EventRepository repository;
+
     /**
      * The project value.
      */
     private EventProject project;
+
     /**
      * The runner value.
      */

@@ -45,18 +45,22 @@ public class JwaAlgorithm {
      * Unsecured JWS algorithm identifier, recognized solely so execution can reject it explicitly.
      */
     public static final JwaAlgorithm NONE = known(Normal.NONE, Kind.UNSECURED, Set.of(), null, 0);
+
     /**
      * HMAC using SHA-256 signature algorithm identifier.
      */
     public static final JwaAlgorithm HS256 = known("HS256", Kind.SIGNATURE, Set.of("oct"), Algorithm.HMACSHA256, 256);
+
     /**
      * HMAC using SHA-384 signature algorithm identifier.
      */
     public static final JwaAlgorithm HS384 = known("HS384", Kind.SIGNATURE, Set.of("oct"), Algorithm.HMACSHA384, 384);
+
     /**
      * HMAC using SHA-512 signature algorithm identifier.
      */
     public static final JwaAlgorithm HS512 = known("HS512", Kind.SIGNATURE, Set.of("oct"), Algorithm.HMACSHA512, 512);
+
     /**
      * RSASSA-PKCS1-v1_5 using SHA-256 signature algorithm identifier.
      */
@@ -66,6 +70,7 @@ public class JwaAlgorithm {
             Set.of("RSA"),
             Algorithm.SHA256WITHRSA,
             2048);
+
     /**
      * RSASSA-PKCS1-v1_5 using SHA-384 signature algorithm identifier.
      */
@@ -75,6 +80,7 @@ public class JwaAlgorithm {
             Set.of("RSA"),
             Algorithm.SHA384WITHRSA,
             2048);
+
     /**
      * RSASSA-PKCS1-v1_5 using SHA-512 signature algorithm identifier.
      */
@@ -84,6 +90,7 @@ public class JwaAlgorithm {
             Set.of("RSA"),
             Algorithm.SHA512WITHRSA,
             2048);
+
     /**
      * RSASSA-PSS using SHA-256 and MGF1 SHA-256 signature algorithm identifier.
      */
@@ -93,6 +100,7 @@ public class JwaAlgorithm {
             Set.of("RSA"),
             Algorithm.SHA256WITHRSA_PSS,
             2048);
+
     /**
      * RSASSA-PSS using SHA-384 and MGF1 SHA-384 signature algorithm identifier.
      */
@@ -102,6 +110,7 @@ public class JwaAlgorithm {
             Set.of("RSA"),
             Algorithm.SHA384WITHRSA_PSS,
             2048);
+
     /**
      * RSASSA-PSS using SHA-512 and MGF1 SHA-512 signature algorithm identifier.
      */
@@ -111,6 +120,7 @@ public class JwaAlgorithm {
             Set.of("RSA"),
             Algorithm.SHA512WITHRSA_PSS,
             2048);
+
     /**
      * ECDSA using P-256 and SHA-256 signature algorithm identifier.
      */
@@ -120,6 +130,7 @@ public class JwaAlgorithm {
             Set.of("EC"),
             Algorithm.SHA256WITHECDSA,
             256);
+
     /**
      * ECDSA using P-384 and SHA-384 signature algorithm identifier.
      */
@@ -129,6 +140,7 @@ public class JwaAlgorithm {
             Set.of("EC"),
             Algorithm.SHA384WITHECDSA,
             384);
+
     /**
      * ECDSA using P-521 and SHA-512 signature algorithm identifier.
      */
@@ -138,6 +150,7 @@ public class JwaAlgorithm {
             Set.of("EC"),
             Algorithm.SHA512WITHECDSA,
             521);
+
     /**
      * Edwards-curve digital signature algorithm identifier.
      */
@@ -147,10 +160,12 @@ public class JwaAlgorithm {
      * RSAES-PKCS1-v1_5 key-management identifier retained for interoperability but not mapped for execution.
      */
     public static final JwaAlgorithm RSA1_5 = known("RSA1_5", Kind.KEY_MANAGEMENT, Set.of("RSA"), null, 2048);
+
     /**
      * RSAES OAEP using SHA-1 and MGF1 SHA-1 key-management identifier.
      */
     public static final JwaAlgorithm RSA_OAEP = known("RSA-OAEP", Kind.KEY_MANAGEMENT, Set.of("RSA"), null, 2048);
+
     /**
      * RSAES OAEP using SHA-256 and MGF1 SHA-256 key-management identifier.
      */
@@ -160,26 +175,32 @@ public class JwaAlgorithm {
             Set.of("RSA"),
             null,
             2048);
+
     /**
      * AES Key Wrap with a 128-bit key-management identifier.
      */
     public static final JwaAlgorithm A128KW = known("A128KW", Kind.KEY_MANAGEMENT, Set.of("oct"), null, 128);
+
     /**
      * AES Key Wrap with a 192-bit key-management identifier.
      */
     public static final JwaAlgorithm A192KW = known("A192KW", Kind.KEY_MANAGEMENT, Set.of("oct"), null, 192);
+
     /**
      * AES Key Wrap with a 256-bit key-management identifier.
      */
     public static final JwaAlgorithm A256KW = known("A256KW", Kind.KEY_MANAGEMENT, Set.of("oct"), null, 256);
+
     /**
      * Direct use of a shared symmetric key as the content-encryption key.
      */
     public static final JwaAlgorithm DIRECT = known("dir", Kind.KEY_MANAGEMENT, Set.of("oct"), null, 128);
+
     /**
      * ECDH-ES direct key-agreement identifier.
      */
     public static final JwaAlgorithm ECDH_ES = known("ECDH-ES", Kind.KEY_MANAGEMENT, Set.of("EC", "OKP"), null, 256);
+
     /**
      * ECDH-ES with AES-128 Key Wrap identifier.
      */
@@ -189,6 +210,7 @@ public class JwaAlgorithm {
             Set.of("EC", "OKP"),
             null,
             256);
+
     /**
      * ECDH-ES with AES-192 Key Wrap identifier.
      */
@@ -198,6 +220,7 @@ public class JwaAlgorithm {
             Set.of("EC", "OKP"),
             null,
             256);
+
     /**
      * ECDH-ES with AES-256 Key Wrap identifier.
      */
@@ -207,18 +230,22 @@ public class JwaAlgorithm {
             Set.of("EC", "OKP"),
             null,
             256);
+
     /**
      * AES-GCM key wrapping with a 128-bit key identifier.
      */
     public static final JwaAlgorithm A128GCMKW = known("A128GCMKW", Kind.KEY_MANAGEMENT, Set.of("oct"), null, 128);
+
     /**
      * AES-GCM key wrapping with a 192-bit key identifier.
      */
     public static final JwaAlgorithm A192GCMKW = known("A192GCMKW", Kind.KEY_MANAGEMENT, Set.of("oct"), null, 192);
+
     /**
      * AES-GCM key wrapping with a 256-bit key identifier.
      */
     public static final JwaAlgorithm A256GCMKW = known("A256GCMKW", Kind.KEY_MANAGEMENT, Set.of("oct"), null, 256);
+
     /**
      * PBES2 SHA-256 with AES-128 Key Wrap identifier.
      */
@@ -228,6 +255,7 @@ public class JwaAlgorithm {
             Set.of("oct"),
             null,
             128);
+
     /**
      * PBES2 SHA-384 with AES-192 Key Wrap identifier.
      */
@@ -237,6 +265,7 @@ public class JwaAlgorithm {
             Set.of("oct"),
             null,
             192);
+
     /**
      * PBES2 SHA-512 with AES-256 Key Wrap identifier.
      */
@@ -256,6 +285,7 @@ public class JwaAlgorithm {
             Set.of("oct"),
             null,
             256);
+
     /**
      * AES-CBC with HMAC SHA-384 authenticated encryption identifier.
      */
@@ -265,6 +295,7 @@ public class JwaAlgorithm {
             Set.of("oct"),
             null,
             384);
+
     /**
      * AES-CBC with HMAC SHA-512 authenticated encryption identifier.
      */
@@ -274,14 +305,17 @@ public class JwaAlgorithm {
             Set.of("oct"),
             null,
             512);
+
     /**
      * AES-GCM authenticated encryption with a 128-bit key identifier.
      */
     public static final JwaAlgorithm A128GCM = known("A128GCM", Kind.CONTENT_ENCRYPTION, Set.of("oct"), null, 128);
+
     /**
      * AES-GCM authenticated encryption with a 192-bit key identifier.
      */
     public static final JwaAlgorithm A192GCM = known("A192GCM", Kind.CONTENT_ENCRYPTION, Set.of("oct"), null, 192);
+
     /**
      * AES-GCM authenticated encryption with a 256-bit key identifier.
      */
@@ -333,6 +367,7 @@ public class JwaAlgorithm {
      * Case-sensitive JOSE registration or extension identifier.
      */
     private final String name;
+
     /**
      * Registration metadata for a locally understood value, or {@code null} for an open extension value.
      */

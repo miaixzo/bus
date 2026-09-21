@@ -107,6 +107,35 @@ public class DispatchWorker implements AutoCloseable {
     }
 
     /**
+     * Fails a running handle while tolerating a concurrent terminal winner.
+     *
+     * @param handle running handle to fail
+     * @param cause  failure reported by the activity or executor
+     */
+    private static void fail(final DispatchHandle handle, final Throwable cause) {
+        if (handle.state() != State.RUNNING) {
+            return;
+        }
+        try {
+            handle.fail(cause);
+        } catch (final StatefulException ignored) {
+            // A concurrent cancellation or completion already owns the terminal state.
+        }
+    }
+
+    /**
+     * Validates and returns a required reference.
+     *
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Executes one short-task entry asynchronously through its authoritative handle.
      *
      * @param entry reserved queue entry to submit
@@ -301,35 +330,6 @@ public class DispatchWorker implements AutoCloseable {
         } finally {
             active.remove(entry);
         }
-    }
-
-    /**
-     * Fails a running handle while tolerating a concurrent terminal winner.
-     *
-     * @param handle running handle to fail
-     * @param cause  failure reported by the activity or executor
-     */
-    private static void fail(final DispatchHandle handle, final Throwable cause) {
-        if (handle.state() != State.RUNNING) {
-            return;
-        }
-        try {
-            handle.fail(cause);
-        } catch (final StatefulException ignored) {
-            // A concurrent cancellation or completion already owns the terminal state.
-        }
-    }
-
-    /**
-     * Validates and returns a required reference.
-     *
-     * @param value reference to validate
-     * @param name  logical reference name used in the validation message
-     * @param <T>   reference type
-     * @return the validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

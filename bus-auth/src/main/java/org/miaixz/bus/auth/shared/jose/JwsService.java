@@ -59,22 +59,27 @@ public class JwsService {
      * Critical extension used by RFC 7797, which this version deliberately does not implement.
      */
     private static final String UNENCODED_PAYLOAD = "b64";
+
     /**
      * Exact JWS JSON payload member name.
      */
     private static final String PAYLOAD = "payload";
+
     /**
      * Exact JWS JSON protected-header member name.
      */
     private static final String PROTECTED = "protected";
+
     /**
      * Exact JWS JSON unprotected-header member name.
      */
     private static final String HEADER = "header";
+
     /**
      * Exact JWS JSON signature member name.
      */
     private static final String SIGNATURE = "signature";
+
     /**
      * Exact General JWS JSON signatures-array member name.
      */
@@ -84,10 +89,12 @@ public class JwsService {
      * Shared algorithm/key-direction validation primitive.
      */
     private final AlgorithmGuard algorithmGuard;
+
     /**
      * Immutable profile-specific JWS algorithm allow-list.
      */
     private final Set<String> allowedAlgorithms;
+
     /**
      * Whether operation keys must satisfy the registered JWA minimum strength.
      */

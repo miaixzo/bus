@@ -47,6 +47,133 @@ import org.miaixz.bus.cortex.Type;
 public class Item extends Setting {
 
     /**
+     * Setting data identifier within the group.
+     */
+    private String data_id;
+
+    /**
+     * Setting group name within the space.
+     */
+    private String group;
+
+    /**
+     * Source type used to resolve the effective value.
+     */
+    private String source;
+
+    /**
+     * Source-specific descriptor such as an environment variable name or external resource address.
+     */
+    private String spec;
+
+    /**
+     * Optional gray-release rule.
+     */
+    private String rule;
+
+    /**
+     * Logical content format.
+     */
+    private String format;
+
+    /**
+     * Current logical setting value.
+     */
+    private String content;
+
+    /**
+     * Delivery exposure policy.
+     */
+    private String exposure;
+
+    /**
+     * Monotonic revision number for the current {@code setting.item} state.
+     * <p>
+     * Kept as {@code version} for source and storage compatibility while new code uses {@link #getRevision()} and
+     * {@link #setRevision(String)}.
+     * </p>
+     */
+    private String version;
+
+    /**
+     * Content checksum used for idempotent publish and diff calculation.
+     */
+    private String checksum;
+
+    /**
+     * Encryption flag of the stored content, where {@code 1} means encrypted and {@code 0} means plain text.
+     */
+    private Integer encrypted;
+
+    /**
+     * Optional logical labels.
+     */
+    @Transient
+    private Map<String, String> labels;
+
+    /**
+     * Aggregated application bindings loaded from {@code setting_item_binding}.
+     */
+    @Transient
+    private List<String> app_ids;
+
+    /**
+     * Aggregated profile bindings loaded from {@code setting_item_binding}.
+     */
+    @Transient
+    private List<String> profile_ids;
+
+    /**
+     * Structured extension attributes for adapters that need richer integration parameters.
+     */
+    @Transient
+    private Map<String, Object> extension;
+
+    /**
+     * Creates an empty current-state setting item.
+     */
+    public Item() {
+        super();
+        setType(Type.ITEM.key());
+    }
+
+    /**
+     * Returns the current item revision number.
+     *
+     * @return item revision number
+     */
+    public String getRevision() {
+        return version;
+    }
+
+    /**
+     * Assigns the current item revision number.
+     *
+     * @param revision item revision number
+     */
+    public void setRevision(String revision) {
+        this.version = revision;
+    }
+
+    /**
+     * Returns the current item revision number using storage-oriented naming.
+     *
+     * @return item revision number
+     */
+    public String getRevisionNo() {
+        return version;
+    }
+
+    /**
+     * Assigns the current item revision number using storage-oriented naming.
+     *
+     * @param revisionNo item revision number
+     */
+    public void setRevisionNo(String revisionNo) {
+        this.version = revisionNo;
+    }
+
+    /**
      * Role of an item in source and resolved configuration projections.
      */
     public enum Kind {
@@ -188,133 +315,6 @@ public class Item extends Setting {
          * Read the governed effective value after resolving references and overrides.
          */
         EFFECTIVE
-    }
-
-    /**
-     * Setting data identifier within the group.
-     */
-    private String data_id;
-
-    /**
-     * Setting group name within the space.
-     */
-    private String group;
-
-    /**
-     * Source type used to resolve the effective value.
-     */
-    private String source;
-
-    /**
-     * Source-specific descriptor such as an environment variable name or external resource address.
-     */
-    private String spec;
-
-    /**
-     * Optional gray-release rule.
-     */
-    private String rule;
-
-    /**
-     * Logical content format.
-     */
-    private String format;
-
-    /**
-     * Current logical setting value.
-     */
-    private String content;
-
-    /**
-     * Delivery exposure policy.
-     */
-    private String exposure;
-
-    /**
-     * Monotonic revision number for the current {@code setting.item} state.
-     * <p>
-     * Kept as {@code version} for source and storage compatibility while new code uses {@link #getRevision()} and
-     * {@link #setRevision(String)}.
-     * </p>
-     */
-    private String version;
-
-    /**
-     * Content checksum used for idempotent publish and diff calculation.
-     */
-    private String checksum;
-
-    /**
-     * Encryption flag of the stored content, where {@code 1} means encrypted and {@code 0} means plain text.
-     */
-    private Integer encrypted;
-
-    /**
-     * Optional logical labels.
-     */
-    @Transient
-    private Map<String, String> labels;
-
-    /**
-     * Aggregated application bindings loaded from {@code setting_item_binding}.
-     */
-    @Transient
-    private List<String> app_ids;
-
-    /**
-     * Aggregated profile bindings loaded from {@code setting_item_binding}.
-     */
-    @Transient
-    private List<String> profile_ids;
-
-    /**
-     * Structured extension attributes for adapters that need richer integration parameters.
-     */
-    @Transient
-    private Map<String, Object> extension;
-
-    /**
-     * Creates an empty current-state setting item.
-     */
-    public Item() {
-        super();
-        setType(Type.ITEM.key());
-    }
-
-    /**
-     * Returns the current item revision number.
-     *
-     * @return item revision number
-     */
-    public String getRevision() {
-        return version;
-    }
-
-    /**
-     * Assigns the current item revision number.
-     *
-     * @param revision item revision number
-     */
-    public void setRevision(String revision) {
-        this.version = revision;
-    }
-
-    /**
-     * Returns the current item revision number using storage-oriented naming.
-     *
-     * @return item revision number
-     */
-    public String getRevisionNo() {
-        return version;
-    }
-
-    /**
-     * Assigns the current item revision number using storage-oriented naming.
-     *
-     * @param revisionNo item revision number
-     */
-    public void setRevisionNo(String revisionNo) {
-        this.version = revisionNo;
     }
 
 }

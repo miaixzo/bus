@@ -20,11 +20,7 @@
 package org.miaixz.bus.fabric.network.dns.cache;
 
 import java.time.Duration;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -290,6 +286,75 @@ public class DnsResponseCache {
     }
 
     /**
+     * Returns the default lower TTL for a cache TTL.
+     *
+     * @param ttl cache TTL cap
+     * @return default lower TTL not exceeding the cache TTL cap
+     */
+    private static Duration defaultMinTtl(final Duration ttl) {
+        if (ttl == null || ttl.isNegative() || ttl.isZero()) {
+            return DEFAULT_MIN_TTL;
+        }
+        return DEFAULT_MIN_TTL.compareTo(ttl) <= 0 ? DEFAULT_MIN_TTL : ttl;
+    }
+
+    /**
+     * Computes the timing-wheel tick size for a cache TTL and stale window.
+     *
+     * @param ttl           cache TTL cap
+     * @param serveStaleTtl serve-stale window
+     * @return timing-wheel tick size in nanoseconds
+     */
+    private static long wheelTickNanos(final Duration ttl, final Duration serveStaleTtl) {
+        return Math.max(1L, saturatedAdd(durationToNanos(ttl), durationToNanos(serveStaleTtl)) / TIMING_WHEEL_SLOTS);
+    }
+
+    /**
+     * Converts a duration to nanoseconds with saturation.
+     *
+     * @param duration source duration
+     * @return nanoseconds, or {@link Long#MAX_VALUE} when conversion overflows
+     */
+    private static long durationToNanos(final Duration duration) {
+        try {
+            return duration.toNanos();
+        } catch (final ArithmeticException e) {
+            return Long.MAX_VALUE;
+        }
+    }
+
+    /**
+     * Adds a nanosecond delta to a monotonic timestamp with saturation.
+     *
+     * @param timestamp monotonic timestamp
+     * @param delta     nanosecond delta
+     * @return saturated timestamp
+     */
+    private static long saturatedAdd(final long timestamp, final long delta) {
+        if (delta > 0L && timestamp > Long.MAX_VALUE - delta) {
+            return Long.MAX_VALUE;
+        }
+        if (delta < 0L && timestamp < Long.MIN_VALUE - delta) {
+            return Long.MIN_VALUE;
+        }
+        return timestamp + delta;
+    }
+
+    /**
+     * Copies a cached response and restores the active query identifier.
+     *
+     * @param entry cached response entry
+     * @param query current query
+     * @return response bytes for the current query id
+     */
+    private static byte[] responseWithQueryId(final Entry entry, final DnsQuery query) {
+        final byte[] copy = Arrays.copyOf(entry.response, entry.response.length);
+        copy[0] = (byte) ((query.id() >>> 8) & 0xff);
+        copy[1] = (byte) (query.id() & 0xff);
+        return copy;
+    }
+
+    /**
      * Returns a cached response with the current query id.
      *
      * @param query  current query
@@ -502,75 +567,6 @@ public class DnsResponseCache {
     }
 
     /**
-     * Returns the default lower TTL for a cache TTL.
-     *
-     * @param ttl cache TTL cap
-     * @return default lower TTL not exceeding the cache TTL cap
-     */
-    private static Duration defaultMinTtl(final Duration ttl) {
-        if (ttl == null || ttl.isNegative() || ttl.isZero()) {
-            return DEFAULT_MIN_TTL;
-        }
-        return DEFAULT_MIN_TTL.compareTo(ttl) <= 0 ? DEFAULT_MIN_TTL : ttl;
-    }
-
-    /**
-     * Computes the timing-wheel tick size for a cache TTL and stale window.
-     *
-     * @param ttl           cache TTL cap
-     * @param serveStaleTtl serve-stale window
-     * @return timing-wheel tick size in nanoseconds
-     */
-    private static long wheelTickNanos(final Duration ttl, final Duration serveStaleTtl) {
-        return Math.max(1L, saturatedAdd(durationToNanos(ttl), durationToNanos(serveStaleTtl)) / TIMING_WHEEL_SLOTS);
-    }
-
-    /**
-     * Converts a duration to nanoseconds with saturation.
-     *
-     * @param duration source duration
-     * @return nanoseconds, or {@link Long#MAX_VALUE} when conversion overflows
-     */
-    private static long durationToNanos(final Duration duration) {
-        try {
-            return duration.toNanos();
-        } catch (final ArithmeticException e) {
-            return Long.MAX_VALUE;
-        }
-    }
-
-    /**
-     * Adds a nanosecond delta to a monotonic timestamp with saturation.
-     *
-     * @param timestamp monotonic timestamp
-     * @param delta     nanosecond delta
-     * @return saturated timestamp
-     */
-    private static long saturatedAdd(final long timestamp, final long delta) {
-        if (delta > 0L && timestamp > Long.MAX_VALUE - delta) {
-            return Long.MAX_VALUE;
-        }
-        if (delta < 0L && timestamp < Long.MIN_VALUE - delta) {
-            return Long.MIN_VALUE;
-        }
-        return timestamp + delta;
-    }
-
-    /**
-     * Copies a cached response and restores the active query identifier.
-     *
-     * @param entry cached response entry
-     * @param query current query
-     * @return response bytes for the current query id
-     */
-    private static byte[] responseWithQueryId(final Entry entry, final DnsQuery query) {
-        final byte[] copy = Arrays.copyOf(entry.response, entry.response.length);
-        copy[0] = (byte) ((query.id() >>> 8) & 0xff);
-        copy[1] = (byte) (query.id() & 0xff);
-        return copy;
-    }
-
-    /**
      * Cached response metadata returned to the DNS server hot path.
      *
      * @author Kimi Liu
@@ -647,6 +643,96 @@ public class DnsResponseCache {
         public void finishPrefetch() {
             if (prefetchEntry != null) {
                 prefetchEntry.prefetching.set(false);
+            }
+        }
+
+    }
+
+    /**
+     * Cached response entry.
+     *
+     * @author Kimi Liu
+     */
+    private static final class Entry {
+
+        /**
+         * Response bytes with a zeroed id.
+         */
+        private final byte[] response;
+
+        /**
+         * Monotonic expiry timestamp.
+         */
+        private final long expiresAtNanos;
+
+        /**
+         * Monotonic timestamp after which the stale entry is discarded.
+         */
+        private final long staleExpiresAtNanos;
+
+        /**
+         * Monotonic timestamp after which active hits trigger prefetch.
+         */
+        private final long prefetchAtNanos;
+
+        /**
+         * Estimated retained bytes for this entry.
+         */
+        private final long estimatedBytes;
+
+        /**
+         * Single in-flight prefetch guard.
+         */
+        private final AtomicBoolean prefetching;
+
+        /**
+         * Last successful access timestamp.
+         */
+        private volatile long lastAccessNanos;
+
+        /**
+         * Creates a cached response entry.
+         *
+         * @param response            response bytes with a zeroed id
+         * @param expiresAtNanos      monotonic expiry timestamp
+         * @param staleExpiresAtNanos monotonic timestamp after which the stale entry is discarded
+         * @param prefetchAtNanos     monotonic timestamp after which active hits trigger prefetch
+         * @param estimatedBytes      estimated retained bytes
+         * @param lastAccessNanos     last successful access timestamp
+         */
+        private Entry(final byte[] response, final long expiresAtNanos, final long staleExpiresAtNanos,
+                final long prefetchAtNanos, final long estimatedBytes, final long lastAccessNanos) {
+            this.response = response;
+            this.expiresAtNanos = expiresAtNanos;
+            this.staleExpiresAtNanos = staleExpiresAtNanos;
+            this.prefetchAtNanos = prefetchAtNanos;
+            this.estimatedBytes = estimatedBytes;
+            this.prefetching = new AtomicBoolean();
+            this.lastAccessNanos = lastAccessNanos;
+        }
+
+    }
+
+    /**
+     * Candidate selected for global overflow eviction.
+     *
+     * @param shard owning shard
+     * @param key   cache key
+     * @param entry cache entry
+     * @author Kimi Liu
+     */
+    private record EvictionCandidate(Shard shard, DnsCacheKey key, Entry entry) {
+
+        /**
+         * Creates an eviction candidate.
+         *
+         * @param shard owning shard
+         * @param key   cache key
+         * @param entry cache entry
+         */
+        private EvictionCandidate {
+            if (shard == null || key == null || entry == null) {
+                throw new ValidateException("DNS cache eviction candidate must be complete");
             }
         }
 
@@ -880,96 +966,6 @@ public class DnsResponseCache {
                 wheel[index] = new ArrayDeque<>();
             }
             return wheel;
-        }
-
-    }
-
-    /**
-     * Cached response entry.
-     *
-     * @author Kimi Liu
-     */
-    private static final class Entry {
-
-        /**
-         * Response bytes with a zeroed id.
-         */
-        private final byte[] response;
-
-        /**
-         * Monotonic expiry timestamp.
-         */
-        private final long expiresAtNanos;
-
-        /**
-         * Monotonic timestamp after which the stale entry is discarded.
-         */
-        private final long staleExpiresAtNanos;
-
-        /**
-         * Monotonic timestamp after which active hits trigger prefetch.
-         */
-        private final long prefetchAtNanos;
-
-        /**
-         * Estimated retained bytes for this entry.
-         */
-        private final long estimatedBytes;
-
-        /**
-         * Single in-flight prefetch guard.
-         */
-        private final AtomicBoolean prefetching;
-
-        /**
-         * Last successful access timestamp.
-         */
-        private volatile long lastAccessNanos;
-
-        /**
-         * Creates a cached response entry.
-         *
-         * @param response            response bytes with a zeroed id
-         * @param expiresAtNanos      monotonic expiry timestamp
-         * @param staleExpiresAtNanos monotonic timestamp after which the stale entry is discarded
-         * @param prefetchAtNanos     monotonic timestamp after which active hits trigger prefetch
-         * @param estimatedBytes      estimated retained bytes
-         * @param lastAccessNanos     last successful access timestamp
-         */
-        private Entry(final byte[] response, final long expiresAtNanos, final long staleExpiresAtNanos,
-                final long prefetchAtNanos, final long estimatedBytes, final long lastAccessNanos) {
-            this.response = response;
-            this.expiresAtNanos = expiresAtNanos;
-            this.staleExpiresAtNanos = staleExpiresAtNanos;
-            this.prefetchAtNanos = prefetchAtNanos;
-            this.estimatedBytes = estimatedBytes;
-            this.prefetching = new AtomicBoolean();
-            this.lastAccessNanos = lastAccessNanos;
-        }
-
-    }
-
-    /**
-     * Candidate selected for global overflow eviction.
-     *
-     * @param shard owning shard
-     * @param key   cache key
-     * @param entry cache entry
-     * @author Kimi Liu
-     */
-    private record EvictionCandidate(Shard shard, DnsCacheKey key, Entry entry) {
-
-        /**
-         * Creates an eviction candidate.
-         *
-         * @param shard owning shard
-         * @param key   cache key
-         * @param entry cache entry
-         */
-        private EvictionCandidate {
-            if (shard == null || key == null || entry == null) {
-                throw new ValidateException("DNS cache eviction candidate must be complete");
-            }
         }
 
     }

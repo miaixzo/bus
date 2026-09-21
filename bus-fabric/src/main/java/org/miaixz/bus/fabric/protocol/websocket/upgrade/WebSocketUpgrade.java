@@ -79,20 +79,6 @@ public class WebSocketUpgrade {
     }
 
     /**
-     * Builds WebSocket upgrade request headers.
-     *
-     * @param source existing request headers to augment
-     * @return headers containing the required WebSocket upgrade fields and this adapter's handshake key
-     * @throws ValidateException if {@code source} is {@code null}
-     */
-    public Headers headers(final Headers source) {
-        final Headers checked = require(source, "WebSocket headers");
-        return checked.with(Http.Header.UPGRADE, Http.WebSocket.UPGRADE_TOKEN)
-                .with(Http.Header.CONNECTION, Http.Header.UPGRADE)
-                .with(Http.WebSocket.VERSION, Http.WebSocket.VERSION_13).with(Http.WebSocket.KEY, key);
-    }
-
-    /**
      * Builds WebSocket upgrade response headers.
      *
      * @param request validated opening request headers containing {@code Sec-WebSocket-Key}
@@ -124,97 +110,12 @@ public class WebSocketUpgrade {
     }
 
     /**
-     * Validates an upgrade response.
-     *
-     * @param status  HTTP response status code
-     * @param headers response headers containing {@code Sec-WebSocket-Accept}
-     * @throws ProtocolException if the response is not a valid switching-protocols handshake
-     * @throws ValidateException if the headers or accept value are invalid
-     */
-    public void validate(final int status, final Headers headers) {
-        final Headers checked = require(headers, "WebSocket response headers");
-        if (status != Http.Status.SWITCHING_PROTOCOLS) {
-            throw new ProtocolException("WebSocket upgrade response must be 101");
-        }
-        final String header = checked.get(Http.WebSocket.ACCEPT);
-        if (!accept(key, header)) {
-            throw new ProtocolException("Invalid WebSocket accept header");
-        }
-    }
-
-    /**
-     * Returns handshake key.
-     *
-     * @return base64-encoded client handshake key generated for this adapter
-     */
-    public String key() {
-        return key;
-    }
-
-    /**
-     * Validates a Sec-WebSocket-Accept value.
-     *
-     * @param key    base64-encoded client handshake key
-     * @param accept content of the server's {@code Sec-WebSocket-Accept} header
-     * @return {@code true} when the supplied accept value matches the key in constant time
-     * @throws ProtocolException if the key does not decode to 16 bytes
-     * @throws ValidateException if either header value is blank or contains a line break
-     */
-    public boolean accept(final String key, final String accept) {
-        final String checkedKey = validateHeader(key, "WebSocket key");
-        final String checkedAccept = validateHeader(accept, "WebSocket accept");
-        final String expected = acceptKey(checkedKey);
-        return MessageDigest.isEqual(
-                ByteString.encodeString(expected, Charset.ISO_8859_1).toByteArray(),
-                ByteString.encodeString(checkedAccept, Charset.ISO_8859_1).toByteArray());
-    }
-
-    /**
      * Creates a random WebSocket handshake key.
      *
      * @return base64 handshake key
      */
     private static String randomKey() {
         return Base64.encode(RandomKit.randomBytes(Http.WebSocket.KEY_BYTES, RANDOM));
-    }
-
-    /**
-     * Converts a WebSocket URI to HTTP.
-     *
-     * @param uri WebSocket URI whose authority, path, and query are preserved
-     * @return equivalent HTTP or HTTPS URI without a fragment
-     * @throws ProtocolException if the converted URI cannot be constructed
-     */
-    public URI httpUri(final URI uri) {
-        final URI checked = require(uri, "WebSocket URI");
-        final String scheme = Protocol.WSS.name.equalsIgnoreCase(checked.getScheme()) ? Protocol.HTTPS.name
-                : Protocol.HTTP.name;
-        try {
-            return new URI(scheme, checked.getUserInfo(), checked.getHost(), checked.getPort(), checked.getPath(),
-                    checked.getQuery(), null);
-        } catch (final URISyntaxException e) {
-            throw new ProtocolException("Unable to create HTTP upgrade URI", e);
-        }
-    }
-
-    /**
-     * Converts HTTP response URI to WebSocket address.
-     *
-     * @param uri HTTP response URI whose authority, path, and query are preserved
-     * @return equivalent WS or WSS protocol address without a fragment
-     * @throws ProtocolException if the converted URI or address cannot be constructed
-     */
-    public Address address(final URI uri) {
-        final URI checked = require(uri, "HTTP upgrade URI");
-        final String scheme = Protocol.HTTPS.name.equalsIgnoreCase(checked.getScheme()) ? Protocol.WSS.name
-                : Protocol.WS.name;
-        try {
-            return Address.from(
-                    new URI(scheme, checked.getUserInfo(), checked.getHost(), checked.getPort(), checked.getPath(),
-                            checked.getQuery(), null));
-        } catch (final URISyntaxException e) {
-            throw new ProtocolException("Unable to create WebSocket address", e);
-        }
     }
 
     /**
@@ -477,6 +378,105 @@ public class WebSocketUpgrade {
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Builds WebSocket upgrade request headers.
+     *
+     * @param source existing request headers to augment
+     * @return headers containing the required WebSocket upgrade fields and this adapter's handshake key
+     * @throws ValidateException if {@code source} is {@code null}
+     */
+    public Headers headers(final Headers source) {
+        final Headers checked = require(source, "WebSocket headers");
+        return checked.with(Http.Header.UPGRADE, Http.WebSocket.UPGRADE_TOKEN)
+                .with(Http.Header.CONNECTION, Http.Header.UPGRADE)
+                .with(Http.WebSocket.VERSION, Http.WebSocket.VERSION_13).with(Http.WebSocket.KEY, key);
+    }
+
+    /**
+     * Validates an upgrade response.
+     *
+     * @param status  HTTP response status code
+     * @param headers response headers containing {@code Sec-WebSocket-Accept}
+     * @throws ProtocolException if the response is not a valid switching-protocols handshake
+     * @throws ValidateException if the headers or accept value are invalid
+     */
+    public void validate(final int status, final Headers headers) {
+        final Headers checked = require(headers, "WebSocket response headers");
+        if (status != Http.Status.SWITCHING_PROTOCOLS) {
+            throw new ProtocolException("WebSocket upgrade response must be 101");
+        }
+        final String header = checked.get(Http.WebSocket.ACCEPT);
+        if (!accept(key, header)) {
+            throw new ProtocolException("Invalid WebSocket accept header");
+        }
+    }
+
+    /**
+     * Returns handshake key.
+     *
+     * @return base64-encoded client handshake key generated for this adapter
+     */
+    public String key() {
+        return key;
+    }
+
+    /**
+     * Validates a Sec-WebSocket-Accept value.
+     *
+     * @param key    base64-encoded client handshake key
+     * @param accept content of the server's {@code Sec-WebSocket-Accept} header
+     * @return {@code true} when the supplied accept value matches the key in constant time
+     * @throws ProtocolException if the key does not decode to 16 bytes
+     * @throws ValidateException if either header value is blank or contains a line break
+     */
+    public boolean accept(final String key, final String accept) {
+        final String checkedKey = validateHeader(key, "WebSocket key");
+        final String checkedAccept = validateHeader(accept, "WebSocket accept");
+        final String expected = acceptKey(checkedKey);
+        return MessageDigest.isEqual(
+                ByteString.encodeString(expected, Charset.ISO_8859_1).toByteArray(),
+                ByteString.encodeString(checkedAccept, Charset.ISO_8859_1).toByteArray());
+    }
+
+    /**
+     * Converts a WebSocket URI to HTTP.
+     *
+     * @param uri WebSocket URI whose authority, path, and query are preserved
+     * @return equivalent HTTP or HTTPS URI without a fragment
+     * @throws ProtocolException if the converted URI cannot be constructed
+     */
+    public URI httpUri(final URI uri) {
+        final URI checked = require(uri, "WebSocket URI");
+        final String scheme = Protocol.WSS.name.equalsIgnoreCase(checked.getScheme()) ? Protocol.HTTPS.name
+                : Protocol.HTTP.name;
+        try {
+            return new URI(scheme, checked.getUserInfo(), checked.getHost(), checked.getPort(), checked.getPath(),
+                    checked.getQuery(), null);
+        } catch (final URISyntaxException e) {
+            throw new ProtocolException("Unable to create HTTP upgrade URI", e);
+        }
+    }
+
+    /**
+     * Converts HTTP response URI to WebSocket address.
+     *
+     * @param uri HTTP response URI whose authority, path, and query are preserved
+     * @return equivalent WS or WSS protocol address without a fragment
+     * @throws ProtocolException if the converted URI or address cannot be constructed
+     */
+    public Address address(final URI uri) {
+        final URI checked = require(uri, "HTTP upgrade URI");
+        final String scheme = Protocol.HTTPS.name.equalsIgnoreCase(checked.getScheme()) ? Protocol.WSS.name
+                : Protocol.WS.name;
+        try {
+            return Address.from(
+                    new URI(scheme, checked.getUserInfo(), checked.getHost(), checked.getPort(), checked.getPath(),
+                            checked.getQuery(), null));
+        } catch (final URISyntaxException e) {
+            throw new ProtocolException("Unable to create WebSocket address", e);
+        }
     }
 
     /**

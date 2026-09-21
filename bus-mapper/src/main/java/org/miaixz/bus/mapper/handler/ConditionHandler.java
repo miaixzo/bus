@@ -55,6 +55,11 @@ import org.miaixz.bus.mapper.parsing.SqlSource;
 public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implements MapperHandler<T> {
 
     /**
+     * Cache of database-specific configuration values.
+     */
+    private final ConcurrentMap<DerivedConfigKey, Optional<C>> derivedConfigCache = new ConcurrentHashMap<>();
+
+    /**
      * Flattened Mapper properties used for feature configuration lookup.
      * <p>
      * Handler subclasses use the effective JDBC data source key to select database-specific entries. The properties do
@@ -62,11 +67,6 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
      * </p>
      */
     protected Properties properties;
-
-    /**
-     * Cache of database-specific configuration values.
-     */
-    private final ConcurrentMap<DerivedConfigKey, Optional<C>> derivedConfigCache = new ConcurrentHashMap<>();
 
     /**
      * Properties instance currently associated with the derived configuration cache.

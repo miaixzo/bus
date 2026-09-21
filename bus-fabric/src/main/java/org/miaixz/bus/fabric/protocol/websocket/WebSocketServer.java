@@ -168,19 +168,6 @@ public class WebSocketServer implements Lifecycle {
      * Terminal shutdown guard.
      */
     /**
-     * Listening server channel.
-     */
-    private volatile ServerSocketChannel serverChannel;
-
-    /**
-     * Background accept-loop handle.
-     */
-    private volatile DispatchHandle acceptHandle;
-
-    /**
-     * Sessions registered only after successful HTTP upgrade.
-     */
-    /**
      * Accepted transports, including TLS and HTTP handshakes still in progress.
      */
     private final Queue<AcceptedTransport> transports;
@@ -189,6 +176,19 @@ public class WebSocketServer implements Lifecycle {
      * Raw channels still being inspected for an optional PROXY header.
      */
     private final Queue<SocketChannel> acceptedChannels;
+
+    /**
+     * Sessions registered only after successful HTTP upgrade.
+     */
+    /**
+     * Listening server channel.
+     */
+    private volatile ServerSocketChannel serverChannel;
+
+    /**
+     * Background accept-loop handle.
+     */
+    private volatile DispatchHandle acceptHandle;
 
     /**
      * Creates a WebSocket server from one validated builder snapshot.
@@ -227,6 +227,131 @@ public class WebSocketServer implements Lifecycle {
      */
     public static Builder builder(final Context context) {
         return new Builder(require(context, "Context"));
+    }
+
+    /**
+     * Waits for one TLS setup future and preserves its runtime cause.
+     *
+     * @param future  setup future
+     * @param message checked-failure message
+     * @param <T>     result type
+     * @return completed result
+     */
+    private static <T> T await(final CompletableFuture<T> future, final String message) {
+        try {
+            return require(future, "Setup future").join();
+        } catch (final CompletionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof RuntimeException runtime) {
+                throw runtime;
+            }
+            throw new InternalException(message, cause == null ? e : cause);
+        }
+    }
+
+    /**
+     * Builds a stable dispatch key for one accepted session.
+     *
+     * @param peerAddress peer address
+     * @return dispatch key
+     */
+    private static String dispatchKey(final Address peerAddress) {
+        return peerAddress.scheme() + Symbol.COLON + Symbol.SLASH + Symbol.SLASH + peerAddress.host() + Symbol.C_COLON
+                + peerAddress.port();
+    }
+
+    /**
+     * Quietly closes a listening channel that failed during startup.
+     *
+     * @param channel listening channel
+     */
+    private static void closeServerChannel(final ServerSocketChannel channel) {
+        if (channel == null) {
+            return;
+        }
+        try {
+            channel.close();
+        } catch (final IOException ignored) {
+            // The original startup failure remains authoritative.
+        }
+    }
+
+    /**
+     * Converts a duration to a saturated nanosecond interval.
+     *
+     * @param duration interval to convert
+     * @return interval in nanoseconds, or {@link Long#MAX_VALUE} on overflow
+     */
+    private static long durationNanos(final Duration duration) {
+        try {
+            return duration.toNanos();
+        } catch (final ArithmeticException e) {
+            return Long.MAX_VALUE;
+        }
+    }
+
+    /**
+     * Computes non-negative elapsed nanoseconds with wrap-safe subtraction.
+     *
+     * @param now       current monotonic time
+     * @param startedAt start time
+     * @return elapsed nanoseconds
+     */
+    private static long elapsed(final long now, final long startedAt) {
+        final long value = now - startedAt;
+        return value < Normal.LONG_ZERO ? Long.MAX_VALUE : value;
+    }
+
+    /**
+     * Aggregates cleanup failures using suppressed causes.
+     *
+     * @param failure current failure
+     * @param next    next failure
+     * @return primary failure
+     */
+    private static RuntimeException append(final RuntimeException failure, final RuntimeException next) {
+        if (failure == null) {
+            return next;
+        }
+        if (failure != next) {
+            failure.addSuppressed(next);
+        }
+        return failure;
+    }
+
+    /**
+     * Returns a timeout policy with one replacement automatic ping interval.
+     *
+     * @param timeout source timeout
+     * @param ping    ping interval
+     * @return updated timeout
+     */
+    private static Timeout withPing(final Timeout timeout, final Duration ping) {
+        return new Timeout(timeout.connect(), timeout.read(), timeout.write(), timeout.call(), ping, timeout.close());
+    }
+
+    /**
+     * Validates that server TLS context and settings are configured as one pair.
+     *
+     * @param context  TLS context
+     * @param settings TLS settings
+     */
+    private static void validateTlsPair(final TlsContext context, final TlsSettings settings) {
+        if ((context == null) != (settings == null)) {
+            throw new ValidateException("TLS context and settings must be configured together");
+        }
+    }
+
+    /**
+     * Validates a required value.
+     *
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -694,26 +819,6 @@ public class WebSocketServer implements Lifecycle {
     }
 
     /**
-     * Waits for one TLS setup future and preserves its runtime cause.
-     *
-     * @param future  setup future
-     * @param message checked-failure message
-     * @param <T>     result type
-     * @return completed result
-     */
-    private static <T> T await(final CompletableFuture<T> future, final String message) {
-        try {
-            return require(future, "Setup future").join();
-        } catch (final CompletionException e) {
-            final Throwable cause = e.getCause();
-            if (cause instanceof RuntimeException runtime) {
-                throw runtime;
-            }
-            throw new InternalException(message, cause == null ? e : cause);
-        }
-    }
-
-    /**
      * Builds immutable session attributes from the validated upgrade.
      *
      * @param headers     request headers
@@ -753,17 +858,6 @@ public class WebSocketServer implements Lifecycle {
         } catch (final IOException e) {
             throw new ProtocolException("Unable to resolve accepted WebSocket peer address", e);
         }
-    }
-
-    /**
-     * Builds a stable dispatch key for one accepted session.
-     *
-     * @param peerAddress peer address
-     * @return dispatch key
-     */
-    private static String dispatchKey(final Address peerAddress) {
-        return peerAddress.scheme() + Symbol.COLON + Symbol.SLASH + Symbol.SLASH + peerAddress.host() + Symbol.C_COLON
-                + peerAddress.port();
     }
 
     /**
@@ -849,100 +943,6 @@ public class WebSocketServer implements Lifecycle {
                     ObservationMarker.WEBSOCKET_FAILED,
                     new SocketException("Unable to close accepted WebSocket channel", e));
         }
-    }
-
-    /**
-     * Quietly closes a listening channel that failed during startup.
-     *
-     * @param channel listening channel
-     */
-    private static void closeServerChannel(final ServerSocketChannel channel) {
-        if (channel == null) {
-            return;
-        }
-        try {
-            channel.close();
-        } catch (final IOException ignored) {
-            // The original startup failure remains authoritative.
-        }
-    }
-
-    /**
-     * Converts a duration to a saturated nanosecond interval.
-     *
-     * @param duration interval to convert
-     * @return interval in nanoseconds, or {@link Long#MAX_VALUE} on overflow
-     */
-    private static long durationNanos(final Duration duration) {
-        try {
-            return duration.toNanos();
-        } catch (final ArithmeticException e) {
-            return Long.MAX_VALUE;
-        }
-    }
-
-    /**
-     * Computes non-negative elapsed nanoseconds with wrap-safe subtraction.
-     *
-     * @param now       current monotonic time
-     * @param startedAt start time
-     * @return elapsed nanoseconds
-     */
-    private static long elapsed(final long now, final long startedAt) {
-        final long value = now - startedAt;
-        return value < Normal.LONG_ZERO ? Long.MAX_VALUE : value;
-    }
-
-    /**
-     * Aggregates cleanup failures using suppressed causes.
-     *
-     * @param failure current failure
-     * @param next    next failure
-     * @return primary failure
-     */
-    private static RuntimeException append(final RuntimeException failure, final RuntimeException next) {
-        if (failure == null) {
-            return next;
-        }
-        if (failure != next) {
-            failure.addSuppressed(next);
-        }
-        return failure;
-    }
-
-    /**
-     * Returns a timeout policy with one replacement automatic ping interval.
-     *
-     * @param timeout source timeout
-     * @param ping    ping interval
-     * @return updated timeout
-     */
-    private static Timeout withPing(final Timeout timeout, final Duration ping) {
-        return new Timeout(timeout.connect(), timeout.read(), timeout.write(), timeout.call(), ping, timeout.close());
-    }
-
-    /**
-     * Validates that server TLS context and settings are configured as one pair.
-     *
-     * @param context  TLS context
-     * @param settings TLS settings
-     */
-    private static void validateTlsPair(final TlsContext context, final TlsSettings settings) {
-        if ((context == null) != (settings == null)) {
-            throw new ValidateException("TLS context and settings must be configured together");
-        }
-    }
-
-    /**
-     * Validates a required value.
-     *
-     * @param value reference to validate
-     * @param name  field name included in the validation failure
-     * @param <T>   reference type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -1135,6 +1135,40 @@ public class WebSocketServer implements Lifecycle {
          */
         public Builder(final Context context) {
             this.context = context;
+        }
+
+        /**
+         * Rejects response headers owned by the upgrade protocol.
+         *
+         * @param name header name
+         */
+        private static void rejectReservedHeader(final String name) {
+            if (Http.Header.UPGRADE.equalsIgnoreCase(name) || Http.Header.CONNECTION.equalsIgnoreCase(name)
+                    || Http.WebSocket.ACCEPT.equalsIgnoreCase(name)) {
+                throw new ValidateException("WebSocket server response header is reserved: " + name);
+            }
+        }
+
+        /**
+         * Validates host.
+         *
+         * @param host candidate local bind host
+         */
+        private static void validateHost(final String host) {
+            if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
+                throw new ValidateException("WebSocket server host must be non-blank and single-line");
+            }
+        }
+
+        /**
+         * Validates port.
+         *
+         * @param port candidate local listening port
+         */
+        private static void validatePort(final int port) {
+            if (port < Normal._1 || port > Normal._65535) {
+                throw new ValidateException("WebSocket server port must be between 1 and 65535");
+            }
         }
 
         /**
@@ -1540,40 +1574,6 @@ public class WebSocketServer implements Lifecycle {
                     .backlog(socketOptions.backlog()).ioThreads(socketOptions.ioThreads())
                     .socketOptions(socketOptions.socketOptions()).retainReadBuffer(socketOptions.retainReadBuffer())
                     .idleTimeout(socketOptions.idleTimeout()).kcpWireVersion(socketOptions.kcpWireVersion());
-        }
-
-        /**
-         * Rejects response headers owned by the upgrade protocol.
-         *
-         * @param name header name
-         */
-        private static void rejectReservedHeader(final String name) {
-            if (Http.Header.UPGRADE.equalsIgnoreCase(name) || Http.Header.CONNECTION.equalsIgnoreCase(name)
-                    || Http.WebSocket.ACCEPT.equalsIgnoreCase(name)) {
-                throw new ValidateException("WebSocket server response header is reserved: " + name);
-            }
-        }
-
-        /**
-         * Validates host.
-         *
-         * @param host candidate local bind host
-         */
-        private static void validateHost(final String host) {
-            if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
-                throw new ValidateException("WebSocket server host must be non-blank and single-line");
-            }
-        }
-
-        /**
-         * Validates port.
-         *
-         * @param port candidate local listening port
-         */
-        private static void validatePort(final int port) {
-            if (port < Normal._1 || port > Normal._65535) {
-                throw new ValidateException("WebSocket server port must be between 1 and 65535");
-            }
         }
 
     }

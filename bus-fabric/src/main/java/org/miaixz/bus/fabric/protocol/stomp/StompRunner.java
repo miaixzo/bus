@@ -74,6 +74,110 @@ final class StompRunner {
     }
 
     /**
+     * Parses a strict {@code sx,sy} CONNECTED heartbeat header.
+     *
+     * @param value header value, or null when the server disables heartbeats
+     * @return server send and receive values
+     * @throws ProtocolException if the header is not exactly two non-negative decimal components
+     */
+    private static long[] heartbeatPair(final String value) {
+        if (value == null) {
+            return new long[] { Normal.LONG_ZERO, Normal.LONG_ZERO };
+        }
+        final int comma = value.indexOf(Symbol.C_COMMA);
+        if (comma <= Normal._0 || comma != value.lastIndexOf(Symbol.C_COMMA) || comma == value.length() - Normal._1) {
+            throw new ProtocolException("Invalid STOMP CONNECTED heart-beat header");
+        }
+        return new long[] { unsignedMillis(value, Normal._0, comma),
+                unsignedMillis(value, comma + Normal._1, value.length()) };
+    }
+
+    /**
+     * Parses one non-negative decimal millisecond component.
+     *
+     * @param value complete heartbeat header text
+     * @param start inclusive component start index
+     * @param end   exclusive component end index
+     * @return non-negative millisecond component
+     * @throws ProtocolException if the component is non-decimal or overflows {@code long}
+     */
+    private static long unsignedMillis(final String value, final int start, final int end) {
+        long result = Normal.LONG_ZERO;
+        for (int index = start; index < end; index++) {
+            final int digit = value.charAt(index) - Symbol.C_ZERO;
+            if (digit < Normal._0 || digit > Normal._9 || result > (Long.MAX_VALUE - digit) / Normal._10) {
+                throw new ProtocolException("Invalid STOMP CONNECTED heart-beat header");
+            }
+            result = result * Normal._10 + digit;
+        }
+        return result;
+    }
+
+    /**
+     * Creates a millisecond Duration while preserving protocol error semantics.
+     *
+     * @param millis negotiated millisecond interval
+     * @param name   component name
+     * @return duration representing the interval
+     * @throws ProtocolException if the duration cannot represent the interval
+     */
+    private static Duration duration(final long millis, final String name) {
+        try {
+            return Duration.ofMillis(millis);
+        } catch (final ArithmeticException e) {
+            throw new ProtocolException(name + " is too large", e);
+        }
+    }
+
+    /**
+     * Returns half a positive value rounded up.
+     *
+     * @param value positive integer interval
+     * @return half of the interval rounded toward positive infinity
+     */
+    private static long halfCeiling(final long value) {
+        return value / Normal._2 + value % Normal._2;
+    }
+
+    /**
+     * Converts a Duration to nanoseconds with saturation.
+     *
+     * @param duration timeout duration to convert
+     * @return exact nanoseconds or {@link Long#MAX_VALUE} when conversion overflows
+     */
+    private static long durationNanos(final Duration duration) {
+        try {
+            return duration.toNanos();
+        } catch (final ArithmeticException e) {
+            return Long.MAX_VALUE;
+        }
+    }
+
+    /**
+     * Calculates monotonic elapsed nanoseconds.
+     *
+     * @param started monotonic start reading
+     * @param current monotonic current reading
+     * @return non-negative elapsed nanoseconds
+     */
+    private static long elapsed(final long started, final long current) {
+        return Math.max(Normal.LONG_ZERO, current - started);
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Opens a STOMP session over WebSocket.
      *
      * @return connected STOMP session running over a newly opened WebSocket
@@ -324,97 +428,6 @@ final class StompRunner {
     }
 
     /**
-     * Parses a strict {@code sx,sy} CONNECTED heartbeat header.
-     *
-     * @param value header value, or null when the server disables heartbeats
-     * @return server send and receive values
-     * @throws ProtocolException if the header is not exactly two non-negative decimal components
-     */
-    private static long[] heartbeatPair(final String value) {
-        if (value == null) {
-            return new long[] { Normal.LONG_ZERO, Normal.LONG_ZERO };
-        }
-        final int comma = value.indexOf(Symbol.C_COMMA);
-        if (comma <= Normal._0 || comma != value.lastIndexOf(Symbol.C_COMMA) || comma == value.length() - Normal._1) {
-            throw new ProtocolException("Invalid STOMP CONNECTED heart-beat header");
-        }
-        return new long[] { unsignedMillis(value, Normal._0, comma),
-                unsignedMillis(value, comma + Normal._1, value.length()) };
-    }
-
-    /**
-     * Parses one non-negative decimal millisecond component.
-     *
-     * @param value complete heartbeat header text
-     * @param start inclusive component start index
-     * @param end   exclusive component end index
-     * @return non-negative millisecond component
-     * @throws ProtocolException if the component is non-decimal or overflows {@code long}
-     */
-    private static long unsignedMillis(final String value, final int start, final int end) {
-        long result = Normal.LONG_ZERO;
-        for (int index = start; index < end; index++) {
-            final int digit = value.charAt(index) - Symbol.C_ZERO;
-            if (digit < Normal._0 || digit > Normal._9 || result > (Long.MAX_VALUE - digit) / Normal._10) {
-                throw new ProtocolException("Invalid STOMP CONNECTED heart-beat header");
-            }
-            result = result * Normal._10 + digit;
-        }
-        return result;
-    }
-
-    /**
-     * Creates a millisecond Duration while preserving protocol error semantics.
-     *
-     * @param millis negotiated millisecond interval
-     * @param name   component name
-     * @return duration representing the interval
-     * @throws ProtocolException if the duration cannot represent the interval
-     */
-    private static Duration duration(final long millis, final String name) {
-        try {
-            return Duration.ofMillis(millis);
-        } catch (final ArithmeticException e) {
-            throw new ProtocolException(name + " is too large", e);
-        }
-    }
-
-    /**
-     * Returns half a positive value rounded up.
-     *
-     * @param value positive integer interval
-     * @return half of the interval rounded toward positive infinity
-     */
-    private static long halfCeiling(final long value) {
-        return value / Normal._2 + value % Normal._2;
-    }
-
-    /**
-     * Converts a Duration to nanoseconds with saturation.
-     *
-     * @param duration timeout duration to convert
-     * @return exact nanoseconds or {@link Long#MAX_VALUE} when conversion overflows
-     */
-    private static long durationNanos(final Duration duration) {
-        try {
-            return duration.toNanos();
-        } catch (final ArithmeticException e) {
-            return Long.MAX_VALUE;
-        }
-    }
-
-    /**
-     * Calculates monotonic elapsed nanoseconds.
-     *
-     * @param started monotonic start reading
-     * @param current monotonic current reading
-     * @return non-negative elapsed nanoseconds
-     */
-    private static long elapsed(final long started, final long current) {
-        return Math.max(Normal.LONG_ZERO, current - started);
-    }
-
-    /**
      * Waits for the CONNECT frame to be written.
      *
      * @param call deferred CONNECT-frame send operation to await
@@ -523,19 +536,6 @@ final class StompRunner {
             event = event.cause(cause);
         }
         spec.observer().emit(event.build());
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  logical field name included in the validation error
-     * @param <T>   reference type
-     * @return validated non-null reference
-     * @throws ValidateException if {@code value} is {@code null}
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

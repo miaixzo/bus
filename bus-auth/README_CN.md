@@ -80,8 +80,8 @@ RuntimeBuilder -> SourceLookup -> SourceDriver -> SourceWorker -> Dispatcher
                          RuntimeManager / Roster
 ```
 
-`Registry` 和 `Registry.Connector` 是构建期注册契约。`registry` 包在注册冻结后负责 Blueprint 校验和 Roster 投影，
-它不是另一套 Connector Registry。
+`Registry` 和 `Registry.Connector` 是构建期注册契约。`registry` 包在注册冻结后负责 Blueprint 校验和 Roster 投影， 它不是另一套
+Connector Registry。
 
 `ProtocolModule` 和 `VendorModule` 是 `SourceAggregate` 持有的两个内置 `SourceModule` 实现。`SourceLookup` 冻结 Driver、
 Descriptor 和反向路由索引。Runtime 编译时为每个 Source 创建最小权限的 `ScopedSourceServices`，Driver 不会获得完整的
@@ -104,8 +104,8 @@ Afdian、Alipay、Aliyun、Amazon、Apple、Baidu、Coding、DingTalk、Douyin�
 GitHub、GitLab、Google、Huawei、JD、Kujiale、LINE、LinkedIn、Meituan、Mi、Microsoft、Okta、OSChina、Pinterest、
 Proginn、QQ、RedNote、Slack、Stack Overflow、Taobao、Teambition、Toutiao、Twitter、VK、WeChat、Weibo 和 Ximalaya。
 
-当前为 Aliyun、DingTalk、Feishu、Figma、GitHub、GitLab、Google、Microsoft、Okta、Slack 和企业微信提供 Realm Adapter。
-每个精确 Variant 自行声明可用 Capability；仅凭平台名称不能推断其支持 Realm、增量变更或单资源查询。
+当前为 Aliyun、DingTalk、Feishu、Figma、GitHub、GitLab、Google、Microsoft、Okta、Slack 和企业微信提供 Realm Adapter。 每个精确
+Variant 自行声明可用 Capability；仅凭平台名称不能推断其支持 Realm、增量变更或单资源查询。
 
 ## Runtime 装配
 
@@ -141,8 +141,8 @@ RuntimeManager runtime = Authorize.standard(services, blueprintLoader)
 ```
 
 只配置所选 Driver 实际需要的 Worker 端口。候选编译时发现缺少必要端口会立即失败；Bus Auth 不会安装宽松的空实现。
-`build(...)` 在暴露 Runtime 前加载、校验、编译并原子提交初始 Blueprint。`buildEmpty()` 仅用于明确需要从 revision zero、
-无 Source 状态启动的管理进程。
+`build(...)` 在暴露 Runtime 前加载、校验、编译并原子提交初始 Blueprint。`buildEmpty()` 仅用于明确需要从 revision zero、 无
+Source 状态启动的管理进程。
 
 ## Source 发现
 
@@ -156,9 +156,8 @@ SourceDescriptor selected = runtime.descriptor()
         .getOrNull();
 ```
 
-每个 Descriptor 都提供稳定选择 ID、持久化 Source type、真实协议、展示元数据、配置表单、Capability Manifest、
-Conformance 信息，以及无副作用的持久化 Source 匹配能力。Descriptor 不解析凭据、不创建 Worker、不读取 Roster，
-也不发起网络请求。
+每个 Descriptor 都提供稳定选择 ID、持久化 Source type、真实协议、展示元数据、配置表单、Capability Manifest、 Conformance
+信息，以及无副作用的持久化 Source 匹配能力。Descriptor 不解析凭据、不创建 Worker、不读取 Roster， 也不发起网络请求。
 
 ## 调用、重载与生命周期
 
@@ -214,8 +213,7 @@ CompletionStage<Outcome<Realm.Description>> result = runtime.dispatcher().invoke
 ```
 
 调用方显式选择 Source 和 Capability；`Dispatcher` 不会根据不可信请求路径推断任何一个值。它统一校验生命周期、Roster
-路由、Capability 声明、请求类型、认证边界和响应类型。项目传输层继续负责将正式协议请求和响应映射到自己的 HTTP、TCP
-或 UDP 服务。
+路由、Capability 声明、请求类型、认证边界和响应类型。项目传输层继续负责将正式协议请求和响应映射到自己的 HTTP、TCP 或 UDP 服务。
 
 按照封闭结果族处理 `Outcome`：
 
@@ -232,13 +230,11 @@ switch (outcome) {
 不会改变当前 Roster 和 Worker。Revision 必须严格递增，并作为框架 Cache 的 generation，防止重载后继续使用旧协议状态。
 
 应通过 `try`/`finally` 或 try-with-resources 确定性管理 `RuntimeManager` 生命周期。`close()` 拒绝新的 Dispatch 和 Reload，
-并退役已编译 Worker，但不会关闭调用方拥有的 Executor、Cache、Loader、Store 或网络资源。最后一次成功提交的 Roster
-仍然可以读取。
+并退役已编译 Worker，但不会关闭调用方拥有的 Executor、Cache、Loader、Store 或网络资源。最后一次成功提交的 Roster 仍然可以读取。
 
 ## 选择性装配与 Vendor 配置
 
-`Authorize.standard(...)` 安装所有内置 Protocol 和 Vendor Connector。项目也可以保留全部 Protocol，只选择需要的 Vendor
-平台：
+`Authorize.standard(...)` 安装所有内置 Protocol 和 Vendor Connector。项目也可以保留全部 Protocol，只选择需要的 Vendor 平台：
 
 ```java
 SourceAggregate aggregate = SourceSuite
@@ -260,8 +256,8 @@ Runtime 装配和客户端 Vendor 配置必须使用同一个已经冻结的 `Ve
 ## Realm 资源访问
 
 `Realm` 是描述和读取上游身份与关系的共享协议中立契约。它提供 `DESCRIBE`、`SNAPSHOT`、可选 `CHANGES` 和可选
-`RETRIEVE` Capability。调用方必须检查返回的 description、coverage、operations、limitations、resource types 和
-continuation mode，不能假设所有 Adapter 行为一致。
+`RETRIEVE` Capability。调用方必须检查返回的 description、coverage、operations、limitations、resource types 和 continuation
+mode，不能假设所有 Adapter 行为一致。
 
 Bus Auth 只执行经过认证的上游访问。接入项目负责同步调度、检查点持久化、字段映射、差异协调、删除策略、事务、重试，
 以及本地组织、用户和用户组模型。
@@ -293,8 +289,8 @@ String subject = verified.claims().subject().getOrNull();
 ```
 
 `verify(...)` 使用显式可信算法和密钥检查签名；`validate(...)` 还会校验时间声明以及可选的 Issuer/Audience 要求；
-`isValid(...)` 是返回 boolean 的便捷形式。重复调用、非对称算法或显式 Clock 使用 `JwtService`；各协议包继续负责自己的
-专用 JWT Claim 策略。
+`isValid(...)` 是返回 boolean 的便捷形式。重复调用、非对称算法或显式 Clock 使用 `JwtService`；各协议包继续负责自己的 专用
+JWT Claim 策略。
 
 ## 扩展 SPI
 
@@ -311,9 +307,8 @@ String subject = verified.claims().subject().getOrNull();
 - 一个原子绑定完整平台注册内容的 `VendorConnector`；
 - 根 `SourceConnector` 服务的一条 `provides` 或 `META-INF/services` 声明。
 
-`SourceConnector` 是唯一发现服务。sealed 根接口只接纳 Protocol 和 Vendor 两个家族，两个 non-sealed 子接口继续允许外部
-实现。`connect(registry)` 是同步构建期声明回调：它不建立远程连接、不保留 Registry、不访问项目数据，也不修改运行中的
-Roster。
+`SourceConnector` 是唯一发现服务。sealed 根接口只接纳 Protocol 和 Vendor 两个家族，两个 non-sealed 子接口继续允许外部 实现。
+`connect(registry)` 是同步构建期声明回调：它不建立远程连接、不保留 Registry、不访问项目数据，也不修改运行中的 Roster。
 
 `Registry`、`ProtocolRegistry` 和 `VendorRegistry` 在 Freeze 前支持单个注册、原子批量注册、单个卸载和原子批量卸载。
 不希望使用服务发现时，可以通过 `SourceSuite.register(...)` 和 `registerAll(...)` 走统一显式扩展链路。
@@ -331,18 +326,18 @@ Roster。
 
 ## Package 职责
 
-| Package | 职责 |
-|:--|:--|
-| `org.miaixz.bus.auth` | 领域值、`Authorize`、`Registry`、`Roster`、`Dispatcher`、`Policies` 和 `Realm` |
-| `org.miaixz.bus.auth.source` | Source 发现、Descriptor、Module、Driver、Workflow 和最小权限服务契约 |
-| `org.miaixz.bus.auth.source.protocol` | 正式协议注册及各协议专用子包 |
-| `org.miaixz.bus.auth.source.vendor` | Vendor Manifest、Options、Connector、Adapter、Lookup 和配置 |
-| `org.miaixz.bus.auth.registry` | 完整 Blueprint 校验和不可变 Roster 投影 |
-| `org.miaixz.bus.auth.runtime` | Runtime 装配、最小权限服务、原子重载、Dispatch 和生命周期 |
-| `org.miaixz.bus.auth.worker` | 项目 Action Port、Worker Slot、Listener、Session 和已编译 SourceWorker |
-| `org.miaixz.bus.auth.worker.loader` | 项目拥有的异步数据加载端口 |
-| `org.miaixz.bus.auth.resolver` | 对项目加载 Record 进行纯校验和解析 |
-| `org.miaixz.bus.auth.shared` | 跨协议 JOSE、JWT、PKCE、DPoP、Claim 及相关安全组件 |
+| Package                               | 职责                                                                           |
+|:--------------------------------------|:-------------------------------------------------------------------------------|
+| `org.miaixz.bus.auth`                 | 领域值、`Authorize`、`Registry`、`Roster`、`Dispatcher`、`Policies` 和 `Realm` |
+| `org.miaixz.bus.auth.source`          | Source 发现、Descriptor、Module、Driver、Workflow 和最小权限服务契约           |
+| `org.miaixz.bus.auth.source.protocol` | 正式协议注册及各协议专用子包                                                   |
+| `org.miaixz.bus.auth.source.vendor`   | Vendor Manifest、Options、Connector、Adapter、Lookup 和配置                    |
+| `org.miaixz.bus.auth.registry`        | 完整 Blueprint 校验和不可变 Roster 投影                                        |
+| `org.miaixz.bus.auth.runtime`         | Runtime 装配、最小权限服务、原子重载、Dispatch 和生命周期                      |
+| `org.miaixz.bus.auth.worker`          | 项目 Action Port、Worker Slot、Listener、Session 和已编译 SourceWorker         |
+| `org.miaixz.bus.auth.worker.loader`   | 项目拥有的异步数据加载端口                                                     |
+| `org.miaixz.bus.auth.resolver`        | 对项目加载 Record 进行纯校验和解析                                             |
+| `org.miaixz.bus.auth.shared`          | 跨协议 JOSE、JWT、PKCE、DPoP、Claim 及相关安全组件                             |
 
 ## 构建
 

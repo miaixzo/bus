@@ -61,10 +61,10 @@ public class WalkSheetReader extends AbstractSheetReader<Void> {
     @Override
     public Void read(final Sheet sheet) {
         final int startRowIndex = Math.max(this.cellRangeAddress.getFirstRow(), sheet.getFirstRowNum());// Read starting
-                                                                                                        // row
-                                                                                                        // (inclusive).
+        // row
+        // (inclusive).
         final int endRowIndex = Math.min(this.cellRangeAddress.getLastRow(), sheet.getLastRowNum());// Read ending row
-                                                                                                    // (inclusive).
+        // (inclusive).
         final CellEditor cellEditor = this.config.getCellEditor();
 
         Row row;

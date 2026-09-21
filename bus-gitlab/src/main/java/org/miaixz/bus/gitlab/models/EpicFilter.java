@@ -42,9 +42,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class EpicFilter implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852252738550L;
 
@@ -52,54 +49,67 @@ public class EpicFilter implements Serializable {
      * The author id value.
      */
     private Long authorId;
+
     /**
      * The author username value.
      */
     private String authorUsername;
+
     /**
      * The labels value.
      */
     private String labels;
+
     /**
      * The order by value.
      */
     private EpicOrderBy orderBy;
+
     /**
      * The sort value.
      */
     private SortOrder sort;
+
     /**
      * The search value.
      */
     private String search;
+
     /**
      * The state value.
      */
     private EpicState state;
+
     /**
      * The created after value.
      */
     private Date createdAfter;
+
     /**
      * The updated after value.
      */
     private Date updatedAfter;
+
     /**
      * The updated before value.
      */
     private Date updatedBefore;
+
     /**
      * The include ancestor groups value.
      */
     private Boolean includeAncestorGroups;
+
     /**
      * The include descendant groups value.
      */
     private Boolean includeDescendantGroups;
+
     /**
      * The my reaction emoji value.
      */
     private String myReactionEmoji;
+
     /**
      * The not value.
      */
@@ -328,6 +338,17 @@ public class EpicFilter implements Serializable {
         return (this);
     }
 
+    private Map<String, Object> toStringMap(Map<EpicField, Object> map) {
+        if (map == null) {
+            return null;
+        }
+        Map<String, Object> result = new LinkedHashMap<>();
+        for (Map.Entry<EpicField, Object> entry : map.entrySet()) {
+            result.put(entry.getKey().toString(), entry.getValue());
+        }
+        return result;
+    }
+
     /**
      * The epic field enum.
      *
@@ -387,17 +408,6 @@ public class EpicFilter implements Serializable {
             return (enumCodec.toString(this));
         }
 
-    }
-
-    private Map<String, Object> toStringMap(Map<EpicField, Object> map) {
-        if (map == null) {
-            return null;
-        }
-        Map<String, Object> result = new LinkedHashMap<>();
-        for (Map.Entry<EpicField, Object> entry : map.entrySet()) {
-            result.put(entry.getKey().toString(), entry.getValue());
-        }
-        return result;
     }
 
 }

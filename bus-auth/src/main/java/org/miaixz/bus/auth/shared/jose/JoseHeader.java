@@ -45,50 +45,62 @@ public class JoseHeader {
      * Registered JOSE algorithm member name.
      */
     public static final String ALGORITHM = "alg";
+
     /**
      * Registered JWK Set URL member name.
      */
     public static final String JWK_SET_URL = "jku";
+
     /**
      * Registered embedded JSON Web Key member name.
      */
     public static final String JSON_WEB_KEY = "jwk";
+
     /**
      * Registered key identifier member name.
      */
     public static final String KEY_ID = "kid";
+
     /**
      * Registered X.509 certificate URL member name.
      */
     public static final String CERTIFICATE_URL = "x5u";
+
     /**
      * Registered X.509 certificate chain member name.
      */
     public static final String CERTIFICATE_CHAIN = "x5c";
+
     /**
      * Registered SHA-1 X.509 certificate thumbprint member name.
      */
     public static final String CERTIFICATE_THUMBPRINT = "x5t";
+
     /**
      * Registered SHA-256 X.509 certificate thumbprint member name.
      */
     public static final String CERTIFICATE_THUMBPRINT_SHA256 = "x5t#S256";
+
     /**
      * Registered complete JOSE object media type member name.
      */
     public static final String TYPE = "typ";
+
     /**
      * Registered secured content media type member name.
      */
     public static final String CONTENT_TYPE = "cty";
+
     /**
      * Registered critical extension member name.
      */
     public static final String CRITICAL = "crit";
+
     /**
      * Registered JWE content-encryption algorithm member name.
      */
     public static final String ENCRYPTION = "enc";
+
     /**
      * Registered JWE compression algorithm member name.
      */
@@ -105,6 +117,7 @@ public class JoseHeader {
      * Integrity-protected registered and extension parameters.
      */
     private final Parameters protectedSection;
+
     /**
      * Unprotected registered and extension parameters.
      */

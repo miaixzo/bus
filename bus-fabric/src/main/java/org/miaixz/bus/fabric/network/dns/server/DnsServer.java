@@ -37,13 +37,7 @@ import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.network.dns.cache.DnsResponseCache;
 import org.miaixz.bus.fabric.network.dns.forward.DnsForwarder;
 import org.miaixz.bus.fabric.network.dns.forward.DnsUpstream;
-import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
-import org.miaixz.bus.fabric.network.dns.message.DnsDecodedResponse;
-import org.miaixz.bus.fabric.network.dns.message.DnsExtendedError;
-import org.miaixz.bus.fabric.network.dns.message.DnsQuery;
-import org.miaixz.bus.fabric.network.dns.message.DnsResponse;
-import org.miaixz.bus.fabric.network.dns.message.DnsResponseCode;
-import org.miaixz.bus.fabric.network.dns.message.DnsTsig;
+import org.miaixz.bus.fabric.network.dns.message.*;
 import org.miaixz.bus.fabric.network.dns.observe.DnsMetrics;
 import org.miaixz.bus.fabric.network.dns.observe.DnsMetrics.DnssecResult;
 import org.miaixz.bus.fabric.network.dns.observe.DnsQueryLog;
@@ -164,6 +158,273 @@ public class DnsServer implements AutoCloseable, Lifecycle {
      */
     public static DnsServer create(final DnsServerOptions options) {
         return new DnsServer(options);
+    }
+
+    /**
+     * Classifies a DNSSEC validation result for metrics.
+     *
+     * @param query    decoded DNS query
+     * @param response decoded DNS response
+     * @return DNSSEC result category
+     */
+    private static DnssecResult dnssecResult(final DnsQuery query, final DnsDecodedResponse response) {
+        if (!query.dnssecOk()) {
+            return DnssecResult.SKIPPED;
+        }
+        if (response.authenticData()) {
+            return DnssecResult.VALIDATED;
+        }
+        if (response.responseCode() == DnsResponseCode.SERVFAIL) {
+            return DnssecResult.FAILED;
+        }
+        return DnssecResult.INSECURE;
+    }
+
+    /**
+     * Extracts the response code from a wire-format response.
+     *
+     * @param response encoded DNS response
+     * @return decoded response code, or FORMERR when decoding fails
+     */
+    private static DnsResponseCode responseCode(final byte[] response) {
+        try {
+            return DnsCodec.decodeResponse(response).responseCode();
+        } catch (final RuntimeException e) {
+            return DnsResponseCode.FORMERR;
+        }
+    }
+
+    /**
+     * Returns the matched policy action for query logging.
+     *
+     * @param current        active runtime index, or {@code null}
+     * @param query          decoded DNS query
+     * @param routingAddress address used for view selection
+     * @return policy action token
+     */
+    private static String policyAction(
+            final RuntimeIndex current,
+            final DnsQuery query,
+            final InetAddress routingAddress) {
+        if (current == null) {
+            return "none";
+        }
+        final DnsPolicyRule policy = current.policyIndex(routingAddress)
+                .match(query.question(), routingAddress, current.viewName(routingAddress), null);
+        return policy == null ? "none" : policy.action().name();
+    }
+
+    /**
+     * Returns the upstream summary for query logging.
+     *
+     * @param current        active runtime index, or {@code null}
+     * @param query          decoded DNS query
+     * @param routingAddress address used for view selection
+     * @return upstream summary token
+     */
+    private static String upstreamSummary(
+            final RuntimeIndex current,
+            final DnsQuery query,
+            final InetAddress routingAddress) {
+        if (current == null || query.opcode() != DnsQuery.OPCODE_QUERY
+                || !shouldForward(current, query, routingAddress)) {
+            return "local";
+        }
+        final List<DnsUpstream> selected = upstreams(current, query, routingAddress);
+        if (selected.isEmpty()) {
+            return "none";
+        }
+        final StringBuilder summary = new StringBuilder();
+        for (final DnsUpstream upstream : selected) {
+            if (!summary.isEmpty()) {
+                summary.append(Symbol.C_OR);
+            }
+            summary.append(upstream.transport().name()).append("://").append(upstream.host()).append(Symbol.C_COLON)
+                    .append(upstream.port());
+        }
+        return summary.toString();
+    }
+
+    /**
+     * Returns whether a wire-format response is SERVFAIL.
+     *
+     * @param response response wire bytes
+     * @return true when the response code is SERVFAIL
+     */
+    private static boolean servfail(final byte[] response) {
+        try {
+            return DnsCodec.decodeResponse(response).responseCode() == DnsResponseCode.SERVFAIL;
+        } catch (final RuntimeException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Applies snapshot policy rules to one query.
+     *
+     * @param current       active runtime index
+     * @param query         decoded DNS query
+     * @param clientAddress client address, or {@code null} when unavailable
+     * @return policy response, or {@code null}
+     */
+    private static DnsResponse policyResponse(
+            final RuntimeIndex current,
+            final DnsQuery query,
+            final InetAddress clientAddress) {
+        final DnsPolicyRule policy = current.policyIndex(clientAddress)
+                .match(query.question(), clientAddress, current.viewName(clientAddress), null);
+        if (policy != null) {
+            return new DnsResponse(query, policy.responseCode(), true, false, false, policy.answers(query.question()),
+                    List.of(), List.of(), policyExtendedError(policy, query));
+        }
+        return null;
+    }
+
+    /**
+     * Returns the EDNS Extended DNS Error attached to a policy response.
+     *
+     * @param policy matched policy rule
+     * @param query  decoded DNS query
+     * @return EDE metadata, or {@code null} when the response must not include EDE
+     */
+    private static DnsExtendedError policyExtendedError(final DnsPolicyRule policy, final DnsQuery query) {
+        if (!query.edns()) {
+            return null;
+        }
+        return policy.extendedError();
+    }
+
+    /**
+     * Resolves a query against the local runtime index.
+     *
+     * @param current       active runtime index
+     * @param query         decoded DNS query
+     * @param clientAddress client address, or {@code null} when unavailable
+     * @return DNS response model
+     */
+    private static DnsResponse resolveLocal(
+            final RuntimeIndex current,
+            final DnsQuery query,
+            final InetAddress clientAddress) {
+        final DnsAuthoritativeResolver resolver = new DnsAuthoritativeResolver(current);
+        final DnsResolution resolution = resolver.resolve(query.question(), clientAddress, query.dnssecOk());
+        return new DnsResponse(query, resolution.responseCode(), resolution.authoritative(), false, false,
+                resolution.answers(), resolution.authorities(), List.of());
+    }
+
+    /**
+     * Returns whether a query should be forwarded to upstream DNS servers.
+     *
+     * @param current       active runtime index
+     * @param query         decoded DNS query
+     * @param clientAddress client address, or {@code null} when unavailable
+     * @return true when the query is outside local authority or targets a forward zone
+     */
+    private static boolean shouldForward(
+            final RuntimeIndex current,
+            final DnsQuery query,
+            final InetAddress clientAddress) {
+        final DnsZone zone = current.findZone(query.question().name(), clientAddress);
+        final boolean forwardZone = zone == null || zone.mode() == DnsZoneMode.FORWARD
+                || zone.mode() == DnsZoneMode.STUB;
+        return forwardZone && !upstreams(current, query, clientAddress).isEmpty();
+    }
+
+    /**
+     * Selects upstream DNS servers for a forwarded query.
+     *
+     * @param current       active runtime index
+     * @param query         decoded DNS query
+     * @param clientAddress client address, or {@code null} when unavailable
+     * @return zone-specific upstreams or global upstreams
+     */
+    private static List<DnsUpstream> upstreams(
+            final RuntimeIndex current,
+            final DnsQuery query,
+            final InetAddress clientAddress) {
+        final DnsZone zone = current.findZone(query.question().name(), clientAddress);
+        if (zone != null && (zone.mode() == DnsZoneMode.FORWARD || zone.mode() == DnsZoneMode.STUB)
+                && !zone.upstreams().isEmpty()) {
+            return zone.upstreams();
+        }
+        return current.upstreams();
+    }
+
+    /**
+     * Selects the address used for view and policy routing.
+     *
+     * @param query         decoded DNS query
+     * @param clientAddress transport client address, or {@code null} when unavailable
+     * @return EDNS Client Subnet address when present, otherwise the transport client address
+     */
+    private static InetAddress effectiveClientAddress(final DnsQuery query, final InetAddress clientAddress) {
+        return query.clientSubnet() == null ? clientAddress : query.clientSubnet().address();
+    }
+
+    /**
+     * Encodes a DNS response model.
+     *
+     * @param response           response model
+     * @param stream             true when a TCP-style full response is required
+     * @param maxUdpPayloadBytes maximum UDP payload size
+     * @return response wire bytes
+     */
+    private static byte[] encode(final DnsResponse response, final boolean stream, final int maxUdpPayloadBytes) {
+        return stream ? DnsCodec.encodeResponse(response) : DnsCodec.encodeUdpResponse(response, maxUdpPayloadBytes);
+    }
+
+    /**
+     * Encodes and TSIG-signs a DNS response when the request was authenticated.
+     *
+     * @param response           response model
+     * @param stream             true when a TCP-style full response is required
+     * @param maxUdpPayloadBytes maximum UDP payload size
+     * @param tsigKey            verified TSIG key, or {@code null} for unsigned responses
+     * @return response wire bytes
+     */
+    private static byte[] encodeSigned(
+            final DnsResponse response,
+            final boolean stream,
+            final int maxUdpPayloadBytes,
+            final DnsTsigKey tsigKey) {
+        return sign(encode(response, stream, maxUdpPayloadBytes), response.query(), tsigKey);
+    }
+
+    /**
+     * TSIG-signs response bytes when a verified key is available.
+     *
+     * @param response response wire bytes
+     * @param query    decoded DNS query
+     * @param tsigKey  verified TSIG key, or {@code null} for unsigned responses
+     * @return original or signed response wire bytes
+     */
+    private static byte[] sign(final byte[] response, final DnsQuery query, final DnsTsigKey tsigKey) {
+        return tsigKey == null ? response : DnsTsig.signResponse(response, query, tsigKey);
+    }
+
+    /**
+     * Closes endpoint handles and suppresses later failures onto the first failure.
+     *
+     * @param closing handles to close
+     */
+    private static void closeHandles(final List<AutoCloseable> closing) {
+        RuntimeException failure = null;
+        for (final AutoCloseable handle : closing) {
+            try {
+                handle.close();
+            } catch (final Exception e) {
+                final RuntimeException runtime = e instanceof RuntimeException existing ? existing
+                        : new StatefulException("Unable to close DNS endpoint", e);
+                if (failure == null) {
+                    failure = runtime;
+                } else {
+                    failure.addSuppressed(runtime);
+                }
+            }
+        }
+        if (failure != null) {
+            throw failure;
+        }
     }
 
     /**
@@ -551,26 +812,6 @@ public class DnsServer implements AutoCloseable, Lifecycle {
     }
 
     /**
-     * Classifies a DNSSEC validation result for metrics.
-     *
-     * @param query    decoded DNS query
-     * @param response decoded DNS response
-     * @return DNSSEC result category
-     */
-    private static DnssecResult dnssecResult(final DnsQuery query, final DnsDecodedResponse response) {
-        if (!query.dnssecOk()) {
-            return DnssecResult.SKIPPED;
-        }
-        if (response.authenticData()) {
-            return DnssecResult.VALIDATED;
-        }
-        if (response.responseCode() == DnsResponseCode.SERVFAIL) {
-            return DnssecResult.FAILED;
-        }
-        return DnssecResult.INSECURE;
-    }
-
-    /**
      * Records one query log entry when query logging is enabled.
      *
      * @param query         decoded DNS query
@@ -604,85 +845,6 @@ public class DnsServer implements AutoCloseable, Lifecycle {
                     upstreamSummary(current, query, routingAddress));
         } catch (final RuntimeException ignored) {
             return;
-        }
-    }
-
-    /**
-     * Extracts the response code from a wire-format response.
-     *
-     * @param response encoded DNS response
-     * @return decoded response code, or FORMERR when decoding fails
-     */
-    private static DnsResponseCode responseCode(final byte[] response) {
-        try {
-            return DnsCodec.decodeResponse(response).responseCode();
-        } catch (final RuntimeException e) {
-            return DnsResponseCode.FORMERR;
-        }
-    }
-
-    /**
-     * Returns the matched policy action for query logging.
-     *
-     * @param current        active runtime index, or {@code null}
-     * @param query          decoded DNS query
-     * @param routingAddress address used for view selection
-     * @return policy action token
-     */
-    private static String policyAction(
-            final RuntimeIndex current,
-            final DnsQuery query,
-            final InetAddress routingAddress) {
-        if (current == null) {
-            return "none";
-        }
-        final DnsPolicyRule policy = current.policyIndex(routingAddress)
-                .match(query.question(), routingAddress, current.viewName(routingAddress), null);
-        return policy == null ? "none" : policy.action().name();
-    }
-
-    /**
-     * Returns the upstream summary for query logging.
-     *
-     * @param current        active runtime index, or {@code null}
-     * @param query          decoded DNS query
-     * @param routingAddress address used for view selection
-     * @return upstream summary token
-     */
-    private static String upstreamSummary(
-            final RuntimeIndex current,
-            final DnsQuery query,
-            final InetAddress routingAddress) {
-        if (current == null || query.opcode() != DnsQuery.OPCODE_QUERY
-                || !shouldForward(current, query, routingAddress)) {
-            return "local";
-        }
-        final List<DnsUpstream> selected = upstreams(current, query, routingAddress);
-        if (selected.isEmpty()) {
-            return "none";
-        }
-        final StringBuilder summary = new StringBuilder();
-        for (final DnsUpstream upstream : selected) {
-            if (!summary.isEmpty()) {
-                summary.append(Symbol.C_OR);
-            }
-            summary.append(upstream.transport().name()).append("://").append(upstream.host()).append(Symbol.C_COLON)
-                    .append(upstream.port());
-        }
-        return summary.toString();
-    }
-
-    /**
-     * Returns whether a wire-format response is SERVFAIL.
-     *
-     * @param response response wire bytes
-     * @return true when the response code is SERVFAIL
-     */
-    private static boolean servfail(final byte[] response) {
-        try {
-            return DnsCodec.decodeResponse(response).responseCode() == DnsResponseCode.SERVFAIL;
-        } catch (final RuntimeException e) {
-            return false;
         }
     }
 
@@ -817,77 +979,6 @@ public class DnsServer implements AutoCloseable, Lifecycle {
     }
 
     /**
-     * Applies snapshot policy rules to one query.
-     *
-     * @param current       active runtime index
-     * @param query         decoded DNS query
-     * @param clientAddress client address, or {@code null} when unavailable
-     * @return policy response, or {@code null}
-     */
-    private static DnsResponse policyResponse(
-            final RuntimeIndex current,
-            final DnsQuery query,
-            final InetAddress clientAddress) {
-        final DnsPolicyRule policy = current.policyIndex(clientAddress)
-                .match(query.question(), clientAddress, current.viewName(clientAddress), null);
-        if (policy != null) {
-            return new DnsResponse(query, policy.responseCode(), true, false, false, policy.answers(query.question()),
-                    List.of(), List.of(), policyExtendedError(policy, query));
-        }
-        return null;
-    }
-
-    /**
-     * Returns the EDNS Extended DNS Error attached to a policy response.
-     *
-     * @param policy matched policy rule
-     * @param query  decoded DNS query
-     * @return EDE metadata, or {@code null} when the response must not include EDE
-     */
-    private static DnsExtendedError policyExtendedError(final DnsPolicyRule policy, final DnsQuery query) {
-        if (!query.edns()) {
-            return null;
-        }
-        return policy.extendedError();
-    }
-
-    /**
-     * Resolves a query against the local runtime index.
-     *
-     * @param current       active runtime index
-     * @param query         decoded DNS query
-     * @param clientAddress client address, or {@code null} when unavailable
-     * @return DNS response model
-     */
-    private static DnsResponse resolveLocal(
-            final RuntimeIndex current,
-            final DnsQuery query,
-            final InetAddress clientAddress) {
-        final DnsAuthoritativeResolver resolver = new DnsAuthoritativeResolver(current);
-        final DnsResolution resolution = resolver.resolve(query.question(), clientAddress, query.dnssecOk());
-        return new DnsResponse(query, resolution.responseCode(), resolution.authoritative(), false, false,
-                resolution.answers(), resolution.authorities(), List.of());
-    }
-
-    /**
-     * Returns whether a query should be forwarded to upstream DNS servers.
-     *
-     * @param current       active runtime index
-     * @param query         decoded DNS query
-     * @param clientAddress client address, or {@code null} when unavailable
-     * @return true when the query is outside local authority or targets a forward zone
-     */
-    private static boolean shouldForward(
-            final RuntimeIndex current,
-            final DnsQuery query,
-            final InetAddress clientAddress) {
-        final DnsZone zone = current.findZone(query.question().name(), clientAddress);
-        final boolean forwardZone = zone == null || zone.mode() == DnsZoneMode.FORWARD
-                || zone.mode() == DnsZoneMode.STUB;
-        return forwardZone && !upstreams(current, query, clientAddress).isEmpty();
-    }
-
-    /**
      * Resolves and encodes a response without reading or writing the response cache.
      *
      * @param current        active runtime index
@@ -948,37 +1039,6 @@ public class DnsServer implements AutoCloseable, Lifecycle {
     }
 
     /**
-     * Selects upstream DNS servers for a forwarded query.
-     *
-     * @param current       active runtime index
-     * @param query         decoded DNS query
-     * @param clientAddress client address, or {@code null} when unavailable
-     * @return zone-specific upstreams or global upstreams
-     */
-    private static List<DnsUpstream> upstreams(
-            final RuntimeIndex current,
-            final DnsQuery query,
-            final InetAddress clientAddress) {
-        final DnsZone zone = current.findZone(query.question().name(), clientAddress);
-        if (zone != null && (zone.mode() == DnsZoneMode.FORWARD || zone.mode() == DnsZoneMode.STUB)
-                && !zone.upstreams().isEmpty()) {
-            return zone.upstreams();
-        }
-        return current.upstreams();
-    }
-
-    /**
-     * Selects the address used for view and policy routing.
-     *
-     * @param query         decoded DNS query
-     * @param clientAddress transport client address, or {@code null} when unavailable
-     * @return EDNS Client Subnet address when present, otherwise the transport client address
-     */
-    private static InetAddress effectiveClientAddress(final DnsQuery query, final InetAddress clientAddress) {
-        return query.clientSubnet() == null ? clientAddress : query.clientSubnet().address();
-    }
-
-    /**
      * Returns whether a client address is allowed to use forwarding or recursive resolution.
      *
      * @param clientAddress client address, or {@code null} when unavailable
@@ -994,47 +1054,6 @@ public class DnsServer implements AutoCloseable, Lifecycle {
             }
         }
         return false;
-    }
-
-    /**
-     * Encodes a DNS response model.
-     *
-     * @param response           response model
-     * @param stream             true when a TCP-style full response is required
-     * @param maxUdpPayloadBytes maximum UDP payload size
-     * @return response wire bytes
-     */
-    private static byte[] encode(final DnsResponse response, final boolean stream, final int maxUdpPayloadBytes) {
-        return stream ? DnsCodec.encodeResponse(response) : DnsCodec.encodeUdpResponse(response, maxUdpPayloadBytes);
-    }
-
-    /**
-     * Encodes and TSIG-signs a DNS response when the request was authenticated.
-     *
-     * @param response           response model
-     * @param stream             true when a TCP-style full response is required
-     * @param maxUdpPayloadBytes maximum UDP payload size
-     * @param tsigKey            verified TSIG key, or {@code null} for unsigned responses
-     * @return response wire bytes
-     */
-    private static byte[] encodeSigned(
-            final DnsResponse response,
-            final boolean stream,
-            final int maxUdpPayloadBytes,
-            final DnsTsigKey tsigKey) {
-        return sign(encode(response, stream, maxUdpPayloadBytes), response.query(), tsigKey);
-    }
-
-    /**
-     * TSIG-signs response bytes when a verified key is available.
-     *
-     * @param response response wire bytes
-     * @param query    decoded DNS query
-     * @param tsigKey  verified TSIG key, or {@code null} for unsigned responses
-     * @return original or signed response wire bytes
-     */
-    private static byte[] sign(final byte[] response, final DnsQuery query, final DnsTsigKey tsigKey) {
-        return tsigKey == null ? response : DnsTsig.signResponse(response, query, tsigKey);
     }
 
     /**
@@ -1083,31 +1102,6 @@ public class DnsServer implements AutoCloseable, Lifecycle {
             throw new StatefulException("DNS server snapshot has not been loaded");
         }
         return current;
-    }
-
-    /**
-     * Closes endpoint handles and suppresses later failures onto the first failure.
-     *
-     * @param closing handles to close
-     */
-    private static void closeHandles(final List<AutoCloseable> closing) {
-        RuntimeException failure = null;
-        for (final AutoCloseable handle : closing) {
-            try {
-                handle.close();
-            } catch (final Exception e) {
-                final RuntimeException runtime = e instanceof RuntimeException existing ? existing
-                        : new StatefulException("Unable to close DNS endpoint", e);
-                if (failure == null) {
-                    failure = runtime;
-                } else {
-                    failure.addSuppressed(runtime);
-                }
-            }
-        }
-        if (failure != null) {
-            throw failure;
-        }
     }
 
 }

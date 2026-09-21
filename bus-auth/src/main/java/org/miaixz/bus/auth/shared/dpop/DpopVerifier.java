@@ -61,14 +61,17 @@ public class DpopVerifier {
      * Profile-scoped shared JWS parser and verifier.
      */
     private final JwsService jwsService;
+
     /**
      * Explicit converter for the proof's validated public JWK.
      */
     private final PublicKeyFactory publicKeyFactory;
+
     /**
      * Shared clock and skew guard.
      */
     private final TimeGuard timeGuard;
+
     /**
      * Shared constant-time comparison primitive for proof-bound values.
      */

@@ -36,7 +36,7 @@ import org.miaixz.bus.gitlab.models.PackageFilter;
  * This class implements the client side API for the GitLab Packages API. See
  * <a href="https://docs.gitlab.com/ee/api/packages.html">Packages API at GitLab</a> for more information.
  * </p>
- *
+ * <p>
  * NOTE: This API is not available in the Community edition of GitLab.
  *
  * @author Kimi Liu

@@ -61,15 +61,6 @@ public class DnsServerPolicy implements Policy {
     }
 
     /**
-     * Returns DNS server startup options.
-     *
-     * @return DNS server options
-     */
-    public DnsServerOptions options() {
-        return options;
-    }
-
-    /**
      * Resolves the DNS server policy from an option snapshot.
      *
      * @param options option snapshot
@@ -77,6 +68,15 @@ public class DnsServerPolicy implements Policy {
      */
     public static DnsServerPolicy resolve(final Options options) {
         return Assert.notNull(options, () -> new ValidateException("Options must not be null")).get(OPTION);
+    }
+
+    /**
+     * Returns DNS server startup options.
+     *
+     * @return DNS server options
+     */
+    public DnsServerOptions options() {
+        return options;
     }
 
     /**

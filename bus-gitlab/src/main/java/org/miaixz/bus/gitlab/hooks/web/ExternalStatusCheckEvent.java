@@ -34,9 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class ExternalStatusCheckEvent implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852232138157L;
 
@@ -44,38 +41,47 @@ public class ExternalStatusCheckEvent implements Serializable {
      * The object kind value.
      */
     private String objectKind;
+
     /**
      * The event type value.
      */
     private String eventType;
+
     /**
      * The user value.
      */
     private EventUser user;
+
     /**
      * The project value.
      */
     private EventProject project;
+
     /**
      * The repository value.
      */
     private EventRepository repository;
+
     /**
      * The object attributes value.
      */
     private ObjectAttributes objectAttributes;
+
     /**
      * The labels value.
      */
     private List<EventLabel> labels;
+
     /**
      * The changes value.
      */
     private MergeRequestChanges changes;
+
     /**
      * The assignees value.
      */
     private List<Assignee> assignees;
+
     /**
      * The external approval rule value.
      */

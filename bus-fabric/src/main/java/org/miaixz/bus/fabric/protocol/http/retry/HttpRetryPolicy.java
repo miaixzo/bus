@@ -116,6 +116,26 @@ public class HttpRetryPolicy implements Policy {
     }
 
     /**
+     * Creates a retry policy builder.
+     *
+     * @return new builder seeded with default retry settings
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * Returns whether a cause is a connection failure.
+     *
+     * @param cause non-null failure instance to classify without traversing its cause chain
+     * @return true for fabric, JDK socket, connect, or other I/O exceptions
+     */
+    private static boolean connectionFailure(final Throwable cause) {
+        return cause instanceof SocketException || cause instanceof java.net.SocketException
+                || cause instanceof ConnectException || cause instanceof IOException;
+    }
+
+    /**
      * Adds this complete policy to an option snapshot.
      *
      * @param options option source
@@ -124,15 +144,6 @@ public class HttpRetryPolicy implements Policy {
     @Override
     public Options from(final Options options) {
         return Assert.notNull(options, () -> new ValidateException("Options must not be null")).with(OPTION, this);
-    }
-
-    /**
-     * Creates a retry policy builder.
-     *
-     * @return new builder seeded with default retry settings
-     */
-    public static Builder builder() {
-        return new Builder();
     }
 
     /**
@@ -262,17 +273,6 @@ public class HttpRetryPolicy implements Policy {
     }
 
     /**
-     * Returns whether a cause is a connection failure.
-     *
-     * @param cause non-null failure instance to classify without traversing its cause chain
-     * @return true for fabric, JDK socket, connect, or other I/O exceptions
-     */
-    private static boolean connectionFailure(final Throwable cause) {
-        return cause instanceof SocketException || cause instanceof java.net.SocketException
-                || cause instanceof ConnectException || cause instanceof IOException;
-    }
-
-    /**
      * Builder for retry policies.
      *
      * @author Kimi Liu
@@ -314,6 +314,22 @@ public class HttpRetryPolicy implements Policy {
          */
         public Builder() {
             // No initialization required.
+        }
+
+        /**
+         * Validates a non-negative delay.
+         *
+         * @param value delay candidate
+         * @param name  component name
+         * @return validated delay
+         */
+        private static Duration duration(final Duration value, final String name) {
+            final Duration checked = Assert
+                    .notNull(value, () -> new ValidateException(name + " must be non-null and non-negative"));
+            Assert.isFalse(
+                    checked.isNegative(),
+                    () -> new ValidateException(name + " must be non-null and non-negative"));
+            return checked;
         }
 
         /**
@@ -411,22 +427,6 @@ public class HttpRetryPolicy implements Policy {
             }
             return new HttpRetryPolicy(maxAttempts, maxStaleRetries, maxRedirects, retryOnConnectionFailure,
                     currentBase, currentMaximum);
-        }
-
-        /**
-         * Validates a non-negative delay.
-         *
-         * @param value delay candidate
-         * @param name  component name
-         * @return validated delay
-         */
-        private static Duration duration(final Duration value, final String name) {
-            final Duration checked = Assert
-                    .notNull(value, () -> new ValidateException(name + " must be non-null and non-negative"));
-            Assert.isFalse(
-                    checked.isNegative(),
-                    () -> new ValidateException(name + " must be non-null and non-negative"));
-            return checked;
         }
 
     }

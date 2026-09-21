@@ -38,10 +38,12 @@ public class StartupMetrics {
      * Total application startup duration metric.
      */
     public static final String STARTUP_DURATION = "application.startup.duration";
+
     /**
      * Application startup count metric.
      */
     public static final String STARTUP_COUNT = "application.startup.count";
+
     /**
      * Application startup-stage duration metric.
      */

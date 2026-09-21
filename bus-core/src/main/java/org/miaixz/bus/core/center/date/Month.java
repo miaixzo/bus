@@ -29,6 +29,7 @@ import org.miaixz.bus.core.lang.Symbol;
 /**
  * Enumeration for months, corresponding to the int values of months in {@link Calendar}.
  *
+ * @author Kimi Liu
  * @see Calendar#JANUARY
  * @see Calendar#FEBRUARY
  * @see Calendar#MARCH
@@ -42,7 +43,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * @see Calendar#NOVEMBER
  * @see Calendar#DECEMBER
  * @see Calendar#UNDECIMBER
- * @author Kimi Liu
  */
 public enum Month {
 

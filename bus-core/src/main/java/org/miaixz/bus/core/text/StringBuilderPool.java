@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.core.text;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -75,41 +76,6 @@ import org.miaixz.bus.core.lang.Normal;
 public class StringBuilderPool {
 
     /**
-     * ThreadLocal pool for small {@link StringBuilder} instances (default initial capacity: 64 characters). Suitable
-     * for short strings like IDs, names, and simple labels.
-     */
-    private static ThreadLocal<StringBuilder> SMALL_BUILDER;
-
-    /**
-     * ThreadLocal pool for medium {@link StringBuilder} instances (default initial capacity: 256 characters). Suitable
-     * for SQL fragments, short messages, and file paths.
-     */
-    private static ThreadLocal<StringBuilder> MEDIUM_BUILDER;
-
-    /**
-     * ThreadLocal pool for large {@link StringBuilder} instances (default initial capacity: 1024 characters). Suitable
-     * for full SQL statements, JSON snippets, and XML fragments.
-     */
-    private static ThreadLocal<StringBuilder> LARGE_BUILDER;
-
-    /**
-     * ThreadLocal pool for extra-large {@link StringBuilder} instances (default initial capacity: 4096 characters).
-     * Suitable for complex queries and large bulk operation strings.
-     */
-    private static ThreadLocal<StringBuilder> EXTRA_LARGE_BUILDER;
-
-    /**
-     * Current pool configuration. Marked as volatile to ensure visibility across all threads when updated.
-     */
-    private static volatile PoolConfig config = new PoolConfig();
-
-    /**
-     * Optional event listener for pool lifecycle events (e.g., oversized creation, capacity trimming). Marked as
-     * volatile.
-     */
-    private static volatile PoolEventListener eventListener = null;
-
-    /**
      * Atomic counter for the number of times a {@link StringBuilder} was acquired from the small pool.
      */
     private static final AtomicLong smallPoolAcquires = new AtomicLong(0);
@@ -143,6 +109,41 @@ public class StringBuilderPool {
      * Atomic counter for the total number of build operations executed.
      */
     private static final AtomicLong totalBuilds = new AtomicLong(0);
+
+    /**
+     * ThreadLocal pool for small {@link StringBuilder} instances (default initial capacity: 64 characters). Suitable
+     * for short strings like IDs, names, and simple labels.
+     */
+    private static ThreadLocal<StringBuilder> SMALL_BUILDER;
+
+    /**
+     * ThreadLocal pool for medium {@link StringBuilder} instances (default initial capacity: 256 characters). Suitable
+     * for SQL fragments, short messages, and file paths.
+     */
+    private static ThreadLocal<StringBuilder> MEDIUM_BUILDER;
+
+    /**
+     * ThreadLocal pool for large {@link StringBuilder} instances (default initial capacity: 1024 characters). Suitable
+     * for full SQL statements, JSON snippets, and XML fragments.
+     */
+    private static ThreadLocal<StringBuilder> LARGE_BUILDER;
+
+    /**
+     * ThreadLocal pool for extra-large {@link StringBuilder} instances (default initial capacity: 4096 characters).
+     * Suitable for complex queries and large bulk operation strings.
+     */
+    private static ThreadLocal<StringBuilder> EXTRA_LARGE_BUILDER;
+
+    /**
+     * Current pool configuration. Marked as volatile to ensure visibility across all threads when updated.
+     */
+    private static volatile PoolConfig config = new PoolConfig();
+
+    /**
+     * Optional event listener for pool lifecycle events (e.g., oversized creation, capacity trimming). Marked as
+     * volatile.
+     */
+    private static volatile PoolEventListener eventListener = null;
 
     /**
      * Static initializer block: Initializes the thread-local pools with the default configuration.
@@ -446,6 +447,39 @@ public class StringBuilderPool {
     }
 
     /**
+     * Event listener interface for pool lifecycle events.
+     *
+     * <p>
+     * Implementations can be used to monitor significant events such as oversized creations and capacity trimming.
+     * </p>
+     *
+     * @author Kimi Liu
+     */
+    public interface PoolEventListener {
+
+        /**
+         * Called when an oversized {@code StringBuilder} is created (not obtained from the pool).
+         *
+         * @param size the requested size of the created {@code StringBuilder}
+         */
+        void onOversizedCreation(int size);
+
+        /**
+         * Called when a pooled {@code StringBuilder}'s capacity is trimmed upon release.
+         *
+         * @param oldCapacity the capacity before trimming
+         * @param newCapacity the capacity after trimming
+         */
+        void onCapacityTrim(int oldCapacity, int newCapacity);
+
+        /**
+         * Called when the pool is explicitly cleaned up via {@link StringBuilderPool#cleanup()}.
+         */
+        void onCleanup();
+
+    }
+
+    /**
      * Pool configuration class.
      *
      * <p>
@@ -456,9 +490,7 @@ public class StringBuilderPool {
      */
     public static class PoolConfig implements Serializable {
 
-        /**
-         * The serial version UID for serialization compatibility.
-         */
+        @Serial
         private static final long serialVersionUID = 2810328965018L;
 
         /**
@@ -662,9 +694,7 @@ public class StringBuilderPool {
      */
     public static class PoolStats implements Serializable {
 
-        /**
-         * The serial version UID for serialization compatibility.
-         */
+        @Serial
         private static final long serialVersionUID = 2821568390215L;
 
         /**
@@ -832,39 +862,6 @@ public class StringBuilderPool {
                     avgBuildTimeNanos,
                     poolHitRate * 100);
         }
-
-    }
-
-    /**
-     * Event listener interface for pool lifecycle events.
-     *
-     * <p>
-     * Implementations can be used to monitor significant events such as oversized creations and capacity trimming.
-     * </p>
-     *
-     * @author Kimi Liu
-     */
-    public interface PoolEventListener {
-
-        /**
-         * Called when an oversized {@code StringBuilder} is created (not obtained from the pool).
-         *
-         * @param size the requested size of the created {@code StringBuilder}
-         */
-        void onOversizedCreation(int size);
-
-        /**
-         * Called when a pooled {@code StringBuilder}'s capacity is trimmed upon release.
-         *
-         * @param oldCapacity the capacity before trimming
-         * @param newCapacity the capacity after trimming
-         */
-        void onCapacityTrim(int oldCapacity, int newCapacity);
-
-        /**
-         * Called when the pool is explicitly cleaned up via {@link StringBuilderPool#cleanup()}.
-         */
-        void onCleanup();
 
     }
 

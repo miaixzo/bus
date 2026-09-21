@@ -146,9 +146,6 @@ public interface JsonValue extends Serializable {
      */
     class NullValue implements JsonValue {
 
-        /**
-         * Serialization identifier for the singleton value.
-         */
         @Serial
         private static final long serialVersionUID = 2852291720260L;
 

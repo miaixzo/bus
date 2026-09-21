@@ -49,6 +49,18 @@ public class Festival extends Loops {
     protected String data;
 
     /**
+     * Constructs a festival with the given name and encoded data.
+     *
+     * @param name festival name
+     * @param data encoded festival data
+     */
+    public Festival(String name, String data) {
+        validate(data);
+        this.name = name;
+        this.data = data;
+    }
+
+    /**
      * Validates the encoded festival data.
      *
      * @param data encoded data string (must be exactly 9 characters)
@@ -61,18 +73,6 @@ public class Festival extends Loops {
         if (data.length() != 9) {
             throw new IllegalArgumentException("illegal event data: " + data);
         }
-    }
-
-    /**
-     * Constructs a festival with the given name and encoded data.
-     *
-     * @param name festival name
-     * @param data encoded festival data
-     */
-    public Festival(String name, String data) {
-        validate(data);
-        this.name = name;
-        this.data = data;
     }
 
     /**
@@ -93,6 +93,37 @@ public class Festival extends Loops {
     public static Festival fromName(String name) {
         Matcher matcher = Pattern.compile(String.format(FestivalRegistry.REGEX, name)).matcher(FestivalRegistry.DATA);
         return matcher.find() ? new Festival(name, matcher.group(1)) : null;
+    }
+
+    /**
+     * Gets festivals matching the given solar day.
+     *
+     * @param d solar day
+     * @return list of matching festivals
+     */
+    public static List<Festival> fromSolarDay(SolarDay d) {
+        List<Festival> l = new ArrayList<>();
+        for (Festival e : all()) {
+            if (d.equals(e.getSolarDay(d.getYear()))) {
+                l.add(e);
+            }
+        }
+        return l;
+    }
+
+    /**
+     * Gets all registered festivals.
+     *
+     * @return list of all festivals
+     */
+    public static List<Festival> all() {
+        List<Festival> l = new ArrayList<>();
+        Matcher matcher = Pattern.compile(String.format(FestivalRegistry.REGEX, ".[^@]+"))
+                .matcher(FestivalRegistry.DATA);
+        while (matcher.find()) {
+            l.add(new Festival(matcher.group(2), matcher.group(1)));
+        }
+        return l;
     }
 
     /**
@@ -170,37 +201,6 @@ public class Festival extends Loops {
             n = n * size + getCharIndex(6 + i);
         }
         return n;
-    }
-
-    /**
-     * Gets festivals matching the given solar day.
-     *
-     * @param d solar day
-     * @return list of matching festivals
-     */
-    public static List<Festival> fromSolarDay(SolarDay d) {
-        List<Festival> l = new ArrayList<>();
-        for (Festival e : all()) {
-            if (d.equals(e.getSolarDay(d.getYear()))) {
-                l.add(e);
-            }
-        }
-        return l;
-    }
-
-    /**
-     * Gets all registered festivals.
-     *
-     * @return list of all festivals
-     */
-    public static List<Festival> all() {
-        List<Festival> l = new ArrayList<>();
-        Matcher matcher = Pattern.compile(String.format(FestivalRegistry.REGEX, ".[^@]+"))
-                .matcher(FestivalRegistry.DATA);
-        while (matcher.find()) {
-            l.add(new Festival(matcher.group(2), matcher.group(1)));
-        }
-        return l;
     }
 
     /**

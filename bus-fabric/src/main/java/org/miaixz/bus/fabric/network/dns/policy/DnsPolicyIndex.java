@@ -20,11 +20,7 @@
 package org.miaixz.bus.fabric.network.dns.policy;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.dns.message.DnsName;
@@ -152,6 +148,76 @@ public class DnsPolicyIndex {
     }
 
     /**
+     * Returns whether any rule in a list matches.
+     *
+     * @param rules         candidate rules
+     * @param question      decoded DNS question
+     * @param clientAddress client address, or {@code null}
+     * @param viewName      selected view name, or {@code null}
+     * @param endpoint      endpoint name, or {@code null}
+     * @return true when a rule matches
+     */
+    private static boolean matchesAny(
+            final List<DnsPolicyRule> rules,
+            final DnsQuestion question,
+            final InetAddress clientAddress,
+            final String viewName,
+            final String endpoint) {
+        return firstMatching(rules, question, clientAddress, viewName, endpoint) != null;
+    }
+
+    /**
+     * Returns the first matching rule from a list.
+     *
+     * @param rules         candidate rules
+     * @param question      decoded DNS question
+     * @param clientAddress client address, or {@code null}
+     * @param viewName      selected view name, or {@code null}
+     * @param endpoint      endpoint name, or {@code null}
+     * @return matching rule, or {@code null}
+     */
+    private static DnsPolicyRule firstMatching(
+            final List<DnsPolicyRule> rules,
+            final DnsQuestion question,
+            final InetAddress clientAddress,
+            final String viewName,
+            final String endpoint) {
+        if (rules == null || rules.isEmpty()) {
+            return null;
+        }
+        for (final DnsPolicyRule rule : rules) {
+            if (rule.matches(question, clientAddress, viewName, endpoint)) {
+                return rule;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Creates an immutable exact-rule map.
+     *
+     * @param source source exact map
+     * @return immutable exact map
+     */
+    private static Map<String, List<DnsPolicyRule>> immutableExactRules(final Map<String, List<DnsPolicyRule>> source) {
+        final HashMap<String, List<DnsPolicyRule>> copied = new HashMap<>();
+        for (final Map.Entry<String, List<DnsPolicyRule>> entry : source.entrySet()) {
+            copied.put(entry.getKey(), List.copyOf(entry.getValue()));
+        }
+        return Map.copyOf(copied);
+    }
+
+    /**
+     * Splits a normalized domain name into labels.
+     *
+     * @param name normalized domain name
+     * @return labels excluding the root label
+     */
+    private static String[] labels(final String name) {
+        return DnsName.labels(name);
+    }
+
+    /**
      * Matches a DNS question without context constraints.
      *
      * @param question decoded DNS question
@@ -217,66 +283,6 @@ public class DnsPolicyIndex {
      */
     public boolean emptyIndex() {
         return rules.isEmpty();
-    }
-
-    /**
-     * Returns whether any rule in a list matches.
-     *
-     * @param rules         candidate rules
-     * @param question      decoded DNS question
-     * @param clientAddress client address, or {@code null}
-     * @param viewName      selected view name, or {@code null}
-     * @param endpoint      endpoint name, or {@code null}
-     * @return true when a rule matches
-     */
-    private static boolean matchesAny(
-            final List<DnsPolicyRule> rules,
-            final DnsQuestion question,
-            final InetAddress clientAddress,
-            final String viewName,
-            final String endpoint) {
-        return firstMatching(rules, question, clientAddress, viewName, endpoint) != null;
-    }
-
-    /**
-     * Returns the first matching rule from a list.
-     *
-     * @param rules         candidate rules
-     * @param question      decoded DNS question
-     * @param clientAddress client address, or {@code null}
-     * @param viewName      selected view name, or {@code null}
-     * @param endpoint      endpoint name, or {@code null}
-     * @return matching rule, or {@code null}
-     */
-    private static DnsPolicyRule firstMatching(
-            final List<DnsPolicyRule> rules,
-            final DnsQuestion question,
-            final InetAddress clientAddress,
-            final String viewName,
-            final String endpoint) {
-        if (rules == null || rules.isEmpty()) {
-            return null;
-        }
-        for (final DnsPolicyRule rule : rules) {
-            if (rule.matches(question, clientAddress, viewName, endpoint)) {
-                return rule;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Creates an immutable exact-rule map.
-     *
-     * @param source source exact map
-     * @return immutable exact map
-     */
-    private static Map<String, List<DnsPolicyRule>> immutableExactRules(final Map<String, List<DnsPolicyRule>> source) {
-        final HashMap<String, List<DnsPolicyRule>> copied = new HashMap<>();
-        for (final Map.Entry<String, List<DnsPolicyRule>> entry : source.entrySet()) {
-            copied.put(entry.getKey(), List.copyOf(entry.getValue()));
-        }
-        return Map.copyOf(copied);
     }
 
     /**
@@ -432,16 +438,6 @@ public class DnsPolicyIndex {
             return new SuffixNode(Map.copyOf(immutableChildren), List.copyOf(rules));
         }
 
-    }
-
-    /**
-     * Splits a normalized domain name into labels.
-     *
-     * @param name normalized domain name
-     * @return labels excluding the root label
-     */
-    private static String[] labels(final String name) {
-        return DnsName.labels(name);
     }
 
 }

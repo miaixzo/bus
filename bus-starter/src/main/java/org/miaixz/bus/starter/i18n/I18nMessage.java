@@ -66,6 +66,21 @@ public class I18nMessage {
     }
 
     /**
+     * Formats the message with the requested locale.
+     *
+     * @param message message supplied to this operation
+     * @param args    message format arguments
+     * @param locale  message locale
+     * @return formatted message
+     */
+    private static String format(String message, Object[] args, Locale locale) {
+        if (args == null || args.length == 0) {
+            return message;
+        }
+        return new MessageFormat(message, locale == null ? Locale.getDefault() : locale).format(args);
+    }
+
+    /**
      * Retrieves a message for the given code, using the current locale.
      *
      * @param code the message code
@@ -143,21 +158,6 @@ public class I18nMessage {
     private String[] baseNames() {
         String[] baseNames = this.properties.getBaseNames();
         return baseNames == null || baseNames.length == 0 ? new String[] { "messages" } : baseNames;
-    }
-
-    /**
-     * Formats the message with the requested locale.
-     *
-     * @param message message supplied to this operation
-     * @param args    message format arguments
-     * @param locale  message locale
-     * @return formatted message
-     */
-    private static String format(String message, Object[] args, Locale locale) {
-        if (args == null || args.length == 0) {
-            return message;
-        }
-        return new MessageFormat(message, locale == null ? Locale.getDefault() : locale).format(args);
     }
 
     /**

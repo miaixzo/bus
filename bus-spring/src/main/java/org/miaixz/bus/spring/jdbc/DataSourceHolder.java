@@ -69,19 +69,6 @@ public class DataSourceHolder {
     }
 
     /**
-     * Sets the default JDBC routing key.
-     *
-     * @param key configured primary datasource key
-     */
-    public void setDefaultKey(String key) {
-        String value = StringKit.trim(key);
-        if (StringKit.isEmpty(value)) {
-            throw new IllegalArgumentException("Default JDBC datasource key must not be blank");
-        }
-        this.defaultKey = value;
-    }
-
-    /**
      * Selects an explicit JDBC routing key.
      *
      * @param key routing key; {@code null} removes the explicit selection
@@ -92,6 +79,19 @@ public class DataSourceHolder {
         } else {
             this.currentKey.set(key);
         }
+    }
+
+    /**
+     * Sets the default JDBC routing key.
+     *
+     * @param key configured primary datasource key
+     */
+    public void setDefaultKey(String key) {
+        String value = StringKit.trim(key);
+        if (StringKit.isEmpty(value)) {
+            throw new IllegalArgumentException("Default JDBC datasource key must not be blank");
+        }
+        this.defaultKey = value;
     }
 
     /**

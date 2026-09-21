@@ -34,9 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class SshKey implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852281539315L;
 
@@ -44,18 +41,22 @@ public class SshKey implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The title value.
      */
     private String title;
+
     /**
      * The key value.
      */
     private String key;
+
     /**
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The expires at value.
      */

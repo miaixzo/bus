@@ -127,9 +127,6 @@ public class IdTokenCache extends AuthCache<IdTokenCache.Entry> {
     public record Entry(String sourceId, String consumerId, String subject, Optional<String> sessionId)
             implements Serializable {
 
-        /**
-         * Stable serialization version for cached ID Token bindings.
-         */
         @Serial
         private static final long serialVersionUID = 2868923612053L;
 

@@ -107,44 +107,6 @@ public class MultipartBody implements RequestBody {
     }
 
     /**
-     * Returns boundary.
-     *
-     * @return boundary token used by the encoded payload
-     */
-    public String boundary() {
-        return boundary;
-    }
-
-    /**
-     * Returns parts.
-     *
-     * @return immutable parts
-     */
-    public List<Part> parts() {
-        return parts;
-    }
-
-    /**
-     * Returns media.
-     *
-     * @return multipart/form-data media type including the boundary parameter
-     */
-    @Override
-    public MediaType media() {
-        return media;
-    }
-
-    /**
-     * Returns payload.
-     *
-     * @return lazily encoded multipart payload
-     */
-    @Override
-    public Payload payload() {
-        return payload;
-    }
-
-    /**
      * Builds a part header segment.
      *
      * @param boundary boundary token written before the part
@@ -267,6 +229,44 @@ public class MultipartBody implements RequestBody {
                 () -> new ValidateException("Multipart boundary must be non-blank and single-line"));
         Assert.isFalse(checked.length() > Normal._70, () -> new ProtocolException("Multipart boundary is too long"));
         return checked;
+    }
+
+    /**
+     * Returns boundary.
+     *
+     * @return boundary token used by the encoded payload
+     */
+    public String boundary() {
+        return boundary;
+    }
+
+    /**
+     * Returns parts.
+     *
+     * @return immutable parts
+     */
+    public List<Part> parts() {
+        return parts;
+    }
+
+    /**
+     * Returns media.
+     *
+     * @return multipart/form-data media type including the boundary parameter
+     */
+    @Override
+    public MediaType media() {
+        return media;
+    }
+
+    /**
+     * Returns payload.
+     *
+     * @return lazily encoded multipart payload
+     */
+    @Override
+    public Payload payload() {
+        return payload;
     }
 
     /**
@@ -435,14 +435,14 @@ public class MultipartBody implements RequestBody {
     public static class Builder {
 
         /**
-         * Boundary token used for the body being assembled.
-         */
-        private String boundary;
-
-        /**
          * Mutable ordered parts accumulated by the builder.
          */
         private final ArrayList<Part> parts;
+
+        /**
+         * Boundary token used for the body being assembled.
+         */
+        private String boundary;
 
         /**
          * Creates builder.
@@ -661,6 +661,16 @@ public class MultipartBody implements RequestBody {
         }
 
         /**
+         * Creates a buffer source from bytes.
+         *
+         * @param bytes framing bytes to expose
+         * @return in-memory source positioned before the supplied bytes
+         */
+        private static Source source(final byte[] bytes) {
+            return new Buffer().write(bytes);
+        }
+
+        /**
          * Reads bytes into the supplied sink.
          *
          * @param sink      target buffer
@@ -741,16 +751,6 @@ public class MultipartBody implements RequestBody {
                 return source(closingBytes(boundary));
             }
             return null;
-        }
-
-        /**
-         * Creates a buffer source from bytes.
-         *
-         * @param bytes framing bytes to expose
-         * @return in-memory source positioned before the supplied bytes
-         */
-        private static Source source(final byte[] bytes) {
-            return new Buffer().write(bytes);
         }
 
     }

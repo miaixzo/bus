@@ -96,16 +96,6 @@ public class AioChannel implements Conduit {
     private final AtomicBoolean callbackReadActive;
 
     /**
-     * Caller-owned target of the active callback read.
-     */
-    private Buffer callbackReadTarget;
-
-    /**
-     * Terminal callback of the active callback read.
-     */
-    private BiConsumerX<? super Long, ? super Throwable> callbackReadCompletion;
-
-    /**
      * Reusable native completion handler for callback reads.
      */
     private final CompletionHandler<Integer, Void> callbackReadHandler;
@@ -121,6 +111,21 @@ public class AioChannel implements Conduit {
     private final ArrayDeque<WriteRequest> writes;
 
     /**
+     * Reusable native completion handler for callback writes.
+     */
+    private final CompletionHandler<Integer, WriteRequest> callbackWriteHandler;
+
+    /**
+     * Caller-owned target of the active callback read.
+     */
+    private Buffer callbackReadTarget;
+
+    /**
+     * Terminal callback of the active callback read.
+     */
+    private BiConsumerX<? super Long, ? super Throwable> callbackReadCompletion;
+
+    /**
      * Whether a native asynchronous write currently owns the queue head.
      */
     private boolean writeActive;
@@ -129,11 +134,6 @@ public class AioChannel implements Conduit {
      * Reentrancy guard that turns synchronous completion callbacks into an iterative drain.
      */
     private boolean writeDraining;
-
-    /**
-     * Reusable native completion handler for callback writes.
-     */
-    private final CompletionHandler<Integer, WriteRequest> callbackWriteHandler;
 
     /**
      * Local socket address.
@@ -276,6 +276,27 @@ public class AioChannel implements Conduit {
             accepted.closeAfterFailure();
             throw new SocketException("Unable to read accepted AIO channel addresses", e);
         }
+    }
+
+    /**
+     * Maps native asynchronous failures to the Fabric socket exception contract.
+     *
+     * @param message failure message
+     * @param cause   native failure
+     * @return mapped failure
+     */
+    private static RuntimeException socketFailure(final String message, final Throwable cause) {
+        return cause instanceof RuntimeException runtime ? runtime : new SocketException(message, cause);
+    }
+
+    /**
+     * Converts a long byte count to an int size accepted by JDK buffers.
+     *
+     * @param byteCount byte count
+     * @return int size
+     */
+    private static int toIntSize(final long byteCount) {
+        return (int) Math.min(byteCount, Integer.MAX_VALUE);
     }
 
     /**
@@ -900,17 +921,6 @@ public class AioChannel implements Conduit {
     }
 
     /**
-     * Maps native asynchronous failures to the Fabric socket exception contract.
-     *
-     * @param message failure message
-     * @param cause   native failure
-     * @return mapped failure
-     */
-    private static RuntimeException socketFailure(final String message, final Throwable cause) {
-        return cause instanceof RuntimeException runtime ? runtime : new SocketException(message, cause);
-    }
-
-    /**
      * Returns a bounded read capacity.
      *
      * @param byteCount requested byte count
@@ -921,13 +931,136 @@ public class AioChannel implements Conduit {
     }
 
     /**
-     * Converts a long byte count to an int size accepted by JDK buffers.
-     *
-     * @param byteCount byte count
-     * @return int size
+     * Caller-owned write retained until its requested bytes are fully drained.
+     * <p>
+     * Access is serialized by the enclosing channel write monitor, while the future may be observed by any caller
+     * thread.
+     * </p>
      */
-    private static int toIntSize(final long byteCount) {
-        return (int) Math.min(byteCount, Integer.MAX_VALUE);
+    private static class WriteRequest {
+
+        /**
+         * Source whose position advances only as bytes are accepted by the channel.
+         */
+        final Buffer source;
+
+        /**
+         * Total number of bytes promised by this request.
+         */
+        final long byteCount;
+
+        /**
+         * Completion carrying the written byte count or terminal failure.
+         */
+        private final CompletableFuture<Long> future;
+
+        /**
+         * Creates a queued write request.
+         *
+         * @param source    caller-owned source
+         * @param byteCount bytes to write
+         */
+        private WriteRequest(final Buffer source, final long byteCount) {
+            this(source, byteCount, true);
+        }
+
+        /**
+         * Creates a queued request and optionally allocates its compatibility future.
+         *
+         * @param source    caller-owned source
+         * @param byteCount bytes to write
+         * @param future    whether to allocate a caller-visible future
+         */
+        private WriteRequest(final Buffer source, final long byteCount, final boolean future) {
+            this.source = source;
+            this.byteCount = byteCount;
+            this.future = future ? new CompletableFuture<>() : null;
+        }
+    }
+
+    /**
+     * Allocation-light write request completed through a reusable callback.
+     */
+    private static final class CallbackWriteRequest extends WriteRequest {
+
+        /**
+         * Atomic terminal-state handle.
+         */
+        private static final VarHandle TERMINAL;
+
+        static {
+            try {
+                TERMINAL = MethodHandles.lookup().findVarHandle(CallbackWriteRequest.class, "terminal", int.class);
+            } catch (final ReflectiveOperationException e) {
+                throw new ExceptionInInitializerError(e);
+            }
+        }
+
+        /**
+         * Caller completion callback.
+         */
+        private final BiConsumerX<? super Long, ? super Throwable> completion;
+
+        /**
+         * Zero while active and one after terminal ownership is claimed.
+         */
+        private volatile int terminal;
+
+        /**
+         * Bytes accepted before the active native write.
+         */
+        private long written;
+
+        /**
+         * Consecutive zero-progress native completions.
+         */
+        private int zeroProgress;
+
+        /**
+         * Byte count submitted by the active native write.
+         */
+        private int chunk;
+
+        /**
+         * Creates a callback write request.
+         *
+         * @param source     caller-owned source
+         * @param byteCount  bytes to write
+         * @param completion terminal completion callback
+         */
+        private CallbackWriteRequest(final Buffer source, final long byteCount,
+                final BiConsumerX<? super Long, ? super Throwable> completion) {
+            super(source, byteCount, false);
+            this.completion = completion;
+        }
+
+        /**
+         * Publishes the terminal outcome.
+         *
+         * @param value completed byte count
+         * @param cause terminal failure
+         */
+        private void complete(final Long value, final Throwable cause) {
+            completion.accept(cause == null ? value : null, cause);
+        }
+
+        /**
+         * Returns whether terminal ownership was already claimed.
+         *
+         * @return true after terminal ownership is claimed
+         */
+        private boolean terminal() {
+            return terminal != Normal._0;
+        }
+
+        /**
+         * Claims terminal ownership exactly once.
+         *
+         * @return true when this invocation claimed ownership
+         */
+        private boolean terminate() {
+            return TERMINAL.compareAndSet(this, Normal._0, Normal._1);
+        }
     }
 
     /**
@@ -1072,139 +1205,6 @@ public class AioChannel implements Conduit {
             return true;
         }
 
-    }
-
-    /**
-     * Caller-owned write retained until its requested bytes are fully drained.
-     * <p>
-     * Access is serialized by the enclosing channel write monitor, while the future may be observed by any caller
-     * thread.
-     * </p>
-     */
-    private static class WriteRequest {
-
-        /**
-         * Source whose position advances only as bytes are accepted by the channel.
-         */
-        final Buffer source;
-
-        /**
-         * Total number of bytes promised by this request.
-         */
-        final long byteCount;
-
-        /**
-         * Completion carrying the written byte count or terminal failure.
-         */
-        private final CompletableFuture<Long> future;
-
-        /**
-         * Creates a queued write request.
-         *
-         * @param source    caller-owned source
-         * @param byteCount bytes to write
-         */
-        private WriteRequest(final Buffer source, final long byteCount) {
-            this(source, byteCount, true);
-        }
-
-        /**
-         * Creates a queued request and optionally allocates its compatibility future.
-         *
-         * @param source    caller-owned source
-         * @param byteCount bytes to write
-         * @param future    whether to allocate a caller-visible future
-         */
-        private WriteRequest(final Buffer source, final long byteCount, final boolean future) {
-            this.source = source;
-            this.byteCount = byteCount;
-            this.future = future ? new CompletableFuture<>() : null;
-        }
-    }
-
-    /**
-     * Allocation-light write request completed through a reusable callback.
-     */
-    private static final class CallbackWriteRequest extends WriteRequest {
-
-        /**
-         * Atomic terminal-state handle.
-         */
-        private static final VarHandle TERMINAL;
-
-        /**
-         * Caller completion callback.
-         */
-        private final BiConsumerX<? super Long, ? super Throwable> completion;
-
-        /**
-         * Zero while active and one after terminal ownership is claimed.
-         */
-        private volatile int terminal;
-
-        /**
-         * Bytes accepted before the active native write.
-         */
-        private long written;
-
-        /**
-         * Consecutive zero-progress native completions.
-         */
-        private int zeroProgress;
-
-        /**
-         * Byte count submitted by the active native write.
-         */
-        private int chunk;
-
-        /**
-         * Creates a callback write request.
-         *
-         * @param source     caller-owned source
-         * @param byteCount  bytes to write
-         * @param completion terminal completion callback
-         */
-        private CallbackWriteRequest(final Buffer source, final long byteCount,
-                final BiConsumerX<? super Long, ? super Throwable> completion) {
-            super(source, byteCount, false);
-            this.completion = completion;
-        }
-
-        /**
-         * Publishes the terminal outcome.
-         *
-         * @param value completed byte count
-         * @param cause terminal failure
-         */
-        private void complete(final Long value, final Throwable cause) {
-            completion.accept(cause == null ? value : null, cause);
-        }
-
-        /**
-         * Returns whether terminal ownership was already claimed.
-         *
-         * @return true after terminal ownership is claimed
-         */
-        private boolean terminal() {
-            return terminal != Normal._0;
-        }
-
-        /**
-         * Claims terminal ownership exactly once.
-         *
-         * @return true when this invocation claimed ownership
-         */
-        private boolean terminate() {
-            return TERMINAL.compareAndSet(this, Normal._0, Normal._1);
-        }
-
-        static {
-            try {
-                TERMINAL = MethodHandles.lookup().findVarHandle(CallbackWriteRequest.class, "terminal", int.class);
-            } catch (final ReflectiveOperationException e) {
-                throw new ExceptionInInitializerError(e);
-            }
-        }
     }
 
 }

@@ -31,9 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class AuditEventDetail implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852237823656L;
 
@@ -41,42 +38,52 @@ public class AuditEventDetail implements Serializable {
      * The change value.
      */
     private String change;
+
     /**
      * The from value.
      */
     private String from;
+
     /**
      * The to value.
      */
     private String to;
+
     /**
      * The add value.
      */
     private String add;
+
     /**
      * The custom message value.
      */
     private String customMessage;
+
     /**
      * The author name value.
      */
     private String authorName;
+
     /**
      * The target id value.
      */
     private Object targetId;
+
     /**
      * The target type value.
      */
     private String targetType;
+
     /**
      * The target details value.
      */
     private String targetDetails;
+
     /**
      * The ip address value.
      */
     private String ipAddress;
+
     /**
      * The entity path value.
      */

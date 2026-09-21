@@ -36,113 +36,49 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class ImportStatus implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852257150210L;
-
-    /**
-     * Enum representing the status of the import.
-     *
-     * @author Kimi Liu
-     */
-    public enum Status {
-
-        /**
-         * The none status.
-         */
-        NONE,
-        /**
-         * The scheduled status.
-         */
-        SCHEDULED,
-        /**
-         * The failed status.
-         */
-        FAILED,
-        /**
-         * The started status.
-         */
-        STARTED,
-        /**
-         * The finished status.
-         */
-        FINISHED;
-
-        /**
-         * The enum codec value.
-         */
-        private static JacksonJsonEnumCodec<Status> enumCodec = new JacksonJsonEnumCodec<>(Status.class);
-
-        /**
-         * Returns the value.
-         *
-         * @param value the value value
-         * @return the result
-         */
-
-        @JsonCreator
-        public static Status forValue(String value) {
-            return enumCodec.forValue(value);
-        }
-
-        /**
-         * Returns the value.
-         *
-         * @return the result
-         */
-
-        @JsonValue
-        public String toValue() {
-            return (enumCodec.toString(this));
-        }
-
-        /**
-         * Returns the string.
-         *
-         * @return the result
-         */
-
-        @Override
-        public String toString() {
-            return (enumCodec.toString(this));
-        }
-
-    }
 
     /**
      * The id value.
      */
     private Long id;
+
     /**
      * The description value.
      */
     private String description;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The name with namespace value.
      */
     private String nameWithNamespace;
+
     /**
      * The path value.
      */
     private String path;
+
     /**
      * The path with namespace value.
      */
     private String pathWithNamespace;
+
     /**
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The import status value.
      */
     private Status importStatus;
+
     /**
      * The import error value.
      */
@@ -344,6 +280,75 @@ public class ImportStatus implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    /**
+     * Enum representing the status of the import.
+     *
+     * @author Kimi Liu
+     */
+    public enum Status {
+
+        /**
+         * The none status.
+         */
+        NONE,
+        /**
+         * The scheduled status.
+         */
+        SCHEDULED,
+        /**
+         * The failed status.
+         */
+        FAILED,
+        /**
+         * The started status.
+         */
+        STARTED,
+        /**
+         * The finished status.
+         */
+        FINISHED;
+
+        /**
+         * The enum codec value.
+         */
+        private static JacksonJsonEnumCodec<Status> enumCodec = new JacksonJsonEnumCodec<>(Status.class);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
+
+        @JsonCreator
+        public static Status forValue(String value) {
+            return enumCodec.forValue(value);
+        }
+
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
+        @JsonValue
+        public String toValue() {
+            return (enumCodec.toString(this));
+        }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
+
+        @Override
+        public String toString() {
+            return (enumCodec.toString(this));
+        }
+
     }
 
 }

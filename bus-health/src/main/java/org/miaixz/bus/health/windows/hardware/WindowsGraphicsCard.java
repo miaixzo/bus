@@ -57,34 +57,42 @@ public class WindowsGraphicsCard extends AbstractGraphicsCard {
      * The ADAPTER_STRING constant.
      */
     public static final String ADAPTER_STRING = "HardwareInformation.AdapterString";
+
     /**
      * The DRIVER_DESC constant.
      */
     public static final String DRIVER_DESC = "DriverDesc";
+
     /**
      * The DRIVER_VERSION constant.
      */
     public static final String DRIVER_VERSION = "DriverVersion";
+
     /**
      * The VENDOR constant.
      */
     public static final String VENDOR = "ProviderName";
+
     /**
      * The QW_MEMORY_SIZE constant.
      */
     public static final String QW_MEMORY_SIZE = "HardwareInformation.qwMemorySize";
+
     /**
      * The MATCHING_DEVICE_ID constant.
      */
     public static final String MATCHING_DEVICE_ID = "MatchingDeviceId";
+
     /**
      * The LOCATION_INFORMATION constant.
      */
     public static final String LOCATION_INFORMATION = "LocationInformation";
+
     /**
      * The DISPLAY_DEVICES_REGISTRY_PATH constant.
      */
     public static final String DISPLAY_DEVICES_REGISTRY_PATH = "SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\";
+
     /**
      * The IS_VISTA_OR_GREATER constant.
      */

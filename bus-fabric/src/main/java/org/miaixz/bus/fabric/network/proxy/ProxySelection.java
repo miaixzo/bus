@@ -43,37 +43,6 @@ public record ProxySelection(ProxyPlan requested, ProxyPlan effective, Source so
         List<ProxyPlan> candidates, ProxySelector selector) {
 
     /**
-     * Describes where the effective policy originated.
-     */
-    public enum Source {
-
-        /**
-         * An explicit non-inherited request policy supplied the effective plan.
-         */
-        REQUEST,
-
-        /**
-         * The context-level {@link ProxyPlan#OPTION} supplied the effective plan.
-         */
-        CONTEXT,
-
-        /**
-         * No configured override existed, so the JDK system selector supplied candidates.
-         */
-        SYSTEM_DEFAULT,
-
-        /**
-         * The compatibility {@link ProxyPlan#LEGACY_HTTP_OPTION} supplied the effective plan.
-         */
-        LEGACY_HTTP_OPTION,
-
-        /**
-         * A present compatibility option with a {@code null} value selected direct routing.
-         */
-        LEGACY_NULL
-    }
-
-    /**
      * Validates and snapshots a resolved selection.
      */
     public ProxySelection {
@@ -125,6 +94,37 @@ public record ProxySelection(ProxyPlan requested, ProxyPlan effective, Source so
         } catch (final RuntimeException callbackFailure) {
             routeFailure.addSuppressed(callbackFailure);
         }
+    }
+
+    /**
+     * Describes where the effective policy originated.
+     */
+    public enum Source {
+
+        /**
+         * An explicit non-inherited request policy supplied the effective plan.
+         */
+        REQUEST,
+
+        /**
+         * The context-level {@link ProxyPlan#OPTION} supplied the effective plan.
+         */
+        CONTEXT,
+
+        /**
+         * No configured override existed, so the JDK system selector supplied candidates.
+         */
+        SYSTEM_DEFAULT,
+
+        /**
+         * The compatibility {@link ProxyPlan#LEGACY_HTTP_OPTION} supplied the effective plan.
+         */
+        LEGACY_HTTP_OPTION,
+
+        /**
+         * A present compatibility option with a {@code null} value selected direct routing.
+         */
+        LEGACY_NULL
     }
 
 }

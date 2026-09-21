@@ -29,6 +29,7 @@ public class MatOfDouble extends Mat {
 
     // 64FC(x)
     private static final int _depth = CvType.CV_64F;
+
     private static final int _channels = 1;
 
     public MatOfDouble() {
@@ -42,10 +43,6 @@ public class MatOfDouble extends Mat {
         // FIXME: do we need release() here?
     }
 
-    public static MatOfDouble fromNativeAddr(long addr) {
-        return new MatOfDouble(addr);
-    }
-
     public MatOfDouble(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -56,6 +53,10 @@ public class MatOfDouble extends Mat {
     public MatOfDouble(double... a) {
         super();
         fromArray(a);
+    }
+
+    public static MatOfDouble fromNativeAddr(long addr) {
+        return new MatOfDouble(addr);
     }
 
     public void alloc(int elemNumber) {

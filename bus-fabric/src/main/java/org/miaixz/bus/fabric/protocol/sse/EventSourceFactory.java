@@ -106,6 +106,18 @@ public class EventSourceFactory implements EventSource.Factory, AutoCloseable {
     }
 
     /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, name + " must not be null");
+    }
+
+    /**
      * Opens an event source from a URL.
      *
      * @param url      URL
@@ -203,18 +215,6 @@ public class EventSourceFactory implements EventSource.Factory, AutoCloseable {
         if (closed.get()) {
             throw new StatefulException("EventSourceFactory is closed");
         }
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  field name included in the validation failure
-     * @param <T>   reference type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, name + " must not be null");
     }
 
     /**

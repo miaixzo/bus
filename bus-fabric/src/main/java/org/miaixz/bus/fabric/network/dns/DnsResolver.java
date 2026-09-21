@@ -128,6 +128,34 @@ public class DnsResolver {
     }
 
     /**
+     * Waits for a shared synchronous resolution and restores its cause.
+     *
+     * @param future shared resolution future
+     * @return completed DNS result
+     */
+    private static DnsResult await(final CompletableFuture<DnsResult> future) {
+        try {
+            return future.join();
+        } catch (final CompletionException failure) {
+            final Throwable cause = failure.getCause();
+            if (cause instanceof RuntimeException runtime) {
+                throw runtime;
+            }
+            throw failure;
+        }
+    }
+
+    /**
+     * Returns the shared system resolver contract.
+     *
+     * @return system resolver contract
+     */
+    private static Resolver systemResolver() {
+        return Instances.get(DnsResolver.class.getName() + ".systemResolver", () -> new Resolver() {
+        });
+    }
+
+    /**
      * Resolves a host.
      *
      * @param host host name or address literal to normalize and resolve
@@ -342,24 +370,6 @@ public class DnsResolver {
     }
 
     /**
-     * Waits for a shared synchronous resolution and restores its cause.
-     *
-     * @param future shared resolution future
-     * @return completed DNS result
-     */
-    private static DnsResult await(final CompletableFuture<DnsResult> future) {
-        try {
-            return future.join();
-        } catch (final CompletionException failure) {
-            final Throwable cause = failure.getCause();
-            if (cause instanceof RuntimeException runtime) {
-                throw runtime;
-            }
-            throw failure;
-        }
-    }
-
-    /**
      * Emits an event.
      *
      * @param marker      DNS lifecycle marker to publish
@@ -377,16 +387,6 @@ public class DnsResolver {
         observer.emit(
                 FabricEvent.builder(marker, clock).tag(Builder.TAG_OPERATION_ID, operationId).tag(Builder.HOST, host)
                         .cause(cause).build());
-    }
-
-    /**
-     * Returns the shared system resolver contract.
-     *
-     * @return system resolver contract
-     */
-    private static Resolver systemResolver() {
-        return Instances.get(DnsResolver.class.getName() + ".systemResolver", () -> new Resolver() {
-        });
     }
 
     /**

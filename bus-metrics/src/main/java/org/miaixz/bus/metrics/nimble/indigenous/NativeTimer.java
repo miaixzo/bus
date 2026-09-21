@@ -70,24 +70,9 @@ public class NativeTimer implements Timer {
     private final DoubleAdder sumNanos = new DoubleAdder();
 
     /**
-     * Maximum recorded duration in nanoseconds.
-     */
-    private volatile double maxNanos = 0;
-
-    /**
      * T-Digest for accurate quantile estimation over the lifetime of this timer.
      */
     private final TDigest lifetimeDigest = new TDigest();
-
-    /**
-     * Rolling 1-minute T-Digest; rotated every 60 seconds by the scheduler.
-     */
-    private volatile TDigest digest1m = new TDigest();
-
-    /**
-     * Rolling 5-minute T-Digest; rotated every 5 minutes by the scheduler.
-     */
-    private volatile TDigest digest5m = new TDigest();
 
     /**
      * Per-bucket cumulative counts aligned to {@link #BUCKET_BOUNDS_SECS}.
@@ -103,6 +88,21 @@ public class NativeTimer implements Timer {
      * Counter incremented on each recording; used to throttle violation checks.
      */
     private final AtomicInteger recordsSinceLastCheck = new AtomicInteger();
+
+    /**
+     * Maximum recorded duration in nanoseconds.
+     */
+    private volatile double maxNanos = 0;
+
+    /**
+     * Rolling 1-minute T-Digest; rotated every 60 seconds by the scheduler.
+     */
+    private volatile TDigest digest1m = new TDigest();
+
+    /**
+     * Rolling 5-minute T-Digest; rotated every 5 minutes by the scheduler.
+     */
+    private volatile TDigest digest5m = new TDigest();
 
     /**
      * Create a new NativeTimer.

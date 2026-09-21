@@ -48,19 +48,19 @@ import org.miaixz.bus.logger.Logger;
  */
 public class Attributes implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852260209995L;
+
     /**
      * Coercion mode constant
      */
     public static final String COERCE = "COERCE";
+
     /**
      * Correction mode constant
      */
     public static final String CORRECT = "CORRECT";
-    /**
-     * The serial version uid value.
-     */
-    @Serial
-    private static final long serialVersionUID = 2852260209995L;
+
     /**
      * Initial capacity
      */

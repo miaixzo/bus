@@ -29,9 +29,6 @@ import java.io.Serializable;
  */
 public class HL7ApplicationExtension implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852267557616L;
 

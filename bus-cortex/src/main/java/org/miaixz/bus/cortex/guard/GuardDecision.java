@@ -78,15 +78,6 @@ public class GuardDecision {
     }
 
     /**
-     * Returns whether the request is allowed.
-     *
-     * @return {@code true} when the request is allowed
-     */
-    public boolean isAllowed() {
-        return allowed;
-    }
-
-    /**
      * Creates a successful decision.
      *
      * @return allow decision
@@ -104,6 +95,15 @@ public class GuardDecision {
      */
     public static GuardDecision deny(String code, String message) {
         return new GuardDecision(false, code, message);
+    }
+
+    /**
+     * Returns whether the request is allowed.
+     *
+     * @return {@code true} when the request is allowed
+     */
+    public boolean isAllowed() {
+        return allowed;
     }
 
 }

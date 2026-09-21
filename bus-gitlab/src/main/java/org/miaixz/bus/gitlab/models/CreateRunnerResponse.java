@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -31,19 +32,19 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class CreateRunnerResponse implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
+    @Serial
     private static final long serialVersionUID = 2852250855127L;
 
     /**
      * The id value.
      */
     private Long id;
+
     /**
      * The token value.
      */
     private String token;
+
     /**
      * The token expires at value.
      */

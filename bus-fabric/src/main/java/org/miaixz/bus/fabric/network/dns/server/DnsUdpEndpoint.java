@@ -124,6 +124,55 @@ public class DnsUdpEndpoint implements AutoCloseable, Lifecycle {
     }
 
     /**
+     * Configures SO_REUSEPORT when available and requires it on Linux.
+     *
+     * @param channel datagram channel
+     * @throws IOException if the option write fails
+     */
+    private static void configureReusePort(final DatagramChannel channel) throws IOException {
+        if (channel.supportedOptions().contains(StandardSocketOptions.SO_REUSEPORT)) {
+            channel.setOption(StandardSocketOptions.SO_REUSEPORT, true);
+            return;
+        }
+        if (linux()) {
+            throw new SocketException("DNS UDP endpoint requires SO_REUSEPORT on Linux");
+        }
+    }
+
+    /**
+     * Prepares the thread-local send buffer for one response.
+     *
+     * @param response response bytes
+     * @return send buffer ready for writing
+     */
+    private static ByteBuffer sendBuffer(final byte[] response) {
+        final ByteBuffer buffer = SEND_BUFFER.get();
+        buffer.clear();
+        buffer.put(response);
+        buffer.flip();
+        return buffer;
+    }
+
+    /**
+     * Extracts a client address from a socket address.
+     *
+     * @param remote remote socket address
+     * @return client address, or {@code null} when unavailable
+     */
+    private static InetAddress clientAddress(final SocketAddress remote) {
+        return remote instanceof InetSocketAddress address ? address.getAddress() : null;
+    }
+
+    /**
+     * Returns whether the process is running on Linux.
+     *
+     * @return true on Linux
+     */
+    private static boolean linux() {
+        return System.getProperty("os.name", Normal.EMPTY).toLowerCase(Locale.ROOT).contains("linux");
+    }
+
+    /**
      * Starts all UDP datagram loops.
      *
      * @return this endpoint
@@ -242,61 +291,12 @@ public class DnsUdpEndpoint implements AutoCloseable, Lifecycle {
     }
 
     /**
-     * Configures SO_REUSEPORT when available and requires it on Linux.
-     *
-     * @param channel datagram channel
-     * @throws IOException if the option write fails
-     */
-    private static void configureReusePort(final DatagramChannel channel) throws IOException {
-        if (channel.supportedOptions().contains(StandardSocketOptions.SO_REUSEPORT)) {
-            channel.setOption(StandardSocketOptions.SO_REUSEPORT, true);
-            return;
-        }
-        if (linux()) {
-            throw new SocketException("DNS UDP endpoint requires SO_REUSEPORT on Linux");
-        }
-    }
-
-    /**
      * Returns the number of channels bound by this endpoint.
      *
      * @return channel count
      */
     private int channelCount() {
         return Math.min(options.ioThreads(), MAX_CHANNELS);
-    }
-
-    /**
-     * Prepares the thread-local send buffer for one response.
-     *
-     * @param response response bytes
-     * @return send buffer ready for writing
-     */
-    private static ByteBuffer sendBuffer(final byte[] response) {
-        final ByteBuffer buffer = SEND_BUFFER.get();
-        buffer.clear();
-        buffer.put(response);
-        buffer.flip();
-        return buffer;
-    }
-
-    /**
-     * Extracts a client address from a socket address.
-     *
-     * @param remote remote socket address
-     * @return client address, or {@code null} when unavailable
-     */
-    private static InetAddress clientAddress(final SocketAddress remote) {
-        return remote instanceof InetSocketAddress address ? address.getAddress() : null;
-    }
-
-    /**
-     * Returns whether the process is running on Linux.
-     *
-     * @return true on Linux
-     */
-    private static boolean linux() {
-        return System.getProperty("os.name", Normal.EMPTY).toLowerCase(Locale.ROOT).contains("linux");
     }
 
     /**

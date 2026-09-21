@@ -49,9 +49,6 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
  */
 public class Fragments extends ArrayList<Object> implements Value {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852262835172L;
 

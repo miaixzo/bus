@@ -74,48 +74,6 @@ public class RouteGuard {
     }
 
     /**
-     * Checks an address scheme.
-     *
-     * @param address logical route address whose scheme is checked
-     * @return passing result for an allowed normalized scheme, or rejection naming the disallowed scheme
-     * @throws ValidateException if {@code address} is {@code null}
-     * @throws ProtocolException if the address scheme is invalid
-     */
-    public GuardResult check(final Address address) {
-        final Address checkedAddress = Assert.notNull(address, () -> new ValidateException("Address must not be null"));
-        final String scheme = validateScheme(checkedAddress.scheme(), false);
-        return schemes.contains(scheme) ? GuardResult.pass() : GuardResult.reject("route scheme rejected: " + scheme);
-    }
-
-    /**
-     * Checks a route and its proxy plan.
-     *
-     * @param route route whose logical scheme and proxy compatibility are checked
-     * @return first scheme rejection, proxy incompatibility rejection, or passing result
-     * @throws ValidateException if {@code route} is {@code null}
-     * @throws ProtocolException if a route or proxy scheme is invalid or the proxy plan is null
-     */
-    public GuardResult check(final Route route) {
-        final Route checkedRoute = Assert.notNull(route, () -> new ValidateException("Route must not be null"));
-        final Address address = checkedRoute.address();
-        final GuardResult addressResult = check(address);
-        if (!addressResult.passed()) {
-            return addressResult;
-        }
-        return compatible(address, checkedRoute.proxy()) ? GuardResult.pass()
-                : GuardResult.reject("route proxy incompatible with scheme: " + address.scheme());
-    }
-
-    /**
-     * Returns rule name.
-     *
-     * @return stable route guard name
-     */
-    public String name() {
-        return Builder.ROUTE;
-    }
-
-    /**
      * Returns whether a proxy plan is compatible with a target.
      *
      * @param address validated logical target address
@@ -161,6 +119,48 @@ public class RouteGuard {
             throw new ProtocolException("Invalid route scheme");
         }
         return value.toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Checks an address scheme.
+     *
+     * @param address logical route address whose scheme is checked
+     * @return passing result for an allowed normalized scheme, or rejection naming the disallowed scheme
+     * @throws ValidateException if {@code address} is {@code null}
+     * @throws ProtocolException if the address scheme is invalid
+     */
+    public GuardResult check(final Address address) {
+        final Address checkedAddress = Assert.notNull(address, () -> new ValidateException("Address must not be null"));
+        final String scheme = validateScheme(checkedAddress.scheme(), false);
+        return schemes.contains(scheme) ? GuardResult.pass() : GuardResult.reject("route scheme rejected: " + scheme);
+    }
+
+    /**
+     * Checks a route and its proxy plan.
+     *
+     * @param route route whose logical scheme and proxy compatibility are checked
+     * @return first scheme rejection, proxy incompatibility rejection, or passing result
+     * @throws ValidateException if {@code route} is {@code null}
+     * @throws ProtocolException if a route or proxy scheme is invalid or the proxy plan is null
+     */
+    public GuardResult check(final Route route) {
+        final Route checkedRoute = Assert.notNull(route, () -> new ValidateException("Route must not be null"));
+        final Address address = checkedRoute.address();
+        final GuardResult addressResult = check(address);
+        if (!addressResult.passed()) {
+            return addressResult;
+        }
+        return compatible(address, checkedRoute.proxy()) ? GuardResult.pass()
+                : GuardResult.reject("route proxy incompatible with scheme: " + address.scheme());
+    }
+
+    /**
+     * Returns rule name.
+     *
+     * @return stable route guard name
+     */
+    public String name() {
+        return Builder.ROUTE;
     }
 
 }

@@ -33,9 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class DeployToken implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852251025919L;
 
@@ -43,22 +40,27 @@ public class DeployToken implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The username value.
      */
     private String username;
+
     /**
      * The expires at value.
      */
     private Date expiresAt;
+
     /**
      * The scopes value.
      */
     private List<Constants.DeployTokenScope> scopes;
+
     /**
      * The token value.
      */

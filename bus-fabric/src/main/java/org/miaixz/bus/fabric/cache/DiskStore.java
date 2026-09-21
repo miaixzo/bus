@@ -120,6 +120,142 @@ public class DiskStore implements CacheStore {
     }
 
     /**
+     * Streams a payload into a cache writer.
+     *
+     * @param writer  destination cache writer
+     * @param payload payload whose source is streamed to the writer
+     * @throws IOException when writing fails
+     */
+    private static void writePayload(final CacheWriter writer, final Payload payload) throws IOException {
+        Assert.notNull(writer, () -> new ValidateException("Cache writer must not be null"));
+        Assert.notNull(payload, () -> new ValidateException("Cache payload must not be null"));
+        final Buffer buffer = new Buffer();
+        try (Source input = payload.source()) {
+            long read = input.read(buffer, Builder.BYTES_64_KIB);
+            while (read != -1L) {
+                writer.write(buffer, read);
+                read = input.read(buffer, Builder.BYTES_64_KIB);
+            }
+        }
+    }
+
+    /**
+     * Writes metadata.
+     *
+     * @param target metadata part sink
+     * @param key    validated logical cache key
+     * @param entry  entry whose metadata headers are serialized
+     * @throws IOException when writing fails
+     */
+    private static void writeMeta(final Sink target, final String key, final CacheEntry entry) throws IOException {
+        try (BufferSink sink = IoKit.buffer(target)) {
+            sink.writeUtf8(key).writeByte(Symbol.C_LF);
+            writeHeaders(sink, entry.metadata());
+        }
+    }
+
+    /**
+     * Writes headers.
+     *
+     * @param sink    buffered metadata destination
+     * @param headers metadata headers to serialize
+     * @throws IOException when writing fails
+     */
+    private static void writeHeaders(final BufferSink sink, final Headers headers) throws IOException {
+        final int count = headers.size();
+        sink.writeDecimalLong(count).writeByte(Symbol.C_LF);
+        for (int i = 0; i < count; i++) {
+            sink.writeUtf8(headers.name(i)).writeByte(Symbol.C_LF);
+            sink.writeUtf8(headers.value(i)).writeByte(Symbol.C_LF);
+        }
+    }
+
+    /**
+     * Reads headers.
+     *
+     * @param source buffered metadata source positioned at the header count
+     * @return immutable deserialized metadata headers
+     * @throws IOException when reading fails
+     */
+    private static Headers readHeaders(final BufferSource source) throws IOException {
+        final Headers.Builder builder = Headers.builder();
+        final int count = readInt(source);
+        for (int i = 0; i < count; i++) {
+            builder.add(source.readUtf8LineStrict(), source.readUtf8LineStrict());
+        }
+        return builder.build();
+    }
+
+    /**
+     * Reads metadata.
+     *
+     * @param source metadata-part source
+     * @return deserialized logical key and metadata headers
+     * @throws IOException when loading fails
+     */
+    private static Metadata readMeta(final Source source) throws IOException {
+        try (BufferSource input = IoKit.buffer(source)) {
+            final String key = input.readUtf8LineStrict();
+            return new Metadata(key, readHeaders(input));
+        }
+    }
+
+    /**
+     * Reads an integer line.
+     *
+     * @param source buffered source positioned at a decimal line
+     * @return validated non-negative integer read from the line
+     * @throws IOException when reading fails
+     */
+    private static int readInt(final BufferSource source) throws IOException {
+        final long value = source.readDecimalLong();
+        final String suffix = source.readUtf8LineStrict();
+        if (value < 0 || value > Integer.MAX_VALUE || !suffix.isEmpty()) {
+            throw new IOException("expected an int but was " + value + suffix);
+        }
+        return (int) value;
+    }
+
+    /**
+     * Validates key.
+     *
+     * @param key candidate logical cache key
+     * @return validated non-blank single-line key
+     */
+    private static String validateKey(final String key) {
+        if (StringKit.isBlank(key) || StringKit.containsAny(key, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException("Cache key must be non-blank and single-line");
+        }
+        return key;
+    }
+
+    /**
+     * Returns disk-safe file name for key.
+     *
+     * @param key logical cache key to hash
+     * @return lowercase MD5 hexadecimal file key accepted by the disk cache
+     */
+    private static String name(final String key) {
+        return ByteString.encodeUtf8(validateKey(key)).md5().hex();
+    }
+
+    /**
+     * Aborts an editor quietly.
+     *
+     * @param editor active editor to abort, or {@code null} when none was opened
+     */
+    private static void abortQuietly(final DiskLruCache.Editor editor) {
+        if (editor == null) {
+            return;
+        }
+        try {
+            editor.abort();
+        } catch (final IOException ignored) {
+            // Best-effort abort keeps the original failure.
+        }
+    }
+
+    /**
      * Initializes the underlying journal.
      */
     public void initialize() {
@@ -195,26 +331,6 @@ public class DiskStore implements CacheStore {
             writer.commit();
         } catch (final IOException e) {
             throw new InternalException("Unable to write disk cache payload", e);
-        }
-    }
-
-    /**
-     * Streams a payload into a cache writer.
-     *
-     * @param writer  destination cache writer
-     * @param payload payload whose source is streamed to the writer
-     * @throws IOException when writing fails
-     */
-    private static void writePayload(final CacheWriter writer, final Payload payload) throws IOException {
-        Assert.notNull(writer, () -> new ValidateException("Cache writer must not be null"));
-        Assert.notNull(payload, () -> new ValidateException("Cache payload must not be null"));
-        final Buffer buffer = new Buffer();
-        try (Source input = payload.source()) {
-            long read = input.read(buffer, Builder.BYTES_64_KIB);
-            while (read != -1L) {
-                writer.write(buffer, read);
-                read = input.read(buffer, Builder.BYTES_64_KIB);
-            }
         }
     }
 
@@ -370,127 +486,11 @@ public class DiskStore implements CacheStore {
     }
 
     /**
-     * Writes metadata.
-     *
-     * @param target metadata part sink
-     * @param key    validated logical cache key
-     * @param entry  entry whose metadata headers are serialized
-     * @throws IOException when writing fails
-     */
-    private static void writeMeta(final Sink target, final String key, final CacheEntry entry) throws IOException {
-        try (BufferSink sink = IoKit.buffer(target)) {
-            sink.writeUtf8(key).writeByte(Symbol.C_LF);
-            writeHeaders(sink, entry.metadata());
-        }
-    }
-
-    /**
-     * Writes headers.
-     *
-     * @param sink    buffered metadata destination
-     * @param headers metadata headers to serialize
-     * @throws IOException when writing fails
-     */
-    private static void writeHeaders(final BufferSink sink, final Headers headers) throws IOException {
-        final int count = headers.size();
-        sink.writeDecimalLong(count).writeByte(Symbol.C_LF);
-        for (int i = 0; i < count; i++) {
-            sink.writeUtf8(headers.name(i)).writeByte(Symbol.C_LF);
-            sink.writeUtf8(headers.value(i)).writeByte(Symbol.C_LF);
-        }
-    }
-
-    /**
-     * Reads headers.
-     *
-     * @param source buffered metadata source positioned at the header count
-     * @return immutable deserialized metadata headers
-     * @throws IOException when reading fails
-     */
-    private static Headers readHeaders(final BufferSource source) throws IOException {
-        final Headers.Builder builder = Headers.builder();
-        final int count = readInt(source);
-        for (int i = 0; i < count; i++) {
-            builder.add(source.readUtf8LineStrict(), source.readUtf8LineStrict());
-        }
-        return builder.build();
-    }
-
-    /**
-     * Reads metadata.
-     *
-     * @param source metadata-part source
-     * @return deserialized logical key and metadata headers
-     * @throws IOException when loading fails
-     */
-    private static Metadata readMeta(final Source source) throws IOException {
-        try (BufferSource input = IoKit.buffer(source)) {
-            final String key = input.readUtf8LineStrict();
-            return new Metadata(key, readHeaders(input));
-        }
-    }
-
-    /**
-     * Reads an integer line.
-     *
-     * @param source buffered source positioned at a decimal line
-     * @return validated non-negative integer read from the line
-     * @throws IOException when reading fails
-     */
-    private static int readInt(final BufferSource source) throws IOException {
-        final long value = source.readDecimalLong();
-        final String suffix = source.readUtf8LineStrict();
-        if (value < 0 || value > Integer.MAX_VALUE || !suffix.isEmpty()) {
-            throw new IOException("expected an int but was " + value + suffix);
-        }
-        return (int) value;
-    }
-
-    /**
      * Ensures store is open.
      */
     private void ensureOpen() {
         if (state.get().terminal()) {
             throw new StatefulException("Disk cache is closed");
-        }
-    }
-
-    /**
-     * Validates key.
-     *
-     * @param key candidate logical cache key
-     * @return validated non-blank single-line key
-     */
-    private static String validateKey(final String key) {
-        if (StringKit.isBlank(key) || StringKit.containsAny(key, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Cache key must be non-blank and single-line");
-        }
-        return key;
-    }
-
-    /**
-     * Returns disk-safe file name for key.
-     *
-     * @param key logical cache key to hash
-     * @return lowercase MD5 hexadecimal file key accepted by the disk cache
-     */
-    private static String name(final String key) {
-        return ByteString.encodeUtf8(validateKey(key)).md5().hex();
-    }
-
-    /**
-     * Aborts an editor quietly.
-     *
-     * @param editor active editor to abort, or {@code null} when none was opened
-     */
-    private static void abortQuietly(final DiskLruCache.Editor editor) {
-        if (editor == null) {
-            return;
-        }
-        try {
-            editor.abort();
-        } catch (final IOException ignored) {
-            // Best-effort abort keeps the original failure.
         }
     }
 
@@ -515,14 +515,14 @@ public class DiskStore implements CacheStore {
         private final Sink sink;
 
         /**
-         * Written byte count.
-         */
-        private long written;
-
-        /**
          * Closed flag.
          */
         private final AtomicBoolean closed = new AtomicBoolean();
+
+        /**
+         * Written byte count.
+         */
+        private long written;
 
         /**
          * Creates a sink adapter.

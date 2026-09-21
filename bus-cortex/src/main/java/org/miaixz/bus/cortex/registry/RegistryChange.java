@@ -40,27 +40,6 @@ import org.miaixz.bus.cortex.Type;
 public class RegistryChange<T extends Assets> implements Change<T> {
 
     /**
-     * Registry mutation kinds that can produce a change notification.
-     *
-     * @author Kimi Liu
-     */
-    public enum Action {
-        /**
-         * One entry was registered.
-         */
-        REGISTER,
-        /**
-         * One entry was updated.
-         */
-        UPDATE,
-        /**
-         * One entry was deregistered.
-         */
-        DEREGISTER
-
-    }
-
-    /**
      * Identifier of the affected asset.
      */
     private String id;
@@ -155,6 +134,27 @@ public class RegistryChange<T extends Assets> implements Change<T> {
      */
     public RegistryChange() {
         // No initialization required.
+    }
+
+    /**
+     * Registry mutation kinds that can produce a change notification.
+     *
+     * @author Kimi Liu
+     */
+    public enum Action {
+        /**
+         * One entry was registered.
+         */
+        REGISTER,
+        /**
+         * One entry was updated.
+         */
+        UPDATE,
+        /**
+         * One entry was deregistered.
+         */
+        DEREGISTER
+
     }
 
 }

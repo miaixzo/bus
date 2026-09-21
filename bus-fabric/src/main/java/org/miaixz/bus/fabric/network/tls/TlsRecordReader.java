@@ -96,6 +96,24 @@ final class TlsRecordReader {
     }
 
     /**
+     * Grows a direct buffer while preserving bytes currently stored in write mode.
+     *
+     * @param current direct buffer in write mode whose stored bytes are preserved
+     * @param hint    provider-reported minimum capacity candidate
+     * @return larger direct buffer in write mode with preserved bytes preceding its position
+     */
+    private static ByteBuffer grow(final ByteBuffer current, final int hint) {
+        final int capacity = Math.max(hint, current.capacity() << 1);
+        if (capacity <= current.capacity()) {
+            throw new ProtocolException("TLS buffer cannot grow safely");
+        }
+        current.flip();
+        final ByteBuffer grown = ByteBuffer.allocateDirect(capacity);
+        grown.put(current);
+        return grown;
+    }
+
+    /**
      * Reads up to a requested plaintext count.
      *
      * @param target destination buffer
@@ -203,24 +221,6 @@ final class TlsRecordReader {
         }
         encrypted.flip();
         return read >= 0L && encrypted.hasRemaining();
-    }
-
-    /**
-     * Grows a direct buffer while preserving bytes currently stored in write mode.
-     *
-     * @param current direct buffer in write mode whose stored bytes are preserved
-     * @param hint    provider-reported minimum capacity candidate
-     * @return larger direct buffer in write mode with preserved bytes preceding its position
-     */
-    private static ByteBuffer grow(final ByteBuffer current, final int hint) {
-        final int capacity = Math.max(hint, current.capacity() << 1);
-        if (capacity <= current.capacity()) {
-            throw new ProtocolException("TLS buffer cannot grow safely");
-        }
-        current.flip();
-        final ByteBuffer grown = ByteBuffer.allocateDirect(capacity);
-        grown.put(current);
-        return grown;
     }
 
 }

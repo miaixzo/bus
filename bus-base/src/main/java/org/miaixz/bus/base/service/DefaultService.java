@@ -24,7 +24,7 @@ import org.miaixz.bus.base.mapper.BaseMapper;
 /**
  * Default service class, extending {@link AbstractService} and providing default implementations for entities and
  * mappers.
- *
+ * <p>
  * By default the service uses the field conventions implemented by {@link AbstractService}. Subclasses can override the
  * protected lifecycle methods when they require custom behavior.
  *

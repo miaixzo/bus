@@ -103,42 +103,52 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
      * The bitness value.
      */
     private final int bitness;
+
     /**
      * The commandLine value.
      */
     private final SupplierX<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+
     /**
      * The state value.
      */
     private volatile OSProcess.State state = OSProcess.State.INVALID;
+
     /**
      * The name value.
      */
     private volatile String name;
+
     /**
      * The path value.
      */
     private volatile String path = Normal.EMPTY;
+
     /**
      * The user value.
      */
     private volatile String user;
+
     /**
      * The userID value.
      */
     private volatile String userID;
+
     /**
      * The group value.
      */
     private volatile String group;
+
     /**
      * The groupID value.
      */
     private volatile String groupID;
+
     /**
      * The commandLineBackup value.
      */
     private volatile String commandLineBackup;
+
     /**
      * The parentProcessID value.
      */

@@ -45,9 +45,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class MergeRequestFilter implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852263228021L;
 
@@ -55,54 +52,67 @@ public class MergeRequestFilter implements Serializable {
      * The project id value.
      */
     private Long projectId;
+
     /**
      * The group id value.
      */
     private Long groupId;
+
     /**
      * The iids value.
      */
     private List<Long> iids;
+
     /**
      * The state value.
      */
     private MergeRequestState state;
+
     /**
      * The order by value.
      */
     private MergeRequestOrderBy orderBy;
+
     /**
      * The sort value.
      */
     private SortOrder sort;
+
     /**
      * The milestone value.
      */
     private String milestone;
+
     /**
      * The simple view value.
      */
     private Boolean simpleView;
+
     /**
      * The labels value.
      */
     private List<String> labels;
+
     /**
      * The created after value.
      */
     private Date createdAfter;
+
     /**
      * The created before value.
      */
     private Date createdBefore;
+
     /**
      * The updated after value.
      */
     private Date updatedAfter;
+
     /**
      * The updated before value.
      */
     private Date updatedBefore;
+
     /**
      * The scope value.
      */
@@ -117,34 +127,42 @@ public class MergeRequestFilter implements Serializable {
      * The assignee id value.
      */
     private Long assigneeId;
+
     /**
      * The reviewer id value.
      */
     private Long reviewerId;
+
     /**
      * The my reaction emoji value.
      */
     private String myReactionEmoji;
+
     /**
      * The source branch value.
      */
     private String sourceBranch;
+
     /**
      * The target branch value.
      */
     private String targetBranch;
+
     /**
      * The search value.
      */
     private String search;
+
     /**
      * The in value.
      */
     private MergeRequestSearchIn in;
+
     /**
      * The wip value.
      */
     private Boolean wip;
+
     /**
      * The not value.
      */
@@ -165,6 +183,16 @@ public class MergeRequestFilter implements Serializable {
 
     public MergeRequestState getState() {
         return state;
+    }
+
+    /**
+     * Sets the state.
+     *
+     * @param state the state value
+     */
+
+    public void setState(MergeRequestState state) {
+        this.state = state;
     }
 
     /**
@@ -232,16 +260,6 @@ public class MergeRequestFilter implements Serializable {
     }
 
     /**
-     * Sets the state.
-     *
-     * @param state the state value
-     */
-
-    public void setState(MergeRequestState state) {
-        this.state = state;
-    }
-
-    /**
      * Returns the scope.
      *
      * @return the result
@@ -249,6 +267,16 @@ public class MergeRequestFilter implements Serializable {
 
     public MergeRequestScope getScope() {
         return scope;
+    }
+
+    /**
+     * Sets the scope.
+     *
+     * @param scope the scope value
+     */
+
+    public void setScope(MergeRequestScope scope) {
+        this.scope = scope;
     }
 
     /**
@@ -552,16 +580,6 @@ public class MergeRequestFilter implements Serializable {
     }
 
     /**
-     * Sets the scope.
-     *
-     * @param scope the scope value
-     */
-
-    public void setScope(MergeRequestScope scope) {
-        this.scope = scope;
-    }
-
-    /**
      * Returns the reviewer id.
      *
      * @return the result
@@ -569,6 +587,16 @@ public class MergeRequestFilter implements Serializable {
 
     public Long getReviewerId() {
         return reviewerId;
+    }
+
+    /**
+     * Sets the reviewer id.
+     *
+     * @param reviewerId the reviewer id value
+     */
+
+    public void setReviewerId(Long reviewerId) {
+        this.reviewerId = reviewerId;
     }
 
     /**
@@ -636,16 +664,6 @@ public class MergeRequestFilter implements Serializable {
     }
 
     /**
-     * Sets the reviewer id.
-     *
-     * @param reviewerId the reviewer id value
-     */
-
-    public void setReviewerId(Long reviewerId) {
-        this.reviewerId = reviewerId;
-    }
-
-    /**
      * Sets the reviewer id and returns this instance.
      *
      * @param reviewerId the reviewer id value
@@ -677,6 +695,16 @@ public class MergeRequestFilter implements Serializable {
 
     public MergeRequestSearchIn getIn() {
         return in;
+    }
+
+    /**
+     * Sets the in.
+     *
+     * @param in the in value
+     */
+
+    public void setIn(MergeRequestSearchIn in) {
+        this.in = in;
     }
 
     /**
@@ -805,16 +833,6 @@ public class MergeRequestFilter implements Serializable {
     public MergeRequestFilter withSearch(String search) {
         this.search = search;
         return (this);
-    }
-
-    /**
-     * Sets the in.
-     *
-     * @param in the in value
-     */
-
-    public void setIn(MergeRequestSearchIn in) {
-        this.in = in;
     }
 
     /**
@@ -1047,6 +1065,28 @@ public class MergeRequestFilter implements Serializable {
         return params;
     }
 
+    private Map<String, Object> toStringMap(Map<MergeRequestField, Object> map) {
+        if (map == null) {
+            return null;
+        }
+        Map<String, Object> result = new LinkedHashMap<>();
+        for (Map.Entry<MergeRequestField, Object> entry : map.entrySet()) {
+            result.put(entry.getKey().toString(), entry.getValue());
+        }
+        return result;
+    }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
+    }
+
     /**
      * The merge request field enum.
      *
@@ -1131,28 +1171,6 @@ public class MergeRequestFilter implements Serializable {
             return (enumCodec.toString(this));
         }
 
-    }
-
-    private Map<String, Object> toStringMap(Map<MergeRequestField, Object> map) {
-        if (map == null) {
-            return null;
-        }
-        Map<String, Object> result = new LinkedHashMap<>();
-        for (Map.Entry<MergeRequestField, Object> entry : map.entrySet()) {
-            result.put(entry.getKey().toString(), entry.getValue());
-        }
-        return result;
-    }
-
-    /**
-     * Returns the string.
-     *
-     * @return the result
-     */
-
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
     }
 
 }

@@ -32,28 +32,30 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class ProjectSystemHookEvent extends AbstractSystemHookEvent {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852292902085L;
+
     /**
      * The project create event value.
      */
 
     public static final String PROJECT_CREATE_EVENT = "project_create";
+
     /**
      * The project destroy event value.
      */
     public static final String PROJECT_DESTROY_EVENT = "project_destroy";
+
     /**
      * The project rename event value.
      */
     public static final String PROJECT_RENAME_EVENT = "project_rename";
+
     /**
      * The project transfer event value.
      */
     public static final String PROJECT_TRANSFER_EVENT = "project_transfer";
+
     /**
      * The project update event value.
      */
@@ -63,42 +65,52 @@ public class ProjectSystemHookEvent extends AbstractSystemHookEvent {
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The updated at value.
      */
     private Date updatedAt;
+
     /**
      * The event name value.
      */
     private String eventName;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The owner email value.
      */
     private String ownerEmail;
+
     /**
      * The owner name value.
      */
     private String ownerName;
+
     /**
      * The path value.
      */
     private String path;
+
     /**
      * The project id value.
      */
     private Long projectId;
+
     /**
      * The path with namespace value.
      */
     private String pathWithNamespace;
+
     /**
      * The project visibility value.
      */
     private Visibility projectVisibility;
+
     /**
      * The old path with namespace value.
      */

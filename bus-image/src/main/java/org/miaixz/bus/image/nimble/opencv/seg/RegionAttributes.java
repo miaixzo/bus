@@ -81,38 +81,47 @@ public class RegionAttributes implements Comparable<RegionAttributes> {
      * The ID value.
      */
     private final int id;
+
     /**
      * The number of pixels value.
      */
     protected long numberOfPixels = UNINITIALIZED_PIXEL_COUNT;
+
     /**
      * The label value.
      */
     private String label;
+
     /**
      * The description value.
      */
     private String description;
+
     /**
      * The type value.
      */
     private String type;
+
     /**
      * The color value.
      */
     private Color color;
+
     /**
      * The filled value.
      */
     private boolean filled = true;
+
     /**
      * The line thickness value.
      */
     private float lineThickness = DEFAULT_LINE_THICKNESS;
+
     /**
      * The visible value.
      */
     private boolean visible = true;
+
     /**
      * The interior opacity value.
      */

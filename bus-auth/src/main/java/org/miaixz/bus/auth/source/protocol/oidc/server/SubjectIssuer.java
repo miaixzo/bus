@@ -59,10 +59,12 @@ public class SubjectIssuer {
      * Exact Source identifier used to isolate subject derivation.
      */
     private final String sourceId;
+
     /**
      * Frozen OpenID Provider options.
      */
     private final OpenIdServerOptions options;
+
     /**
      * Source-scoped key loader and parser services.
      */

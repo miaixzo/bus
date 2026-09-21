@@ -60,6 +60,26 @@ public class BodyCodec {
     }
 
     /**
+     * Validates a payload.
+     *
+     * @param payload payload reference to validate
+     * @return validated payload
+     */
+    private static Payload validatePayload(final Payload payload) {
+        return Assert.notNull(payload, () -> new ValidateException("Payload must not be null"));
+    }
+
+    /**
+     * Validates a charset.
+     *
+     * @param charset charset reference to validate
+     * @return validated charset
+     */
+    private static Charset validateCharset(final Charset charset) {
+        return Assert.notNull(charset, () -> new ValidateException("Charset must not be null"));
+    }
+
+    /**
      * Adapts a payload into a stream source.
      *
      * @param payload payload whose source is opened
@@ -123,26 +143,6 @@ public class BodyCodec {
         } catch (final InternalException e) {
             throw new InternalException("Unable to read file payload length", e);
         }
-    }
-
-    /**
-     * Validates a payload.
-     *
-     * @param payload payload reference to validate
-     * @return validated payload
-     */
-    private static Payload validatePayload(final Payload payload) {
-        return Assert.notNull(payload, () -> new ValidateException("Payload must not be null"));
-    }
-
-    /**
-     * Validates a charset.
-     *
-     * @param charset charset reference to validate
-     * @return validated charset
-     */
-    private static Charset validateCharset(final Charset charset) {
-        return Assert.notNull(charset, () -> new ValidateException("Charset must not be null"));
     }
 
     /**

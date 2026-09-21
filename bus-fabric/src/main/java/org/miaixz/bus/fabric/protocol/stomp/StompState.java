@@ -80,6 +80,35 @@ final class StompState {
     }
 
     /**
+     * Validates one non-negative heartbeat duration.
+     *
+     * @param value duration candidate
+     * @param name  field name
+     * @return validated duration
+     */
+    private static Duration duration(final Duration value, final String name) {
+        final Duration checked = Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+        if (checked.isNegative()) {
+            throw new ValidateException(name + " must not be negative");
+        }
+        return checked;
+    }
+
+    /**
+     * Converts a duration to nanoseconds while saturating values that exceed the primitive range.
+     *
+     * @param value validated duration
+     * @return nanoseconds
+     */
+    private static long nanos(final Duration value) {
+        try {
+            return value.toNanos();
+        } catch (final ArithmeticException ignored) {
+            return Long.MAX_VALUE;
+        }
+    }
+
+    /**
      * Returns the outbound heartbeat interval.
      *
      * @return outbound heartbeat interval
@@ -113,35 +142,6 @@ final class StompState {
      */
     long inboundHeartbeatDeadlineNanos() {
         return inboundHeartbeatDeadlineNanos;
-    }
-
-    /**
-     * Validates one non-negative heartbeat duration.
-     *
-     * @param value duration candidate
-     * @param name  field name
-     * @return validated duration
-     */
-    private static Duration duration(final Duration value, final String name) {
-        final Duration checked = Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-        if (checked.isNegative()) {
-            throw new ValidateException(name + " must not be negative");
-        }
-        return checked;
-    }
-
-    /**
-     * Converts a duration to nanoseconds while saturating values that exceed the primitive range.
-     *
-     * @param value validated duration
-     * @return nanoseconds
-     */
-    private static long nanos(final Duration value) {
-        try {
-            return value.toNanos();
-        } catch (final ArithmeticException ignored) {
-            return Long.MAX_VALUE;
-        }
     }
 
 }

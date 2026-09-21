@@ -219,6 +219,57 @@ public class TcpServer implements AutoCloseable {
     }
 
     /**
+     * Aggregates a cleanup failure using suppressed exceptions.
+     *
+     * @param failure current primary failure
+     * @param next    next failure
+     * @return primary failure
+     */
+    private static Throwable collect(final Throwable failure, final Throwable next) {
+        if (failure == null) {
+            return next;
+        }
+        if (failure != next) {
+            failure.addSuppressed(next);
+        }
+        return failure;
+    }
+
+    /**
+     * Creates a bind socket address.
+     *
+     * @param address bind address
+     * @return socket address
+     */
+    private static InetSocketAddress socket(final Address address) {
+        return new InetSocketAddress(address.host(), address.port());
+    }
+
+    /**
+     * Awaits a conduit operation and preserves runtime failures.
+     *
+     * @param future  non-null asynchronous byte-count operation to join
+     * @param message context used when a checked or missing result must be wrapped
+     * @return completed byte count
+     */
+    private static long await(final CompletableFuture<Long> future, final String message) {
+        try {
+            final Long result = Assert.notNull(future, () -> new ValidateException("TCP IO future must not be null"))
+                    .join();
+            return Assert.notNull(result, () -> new InternalException(message + ": missing byte count"));
+        } catch (final CompletionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof RuntimeException runtime) {
+                throw runtime;
+            }
+            if (cause instanceof Error error) {
+                throw error;
+            }
+            throw new InternalException(message, cause);
+        }
+    }
+
+    /**
      * Returns the listen address.
      *
      * @return local logical address configured for binding
@@ -473,33 +524,6 @@ public class TcpServer implements AutoCloseable {
     }
 
     /**
-     * Aggregates a cleanup failure using suppressed exceptions.
-     *
-     * @param failure current primary failure
-     * @param next    next failure
-     * @return primary failure
-     */
-    private static Throwable collect(final Throwable failure, final Throwable next) {
-        if (failure == null) {
-            return next;
-        }
-        if (failure != next) {
-            failure.addSuppressed(next);
-        }
-        return failure;
-    }
-
-    /**
-     * Creates a bind socket address.
-     *
-     * @param address bind address
-     * @return socket address
-     */
-    private static InetSocketAddress socket(final Address address) {
-        return new InetSocketAddress(address.host(), address.port());
-    }
-
-    /**
      * Notifies listener open without allowing listener failures to escape.
      *
      * @param source server or session whose lifecycle opened
@@ -550,27 +574,17 @@ public class TcpServer implements AutoCloseable {
     }
 
     /**
-     * Awaits a conduit operation and preserves runtime failures.
+     * Internal no-operation listener.
      *
-     * @param future  non-null asynchronous byte-count operation to join
-     * @param message context used when a checked or missing result must be wrapped
-     * @return completed byte count
+     * @author Kimi Liu
      */
-    private static long await(final CompletableFuture<Long> future, final String message) {
-        try {
-            final Long result = Assert.notNull(future, () -> new ValidateException("TCP IO future must not be null"))
-                    .join();
-            return Assert.notNull(result, () -> new InternalException(message + ": missing byte count"));
-        } catch (final CompletionException e) {
-            final Throwable cause = e.getCause();
-            if (cause instanceof RuntimeException runtime) {
-                throw runtime;
-            }
-            if (cause instanceof Error error) {
-                throw error;
-            }
-            throw new InternalException(message, cause);
-        }
+    private enum NoopListener implements Listener<Object> {
+
+        /**
+         * Singleton no-operation listener.
+         */
+        INSTANCE
+
     }
 
     /**
@@ -886,20 +900,6 @@ public class TcpServer implements AutoCloseable {
         public Map<String, Object> attributes() {
             return Map.of();
         }
-
-    }
-
-    /**
-     * Internal no-operation listener.
-     *
-     * @author Kimi Liu
-     */
-    private enum NoopListener implements Listener<Object> {
-
-        /**
-         * Singleton no-operation listener.
-         */
-        INSTANCE
 
     }
 

@@ -45,22 +45,27 @@ public class SpringBuilder {
      * Application context owned by this facade.
      */
     private final SpringContext context;
+
     /**
      * Read-only Bean lookup service.
      */
     private final BeanProvider beans;
+
     /**
      * Bean registration service.
      */
     private final BeanRegistry registry;
+
     /**
      * Side-effect-free Bean metadata service.
      */
     private final BeanMetadata metadata;
+
     /**
      * Environment property resolution service.
      */
     private final EnvironmentResolver environment;
+
     /**
      * Ordered Provider discovery service.
      */

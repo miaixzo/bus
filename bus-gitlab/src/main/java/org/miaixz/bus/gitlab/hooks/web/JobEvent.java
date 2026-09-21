@@ -32,16 +32,15 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class JobEvent extends AbstractEvent {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852232651592L;
+
     /**
      * The job hook x gitlab event value.
      */
 
     public static final String JOB_HOOK_X_GITLAB_EVENT = "Job Hook";
+
     /**
      * The object kind value.
      */
@@ -51,70 +50,87 @@ public class JobEvent extends AbstractEvent {
      * The ref value.
      */
     private String ref;
+
     /**
      * The tag value.
      */
     private Boolean tag;
+
     /**
      * The before sha value.
      */
     private String beforeSha;
+
     /**
      * The sha value.
      */
     private String sha;
+
     /**
      * The job id value.
      */
     private Long jobId;
+
     /**
      * The job name value.
      */
     private String jobName;
+
     /**
      * The job stage value.
      */
     private String jobStage;
+
     /**
      * The job status value.
      */
     private String jobStatus;
+
     /**
      * The job started at value.
      */
     private Date jobStartedAt;
+
     /**
      * The job finished at value.
      */
     private Date jobFinishedAt;
+
     /**
      * The job duration value.
      */
     private Integer jobDuration;
+
     /**
      * The job allow failure value.
      */
     private Boolean jobAllowFailure;
+
     /**
      * The job failure reason value.
      */
     private String jobFailureReason;
+
     /**
      * The project id value.
      */
     private Long projectId;
+
     /**
      * The project name value.
      */
     private String projectName;
+
     /**
      * The user value.
      */
     private EventUser user;
+
     /**
      * The commit value.
      */
     private BuildCommit commit;
+
     /**
      * The repository value.
      */

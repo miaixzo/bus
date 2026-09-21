@@ -31,9 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class ContainerExpirationPolicy implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852250662811L;
 
@@ -41,22 +38,27 @@ public class ContainerExpirationPolicy implements Serializable {
      * The cadence value.
      */
     private String cadence;
+
     /**
      * The enabled value.
      */
     private Boolean enabled;
+
     /**
      * The keep n value.
      */
     private Integer keepN;
+
     /**
      * The older than value.
      */
     private String olderThan;
+
     /**
      * The name regex value.
      */
     private String nameRegex;
+
     /**
      * The name regex keep value.
      */

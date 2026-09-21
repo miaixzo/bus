@@ -221,11 +221,6 @@ public class WebSocketSession implements Session {
     private final ArrayDeque<OutboundEntry> outbound;
 
     /**
-     * Complete reserved wire bytes across queued and active entries.
-     */
-    private long queuedBytes;
-
-    /**
      * Guard allowing at most one active background drain.
      */
     private final AtomicBoolean draining;
@@ -244,6 +239,11 @@ public class WebSocketSession implements Session {
      * Guard allowing exactly one native resource cleanup.
      */
     private final AtomicBoolean resourcesClosed;
+
+    /**
+     * Complete reserved wire bytes across queued and active entries.
+     */
+    private long queuedBytes;
 
     /**
      * Guard allowing exactly one close entry.
@@ -410,33 +410,6 @@ public class WebSocketSession implements Session {
     }
 
     /**
-     * Applies the session read timeout at upgrade ownership transfer. Zero clears any HTTP drain timeout retained by
-     * the reused source.
-     *
-     * @param source  upgraded connection source
-     * @param timeout WebSocket timeout policy
-     * @return the same configured source
-     */
-    private static Source configureSource(final Source source, final Timeout timeout) {
-        final Source current = require(source, "WebSocket source");
-        current.timeout().timeout(require(timeout, "WebSocket timeout").read());
-        return current;
-    }
-
-    /**
-     * Applies the session write timeout at upgrade ownership transfer.
-     *
-     * @param sink    upgraded connection sink
-     * @param timeout WebSocket timeout policy
-     * @return the same configured sink
-     */
-    private static Sink configureSink(final Sink sink, final Timeout timeout) {
-        final Sink current = require(sink, "WebSocket sink");
-        current.timeout().timeout(require(timeout, "WebSocket timeout").write());
-        return current;
-    }
-
-    /**
      * Creates the fully specified session and starts its owned background activities.
      *
      * @param address             session address
@@ -527,6 +500,317 @@ public class WebSocketSession implements Session {
         if (!terminalNotified.get()) {
             ping.schedule();
         }
+    }
+
+    /**
+     * Applies the session read timeout at upgrade ownership transfer. Zero clears any HTTP drain timeout retained by
+     * the reused source.
+     *
+     * @param source  upgraded connection source
+     * @param timeout WebSocket timeout policy
+     * @return the same configured source
+     */
+    private static Source configureSource(final Source source, final Timeout timeout) {
+        final Source current = require(source, "WebSocket source");
+        current.timeout().timeout(require(timeout, "WebSocket timeout").read());
+        return current;
+    }
+
+    /**
+     * Applies the session write timeout at upgrade ownership transfer.
+     *
+     * @param sink    upgraded connection sink
+     * @param timeout WebSocket timeout policy
+     * @return the same configured sink
+     */
+    private static Sink configureSink(final Sink sink, final Timeout timeout) {
+        final Sink current = require(sink, "WebSocket sink");
+        current.timeout().timeout(require(timeout, "WebSocket timeout").write());
+        return current;
+    }
+
+    /**
+     * Completes one entry according to the selected terminal kind.
+     *
+     * @param entry       outbound entry reaching a terminal state
+     * @param termination terminal kind
+     * @param cause       completion cause
+     */
+    private static void completeEntry(final OutboundEntry entry, final Termination termination, final Throwable cause) {
+        if (termination == Termination.CANCEL) {
+            entry.cancel(cause);
+        } else {
+            entry.fail(cause);
+        }
+    }
+
+    /**
+     * Closes one resource while retaining the first failure.
+     *
+     * @param resource closeable resource, or {@code null}
+     * @param failure  current first failure
+     * @param name     resource name
+     * @return first failure
+     */
+    private static RuntimeException closeResource(
+            final AutoCloseable resource,
+            final RuntimeException failure,
+            final String name) {
+        RuntimeException current = failure;
+        if (resource == null) {
+            return current;
+        }
+        try {
+            resource.close();
+        } catch (final Exception e) {
+            final RuntimeException next = e instanceof RuntimeException runtime ? runtime
+                    : new InternalException("Unable to close " + name, e);
+            if (current == null) {
+                current = next;
+            } else if (current != next) {
+                current.addSuppressed(next);
+            }
+        }
+        return current;
+    }
+
+    /**
+     * Closes a connection lease while retaining the first cleanup failure.
+     *
+     * @param resource connection lease
+     * @param failure  current first failure
+     * @return first failure
+     */
+    private static RuntimeException closeLease(final ConnectionLease resource, final RuntimeException failure) {
+        RuntimeException current = failure;
+        if (resource == null) {
+            return current;
+        }
+        try {
+            resource.close();
+        } catch (final RuntimeException e) {
+            if (current == null) {
+                current = e;
+            } else if (current != e) {
+                current.addSuppressed(e);
+            }
+        }
+        return current;
+    }
+
+    /**
+     * Cancels and clears one dispatch handle reference.
+     *
+     * @param reference handle reference
+     */
+    private static void cancelHandle(final AtomicReference<DispatchHandle> reference) {
+        final DispatchHandle handle = reference.getAndSet(null);
+        if (handle != null) {
+            handle.cancel();
+        }
+    }
+
+    /**
+     * Calculates complete frame wire bytes including header and optional mask.
+     *
+     * @param frame  frame whose physical wire size is calculated
+     * @param masked mask flag
+     * @return complete wire bytes
+     */
+    private static long wireBytes(final WebSocketFrame frame, final boolean masked) {
+        final long payloadBytes = frame.payload().size();
+        final long lengthBytes = payloadBytes <= Builder.WEBSOCKET_CONTROL_PAYLOAD_MAX_BYTES ? Normal.LONG_ZERO
+                : payloadBytes <= Normal._65535 ? Short.BYTES : Long.BYTES;
+        return Normal._2 + lengthBytes + (masked ? Normal._4 : Normal._0) + payloadBytes;
+    }
+
+    /**
+     * Parses one already validated close frame.
+     *
+     * @param frame close frame
+     * @return close description
+     */
+    private static WebSocketClose parseClose(final WebSocketFrame frame) {
+        final byte[] payload = frame.payload().toByteArray();
+        if (payload.length == Normal._0) {
+            return WebSocketClose.of((int) Normal.KILO, Normal.EMPTY);
+        }
+        if (payload.length == Normal._1) {
+            throw new ProtocolException("Invalid WebSocket close payload");
+        }
+        final int code = (payload[Normal._0] & Builder.UNSIGNED_BYTE_MASK) << Byte.SIZE
+                | payload[Normal._1] & Builder.UNSIGNED_BYTE_MASK;
+        final String reason = decodeUtf8(payload, Short.BYTES, payload.length - Short.BYTES);
+        try {
+            return WebSocketClose.of(code, reason);
+        } catch (final ValidateException e) {
+            throw new ProtocolException("Invalid WebSocket close frame", e);
+        }
+    }
+
+    /**
+     * Strictly decodes complete text message bytes.
+     *
+     * @param value bytes
+     * @return decoded text
+     */
+    private static String decodeUtf8(final ByteString value) {
+        return decodeUtf8(value.toByteArray(), Normal._0, value.size());
+    }
+
+    /**
+     * Strictly decodes a UTF-8 byte range.
+     *
+     * @param value  bytes
+     * @param offset range offset
+     * @param length range length
+     * @return decoded text
+     */
+    private static String decodeUtf8(final byte[] value, final int offset, final int length) {
+        try {
+            return Charset.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(value, offset, length))
+                    .toString();
+        } catch (final CharacterCodingException e) {
+            throw new ValidateException("WebSocket text must be valid UTF-8", e);
+        }
+    }
+
+    /**
+     * Selects a close code for a reader failure.
+     *
+     * @param cause failure
+     * @return close code
+     */
+    private static int failureCloseCode(final Throwable cause) {
+        final String message = cause.getMessage() == null ? Normal.EMPTY : cause.getMessage().toLowerCase(Locale.ROOT);
+        if (message.contains("too large") || message.contains("size")) {
+            return Builder.WEBSOCKET_CLOSE_MESSAGE_TOO_LARGE;
+        }
+        if (message.contains(Charset.DEFAULT_UTF_8.toLowerCase(Locale.ROOT))) {
+            return Builder.WEBSOCKET_CLOSE_INVALID_PAYLOAD;
+        }
+        if (cause instanceof ProtocolException || cause instanceof ValidateException) {
+            return Builder.WEBSOCKET_CLOSE_PROTOCOL_ERROR;
+        }
+        return Builder.WEBSOCKET_CLOSE_INTERNAL_ERROR;
+    }
+
+    /**
+     * Validates text accepted by the String send overload.
+     *
+     * @param text text accepted by the String send API
+     * @return encoded text
+     */
+    private static ByteString validateSendText(final String text) {
+        if (StringKit.isBlank(text) || StringKit.containsAny(text, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException("WebSocket text must be non-blank and single-line");
+        }
+        return ByteString.encodeUtf8(text);
+    }
+
+    /**
+     * Builds a complete compatibility timeout policy from a legacy ping interval.
+     *
+     * @param ping ping interval
+     * @return complete timeout policy
+     */
+    private static Timeout timeout(final Duration ping) {
+        return Timeout.builder().ping(require(ping, "WebSocket ping interval")).build();
+    }
+
+    /**
+     * Validates a dispatch key only for sessions with native transport.
+     *
+     * @param value    dispatch key
+     * @param required whether a key is required
+     * @return validated key or null
+     */
+    private static String validateDispatchKey(final String value, final boolean required) {
+        if (!required && value == null) {
+            return null;
+        }
+        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException("WebSocket dispatch key must be non-blank and single-line");
+        }
+        return value.trim();
+    }
+
+    /**
+     * Creates a compatibility dispatch key.
+     *
+     * @param address session address
+     * @return dispatch key
+     */
+    private static String defaultDispatchKey(final Address address) {
+        final Address checked = require(address, "WebSocket address");
+        return "websocket:" + checked.host() + Symbol.COLON + checked.port();
+    }
+
+    /**
+     * Creates default session attributes.
+     *
+     * @param observer observer stored in the default attribute map
+     * @return default attributes
+     */
+    private static Map<String, Object> defaultAttributes(final EventObserver observer) {
+        return Map.of(Builder.ATTRIBUTE_OBSERVER, EventObserver.safe(observer));
+    }
+
+    /**
+     * Copies session attributes and installs the session observer.
+     *
+     * @param source   source attributes
+     * @param observer observer installed into the copied attributes
+     * @return immutable attributes
+     */
+    private static Map<String, Object> attributes(final Map<String, Object> source, final EventObserver observer) {
+        final LinkedHashMap<String, Object> result = new LinkedHashMap<>();
+        if (source != null) {
+            source.forEach((key, value) -> {
+                if (key != null && value != null) {
+                    result.put(key, value);
+                }
+            });
+        }
+        result.put(Builder.ATTRIBUTE_OBSERVER, EventObserver.safe(observer));
+        return Map.copyOf(result);
+    }
+
+    /**
+     * Combines a terminal cause with an optional cleanup failure.
+     *
+     * @param cause   terminal cause
+     * @param cleanup cleanup failure
+     * @return combined cause
+     */
+    private static Throwable combine(final Throwable cause, final RuntimeException cleanup) {
+        if (cause == null) {
+            return cleanup;
+        }
+        if (cleanup != null && cleanup != cause) {
+            cause.addSuppressed(cleanup);
+        }
+        return cause;
+    }
+
+    /**
+     * No-operation callback used as an idempotent cancellation-registration sentinel.
+     */
+    private static void noop() {
+        // No operation.
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  field name
+     * @param <T>   value type
+     * @return the validated reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -1353,21 +1637,6 @@ public class WebSocketSession implements Session {
     }
 
     /**
-     * Completes one entry according to the selected terminal kind.
-     *
-     * @param entry       outbound entry reaching a terminal state
-     * @param termination terminal kind
-     * @param cause       completion cause
-     */
-    private static void completeEntry(final OutboundEntry entry, final Termination termination, final Throwable cause) {
-        if (termination == Termination.CANCEL) {
-            entry.cancel(cause);
-        } else {
-            entry.fail(cause);
-        }
-    }
-
-    /**
      * Closes all native resources once and returns the first cleanup failure.
      *
      * @return first cleanup failure or null
@@ -1383,72 +1652,6 @@ public class WebSocketSession implements Session {
             failure = closeResource(dispatcher, failure, "WebSocket dispatcher");
         }
         return failure;
-    }
-
-    /**
-     * Closes one resource while retaining the first failure.
-     *
-     * @param resource closeable resource, or {@code null}
-     * @param failure  current first failure
-     * @param name     resource name
-     * @return first failure
-     */
-    private static RuntimeException closeResource(
-            final AutoCloseable resource,
-            final RuntimeException failure,
-            final String name) {
-        RuntimeException current = failure;
-        if (resource == null) {
-            return current;
-        }
-        try {
-            resource.close();
-        } catch (final Exception e) {
-            final RuntimeException next = e instanceof RuntimeException runtime ? runtime
-                    : new InternalException("Unable to close " + name, e);
-            if (current == null) {
-                current = next;
-            } else if (current != next) {
-                current.addSuppressed(next);
-            }
-        }
-        return current;
-    }
-
-    /**
-     * Closes a connection lease while retaining the first cleanup failure.
-     *
-     * @param resource connection lease
-     * @param failure  current first failure
-     * @return first failure
-     */
-    private static RuntimeException closeLease(final ConnectionLease resource, final RuntimeException failure) {
-        RuntimeException current = failure;
-        if (resource == null) {
-            return current;
-        }
-        try {
-            resource.close();
-        } catch (final RuntimeException e) {
-            if (current == null) {
-                current = e;
-            } else if (current != e) {
-                current.addSuppressed(e);
-            }
-        }
-        return current;
-    }
-
-    /**
-     * Cancels and clears one dispatch handle reference.
-     *
-     * @param reference handle reference
-     */
-    private static void cancelHandle(final AtomicReference<DispatchHandle> reference) {
-        final DispatchHandle handle = reference.getAndSet(null);
-        if (handle != null) {
-            handle.cancel();
-        }
     }
 
     /**
@@ -1559,277 +1762,97 @@ public class WebSocketSession implements Session {
     }
 
     /**
-     * Calculates complete frame wire bytes including header and optional mask.
-     *
-     * @param frame  frame whose physical wire size is calculated
-     * @param masked mask flag
-     * @return complete wire bytes
+     * Outbound ordering class.
      */
-    private static long wireBytes(final WebSocketFrame frame, final boolean masked) {
-        final long payloadBytes = frame.payload().size();
-        final long lengthBytes = payloadBytes <= Builder.WEBSOCKET_CONTROL_PAYLOAD_MAX_BYTES ? Normal.LONG_ZERO
-                : payloadBytes <= Normal._65535 ? Short.BYTES : Long.BYTES;
-        return Normal._2 + lengthBytes + (masked ? Normal._4 : Normal._0) + payloadBytes;
-    }
-
-    /**
-     * Parses one already validated close frame.
-     *
-     * @param frame close frame
-     * @return close description
-     */
-    private static WebSocketClose parseClose(final WebSocketFrame frame) {
-        final byte[] payload = frame.payload().toByteArray();
-        if (payload.length == Normal._0) {
-            return WebSocketClose.of((int) Normal.KILO, Normal.EMPTY);
-        }
-        if (payload.length == Normal._1) {
-            throw new ProtocolException("Invalid WebSocket close payload");
-        }
-        final int code = (payload[Normal._0] & Builder.UNSIGNED_BYTE_MASK) << Byte.SIZE
-                | payload[Normal._1] & Builder.UNSIGNED_BYTE_MASK;
-        final String reason = decodeUtf8(payload, Short.BYTES, payload.length - Short.BYTES);
-        try {
-            return WebSocketClose.of(code, reason);
-        } catch (final ValidateException e) {
-            throw new ProtocolException("Invalid WebSocket close frame", e);
-        }
-    }
-
-    /**
-     * Strictly decodes complete text message bytes.
-     *
-     * @param value bytes
-     * @return decoded text
-     */
-    private static String decodeUtf8(final ByteString value) {
-        return decodeUtf8(value.toByteArray(), Normal._0, value.size());
-    }
-
-    /**
-     * Strictly decodes a UTF-8 byte range.
-     *
-     * @param value  bytes
-     * @param offset range offset
-     * @param length range length
-     * @return decoded text
-     */
-    private static String decodeUtf8(final byte[] value, final int offset, final int length) {
-        try {
-            return Charset.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
-                    .onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(value, offset, length))
-                    .toString();
-        } catch (final CharacterCodingException e) {
-            throw new ValidateException("WebSocket text must be valid UTF-8", e);
-        }
-    }
-
-    /**
-     * Selects a close code for a reader failure.
-     *
-     * @param cause failure
-     * @return close code
-     */
-    private static int failureCloseCode(final Throwable cause) {
-        final String message = cause.getMessage() == null ? Normal.EMPTY : cause.getMessage().toLowerCase(Locale.ROOT);
-        if (message.contains("too large") || message.contains("size")) {
-            return Builder.WEBSOCKET_CLOSE_MESSAGE_TOO_LARGE;
-        }
-        if (message.contains(Charset.DEFAULT_UTF_8.toLowerCase(Locale.ROOT))) {
-            return Builder.WEBSOCKET_CLOSE_INVALID_PAYLOAD;
-        }
-        if (cause instanceof ProtocolException || cause instanceof ValidateException) {
-            return Builder.WEBSOCKET_CLOSE_PROTOCOL_ERROR;
-        }
-        return Builder.WEBSOCKET_CLOSE_INTERNAL_ERROR;
-    }
-
-    /**
-     * Validates text accepted by the String send overload.
-     *
-     * @param text text accepted by the String send API
-     * @return encoded text
-     */
-    private static ByteString validateSendText(final String text) {
-        if (StringKit.isBlank(text) || StringKit.containsAny(text, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("WebSocket text must be non-blank and single-line");
-        }
-        return ByteString.encodeUtf8(text);
-    }
-
-    /**
-     * Builds a complete compatibility timeout policy from a legacy ping interval.
-     *
-     * @param ping ping interval
-     * @return complete timeout policy
-     */
-    private static Timeout timeout(final Duration ping) {
-        return Timeout.builder().ping(require(ping, "WebSocket ping interval")).build();
-    }
-
-    /**
-     * Validates a dispatch key only for sessions with native transport.
-     *
-     * @param value    dispatch key
-     * @param required whether a key is required
-     * @return validated key or null
-     */
-    private static String validateDispatchKey(final String value, final boolean required) {
-        if (!required && value == null) {
-            return null;
-        }
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("WebSocket dispatch key must be non-blank and single-line");
-        }
-        return value.trim();
-    }
-
-    /**
-     * Creates a compatibility dispatch key.
-     *
-     * @param address session address
-     * @return dispatch key
-     */
-    private static String defaultDispatchKey(final Address address) {
-        final Address checked = require(address, "WebSocket address");
-        return "websocket:" + checked.host() + Symbol.COLON + checked.port();
-    }
-
-    /**
-     * Creates default session attributes.
-     *
-     * @param observer observer stored in the default attribute map
-     * @return default attributes
-     */
-    private static Map<String, Object> defaultAttributes(final EventObserver observer) {
-        return Map.of(Builder.ATTRIBUTE_OBSERVER, EventObserver.safe(observer));
-    }
-
-    /**
-     * Copies session attributes and installs the session observer.
-     *
-     * @param source   source attributes
-     * @param observer observer installed into the copied attributes
-     * @return immutable attributes
-     */
-    private static Map<String, Object> attributes(final Map<String, Object> source, final EventObserver observer) {
-        final LinkedHashMap<String, Object> result = new LinkedHashMap<>();
-        if (source != null) {
-            source.forEach((key, value) -> {
-                if (key != null && value != null) {
-                    result.put(key, value);
-                }
-            });
-        }
-        result.put(Builder.ATTRIBUTE_OBSERVER, EventObserver.safe(observer));
-        return Map.copyOf(result);
-    }
-
-    /**
-     * Combines a terminal cause with an optional cleanup failure.
-     *
-     * @param cause   terminal cause
-     * @param cleanup cleanup failure
-     * @return combined cause
-     */
-    private static Throwable combine(final Throwable cause, final RuntimeException cleanup) {
-        if (cause == null) {
-            return cleanup;
-        }
-        if (cleanup != null && cleanup != cause) {
-            cause.addSuppressed(cleanup);
-        }
-        return cause;
-    }
-
-    /**
-     * No-operation callback used as an idempotent cancellation-registration sentinel.
-     */
-    private static void noop() {
-        // No operation.
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  field name
-     * @param <T>   value type
-     * @return the validated reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-    }
-
-    /**
-     * Lazy outbound Call that links Call cancellation to its owned queue entry.
-     */
-    private final class OutboundCall extends MonoCall<Void> {
+    private enum EntryKind {
 
         /**
-         * Outbound entry kind.
+         * User application message kept in FIFO order.
          */
-        private final EntryKind kind;
+        APPLICATION,
 
         /**
-         * Frame factory run only after Call start.
+         * Public or automatic ping ordered before queued application messages.
          */
-        private final Supplier<WebSocketFrame> factory;
+        PING,
 
         /**
-         * Entry created by the running Call.
+         * Internal automatic ping ordered before queued application messages.
          */
-        private final AtomicReference<OutboundEntry> entry;
+        AUTOMATIC_PING,
 
         /**
-         * Creates a lazy outbound Call.
+         * Internal pong ordered before queued application messages.
+         */
+        PONG,
+
+        /**
+         * Internal close ordered immediately after the active entry.
+         */
+        CLOSE
+
+    }
+
+    /**
+     * Outbound entry completion state.
+     */
+    private enum EntryState {
+
+        /**
+         * Reserved and queued.
+         */
+        QUEUED,
+
+        /**
+         * Currently being written.
+         */
+        ACTIVE,
+
+        /**
+         * Successfully flushed.
+         */
+        SUCCEEDED,
+
+        /**
+         * Failed.
+         */
+        FAILED,
+
+        /**
+         * Cancelled.
+         */
+        CANCELLED;
+
+        /**
+         * Returns whether this state is terminal.
          *
-         * @param name    Call name
-         * @param kind    entry kind
-         * @param factory frame factory
+         * @return true when terminal
          */
-        private OutboundCall(final String name, final EntryKind kind, final Supplier<WebSocketFrame> factory) {
-            super(name, dispatcher, observer, timeout);
-            this.kind = require(kind, "WebSocket entry kind");
-            this.factory = require(factory, "WebSocket frame factory");
-            this.entry = new AtomicReference<>();
+        private boolean terminal() {
+            return this == SUCCEEDED || this == FAILED || this == CANCELLED;
         }
 
-        /**
-         * Filters, encodes, reserves, enqueues, and waits after the Call starts.
-         *
-         * @return null after the entry is flushed
-         */
-        @Override
-        protected Void perform() {
-            ensureWritable(kind);
-            cancellation().throwIfCancelled();
-            final WebSocketFrame frame = factory.get();
-            final OutboundEntry created = new OutboundEntry(frame, kind, wireBytes(frame, state.writerMask()));
-            entry.set(created);
-            cancellation().throwIfCancelled();
-            WebSocketSession.this.enqueue(created);
-            awaitEntry(created);
-            return null;
-        }
+    }
+
+    /**
+     * Session terminal path selected by the exactly-once guard owner.
+     */
+    private enum Termination {
 
         /**
-         * Returns the outbound dispatch key.
-         *
-         * @return dispatch key
+         * Normal local or peer close.
          */
-        @Override
-        protected String dispatchKey() {
-            return dispatchKey + ":call";
-        }
+        CLOSE,
 
         /**
-         * Cancels the linked queued or active entry.
+         * Explicit or deadline cancellation.
          */
-        @Override
-        protected void cancelRunning() {
-            cancelEntry(entry.get());
-        }
+        CANCEL,
+
+        /**
+         * Protocol, reader, writer, or handler failure.
+         */
+        FAIL
 
     }
 
@@ -2016,97 +2039,74 @@ public class WebSocketSession implements Session {
     }
 
     /**
-     * Outbound ordering class.
+     * Lazy outbound Call that links Call cancellation to its owned queue entry.
      */
-    private enum EntryKind {
+    private final class OutboundCall extends MonoCall<Void> {
 
         /**
-         * User application message kept in FIFO order.
+         * Outbound entry kind.
          */
-        APPLICATION,
+        private final EntryKind kind;
 
         /**
-         * Public or automatic ping ordered before queued application messages.
+         * Frame factory run only after Call start.
          */
-        PING,
+        private final Supplier<WebSocketFrame> factory;
 
         /**
-         * Internal automatic ping ordered before queued application messages.
+         * Entry created by the running Call.
          */
-        AUTOMATIC_PING,
+        private final AtomicReference<OutboundEntry> entry;
 
         /**
-         * Internal pong ordered before queued application messages.
-         */
-        PONG,
-
-        /**
-         * Internal close ordered immediately after the active entry.
-         */
-        CLOSE
-
-    }
-
-    /**
-     * Outbound entry completion state.
-     */
-    private enum EntryState {
-
-        /**
-         * Reserved and queued.
-         */
-        QUEUED,
-
-        /**
-         * Currently being written.
-         */
-        ACTIVE,
-
-        /**
-         * Successfully flushed.
-         */
-        SUCCEEDED,
-
-        /**
-         * Failed.
-         */
-        FAILED,
-
-        /**
-         * Cancelled.
-         */
-        CANCELLED;
-
-        /**
-         * Returns whether this state is terminal.
+         * Creates a lazy outbound Call.
          *
-         * @return true when terminal
+         * @param name    Call name
+         * @param kind    entry kind
+         * @param factory frame factory
          */
-        private boolean terminal() {
-            return this == SUCCEEDED || this == FAILED || this == CANCELLED;
+        private OutboundCall(final String name, final EntryKind kind, final Supplier<WebSocketFrame> factory) {
+            super(name, dispatcher, observer, timeout);
+            this.kind = require(kind, "WebSocket entry kind");
+            this.factory = require(factory, "WebSocket frame factory");
+            this.entry = new AtomicReference<>();
         }
 
-    }
-
-    /**
-     * Session terminal path selected by the exactly-once guard owner.
-     */
-    private enum Termination {
+        /**
+         * Filters, encodes, reserves, enqueues, and waits after the Call starts.
+         *
+         * @return null after the entry is flushed
+         */
+        @Override
+        protected Void perform() {
+            ensureWritable(kind);
+            cancellation().throwIfCancelled();
+            final WebSocketFrame frame = factory.get();
+            final OutboundEntry created = new OutboundEntry(frame, kind, wireBytes(frame, state.writerMask()));
+            entry.set(created);
+            cancellation().throwIfCancelled();
+            WebSocketSession.this.enqueue(created);
+            awaitEntry(created);
+            return null;
+        }
 
         /**
-         * Normal local or peer close.
+         * Returns the outbound dispatch key.
+         *
+         * @return dispatch key
          */
-        CLOSE,
+        @Override
+        protected String dispatchKey() {
+            return dispatchKey + ":call";
+        }
 
         /**
-         * Explicit or deadline cancellation.
+         * Cancels the linked queued or active entry.
          */
-        CANCEL,
-
-        /**
-         * Protocol, reader, writer, or handler failure.
-         */
-        FAIL
+        @Override
+        protected void cancelRunning() {
+            cancelEntry(entry.get());
+        }
 
     }
 

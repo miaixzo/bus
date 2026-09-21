@@ -32,6 +32,7 @@ public enum MaterialPreset {
     METAL(new Material(0.35f, 0.6f, 0.95f), 80f);
 
     private final Material material;
+
     private final float specularPower;
 
     MaterialPreset(Material material, float specularPower) {

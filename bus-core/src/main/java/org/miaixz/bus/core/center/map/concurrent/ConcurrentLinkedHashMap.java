@@ -1207,6 +1207,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     static final class WeightedValue<V> {
 
         final int weight;
+
         final V value;
 
         WeightedValue(final V value, final int weight) {
@@ -1332,6 +1333,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
 
         @Serial
         private static final long serialVersionUID = 2853159653136L;;
+
         final EntryWeigher<? super K, ? super V> weigher;
 
         BoundedEntryWeigher(final EntryWeigher<? super K, ? super V> weigher) {
@@ -1374,10 +1376,15 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
 
         @Serial
         private static final long serialVersionUID = 2853159653136L;;
+
         final EntryWeigher<? super K, ? super V> weigher;
+
         final BiConsumerX<K, V> listener;
+
         final int concurrencyLevel;
+
         final Map<K, V> data;
+
         final long capacity;
 
         SerializationProxy(final ConcurrentLinkedHashMap<K, V> map) {
@@ -1413,10 +1420,13 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     public static class Builder<K, V> {
 
         BiConsumerX<K, V> listener;
+
         EntryWeigher<? super K, ? super V> weigher;
 
         int concurrencyLevel;
+
         int initialCapacity;
+
         long capacity;
 
         /**
@@ -1533,6 +1543,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     final class AddTask implements Runnable {
 
         final Node<K, V> node;
+
         final int weight;
 
         AddTask(final Node<K, V> node, final int weight) {
@@ -1595,6 +1606,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     final class UpdateTask implements Runnable {
 
         final int weightDifference;
+
         final Node<K, V> node;
 
         public UpdateTask(final Node<K, V> node, final int weightDifference) {
@@ -1723,6 +1735,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     final class KeyIterator implements Iterator<K> {
 
         final Iterator<K> iterator = data.keySet().iterator();
+
         K current;
 
         /**
@@ -1829,6 +1842,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     final class ValueIterator implements Iterator<V> {
 
         final Iterator<Node<K, V>> iterator = data.values().iterator();
+
         Node<K, V> current;
 
         /**
@@ -1971,6 +1985,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     final class EntryIterator implements Iterator<Entry<K, V>> {
 
         final Iterator<Node<K, V>> iterator = data.values().iterator();
+
         Node<K, V> current;
 
         /**

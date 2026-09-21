@@ -34,6 +34,104 @@ import org.miaixz.bus.core.lang.Symbol;
 public interface VersionStore {
 
     /**
+     * Returns the comparator used to select the current release.
+     *
+     * @return current release comparator
+     */
+    static Comparator<VersionRecord> currentComparator() {
+        return Comparator.comparing(VersionRecord::getPublished, Comparator.nullsFirst(Long::compareTo))
+                .thenComparing(VersionRecord::getVersion, Comparator.nullsFirst(VersionStore::compareVersion));
+    }
+
+    /**
+     * Compares two version identifiers using numeric-aware segments.
+     *
+     * @param left  left version
+     * @param right right version
+     * @return negative, zero, or positive comparison result
+     */
+    static int compareVersion(String left, String right) {
+        if (Objects.equals(left, right)) {
+            return 0;
+        }
+        if (left == null) {
+            return -1;
+        }
+        if (right == null) {
+            return 1;
+        }
+        String[] leftParts = left.split("[^0-9A-Za-z]+");
+        String[] rightParts = right.split("[^0-9A-Za-z]+");
+        int length = Math.max(leftParts.length, rightParts.length);
+        for (int index = 0; index < length; index++) {
+            String leftPart = index < leftParts.length ? leftParts[index] : Symbol.ZERO;
+            String rightPart = index < rightParts.length ? rightParts[index] : Symbol.ZERO;
+            int compared = comparePart(leftPart, rightPart);
+            if (compared != 0) {
+                return compared;
+            }
+        }
+        return left.compareTo(right);
+    }
+
+    /**
+     * Returns whether two release records describe the same track and version.
+     *
+     * @param left  first release record
+     * @param right second release record
+     * @return {@code true} when both records describe the same release
+     */
+    private static boolean sameRelease(VersionRecord left, VersionRecord right) {
+        return left != null && right != null
+                && Objects.equals(ReleaseTrack.normalize(left.getTrack()), ReleaseTrack.normalize(right.getTrack()))
+                && Objects.equals(left.getVersion(), right.getVersion());
+    }
+
+    /**
+     * Compares one parsed version segment.
+     *
+     * @param left  left segment
+     * @param right right segment
+     * @return negative, zero, or positive comparison result
+     */
+    private static int comparePart(String left, String right) {
+        boolean leftNumeric = left.chars().allMatch(Character::isDigit);
+        boolean rightNumeric = right.chars().allMatch(Character::isDigit);
+        if (leftNumeric && rightNumeric) {
+            return compareNumericPart(left, right);
+        }
+        return left.compareToIgnoreCase(right);
+    }
+
+    /**
+     * Compares numeric version segments without integer overflow.
+     *
+     * @param left  left numeric segment
+     * @param right right numeric segment
+     * @return negative, zero, or positive comparison result
+     */
+    private static int compareNumericPart(String left, String right) {
+        String normalizedLeft = trimLeadingZero(left);
+        String normalizedRight = trimLeadingZero(right);
+        int lengthCompared = Integer.compare(normalizedLeft.length(), normalizedRight.length());
+        if (lengthCompared != 0) {
+            return lengthCompared;
+        }
+        return normalizedLeft.compareTo(normalizedRight);
+    }
+
+    /**
+     * Removes leading zeroes while preserving a single zero for empty values.
+     *
+     * @param value raw numeric segment
+     * @return normalized numeric segment
+     */
+    private static String trimLeadingZero(String value) {
+        String stripped = value == null ? Normal.EMPTY : value.replaceFirst("^0+(?!$)", Normal.EMPTY);
+        return stripped.isEmpty() ? Symbol.ZERO : stripped;
+    }
+
+    /**
      * Saves or replaces a release record.
      *
      * @param record release record to persist
@@ -148,104 +246,6 @@ public interface VersionStore {
         }
         record.setVersionStatus(VersionStatus.DEPRECATED);
         return save(record);
-    }
-
-    /**
-     * Returns the comparator used to select the current release.
-     *
-     * @return current release comparator
-     */
-    static Comparator<VersionRecord> currentComparator() {
-        return Comparator.comparing(VersionRecord::getPublished, Comparator.nullsFirst(Long::compareTo))
-                .thenComparing(VersionRecord::getVersion, Comparator.nullsFirst(VersionStore::compareVersion));
-    }
-
-    /**
-     * Compares two version identifiers using numeric-aware segments.
-     *
-     * @param left  left version
-     * @param right right version
-     * @return negative, zero, or positive comparison result
-     */
-    static int compareVersion(String left, String right) {
-        if (Objects.equals(left, right)) {
-            return 0;
-        }
-        if (left == null) {
-            return -1;
-        }
-        if (right == null) {
-            return 1;
-        }
-        String[] leftParts = left.split("[^0-9A-Za-z]+");
-        String[] rightParts = right.split("[^0-9A-Za-z]+");
-        int length = Math.max(leftParts.length, rightParts.length);
-        for (int index = 0; index < length; index++) {
-            String leftPart = index < leftParts.length ? leftParts[index] : Symbol.ZERO;
-            String rightPart = index < rightParts.length ? rightParts[index] : Symbol.ZERO;
-            int compared = comparePart(leftPart, rightPart);
-            if (compared != 0) {
-                return compared;
-            }
-        }
-        return left.compareTo(right);
-    }
-
-    /**
-     * Returns whether two release records describe the same track and version.
-     *
-     * @param left  first release record
-     * @param right second release record
-     * @return {@code true} when both records describe the same release
-     */
-    private static boolean sameRelease(VersionRecord left, VersionRecord right) {
-        return left != null && right != null
-                && Objects.equals(ReleaseTrack.normalize(left.getTrack()), ReleaseTrack.normalize(right.getTrack()))
-                && Objects.equals(left.getVersion(), right.getVersion());
-    }
-
-    /**
-     * Compares one parsed version segment.
-     *
-     * @param left  left segment
-     * @param right right segment
-     * @return negative, zero, or positive comparison result
-     */
-    private static int comparePart(String left, String right) {
-        boolean leftNumeric = left.chars().allMatch(Character::isDigit);
-        boolean rightNumeric = right.chars().allMatch(Character::isDigit);
-        if (leftNumeric && rightNumeric) {
-            return compareNumericPart(left, right);
-        }
-        return left.compareToIgnoreCase(right);
-    }
-
-    /**
-     * Compares numeric version segments without integer overflow.
-     *
-     * @param left  left numeric segment
-     * @param right right numeric segment
-     * @return negative, zero, or positive comparison result
-     */
-    private static int compareNumericPart(String left, String right) {
-        String normalizedLeft = trimLeadingZero(left);
-        String normalizedRight = trimLeadingZero(right);
-        int lengthCompared = Integer.compare(normalizedLeft.length(), normalizedRight.length());
-        if (lengthCompared != 0) {
-            return lengthCompared;
-        }
-        return normalizedLeft.compareTo(normalizedRight);
-    }
-
-    /**
-     * Removes leading zeroes while preserving a single zero for empty values.
-     *
-     * @param value raw numeric segment
-     * @return normalized numeric segment
-     */
-    private static String trimLeadingZero(String value) {
-        String stripped = value == null ? Normal.EMPTY : value.replaceFirst("^0+(?!$)", Normal.EMPTY);
-        return stripped.isEmpty() ? Symbol.ZERO : stripped;
     }
 
 }

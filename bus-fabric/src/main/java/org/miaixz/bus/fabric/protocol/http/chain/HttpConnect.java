@@ -47,7 +47,6 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.*;
-import org.miaixz.bus.core.lang.exception.ConnectionException;
 import org.miaixz.bus.core.lang.exception.ConnectionException.Delivery;
 import org.miaixz.bus.core.lang.exception.ConnectionException.Phase;
 import org.miaixz.bus.core.lang.exception.ConnectionException.Scope;
@@ -58,7 +57,6 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.builtin.TlsHandshake;
 import org.miaixz.bus.fabric.*;
-import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.guard.route.AddressGuard;
 import org.miaixz.bus.fabric.guard.route.AddressPolicy;
 import org.miaixz.bus.fabric.network.*;
@@ -333,6 +331,252 @@ public class HttpConnect implements HttpStage, AutoCloseable {
         this.tlsConnector = new HttpTlsConnector(tlsContext, tlsSettings, this.listener, this.dispatcher);
         this.acquirer = new HttpConnectionAcquirer(this.pool);
         this.directRoutes = new ConcurrentHashMap<>();
+    }
+
+    /**
+     * Maps the wire-negotiated ALPN value and rejects every unknown non-empty protocol.
+     *
+     * @param applicationProtocol ALPN protocol selected by the TLS engine
+     * @return established HTTP wire protocol
+     */
+    private static Protocol negotiatedProtocol(final String applicationProtocol) {
+        if (applicationProtocol == null || applicationProtocol.isBlank()
+                || Protocol.HTTP_1_1.name.equalsIgnoreCase(applicationProtocol)) {
+            return Protocol.HTTP_1_1;
+        }
+        if (Protocol.HTTP_2.name.equalsIgnoreCase(applicationProtocol)) {
+            return Protocol.HTTP_2;
+        }
+        throw new ProtocolException("Unsupported negotiated application protocol: " + applicationProtocol);
+    }
+
+    /**
+     * Returns transport handshake metadata without exposing the concrete TLS conduit.
+     *
+     * @param connection established direct or TLS-routed connection
+     * @return TLS handshake metadata, or {@code null} for a plain connection
+     */
+    private static TlsHandshake connectionHandshake(final Connection connection) {
+        if (connection instanceof TlsRoutedConnection tls)
+            return tls.handshake();
+        if (connection instanceof TlsSocketRoutedConnection tls)
+            return tls.handshake();
+        return null;
+    }
+
+    /**
+     * Returns whether request and response connection semantics permit returning the physical connection to the pool.
+     *
+     * @param response completed response
+     * @return true when neither side requested connection closure
+     */
+    private static boolean reusable(final HttpResponse response) {
+        return !closeRequested(response.request().headers()) && !closeRequested(response.headers());
+    }
+
+    /**
+     * Detects a Connection: close token in a header collection.
+     *
+     * @param headers headers to inspect
+     * @return true when connection closure was requested
+     */
+    private static boolean closeRequested(final Headers headers) {
+        for (int index = 0; index < headers.size(); index++) {
+            if (Http.Header.CONNECTION.equalsIgnoreCase(headers.name(index))
+                    && Http.Header.CONNECTION_CLOSE.equalsIgnoreCase(headers.value(index))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Waits for a connection future.
+     *
+     * @param future  asynchronous connection result to await
+     * @param timeout maximum duration allowed for connection establishment
+     * @return connection
+     */
+    private static Connection awaitConnection(final CompletableFuture<Connection> future, final Timeout timeout) {
+        return awaitConnection(future, timeout, Cancellation.create());
+    }
+
+    /**
+     * Waits for a connection future with cancellation support.
+     *
+     * @param future       asynchronous connection result to await
+     * @param timeout      maximum duration allowed for connection establishment
+     * @param cancellation cancellation scope
+     * @return connection
+     */
+    private static Connection awaitConnection(
+            final CompletableFuture<Connection> future,
+            final Timeout timeout,
+            final Cancellation cancellation) {
+        return require(await(future, timeout.connect(), "Connection timed out", cancellation), "Network connection");
+    }
+
+    /**
+     * Waits for TLS handshake completion.
+     *
+     * @param future asynchronous TLS handshake result to await
+     */
+    private static void awaitTls(final CompletableFuture<?> future) {
+        awaitTls(future, Cancellation.create());
+    }
+
+    /**
+     * Waits for TLS handshake completion with cancellation support.
+     *
+     * @param future       asynchronous TLS handshake result to await
+     * @param cancellation cancellation scope
+     */
+    private static void awaitTls(final CompletableFuture<?> future, final Cancellation cancellation) {
+        await(future, Duration.ZERO, "TLS handshake timed out", cancellation);
+    }
+
+    /**
+     * Waits for a future with bus exceptions.
+     *
+     * @param future  asynchronous result to await
+     * @param timeout maximum duration allowed before failing
+     * @param message timeout message
+     * @param <T>     result type
+     * @return the completed asynchronous result
+     */
+    private static <T> T await(final CompletableFuture<T> future, final Duration timeout, final String message) {
+        return await(future, timeout, message, Cancellation.create());
+    }
+
+    /**
+     * Waits for a future with bus exceptions and cancellation support.
+     *
+     * @param future       asynchronous result to await
+     * @param timeout      maximum duration allowed before failing
+     * @param message      timeout message
+     * @param cancellation cancellation scope
+     * @param <T>          result type
+     * @return the completed asynchronous result
+     */
+    private static <T> T await(
+            final CompletableFuture<T> future,
+            final Duration timeout,
+            final String message,
+            final Cancellation cancellation) {
+        final Cancellation scope = require(cancellation, "Cancellation");
+        scope.throwIfCancelled();
+        final Runnable unregister = scope.cancellable() ? scope.onCancel(() -> future.cancel(true)) : NOOP_UNREGISTER;
+        try {
+            final T result = timeout.isZero() ? future.get()
+                    : future.get(Math.max(1L, timeout.toMillis()), TimeUnit.MILLISECONDS);
+            scope.throwIfCancelled();
+            return result;
+        } catch (final java.util.concurrent.TimeoutException e) {
+            future.cancel(true);
+            throw new TimeoutException(message, e);
+        } catch (final CancellationException e) {
+            scope.throwIfCancelled();
+            throw e;
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new InternalException("Interrupted while waiting for HTTP connection", e);
+        } catch (final ExecutionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof RuntimeException runtime) {
+                throw runtime;
+            }
+            throw new SocketException("HTTP connection failed", cause);
+        } finally {
+            unregister.run();
+        }
+    }
+
+    /**
+     * Closes a lease after failure.
+     *
+     * @param lease   failed lease to close
+     * @param message diagnostic message used if closing fails
+     */
+    private static void closeLease(final ConnectionLease lease, final String message) {
+        try {
+            lease.close();
+        } catch (final RuntimeException e) {
+            throw internal(message, e);
+        }
+    }
+
+    /**
+     * Closes a connection after failure.
+     *
+     * @param connection failed connection to close
+     * @param message    diagnostic message used if closing fails
+     */
+    private static void closeConnection(final Connection connection, final String message) {
+        try {
+            connection.close();
+        } catch (final RuntimeException e) {
+            throw internal(message, e);
+        }
+    }
+
+    /**
+     * Normalizes a stage name.
+     *
+     * @param value raw stage name, or {@code null}
+     * @return normalized name
+     */
+    private static String normalizeName(final String value) {
+        Assert.isFalse(
+                StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("HTTP connect name must be non-blank and single-line"));
+        return StringKit.trim(value).toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Wraps a runtime failure as an internal failure when needed.
+     *
+     * @param message failure message for a newly created internal exception
+     * @param failure runtime failure to preserve or wrap
+     * @return internal exception
+     */
+    private static InternalException internal(final String message, final RuntimeException failure) {
+        return failure instanceof InternalException internal ? internal : new InternalException(message, failure);
+    }
+
+    /**
+     * Protects listener callbacks from escaping.
+     *
+     * @param listener listener to protect, or {@code null} for a no-op listener
+     * @return safe listener
+     */
+    private static Listener<Object> safe(final Listener<Object> listener) {
+        return listener == null ? NoopListener.INSTANCE : new SafeListener(listener);
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  field name
+     * @param <T>   value type
+     * @return the validated reference
+     */
+    private static <T> T require(final T value, final String name) {
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
+    }
+
+    /**
+     * Creates an address that retains logical protocol identity while pinning one validated numeric host.
+     *
+     * @param logical logical target
+     * @param numeric validated numeric address
+     * @return address retaining the logical scheme, port, and path
+     */
+    private static Address numericAddress(final Address logical, final InetAddress numeric) {
+        return new Address(logical.scheme(), numeric.getHostAddress(), logical.port(), logical.path());
     }
 
     /**
@@ -740,23 +984,6 @@ public class HttpConnect implements HttpStage, AutoCloseable {
     }
 
     /**
-     * Maps the wire-negotiated ALPN value and rejects every unknown non-empty protocol.
-     *
-     * @param applicationProtocol ALPN protocol selected by the TLS engine
-     * @return established HTTP wire protocol
-     */
-    private static Protocol negotiatedProtocol(final String applicationProtocol) {
-        if (applicationProtocol == null || applicationProtocol.isBlank()
-                || Protocol.HTTP_1_1.name.equalsIgnoreCase(applicationProtocol)) {
-            return Protocol.HTTP_1_1;
-        }
-        if (Protocol.HTTP_2.name.equalsIgnoreCase(applicationProtocol)) {
-            return Protocol.HTTP_2;
-        }
-        throw new ProtocolException("Unsupported negotiated application protocol: " + applicationProtocol);
-    }
-
-    /**
      * Tracks a response so body completion releases the lease.
      *
      * @param lease    connection lease to release after body consumption
@@ -788,46 +1015,6 @@ public class HttpConnect implements HttpStage, AutoCloseable {
                     lease.connection().healthy());
         }
         return tracked;
-    }
-
-    /**
-     * Returns transport handshake metadata without exposing the concrete TLS conduit.
-     *
-     * @param connection established direct or TLS-routed connection
-     * @return TLS handshake metadata, or {@code null} for a plain connection
-     */
-    private static TlsHandshake connectionHandshake(final Connection connection) {
-        if (connection instanceof TlsRoutedConnection tls)
-            return tls.handshake();
-        if (connection instanceof TlsSocketRoutedConnection tls)
-            return tls.handshake();
-        return null;
-    }
-
-    /**
-     * Returns whether request and response connection semantics permit returning the physical connection to the pool.
-     *
-     * @param response completed response
-     * @return true when neither side requested connection closure
-     */
-    private static boolean reusable(final HttpResponse response) {
-        return !closeRequested(response.request().headers()) && !closeRequested(response.headers());
-    }
-
-    /**
-     * Detects a Connection: close token in a header collection.
-     *
-     * @param headers headers to inspect
-     * @return true when connection closure was requested
-     */
-    private static boolean closeRequested(final Headers headers) {
-        for (int index = 0; index < headers.size(); index++) {
-            if (Http.Header.CONNECTION.equalsIgnoreCase(headers.name(index))
-                    && Http.Header.CONNECTION_CLOSE.equalsIgnoreCase(headers.value(index))) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -867,181 +1054,17 @@ public class HttpConnect implements HttpStage, AutoCloseable {
     }
 
     /**
-     * Waits for a connection future.
+     * Internal no-operation listener.
      *
-     * @param future  asynchronous connection result to await
-     * @param timeout maximum duration allowed for connection establishment
-     * @return connection
+     * @author Kimi Liu
      */
-    private static Connection awaitConnection(final CompletableFuture<Connection> future, final Timeout timeout) {
-        return awaitConnection(future, timeout, Cancellation.create());
-    }
+    private enum NoopListener implements Listener<Object> {
 
-    /**
-     * Waits for a connection future with cancellation support.
-     *
-     * @param future       asynchronous connection result to await
-     * @param timeout      maximum duration allowed for connection establishment
-     * @param cancellation cancellation scope
-     * @return connection
-     */
-    private static Connection awaitConnection(
-            final CompletableFuture<Connection> future,
-            final Timeout timeout,
-            final Cancellation cancellation) {
-        return require(await(future, timeout.connect(), "Connection timed out", cancellation), "Network connection");
-    }
+        /**
+         * Singleton no-operation listener.
+         */
+        INSTANCE
 
-    /**
-     * Waits for TLS handshake completion.
-     *
-     * @param future asynchronous TLS handshake result to await
-     */
-    private static void awaitTls(final CompletableFuture<?> future) {
-        awaitTls(future, Cancellation.create());
-    }
-
-    /**
-     * Waits for TLS handshake completion with cancellation support.
-     *
-     * @param future       asynchronous TLS handshake result to await
-     * @param cancellation cancellation scope
-     */
-    private static void awaitTls(final CompletableFuture<?> future, final Cancellation cancellation) {
-        await(future, Duration.ZERO, "TLS handshake timed out", cancellation);
-    }
-
-    /**
-     * Waits for a future with bus exceptions.
-     *
-     * @param future  asynchronous result to await
-     * @param timeout maximum duration allowed before failing
-     * @param message timeout message
-     * @param <T>     result type
-     * @return the completed asynchronous result
-     */
-    private static <T> T await(final CompletableFuture<T> future, final Duration timeout, final String message) {
-        return await(future, timeout, message, Cancellation.create());
-    }
-
-    /**
-     * Waits for a future with bus exceptions and cancellation support.
-     *
-     * @param future       asynchronous result to await
-     * @param timeout      maximum duration allowed before failing
-     * @param message      timeout message
-     * @param cancellation cancellation scope
-     * @param <T>          result type
-     * @return the completed asynchronous result
-     */
-    private static <T> T await(
-            final CompletableFuture<T> future,
-            final Duration timeout,
-            final String message,
-            final Cancellation cancellation) {
-        final Cancellation scope = require(cancellation, "Cancellation");
-        scope.throwIfCancelled();
-        final Runnable unregister = scope.cancellable() ? scope.onCancel(() -> future.cancel(true)) : NOOP_UNREGISTER;
-        try {
-            final T result = timeout.isZero() ? future.get()
-                    : future.get(Math.max(1L, timeout.toMillis()), TimeUnit.MILLISECONDS);
-            scope.throwIfCancelled();
-            return result;
-        } catch (final java.util.concurrent.TimeoutException e) {
-            future.cancel(true);
-            throw new TimeoutException(message, e);
-        } catch (final CancellationException e) {
-            scope.throwIfCancelled();
-            throw e;
-        } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new InternalException("Interrupted while waiting for HTTP connection", e);
-        } catch (final ExecutionException e) {
-            final Throwable cause = e.getCause();
-            if (cause instanceof RuntimeException runtime) {
-                throw runtime;
-            }
-            throw new SocketException("HTTP connection failed", cause);
-        } finally {
-            unregister.run();
-        }
-    }
-
-    /**
-     * Closes a lease after failure.
-     *
-     * @param lease   failed lease to close
-     * @param message diagnostic message used if closing fails
-     */
-    private static void closeLease(final ConnectionLease lease, final String message) {
-        try {
-            lease.close();
-        } catch (final RuntimeException e) {
-            throw internal(message, e);
-        }
-    }
-
-    /**
-     * Closes a connection after failure.
-     *
-     * @param connection failed connection to close
-     * @param message    diagnostic message used if closing fails
-     */
-    private static void closeConnection(final Connection connection, final String message) {
-        try {
-            connection.close();
-        } catch (final RuntimeException e) {
-            throw internal(message, e);
-        }
-    }
-
-    /**
-     * Normalizes a stage name.
-     *
-     * @param value raw stage name, or {@code null}
-     * @return normalized name
-     */
-    private static String normalizeName(final String value) {
-        Assert.isFalse(
-                StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
-                () -> new ValidateException("HTTP connect name must be non-blank and single-line"));
-        return StringKit.trim(value).toLowerCase(Locale.ROOT);
-    }
-
-    /**
-     * Wraps a runtime failure as an internal failure when needed.
-     *
-     * @param message failure message for a newly created internal exception
-     * @param failure runtime failure to preserve or wrap
-     * @return internal exception
-     */
-    private static InternalException internal(final String message, final RuntimeException failure) {
-        return failure instanceof InternalException internal ? internal : new InternalException(message, failure);
-    }
-
-    /**
-     * Protects listener callbacks from escaping.
-     *
-     * @param listener listener to protect, or {@code null} for a no-op listener
-     * @return safe listener
-     */
-    private static Listener<Object> safe(final Listener<Object> listener) {
-        return listener == null ? NoopListener.INSTANCE : new SafeListener(listener);
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  field name
-     * @param <T>   value type
-     * @return the validated reference
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
     }
 
     /**
@@ -1715,6 +1738,19 @@ public class HttpConnect implements HttpStage, AutoCloseable {
         }
 
         /**
+         * Converts a timeout to socket milliseconds.
+         *
+         * @param timeout duration converted for socket APIs
+         * @return milliseconds
+         */
+        private static int timeoutMillis(final Duration timeout) {
+            if (timeout.isZero()) {
+                return 0;
+            }
+            return Math.toIntExact(Math.min(Integer.MAX_VALUE, Math.max(1L, timeout.toMillis())));
+        }
+
+        /**
          * Opens a socket connection.
          *
          * @param address target address
@@ -2020,30 +2056,6 @@ public class HttpConnect implements HttpStage, AutoCloseable {
             }
         }
 
-        /**
-         * Converts a timeout to socket milliseconds.
-         *
-         * @param timeout duration converted for socket APIs
-         * @return milliseconds
-         */
-        private static int timeoutMillis(final Duration timeout) {
-            if (timeout.isZero()) {
-                return 0;
-            }
-            return Math.toIntExact(Math.min(Integer.MAX_VALUE, Math.max(1L, timeout.toMillis())));
-        }
-
-    }
-
-    /**
-     * Creates an address that retains logical protocol identity while pinning one validated numeric host.
-     *
-     * @param logical logical target
-     * @param numeric validated numeric address
-     * @return address retaining the logical scheme, port, and path
-     */
-    private static Address numericAddress(final Address logical, final InetAddress numeric) {
-        return new Address(logical.scheme(), numeric.getHostAddress(), logical.port(), logical.path());
     }
 
     /**
@@ -2055,11 +2067,6 @@ public class HttpConnect implements HttpStage, AutoCloseable {
          * Connection destination.
          */
         private final Address address;
-
-        /**
-         * Lazily materialized only when a caller observes the raw, unrouted connection.
-         */
-        private volatile Destination destination;
 
         /**
          * Socket channel.
@@ -2090,6 +2097,11 @@ public class HttpConnect implements HttpStage, AutoCloseable {
          * One-way close guard for the transport socket.
          */
         private final AtomicBoolean closed = new AtomicBoolean();
+
+        /**
+         * Lazily materialized only when a caller observes the raw, unrouted connection.
+         */
+        private volatile Destination destination;
 
         /**
          * Creates a socket connection.
@@ -2323,6 +2335,25 @@ public class HttpConnect implements HttpStage, AutoCloseable {
         }
 
         /**
+         * Borrows one exclusive staging array without blocking socket I/O.
+         *
+         * @return reusable or transient staging array
+         */
+        private static byte[] borrowScratch() {
+            final byte[] scratch = SCRATCH.poll();
+            return scratch == null ? new byte[Normal._8192] : scratch;
+        }
+
+        /**
+         * Returns a staging array to the bounded pool.
+         *
+         * @param scratch staging array no longer used by the caller
+         */
+        private static void releaseScratch(final byte[] scratch) {
+            SCRATCH.offer(scratch);
+        }
+
+        /**
          * Reads bytes from the socket and exposes the completed result as a future.
          *
          * @param target    destination buffer
@@ -2400,25 +2431,6 @@ public class HttpConnect implements HttpStage, AutoCloseable {
             } finally {
                 releaseScratch(scratch);
             }
-        }
-
-        /**
-         * Borrows one exclusive staging array without blocking socket I/O.
-         *
-         * @return reusable or transient staging array
-         */
-        private static byte[] borrowScratch() {
-            final byte[] scratch = SCRATCH.poll();
-            return scratch == null ? new byte[Normal._8192] : scratch;
-        }
-
-        /**
-         * Returns a staging array to the bounded pool.
-         *
-         * @param scratch staging array no longer used by the caller
-         */
-        private static void releaseScratch(final byte[] scratch) {
-            SCRATCH.offer(scratch);
         }
 
         /**
@@ -2525,6 +2537,43 @@ public class HttpConnect implements HttpStage, AutoCloseable {
             this.writeTimeout = new SocketOperationTimeout("Socket write timed out");
             this.source = new SocketSource();
             this.sink = new SocketSink();
+        }
+
+        /**
+         * Executes one blocking-channel operation on its calling request thread. SocketChannel blocking operations are
+         * interruptible, so cancellation still closes the request promptly without an extra dispatcher task, future
+         * completion, and timer for every network read or write.
+         *
+         * @param supplier blocking socket operation executed by the calling request thread
+         * @param <T>      operation result type
+         * @return already completed or failed future containing the operation outcome
+         */
+        private static <T> CompletableFuture<T> direct(final Supplier<T> supplier) {
+            try {
+                return CompletableFuture.completedFuture(supplier.get());
+            } catch (final Throwable failure) {
+                return CompletableFuture.failedFuture(failure);
+            }
+        }
+
+        /**
+         * Returns a bounded channel read capacity.
+         *
+         * @param byteCount requested byte count
+         * @return read capacity
+         */
+        private static int readCapacity(final long byteCount) {
+            return toIntSize(Math.min(byteCount, Normal._8192));
+        }
+
+        /**
+         * Converts a long byte count to an int size accepted by JDK buffers.
+         *
+         * @param byteCount byte count
+         * @return int size
+         */
+        private static int toIntSize(final long byteCount) {
+            return (int) Math.min(byteCount, Integer.MAX_VALUE);
         }
 
         /**
@@ -2726,23 +2775,6 @@ public class HttpConnect implements HttpStage, AutoCloseable {
         }
 
         /**
-         * Executes one blocking-channel operation on its calling request thread. SocketChannel blocking operations are
-         * interruptible, so cancellation still closes the request promptly without an extra dispatcher task, future
-         * completion, and timer for every network read or write.
-         *
-         * @param supplier blocking socket operation executed by the calling request thread
-         * @param <T>      operation result type
-         * @return already completed or failed future containing the operation outcome
-         */
-        private static <T> CompletableFuture<T> direct(final Supplier<T> supplier) {
-            try {
-                return CompletableFuture.completedFuture(supplier.get());
-            } catch (final Throwable failure) {
-                return CompletableFuture.failedFuture(failure);
-            }
-        }
-
-        /**
          * Runs a blocking socket operation on the dispatcher background channel.
          *
          * @param key      dispatch key
@@ -2825,74 +2857,6 @@ public class HttpConnect implements HttpStage, AutoCloseable {
         }
 
         /**
-         * Returns a bounded channel read capacity.
-         *
-         * @param byteCount requested byte count
-         * @return read capacity
-         */
-        private static int readCapacity(final long byteCount) {
-            return toIntSize(Math.min(byteCount, Normal._8192));
-        }
-
-        /**
-         * Converts a long byte count to an int size accepted by JDK buffers.
-         *
-         * @param byteCount byte count
-         * @return int size
-         */
-        private static int toIntSize(final long byteCount) {
-            return (int) Math.min(byteCount, Integer.MAX_VALUE);
-        }
-
-        /**
-         * Per-direction watchdog that closes the physical socket when one blocking operation exceeds its configured
-         * no-progress timeout.
-         */
-        private final class SocketOperationTimeout extends AsyncTimeout {
-
-            /**
-             * Message identifying the timed operation.
-             */
-            private final String message;
-
-            /**
-             * Creates a socket operation watchdog.
-             *
-             * @param message timeout message exposed to callers
-             */
-            private SocketOperationTimeout(final String message) {
-                this.message = message;
-            }
-
-            /**
-             * Creates the checked timeout while retaining a close-induced socket failure.
-             *
-             * @param cause socket failure caused by closing the timed-out operation, possibly {@code null}
-             * @return socket timeout exception retaining the supplied cause
-             */
-            @Override
-            protected IOException newTimeoutException(final IOException cause) {
-                final SocketTimeoutException failure = new SocketTimeoutException(message);
-                if (cause != null) {
-                    failure.initCause(cause);
-                }
-                return failure;
-            }
-
-            /**
-             * Closes the socket so its current blocking read or write returns promptly.
-             */
-            @Override
-            protected void timedOut() {
-                try {
-                    socket.close();
-                } catch (final IOException ignored) {
-                    // The timeout has already won; channel-close failures are cleanup-only.
-                }
-            }
-        }
-
-        /**
          * Performs one timeout-aware physical socket read. Every cleartext and TLS read path ultimately reaches this
          * method, so expiration has one authoritative connection-closing boundary.
          *
@@ -2941,6 +2905,54 @@ public class HttpConnect implements HttpStage, AutoCloseable {
                     throw timeoutFailure;
                 }
                 throw failure;
+            }
+        }
+
+        /**
+         * Per-direction watchdog that closes the physical socket when one blocking operation exceeds its configured
+         * no-progress timeout.
+         */
+        private final class SocketOperationTimeout extends AsyncTimeout {
+
+            /**
+             * Message identifying the timed operation.
+             */
+            private final String message;
+
+            /**
+             * Creates a socket operation watchdog.
+             *
+             * @param message timeout message exposed to callers
+             */
+            private SocketOperationTimeout(final String message) {
+                this.message = message;
+            }
+
+            /**
+             * Creates the checked timeout while retaining a close-induced socket failure.
+             *
+             * @param cause socket failure caused by closing the timed-out operation, possibly {@code null}
+             * @return socket timeout exception retaining the supplied cause
+             */
+            @Override
+            protected IOException newTimeoutException(final IOException cause) {
+                final SocketTimeoutException failure = new SocketTimeoutException(message);
+                if (cause != null) {
+                    failure.initCause(cause);
+                }
+                return failure;
+            }
+
+            /**
+             * Closes the socket so its current blocking read or write returns promptly.
+             */
+            @Override
+            protected void timedOut() {
+                try {
+                    socket.close();
+                } catch (final IOException ignored) {
+                    // The timeout has already won; channel-close failures are cleanup-only.
+                }
             }
         }
 
@@ -3077,20 +3089,6 @@ public class HttpConnect implements HttpStage, AutoCloseable {
                 // Listener failures must not break HTTP connection lifecycle transitions.
             }
         }
-
-    }
-
-    /**
-     * Internal no-operation listener.
-     *
-     * @author Kimi Liu
-     */
-    private enum NoopListener implements Listener<Object> {
-
-        /**
-         * Singleton no-operation listener.
-         */
-        INSTANCE
 
     }
 

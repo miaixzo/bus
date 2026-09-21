@@ -70,6 +70,7 @@ public class AdlKit {
      */
     private static final AtomicReference<Map<Integer, Integer>> BUS_TO_INDEX = new AtomicReference<>(
             Collections.emptyMap());
+
     /**
      * The adaptersEnumerated value.
      */
@@ -430,6 +431,7 @@ public class AdlKit {
          * The LIBRARY_LOADED constant.
          */
         static final boolean LIBRARY_LOADED;
+
         // Strong reference prevents GC of the callback while ADL holds a native function pointer to it.
         // Uses raw Pointer (not Memory) because ADL frees the native allocation directly via C free().
         // Memory's destructor would double-free the same address.

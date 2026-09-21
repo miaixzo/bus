@@ -29,11 +29,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.dns.cache.DnsValidationCache;
 import org.miaixz.bus.fabric.network.dns.cache.DnsValidationCache.Kind;
-import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
-import org.miaixz.bus.fabric.network.dns.message.DnsDecodedResponse;
-import org.miaixz.bus.fabric.network.dns.message.DnsName;
-import org.miaixz.bus.fabric.network.dns.message.DnsQuestion;
-import org.miaixz.bus.fabric.network.dns.message.DnsResponseCode;
+import org.miaixz.bus.fabric.network.dns.message.*;
 import org.miaixz.bus.fabric.network.dns.record.DnsRecord;
 import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
 
@@ -79,137 +75,6 @@ public class DnsNsecProofValidator {
             throw new ValidateException("DNSSEC NSEC proof cache must not be null");
         }
         this.validationCache = validationCache;
-    }
-
-    /**
-     * Returns whether a decoded response is a negative response that needs NSEC proof validation.
-     *
-     * @param decoded decoded response
-     * @return true when the response is NXDOMAIN or NOERROR without answers
-     */
-    public boolean negativeResponse(final DnsDecodedResponse decoded) {
-        if (decoded == null) {
-            throw new ValidateException("DNSSEC NSEC response must not be null");
-        }
-        return decoded.responseCode() == DnsResponseCode.NXDOMAIN
-                || decoded.responseCode() == DnsResponseCode.NOERROR && decoded.answers().isEmpty();
-    }
-
-    /**
-     * Returns whether the decoded negative response carries a valid NSEC proof.
-     *
-     * @param decoded decoded response
-     * @param now     current instant
-     * @return true when the NSEC proof validates
-     */
-    public boolean provesNegative(final DnsDecodedResponse decoded, final Instant now) {
-        if (decoded == null) {
-            throw new ValidateException("DNSSEC NSEC response must not be null");
-        }
-        if (decoded.responseCode() == DnsResponseCode.NXDOMAIN) {
-            return provesNxDomain(decoded.question(), decoded.authorities(), now);
-        }
-        if (decoded.responseCode() == DnsResponseCode.NOERROR && decoded.answers().isEmpty()) {
-            return provesNoData(decoded.question(), decoded.authorities(), now);
-        }
-        return false;
-    }
-
-    /**
-     * Returns whether NSEC records prove an NXDOMAIN response.
-     *
-     * @param question    original question
-     * @param authorities authority-section records
-     * @param now         current instant
-     * @return true when the NSEC set proves NXDOMAIN and wildcard absence
-     */
-    public boolean provesNxDomain(final DnsQuestion question, final List<DnsRecord> authorities, final Instant now) {
-        validateQuestion(question);
-        final List<DnsRecord> proofRecords = proofRecords(authorities);
-        if (!proofRecords.isEmpty() && validationCache
-                .contains(Kind.NSEC, question.name(), question.typeCode(), proofRecords, validateNow(now))) {
-            return true;
-        }
-        final List<NsecData> proofs = signedProofs(authorities, now);
-        final boolean result = coversName(proofs, question.name()) && provesWildcardAbsence(question, authorities, now);
-        if (result && !proofRecords.isEmpty()) {
-            validationCache.putSuccess(
-                    Kind.NSEC,
-                    question.name(),
-                    question.typeCode(),
-                    proofRecords,
-                    nearestRrsigExpiration(proofRecords),
-                    now);
-        }
-        return result;
-    }
-
-    /**
-     * Returns whether NSEC records prove a NOERROR/NODATA response.
-     *
-     * @param question    original question
-     * @param authorities authority-section records
-     * @param now         current instant
-     * @return true when the NSEC set proves the requested type does not exist
-     */
-    public boolean provesNoData(final DnsQuestion question, final List<DnsRecord> authorities, final Instant now) {
-        validateQuestion(question);
-        final List<DnsRecord> proofRecords = proofRecords(authorities);
-        if (!proofRecords.isEmpty() && validationCache
-                .contains(Kind.NSEC, question.name(), question.typeCode(), proofRecords, validateNow(now))) {
-            return true;
-        }
-        final List<NsecData> proofs = signedProofs(authorities, now);
-        final boolean result = provesExactNoData(proofs, question.name(), question.typeCode())
-                || provesWildcardNoData(question, proofs);
-        if (result && !proofRecords.isEmpty()) {
-            validationCache.putSuccess(
-                    Kind.NSEC,
-                    question.name(),
-                    question.typeCode(),
-                    proofRecords,
-                    nearestRrsigExpiration(proofRecords),
-                    now);
-        }
-        return result;
-    }
-
-    /**
-     * Returns whether NSEC records prove that a matching wildcard does not exist.
-     *
-     * @param question    original question
-     * @param authorities authority-section records
-     * @param now         current instant
-     * @return true when a wildcard owner is covered or explicitly lacks the requested type
-     */
-    public boolean provesWildcardAbsence(
-            final DnsQuestion question,
-            final List<DnsRecord> authorities,
-            final Instant now) {
-        validateQuestion(question);
-        final List<NsecData> proofs = signedProofs(authorities, now);
-        for (final String wildcard : wildcardCandidates(question.name())) {
-            if (coversName(proofs, wildcard) || provesExactNoData(proofs, wildcard, question.typeCode())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Returns whether a decoded DS response proves insecure delegation with NSEC.
-     *
-     * @param decoded decoded response
-     * @param now     current instant
-     * @return true when a DS NODATA NSEC proof exists
-     */
-    public boolean provesInsecureDelegation(final DnsDecodedResponse decoded, final Instant now) {
-        if (decoded == null) {
-            throw new ValidateException("DNSSEC NSEC response must not be null");
-        }
-        return decoded.responseCode() == DnsResponseCode.NOERROR && decoded.answers().isEmpty()
-                && decoded.question().typeCode() == DnsRecordType.DS.code()
-                && provesNoData(decoded.question(), decoded.authorities(), now);
     }
 
     /**
@@ -505,6 +370,137 @@ public class DnsNsecProofValidator {
             throw new ValidateException("DNSSEC NSEC validation instant must not be null");
         }
         return now;
+    }
+
+    /**
+     * Returns whether a decoded response is a negative response that needs NSEC proof validation.
+     *
+     * @param decoded decoded response
+     * @return true when the response is NXDOMAIN or NOERROR without answers
+     */
+    public boolean negativeResponse(final DnsDecodedResponse decoded) {
+        if (decoded == null) {
+            throw new ValidateException("DNSSEC NSEC response must not be null");
+        }
+        return decoded.responseCode() == DnsResponseCode.NXDOMAIN
+                || decoded.responseCode() == DnsResponseCode.NOERROR && decoded.answers().isEmpty();
+    }
+
+    /**
+     * Returns whether the decoded negative response carries a valid NSEC proof.
+     *
+     * @param decoded decoded response
+     * @param now     current instant
+     * @return true when the NSEC proof validates
+     */
+    public boolean provesNegative(final DnsDecodedResponse decoded, final Instant now) {
+        if (decoded == null) {
+            throw new ValidateException("DNSSEC NSEC response must not be null");
+        }
+        if (decoded.responseCode() == DnsResponseCode.NXDOMAIN) {
+            return provesNxDomain(decoded.question(), decoded.authorities(), now);
+        }
+        if (decoded.responseCode() == DnsResponseCode.NOERROR && decoded.answers().isEmpty()) {
+            return provesNoData(decoded.question(), decoded.authorities(), now);
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether NSEC records prove an NXDOMAIN response.
+     *
+     * @param question    original question
+     * @param authorities authority-section records
+     * @param now         current instant
+     * @return true when the NSEC set proves NXDOMAIN and wildcard absence
+     */
+    public boolean provesNxDomain(final DnsQuestion question, final List<DnsRecord> authorities, final Instant now) {
+        validateQuestion(question);
+        final List<DnsRecord> proofRecords = proofRecords(authorities);
+        if (!proofRecords.isEmpty() && validationCache
+                .contains(Kind.NSEC, question.name(), question.typeCode(), proofRecords, validateNow(now))) {
+            return true;
+        }
+        final List<NsecData> proofs = signedProofs(authorities, now);
+        final boolean result = coversName(proofs, question.name()) && provesWildcardAbsence(question, authorities, now);
+        if (result && !proofRecords.isEmpty()) {
+            validationCache.putSuccess(
+                    Kind.NSEC,
+                    question.name(),
+                    question.typeCode(),
+                    proofRecords,
+                    nearestRrsigExpiration(proofRecords),
+                    now);
+        }
+        return result;
+    }
+
+    /**
+     * Returns whether NSEC records prove a NOERROR/NODATA response.
+     *
+     * @param question    original question
+     * @param authorities authority-section records
+     * @param now         current instant
+     * @return true when the NSEC set proves the requested type does not exist
+     */
+    public boolean provesNoData(final DnsQuestion question, final List<DnsRecord> authorities, final Instant now) {
+        validateQuestion(question);
+        final List<DnsRecord> proofRecords = proofRecords(authorities);
+        if (!proofRecords.isEmpty() && validationCache
+                .contains(Kind.NSEC, question.name(), question.typeCode(), proofRecords, validateNow(now))) {
+            return true;
+        }
+        final List<NsecData> proofs = signedProofs(authorities, now);
+        final boolean result = provesExactNoData(proofs, question.name(), question.typeCode())
+                || provesWildcardNoData(question, proofs);
+        if (result && !proofRecords.isEmpty()) {
+            validationCache.putSuccess(
+                    Kind.NSEC,
+                    question.name(),
+                    question.typeCode(),
+                    proofRecords,
+                    nearestRrsigExpiration(proofRecords),
+                    now);
+        }
+        return result;
+    }
+
+    /**
+     * Returns whether NSEC records prove that a matching wildcard does not exist.
+     *
+     * @param question    original question
+     * @param authorities authority-section records
+     * @param now         current instant
+     * @return true when a wildcard owner is covered or explicitly lacks the requested type
+     */
+    public boolean provesWildcardAbsence(
+            final DnsQuestion question,
+            final List<DnsRecord> authorities,
+            final Instant now) {
+        validateQuestion(question);
+        final List<NsecData> proofs = signedProofs(authorities, now);
+        for (final String wildcard : wildcardCandidates(question.name())) {
+            if (coversName(proofs, wildcard) || provesExactNoData(proofs, wildcard, question.typeCode())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether a decoded DS response proves insecure delegation with NSEC.
+     *
+     * @param decoded decoded response
+     * @param now     current instant
+     * @return true when a DS NODATA NSEC proof exists
+     */
+    public boolean provesInsecureDelegation(final DnsDecodedResponse decoded, final Instant now) {
+        if (decoded == null) {
+            throw new ValidateException("DNSSEC NSEC response must not be null");
+        }
+        return decoded.responseCode() == DnsResponseCode.NOERROR && decoded.answers().isEmpty()
+                && decoded.question().typeCode() == DnsRecordType.DS.code()
+                && provesNoData(decoded.question(), decoded.authorities(), now);
     }
 
     /**

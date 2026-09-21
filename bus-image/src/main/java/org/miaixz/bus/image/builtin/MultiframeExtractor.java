@@ -81,14 +81,17 @@ public class MultiframeExtractor {
      * The preserve series instance UID value.
      */
     private boolean preserveSeriesInstanceUID;
+
     /**
      * The instance number format value.
      */
     private String instanceNumberFormat = "%s%04d";
+
     /**
      * The UID mapper value.
      */
     private UIDMapper uidMapper = new HashUIDMapper();
+
     /**
      * The nof accessor value.
      */

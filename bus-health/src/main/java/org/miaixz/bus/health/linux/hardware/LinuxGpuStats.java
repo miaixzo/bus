@@ -70,6 +70,7 @@ final class LinuxGpuStats implements GpuStats {
      * The hwmonPath value.
      */
     private final String hwmonPath;
+
     // Cached Intel gt0 path
     /**
      * The gt0Path value.

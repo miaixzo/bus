@@ -91,6 +91,47 @@ public class HttpCoordinator implements HttpStage {
     }
 
     /**
+     * Returns a 504 response for unsatisfied only-if-cached requests.
+     *
+     * @param request request that cannot be satisfied without network access
+     * @return synthetic empty-body 504 response associated with the request
+     */
+    private static HttpResponse unsatisfiable(final HttpRequest request) {
+        return HttpResponse.builder().request(request).code(Http.Status.GATEWAY_TIMEOUT)
+                .message("Unsatisfiable Request (only-if-cached)").body(PayloadBody.empty()).build();
+    }
+
+    /**
+     * Normalizes a stage name.
+     *
+     * @param value stage identifier to validate and normalize
+     * @return trimmed lowercase stage identifier
+     * @throws ValidateException if the identifier is blank or contains a line break
+     */
+    private static String normalizeName(final String value) {
+        Assert.isFalse(
+                StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("HTTP cache name must be non-blank and single-line"));
+        return StringKit.trim(value).toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
+     */
+    private static <T> T require(final T value, final String name) {
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
+    }
+
+    /**
      * Resolves cache before proceeding to the network stage.
      *
      * @param request request used for cache lookup and possible conditional validation
@@ -208,17 +249,6 @@ public class HttpCoordinator implements HttpStage {
     }
 
     /**
-     * Returns a 504 response for unsatisfied only-if-cached requests.
-     *
-     * @param request request that cannot be satisfied without network access
-     * @return synthetic empty-body 504 response associated with the request
-     */
-    private static HttpResponse unsatisfiable(final HttpRequest request) {
-        return HttpResponse.builder().request(request).code(Http.Status.GATEWAY_TIMEOUT)
-                .message("Unsatisfiable Request (only-if-cached)").body(PayloadBody.empty()).build();
-    }
-
-    /**
      * Returns stage name.
      *
      * @return normalized cache-coordinator stage identifier
@@ -258,36 +288,6 @@ public class HttpCoordinator implements HttpStage {
                     true);
         }
         return cache.write(request, response);
-    }
-
-    /**
-     * Normalizes a stage name.
-     *
-     * @param value stage identifier to validate and normalize
-     * @return trimmed lowercase stage identifier
-     * @throws ValidateException if the identifier is blank or contains a line break
-     */
-    private static String normalizeName(final String value) {
-        Assert.isFalse(
-                StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
-                () -> new ValidateException("HTTP cache name must be non-blank and single-line"));
-        return StringKit.trim(value).toLowerCase(Locale.ROOT);
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  logical field name included in the validation error
-     * @param <T>   reference type
-     * @return validated non-null reference
-     * @throws ValidateException if {@code value} is {@code null}
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
     }
 
 }

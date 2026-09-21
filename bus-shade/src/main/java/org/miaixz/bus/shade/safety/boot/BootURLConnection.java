@@ -48,8 +48,11 @@ import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
 public class BootURLConnection extends JarURLConnection {
 
     private final JarURLConnection jarURLConnection;
+
     private final DecryptorProvider decryptorProvider;
+
     private final EncryptorProvider encryptorProvider;
+
     private final Key key;
 
     /**

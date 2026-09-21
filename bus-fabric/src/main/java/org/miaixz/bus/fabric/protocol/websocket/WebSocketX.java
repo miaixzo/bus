@@ -93,6 +93,55 @@ public class WebSocketX {
     }
 
     /**
+     * Validates a required value.
+     *
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Parses a target URI.
+     *
+     * @param value raw WebSocket target URL
+     * @return validated WS or WSS target URI
+     */
+    private static URI parseTarget(final String value) {
+        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException("WebSocket URL must be non-blank and single-line");
+        }
+        try {
+            final URI uri = new URI(value.trim());
+            final String scheme = uri.getScheme();
+            if (!Protocol.WS.name.equalsIgnoreCase(scheme) && !Protocol.WSS.name.equalsIgnoreCase(scheme)) {
+                throw new ProtocolException("WebSocket URL must use ws or wss");
+            }
+            Address.from(uri);
+            return uri;
+        } catch (final URISyntaxException e) {
+            throw new ProtocolException("Invalid WebSocket URL", e);
+        }
+    }
+
+    /**
+     * Validates a duration.
+     *
+     * @param duration candidate timeout duration
+     * @param name     field name included in validation failures
+     * @return validated non-negative duration
+     */
+    private static Duration validateDuration(final Duration duration, final String name) {
+        final Duration checked = Assert
+                .notNull(duration, () -> new ValidateException(name + " must be non-null and non-negative"));
+        Assert.isFalse(checked.isNegative(), () -> new ValidateException(name + " must be non-null and non-negative"));
+        return checked;
+    }
+
+    /**
      * Opens the WebSocket synchronously.
      *
      * @return opened session
@@ -205,55 +254,6 @@ public class WebSocketX {
      */
     public Message message(final Payload payload) {
         return Message.of(protocol(), address(), headers(), payload, null);
-    }
-
-    /**
-     * Validates a required value.
-     *
-     * @param value reference to validate
-     * @param name  field name included in the validation failure
-     * @param <T>   reference type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-    }
-
-    /**
-     * Parses a target URI.
-     *
-     * @param value raw WebSocket target URL
-     * @return validated WS or WSS target URI
-     */
-    private static URI parseTarget(final String value) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("WebSocket URL must be non-blank and single-line");
-        }
-        try {
-            final URI uri = new URI(value.trim());
-            final String scheme = uri.getScheme();
-            if (!Protocol.WS.name.equalsIgnoreCase(scheme) && !Protocol.WSS.name.equalsIgnoreCase(scheme)) {
-                throw new ProtocolException("WebSocket URL must use ws or wss");
-            }
-            Address.from(uri);
-            return uri;
-        } catch (final URISyntaxException e) {
-            throw new ProtocolException("Invalid WebSocket URL", e);
-        }
-    }
-
-    /**
-     * Validates a duration.
-     *
-     * @param duration candidate timeout duration
-     * @param name     field name included in validation failures
-     * @return validated non-negative duration
-     */
-    private static Duration validateDuration(final Duration duration, final String name) {
-        final Duration checked = Assert
-                .notNull(duration, () -> new ValidateException(name + " must be non-null and non-negative"));
-        Assert.isFalse(checked.isNegative(), () -> new ValidateException(name + " must be non-null and non-negative"));
-        return checked;
     }
 
     /**

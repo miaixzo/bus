@@ -39,9 +39,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
  */
 public class ImpersonationToken implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852257073750L;
 
@@ -49,47 +46,58 @@ public class ImpersonationToken implements Serializable {
      * The description value.
      */
     private String description;
+
     /**
      * The active value.
      */
     private Boolean active;
+
     /**
      * The token value.
      */
     private String token;
+
     /**
      * The scopes value.
      */
     private List<Scope> scopes;
+
     /**
      * The user id value.
      */
     private Long userId;
+
     /**
      * The revoked value.
      */
     private Boolean revoked;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The expires at value.
      */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date expiresAt;
+
     /**
      * The id value.
      */
     private Long id;
+
     /**
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The last used at value.
      */
     private Date lastUsedAt;
+
     /**
      * The impersonation value.
      */
@@ -110,6 +118,16 @@ public class ImpersonationToken implements Serializable {
 
     public String getDescription() {
         return description;
+    }
+
+    /**
+     * Sets the description.
+     *
+     * @param description the description value
+     */
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
@@ -233,122 +251,6 @@ public class ImpersonationToken implements Serializable {
     }
 
     /**
-     * Sets the description.
-     *
-     * @param description the description value
-     */
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * Enum to specify the scope of an ImpersonationToken.
-     *
-     * @author Kimi Liu
-     */
-    public enum Scope {
-
-        /**
-         * The api scope.
-         */
-        API,
-        /**
-         * The read api scope.
-         */
-        READ_API,
-        /**
-         * The read user scope.
-         */
-        READ_USER,
-        /**
-         * The read repository scope.
-         */
-        READ_REPOSITORY,
-        /**
-         * The write repository scope.
-         */
-        WRITE_REPOSITORY,
-        /**
-         * The read registry scope.
-         */
-        READ_REGISTRY,
-        /**
-         * The write registry scope.
-         */
-        WRITE_REGISTRY,
-        /**
-         * The read virtual registry scope.
-         */
-        READ_VIRTUAL_REGISTRY,
-        /**
-         * The write virtual registry scope.
-         */
-        WRITE_VIRTUAL_REGISTRY,
-        /**
-         * The create runner scope.
-         */
-        CREATE_RUNNER,
-        /**
-         * The manage runner scope.
-         */
-        MANAGE_RUNNER,
-        /**
-         * The ai features scope.
-         */
-        AI_FEATURES,
-        /**
-         * The k8 s proxy scope.
-         */
-        K8S_PROXY,
-        /**
-         * The self rotate scope.
-         */
-        SELF_ROTATE,
-        /**
-         * The sudo scope.
-         */
-        SUDO;
-
-        /**
-         * Converts enum constants to and from JSON values.
-         */
-        private static JacksonJsonEnumCodec<Scope> enumCodec = new JacksonJsonEnumCodec<>(Scope.class);
-
-        /**
-         * Converts a GitLab API value into an impersonation token scope.
-         *
-         * @param value the GitLab API value
-         * @return the matching impersonation token scope
-         */
-        @JsonCreator
-        public static Scope forValue(String value) {
-            return enumCodec.forValue(value);
-        }
-
-        /**
-         * Converts this impersonation token scope to the GitLab API value.
-         *
-         * @return the GitLab API value
-         */
-        @JsonValue
-        public String toValue() {
-            return (enumCodec.toString(this));
-        }
-
-        /**
-         * Converts this impersonation token scope to the GitLab API value.
-         *
-         * @return the GitLab API value
-         */
-        @Override
-        public String toString() {
-            return (enumCodec.toString(this));
-        }
-
-    }
-
-    /**
      * Returns the id.
      *
      * @return the result
@@ -457,6 +359,112 @@ public class ImpersonationToken implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    /**
+     * Enum to specify the scope of an ImpersonationToken.
+     *
+     * @author Kimi Liu
+     */
+    public enum Scope {
+
+        /**
+         * The api scope.
+         */
+        API,
+        /**
+         * The read api scope.
+         */
+        READ_API,
+        /**
+         * The read user scope.
+         */
+        READ_USER,
+        /**
+         * The read repository scope.
+         */
+        READ_REPOSITORY,
+        /**
+         * The write repository scope.
+         */
+        WRITE_REPOSITORY,
+        /**
+         * The read registry scope.
+         */
+        READ_REGISTRY,
+        /**
+         * The write registry scope.
+         */
+        WRITE_REGISTRY,
+        /**
+         * The read virtual registry scope.
+         */
+        READ_VIRTUAL_REGISTRY,
+        /**
+         * The write virtual registry scope.
+         */
+        WRITE_VIRTUAL_REGISTRY,
+        /**
+         * The create runner scope.
+         */
+        CREATE_RUNNER,
+        /**
+         * The manage runner scope.
+         */
+        MANAGE_RUNNER,
+        /**
+         * The ai features scope.
+         */
+        AI_FEATURES,
+        /**
+         * The k8 s proxy scope.
+         */
+        K8S_PROXY,
+        /**
+         * The self rotate scope.
+         */
+        SELF_ROTATE,
+        /**
+         * The sudo scope.
+         */
+        SUDO;
+
+        /**
+         * Converts enum constants to and from JSON values.
+         */
+        private static JacksonJsonEnumCodec<Scope> enumCodec = new JacksonJsonEnumCodec<>(Scope.class);
+
+        /**
+         * Converts a GitLab API value into an impersonation token scope.
+         *
+         * @param value the GitLab API value
+         * @return the matching impersonation token scope
+         */
+        @JsonCreator
+        public static Scope forValue(String value) {
+            return enumCodec.forValue(value);
+        }
+
+        /**
+         * Converts this impersonation token scope to the GitLab API value.
+         *
+         * @return the GitLab API value
+         */
+        @JsonValue
+        public String toValue() {
+            return (enumCodec.toString(this));
+        }
+
+        /**
+         * Converts this impersonation token scope to the GitLab API value.
+         *
+         * @return the GitLab API value
+         */
+        @Override
+        public String toString() {
+            return (enumCodec.toString(this));
+        }
+
     }
 
 }

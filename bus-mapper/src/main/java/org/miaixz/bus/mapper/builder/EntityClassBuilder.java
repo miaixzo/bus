@@ -54,16 +54,6 @@ public class EntityClassBuilder {
     }
 
     /**
-     * Stores a {@link TableMeta} instance.
-     *
-     * @param tableMeta The table metadata to store.
-     */
-    public static void setTableMeta(TableMeta tableMeta) {
-        TABLE_META_STORE.put(tableMeta.entityClass(), tableMeta);
-        COLUMN_META_STORE.computeIfAbsent(tableMeta.entityClass(), k -> new ArrayList<>());
-    }
-
-    /**
      * Adds a {@link ColumnMeta} instance for a given entity class.
      *
      * @param entityClass The entity class.
@@ -96,6 +86,16 @@ public class EntityClassBuilder {
             }
             return TABLE_META_STORE.values().iterator().next();
         }
+    }
+
+    /**
+     * Stores a {@link TableMeta} instance.
+     *
+     * @param tableMeta The table metadata to store.
+     */
+    public static void setTableMeta(TableMeta tableMeta) {
+        TABLE_META_STORE.put(tableMeta.entityClass(), tableMeta);
+        COLUMN_META_STORE.computeIfAbsent(tableMeta.entityClass(), k -> new ArrayList<>());
     }
 
     /**

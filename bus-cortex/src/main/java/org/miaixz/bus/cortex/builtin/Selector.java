@@ -37,31 +37,6 @@ import lombok.Setter;
 public class Selector {
 
     /**
-     * Comparison operator for label selector expressions.
-     *
-     * @author Kimi Liu
-     */
-    public enum Op {
-        /**
-         * Key equals one of the given values.
-         */
-        EQ,
-        /**
-         * Key does not equal any of the given values.
-         */
-        NEQ,
-        /**
-         * Key value is contained in the given set.
-         */
-        IN,
-        /**
-         * Key value is not contained in the given set.
-         */
-        NOTIN
-
-    }
-
-    /**
      * Metadata key to match against.
      */
     private String key;
@@ -159,6 +134,31 @@ public class Selector {
             selectors.add(eq(entry.getKey(), entry.getValue()));
         }
         return selectors;
+    }
+
+    /**
+     * Comparison operator for label selector expressions.
+     *
+     * @author Kimi Liu
+     */
+    public enum Op {
+        /**
+         * Key equals one of the given values.
+         */
+        EQ,
+        /**
+         * Key does not equal any of the given values.
+         */
+        NEQ,
+        /**
+         * Key value is contained in the given set.
+         */
+        IN,
+        /**
+         * Key value is not contained in the given set.
+         */
+        NOTIN
+
     }
 
 }

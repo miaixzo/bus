@@ -49,6 +49,7 @@ public class JwtVerifier {
      * Profile-scoped JWS service.
      */
     private final JwsService jwsService;
+
     /**
      * Profile-scoped JWE service.
      */

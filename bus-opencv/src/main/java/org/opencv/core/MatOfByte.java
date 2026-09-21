@@ -29,6 +29,7 @@ public class MatOfByte extends Mat {
 
     // 8UC(x)
     private static final int _depth = CvType.CV_8U;
+
     private static final int _channels = 1;
 
     public MatOfByte() {
@@ -40,10 +41,6 @@ public class MatOfByte extends Mat {
         if (!empty() && checkVector(_channels, _depth) < 0)
             throw new IllegalArgumentException("Incompatible Mat");
         // FIXME: do we need release() here?
-    }
-
-    public static MatOfByte fromNativeAddr(long addr) {
-        return new MatOfByte(addr);
     }
 
     public MatOfByte(Mat m) {
@@ -61,6 +58,10 @@ public class MatOfByte extends Mat {
     public MatOfByte(int offset, int length, byte... a) {
         super();
         fromArray(offset, length, a);
+    }
+
+    public static MatOfByte fromNativeAddr(long addr) {
+        return new MatOfByte(addr);
     }
 
     public void alloc(int elemNumber) {

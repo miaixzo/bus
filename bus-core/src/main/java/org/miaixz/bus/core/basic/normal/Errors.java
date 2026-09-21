@@ -42,33 +42,6 @@ public interface Errors {
     Map<String, Entry> ERRORS_CACHE = new ConcurrentHashMap<>();
 
     /**
-     * Gets the unique error code.
-     *
-     * @return The error code string, used to uniquely identify an error.
-     */
-    String getKey();
-
-    /**
-     * Gets the detailed error message.
-     *
-     * @return The error message string, describing the error in detail.
-     */
-    String getValue();
-
-    /**
-     * Registers the error code into the global cache. If the error code already exists in the cache, this method will
-     * throw an exception to prevent duplicates.
-     *
-     * @throws AlreadyExistsException if attempting to register a duplicate error code.
-     */
-    default void register() {
-        if (ERRORS_CACHE.containsKey(getKey())) {
-            throw new AlreadyExistsException("Key already exists for : " + getKey());
-        }
-        ERRORS_CACHE.putIfAbsent(getKey(), new Entry(getKey(), getValue()));
-    }
-
-    /**
      * Checks if the global cache contains the specified error code.
      *
      * @param code The error code to check.
@@ -139,6 +112,33 @@ public interface Errors {
         }
         final Entry entry = require(errcode);
         return null != entry ? entry.getValue() : fallback;
+    }
+
+    /**
+     * Gets the unique error code.
+     *
+     * @return The error code string, used to uniquely identify an error.
+     */
+    String getKey();
+
+    /**
+     * Gets the detailed error message.
+     *
+     * @return The error message string, describing the error in detail.
+     */
+    String getValue();
+
+    /**
+     * Registers the error code into the global cache. If the error code already exists in the cache, this method will
+     * throw an exception to prevent duplicates.
+     *
+     * @throws AlreadyExistsException if attempting to register a duplicate error code.
+     */
+    default void register() {
+        if (ERRORS_CACHE.containsKey(getKey())) {
+            throw new AlreadyExistsException("Key already exists for : " + getKey());
+        }
+        ERRORS_CACHE.putIfAbsent(getKey(), new Entry(getKey(), getValue()));
     }
 
     /**

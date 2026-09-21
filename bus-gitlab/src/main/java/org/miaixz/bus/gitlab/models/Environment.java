@@ -36,11 +36,9 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class Environment implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852252558305L;
+
     /**
      * The tier value.
      */
@@ -50,26 +48,32 @@ public class Environment implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The slug value.
      */
     private String slug;
+
     /**
      * The external url value.
      */
     private String externalUrl;
+
     /**
      * The auto stop at value.
      */
     private Date autoStopAt;
+
     /**
      * The state value.
      */
     private EnvironmentState state;
+
     /**
      * The last deployment value.
      */
@@ -90,6 +94,16 @@ public class Environment implements Serializable {
 
     public String getTier() {
         return tier;
+    }
+
+    /**
+     * Sets the tier.
+     *
+     * @param tier the tier value
+     */
+
+    public void setTier(String tier) {
+        this.tier = tier;
     }
 
     /**
@@ -173,16 +187,6 @@ public class Environment implements Serializable {
     }
 
     /**
-     * Sets the tier.
-     *
-     * @param tier the tier value
-     */
-
-    public void setTier(String tier) {
-        this.tier = tier;
-    }
-
-    /**
      * Returns the auto stop at.
      *
      * @return the result
@@ -190,6 +194,16 @@ public class Environment implements Serializable {
 
     public Date getAutoStopAt() {
         return autoStopAt;
+    }
+
+    /**
+     * Sets the auto stop at.
+     *
+     * @param autoStopAt the auto stop at value
+     */
+
+    public void setAutoStopAt(Date autoStopAt) {
+        this.autoStopAt = autoStopAt;
     }
 
     /**
@@ -233,13 +247,14 @@ public class Environment implements Serializable {
     }
 
     /**
-     * Sets the auto stop at.
+     * Returns the string.
      *
-     * @param autoStopAt the auto stop at value
+     * @return the result
      */
 
-    public void setAutoStopAt(Date autoStopAt) {
-        this.autoStopAt = autoStopAt;
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
     }
 
     /**
@@ -298,17 +313,6 @@ public class Environment implements Serializable {
             return (enumCodec.toString(this));
         }
 
-    }
-
-    /**
-     * Returns the string.
-     *
-     * @return the result
-     */
-
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
     }
 
 }

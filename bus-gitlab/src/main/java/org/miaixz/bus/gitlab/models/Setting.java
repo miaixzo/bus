@@ -2060,6 +2060,7 @@ public enum Setting {
      * The type field.
      */
     private Class<?> type;
+
     /**
      * The types value.
      */

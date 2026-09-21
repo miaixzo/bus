@@ -53,8 +53,8 @@ import org.miaixz.bus.core.xyz.CollKit;
  * will be returned.
  *
  * @param <T> The type of {@link AnnotationMapping}.
- * @see RepeatableAnnotationCollector
  * @author Kimi Liu
+ * @see RepeatableAnnotationCollector
  */
 public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotation>>
         implements AnnotatedElement, Iterable<T> {

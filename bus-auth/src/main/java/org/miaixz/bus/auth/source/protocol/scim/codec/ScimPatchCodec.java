@@ -233,7 +233,6 @@ public class ScimPatchCodec {
      *
      * @param schemas    standard schema array
      * @param Operations ordered patch operations
-     *
      * @author Kimi Liu
      */
     private record PatchDocument(JsonValue schemas, JsonValue Operations) {
@@ -246,7 +245,6 @@ public class ScimPatchCodec {
      * @param op    operation name
      * @param path  optional attribute path
      * @param value optional operation value
-     *
      * @author Kimi Liu
      */
     private record OperationDocument(JsonValue op, JsonValue path, JsonValue value) {

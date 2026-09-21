@@ -47,10 +47,12 @@ public class ImageBanner {
      * Perceptual luminance weight of the red channel.
      */
     private static final double RED_WEIGHT = 0.2126d;
+
     /**
      * Perceptual luminance weight of the green channel.
      */
     private static final double GREEN_WEIGHT = 0.7152d;
+
     /**
      * Perceptual luminance weight of the blue channel.
      */
@@ -60,6 +62,7 @@ public class ImageBanner {
      * Source image rendered as terminal characters.
      */
     private final File image;
+
     /**
      * Terminal color palette selected for the source image.
      */

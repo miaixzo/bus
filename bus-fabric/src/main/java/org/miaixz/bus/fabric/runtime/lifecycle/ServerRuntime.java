@@ -93,6 +93,18 @@ public class ServerRuntime<S> {
     }
 
     /**
+     * Validates required values.
+     *
+     * @param value value
+     * @param name  diagnostic name
+     * @param <T>   value type
+     * @return validated value
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Returns the public lifecycle state.
      *
      * @return state
@@ -243,18 +255,6 @@ public class ServerRuntime<S> {
      */
     public void emit(final ObservationMarker marker, final Throwable cause) {
         lifecycle.emit(marker, cause);
-    }
-
-    /**
-     * Validates required values.
-     *
-     * @param value value
-     * @param name  diagnostic name
-     * @param <T>   value type
-     * @return validated value
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

@@ -66,6 +66,32 @@ public record Binding<T>(String key, T value, Options options) {
     }
 
     /**
+     * Validates binding keys.
+     *
+     * @param key candidate binding or option key
+     * @return trimmed, non-blank, single-line key
+     * @throws ValidateException if {@code key} is blank or contains a carriage return or line feed
+     */
+    private static String validateKey(final String key) {
+        if (StringKit.isBlank(key) || StringKit.containsAny(key, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException("Registry key must be non-blank and single-line");
+        }
+        return key.trim();
+    }
+
+    /**
+     * Validates and returns a required reference.
+     *
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Returns a copy whose option snapshot contains a replaced or added entry.
      *
      * @param key   non-blank, single-line option key
@@ -106,32 +132,6 @@ public record Binding<T>(String key, T value, Options options) {
     @Override
     public Options options() {
         return options;
-    }
-
-    /**
-     * Validates binding keys.
-     *
-     * @param key candidate binding or option key
-     * @return trimmed, non-blank, single-line key
-     * @throws ValidateException if {@code key} is blank or contains a carriage return or line feed
-     */
-    private static String validateKey(final String key) {
-        if (StringKit.isBlank(key) || StringKit.containsAny(key, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Registry key must be non-blank and single-line");
-        }
-        return key.trim();
-    }
-
-    /**
-     * Validates and returns a required reference.
-     *
-     * @param value reference to validate
-     * @param name  logical reference name used in the validation message
-     * @param <T>   reference type
-     * @return the validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

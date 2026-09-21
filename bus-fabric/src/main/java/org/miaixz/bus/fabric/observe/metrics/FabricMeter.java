@@ -116,6 +116,22 @@ public class FabricMeter {
     }
 
     /**
+     * Validates a metric name.
+     *
+     * @param name metric name to validate without trimming or other normalization
+     * @return unchanged non-blank, single-line metric name
+     * @throws ValidateException if {@code name} is blank or contains a carriage return or line feed
+     */
+    private static String validateName(final String name) {
+        final String checked = Assert
+                .notBlank(name, () -> new ValidateException("Metric name must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Metric name must be non-blank and single-line"));
+        return checked;
+    }
+
+    /**
      * Increments a counter by one.
      *
      * @param name non-blank, single-line dynamic counter name
@@ -287,22 +303,6 @@ public class FabricMeter {
      */
     int activeTimers() {
         return activeTimers.size();
-    }
-
-    /**
-     * Validates a metric name.
-     *
-     * @param name metric name to validate without trimming or other normalization
-     * @return unchanged non-blank, single-line metric name
-     * @throws ValidateException if {@code name} is blank or contains a carriage return or line feed
-     */
-    private static String validateName(final String name) {
-        final String checked = Assert
-                .notBlank(name, () -> new ValidateException("Metric name must be non-blank and single-line"));
-        Assert.isFalse(
-                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
-                () -> new ValidateException("Metric name must be non-blank and single-line"));
-        return checked;
     }
 
     /**

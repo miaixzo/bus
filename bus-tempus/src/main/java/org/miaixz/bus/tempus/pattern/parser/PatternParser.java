@@ -39,11 +39,17 @@ import org.miaixz.bus.tempus.pattern.matcher.PatternMatcher;
 public class PatternParser {
 
     private static final PartParser SECOND_VALUE_PARSER = PartParser.of(Part.SECOND);
+
     private static final PartParser MINUTE_VALUE_PARSER = PartParser.of(Part.MINUTE);
+
     private static final PartParser HOUR_VALUE_PARSER = PartParser.of(Part.HOUR);
+
     private static final PartParser DAY_OF_MONTH_VALUE_PARSER = PartParser.of(Part.DAY_OF_MONTH);
+
     private static final PartParser MONTH_VALUE_PARSER = PartParser.of(Part.MONTH);
+
     private static final PartParser DAY_OF_WEEK_VALUE_PARSER = PartParser.of(Part.DAY_OF_WEEK);
+
     private static final PartParser YEAR_VALUE_PARSER = PartParser.of(Part.YEAR);
 
     /**

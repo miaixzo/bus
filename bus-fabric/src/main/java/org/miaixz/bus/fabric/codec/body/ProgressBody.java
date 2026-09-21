@@ -193,6 +193,69 @@ public interface ProgressBody extends Body {
         }
 
         /**
+         * Validates step bytes.
+         *
+         * @param bytes candidate callback interval in bytes
+         * @throws ValidateException if {@code bytes} is not positive
+         */
+        static void validateStepBytes(final long bytes) {
+            Assert.isTrue(bytes > 0, () -> new ValidateException("Progress step bytes must be positive"));
+        }
+
+        /**
+         * Validates step rate.
+         *
+         * @param rate  candidate fraction of the total length
+         * @param total declared total byte count
+         * @throws ValidateException if the rate is outside {@code (0, 1]} or the total is unknown
+         */
+        static void validateStepRate(final double rate, final long total) {
+            Assert.isTrue(
+                    Double.isFinite(rate) && rate > 0 && rate <= 1,
+                    () -> new ValidateException("Progress step rate must be greater than 0 and at most 1"));
+            Assert.isTrue(
+                    total >= 0,
+                    () -> new ValidateException("Progress step rate requires a known payload length"));
+        }
+
+        /**
+         * Returns the next threshold after the transferred count.
+         *
+         * @param current current cumulative byte count
+         * @param step    positive callback interval
+         * @return first aligned threshold strictly greater than {@code current}, saturated at {@link Long#MAX_VALUE}
+         */
+        private static long nextThreshold(final long current, final long step) {
+            final long remainder = current % step;
+            final long delta = remainder == 0L ? step : step - remainder;
+            return saturatedAdd(current, delta);
+        }
+
+        /**
+         * Adds two non-negative values with saturation.
+         *
+         * @param first  first value
+         * @param second second value
+         * @return saturated sum
+         */
+        private static long saturatedAdd(final long first, final long second) {
+            return first > Long.MAX_VALUE - second ? Long.MAX_VALUE : first + second;
+        }
+
+        /**
+         * Validates a required value.
+         *
+         * @param value reference to validate
+         * @param name  logical field name included in the validation error
+         * @param <T>   reference type
+         * @return validated non-null reference
+         * @throws ValidateException if {@code value} is {@code null}
+         */
+        private static <T> T require(final T value, final String name) {
+            return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+        }
+
+        /**
          * Returns wrapped payload.
          *
          * @return stable progress-aware wrapper around the original payload
@@ -244,32 +307,6 @@ public interface ProgressBody extends Body {
             validateStepRate(rate, original.length());
             stepBytes(Math.max(1L, (long) Math.ceil(original.length() * rate)));
             return this;
-        }
-
-        /**
-         * Validates step bytes.
-         *
-         * @param bytes candidate callback interval in bytes
-         * @throws ValidateException if {@code bytes} is not positive
-         */
-        static void validateStepBytes(final long bytes) {
-            Assert.isTrue(bytes > 0, () -> new ValidateException("Progress step bytes must be positive"));
-        }
-
-        /**
-         * Validates step rate.
-         *
-         * @param rate  candidate fraction of the total length
-         * @param total declared total byte count
-         * @throws ValidateException if the rate is outside {@code (0, 1]} or the total is unknown
-         */
-        static void validateStepRate(final double rate, final long total) {
-            Assert.isTrue(
-                    Double.isFinite(rate) && rate > 0 && rate <= 1,
-                    () -> new ValidateException("Progress step rate must be greater than 0 and at most 1"));
-            Assert.isTrue(
-                    total >= 0,
-                    () -> new ValidateException("Progress step rate requires a known payload length"));
         }
 
         /**
@@ -351,19 +388,6 @@ public interface ProgressBody extends Body {
         }
 
         /**
-         * Returns the next threshold after the transferred count.
-         *
-         * @param current current cumulative byte count
-         * @param step    positive callback interval
-         * @return first aligned threshold strictly greater than {@code current}, saturated at {@link Long#MAX_VALUE}
-         */
-        private static long nextThreshold(final long current, final long step) {
-            final long remainder = current % step;
-            final long delta = remainder == 0L ? step : step - remainder;
-            return saturatedAdd(current, delta);
-        }
-
-        /**
          * Adds transferred bytes with saturation at {@link Long#MAX_VALUE}.
          *
          * @param count positive byte count
@@ -377,30 +401,6 @@ public interface ProgressBody extends Body {
                     return next;
                 }
             }
-        }
-
-        /**
-         * Adds two non-negative values with saturation.
-         *
-         * @param first  first value
-         * @param second second value
-         * @return saturated sum
-         */
-        private static long saturatedAdd(final long first, final long second) {
-            return first > Long.MAX_VALUE - second ? Long.MAX_VALUE : first + second;
-        }
-
-        /**
-         * Validates a required value.
-         *
-         * @param value reference to validate
-         * @param name  logical field name included in the validation error
-         * @param <T>   reference type
-         * @return validated non-null reference
-         * @throws ValidateException if {@code value} is {@code null}
-         */
-        private static <T> T require(final T value, final String name) {
-            return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
         }
 
         /**

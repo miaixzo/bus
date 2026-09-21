@@ -31,9 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Namespace implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852265752716L;
 
@@ -41,30 +38,37 @@ public class Namespace implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The path value.
      */
     private String path;
+
     /**
      * The kind value.
      */
     private String kind;
+
     /**
      * The full path value.
      */
     private String fullPath;
+
     /**
      * The parent id value.
      */
     private Long parentId;
+
     /**
      * The avatar url value.
      */
     private String avatarUrl;
+
     /**
      * The web url value.
      */

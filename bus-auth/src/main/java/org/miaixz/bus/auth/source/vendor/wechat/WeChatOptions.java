@@ -65,22 +65,27 @@ public record WeChatOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
      * Sole Open Platform scope required by the supported browser login flow.
      */
     private static final String OPEN_SCOPE = "snsapi_login";
+
     /**
      * Official Account scope that permits profile retrieval.
      */
     private static final String OFFICIAL_PROFILE_SCOPE = "snsapi_userinfo";
+
     /**
      * Official Account and WeCom scope that returns only the platform subject.
      */
     private static final String BASE_SCOPE = "snsapi_base";
+
     /**
      * Supported WeCom corporate application login type.
      */
     private static final String CORPORATE_APPLICATION = "CorpApp";
+
     /**
      * Supported WeCom service application login type.
      */
     private static final String SERVICE_APPLICATION = "ServiceApp";
+
     /**
      * Historical default language sent to the WeCom QR login page.
      */

@@ -57,6 +57,40 @@ public class DnsNotifyHandler {
     }
 
     /**
+     * Returns whether the NOTIFY zone exists in the active index.
+     *
+     * @param current       active runtime index before refresh
+     * @param query         decoded NOTIFY query
+     * @param clientAddress client address, or {@code null} when unavailable
+     * @return true when the NOTIFY zone is known
+     */
+    private static boolean knownZone(
+            final RuntimeIndex current,
+            final DnsQuery query,
+            final InetAddress clientAddress) {
+        final DnsZone zone = current.findZone(query.question().name(), clientAddress);
+        return zone != null && zone.origin().equals(query.question().name());
+    }
+
+    /**
+     * Validates and copies CIDR blocks.
+     *
+     * @param cidrs source CIDR blocks
+     * @return immutable CIDR blocks
+     */
+    private static List<CidrBlock> immutableCidrs(final List<CidrBlock> cidrs) {
+        if (cidrs == null) {
+            throw new ValidateException("DNS NOTIFY ACL CIDRs must not be null");
+        }
+        for (final CidrBlock cidr : cidrs) {
+            if (cidr == null) {
+                throw new ValidateException("DNS NOTIFY ACL CIDRs must not contain null");
+            }
+        }
+        return List.copyOf(cidrs);
+    }
+
+    /**
      * Handles one DNS NOTIFY query.
      *
      * @param current       active runtime index before refresh
@@ -92,22 +126,6 @@ public class DnsNotifyHandler {
     }
 
     /**
-     * Returns whether the NOTIFY zone exists in the active index.
-     *
-     * @param current       active runtime index before refresh
-     * @param query         decoded NOTIFY query
-     * @param clientAddress client address, or {@code null} when unavailable
-     * @return true when the NOTIFY zone is known
-     */
-    private static boolean knownZone(
-            final RuntimeIndex current,
-            final DnsQuery query,
-            final InetAddress clientAddress) {
-        final DnsZone zone = current.findZone(query.question().name(), clientAddress);
-        return zone != null && zone.origin().equals(query.question().name());
-    }
-
-    /**
      * Returns whether a client address is allowed to submit NOTIFY.
      *
      * @param clientAddress client address, or {@code null} when unavailable
@@ -123,24 +141,6 @@ public class DnsNotifyHandler {
             }
         }
         return false;
-    }
-
-    /**
-     * Validates and copies CIDR blocks.
-     *
-     * @param cidrs source CIDR blocks
-     * @return immutable CIDR blocks
-     */
-    private static List<CidrBlock> immutableCidrs(final List<CidrBlock> cidrs) {
-        if (cidrs == null) {
-            throw new ValidateException("DNS NOTIFY ACL CIDRs must not be null");
-        }
-        for (final CidrBlock cidr : cidrs) {
-            if (cidr == null) {
-                throw new ValidateException("DNS NOTIFY ACL CIDRs must not contain null");
-            }
-        }
-        return List.copyOf(cidrs);
     }
 
     /**

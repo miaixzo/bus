@@ -31,12 +31,13 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class CharacterConverter extends AbstractConverter {
 
+    @Serial
+    private static final long serialVersionUID = 2852266250201L;
+
     /**
      * Singleton instance.
      */
     public static final CharacterConverter INSTANCE = new CharacterConverter();
-    @Serial
-    private static final long serialVersionUID = 2852266250201L;
 
     /**
      * Creates a new {@code CharacterConverter} instance.

@@ -31,9 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class ExternalStatusCheckResult implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852253955988L;
 
@@ -41,10 +38,12 @@ public class ExternalStatusCheckResult implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The merge request value.
      */
     private MergeRequest mergeRequest;
+
     /**
      * The external status check value.
      */

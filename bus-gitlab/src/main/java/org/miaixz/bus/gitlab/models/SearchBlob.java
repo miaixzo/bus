@@ -31,9 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class SearchBlob implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852280850317L;
 
@@ -41,26 +38,32 @@ public class SearchBlob implements Serializable {
      * The basename value.
      */
     private String basename;
+
     /**
      * The data value.
      */
     private String data;
+
     /**
      * The filename value.
      */
     private String filename;
+
     /**
      * The id value.
      */
     private String id;
+
     /**
      * The ref value.
      */
     private String ref;
+
     /**
      * The startline value.
      */
     private Integer startline;
+
     /**
      * The project id value.
      */

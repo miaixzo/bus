@@ -34,9 +34,6 @@ import org.miaixz.bus.image.Tag;
  */
 public class Issuer implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852263505712L;
 

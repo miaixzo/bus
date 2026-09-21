@@ -37,34 +37,42 @@ public class LinuxOSFileStore extends AbstractOSFileStore {
      * Whether this file store represents an NFS mount whose server was unreachable during enumeration.
      */
     private final boolean unreachable;
+
     /**
      * The logicalVolume value.
      */
     private String logicalVolume;
+
     /**
      * The description value.
      */
     private String description;
+
     /**
      * The fsType value.
      */
     private String fsType;
+
     /**
      * The freeSpace value.
      */
     private long freeSpace;
+
     /**
      * The usableSpace value.
      */
     private long usableSpace;
+
     /**
      * The totalSpace value.
      */
     private long totalSpace;
+
     /**
      * The freeInodes value.
      */
     private long freeInodes;
+
     /**
      * The totalInodes value.
      */

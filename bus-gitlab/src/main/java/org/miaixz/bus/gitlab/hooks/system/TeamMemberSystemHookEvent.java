@@ -32,16 +32,15 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class TeamMemberSystemHookEvent extends AbstractSystemHookEvent {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852229806158L;
+
     /**
      * The new team member event value.
      */
 
     public static final String NEW_TEAM_MEMBER_EVENT = "user_add_to_team";
+
     /**
      * The team member removed event value.
      */
@@ -51,50 +50,62 @@ public class TeamMemberSystemHookEvent extends AbstractSystemHookEvent {
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The updated at value.
      */
     private Date updatedAt;
+
     /**
      * The event name value.
      */
     private String eventName;
+
     /**
      * The access level value.
      */
     private String accessLevel;
+
     /**
      * The project name value.
      */
     private String projectName;
+
     /**
      * The project path value.
      */
     private String projectPath;
+
     /**
      * The project id value.
      */
     private Long projectId;
+
     /**
      * The project path with namespace value.
      */
     private String projectPathWithNamespace;
+
     /**
      * The user email value.
      */
     private String userEmail;
+
     /**
      * The user name value.
      */
     private String userName;
+
     /**
      * The user username value.
      */
     private String userUsername;
+
     /**
      * The user id value.
      */
     private Long userId;
+
     /**
      * The project visibility value.
      */

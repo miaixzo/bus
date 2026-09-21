@@ -27,6 +27,7 @@ package org.miaixz.bus.image.nimble.opencv.lut.colormap;
 public record OutsideColors(Rgba low, Rgba high, Rgba nan) {
 
     public static final OutsideColors CLAMP = new OutsideColors(null, null, null);
+
     public static final OutsideColors TRANSPARENT = new OutsideColors(Rgba.TRANSPARENT, Rgba.TRANSPARENT,
             Rgba.TRANSPARENT);
 }

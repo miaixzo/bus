@@ -59,6 +59,19 @@ public class LimitGuard {
     }
 
     /**
+     * Validates maximum bytes.
+     *
+     * @param maxBytes candidate inclusive frame and queue limit
+     * @return unchanged limit from 1 byte through 16 MiB
+     */
+    private static long validateMaxBytes(final long maxBytes) {
+        Assert.isTrue(
+                maxBytes > Normal._0 && maxBytes <= Builder.BYTES_16_MIB,
+                () -> new ValidateException("Frame limit must be between 1 and 16777216"));
+        return maxBytes;
+    }
+
+    /**
      * Checks a single frame length.
      *
      * @param frame non-null frame whose validated payload length is checked
@@ -102,19 +115,6 @@ public class LimitGuard {
      */
     public String name() {
         return Builder.GUARD_FRAME_LIMIT_NAME;
-    }
-
-    /**
-     * Validates maximum bytes.
-     *
-     * @param maxBytes candidate inclusive frame and queue limit
-     * @return unchanged limit from 1 byte through 16 MiB
-     */
-    private static long validateMaxBytes(final long maxBytes) {
-        Assert.isTrue(
-                maxBytes > Normal._0 && maxBytes <= Builder.BYTES_16_MIB,
-                () -> new ValidateException("Frame limit must be between 1 and 16777216"));
-        return maxBytes;
     }
 
 }

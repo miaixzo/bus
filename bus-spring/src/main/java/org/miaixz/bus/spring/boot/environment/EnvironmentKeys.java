@@ -32,43 +32,53 @@ public class EnvironmentKeys {
      * Spring application-name property.
      */
     public static final String APPLICATION_NAME = "spring.application.name";
+
     /**
      * Bus configuration property-source name.
      */
     public static final String BUS_PROPERTY_SOURCE = "configurationProperties";
+
     /**
      * Spring Boot logging property prefix.
      */
     public static final String LOGGING_PREFIX = "logging" + Symbol.DOT;
+
     /**
      * Root Spring logging-level property.
      */
     public static final String LOGGING_LEVEL = LOGGING_PREFIX + "level";
+
     /**
      * Spring Boot console logging-pattern property.
      */
     public static final String LOGGING_PATTERN_CONSOLE = LOGGING_PREFIX + "pattern" + Symbol.DOT + "console";
+
     /**
      * Spring Boot file logging-pattern property.
      */
     public static final String LOGGING_PATTERN_FILE = LOGGING_PREFIX + "pattern" + Symbol.DOT + "file";
+
     /**
      * Bus logging configuration namespace.
      */
     public static final String BUS_LOGGING_PREFIX = "bus" + Symbol.DOT + "logging";
+
     /**
      * Bus logging-pattern defaults flag.
      */
     public static final String BUS_LOGGING_PATTERN_DEFAULTS = BUS_LOGGING_PREFIX + Symbol.DOT + "pattern" + Symbol.DOT
             + "defaults";
+
     /**
      * Bus configuration-listener flag.
      */
     public static final String CONFIG_ENABLED = "bus.config.enabled";
+
     /**
      * Bus metrics integration flag.
      */
     public static final String METRICS_ENABLED = "bus.metrics.enabled";
+
     /**
      * Bus startup-metrics flag.
      */

@@ -44,14 +44,17 @@ public abstract class AbstractPushEvent {
      * The after value.
      */
     private String after;
+
     /**
      * The before value.
      */
     private String before;
+
     /**
      * The ref value.
      */
     private String ref;
+
     /**
      * The checkout sha value.
      */
@@ -61,18 +64,22 @@ public abstract class AbstractPushEvent {
      * The user id value.
      */
     private Long userId;
+
     /**
      * The user name value.
      */
     private String userName;
+
     /**
      * The user username value.
      */
     private String userUsername;
+
     /**
      * The user email value.
      */
     private String userEmail;
+
     /**
      * The user avatar value.
      */
@@ -82,18 +89,22 @@ public abstract class AbstractPushEvent {
      * The project id value.
      */
     private Long projectId;
+
     /**
      * The project value.
      */
     private EventProject project;
+
     /**
      * The repository value.
      */
     private EventRepository repository;
+
     /**
      * The commits value.
      */
     private List<EventCommit> commits;
+
     /**
      * The total commits count value.
      */
@@ -103,14 +114,28 @@ public abstract class AbstractPushEvent {
      * The request url value.
      */
     private String requestUrl;
+
     /**
      * The request query string value.
      */
     private String requestQueryString;
+
     /**
      * The request secret token value.
      */
     private String requestSecretToken;
+
+    /**
+     * The ref protected value.
+     */
+    private Boolean refProtected;
+
+    /**
+     * Constructs a new AbstractPushEvent instance.
+     */
+    public AbstractPushEvent() {
+        // No initialization required.
+    }
 
     /**
      * Returns the event name.
@@ -185,24 +210,21 @@ public abstract class AbstractPushEvent {
     }
 
     /**
-     * The ref protected value.
-     */
-    private Boolean refProtected;
-
-    /**
-     * Constructs a new AbstractPushEvent instance.
-     */
-    public AbstractPushEvent() {
-        // No initialization required.
-    }
-
-    /**
      * Returns the ref protected.
      *
      * @return the result
      */
     public Boolean getRefProtected() {
         return refProtected;
+    }
+
+    /**
+     * Sets the ref protected.
+     *
+     * @param refProtected the ref protected value
+     */
+    public void setRefProtected(Boolean refProtected) {
+        this.refProtected = refProtected;
     }
 
     /**
@@ -404,15 +426,6 @@ public abstract class AbstractPushEvent {
     }
 
     /**
-     * Sets the ref protected.
-     *
-     * @param refProtected the ref protected value
-     */
-    public void setRefProtected(Boolean refProtected) {
-        this.refProtected = refProtected;
-    }
-
-    /**
      * Returns the request url.
      *
      * @return the result
@@ -464,6 +477,15 @@ public abstract class AbstractPushEvent {
     }
 
     /**
+     * Sets the request secret token.
+     *
+     * @param secretToken the secret token value
+     */
+    public void setRequestSecretToken(String secretToken) {
+        this.requestSecretToken = secretToken;
+    }
+
+    /**
      * Gets the branch name from the ref. Will return null if the ref does not start with "refs/heads/".
      *
      * @return the branch name from the ref
@@ -483,15 +505,6 @@ public abstract class AbstractPushEvent {
         }
 
         return (ref.substring(REFS_HEADS.length()));
-    }
-
-    /**
-     * Sets the request secret token.
-     *
-     * @param secretToken the secret token value
-     */
-    public void setRequestSecretToken(String secretToken) {
-        this.requestSecretToken = secretToken;
     }
 
 }

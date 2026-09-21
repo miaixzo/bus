@@ -49,13 +49,6 @@ public class ColorKit {
      */
     private static final int RGB_COLOR_BOUND = 256;
 
-    /**
-     * Keeps color parsing and conversion on the static API.
-     */
-    public ColorKit() {
-        // No initialization required.
-    }
-
     static {
         final Map<String, Color> colorMap = MapKit.builder("BLACK", Color.BLACK).put("WHITE", Color.WHITE)
                 .put("LIGHTGRAY", Color.LIGHT_GRAY).put("LIGHT_GRAY", Color.LIGHT_GRAY).put("GRAY", Color.GRAY)
@@ -67,6 +60,13 @@ public class ColorKit {
                 // Light Gold
                 .put("LIGHTGOLD", hexToColor("#ac9c85")).put("LIGHT_GOLD", hexToColor("#ac9c85")).build();
         COLOR_MAPPING = MapKit.view(colorMap);
+    }
+
+    /**
+     * Keeps color parsing and conversion on the static API.
+     */
+    public ColorKit() {
+        // No initialization required.
     }
 
     /**

@@ -44,18 +44,22 @@ public class LimiterProperties {
      * Whether the limiter integration is enabled.
      */
     private final boolean enabled;
+
     /**
      * Retention time for hotspot limiter decisions.
      */
     private final Duration hotspotCacheDuration;
+
     /**
      * Whether rejected limiter decisions are written to the log.
      */
     private final boolean logger;
+
     /**
      * Supplier implementation used to obtain limiter resources.
      */
     private final String supplierClass;
+
     /**
      * Extension settings passed to the selected limiter implementation.
      */

@@ -399,7 +399,6 @@ public class ScimBulkCodec {
      * @param schemas      standard message schemas
      * @param failOnErrors optional failure threshold
      * @param Operations   ordered operation array
-     *
      * @author Kimi Liu
      */
     private record BulkDocument(JsonValue schemas, JsonValue failOnErrors, JsonValue Operations) {
@@ -414,7 +413,6 @@ public class ScimBulkCodec {
      * @param path    relative resource target
      * @param version optional entity-tag
      * @param data    optional method-specific payload
-     *
      * @author Kimi Liu
      */
     private record OperationDocument(JsonValue method, JsonValue bulkId, JsonValue path, JsonValue version,
@@ -429,7 +427,6 @@ public class ScimBulkCodec {
      * @param status   HTTP status text
      * @param scimType optional SCIM error keyword
      * @param detail   optional human-readable detail
-     *
      * @author Kimi Liu
      */
     private record ErrorDocument(JsonValue schemas, JsonValue status, JsonValue scimType, JsonValue detail) {

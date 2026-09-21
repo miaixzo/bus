@@ -28,9 +28,6 @@ import java.io.Serial;
  */
 public class Author extends AbstractUser<Author> {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852237919068L;
 

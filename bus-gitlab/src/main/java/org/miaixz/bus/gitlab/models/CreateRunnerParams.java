@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -31,51 +32,59 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class CreateRunnerParams implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
+    @Serial
     private static final long serialVersionUID = 2852250855126L;
 
     /**
      * The runner type value.
      */
     private Runner.RunnerType runnerType;
+
     /**
      * The group id value.
      */
     private Long groupId;
+
     /**
      * The project id value.
      */
     private Long projectId;
+
     /**
      * The description value.
      */
     private String description;
+
     /**
      * The paused value.
      */
     private Boolean paused;
+
     /**
      * The locked value.
      */
     private Boolean locked;
+
     /**
      * The run untagged value.
      */
     private Boolean runUntagged;
+
     /**
      * The tag list value.
      */
     private List<String> tagList;
+
     /**
      * The access level value.
      */
     private String accessLevel;
+
     /**
      * The maximum timeout value.
      */
     private Integer maximumTimeout;
+
     /**
      * The maintenance note value.
      */

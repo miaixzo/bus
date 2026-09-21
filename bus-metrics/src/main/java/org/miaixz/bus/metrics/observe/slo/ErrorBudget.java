@@ -37,6 +37,11 @@ public class ErrorBudget {
     private final long windowMillis;
 
     /**
+     * Epoch millisecond timestamp when this budget was created.
+     */
+    private final long startMs = System.currentTimeMillis();
+
+    /**
      * Cumulative count of good (successful) requests.
      */
     private long goodRequests = 0;
@@ -45,11 +50,6 @@ public class ErrorBudget {
      * Cumulative count of all requests (good + bad).
      */
     private long totalRequests = 0;
-
-    /**
-     * Epoch millisecond timestamp when this budget was created.
-     */
-    private final long startMs = System.currentTimeMillis();
 
     /**
      * Create a new error budget tracker.

@@ -83,13 +83,13 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * information. The cache is backed by a {@link WeakConcurrentMap} and can be cleared manually by calling
  * {@link #clearCaches()}.
  *
+ * @author Kimi Liu
  * @see ResolvedAnnotationMapping
  * @see GenericAnnotationMapping
  * @see HierarchicalAnnotatedElements
  * @see RepeatableMetaAnnotatedElement
  * @see MetaAnnotatedElement
  * @see RepeatableAnnotationCollector
- * @author Kimi Liu
  */
 public class AnnotatedElements {
 

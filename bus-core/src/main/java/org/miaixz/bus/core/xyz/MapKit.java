@@ -23,12 +23,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import org.miaixz.bus.core.center.function.BiFunctionX;
-import org.miaixz.bus.core.center.function.Consumer3X;
-import org.miaixz.bus.core.center.function.FunctionX;
-import org.miaixz.bus.core.center.function.PredicateX;
-import org.miaixz.bus.core.center.function.SupplierX;
-import org.miaixz.bus.core.center.function.UnaryOperatorX;
+import org.miaixz.bus.core.center.function.*;
 import org.miaixz.bus.core.center.iterator.ArrayIterator;
 import org.miaixz.bus.core.center.map.*;
 import org.miaixz.bus.core.center.map.Dictionary;

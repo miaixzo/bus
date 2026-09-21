@@ -39,18 +39,22 @@ public class DicomStowConfig {
      * The default HTTP protocol version value.
      */
     static final HttpClient.Version DEFAULT_HTTP_VERSION = HttpClient.Version.HTTP_1_1;
+
     /**
      * The default user agent value.
      */
     private static final String DEFAULT_USER_AGENT = "bus-image STOW-RS Client";
+
     /**
      * The default thread pool size value.
      */
     private static final int DEFAULT_THREAD_POOL_SIZE = 5;
+
     /**
      * The default connect timeout value.
      */
     private static final Duration DEFAULT_CONNECT_TIMEOUT = Duration.ofSeconds(10);
+
     /**
      * The request url value.
      */
@@ -202,18 +206,22 @@ public class DicomStowConfig {
          * The headers value.
          */
         private final Map<String, String> headers = new HashMap<>();
+
         /**
          * The request url value.
          */
         private String requestUrl;
+
         /**
          * The content type value.
          */
         private String contentType = MediaType.APPLICATION_DICOM;
+
         /**
          * The user agent value.
          */
         private String userAgent = DEFAULT_USER_AGENT;
+
         /**
          * The thread pool size value.
          */

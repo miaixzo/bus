@@ -68,30 +68,37 @@ public class CorsProperties {
      * Whether the cors integration is enabled.
      */
     private final boolean enabled;
+
     /**
      * Servlet path pattern to which the CORS policy applies.
      */
     private final String path;
+
     /**
      * Origins permitted to issue cross-origin requests.
      */
     private final String[] allowedOrigins;
+
     /**
      * Request headers accepted during cross-origin requests.
      */
     private final String[] allowedHeaders;
+
     /**
      * HTTP methods accepted during cross-origin requests.
      */
     private final String[] allowedMethods;
+
     /**
      * Response headers made visible to browser clients.
      */
     private final String[] exposedHeaders;
+
     /**
      * Whether browsers may include credentials in cross-origin requests.
      */
     private final boolean allowCredentials;
+
     /**
      * Duration for which browsers may cache a preflight response.
      */

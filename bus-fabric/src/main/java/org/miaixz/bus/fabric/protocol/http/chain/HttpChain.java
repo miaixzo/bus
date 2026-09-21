@@ -54,6 +54,11 @@ public class HttpChain {
     private final HttpStage[] stages;
 
     /**
+     * Shared cancellation scope.
+     */
+    private final Cancellation cancellation;
+
+    /**
      * Current stage index.
      */
     private int index;
@@ -67,11 +72,6 @@ public class HttpChain {
      * Current network connection.
      */
     private Connection connection;
-
-    /**
-     * Shared cancellation scope.
-     */
-    private final Cancellation cancellation;
 
     /**
      * Creates a chain.
@@ -110,6 +110,64 @@ public class HttpChain {
      */
     public static HttpChain create(final List<HttpStage> stages, final Cancellation cancellation) {
         return new HttpChain(snapshot(stages), Normal._0, null, null, cancellation);
+    }
+
+    /**
+     * Validates stage list.
+     *
+     * @param stages source stage list whose identity may reuse a compiled array
+     * @return validated immutable stage array snapshot
+     */
+    private static HttpStage[] snapshot(final List<HttpStage> stages) {
+        final List<HttpStage> source = require(stages, "HTTP stages");
+        final CompiledStages cached = compiledStages;
+        if (cached != null && source == cached.source) {
+            return cached.stages;
+        }
+        for (final HttpStage stage : source) {
+            validateStage(stage);
+        }
+        final HttpStage[] compiled = source.toArray(HttpStage[]::new);
+        compiledStages = new CompiledStages(source, compiled);
+        return compiled;
+    }
+
+    /**
+     * Validates a stage.
+     *
+     * @param stage stage reference to validate
+     */
+    private static void validateStage(final HttpStage stage) {
+        require(stage, "HTTP stage");
+    }
+
+    /**
+     * Validates a stage index.
+     *
+     * @param index candidate next-stage index
+     * @param size  stage size
+     * @return validated index between zero and stage count inclusive
+     */
+    private static int validateIndex(final int index, final int size) {
+        if (index < Normal._0 || index > size) {
+            throw new ValidateException("HTTP chain index is out of range");
+        }
+        return index;
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  field name
+     * @param <T>   value type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
     }
 
     /**
@@ -212,73 +270,6 @@ public class HttpChain {
     }
 
     /**
-     * Validates stage list.
-     *
-     * @param stages source stage list whose identity may reuse a compiled array
-     * @return validated immutable stage array snapshot
-     */
-    private static HttpStage[] snapshot(final List<HttpStage> stages) {
-        final List<HttpStage> source = require(stages, "HTTP stages");
-        final CompiledStages cached = compiledStages;
-        if (cached != null && source == cached.source) {
-            return cached.stages;
-        }
-        for (final HttpStage stage : source) {
-            validateStage(stage);
-        }
-        final HttpStage[] compiled = source.toArray(HttpStage[]::new);
-        compiledStages = new CompiledStages(source, compiled);
-        return compiled;
-    }
-
-    /**
-     * Validates a stage.
-     *
-     * @param stage stage reference to validate
-     */
-    private static void validateStage(final HttpStage stage) {
-        require(stage, "HTTP stage");
-    }
-
-    /**
-     * Validates a stage index.
-     *
-     * @param index candidate next-stage index
-     * @param size  stage size
-     * @return validated index between zero and stage count inclusive
-     */
-    private static int validateIndex(final int index, final int size) {
-        if (index < Normal._0 || index > size) {
-            throw new ValidateException("HTTP chain index is out of range");
-        }
-        return index;
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  field name
-     * @param <T>   value type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
-    }
-
-    /**
-     * Atomically published compiled stage snapshot.
-     *
-     * @param source source list identity
-     * @param stages compiled stage array
-     */
-    private record CompiledStages(List<HttpStage> source, HttpStage[] stages) {
-    }
-
-    /**
      * Delivery state supplied by the network owner, never inferred from an exception class.
      */
     public enum DeliveryState {
@@ -358,6 +349,15 @@ public class HttpChain {
          * No more specific authoritative reason was available.
          */
         UNKNOWN
+    }
+
+    /**
+     * Atomically published compiled stage snapshot.
+     *
+     * @param source source list identity
+     * @param stages compiled stage array
+     */
+    private record CompiledStages(List<HttpStage> source, HttpStage[] stages) {
     }
 
     /**

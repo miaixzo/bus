@@ -44,6 +44,7 @@ public class OpenIdClientScheme implements ProtocolScheme<OpenIdClientOptions> {
      * Stable Source type identifier.
      */
     public static final String ID = "oidc";
+
     /**
      * Builds an OIDC Authentication Request URL for user-agent navigation.
      */
@@ -53,6 +54,7 @@ public class OpenIdClientScheme implements ProtocolScheme<OpenIdClientOptions> {
             Url.class,
             Capability.Interaction.REDIRECT,
             Capability.Security.PUBLIC);
+
     /**
      * Retrieves OpenID Provider Metadata.
      */
@@ -62,6 +64,7 @@ public class OpenIdClientScheme implements ProtocolScheme<OpenIdClientOptions> {
             OpenIdProviderMetadata.class,
             Capability.Interaction.DIRECT,
             Capability.Security.PUBLIC);
+
     /**
      * Retrieves the issuer-bound public JWK Set.
      */
@@ -71,6 +74,7 @@ public class OpenIdClientScheme implements ProtocolScheme<OpenIdClientOptions> {
             JwkSet.class,
             Capability.Interaction.DIRECT,
             Capability.Security.PUBLIC);
+
     /**
      * Retrieves claims from the UserInfo endpoint.
      */
@@ -80,6 +84,7 @@ public class OpenIdClientScheme implements ProtocolScheme<OpenIdClientOptions> {
             UserInfoResponse.class,
             Capability.Interaction.DIRECT,
             Capability.Security.PUBLIC);
+
     /**
      * Builds an RP-Initiated Logout URL for user-agent navigation.
      */
@@ -89,6 +94,7 @@ public class OpenIdClientScheme implements ProtocolScheme<OpenIdClientOptions> {
             Url.class,
             Capability.Interaction.REDIRECT,
             Capability.Security.PUBLIC);
+
     /**
      * Exact potential Source operations, narrowed by the compiled runtime manifest when endpoints are absent.
      */
@@ -103,6 +109,7 @@ public class OpenIdClientScheme implements ProtocolScheme<OpenIdClientOptions> {
             JWK_SET,
             USERINFO,
             END_SESSION));
+
     /**
      * Formal standards implemented by the generic relying party.
      */
@@ -116,6 +123,7 @@ public class OpenIdClientScheme implements ProtocolScheme<OpenIdClientOptions> {
                     citation("https://www.rfc-editor.org/rfc/rfc9207", "Authorization response issuer"),
                     citation("https://www.rfc-editor.org/rfc/rfc9700", "OAuth security best current practice")),
             "OpenID Connect Relying Party");
+
     /**
      * Management form using standard discovery, endpoint, client, and JOSE member names.
      */

@@ -31,16 +31,15 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class KeySystemHookEvent extends AbstractSystemHookEvent {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852292810115L;
+
     /**
      * The key create event value.
      */
 
     public static final String KEY_CREATE_EVENT = "key_create";
+
     /**
      * The key destroy event value.
      */
@@ -50,22 +49,27 @@ public class KeySystemHookEvent extends AbstractSystemHookEvent {
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The updated at value.
      */
     private Date updatedAt;
+
     /**
      * The event name value.
      */
     private String eventName;
+
     /**
      * The username value.
      */
     private String username;
+
     /**
      * The key value.
      */
     private String key;
+
     /**
      * The id value.
      */

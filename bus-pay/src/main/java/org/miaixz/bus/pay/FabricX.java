@@ -25,11 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyStore;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -485,15 +481,6 @@ public abstract class FabricX {
         }
 
         /**
-         * Returns the total header value count.
-         *
-         * @return header value count
-         */
-        public int headerCount() {
-            return headers.values().stream().mapToInt(List::size).sum();
-        }
-
-        /**
          * Copies headers defensively.
          *
          * @param headers headers
@@ -509,6 +496,15 @@ public abstract class FabricX {
                             name,
                             values == null ? List.of() : Collections.unmodifiableList(new ArrayList<>(values))));
             return Collections.unmodifiableMap(copy);
+        }
+
+        /**
+         * Returns the total header value count.
+         *
+         * @return header value count
+         */
+        public int headerCount() {
+            return headers.values().stream().mapToInt(List::size).sum();
         }
 
     }

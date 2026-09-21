@@ -34,6 +34,16 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class CacheableAnnotationAttribute implements AnnotationAttribute {
 
     /**
+     * The annotation instance owning this attribute.
+     */
+    private final Annotation annotation;
+
+    /**
+     * The method representing the annotation attribute.
+     */
+    private final Method attribute;
+
+    /**
      * Whether the attribute value has been invoked and cached.
      */
     private volatile boolean valueInvoked;
@@ -52,16 +62,6 @@ public class CacheableAnnotationAttribute implements AnnotationAttribute {
      * The cached default value of the attribute.
      */
     private Object defaultValue;
-
-    /**
-     * The annotation instance owning this attribute.
-     */
-    private final Annotation annotation;
-
-    /**
-     * The method representing the annotation attribute.
-     */
-    private final Method attribute;
 
     /**
      * Constructs a new {@code CacheableAnnotationAttribute}.

@@ -84,6 +84,40 @@ public class DnsQueryLog {
     }
 
     /**
+     * Returns a safe address token.
+     *
+     * @param address client address, or {@code null}
+     * @return address token
+     */
+    private static String address(final InetAddress address) {
+        return address == null ? NONE : address.getHostAddress();
+    }
+
+    /**
+     * Returns a non-blank value or the absent token.
+     *
+     * @param value candidate value
+     * @return safe value token
+     */
+    private static String value(final String value) {
+        return value == null || value.isBlank() ? NONE : value;
+    }
+
+    /**
+     * Returns a redacted ECS token.
+     *
+     * @param subnet EDNS Client Subnet value, or {@code null}
+     * @return redacted ECS token without the client subnet address
+     */
+    private static String ecs(final DnsClientSubnet subnet) {
+        if (subnet == null) {
+            return NONE;
+        }
+        return "redacted/family-" + subnet.family() + "/source-" + subnet.sourcePrefixLength() + "/scope-"
+                + subnet.scopePrefixLength();
+    }
+
+    /**
      * Returns whether query logging is enabled.
      *
      * @return true when logging is enabled
@@ -151,40 +185,6 @@ public class DnsQueryLog {
                 value(policyAction),
                 value(upstream),
                 ecs(query.clientSubnet()));
-    }
-
-    /**
-     * Returns a safe address token.
-     *
-     * @param address client address, or {@code null}
-     * @return address token
-     */
-    private static String address(final InetAddress address) {
-        return address == null ? NONE : address.getHostAddress();
-    }
-
-    /**
-     * Returns a non-blank value or the absent token.
-     *
-     * @param value candidate value
-     * @return safe value token
-     */
-    private static String value(final String value) {
-        return value == null || value.isBlank() ? NONE : value;
-    }
-
-    /**
-     * Returns a redacted ECS token.
-     *
-     * @param subnet EDNS Client Subnet value, or {@code null}
-     * @return redacted ECS token without the client subnet address
-     */
-    private static String ecs(final DnsClientSubnet subnet) {
-        if (subnet == null) {
-            return NONE;
-        }
-        return "redacted/family-" + subnet.family() + "/source-" + subnet.sourcePrefixLength() + "/scope-"
-                + subnet.scopePrefixLength();
     }
 
 }

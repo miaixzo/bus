@@ -772,6 +772,22 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
         }
 
         /**
+         * Creates a Sort enum from a string value.
+         *
+         * @param value the string value to convert
+         * @return the Sort enum value
+         */
+        public static Sort fromString(String value) {
+            try {
+                return Sort.valueOf(value.toUpperCase());
+            } catch (Exception e) {
+                throw new IllegalArgumentException(String.format(
+                        "Invalid value '%s' for orders given; Has to be either 'desc' or 'asc' (case insensitive)",
+                        value), e);
+            }
+        }
+
+        /**
          * Checks if this sort order is ascending.
          *
          * @return true if ascending, false otherwise
@@ -787,22 +803,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          */
         public boolean isDescending() {
             return this.equals(DESC);
-        }
-
-        /**
-         * Creates a Sort enum from a string value.
-         *
-         * @param value the string value to convert
-         * @return the Sort enum value
-         */
-        public static Sort fromString(String value) {
-            try {
-                return Sort.valueOf(value.toUpperCase());
-            } catch (Exception e) {
-                throw new IllegalArgumentException(String.format(
-                        "Invalid value '%s' for orders given; Has to be either 'desc' or 'asc' (case insensitive)",
-                        value), e);
-            }
         }
 
     }

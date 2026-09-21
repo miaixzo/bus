@@ -525,7 +525,7 @@ public class DateBuilder {
         // If there is a Unix timestamp, set the time accordingly
         if (unixsecond != 0) {
             calendar.setTimeInMillis(unixsecond * 1000 + nanosecond / 1_000_000); // Set milliseconds corresponding to
-                                                                                  // the timestamp
+            // the timestamp
             return calendar;
         }
 

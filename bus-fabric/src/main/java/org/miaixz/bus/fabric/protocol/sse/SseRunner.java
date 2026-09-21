@@ -76,6 +76,66 @@ final class SseRunner {
     }
 
     /**
+     * Validates response status and media type.
+     *
+     * @param response streaming HTTP response to validate
+     * @throws ProtocolException if the status is not successful or the content type is not {@code text/event-stream}
+     */
+    private static void validateResponse(final HttpRunner.Stream response) {
+        final int status = response.status();
+        if (status < Http.Status.OK || status >= Http.Status.MULTIPLE_CHOICES) {
+            throw new ProtocolException("SSE response status must be 2xx");
+        }
+        final String value = response.headers().get(Http.Header.CONTENT_TYPE);
+        final MediaType mediaType;
+        try {
+            mediaType = MediaType.parse(value);
+        } catch (final RuntimeException e) {
+            throw new ProtocolException("SSE response has an invalid Content-Type", e);
+        }
+        if (!"text".equalsIgnoreCase(mediaType.type()) || !"event-stream".equalsIgnoreCase(mediaType.subtype())) {
+            throw new ProtocolException("SSE response must be text/event-stream");
+        }
+    }
+
+    /**
+     * Closes a reader before reconnecting.
+     *
+     * @param reader reader to close, or {@code null} when creation failed before a reader was assigned
+     */
+    private static void closeReader(final SseReader reader) {
+        try {
+            reader.close();
+        } catch (final RuntimeException ignored) {
+            // Reconnect should preserve the original stream outcome.
+        }
+    }
+
+    /**
+     * Closes an unclaimed response.
+     *
+     * @param response unclaimed streaming response to close, or {@code null}
+     */
+    private static void closeResponse(final HttpRunner.Stream response) {
+        if (response != null) {
+            response.close();
+        }
+    }
+
+    /**
+     * Validates required values.
+     *
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Opens the SSE stream synchronously and starts background event delivery.
      *
      * @return opened session
@@ -248,29 +308,6 @@ final class SseRunner {
                 spec.address().port(),
                 response.status());
         return response;
-    }
-
-    /**
-     * Validates response status and media type.
-     *
-     * @param response streaming HTTP response to validate
-     * @throws ProtocolException if the status is not successful or the content type is not {@code text/event-stream}
-     */
-    private static void validateResponse(final HttpRunner.Stream response) {
-        final int status = response.status();
-        if (status < Http.Status.OK || status >= Http.Status.MULTIPLE_CHOICES) {
-            throw new ProtocolException("SSE response status must be 2xx");
-        }
-        final String value = response.headers().get(Http.Header.CONTENT_TYPE);
-        final MediaType mediaType;
-        try {
-            mediaType = MediaType.parse(value);
-        } catch (final RuntimeException e) {
-            throw new ProtocolException("SSE response has an invalid Content-Type", e);
-        }
-        if (!"text".equalsIgnoreCase(mediaType.type()) || !"event-stream".equalsIgnoreCase(mediaType.subtype())) {
-            throw new ProtocolException("SSE response must be text/event-stream");
-        }
     }
 
     /**
@@ -594,19 +631,6 @@ final class SseRunner {
     }
 
     /**
-     * Closes a reader before reconnecting.
-     *
-     * @param reader reader to close, or {@code null} when creation failed before a reader was assigned
-     */
-    private static void closeReader(final SseReader reader) {
-        try {
-            reader.close();
-        } catch (final RuntimeException ignored) {
-            // Reconnect should preserve the original stream outcome.
-        }
-    }
-
-    /**
      * Checks the optional guard.
      *
      * @param message filtered SSE message to validate
@@ -666,30 +690,6 @@ final class SseRunner {
             event.cause(cause);
         }
         spec.observer().emit(event.build());
-    }
-
-    /**
-     * Closes an unclaimed response.
-     *
-     * @param response unclaimed streaming response to close, or {@code null}
-     */
-    private static void closeResponse(final HttpRunner.Stream response) {
-        if (response != null) {
-            response.close();
-        }
-    }
-
-    /**
-     * Validates required values.
-     *
-     * @param value reference to validate
-     * @param name  logical field name included in the validation error
-     * @param <T>   reference type
-     * @return validated non-null reference
-     * @throws ValidateException if {@code value} is {@code null}
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

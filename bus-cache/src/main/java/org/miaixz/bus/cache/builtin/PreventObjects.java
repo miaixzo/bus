@@ -76,9 +76,6 @@ public class PreventObjects {
      */
     private static final class NullMarker implements Serializable {
 
-        /**
-         * The serialization version UID.
-         */
         @Serial
         private static final long serialVersionUID = 2852290208329L;
 

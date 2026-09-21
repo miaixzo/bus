@@ -23,11 +23,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
@@ -108,6 +104,37 @@ public class MapperAotProcessors {
         }
 
         /**
+         * Normalizes the base packages.
+         *
+         * @param configuredPackages configured packages
+         * @return normalized, de-duplicated mapper packages in declaration order
+         */
+        private static List<String> normalizeBasePackages(String[] configuredPackages) {
+            if (configuredPackages == null || configuredPackages.length == 0) {
+                return List.of();
+            }
+            return Arrays.stream(configuredPackages)
+                    .filter(packageName -> packageName != null && !packageName.isBlank()).map(String::trim).distinct()
+                    .toList();
+        }
+
+        /**
+         * Tests whether the candidate type is a mapper explicitly included by Starter configuration.
+         *
+         * @param type         candidate mapper interface
+         * @param basePackages base packages
+         * @return whether configured mapper
+         */
+        private static boolean isConfiguredMapper(Class<?> type, List<String> basePackages) {
+            if (type == null || !type.isInterface()) {
+                return false;
+            }
+            String packageName = type.getPackageName();
+            return basePackages.stream().anyMatch(
+                    basePackage -> packageName.equals(basePackage) || packageName.startsWith(basePackage + Symbol.DOT));
+        }
+
+        /**
          * Returns whether a registered bean should be excluded from AOT processing.
          *
          * @param registeredBean registered bean descriptor
@@ -166,37 +193,6 @@ public class MapperAotProcessors {
                     }
                 }
             };
-        }
-
-        /**
-         * Normalizes the base packages.
-         *
-         * @param configuredPackages configured packages
-         * @return normalized, de-duplicated mapper packages in declaration order
-         */
-        private static List<String> normalizeBasePackages(String[] configuredPackages) {
-            if (configuredPackages == null || configuredPackages.length == 0) {
-                return List.of();
-            }
-            return Arrays.stream(configuredPackages)
-                    .filter(packageName -> packageName != null && !packageName.isBlank()).map(String::trim).distinct()
-                    .toList();
-        }
-
-        /**
-         * Tests whether the candidate type is a mapper explicitly included by Starter configuration.
-         *
-         * @param type         candidate mapper interface
-         * @param basePackages base packages
-         * @return whether configured mapper
-         */
-        private static boolean isConfiguredMapper(Class<?> type, List<String> basePackages) {
-            if (type == null || !type.isInterface()) {
-                return false;
-            }
-            String packageName = type.getPackageName();
-            return basePackages.stream().anyMatch(
-                    basePackage -> packageName.equals(basePackage) || packageName.startsWith(basePackage + Symbol.DOT));
         }
 
         /**

@@ -20,11 +20,7 @@
 package org.miaixz.bus.fabric.network.dns.resolve;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -139,6 +135,187 @@ public class RuntimeIndex {
         final RuntimeIndex compiled = compile(snapshot);
         target.set(compiled);
         return compiled;
+    }
+
+    /**
+     * Compiles all views.
+     *
+     * @param snapshot source snapshot
+     * @return immutable compiled views
+     */
+    private static List<ViewIndex> compileViews(final DnsSnapshot snapshot) {
+        final ArrayList<ViewIndex> result = new ArrayList<>();
+        for (final DnsView view : snapshot.views()) {
+            final ArrayList<DnsPolicyRule> effectivePolicies = new ArrayList<>(snapshot.policies());
+            effectivePolicies.addAll(view.policies());
+            result.add(
+                    new ViewIndex(view, compileZones(view.zones()), DnsPolicyIndex.compile(view.policies()),
+                            DnsPolicyIndex.compile(effectivePolicies)));
+        }
+        return List.copyOf(result);
+    }
+
+    /**
+     * Selects the default view index.
+     *
+     * @param views compiled views
+     * @return default view index
+     */
+    private static ViewIndex defaultView(final List<ViewIndex> views) {
+        for (final ViewIndex view : views) {
+            if (DnsView.DEFAULT.equals(view.view.name())) {
+                return view;
+            }
+        }
+        return views.getFirst();
+    }
+
+    /**
+     * Compiles zones into longest-origin order.
+     *
+     * @param zones source zones
+     * @return immutable sorted zones
+     */
+    private static List<DnsZone> compileZones(final List<DnsZone> zones) {
+        final ArrayList<DnsZone> result = new ArrayList<>(zones);
+        result.sort(Comparator.comparingInt((DnsZone zone) -> zone.origin().length()).reversed());
+        return List.copyOf(result);
+    }
+
+    /**
+     * Compiles DNSKEY records by key tag.
+     *
+     * @param snapshot source snapshot
+     * @return immutable DNSKEY key-tag index
+     */
+    private static Map<Integer, List<DnsRecord>> compileDnskeyIndex(final DnsSnapshot snapshot) {
+        final HashMap<Integer, List<DnsRecord>> mutable = new HashMap<>();
+        for (final DnsView view : snapshot.views()) {
+            for (final DnsZone zone : view.zones()) {
+                indexDnskeys(mutable, zone.records());
+                indexSigningKeys(mutable, zone.signingKeys());
+            }
+        }
+        return immutableRecordIndex(mutable);
+    }
+
+    /**
+     * Indexes DNSKEY records.
+     *
+     * @param target  target index
+     * @param records source records
+     */
+    private static void indexDnskeys(final Map<Integer, List<DnsRecord>> target, final List<DnsRecord> records) {
+        for (final DnsRecord record : records) {
+            if (record.typeCode() == DnsRecordType.DNSKEY.code()) {
+                target.computeIfAbsent(DnsSigningKey.keyTag(record.wireData()), ignored -> new ArrayList<>())
+                        .add(record);
+            }
+        }
+    }
+
+    /**
+     * Indexes signing keys as DNSKEY records.
+     *
+     * @param target      target index
+     * @param signingKeys source signing keys
+     */
+    private static void indexSigningKeys(
+            final Map<Integer, List<DnsRecord>> target,
+            final List<DnsSigningKey> signingKeys) {
+        for (final DnsSigningKey signingKey : signingKeys) {
+            target.computeIfAbsent(signingKey.keyTag(), ignored -> new ArrayList<>()).add(signingKey.dnskeyRecord(0L));
+        }
+    }
+
+    /**
+     * Compiles DS records by owner name.
+     *
+     * @param snapshot source snapshot
+     * @return immutable DS owner index
+     */
+    private static Map<String, List<DnsRecord>> compileDsIndex(final DnsSnapshot snapshot) {
+        final HashMap<String, List<DnsRecord>> mutable = new HashMap<>();
+        for (final DnsView view : snapshot.views()) {
+            for (final DnsZone zone : view.zones()) {
+                for (final DnsRecord record : zone.records()) {
+                    if (record.typeCode() == DnsRecordType.DS.code()) {
+                        mutable.computeIfAbsent(record.name(), ignored -> new ArrayList<>()).add(record);
+                    }
+                }
+            }
+        }
+        return immutableStringRecordIndex(mutable);
+    }
+
+    /**
+     * Compiles trust anchors by key tag.
+     *
+     * @param snapshot source snapshot
+     * @return immutable trust-anchor key-tag index
+     */
+    private static Map<Integer, List<DnsTrustAnchor>> compileTrustAnchorIndex(final DnsSnapshot snapshot) {
+        final HashMap<Integer, List<DnsTrustAnchor>> mutable = new HashMap<>();
+        for (final DnsTrustAnchor trustAnchor : snapshot.dnssecTrustAnchors()) {
+            mutable.computeIfAbsent(trustAnchor.keyTag(), ignored -> new ArrayList<>()).add(trustAnchor);
+        }
+        final HashMap<Integer, List<DnsTrustAnchor>> immutable = new HashMap<>();
+        for (final Map.Entry<Integer, List<DnsTrustAnchor>> entry : mutable.entrySet()) {
+            immutable.put(entry.getKey(), List.copyOf(entry.getValue()));
+        }
+        return Map.copyOf(immutable);
+    }
+
+    /**
+     * Compiles upstream health references by stable health key.
+     *
+     * @param snapshot source snapshot
+     * @param health   shared upstream health reference
+     * @return immutable upstream health reference map
+     */
+    private static Map<String, DnsUpstreamHealth> compileUpstreamHealthRefs(
+            final DnsSnapshot snapshot,
+            final DnsUpstreamHealth health) {
+        final HashMap<String, DnsUpstreamHealth> refs = new HashMap<>();
+        for (final DnsUpstream upstream : snapshot.upstreams()) {
+            refs.put(health.healthKey(upstream), health);
+        }
+        for (final DnsView view : snapshot.views()) {
+            for (final DnsZone zone : view.zones()) {
+                for (final DnsUpstream upstream : zone.upstreams()) {
+                    refs.put(health.healthKey(upstream), health);
+                }
+            }
+        }
+        return Map.copyOf(refs);
+    }
+
+    /**
+     * Creates an immutable integer-key record index.
+     *
+     * @param source mutable source index
+     * @return immutable index
+     */
+    private static Map<Integer, List<DnsRecord>> immutableRecordIndex(final Map<Integer, List<DnsRecord>> source) {
+        final HashMap<Integer, List<DnsRecord>> immutable = new HashMap<>();
+        for (final Map.Entry<Integer, List<DnsRecord>> entry : source.entrySet()) {
+            immutable.put(entry.getKey(), List.copyOf(entry.getValue()));
+        }
+        return Map.copyOf(immutable);
+    }
+
+    /**
+     * Creates an immutable string-key record index.
+     *
+     * @param source mutable source index
+     * @return immutable index
+     */
+    private static Map<String, List<DnsRecord>> immutableStringRecordIndex(final Map<String, List<DnsRecord>> source) {
+        final HashMap<String, List<DnsRecord>> immutable = new HashMap<>();
+        for (final Map.Entry<String, List<DnsRecord>> entry : source.entrySet()) {
+            immutable.put(DnsName.normalize(entry.getKey()), List.copyOf(entry.getValue()));
+        }
+        return Map.copyOf(immutable);
     }
 
     /**
@@ -329,187 +506,6 @@ public class RuntimeIndex {
             }
         }
         return selected == null ? defaultView : selected;
-    }
-
-    /**
-     * Compiles all views.
-     *
-     * @param snapshot source snapshot
-     * @return immutable compiled views
-     */
-    private static List<ViewIndex> compileViews(final DnsSnapshot snapshot) {
-        final ArrayList<ViewIndex> result = new ArrayList<>();
-        for (final DnsView view : snapshot.views()) {
-            final ArrayList<DnsPolicyRule> effectivePolicies = new ArrayList<>(snapshot.policies());
-            effectivePolicies.addAll(view.policies());
-            result.add(
-                    new ViewIndex(view, compileZones(view.zones()), DnsPolicyIndex.compile(view.policies()),
-                            DnsPolicyIndex.compile(effectivePolicies)));
-        }
-        return List.copyOf(result);
-    }
-
-    /**
-     * Selects the default view index.
-     *
-     * @param views compiled views
-     * @return default view index
-     */
-    private static ViewIndex defaultView(final List<ViewIndex> views) {
-        for (final ViewIndex view : views) {
-            if (DnsView.DEFAULT.equals(view.view.name())) {
-                return view;
-            }
-        }
-        return views.getFirst();
-    }
-
-    /**
-     * Compiles zones into longest-origin order.
-     *
-     * @param zones source zones
-     * @return immutable sorted zones
-     */
-    private static List<DnsZone> compileZones(final List<DnsZone> zones) {
-        final ArrayList<DnsZone> result = new ArrayList<>(zones);
-        result.sort(Comparator.comparingInt((DnsZone zone) -> zone.origin().length()).reversed());
-        return List.copyOf(result);
-    }
-
-    /**
-     * Compiles DNSKEY records by key tag.
-     *
-     * @param snapshot source snapshot
-     * @return immutable DNSKEY key-tag index
-     */
-    private static Map<Integer, List<DnsRecord>> compileDnskeyIndex(final DnsSnapshot snapshot) {
-        final HashMap<Integer, List<DnsRecord>> mutable = new HashMap<>();
-        for (final DnsView view : snapshot.views()) {
-            for (final DnsZone zone : view.zones()) {
-                indexDnskeys(mutable, zone.records());
-                indexSigningKeys(mutable, zone.signingKeys());
-            }
-        }
-        return immutableRecordIndex(mutable);
-    }
-
-    /**
-     * Indexes DNSKEY records.
-     *
-     * @param target  target index
-     * @param records source records
-     */
-    private static void indexDnskeys(final Map<Integer, List<DnsRecord>> target, final List<DnsRecord> records) {
-        for (final DnsRecord record : records) {
-            if (record.typeCode() == DnsRecordType.DNSKEY.code()) {
-                target.computeIfAbsent(DnsSigningKey.keyTag(record.wireData()), ignored -> new ArrayList<>())
-                        .add(record);
-            }
-        }
-    }
-
-    /**
-     * Indexes signing keys as DNSKEY records.
-     *
-     * @param target      target index
-     * @param signingKeys source signing keys
-     */
-    private static void indexSigningKeys(
-            final Map<Integer, List<DnsRecord>> target,
-            final List<DnsSigningKey> signingKeys) {
-        for (final DnsSigningKey signingKey : signingKeys) {
-            target.computeIfAbsent(signingKey.keyTag(), ignored -> new ArrayList<>()).add(signingKey.dnskeyRecord(0L));
-        }
-    }
-
-    /**
-     * Compiles DS records by owner name.
-     *
-     * @param snapshot source snapshot
-     * @return immutable DS owner index
-     */
-    private static Map<String, List<DnsRecord>> compileDsIndex(final DnsSnapshot snapshot) {
-        final HashMap<String, List<DnsRecord>> mutable = new HashMap<>();
-        for (final DnsView view : snapshot.views()) {
-            for (final DnsZone zone : view.zones()) {
-                for (final DnsRecord record : zone.records()) {
-                    if (record.typeCode() == DnsRecordType.DS.code()) {
-                        mutable.computeIfAbsent(record.name(), ignored -> new ArrayList<>()).add(record);
-                    }
-                }
-            }
-        }
-        return immutableStringRecordIndex(mutable);
-    }
-
-    /**
-     * Compiles trust anchors by key tag.
-     *
-     * @param snapshot source snapshot
-     * @return immutable trust-anchor key-tag index
-     */
-    private static Map<Integer, List<DnsTrustAnchor>> compileTrustAnchorIndex(final DnsSnapshot snapshot) {
-        final HashMap<Integer, List<DnsTrustAnchor>> mutable = new HashMap<>();
-        for (final DnsTrustAnchor trustAnchor : snapshot.dnssecTrustAnchors()) {
-            mutable.computeIfAbsent(trustAnchor.keyTag(), ignored -> new ArrayList<>()).add(trustAnchor);
-        }
-        final HashMap<Integer, List<DnsTrustAnchor>> immutable = new HashMap<>();
-        for (final Map.Entry<Integer, List<DnsTrustAnchor>> entry : mutable.entrySet()) {
-            immutable.put(entry.getKey(), List.copyOf(entry.getValue()));
-        }
-        return Map.copyOf(immutable);
-    }
-
-    /**
-     * Compiles upstream health references by stable health key.
-     *
-     * @param snapshot source snapshot
-     * @param health   shared upstream health reference
-     * @return immutable upstream health reference map
-     */
-    private static Map<String, DnsUpstreamHealth> compileUpstreamHealthRefs(
-            final DnsSnapshot snapshot,
-            final DnsUpstreamHealth health) {
-        final HashMap<String, DnsUpstreamHealth> refs = new HashMap<>();
-        for (final DnsUpstream upstream : snapshot.upstreams()) {
-            refs.put(health.healthKey(upstream), health);
-        }
-        for (final DnsView view : snapshot.views()) {
-            for (final DnsZone zone : view.zones()) {
-                for (final DnsUpstream upstream : zone.upstreams()) {
-                    refs.put(health.healthKey(upstream), health);
-                }
-            }
-        }
-        return Map.copyOf(refs);
-    }
-
-    /**
-     * Creates an immutable integer-key record index.
-     *
-     * @param source mutable source index
-     * @return immutable index
-     */
-    private static Map<Integer, List<DnsRecord>> immutableRecordIndex(final Map<Integer, List<DnsRecord>> source) {
-        final HashMap<Integer, List<DnsRecord>> immutable = new HashMap<>();
-        for (final Map.Entry<Integer, List<DnsRecord>> entry : source.entrySet()) {
-            immutable.put(entry.getKey(), List.copyOf(entry.getValue()));
-        }
-        return Map.copyOf(immutable);
-    }
-
-    /**
-     * Creates an immutable string-key record index.
-     *
-     * @param source mutable source index
-     * @return immutable index
-     */
-    private static Map<String, List<DnsRecord>> immutableStringRecordIndex(final Map<String, List<DnsRecord>> source) {
-        final HashMap<String, List<DnsRecord>> immutable = new HashMap<>();
-        for (final Map.Entry<String, List<DnsRecord>> entry : source.entrySet()) {
-            immutable.put(DnsName.normalize(entry.getKey()), List.copyOf(entry.getValue()));
-        }
-        return Map.copyOf(immutable);
     }
 
     /**

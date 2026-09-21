@@ -77,6 +77,29 @@ public class KafkaProvider implements MQProvider {
     }
 
     /**
+     * Builds Kafka configuration properties based on the provided generic {@link MQConfig}. It extracts the broker URL
+     * and merges any additional properties from {@link MQConfig}.
+     *
+     * @param config The {@link MQConfig} object, containing necessary connection information.
+     * @return The constructed Kafka configuration {@link Properties}.
+     */
+    private static Properties buidProperties(final MQConfig config) {
+        Logger.debug(
+                true,
+                "Extra",
+                "Kafka provider property build started: brokerPresent={}, extraPropertyCount={}",
+                config != null && config.getBrokerUrl() != null,
+                config == null || config.getProperties() == null ? 0 : config.getProperties().size());
+        final Properties properties = new Properties();
+        // Set Kafka server address using CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG
+        properties.setProperty(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, config.getBrokerUrl());
+        // Add other configuration properties from MQConfig
+        properties.putAll(config.getProperties());
+        Logger.debug(false, "Extra", "Kafka provider property build completed: propertyCount={}", properties.size());
+        return properties;
+    }
+
+    /**
      * Initializes the Kafka provider using the provided {@link MQConfig}. This method converts the generic
      * {@link MQConfig} into Kafka-specific {@link Properties} and then calls {@link #init(Properties)} to set up the
      * provider.
@@ -182,29 +205,6 @@ public class KafkaProvider implements MQProvider {
                 this.properties == null ? 0 : this.properties.size(),
                 (System.nanoTime() - startedAt) / 1_000_000L);
         return consumer;
-    }
-
-    /**
-     * Builds Kafka configuration properties based on the provided generic {@link MQConfig}. It extracts the broker URL
-     * and merges any additional properties from {@link MQConfig}.
-     *
-     * @param config The {@link MQConfig} object, containing necessary connection information.
-     * @return The constructed Kafka configuration {@link Properties}.
-     */
-    private static Properties buidProperties(final MQConfig config) {
-        Logger.debug(
-                true,
-                "Extra",
-                "Kafka provider property build started: brokerPresent={}, extraPropertyCount={}",
-                config != null && config.getBrokerUrl() != null,
-                config == null || config.getProperties() == null ? 0 : config.getProperties().size());
-        final Properties properties = new Properties();
-        // Set Kafka server address using CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG
-        properties.setProperty(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, config.getBrokerUrl());
-        // Add other configuration properties from MQConfig
-        properties.putAll(config.getProperties());
-        Logger.debug(false, "Extra", "Kafka provider property build completed: propertyCount={}", properties.size());
-        return properties;
     }
 
 }

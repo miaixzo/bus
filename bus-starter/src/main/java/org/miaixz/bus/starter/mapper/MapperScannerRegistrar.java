@@ -78,6 +78,25 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
     }
 
     /**
+     * Finds the mapper enable annotation declared by an application source.
+     *
+     * @param registry current Bean definition registry
+     * @return merged annotation attributes, or {@code null} when properties activated the feature
+     */
+    private static AnnotationMetadata findEnableMapperMetadata(BeanDefinitionRegistry registry) {
+        for (String beanName : registry.getBeanDefinitionNames()) {
+            if (registry.getBeanDefinition(beanName) instanceof AnnotatedBeanDefinition definition) {
+                AnnotationMetadata metadata = definition.getMetadata();
+                if (metadata.hasAnnotation(EnableMapper.class.getName())
+                        || metadata.hasMetaAnnotation(EnableMapper.class.getName())) {
+                    return metadata;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Registers mapper interfaces using annotation attributes first and configuration properties second.
      *
      * <p>
@@ -186,25 +205,6 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
                 "Mapper scanner registration finished: basePackageCount={}, mapperBeanCount={}",
                 basePackage.size(),
                 beanDefinitions.size());
-    }
-
-    /**
-     * Finds the mapper enable annotation declared by an application source.
-     *
-     * @param registry current Bean definition registry
-     * @return merged annotation attributes, or {@code null} when properties activated the feature
-     */
-    private static AnnotationMetadata findEnableMapperMetadata(BeanDefinitionRegistry registry) {
-        for (String beanName : registry.getBeanDefinitionNames()) {
-            if (registry.getBeanDefinition(beanName) instanceof AnnotatedBeanDefinition definition) {
-                AnnotationMetadata metadata = definition.getMetadata();
-                if (metadata.hasAnnotation(EnableMapper.class.getName())
-                        || metadata.hasMetaAnnotation(EnableMapper.class.getName())) {
-                    return metadata;
-                }
-            }
-        }
-        return null;
     }
 
     /**

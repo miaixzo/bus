@@ -98,6 +98,31 @@ final class HttpConnectionLease {
     }
 
     /**
+     * Returns the owner embedded in a wrapped payload.
+     *
+     * @param payload response payload
+     * @return lease owner or {@code null}
+     */
+    static HttpConnectionLease from(final Payload payload) {
+        return payload instanceof LeasePayload tracked ? tracked.owner() : null;
+    }
+
+    /**
+     * Requires a non-null value.
+     *
+     * @param value value
+     * @param name  diagnostic name
+     * @param <T>   value type
+     * @return value
+     */
+    private static <T> T require(final T value, final String name) {
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
+    }
+
+    /**
      * Wraps a transport payload with this lease lifecycle.
      *
      * @param payload payload to wrap
@@ -154,16 +179,6 @@ final class HttpConnectionLease {
         } catch (final RuntimeException e) {
             throw new InternalException("Unable to release HTTP connection", e);
         }
-    }
-
-    /**
-     * Returns the owner embedded in a wrapped payload.
-     *
-     * @param payload response payload
-     * @return lease owner or {@code null}
-     */
-    static HttpConnectionLease from(final Payload payload) {
-        return payload instanceof LeasePayload tracked ? tracked.owner() : null;
     }
 
     /**
@@ -325,21 +340,6 @@ final class HttpConnectionLease {
             }
             release();
         }
-    }
-
-    /**
-     * Requires a non-null value.
-     *
-     * @param value value
-     * @param name  diagnostic name
-     * @param <T>   value type
-     * @return value
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
     }
 
 }

@@ -38,30 +38,37 @@ public class MemoryPressure implements AutoCloseable {
      * Supplies direct bytes currently allocated by the unified Netty allocator.
      */
     private final LongSupplier directUsed;
+
     /**
      * Maximum direct memory available to the process.
      */
     private final long directMaximum;
+
     /**
      * Direct-memory ratio that first rejects new downloads.
      */
     private final double directDownloadThreshold;
+
     /**
      * Direct-memory ratio that rejects every new stream.
      */
     private final double directStreamingThreshold;
+
     /**
      * Direct-memory ratio that rejects every new request.
      */
     private final double directEmergencyThreshold;
+
     /**
      * Direct-memory ratio below which hysteresis permits recovery to normal.
      */
     private final double directRecoveryThreshold;
+
     /**
      * Single daemon executor that samples memory away from request threads.
      */
     private final ScheduledExecutorService sampler;
+
     /**
      * Latest sampled state, published lock-free to request threads.
      */

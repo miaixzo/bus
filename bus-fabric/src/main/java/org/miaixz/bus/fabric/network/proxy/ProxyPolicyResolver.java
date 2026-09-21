@@ -42,6 +42,19 @@ public class ProxyPolicyResolver {
     }
 
     /**
+     * Validates one required resolver input.
+     *
+     * @param value input value
+     * @param name  diagnostic input name
+     * @param <T>   input type
+     * @return validated non-null value
+     * @throws ValidateException if {@code value} is {@code null}
+     */
+    private static <T> T required(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Resolves request, context, legacy, and system policies in deterministic priority order.
      * <p>
      * Explicit request policy has highest priority, followed by {@link ProxyPlan#OPTION}, the legacy HTTP option, and
@@ -85,19 +98,6 @@ public class ProxyPolicyResolver {
         final List<ProxyPlan> candidates = selector == null ? List.of(ProxyPlan.direct())
                 : ProxySelectorAdapter.of(selector).select(destination.toUri());
         return new ProxySelection(requested, effective, source, destination, candidates, selector);
-    }
-
-    /**
-     * Validates one required resolver input.
-     *
-     * @param value input value
-     * @param name  diagnostic input name
-     * @param <T>   input type
-     * @return validated non-null value
-     * @throws ValidateException if {@code value} is {@code null}
-     */
-    private static <T> T required(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

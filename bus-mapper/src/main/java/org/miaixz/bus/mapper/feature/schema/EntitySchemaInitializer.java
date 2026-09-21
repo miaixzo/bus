@@ -43,11 +43,7 @@ import org.miaixz.bus.mapper.behavior.SchemaBehavior;
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.dialect.DialectRegistry;
 import org.miaixz.bus.mapper.feature.affix.AffixRuleConfig;
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
-import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
-import org.miaixz.bus.mapper.parsing.IndexMeta;
-import org.miaixz.bus.mapper.parsing.MapperFactory;
-import org.miaixz.bus.mapper.parsing.TableMeta;
+import org.miaixz.bus.mapper.parsing.*;
 
 /**
  * Entity schema initializer.

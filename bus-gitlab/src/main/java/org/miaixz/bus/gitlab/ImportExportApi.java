@@ -42,8 +42,8 @@ import org.miaixz.bus.logger.Logger;
 /**
  * This class provides an entry point to all the GitLab API project import/export calls.
  *
- * @see <a href="https://docs.gitlab.com/ee/api/project_import_export.html">Project import/export API at GitLab</a>
  * @author Kimi Liu
+ * @see <a href="https://docs.gitlab.com/ee/api/project_import_export.html">Project import/export API at GitLab</a>
  */
 public class ImportExportApi extends AbstractApi {
 

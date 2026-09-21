@@ -133,6 +133,56 @@ public class DnsDecodedResponse {
     }
 
     /**
+     * Returns the negative-cache TTL represented by an SOA record.
+     *
+     * @param record SOA record
+     * @return minimum of the SOA record TTL and SOA minimum field
+     */
+    private static long soaNegativeTtl(final DnsRecord record) {
+        final byte[] data = record.wireData();
+        final DnsName.ReadResult primary = DnsName.read(data, 0);
+        final DnsName.ReadResult responsible = DnsName.read(data, primary.nextOffset());
+        if (responsible.nextOffset() + 20 > data.length) {
+            return record.ttl();
+        }
+        return Math.min(record.ttl(), DnsCodec.readUnsignedInt(data, responsible.nextOffset() + 16));
+    }
+
+    /**
+     * Returns the minimum TTL across a record list.
+     *
+     * @param current current minimum TTL
+     * @param records records being inspected
+     * @return updated minimum TTL
+     */
+    private static long minimumTtl(final long current, final List<DnsRecord> records) {
+        long ttlSeconds = current;
+        for (final DnsRecord record : records) {
+            ttlSeconds = Math.min(ttlSeconds, record.ttl());
+        }
+        return ttlSeconds;
+    }
+
+    /**
+     * Validates and copies a record list.
+     *
+     * @param records source records
+     * @param section diagnostic section name
+     * @return immutable record list
+     */
+    private static List<DnsRecord> immutableRecords(final List<DnsRecord> records, final String section) {
+        if (records == null) {
+            throw new ValidateException("DNS decoded " + section + " records must not be null");
+        }
+        for (final DnsRecord record : records) {
+            if (record == null) {
+                throw new ValidateException("DNS decoded " + section + " records must not contain null");
+            }
+        }
+        return List.copyOf(records);
+    }
+
+    /**
      * Returns the DNS message identifier.
      *
      * @return unsigned 16-bit identifier
@@ -278,56 +328,6 @@ public class DnsDecodedResponse {
             }
         }
         return ttlSeconds;
-    }
-
-    /**
-     * Returns the negative-cache TTL represented by an SOA record.
-     *
-     * @param record SOA record
-     * @return minimum of the SOA record TTL and SOA minimum field
-     */
-    private static long soaNegativeTtl(final DnsRecord record) {
-        final byte[] data = record.wireData();
-        final DnsName.ReadResult primary = DnsName.read(data, 0);
-        final DnsName.ReadResult responsible = DnsName.read(data, primary.nextOffset());
-        if (responsible.nextOffset() + 20 > data.length) {
-            return record.ttl();
-        }
-        return Math.min(record.ttl(), DnsCodec.readUnsignedInt(data, responsible.nextOffset() + 16));
-    }
-
-    /**
-     * Returns the minimum TTL across a record list.
-     *
-     * @param current current minimum TTL
-     * @param records records being inspected
-     * @return updated minimum TTL
-     */
-    private static long minimumTtl(final long current, final List<DnsRecord> records) {
-        long ttlSeconds = current;
-        for (final DnsRecord record : records) {
-            ttlSeconds = Math.min(ttlSeconds, record.ttl());
-        }
-        return ttlSeconds;
-    }
-
-    /**
-     * Validates and copies a record list.
-     *
-     * @param records source records
-     * @param section diagnostic section name
-     * @return immutable record list
-     */
-    private static List<DnsRecord> immutableRecords(final List<DnsRecord> records, final String section) {
-        if (records == null) {
-            throw new ValidateException("DNS decoded " + section + " records must not be null");
-        }
-        for (final DnsRecord record : records) {
-            if (record == null) {
-                throw new ValidateException("DNS decoded " + section + " records must not contain null");
-            }
-        }
-        return List.copyOf(records);
     }
 
 }

@@ -44,6 +44,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
      * The cpuid value.
      */
     private final SupplierX<ProcessorIdentifier> cpuid = Memoizer.memoize(this::queryProcessorId);
+
     // Max often iterates current, intentionally making it shorter to re-memoize current
     /**
      * The currentFreq value.
@@ -73,6 +74,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
      */
     private final SupplierX<long[][]> processorCpuLoadTicks = Memoizer
             .memoize(this::queryProcessorCpuLoadTicks, Memoizer.defaultExpiration());
+
     // Logical and Physical Processor Counts
     /**
      * The physicalPackageCount value.
@@ -93,6 +95,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
      * The maxFreq value.
      */
     private final SupplierX<Long> maxFreq = Memoizer.memoize(this::queryMaxFreq, Memoizer.defaultExpiration());
+
     // Processor info, initialized in constructor
     /**
      * The logicalProcessors value.

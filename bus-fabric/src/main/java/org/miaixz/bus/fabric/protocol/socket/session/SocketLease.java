@@ -61,14 +61,14 @@ public class SocketLease {
     private final ConnectionLease lease;
 
     /**
-     * Socket session created over the leased connection.
-     */
-    private SocketSession session;
-
-    /**
      * One-shot guard shared by release and close operations.
      */
     private final AtomicBoolean released;
+
+    /**
+     * Socket session created over the leased connection.
+     */
+    private SocketSession session;
 
     /**
      * Creates a socket lease.
@@ -303,61 +303,6 @@ public class SocketLease {
     }
 
     /**
-     * Returns the session.
-     *
-     * @return initialized socket session backed by the leased connection
-     */
-    public SocketSession session() {
-        return Assert.notNull(session, () -> new ValidateException("Socket session has not been initialized"));
-    }
-
-    /**
-     * Releases this lease.
-     *
-     * @return {@code true} when this call first released the lease to the pool
-     */
-    public boolean release() {
-        if (!released.compareAndSet(false, true)) {
-            return false;
-        }
-        return lease.release();
-    }
-
-    /**
-     * Closes this lease.
-     *
-     * @return {@code true} when this call first closed the session and lease
-     */
-    public boolean close() {
-        if (!released.compareAndSet(false, true)) {
-            return false;
-        }
-        if (session != null) {
-            session.close();
-        }
-        lease.close();
-        return true;
-    }
-
-    /**
-     * Returns whether released.
-     *
-     * @return {@code true} after either release or close has claimed the lease
-     */
-    public boolean released() {
-        return released.get();
-    }
-
-    /**
-     * Creates an owner handle for a socket session.
-     *
-     * @return closeable owner handle delegating to this lease
-     */
-    public Owner owner() {
-        return new Owner(this);
-    }
-
-    /**
      * Opens a pooled connection.
      *
      * @param destination connection destination
@@ -564,6 +509,61 @@ public class SocketLease {
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Returns the session.
+     *
+     * @return initialized socket session backed by the leased connection
+     */
+    public SocketSession session() {
+        return Assert.notNull(session, () -> new ValidateException("Socket session has not been initialized"));
+    }
+
+    /**
+     * Releases this lease.
+     *
+     * @return {@code true} when this call first released the lease to the pool
+     */
+    public boolean release() {
+        if (!released.compareAndSet(false, true)) {
+            return false;
+        }
+        return lease.release();
+    }
+
+    /**
+     * Closes this lease.
+     *
+     * @return {@code true} when this call first closed the session and lease
+     */
+    public boolean close() {
+        if (!released.compareAndSet(false, true)) {
+            return false;
+        }
+        if (session != null) {
+            session.close();
+        }
+        lease.close();
+        return true;
+    }
+
+    /**
+     * Returns whether released.
+     *
+     * @return {@code true} after either release or close has claimed the lease
+     */
+    public boolean released() {
+        return released.get();
+    }
+
+    /**
+     * Creates an owner handle for a socket session.
+     *
+     * @return closeable owner handle delegating to this lease
+     */
+    public Owner owner() {
+        return new Owner(this);
     }
 
     /**

@@ -61,6 +61,21 @@ public record StompTopic(String id, String destination) {
     }
 
     /**
+     * Validates a single-line token.
+     *
+     * @param value identifier or destination text to validate
+     * @param name  logical field name included in the validation error
+     * @return unchanged non-blank, single-line text
+     * @throws ValidateException if the text is blank or contains a line break
+     */
+    private static String validate(final String value, final String name) {
+        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException(name + " must be non-blank and single-line");
+        }
+        return value;
+    }
+
+    /**
      * Returns the subscription id.
      *
      * @return explicit identifier or the destination selected as its default
@@ -101,21 +116,6 @@ public record StompTopic(String id, String destination) {
             return value.startsWith(prefix) && value.indexOf(Symbol.C_SLASH, prefix.length()) < Normal._0;
         }
         return false;
-    }
-
-    /**
-     * Validates a single-line token.
-     *
-     * @param value identifier or destination text to validate
-     * @param name  logical field name included in the validation error
-     * @return unchanged non-blank, single-line text
-     * @throws ValidateException if the text is blank or contains a line break
-     */
-    private static String validate(final String value, final String name) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException(name + " must be non-blank and single-line");
-        }
-        return value;
     }
 
 }

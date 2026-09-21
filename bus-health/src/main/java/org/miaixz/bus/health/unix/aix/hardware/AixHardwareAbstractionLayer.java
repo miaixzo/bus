@@ -47,6 +47,7 @@ public class AixHardwareAbstractionLayer extends AbstractHardwareAbstractionLaye
      */
     private final SupplierX<List<String>> lscfg = Memoizer
             .memoize(Lscfg::queryAllDevices, Memoizer.defaultExpiration());
+
     // Memoized disk stats to pass to disk object(s)
     /**
      * The diskStats value.

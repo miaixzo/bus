@@ -32,6 +32,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SlabBufferAllocator {
 
     /**
+     * Shared fallback allocator that creates standalone heap slices.
+     */
+    public static final SlabBufferAllocator DEFAULT_ALLOCATOR = new SlabBufferAllocator(0, 1, false);
+
+    /**
      * Background compactor for slab allocators.
      */
     private static final ScheduledThreadPoolExecutor SLAB_BUFFER_ALLOCATOR_COMPACTOR = new ScheduledThreadPoolExecutor(
@@ -42,14 +47,14 @@ public class SlabBufferAllocator {
             });
 
     /**
-     * Shared fallback allocator that creates standalone heap slices.
-     */
-    public static final SlabBufferAllocator DEFAULT_ALLOCATOR = new SlabBufferAllocator(0, 1, false);
-
-    /**
      * Round-robin cursor.
      */
     private final AtomicInteger cursor = new AtomicInteger();
+
+    /**
+     * Background compaction future.
+     */
+    private final ScheduledFuture<?> future;
 
     /**
      * Slabs owned by this allocator.
@@ -60,11 +65,6 @@ public class SlabBufferAllocator {
      * Whether this allocator accepts allocations.
      */
     private volatile boolean enabled = true;
-
-    /**
-     * Background compaction future.
-     */
-    private final ScheduledFuture<?> future;
 
     /**
      * Creates a direct slab allocator.

@@ -54,11 +54,17 @@ import org.miaixz.bus.pay.nimble.wechat.WechatPayBuilder;
 public class JdPayBuilder {
 
     private static final String XML_HEAD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+
     private static final String XML_JDPAY_START = "<jdpay>";
+
     private static final String XML_JDPAY_END = "</jdpay>";
+
     private static final Pattern PATTERN = Pattern.compile("\t|\r|\n");
+
     private static final String XML_SIGN_START = "<sign>";
+
     private static final String XML_SIGN_END = "</sign>";
+
     private static final String SIGN = "sign";
 
     /**

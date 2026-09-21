@@ -22,12 +22,7 @@ package org.miaixz.bus.fabric.network.dns.dnssec;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -35,11 +30,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.dns.cache.DnsValidationCache;
 import org.miaixz.bus.fabric.network.dns.cache.DnsValidationCache.Kind;
-import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
-import org.miaixz.bus.fabric.network.dns.message.DnsDecodedResponse;
-import org.miaixz.bus.fabric.network.dns.message.DnsName;
-import org.miaixz.bus.fabric.network.dns.message.DnsQuestion;
-import org.miaixz.bus.fabric.network.dns.message.DnsResponseCode;
+import org.miaixz.bus.fabric.network.dns.message.*;
 import org.miaixz.bus.fabric.network.dns.record.DnsRecord;
 import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
 
@@ -100,139 +91,6 @@ public class DnsNsec3ProofValidator {
             throw new ValidateException("DNSSEC NSEC3 proof cache must not be null");
         }
         this.validationCache = validationCache;
-    }
-
-    /**
-     * Returns whether a decoded response is a negative response that needs NSEC3 proof validation.
-     *
-     * @param decoded decoded response
-     * @return true when the response is NXDOMAIN or NOERROR without answers
-     */
-    public boolean negativeResponse(final DnsDecodedResponse decoded) {
-        if (decoded == null) {
-            throw new ValidateException("DNSSEC NSEC3 response must not be null");
-        }
-        return decoded.responseCode() == DnsResponseCode.NXDOMAIN
-                || decoded.responseCode() == DnsResponseCode.NOERROR && decoded.answers().isEmpty();
-    }
-
-    /**
-     * Returns whether the decoded negative response carries a valid NSEC3 proof.
-     *
-     * @param decoded decoded response
-     * @param now     current instant
-     * @return true when the NSEC3 proof validates
-     */
-    public boolean provesNegative(final DnsDecodedResponse decoded, final Instant now) {
-        if (decoded == null) {
-            throw new ValidateException("DNSSEC NSEC3 response must not be null");
-        }
-        if (decoded.responseCode() == DnsResponseCode.NXDOMAIN) {
-            return provesNxDomain(decoded.question(), decoded.authorities(), now);
-        }
-        if (decoded.responseCode() == DnsResponseCode.NOERROR && decoded.answers().isEmpty()) {
-            return provesNoData(decoded.question(), decoded.authorities(), now);
-        }
-        return false;
-    }
-
-    /**
-     * Returns whether NSEC3 records prove an NXDOMAIN response.
-     *
-     * @param question    original question
-     * @param authorities authority-section records
-     * @param now         current instant
-     * @return true when the closest-encloser, next-closer, and wildcard proofs validate
-     */
-    public boolean provesNxDomain(final DnsQuestion question, final List<DnsRecord> authorities, final Instant now) {
-        validateQuestion(question);
-        final List<DnsRecord> proofRecords = proofRecords(authorities);
-        if (!proofRecords.isEmpty() && validationCache
-                .contains(Kind.NSEC3, question.name(), question.typeCode(), proofRecords, validateNow(now))) {
-            return true;
-        }
-        final List<Nsec3Data> proofs = signedProofs(authorities, now);
-        final List<Nsec3Param> parameters = parameters(authorities);
-        final boolean result = parametersMatch(proofs, parameters) && provesClosestEncloserNxDomain(question, proofs);
-        if (result && !proofRecords.isEmpty()) {
-            validationCache.putSuccess(
-                    Kind.NSEC3,
-                    question.name(),
-                    question.typeCode(),
-                    proofRecords,
-                    nearestRrsigExpiration(proofRecords),
-                    now);
-        }
-        return result;
-    }
-
-    /**
-     * Returns whether NSEC3 records prove a NOERROR/NODATA response.
-     *
-     * @param question    original question
-     * @param authorities authority-section records
-     * @param now         current instant
-     * @return true when exact-name or closest-encloser NODATA proof validates
-     */
-    public boolean provesNoData(final DnsQuestion question, final List<DnsRecord> authorities, final Instant now) {
-        validateQuestion(question);
-        final List<DnsRecord> proofRecords = proofRecords(authorities);
-        if (!proofRecords.isEmpty() && validationCache
-                .contains(Kind.NSEC3, question.name(), question.typeCode(), proofRecords, validateNow(now))) {
-            return true;
-        }
-        final List<Nsec3Data> proofs = signedProofs(authorities, now);
-        final List<Nsec3Param> parameters = parameters(authorities);
-        final boolean result = parametersMatch(proofs, parameters)
-                && (provesExactNoData(question, proofs) || provesClosestEncloserNoData(question, proofs));
-        if (result && !proofRecords.isEmpty()) {
-            validationCache.putSuccess(
-                    Kind.NSEC3,
-                    question.name(),
-                    question.typeCode(),
-                    proofRecords,
-                    nearestRrsigExpiration(proofRecords),
-                    now);
-        }
-        return result;
-    }
-
-    /**
-     * Returns whether NSEC3 records prove an opt-out insecure delegation.
-     *
-     * @param question    original DS question
-     * @param authorities authority-section records
-     * @param now         current instant
-     * @return true when an opt-out NSEC3 interval covers the child delegation
-     */
-    public boolean provesOptOutDelegation(
-            final DnsQuestion question,
-            final List<DnsRecord> authorities,
-            final Instant now) {
-        validateQuestion(question);
-        if (question.typeCode() != DnsRecordType.DS.code()) {
-            return false;
-        }
-        final List<Nsec3Data> proofs = signedProofs(authorities, now);
-        final List<Nsec3Param> parameters = parameters(authorities);
-        return parametersMatch(proofs, parameters) && coversOptOut(question.name(), proofs);
-    }
-
-    /**
-     * Returns whether a decoded DS response proves insecure delegation with NSEC3.
-     *
-     * @param decoded decoded response
-     * @param now     current instant
-     * @return true when a DS NODATA or opt-out NSEC3 proof exists
-     */
-    public boolean provesInsecureDelegation(final DnsDecodedResponse decoded, final Instant now) {
-        if (decoded == null) {
-            throw new ValidateException("DNSSEC NSEC3 response must not be null");
-        }
-        return decoded.responseCode() == DnsResponseCode.NOERROR && decoded.answers().isEmpty()
-                && decoded.question().typeCode() == DnsRecordType.DS.code()
-                && (provesNoData(decoded.question(), decoded.authorities(), now)
-                        || provesOptOutDelegation(decoded.question(), decoded.authorities(), now));
     }
 
     /**
@@ -774,6 +632,177 @@ public class DnsNsec3ProofValidator {
     }
 
     /**
+     * Validates an NSEC3 hash algorithm.
+     *
+     * @param hashAlgorithm hash algorithm code
+     */
+    private static void validateHashAlgorithm(final int hashAlgorithm) {
+        if (hashAlgorithm != HASH_SHA1) {
+            throw new ProtocolException("Unsupported DNSSEC NSEC3 hash algorithm: " + hashAlgorithm);
+        }
+    }
+
+    /**
+     * Validates a byte array.
+     *
+     * @param data byte array
+     * @param name diagnostic name
+     * @return validated byte array
+     */
+    private static byte[] validateBytes(final byte[] data, final String name) {
+        if (data == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return data;
+    }
+
+    /**
+     * Normalizes a base32hex hash label.
+     *
+     * @param value hash label
+     * @return lowercase hash label
+     */
+    private static String normalizeHash(final String value) {
+        if (value == null || value.isBlank()) {
+            throw new ProtocolException("DNSSEC NSEC3 hash label must not be blank");
+        }
+        return value.toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Returns whether a decoded response is a negative response that needs NSEC3 proof validation.
+     *
+     * @param decoded decoded response
+     * @return true when the response is NXDOMAIN or NOERROR without answers
+     */
+    public boolean negativeResponse(final DnsDecodedResponse decoded) {
+        if (decoded == null) {
+            throw new ValidateException("DNSSEC NSEC3 response must not be null");
+        }
+        return decoded.responseCode() == DnsResponseCode.NXDOMAIN
+                || decoded.responseCode() == DnsResponseCode.NOERROR && decoded.answers().isEmpty();
+    }
+
+    /**
+     * Returns whether the decoded negative response carries a valid NSEC3 proof.
+     *
+     * @param decoded decoded response
+     * @param now     current instant
+     * @return true when the NSEC3 proof validates
+     */
+    public boolean provesNegative(final DnsDecodedResponse decoded, final Instant now) {
+        if (decoded == null) {
+            throw new ValidateException("DNSSEC NSEC3 response must not be null");
+        }
+        if (decoded.responseCode() == DnsResponseCode.NXDOMAIN) {
+            return provesNxDomain(decoded.question(), decoded.authorities(), now);
+        }
+        if (decoded.responseCode() == DnsResponseCode.NOERROR && decoded.answers().isEmpty()) {
+            return provesNoData(decoded.question(), decoded.authorities(), now);
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether NSEC3 records prove an NXDOMAIN response.
+     *
+     * @param question    original question
+     * @param authorities authority-section records
+     * @param now         current instant
+     * @return true when the closest-encloser, next-closer, and wildcard proofs validate
+     */
+    public boolean provesNxDomain(final DnsQuestion question, final List<DnsRecord> authorities, final Instant now) {
+        validateQuestion(question);
+        final List<DnsRecord> proofRecords = proofRecords(authorities);
+        if (!proofRecords.isEmpty() && validationCache
+                .contains(Kind.NSEC3, question.name(), question.typeCode(), proofRecords, validateNow(now))) {
+            return true;
+        }
+        final List<Nsec3Data> proofs = signedProofs(authorities, now);
+        final List<Nsec3Param> parameters = parameters(authorities);
+        final boolean result = parametersMatch(proofs, parameters) && provesClosestEncloserNxDomain(question, proofs);
+        if (result && !proofRecords.isEmpty()) {
+            validationCache.putSuccess(
+                    Kind.NSEC3,
+                    question.name(),
+                    question.typeCode(),
+                    proofRecords,
+                    nearestRrsigExpiration(proofRecords),
+                    now);
+        }
+        return result;
+    }
+
+    /**
+     * Returns whether NSEC3 records prove a NOERROR/NODATA response.
+     *
+     * @param question    original question
+     * @param authorities authority-section records
+     * @param now         current instant
+     * @return true when exact-name or closest-encloser NODATA proof validates
+     */
+    public boolean provesNoData(final DnsQuestion question, final List<DnsRecord> authorities, final Instant now) {
+        validateQuestion(question);
+        final List<DnsRecord> proofRecords = proofRecords(authorities);
+        if (!proofRecords.isEmpty() && validationCache
+                .contains(Kind.NSEC3, question.name(), question.typeCode(), proofRecords, validateNow(now))) {
+            return true;
+        }
+        final List<Nsec3Data> proofs = signedProofs(authorities, now);
+        final List<Nsec3Param> parameters = parameters(authorities);
+        final boolean result = parametersMatch(proofs, parameters)
+                && (provesExactNoData(question, proofs) || provesClosestEncloserNoData(question, proofs));
+        if (result && !proofRecords.isEmpty()) {
+            validationCache.putSuccess(
+                    Kind.NSEC3,
+                    question.name(),
+                    question.typeCode(),
+                    proofRecords,
+                    nearestRrsigExpiration(proofRecords),
+                    now);
+        }
+        return result;
+    }
+
+    /**
+     * Returns whether NSEC3 records prove an opt-out insecure delegation.
+     *
+     * @param question    original DS question
+     * @param authorities authority-section records
+     * @param now         current instant
+     * @return true when an opt-out NSEC3 interval covers the child delegation
+     */
+    public boolean provesOptOutDelegation(
+            final DnsQuestion question,
+            final List<DnsRecord> authorities,
+            final Instant now) {
+        validateQuestion(question);
+        if (question.typeCode() != DnsRecordType.DS.code()) {
+            return false;
+        }
+        final List<Nsec3Data> proofs = signedProofs(authorities, now);
+        final List<Nsec3Param> parameters = parameters(authorities);
+        return parametersMatch(proofs, parameters) && coversOptOut(question.name(), proofs);
+    }
+
+    /**
+     * Returns whether a decoded DS response proves insecure delegation with NSEC3.
+     *
+     * @param decoded decoded response
+     * @param now     current instant
+     * @return true when a DS NODATA or opt-out NSEC3 proof exists
+     */
+    public boolean provesInsecureDelegation(final DnsDecodedResponse decoded, final Instant now) {
+        if (decoded == null) {
+            throw new ValidateException("DNSSEC NSEC3 response must not be null");
+        }
+        return decoded.responseCode() == DnsResponseCode.NOERROR && decoded.answers().isEmpty()
+                && decoded.question().typeCode() == DnsRecordType.DS.code()
+                && (provesNoData(decoded.question(), decoded.authorities(), now)
+                        || provesOptOutDelegation(decoded.question(), decoded.authorities(), now));
+    }
+
+    /**
      * Immutable parsed NSEC3 data.
      *
      * @param owner         owner name
@@ -898,44 +927,6 @@ public class DnsNsec3ProofValidator {
             return Arrays.copyOf(salt, salt.length);
         }
 
-    }
-
-    /**
-     * Validates an NSEC3 hash algorithm.
-     *
-     * @param hashAlgorithm hash algorithm code
-     */
-    private static void validateHashAlgorithm(final int hashAlgorithm) {
-        if (hashAlgorithm != HASH_SHA1) {
-            throw new ProtocolException("Unsupported DNSSEC NSEC3 hash algorithm: " + hashAlgorithm);
-        }
-    }
-
-    /**
-     * Validates a byte array.
-     *
-     * @param data byte array
-     * @param name diagnostic name
-     * @return validated byte array
-     */
-    private static byte[] validateBytes(final byte[] data, final String name) {
-        if (data == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return data;
-    }
-
-    /**
-     * Normalizes a base32hex hash label.
-     *
-     * @param value hash label
-     * @return lowercase hash label
-     */
-    private static String normalizeHash(final String value) {
-        if (value == null || value.isBlank()) {
-            throw new ProtocolException("DNSSEC NSEC3 hash label must not be blank");
-        }
-        return value.toLowerCase(Locale.ROOT);
     }
 
 }

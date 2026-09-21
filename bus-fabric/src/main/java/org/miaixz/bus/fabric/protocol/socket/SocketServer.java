@@ -181,16 +181,6 @@ public class SocketServer implements Lifecycle {
     private final AtomicBoolean started;
 
     /**
-     * Listening server channel.
-     */
-    private volatile ServerSocketChannel serverChannel;
-
-    /**
-     * Background accept-loop handle.
-     */
-    private volatile DispatchHandle acceptHandle;
-
-    /**
      * Lifecycle scope.
      */
     private final ServerRuntime<SocketSession> runtime;
@@ -209,6 +199,16 @@ public class SocketServer implements Lifecycle {
      * Single blocking session eligible for the low-latency platform-thread reader.
      */
     private final AtomicReference<SocketSession> latencyReader;
+
+    /**
+     * Listening server channel.
+     */
+    private volatile ServerSocketChannel serverChannel;
+
+    /**
+     * Background accept-loop handle.
+     */
+    private volatile DispatchHandle acceptHandle;
 
     /**
      * Active completion-driven listener.
@@ -259,6 +259,132 @@ public class SocketServer implements Lifecycle {
      */
     public static Builder builder(final Context context) {
         return new Builder(require(context, "Context"));
+    }
+
+    /**
+     * Waits for one TLS setup future and preserves its runtime cause.
+     *
+     * @param future  setup future
+     * @param message checked-failure message
+     * @param <T>     result type
+     * @return completed result
+     */
+    private static <T> T await(final CompletableFuture<T> future, final String message) {
+        try {
+            return require(future, "Setup future").join();
+        } catch (final CompletionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof RuntimeException runtime) {
+                throw runtime;
+            }
+            throw new InternalException(message, cause == null ? e : cause);
+        }
+    }
+
+    /**
+     * Quietly closes a listening channel that failed during startup.
+     *
+     * @param channel listening channel
+     */
+    private static void closeServerChannel(final ServerSocketChannel channel) {
+        if (channel == null) {
+            return;
+        }
+        try {
+            channel.close();
+        } catch (final IOException ignored) {
+            // The original startup failure remains authoritative.
+        }
+    }
+
+    /**
+     * Releases partially initialized AIO resources without replacing the startup failure.
+     *
+     * @param server partially started asynchronous listener
+     * @param group  partially initialized asynchronous group
+     */
+    private static void closeAsyncStartup(final AioServer server, final AioGroup group) {
+        if (server != null) {
+            try {
+                server.close();
+            } catch (final RuntimeException ignored) {
+                // The startup failure remains authoritative.
+            }
+        }
+        if (group != null) {
+            try {
+                group.close();
+            } catch (final RuntimeException ignored) {
+                // The startup failure remains authoritative.
+            }
+        }
+    }
+
+    /**
+     * Converts a duration to a saturated nanosecond interval.
+     *
+     * @param duration duration to convert
+     * @return converted nanoseconds, or {@link Long#MAX_VALUE} on overflow
+     */
+    private static long durationNanos(final Duration duration) {
+        try {
+            return duration.toNanos();
+        } catch (final ArithmeticException e) {
+            return Long.MAX_VALUE;
+        }
+    }
+
+    /**
+     * Computes non-negative elapsed nanoseconds with wrap-safe subtraction.
+     *
+     * @param now       current monotonic time
+     * @param startedAt start time
+     * @return elapsed nanoseconds
+     */
+    private static long elapsed(final long now, final long startedAt) {
+        final long value = now - startedAt;
+        return value < Normal.LONG_ZERO ? Long.MAX_VALUE : value;
+    }
+
+    /**
+     * Aggregates cleanup failures using suppressed causes.
+     *
+     * @param failure current failure
+     * @param next    next failure
+     * @return primary failure
+     */
+    private static RuntimeException append(final RuntimeException failure, final RuntimeException next) {
+        if (failure == null) {
+            return next;
+        }
+        if (failure != next) {
+            failure.addSuppressed(next);
+        }
+        return failure;
+    }
+
+    /**
+     * Validates that server TLS context and settings are configured as one pair.
+     *
+     * @param context  TLS context
+     * @param settings TLS settings
+     */
+    private static void validateTlsPair(final TlsContext context, final TlsSettings settings) {
+        if ((context == null) != (settings == null)) {
+            throw new ValidateException("TLS context and settings must be configured together");
+        }
+    }
+
+    /**
+     * Validates a required value.
+     *
+     * @param value reference to validate
+     * @param name  diagnostic parameter name
+     * @param <T>   value type
+     * @return the validated reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -848,26 +974,6 @@ public class SocketServer implements Lifecycle {
     }
 
     /**
-     * Waits for one TLS setup future and preserves its runtime cause.
-     *
-     * @param future  setup future
-     * @param message checked-failure message
-     * @param <T>     result type
-     * @return completed result
-     */
-    private static <T> T await(final CompletableFuture<T> future, final String message) {
-        try {
-            return require(future, "Setup future").join();
-        } catch (final CompletionException e) {
-            final Throwable cause = e.getCause();
-            if (cause instanceof RuntimeException runtime) {
-                throw runtime;
-            }
-            throw new InternalException(message, cause == null ? e : cause);
-        }
-    }
-
-    /**
      * Closes one accepted connection without destabilizing its setup activity.
      *
      * @param connection accepted connection
@@ -894,88 +1000,6 @@ public class SocketServer implements Lifecycle {
         } catch (final IOException e) {
             runtime.emit(ObservationMarker.SOCKET_FAILED, new SocketException("Unable to close accepted channel", e));
         }
-    }
-
-    /**
-     * Quietly closes a listening channel that failed during startup.
-     *
-     * @param channel listening channel
-     */
-    private static void closeServerChannel(final ServerSocketChannel channel) {
-        if (channel == null) {
-            return;
-        }
-        try {
-            channel.close();
-        } catch (final IOException ignored) {
-            // The original startup failure remains authoritative.
-        }
-    }
-
-    /**
-     * Releases partially initialized AIO resources without replacing the startup failure.
-     *
-     * @param server partially started asynchronous listener
-     * @param group  partially initialized asynchronous group
-     */
-    private static void closeAsyncStartup(final AioServer server, final AioGroup group) {
-        if (server != null) {
-            try {
-                server.close();
-            } catch (final RuntimeException ignored) {
-                // The startup failure remains authoritative.
-            }
-        }
-        if (group != null) {
-            try {
-                group.close();
-            } catch (final RuntimeException ignored) {
-                // The startup failure remains authoritative.
-            }
-        }
-    }
-
-    /**
-     * Converts a duration to a saturated nanosecond interval.
-     *
-     * @param duration duration to convert
-     * @return converted nanoseconds, or {@link Long#MAX_VALUE} on overflow
-     */
-    private static long durationNanos(final Duration duration) {
-        try {
-            return duration.toNanos();
-        } catch (final ArithmeticException e) {
-            return Long.MAX_VALUE;
-        }
-    }
-
-    /**
-     * Computes non-negative elapsed nanoseconds with wrap-safe subtraction.
-     *
-     * @param now       current monotonic time
-     * @param startedAt start time
-     * @return elapsed nanoseconds
-     */
-    private static long elapsed(final long now, final long startedAt) {
-        final long value = now - startedAt;
-        return value < Normal.LONG_ZERO ? Long.MAX_VALUE : value;
-    }
-
-    /**
-     * Aggregates cleanup failures using suppressed causes.
-     *
-     * @param failure current failure
-     * @param next    next failure
-     * @return primary failure
-     */
-    private static RuntimeException append(final RuntimeException failure, final RuntimeException next) {
-        if (failure == null) {
-            return next;
-        }
-        if (failure != next) {
-            failure.addSuppressed(next);
-        }
-        return failure;
     }
 
     /**
@@ -1177,30 +1201,6 @@ public class SocketServer implements Lifecycle {
         } catch (final RuntimeException e) {
             runtime.emit(ObservationMarker.LISTENER_FAILED, e);
         }
-    }
-
-    /**
-     * Validates that server TLS context and settings are configured as one pair.
-     *
-     * @param context  TLS context
-     * @param settings TLS settings
-     */
-    private static void validateTlsPair(final TlsContext context, final TlsSettings settings) {
-        if ((context == null) != (settings == null)) {
-            throw new ValidateException("TLS context and settings must be configured together");
-        }
-    }
-
-    /**
-     * Validates a required value.
-     *
-     * @param value reference to validate
-     * @param name  diagnostic parameter name
-     * @param <T>   value type
-     * @return the validated reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -1730,6 +1730,28 @@ public class SocketServer implements Lifecycle {
         }
 
         /**
+         * Validates host.
+         *
+         * @param host bind host to validate
+         */
+        private static void validateHost(final String host) {
+            if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
+                throw new ValidateException("Socket server host must be non-blank and single-line");
+            }
+        }
+
+        /**
+         * Validates port.
+         *
+         * @param port bind port to validate
+         */
+        private static void validatePort(final int port) {
+            if (port < Normal._1 || port > Normal._65535) {
+                throw new ValidateException("Socket server port must be between 1 and 65535");
+            }
+        }
+
+        /**
          * Sets a bind host and port.
          *
          * @param host local interface name or address to bind
@@ -2166,28 +2188,6 @@ public class SocketServer implements Lifecycle {
                     .backlog(socketOptions.backlog()).ioThreads(socketOptions.ioThreads())
                     .socketOptions(socketOptions.socketOptions()).retainReadBuffer(socketOptions.retainReadBuffer())
                     .idleTimeout(socketOptions.idleTimeout()).kcpWireVersion(socketOptions.kcpWireVersion());
-        }
-
-        /**
-         * Validates host.
-         *
-         * @param host bind host to validate
-         */
-        private static void validateHost(final String host) {
-            if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
-                throw new ValidateException("Socket server host must be non-blank and single-line");
-            }
-        }
-
-        /**
-         * Validates port.
-         *
-         * @param port bind port to validate
-         */
-        private static void validatePort(final int port) {
-            if (port < Normal._1 || port > Normal._65535) {
-                throw new ValidateException("Socket server port must be between 1 and 65535");
-            }
         }
 
     }

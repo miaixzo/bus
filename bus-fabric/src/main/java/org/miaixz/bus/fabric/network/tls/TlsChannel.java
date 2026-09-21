@@ -142,6 +142,36 @@ public class TlsChannel implements Conduit, Lifecycle {
     private final NioBufferAllocator applicationBuffers;
 
     /**
+     * Ensures persistent leases and allocators close once.
+     */
+    private final AtomicBoolean buffersClosed;
+
+    /**
+     * Ensures close_notify is emitted once.
+     */
+    private final AtomicBoolean closeNotifySent;
+
+    /**
+     * Ensures the open listener fires once.
+     */
+    private final AtomicBoolean openNotified;
+
+    /**
+     * Ensures the close listener fires once.
+     */
+    private final AtomicBoolean closeNotified;
+
+    /**
+     * Plaintext source view.
+     */
+    private final Source source;
+
+    /**
+     * Plaintext sink view.
+     */
+    private final Sink sink;
+
+    /**
      * Current encrypted-input lease.
      */
     private NioBuffer encryptedInputLease;
@@ -190,36 +220,6 @@ public class TlsChannel implements Conduit, Lifecycle {
      * First terminal failure.
      */
     private volatile Throwable failure;
-
-    /**
-     * Ensures persistent leases and allocators close once.
-     */
-    private final AtomicBoolean buffersClosed;
-
-    /**
-     * Ensures close_notify is emitted once.
-     */
-    private final AtomicBoolean closeNotifySent;
-
-    /**
-     * Ensures the open listener fires once.
-     */
-    private final AtomicBoolean openNotified;
-
-    /**
-     * Ensures the close listener fires once.
-     */
-    private final AtomicBoolean closeNotified;
-
-    /**
-     * Plaintext source view.
-     */
-    private final Source source;
-
-    /**
-     * Plaintext sink view.
-     */
-    private final Sink sink;
 
     /**
      * Creates a TLS state machine borrowing all runtime resources.
@@ -334,6 +334,122 @@ public class TlsChannel implements Conduit, Lifecycle {
             final Timeout timeout,
             final FabricMeter meter) {
         return new TlsChannel(conduit, engine, listener, dispatcher, timeout, meter);
+    }
+
+    /**
+     * Returns a bounded doubled staging capacity.
+     *
+     * @param current current capacity
+     * @param session current SSL session recommendation
+     * @param name    buffer name
+     * @return expanded capacity
+     */
+    private static int grownCapacity(final int current, final int session, final String name) {
+        final long requested = Math.max((long) current * Normal._2, session);
+        if (requested > Normal.MEBI || requested <= current) {
+            throw new ProtocolException("TLS " + name + " exceeded the 1 MiB staging limit");
+        }
+        return (int) requested;
+    }
+
+    /**
+     * Completes an interruptible blocking TLS operation on its request owner.
+     *
+     * @param operation blocking TLS operation executed by the calling request owner
+     * @param <T>       operation result type
+     * @return already completed or failed future containing the operation outcome
+     */
+    private static <T> CompletableFuture<T> directFuture(final Supplier<T> operation) {
+        try {
+            return CompletableFuture.completedFuture(operation.get());
+        } catch (final Throwable failure) {
+            return CompletableFuture.failedFuture(failure);
+        }
+    }
+
+    /**
+     * Validates an initial SSL session buffer size.
+     *
+     * @param size session buffer size
+     * @return validated size
+     */
+    private static int checkedInitialSize(final int size) {
+        if (size <= Normal._0 || size > Normal.MEBI) {
+            throw new ProtocolException("TLS session buffer size exceeds the 1 MiB staging limit: " + size);
+        }
+        return size;
+    }
+
+    /**
+     * Initializes a newly allocated buffer as an empty read-mode buffer.
+     *
+     * @param buffer allocated buffer
+     * @return empty read-mode buffer
+     */
+    private static ByteBuffer emptyReadBuffer(final ByteBuffer buffer) {
+        buffer.clear();
+        buffer.flip();
+        return buffer;
+    }
+
+    /**
+     * Transfers a core buffer into a NIO target.
+     *
+     * @param source core source
+     * @param target NIO target
+     * @param count  exact byte count
+     */
+    private static void transfer(final Buffer source, final ByteBuffer target, final long count) {
+        final int before = target.position();
+        try {
+            source.read(target);
+        } catch (final IOException e) {
+            throw new SocketException("Unable to transfer TLS input", e);
+        }
+        if (target.position() - before != count) {
+            throw new InternalException("TLS input transfer count mismatch");
+        }
+    }
+
+    /**
+     * Transfers a NIO source into a core target.
+     *
+     * @param source NIO source
+     * @param target core target
+     */
+    private static void transfer(final ByteBuffer source, final Buffer target) {
+        try {
+            target.write(source);
+        } catch (final IOException e) {
+            throw new SocketException("Unable to transfer TLS output", e);
+        }
+    }
+
+    /**
+     * Consumes plaintext only after its complete TLS record was written.
+     *
+     * @param source plaintext source
+     * @param count  consumed byte count
+     */
+    private static void consume(final Buffer source, final int count) {
+        if (count <= Normal._0) {
+            return;
+        }
+        try {
+            source.skip(count);
+        } catch (final IOException e) {
+            throw new SocketException("Unable to consume TLS plaintext", e);
+        }
+    }
+
+    /**
+     * Converts a non-negative byte count to a bounded NIO size.
+     *
+     * @param count byte count
+     * @return NIO size
+     */
+    private static int toIntSize(final long count) {
+        return (int) Math.min(count, Integer.MAX_VALUE);
     }
 
     /**
@@ -1320,22 +1436,6 @@ public class TlsChannel implements Conduit, Lifecycle {
     }
 
     /**
-     * Returns a bounded doubled staging capacity.
-     *
-     * @param current current capacity
-     * @param session current SSL session recommendation
-     * @param name    buffer name
-     * @return expanded capacity
-     */
-    private static int grownCapacity(final int current, final int session, final String name) {
-        final long requested = Math.max((long) current * Normal._2, session);
-        if (requested > Normal.MEBI || requested <= current) {
-            throw new ProtocolException("TLS " + name + " exceeded the 1 MiB staging limit");
-        }
-        return (int) requested;
-    }
-
-    /**
      * Waits for one conduit operation with its configured deadline.
      *
      * @param future   operation future
@@ -1453,21 +1553,6 @@ public class TlsChannel implements Conduit, Lifecycle {
             current.cancel(true);
         }
         dispatcher.cancel(this);
-    }
-
-    /**
-     * Completes an interruptible blocking TLS operation on its request owner.
-     *
-     * @param operation blocking TLS operation executed by the calling request owner
-     * @param <T>       operation result type
-     * @return already completed or failed future containing the operation outcome
-     */
-    private static <T> CompletableFuture<T> directFuture(final Supplier<T> operation) {
-        try {
-            return CompletableFuture.completedFuture(operation.get());
-        } catch (final Throwable failure) {
-            return CompletableFuture.failedFuture(failure);
-        }
     }
 
     /**
@@ -1702,88 +1787,40 @@ public class TlsChannel implements Conduit, Lifecycle {
     }
 
     /**
-     * Validates an initial SSL session buffer size.
-     *
-     * @param size session buffer size
-     * @return validated size
+     * Internal TLS state sequence.
      */
-    private static int checkedInitialSize(final int size) {
-        if (size <= Normal._0 || size > Normal.MEBI) {
-            throw new ProtocolException("TLS session buffer size exceeds the 1 MiB staging limit: " + size);
-        }
-        return size;
-    }
+    private enum TlsState {
 
-    /**
-     * Initializes a newly allocated buffer as an empty read-mode buffer.
-     *
-     * @param buffer allocated buffer
-     * @return empty read-mode buffer
-     */
-    private static ByteBuffer emptyReadBuffer(final ByteBuffer buffer) {
-        buffer.clear();
-        buffer.flip();
-        return buffer;
-    }
+        /**
+         * New state.
+         */
+        NEW,
 
-    /**
-     * Transfers a core buffer into a NIO target.
-     *
-     * @param source core source
-     * @param target NIO target
-     * @param count  exact byte count
-     */
-    private static void transfer(final Buffer source, final ByteBuffer target, final long count) {
-        final int before = target.position();
-        try {
-            source.read(target);
-        } catch (final IOException e) {
-            throw new SocketException("Unable to transfer TLS input", e);
-        }
-        if (target.position() - before != count) {
-            throw new InternalException("TLS input transfer count mismatch");
-        }
-    }
+        /**
+         * Handshake in progress.
+         */
+        HANDSHAKING,
 
-    /**
-     * Transfers a NIO source into a core target.
-     *
-     * @param source NIO source
-     * @param target core target
-     */
-    private static void transfer(final ByteBuffer source, final Buffer target) {
-        try {
-            target.write(source);
-        } catch (final IOException e) {
-            throw new SocketException("Unable to transfer TLS output", e);
-        }
-    }
+        /**
+         * Plaintext IO open.
+         */
+        OPEN,
 
-    /**
-     * Consumes plaintext only after its complete TLS record was written.
-     *
-     * @param source plaintext source
-     * @param count  consumed byte count
-     */
-    private static void consume(final Buffer source, final int count) {
-        if (count <= Normal._0) {
-            return;
-        }
-        try {
-            source.skip(count);
-        } catch (final IOException e) {
-            throw new SocketException("Unable to consume TLS plaintext", e);
-        }
-    }
+        /**
+         * Graceful close in progress.
+         */
+        CLOSING,
 
-    /**
-     * Converts a non-negative byte count to a bounded NIO size.
-     *
-     * @param count byte count
-     * @return NIO size
-     */
-    private static int toIntSize(final long count) {
-        return (int) Math.min(count, Integer.MAX_VALUE);
+        /**
+         * Fully closed.
+         */
+        CLOSED,
+
+        /**
+         * Terminal failure.
+         */
+        FAILED
+
     }
 
     /**
@@ -1870,43 +1907,6 @@ public class TlsChannel implements Conduit, Lifecycle {
         public void close() {
             TlsChannel.this.close();
         }
-
-    }
-
-    /**
-     * Internal TLS state sequence.
-     */
-    private enum TlsState {
-
-        /**
-         * New state.
-         */
-        NEW,
-
-        /**
-         * Handshake in progress.
-         */
-        HANDSHAKING,
-
-        /**
-         * Plaintext IO open.
-         */
-        OPEN,
-
-        /**
-         * Graceful close in progress.
-         */
-        CLOSING,
-
-        /**
-         * Fully closed.
-         */
-        CLOSED,
-
-        /**
-         * Terminal failure.
-         */
-        FAILED
 
     }
 

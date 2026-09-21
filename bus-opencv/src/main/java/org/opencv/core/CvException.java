@@ -19,11 +19,14 @@
 */
 package org.opencv.core;
 
+import java.io.Serial;
+
 /**
  * The cv exception class.
  */
 public class CvException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 2882630598126L;
 
     public CvException(String msg) {

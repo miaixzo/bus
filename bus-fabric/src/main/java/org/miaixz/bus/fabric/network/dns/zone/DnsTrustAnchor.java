@@ -106,6 +106,32 @@ public class DnsTrustAnchor {
     }
 
     /**
+     * Validates trust-anchor record data.
+     *
+     * @param data candidate data
+     * @return validated data
+     */
+    private static DnsRecordData validateData(final DnsRecordData data) {
+        if (data == null) {
+            throw new ValidateException("DNS trust anchor data must not be null");
+        }
+        final byte[] rdata = data.wireData();
+        if (data.type() == DnsRecordType.DS) {
+            if (rdata.length <= DS_FIXED_BYTES) {
+                throw new ValidateException("DNS DS trust anchor must contain a digest");
+            }
+            return data;
+        }
+        if (data.type() == DnsRecordType.DNSKEY) {
+            if (rdata.length <= DNSKEY_FIXED_BYTES) {
+                throw new ValidateException("DNSKEY trust anchor must contain a public key");
+            }
+            return data;
+        }
+        throw new ValidateException("DNS trust anchor must be a DS or DNSKEY record");
+    }
+
+    /**
      * Returns the trust-anchor owner name.
      *
      * @return canonical owner name
@@ -185,32 +211,6 @@ public class DnsTrustAnchor {
             return -1;
         }
         return DnsCodec.readUnsignedByte(data.wireData(), 3);
-    }
-
-    /**
-     * Validates trust-anchor record data.
-     *
-     * @param data candidate data
-     * @return validated data
-     */
-    private static DnsRecordData validateData(final DnsRecordData data) {
-        if (data == null) {
-            throw new ValidateException("DNS trust anchor data must not be null");
-        }
-        final byte[] rdata = data.wireData();
-        if (data.type() == DnsRecordType.DS) {
-            if (rdata.length <= DS_FIXED_BYTES) {
-                throw new ValidateException("DNS DS trust anchor must contain a digest");
-            }
-            return data;
-        }
-        if (data.type() == DnsRecordType.DNSKEY) {
-            if (rdata.length <= DNSKEY_FIXED_BYTES) {
-                throw new ValidateException("DNSKEY trust anchor must contain a public key");
-            }
-            return data;
-        }
-        throw new ValidateException("DNS trust anchor must be a DS or DNSKEY record");
     }
 
 }

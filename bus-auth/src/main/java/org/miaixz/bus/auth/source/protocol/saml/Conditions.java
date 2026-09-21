@@ -90,7 +90,6 @@ public record Conditions(Optional<Instant> notBefore, Optional<Instant> notOnOrA
      * Wraps one typed AudienceRestriction condition.
      *
      * @param restriction audience restriction applied to the assertion
-     *
      * @author Kimi Liu
      */
     public record Audience(AudienceRestriction restriction) implements Condition {
@@ -118,7 +117,6 @@ public record Conditions(Optional<Instant> notBefore, Optional<Instant> notOnOrA
      *
      * @param count     optional non-negative proxy count
      * @param audiences ordered optional audience URIs
-     *
      * @author Kimi Liu
      */
     public record ProxyRestriction(Optional<Integer> count, List<String> audiences) implements Condition {
@@ -146,7 +144,6 @@ public record Conditions(Optional<Instant> notBefore, Optional<Instant> notOnOrA
      * Preserves a derived extension of abstract {@code ConditionAbstractType}.
      *
      * @param xml complete secure namespace-aware condition element bytes
-     *
      * @author Kimi Liu
      */
     public record Extension(byte[] xml) implements Condition {

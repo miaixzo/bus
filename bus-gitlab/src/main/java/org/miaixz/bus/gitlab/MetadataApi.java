@@ -28,8 +28,8 @@ import org.miaixz.bus.gitlab.models.Metadata;
 /**
  * This class implements the client side API for the Gitlab metadata call.
  *
- * @see <a href="https://https://docs.gitlab.com/ee/api/metadata.html">Metadata API at Gitlab</a>
  * @author Kimi Liu
+ * @see <a href="https://https://docs.gitlab.com/ee/api/metadata.html">Metadata API at Gitlab</a>
  */
 public class MetadataApi extends AbstractApi {
 

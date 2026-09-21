@@ -130,25 +130,6 @@ public class Mediator {
     }
 
     /**
-     * Represents a typed invocation with one input and one result.
-     *
-     * @param <I> invocation input type
-     * @param <O> invocation result type
-     */
-    @FunctionalInterface
-    public interface Invocation<I, O> {
-
-        /**
-         * Invokes the operation with the supplied input.
-         *
-         * @param input input supplied by the mediator
-         * @return operation-specific result
-         */
-        O invoke(I input);
-
-    }
-
-    /**
      * Defines direct protocol types and internal carrier types.
      */
     public enum Type {
@@ -187,6 +168,25 @@ public class Mediator {
          * WebSocket session opening.
          */
         WEBSOCKET
+
+    }
+
+    /**
+     * Represents a typed invocation with one input and one result.
+     *
+     * @param <I> invocation input type
+     * @param <O> invocation result type
+     */
+    @FunctionalInterface
+    public interface Invocation<I, O> {
+
+        /**
+         * Invokes the operation with the supplied input.
+         *
+         * @param input input supplied by the mediator
+         * @return operation-specific result
+         */
+        O invoke(I input);
 
     }
 

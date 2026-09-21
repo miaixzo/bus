@@ -75,6 +75,58 @@ public class HttpAuth {
     }
 
     /**
+     * Returns whether the challenge targets proxy authentication.
+     *
+     * @param challenge parsed challenge whose parameters are inspected
+     * @return {@code true} when its {@code proxy} parameter equals {@code true} ignoring case
+     */
+    private static boolean proxy(final Challenge challenge) {
+        return "true".equalsIgnoreCase(challenge.parameters().get("proxy"));
+    }
+
+    /**
+     * Validates a username.
+     *
+     * @param username user name to validate
+     * @return unchanged non-blank, single-line user name
+     * @throws ValidateException if the user name is blank or contains a line break
+     */
+    private static String validateUsername(final String username) {
+        Assert.isFalse(
+                StringKit.isBlank(username) || StringKit.containsAny(username, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Username must be non-blank and single-line"));
+        return username;
+    }
+
+    /**
+     * Validates a password.
+     *
+     * @param password password to validate
+     * @return unchanged single-line password, including an empty password
+     * @throws ValidateException if the password is {@code null} or contains a line break
+     */
+    private static String validatePassword(final String password) {
+        final String current = Assert.notNull(password, () -> new ValidateException("Password must be single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(current, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Password must be single-line"));
+        return current;
+    }
+
+    /**
+     * Validates a required collaborator.
+     *
+     * @param value collaborator reference to validate
+     * @param name  logical collaborator name included in the validation error
+     * @param <T>   collaborator type
+     * @return validated non-null collaborator
+     * @throws ValidateException if {@code value} is {@code null}
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Applies Authorization to a headers snapshot.
      *
      * @param headers source headers to copy and augment
@@ -141,58 +193,6 @@ public class HttpAuth {
     @Override
     public String toString() {
         return redactedValue();
-    }
-
-    /**
-     * Returns whether the challenge targets proxy authentication.
-     *
-     * @param challenge parsed challenge whose parameters are inspected
-     * @return {@code true} when its {@code proxy} parameter equals {@code true} ignoring case
-     */
-    private static boolean proxy(final Challenge challenge) {
-        return "true".equalsIgnoreCase(challenge.parameters().get("proxy"));
-    }
-
-    /**
-     * Validates a username.
-     *
-     * @param username user name to validate
-     * @return unchanged non-blank, single-line user name
-     * @throws ValidateException if the user name is blank or contains a line break
-     */
-    private static String validateUsername(final String username) {
-        Assert.isFalse(
-                StringKit.isBlank(username) || StringKit.containsAny(username, Symbol.C_CR, Symbol.C_LF),
-                () -> new ValidateException("Username must be non-blank and single-line"));
-        return username;
-    }
-
-    /**
-     * Validates a password.
-     *
-     * @param password password to validate
-     * @return unchanged single-line password, including an empty password
-     * @throws ValidateException if the password is {@code null} or contains a line break
-     */
-    private static String validatePassword(final String password) {
-        final String current = Assert.notNull(password, () -> new ValidateException("Password must be single-line"));
-        Assert.isFalse(
-                StringKit.containsAny(current, Symbol.C_CR, Symbol.C_LF),
-                () -> new ValidateException("Password must be single-line"));
-        return current;
-    }
-
-    /**
-     * Validates a required collaborator.
-     *
-     * @param value collaborator reference to validate
-     * @param name  logical collaborator name included in the validation error
-     * @param <T>   collaborator type
-     * @return validated non-null collaborator
-     * @throws ValidateException if {@code value} is {@code null}
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

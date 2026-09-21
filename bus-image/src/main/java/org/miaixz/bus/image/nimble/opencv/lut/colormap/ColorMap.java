@@ -48,7 +48,9 @@ public record ColorMap(String id, String name, ColorMapType type, Set<String> mo
         boolean hidden) {
 
     public static final int MIN_BITS = 8;
+
     public static final int MAX_BITS = 16;
+
     /**
      * Metadata key of the DICOM Color Palette SOP Instance UID the map came from or was given.
      */
@@ -243,21 +245,37 @@ public record ColorMap(String id, String name, ColorMapType type, Set<String> mo
     public static final class Builder {
 
         private static final int UNSET_BITS = -1;
+
         private final List<ColorStop> stops = new ArrayList<>();
+
         private final Map<String, String> metadata = new LinkedHashMap<>();
+
         private String id;
+
         private String name;
+
         private ColorMapType type = ColorMapType.SEQUENTIAL;
+
         private Set<String> modalities = Set.of();
+
         private boolean defaultForModality;
+
         private ColorMapDomain domain = ColorMapDomain.RELATIVE;
+
         private int bits = UNSET_BITS;
+
         private InterpolationSpace space = InterpolationSpace.RGB;
+
         private Interpolation interpolation = Interpolation.LINEAR;
+
         private OutsideColors outside = OutsideColors.CLAMP;
+
         private Lighting lighting;
+
         private String category;
+
         private Set<String> tags = Set.of();
+
         private boolean hidden;
 
         private Builder(String name) {

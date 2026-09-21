@@ -34,8 +34,8 @@ import org.miaixz.bus.core.xyz.IteratorKit;
  * for configuring size-bounded caches, allowing capacity to be measured by factors other than just the number of
  * entries.
  *
- * @see <a href="http://code.google.com/p/concurrentlinkedhashmap/">ConcurrentLinkedHashMap Project</a>
  * @author Kimi Liu
+ * @see <a href="http://code.google.com/p/concurrentlinkedhashmap/">ConcurrentLinkedHashMap Project</a>
  */
 public class Weighers {
 

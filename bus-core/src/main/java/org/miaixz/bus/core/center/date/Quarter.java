@@ -26,11 +26,11 @@ import org.miaixz.bus.core.lang.Assert;
 /**
  * Enumeration for quarters of a year.
  *
+ * @author Kimi Liu
  * @see #Q1
  * @see #Q2
  * @see #Q3
  * @see #Q4
- * @author Kimi Liu
  */
 public enum Quarter {
 

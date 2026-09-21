@@ -38,52 +38,6 @@ import org.miaixz.bus.cortex.Type;
 public class BatchOperation {
 
     /**
-     * Type of operation to apply to each entry in the batch.
-     *
-     * @author Kimi Liu
-     */
-    public enum OperationType {
-        /**
-         * Register all entries in the batch.
-         */
-        REGISTER,
-        /**
-         * Deregister all entries in the batch.
-         */
-        DEREGISTER,
-        /**
-         * Update all entries in the batch.
-         */
-        UPDATE,
-        /**
-         * Upsert all entries in the batch.
-         */
-        UPSERT
-
-    }
-
-    /**
-     * Conflict handling policy for batch writes.
-     *
-     * @author Kimi Liu
-     */
-    public enum ConflictPolicy {
-        /**
-         * Keep the existing entry when a conflict is detected.
-         */
-        SKIP,
-        /**
-         * Overwrite the existing entry.
-         */
-        OVERWRITE,
-        /**
-         * Abort the batch when a conflict is detected.
-         */
-        FAIL_FAST
-
-    }
-
-    /**
      * Target registry type applied when entries do not specify one explicitly.
      */
     private Type type;
@@ -138,6 +92,52 @@ public class BatchOperation {
      */
     public BatchOperation() {
         // No initialization required.
+    }
+
+    /**
+     * Type of operation to apply to each entry in the batch.
+     *
+     * @author Kimi Liu
+     */
+    public enum OperationType {
+        /**
+         * Register all entries in the batch.
+         */
+        REGISTER,
+        /**
+         * Deregister all entries in the batch.
+         */
+        DEREGISTER,
+        /**
+         * Update all entries in the batch.
+         */
+        UPDATE,
+        /**
+         * Upsert all entries in the batch.
+         */
+        UPSERT
+
+    }
+
+    /**
+     * Conflict handling policy for batch writes.
+     *
+     * @author Kimi Liu
+     */
+    public enum ConflictPolicy {
+        /**
+         * Keep the existing entry when a conflict is detected.
+         */
+        SKIP,
+        /**
+         * Overwrite the existing entry.
+         */
+        OVERWRITE,
+        /**
+         * Abort the batch when a conflict is detected.
+         */
+        FAIL_FAST
+
     }
 
 }

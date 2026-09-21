@@ -43,6 +43,7 @@ public class JsonProperties {
      * Whether the json integration is enabled.
      */
     private final boolean enabled;
+
     /**
      * JSON provider selected for the current application context.
      */

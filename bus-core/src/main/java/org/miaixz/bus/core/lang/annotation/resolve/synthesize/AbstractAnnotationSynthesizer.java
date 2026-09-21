@@ -47,11 +47,6 @@ public abstract class AbstractAnnotationSynthesizer<T> implements AnnotationSynt
     protected final Map<Class<? extends Annotation>, SynthesizedAnnotation> synthesizedAnnotationMap;
 
     /**
-     * Cache of already synthesized (proxied) annotation instances.
-     */
-    private final Map<Class<? extends Annotation>, Annotation> synthesizedProxyAnnotations;
-
-    /**
      * The synthesized annotation selector used to resolve duplicate annotation types.
      */
     protected final SynthesizedAnnotationSelector annotationSelector;
@@ -65,6 +60,11 @@ public abstract class AbstractAnnotationSynthesizer<T> implements AnnotationSynt
      * The annotation scanner used to discover annotations.
      */
     protected final AnnotationScanner annotationScanner;
+
+    /**
+     * Cache of already synthesized (proxied) annotation instances.
+     */
+    private final Map<Class<? extends Annotation>, Annotation> synthesizedProxyAnnotations;
 
     /**
      * Constructs an annotation synthesizer.

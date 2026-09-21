@@ -33,9 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Comment implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852239270127L;
 
@@ -43,22 +40,27 @@ public class Comment implements Serializable {
      * The author value.
      */
     private Author author;
+
     /**
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The line type value.
      */
     private LineType lineType;
+
     /**
      * The path value.
      */
     private String path;
+
     /**
      * The line value.
      */
     private Integer line;
+
     /**
      * The note value.
      */

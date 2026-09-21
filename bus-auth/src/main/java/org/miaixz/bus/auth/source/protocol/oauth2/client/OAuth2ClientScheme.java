@@ -42,6 +42,7 @@ public class OAuth2ClientScheme implements ProtocolScheme<OAuth2ClientOptions> {
      * Stable Source type identifier.
      */
     public static final String ID = "oauth2";
+
     /**
      * Builds a standard authorization URL for user-agent redirection.
      */
@@ -51,6 +52,7 @@ public class OAuth2ClientScheme implements ProtocolScheme<OAuth2ClientOptions> {
             Url.class,
             Capability.Interaction.REDIRECT,
             Capability.Security.PUBLIC);
+
     /**
      * Executes every supported grant at the single token endpoint.
      */
@@ -60,6 +62,7 @@ public class OAuth2ClientScheme implements ProtocolScheme<OAuth2ClientOptions> {
             TokenEndpointResponse.class,
             Capability.Interaction.DIRECT,
             Capability.Security.PUBLIC);
+
     /**
      * Introspects an opaque token using an authenticated client.
      */
@@ -69,6 +72,7 @@ public class OAuth2ClientScheme implements ProtocolScheme<OAuth2ClientOptions> {
             IntrospectionResponse.class,
             Capability.Interaction.DIRECT,
             Capability.Security.CLIENT_AUTHENTICATED);
+
     /**
      * Revokes an opaque token using an authenticated client.
      */
@@ -78,6 +82,7 @@ public class OAuth2ClientScheme implements ProtocolScheme<OAuth2ClientOptions> {
             Void.class,
             Capability.Interaction.DIRECT,
             Capability.Security.CLIENT_AUTHENTICATED);
+
     /**
      * Initiates RFC 8628 device authorization.
      */
@@ -87,6 +92,7 @@ public class OAuth2ClientScheme implements ProtocolScheme<OAuth2ClientOptions> {
             DeviceAuthorizationResponse.class,
             Capability.Interaction.DEVICE,
             Capability.Security.PUBLIC);
+
     /**
      * Retrieves RFC 8414 authorization server metadata.
      */
@@ -96,11 +102,13 @@ public class OAuth2ClientScheme implements ProtocolScheme<OAuth2ClientOptions> {
             AuthorizationServerMetadata.class,
             Capability.Interaction.DIRECT,
             Capability.Security.PUBLIC);
+
     /**
      * Exact OAuth 2.x Source operations implemented by this scheme.
      */
     private static final Capability.Manifest MANIFEST = new Capability.Manifest(List
             .of(AUTHORIZATION, TOKEN, INTROSPECTION, REVOCATION, DEVICE_AUTHORIZATION, AUTHORIZATION_SERVER_METADATA));
+
     /**
      * Formal standards implemented by the generic OAuth 2.x Source.
      */
@@ -117,6 +125,7 @@ public class OAuth2ClientScheme implements ProtocolScheme<OAuth2ClientOptions> {
                     citation("rfc9207", "Authorization response issuer"),
                     citation("rfc9700", "OAuth 2.0 security best current practice")),
             "OAuth 2.x Client");
+
     /**
      * External management form using registered OAuth member names where standards define them.
      */

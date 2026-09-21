@@ -45,6 +45,7 @@ public class SystemHookManager implements HookManager {
      */
 
     public static final String SYSTEM_HOOK_EVENT = "System Hook";
+
     /**
      * The jackson json value.
      */

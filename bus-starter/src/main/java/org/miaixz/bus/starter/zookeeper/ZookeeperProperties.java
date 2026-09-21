@@ -44,30 +44,37 @@ public class ZookeeperProperties {
      * Whether the zookeeper integration is enabled.
      */
     private final boolean enabled;
+
     /**
      * ZooKeeper ensemble connection string.
      */
     private final String connectString;
+
     /**
      * Curator namespace applied to all client paths.
      */
     private final String namespace;
+
     /**
      * Maximum time allowed to establish a ZooKeeper connection.
      */
     private final Duration connectionTimeout;
+
     /**
      * ZooKeeper session timeout negotiated by the client.
      */
     private final Duration sessionTimeout;
+
     /**
      * Initial delay used by the retry backoff policy.
      */
     private final Duration baseSleepTime;
+
     /**
      * Maximum number of connection retry attempts.
      */
     private final int maxRetries;
+
     /**
      * Optional authentication reference supplied to the Curator client.
      */

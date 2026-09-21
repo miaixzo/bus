@@ -60,6 +60,19 @@ public class LimitGuard implements GuardRule {
     }
 
     /**
+     * Validates maximum bytes.
+     *
+     * @param maxBytes candidate inclusive body limit
+     * @return unchanged limit from 1 byte through 16 MiB
+     */
+    private static long validateMaxBytes(final long maxBytes) {
+        Assert.isTrue(
+                maxBytes > 0 && maxBytes <= Builder.BYTES_16_MIB,
+                () -> new ValidateException("Body limit must be between 1 and 16777216"));
+        return maxBytes;
+    }
+
+    /**
      * Checks message body length.
      *
      * @param message non-null message whose declared and payload lengths are compared
@@ -100,19 +113,6 @@ public class LimitGuard implements GuardRule {
     @Override
     public String name() {
         return Builder.GUARD_BODY_LIMIT_NAME;
-    }
-
-    /**
-     * Validates maximum bytes.
-     *
-     * @param maxBytes candidate inclusive body limit
-     * @return unchanged limit from 1 byte through 16 MiB
-     */
-    private static long validateMaxBytes(final long maxBytes) {
-        Assert.isTrue(
-                maxBytes > 0 && maxBytes <= Builder.BYTES_16_MIB,
-                () -> new ValidateException("Body limit must be between 1 and 16777216"));
-        return maxBytes;
     }
 
 }

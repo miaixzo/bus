@@ -58,18 +58,22 @@ public class RuntimeBuilder {
      * Externally supplied runtime service container.
      */
     private final RuntimeServices runtimeServices;
+
     /**
      * External complete Blueprint snapshot loader.
      */
     private final BlueprintLoader blueprintLoader;
+
     /**
      * Explicit Source modules retained in caller-provided order.
      */
     private final List<SourceModule> modules;
+
     /**
      * Explicit Roster listeners retained in caller-provided order.
      */
     private final List<RosterListener> listeners;
+
     /**
      * Whether the one-shot build process has begun.
      */

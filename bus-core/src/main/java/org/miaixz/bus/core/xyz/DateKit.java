@@ -49,8 +49,8 @@ import org.miaixz.bus.core.text.CharsBacker;
 /**
  * Date and time class.
  *
- * @see Fields Common date and time format constants.
  * @author Kimi Liu
+ * @see Fields Common date and time format constants.
  */
 public class DateKit extends Calendar {
 

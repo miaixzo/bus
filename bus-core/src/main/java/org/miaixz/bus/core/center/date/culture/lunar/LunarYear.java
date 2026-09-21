@@ -76,16 +76,6 @@ public class LunarYear extends YearParts {
     }
 
     /**
-     * Validates the lunar year.
-     *
-     * @param year the lunar year
-     * @throws IllegalArgumentException if the year is out of valid range
-     */
-    public static void validate(int year) {
-        validateRange(year, -1, 9999, "lunar year");
-    }
-
-    /**
      * Constructs a LunarYear instance.
      *
      * @param year the lunar year
@@ -93,6 +83,16 @@ public class LunarYear extends YearParts {
     public LunarYear(int year) {
         validate(year);
         this.year = year;
+    }
+
+    /**
+     * Validates the lunar year.
+     *
+     * @param year the lunar year
+     * @throws IllegalArgumentException if the year is out of valid range
+     */
+    public static void validate(int year) {
+        validateRange(year, -1, 9999, "lunar year");
     }
 
     /**

@@ -52,6 +52,29 @@ public abstract class AbstractJsonProvider implements JsonProvider {
     }
 
     /**
+     * Strictly decodes one non-empty UTF-8 JSON document.
+     *
+     * @param json complete JSON bytes
+     * @return decoded document retaining its original lexical representation
+     * @throws IllegalArgumentException if {@code json} is {@code null}
+     * @throws InternalException        if the bytes are invalid UTF-8 or contain only whitespace
+     */
+    private static String document(final byte[] json) {
+        Assert.notNull(json, "JSON document must not be null");
+        final String document;
+        try {
+            document = Charset.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(json)).toString();
+        } catch (CharacterCodingException cause) {
+            throw new InternalException("JSON document is not valid UTF-8", cause);
+        }
+        if (document.isBlank()) {
+            throw new InternalException("JSON document must contain one RFC 8259 value");
+        }
+        return document;
+    }
+
+    /**
      * Converts one provider-neutral JSON object through the single strict record-binding contract.
      * <p>
      * The inherited implementation applies record-derived schema validation and provider-neutral property selection.
@@ -175,27 +198,22 @@ public abstract class AbstractJsonProvider implements JsonProvider {
     }
 
     /**
-     * Strictly decodes one non-empty UTF-8 JSON document.
+     * Converts a complete JSON document into the provider-neutral immutable value model.
      *
-     * @param json complete JSON bytes
-     * @return decoded document retaining its original lexical representation
-     * @throws IllegalArgumentException if {@code json} is {@code null}
-     * @throws InternalException        if the bytes are invalid UTF-8 or contain only whitespace
+     * @param document non-empty Java string decoded strictly from UTF-8
+     * @return provider-neutral JSON value; never Java {@code null}
+     * @throws InternalException if syntax is invalid, trailing content exists, or conversion would lose information
      */
-    private static String document(final byte[] json) {
-        Assert.notNull(json, "JSON document must not be null");
-        final String document;
-        try {
-            document = Charset.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
-                    .onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(json)).toString();
-        } catch (CharacterCodingException cause) {
-            throw new InternalException("JSON document is not valid UTF-8", cause);
-        }
-        if (document.isBlank()) {
-            throw new InternalException("JSON document must contain one RFC 8259 value");
-        }
-        return document;
-    }
+    protected abstract JsonValue decodeValue(String document);
+
+    /**
+     * Converts a provider-neutral JSON value into one complete RFC 8259 document.
+     *
+     * @param value non-null immutable JSON value
+     * @return serialized JSON document; never {@code null}
+     * @throws InternalException if the concrete engine cannot represent or serialize the value without loss
+     */
+    protected abstract String encodeValue(JsonValue value);
 
     /**
      * Performs provider-independent structural depth and duplicate-member validation before engine parsing.
@@ -515,23 +533,5 @@ public abstract class AbstractJsonProvider implements JsonProvider {
             return new InternalException(message + " at character " + index);
         }
     }
-
-    /**
-     * Converts a complete JSON document into the provider-neutral immutable value model.
-     *
-     * @param document non-empty Java string decoded strictly from UTF-8
-     * @return provider-neutral JSON value; never Java {@code null}
-     * @throws InternalException if syntax is invalid, trailing content exists, or conversion would lose information
-     */
-    protected abstract JsonValue decodeValue(String document);
-
-    /**
-     * Converts a provider-neutral JSON value into one complete RFC 8259 document.
-     *
-     * @param value non-null immutable JSON value
-     * @return serialized JSON document; never {@code null}
-     * @throws InternalException if the concrete engine cannot represent or serialize the value without loss
-     */
-    protected abstract String encodeValue(JsonValue value);
 
 }

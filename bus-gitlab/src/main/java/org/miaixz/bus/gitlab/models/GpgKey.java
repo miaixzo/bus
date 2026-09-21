@@ -32,10 +32,12 @@ public class GpgKey {
      * The id value.
      */
     private Long id;
+
     /**
      * The key value.
      */
     private String key;
+
     /**
      * The created at value.
      */

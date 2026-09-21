@@ -45,6 +45,7 @@ public class NotifyProperties {
      * Whether the notify integration is enabled.
      */
     private final boolean enabled;
+
     /**
      * Notification channel definitions grouped by provider type.
      */

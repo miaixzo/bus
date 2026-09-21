@@ -47,9 +47,6 @@ import org.miaixz.bus.image.galaxy.io.SAXParserFactoryHolder;
  */
 public class IOD extends ArrayList<IOD.DataElement> {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852255015270L;
 
@@ -224,9 +221,6 @@ public class IOD extends ArrayList<IOD.DataElement> {
      */
     public static class DataElement implements Serializable {
 
-        /**
-         * The serial version UID for serialization.
-         */
         @Serial
         private static final long serialVersionUID = 2852255091391L;
 

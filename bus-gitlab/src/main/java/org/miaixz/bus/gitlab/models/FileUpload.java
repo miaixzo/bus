@@ -31,9 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class FileUpload implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852255128975L;
 
@@ -41,10 +38,12 @@ public class FileUpload implements Serializable {
      * The alt value.
      */
     private String alt;
+
     /**
      * The url value.
      */
     private String url;
+
     /**
      * The markdown value.
      */

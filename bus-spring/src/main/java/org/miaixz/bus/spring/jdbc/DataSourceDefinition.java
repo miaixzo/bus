@@ -40,26 +40,32 @@ public class DataSourceDefinition {
      * Routing name.
      */
     private String name;
+
     /**
      * JDBC connection URL.
      */
     private String url;
+
     /**
      * Authentication username.
      */
     private String username;
+
     /**
      * Authentication password.
      */
     private String password;
+
     /**
      * JDBC driver class name.
      */
     private String driverClassName;
+
     /**
      * Datasource implementation class name.
      */
     private String type;
+
     /**
      * Hikari-compatible pool properties.
      */

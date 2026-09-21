@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -32,15 +33,14 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class ErrorTrackingClientKey implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
+    @Serial
     private static final long serialVersionUID = 2826910583269L;
 
     /**
      * The id value.
      */
     private Long id;
+
     /**
      * The active value.
      */

@@ -29,9 +29,6 @@ import java.io.Serializable;
  */
 public class CustomAttribute implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852250951355L;
 
@@ -39,6 +36,7 @@ public class CustomAttribute implements Serializable {
      * The key value.
      */
     private String key;
+
     /**
      * The value value.
      */

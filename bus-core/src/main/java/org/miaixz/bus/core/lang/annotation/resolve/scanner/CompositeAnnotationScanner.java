@@ -71,17 +71,6 @@ public class CompositeAnnotationScanner implements AnnotationScanner {
     private final AnnotationScanner elementScanner;
 
     /**
-     * Returns {@code true} for all {@link AnnotatedElement} types.
-     *
-     * @param annotatedEle {@link AnnotatedElement}, e.g. Class, Method, Field, Constructor
-     * @return {@code true} always
-     */
-    @Override
-    public boolean support(final AnnotatedElement annotatedEle) {
-        return true;
-    }
-
-    /**
      * Constructs a composite annotation scanner.
      *
      * @param enableScanMetaAnnotation  whether to scan meta-annotations of found annotations
@@ -97,6 +86,17 @@ public class CompositeAnnotationScanner implements AnnotationScanner {
         this.methodScanner = new MethodAnnotationScanner(enableScanSupperClass, enableScanSupperInterface, a -> true,
                 Collections.emptySet());
         this.elementScanner = new ElementAnnotationScanner();
+    }
+
+    /**
+     * Returns {@code true} for all {@link AnnotatedElement} types.
+     *
+     * @param annotatedEle {@link AnnotatedElement}, e.g. Class, Method, Field, Constructor
+     * @return {@code true} always
+     */
+    @Override
+    public boolean support(final AnnotatedElement annotatedEle) {
+        return true;
     }
 
     /**

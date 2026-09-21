@@ -47,70 +47,87 @@ public class CortexProperties {
      * Whether the cortex integration is enabled.
      */
     private final boolean enabled;
+
     /**
      * Cortex server address used by configuration and watch clients.
      */
     private final String serverAddr;
+
     /**
      * Logical space that isolates Cortex data and watches.
      */
     private final String space;
+
     /**
      * Whether this application registers itself with Cortex during startup.
      */
     private final boolean autoRegister;
+
     /**
      * Whether remote Cortex settings are loaded into the Spring environment.
      */
     private final boolean settingEnabled;
+
     /**
      * Whether embedded Cortex server integration is enabled.
      */
     private final boolean serverEnabled;
+
     /**
      * Remote configuration group queried by the settings client.
      */
     private final String settingGroup;
+
     /**
      * Remote configuration data identifier queried by the settings client.
      */
     private final String settingDataId;
+
     /**
      * Maximum number of remote setting versions retained locally.
      */
     private final int maxSettingVersions;
+
     /**
      * Maximum active watches permitted within one space.
      */
     private final int maxWatchesPerSpace;
+
     /**
      * Inactivity duration after which a watch is expired.
      */
     private final Duration watchExpire;
+
     /**
      * Time-to-live applied to locally cached Cortex data.
      */
     private final Duration cacheExpire;
+
     /**
      * Cache backend settings used by the Cortex integration.
      */
     private final Options cache;
+
     /**
      * Watch delivery and lifecycle settings.
      */
     private final Watch watch;
+
     /**
      * External configuration bridge settings.
      */
     private final Bridge bridge;
+
     /**
      * Request authorization settings for Cortex operations.
      */
     private final Guard guard;
+
     /**
      * Audit event collection and retention settings.
      */
     private final Audit audit;
+
     /**
      * Version-history limits and retention settings.
      */
@@ -231,6 +248,16 @@ public class CortexProperties {
      */
     public long requireCacheExpireMs() {
         return cacheExpire.toMillis();
+    }
+
+    /**
+     * @return safe diagnostic text
+     */
+    @Override
+    public String toString() {
+        return "CortexProperties[enabled=" + enabled + ", space=" + space + ", serverEnabled=" + serverEnabled
+                + ", maxSettingVersions=" + maxSettingVersions + ", maxWatchesPerSpace=" + maxWatchesPerSpace
+                + ", watchExpire=" + watchExpire + ", cacheExpire=" + cacheExpire + ", guard=***]";
     }
 
     /**
@@ -376,16 +403,6 @@ public class CortexProperties {
         public Version() {
             this(false);
         }
-    }
-
-    /**
-     * @return safe diagnostic text
-     */
-    @Override
-    public String toString() {
-        return "CortexProperties[enabled=" + enabled + ", space=" + space + ", serverEnabled=" + serverEnabled
-                + ", maxSettingVersions=" + maxSettingVersions + ", maxWatchesPerSpace=" + maxWatchesPerSpace
-                + ", watchExpire=" + watchExpire + ", cacheExpire=" + cacheExpire + ", guard=***]";
     }
 
 }

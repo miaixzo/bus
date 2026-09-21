@@ -31,16 +31,15 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class WikiPageEvent extends AbstractEvent {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852233220608L;
+
     /**
      * The x gitlab event value.
      */
 
     public static final String X_GITLAB_EVENT = "Wiki Page Hook";
+
     /**
      * The object kind value.
      */
@@ -50,14 +49,17 @@ public class WikiPageEvent extends AbstractEvent {
      * The user value.
      */
     private EventUser user;
+
     /**
      * The project value.
      */
     private EventProject project;
+
     /**
      * The wiki value.
      */
     private Wiki wiki;
+
     /**
      * The object attributes value.
      */
@@ -173,6 +175,17 @@ public class WikiPageEvent extends AbstractEvent {
     }
 
     /**
+     * Returns the string.
+     *
+     * @return the result
+     */
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
+    }
+
+    /**
      * The wiki class.
      *
      * @author Kimi Liu
@@ -183,18 +196,22 @@ public class WikiPageEvent extends AbstractEvent {
          * The web url value.
          */
         private String webUrl;
+
         /**
          * The git http url value.
          */
         private String git_http_url;
+
         /**
          * The git ssh url value.
          */
         private String git_ssh_url;
+
         /**
          * The path with namespace value.
          */
         private String pathWithNamespace;
+
         /**
          * The default branch value.
          */
@@ -310,17 +327,6 @@ public class WikiPageEvent extends AbstractEvent {
     }
 
     /**
-     * Returns the string.
-     *
-     * @return the result
-     */
-
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
-    }
-
-    /**
      * The object attributes class.
      *
      * @author Kimi Liu
@@ -331,34 +337,42 @@ public class WikiPageEvent extends AbstractEvent {
          * The title value.
          */
         private String title;
+
         /**
          * The content value.
          */
         private String content;
+
         /**
          * The format value.
          */
         private String format;
+
         /**
          * The message value.
          */
         private String message;
+
         /**
          * The slug value.
          */
         private String slug;
+
         /**
          * The url value.
          */
         private String url;
+
         /**
          * The action value.
          */
         private String action;
+
         /**
          * The diff url value.
          */
         private String diffUrl;
+
         /**
          * The version id value.
          */

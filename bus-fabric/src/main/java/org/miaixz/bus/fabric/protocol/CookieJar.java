@@ -115,6 +115,46 @@ public class CookieJar {
     }
 
     /**
+     * Returns whether two cookies share the same replacement identity.
+     *
+     * @param first  retained cookie identity
+     * @param second incoming cookie identity
+     * @return {@code true} when name and path match and either domains match or both host-only origins match
+     */
+    private static boolean sameIdentity(final Cookie first, final Cookie second) {
+        if (!first.name().equals(second.name()) || !first.path().equals(second.path())) {
+            return false;
+        }
+        if (first.domain() != null || second.domain() != null) {
+            return equal(first.domain(), second.domain());
+        }
+        return equal(first.host(), second.host());
+    }
+
+    /**
+     * Returns whether two nullable strings are equal.
+     *
+     * @param first  first nullable string
+     * @param second second nullable string
+     * @return {@code true} when both values are null or equal by {@link String#equals(Object)}
+     */
+    private static boolean equal(final String first, final String second) {
+        return first == null ? second == null : first.equals(second);
+    }
+
+    /**
+     * Validates and returns a required reference.
+     *
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Parses each {@code Set-Cookie} response header and saves every valid result.
      * <p>
      * Individual malformed header values are ignored. A non-accepting jar ignores the complete call, including its
@@ -290,46 +330,6 @@ public class CookieJar {
     private boolean expired(final Cookie cookie) {
         final Instant expires = cookie.expires();
         return expires != null && !clock.now().isBefore(expires);
-    }
-
-    /**
-     * Returns whether two cookies share the same replacement identity.
-     *
-     * @param first  retained cookie identity
-     * @param second incoming cookie identity
-     * @return {@code true} when name and path match and either domains match or both host-only origins match
-     */
-    private static boolean sameIdentity(final Cookie first, final Cookie second) {
-        if (!first.name().equals(second.name()) || !first.path().equals(second.path())) {
-            return false;
-        }
-        if (first.domain() != null || second.domain() != null) {
-            return equal(first.domain(), second.domain());
-        }
-        return equal(first.host(), second.host());
-    }
-
-    /**
-     * Returns whether two nullable strings are equal.
-     *
-     * @param first  first nullable string
-     * @param second second nullable string
-     * @return {@code true} when both values are null or equal by {@link String#equals(Object)}
-     */
-    private static boolean equal(final String first, final String second) {
-        return first == null ? second == null : first.equals(second);
-    }
-
-    /**
-     * Validates and returns a required reference.
-     *
-     * @param value reference to validate
-     * @param name  logical reference name used in the validation message
-     * @param <T>   reference type
-     * @return the validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

@@ -50,16 +50,16 @@ public class DataSourceFactory {
      */
     private static final ConfigurationPropertyNameAliases ALIASES;
 
-    /**
-     * Default datasource type supplied by the consuming integration.
-     */
-    private final String defaultType;
-
     static {
         ALIASES = new ConfigurationPropertyNameAliases();
         ALIASES.addAliases("url", JDBC_URL);
         ALIASES.addAliases("username", "user");
     }
+
+    /**
+     * Default datasource type supplied by the consuming integration.
+     */
+    private final String defaultType;
 
     /**
      * Creates a datasource factory with an integration-defined default type.
@@ -70,26 +70,6 @@ public class DataSourceFactory {
         this.defaultType = StringKit.trim(defaultType);
         if (StringKit.isEmpty(this.defaultType)) {
             throw new IllegalArgumentException("Default datasource type is required");
-        }
-    }
-
-    /**
-     * Creates and binds one concrete datasource.
-     *
-     * @param definition normalized datasource definition
-     * @return configured datasource instance
-     */
-    public DataSource create(DataSourceDefinition definition) {
-        String typeName = StringKit.isEmpty(definition.getType()) ? this.defaultType : definition.getType();
-        try {
-            Class<? extends DataSource> type = Class.forName(typeName).asSubclass(DataSource.class);
-            Map<String, Object> properties = properties(definition);
-            ConfigurationPropertySource source = new MapConfigurationPropertySource(properties);
-            Binder binder = new Binder(source.withAliases(ALIASES));
-            return binder.bind(ConfigurationPropertyName.EMPTY, Bindable.of(type)).get();
-        } catch (Exception e) {
-            throw new IllegalArgumentException(
-                    "Cannot create datasource '" + definition.getName() + "' with type: " + typeName, e);
         }
     }
 
@@ -119,6 +99,26 @@ public class DataSourceFactory {
     private static void put(Map<String, Object> properties, String name, Object value) {
         if (value != null) {
             properties.put(name, value);
+        }
+    }
+
+    /**
+     * Creates and binds one concrete datasource.
+     *
+     * @param definition normalized datasource definition
+     * @return configured datasource instance
+     */
+    public DataSource create(DataSourceDefinition definition) {
+        String typeName = StringKit.isEmpty(definition.getType()) ? this.defaultType : definition.getType();
+        try {
+            Class<? extends DataSource> type = Class.forName(typeName).asSubclass(DataSource.class);
+            Map<String, Object> properties = properties(definition);
+            ConfigurationPropertySource source = new MapConfigurationPropertySource(properties);
+            Binder binder = new Binder(source.withAliases(ALIASES));
+            return binder.bind(ConfigurationPropertyName.EMPTY, Bindable.of(type)).get();
+        } catch (Exception e) {
+            throw new IllegalArgumentException(
+                    "Cannot create datasource '" + definition.getName() + "' with type: " + typeName, e);
         }
     }
 

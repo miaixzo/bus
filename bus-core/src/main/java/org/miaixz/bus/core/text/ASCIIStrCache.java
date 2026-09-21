@@ -38,18 +38,18 @@ public class ASCIIStrCache {
      */
     private static final String[] CACHE = new String[ASCII_LENGTH];
 
-    /**
-     * Keeps ASCII string-cache lookup on the static API.
-     */
-    public ASCIIStrCache() {
-        // No initialization required.
-    }
-
     static {
         // Populate the cache with String representations of ASCII characters.
         for (char c = 0; c < ASCII_LENGTH; c++) {
             CACHE[c] = String.valueOf(c);
         }
+    }
+
+    /**
+     * Keeps ASCII string-cache lookup on the static API.
+     */
+    public ASCIIStrCache() {
+        // No initialization required.
     }
 
     /**

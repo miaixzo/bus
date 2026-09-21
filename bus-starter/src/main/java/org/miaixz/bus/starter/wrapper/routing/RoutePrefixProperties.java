@@ -42,14 +42,17 @@ public class RoutePrefixProperties {
      * Whether route-prefix handling is enabled.
      */
     private final boolean enabled;
+
     /**
      * Path prefix prepended to matching controller routes.
      */
     private final String prefix;
+
     /**
      * Controller package roots eligible for route prefixing.
      */
     private final List<String> basePackages;
+
     /**
      * Whether discovered route metadata is retained for inspection.
      */

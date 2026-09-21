@@ -42,13 +42,6 @@ public class IntRangeMatcher implements Matcher<Object, IntRange> {
      */
     private static final Set<Class<?>> NUMBER_TYPES = new HashSet<>();
 
-    /**
-     * Constructs a new IntRangeMatcher instance.
-     */
-    public IntRangeMatcher() {
-        // No initialization required.
-    }
-
     static {
         NUMBER_TYPES.add(Integer.class);
         NUMBER_TYPES.add(Long.class);
@@ -60,6 +53,13 @@ public class IntRangeMatcher implements Matcher<Object, IntRange> {
         NUMBER_TYPES.add(float.class);
         NUMBER_TYPES.add(BigDecimal.class);
         NUMBER_TYPES.add(BigInteger.class);
+    }
+
+    /**
+     * Constructs a new IntRangeMatcher instance.
+     */
+    public IntRangeMatcher() {
+        // No initialization required.
     }
 
     /**

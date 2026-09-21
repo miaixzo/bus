@@ -27,8 +27,8 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 /**
  * A serializable {@link Runnable} interface that supports throwing exceptions and combining multiple runnables.
  *
- * @see Runnable
  * @author Kimi Liu
+ * @see Runnable
  */
 @FunctionalInterface
 public interface RunnableX extends Runnable, Serializable {

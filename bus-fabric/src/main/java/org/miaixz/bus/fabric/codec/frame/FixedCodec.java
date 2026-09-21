@@ -68,6 +68,30 @@ public class FixedCodec implements FrameCodec {
     }
 
     /**
+     * Validates frame length.
+     *
+     * @param length candidate fixed frame length
+     * @return unchanged length from 1 byte through 16 MiB
+     */
+    private static int validateLength(final int length) {
+        Assert.isTrue(
+                length > 0 && length <= Builder.BYTES_16_MIB,
+                () -> new ValidateException("Frame length must be between 1 and 16777216"));
+        return length;
+    }
+
+    /**
+     * Validates input buffer.
+     *
+     * @param input buffer required to be non-null and contain at least one byte
+     */
+    private static void validateInput(final Buffer input) {
+        Assert.isTrue(
+                Assert.notNull(input, () -> new ValidateException("Frame input must not be empty")).size() > 0,
+                () -> new ValidateException("Frame input must not be empty"));
+    }
+
+    /**
      * Decodes fixed-length frames.
      *
      * @param input non-null, non-empty buffer whose bytes are consumed into the decoder accumulator
@@ -134,30 +158,6 @@ public class FixedCodec implements FrameCodec {
     @Override
     public void reset() {
         buffer.clear();
-    }
-
-    /**
-     * Validates frame length.
-     *
-     * @param length candidate fixed frame length
-     * @return unchanged length from 1 byte through 16 MiB
-     */
-    private static int validateLength(final int length) {
-        Assert.isTrue(
-                length > 0 && length <= Builder.BYTES_16_MIB,
-                () -> new ValidateException("Frame length must be between 1 and 16777216"));
-        return length;
-    }
-
-    /**
-     * Validates input buffer.
-     *
-     * @param input buffer required to be non-null and contain at least one byte
-     */
-    private static void validateInput(final Buffer input) {
-        Assert.isTrue(
-                Assert.notNull(input, () -> new ValidateException("Frame input must not be empty")).size() > 0,
-                () -> new ValidateException("Frame input must not be empty"));
     }
 
 }

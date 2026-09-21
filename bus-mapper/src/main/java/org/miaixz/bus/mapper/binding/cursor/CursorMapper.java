@@ -35,7 +35,6 @@ import org.miaixz.bus.mapper.provider.EntityProvider;
  * @param <T> The type of the entity class.
  * @param <E> An object that conforms to the Condition data structure, such as {@link Condition} or an MBG-generated
  *            Condition object.
- *
  * @author Kimi Liu
  */
 public interface CursorMapper<T, E> {

@@ -32,6 +32,7 @@ public class EventReleaseSource {
      * The format value.
      */
     private String format;
+
     /**
      * The url value.
      */

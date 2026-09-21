@@ -88,6 +88,44 @@ public class Demuxer implements Handler {
     }
 
     /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return the validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Validates a channel token.
+     *
+     * @param value token text to trim and validate
+     * @param name  logical field name included in the validation error
+     * @return trimmed, non-blank, single-line token
+     * @throws ValidateException if the token is blank or contains a line break
+     */
+    private static String validateToken(final String value, final String name) {
+        final String current = value == null ? null : StringKit.trim(value);
+        if (StringKit.isBlank(current) || StringKit.containsAny(current, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException(name + " must be non-blank and single-line");
+        }
+        return current;
+    }
+
+    /**
+     * Returns the shared no-op message handler.
+     *
+     * @return shared handler that ignores received messages
+     */
+    public static Handler noop() {
+        return Instances.get(Demuxer.class.getName() + ".noop", NoopHandler::new);
+    }
+
+    /**
      * Routes a received message to the matching channel handler.
      *
      * @param session session on which the message was received
@@ -188,44 +226,6 @@ public class Demuxer implements Handler {
             result.add(fallback);
         }
         return result;
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  logical field name included in the validation error
-     * @param <T>   reference type
-     * @return the validated non-null reference
-     * @throws ValidateException if {@code value} is {@code null}
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-    }
-
-    /**
-     * Validates a channel token.
-     *
-     * @param value token text to trim and validate
-     * @param name  logical field name included in the validation error
-     * @return trimmed, non-blank, single-line token
-     * @throws ValidateException if the token is blank or contains a line break
-     */
-    private static String validateToken(final String value, final String name) {
-        final String current = value == null ? null : StringKit.trim(value);
-        if (StringKit.isBlank(current) || StringKit.containsAny(current, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException(name + " must be non-blank and single-line");
-        }
-        return current;
-    }
-
-    /**
-     * Returns the shared no-op message handler.
-     *
-     * @return shared handler that ignores received messages
-     */
-    public static Handler noop() {
-        return Instances.get(Demuxer.class.getName() + ".noop", NoopHandler::new);
     }
 
     /**

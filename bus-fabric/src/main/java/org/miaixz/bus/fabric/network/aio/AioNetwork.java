@@ -288,6 +288,31 @@ public class AioNetwork implements AutoCloseable {
     }
 
     /**
+     * Composes the network listener with a per-operation listener.
+     *
+     * @param first  network-wide listener, or {@code null}
+     * @param second per-operation listener, or {@code null}
+     * @return failure-safe listener that invokes the configured delegates in order
+     */
+    private static Listener<Object> compose(final Listener<Object> first, final Listener<Object> second) {
+        final Listener<Object> left = first == null ? NoopListener.INSTANCE : first;
+        if (second == null) {
+            return left;
+        }
+        return safe(new CompositeListener(left, second));
+    }
+
+    /**
+     * Protects listener callbacks from escaping.
+     *
+     * @param listener listener to wrap, or {@code null}
+     * @return no-op listener for {@code null}, otherwise a wrapper that suppresses callback failures
+     */
+    private static Listener<Object> safe(final Listener<Object> listener) {
+        return listener == null ? NoopListener.INSTANCE : new SafeListener(listener);
+    }
+
+    /**
      * Returns the worker group.
      *
      * @return worker group owned by this network
@@ -429,28 +454,602 @@ public class AioNetwork implements AutoCloseable {
     }
 
     /**
-     * Composes the network listener with a per-operation listener.
+     * Internal no-operation listener.
      *
-     * @param first  network-wide listener, or {@code null}
-     * @param second per-operation listener, or {@code null}
-     * @return failure-safe listener that invokes the configured delegates in order
+     * @author Kimi Liu
      */
-    private static Listener<Object> compose(final Listener<Object> first, final Listener<Object> second) {
-        final Listener<Object> left = first == null ? NoopListener.INSTANCE : first;
-        if (second == null) {
-            return left;
-        }
-        return safe(new CompositeListener(left, second));
+    private enum NoopListener implements Listener<Object> {
+
+        /**
+         * Singleton no-operation listener.
+         */
+        INSTANCE
+
     }
 
     /**
-     * Protects listener callbacks from escaping.
+     * Pending native connect operation and the channel it exclusively owns.
      *
-     * @param listener listener to wrap, or {@code null}
-     * @return no-op listener for {@code null}, otherwise a wrapper that suppresses callback failures
+     * @param channel   channel opened for this attempt
+     * @param operation asynchronous connect completion
      */
-    private static Listener<Object> safe(final Listener<Object> listener) {
-        return listener == null ? NoopListener.INSTANCE : new SafeListener(listener);
+    private record Attempt(AioChannel channel, CompletableFuture<Void> operation) {
+    }
+
+    /**
+     * AIO network connection.
+     */
+    private static final class AioConnection implements Connection {
+
+        /**
+         * Immutable logical and transport destination of the connection.
+         */
+        private final Destination destination;
+
+        /**
+         * Native AIO channel owned by the connection.
+         */
+        private final AioChannel aio;
+
+        /**
+         * Protocol-facing conduit backed by the native channel.
+         */
+        private final Conduit conduit;
+
+        /**
+         * Lifecycle state and listener notification scope.
+         */
+        private final LifecycleScope scope;
+
+        /**
+         * Creates a connection.
+         *
+         * @param destination logical and transport destination metadata
+         * @param aio         connected native channel owned by the connection
+         * @param listener    failure-safe lifecycle listener
+         */
+        private AioConnection(final Destination destination, final AioChannel aio, final Listener<Object> listener) {
+            this.destination = Assert
+                    .notNull(destination, () -> new ValidateException("Connection destination must not be null"));
+            this.aio = Assert.notNull(aio, () -> new ValidateException("AIO channel must not be null"));
+            this.conduit = new AioConduit(this.aio);
+            this.scope = LifecycleScope.session(
+                    this,
+                    "aio-connection",
+                    listener,
+                    EventObserver.noop(),
+                    ObservationMarker.CONNECT_SUCCESS,
+                    null,
+                    ObservationMarker.CONNECT_FAILED);
+            this.scope.open(this);
+        }
+
+        /**
+         * Returns the destination.
+         *
+         * @return immutable destination metadata for this connection
+         */
+        @Override
+        public Destination destination() {
+            return destination;
+        }
+
+        /**
+         * Returns the conduit.
+         *
+         * @return conduit that reads from and writes to the native channel
+         */
+        @Override
+        public Conduit conduit() {
+            return conduit;
+        }
+
+        /**
+         * Returns state.
+         *
+         * @return current lifecycle state
+         */
+        @Override
+        public State state() {
+            return scope.state();
+        }
+
+        /**
+         * Returns the protocol-layer source.
+         *
+         * @return protocol-facing source backed by the connection conduit
+         */
+        @Override
+        public Source source() {
+            return conduit.source();
+        }
+
+        /**
+         * Returns the protocol-layer sink.
+         *
+         * @return protocol-facing sink backed by the connection conduit
+         */
+        @Override
+        public Sink sink() {
+            return conduit.sink();
+        }
+
+        /**
+         * Returns health.
+         *
+         * @return {@code true} when the lifecycle is open and the native channel remains open
+         */
+        @Override
+        public boolean healthy() {
+            return scope.state() == State.RUNNING && aio.opened();
+        }
+
+        /**
+         * Returns idle state.
+         *
+         * @return {@code false}, because this adapter does not track connection idleness
+         */
+        @Override
+        public boolean idle() {
+            return false;
+        }
+
+        /**
+         * Closes the connection.
+         */
+        @Override
+        public void close() {
+            if (scope.state().terminal()) {
+                return;
+            }
+            try {
+                aio.close();
+            } finally {
+                scope.close(this);
+            }
+        }
+
+    }
+
+    /**
+     * Network conduit adapter for AIO channels.
+     */
+    private static final class AioConduit implements Conduit {
+
+        /**
+         * Native channel adapted by this conduit.
+         */
+        private final AioChannel aio;
+
+        /**
+         * Source view for protocol readers.
+         */
+        private final Source source;
+
+        /**
+         * Sink view for protocol writers.
+         */
+        private final Sink sink;
+
+        /**
+         * Creates an adapter.
+         *
+         * @param aio non-null native channel to adapt
+         */
+        private AioConduit(final AioChannel aio) {
+            this.aio = Assert.notNull(aio, () -> new ValidateException("AIO channel must not be null"));
+            this.source = new AioSource();
+            this.sink = new AioSink();
+        }
+
+        /**
+         * Validates one completed channel read.
+         *
+         * @param count     byte count reported by the channel, or {@code null} for an invalid completion
+         * @param requested maximum byte count requested from the channel
+         * @param before    target buffer size before the read
+         * @param after     target buffer size after the read
+         * @return validated count, including {@code -1} for end of stream
+         */
+        private static long validateReadResult(
+                final Long count,
+                final long requested,
+                final long before,
+                final long after) {
+            if (count == null) {
+                throw new InternalException("AIO read returned a null byte count");
+            }
+            if (count < Normal.__1 || count > requested) {
+                throw new InternalException("AIO read returned an invalid byte count: " + count);
+            }
+            if (requested == Normal._0 && count != Normal._0) {
+                throw new InternalException("AIO zero-byte read returned a nonzero result: " + count);
+            }
+            final long appended = after - before;
+            if ((count == Normal.__1 && appended != Normal._0) || (count >= Normal._0 && appended != count)) {
+                throw new InternalException("AIO read count did not match appended bytes");
+            }
+            return count;
+        }
+
+        /**
+         * Validates one completed channel write.
+         *
+         * @param count     byte count reported by the channel, or {@code null} for an invalid completion
+         * @param requested exact byte count requested from the channel
+         * @param before    source buffer size before the write
+         * @param after     source buffer size after the write
+         * @return validated count equal to the requested byte count
+         */
+        private static long validateWriteResult(
+                final Long count,
+                final long requested,
+                final long before,
+                final long after) {
+            if (count == null) {
+                throw new InternalException("AIO write returned a null byte count");
+            }
+            if (count < Normal._0 || count > requested) {
+                throw new InternalException("AIO write returned an invalid byte count: " + count);
+            }
+            if (count != requested || before - after != requested) {
+                throw new InternalException("AIO write did not fully consume requested bytes");
+            }
+            return count;
+        }
+
+        /**
+         * Awaits an asynchronous byte-count operation.
+         *
+         * @param future  non-null asynchronous byte-count operation
+         * @param message message used when an interruption or checked failure is converted to an I/O exception
+         * @return non-null byte count produced by the operation
+         * @throws IOException if waiting is interrupted or the operation fails with a checked cause
+         */
+        private static long await(final CompletableFuture<Long> future, final String message) throws IOException {
+            try {
+                final Long count = Assert.notNull(future, () -> new ValidateException("IO future must not be null"))
+                        .get();
+                if (count == null) {
+                    throw new InternalException("AIO operation returned a null byte count");
+                }
+                return count;
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new IOException(message, e);
+            } catch (final ExecutionException e) {
+                final Throwable cause = e.getCause();
+                if (cause instanceof IOException io) {
+                    throw io;
+                }
+                if (cause instanceof RuntimeException runtime) {
+                    throw runtime;
+                }
+                if (cause instanceof Error error) {
+                    throw error;
+                }
+                throw new IOException(message, cause);
+            }
+        }
+
+        /**
+         * Reads bytes into a core.io buffer.
+         *
+         * @param target    buffer that receives bytes from the channel
+         * @param byteCount maximum number of bytes to append
+         * @return future containing the validated read count, including {@code -1} at end of stream
+         */
+        @Override
+        public CompletableFuture<Long> read(final Buffer target, final long byteCount) {
+            if (target == null) {
+                return CompletableFuture.failedFuture(new ValidateException("Read target must not be null"));
+            }
+            if (byteCount < Normal._0) {
+                return CompletableFuture.failedFuture(new ValidateException("Read byte count must not be negative"));
+            }
+            final long before = target.size();
+            final CompletableFuture<Long> operation;
+            try {
+                operation = aio.read(target, byteCount);
+            } catch (final RuntimeException e) {
+                return CompletableFuture.failedFuture(e);
+            }
+            if (operation == null) {
+                return CompletableFuture.failedFuture(new InternalException("AIO read returned a null future"));
+            }
+            return operation.thenApply(count -> validateReadResult(count, byteCount, before, target.size()));
+        }
+
+        /**
+         * Writes bytes from a core.io buffer.
+         *
+         * @param source    buffer whose leading bytes are consumed by the write
+         * @param byteCount exact number of bytes to write
+         * @return future containing the validated number of consumed bytes
+         */
+        @Override
+        public CompletableFuture<Long> write(final Buffer source, final long byteCount) {
+            if (source == null) {
+                return CompletableFuture.failedFuture(new ValidateException("Write source must not be null"));
+            }
+            if (byteCount < Normal._0 || byteCount > source.size()) {
+                return CompletableFuture
+                        .failedFuture(new ValidateException("Write byte count must be between zero and source size"));
+            }
+            final long before = source.size();
+            final CompletableFuture<Long> operation;
+            try {
+                operation = aio.write(source, byteCount);
+            } catch (final RuntimeException e) {
+                return CompletableFuture.failedFuture(e);
+            }
+            if (operation == null) {
+                return CompletableFuture.failedFuture(new InternalException("AIO write returned a null future"));
+            }
+            return operation.thenApply(count -> validateWriteResult(count, byteCount, before, source.size()));
+        }
+
+        /**
+         * Returns the core.io source view.
+         *
+         * @return reusable protocol-facing source view
+         */
+        @Override
+        public Source source() {
+            return source;
+        }
+
+        /**
+         * Returns the core.io sink view.
+         *
+         * @return reusable protocol-facing sink view
+         */
+        @Override
+        public Sink sink() {
+            return sink;
+        }
+
+        /**
+         * Returns open state.
+         *
+         * @return {@code true} while the underlying native channel is open
+         */
+        @Override
+        public boolean opened() {
+            return aio.opened();
+        }
+
+        /**
+         * Closes the adapter.
+         */
+        @Override
+        public void close() {
+            aio.close();
+        }
+
+        /**
+         * Source backed by the AIO conduit.
+         */
+        private final class AioSource implements Source {
+
+            /**
+             * Reads bytes through the enclosing conduit.
+             *
+             * @param sink      buffer that receives bytes from the native channel
+             * @param byteCount maximum number of bytes to append
+             * @return positive number of bytes read, {@code 0} for a zero-byte request, or {@code -1} at end of stream
+             * @throws IOException if the asynchronous read cannot be completed
+             */
+            @Override
+            public long read(final Buffer sink, final long byteCount) throws IOException {
+                final long count = await(AioConduit.this.read(sink, byteCount), "Unable to read AIO source");
+                if (count == Normal._0 && byteCount != Normal._0) {
+                    throw new InternalException("AIO source returned zero for a positive read request");
+                }
+                return count;
+            }
+
+            /**
+             * Returns the no-op timeout.
+             *
+             * @return shared timeout instance that imposes no source deadline
+             */
+            @Override
+            public org.miaixz.bus.core.io.timout.Timeout timeout() {
+                return org.miaixz.bus.core.io.timout.Timeout.NONE;
+            }
+
+            /**
+             * Closes the enclosing conduit.
+             */
+            @Override
+            public void close() {
+                AioConduit.this.close();
+            }
+
+        }
+
+        /**
+         * Sink backed by the AIO conduit.
+         */
+        private final class AioSink implements Sink {
+
+            /**
+             * Writes bytes through the enclosing conduit.
+             *
+             * @param source    buffer whose leading bytes are written and consumed
+             * @param byteCount exact number of bytes to write
+             * @throws IOException if the asynchronous write cannot be completed
+             */
+            @Override
+            public void write(final Buffer source, final long byteCount) throws IOException {
+                final long before = source == null ? Normal._0 : source.size();
+                final long count = await(AioConduit.this.write(source, byteCount), "Unable to write AIO sink");
+                if (count != byteCount || before - source.size() != byteCount) {
+                    throw new InternalException("AIO sink did not fully consume requested bytes");
+                }
+            }
+
+            /**
+             * Flushes the AIO sink.
+             */
+            @Override
+            public void flush() {
+                // AIO socket writes are flushed by the operating system.
+            }
+
+            /**
+             * Returns the no-op timeout.
+             *
+             * @return shared timeout instance that imposes no sink deadline
+             */
+            @Override
+            public org.miaixz.bus.core.io.timout.Timeout timeout() {
+                return org.miaixz.bus.core.io.timout.Timeout.NONE;
+            }
+
+            /**
+             * Closes the enclosing conduit.
+             */
+            @Override
+            public void close() {
+                AioConduit.this.close();
+            }
+
+        }
+
+    }
+
+    /**
+     * Ordered pair of lifecycle listeners invoked for each event.
+     *
+     * @param first  listener invoked first
+     * @param second listener invoked after the first, even if the first fails
+     */
+    private record CompositeListener(Listener<Object> first, Listener<Object> second) implements Listener<Object> {
+
+        /**
+         * Handles open events.
+         *
+         * @param source object whose lifecycle opened
+         */
+        @Override
+        public void open(final Object source) {
+            RuntimeException failure = null;
+            try {
+                first.open(source);
+            } catch (final RuntimeException e) {
+                failure = e;
+            }
+            try {
+                second.open(source);
+            } catch (final RuntimeException e) {
+                failure = failure == null ? e : failure;
+            }
+            if (failure != null) {
+                throw failure;
+            }
+        }
+
+        /**
+         * Handles close events.
+         *
+         * @param source object whose lifecycle closed
+         */
+        @Override
+        public void close(final Object source) {
+            RuntimeException failure = null;
+            try {
+                first.close(source);
+            } catch (final RuntimeException e) {
+                failure = e;
+            }
+            try {
+                second.close(source);
+            } catch (final RuntimeException e) {
+                failure = failure == null ? e : failure;
+            }
+            if (failure != null) {
+                throw failure;
+            }
+        }
+
+        /**
+         * Handles failure events.
+         *
+         * @param source object whose lifecycle failed
+         * @param cause  failure reported by the source
+         */
+        @Override
+        public void failure(final Object source, final Throwable cause) {
+            RuntimeException failure = null;
+            try {
+                first.failure(source, cause);
+            } catch (final RuntimeException e) {
+                failure = e;
+            }
+            try {
+                second.failure(source, cause);
+            } catch (final RuntimeException e) {
+                failure = failure == null ? e : failure;
+            }
+            if (failure != null) {
+                throw failure;
+            }
+        }
+
+    }
+
+    /**
+     * Listener wrapper that prevents delegate failures from escaping network lifecycle transitions.
+     *
+     * @param delegate listener whose runtime failures are suppressed
+     */
+    private record SafeListener(Listener<Object> delegate) implements Listener<Object> {
+
+        /**
+         * Handles open events.
+         *
+         * @param source object whose lifecycle opened
+         */
+        @Override
+        public void open(final Object source) {
+            try {
+                delegate.open(source);
+            } catch (final RuntimeException ignored) {
+                // Listener failures must not break network lifecycle transitions.
+            }
+        }
+
+        /**
+         * Handles close events.
+         *
+         * @param source object whose lifecycle closed
+         */
+        @Override
+        public void close(final Object source) {
+            try {
+                delegate.close(source);
+            } catch (final RuntimeException ignored) {
+                // Listener failures must not break network lifecycle transitions.
+            }
+        }
+
+        /**
+         * Handles failure events.
+         *
+         * @param source object whose lifecycle failed
+         * @param cause  failure reported by the source
+         */
+        @Override
+        public void failure(final Object source, final Throwable cause) {
+            try {
+                delegate.failure(source, cause);
+            } catch (final RuntimeException ignored) {
+                // Listener failures must not break network lifecycle transitions.
+            }
+        }
+
     }
 
     /**
@@ -706,605 +1305,6 @@ public class AioNetwork implements AutoCloseable {
             managed.remove(attempt.channel);
             IoKit.closeQuietly(attempt.channel);
         }
-    }
-
-    /**
-     * Pending native connect operation and the channel it exclusively owns.
-     *
-     * @param channel   channel opened for this attempt
-     * @param operation asynchronous connect completion
-     */
-    private record Attempt(AioChannel channel, CompletableFuture<Void> operation) {
-    }
-
-    /**
-     * AIO network connection.
-     */
-    private static final class AioConnection implements Connection {
-
-        /**
-         * Immutable logical and transport destination of the connection.
-         */
-        private final Destination destination;
-
-        /**
-         * Native AIO channel owned by the connection.
-         */
-        private final AioChannel aio;
-
-        /**
-         * Protocol-facing conduit backed by the native channel.
-         */
-        private final Conduit conduit;
-
-        /**
-         * Lifecycle state and listener notification scope.
-         */
-        private final LifecycleScope scope;
-
-        /**
-         * Creates a connection.
-         *
-         * @param destination logical and transport destination metadata
-         * @param aio         connected native channel owned by the connection
-         * @param listener    failure-safe lifecycle listener
-         */
-        private AioConnection(final Destination destination, final AioChannel aio, final Listener<Object> listener) {
-            this.destination = Assert
-                    .notNull(destination, () -> new ValidateException("Connection destination must not be null"));
-            this.aio = Assert.notNull(aio, () -> new ValidateException("AIO channel must not be null"));
-            this.conduit = new AioConduit(this.aio);
-            this.scope = LifecycleScope.session(
-                    this,
-                    "aio-connection",
-                    listener,
-                    EventObserver.noop(),
-                    ObservationMarker.CONNECT_SUCCESS,
-                    null,
-                    ObservationMarker.CONNECT_FAILED);
-            this.scope.open(this);
-        }
-
-        /**
-         * Returns the destination.
-         *
-         * @return immutable destination metadata for this connection
-         */
-        @Override
-        public Destination destination() {
-            return destination;
-        }
-
-        /**
-         * Returns the conduit.
-         *
-         * @return conduit that reads from and writes to the native channel
-         */
-        @Override
-        public Conduit conduit() {
-            return conduit;
-        }
-
-        /**
-         * Returns state.
-         *
-         * @return current lifecycle state
-         */
-        @Override
-        public State state() {
-            return scope.state();
-        }
-
-        /**
-         * Returns the protocol-layer source.
-         *
-         * @return protocol-facing source backed by the connection conduit
-         */
-        @Override
-        public Source source() {
-            return conduit.source();
-        }
-
-        /**
-         * Returns the protocol-layer sink.
-         *
-         * @return protocol-facing sink backed by the connection conduit
-         */
-        @Override
-        public Sink sink() {
-            return conduit.sink();
-        }
-
-        /**
-         * Returns health.
-         *
-         * @return {@code true} when the lifecycle is open and the native channel remains open
-         */
-        @Override
-        public boolean healthy() {
-            return scope.state() == State.RUNNING && aio.opened();
-        }
-
-        /**
-         * Returns idle state.
-         *
-         * @return {@code false}, because this adapter does not track connection idleness
-         */
-        @Override
-        public boolean idle() {
-            return false;
-        }
-
-        /**
-         * Closes the connection.
-         */
-        @Override
-        public void close() {
-            if (scope.state().terminal()) {
-                return;
-            }
-            try {
-                aio.close();
-            } finally {
-                scope.close(this);
-            }
-        }
-
-    }
-
-    /**
-     * Network conduit adapter for AIO channels.
-     */
-    private static final class AioConduit implements Conduit {
-
-        /**
-         * Native channel adapted by this conduit.
-         */
-        private final AioChannel aio;
-
-        /**
-         * Source view for protocol readers.
-         */
-        private final Source source;
-
-        /**
-         * Sink view for protocol writers.
-         */
-        private final Sink sink;
-
-        /**
-         * Creates an adapter.
-         *
-         * @param aio non-null native channel to adapt
-         */
-        private AioConduit(final AioChannel aio) {
-            this.aio = Assert.notNull(aio, () -> new ValidateException("AIO channel must not be null"));
-            this.source = new AioSource();
-            this.sink = new AioSink();
-        }
-
-        /**
-         * Reads bytes into a core.io buffer.
-         *
-         * @param target    buffer that receives bytes from the channel
-         * @param byteCount maximum number of bytes to append
-         * @return future containing the validated read count, including {@code -1} at end of stream
-         */
-        @Override
-        public CompletableFuture<Long> read(final Buffer target, final long byteCount) {
-            if (target == null) {
-                return CompletableFuture.failedFuture(new ValidateException("Read target must not be null"));
-            }
-            if (byteCount < Normal._0) {
-                return CompletableFuture.failedFuture(new ValidateException("Read byte count must not be negative"));
-            }
-            final long before = target.size();
-            final CompletableFuture<Long> operation;
-            try {
-                operation = aio.read(target, byteCount);
-            } catch (final RuntimeException e) {
-                return CompletableFuture.failedFuture(e);
-            }
-            if (operation == null) {
-                return CompletableFuture.failedFuture(new InternalException("AIO read returned a null future"));
-            }
-            return operation.thenApply(count -> validateReadResult(count, byteCount, before, target.size()));
-        }
-
-        /**
-         * Writes bytes from a core.io buffer.
-         *
-         * @param source    buffer whose leading bytes are consumed by the write
-         * @param byteCount exact number of bytes to write
-         * @return future containing the validated number of consumed bytes
-         */
-        @Override
-        public CompletableFuture<Long> write(final Buffer source, final long byteCount) {
-            if (source == null) {
-                return CompletableFuture.failedFuture(new ValidateException("Write source must not be null"));
-            }
-            if (byteCount < Normal._0 || byteCount > source.size()) {
-                return CompletableFuture
-                        .failedFuture(new ValidateException("Write byte count must be between zero and source size"));
-            }
-            final long before = source.size();
-            final CompletableFuture<Long> operation;
-            try {
-                operation = aio.write(source, byteCount);
-            } catch (final RuntimeException e) {
-                return CompletableFuture.failedFuture(e);
-            }
-            if (operation == null) {
-                return CompletableFuture.failedFuture(new InternalException("AIO write returned a null future"));
-            }
-            return operation.thenApply(count -> validateWriteResult(count, byteCount, before, source.size()));
-        }
-
-        /**
-         * Validates one completed channel read.
-         *
-         * @param count     byte count reported by the channel, or {@code null} for an invalid completion
-         * @param requested maximum byte count requested from the channel
-         * @param before    target buffer size before the read
-         * @param after     target buffer size after the read
-         * @return validated count, including {@code -1} for end of stream
-         */
-        private static long validateReadResult(
-                final Long count,
-                final long requested,
-                final long before,
-                final long after) {
-            if (count == null) {
-                throw new InternalException("AIO read returned a null byte count");
-            }
-            if (count < Normal.__1 || count > requested) {
-                throw new InternalException("AIO read returned an invalid byte count: " + count);
-            }
-            if (requested == Normal._0 && count != Normal._0) {
-                throw new InternalException("AIO zero-byte read returned a nonzero result: " + count);
-            }
-            final long appended = after - before;
-            if ((count == Normal.__1 && appended != Normal._0) || (count >= Normal._0 && appended != count)) {
-                throw new InternalException("AIO read count did not match appended bytes");
-            }
-            return count;
-        }
-
-        /**
-         * Validates one completed channel write.
-         *
-         * @param count     byte count reported by the channel, or {@code null} for an invalid completion
-         * @param requested exact byte count requested from the channel
-         * @param before    source buffer size before the write
-         * @param after     source buffer size after the write
-         * @return validated count equal to the requested byte count
-         */
-        private static long validateWriteResult(
-                final Long count,
-                final long requested,
-                final long before,
-                final long after) {
-            if (count == null) {
-                throw new InternalException("AIO write returned a null byte count");
-            }
-            if (count < Normal._0 || count > requested) {
-                throw new InternalException("AIO write returned an invalid byte count: " + count);
-            }
-            if (count != requested || before - after != requested) {
-                throw new InternalException("AIO write did not fully consume requested bytes");
-            }
-            return count;
-        }
-
-        /**
-         * Returns the core.io source view.
-         *
-         * @return reusable protocol-facing source view
-         */
-        @Override
-        public Source source() {
-            return source;
-        }
-
-        /**
-         * Returns the core.io sink view.
-         *
-         * @return reusable protocol-facing sink view
-         */
-        @Override
-        public Sink sink() {
-            return sink;
-        }
-
-        /**
-         * Returns open state.
-         *
-         * @return {@code true} while the underlying native channel is open
-         */
-        @Override
-        public boolean opened() {
-            return aio.opened();
-        }
-
-        /**
-         * Closes the adapter.
-         */
-        @Override
-        public void close() {
-            aio.close();
-        }
-
-        /**
-         * Awaits an asynchronous byte-count operation.
-         *
-         * @param future  non-null asynchronous byte-count operation
-         * @param message message used when an interruption or checked failure is converted to an I/O exception
-         * @return non-null byte count produced by the operation
-         * @throws IOException if waiting is interrupted or the operation fails with a checked cause
-         */
-        private static long await(final CompletableFuture<Long> future, final String message) throws IOException {
-            try {
-                final Long count = Assert.notNull(future, () -> new ValidateException("IO future must not be null"))
-                        .get();
-                if (count == null) {
-                    throw new InternalException("AIO operation returned a null byte count");
-                }
-                return count;
-            } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new IOException(message, e);
-            } catch (final ExecutionException e) {
-                final Throwable cause = e.getCause();
-                if (cause instanceof IOException io) {
-                    throw io;
-                }
-                if (cause instanceof RuntimeException runtime) {
-                    throw runtime;
-                }
-                if (cause instanceof Error error) {
-                    throw error;
-                }
-                throw new IOException(message, cause);
-            }
-        }
-
-        /**
-         * Source backed by the AIO conduit.
-         */
-        private final class AioSource implements Source {
-
-            /**
-             * Reads bytes through the enclosing conduit.
-             *
-             * @param sink      buffer that receives bytes from the native channel
-             * @param byteCount maximum number of bytes to append
-             * @return positive number of bytes read, {@code 0} for a zero-byte request, or {@code -1} at end of stream
-             * @throws IOException if the asynchronous read cannot be completed
-             */
-            @Override
-            public long read(final Buffer sink, final long byteCount) throws IOException {
-                final long count = await(AioConduit.this.read(sink, byteCount), "Unable to read AIO source");
-                if (count == Normal._0 && byteCount != Normal._0) {
-                    throw new InternalException("AIO source returned zero for a positive read request");
-                }
-                return count;
-            }
-
-            /**
-             * Returns the no-op timeout.
-             *
-             * @return shared timeout instance that imposes no source deadline
-             */
-            @Override
-            public org.miaixz.bus.core.io.timout.Timeout timeout() {
-                return org.miaixz.bus.core.io.timout.Timeout.NONE;
-            }
-
-            /**
-             * Closes the enclosing conduit.
-             */
-            @Override
-            public void close() {
-                AioConduit.this.close();
-            }
-
-        }
-
-        /**
-         * Sink backed by the AIO conduit.
-         */
-        private final class AioSink implements Sink {
-
-            /**
-             * Writes bytes through the enclosing conduit.
-             *
-             * @param source    buffer whose leading bytes are written and consumed
-             * @param byteCount exact number of bytes to write
-             * @throws IOException if the asynchronous write cannot be completed
-             */
-            @Override
-            public void write(final Buffer source, final long byteCount) throws IOException {
-                final long before = source == null ? Normal._0 : source.size();
-                final long count = await(AioConduit.this.write(source, byteCount), "Unable to write AIO sink");
-                if (count != byteCount || before - source.size() != byteCount) {
-                    throw new InternalException("AIO sink did not fully consume requested bytes");
-                }
-            }
-
-            /**
-             * Flushes the AIO sink.
-             */
-            @Override
-            public void flush() {
-                // AIO socket writes are flushed by the operating system.
-            }
-
-            /**
-             * Returns the no-op timeout.
-             *
-             * @return shared timeout instance that imposes no sink deadline
-             */
-            @Override
-            public org.miaixz.bus.core.io.timout.Timeout timeout() {
-                return org.miaixz.bus.core.io.timout.Timeout.NONE;
-            }
-
-            /**
-             * Closes the enclosing conduit.
-             */
-            @Override
-            public void close() {
-                AioConduit.this.close();
-            }
-
-        }
-
-    }
-
-    /**
-     * Ordered pair of lifecycle listeners invoked for each event.
-     *
-     * @param first  listener invoked first
-     * @param second listener invoked after the first, even if the first fails
-     */
-    private record CompositeListener(Listener<Object> first, Listener<Object> second) implements Listener<Object> {
-
-        /**
-         * Handles open events.
-         *
-         * @param source object whose lifecycle opened
-         */
-        @Override
-        public void open(final Object source) {
-            RuntimeException failure = null;
-            try {
-                first.open(source);
-            } catch (final RuntimeException e) {
-                failure = e;
-            }
-            try {
-                second.open(source);
-            } catch (final RuntimeException e) {
-                failure = failure == null ? e : failure;
-            }
-            if (failure != null) {
-                throw failure;
-            }
-        }
-
-        /**
-         * Handles close events.
-         *
-         * @param source object whose lifecycle closed
-         */
-        @Override
-        public void close(final Object source) {
-            RuntimeException failure = null;
-            try {
-                first.close(source);
-            } catch (final RuntimeException e) {
-                failure = e;
-            }
-            try {
-                second.close(source);
-            } catch (final RuntimeException e) {
-                failure = failure == null ? e : failure;
-            }
-            if (failure != null) {
-                throw failure;
-            }
-        }
-
-        /**
-         * Handles failure events.
-         *
-         * @param source object whose lifecycle failed
-         * @param cause  failure reported by the source
-         */
-        @Override
-        public void failure(final Object source, final Throwable cause) {
-            RuntimeException failure = null;
-            try {
-                first.failure(source, cause);
-            } catch (final RuntimeException e) {
-                failure = e;
-            }
-            try {
-                second.failure(source, cause);
-            } catch (final RuntimeException e) {
-                failure = failure == null ? e : failure;
-            }
-            if (failure != null) {
-                throw failure;
-            }
-        }
-
-    }
-
-    /**
-     * Listener wrapper that prevents delegate failures from escaping network lifecycle transitions.
-     *
-     * @param delegate listener whose runtime failures are suppressed
-     */
-    private record SafeListener(Listener<Object> delegate) implements Listener<Object> {
-
-        /**
-         * Handles open events.
-         *
-         * @param source object whose lifecycle opened
-         */
-        @Override
-        public void open(final Object source) {
-            try {
-                delegate.open(source);
-            } catch (final RuntimeException ignored) {
-                // Listener failures must not break network lifecycle transitions.
-            }
-        }
-
-        /**
-         * Handles close events.
-         *
-         * @param source object whose lifecycle closed
-         */
-        @Override
-        public void close(final Object source) {
-            try {
-                delegate.close(source);
-            } catch (final RuntimeException ignored) {
-                // Listener failures must not break network lifecycle transitions.
-            }
-        }
-
-        /**
-         * Handles failure events.
-         *
-         * @param source object whose lifecycle failed
-         * @param cause  failure reported by the source
-         */
-        @Override
-        public void failure(final Object source, final Throwable cause) {
-            try {
-                delegate.failure(source, cause);
-            } catch (final RuntimeException ignored) {
-                // Listener failures must not break network lifecycle transitions.
-            }
-        }
-
-    }
-
-    /**
-     * Internal no-operation listener.
-     *
-     * @author Kimi Liu
-     */
-    private enum NoopListener implements Listener<Object> {
-
-        /**
-         * Singleton no-operation listener.
-         */
-        INSTANCE
-
     }
 
 }

@@ -50,43 +50,52 @@ public class Library extends Space {
      * implementation and do not affect authentication compilation.
      */
     private String code;
+
     /**
      * Project-managed human-readable application name displayed in external application hubs.
      */
     private String name;
+
     /**
      * Optional project-managed application icon location, never interpreted by authentication execution.
      */
     private String icon;
+
     /**
      * Project-managed launch template interpreted and validated only by the integrating project.
      */
     private String url;
+
     /**
      * Project-managed browser browsing-context code. Built-in values map to {@link Target}, while project validation
      * decides whether a missing or unsupported value is accepted.
      */
     private Integer target;
+
     /**
      * Optional project-managed presentation order used only by external application hubs.
      */
     private Integer sort;
+
     /**
      * Optional external presentation category. {@code null} means that the application is unclassified; a non-blank
      * value is an external grouping key and must never change authentication or authorization behavior.
      */
     private String category;
+
     /**
      * Optional JSON object encoded as text for implementation-neutral presentation and management extensions.
      * {@code null} or blank means no extensions. Its members must not affect protocol execution, authorization, or
      * security decisions.
      */
     private String metadata;
+
     /**
      * Optional human-readable publisher or application owner name. {@code null} means unknown or undisclosed; the value
      * is displayed only and is not a verified security identity.
      */
     private String publisher;
+
     /**
      * Optional human-readable application description. {@code null} means that no description is supplied; the value is
      * presentation-only and is not interpreted as policy or protocol configuration.

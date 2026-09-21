@@ -109,11 +109,6 @@ public class ConnectionPool implements AutoCloseable {
     private final Set<Destination> validatedDestinations;
 
     /**
-     * Most recently validated immutable destination identity used by the steady single-origin fast path.
-     */
-    private volatile Destination lastValidatedDestination;
-
-    /**
      * Leased connections.
      */
     private final Set<ConnectionLease> leased;
@@ -139,31 +134,21 @@ public class ConnectionPool implements AutoCloseable {
     private final Set<Destination> expandedHttp1Destinations;
 
     /**
-     * Multiplex capacity listener registrations.
-     */
-    /**
-     * O(1) total physical connection count.
-     */
-    private volatile int physicalCount;
-
-    /**
-     * O(1) total idle connection count.
-     */
-    /**
      * Coordination lock.
      */
     private final Object lock;
 
     /**
-     * Reserved connection creations currently running outside the pool lock.
+     * Multiplex capacity listener registrations.
      */
-    private int creating;
-
     /**
      * Reserved connection creations by destination.
      */
     private final Map<Destination, Integer> creatingByDestination;
 
+    /**
+     * O(1) total idle connection count.
+     */
     /**
      * Fair first-in-first-out acquisition waiters.
      */
@@ -183,6 +168,21 @@ public class ConnectionPool implements AutoCloseable {
      * Borrowed metric owner.
      */
     private final FabricMeter meter;
+
+    /**
+     * Most recently validated immutable destination identity used by the steady single-origin fast path.
+     */
+    private volatile Destination lastValidatedDestination;
+
+    /**
+     * O(1) total physical connection count.
+     */
+    private volatile int physicalCount;
+
+    /**
+     * Reserved connection creations currently running outside the pool lock.
+     */
+    private int creating;
 
     /**
      * Runtime dispatcher, borrowed when supplied and lazily owned otherwise.
@@ -293,6 +293,103 @@ public class ConnectionPool implements AutoCloseable {
             final Dispatcher dispatcher) {
         return new ConnectionPool(policy == null ? PoolPolicy.defaults() : policy, require(clock, "Runtime clock"),
                 require(meter, "Fabric meter"), require(dispatcher, "Runtime dispatcher"));
+    }
+
+    /**
+     * Closes a list of connections.
+     *
+     * @param connections physical connections to close, aggregating failures
+     */
+    private static void closeAll(final List<Connection> connections) {
+        RuntimeException failure = null;
+        for (final Connection connection : connections) {
+            try {
+                connection.close();
+            } catch (final RuntimeException e) {
+                if (failure == null) {
+                    failure = e;
+                } else {
+                    failure.addSuppressed(e);
+                }
+            }
+        }
+        if (failure != null) {
+            throw new InternalException("Unable to close pooled connections", failure);
+        }
+    }
+
+    /**
+     * Closes one connection.
+     *
+     * @param connection physical pooled connection to close
+     */
+    private static void closeOne(final Connection connection) {
+        try {
+            connection.close();
+        } catch (final RuntimeException e) {
+            throw new InternalException("Unable to close pooled connection", e);
+        }
+    }
+
+    /**
+     * Aborts one connection after its lease has become terminally non-reusable.
+     */
+    private static void abortOne(final Connection connection) {
+        try {
+            connection.abort();
+        } catch (final RuntimeException e) {
+            throw new InternalException("Unable to abort pooled connection", e);
+        }
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
+    }
+
+    /**
+     * Validates that destination options have stable value semantics.
+     *
+     * @param destination destination to validate
+     */
+    private static void validateDestination(final Destination destination) {
+        for (final Map.Entry<String, Object> entry : destination.options().asMap().entrySet()) {
+            if (!stableOptionValue(entry.getValue())) {
+                throw new ValidateException("Connection destination option must be a stable value: " + entry.getKey());
+            }
+        }
+    }
+
+    /**
+     * Returns whether an option value is immutable and value-comparable.
+     *
+     * @param value option value
+     * @return true when the value is safe in a destination identity
+     */
+    private static boolean stableOptionValue(final Object value) {
+        if (value == null) {
+            return true;
+        }
+        if (value instanceof Context || value instanceof Supplier<?> || value instanceof Dispatcher
+                || value instanceof Collection<?> || value instanceof Map<?, ?> || value.getClass().isArray()) {
+            return false;
+        }
+        return value instanceof TlsPolicy || value instanceof TlsContext || value instanceof TlsSettings
+                || value instanceof String || value instanceof Boolean || value instanceof Character
+                || value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long
+                || value instanceof Float || value instanceof Double || value instanceof BigInteger
+                || value instanceof BigDecimal || value instanceof Duration || value instanceof Timeout
+                || value instanceof Enum<?>;
     }
 
     /**
@@ -1655,103 +1752,6 @@ public class ConnectionPool implements AutoCloseable {
         if (closed.get()) {
             throw new StatefulException("Connection pool is closed");
         }
-    }
-
-    /**
-     * Closes a list of connections.
-     *
-     * @param connections physical connections to close, aggregating failures
-     */
-    private static void closeAll(final List<Connection> connections) {
-        RuntimeException failure = null;
-        for (final Connection connection : connections) {
-            try {
-                connection.close();
-            } catch (final RuntimeException e) {
-                if (failure == null) {
-                    failure = e;
-                } else {
-                    failure.addSuppressed(e);
-                }
-            }
-        }
-        if (failure != null) {
-            throw new InternalException("Unable to close pooled connections", failure);
-        }
-    }
-
-    /**
-     * Closes one connection.
-     *
-     * @param connection physical pooled connection to close
-     */
-    private static void closeOne(final Connection connection) {
-        try {
-            connection.close();
-        } catch (final RuntimeException e) {
-            throw new InternalException("Unable to close pooled connection", e);
-        }
-    }
-
-    /**
-     * Aborts one connection after its lease has become terminally non-reusable.
-     */
-    private static void abortOne(final Connection connection) {
-        try {
-            connection.abort();
-        } catch (final RuntimeException e) {
-            throw new InternalException("Unable to abort pooled connection", e);
-        }
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  field name included in the validation failure
-     * @param <T>   reference type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
-    }
-
-    /**
-     * Validates that destination options have stable value semantics.
-     *
-     * @param destination destination to validate
-     */
-    private static void validateDestination(final Destination destination) {
-        for (final Map.Entry<String, Object> entry : destination.options().asMap().entrySet()) {
-            if (!stableOptionValue(entry.getValue())) {
-                throw new ValidateException("Connection destination option must be a stable value: " + entry.getKey());
-            }
-        }
-    }
-
-    /**
-     * Returns whether an option value is immutable and value-comparable.
-     *
-     * @param value option value
-     * @return true when the value is safe in a destination identity
-     */
-    private static boolean stableOptionValue(final Object value) {
-        if (value == null) {
-            return true;
-        }
-        if (value instanceof Context || value instanceof Supplier<?> || value instanceof Dispatcher
-                || value instanceof Collection<?> || value instanceof Map<?, ?> || value.getClass().isArray()) {
-            return false;
-        }
-        return value instanceof TlsPolicy || value instanceof TlsContext || value instanceof TlsSettings
-                || value instanceof String || value instanceof Boolean || value instanceof Character
-                || value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long
-                || value instanceof Float || value instanceof Double || value instanceof BigInteger
-                || value instanceof BigDecimal || value instanceof Duration || value instanceof Timeout
-                || value instanceof Enum<?>;
     }
 
 }

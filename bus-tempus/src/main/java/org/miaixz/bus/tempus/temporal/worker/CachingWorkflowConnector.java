@@ -73,6 +73,20 @@ public class CachingWorkflowConnector implements WorkflowConnector, AutoCloseabl
     }
 
     /**
+     * Builds the cache key used to isolate workflow clients by endpoint, namespace, and client identity.
+     *
+     * @param endpoint  the Temporal endpoint
+     * @param namespace the Temporal namespace
+     * @param identity  the Temporal client identity
+     * @return the composite cache key
+     */
+    private static String toClientCacheKey(String endpoint, String namespace, String identity) {
+        String ns = namespace == null ? Normal.EMPTY : namespace;
+        String id = identity == null ? Normal.EMPTY : identity;
+        return StringJoiner.of(Symbol.OR).append(endpoint).append(ns).append(id).toString();
+    }
+
+    /**
      * Returns a cached workflow client for the specified binding, creating one if necessary.
      * <p>
      * Client cache is keyed by endpoint + namespace + identity to ensure different clients do not accidentally share
@@ -189,20 +203,6 @@ public class CachingWorkflowConnector implements WorkflowConnector, AutoCloseabl
                     e.getClass().getSimpleName());
             throw e;
         }
-    }
-
-    /**
-     * Builds the cache key used to isolate workflow clients by endpoint, namespace, and client identity.
-     *
-     * @param endpoint  the Temporal endpoint
-     * @param namespace the Temporal namespace
-     * @param identity  the Temporal client identity
-     * @return the composite cache key
-     */
-    private static String toClientCacheKey(String endpoint, String namespace, String identity) {
-        String ns = namespace == null ? Normal.EMPTY : namespace;
-        String id = identity == null ? Normal.EMPTY : identity;
-        return StringJoiner.of(Symbol.OR).append(endpoint).append(ns).append(id).toString();
     }
 
     /**

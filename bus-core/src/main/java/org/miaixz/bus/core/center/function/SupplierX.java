@@ -29,8 +29,8 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
  * A serializable {@link Supplier} interface that supports throwing exceptions and combining multiple suppliers.
  *
  * @param <R> The type of results supplied by this supplier.
- * @see Supplier
  * @author Kimi Liu
+ * @see Supplier
  */
 @FunctionalInterface
 public interface SupplierX<R> extends Supplier<R>, Serializable {

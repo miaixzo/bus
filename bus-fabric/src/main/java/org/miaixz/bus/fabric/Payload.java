@@ -49,25 +49,6 @@ public interface Payload {
     }
 
     /**
-     * Lazily initialized holder for the shared empty payload.
-     */
-    class EmptyHolder {
-
-        /**
-         * Shared immutable empty payload.
-         */
-        private static final Payload EMPTY = Payload.owned(ByteString.EMPTY);
-
-        /**
-         * Creates an instance without per-instance state; the empty payload remains shared at the class level.
-         */
-        public EmptyHolder() {
-            // No initialization required.
-        }
-
-    }
-
-    /**
      * Creates a repeatable payload from bytes.
      *
      * @param bytes mutable bytes copied into an immutable snapshot
@@ -387,84 +368,6 @@ public interface Payload {
     }
 
     /**
-     * Returns the payload length.
-     *
-     * @return payload length, or -1 when unknown
-     */
-    long length();
-
-    /**
-     * Opens the payload source.
-     *
-     * @return newly opened source, subject to the implementation's repeatability
-     */
-    Source source();
-
-    /**
-     * Reads all payload bytes.
-     *
-     * @return payload bytes
-     */
-    default byte[] bytes() {
-        return materialize(this, Normal.MEBI_64, "Payload.bytes()");
-    }
-
-    /**
-     * Reads all payload bytes with an explicit materialize threshold.
-     *
-     * @param maxBytes maximum bytes to materialize
-     * @return payload bytes
-     */
-    default byte[] bytes(final long maxBytes) {
-        return materialize(this, maxBytes, "Payload.bytes(long)");
-    }
-
-    /**
-     * Reads the payload as text.
-     *
-     * @param charset character encoding used to decode payload bytes
-     * @return payload text
-     */
-    default String text(final Charset charset) {
-        return text(charset, Normal.MEBI_64);
-    }
-
-    /**
-     * Reads the payload as text with an explicit materialize threshold.
-     *
-     * @param charset  character encoding used to decode payload bytes
-     * @param maxBytes maximum bytes to materialize
-     * @return payload text
-     */
-    default String text(final Charset charset, final long maxBytes) {
-        validateCharset(charset);
-        return new String(bytes(maxBytes), charset);
-    }
-
-    /**
-     * Returns whether this payload can be read more than once.
-     *
-     * @return true when repeatable
-     */
-    boolean repeatable();
-
-    /**
-     * Returns immutable owned bytes for copy-free protocol consumers.
-     *
-     * <p>
-     * Streaming implementations retain their one-shot semantics and therefore reject this operation.
-     * </p>
-     *
-     * @return immutable byte owner
-     */
-    default ByteString ownedBytes() {
-        if (!repeatable()) {
-            throw new StatefulException("Streaming payload has no repeatable byte owner");
-        }
-        return ByteString.of(bytes());
-    }
-
-    /**
      * Reads a payload stream into memory while enforcing a threshold.
      *
      * @param payload  payload to read
@@ -616,6 +519,103 @@ public interface Payload {
             return "Payload.materialize";
         }
         return entry;
+    }
+
+    /**
+     * Returns the payload length.
+     *
+     * @return payload length, or -1 when unknown
+     */
+    long length();
+
+    /**
+     * Opens the payload source.
+     *
+     * @return newly opened source, subject to the implementation's repeatability
+     */
+    Source source();
+
+    /**
+     * Reads all payload bytes.
+     *
+     * @return payload bytes
+     */
+    default byte[] bytes() {
+        return materialize(this, Normal.MEBI_64, "Payload.bytes()");
+    }
+
+    /**
+     * Reads all payload bytes with an explicit materialize threshold.
+     *
+     * @param maxBytes maximum bytes to materialize
+     * @return payload bytes
+     */
+    default byte[] bytes(final long maxBytes) {
+        return materialize(this, maxBytes, "Payload.bytes(long)");
+    }
+
+    /**
+     * Reads the payload as text.
+     *
+     * @param charset character encoding used to decode payload bytes
+     * @return payload text
+     */
+    default String text(final Charset charset) {
+        return text(charset, Normal.MEBI_64);
+    }
+
+    /**
+     * Reads the payload as text with an explicit materialize threshold.
+     *
+     * @param charset  character encoding used to decode payload bytes
+     * @param maxBytes maximum bytes to materialize
+     * @return payload text
+     */
+    default String text(final Charset charset, final long maxBytes) {
+        validateCharset(charset);
+        return new String(bytes(maxBytes), charset);
+    }
+
+    /**
+     * Returns whether this payload can be read more than once.
+     *
+     * @return true when repeatable
+     */
+    boolean repeatable();
+
+    /**
+     * Returns immutable owned bytes for copy-free protocol consumers.
+     *
+     * <p>
+     * Streaming implementations retain their one-shot semantics and therefore reject this operation.
+     * </p>
+     *
+     * @return immutable byte owner
+     */
+    default ByteString ownedBytes() {
+        if (!repeatable()) {
+            throw new StatefulException("Streaming payload has no repeatable byte owner");
+        }
+        return ByteString.of(bytes());
+    }
+
+    /**
+     * Lazily initialized holder for the shared empty payload.
+     */
+    class EmptyHolder {
+
+        /**
+         * Shared immutable empty payload.
+         */
+        private static final Payload EMPTY = Payload.owned(ByteString.EMPTY);
+
+        /**
+         * Creates an instance without per-instance state; the empty payload remains shared at the class level.
+         */
+        public EmptyHolder() {
+            // No initialization required.
+        }
+
     }
 
 }

@@ -37,9 +37,6 @@ import org.miaixz.bus.image.metric.net.DeviceExtension;
  */
 public class HL7DeviceExtension extends DeviceExtension {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852267701967L;
 

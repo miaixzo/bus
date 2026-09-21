@@ -157,6 +157,167 @@ public class HttpDownload {
     }
 
     /**
+     * Validates the HTTP response.
+     *
+     * @param response HTTP response whose status is validated
+     * @param append   append mode
+     */
+    private static void validateResponse(final HttpResponse response, final boolean append) {
+        final int code = response.code();
+        if (append && code != Http.Status.PARTIAL_CONTENT) {
+            throw new ProtocolException("HTTP resume requires 206 Partial Content");
+        }
+        if (!append && code != Http.Status.OK && code != Http.Status.PARTIAL_CONTENT) {
+            throw new ProtocolException("HTTP download failed with status " + code);
+        }
+    }
+
+    /**
+     * Returns expected total length.
+     *
+     * @param response accepted response containing length headers
+     * @param offset   existing partial-file byte count
+     * @param append   append mode
+     * @return total or -1
+     */
+    private static long totalLength(final HttpResponse response, final long offset, final boolean append) {
+        final long rangeTotal = contentRangeTotal(response.headers().get(Http.Header.CONTENT_RANGE));
+        if (rangeTotal >= 0L) {
+            return rangeTotal;
+        }
+        final long length = response.headers().contentLength();
+        if (length >= 0) {
+            if (!append) {
+                return length;
+            }
+            try {
+                return Math.addExact(offset, length);
+            } catch (final ArithmeticException e) {
+                throw new ProtocolException("HTTP download length overflow", e);
+            }
+        }
+        return -1L;
+    }
+
+    /**
+     * Parses total length from Content-Range.
+     *
+     * @param value header value
+     * @return total or -1
+     */
+    private static long contentRangeTotal(final String value) {
+        if (value == null) {
+            return -1L;
+        }
+        final int slash = value.lastIndexOf(Symbol.C_SLASH);
+        if (slash < 0 || slash == value.length() - 1) {
+            return -1L;
+        }
+        final String total = value.substring(slash + 1).trim();
+        if (Symbol.STAR.equals(total)) {
+            return -1L;
+        }
+        try {
+            return Long.parseLong(total);
+        } catch (final NumberFormatException e) {
+            throw new ProtocolException("Invalid Content-Range total", e);
+        }
+    }
+
+    /**
+     * Returns a resumable validator.
+     *
+     * @param response response containing ETag or Last-Modified headers
+     * @return validator or null
+     */
+    private static String validator(final HttpResponse response) {
+        final String etag = response.headers().get(Http.Header.ETAG);
+        return etag == null ? response.headers().get(Http.Header.LAST_MODIFIED) : etag;
+    }
+
+    /**
+     * Reads a validator sidecar.
+     *
+     * @param meta sidecar
+     * @return validator or null
+     * @throws IOException when reading fails
+     */
+    private static String readValidator(final Path meta) throws IOException {
+        if (!Files.exists(meta)) {
+            return null;
+        }
+        final String value = Files.readString(meta).trim();
+        return value.isEmpty() ? null : value;
+    }
+
+    /**
+     * Writes a validator sidecar.
+     *
+     * @param meta      sidecar
+     * @param validator ETag or Last-Modified value, or {@code null} to remove the sidecar
+     * @throws IOException when writing fails
+     */
+    private static void writeValidator(final Path meta, final String validator) throws IOException {
+        if (validator == null || validator.isBlank()) {
+            deleteQuietly(meta);
+            return;
+        }
+        createParent(meta);
+        Files.writeString(meta, validator);
+    }
+
+    /**
+     * Ensures the target parent directory exists before body bytes are written.
+     *
+     * @param path target or sidecar path
+     * @throws IOException when the directory cannot be created
+     */
+    private static void createParent(final Path path) throws IOException {
+        final Path parent = path.toAbsolutePath().getParent();
+        if (parent != null) {
+            Files.createDirectories(parent);
+        }
+    }
+
+    /**
+     * Removes an incomplete target or validator sidecar without hiding the original transfer failure.
+     *
+     * @param path path to remove
+     */
+    private static void deleteQuietly(final Path path) {
+        try {
+            Files.deleteIfExists(path);
+        } catch (final IOException ignored) {
+            // Best-effort cleanup.
+        }
+    }
+
+    /**
+     * Validates that a download target names a concrete file path.
+     *
+     * @param target candidate target
+     * @return validated target
+     */
+    private static Path validateTarget(final Path target) {
+        final Path checked = Assert
+                .notNull(target, () -> new ValidateException("HTTP download target must not be null"));
+        Assert.notNull(checked.getFileName(), () -> new ValidateException("HTTP download target must not be null"));
+        return checked;
+    }
+
+    /**
+     * Validates required builder and execution inputs.
+     *
+     * @param value reference to validate
+     * @param name  field name used in validation messages
+     * @param <T>   value type
+     * @return validated value
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Executes the download.
      *
      * @return final target path after the part file is atomically installed
@@ -367,116 +528,6 @@ public class HttpDownload {
     }
 
     /**
-     * Validates the HTTP response.
-     *
-     * @param response HTTP response whose status is validated
-     * @param append   append mode
-     */
-    private static void validateResponse(final HttpResponse response, final boolean append) {
-        final int code = response.code();
-        if (append && code != Http.Status.PARTIAL_CONTENT) {
-            throw new ProtocolException("HTTP resume requires 206 Partial Content");
-        }
-        if (!append && code != Http.Status.OK && code != Http.Status.PARTIAL_CONTENT) {
-            throw new ProtocolException("HTTP download failed with status " + code);
-        }
-    }
-
-    /**
-     * Returns expected total length.
-     *
-     * @param response accepted response containing length headers
-     * @param offset   existing partial-file byte count
-     * @param append   append mode
-     * @return total or -1
-     */
-    private static long totalLength(final HttpResponse response, final long offset, final boolean append) {
-        final long rangeTotal = contentRangeTotal(response.headers().get(Http.Header.CONTENT_RANGE));
-        if (rangeTotal >= 0L) {
-            return rangeTotal;
-        }
-        final long length = response.headers().contentLength();
-        if (length >= 0) {
-            if (!append) {
-                return length;
-            }
-            try {
-                return Math.addExact(offset, length);
-            } catch (final ArithmeticException e) {
-                throw new ProtocolException("HTTP download length overflow", e);
-            }
-        }
-        return -1L;
-    }
-
-    /**
-     * Parses total length from Content-Range.
-     *
-     * @param value header value
-     * @return total or -1
-     */
-    private static long contentRangeTotal(final String value) {
-        if (value == null) {
-            return -1L;
-        }
-        final int slash = value.lastIndexOf(Symbol.C_SLASH);
-        if (slash < 0 || slash == value.length() - 1) {
-            return -1L;
-        }
-        final String total = value.substring(slash + 1).trim();
-        if (Symbol.STAR.equals(total)) {
-            return -1L;
-        }
-        try {
-            return Long.parseLong(total);
-        } catch (final NumberFormatException e) {
-            throw new ProtocolException("Invalid Content-Range total", e);
-        }
-    }
-
-    /**
-     * Returns a resumable validator.
-     *
-     * @param response response containing ETag or Last-Modified headers
-     * @return validator or null
-     */
-    private static String validator(final HttpResponse response) {
-        final String etag = response.headers().get(Http.Header.ETAG);
-        return etag == null ? response.headers().get(Http.Header.LAST_MODIFIED) : etag;
-    }
-
-    /**
-     * Reads a validator sidecar.
-     *
-     * @param meta sidecar
-     * @return validator or null
-     * @throws IOException when reading fails
-     */
-    private static String readValidator(final Path meta) throws IOException {
-        if (!Files.exists(meta)) {
-            return null;
-        }
-        final String value = Files.readString(meta).trim();
-        return value.isEmpty() ? null : value;
-    }
-
-    /**
-     * Writes a validator sidecar.
-     *
-     * @param meta      sidecar
-     * @param validator ETag or Last-Modified value, or {@code null} to remove the sidecar
-     * @throws IOException when writing fails
-     */
-    private static void writeValidator(final Path meta, final String validator) throws IOException {
-        if (validator == null || validator.isBlank()) {
-            deleteQuietly(meta);
-            return;
-        }
-        createParent(meta);
-        Files.writeString(meta, validator);
-    }
-
-    /**
      * Emits download progress only when the caller supplied a progress callback.
      *
      * @param written bytes written to the target file
@@ -486,57 +537,6 @@ public class HttpDownload {
         if (progress != null) {
             progress.accept(written, total);
         }
-    }
-
-    /**
-     * Ensures the target parent directory exists before body bytes are written.
-     *
-     * @param path target or sidecar path
-     * @throws IOException when the directory cannot be created
-     */
-    private static void createParent(final Path path) throws IOException {
-        final Path parent = path.toAbsolutePath().getParent();
-        if (parent != null) {
-            Files.createDirectories(parent);
-        }
-    }
-
-    /**
-     * Removes an incomplete target or validator sidecar without hiding the original transfer failure.
-     *
-     * @param path path to remove
-     */
-    private static void deleteQuietly(final Path path) {
-        try {
-            Files.deleteIfExists(path);
-        } catch (final IOException ignored) {
-            // Best-effort cleanup.
-        }
-    }
-
-    /**
-     * Validates that a download target names a concrete file path.
-     *
-     * @param target candidate target
-     * @return validated target
-     */
-    private static Path validateTarget(final Path target) {
-        final Path checked = Assert
-                .notNull(target, () -> new ValidateException("HTTP download target must not be null"));
-        Assert.notNull(checked.getFileName(), () -> new ValidateException("HTTP download target must not be null"));
-        return checked;
-    }
-
-    /**
-     * Validates required builder and execution inputs.
-     *
-     * @param value reference to validate
-     * @param name  field name used in validation messages
-     * @param <T>   value type
-     * @return validated value
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**

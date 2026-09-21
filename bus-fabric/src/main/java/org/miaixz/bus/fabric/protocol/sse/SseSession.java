@@ -169,6 +169,75 @@ public class SseSession implements Session {
     }
 
     /**
+     * Cancels an optional Call.
+     *
+     * @param call call to cancel, or {@code null} when none is owned
+     */
+    private static void cancel(final Call<?> call) {
+        if (call != null) {
+            call.cancel();
+        }
+    }
+
+    /**
+     * Cancels an optional dispatcher handle.
+     *
+     * @param handle dispatcher handle to cancel, or {@code null} when none is owned
+     */
+    private static void cancel(final DispatchHandle handle) {
+        if (handle != null) {
+            handle.cancel();
+        }
+    }
+
+    /**
+     * Closes an optional resource.
+     *
+     * @param resource resource to close, or {@code null} when none is owned
+     */
+    private static void close(final AutoCloseable resource) {
+        if (resource == null) {
+            return;
+        }
+        try {
+            resource.close();
+        } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Fabric",
+                    e,
+                    "Unable to close an SSE session resource: type={}",
+                    resource.getClass().getSimpleName());
+        }
+    }
+
+    /**
+     * Replaces LifecycleScope's generated operation tag with the runner-owned identifier.
+     *
+     * @param event       lifecycle event whose marker, time, tags, and cause are preserved
+     * @param operationId runner-owned identifier replacing the generated operation tag
+     * @return event carrying the shared identifier
+     * @throws ValidateException if {@code event} is {@code null}
+     */
+    private static FabricEvent withOperationId(final FabricEvent event, final String operationId) {
+        final FabricEvent current = require(event, "SSE lifecycle event");
+        return new FabricEvent(current.marker(), current.time(),
+                current.tags().with(Builder.TAG_OPERATION_ID, operationId), current.cause());
+    }
+
+    /**
+     * Validates and returns a required reference.
+     *
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Returns the session address.
      *
      * @return remote SSE endpoint address
@@ -400,75 +469,6 @@ public class SseSession implements Session {
         if (hook != null) {
             hook.run();
         }
-    }
-
-    /**
-     * Cancels an optional Call.
-     *
-     * @param call call to cancel, or {@code null} when none is owned
-     */
-    private static void cancel(final Call<?> call) {
-        if (call != null) {
-            call.cancel();
-        }
-    }
-
-    /**
-     * Cancels an optional dispatcher handle.
-     *
-     * @param handle dispatcher handle to cancel, or {@code null} when none is owned
-     */
-    private static void cancel(final DispatchHandle handle) {
-        if (handle != null) {
-            handle.cancel();
-        }
-    }
-
-    /**
-     * Closes an optional resource.
-     *
-     * @param resource resource to close, or {@code null} when none is owned
-     */
-    private static void close(final AutoCloseable resource) {
-        if (resource == null) {
-            return;
-        }
-        try {
-            resource.close();
-        } catch (final Exception e) {
-            Logger.warn(
-                    false,
-                    "Fabric",
-                    e,
-                    "Unable to close an SSE session resource: type={}",
-                    resource.getClass().getSimpleName());
-        }
-    }
-
-    /**
-     * Replaces LifecycleScope's generated operation tag with the runner-owned identifier.
-     *
-     * @param event       lifecycle event whose marker, time, tags, and cause are preserved
-     * @param operationId runner-owned identifier replacing the generated operation tag
-     * @return event carrying the shared identifier
-     * @throws ValidateException if {@code event} is {@code null}
-     */
-    private static FabricEvent withOperationId(final FabricEvent event, final String operationId) {
-        final FabricEvent current = require(event, "SSE lifecycle event");
-        return new FabricEvent(current.marker(), current.time(),
-                current.tags().with(Builder.TAG_OPERATION_ID, operationId), current.cause());
-    }
-
-    /**
-     * Validates and returns a required reference.
-     *
-     * @param value reference to validate
-     * @param name  logical reference name used in the validation message
-     * @param <T>   reference type
-     * @return the validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**

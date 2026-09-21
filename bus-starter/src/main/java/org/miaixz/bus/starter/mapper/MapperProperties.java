@@ -45,7 +45,7 @@ public class MapperProperties extends MapperOptions {
 
     /**
      * Binds Mapper activation and flattened plugin settings without retaining the mutable source map.
-     *
+     * <p>
      * Constructs a new MapperProperties instance for Spring Boot property binding.
      */
     public MapperProperties() {

@@ -74,14 +74,17 @@ public class LutShape {
      * The log inv value.
      */
     public static final LutShape LOG_INV = new LutShape(Function.LOG_INV);
+
     /**
      * The function value.
      */
     private final Function function;
+
     /**
      * The explanation value.
      */
     private final String explanation;
+
     /**
      * The lookup value.
      */

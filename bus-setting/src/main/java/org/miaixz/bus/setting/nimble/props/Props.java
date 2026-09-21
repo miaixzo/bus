@@ -480,7 +480,7 @@ public class Props extends Properties implements TypeGetter<CharSequence> {
      * a.c = 2
      * b.a = 3
      * </pre>
-     *
+     * <p>
      * Calling {@code getSubProps("a")} would return a {@code Props} object containing:
      *
      * <pre>

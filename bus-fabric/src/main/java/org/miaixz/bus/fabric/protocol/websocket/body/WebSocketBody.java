@@ -159,6 +159,71 @@ public class WebSocketBody implements MessageBody, ProgressBody {
     }
 
     /**
+     * Validates text.
+     *
+     * @param text Unicode text to validate and encode
+     * @return validated text encoded as UTF-8 bytes
+     */
+    private static ByteString validateText(final String text) {
+        final String checked = require(text, "WebSocket text");
+        validateTextValue(checked);
+        return ByteString.encodeUtf8(checked);
+    }
+
+    /**
+     * Creates a text body from validated values.
+     *
+     * @param bytes validated UTF-8 text bytes
+     * @param text  decoded validated text value
+     * @return WebSocket body
+     */
+    private static WebSocketBody text(final ByteString bytes, final String text) {
+        return new WebSocketBody(Kind.TEXT, text, Payload.of(bytes),
+                MediaType.TEXT_PLAIN_TYPE.withCharset(Charset.UTF_8));
+    }
+
+    /**
+     * Validates text characters.
+     *
+     * @param text decoded text whose control characters are validated
+     */
+    private static void validateTextValue(final String text) {
+        for (int i = Normal._0; i < text.length(); i++) {
+            final char current = text.charAt(i);
+            if (current < Symbol.C_SPACE && current != Symbol.C_CR && current != Symbol.C_LF) {
+                throw new ValidateException("WebSocket text contains an invalid control character");
+            }
+        }
+    }
+
+    /**
+     * Decodes text bytes as strict UTF-8.
+     *
+     * @param text text bytes
+     * @return decoded text
+     */
+    private static String decodeUtf8(final ByteString text) {
+        try {
+            return Charset.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(CodingErrorAction.REPORT).decode(text.asByteBuffer()).toString();
+        } catch (final CharacterCodingException e) {
+            throw new ValidateException("WebSocket text must be valid UTF-8", e);
+        }
+    }
+
+    /**
+     * Validates a required reference.
+     *
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Returns message kind.
      *
      * @return text or binary message kind
@@ -283,71 +348,6 @@ public class WebSocketBody implements MessageBody, ProgressBody {
             progress.stepRate(rate);
         }
         return this;
-    }
-
-    /**
-     * Validates text.
-     *
-     * @param text Unicode text to validate and encode
-     * @return validated text encoded as UTF-8 bytes
-     */
-    private static ByteString validateText(final String text) {
-        final String checked = require(text, "WebSocket text");
-        validateTextValue(checked);
-        return ByteString.encodeUtf8(checked);
-    }
-
-    /**
-     * Creates a text body from validated values.
-     *
-     * @param bytes validated UTF-8 text bytes
-     * @param text  decoded validated text value
-     * @return WebSocket body
-     */
-    private static WebSocketBody text(final ByteString bytes, final String text) {
-        return new WebSocketBody(Kind.TEXT, text, Payload.of(bytes),
-                MediaType.TEXT_PLAIN_TYPE.withCharset(Charset.UTF_8));
-    }
-
-    /**
-     * Validates text characters.
-     *
-     * @param text decoded text whose control characters are validated
-     */
-    private static void validateTextValue(final String text) {
-        for (int i = Normal._0; i < text.length(); i++) {
-            final char current = text.charAt(i);
-            if (current < Symbol.C_SPACE && current != Symbol.C_CR && current != Symbol.C_LF) {
-                throw new ValidateException("WebSocket text contains an invalid control character");
-            }
-        }
-    }
-
-    /**
-     * Decodes text bytes as strict UTF-8.
-     *
-     * @param text text bytes
-     * @return decoded text
-     */
-    private static String decodeUtf8(final ByteString text) {
-        try {
-            return Charset.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
-                    .onUnmappableCharacter(CodingErrorAction.REPORT).decode(text.asByteBuffer()).toString();
-        } catch (final CharacterCodingException e) {
-            throw new ValidateException("WebSocket text must be valid UTF-8", e);
-        }
-    }
-
-    /**
-     * Validates a required reference.
-     *
-     * @param value reference to validate
-     * @param name  field name included in the validation failure
-     * @param <T>   reference type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**

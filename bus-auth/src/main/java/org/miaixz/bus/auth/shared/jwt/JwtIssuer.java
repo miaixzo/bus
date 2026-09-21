@@ -47,6 +47,7 @@ public class JwtIssuer {
      * Profile-scoped JWS execution service.
      */
     private final JwsService jwsService;
+
     /**
      * Shared Fabric time source.
      */

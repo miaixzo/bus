@@ -43,13 +43,6 @@ public class Registry {
      */
     private static final Map<EnumValue.Masking, StrategyProvider> STRATEGY_CACHE = new ConcurrentHashMap<>();
 
-    /**
-     * Constructs a new Registry instance.
-     */
-    public Registry() {
-        // No initialization required.
-    }
-
     static {
         register(new AddressProvider());
         register(new BandCardProvider());
@@ -63,6 +56,13 @@ public class Registry {
         register(new PasswordProvider());
         register(new CardProvider());
         register(new PhoneProvider());
+    }
+
+    /**
+     * Constructs a new Registry instance.
+     */
+    public Registry() {
+        // No initialization required.
     }
 
     /**

@@ -32,10 +32,12 @@ public class IssueChanges extends EventChanges {
      * The due date value.
      */
     private ChangeContainer<Date> dueDate;
+
     /**
      * The confidential value.
      */
     private ChangeContainer<Boolean> confidential;
+
     /**
      * The heath status value.
      */

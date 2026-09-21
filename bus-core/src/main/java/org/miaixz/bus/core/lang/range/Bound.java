@@ -58,9 +58,9 @@ import org.miaixz.bus.core.center.function.PredicateX;
  * </ul>
  *
  * @param <T> the type of the boundary value, which must be comparable
+ * @author Kimi Liu
  * @see BoundType
  * @see BoundedRange
- * @author Kimi Liu
  */
 public interface Bound<T extends Comparable<? super T>> extends PredicateX<T>, Comparable<Bound<T>> {
 

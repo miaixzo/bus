@@ -35,9 +35,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class RepositoryFile implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852280333826L;
 
@@ -53,30 +50,37 @@ public class RepositoryFile implements Serializable {
      * The size value.
      */
     private Integer size;
+
     /**
      * The encoding value.
      */
     private Encoding encoding;
+
     /**
      * The content value.
      */
     private String content;
+
     /**
      * The content sha256 value.
      */
     private String contentSha256;
+
     /**
      * The ref value.
      */
     private String ref;
+
     /**
      * The blob id value.
      */
     private String blobId;
+
     /**
      * The commit id value.
      */
     private String commitId;
+
     /**
      * The last commit id value.
      */

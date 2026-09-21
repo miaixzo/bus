@@ -113,6 +113,19 @@ public class TlsContext {
     }
 
     /**
+     * Creates the default SSL context wrapper.
+     *
+     * @return TLS context
+     */
+    private static TlsContext createDefault() {
+        try {
+            return new TlsContext(SSLContextBuilder.getDefault());
+        } catch (final InternalException e) {
+            throw new ProtocolException("Default TLS context is not available", e);
+        }
+    }
+
+    /**
      * Creates a configured client engine.
      *
      * @param address  target address
@@ -324,19 +337,6 @@ public class TlsContext {
         current = new SocketConfiguration(settings, host, parameters);
         socketConfiguration = current;
         return parameters;
-    }
-
-    /**
-     * Creates the default SSL context wrapper.
-     *
-     * @return TLS context
-     */
-    private static TlsContext createDefault() {
-        try {
-            return new TlsContext(SSLContextBuilder.getDefault());
-        } catch (final InternalException e) {
-            throw new ProtocolException("Default TLS context is not available", e);
-        }
     }
 
     /**

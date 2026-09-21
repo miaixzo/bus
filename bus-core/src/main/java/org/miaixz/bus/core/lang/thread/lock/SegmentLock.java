@@ -302,6 +302,7 @@ public abstract class SegmentLock<L> {
     private static final class WeakSafeLock implements Lock {
 
         private final Lock delegate;
+
         private final WeakSafeReadWriteLock strongReference;
 
         /**
@@ -595,8 +596,11 @@ public abstract class SegmentLock<L> {
     private static class SmallLazySegmentLock<L> extends PowerOfTwoSegmentLock<L> {
 
         final AtomicReferenceArray<ArrayReference<? extends L>> locks;
+
         final SupplierX<L> supplier;
+
         final int size;
+
         final ReferenceQueue<L> queue = new ReferenceQueue<>();
 
         /**
@@ -701,7 +705,9 @@ public abstract class SegmentLock<L> {
     private static class LargeLazySegmentLock<L> extends PowerOfTwoSegmentLock<L> {
 
         final ConcurrentMap<Integer, L> locks;
+
         final SupplierX<L> supplier;
+
         final int size;
 
         /**
@@ -762,7 +768,9 @@ public abstract class SegmentLock<L> {
         private static final long serialVersionUID = 2852280575965L;
 
         long unused1;
+
         long unused2;
+
         long unused3;
 
         /**

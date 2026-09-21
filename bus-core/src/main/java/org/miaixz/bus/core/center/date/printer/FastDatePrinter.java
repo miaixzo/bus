@@ -32,8 +32,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  * used to format a {@link Date} into a string. This implementation is inspired by Apache Commons Lang's
  * {@code FastDatePrinter}.
  *
- * @see FastDateParser
  * @author Kimi Liu
+ * @see FastDateParser
  */
 public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter {
 

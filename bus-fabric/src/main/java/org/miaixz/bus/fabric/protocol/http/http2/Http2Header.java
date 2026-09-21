@@ -57,28 +57,6 @@ public record Http2Header(String name, String value, boolean pseudo) {
     }
 
     /**
-     * Returns whether HPACK must avoid indexing this security-sensitive field.
-     *
-     * @return {@code true} for authorization and cookie fields
-     */
-    public boolean sensitive() {
-        return switch (name) {
-            case "authorization", "proxy-authorization", "cookie", "set-cookie" -> true;
-            default -> false;
-        };
-    }
-
-    /**
-     * Returns the RFC 7541 entry size without allocating encoded byte arrays.
-     *
-     * @return 32-byte overhead plus name and UTF-8 value lengths, saturated at {@link Integer#MAX_VALUE}
-     */
-    public int hpackSize() {
-        final long size = 32L + name.length() + utf8Length(value);
-        return size > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) size;
-    }
-
-    /**
      * Validates a lowercase ASCII HTTP/2 field name.
      *
      * @param value field name to validate
@@ -158,6 +136,28 @@ public record Http2Header(String name, String value, boolean pseudo) {
             }
         }
         return (int) length;
+    }
+
+    /**
+     * Returns whether HPACK must avoid indexing this security-sensitive field.
+     *
+     * @return {@code true} for authorization and cookie fields
+     */
+    public boolean sensitive() {
+        return switch (name) {
+            case "authorization", "proxy-authorization", "cookie", "set-cookie" -> true;
+            default -> false;
+        };
+    }
+
+    /**
+     * Returns the RFC 7541 entry size without allocating encoded byte arrays.
+     *
+     * @return 32-byte overhead plus name and UTF-8 value lengths, saturated at {@link Integer#MAX_VALUE}
+     */
+    public int hpackSize() {
+        final long size = 32L + name.length() + utf8Length(value);
+        return size > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) size;
     }
 
 }

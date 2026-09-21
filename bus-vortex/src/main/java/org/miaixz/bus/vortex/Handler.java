@@ -32,8 +32,8 @@ import reactor.core.publisher.Mono;
  * after the request is routed to its final destination by a {@link Router}. This provides an AOP-like mechanism for
  * tasks such as logging, metrics, or final response modification.
  *
- * @see VortexHandler
  * @author Kimi Liu
+ * @see VortexHandler
  */
 public interface Handler {
 

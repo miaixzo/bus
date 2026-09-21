@@ -101,6 +101,56 @@ public class DiskLruCache implements Closeable, Flushable {
     private final AutoCloseable cleanupCloseable;
 
     /**
+     * Background task that trims the journal and evicts entries after writes.
+     */
+    private final Runnable cleanupRunnable = new Runnable() {
+
+        /**
+         * Runs deferred cache trimming and journal rebuild work.
+         */
+        @Override
+        public void run() {
+            synchronized (DiskLruCache.this) {
+                if (!initialized || closed) {
+                    return; // Nothing to do.
+                }
+
+                try {
+                    trimToSize();
+                } catch (IOException ignored) {
+                    Logger.warn(
+                            false,
+                            "Http",
+                            ignored,
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                            "DiskLruCache",
+                            true,
+                            ignored.getClass().getSimpleName());
+                    mostRecentTrimFailed = true;
+                }
+
+                try {
+                    if (journalRebuildRequired()) {
+                        rebuildJournal();
+                        redundantOpCount = 0;
+                    }
+                } catch (IOException e) {
+                    Logger.warn(
+                            false,
+                            "Http",
+                            e,
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                            "DiskLruCache",
+                            true,
+                            e.getClass().getSimpleName());
+                    mostRecentRebuildFailed = true;
+                    journalWriter = IoKit.buffer(IoKit.blackhole());
+                }
+            }
+        }
+    };
+
+    /**
      * Buffered writer appending mutations to the active journal.
      */
     BufferSink journalWriter;
@@ -150,56 +200,6 @@ public class DiskLruCache implements Closeable, Flushable {
      * committed. A snapshot is stale if its sequence number is not equal to its entry's sequence number.
      */
     private long nextSequenceNumber = 0;
-
-    /**
-     * Background task that trims the journal and evicts entries after writes.
-     */
-    private final Runnable cleanupRunnable = new Runnable() {
-
-        /**
-         * Runs deferred cache trimming and journal rebuild work.
-         */
-        @Override
-        public void run() {
-            synchronized (DiskLruCache.this) {
-                if (!initialized || closed) {
-                    return; // Nothing to do.
-                }
-
-                try {
-                    trimToSize();
-                } catch (IOException ignored) {
-                    Logger.warn(
-                            false,
-                            "Http",
-                            ignored,
-                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
-                            "DiskLruCache",
-                            true,
-                            ignored.getClass().getSimpleName());
-                    mostRecentTrimFailed = true;
-                }
-
-                try {
-                    if (journalRebuildRequired()) {
-                        rebuildJournal();
-                        redundantOpCount = 0;
-                    }
-                } catch (IOException e) {
-                    Logger.warn(
-                            false,
-                            "Http",
-                            e,
-                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
-                            "DiskLruCache",
-                            true,
-                            e.getClass().getSimpleName());
-                    mostRecentRebuildFailed = true;
-                    journalWriter = IoKit.buffer(IoKit.blackhole());
-                }
-            }
-        }
-    };
 
     /**
      * Creates a cache with externally managed cleanup execution.
@@ -1191,302 +1191,6 @@ public class DiskLruCache implements Closeable, Flushable {
     }
 
     /**
-     * A snapshot of the values for an entry.
-     *
-     * @author Kimi Liu
-     */
-    public class Snapshot implements Closeable {
-
-        /**
-         * Entry key captured when this snapshot was opened.
-         */
-        private final String key;
-
-        /**
-         * Entry sequence used to reject stale snapshot edits.
-         */
-        private final long sequenceNumber;
-
-        /**
-         * Open value sources owned by this snapshot.
-         */
-        private final Source[] sources;
-
-        /**
-         * Committed byte lengths for {@link #sources}.
-         */
-        private final long[] lengths;
-
-        /**
-         * Creates a snapshot over committed value sources.
-         *
-         * @param key            entry key
-         * @param sequenceNumber committed entry sequence
-         * @param sources        value sources
-         * @param lengths        value lengths
-         */
-        public Snapshot(String key, long sequenceNumber, Source[] sources, long[] lengths) {
-            this.key = key;
-            this.sequenceNumber = sequenceNumber;
-            this.sources = sources;
-            this.lengths = lengths;
-        }
-
-        /**
-         * Returns the key for this snapshot.
-         *
-         * @return the key.
-         */
-        public String key() {
-            return key;
-        }
-
-        /**
-         * Returns an editor for this snapshot's entry, or null if either the entry has changed since this snapshot was
-         * created or if another edit is in progress.
-         *
-         * @return an editor or null.
-         * @throws IOException if an I/O error occurs.
-         */
-        public Editor edit() throws IOException {
-            return DiskLruCache.this.edit(key, sequenceNumber);
-        }
-
-        /**
-         * Returns the unbuffered stream with the value for {@code index}.
-         *
-         * @param index the index of the value.
-         * @return the source for the value.
-         */
-        public Source getSource(int index) {
-            return sources[index];
-        }
-
-        /**
-         * Returns the byte length of the value for {@code index}.
-         *
-         * @param index the index of the value.
-         * @return the length of the value.
-         */
-        public long getLength(int index) {
-            return lengths[index];
-        }
-
-        /**
-         * Closes this snapshot.
-         */
-        public void close() {
-            for (Source in : sources) {
-                IoKit.close(in);
-            }
-        }
-
-    }
-
-    /**
-     * Edits the values for an entry.
-     *
-     * @author Kimi Liu
-     */
-    public class Editor {
-
-        /**
-         * Entry currently locked by this editor.
-         */
-        final Entry entry;
-
-        /**
-         * Tracks which value indexes were written for a newly-created entry.
-         */
-        final boolean[] written;
-
-        /**
-         * True after this editor has committed, aborted, or been detached.
-         */
-        private boolean done;
-
-        /**
-         * Creates an editor and marks all values as unwritten for new entries.
-         *
-         * @param entry locked cache entry
-         */
-        public Editor(Entry entry) {
-            this.entry = entry;
-            this.written = (entry.readable) ? null : new boolean[valueCount];
-        }
-
-        /**
-         * Prevents this editor from completing normally. This is necessary either when the edit causes an I/O error, or
-         * if the target entry is evicted while this editor is active. In either case we delete the editor's created
-         * files and prevent new files from being created. Note that once an editor has been detached it is possible for
-         * another editor to edit the entry.
-         */
-        void detach() {
-            if (entry.currentEditor == this) {
-                for (int i = 0; i < valueCount; i++) {
-                    try {
-                        diskFile.delete(entry.dirtyFiles[i]);
-                    } catch (IOException e) {
-                        Logger.warn(
-                                false,
-                                "Http",
-                                e,
-                                "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
-                                "DiskLruCache",
-                                true,
-                                e.getClass().getSimpleName());
-                        // This file is potentially leaked. Not much we can do about that.
-                    }
-                }
-                entry.currentEditor = null;
-            }
-        }
-
-        /**
-         * Returns an unbuffered input stream to read the last committed value, or null if no value has been committed.
-         *
-         * @param index the index of the value.
-         * @return a source for the value, or null.
-         */
-        public Source newSource(int index) {
-            synchronized (DiskLruCache.this) {
-                if (done) {
-                    throw new IllegalStateException();
-                }
-                if (!entry.readable || entry.currentEditor != this) {
-                    return null;
-                }
-                try {
-                    return diskFile.source(entry.cleanFiles[index]);
-                } catch (FileNotFoundException e) {
-                    Logger.warn(
-                            false,
-                            "Http",
-                            e,
-                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
-                            "DiskLruCache",
-                            true,
-                            e.getClass().getSimpleName());
-                    return null;
-                }
-            }
-        }
-
-        /**
-         * Returns a new unbuffered output stream to write the value at {@code index}. If the underlying output stream
-         * encounters errors when writing to the filesystem, this edit will be aborted when {@link #commit} is called.
-         * The returned output stream does not throw IOExceptions.
-         *
-         * @param index the index of the value.
-         * @return a sink for the value.
-         */
-        public Sink newSink(int index) {
-            synchronized (DiskLruCache.this) {
-                if (done) {
-                    throw new IllegalStateException();
-                }
-                if (entry.currentEditor != this) {
-                    return IoKit.blackhole();
-                }
-                if (!entry.readable) {
-                    written[index] = true;
-                }
-                File dirtyFile = entry.dirtyFiles[index];
-                Sink sink;
-                try {
-                    sink = diskFile.sink(dirtyFile);
-                } catch (FileNotFoundException e) {
-                    Logger.warn(
-                            false,
-                            "Http",
-                            e,
-                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
-                            "DiskLruCache",
-                            true,
-                            e.getClass().getSimpleName());
-                    return IoKit.blackhole();
-                }
-                return new FaultHideSink(sink) {
-
-                    /**
-                     * Called when an I/O exception occurs during write operations.
-                     * <p>
-                     * This method detaches the editor to prevent it from completing normally, which ensures that any
-                     * partially written files are cleaned up.
-                     * </p>
-                     *
-                     * @param e The {@link IOException} that occurred.
-                     */
-                    @Override
-                    protected void onException(IOException e) {
-                        synchronized (DiskLruCache.this) {
-                            detach();
-                        }
-                    }
-                };
-            }
-        }
-
-        /**
-         * Commits this edit so it is visible to readers. This releases the edit lock so another edit may be started on
-         * the same key.
-         *
-         * @throws IOException if an I/O error occurs.
-         */
-        public void commit() throws IOException {
-            synchronized (DiskLruCache.this) {
-                if (done) {
-                    throw new IllegalStateException();
-                }
-                if (entry.currentEditor == this) {
-                    completeEdit(this, true);
-                }
-                done = true;
-            }
-        }
-
-        /**
-         * Aborts this edit. This releases the edit lock so another edit may be started on the same key.
-         *
-         * @throws IOException if an I/O error occurs.
-         */
-        public void abort() throws IOException {
-            synchronized (DiskLruCache.this) {
-                if (done) {
-                    throw new IllegalStateException();
-                }
-                if (entry.currentEditor == this) {
-                    completeEdit(this, false);
-                }
-                done = true;
-            }
-        }
-
-        /**
-         * Aborts this edit unless it has been committed.
-         */
-        public void abortUnlessCommitted() {
-            synchronized (DiskLruCache.this) {
-                if (!done && entry.currentEditor == this) {
-                    try {
-                        completeEdit(this, false);
-                    } catch (IOException ignored) {
-                        Logger.warn(
-                                false,
-                                "Http",
-                                ignored,
-                                "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
-                                "DiskLruCache",
-                                true,
-                                ignored.getClass().getSimpleName());
-                    }
-                }
-            }
-        }
-
-    }
-
-    /**
      * Mutable state for one disk LRU cache entry.
      */
     private static class State {
@@ -1778,6 +1482,302 @@ public class DiskLruCache implements Closeable, Flushable {
                 return Builder.DISK_LRU_CACHE_READ.equals(command);
             }
 
+        }
+
+    }
+
+    /**
+     * A snapshot of the values for an entry.
+     *
+     * @author Kimi Liu
+     */
+    public class Snapshot implements Closeable {
+
+        /**
+         * Entry key captured when this snapshot was opened.
+         */
+        private final String key;
+
+        /**
+         * Entry sequence used to reject stale snapshot edits.
+         */
+        private final long sequenceNumber;
+
+        /**
+         * Open value sources owned by this snapshot.
+         */
+        private final Source[] sources;
+
+        /**
+         * Committed byte lengths for {@link #sources}.
+         */
+        private final long[] lengths;
+
+        /**
+         * Creates a snapshot over committed value sources.
+         *
+         * @param key            entry key
+         * @param sequenceNumber committed entry sequence
+         * @param sources        value sources
+         * @param lengths        value lengths
+         */
+        public Snapshot(String key, long sequenceNumber, Source[] sources, long[] lengths) {
+            this.key = key;
+            this.sequenceNumber = sequenceNumber;
+            this.sources = sources;
+            this.lengths = lengths;
+        }
+
+        /**
+         * Returns the key for this snapshot.
+         *
+         * @return the key.
+         */
+        public String key() {
+            return key;
+        }
+
+        /**
+         * Returns an editor for this snapshot's entry, or null if either the entry has changed since this snapshot was
+         * created or if another edit is in progress.
+         *
+         * @return an editor or null.
+         * @throws IOException if an I/O error occurs.
+         */
+        public Editor edit() throws IOException {
+            return DiskLruCache.this.edit(key, sequenceNumber);
+        }
+
+        /**
+         * Returns the unbuffered stream with the value for {@code index}.
+         *
+         * @param index the index of the value.
+         * @return the source for the value.
+         */
+        public Source getSource(int index) {
+            return sources[index];
+        }
+
+        /**
+         * Returns the byte length of the value for {@code index}.
+         *
+         * @param index the index of the value.
+         * @return the length of the value.
+         */
+        public long getLength(int index) {
+            return lengths[index];
+        }
+
+        /**
+         * Closes this snapshot.
+         */
+        public void close() {
+            for (Source in : sources) {
+                IoKit.close(in);
+            }
+        }
+
+    }
+
+    /**
+     * Edits the values for an entry.
+     *
+     * @author Kimi Liu
+     */
+    public class Editor {
+
+        /**
+         * Entry currently locked by this editor.
+         */
+        final Entry entry;
+
+        /**
+         * Tracks which value indexes were written for a newly-created entry.
+         */
+        final boolean[] written;
+
+        /**
+         * True after this editor has committed, aborted, or been detached.
+         */
+        private boolean done;
+
+        /**
+         * Creates an editor and marks all values as unwritten for new entries.
+         *
+         * @param entry locked cache entry
+         */
+        public Editor(Entry entry) {
+            this.entry = entry;
+            this.written = (entry.readable) ? null : new boolean[valueCount];
+        }
+
+        /**
+         * Prevents this editor from completing normally. This is necessary either when the edit causes an I/O error, or
+         * if the target entry is evicted while this editor is active. In either case we delete the editor's created
+         * files and prevent new files from being created. Note that once an editor has been detached it is possible for
+         * another editor to edit the entry.
+         */
+        void detach() {
+            if (entry.currentEditor == this) {
+                for (int i = 0; i < valueCount; i++) {
+                    try {
+                        diskFile.delete(entry.dirtyFiles[i]);
+                    } catch (IOException e) {
+                        Logger.warn(
+                                false,
+                                "Http",
+                                e,
+                                "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                                "DiskLruCache",
+                                true,
+                                e.getClass().getSimpleName());
+                        // This file is potentially leaked. Not much we can do about that.
+                    }
+                }
+                entry.currentEditor = null;
+            }
+        }
+
+        /**
+         * Returns an unbuffered input stream to read the last committed value, or null if no value has been committed.
+         *
+         * @param index the index of the value.
+         * @return a source for the value, or null.
+         */
+        public Source newSource(int index) {
+            synchronized (DiskLruCache.this) {
+                if (done) {
+                    throw new IllegalStateException();
+                }
+                if (!entry.readable || entry.currentEditor != this) {
+                    return null;
+                }
+                try {
+                    return diskFile.source(entry.cleanFiles[index]);
+                } catch (FileNotFoundException e) {
+                    Logger.warn(
+                            false,
+                            "Http",
+                            e,
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                            "DiskLruCache",
+                            true,
+                            e.getClass().getSimpleName());
+                    return null;
+                }
+            }
+        }
+
+        /**
+         * Returns a new unbuffered output stream to write the value at {@code index}. If the underlying output stream
+         * encounters errors when writing to the filesystem, this edit will be aborted when {@link #commit} is called.
+         * The returned output stream does not throw IOExceptions.
+         *
+         * @param index the index of the value.
+         * @return a sink for the value.
+         */
+        public Sink newSink(int index) {
+            synchronized (DiskLruCache.this) {
+                if (done) {
+                    throw new IllegalStateException();
+                }
+                if (entry.currentEditor != this) {
+                    return IoKit.blackhole();
+                }
+                if (!entry.readable) {
+                    written[index] = true;
+                }
+                File dirtyFile = entry.dirtyFiles[index];
+                Sink sink;
+                try {
+                    sink = diskFile.sink(dirtyFile);
+                } catch (FileNotFoundException e) {
+                    Logger.warn(
+                            false,
+                            "Http",
+                            e,
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                            "DiskLruCache",
+                            true,
+                            e.getClass().getSimpleName());
+                    return IoKit.blackhole();
+                }
+                return new FaultHideSink(sink) {
+
+                    /**
+                     * Called when an I/O exception occurs during write operations.
+                     * <p>
+                     * This method detaches the editor to prevent it from completing normally, which ensures that any
+                     * partially written files are cleaned up.
+                     * </p>
+                     *
+                     * @param e The {@link IOException} that occurred.
+                     */
+                    @Override
+                    protected void onException(IOException e) {
+                        synchronized (DiskLruCache.this) {
+                            detach();
+                        }
+                    }
+                };
+            }
+        }
+
+        /**
+         * Commits this edit so it is visible to readers. This releases the edit lock so another edit may be started on
+         * the same key.
+         *
+         * @throws IOException if an I/O error occurs.
+         */
+        public void commit() throws IOException {
+            synchronized (DiskLruCache.this) {
+                if (done) {
+                    throw new IllegalStateException();
+                }
+                if (entry.currentEditor == this) {
+                    completeEdit(this, true);
+                }
+                done = true;
+            }
+        }
+
+        /**
+         * Aborts this edit. This releases the edit lock so another edit may be started on the same key.
+         *
+         * @throws IOException if an I/O error occurs.
+         */
+        public void abort() throws IOException {
+            synchronized (DiskLruCache.this) {
+                if (done) {
+                    throw new IllegalStateException();
+                }
+                if (entry.currentEditor == this) {
+                    completeEdit(this, false);
+                }
+                done = true;
+            }
+        }
+
+        /**
+         * Aborts this edit unless it has been committed.
+         */
+        public void abortUnlessCommitted() {
+            synchronized (DiskLruCache.this) {
+                if (!done && entry.currentEditor == this) {
+                    try {
+                        completeEdit(this, false);
+                    } catch (IOException ignored) {
+                        Logger.warn(
+                                false,
+                                "Http",
+                                ignored,
+                                "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                                "DiskLruCache",
+                                true,
+                                ignored.getClass().getSimpleName());
+                    }
+                }
+            }
         }
 
     }

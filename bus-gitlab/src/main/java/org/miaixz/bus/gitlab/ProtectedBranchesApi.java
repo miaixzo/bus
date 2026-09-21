@@ -35,8 +35,8 @@ import org.miaixz.bus.gitlab.models.ProtectedBranch;
 /**
  * This class provides an entry point to all the Protected Branches API calls.
  *
- * @see <a href="https://docs.gitlab.com/ee/api/protected_branches.html">Protected branches API at GitLab</a>
  * @author Kimi Liu
+ * @see <a href="https://docs.gitlab.com/ee/api/protected_branches.html">Protected branches API at GitLab</a>
  */
 public class ProtectedBranchesApi extends AbstractApi {
 

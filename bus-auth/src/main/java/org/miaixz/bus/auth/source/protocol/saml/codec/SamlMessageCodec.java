@@ -412,7 +412,6 @@ public class SamlMessageCodec {
      *
      * @param <S> source type
      * @param <T> target type
-     *
      * @author Kimi Liu
      */
     @FunctionalInterface
@@ -432,7 +431,6 @@ public class SamlMessageCodec {
      * Converts one exact root element into its typed SAML message.
      *
      * @param <T> decoded message type
-     *
      * @author Kimi Liu
      */
     @FunctionalInterface
