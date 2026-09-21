@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex.setting.curator;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +34,8 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.setting.SettingEnforcer;
 import org.miaixz.bus.cortex.setting.SettingPublisher;
 import org.miaixz.bus.cortex.setting.item.*;
-import org.miaixz.bus.cortex.setting.item.revision.ItemRevision;
-import org.miaixz.bus.cortex.setting.item.revision.ItemRevisionStore;
+import org.miaixz.bus.cortex.setting.revision.Revision;
+import org.miaixz.bus.cortex.setting.revision.RevisionStore;
 
 /**
  * Application service for the setting domain.
@@ -49,9 +50,9 @@ public class ItemCuratorService {
     private final StoreBackedItemStore entryStore;
 
     /**
-     * ItemRevision-history store used for rollback and audits.
+     * Revision-history store used for rollback and audits.
      */
-    private final ItemRevisionStore revisionStore;
+    private final RevisionStore revisionStore;
 
     /**
      * Effective-value resolver for external and internal reads.
@@ -86,8 +87,8 @@ public class ItemCuratorService {
      * @param resolver      effective-value resolver
      * @param publisher     publisher responsible for revision-tracked updates
      */
-    public ItemCuratorService(StoreBackedItemStore entryStore, ItemRevisionStore revisionStore,
-            ItemValueResolver resolver, SettingPublisher publisher) {
+    public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore, ItemValueResolver resolver,
+            SettingPublisher publisher) {
         this(entryStore, revisionStore, resolver, publisher, null, null, SettingGenerator.INSTANCE);
     }
 
@@ -100,8 +101,8 @@ public class ItemCuratorService {
      * @param publisher     publisher responsible for revision-tracked updates
      * @param enforcer      optional centralized setting enforcer
      */
-    public ItemCuratorService(StoreBackedItemStore entryStore, ItemRevisionStore revisionStore,
-            ItemValueResolver resolver, SettingPublisher publisher, SettingEnforcer enforcer) {
+    public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore, ItemValueResolver resolver,
+            SettingPublisher publisher, SettingEnforcer enforcer) {
         this(entryStore, revisionStore, resolver, publisher, enforcer, null, SettingGenerator.INSTANCE);
     }
 
@@ -115,8 +116,8 @@ public class ItemCuratorService {
      * @param enforcer      setting enforcer
      * @param cortexGuard   shared guard
      */
-    public ItemCuratorService(StoreBackedItemStore entryStore, ItemRevisionStore revisionStore,
-            ItemValueResolver resolver, SettingPublisher publisher, SettingEnforcer enforcer, CortexGuard cortexGuard) {
+    public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore, ItemValueResolver resolver,
+            SettingPublisher publisher, SettingEnforcer enforcer, CortexGuard cortexGuard) {
         this(entryStore, revisionStore, resolver, publisher, enforcer, cortexGuard, SettingGenerator.INSTANCE);
     }
 
@@ -131,9 +132,8 @@ public class ItemCuratorService {
      * @param cortexGuard   shared guard
      * @param keying        setting-domain key strategy
      */
-    public ItemCuratorService(StoreBackedItemStore entryStore, ItemRevisionStore revisionStore,
-            ItemValueResolver resolver, SettingPublisher publisher, SettingEnforcer enforcer, CortexGuard cortexGuard,
-            Keying<SettingSpec> keying) {
+    public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore, ItemValueResolver resolver,
+            SettingPublisher publisher, SettingEnforcer enforcer, CortexGuard cortexGuard, Keying<SettingSpec> keying) {
         this.entryStore = entryStore;
         this.revisionStore = revisionStore;
         this.resolver = resolver;
@@ -431,12 +431,12 @@ public class ItemCuratorService {
      * @param revision historical revision
      * @return matching revision or {@code null}
      */
-    public ItemRevision revision(String space, String group, String data_id, String profile, String revision) {
+    public Revision revision(String space, String group, String data_id, String profile, String revision) {
         return revisionStore.find(space, group, data_id, profile, revision);
     }
 
     /**
-     * Lists {@code setting.item.revision} snapshots for one entry.
+     * Lists {@code setting.revision} snapshots for one entry.
      *
      * @param space   space
      * @param group   setting group
@@ -444,7 +444,7 @@ public class ItemCuratorService {
      * @param profile optional profile
      * @return revisions from newest to oldest
      */
-    public List<ItemRevision> revisions(String space, String group, String data_id, String profile) {
+    public List<Revision> revisions(String space, String group, String data_id, String profile) {
         return revisionStore.query(space, group, data_id, profile);
     }
 
@@ -538,7 +538,7 @@ public class ItemCuratorService {
         if (app_id == null || app_id.isBlank()) {
             return entries;
         }
-        java.util.ArrayList<Item> result = new java.util.ArrayList<>(entries.size());
+        List<Item> result = new ArrayList<>(entries.size());
         for (Item entry : entries) {
             if (entry != null && ItemBindingProjection.bindsToApp(entry, app_id)) {
                 result.add(entry);

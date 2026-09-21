@@ -97,9 +97,9 @@ public abstract class SegmentLock<L> {
      * Creates a segment of reentrant locks with strong references.
      *
      * @param stripes The number of segments.
-     * @return A {@link SegmentLock} instance managing {@link java.util.concurrent.locks.Lock}s.
+     * @return A {@link SegmentLock} instance managing {@link Lock}s.
      */
-    public static SegmentLock<java.util.concurrent.locks.Lock> lock(final int stripes) {
+    public static SegmentLock<Lock> lock(final int stripes) {
         return custom(stripes, PaddedLock::new);
     }
 
@@ -108,9 +108,9 @@ public abstract class SegmentLock<L> {
      * accessed and can be garbage collected if not strongly referenced elsewhere.
      *
      * @param stripes The number of segments.
-     * @return A {@link SegmentLock} instance managing weakly-referenced {@link java.util.concurrent.locks.Lock}s.
+     * @return A {@link SegmentLock} instance managing weakly-referenced {@link Lock}s.
      */
-    public static SegmentLock<java.util.concurrent.locks.Lock> lazyWeakLock(final int stripes) {
+    public static SegmentLock<Lock> lazyWeakLock(final int stripes) {
         return lazyWeakCustom(stripes, () -> new ReentrantLock(false));
     }
 
@@ -277,7 +277,7 @@ public abstract class SegmentLock<L> {
          * @return The read lock.
          */
         @Override
-        public java.util.concurrent.locks.Lock readLock() {
+        public Lock readLock() {
             return new WeakSafeLock(delegate.readLock(), this);
         }
 
@@ -287,7 +287,7 @@ public abstract class SegmentLock<L> {
          * @return The write lock.
          */
         @Override
-        public java.util.concurrent.locks.Lock writeLock() {
+        public Lock writeLock() {
             return new WeakSafeLock(delegate.writeLock(), this);
         }
 
@@ -299,9 +299,9 @@ public abstract class SegmentLock<L> {
      *
      * @author Kimi Liu
      */
-    private static final class WeakSafeLock implements java.util.concurrent.locks.Lock {
+    private static final class WeakSafeLock implements Lock {
 
-        private final java.util.concurrent.locks.Lock delegate;
+        private final Lock delegate;
         private final WeakSafeReadWriteLock strongReference;
 
         /**

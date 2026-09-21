@@ -26,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -577,7 +578,7 @@ public class IdentifierValidator {
                     continue;
                 }
                 List<String> parts = entry.qualified() ? split(policy, entry.identifier())
-                        : java.util.Collections.singletonList(entry.identifier());
+                        : Collections.singletonList(entry.identifier());
                 for (String part : parts) {
                     String reason = violation(policy, part);
                     if (reason != null) {
@@ -641,7 +642,7 @@ public class IdentifierValidator {
      */
     private List<String> split(Policy policy, String identifier) {
         if (identifier == null) {
-            return java.util.Collections.singletonList(null);
+            return Collections.singletonList(null);
         }
         List<String> parts = new ArrayList<>();
         StringBuilder current = new StringBuilder();

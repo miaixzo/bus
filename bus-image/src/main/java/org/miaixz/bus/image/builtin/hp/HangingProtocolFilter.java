@@ -20,6 +20,8 @@
 package org.miaixz.bus.image.builtin.hp;
 
 import java.util.Arrays;
+import java.util.stream.DoubleStream;
+import java.util.stream.Stream;
 
 /**
  * Hanging Protocol filter operations.
@@ -105,9 +107,9 @@ public enum HangingProtocolFilter {
      * @param valueNumber the value number.
      * @return the operation result.
      */
-    private static java.util.stream.Stream<String> selected(String[] values, int valueNumber) {
+    private static Stream<String> selected(String[] values, int valueNumber) {
         if (valueNumber > 0) {
-            return java.util.stream.Stream.of(values[valueNumber - 1]);
+            return Stream.of(values[valueNumber - 1]);
         }
         return Arrays.stream(values);
     }
@@ -119,9 +121,9 @@ public enum HangingProtocolFilter {
      * @param valueNumber the value number.
      * @return the operation result.
      */
-    private static java.util.stream.DoubleStream selected(double[] values, int valueNumber) {
+    private static DoubleStream selected(double[] values, int valueNumber) {
         if (valueNumber > 0) {
-            return java.util.stream.DoubleStream.of(values[valueNumber - 1]);
+            return DoubleStream.of(values[valueNumber - 1]);
         }
         return Arrays.stream(values);
     }

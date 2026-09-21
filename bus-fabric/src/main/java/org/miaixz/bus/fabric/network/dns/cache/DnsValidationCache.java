@@ -232,7 +232,7 @@ public class DnsValidationCache {
         if (decoded == null) {
             throw new ValidateException("DNS validation cache response must not be null");
         }
-        final java.util.ArrayList<DnsRecord> records = new java.util.ArrayList<>();
+        final ArrayList<DnsRecord> records = new ArrayList<>();
         records.addAll(decoded.answers());
         records.addAll(decoded.authorities());
         records.addAll(decoded.additionals());

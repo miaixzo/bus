@@ -75,7 +75,7 @@ import org.miaixz.bus.cortex.setting.delivery.RuntimeItemOverlayService;
 import org.miaixz.bus.cortex.setting.item.GrayRuleMatcher;
 import org.miaixz.bus.cortex.setting.item.ItemStore;
 import org.miaixz.bus.cortex.setting.item.StoreBackedItemStore;
-import org.miaixz.bus.cortex.setting.item.revision.ItemRevisionStore;
+import org.miaixz.bus.cortex.setting.revision.RevisionStore;
 import org.miaixz.bus.cortex.setting.secret.NoOpSecretCodec;
 import org.miaixz.bus.cortex.setting.secret.SecretCodec;
 import org.miaixz.bus.cortex.setting.secret.SecretMasker;
@@ -456,16 +456,16 @@ public class CortexConfiguration {
     }
 
     /**
-     * Creates the default {@code setting.item.revision} store when the host application does not provide persistent
-     * history storage.
+     * Creates the default {@code setting.revision} store when the host application does not provide persistent history
+     * storage.
      *
      * @param cache shared cache abstraction
-     * @return cache-backed {@code setting.item.revision} store
+     * @return cache-backed {@code setting.revision} store
      */
     @Bean
-    @ConditionalOnMissingBean(ItemRevisionStore.class)
-    public ItemRevisionStore revisionStore(@Qualifier("cortexCache") CacheX cache) {
-        return new CacheItemRevisionStore(cache(cache), SettingGenerator.INSTANCE);
+    @ConditionalOnMissingBean(RevisionStore.class)
+    public RevisionStore revisionStore(@Qualifier("cortexCache") CacheX cache) {
+        return new CacheRevisionStore(cache(cache), SettingGenerator.INSTANCE);
     }
 
     /**
@@ -484,16 +484,16 @@ public class CortexConfiguration {
     @ConditionalOnMissingBean(ItemCuratorService.class)
     public ItemCuratorService settingCuratorService(
             StoreBackedItemStore settingStore,
-            ItemRevisionStore revisionStore,
+            RevisionStore revisionStore,
             WatchManager watchManager,
             SecretCodec secretCodec,
             ObjectProvider<SettingEnforcer> settingEnforcer,
             ObjectProvider<CortexGuard> cortexGuard,
             @Qualifier("settingKeying") ObjectProvider<Keying<Keying.SettingSpec>> keyingProvider) {
-        if (revisionStore instanceof CacheItemRevisionStore && properties.isServerEnabled()
+        if (revisionStore instanceof CacheRevisionStore && properties.isServerEnabled()
                 && properties.isSettingEnabled()) {
             throw new IllegalStateException(
-                    "A production ItemRevisionStore is required when bus.cortex.server-enabled=true");
+                    "A production RevisionStore is required when bus.cortex.server-enabled=true");
         }
         ItemValueResolver resolver = new ItemValueResolver(settingSourceAdapters(), new GrayRuleMatcher(), secretCodec);
         Keying<Keying.SettingSpec> settingKeying = keyingProvider.getIfAvailable(() -> SettingGenerator.INSTANCE);

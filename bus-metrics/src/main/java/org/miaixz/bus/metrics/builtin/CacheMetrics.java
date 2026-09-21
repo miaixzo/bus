@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.metrics.builtin;
 
+import java.util.Collection;
+import java.util.Map;
+
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Metrics;
@@ -114,8 +117,8 @@ public class CacheMetrics {
          * @return map of found key-value pairs
          */
         @Override
-        public java.util.Map<K, V> read(java.util.Collection<K> keys) {
-            java.util.Map<K, V> result = delegate.read(keys);
+        public Map<K, V> read(Collection<K> keys) {
+            Map<K, V> result = delegate.read(keys);
             Metrics.counter("cache.requests", "cache", cacheName, "result", "hit").increment(result.size());
             Metrics.counter("cache.requests", "cache", cacheName, "result", "miss")
                     .increment(keys.size() - result.size());
@@ -142,7 +145,7 @@ public class CacheMetrics {
          * @param expire TTL in milliseconds
          */
         @Override
-        public void write(java.util.Map<K, V> map, long expire) {
+        public void write(Map<K, V> map, long expire) {
             delegate.write(map, expire);
             Metrics.counter("cache.writes", "cache", cacheName).increment(map.size());
         }

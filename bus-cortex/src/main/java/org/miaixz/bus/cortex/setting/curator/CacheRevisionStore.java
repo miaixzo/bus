@@ -31,20 +31,20 @@ import org.miaixz.bus.cortex.Suite;
 import org.miaixz.bus.cortex.Trait;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.setting.item.ItemBindingProjection;
-import org.miaixz.bus.cortex.setting.item.ItemRevisionNumbers;
-import org.miaixz.bus.cortex.setting.item.revision.ItemRevision;
-import org.miaixz.bus.cortex.setting.item.revision.ItemRevisionStore;
+import org.miaixz.bus.cortex.setting.revision.Revision;
+import org.miaixz.bus.cortex.setting.revision.RevisionNumbers;
+import org.miaixz.bus.cortex.setting.revision.RevisionStore;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**
- * Cache-backed {@code setting.item.revision} store.
+ * Cache-backed {@code setting.revision} store.
  *
  * @author Kimi Liu
  */
-public class CacheItemRevisionStore implements ItemRevisionStore {
+public class CacheRevisionStore implements RevisionStore {
 
     /**
-     * Shared cache that stores serialized {@code setting.item.revision} snapshots.
+     * Shared cache that stores serialized {@code setting.revision} snapshots.
      */
     private final CacheX<String, Object> cacheX;
 
@@ -54,33 +54,33 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
     private final Keying<SettingSpec> keying;
 
     /**
-     * Creates a CacheItemRevisionStore.
+     * Creates a CacheRevisionStore.
      *
      * @param cacheX shared cache backend
      */
-    public CacheItemRevisionStore(CacheX<String, Object> cacheX) {
+    public CacheRevisionStore(CacheX<String, Object> cacheX) {
         this(cacheX, SettingGenerator.INSTANCE);
     }
 
     /**
-     * Creates a CacheItemRevisionStore.
+     * Creates a CacheRevisionStore.
      *
      * @param cacheX shared cache backend
      * @param keying setting-domain key strategy
      */
-    public CacheItemRevisionStore(CacheX<String, Object> cacheX, Keying<SettingSpec> keying) {
+    public CacheRevisionStore(CacheX<String, Object> cacheX, Keying<SettingSpec> keying) {
         this.cacheX = cacheX;
         this.keying = keying == null ? SettingGenerator.INSTANCE : keying;
     }
 
     /**
-     * Stores one {@code setting.item.revision} snapshot in the backing cache.
+     * Stores one {@code setting.revision} snapshot in the backing cache.
      *
-     * @param revision {@code setting.item.revision} snapshot
+     * @param revision {@code setting.revision} snapshot
      * @return stored revision
      */
     @Override
-    public ItemRevision save(ItemRevision revision) {
+    public Revision save(Revision revision) {
         if (revision == null) {
             return null;
         }
@@ -92,7 +92,7 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
     }
 
     /**
-     * Finds one {@code setting.item.revision} snapshot by its logical revision key.
+     * Finds one {@code setting.revision} snapshot by its logical revision key.
      *
      * @param space      space
      * @param group      setting group
@@ -102,16 +102,16 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
      * @return matching revision or {@code null}
      */
     @Override
-    public ItemRevision find(String space, String group, String data_id, String profile, String revisionNo) {
+    public Revision find(String space, String group, String data_id, String profile, String revisionNo) {
         Object raw = cacheX.read(revisionKey(space, group, data_id, profile, revisionNo));
         if (raw instanceof String json) {
-            return JsonKit.toPojo(json, ItemRevision.class);
+            return JsonKit.toPojo(json, Revision.class);
         }
         return null;
     }
 
     /**
-     * Deletes one {@code setting.item.revision} snapshot from the backing cache.
+     * Deletes one {@code setting.revision} snapshot from the backing cache.
      *
      * @param space      space
      * @param group      setting group
@@ -120,8 +120,8 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
      * @param revisionNo revision number
      */
     @Override
-    public ItemRevision delete(String space, String group, String data_id, String profile, String revisionNo) {
-        ItemRevision revision = find(space, group, data_id, profile, revisionNo);
+    public Revision delete(String space, String group, String data_id, String profile, String revisionNo) {
+        Revision revision = find(space, group, data_id, profile, revisionNo);
         if (revision == null) {
             cacheX.remove(revisionKey(space, group, data_id, profile, revisionNo));
             return null;
@@ -131,7 +131,7 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
     }
 
     /**
-     * Queries all {@code setting.item.revision} snapshots for one logical setting entry.
+     * Queries all {@code setting.revision} snapshots for one logical setting entry.
      *
      * @param space   space
      * @param group   setting group
@@ -140,19 +140,19 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
      * @return revisions ordered from newest to oldest
      */
     @Override
-    public List<ItemRevision> query(String space, String group, String data_id, String profile) {
+    public List<Revision> query(String space, String group, String data_id, String profile) {
         Map<String, Object> entries = cacheX.scan(revisionPrefix(space, group, data_id, profile));
-        List<ItemRevision> result = new ArrayList<>();
+        List<Revision> result = new ArrayList<>();
         for (Object value : entries.values()) {
             if (value instanceof String json) {
-                ItemRevision revision = JsonKit.toPojo(json, ItemRevision.class);
+                Revision revision = JsonKit.toPojo(json, Revision.class);
                 if (revision != null) {
                     result.add(revision);
                 }
             }
         }
         result.sort(
-                Comparator.comparingLong((ItemRevision revision) -> ItemRevisionNumbers.sortKey(revision.getRevision()))
+                Comparator.comparingLong((Revision revision) -> RevisionNumbers.sortKey(revision.getRevision()))
                         .reversed());
         return result;
     }
@@ -171,7 +171,7 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
         if (maxRevisions <= 0) {
             return;
         }
-        List<ItemRevision> revisions = query(space, group, data_id, profile);
+        List<Revision> revisions = query(space, group, data_id, profile);
         if (revisions.size() <= maxRevisions) {
             return;
         }
@@ -196,14 +196,14 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
      * @return updated revision or {@code null}
      */
     @Override
-    public ItemRevision markRollback(
+    public Revision markRollback(
             String space,
             String group,
             String data_id,
             String profile,
             String revisionNo,
             String revert) {
-        ItemRevision revision = find(space, group, data_id, profile, revisionNo);
+        Revision revision = find(space, group, data_id, profile, revisionNo);
         if (revision == null) {
             return null;
         }
@@ -237,7 +237,7 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
      * @param revision item revision
      * @return revision cache keys
      */
-    private List<String> revisionKeys(ItemRevision revision) {
+    private List<String> revisionKeys(Revision revision) {
         List<String> profiles = ItemBindingProjection.normalizedProfileIds(revision);
         if (profiles == null || profiles.isEmpty()) {
             return List.of(

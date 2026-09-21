@@ -26,6 +26,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CodingErrorAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -359,7 +360,7 @@ public class BerCodec implements FabricX.Framer {
             if (length > Integer.MAX_VALUE || length > bytes.length - offset) {
                 throw new ProtocolException("LDAP BER element content is truncated or excessive");
             }
-            final byte[] content = java.util.Arrays.copyOfRange(bytes, offset, offset + (int) length);
+            final byte[] content = Arrays.copyOfRange(bytes, offset, offset + (int) length);
             offset += (int) length;
             return new Element(tag, content, maximumDepth, depth + 1);
         }

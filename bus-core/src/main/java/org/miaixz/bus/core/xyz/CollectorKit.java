@@ -125,7 +125,7 @@ public class CollectorKit {
         final Supplier<A> downstreamSupplier = downstream.supplier();
         final BiConsumer<A, ? super T> downstreamAccumulator = downstream.accumulator();
         final BiConsumer<Map<K, A>, T> accumulator = (m, t) -> {
-            final K key = java.util.Optional.ofNullable(t).map(classifier).orElse(null);
+            final K key = Optional.ofNullable(t).map(classifier).orElse(null);
             final A container = m.computeIfAbsent(key, k -> downstreamSupplier.get());
             if (ArrayKit.isArray(container) || Objects.nonNull(t)) {
                 downstreamAccumulator.accept(container, t);

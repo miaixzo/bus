@@ -25,7 +25,7 @@
  * and the lightweight item watcher used by diagnostics and demos. These types underpin the formal {@code setting.item}
  * resource within the canonical relationship {@code space -> app -> item}. Durable app/profile bindings are stored in
  * {@code setting_item_binding} and aggregated back into the runtime-only fields {@code app_ids} and
- * {@code profile_ids}. ItemRevision history is nested one level deeper under {@code setting.item.revision}.
+ * {@code profile_ids}. Revision history is exposed by the sibling {@code setting.revision} resource.
  *
  * @author Kimi Liu
  */

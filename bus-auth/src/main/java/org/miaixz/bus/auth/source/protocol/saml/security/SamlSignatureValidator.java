@@ -24,7 +24,9 @@ import java.security.PublicKey;
 import java.security.Signature;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -156,7 +158,7 @@ public class SamlSignatureValidator {
      * @return whether the identifier selects SHA-1
      */
     private static boolean sha1(final String algorithm) {
-        return algorithm == null || algorithm.toLowerCase(java.util.Locale.ROOT).contains("sha1");
+        return algorithm == null || algorithm.toLowerCase(Locale.ROOT).contains("sha1");
     }
 
     /**
@@ -674,7 +676,7 @@ public class SamlSignatureValidator {
                         if (!(clean.leaf() instanceof X509Certificate certificate)) {
                             yield failed("SAML signing certificate is not X.509");
                         }
-                        certificate.checkValidity(java.util.Date.from(timeout.clock().now()));
+                        certificate.checkValidity(Date.from(timeout.clock().now()));
                         yield Outcome.succeeded(certificate.getPublicKey());
                     } catch (Exception exception) {
                         yield rejected("SAML signing certificate chain is not trusted or time-valid");

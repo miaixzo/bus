@@ -18,8 +18,12 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides setting item revision snapshots and storage abstractions for historical configuration state.
+ * Provides first-class revision snapshots and storage abstractions.
+ * <p>
+ * The current revision representation preserves the setting-item history contract. Keeping it in a sibling package
+ * avoids making revision storage subordinate to one resource family and leaves room for additional revision variants.
+ * </p>
  *
  * @author Kimi Liu
  */
-package org.miaixz.bus.cortex.setting.item.revision;
+package org.miaixz.bus.cortex.setting.revision;

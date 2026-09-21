@@ -23,6 +23,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferLimitException;
@@ -139,7 +140,7 @@ public class Octets {
         return awaitBufferingCapacity().then(budget.acquire(reservationBytes))
                 .timeout(Duration.ofSeconds(Holder.get().getBufferAcquireTimeoutSeconds()))
                 .onErrorMap(
-                        java.util.concurrent.TimeoutException.class,
+                        TimeoutException.class,
                         error -> new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
                                 "Buffered-byte capacity wait timed out", error))
                 .flatMap(
@@ -302,7 +303,7 @@ public class Octets {
     private static Mono<AsyncByteBudget.Lease> acquire(AsyncByteBudget budget, long bytes) {
         return budget.acquire(bytes).timeout(Duration.ofSeconds(Holder.get().getBufferAcquireTimeoutSeconds()))
                 .onErrorMap(
-                        java.util.concurrent.TimeoutException.class,
+                        TimeoutException.class,
                         error -> new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
                                 "Buffered-byte capacity wait timed out", error));
     }

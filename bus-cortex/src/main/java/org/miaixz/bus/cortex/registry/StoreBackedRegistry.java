@@ -19,16 +19,13 @@
 */
 package org.miaixz.bus.cortex.registry;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.*;
+import org.miaixz.bus.cortex.Vector;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
 import org.miaixz.bus.cortex.magic.event.CortexChangeRecord;
@@ -403,7 +400,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         if (entries == null || entries.isEmpty()) {
             return List.of();
         }
-        List<T> result = new java.util.ArrayList<>(entries.size());
+        List<T> result = new ArrayList<>(entries.size());
         for (T entry : entries) {
             T prepared = normalizeEntry(entry);
             cacheEntry(prepared);

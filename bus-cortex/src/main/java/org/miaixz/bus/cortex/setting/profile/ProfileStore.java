@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex.setting.profile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +51,7 @@ public interface ProfileStore {
         if (entries == null || entries.isEmpty()) {
             return List.of();
         }
-        java.util.ArrayList<Profile> result = new java.util.ArrayList<>(entries.size());
+        List<Profile> result = new ArrayList<>(entries.size());
         for (Profile entry : entries) {
             if (entry != null) {
                 result.add(save(entry));

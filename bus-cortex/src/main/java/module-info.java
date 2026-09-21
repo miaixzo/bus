@@ -64,10 +64,13 @@ module bus.cortex {
     exports org.miaixz.bus.cortex.setting.curator;
     exports org.miaixz.bus.cortex.setting.delivery;
     exports org.miaixz.bus.cortex.setting.item;
-    exports org.miaixz.bus.cortex.setting.item.revision;
+    exports org.miaixz.bus.cortex.setting.revision;
+    exports org.miaixz.bus.cortex.setting.instance;
     exports org.miaixz.bus.cortex.setting.profile;
+    exports org.miaixz.bus.cortex.setting.rollout;
     exports org.miaixz.bus.cortex.setting.secret;
     exports org.miaixz.bus.cortex.setting.space;
+    exports org.miaixz.bus.cortex.setting.watch;
     exports org.miaixz.bus.cortex.version;
 
 }

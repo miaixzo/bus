@@ -19,6 +19,10 @@
 */
 package org.miaixz.bus.mapper;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -192,8 +196,7 @@ public class Context extends org.miaixz.bus.core.Context {
      * @param ignoreTables logical tables excluded from affix handling
      */
     public static void setAffix(String prefix, String suffix, String... ignoreTables) {
-        java.util.List<String> ignore = ignoreTables == null ? java.util.Collections.emptyList()
-                : java.util.Arrays.asList(ignoreTables);
+        List<String> ignore = ignoreTables == null ? Collections.emptyList() : Arrays.asList(ignoreTables);
         setAffix(prefix, ignore, suffix, ignore);
     }
 
@@ -205,11 +208,7 @@ public class Context extends org.miaixz.bus.core.Context {
      * @param suffix       table suffix
      * @param suffixIgnore logical tables excluded only from suffix handling
      */
-    public static void setAffix(
-            String prefix,
-            java.util.List<String> prefixIgnore,
-            String suffix,
-            java.util.List<String> suffixIgnore) {
+    public static void setAffix(String prefix, List<String> prefixIgnore, String suffix, List<String> suffixIgnore) {
         MapperConfig config = getMapperConfig();
         if (config == null) {
             config = new MapperConfig();

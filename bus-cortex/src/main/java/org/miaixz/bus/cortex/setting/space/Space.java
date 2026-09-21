@@ -20,9 +20,11 @@
 package org.miaixz.bus.cortex.setting.space;
 
 import jakarta.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
 import org.miaixz.bus.core.basic.entity.Tenant;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.cortex.Type;
@@ -40,14 +42,9 @@ import org.miaixz.bus.cortex.Type;
 @Getter
 @Setter
 @SuperBuilder
-@Table(
-        name = "space",
-        uniqueConstraints = @UniqueConstraint(
-                name = "uk_space_tenant_variant_code",
-                columnNames = {"tenant_id", "variant", "code"}),
-        indexes = @Index(
-                name = "idx_space_tenant_variant_status_modified_id",
-                columnList = "tenant_id, variant, status, modified, id"))
+@Table(name = "space", uniqueConstraints = @UniqueConstraint(name = "uk_space_tenant_variant_code", columnNames = {
+        "tenant_id", "variant",
+        "code" }), indexes = @Index(name = "idx_space_tenant_variant_status_modified_id", columnList = "tenant_id, variant, status, modified, id"))
 public class Space extends Tenant {
 
     /**

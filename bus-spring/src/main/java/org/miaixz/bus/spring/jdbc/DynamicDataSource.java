@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.spring.jdbc;
 
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -321,7 +323,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Auto
         this.initialized = false;
         this.dataSourceHolder.remove();
 
-        Set<DataSource> released = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
+        Set<DataSource> released = Collections.newSetFromMap(new IdentityHashMap<>());
         RuntimeException failure = null;
         try {
             super.setTargetDataSources(Map.of());

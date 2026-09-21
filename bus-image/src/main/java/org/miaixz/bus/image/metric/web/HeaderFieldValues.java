@@ -53,7 +53,7 @@ public class HeaderFieldValues {
      * @return the operation result.
      */
     private static String normalizeKey(String key) {
-        return key == null ? Normal.EMPTY : key.toLowerCase(java.util.Locale.ROOT);
+        return key == null ? Normal.EMPTY : key.toLowerCase(Locale.ROOT);
     }
 
     /**
@@ -202,7 +202,7 @@ public class HeaderFieldValues {
                 }
                 skipSeparator();
                 if (hasText(name)) {
-                    params.put(name.toLowerCase(java.util.Locale.ROOT), value);
+                    params.put(name.toLowerCase(Locale.ROOT), value);
                 }
             }
             return params;

@@ -10881,7 +10881,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.curator.CacheItemRevisionStore",
+      "type": "org.miaixz.bus.cortex.setting.curator.CacheRevisionStore",
       "methods": [
         {
           "name": "<init>",
@@ -10963,7 +10963,7 @@
         {
           "name": "revisionKeys",
           "parameterTypes": [
-            "org.miaixz.bus.cortex.setting.item.revision.ItemRevision"
+            "org.miaixz.bus.cortex.setting.revision.Revision"
           ]
         },
         {
@@ -10978,7 +10978,7 @@
         {
           "name": "save",
           "parameterTypes": [
-            "org.miaixz.bus.cortex.setting.item.revision.ItemRevision"
+            "org.miaixz.bus.cortex.setting.revision.Revision"
           ]
         },
         {
@@ -11038,7 +11038,7 @@
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.cortex.setting.item.StoreBackedItemStore",
-            "org.miaixz.bus.cortex.setting.item.revision.ItemRevisionStore",
+            "org.miaixz.bus.cortex.setting.revision.RevisionStore",
             "org.miaixz.bus.cortex.setting.curator.ItemValueResolver",
             "org.miaixz.bus.cortex.setting.SettingPublisher"
           ]
@@ -11047,7 +11047,7 @@
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.cortex.setting.item.StoreBackedItemStore",
-            "org.miaixz.bus.cortex.setting.item.revision.ItemRevisionStore",
+            "org.miaixz.bus.cortex.setting.revision.RevisionStore",
             "org.miaixz.bus.cortex.setting.curator.ItemValueResolver",
             "org.miaixz.bus.cortex.setting.SettingPublisher",
             "org.miaixz.bus.cortex.setting.SettingEnforcer"
@@ -11057,7 +11057,7 @@
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.cortex.setting.item.StoreBackedItemStore",
-            "org.miaixz.bus.cortex.setting.item.revision.ItemRevisionStore",
+            "org.miaixz.bus.cortex.setting.revision.RevisionStore",
             "org.miaixz.bus.cortex.setting.curator.ItemValueResolver",
             "org.miaixz.bus.cortex.setting.SettingPublisher",
             "org.miaixz.bus.cortex.setting.SettingEnforcer",
@@ -11068,7 +11068,7 @@
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.cortex.setting.item.StoreBackedItemStore",
-            "org.miaixz.bus.cortex.setting.item.revision.ItemRevisionStore",
+            "org.miaixz.bus.cortex.setting.revision.RevisionStore",
             "org.miaixz.bus.cortex.setting.curator.ItemValueResolver",
             "org.miaixz.bus.cortex.setting.SettingPublisher",
             "org.miaixz.bus.cortex.setting.SettingEnforcer",
@@ -13123,7 +13123,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.item.ItemRevisionNumbers",
+      "type": "org.miaixz.bus.cortex.setting.item.RevisionNumbers",
       "methods": [
         {
           "name": "<init>",
@@ -13432,7 +13432,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.item.revision.ItemRevision",
+      "type": "org.miaixz.bus.cortex.setting.revision.Revision",
       "fields": [
         {
           "name": "diff"
@@ -13452,7 +13452,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.cortex.setting.item.revision.ItemRevision$ItemRevisionBuilder"
+            "org.miaixz.bus.cortex.setting.revision.Revision$RevisionBuilder"
           ]
         },
         {
@@ -13492,7 +13492,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.item.revision.ItemRevision$ItemRevisionBuilder",
+      "type": "org.miaixz.bus.cortex.setting.revision.Revision$RevisionBuilder",
       "methods": [
         {
           "name": "<init>",
@@ -13523,7 +13523,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.item.revision.ItemRevision$ItemRevisionBuilderImpl",
+      "type": "org.miaixz.bus.cortex.setting.revision.Revision$RevisionBuilderImpl",
       "methods": [
         {
           "name": "<init>",
@@ -13540,7 +13540,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.item.revision.ItemRevision$Operation",
+      "type": "org.miaixz.bus.cortex.setting.revision.Revision$Operation",
       "fields": [
         {
           "name": "DELETE"
@@ -13570,7 +13570,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.item.revision.ItemRevision$Role",
+      "type": "org.miaixz.bus.cortex.setting.revision.Revision$Role",
       "fields": [
         {
           "name": "GRAY"
@@ -13600,7 +13600,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.item.revision.ItemRevision$Source",
+      "type": "org.miaixz.bus.cortex.setting.revision.Revision$Source",
       "fields": [
         {
           "name": "ARCHIVE"
@@ -14190,7 +14190,7 @@
         {
           "name": "mask",
           "parameterTypes": [
-            "org.miaixz.bus.cortex.setting.item.revision.ItemRevision"
+            "org.miaixz.bus.cortex.setting.revision.Revision"
           ]
         }
       ]
@@ -14225,7 +14225,7 @@
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.cortex.setting.item.StoreBackedItemStore",
-            "org.miaixz.bus.cortex.setting.item.revision.ItemRevisionStore",
+            "org.miaixz.bus.cortex.setting.revision.RevisionStore",
             "org.miaixz.bus.cortex.magic.watch.WatchManager",
             "org.miaixz.bus.cortex.setting.secret.SecretCodec"
           ]
@@ -14234,7 +14234,7 @@
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.cortex.setting.item.StoreBackedItemStore",
-            "org.miaixz.bus.cortex.setting.item.revision.ItemRevisionStore",
+            "org.miaixz.bus.cortex.setting.revision.RevisionStore",
             "org.miaixz.bus.cortex.magic.watch.WatchManager",
             "org.miaixz.bus.cortex.setting.secret.SecretCodec",
             "int"
@@ -14244,7 +14244,7 @@
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.cortex.setting.item.StoreBackedItemStore",
-            "org.miaixz.bus.cortex.setting.item.revision.ItemRevisionStore",
+            "org.miaixz.bus.cortex.setting.revision.RevisionStore",
             "org.miaixz.bus.cortex.magic.watch.WatchManager",
             "org.miaixz.bus.cortex.setting.secret.SecretCodec",
             "int",
@@ -14256,7 +14256,7 @@
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.cortex.setting.item.StoreBackedItemStore",
-            "org.miaixz.bus.cortex.setting.item.revision.ItemRevisionStore",
+            "org.miaixz.bus.cortex.setting.revision.RevisionStore",
             "org.miaixz.bus.cortex.magic.watch.WatchManager",
             "org.miaixz.bus.cortex.setting.secret.SecretCodec",
             "int",
@@ -14268,7 +14268,7 @@
           "parameterTypes": [
             "java.lang.String",
             "org.miaixz.bus.cortex.setting.item.Item",
-            "org.miaixz.bus.cortex.setting.item.revision.ItemRevision"
+            "org.miaixz.bus.cortex.setting.revision.Revision"
           ]
         },
         {
@@ -14276,7 +14276,7 @@
           "parameterTypes": [
             "org.miaixz.bus.cortex.setting.item.Item",
             "org.miaixz.bus.cortex.setting.item.Item",
-            "org.miaixz.bus.cortex.setting.item.revision.ItemRevision",
+            "org.miaixz.bus.cortex.setting.revision.Revision",
             "java.lang.Throwable"
           ]
         },
@@ -14292,7 +14292,7 @@
         {
           "name": "diff",
           "parameterTypes": [
-            "org.miaixz.bus.cortex.setting.item.revision.ItemRevision",
+            "org.miaixz.bus.cortex.setting.revision.Revision",
             "org.miaixz.bus.cortex.setting.item.Item"
           ]
         },
@@ -14357,7 +14357,7 @@
           "name": "toRevision",
           "parameterTypes": [
             "org.miaixz.bus.cortex.setting.item.Item",
-            "org.miaixz.bus.cortex.setting.item.revision.ItemRevision"
+            "org.miaixz.bus.cortex.setting.revision.Revision"
           ]
         },
         {
@@ -14842,6 +14842,1055 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.cortex.setting.instance.Instance",
+      "fields": [
+        {
+          "name": "asset_id"
+        },
+        {
+          "name": "fingerprint"
+        },
+        {
+          "name": "process"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "scheme"
+        },
+        {
+          "name": "pid"
+        },
+        {
+          "name": "endpoint"
+        },
+        {
+          "name": "health"
+        },
+        {
+          "name": "heartbeat"
+        },
+        {
+          "name": "probed"
+        },
+        {
+          "name": "version"
+        },
+        {
+          "name": "duration"
+        },
+        {
+          "name": "session"
+        },
+        {
+          "name": "labels_json"
+        },
+        {
+          "name": "metadata_json"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.cortex.setting.instance.Instance$InstanceBuilder"
+          ]
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getType",
+          "parameterTypes": []
+        },
+        {
+          "name": "setType",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "getAsset_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAsset_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getFingerprint",
+          "parameterTypes": []
+        },
+        {
+          "name": "setFingerprint",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getProcess",
+          "parameterTypes": []
+        },
+        {
+          "name": "setProcess",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getHost",
+          "parameterTypes": []
+        },
+        {
+          "name": "setHost",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getPort",
+          "parameterTypes": []
+        },
+        {
+          "name": "setPort",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "getScheme",
+          "parameterTypes": []
+        },
+        {
+          "name": "setScheme",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getPid",
+          "parameterTypes": []
+        },
+        {
+          "name": "setPid",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "getEndpoint",
+          "parameterTypes": []
+        },
+        {
+          "name": "setEndpoint",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getHealth",
+          "parameterTypes": []
+        },
+        {
+          "name": "setHealth",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getHeartbeat",
+          "parameterTypes": []
+        },
+        {
+          "name": "setHeartbeat",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "getProbed",
+          "parameterTypes": []
+        },
+        {
+          "name": "setProbed",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "getVersion",
+          "parameterTypes": []
+        },
+        {
+          "name": "setVersion",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getDuration",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDuration",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "getSession",
+          "parameterTypes": []
+        },
+        {
+          "name": "setSession",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getLabels_json",
+          "parameterTypes": []
+        },
+        {
+          "name": "setLabels_json",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getMetadata_json",
+          "parameterTypes": []
+        },
+        {
+          "name": "setMetadata_json",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.instance.Instance$InstanceBuilder",
+      "fields": [
+        {
+          "name": "asset_id"
+        },
+        {
+          "name": "fingerprint"
+        },
+        {
+          "name": "process"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "scheme"
+        },
+        {
+          "name": "pid"
+        },
+        {
+          "name": "endpoint"
+        },
+        {
+          "name": "health"
+        },
+        {
+          "name": "heartbeat"
+        },
+        {
+          "name": "probed"
+        },
+        {
+          "name": "version"
+        },
+        {
+          "name": "duration"
+        },
+        {
+          "name": "session"
+        },
+        {
+          "name": "labels_json"
+        },
+        {
+          "name": "metadata_json"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "asset_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "fingerprint",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "process",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "host",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "port",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "scheme",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "pid",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "endpoint",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "health",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "heartbeat",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "probed",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "version",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "duration",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "session",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "labels_json",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "metadata_json",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.instance.Instance$InstanceBuilderImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.watch.Watch",
+      "fields": [
+        {
+          "name": "instance_id"
+        },
+        {
+          "name": "item_id"
+        },
+        {
+          "name": "session"
+        },
+        {
+          "name": "target_revision_id"
+        },
+        {
+          "name": "generation"
+        },
+        {
+          "name": "fetched"
+        },
+        {
+          "name": "applied"
+        },
+        {
+          "name": "last_applied_revision_id"
+        },
+        {
+          "name": "acknowledged"
+        },
+        {
+          "name": "error"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.cortex.setting.watch.Watch$WatchBuilder"
+          ]
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getType",
+          "parameterTypes": []
+        },
+        {
+          "name": "setType",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "getInstance_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "setInstance_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getItem_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "setItem_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getSession",
+          "parameterTypes": []
+        },
+        {
+          "name": "setSession",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getTarget_revision_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "setTarget_revision_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getGeneration",
+          "parameterTypes": []
+        },
+        {
+          "name": "setGeneration",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "getFetched",
+          "parameterTypes": []
+        },
+        {
+          "name": "setFetched",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "getApplied",
+          "parameterTypes": []
+        },
+        {
+          "name": "setApplied",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "getLast_applied_revision_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "setLast_applied_revision_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getAcknowledged",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAcknowledged",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "getError",
+          "parameterTypes": []
+        },
+        {
+          "name": "setError",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.watch.Watch$WatchBuilder",
+      "fields": [
+        {
+          "name": "instance_id"
+        },
+        {
+          "name": "item_id"
+        },
+        {
+          "name": "session"
+        },
+        {
+          "name": "target_revision_id"
+        },
+        {
+          "name": "generation"
+        },
+        {
+          "name": "fetched"
+        },
+        {
+          "name": "applied"
+        },
+        {
+          "name": "last_applied_revision_id"
+        },
+        {
+          "name": "acknowledged"
+        },
+        {
+          "name": "error"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "instance_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "item_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "session",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "target_revision_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "generation",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "fetched",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "applied",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "last_applied_revision_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "acknowledged",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "error",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.watch.Watch$WatchBuilderImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.rollout.Rollout",
+      "fields": [
+        {
+          "name": "profile_id"
+        },
+        {
+          "name": "mode"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "title"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "policy_json"
+        },
+        {
+          "name": "checksum"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "digest"
+        },
+        {
+          "name": "rule_json"
+        },
+        {
+          "name": "edition"
+        },
+        {
+          "name": "finished"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.cortex.setting.rollout.Rollout$RolloutBuilder"
+          ]
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getType",
+          "parameterTypes": []
+        },
+        {
+          "name": "setType",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "getProfile_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "setProfile_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getMode",
+          "parameterTypes": []
+        },
+        {
+          "name": "setMode",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getState",
+          "parameterTypes": []
+        },
+        {
+          "name": "setState",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getTitle",
+          "parameterTypes": []
+        },
+        {
+          "name": "setTitle",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getDescription",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDescription",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getPolicy_json",
+          "parameterTypes": []
+        },
+        {
+          "name": "setPolicy_json",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getChecksum",
+          "parameterTypes": []
+        },
+        {
+          "name": "setChecksum",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getRequest",
+          "parameterTypes": []
+        },
+        {
+          "name": "setRequest",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getDigest",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDigest",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getRule_json",
+          "parameterTypes": []
+        },
+        {
+          "name": "setRule_json",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getEdition",
+          "parameterTypes": []
+        },
+        {
+          "name": "setEdition",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "getFinished",
+          "parameterTypes": []
+        },
+        {
+          "name": "setFinished",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.rollout.Rollout$RolloutBuilder",
+      "fields": [
+        {
+          "name": "profile_id"
+        },
+        {
+          "name": "mode"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "title"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "policy_json"
+        },
+        {
+          "name": "checksum"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "digest"
+        },
+        {
+          "name": "rule_json"
+        },
+        {
+          "name": "edition"
+        },
+        {
+          "name": "finished"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "profile_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "mode",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "state",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "title",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "description",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "policy_json",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "checksum",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "request",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "digest",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "rule_json",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "edition",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "finished",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.rollout.Rollout$RolloutBuilderImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.cortex.Type",
       "fields": [
         {
@@ -14863,6 +15912,9 @@
           "name": "ITEM_REVISION"
         },
         {
+          "name": "INSTANCE"
+        },
+        {
           "name": "key"
         },
         {
@@ -14876,6 +15928,12 @@
         },
         {
           "name": "PROMPT"
+        },
+        {
+          "name": "ROLLOUT"
+        },
+        {
+          "name": "WATCH"
         },
         {
           "name": "VERSION"

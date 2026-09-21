@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.mapper.feature.tenant;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -456,7 +457,7 @@ public class TenantBuilder {
      * @return {@code true} when the token is not a real alias
      */
     private boolean aliasStopWord(String token) {
-        return token == null || ALIAS_STOP_WORDS.contains(token.toUpperCase(java.util.Locale.ROOT));
+        return token == null || ALIAS_STOP_WORDS.contains(token.toUpperCase(Locale.ROOT));
     }
 
     /**

@@ -22,6 +22,7 @@ package org.miaixz.bus.metrics.nimble.prometheus;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 import java.util.function.ToDoubleFunction;
+import java.util.stream.StreamSupport;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.lang.Normal;
@@ -456,7 +457,7 @@ public class PrometheusProvider implements Provider {
             @Override
             public double percentile(double p, TimeUnit unit) {
                 return s.collect().getDataPoints().stream()
-                        .flatMap(dp -> java.util.stream.StreamSupport.stream(dp.getQuantiles().spliterator(), false))
+                        .flatMap(dp -> StreamSupport.stream(dp.getQuantiles().spliterator(), false))
                         .filter(q -> Double.compare(q.getQuantile(), p) == 0)
                         .mapToDouble(q -> q.getValue() * unit.toNanos(1) / 1e9).findFirst().orElse(0);
             }

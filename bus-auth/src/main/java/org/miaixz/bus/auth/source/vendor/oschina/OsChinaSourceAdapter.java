@@ -20,6 +20,7 @@
 package org.miaixz.bus.auth.source.vendor.oschina;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -266,7 +267,7 @@ public class OsChinaSourceAdapter implements VendorAdapter {
         try {
             return new String(material);
         } finally {
-            java.util.Arrays.fill(material, Symbol.C_NUL);
+            Arrays.fill(material, Symbol.C_NUL);
         }
     }
 

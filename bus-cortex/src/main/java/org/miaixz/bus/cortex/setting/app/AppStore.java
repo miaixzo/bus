@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex.setting.app;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +51,7 @@ public interface AppStore {
         if (entries == null || entries.isEmpty()) {
             return List.of();
         }
-        java.util.ArrayList<App> result = new java.util.ArrayList<>(entries.size());
+        List<App> result = new ArrayList<>(entries.size());
         for (App entry : entries) {
             if (entry != null) {
                 result.add(save(entry));

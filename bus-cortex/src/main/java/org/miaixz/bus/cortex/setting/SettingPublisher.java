@@ -33,10 +33,10 @@ import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemBindingProjection;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
-import org.miaixz.bus.cortex.setting.item.ItemRevisionNumbers;
 import org.miaixz.bus.cortex.setting.item.StoreBackedItemStore;
-import org.miaixz.bus.cortex.setting.item.revision.ItemRevision;
-import org.miaixz.bus.cortex.setting.item.revision.ItemRevisionStore;
+import org.miaixz.bus.cortex.setting.revision.Revision;
+import org.miaixz.bus.cortex.setting.revision.RevisionNumbers;
+import org.miaixz.bus.cortex.setting.revision.RevisionStore;
 import org.miaixz.bus.cortex.setting.secret.SecretCodec;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -74,9 +74,9 @@ public class SettingPublisher {
     private final StoreBackedItemStore entryStore;
 
     /**
-     * ItemRevision history store.
+     * Revision history store.
      */
-    private final ItemRevisionStore revisionStore;
+    private final RevisionStore revisionStore;
 
     /**
      * Watch manager notified after publish and delete operations.
@@ -111,7 +111,7 @@ public class SettingPublisher {
      * @param watchManager  watch manager
      * @param secretCodec   secret codec
      */
-    public SettingPublisher(StoreBackedItemStore entryStore, ItemRevisionStore revisionStore, WatchManager watchManager,
+    public SettingPublisher(StoreBackedItemStore entryStore, RevisionStore revisionStore, WatchManager watchManager,
             SecretCodec secretCodec) {
         this(entryStore, revisionStore, watchManager, secretCodec, 10, SettingGenerator.INSTANCE, null);
     }
@@ -125,7 +125,7 @@ public class SettingPublisher {
      * @param secretCodec   secret codec
      * @param maxRevisions  max revisions to retain
      */
-    public SettingPublisher(StoreBackedItemStore entryStore, ItemRevisionStore revisionStore, WatchManager watchManager,
+    public SettingPublisher(StoreBackedItemStore entryStore, RevisionStore revisionStore, WatchManager watchManager,
             SecretCodec secretCodec, int maxRevisions) {
         this(entryStore, revisionStore, watchManager, secretCodec, maxRevisions, SettingGenerator.INSTANCE, null);
     }
@@ -140,7 +140,7 @@ public class SettingPublisher {
      * @param maxRevisions   max revisions to retain
      * @param changeLogStore optional outbox store
      */
-    public SettingPublisher(StoreBackedItemStore entryStore, ItemRevisionStore revisionStore, WatchManager watchManager,
+    public SettingPublisher(StoreBackedItemStore entryStore, RevisionStore revisionStore, WatchManager watchManager,
             SecretCodec secretCodec, int maxRevisions, CortexChangeLogStore changeLogStore) {
         this(entryStore, revisionStore, watchManager, secretCodec, maxRevisions, SettingGenerator.INSTANCE,
                 changeLogStore);
@@ -157,7 +157,7 @@ public class SettingPublisher {
      * @param keying         setting-domain key strategy
      * @param changeLogStore optional outbox store
      */
-    public SettingPublisher(StoreBackedItemStore entryStore, ItemRevisionStore revisionStore, WatchManager watchManager,
+    public SettingPublisher(StoreBackedItemStore entryStore, RevisionStore revisionStore, WatchManager watchManager,
             SecretCodec secretCodec, int maxRevisions, Keying<SettingSpec> keying,
             CortexChangeLogStore changeLogStore) {
         this.entryStore = entryStore;
@@ -239,15 +239,15 @@ public class SettingPublisher {
                     current.getRevision());
             return current;
         }
-        prepared.setRevision(ItemRevisionNumbers.next(current == null ? null : current.getRevision()));
+        prepared.setRevision(RevisionNumbers.next(current == null ? null : current.getRevision()));
         String notifyContent = prepared.getContent();
         if (ItemNormalizer.isEncryptedFlagEnabled(prepared.getEncrypted()) && prepared.getContent() != null) {
             prepared.setContent(secretCodec.encrypt(prepared.getContent()));
         }
         Item stored = entryStore.save(prepared);
-        ItemRevision previous = current == null ? null
+        Revision previous = current == null ? null
                 : revisionStore.latest(current.getSpace_id(), current.getGroup(), current.getData_id(), profile);
-        ItemRevision revision = toRevision(stored, previous);
+        Revision revision = toRevision(stored, previous);
         try {
             revisionStore.save(revision);
             revisionStore
@@ -359,7 +359,7 @@ public class SettingPublisher {
                 data_id,
                 profile,
                 revision);
-        ItemRevision snapshot = revisionStore.find(space, group, data_id, profile, revision);
+        Revision snapshot = revisionStore.find(space, group, data_id, profile, revision);
         if (snapshot == null) {
             Logger.warn(
                     false,
@@ -394,7 +394,7 @@ public class SettingPublisher {
         Item prepared = ItemNormalizer.normalize(entry);
         Item published = publish(prepared, true, SETTING_DURABLE_SOURCE, ROLLBACK_EVENT, "Setting rolled back");
         if (published != null) {
-            ItemRevision latest = revisionStore.latest(space, group, data_id, profile);
+            Revision latest = revisionStore.latest(space, group, data_id, profile);
             if (latest != null) {
                 revisionStore.markRollback(space, group, data_id, profile, latest.getRevision(), revision);
             }
@@ -420,7 +420,7 @@ public class SettingPublisher {
      * @param revision revision snapshot that failed to complete
      * @param failure  original publish failure
      */
-    private void compensateCurrentState(Item previous, Item stored, ItemRevision revision, Throwable failure) {
+    private void compensateCurrentState(Item previous, Item stored, Revision revision, Throwable failure) {
         try {
             if (stored != null && revision != null) {
                 revisionStore.delete(
@@ -471,8 +471,8 @@ public class SettingPublisher {
      * @param previous previous recorded revision, or {@code null} for the initial revision
      * @return revision snapshot recorded for history and rollback
      */
-    private ItemRevision toRevision(Item entry, ItemRevision previous) {
-        ItemRevision revision = ItemRevision.builder().item_id(entry.getId()).space_id(entry.getSpace_id())
+    private Revision toRevision(Item entry, Revision previous) {
+        Revision revision = Revision.builder().item_id(entry.getId()).space_id(entry.getSpace_id())
                 .group(entry.getGroup()).data_id(entry.getData_id())
                 .profile_ids(ItemBindingProjection.normalizedProfileIds(entry))
                 .app_ids(ItemBindingProjection.normalizedAppIds(entry)).content(entry.getContent())
@@ -491,7 +491,7 @@ public class SettingPublisher {
      * @param current  current entry
      * @return diff summary
      */
-    private String diff(ItemRevision previous, Item current) {
+    private String diff(Revision previous, Item current) {
         if (previous == null || current == null) {
             return "initial";
         }
@@ -515,7 +515,7 @@ public class SettingPublisher {
      * @param item     current setting item
      * @param revision current setting revision
      */
-    private void appendChangeLog(String action, Item item, ItemRevision revision) {
+    private void appendChangeLog(String action, Item item, Revision revision) {
         if (changeLogStore == null || item == null) {
             return;
         }
@@ -531,7 +531,7 @@ public class SettingPublisher {
                         ItemBindingProjection.firstProfileId(item)));
         record.setSpace_id(item.getSpace_id());
         record.setPayload(JsonKit.toJsonString(revision == null ? item : revision));
-        record.setSequence(ItemRevisionNumbers.sortKey(item.getRevision()));
+        record.setSequence(RevisionNumbers.sortKey(item.getRevision()));
         record.setIdempotencyKey(
                 "setting:" + action + Symbol.COLON + record.getResourceId() + Symbol.COLON + item.getRevision());
         changeLogStore.append(record);
