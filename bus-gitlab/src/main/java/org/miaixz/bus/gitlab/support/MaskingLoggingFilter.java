@@ -458,6 +458,12 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
          */
         private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
+        /**
+         * Creates a logging stream that mirrors entity bytes to the supplied output stream.
+         *
+         * @param sb  destination for the formatted entity log
+         * @param out output stream receiving the entity bytes
+         */
         public LoggingStream(StringBuilder sb, OutputStream out) {
             super(out);
             this.sb = sb;

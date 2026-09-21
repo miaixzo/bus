@@ -32,6 +32,9 @@ import org.miaixz.bus.core.lang.Normal;
  */
 public class Archive {
 
+    /**
+     * Creates an archive model container.
+     */
     public Archive() {
         // No initialization required.
     }
