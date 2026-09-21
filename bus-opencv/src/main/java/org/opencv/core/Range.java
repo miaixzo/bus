@@ -20,31 +20,57 @@
 package org.opencv.core;
 
 //javadoc:Range
-
 /**
- * The range class.
+ * Provides the {@code Range} API.
  */
 public class Range {
 
+    /**
+     * OpenCV constants used by this API.
+     */
     public int start, end;
 
+    /**
+     * Creates a new {@code Range} instance.
+     *
+     * @param s the {@code s} value
+     * @param e the {@code e} value
+     */
     public Range(int s, int e) {
         this.start = s;
         this.end = e;
     }
 
+    /**
+     * Creates a new {@code Range} instance.
+     */
     public Range() {
         this(0, 0);
     }
 
+    /**
+     * Creates a new {@code Range} instance.
+     *
+     * @param vals the {@code vals} value
+     */
     public Range(double[] vals) {
         set(vals);
     }
 
+    /**
+     * Performs the {@code all} operation.
+     *
+     * @return the operation result
+     */
     public static Range all() {
         return new Range(Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
+    /**
+     * Performs the {@code set} operation.
+     *
+     * @param vals the {@code vals} value
+     */
     public void set(double[] vals) {
         if (vals != null) {
             start = vals.length > 0 ? (int) vals[0] : 0;
@@ -56,20 +82,42 @@ public class Range {
 
     }
 
+    /**
+     * Performs the {@code size} operation.
+     *
+     * @return the operation result
+     */
     public int size() {
         return empty() ? 0 : end - start;
     }
 
+    /**
+     * Performs the {@code empty} operation.
+     *
+     * @return the operation result
+     */
     public boolean empty() {
         return end <= start;
     }
 
+    /**
+     * Performs the {@code intersection} operation.
+     *
+     * @param r1 the {@code r1} value
+     * @return the operation result
+     */
     public Range intersection(Range r1) {
         Range r = new Range(Math.max(r1.start, this.start), Math.min(r1.end, this.end));
         r.end = Math.max(r.end, r.start);
         return r;
     }
 
+    /**
+     * Performs the {@code shift} operation.
+     *
+     * @param delta the {@code delta} value
+     * @return the operation result
+     */
     public Range shift(int delta) {
         return new Range(start + delta, end + delta);
     }
@@ -104,5 +152,4 @@ public class Range {
     public String toString() {
         return "[" + start + ", " + end + ")";
     }
-
 }

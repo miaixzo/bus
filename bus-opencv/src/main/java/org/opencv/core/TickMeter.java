@@ -34,14 +34,25 @@ package org.opencv.core;
  */
 public class TickMeter {
 
+    /**
+     * The {@code nativeObj} value.
+     */
     protected final long nativeObj;
 
+    /**
+     * Creates a new {@code TickMeter} instance.
+     *
+     * @param addr the {@code addr} value
+     */
     protected TickMeter(long addr) {
         nativeObj = addr;
         long nativeObjCopy = nativeObj;
         org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
+    /**
+     * Creates a new {@code TickMeter} instance.
+     */
     public TickMeter() {
         nativeObj = TickMeter_0();
         long nativeObjCopy = nativeObj;
@@ -49,6 +60,12 @@ public class TickMeter {
     }
 
     // internal usage only
+    /**
+     * Performs the {@code __fromPtr__} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static TickMeter __fromPtr__(long addr) {
         return new TickMeter(addr);
     }
@@ -168,66 +185,140 @@ public class TickMeter {
     // native support for java finalize() or cleaner
     private static native void delete(long nativeObj);
 
+    /**
+     * Performs the {@code getNativeObjAddr} operation.
+     *
+     * @return the operation result
+     */
     public long getNativeObjAddr() {
         return nativeObj;
     }
 
+    /**
+     * Performs the {@code start} operation.
+     */
     public void start() {
         start_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code stop} operation.
+     */
     public void stop() {
         stop_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code getTimeTicks} operation.
+     *
+     * @return the operation result
+     */
     public long getTimeTicks() {
         return getTimeTicks_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code getTimeMicro} operation.
+     *
+     * @return the operation result
+     */
     public double getTimeMicro() {
         return getTimeMicro_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code getTimeMilli} operation.
+     *
+     * @return the operation result
+     */
     public double getTimeMilli() {
         return getTimeMilli_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code getTimeSec} operation.
+     *
+     * @return the operation result
+     */
     public double getTimeSec() {
         return getTimeSec_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code getLastTimeTicks} operation.
+     *
+     * @return the operation result
+     */
     public long getLastTimeTicks() {
         return getLastTimeTicks_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code getLastTimeMicro} operation.
+     *
+     * @return the operation result
+     */
     public double getLastTimeMicro() {
         return getLastTimeMicro_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code getLastTimeMilli} operation.
+     *
+     * @return the operation result
+     */
     public double getLastTimeMilli() {
         return getLastTimeMilli_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code getLastTimeSec} operation.
+     *
+     * @return the operation result
+     */
     public double getLastTimeSec() {
         return getLastTimeSec_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code getCounter} operation.
+     *
+     * @return the operation result
+     */
     public long getCounter() {
         return getCounter_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code getFPS} operation.
+     *
+     * @return the operation result
+     */
     public double getFPS() {
         return getFPS_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code getAvgTimeSec} operation.
+     *
+     * @return the operation result
+     */
     public double getAvgTimeSec() {
         return getAvgTimeSec_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code getAvgTimeMilli} operation.
+     *
+     * @return the operation result
+     */
     public double getAvgTimeMilli() {
         return getAvgTimeMilli_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code reset} operation.
+     */
     public void reset() {
         reset_0(nativeObj);
     }

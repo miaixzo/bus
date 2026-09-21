@@ -23,19 +23,26 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The mat of rect class.
+ * Provides the {@code MatOfRect} API.
  */
 public class MatOfRect extends Mat {
 
     // 32SC4
     private static final int _depth = CvType.CV_32S;
-
     private static final int _channels = 4;
 
+    /**
+     * Creates a new {@code MatOfRect} instance.
+     */
     public MatOfRect() {
         super();
     }
 
+    /**
+     * Creates a new {@code MatOfRect} instance.
+     *
+     * @param addr the {@code addr} value
+     */
     protected MatOfRect(long addr) {
         super(addr);
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -43,6 +50,11 @@ public class MatOfRect extends Mat {
         // FIXME: do we need release() here?
     }
 
+    /**
+     * Creates a new {@code MatOfRect} instance.
+     *
+     * @param m the {@code m} value
+     */
     public MatOfRect(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -50,20 +62,41 @@ public class MatOfRect extends Mat {
         // FIXME: do we need release() here?
     }
 
+    /**
+     * Creates a new {@code MatOfRect} instance.
+     *
+     * @param a the {@code a} value
+     */
     public MatOfRect(Rect... a) {
         super();
         fromArray(a);
     }
 
+    /**
+     * Performs the {@code fromNativeAddr} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static MatOfRect fromNativeAddr(long addr) {
         return new MatOfRect(addr);
     }
 
+    /**
+     * Performs the {@code alloc} operation.
+     *
+     * @param elemNumber the {@code elemNumber} value
+     */
     public void alloc(int elemNumber) {
         if (elemNumber > 0)
             super.create(elemNumber, 1, CvType.makeType(_depth, _channels));
     }
 
+    /**
+     * Performs the {@code fromArray} operation.
+     *
+     * @param a the {@code a} value
+     */
     public void fromArray(Rect... a) {
         if (a == null || a.length == 0)
             return;
@@ -80,6 +113,11 @@ public class MatOfRect extends Mat {
         put(0, 0, buff); // TODO: check ret val!
     }
 
+    /**
+     * Performs the {@code toArray} operation.
+     *
+     * @return the operation result
+     */
     public Rect[] toArray() {
         int num = (int) total();
         Rect[] a = new Rect[num];
@@ -93,14 +131,23 @@ public class MatOfRect extends Mat {
         return a;
     }
 
+    /**
+     * Performs the {@code fromList} operation.
+     *
+     * @param lr the {@code lr} value
+     */
     public void fromList(List<Rect> lr) {
         Rect ap[] = lr.toArray(new Rect[0]);
         fromArray(ap);
     }
 
+    /**
+     * Performs the {@code toList} operation.
+     *
+     * @return the operation result
+     */
     public List<Rect> toList() {
         Rect[] ar = toArray();
         return Arrays.asList(ar);
     }
-
 }

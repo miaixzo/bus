@@ -20,28 +20,49 @@
 package org.opencv.core;
 
 //javadoc:Point_
-
 /**
- * The point class.
+ * Provides the {@code Point} API.
  */
 public class Point {
 
+    /**
+     * OpenCV constants used by this API.
+     */
     public double x, y;
 
+    /**
+     * Creates a new {@code Point} instance.
+     *
+     * @param x the {@code x} value
+     * @param y the {@code y} value
+     */
     public Point(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
+    /**
+     * Creates a new {@code Point} instance.
+     */
     public Point() {
         this(0, 0);
     }
 
+    /**
+     * Creates a new {@code Point} instance.
+     *
+     * @param vals the {@code vals} value
+     */
     public Point(double[] vals) {
         this();
         set(vals);
     }
 
+    /**
+     * Performs the {@code set} operation.
+     *
+     * @param vals the {@code vals} value
+     */
     public void set(double[] vals) {
         if (vals != null) {
             x = vals.length > 0 ? vals[0] : 0;
@@ -56,6 +77,12 @@ public class Point {
         return new Point(x, y);
     }
 
+    /**
+     * Performs the {@code dot} operation.
+     *
+     * @param p the {@code p} value
+     * @return the operation result
+     */
     public double dot(Point p) {
         return x * p.x + y * p.y;
     }
@@ -82,6 +109,12 @@ public class Point {
         return x == it.x && y == it.y;
     }
 
+    /**
+     * Performs the {@code inside} operation.
+     *
+     * @param r the {@code r} value
+     * @return the operation result
+     */
     public boolean inside(Rect r) {
         return r.contains(this);
     }
@@ -90,5 +123,4 @@ public class Point {
     public String toString() {
         return "{" + x + ", " + y + "}";
     }
-
 }

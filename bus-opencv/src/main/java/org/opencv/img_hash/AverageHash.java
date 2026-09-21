@@ -29,11 +29,22 @@ package org.opencv.img_hash;
  */
 public class AverageHash extends ImgHashBase {
 
-    public AverageHash(long addr) {
+    /**
+     * Creates a new {@code AverageHash} instance.
+     *
+     * @param addr the {@code addr} value
+     */
+    protected AverageHash(long addr) {
         super(addr);
     }
 
     // internal usage only
+    /**
+     * Performs the {@code __fromPtr__} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static AverageHash __fromPtr__(long addr) {
         return new AverageHash(addr);
     }
@@ -42,6 +53,11 @@ public class AverageHash extends ImgHashBase {
     // C++: static Ptr_AverageHash cv::img_hash::AverageHash::create()
     //
 
+    /**
+     * Performs the {@code create} operation.
+     *
+     * @return the operation result
+     */
     public static AverageHash create() {
         return AverageHash.__fromPtr__(create_0());
     }

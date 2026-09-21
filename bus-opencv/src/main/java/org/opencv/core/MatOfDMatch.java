@@ -23,19 +23,26 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The mat of d match class.
+ * Provides the {@code MatOfDMatch} API.
  */
 public class MatOfDMatch extends Mat {
 
     // 32FC4
     private static final int _depth = CvType.CV_32F;
-
     private static final int _channels = 4;
 
+    /**
+     * Creates a new {@code MatOfDMatch} instance.
+     */
     public MatOfDMatch() {
         super();
     }
 
+    /**
+     * Creates a new {@code MatOfDMatch} instance.
+     *
+     * @param addr the {@code addr} value
+     */
     protected MatOfDMatch(long addr) {
         super(addr);
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -43,6 +50,11 @@ public class MatOfDMatch extends Mat {
         // FIXME: do we need release() here?
     }
 
+    /**
+     * Creates a new {@code MatOfDMatch} instance.
+     *
+     * @param m the {@code m} value
+     */
     public MatOfDMatch(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -50,20 +62,41 @@ public class MatOfDMatch extends Mat {
         // FIXME: do we need release() here?
     }
 
+    /**
+     * Creates a new {@code MatOfDMatch} instance.
+     *
+     * @param ap the {@code ap} value
+     */
     public MatOfDMatch(DMatch... ap) {
         super();
         fromArray(ap);
     }
 
+    /**
+     * Performs the {@code fromNativeAddr} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static MatOfDMatch fromNativeAddr(long addr) {
         return new MatOfDMatch(addr);
     }
 
+    /**
+     * Performs the {@code alloc} operation.
+     *
+     * @param elemNumber the {@code elemNumber} value
+     */
     public void alloc(int elemNumber) {
         if (elemNumber > 0)
             super.create(elemNumber, 1, CvType.makeType(_depth, _channels));
     }
 
+    /**
+     * Performs the {@code fromArray} operation.
+     *
+     * @param a the {@code a} value
+     */
     public void fromArray(DMatch... a) {
         if (a == null || a.length == 0)
             return;
@@ -80,6 +113,11 @@ public class MatOfDMatch extends Mat {
         put(0, 0, buff); // TODO: check ret val!
     }
 
+    /**
+     * Performs the {@code toArray} operation.
+     *
+     * @return the operation result
+     */
     public DMatch[] toArray() {
         int num = (int) total();
         DMatch[] a = new DMatch[num];
@@ -93,14 +131,23 @@ public class MatOfDMatch extends Mat {
         return a;
     }
 
+    /**
+     * Performs the {@code fromList} operation.
+     *
+     * @param ldm the {@code ldm} value
+     */
     public void fromList(List<DMatch> ldm) {
         DMatch adm[] = ldm.toArray(new DMatch[0]);
         fromArray(adm);
     }
 
+    /**
+     * Performs the {@code toList} operation.
+     *
+     * @return the operation result
+     */
     public List<DMatch> toList() {
         DMatch[] adm = toArray();
         return Arrays.asList(adm);
     }
-
 }

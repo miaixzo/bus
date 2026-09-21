@@ -30,11 +30,22 @@ import org.opencv.core.Point;
  */
 public class GeneralizedHough extends Algorithm {
 
-    public GeneralizedHough(long addr) {
+    /**
+     * Creates a new {@code GeneralizedHough} instance.
+     *
+     * @param addr the {@code addr} value
+     */
+    protected GeneralizedHough(long addr) {
         super(addr);
     }
 
     // internal usage only
+    /**
+     * Performs the {@code __fromPtr__} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static GeneralizedHough __fromPtr__(long addr) {
         return new GeneralizedHough(addr);
     }
@@ -177,74 +188,180 @@ public class GeneralizedHough extends Algorithm {
     // native support for java finalize() or cleaner
     private static native void delete(long nativeObj);
 
+    /**
+     * Performs the {@code setTemplate} operation.
+     *
+     * @param templ the {@code templ} value
+     * @param templCenter the {@code templCenter} value
+     */
     public void setTemplate(Mat templ, Point templCenter) {
         setTemplate_0(nativeObj, templ.nativeObj, templCenter.x, templCenter.y);
     }
 
+    /**
+     * Performs the {@code setTemplate} operation.
+     *
+     * @param templ the {@code templ} value
+     */
     public void setTemplate(Mat templ) {
         setTemplate_1(nativeObj, templ.nativeObj);
     }
 
+    /**
+     * Performs the {@code setTemplate} operation.
+     *
+     * @param edges the {@code edges} value
+     * @param dx the {@code dx} value
+     * @param dy the {@code dy} value
+     * @param templCenter the {@code templCenter} value
+     */
     public void setTemplate(Mat edges, Mat dx, Mat dy, Point templCenter) {
         setTemplate_2(nativeObj, edges.nativeObj, dx.nativeObj, dy.nativeObj, templCenter.x, templCenter.y);
     }
 
+    /**
+     * Performs the {@code setTemplate} operation.
+     *
+     * @param edges the {@code edges} value
+     * @param dx the {@code dx} value
+     * @param dy the {@code dy} value
+     */
     public void setTemplate(Mat edges, Mat dx, Mat dy) {
         setTemplate_3(nativeObj, edges.nativeObj, dx.nativeObj, dy.nativeObj);
     }
 
+    /**
+     * Performs the {@code detect} operation.
+     *
+     * @param image the {@code image} value
+     * @param positions the {@code positions} value
+     * @param votes the {@code votes} value
+     */
     public void detect(Mat image, Mat positions, Mat votes) {
         detect_0(nativeObj, image.nativeObj, positions.nativeObj, votes.nativeObj);
     }
 
+    /**
+     * Performs the {@code detect} operation.
+     *
+     * @param image the {@code image} value
+     * @param positions the {@code positions} value
+     */
     public void detect(Mat image, Mat positions) {
         detect_1(nativeObj, image.nativeObj, positions.nativeObj);
     }
 
+    /**
+     * Performs the {@code detect} operation.
+     *
+     * @param edges the {@code edges} value
+     * @param dx the {@code dx} value
+     * @param dy the {@code dy} value
+     * @param positions the {@code positions} value
+     * @param votes the {@code votes} value
+     */
     public void detect(Mat edges, Mat dx, Mat dy, Mat positions, Mat votes) {
         detect_2(nativeObj, edges.nativeObj, dx.nativeObj, dy.nativeObj, positions.nativeObj, votes.nativeObj);
     }
 
+    /**
+     * Performs the {@code detect} operation.
+     *
+     * @param edges the {@code edges} value
+     * @param dx the {@code dx} value
+     * @param dy the {@code dy} value
+     * @param positions the {@code positions} value
+     */
     public void detect(Mat edges, Mat dx, Mat dy, Mat positions) {
         detect_3(nativeObj, edges.nativeObj, dx.nativeObj, dy.nativeObj, positions.nativeObj);
     }
 
+    /**
+     * Performs the {@code getCannyLowThresh} operation.
+     *
+     * @return the operation result
+     */
     public int getCannyLowThresh() {
         return getCannyLowThresh_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setCannyLowThresh} operation.
+     *
+     * @param cannyLowThresh the {@code cannyLowThresh} value
+     */
     public void setCannyLowThresh(int cannyLowThresh) {
         setCannyLowThresh_0(nativeObj, cannyLowThresh);
     }
 
+    /**
+     * Performs the {@code getCannyHighThresh} operation.
+     *
+     * @return the operation result
+     */
     public int getCannyHighThresh() {
         return getCannyHighThresh_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setCannyHighThresh} operation.
+     *
+     * @param cannyHighThresh the {@code cannyHighThresh} value
+     */
     public void setCannyHighThresh(int cannyHighThresh) {
         setCannyHighThresh_0(nativeObj, cannyHighThresh);
     }
 
+    /**
+     * Performs the {@code getMinDist} operation.
+     *
+     * @return the operation result
+     */
     public double getMinDist() {
         return getMinDist_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setMinDist} operation.
+     *
+     * @param minDist the {@code minDist} value
+     */
     public void setMinDist(double minDist) {
         setMinDist_0(nativeObj, minDist);
     }
 
+    /**
+     * Performs the {@code getDp} operation.
+     *
+     * @return the operation result
+     */
     public double getDp() {
         return getDp_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setDp} operation.
+     *
+     * @param dp the {@code dp} value
+     */
     public void setDp(double dp) {
         setDp_0(nativeObj, dp);
     }
 
+    /**
+     * Performs the {@code getMaxBufferSize} operation.
+     *
+     * @return the operation result
+     */
     public int getMaxBufferSize() {
         return getMaxBufferSize_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setMaxBufferSize} operation.
+     *
+     * @param maxBufferSize the {@code maxBufferSize} value
+     */
     public void setMaxBufferSize(int maxBufferSize) {
         setMaxBufferSize_0(nativeObj, maxBufferSize);
     }

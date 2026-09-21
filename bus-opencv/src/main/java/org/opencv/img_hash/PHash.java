@@ -30,11 +30,22 @@ package org.opencv.img_hash;
  */
 public class PHash extends ImgHashBase {
 
-    public PHash(long addr) {
+    /**
+     * Creates a new {@code PHash} instance.
+     *
+     * @param addr the {@code addr} value
+     */
+    protected PHash(long addr) {
         super(addr);
     }
 
     // internal usage only
+    /**
+     * Performs the {@code __fromPtr__} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static PHash __fromPtr__(long addr) {
         return new PHash(addr);
     }
@@ -43,6 +54,11 @@ public class PHash extends ImgHashBase {
     // C++: static Ptr_PHash cv::img_hash::PHash::create()
     //
 
+    /**
+     * Performs the {@code create} operation.
+     *
+     * @return the operation result
+     */
     public static PHash create() {
         return PHash.__fromPtr__(create_0());
     }

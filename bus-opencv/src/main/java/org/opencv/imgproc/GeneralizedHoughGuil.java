@@ -28,11 +28,22 @@ package org.opencv.imgproc;
  */
 public class GeneralizedHoughGuil extends GeneralizedHough {
 
-    public GeneralizedHoughGuil(long addr) {
+    /**
+     * Creates a new {@code GeneralizedHoughGuil} instance.
+     *
+     * @param addr the {@code addr} value
+     */
+    protected GeneralizedHoughGuil(long addr) {
         super(addr);
     }
 
     // internal usage only
+    /**
+     * Performs the {@code __fromPtr__} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static GeneralizedHoughGuil __fromPtr__(long addr) {
         return new GeneralizedHoughGuil(addr);
     }
@@ -208,98 +219,218 @@ public class GeneralizedHoughGuil extends GeneralizedHough {
     // native support for java finalize() or cleaner
     private static native void delete(long nativeObj);
 
+    /**
+     * Performs the {@code getXi} operation.
+     *
+     * @return the operation result
+     */
     public double getXi() {
         return getXi_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setXi} operation.
+     *
+     * @param xi the {@code xi} value
+     */
     public void setXi(double xi) {
         setXi_0(nativeObj, xi);
     }
 
+    /**
+     * Performs the {@code getLevels} operation.
+     *
+     * @return the operation result
+     */
     public int getLevels() {
         return getLevels_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setLevels} operation.
+     *
+     * @param levels the {@code levels} value
+     */
     public void setLevels(int levels) {
         setLevels_0(nativeObj, levels);
     }
 
+    /**
+     * Performs the {@code getAngleEpsilon} operation.
+     *
+     * @return the operation result
+     */
     public double getAngleEpsilon() {
         return getAngleEpsilon_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setAngleEpsilon} operation.
+     *
+     * @param angleEpsilon the {@code angleEpsilon} value
+     */
     public void setAngleEpsilon(double angleEpsilon) {
         setAngleEpsilon_0(nativeObj, angleEpsilon);
     }
 
+    /**
+     * Performs the {@code getMinAngle} operation.
+     *
+     * @return the operation result
+     */
     public double getMinAngle() {
         return getMinAngle_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setMinAngle} operation.
+     *
+     * @param minAngle the {@code minAngle} value
+     */
     public void setMinAngle(double minAngle) {
         setMinAngle_0(nativeObj, minAngle);
     }
 
+    /**
+     * Performs the {@code getMaxAngle} operation.
+     *
+     * @return the operation result
+     */
     public double getMaxAngle() {
         return getMaxAngle_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setMaxAngle} operation.
+     *
+     * @param maxAngle the {@code maxAngle} value
+     */
     public void setMaxAngle(double maxAngle) {
         setMaxAngle_0(nativeObj, maxAngle);
     }
 
+    /**
+     * Performs the {@code getAngleStep} operation.
+     *
+     * @return the operation result
+     */
     public double getAngleStep() {
         return getAngleStep_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setAngleStep} operation.
+     *
+     * @param angleStep the {@code angleStep} value
+     */
     public void setAngleStep(double angleStep) {
         setAngleStep_0(nativeObj, angleStep);
     }
 
+    /**
+     * Performs the {@code getAngleThresh} operation.
+     *
+     * @return the operation result
+     */
     public int getAngleThresh() {
         return getAngleThresh_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setAngleThresh} operation.
+     *
+     * @param angleThresh the {@code angleThresh} value
+     */
     public void setAngleThresh(int angleThresh) {
         setAngleThresh_0(nativeObj, angleThresh);
     }
 
+    /**
+     * Performs the {@code getMinScale} operation.
+     *
+     * @return the operation result
+     */
     public double getMinScale() {
         return getMinScale_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setMinScale} operation.
+     *
+     * @param minScale the {@code minScale} value
+     */
     public void setMinScale(double minScale) {
         setMinScale_0(nativeObj, minScale);
     }
 
+    /**
+     * Performs the {@code getMaxScale} operation.
+     *
+     * @return the operation result
+     */
     public double getMaxScale() {
         return getMaxScale_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setMaxScale} operation.
+     *
+     * @param maxScale the {@code maxScale} value
+     */
     public void setMaxScale(double maxScale) {
         setMaxScale_0(nativeObj, maxScale);
     }
 
+    /**
+     * Performs the {@code getScaleStep} operation.
+     *
+     * @return the operation result
+     */
     public double getScaleStep() {
         return getScaleStep_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setScaleStep} operation.
+     *
+     * @param scaleStep the {@code scaleStep} value
+     */
     public void setScaleStep(double scaleStep) {
         setScaleStep_0(nativeObj, scaleStep);
     }
 
+    /**
+     * Performs the {@code getScaleThresh} operation.
+     *
+     * @return the operation result
+     */
     public int getScaleThresh() {
         return getScaleThresh_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setScaleThresh} operation.
+     *
+     * @param scaleThresh the {@code scaleThresh} value
+     */
     public void setScaleThresh(int scaleThresh) {
         setScaleThresh_0(nativeObj, scaleThresh);
     }
 
+    /**
+     * Performs the {@code getPosThresh} operation.
+     *
+     * @return the operation result
+     */
     public int getPosThresh() {
         return getPosThresh_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setPosThresh} operation.
+     *
+     * @param posThresh the {@code posThresh} value
+     */
     public void setPosThresh(int posThresh) {
         setPosThresh_0(nativeObj, posThresh);
     }

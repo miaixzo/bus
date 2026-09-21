@@ -23,19 +23,26 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The mat of point 3 class.
+ * Provides the {@code MatOfPoint3} API.
  */
 public class MatOfPoint3 extends Mat {
 
     // 32SC3
     private static final int _depth = CvType.CV_32S;
-
     private static final int _channels = 3;
 
+    /**
+     * Creates a new {@code MatOfPoint3} instance.
+     */
     public MatOfPoint3() {
         super();
     }
 
+    /**
+     * Creates a new {@code MatOfPoint3} instance.
+     *
+     * @param addr the {@code addr} value
+     */
     protected MatOfPoint3(long addr) {
         super(addr);
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -43,6 +50,11 @@ public class MatOfPoint3 extends Mat {
         // FIXME: do we need release() here?
     }
 
+    /**
+     * Creates a new {@code MatOfPoint3} instance.
+     *
+     * @param m the {@code m} value
+     */
     public MatOfPoint3(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -50,20 +62,41 @@ public class MatOfPoint3 extends Mat {
         // FIXME: do we need release() here?
     }
 
+    /**
+     * Creates a new {@code MatOfPoint3} instance.
+     *
+     * @param a the {@code a} value
+     */
     public MatOfPoint3(Point3... a) {
         super();
         fromArray(a);
     }
 
+    /**
+     * Performs the {@code fromNativeAddr} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static MatOfPoint3 fromNativeAddr(long addr) {
         return new MatOfPoint3(addr);
     }
 
+    /**
+     * Performs the {@code alloc} operation.
+     *
+     * @param elemNumber the {@code elemNumber} value
+     */
     public void alloc(int elemNumber) {
         if (elemNumber > 0)
             super.create(elemNumber, 1, CvType.makeType(_depth, _channels));
     }
 
+    /**
+     * Performs the {@code fromArray} operation.
+     *
+     * @param a the {@code a} value
+     */
     public void fromArray(Point3... a) {
         if (a == null || a.length == 0)
             return;
@@ -79,6 +112,11 @@ public class MatOfPoint3 extends Mat {
         put(0, 0, buff); // TODO: check ret val!
     }
 
+    /**
+     * Performs the {@code toArray} operation.
+     *
+     * @return the operation result
+     */
     public Point3[] toArray() {
         int num = (int) total();
         Point3[] ap = new Point3[num];
@@ -91,14 +129,23 @@ public class MatOfPoint3 extends Mat {
         return ap;
     }
 
+    /**
+     * Performs the {@code fromList} operation.
+     *
+     * @param lp the {@code lp} value
+     */
     public void fromList(List<Point3> lp) {
         Point3 ap[] = lp.toArray(new Point3[0]);
         fromArray(ap);
     }
 
+    /**
+     * Performs the {@code toList} operation.
+     *
+     * @return the operation result
+     */
     public List<Point3> toList() {
         Point3[] ap = toArray();
         return Arrays.asList(ap);
     }
-
 }

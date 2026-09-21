@@ -30,11 +30,22 @@ import org.opencv.core.Size;
  */
 public class CLAHE extends Algorithm {
 
-    public CLAHE(long addr) {
+    /**
+     * Creates a new {@code CLAHE} instance.
+     *
+     * @param addr the {@code addr} value
+     */
+    protected CLAHE(long addr) {
         super(addr);
     }
 
     // internal usage only
+    /**
+     * Performs the {@code __fromPtr__} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static CLAHE __fromPtr__(long addr) {
         return new CLAHE(addr);
     }
@@ -111,6 +122,11 @@ public class CLAHE extends Algorithm {
         apply_0(nativeObj, src.nativeObj, dst.nativeObj);
     }
 
+    /**
+     * Performs the {@code getClipLimit} operation.
+     *
+     * @return the operation result
+     */
     public double getClipLimit() {
         return getClipLimit_0(nativeObj);
     }
@@ -124,6 +140,11 @@ public class CLAHE extends Algorithm {
         setClipLimit_0(nativeObj, clipLimit);
     }
 
+    /**
+     * Performs the {@code getTilesGridSize} operation.
+     *
+     * @return the operation result
+     */
     public Size getTilesGridSize() {
         return new Size(getTilesGridSize_0(nativeObj));
     }
@@ -155,6 +176,9 @@ public class CLAHE extends Algorithm {
         setBitShift_0(nativeObj, bitShift);
     }
 
+    /**
+     * Performs the {@code collectGarbage} operation.
+     */
     public void collectGarbage() {
         collectGarbage_0(nativeObj);
     }

@@ -36,11 +36,22 @@ import org.opencv.core.Size;
  */
 public class LineSegmentDetector extends Algorithm {
 
-    public LineSegmentDetector(long addr) {
+    /**
+     * Creates a new {@code LineSegmentDetector} instance.
+     *
+     * @param addr the {@code addr} value
+     */
+    protected LineSegmentDetector(long addr) {
         super(addr);
     }
 
     // internal usage only
+    /**
+     * Performs the {@code __fromPtr__} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static LineSegmentDetector __fromPtr__(long addr) {
         return new LineSegmentDetector(addr);
     }

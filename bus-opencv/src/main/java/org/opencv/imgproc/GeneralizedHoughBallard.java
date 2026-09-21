@@ -28,11 +28,22 @@ package org.opencv.imgproc;
  */
 public class GeneralizedHoughBallard extends GeneralizedHough {
 
-    public GeneralizedHoughBallard(long addr) {
+    /**
+     * Creates a new {@code GeneralizedHoughBallard} instance.
+     *
+     * @param addr the {@code addr} value
+     */
+    protected GeneralizedHoughBallard(long addr) {
         super(addr);
     }
 
     // internal usage only
+    /**
+     * Performs the {@code __fromPtr__} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static GeneralizedHoughBallard __fromPtr__(long addr) {
         return new GeneralizedHoughBallard(addr);
     }
@@ -68,18 +79,38 @@ public class GeneralizedHoughBallard extends GeneralizedHough {
     // native support for java finalize() or cleaner
     private static native void delete(long nativeObj);
 
+    /**
+     * Performs the {@code getLevels} operation.
+     *
+     * @return the operation result
+     */
     public int getLevels() {
         return getLevels_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setLevels} operation.
+     *
+     * @param levels the {@code levels} value
+     */
     public void setLevels(int levels) {
         setLevels_0(nativeObj, levels);
     }
 
+    /**
+     * Performs the {@code getVotesThreshold} operation.
+     *
+     * @return the operation result
+     */
     public int getVotesThreshold() {
         return getVotesThreshold_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setVotesThreshold} operation.
+     *
+     * @param votesThreshold the {@code votesThreshold} value
+     */
     public void setVotesThreshold(int votesThreshold) {
         setVotesThreshold_0(nativeObj, votesThreshold);
     }

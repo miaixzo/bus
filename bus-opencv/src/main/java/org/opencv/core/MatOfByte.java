@@ -23,19 +23,26 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The mat of byte class.
+ * Provides the {@code MatOfByte} API.
  */
 public class MatOfByte extends Mat {
 
     // 8UC(x)
     private static final int _depth = CvType.CV_8U;
-
     private static final int _channels = 1;
 
+    /**
+     * Creates a new {@code MatOfByte} instance.
+     */
     public MatOfByte() {
         super();
     }
 
+    /**
+     * Creates a new {@code MatOfByte} instance.
+     *
+     * @param addr the {@code addr} value
+     */
     protected MatOfByte(long addr) {
         super(addr);
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -43,6 +50,11 @@ public class MatOfByte extends Mat {
         // FIXME: do we need release() here?
     }
 
+    /**
+     * Creates a new {@code MatOfByte} instance.
+     *
+     * @param m the {@code m} value
+     */
     public MatOfByte(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -50,25 +62,53 @@ public class MatOfByte extends Mat {
         // FIXME: do we need release() here?
     }
 
+    /**
+     * Creates a new {@code MatOfByte} instance.
+     *
+     * @param a the {@code a} value
+     */
     public MatOfByte(byte... a) {
         super();
         fromArray(a);
     }
 
+    /**
+     * Creates a new {@code MatOfByte} instance.
+     *
+     * @param offset the {@code offset} value
+     * @param length the {@code length} value
+     * @param a the {@code a} value
+     */
     public MatOfByte(int offset, int length, byte... a) {
         super();
         fromArray(offset, length, a);
     }
 
+    /**
+     * Performs the {@code fromNativeAddr} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static MatOfByte fromNativeAddr(long addr) {
         return new MatOfByte(addr);
     }
 
+    /**
+     * Performs the {@code alloc} operation.
+     *
+     * @param elemNumber the {@code elemNumber} value
+     */
     public void alloc(int elemNumber) {
         if (elemNumber > 0)
             super.create(elemNumber, 1, CvType.makeType(_depth, _channels));
     }
 
+    /**
+     * Performs the {@code fromArray} operation.
+     *
+     * @param a the {@code a} value
+     */
     public void fromArray(byte... a) {
         if (a == null || a.length == 0)
             return;
@@ -77,6 +117,13 @@ public class MatOfByte extends Mat {
         put(0, 0, a); // TODO: check ret val!
     }
 
+    /**
+     * Performs the {@code fromArray} operation.
+     *
+     * @param offset the {@code offset} value
+     * @param length the {@code length} value
+     * @param a the {@code a} value
+     */
     public void fromArray(int offset, int length, byte... a) {
         if (offset < 0)
             throw new IllegalArgumentException("offset < 0");
@@ -91,6 +138,11 @@ public class MatOfByte extends Mat {
         put(0, 0, a, offset, length); // TODO: check ret val!
     }
 
+    /**
+     * Performs the {@code toArray} operation.
+     *
+     * @return the operation result
+     */
     public byte[] toArray() {
         int num = checkVector(_channels, _depth);
         if (num < 0)
@@ -102,6 +154,11 @@ public class MatOfByte extends Mat {
         return a;
     }
 
+    /**
+     * Performs the {@code fromList} operation.
+     *
+     * @param lb the {@code lb} value
+     */
     public void fromList(List<Byte> lb) {
         if (lb == null || lb.size() == 0)
             return;
@@ -112,6 +169,11 @@ public class MatOfByte extends Mat {
         fromArray(a);
     }
 
+    /**
+     * Performs the {@code toList} operation.
+     *
+     * @return the operation result
+     */
     public List<Byte> toList() {
         byte[] a = toArray();
         Byte ab[] = new Byte[a.length];
@@ -119,5 +181,4 @@ public class MatOfByte extends Mat {
             ab[i] = a[i];
         return Arrays.asList(ab);
     }
-
 }

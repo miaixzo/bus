@@ -23,19 +23,26 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The mat of rotated rect class.
+ * Provides the {@code MatOfRotatedRect} API.
  */
 public class MatOfRotatedRect extends Mat {
 
     // 32FC5
     private static final int _depth = CvType.CV_32F;
-
     private static final int _channels = 5;
 
+    /**
+     * Creates a new {@code MatOfRotatedRect} instance.
+     */
     public MatOfRotatedRect() {
         super();
     }
 
+    /**
+     * Creates a new {@code MatOfRotatedRect} instance.
+     *
+     * @param addr the {@code addr} value
+     */
     protected MatOfRotatedRect(long addr) {
         super(addr);
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -43,6 +50,11 @@ public class MatOfRotatedRect extends Mat {
         // FIXME: do we need release() here?
     }
 
+    /**
+     * Creates a new {@code MatOfRotatedRect} instance.
+     *
+     * @param m the {@code m} value
+     */
     public MatOfRotatedRect(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -50,20 +62,41 @@ public class MatOfRotatedRect extends Mat {
         // FIXME: do we need release() here?
     }
 
+    /**
+     * Creates a new {@code MatOfRotatedRect} instance.
+     *
+     * @param a the {@code a} value
+     */
     public MatOfRotatedRect(RotatedRect... a) {
         super();
         fromArray(a);
     }
 
+    /**
+     * Performs the {@code fromNativeAddr} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static MatOfRotatedRect fromNativeAddr(long addr) {
         return new MatOfRotatedRect(addr);
     }
 
+    /**
+     * Performs the {@code alloc} operation.
+     *
+     * @param elemNumber the {@code elemNumber} value
+     */
     public void alloc(int elemNumber) {
         if (elemNumber > 0)
             super.create(elemNumber, 1, CvType.makeType(_depth, _channels));
     }
 
+    /**
+     * Performs the {@code fromArray} operation.
+     *
+     * @param a the {@code a} value
+     */
     public void fromArray(RotatedRect... a) {
         if (a == null || a.length == 0)
             return;
@@ -81,6 +114,11 @@ public class MatOfRotatedRect extends Mat {
         put(0, 0, buff); // TODO: check ret val!
     }
 
+    /**
+     * Performs the {@code toArray} operation.
+     *
+     * @return the operation result
+     */
     public RotatedRect[] toArray() {
         int num = (int) total();
         RotatedRect[] a = new RotatedRect[num];
@@ -94,14 +132,23 @@ public class MatOfRotatedRect extends Mat {
         return a;
     }
 
+    /**
+     * Performs the {@code fromList} operation.
+     *
+     * @param lr the {@code lr} value
+     */
     public void fromList(List<RotatedRect> lr) {
         RotatedRect ap[] = lr.toArray(new RotatedRect[0]);
         fromArray(ap);
     }
 
+    /**
+     * Performs the {@code toList} operation.
+     *
+     * @return the operation result
+     */
     public List<RotatedRect> toList() {
         RotatedRect[] ar = toArray();
         return Arrays.asList(ar);
     }
-
 }

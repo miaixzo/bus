@@ -20,32 +20,58 @@
 package org.opencv.core;
 
 //javadoc:Size_
-
 /**
- * The size class.
+ * Provides the {@code Size} API.
  */
 public class Size {
 
+    /**
+     * OpenCV constants used by this API.
+     */
     public double width, height;
 
+    /**
+     * Creates a new {@code Size} instance.
+     *
+     * @param width the {@code width} value
+     * @param height the {@code height} value
+     */
     public Size(double width, double height) {
         this.width = width;
         this.height = height;
     }
 
+    /**
+     * Creates a new {@code Size} instance.
+     */
     public Size() {
         this(0, 0);
     }
 
+    /**
+     * Creates a new {@code Size} instance.
+     *
+     * @param p the {@code p} value
+     */
     public Size(Point p) {
         width = p.x;
         height = p.y;
     }
 
+    /**
+     * Creates a new {@code Size} instance.
+     *
+     * @param vals the {@code vals} value
+     */
     public Size(double[] vals) {
         set(vals);
     }
 
+    /**
+     * Performs the {@code set} operation.
+     *
+     * @param vals the {@code vals} value
+     */
     public void set(double[] vals) {
         if (vals != null) {
             width = vals.length > 0 ? vals[0] : 0;
@@ -56,10 +82,20 @@ public class Size {
         }
     }
 
+    /**
+     * Performs the {@code area} operation.
+     *
+     * @return the operation result
+     */
     public double area() {
         return width * height;
     }
 
+    /**
+     * Performs the {@code empty} operation.
+     *
+     * @return the operation result
+     */
     public boolean empty() {
         return width <= 0 || height <= 0;
     }

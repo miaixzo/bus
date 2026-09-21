@@ -23,19 +23,26 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The mat of double class.
+ * Provides the {@code MatOfDouble} API.
  */
 public class MatOfDouble extends Mat {
 
     // 64FC(x)
     private static final int _depth = CvType.CV_64F;
-
     private static final int _channels = 1;
 
+    /**
+     * Creates a new {@code MatOfDouble} instance.
+     */
     public MatOfDouble() {
         super();
     }
 
+    /**
+     * Creates a new {@code MatOfDouble} instance.
+     *
+     * @param addr the {@code addr} value
+     */
     protected MatOfDouble(long addr) {
         super(addr);
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -43,6 +50,11 @@ public class MatOfDouble extends Mat {
         // FIXME: do we need release() here?
     }
 
+    /**
+     * Creates a new {@code MatOfDouble} instance.
+     *
+     * @param m the {@code m} value
+     */
     public MatOfDouble(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -50,20 +62,41 @@ public class MatOfDouble extends Mat {
         // FIXME: do we need release() here?
     }
 
+    /**
+     * Creates a new {@code MatOfDouble} instance.
+     *
+     * @param a the {@code a} value
+     */
     public MatOfDouble(double... a) {
         super();
         fromArray(a);
     }
 
+    /**
+     * Performs the {@code fromNativeAddr} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static MatOfDouble fromNativeAddr(long addr) {
         return new MatOfDouble(addr);
     }
 
+    /**
+     * Performs the {@code alloc} operation.
+     *
+     * @param elemNumber the {@code elemNumber} value
+     */
     public void alloc(int elemNumber) {
         if (elemNumber > 0)
             super.create(elemNumber, 1, CvType.makeType(_depth, _channels));
     }
 
+    /**
+     * Performs the {@code fromArray} operation.
+     *
+     * @param a the {@code a} value
+     */
     public void fromArray(double... a) {
         if (a == null || a.length == 0)
             return;
@@ -72,6 +105,11 @@ public class MatOfDouble extends Mat {
         put(0, 0, a); // TODO: check ret val!
     }
 
+    /**
+     * Performs the {@code toArray} operation.
+     *
+     * @return the operation result
+     */
     public double[] toArray() {
         int num = checkVector(_channels, _depth);
         if (num < 0)
@@ -83,6 +121,11 @@ public class MatOfDouble extends Mat {
         return a;
     }
 
+    /**
+     * Performs the {@code fromList} operation.
+     *
+     * @param lb the {@code lb} value
+     */
     public void fromList(List<Double> lb) {
         if (lb == null || lb.size() == 0)
             return;
@@ -93,6 +136,11 @@ public class MatOfDouble extends Mat {
         fromArray(a);
     }
 
+    /**
+     * Performs the {@code toList} operation.
+     *
+     * @return the operation result
+     */
     public List<Double> toList() {
         double[] a = toArray();
         Double ab[] = new Double[a.length];
@@ -100,5 +148,4 @@ public class MatOfDouble extends Mat {
             ab[i] = a[i];
         return Arrays.asList(ab);
     }
-
 }

@@ -24,11 +24,14 @@ import org.opencv.core.Mat;
 // C++: class Img_hash
 
 /**
- * The img hash class.
+ * Provides the {@code Img_hash} API.
  */
 public class Img_hash {
 
     // C++: enum BlockMeanHashMode (cv.img_hash.BlockMeanHashMode)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int BLOCK_MEAN_HASH_MODE_0 = 0, BLOCK_MEAN_HASH_MODE_1 = 1;
 
     //
