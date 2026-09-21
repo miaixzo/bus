@@ -433,7 +433,7 @@ public class Geometry {
     /**
      * Performs the {@code HuMoments} operation.
      *
-     * @param m the {@code m} value
+     * @param m  the {@code m} value
      * @param hu the {@code hu} value
      */
     public static void HuMoments(Moments m, Mat hu) {
@@ -1651,8 +1651,8 @@ public class Geometry {
      *
      * @param srcPoints the {@code srcPoints} value
      * @param dstPoints the {@code dstPoints} value
-     * @param mask the {@code mask} value
-     * @param params the {@code params} value
+     * @param mask      the {@code mask} value
+     * @param params    the {@code params} value
      * @return the operation result
      */
     public static Mat findHomography(MatOfPoint2f srcPoints, MatOfPoint2f dstPoints, Mat mask, UsacParams params) {
@@ -2637,18 +2637,18 @@ public class Geometry {
      * Performs the {@code projectPointsSepJ} operation.
      *
      * @param objectPoints the {@code objectPoints} value
-     * @param rvec the {@code rvec} value
-     * @param tvec the {@code tvec} value
+     * @param rvec         the {@code rvec} value
+     * @param tvec         the {@code tvec} value
      * @param cameraMatrix the {@code cameraMatrix} value
-     * @param distCoeffs the {@code distCoeffs} value
-     * @param imagePoints the {@code imagePoints} value
-     * @param dpdr the {@code dpdr} value
-     * @param dpdt the {@code dpdt} value
-     * @param dpdf the {@code dpdf} value
-     * @param dpdc the {@code dpdc} value
-     * @param dpdk the {@code dpdk} value
-     * @param dpdo the {@code dpdo} value
-     * @param aspectRatio the {@code aspectRatio} value
+     * @param distCoeffs   the {@code distCoeffs} value
+     * @param imagePoints  the {@code imagePoints} value
+     * @param dpdr         the {@code dpdr} value
+     * @param dpdt         the {@code dpdt} value
+     * @param dpdf         the {@code dpdf} value
+     * @param dpdc         the {@code dpdc} value
+     * @param dpdk         the {@code dpdk} value
+     * @param dpdo         the {@code dpdo} value
+     * @param aspectRatio  the {@code aspectRatio} value
      */
     public static void projectPointsSepJ(
             Mat objectPoints,
@@ -2684,17 +2684,17 @@ public class Geometry {
      * Performs the {@code projectPointsSepJ} operation.
      *
      * @param objectPoints the {@code objectPoints} value
-     * @param rvec the {@code rvec} value
-     * @param tvec the {@code tvec} value
+     * @param rvec         the {@code rvec} value
+     * @param tvec         the {@code tvec} value
      * @param cameraMatrix the {@code cameraMatrix} value
-     * @param distCoeffs the {@code distCoeffs} value
-     * @param imagePoints the {@code imagePoints} value
-     * @param dpdr the {@code dpdr} value
-     * @param dpdt the {@code dpdt} value
-     * @param dpdf the {@code dpdf} value
-     * @param dpdc the {@code dpdc} value
-     * @param dpdk the {@code dpdk} value
-     * @param dpdo the {@code dpdo} value
+     * @param distCoeffs   the {@code distCoeffs} value
+     * @param imagePoints  the {@code imagePoints} value
+     * @param dpdr         the {@code dpdr} value
+     * @param dpdt         the {@code dpdt} value
+     * @param dpdf         the {@code dpdf} value
+     * @param dpdc         the {@code dpdc} value
+     * @param dpdk         the {@code dpdk} value
+     * @param dpdo         the {@code dpdo} value
      */
     public static void projectPointsSepJ(
             Mat objectPoints,
@@ -2728,16 +2728,16 @@ public class Geometry {
      * Performs the {@code projectPointsSepJ} operation.
      *
      * @param objectPoints the {@code objectPoints} value
-     * @param rvec the {@code rvec} value
-     * @param tvec the {@code tvec} value
+     * @param rvec         the {@code rvec} value
+     * @param tvec         the {@code tvec} value
      * @param cameraMatrix the {@code cameraMatrix} value
-     * @param distCoeffs the {@code distCoeffs} value
-     * @param imagePoints the {@code imagePoints} value
-     * @param dpdr the {@code dpdr} value
-     * @param dpdt the {@code dpdt} value
-     * @param dpdf the {@code dpdf} value
-     * @param dpdc the {@code dpdc} value
-     * @param dpdk the {@code dpdk} value
+     * @param distCoeffs   the {@code distCoeffs} value
+     * @param imagePoints  the {@code imagePoints} value
+     * @param dpdr         the {@code dpdr} value
+     * @param dpdt         the {@code dpdt} value
+     * @param dpdf         the {@code dpdf} value
+     * @param dpdc         the {@code dpdc} value
+     * @param dpdk         the {@code dpdk} value
      */
     public static void projectPointsSepJ(
             Mat objectPoints,
@@ -2769,15 +2769,15 @@ public class Geometry {
      * Performs the {@code projectPointsSepJ} operation.
      *
      * @param objectPoints the {@code objectPoints} value
-     * @param rvec the {@code rvec} value
-     * @param tvec the {@code tvec} value
+     * @param rvec         the {@code rvec} value
+     * @param tvec         the {@code tvec} value
      * @param cameraMatrix the {@code cameraMatrix} value
-     * @param distCoeffs the {@code distCoeffs} value
-     * @param imagePoints the {@code imagePoints} value
-     * @param dpdr the {@code dpdr} value
-     * @param dpdt the {@code dpdt} value
-     * @param dpdf the {@code dpdf} value
-     * @param dpdc the {@code dpdc} value
+     * @param distCoeffs   the {@code distCoeffs} value
+     * @param imagePoints  the {@code imagePoints} value
+     * @param dpdr         the {@code dpdr} value
+     * @param dpdt         the {@code dpdt} value
+     * @param dpdf         the {@code dpdf} value
+     * @param dpdc         the {@code dpdc} value
      */
     public static void projectPointsSepJ(
             Mat objectPoints,
@@ -2807,14 +2807,14 @@ public class Geometry {
      * Performs the {@code projectPointsSepJ} operation.
      *
      * @param objectPoints the {@code objectPoints} value
-     * @param rvec the {@code rvec} value
-     * @param tvec the {@code tvec} value
+     * @param rvec         the {@code rvec} value
+     * @param tvec         the {@code tvec} value
      * @param cameraMatrix the {@code cameraMatrix} value
-     * @param distCoeffs the {@code distCoeffs} value
-     * @param imagePoints the {@code imagePoints} value
-     * @param dpdr the {@code dpdr} value
-     * @param dpdt the {@code dpdt} value
-     * @param dpdf the {@code dpdf} value
+     * @param distCoeffs   the {@code distCoeffs} value
+     * @param imagePoints  the {@code imagePoints} value
+     * @param dpdr         the {@code dpdr} value
+     * @param dpdt         the {@code dpdt} value
+     * @param dpdf         the {@code dpdf} value
      */
     public static void projectPointsSepJ(
             Mat objectPoints,
@@ -2842,13 +2842,13 @@ public class Geometry {
      * Performs the {@code projectPointsSepJ} operation.
      *
      * @param objectPoints the {@code objectPoints} value
-     * @param rvec the {@code rvec} value
-     * @param tvec the {@code tvec} value
+     * @param rvec         the {@code rvec} value
+     * @param tvec         the {@code tvec} value
      * @param cameraMatrix the {@code cameraMatrix} value
-     * @param distCoeffs the {@code distCoeffs} value
-     * @param imagePoints the {@code imagePoints} value
-     * @param dpdr the {@code dpdr} value
-     * @param dpdt the {@code dpdt} value
+     * @param distCoeffs   the {@code distCoeffs} value
+     * @param imagePoints  the {@code imagePoints} value
+     * @param dpdr         the {@code dpdr} value
+     * @param dpdt         the {@code dpdt} value
      */
     public static void projectPointsSepJ(
             Mat objectPoints,
@@ -3723,13 +3723,13 @@ public class Geometry {
      * Performs the {@code solvePnPRansac} operation.
      *
      * @param objectPoints the {@code objectPoints} value
-     * @param imagePoints the {@code imagePoints} value
+     * @param imagePoints  the {@code imagePoints} value
      * @param cameraMatrix the {@code cameraMatrix} value
-     * @param distCoeffs the {@code distCoeffs} value
-     * @param rvec the {@code rvec} value
-     * @param tvec the {@code tvec} value
-     * @param inliers the {@code inliers} value
-     * @param params the {@code params} value
+     * @param distCoeffs   the {@code distCoeffs} value
+     * @param rvec         the {@code rvec} value
+     * @param tvec         the {@code tvec} value
+     * @param inliers      the {@code inliers} value
+     * @param params       the {@code params} value
      * @return the operation result
      */
     public static boolean solvePnPRansac(
@@ -3759,12 +3759,12 @@ public class Geometry {
      * Performs the {@code solvePnPRansac} operation.
      *
      * @param objectPoints the {@code objectPoints} value
-     * @param imagePoints the {@code imagePoints} value
+     * @param imagePoints  the {@code imagePoints} value
      * @param cameraMatrix the {@code cameraMatrix} value
-     * @param distCoeffs the {@code distCoeffs} value
-     * @param rvec the {@code rvec} value
-     * @param tvec the {@code tvec} value
-     * @param inliers the {@code inliers} value
+     * @param distCoeffs   the {@code distCoeffs} value
+     * @param rvec         the {@code rvec} value
+     * @param tvec         the {@code tvec} value
+     * @param inliers      the {@code inliers} value
      * @return the operation result
      */
     public static boolean solvePnPRansac(
@@ -4999,12 +4999,12 @@ public class Geometry {
     /**
      * Performs the {@code findFundamentalMat} operation.
      *
-     * @param points1 the {@code points1} value
-     * @param points2 the {@code points2} value
-     * @param method the {@code method} value
+     * @param points1               the {@code points1} value
+     * @param points2               the {@code points2} value
+     * @param method                the {@code method} value
      * @param ransacReprojThreshold the {@code ransacReprojThreshold} value
-     * @param confidence the {@code confidence} value
-     * @param mask the {@code mask} value
+     * @param confidence            the {@code confidence} value
+     * @param mask                  the {@code mask} value
      * @return the operation result
      */
     public static Mat findFundamentalMat(
@@ -5028,11 +5028,11 @@ public class Geometry {
     /**
      * Performs the {@code findFundamentalMat} operation.
      *
-     * @param points1 the {@code points1} value
-     * @param points2 the {@code points2} value
-     * @param method the {@code method} value
+     * @param points1               the {@code points1} value
+     * @param points2               the {@code points2} value
+     * @param method                the {@code method} value
      * @param ransacReprojThreshold the {@code ransacReprojThreshold} value
-     * @param confidence the {@code confidence} value
+     * @param confidence            the {@code confidence} value
      * @return the operation result
      */
     public static Mat findFundamentalMat(
@@ -5054,9 +5054,9 @@ public class Geometry {
     /**
      * Performs the {@code findFundamentalMat} operation.
      *
-     * @param points1 the {@code points1} value
-     * @param points2 the {@code points2} value
-     * @param method the {@code method} value
+     * @param points1               the {@code points1} value
+     * @param points2               the {@code points2} value
+     * @param method                the {@code method} value
      * @param ransacReprojThreshold the {@code ransacReprojThreshold} value
      * @return the operation result
      */
@@ -5076,7 +5076,7 @@ public class Geometry {
      *
      * @param points1 the {@code points1} value
      * @param points2 the {@code points2} value
-     * @param method the {@code method} value
+     * @param method  the {@code method} value
      * @return the operation result
      */
     public static Mat findFundamentalMat(MatOfPoint2f points1, MatOfPoint2f points2, int method) {
@@ -5107,8 +5107,8 @@ public class Geometry {
      *
      * @param points1 the {@code points1} value
      * @param points2 the {@code points2} value
-     * @param mask the {@code mask} value
-     * @param params the {@code params} value
+     * @param mask    the {@code mask} value
+     * @param params  the {@code params} value
      * @return the operation result
      */
     public static Mat findFundamentalMat(MatOfPoint2f points1, MatOfPoint2f points2, Mat mask, UsacParams params) {
@@ -6027,14 +6027,14 @@ public class Geometry {
     /**
      * Performs the {@code findEssentialMat} operation.
      *
-     * @param points1 the {@code points1} value
-     * @param points2 the {@code points2} value
+     * @param points1       the {@code points1} value
+     * @param points2       the {@code points2} value
      * @param cameraMatrix1 the {@code cameraMatrix1} value
      * @param cameraMatrix2 the {@code cameraMatrix2} value
-     * @param dist_coeff1 the {@code dist_coeff1} value
-     * @param dist_coeff2 the {@code dist_coeff2} value
-     * @param mask the {@code mask} value
-     * @param params the {@code params} value
+     * @param dist_coeff1   the {@code dist_coeff1} value
+     * @param dist_coeff2   the {@code dist_coeff2} value
+     * @param mask          the {@code mask} value
+     * @param params        the {@code params} value
      * @return the operation result
      */
     public static Mat findEssentialMat(
@@ -7647,10 +7647,10 @@ public class Geometry {
     /**
      * Performs the {@code estimateAffine2D} operation.
      *
-     * @param pts1 the {@code pts1} value
-     * @param pts2 the {@code pts2} value
+     * @param pts1    the {@code pts1} value
+     * @param pts2    the {@code pts2} value
      * @param inliers the {@code inliers} value
-     * @param params the {@code params} value
+     * @param params  the {@code params} value
      * @return the operation result
      */
     public static Mat estimateAffine2D(Mat pts1, Mat pts2, Mat inliers, UsacParams params) {
@@ -9154,13 +9154,13 @@ public class Geometry {
      * Performs the {@code fisheye_projectPoints} operation.
      *
      * @param objectPoints the {@code objectPoints} value
-     * @param imagePoints the {@code imagePoints} value
-     * @param rvec the {@code rvec} value
-     * @param tvec the {@code tvec} value
-     * @param K the {@code K} value
-     * @param D the {@code D} value
-     * @param alpha the {@code alpha} value
-     * @param jacobian the {@code jacobian} value
+     * @param imagePoints  the {@code imagePoints} value
+     * @param rvec         the {@code rvec} value
+     * @param tvec         the {@code tvec} value
+     * @param K            the {@code K} value
+     * @param D            the {@code D} value
+     * @param alpha        the {@code alpha} value
+     * @param jacobian     the {@code jacobian} value
      */
     public static void fisheye_projectPoints(
             Mat objectPoints,
@@ -9186,12 +9186,12 @@ public class Geometry {
      * Performs the {@code fisheye_projectPoints} operation.
      *
      * @param objectPoints the {@code objectPoints} value
-     * @param imagePoints the {@code imagePoints} value
-     * @param rvec the {@code rvec} value
-     * @param tvec the {@code tvec} value
-     * @param K the {@code K} value
-     * @param D the {@code D} value
-     * @param alpha the {@code alpha} value
+     * @param imagePoints  the {@code imagePoints} value
+     * @param rvec         the {@code rvec} value
+     * @param tvec         the {@code tvec} value
+     * @param K            the {@code K} value
+     * @param D            the {@code D} value
+     * @param alpha        the {@code alpha} value
      */
     public static void fisheye_projectPoints(
             Mat objectPoints,
@@ -9215,11 +9215,11 @@ public class Geometry {
      * Performs the {@code fisheye_projectPoints} operation.
      *
      * @param objectPoints the {@code objectPoints} value
-     * @param imagePoints the {@code imagePoints} value
-     * @param rvec the {@code rvec} value
-     * @param tvec the {@code tvec} value
-     * @param K the {@code K} value
-     * @param D the {@code D} value
+     * @param imagePoints  the {@code imagePoints} value
+     * @param rvec         the {@code rvec} value
+     * @param tvec         the {@code tvec} value
+     * @param K            the {@code K} value
+     * @param D            the {@code D} value
      */
     public static void fisheye_projectPoints(Mat objectPoints, Mat imagePoints, Mat rvec, Mat tvec, Mat K, Mat D) {
         fisheye_projectPoints_2(

@@ -124,7 +124,7 @@ public class Mat extends CleanableMat {
      * Creates a new {@code Mat} instance.
      *
      * @param sizes the {@code sizes} value
-     * @param type the {@code type} value
+     * @param type  the {@code type} value
      */
     public Mat(int[] sizes, int type) {
         super(n_Mat(sizes.length, sizes, type));
@@ -141,7 +141,7 @@ public class Mat extends CleanableMat {
      * @param rows the {@code rows} value
      * @param cols the {@code cols} value
      * @param type the {@code type} value
-     * @param s the {@code s} value
+     * @param s    the {@code s} value
      */
     public Mat(int rows, int cols, int type, Scalar s) {
         super(n_Mat(rows, cols, type, s.val[0], s.val[1], s.val[2], s.val[3]));
@@ -157,7 +157,7 @@ public class Mat extends CleanableMat {
      *
      * @param size the {@code size} value
      * @param type the {@code type} value
-     * @param s the {@code s} value
+     * @param s    the {@code s} value
      */
     public Mat(Size size, int type, Scalar s) {
         super(n_Mat(size.width, size.height, type, s.val[0], s.val[1], s.val[2], s.val[3]));
@@ -172,8 +172,8 @@ public class Mat extends CleanableMat {
      * Creates a new {@code Mat} instance.
      *
      * @param sizes the {@code sizes} value
-     * @param type the {@code type} value
-     * @param s the {@code s} value
+     * @param type  the {@code type} value
+     * @param s     the {@code s} value
      */
     public Mat(int[] sizes, int type, Scalar s) {
         super(n_Mat(sizes.length, sizes, type, s.val[0], s.val[1], s.val[2], s.val[3]));
@@ -187,7 +187,7 @@ public class Mat extends CleanableMat {
     /**
      * Creates a new {@code Mat} instance.
      *
-     * @param m the {@code m} value
+     * @param m        the {@code m} value
      * @param rowRange the {@code rowRange} value
      * @param colRange the {@code colRange} value
      */
@@ -199,7 +199,7 @@ public class Mat extends CleanableMat {
     /**
      * Creates a new {@code Mat} instance.
      *
-     * @param m the {@code m} value
+     * @param m        the {@code m} value
      * @param rowRange the {@code rowRange} value
      */
     public Mat(Mat m, Range rowRange) {
@@ -214,7 +214,7 @@ public class Mat extends CleanableMat {
     /**
      * Creates a new {@code Mat} instance.
      *
-     * @param m the {@code m} value
+     * @param m      the {@code m} value
      * @param ranges the {@code ranges} value
      */
     public Mat(Mat m, Range[] ranges) {
@@ -229,7 +229,7 @@ public class Mat extends CleanableMat {
     /**
      * Creates a new {@code Mat} instance.
      *
-     * @param m the {@code m} value
+     * @param m   the {@code m} value
      * @param roi the {@code roi} value
      */
     public Mat(Mat m, Rect roi) {
@@ -319,7 +319,7 @@ public class Mat extends CleanableMat {
      * Performs the {@code ones} operation.
      *
      * @param sizes the {@code sizes} value
-     * @param type the {@code type} value
+     * @param type  the {@code type} value
      * @return the operation result
      */
     public static Mat ones(int[] sizes, int type) {
@@ -364,7 +364,7 @@ public class Mat extends CleanableMat {
      * Performs the {@code zeros} operation.
      *
      * @param sizes the {@code sizes} value
-     * @param type the {@code type} value
+     * @param type  the {@code type} value
      * @return the operation result
      */
     public static Mat zeros(int[] sizes, int type) {
@@ -910,10 +910,10 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code adjustROI} operation.
      *
-     * @param dtop the {@code dtop} value
+     * @param dtop    the {@code dtop} value
      * @param dbottom the {@code dbottom} value
-     * @param dleft the {@code dleft} value
-     * @param dright the {@code dright} value
+     * @param dleft   the {@code dleft} value
+     * @param dright  the {@code dright} value
      * @return the operation result
      */
     public Mat adjustROI(int dtop, int dbottom, int dleft, int dright) {
@@ -924,7 +924,7 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code assignTo} operation.
      *
-     * @param m the {@code m} value
+     * @param m    the {@code m} value
      * @param type the {@code type} value
      */
     public void assignTo(Mat m, int type) {
@@ -955,8 +955,8 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code checkVector} operation.
      *
-     * @param elemChannels the {@code elemChannels} value
-     * @param depth the {@code depth} value
+     * @param elemChannels      the {@code elemChannels} value
+     * @param depth             the {@code depth} value
      * @param requireContinuous the {@code requireContinuous} value
      * @return the operation result
      */
@@ -969,7 +969,7 @@ public class Mat extends CleanableMat {
      * Performs the {@code checkVector} operation.
      *
      * @param elemChannels the {@code elemChannels} value
-     * @param depth the {@code depth} value
+     * @param depth        the {@code depth} value
      * @return the operation result
      */
     public int checkVector(int elemChannels, int depth) {
@@ -1008,7 +1008,7 @@ public class Mat extends CleanableMat {
      * Performs the {@code colRange} operation.
      *
      * @param startcol the {@code startcol} value
-     * @param endcol the {@code endcol} value
+     * @param endcol   the {@code endcol} value
      * @return the operation result
      */
     public Mat colRange(int startcol, int endcol) {
@@ -1050,10 +1050,10 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code convertTo} operation.
      *
-     * @param m the {@code m} value
+     * @param m     the {@code m} value
      * @param rtype the {@code rtype} value
      * @param alpha the {@code alpha} value
-     * @param beta the {@code beta} value
+     * @param beta  the {@code beta} value
      */
     public void convertTo(Mat m, int rtype, double alpha, double beta) {
         n_convertTo(nativeObj, m.nativeObj, rtype, alpha, beta);
@@ -1063,7 +1063,7 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code convertTo} operation.
      *
-     * @param m the {@code m} value
+     * @param m     the {@code m} value
      * @param rtype the {@code rtype} value
      * @param alpha the {@code alpha} value
      */
@@ -1075,7 +1075,7 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code convertTo} operation.
      *
-     * @param m the {@code m} value
+     * @param m     the {@code m} value
      * @param rtype the {@code rtype} value
      */
     public void convertTo(Mat m, int rtype) {
@@ -1096,7 +1096,7 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code copyTo} operation.
      *
-     * @param m the {@code m} value
+     * @param m    the {@code m} value
      * @param mask the {@code mask} value
      */
     public void copyTo(Mat m, Mat mask) {
@@ -1131,7 +1131,7 @@ public class Mat extends CleanableMat {
      * Performs the {@code create} operation.
      *
      * @param sizes the {@code sizes} value
-     * @param type the {@code type} value
+     * @param type  the {@code type} value
      */
     public void create(int[] sizes, int type) {
         n_create(nativeObj, sizes.length, sizes, type);
@@ -1286,7 +1286,7 @@ public class Mat extends CleanableMat {
      * Performs the {@code locateROI} operation.
      *
      * @param wholeSize the {@code wholeSize} value
-     * @param ofs the {@code ofs} value
+     * @param ofs       the {@code ofs} value
      */
     public void locateROI(Size wholeSize, Point ofs) {
         double[] wholeSize_out = new double[2];
@@ -1356,7 +1356,7 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code reshape} operation.
      *
-     * @param cn the {@code cn} value
+     * @param cn   the {@code cn} value
      * @param rows the {@code rows} value
      * @return the operation result
      */
@@ -1379,7 +1379,7 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code reshape} operation.
      *
-     * @param cn the {@code cn} value
+     * @param cn       the {@code cn} value
      * @param newshape the {@code newshape} value
      * @return the operation result
      */
@@ -1403,7 +1403,7 @@ public class Mat extends CleanableMat {
      * Performs the {@code rowRange} operation.
      *
      * @param startrow the {@code startrow} value
-     * @param endrow the {@code endrow} value
+     * @param endrow   the {@code endrow} value
      * @return the operation result
      */
     public Mat rowRange(int startrow, int endrow) {
@@ -1447,7 +1447,7 @@ public class Mat extends CleanableMat {
      * Performs the {@code setTo} operation.
      *
      * @param value the {@code value} value
-     * @param mask the {@code mask} value
+     * @param mask  the {@code mask} value
      * @return the operation result
      */
     public Mat setTo(Scalar value, Mat mask) {
@@ -1459,7 +1459,7 @@ public class Mat extends CleanableMat {
      * Performs the {@code setTo} operation.
      *
      * @param value the {@code value} value
-     * @param mask the {@code mask} value
+     * @param mask  the {@code mask} value
      * @return the operation result
      */
     public Mat setTo(Mat value, Mat mask) {
@@ -1524,9 +1524,9 @@ public class Mat extends CleanableMat {
      * Performs the {@code submat} operation.
      *
      * @param rowStart the {@code rowStart} value
-     * @param rowEnd the {@code rowEnd} value
+     * @param rowEnd   the {@code rowEnd} value
      * @param colStart the {@code colStart} value
-     * @param colEnd the {@code colEnd} value
+     * @param colEnd   the {@code colEnd} value
      * @return the operation result
      */
     public Mat submat(int rowStart, int rowEnd, int colStart, int colEnd) {
@@ -1623,8 +1623,8 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code put} operation.
      *
-     * @param row the {@code row} value
-     * @param col the {@code col} value
+     * @param row  the {@code row} value
+     * @param col  the {@code col} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -1640,7 +1640,7 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code put} operation.
      *
-     * @param idx the {@code idx} value
+     * @param idx  the {@code idx} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -1658,8 +1658,8 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code put} operation.
      *
-     * @param row the {@code row} value
-     * @param col the {@code col} value
+     * @param row  the {@code row} value
+     * @param col  the {@code col} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -1678,7 +1678,7 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code put} operation.
      *
-     * @param idx the {@code idx} value
+     * @param idx  the {@code idx} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -1699,8 +1699,8 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code put} operation.
      *
-     * @param row the {@code row} value
-     * @param col the {@code col} value
+     * @param row  the {@code row} value
+     * @param col  the {@code col} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -1719,7 +1719,7 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code put} operation.
      *
-     * @param idx the {@code idx} value
+     * @param idx  the {@code idx} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -1740,8 +1740,8 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code put} operation.
      *
-     * @param row the {@code row} value
-     * @param col the {@code col} value
+     * @param row  the {@code row} value
+     * @param col  the {@code col} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -1760,7 +1760,7 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code put} operation.
      *
-     * @param idx the {@code idx} value
+     * @param idx  the {@code idx} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -1781,8 +1781,8 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code put} operation.
      *
-     * @param row the {@code row} value
-     * @param col the {@code col} value
+     * @param row  the {@code row} value
+     * @param col  the {@code col} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -1801,7 +1801,7 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code put} operation.
      *
-     * @param idx the {@code idx} value
+     * @param idx  the {@code idx} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -1822,9 +1822,9 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code put} operation.
      *
-     * @param row the {@code row} value
-     * @param col the {@code col} value
-     * @param data the {@code data} value
+     * @param row    the {@code row} value
+     * @param col    the {@code col} value
+     * @param data   the {@code data} value
      * @param offset the {@code offset} value
      * @param length the {@code length} value
      * @return the operation result
@@ -1844,8 +1844,8 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code put} operation.
      *
-     * @param idx the {@code idx} value
-     * @param data the {@code data} value
+     * @param idx    the {@code idx} value
+     * @param data   the {@code data} value
      * @param offset the {@code offset} value
      * @param length the {@code length} value
      * @return the operation result
@@ -1867,8 +1867,8 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code get} operation.
      *
-     * @param row the {@code row} value
-     * @param col the {@code col} value
+     * @param row  the {@code row} value
+     * @param col  the {@code col} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -1887,7 +1887,7 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code get} operation.
      *
-     * @param idx the {@code idx} value
+     * @param idx  the {@code idx} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -1908,8 +1908,8 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code get} operation.
      *
-     * @param row the {@code row} value
-     * @param col the {@code col} value
+     * @param row  the {@code row} value
+     * @param col  the {@code col} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -1928,7 +1928,7 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code get} operation.
      *
-     * @param idx the {@code idx} value
+     * @param idx  the {@code idx} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -1949,8 +1949,8 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code get} operation.
      *
-     * @param row the {@code row} value
-     * @param col the {@code col} value
+     * @param row  the {@code row} value
+     * @param col  the {@code col} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -1969,7 +1969,7 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code get} operation.
      *
-     * @param idx the {@code idx} value
+     * @param idx  the {@code idx} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -1990,8 +1990,8 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code get} operation.
      *
-     * @param row the {@code row} value
-     * @param col the {@code col} value
+     * @param row  the {@code row} value
+     * @param col  the {@code col} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -2010,7 +2010,7 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code get} operation.
      *
-     * @param idx the {@code idx} value
+     * @param idx  the {@code idx} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -2031,8 +2031,8 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code get} operation.
      *
-     * @param row the {@code row} value
-     * @param col the {@code col} value
+     * @param row  the {@code row} value
+     * @param col  the {@code col} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -2051,7 +2051,7 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code get} operation.
      *
-     * @param idx the {@code idx} value
+     * @param idx  the {@code idx} value
      * @param data the {@code data} value
      * @return the operation result
      */
@@ -2117,10 +2117,10 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code at} operation.
      *
-     * @param <T> the generic value type
+     * @param <T>   the generic value type
      * @param clazz the {@code clazz} value
-     * @param row the {@code row} value
-     * @param col the {@code col} value
+     * @param row   the {@code row} value
+     * @param col   the {@code col} value
      * @return the operation result
      */
     @SuppressWarnings("unchecked")
@@ -2144,9 +2144,9 @@ public class Mat extends CleanableMat {
     /**
      * Performs the {@code at} operation.
      *
-     * @param <T> the generic value type
+     * @param <T>   the generic value type
      * @param clazz the {@code clazz} value
-     * @param idx the {@code idx} value
+     * @param idx   the {@code idx} value
      * @return the operation result
      */
     @SuppressWarnings("unchecked")

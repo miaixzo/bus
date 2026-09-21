@@ -55,12 +55,12 @@ public class KeyPoint {
     /**
      * Creates a new {@code KeyPoint} instance.
      *
-     * @param x the {@code x} value
-     * @param y the {@code y} value
-     * @param _size the {@code _size} value
-     * @param _angle the {@code _angle} value
+     * @param x         the {@code x} value
+     * @param y         the {@code y} value
+     * @param _size     the {@code _size} value
+     * @param _angle    the {@code _angle} value
      * @param _response the {@code _response} value
-     * @param _octave the {@code _octave} value
+     * @param _octave   the {@code _octave} value
      * @param _class_id the {@code _class_id} value
      */
     public KeyPoint(float x, float y, float _size, float _angle, float _response, int _octave, int _class_id) {
@@ -84,12 +84,12 @@ public class KeyPoint {
     /**
      * Creates a new {@code KeyPoint} instance.
      *
-     * @param x the {@code x} value
-     * @param y the {@code y} value
-     * @param _size the {@code _size} value
-     * @param _angle the {@code _angle} value
+     * @param x         the {@code x} value
+     * @param y         the {@code y} value
+     * @param _size     the {@code _size} value
+     * @param _angle    the {@code _angle} value
      * @param _response the {@code _response} value
-     * @param _octave the {@code _octave} value
+     * @param _octave   the {@code _octave} value
      */
     public KeyPoint(float x, float y, float _size, float _angle, float _response, int _octave) {
         this(x, y, _size, _angle, _response, _octave, -1);
@@ -99,10 +99,10 @@ public class KeyPoint {
     /**
      * Creates a new {@code KeyPoint} instance.
      *
-     * @param x the {@code x} value
-     * @param y the {@code y} value
-     * @param _size the {@code _size} value
-     * @param _angle the {@code _angle} value
+     * @param x         the {@code x} value
+     * @param y         the {@code y} value
+     * @param _size     the {@code _size} value
+     * @param _angle    the {@code _angle} value
      * @param _response the {@code _response} value
      */
     public KeyPoint(float x, float y, float _size, float _angle, float _response) {
@@ -113,9 +113,9 @@ public class KeyPoint {
     /**
      * Creates a new {@code KeyPoint} instance.
      *
-     * @param x the {@code x} value
-     * @param y the {@code y} value
-     * @param _size the {@code _size} value
+     * @param x      the {@code x} value
+     * @param y      the {@code y} value
+     * @param _size  the {@code _size} value
      * @param _angle the {@code _angle} value
      */
     public KeyPoint(float x, float y, float _size, float _angle) {
@@ -126,8 +126,8 @@ public class KeyPoint {
     /**
      * Creates a new {@code KeyPoint} instance.
      *
-     * @param x the {@code x} value
-     * @param y the {@code y} value
+     * @param x     the {@code x} value
+     * @param y     the {@code y} value
      * @param _size the {@code _size} value
      */
     public KeyPoint(float x, float y, float _size) {

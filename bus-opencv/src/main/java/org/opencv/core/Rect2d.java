@@ -33,9 +33,9 @@ public class Rect2d {
     /**
      * Creates a new {@code Rect2d} instance.
      *
-     * @param x the {@code x} value
-     * @param y the {@code y} value
-     * @param width the {@code width} value
+     * @param x      the {@code x} value
+     * @param y      the {@code y} value
+     * @param width  the {@code width} value
      * @param height the {@code height} value
      */
     public Rect2d(double x, double y, double width, double height) {

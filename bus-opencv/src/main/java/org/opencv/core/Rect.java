@@ -33,9 +33,9 @@ public class Rect {
     /**
      * Creates a new {@code Rect} instance.
      *
-     * @param x the {@code x} value
-     * @param y the {@code y} value
-     * @param width the {@code width} value
+     * @param x      the {@code x} value
+     * @param y      the {@code y} value
+     * @param width  the {@code width} value
      * @param height the {@code height} value
      */
     public Rect(int x, int y, int width, int height) {
