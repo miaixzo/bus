@@ -69,7 +69,7 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
     /**
      * Publishes setting content to the given key.
      *
-     * @param space   {@code setting.space}
+     * @param space   logical space identifier
      * @param group   setting group
      * @param data_id setting data identifier
      * @param content setting content
@@ -81,7 +81,7 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
     /**
      * Publishes setting content to the given key with an optional profile segment.
      *
-     * @param space   {@code setting.space}
+     * @param space   logical space identifier
      * @param group   setting group
      * @param data_id setting data identifier
      * @param profile optional setting profile
@@ -94,7 +94,7 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
     /**
      * Publishes setting content with an explicit TTL.
      *
-     * @param space   {@code setting.space}
+     * @param space   logical space identifier
      * @param group   setting group
      * @param data_id setting data identifier
      * @param profile optional profile
@@ -109,7 +109,7 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
     /**
      * Resolves one lightweight setting value from the shared cache.
      *
-     * @param space   {@code setting.space}
+     * @param space   logical space identifier
      * @param group   setting group
      * @param data_id setting data identifier
      * @param profile optional setting profile
@@ -124,7 +124,7 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
     /**
      * Deletes one lightweight setting value.
      *
-     * @param space   {@code setting.space}
+     * @param space   logical space identifier
      * @param group   setting group
      * @param data_id setting data identifier
      * @param profile optional profile

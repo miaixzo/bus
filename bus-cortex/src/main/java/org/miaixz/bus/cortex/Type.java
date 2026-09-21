@@ -48,9 +48,9 @@ public enum Type {
     PROMPT(Normal._3, "Prompt entry"),
 
     /**
-     * Setting space directory resource.
+     * Shared logical-space resource.
      */
-    SPACE(4, "Setting space", Domain.SETTING),
+    SPACE(4, "Logical space", Domain.SPACE),
 
     /**
      * Setting application directory resource.
@@ -167,7 +167,7 @@ public enum Type {
             case MCP -> "mcp";
             case PROMPT -> "prompt";
             case VERSION -> "version";
-            default -> throw new IllegalStateException("Setting types do not have cache key segments");
+            default -> throw new IllegalStateException("Space and setting types do not have cache key segments");
         };
     }
 
@@ -187,6 +187,15 @@ public enum Type {
      */
     public boolean isSetting() {
         return domain == Domain.SETTING;
+    }
+
+    /**
+     * Returns whether this value identifies the shared logical-space resource.
+     *
+     * @return {@code true} for SPACE
+     */
+    public boolean isSpace() {
+        return domain == Domain.SPACE;
     }
 
     /**
@@ -328,7 +337,7 @@ public enum Type {
      * @return setting-domain resource types
      */
     public static List<Type> settingTypes() {
-        return List.of(SPACE, APP, PROFILE, ITEM, ITEM_REVISION, BINDING);
+        return List.of(APP, PROFILE, ITEM, ITEM_REVISION, BINDING);
     }
 
     /**
@@ -367,7 +376,7 @@ public enum Type {
     }
 
     /**
-     * Internal type-domain classifier used to keep registry, setting and version boundaries explicit.
+     * Internal type-domain classifier used to keep registry, setting, space and version boundaries explicit.
      *
      * @author Kimi Liu
      */
@@ -380,6 +389,10 @@ public enum Type {
          * Setting resource domain.
          */
         SETTING,
+        /**
+         * Shared logical-space domain.
+         */
+        SPACE,
         /**
          * Version release domain.
          */

@@ -18,9 +18,11 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Space directory abstractions for the setting domain.
+ * Shared logical-space entity and persistence boundary.
  * <p>
- * Space is the root resource of the setting domain and inherits the shared setting-domain base fields from
- * {@link org.miaixz.bus.cortex.Setting}.
+ * Workspace and namespace are variants of the same persistent entity rather than setting-specific directory types.
+ * Persistent discriminators use integer codes from {@link org.miaixz.bus.core.lang.EnumValue.Variant} and
+ * {@link org.miaixz.bus.core.lang.EnumValue.Visibility}.
+ * </p>
  */
 package org.miaixz.bus.cortex.setting.space;

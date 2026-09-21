@@ -19,38 +19,40 @@
 */
 package org.miaixz.bus.cortex.setting.space;
 
-import java.util.List;
-import java.util.Map;
-
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.cortex.Suite;
 import org.miaixz.bus.cortex.Trait;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
- * Directory contract for {@code setting.space}.
+ * Durable directory contract for shared logical spaces.
  *
  * @author Kimi Liu
  */
 public interface SpaceStore {
 
     /**
-     * Saves one space entry.
+     * Saves one workspace or namespace record.
      *
-     * @param entry space entry
-     * @return stored space entry
+     * @param entry space entity with explicit integer variant and visibility codes
+     * @return stored space entity
      */
     Space save(Space entry);
 
     /**
-     * Saves a batch of space entries.
+     * Saves a batch of space records.
      *
-     * @param entries space entries
+     * @param entries space entities
      * @return stored snapshots
      */
     default List<Space> saveAll(List<Space> entries) {
         if (entries == null || entries.isEmpty()) {
             return List.of();
         }
-        java.util.ArrayList<Space> result = new java.util.ArrayList<>(entries.size());
+        List<Space> result = new ArrayList<>(entries.size());
         for (Space entry : entries) {
             if (entry != null) {
                 result.add(save(entry));
@@ -60,26 +62,48 @@ public interface SpaceStore {
     }
 
     /**
-     * Finds one space entry.
+     * Finds one space by its permanent identifier.
      *
      * @param id space identifier
-     * @return matching space entry or {@code null}
+     * @return matching entity or {@code null}
      */
     default Space find(String id) {
         return null;
     }
 
     /**
-     * Lists all space entries.
+     * Finds one space and verifies its persisted variant.
      *
-     * @return space entries
+     * @param id      space identifier
+     * @param variant required integer {@link EnumValue.Variant} code
+     * @return matching entity or {@code null}
+     */
+    default Space find(String id, Integer variant) {
+        Space entry = find(id);
+        return entry != null && (variant == null || variant.equals(entry.getVariant())) ? entry : null;
+    }
+
+    /**
+     * Lists spaces, optionally restricted to one persisted variant.
+     *
+     * @param variant integer {@link EnumValue.Variant} code, or {@code null} for all variants
+     * @return matching space entities
+     */
+    default List<Space> query(Integer variant) {
+        return List.of();
+    }
+
+    /**
+     * Lists workspace and namespace records together.
+     *
+     * @return all visible space entities
      */
     default List<Space> query() {
         return List.of();
     }
 
     /**
-     * Deletes one space entry.
+     * Deletes one space by its permanent identifier.
      *
      * @param id space identifier
      * @return deleted snapshot or {@code null} when absent
