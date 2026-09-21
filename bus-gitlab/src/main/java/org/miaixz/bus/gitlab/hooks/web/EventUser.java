@@ -32,18 +32,22 @@ public class EventUser {
      * The id value.
      */
     private Long id;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The username value.
      */
     private String username;
+
     /**
      * The avatar url value.
      */
     private String avatarUrl;
+
     /**
      * The email value.
      */

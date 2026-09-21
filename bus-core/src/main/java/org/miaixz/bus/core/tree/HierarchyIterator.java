@@ -48,9 +48,9 @@ import org.miaixz.bus.core.xyz.TreeKit;
  * }</pre>
  *
  * @param <T> The type of elements in the hierarchy.
+ * @author Kimi Liu
  * @see EasyStream#iterateHierarchies
  * @see StreamKit#iterateHierarchies
- * @author Kimi Liu
  */
 public abstract class HierarchyIterator<T> implements Iterator<T> {
 

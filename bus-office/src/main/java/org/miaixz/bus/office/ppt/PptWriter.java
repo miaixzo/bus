@@ -20,7 +20,10 @@
 package org.miaixz.bus.office.ppt;
 
 import java.awt.*;
-import java.io.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 
 import org.apache.poi.sl.usermodel.PictureData;
 import org.apache.poi.sl.usermodel.TextParagraph;

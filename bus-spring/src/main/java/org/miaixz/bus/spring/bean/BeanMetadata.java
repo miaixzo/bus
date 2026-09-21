@@ -46,70 +46,6 @@ public class BeanMetadata {
     }
 
     /**
-     * Resolves an already available Bean or FactoryBean product type.
-     *
-     * <p>
-     * String class names are deliberately not loaded: an optional type that is absent from the classpath remains
-     * unresolved instead of raising a linkage error.
-     * </p>
-     *
-     * @param definition Bean definition to inspect
-     * @return resolved Bean or FactoryBean product type, or {@code null} when unavailable without class loading
-     */
-    public Class<?> resolveBeanClassType(BeanDefinition definition) {
-        Objects.requireNonNull(definition, "definition");
-
-        Class<?> objectType = resolveObjectTypeAttribute(definition);
-        if (objectType != null) {
-            return objectType;
-        }
-
-        Class<?> resolved = resolveResolvableType(definition.getResolvableType());
-        if (resolved != null) {
-            return resolved;
-        }
-
-        if (definition instanceof AnnotatedBeanDefinition annotated) {
-            MethodMetadata method = annotated.getFactoryMethodMetadata();
-            if (method instanceof StandardMethodMetadata standardMethod) {
-                return standardMethod.getIntrospectedMethod().getReturnType();
-            }
-            AnnotationMetadata metadata = annotated.getMetadata();
-            if (metadata instanceof StandardAnnotationMetadata standardMetadata) {
-                return factoryProductTypeOrClass(standardMetadata.getIntrospectedClass());
-            }
-        }
-
-        if (definition instanceof AbstractBeanDefinition abstractDefinition && abstractDefinition.hasBeanClass()) {
-            return factoryProductTypeOrClass(abstractDefinition.getBeanClass());
-        }
-        return null;
-    }
-
-    /**
-     * Returns whether a definition was created from configuration-class method metadata.
-     *
-     * @param definition Bean definition to inspect
-     * @return {@code true} when factory-method metadata identifies a configuration source
-     */
-    public boolean isFromConfigurationSource(BeanDefinition definition) {
-        Objects.requireNonNull(definition, "definition");
-        return definition instanceof AnnotatedBeanDefinition annotated && annotated.getFactoryMethodMetadata() != null;
-    }
-
-    /**
-     * Returns whether the resolvable definition class implements {@link FactoryBean}.
-     *
-     * @param definition Bean definition to inspect
-     * @return {@code true} when the raw definition type implements {@link FactoryBean}
-     */
-    public boolean isFactoryBean(BeanDefinition definition) {
-        Objects.requireNonNull(definition, "definition");
-        Class<?> type = rawDefinitionClass(definition);
-        return type != null && FactoryBean.class.isAssignableFrom(type);
-    }
-
-    /**
      * Resolves the standard FactoryBean object-type attribute.
      *
      * @param definition Bean definition carrying the attribute
@@ -184,6 +120,70 @@ public class BeanMetadata {
      */
     private static Class<?> useful(Class<?> type) {
         return type == Object.class ? null : type;
+    }
+
+    /**
+     * Resolves an already available Bean or FactoryBean product type.
+     *
+     * <p>
+     * String class names are deliberately not loaded: an optional type that is absent from the classpath remains
+     * unresolved instead of raising a linkage error.
+     * </p>
+     *
+     * @param definition Bean definition to inspect
+     * @return resolved Bean or FactoryBean product type, or {@code null} when unavailable without class loading
+     */
+    public Class<?> resolveBeanClassType(BeanDefinition definition) {
+        Objects.requireNonNull(definition, "definition");
+
+        Class<?> objectType = resolveObjectTypeAttribute(definition);
+        if (objectType != null) {
+            return objectType;
+        }
+
+        Class<?> resolved = resolveResolvableType(definition.getResolvableType());
+        if (resolved != null) {
+            return resolved;
+        }
+
+        if (definition instanceof AnnotatedBeanDefinition annotated) {
+            MethodMetadata method = annotated.getFactoryMethodMetadata();
+            if (method instanceof StandardMethodMetadata standardMethod) {
+                return standardMethod.getIntrospectedMethod().getReturnType();
+            }
+            AnnotationMetadata metadata = annotated.getMetadata();
+            if (metadata instanceof StandardAnnotationMetadata standardMetadata) {
+                return factoryProductTypeOrClass(standardMetadata.getIntrospectedClass());
+            }
+        }
+
+        if (definition instanceof AbstractBeanDefinition abstractDefinition && abstractDefinition.hasBeanClass()) {
+            return factoryProductTypeOrClass(abstractDefinition.getBeanClass());
+        }
+        return null;
+    }
+
+    /**
+     * Returns whether a definition was created from configuration-class method metadata.
+     *
+     * @param definition Bean definition to inspect
+     * @return {@code true} when factory-method metadata identifies a configuration source
+     */
+    public boolean isFromConfigurationSource(BeanDefinition definition) {
+        Objects.requireNonNull(definition, "definition");
+        return definition instanceof AnnotatedBeanDefinition annotated && annotated.getFactoryMethodMetadata() != null;
+    }
+
+    /**
+     * Returns whether the resolvable definition class implements {@link FactoryBean}.
+     *
+     * @param definition Bean definition to inspect
+     * @return {@code true} when the raw definition type implements {@link FactoryBean}
+     */
+    public boolean isFactoryBean(BeanDefinition definition) {
+        Objects.requireNonNull(definition, "definition");
+        Class<?> type = rawDefinitionClass(definition);
+        return type != null && FactoryBean.class.isAssignableFrom(type);
     }
 
 }

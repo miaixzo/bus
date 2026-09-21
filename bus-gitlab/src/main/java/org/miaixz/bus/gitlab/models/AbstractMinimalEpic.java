@@ -37,9 +37,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 @Setter
 public class AbstractMinimalEpic<E extends AbstractMinimalEpic<E>> implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852235180659L;
 
@@ -47,26 +44,32 @@ public class AbstractMinimalEpic<E extends AbstractMinimalEpic<E>> implements Se
      * The id value.
      */
     private Long id;
+
     /**
      * The iid value.
      */
     private Long iid;
+
     /**
      * The group id value.
      */
     private Long groupId;
+
     /**
      * The parent id value.
      */
     private Long parentId;
+
     /**
      * The title value.
      */
     private String title;
+
     /**
      * The reference value.
      */
     private String reference;
+
     /**
      * The url value.
      */

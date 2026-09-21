@@ -27,11 +27,7 @@ import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
 import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
 import org.miaixz.bus.mapper.feature.schema.TableSnapshot;
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
-import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
-import org.miaixz.bus.mapper.parsing.IndexMeta;
-import org.miaixz.bus.mapper.parsing.PrimaryKeyMeta;
-import org.miaixz.bus.mapper.parsing.TableMeta;
+import org.miaixz.bus.mapper.parsing.*;
 
 /**
  * Schema behavior exposed by a database dialect.

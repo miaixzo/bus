@@ -101,27 +101,6 @@ public class ExcelReadConfig extends ExcelConfig {
     }
 
     /**
-     * Read mode enum.
-     *
-     * @author Kimi Liu
-     */
-    public enum ReadMode {
-        /**
-         * Automatically choose mode.
-         */
-        AUTO,
-        /**
-         * Force workbook in-memory mode.
-         */
-        MEMORY,
-        /**
-         * Force SAX streaming mode.
-         */
-        STREAMING
-
-    }
-
-    /**
      * Gets read mode.
      *
      * @return Read mode.
@@ -379,6 +358,27 @@ public class ExcelReadConfig extends ExcelConfig {
     public ExcelReadConfig setTransferEstimatedColumnCount(final int transferEstimatedColumnCount) {
         this.transferEstimatedColumnCount = transferEstimatedColumnCount > 0 ? transferEstimatedColumnCount : 1;
         return this;
+    }
+
+    /**
+     * Read mode enum.
+     *
+     * @author Kimi Liu
+     */
+    public enum ReadMode {
+        /**
+         * Automatically choose mode.
+         */
+        AUTO,
+        /**
+         * Force workbook in-memory mode.
+         */
+        MEMORY,
+        /**
+         * Force SAX streaming mode.
+         */
+        STREAMING
+
     }
 
 }

@@ -145,6 +145,7 @@ public class JPEG {
      * Differential Lossless, Arithmetic coding
      */
     public static final int SOF15 = 0xCF;
+
     // Restart Markers
     /**
      * The rst0 value.
@@ -331,6 +332,7 @@ public class JPEG {
      * Comment marker
      */
     public static final int COM = 0xFE;
+
     // JPEG 2000 markers
     /**
      * The jpeg2000 standalone value.

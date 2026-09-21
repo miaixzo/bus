@@ -207,7 +207,7 @@ public class RepositoryFileApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: POST /projects/:id/repository/files</code>
      * </pre>
-     *
+     * <p>
      * file_path (required) - Full path to new file. Ex. lib/class.rb branch_name (required) - The name of branch
      * encoding (optional) - 'text' or 'base64'. Text is default. content (required) - File content commit_message
      * (required) - Commit message
@@ -243,7 +243,7 @@ public class RepositoryFileApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: PUT /projects/:id/repository/files</code>
      * </pre>
-     *
+     * <p>
      * file_path (required) - Full path to new file. Ex. lib/class.rb branch_name (required) - The name of branch
      * encoding (optional) - 'text' or 'base64'. Text is default. content (required) - File content commit_message
      * (required) - Commit message
@@ -279,7 +279,7 @@ public class RepositoryFileApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: DELETE /projects/:id/repository/files</code>
      * </pre>
-     *
+     * <p>
      * file_path (required) - Full path to file. Ex. lib/class.rb branch_name (required) - The name of branch
      * commit_message (required) - Commit message
      *
@@ -312,13 +312,13 @@ public class RepositoryFileApi extends AbstractApi {
     /**
      * Get the raw file for the file by commit sha and path. Thye file will be saved to the specified directory. If the
      * file already exists in the directory it will be overwritten.
-     *
+     * <p>
      * V3:
      *
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/repository/blobs/:sha</code>
      * </pre>
-     *
+     * <p>
      * V4:
      *
      * <pre>
@@ -380,13 +380,13 @@ public class RepositoryFileApi extends AbstractApi {
 
     /**
      * Get the raw file contents for a file by commit sha and path.
-     *
+     * <p>
      * V3:
      *
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/repository/blobs/:sha</code>
      * </pre>
-     *
+     * <p>
      * V4:
      *
      * <pre>

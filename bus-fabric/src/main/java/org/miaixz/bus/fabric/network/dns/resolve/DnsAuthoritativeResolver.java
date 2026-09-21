@@ -76,69 +76,6 @@ public class DnsAuthoritativeResolver {
     }
 
     /**
-     * Resolves one DNS question.
-     *
-     * @param question decoded DNS question
-     * @return resolution result
-     */
-    public DnsResolution resolve(final DnsQuestion question) {
-        return resolve(question, null);
-    }
-
-    /**
-     * Resolves one DNS question for a client address.
-     *
-     * @param question      decoded DNS question
-     * @param clientAddress client address, or {@code null} when unavailable
-     * @return resolution result
-     */
-    public DnsResolution resolve(final DnsQuestion question, final InetAddress clientAddress) {
-        return resolve(question, clientAddress, false);
-    }
-
-    /**
-     * Resolves one DNS question for a client address.
-     *
-     * @param question      decoded DNS question
-     * @param clientAddress client address, or {@code null} when unavailable
-     * @param dnssecOk      true when EDNS DNSSEC OK was requested
-     * @return resolution result
-     */
-    public DnsResolution resolve(final DnsQuestion question, final InetAddress clientAddress, final boolean dnssecOk) {
-        if (question == null) {
-            throw new ValidateException("DNS question must not be null");
-        }
-        if (!question.internetClass()) {
-            return DnsResolution.empty(DnsResponseCode.REFUSED, false, List.of());
-        }
-        final DnsZone zone = index.findZone(question.name(), clientAddress);
-        if (zone == null) {
-            return DnsResolution.empty(DnsResponseCode.REFUSED, false, List.of());
-        }
-        if (zone.mode() == DnsZoneMode.BLOCK) {
-            return DnsResolution.empty(DnsResponseCode.NXDOMAIN, true, zone.soaRecords());
-        }
-        if (zone.mode() != DnsZoneMode.AUTHORITATIVE && zone.mode() != DnsZoneMode.OVERRIDE) {
-            return DnsResolution.empty(DnsResponseCode.NOTIMP, true, zone.soaRecords());
-        }
-        if (question.typeCode() == DnsRecordType.ANY.code()) {
-            return minimalAny(question);
-        }
-        try {
-            return resolveName(
-                    zone,
-                    question.name(),
-                    question.typeCode(),
-                    question.recordClass(),
-                    new HashSet<>(),
-                    0,
-                    dnssecOk);
-        } catch (final RuntimeException e) {
-            return DnsResolution.empty(DnsResponseCode.SERVFAIL, true, zone.soaRecords());
-        }
-    }
-
-    /**
      * Resolves one owner name inside a zone.
      *
      * @param zone        matched zone
@@ -337,6 +274,69 @@ public class DnsAuthoritativeResolver {
     private static DnsResolution minimalAny(final DnsQuestion question) {
         return DnsResolution
                 .answer(List.of(DnsRecord.hinfo(question.name(), "RFC8482", Normal.EMPTY, MINIMAL_ANY_TTL)));
+    }
+
+    /**
+     * Resolves one DNS question.
+     *
+     * @param question decoded DNS question
+     * @return resolution result
+     */
+    public DnsResolution resolve(final DnsQuestion question) {
+        return resolve(question, null);
+    }
+
+    /**
+     * Resolves one DNS question for a client address.
+     *
+     * @param question      decoded DNS question
+     * @param clientAddress client address, or {@code null} when unavailable
+     * @return resolution result
+     */
+    public DnsResolution resolve(final DnsQuestion question, final InetAddress clientAddress) {
+        return resolve(question, clientAddress, false);
+    }
+
+    /**
+     * Resolves one DNS question for a client address.
+     *
+     * @param question      decoded DNS question
+     * @param clientAddress client address, or {@code null} when unavailable
+     * @param dnssecOk      true when EDNS DNSSEC OK was requested
+     * @return resolution result
+     */
+    public DnsResolution resolve(final DnsQuestion question, final InetAddress clientAddress, final boolean dnssecOk) {
+        if (question == null) {
+            throw new ValidateException("DNS question must not be null");
+        }
+        if (!question.internetClass()) {
+            return DnsResolution.empty(DnsResponseCode.REFUSED, false, List.of());
+        }
+        final DnsZone zone = index.findZone(question.name(), clientAddress);
+        if (zone == null) {
+            return DnsResolution.empty(DnsResponseCode.REFUSED, false, List.of());
+        }
+        if (zone.mode() == DnsZoneMode.BLOCK) {
+            return DnsResolution.empty(DnsResponseCode.NXDOMAIN, true, zone.soaRecords());
+        }
+        if (zone.mode() != DnsZoneMode.AUTHORITATIVE && zone.mode() != DnsZoneMode.OVERRIDE) {
+            return DnsResolution.empty(DnsResponseCode.NOTIMP, true, zone.soaRecords());
+        }
+        if (question.typeCode() == DnsRecordType.ANY.code()) {
+            return minimalAny(question);
+        }
+        try {
+            return resolveName(
+                    zone,
+                    question.name(),
+                    question.typeCode(),
+                    question.recordClass(),
+                    new HashSet<>(),
+                    0,
+                    dnssecOk);
+        } catch (final RuntimeException e) {
+            return DnsResolution.empty(DnsResponseCode.SERVFAIL, true, zone.soaRecords());
+        }
     }
 
 }

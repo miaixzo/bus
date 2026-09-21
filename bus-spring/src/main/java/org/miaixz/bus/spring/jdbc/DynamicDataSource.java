@@ -19,14 +19,7 @@
 */
 package org.miaixz.bus.spring.jdbc;
 
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import javax.sql.DataSource;
 
@@ -85,6 +78,39 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Auto
     public DynamicDataSource(DataSourceHolder dataSourceHolder, List<DataSourceListener> listeners) {
         this.dataSourceHolder = Objects.requireNonNull(dataSourceHolder, "dataSourceHolder");
         this.listeners = List.copyOf(listeners == null ? List.of() : listeners);
+    }
+
+    /**
+     * Closes an owned datasource when it exposes an explicit close contract.
+     *
+     * @param dataSource owned datasource
+     */
+    private static void closeDataSource(DataSource dataSource) {
+        if (dataSource instanceof AutoCloseable closeable) {
+            try {
+                closeable.close();
+            } catch (RuntimeException exception) {
+                throw exception;
+            } catch (Exception exception) {
+                throw new IllegalStateException("Failed to close datasource: " + dataSource.getClass().getName(),
+                        exception);
+            }
+        }
+    }
+
+    /**
+     * Adds a secondary lifecycle failure without losing the first failure.
+     *
+     * @param current   first failure, or {@code null}
+     * @param secondary subsequent failure
+     * @return retained first failure
+     */
+    private static RuntimeException append(RuntimeException current, RuntimeException secondary) {
+        if (current == null) {
+            return secondary;
+        }
+        current.addSuppressed(secondary);
+        return current;
     }
 
     /**
@@ -406,39 +432,6 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Auto
      */
     private boolean isRegistered(DataSource candidate) {
         return this.targetDataSources.values().stream().anyMatch(value -> value == candidate);
-    }
-
-    /**
-     * Closes an owned datasource when it exposes an explicit close contract.
-     *
-     * @param dataSource owned datasource
-     */
-    private static void closeDataSource(DataSource dataSource) {
-        if (dataSource instanceof AutoCloseable closeable) {
-            try {
-                closeable.close();
-            } catch (RuntimeException exception) {
-                throw exception;
-            } catch (Exception exception) {
-                throw new IllegalStateException("Failed to close datasource: " + dataSource.getClass().getName(),
-                        exception);
-            }
-        }
-    }
-
-    /**
-     * Adds a secondary lifecycle failure without losing the first failure.
-     *
-     * @param current   first failure, or {@code null}
-     * @param secondary subsequent failure
-     * @return retained first failure
-     */
-    private static RuntimeException append(RuntimeException current, RuntimeException secondary) {
-        if (current == null) {
-            return secondary;
-        }
-        current.addSuppressed(secondary);
-        return current;
     }
 
     /**

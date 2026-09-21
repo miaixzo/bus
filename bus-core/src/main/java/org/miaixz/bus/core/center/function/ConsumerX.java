@@ -30,8 +30,8 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
  * A serializable {@link Consumer} interface that supports throwing exceptions and combining multiple consumers.
  *
  * @param <T> The type of the input argument to the operation.
- * @see Consumer
  * @author Kimi Liu
+ * @see Consumer
  */
 @FunctionalInterface
 public interface ConsumerX<T> extends Consumer<T>, Serializable {

@@ -137,6 +137,115 @@ public class PublicSuffix {
     }
 
     /**
+     * Normalizes a domain for suffix checks.
+     *
+     * @param domain host value from which leading dots are removed
+     * @return normalized ASCII host representation suitable for suffix matching
+     */
+    private static String normalize(final String domain) {
+        String normalized = domain;
+        while (normalized != null && normalized.startsWith(Symbol.DOT)) {
+            normalized = normalized.substring(Normal._1);
+        }
+        return NetKit.normalizeHost(normalized, "Public suffix domain");
+    }
+
+    /**
+     * Returns whether a domain is an address literal.
+     *
+     * @param domain normalized host to classify
+     * @return {@code true} for an IPv4 match or any colon-containing IPv6-style literal
+     */
+    private static boolean isAddressLiteral(final String domain) {
+        return domain.indexOf(Symbol.C_COLON) >= Normal._0 || Pattern.IPV4_PATTERN.matcher(domain).matches();
+    }
+
+    /**
+     * Searches sorted suffix bytes for a matching rule.
+     *
+     * @param bytesToSearch newline-delimited, lexicographically sorted UTF-8 rule bytes
+     * @param labels        UTF-8 domain labels searched as a dot-joined suffix
+     * @param labelIndex    index of the first label included in the candidate suffix
+     * @return matching UTF-8 rule, or {@code null} when the candidate is absent
+     */
+    private static String binarySearchBytes(final byte[] bytesToSearch, final byte[][] labels, final int labelIndex) {
+        int low = Normal._0;
+        int high = bytesToSearch.length;
+        String match = null;
+        while (low < high) {
+            int mid = (low + high) / Normal._2;
+            while (mid > Normal.__1 && bytesToSearch[mid] != Symbol.C_LF) {
+                mid--;
+            }
+            mid++;
+
+            int end = Normal._1;
+            while (bytesToSearch[mid + end] != Symbol.C_LF) {
+                end++;
+            }
+            final int publicSuffixLength = (mid + end) - mid;
+
+            int compareResult;
+            int currentLabelIndex = labelIndex;
+            int currentLabelByteIndex = Normal._0;
+            int publicSuffixByteIndex = Normal._0;
+            boolean expectDot = false;
+            while (true) {
+                final int byte0;
+                if (expectDot) {
+                    byte0 = Symbol.C_DOT;
+                    expectDot = false;
+                } else {
+                    byte0 = labels[currentLabelIndex][currentLabelByteIndex] & Builder.UNSIGNED_BYTE_MASK;
+                }
+
+                final int byte1 = bytesToSearch[mid + publicSuffixByteIndex] & Builder.UNSIGNED_BYTE_MASK;
+                compareResult = byte0 - byte1;
+                if (compareResult != Normal._0) {
+                    break;
+                }
+
+                publicSuffixByteIndex++;
+                currentLabelByteIndex++;
+                if (publicSuffixByteIndex == publicSuffixLength) {
+                    break;
+                }
+
+                if (labels[currentLabelIndex].length == currentLabelByteIndex) {
+                    if (currentLabelIndex == labels.length - Normal._1) {
+                        break;
+                    }
+                    currentLabelIndex++;
+                    currentLabelByteIndex = Normal.__1;
+                    expectDot = true;
+                }
+            }
+
+            if (compareResult < Normal._0) {
+                high = mid - Normal._1;
+            } else if (compareResult > Normal._0) {
+                low = mid + end + Normal._1;
+            } else {
+                final int publicSuffixBytesLeft = publicSuffixLength - publicSuffixByteIndex;
+                int labelBytesLeft = labels[currentLabelIndex].length - currentLabelByteIndex;
+                for (int i = currentLabelIndex + Normal._1; i < labels.length; i++) {
+                    labelBytesLeft += labels[i].length;
+                }
+
+                if (labelBytesLeft < publicSuffixBytesLeft) {
+                    high = mid - Normal._1;
+                } else if (labelBytesLeft > publicSuffixBytesLeft) {
+                    low = mid + end + Normal._1;
+                } else {
+                    match = new String(bytesToSearch, mid, publicSuffixLength, Charset.UTF_8);
+                    break;
+                }
+            }
+        }
+        return match;
+    }
+
+    /**
      * Returns the effective top-level domain plus one by referencing the public suffix list.
      *
      * @param domain normalized punycode domain to evaluate
@@ -299,115 +408,6 @@ public class PublicSuffix {
             publicSuffixListBytes = publicSuffixBytes;
             publicSuffixExceptionListBytes = publicSuffixExceptionBytes;
         }
-    }
-
-    /**
-     * Normalizes a domain for suffix checks.
-     *
-     * @param domain host value from which leading dots are removed
-     * @return normalized ASCII host representation suitable for suffix matching
-     */
-    private static String normalize(final String domain) {
-        String normalized = domain;
-        while (normalized != null && normalized.startsWith(Symbol.DOT)) {
-            normalized = normalized.substring(Normal._1);
-        }
-        return NetKit.normalizeHost(normalized, "Public suffix domain");
-    }
-
-    /**
-     * Returns whether a domain is an address literal.
-     *
-     * @param domain normalized host to classify
-     * @return {@code true} for an IPv4 match or any colon-containing IPv6-style literal
-     */
-    private static boolean isAddressLiteral(final String domain) {
-        return domain.indexOf(Symbol.C_COLON) >= Normal._0 || Pattern.IPV4_PATTERN.matcher(domain).matches();
-    }
-
-    /**
-     * Searches sorted suffix bytes for a matching rule.
-     *
-     * @param bytesToSearch newline-delimited, lexicographically sorted UTF-8 rule bytes
-     * @param labels        UTF-8 domain labels searched as a dot-joined suffix
-     * @param labelIndex    index of the first label included in the candidate suffix
-     * @return matching UTF-8 rule, or {@code null} when the candidate is absent
-     */
-    private static String binarySearchBytes(final byte[] bytesToSearch, final byte[][] labels, final int labelIndex) {
-        int low = Normal._0;
-        int high = bytesToSearch.length;
-        String match = null;
-        while (low < high) {
-            int mid = (low + high) / Normal._2;
-            while (mid > Normal.__1 && bytesToSearch[mid] != Symbol.C_LF) {
-                mid--;
-            }
-            mid++;
-
-            int end = Normal._1;
-            while (bytesToSearch[mid + end] != Symbol.C_LF) {
-                end++;
-            }
-            final int publicSuffixLength = (mid + end) - mid;
-
-            int compareResult;
-            int currentLabelIndex = labelIndex;
-            int currentLabelByteIndex = Normal._0;
-            int publicSuffixByteIndex = Normal._0;
-            boolean expectDot = false;
-            while (true) {
-                final int byte0;
-                if (expectDot) {
-                    byte0 = Symbol.C_DOT;
-                    expectDot = false;
-                } else {
-                    byte0 = labels[currentLabelIndex][currentLabelByteIndex] & Builder.UNSIGNED_BYTE_MASK;
-                }
-
-                final int byte1 = bytesToSearch[mid + publicSuffixByteIndex] & Builder.UNSIGNED_BYTE_MASK;
-                compareResult = byte0 - byte1;
-                if (compareResult != Normal._0) {
-                    break;
-                }
-
-                publicSuffixByteIndex++;
-                currentLabelByteIndex++;
-                if (publicSuffixByteIndex == publicSuffixLength) {
-                    break;
-                }
-
-                if (labels[currentLabelIndex].length == currentLabelByteIndex) {
-                    if (currentLabelIndex == labels.length - Normal._1) {
-                        break;
-                    }
-                    currentLabelIndex++;
-                    currentLabelByteIndex = Normal.__1;
-                    expectDot = true;
-                }
-            }
-
-            if (compareResult < Normal._0) {
-                high = mid - Normal._1;
-            } else if (compareResult > Normal._0) {
-                low = mid + end + Normal._1;
-            } else {
-                final int publicSuffixBytesLeft = publicSuffixLength - publicSuffixByteIndex;
-                int labelBytesLeft = labels[currentLabelIndex].length - currentLabelByteIndex;
-                for (int i = currentLabelIndex + Normal._1; i < labels.length; i++) {
-                    labelBytesLeft += labels[i].length;
-                }
-
-                if (labelBytesLeft < publicSuffixBytesLeft) {
-                    high = mid - Normal._1;
-                } else if (labelBytesLeft > publicSuffixBytesLeft) {
-                    low = mid + end + Normal._1;
-                } else {
-                    match = new String(bytesToSearch, mid, publicSuffixLength, Charset.UTF_8);
-                    break;
-                }
-            }
-        }
-        return match;
     }
 
 }

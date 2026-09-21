@@ -31,8 +31,8 @@ import org.miaixz.bus.gitlab.models.License;
 /**
  * This class provides an entry point to all the GitLab API license calls.
  *
- * @see <a href="https://docs.gitlab.com/ce/api/license.html">License API</a>
  * @author Kimi Liu
+ * @see <a href="https://docs.gitlab.com/ce/api/license.html">License API</a>
  */
 public class LicenseApi extends AbstractApi {
 

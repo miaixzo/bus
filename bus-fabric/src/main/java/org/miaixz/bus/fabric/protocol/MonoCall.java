@@ -304,6 +304,33 @@ public abstract class MonoCall<T> implements Call<T> {
     }
 
     /**
+     * Validates timeout.
+     *
+     * @param timeout candidate maximum wait duration
+     * @return validated timeout
+     */
+    private static Duration validateTimeout(final Duration timeout) {
+        final Duration checked = Assert
+                .notNull(timeout, () -> new ValidateException("Timeout must be non-null and non-negative"));
+        Assert.isFalse(checked.isNegative(), () -> new ValidateException("Timeout must be non-null and non-negative"));
+        return checked;
+    }
+
+    /**
+     * Converts a timeout to nanoseconds with a stable validation failure.
+     *
+     * @param timeout validated timeout
+     * @return timeout nanoseconds
+     */
+    private static long timeoutNanos(final Duration timeout) {
+        try {
+            return timeout.toNanos();
+        } catch (final ArithmeticException e) {
+            throw new ValidateException("Timeout is too large");
+        }
+    }
+
+    /**
      * Performs the protocol operation.
      *
      * @return protocol-specific result produced by the operation
@@ -943,33 +970,6 @@ public abstract class MonoCall<T> implements Call<T> {
     }
 
     /**
-     * Validates timeout.
-     *
-     * @param timeout candidate maximum wait duration
-     * @return validated timeout
-     */
-    private static Duration validateTimeout(final Duration timeout) {
-        final Duration checked = Assert
-                .notNull(timeout, () -> new ValidateException("Timeout must be non-null and non-negative"));
-        Assert.isFalse(checked.isNegative(), () -> new ValidateException("Timeout must be non-null and non-negative"));
-        return checked;
-    }
-
-    /**
-     * Converts a timeout to nanoseconds with a stable validation failure.
-     *
-     * @param timeout validated timeout
-     * @return timeout nanoseconds
-     */
-    private static long timeoutNanos(final Duration timeout) {
-        try {
-            return timeout.toNanos();
-        } catch (final ArithmeticException e) {
-            throw new ValidateException("Timeout is too large");
-        }
-    }
-
-    /**
      * Invokes and clears the optional callback after a successful terminal transition.
      *
      * @param value successful result delivered to the callback
@@ -1090,6 +1090,14 @@ public abstract class MonoCall<T> implements Call<T> {
          */
         private static final VarHandle STATE;
 
+        static {
+            try {
+                STATE = MethodHandles.lookup().findVarHandle(DirectCall.class, "state", Lifecycle.State.class);
+            } catch (final ReflectiveOperationException e) {
+                throw new ExceptionInInitializerError(e);
+            }
+        }
+
         /**
          * Immutable metadata and operation template.
          */
@@ -1129,6 +1137,22 @@ public abstract class MonoCall<T> implements Call<T> {
         private DirectCall(final DirectTemplate<I, T> template, final I input) {
             this.template = template;
             this.input = input;
+        }
+
+        /**
+         * Converts an arbitrary failure into the call runtime contract.
+         *
+         * @param cause failure to propagate
+         * @return runtime failure
+         */
+        private static RuntimeException propagate(final Throwable cause) {
+            if (cause instanceof RuntimeException runtime) {
+                return runtime;
+            }
+            if (cause instanceof Error error) {
+                throw error;
+            }
+            return new InternalException("Call failed", cause);
         }
 
         /**
@@ -1307,30 +1331,6 @@ public abstract class MonoCall<T> implements Call<T> {
                 throw propagate(cause.getCause());
             } catch (final java.util.concurrent.TimeoutException cause) {
                 throw new TimeoutException("Call wait timed out", cause);
-            }
-        }
-
-        /**
-         * Converts an arbitrary failure into the call runtime contract.
-         *
-         * @param cause failure to propagate
-         * @return runtime failure
-         */
-        private static RuntimeException propagate(final Throwable cause) {
-            if (cause instanceof RuntimeException runtime) {
-                return runtime;
-            }
-            if (cause instanceof Error error) {
-                throw error;
-            }
-            return new InternalException("Call failed", cause);
-        }
-
-        static {
-            try {
-                STATE = MethodHandles.lookup().findVarHandle(DirectCall.class, "state", Lifecycle.State.class);
-            } catch (final ReflectiveOperationException e) {
-                throw new ExceptionInInitializerError(e);
             }
         }
 

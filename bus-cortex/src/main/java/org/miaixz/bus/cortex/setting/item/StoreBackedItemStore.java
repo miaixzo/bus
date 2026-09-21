@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.cortex.setting.item;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Symbol;

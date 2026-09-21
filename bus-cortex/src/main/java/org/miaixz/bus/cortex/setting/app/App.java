@@ -41,20 +41,6 @@ import org.miaixz.bus.cortex.Type;
 public class App extends Setting {
 
     /**
-     * Profile-selection mode applied by an application directory entry.
-     */
-    public enum ProfileMode {
-        /**
-         * The application may use every profile visible in its tenant.
-         */
-        ALL,
-        /**
-         * The application may use only the explicitly selected profiles.
-         */
-        SELECTED
-    }
-
-    /**
      * Legacy application code kept only for compatibility and display. {@code id} remains the authoritative identifier.
      */
     private String code;
@@ -75,6 +61,20 @@ public class App extends Setting {
      */
     public App() {
         setType(Type.APP.key());
+    }
+
+    /**
+     * Profile-selection mode applied by an application directory entry.
+     */
+    public enum ProfileMode {
+        /**
+         * The application may use every profile visible in its tenant.
+         */
+        ALL,
+        /**
+         * The application may use only the explicitly selected profiles.
+         */
+        SELECTED
     }
 
 }

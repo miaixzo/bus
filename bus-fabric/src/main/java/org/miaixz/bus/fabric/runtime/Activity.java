@@ -70,11 +70,6 @@ public class Activity implements Runnable, Lifecycle {
     private final String name;
 
     /**
-     * Work reference cleared after execution or successful cancellation to release captured state.
-     */
-    private volatile Runnable action;
-
-    /**
      * Cancellation scope observed before and during action execution.
      */
     private final Cancellation cancellation;
@@ -83,6 +78,11 @@ public class Activity implements Runnable, Lifecycle {
      * Atomic lifecycle state encoded by the state constants in this class.
      */
     private final AtomicInteger state;
+
+    /**
+     * Work reference cleared after execution or successful cancellation to release captured state.
+     */
+    private volatile Runnable action;
 
     /**
      * First action failure retained for diagnostics.
@@ -139,6 +139,34 @@ public class Activity implements Runnable, Lifecycle {
      */
     public static Activity of(final String name, final Runnable runnable, final Cancellation cancellation) {
         return new Activity(name, runnable, cancellation);
+    }
+
+    /**
+     * Validates activity names.
+     *
+     * @param value activity name
+     * @return normalized name
+     */
+    private static String validateName(final String value) {
+        final String current = Assert
+                .notBlank(value, () -> new ValidateException("Activity name must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(current, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Activity name must be non-blank and single-line"));
+        return current.trim();
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -244,34 +272,6 @@ public class Activity implements Runnable, Lifecycle {
      */
     public Throwable failure() {
         return failure;
-    }
-
-    /**
-     * Validates activity names.
-     *
-     * @param value activity name
-     * @return normalized name
-     */
-    private static String validateName(final String value) {
-        final String current = Assert
-                .notBlank(value, () -> new ValidateException("Activity name must be non-blank and single-line"));
-        Assert.isFalse(
-                StringKit.containsAny(current, Symbol.C_CR, Symbol.C_LF),
-                () -> new ValidateException("Activity name must be non-blank and single-line"));
-        return current.trim();
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  logical field name included in the validation error
-     * @param <T>   reference type
-     * @return validated non-null reference
-     * @throws ValidateException if {@code value} is {@code null}
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

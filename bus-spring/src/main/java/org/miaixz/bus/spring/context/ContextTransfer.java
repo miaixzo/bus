@@ -37,51 +37,6 @@ public final class ContextTransfer {
     }
 
     /**
-     * Selects which parts of a captured context may cross an execution boundary.
-     *
-     * @author Kimi Liu
-     */
-    public enum Mode {
-
-        /**
-         * Transfers request correlation, authenticated identity, and raw request credentials.
-         */
-        ALL,
-
-        /**
-         * Transfers request correlation and authenticated identity without raw credentials.
-         */
-        IDENTITY_ONLY,
-
-        /**
-         * Transfers request correlation only.
-         */
-        REQUEST_ONLY,
-
-        /**
-         * Transfers no context values.
-         */
-        NONE;
-
-        /**
-         * Applies this mode to a captured state.
-         *
-         * @param state captured state
-         * @return state safe for the selected transfer boundary
-         */
-        private ContextState apply(ContextState state) {
-            ContextState source = state == null ? ContextState.empty() : state;
-            return switch (this) {
-                case ALL -> source;
-                case IDENTITY_ONLY -> source.withoutCredentials();
-                case REQUEST_ONLY -> source.requestOnly();
-                case NONE -> ContextState.empty();
-            };
-        }
-
-    }
-
-    /**
      * Captures the complete state installed for the current execution.
      *
      * @return immutable current state
@@ -169,6 +124,51 @@ public final class ContextTransfer {
                 return task.call();
             }
         };
+    }
+
+    /**
+     * Selects which parts of a captured context may cross an execution boundary.
+     *
+     * @author Kimi Liu
+     */
+    public enum Mode {
+
+        /**
+         * Transfers request correlation, authenticated identity, and raw request credentials.
+         */
+        ALL,
+
+        /**
+         * Transfers request correlation and authenticated identity without raw credentials.
+         */
+        IDENTITY_ONLY,
+
+        /**
+         * Transfers request correlation only.
+         */
+        REQUEST_ONLY,
+
+        /**
+         * Transfers no context values.
+         */
+        NONE;
+
+        /**
+         * Applies this mode to a captured state.
+         *
+         * @param state captured state
+         * @return state safe for the selected transfer boundary
+         */
+        private ContextState apply(ContextState state) {
+            ContextState source = state == null ? ContextState.empty() : state;
+            return switch (this) {
+                case ALL -> source;
+                case IDENTITY_ONLY -> source.withoutCredentials();
+                case REQUEST_ONLY -> source.requestOnly();
+                case NONE -> ContextState.empty();
+            };
+        }
+
     }
 
 }

@@ -735,6 +735,15 @@ public class TenantBuilder {
     }
 
     /**
+     * Clear SQL cache.
+     */
+    public void clear() {
+        if (sqlCache != null) {
+            sqlCache.clear();
+        }
+    }
+
+    /**
      * SELECT condition split result.
      *
      * @param condition the condition or table suffix before a trailing clause
@@ -742,15 +751,6 @@ public class TenantBuilder {
      */
     private record SelectCondition(String condition, String tail) {
 
-    }
-
-    /**
-     * Clear SQL cache.
-     */
-    public void clear() {
-        if (sqlCache != null) {
-            sqlCache.clear();
-        }
     }
 
 }

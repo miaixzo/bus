@@ -20,15 +20,16 @@
 package org.opencv.core;
 
 // C++: class TickMeter
+
 /**
  * a Class to measure passing time.
- *
+ * <p>
  * The class computes passing time by counting the number of ticks per second. That is, the following code computes the
  * execution time in seconds: SNIPPET: snippets/core_various.cpp TickMeter_total
- *
+ * <p>
  * It is also possible to compute the average time over multiple runs: SNIPPET: snippets/core_various.cpp
  * TickMeter_average
- *
+ * <p>
  * SEE: getTickCount, getTickFrequency
  */
 public class TickMeter {
@@ -41,8 +42,10 @@ public class TickMeter {
         org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
-    public long getNativeObjAddr() {
-        return nativeObj;
+    public TickMeter() {
+        nativeObj = TickMeter_0();
+        long nativeObjCopy = nativeObj;
+        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
     // internal usage only
@@ -54,181 +57,179 @@ public class TickMeter {
     // C++: cv::TickMeter::TickMeter()
     //
 
-    public TickMeter() {
-        nativeObj = TickMeter_0();
-        long nativeObjCopy = nativeObj;
-        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
-    }
+    // C++: cv::TickMeter::TickMeter()
+    private static native long TickMeter_0();
 
     //
     // C++: void cv::TickMeter::start()
     //
-
-    public void start() {
-        start_0(nativeObj);
-    }
-
-    //
-    // C++: void cv::TickMeter::stop()
-    //
-
-    public void stop() {
-        stop_0(nativeObj);
-    }
-
-    //
-    // C++: int64 cv::TickMeter::getTimeTicks()
-    //
-
-    public long getTimeTicks() {
-        return getTimeTicks_0(nativeObj);
-    }
-
-    //
-    // C++: double cv::TickMeter::getTimeMicro()
-    //
-
-    public double getTimeMicro() {
-        return getTimeMicro_0(nativeObj);
-    }
-
-    //
-    // C++: double cv::TickMeter::getTimeMilli()
-    //
-
-    public double getTimeMilli() {
-        return getTimeMilli_0(nativeObj);
-    }
-
-    //
-    // C++: double cv::TickMeter::getTimeSec()
-    //
-
-    public double getTimeSec() {
-        return getTimeSec_0(nativeObj);
-    }
-
-    //
-    // C++: int64 cv::TickMeter::getLastTimeTicks()
-    //
-
-    public long getLastTimeTicks() {
-        return getLastTimeTicks_0(nativeObj);
-    }
-
-    //
-    // C++: double cv::TickMeter::getLastTimeMicro()
-    //
-
-    public double getLastTimeMicro() {
-        return getLastTimeMicro_0(nativeObj);
-    }
-
-    //
-    // C++: double cv::TickMeter::getLastTimeMilli()
-    //
-
-    public double getLastTimeMilli() {
-        return getLastTimeMilli_0(nativeObj);
-    }
-
-    //
-    // C++: double cv::TickMeter::getLastTimeSec()
-    //
-
-    public double getLastTimeSec() {
-        return getLastTimeSec_0(nativeObj);
-    }
-
-    //
-    // C++: int64 cv::TickMeter::getCounter()
-    //
-
-    public long getCounter() {
-        return getCounter_0(nativeObj);
-    }
-
-    //
-    // C++: double cv::TickMeter::getFPS()
-    //
-
-    public double getFPS() {
-        return getFPS_0(nativeObj);
-    }
-
-    //
-    // C++: double cv::TickMeter::getAvgTimeSec()
-    //
-
-    public double getAvgTimeSec() {
-        return getAvgTimeSec_0(nativeObj);
-    }
-
-    //
-    // C++: double cv::TickMeter::getAvgTimeMilli()
-    //
-
-    public double getAvgTimeMilli() {
-        return getAvgTimeMilli_0(nativeObj);
-    }
-
-    //
-    // C++: void cv::TickMeter::reset()
-    //
-
-    public void reset() {
-        reset_0(nativeObj);
-    }
-
-    // C++: cv::TickMeter::TickMeter()
-    private static native long TickMeter_0();
 
     // C++: void cv::TickMeter::start()
     private static native void start_0(long nativeObj);
 
+    //
+    // C++: void cv::TickMeter::stop()
+    //
+
     // C++: void cv::TickMeter::stop()
     private static native void stop_0(long nativeObj);
+
+    //
+    // C++: int64 cv::TickMeter::getTimeTicks()
+    //
 
     // C++: int64 cv::TickMeter::getTimeTicks()
     private static native long getTimeTicks_0(long nativeObj);
 
+    //
+    // C++: double cv::TickMeter::getTimeMicro()
+    //
+
     // C++: double cv::TickMeter::getTimeMicro()
     private static native double getTimeMicro_0(long nativeObj);
+
+    //
+    // C++: double cv::TickMeter::getTimeMilli()
+    //
 
     // C++: double cv::TickMeter::getTimeMilli()
     private static native double getTimeMilli_0(long nativeObj);
 
+    //
+    // C++: double cv::TickMeter::getTimeSec()
+    //
+
     // C++: double cv::TickMeter::getTimeSec()
     private static native double getTimeSec_0(long nativeObj);
+
+    //
+    // C++: int64 cv::TickMeter::getLastTimeTicks()
+    //
 
     // C++: int64 cv::TickMeter::getLastTimeTicks()
     private static native long getLastTimeTicks_0(long nativeObj);
 
+    //
+    // C++: double cv::TickMeter::getLastTimeMicro()
+    //
+
     // C++: double cv::TickMeter::getLastTimeMicro()
     private static native double getLastTimeMicro_0(long nativeObj);
+
+    //
+    // C++: double cv::TickMeter::getLastTimeMilli()
+    //
 
     // C++: double cv::TickMeter::getLastTimeMilli()
     private static native double getLastTimeMilli_0(long nativeObj);
 
+    //
+    // C++: double cv::TickMeter::getLastTimeSec()
+    //
+
     // C++: double cv::TickMeter::getLastTimeSec()
     private static native double getLastTimeSec_0(long nativeObj);
+
+    //
+    // C++: int64 cv::TickMeter::getCounter()
+    //
 
     // C++: int64 cv::TickMeter::getCounter()
     private static native long getCounter_0(long nativeObj);
 
+    //
+    // C++: double cv::TickMeter::getFPS()
+    //
+
     // C++: double cv::TickMeter::getFPS()
     private static native double getFPS_0(long nativeObj);
+
+    //
+    // C++: double cv::TickMeter::getAvgTimeSec()
+    //
 
     // C++: double cv::TickMeter::getAvgTimeSec()
     private static native double getAvgTimeSec_0(long nativeObj);
 
+    //
+    // C++: double cv::TickMeter::getAvgTimeMilli()
+    //
+
     // C++: double cv::TickMeter::getAvgTimeMilli()
     private static native double getAvgTimeMilli_0(long nativeObj);
+
+    //
+    // C++: void cv::TickMeter::reset()
+    //
 
     // C++: void cv::TickMeter::reset()
     private static native void reset_0(long nativeObj);
 
     // native support for java finalize() or cleaner
     private static native void delete(long nativeObj);
+
+    public long getNativeObjAddr() {
+        return nativeObj;
+    }
+
+    public void start() {
+        start_0(nativeObj);
+    }
+
+    public void stop() {
+        stop_0(nativeObj);
+    }
+
+    public long getTimeTicks() {
+        return getTimeTicks_0(nativeObj);
+    }
+
+    public double getTimeMicro() {
+        return getTimeMicro_0(nativeObj);
+    }
+
+    public double getTimeMilli() {
+        return getTimeMilli_0(nativeObj);
+    }
+
+    public double getTimeSec() {
+        return getTimeSec_0(nativeObj);
+    }
+
+    public long getLastTimeTicks() {
+        return getLastTimeTicks_0(nativeObj);
+    }
+
+    public double getLastTimeMicro() {
+        return getLastTimeMicro_0(nativeObj);
+    }
+
+    public double getLastTimeMilli() {
+        return getLastTimeMilli_0(nativeObj);
+    }
+
+    public double getLastTimeSec() {
+        return getLastTimeSec_0(nativeObj);
+    }
+
+    public long getCounter() {
+        return getCounter_0(nativeObj);
+    }
+
+    public double getFPS() {
+        return getFPS_0(nativeObj);
+    }
+
+    public double getAvgTimeSec() {
+        return getAvgTimeSec_0(nativeObj);
+    }
+
+    public double getAvgTimeMilli() {
+        return getAvgTimeMilli_0(nativeObj);
+    }
+
+    public void reset() {
+        reset_0(nativeObj);
+    }
 
 }

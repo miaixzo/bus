@@ -89,19 +89,6 @@ public class FilterChain implements Filter.Chain {
     }
 
     /**
-     * Proceeds to the next filter.
-     *
-     * @param message input message passed from the beginning of this chain
-     * @return final message after every filter and the terminal chain
-     * @throws ValidateException if a message is {@code null} or a boundary changes protocol/address routing fields
-     */
-    @Override
-    public Message proceed(final Message message) {
-        final Message current = Assert.notNull(message, () -> new ValidateException("Message must not be null"));
-        return new Cursor(filters, Normal._0, terminal).proceed(current);
-    }
-
-    /**
      * Collects effective filter slots.
      *
      * @param filters optional filter slots to compact
@@ -150,6 +137,19 @@ public class FilterChain implements Filter.Chain {
             throw new ValidateException("Filter must not replace message address");
         }
         return current;
+    }
+
+    /**
+     * Proceeds to the next filter.
+     *
+     * @param message input message passed from the beginning of this chain
+     * @return final message after every filter and the terminal chain
+     * @throws ValidateException if a message is {@code null} or a boundary changes protocol/address routing fields
+     */
+    @Override
+    public Message proceed(final Message message) {
+        final Message current = Assert.notNull(message, () -> new ValidateException("Message must not be null"));
+        return new Cursor(filters, Normal._0, terminal).proceed(current);
     }
 
     /**

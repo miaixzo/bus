@@ -25,11 +25,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
-import org.miaixz.bus.fabric.network.dns.message.DnsName;
-import org.miaixz.bus.fabric.network.dns.message.DnsQuery;
-import org.miaixz.bus.fabric.network.dns.message.DnsResponse;
-import org.miaixz.bus.fabric.network.dns.message.DnsResponseCode;
+import org.miaixz.bus.fabric.network.dns.message.*;
 import org.miaixz.bus.fabric.network.dns.record.DnsRecord;
 import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
 import org.miaixz.bus.fabric.network.dns.resolve.RuntimeIndex;
@@ -113,55 +109,6 @@ public class DnsZoneTransferHandler {
         }
         final int type = query.question().typeCode();
         return type == DnsRecordType.AXFR.code() || type == DnsRecordType.IXFR.code();
-    }
-
-    /**
-     * Builds a zone-transfer response from the active in-memory runtime index.
-     *
-     * @param current                  active runtime index
-     * @param query                    decoded AXFR or IXFR query
-     * @param transferCapableTransport true when the query arrived over TCP, DoT, or DoQ
-     * @param clientAddress            client address, or {@code null} when unavailable
-     * @return DNS response model
-     */
-    public DnsResponse handle(
-            final RuntimeIndex current,
-            final DnsQuery query,
-            final boolean transferCapableTransport,
-            final InetAddress clientAddress) {
-        if (current == null) {
-            throw new ValidateException("DNS runtime index must not be null");
-        }
-        if (!transferQuery(query)) {
-            return DnsResponse.empty(query, DnsResponseCode.REFUSED, false);
-        }
-        if (!transferCapableTransport || !allowed(clientAddress) || !acquire()) {
-            return DnsResponse.empty(query, DnsResponseCode.REFUSED, false);
-        }
-        try {
-            return answer(current, query, clientAddress);
-        } finally {
-            release();
-        }
-    }
-
-    /**
-     * Builds a response after transport, ACL, and concurrency checks pass.
-     *
-     * @param current       active runtime index
-     * @param query         decoded AXFR or IXFR query
-     * @param clientAddress client address, or {@code null} when unavailable
-     * @return DNS response model
-     */
-    private DnsResponse answer(final RuntimeIndex current, final DnsQuery query, final InetAddress clientAddress) {
-        final DnsZone zone = current.findZone(query.question().name(), clientAddress);
-        if (zone == null || zone.mode() != DnsZoneMode.AUTHORITATIVE) {
-            return DnsResponse.empty(query, DnsResponseCode.REFUSED, false);
-        }
-        if (query.question().typeCode() == DnsRecordType.IXFR.code() && query.ixfrSerial() != null) {
-            return ixfrResponse(query, zone);
-        }
-        return fullTransfer(query, zone);
     }
 
     /**
@@ -262,6 +209,86 @@ public class DnsZoneTransferHandler {
     }
 
     /**
+     * Validates and copies CIDR blocks.
+     *
+     * @param cidrs source CIDR blocks
+     * @return immutable CIDR blocks
+     */
+    private static List<CidrBlock> immutableCidrs(final List<CidrBlock> cidrs) {
+        if (cidrs == null) {
+            throw new ValidateException("DNS zone-transfer ACL CIDRs must not be null");
+        }
+        for (final CidrBlock cidr : cidrs) {
+            if (cidr == null) {
+                throw new ValidateException("DNS zone-transfer ACL CIDRs must not contain null");
+            }
+        }
+        return List.copyOf(cidrs);
+    }
+
+    /**
+     * Validates a zone-transfer concurrency limit.
+     *
+     * @param value candidate concurrency limit
+     * @return validated concurrency limit
+     */
+    private static int validateMaxConcurrentTransfers(final int value) {
+        if (value < 1) {
+            throw new ValidateException("DNS zone-transfer max concurrency must be positive");
+        }
+        return value;
+    }
+
+    /**
+     * Builds a zone-transfer response from the active in-memory runtime index.
+     *
+     * @param current                  active runtime index
+     * @param query                    decoded AXFR or IXFR query
+     * @param transferCapableTransport true when the query arrived over TCP, DoT, or DoQ
+     * @param clientAddress            client address, or {@code null} when unavailable
+     * @return DNS response model
+     */
+    public DnsResponse handle(
+            final RuntimeIndex current,
+            final DnsQuery query,
+            final boolean transferCapableTransport,
+            final InetAddress clientAddress) {
+        if (current == null) {
+            throw new ValidateException("DNS runtime index must not be null");
+        }
+        if (!transferQuery(query)) {
+            return DnsResponse.empty(query, DnsResponseCode.REFUSED, false);
+        }
+        if (!transferCapableTransport || !allowed(clientAddress) || !acquire()) {
+            return DnsResponse.empty(query, DnsResponseCode.REFUSED, false);
+        }
+        try {
+            return answer(current, query, clientAddress);
+        } finally {
+            release();
+        }
+    }
+
+    /**
+     * Builds a response after transport, ACL, and concurrency checks pass.
+     *
+     * @param current       active runtime index
+     * @param query         decoded AXFR or IXFR query
+     * @param clientAddress client address, or {@code null} when unavailable
+     * @return DNS response model
+     */
+    private DnsResponse answer(final RuntimeIndex current, final DnsQuery query, final InetAddress clientAddress) {
+        final DnsZone zone = current.findZone(query.question().name(), clientAddress);
+        if (zone == null || zone.mode() != DnsZoneMode.AUTHORITATIVE) {
+            return DnsResponse.empty(query, DnsResponseCode.REFUSED, false);
+        }
+        if (query.question().typeCode() == DnsRecordType.IXFR.code() && query.ixfrSerial() != null) {
+            return ixfrResponse(query, zone);
+        }
+        return fullTransfer(query, zone);
+    }
+
+    /**
      * Returns whether a client address is allowed to request zone transfers.
      *
      * @param clientAddress client address, or {@code null} when unavailable
@@ -301,37 +328,6 @@ public class DnsZoneTransferHandler {
      */
     private void release() {
         activeTransfers.decrementAndGet();
-    }
-
-    /**
-     * Validates and copies CIDR blocks.
-     *
-     * @param cidrs source CIDR blocks
-     * @return immutable CIDR blocks
-     */
-    private static List<CidrBlock> immutableCidrs(final List<CidrBlock> cidrs) {
-        if (cidrs == null) {
-            throw new ValidateException("DNS zone-transfer ACL CIDRs must not be null");
-        }
-        for (final CidrBlock cidr : cidrs) {
-            if (cidr == null) {
-                throw new ValidateException("DNS zone-transfer ACL CIDRs must not contain null");
-            }
-        }
-        return List.copyOf(cidrs);
-    }
-
-    /**
-     * Validates a zone-transfer concurrency limit.
-     *
-     * @param value candidate concurrency limit
-     * @return validated concurrency limit
-     */
-    private static int validateMaxConcurrentTransfers(final int value) {
-        if (value < 1) {
-            throw new ValidateException("DNS zone-transfer max concurrency must be positive");
-        }
-        return value;
     }
 
 }

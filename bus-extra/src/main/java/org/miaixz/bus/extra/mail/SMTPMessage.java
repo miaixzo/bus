@@ -50,25 +50,6 @@ import org.miaixz.bus.logger.Logger;
 public class SMTPMessage extends MimeMessage {
 
     /**
-     * Creates a new {@code SMTPMessage} instance.
-     *
-     * @param mailAccount      The mail account configuration.
-     * @param useGlobalSession If {@code true}, uses a globally shared session; otherwise, creates a new session.
-     * @param debugOutput      The {@link PrintStream} for debug output. If null, no debug information is printed.
-     * @return A new {@code SMTPMessage} instance.
-     */
-    public static SMTPMessage of(
-            final MailAccount mailAccount,
-            final boolean useGlobalSession,
-            final PrintStream debugOutput) {
-        final Session session = MailKit.getSession(mailAccount, useGlobalSession);
-        if (null != debugOutput) {
-            session.setDebugOut(debugOutput);
-        }
-        return new SMTPMessage(mailAccount, session);
-    }
-
-    /**
      * The mail account configuration.
      */
     private final MailAccount mailAccount;
@@ -89,6 +70,25 @@ public class SMTPMessage extends MimeMessage {
         this.mailAccount = mailAccount;
         multipart = new MimeMultipart();
         init();
+    }
+
+    /**
+     * Creates a new {@code SMTPMessage} instance.
+     *
+     * @param mailAccount      The mail account configuration.
+     * @param useGlobalSession If {@code true}, uses a globally shared session; otherwise, creates a new session.
+     * @param debugOutput      The {@link PrintStream} for debug output. If null, no debug information is printed.
+     * @return A new {@code SMTPMessage} instance.
+     */
+    public static SMTPMessage of(
+            final MailAccount mailAccount,
+            final boolean useGlobalSession,
+            final PrintStream debugOutput) {
+        final Session session = MailKit.getSession(mailAccount, useGlobalSession);
+        if (null != debugOutput) {
+            session.setDebugOut(debugOutput);
+        }
+        return new SMTPMessage(mailAccount, session);
     }
 
     /**

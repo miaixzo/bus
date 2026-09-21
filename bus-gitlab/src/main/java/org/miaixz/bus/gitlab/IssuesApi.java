@@ -34,10 +34,10 @@ import org.miaixz.bus.gitlab.models.*;
 /**
  * This class provides an entry point to all the GitLab API Issue calls.
  *
+ * @author Kimi Liu
  * @see <a href="https://docs.gitlab.com/ce/api/issues.html">Issues API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/issue_links.html">Issue Links API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/issues_statistics.html">Issues Statistics API at GitLab</a>
- * @author Kimi Liu
  */
 public class IssuesApi extends AbstractApi implements Constants {
 
@@ -90,7 +90,7 @@ public class IssuesApi extends AbstractApi implements Constants {
      * <pre>
      * <code>GitLab Endpoint: GET /issues</code>
      * </pre>
-     *
+     * <p>
      * r
      *
      * @param itemsPerPage the number of issues per page

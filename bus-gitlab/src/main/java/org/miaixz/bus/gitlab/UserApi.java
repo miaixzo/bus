@@ -40,8 +40,8 @@ import org.miaixz.bus.logger.Logger;
 /**
  * This class provides an entry point to all the GitLab API users calls.
  *
- * @see <a href="https://docs.gitlab.com/ce/api/users.html">Users API at GitLab</a>
  * @author Kimi Liu
+ * @see <a href="https://docs.gitlab.com/ce/api/users.html">Users API at GitLab</a>
  */
 public class UserApi extends AbstractApi {
 
@@ -1425,9 +1425,8 @@ public class UserApi extends AbstractApi {
      * <code>GitLab Endpoint: GET /user/gpg_keys</code>
      * </pre>
      *
-     * @throws RelevantException if any exception occurs
-     *
      * @return the result
+     * @throws RelevantException if any exception occurs
      */
     public List<GpgKey> listGpgKeys() throws RelevantException {
         Response response = get(Response.Status.OK, null, "user", "gpg_keys");
@@ -1443,9 +1442,8 @@ public class UserApi extends AbstractApi {
      * </pre>
      *
      * @param key the ASCII-armored exported public GPG key to add
-     * @throws RelevantException if any exception occurs
-     *
      * @return the result
+     * @throws RelevantException if any exception occurs
      */
     public GpgKey addGpgKey(final String key) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("key", key, true);
@@ -1475,9 +1473,8 @@ public class UserApi extends AbstractApi {
      * </pre>
      *
      * @param userId the user in the form of an Long(ID)
-     * @throws RelevantException if any exception occurs
-     *
      * @return the result
+     * @throws RelevantException if any exception occurs
      */
     public List<GpgKey> listGpgKeys(final Long userId) throws RelevantException {
         Response response = get(Response.Status.OK, null, "users", userId, "gpg_keys");
@@ -1494,9 +1491,8 @@ public class UserApi extends AbstractApi {
      *
      * @param userId the user in the form of an Long(ID)
      * @param key    the ASCII-armored exported public GPG key to add
-     * @throws RelevantException if any exception occurs
-     *
      * @return the result
+     * @throws RelevantException if any exception occurs
      */
     public GpgKey addGpgKey(final Long userId, final String key) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("key", key, true);
@@ -1536,7 +1532,7 @@ public class UserApi extends AbstractApi {
 
     /**
      * Returns a Pager that lists all projects and groups a user is a member of. (admin only)
-     *
+     * <p>
      * This allows lazy-fetching of huge numbers of memberships.
      *
      * <pre>
@@ -1611,9 +1607,8 @@ public class UserApi extends AbstractApi {
      * </pre>
      *
      * @param username the name of the user to check
-     * @throws RelevantException if any exception occurs.
-     *
      * @return the result
+     * @throws RelevantException if any exception occurs.
      */
     public boolean exists(String username) throws RelevantException {
         if (username == null) {

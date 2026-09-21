@@ -20,6 +20,7 @@
 package org.opencv.core;
 
 //javadoc:TermCriteria
+
 /**
  * The term criteria class.
  */
@@ -44,7 +45,9 @@ public class TermCriteria {
      * The type field.
      */
     public int type;
+
     public int maxCount;
+
     public double epsilon;
 
     /**

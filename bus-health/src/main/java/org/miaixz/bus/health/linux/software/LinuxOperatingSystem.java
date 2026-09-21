@@ -74,6 +74,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      * This static field identifies if the syscall for gettid returns sane results.
      */
     public static final boolean HAS_SYSCALL_GETTID;
+
     // Package private for access from LinuxOSProcess
     /**
      * The BOOTTIME constant.
@@ -129,6 +130,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      * OS Name for manufacturer
      */
     private static final String OS_NAME = Executor.getFirstAnswer("uname -o");
+
     // PPID is 4th numeric value in proc pid stat; subtract 1 for 0-index
     /**
      * The PPID_INDEX constant.
@@ -216,6 +218,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      */
     private final SupplierX<List<ApplicationInfo>> installedAppsSupplier = Memoizer
             .memoize(LinuxInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
+
     /**
      * The cgroupInfoSupplier value.
      */

@@ -53,23 +53,6 @@ public class NativeSloTracker implements SloTracker {
     }
 
     /**
-     * Immutable definition of a registered SLO, including its associated {@link ErrorBudget}.
-     *
-     * @param timerOrMeterName name of the timer or meter metric being observed
-     * @param isLatency        true for latency-based SLOs; false for availability-based
-     * @param thresholdMs      latency threshold in milliseconds (latency SLOs only)
-     * @param maxErrorRatio    maximum allowed error ratio (availability SLOs only)
-     * @param target           SLO target fraction, e.g. 0.999
-     * @param tags             optional tag filters
-     * @param budget           the error budget tracking instance
-     * @author Kimi Liu
-     */
-    private record SloDefinition(String timerOrMeterName, boolean isLatency, long thresholdMs, double maxErrorRatio,
-            double target, Tag[] tags, ErrorBudget budget) {
-
-    }
-
-    /**
      * Register a latency-based SLO.
      *
      * @param sloName     unique SLO name
@@ -194,6 +177,23 @@ public class NativeSloTracker implements SloTracker {
                                 Instant.now()));
             }
         }
+    }
+
+    /**
+     * Immutable definition of a registered SLO, including its associated {@link ErrorBudget}.
+     *
+     * @param timerOrMeterName name of the timer or meter metric being observed
+     * @param isLatency        true for latency-based SLOs; false for availability-based
+     * @param thresholdMs      latency threshold in milliseconds (latency SLOs only)
+     * @param maxErrorRatio    maximum allowed error ratio (availability SLOs only)
+     * @param target           SLO target fraction, e.g. 0.999
+     * @param tags             optional tag filters
+     * @param budget           the error budget tracking instance
+     * @author Kimi Liu
+     */
+    private record SloDefinition(String timerOrMeterName, boolean isLatency, long thresholdMs, double maxErrorRatio,
+            double target, Tag[] tags, ErrorBudget budget) {
+
     }
 
 }

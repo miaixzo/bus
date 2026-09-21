@@ -295,9 +295,9 @@ imagePaths.parallelStream().forEach(path -> {
 ## 🔄 版本兼容性
 
 | Bus OpenCV 版本 | OpenCV 版本 | JDK 版本 |
-|:---|:---|:---|
-| 8.x | 4.x | 17+ |
-| 7.x | 4.x | 11+ |
+|:----------------|:------------|:---------|
+| 8.x             | 4.x         | 17+      |
+| 7.x             | 4.x         | 11+      |
 
 -----
 
@@ -305,32 +305,32 @@ imagePaths.parallelStream().forEach(path -> {
 
 ### 图像操作
 
-| 操作 | 方法 | 描述 |
-|:---|:---|:---|
-| 加载图像 | `Imgcodecs.imread()` | 从文件加载图像 |
+| 操作     | 方法                  | 描述             |
+|:---------|:----------------------|:-----------------|
+| 加载图像 | `Imgcodecs.imread()`  | 从文件加载图像   |
 | 保存图像 | `Imgcodecs.imwrite()` | 将图像保存到文件 |
-| 调整大小 | `Imgproc.resize()` | 调整图像大小 |
-| 旋转 | `Imgproc.rotate()` | 旋转图像 |
-| 裁剪 | `Mat.submat()` | 裁剪图像区域 |
-| 翻转 | `Imgproc.flip()` | 翻转图像 |
+| 调整大小 | `Imgproc.resize()`    | 调整图像大小     |
+| 旋转     | `Imgproc.rotate()`    | 旋转图像         |
+| 裁剪     | `Mat.submat()`        | 裁剪图像区域     |
+| 翻转     | `Imgproc.flip()`      | 翻转图像         |
 
 ### 滤波操作
 
-| 滤波器 | 方法 | 描述 |
-|:---|:---|:---|
-| 高斯模糊 | `GaussianBlur()` | 模糊图像 |
-| 中值模糊 | `medianBlur()` | 中值滤波 |
+| 滤波器   | 方法                | 描述         |
+|:---------|:--------------------|:-------------|
+| 高斯模糊 | `GaussianBlur()`    | 模糊图像     |
+| 中值模糊 | `medianBlur()`      | 中值滤波     |
 | 双边滤波 | `bilateralFilter()` | 边缘保持平滑 |
-| 盒式滤波 | `boxFilter()` | 盒式滤波 |
+| 盒式滤波 | `boxFilter()`       | 盒式滤波     |
 
 ### 特征检测
 
-| 特征 | 方法 | 描述 |
-|:---|:---|:---|
+| 特征 | 方法                    | 描述         |
+|:-----|:------------------------|:-------------|
 | 角点 | `goodFeaturesToTrack()` | 检测角点特征 |
-| 边缘 | `Canny()` | 检测边缘 |
-| 轮廓 | `findContours()` | 查找轮廓 |
-| 直线 | `HoughLines()` | 检测直线 |
+| 边缘 | `Canny()`               | 检测边缘     |
+| 轮廓 | `findContours()`        | 查找轮廓     |
+| 直线 | `HoughLines()`          | 检测直线     |
 
 -----
 
@@ -346,7 +346,7 @@ imagePaths.parallelStream().forEach(path -> {
 
 ### 问: 如何处理不同的图像格式？
 
-答: OpenCV 支持常见格式(JPEG、PNG、BMP、TIFF)。使用适当的文件扩展名。
+答: OpenCV 支持常见格式 (JPEG、PNG、BMP、TIFF)。使用适当的文件扩展名。
 
 ### 问: 如果出现 "UnsatisfiedLinkError" 怎么办？
 

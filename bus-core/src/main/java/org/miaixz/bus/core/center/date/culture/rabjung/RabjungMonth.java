@@ -47,11 +47,6 @@ public class RabjungMonth extends MonthParts {
             "满意月" };
 
     /**
-     * Indicates if this is a leap month.
-     */
-    protected boolean leap;
-
-    /**
      * Map storing special days (leap days and missing days) for each month.
      */
     protected static final Map<Integer, int[]> DAYS = new HashMap<>();
@@ -76,6 +71,11 @@ public class RabjungMonth extends MonthParts {
             m = 0;
         }
     }
+
+    /**
+     * Indicates if this is a leap month.
+     */
+    protected boolean leap;
 
     /**
      * Constructs a {@code RabjungMonth} from the given Tibetan year and month.

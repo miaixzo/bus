@@ -58,11 +58,6 @@ public class PayloadBody implements RequestBody, ResponseBody, ProgressBody {
     }
 
     /**
-     * Payload reference.
-     */
-    private Payload payload;
-
-    /**
      * Optional progress tracker.
      */
     private final ProgressBody.Tracker progress;
@@ -81,6 +76,11 @@ public class PayloadBody implements RequestBody, ResponseBody, ProgressBody {
      * Maximum bytes allowed when materializing this body.
      */
     private final long materializeMaxBytes;
+
+    /**
+     * Payload reference.
+     */
+    private Payload payload;
 
     /**
      * Closed state.
@@ -163,6 +163,17 @@ public class PayloadBody implements RequestBody, ResponseBody, ProgressBody {
             return empty();
         }
         return new PayloadBody(payload, media, null, materializeMaxBytes);
+    }
+
+    /**
+     * Validates a payload length.
+     *
+     * @param length candidate payload length, with {@code -1} representing unknown
+     * @return validated length of {@code -1} or greater
+     */
+    private static long validateLength(final long length) {
+        Assert.isFalse(length < -1, () -> new ValidateException("Body length must be -1 or greater"));
+        return length;
     }
 
     /**
@@ -377,17 +388,6 @@ public class PayloadBody implements RequestBody, ResponseBody, ProgressBody {
             progress.stepRate(rate);
         }
         return this;
-    }
-
-    /**
-     * Validates a payload length.
-     *
-     * @param length candidate payload length, with {@code -1} representing unknown
-     * @return validated length of {@code -1} or greater
-     */
-    private static long validateLength(final long length) {
-        Assert.isFalse(length < -1, () -> new ValidateException("Body length must be -1 or greater"));
-        return length;
     }
 
     /**

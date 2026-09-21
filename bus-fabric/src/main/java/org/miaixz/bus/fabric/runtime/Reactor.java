@@ -127,6 +127,18 @@ public class Reactor implements AutoCloseable {
     }
 
     /**
+     * Validates non-null values.
+     *
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Returns the dispatcher.
      *
      * @return runtime activity dispatcher
@@ -237,18 +249,6 @@ public class Reactor implements AutoCloseable {
     }
 
     /**
-     * Validates non-null values.
-     *
-     * @param value reference to validate
-     * @param name  field name included in the validation failure
-     * @param <T>   reference type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-    }
-
-    /**
      * Builder for reactors.
      *
      * @author Kimi Liu
@@ -295,6 +295,23 @@ public class Reactor implements AutoCloseable {
          */
         public Builder() {
             // No initialization required.
+        }
+
+        /**
+         * Closes one default resource created by this build and suppresses cleanup failure on the primary failure.
+         *
+         * @param resource resource created by this builder, or null
+         * @param failure  primary build failure
+         */
+        private static void closeCreated(final AutoCloseable resource, final Throwable failure) {
+            if (resource == null) {
+                return;
+            }
+            try {
+                resource.close();
+            } catch (final Throwable closeFailure) {
+                failure.addSuppressed(closeFailure);
+            }
         }
 
         /**
@@ -419,23 +436,6 @@ public class Reactor implements AutoCloseable {
                     closeCreated(resolvedDispatcher, failure);
                 }
                 throw failure;
-            }
-        }
-
-        /**
-         * Closes one default resource created by this build and suppresses cleanup failure on the primary failure.
-         *
-         * @param resource resource created by this builder, or null
-         * @param failure  primary build failure
-         */
-        private static void closeCreated(final AutoCloseable resource, final Throwable failure) {
-            if (resource == null) {
-                return;
-            }
-            try {
-                resource.close();
-            } catch (final Throwable closeFailure) {
-                failure.addSuppressed(closeFailure);
             }
         }
 

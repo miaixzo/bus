@@ -293,14 +293,14 @@ public class InstanceFactory implements Instance {
     private static final class Slot {
 
         /**
-         * Thread creating the value, cleared after completion to avoid retaining the thread.
-         */
-        private volatile Thread owner;
-
-        /**
          * Creation result shared by concurrent callers.
          */
         private final CompletableFuture<Object> completion;
+
+        /**
+         * Thread creating the value, cleared after completion to avoid retaining the thread.
+         */
+        private volatile Thread owner;
 
         /**
          * Creates an incomplete slot owned by the current thread.

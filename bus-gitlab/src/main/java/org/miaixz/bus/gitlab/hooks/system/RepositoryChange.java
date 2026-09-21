@@ -32,10 +32,12 @@ public class RepositoryChange {
      * The after value.
      */
     private String after;
+
     /**
      * The before value.
      */
     private String before;
+
     /**
      * The ref value.
      */

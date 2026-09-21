@@ -40,6 +40,27 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public interface JsonProvider extends Provider<String> {
 
     /**
+     * Recursively checks provider-neutral JSON container depth.
+     *
+     * @param value        current JSON value
+     * @param depth        current container depth
+     * @param maximumDepth maximum permitted container depth
+     * @throws ValidateException if the maximum depth is exceeded
+     */
+    private static void validateDepth(final JsonValue value, final int depth, final int maximumDepth) {
+        final int nested = value instanceof JsonValue.ObjectValue || value instanceof JsonValue.ArrayValue ? depth + 1
+                : depth;
+        if (nested > maximumDepth) {
+            throw new ValidateException("JSON document exceeds the maximum nesting depth");
+        }
+        if (value instanceof JsonValue.ObjectValue object) {
+            object.values().values().forEach(item -> validateDepth(item, nested, maximumDepth));
+        } else if (value instanceof JsonValue.ArrayValue array) {
+            array.values().forEach(item -> validateDepth(item, nested, maximumDepth));
+        }
+    }
+
+    /**
      * Returns the stable, non-blank provider name used by configuration, discovery and diagnostics. Implementations
      * should override this default with a short canonical name when they participate in named selection.
      *
@@ -223,27 +244,6 @@ public interface JsonProvider extends Provider<String> {
             throw new IllegalArgumentException("JSON maximum depth must be positive");
         }
         throw new InternalException("JSON provider does not support raw member extraction: " + type());
-    }
-
-    /**
-     * Recursively checks provider-neutral JSON container depth.
-     *
-     * @param value        current JSON value
-     * @param depth        current container depth
-     * @param maximumDepth maximum permitted container depth
-     * @throws ValidateException if the maximum depth is exceeded
-     */
-    private static void validateDepth(final JsonValue value, final int depth, final int maximumDepth) {
-        final int nested = value instanceof JsonValue.ObjectValue || value instanceof JsonValue.ArrayValue ? depth + 1
-                : depth;
-        if (nested > maximumDepth) {
-            throw new ValidateException("JSON document exceeds the maximum nesting depth");
-        }
-        if (value instanceof JsonValue.ObjectValue object) {
-            object.values().values().forEach(item -> validateDepth(item, nested, maximumDepth));
-        } else if (value instanceof JsonValue.ArrayValue array) {
-            array.values().forEach(item -> validateDepth(item, nested, maximumDepth));
-        }
     }
 
     /**

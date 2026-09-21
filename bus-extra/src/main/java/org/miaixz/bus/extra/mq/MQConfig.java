@@ -32,22 +32,8 @@ import java.util.Properties;
  */
 public class MQConfig implements Serializable {
 
-    /**
-     * The serialization version identifier for this class.
-     */
     @Serial
     private static final long serialVersionUID = 2852266759152L;
-
-    /**
-     * Creates a new {@code MQConfig} instance with the specified broker URL. This is a static factory method for
-     * convenient object creation.
-     *
-     * @param brokerUrl The URL or address of the MQ broker.
-     * @return A new {@link MQConfig} instance initialized with the given broker URL.
-     */
-    public static MQConfig of(final String brokerUrl) {
-        return new MQConfig(brokerUrl);
-    }
 
     /**
      * The URL or address of the MQ broker.
@@ -73,6 +59,17 @@ public class MQConfig implements Serializable {
      */
     public MQConfig(final String brokerUrl) {
         this.brokerUrl = brokerUrl;
+    }
+
+    /**
+     * Creates a new {@code MQConfig} instance with the specified broker URL. This is a static factory method for
+     * convenient object creation.
+     *
+     * @param brokerUrl The URL or address of the MQ broker.
+     * @return A new {@link MQConfig} instance initialized with the given broker URL.
+     */
+    public static MQConfig of(final String brokerUrl) {
+        return new MQConfig(brokerUrl);
     }
 
     /**

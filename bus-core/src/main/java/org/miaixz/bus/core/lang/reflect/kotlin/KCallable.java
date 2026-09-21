@@ -44,17 +44,17 @@ public class KCallable {
      */
     private static final Method METHOD_CALL;
 
+    static {
+        final Class<?> kFunctionClass = ClassKit.loadClass("kotlin.reflect.KCallable");
+        METHOD_GET_PARAMETERS = MethodKit.getMethod(kFunctionClass, "getParameters");
+        METHOD_CALL = MethodKit.getMethodByName(kFunctionClass, "call");
+    }
+
     /**
      * Constructs a new KCallable instance.
      */
     public KCallable() {
         // No initialization required.
-    }
-
-    static {
-        final Class<?> kFunctionClass = ClassKit.loadClass("kotlin.reflect.KCallable");
-        METHOD_GET_PARAMETERS = MethodKit.getMethod(kFunctionClass, "getParameters");
-        METHOD_CALL = MethodKit.getMethodByName(kFunctionClass, "call");
     }
 
     /**

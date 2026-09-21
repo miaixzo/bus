@@ -25,12 +25,8 @@ import java.util.Map;
 import org.springframework.boot.EnvironmentPostProcessor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.config.ConfigDataEnvironmentPostProcessor;
-import org.springframework.boot.context.properties.source.ConfigurationProperty;
-import org.springframework.boot.context.properties.source.ConfigurationPropertyName;
+import org.springframework.boot.context.properties.source.*;
 import org.springframework.boot.context.properties.source.ConfigurationPropertyName.Form;
-import org.springframework.boot.context.properties.source.ConfigurationPropertySource;
-import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
-import org.springframework.boot.context.properties.source.IterableConfigurationPropertySource;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
@@ -52,6 +48,7 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
      * Name of the generated logging bridge property source.
      */
     private static final String PROPERTY_SOURCE = "busLoggingNamespaceBridge";
+
     /**
      * Name of the property source containing Bus logging pattern defaults.
      */
@@ -80,6 +77,7 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
      */
     private static final ConfigurationPropertyName SOURCE_NAMESPACE = ConfigurationPropertyName
             .of(EnvironmentKeys.BUS_LOGGING_PREFIX);
+
     /**
      * Source namespace element count.
      */

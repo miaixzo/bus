@@ -384,10 +384,9 @@ public class JobApi extends AbstractApi implements Constants {
      * <code>GitLab Endpoint: GET /job?job_token=${ciJobToken}"</code>
      * </pre>
      *
+     * @param ciJobToken the ci job token value
      * @return a single job corresponding to the token passed as query parameter
      * @throws RelevantException if any exception occurs during execution
-     *
-     * @param ciJobToken the ci job token value
      */
     public Job getJob(final String ciJobToken) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("job_token", ciJobToken, true);
@@ -608,7 +607,7 @@ public class JobApi extends AbstractApi implements Constants {
 
     /**
      * Download a single artifact file from within the job's artifacts archive.
-     *
+     * <p>
      * Only a single file is going to be extracted from the archive and streamed to a client.
      *
      * <pre>
@@ -663,7 +662,7 @@ public class JobApi extends AbstractApi implements Constants {
 
     /**
      * Download a single artifact file from within the job's artifacts archive.
-     *
+     * <p>
      * Only a single file is going to be extracted from the archive and streamed to a client.
      *
      * <pre>
@@ -692,7 +691,7 @@ public class JobApi extends AbstractApi implements Constants {
 
     /**
      * Download a single artifact file from within the job's artifacts archive.
-     *
+     * <p>
      * Only a single file is going to be extracted from the archive and streamed to a client.
      *
      * <pre>
@@ -747,7 +746,7 @@ public class JobApi extends AbstractApi implements Constants {
 
     /**
      * Download a single artifact file from within the job's artifacts archive.
-     *
+     * <p>
      * Only a single file is going to be extracted from the archive and streamed to a client.
      *
      * <pre>

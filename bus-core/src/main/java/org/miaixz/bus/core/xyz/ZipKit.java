@@ -45,8 +45,8 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 /**
  * Compresses and decompresses data.
  *
- * @see ZipWriter
  * @author Kimi Liu
+ * @see ZipWriter
  */
 public class ZipKit {
 

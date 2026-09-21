@@ -53,6 +53,11 @@ final class TlsRecordWriter {
     private final Conduit transport;
 
     /**
+     * Bridge buffer drained by synchronous conduit writes, including partial writes.
+     */
+    private final Buffer encryptedOutput = new Buffer();
+
+    /**
      * Reusable direct staging buffer filled from caller-owned plaintext.
      */
     private ByteBuffer plaintext;
@@ -61,11 +66,6 @@ final class TlsRecordWriter {
      * Reusable direct staging buffer receiving records produced by the engine.
      */
     private ByteBuffer ciphertext;
-
-    /**
-     * Bridge buffer drained by synchronous conduit writes, including partial writes.
-     */
-    private final Buffer encryptedOutput = new Buffer();
 
     /**
      * Number of calls made to the TLS engine's wrap operation.
@@ -91,6 +91,21 @@ final class TlsRecordWriter {
         this.transport = transport;
         this.plaintext = ByteBuffer.allocateDirect(engine.applicationBufferSize());
         this.ciphertext = ByteBuffer.allocateDirect(engine.packetBufferSize());
+    }
+
+    /**
+     * Allocates a larger empty direct buffer using the greater of the provider hint and doubled capacity.
+     *
+     * @param current buffer whose capacity establishes the growth baseline
+     * @param hint    provider-reported minimum capacity candidate
+     * @return larger empty direct buffer in write mode
+     */
+    private static ByteBuffer grow(final ByteBuffer current, final int hint) {
+        final int capacity = Math.max(hint, current.capacity() << 1);
+        if (capacity <= current.capacity()) {
+            throw new SocketException("TLS packet buffer cannot grow safely");
+        }
+        return ByteBuffer.allocateDirect(capacity);
     }
 
     /**
@@ -166,21 +181,6 @@ final class TlsRecordWriter {
         } catch (final IOException e) {
             throw new SocketException("TLS record write failed", e);
         }
-    }
-
-    /**
-     * Allocates a larger empty direct buffer using the greater of the provider hint and doubled capacity.
-     *
-     * @param current buffer whose capacity establishes the growth baseline
-     * @param hint    provider-reported minimum capacity candidate
-     * @return larger empty direct buffer in write mode
-     */
-    private static ByteBuffer grow(final ByteBuffer current, final int hint) {
-        final int capacity = Math.max(hint, current.capacity() << 1);
-        if (capacity <= current.capacity()) {
-            throw new SocketException("TLS packet buffer cannot grow safely");
-        }
-        return ByteBuffer.allocateDirect(capacity);
     }
 
 }

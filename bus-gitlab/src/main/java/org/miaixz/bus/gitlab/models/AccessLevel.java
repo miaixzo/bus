@@ -74,6 +74,13 @@ public enum AccessLevel {
      */
     private static final Map<Integer, AccessLevel> valuesMap = new HashMap<>(9);
 
+    static {
+        for (AccessLevel accessLevel : AccessLevel.values()) {
+            valuesMap.put(accessLevel.value, accessLevel);
+        }
+        valuesMap.put(MAINTAINER.value, MAINTAINER);
+    }
+
     /**
      * Numeric GitLab access level value.
      */
@@ -81,13 +88,6 @@ public enum AccessLevel {
 
     AccessLevel(int value) {
         this.value = value;
-    }
-
-    static {
-        for (AccessLevel accessLevel : AccessLevel.values()) {
-            valuesMap.put(accessLevel.value, accessLevel);
-        }
-        valuesMap.put(MAINTAINER.value, MAINTAINER);
     }
 
     /**

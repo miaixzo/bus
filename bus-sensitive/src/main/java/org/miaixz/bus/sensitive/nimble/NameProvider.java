@@ -47,16 +47,6 @@ public class NameProvider extends AbstractProvider {
     }
 
     /**
-     * Returns the masking strategy used to register this name provider.
-     *
-     * @return {@link EnumValue.Masking#NAME}
-     */
-    @Override
-    public EnumValue.Masking type() {
-        return EnumValue.Masking.NAME;
-    }
-
-    /**
      * Masks the given Chinese name according to the defined rules.
      *
      * @param value  The Chinese name to desensitize.
@@ -87,6 +77,16 @@ public class NameProvider extends AbstractProvider {
         }
         stringBuffer.append(value.charAt(nameLength - 1));
         return stringBuffer.toString();
+    }
+
+    /**
+     * Returns the masking strategy used to register this name provider.
+     *
+     * @return {@link EnumValue.Masking#NAME}
+     */
+    @Override
+    public EnumValue.Masking type() {
+        return EnumValue.Masking.NAME;
     }
 
     /**

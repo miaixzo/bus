@@ -25,8 +25,9 @@ import java.util.Map;
 
 import jakarta.persistence.Transient;
 
-import lombok.*;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.cortex.builtin.Label;

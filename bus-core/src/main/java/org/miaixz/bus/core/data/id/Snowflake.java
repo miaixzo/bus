@@ -56,12 +56,14 @@ public class Snowflake implements Serializable {
      * Default start time: Thu, 04 Nov 2010 01:42:54 GMT
      */
     public static final long DEFAULT_TWEPOCH = 1288834974657L;
+
     private static final long WORKER_ID_BITS = 5L;
 
     /**
      * Maximum supported machine nodes: 0~31, for a total of 32.
      */
     private static final long MAX_WORKER_ID = ~(-1L << WORKER_ID_BITS);
+
     private static final long DATA_CENTER_ID_BITS = 5L;
 
     /**

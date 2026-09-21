@@ -46,11 +46,6 @@ public class CardinalityGuard {
     private static final ConcurrentHashMap<String, CardinalityPolicy> POLICIES = new ConcurrentHashMap<>();
 
     /**
-     * Default maximum distinct tag values when no explicit policy is registered.
-     */
-    private static volatile int defaultMax = Builder.CARDINALITY_DEFAULT_MAX;
-
-    /**
      * Per-tag-key cumulative violation counters for self-monitoring.
      */
     private static final ConcurrentHashMap<String, AtomicLong> VIOLATION_COUNTS = new ConcurrentHashMap<>();
@@ -59,6 +54,11 @@ public class CardinalityGuard {
      * Throttle log output to at most once per 60 seconds per tag key.
      */
     private static final ConcurrentHashMap<String, Long> LAST_LOG_TS = new ConcurrentHashMap<>();
+
+    /**
+     * Default maximum distinct tag values when no explicit policy is registered.
+     */
+    private static volatile int defaultMax = Builder.CARDINALITY_DEFAULT_MAX;
 
     /**
      * Keeps metric-cardinality policy enforcement on the static API.

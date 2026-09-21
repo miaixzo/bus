@@ -39,37 +39,19 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class Variable implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852283021997L;
-
-    /**
-     * Create a List of Variable from the provided Map.
-     *
-     * @param variables the Map to convert to a List of Variable
-     * @return the List of Variable containing the keys and values from the Map, or null if the Map is null
-     */
-    public static List<Variable> convertMapToList(Map<String, String> variables) {
-
-        if (variables == null) {
-            return null;
-        }
-
-        List<Variable> varList = new ArrayList<>(variables.size());
-        variables.forEach((k, v) -> varList.add(new Variable(k, v)));
-        return varList;
-    }
 
     /**
      * The key value.
      */
     private String key;
+
     /**
      * The value value.
      */
     private String value;
+
     /**
      * The variable type value.
      */
@@ -110,6 +92,23 @@ public class Variable implements Serializable {
     public Variable(String key, String value) {
         this.key = key;
         this.value = value;
+    }
+
+    /**
+     * Create a List of Variable from the provided Map.
+     *
+     * @param variables the Map to convert to a List of Variable
+     * @return the List of Variable containing the keys and values from the Map, or null if the Map is null
+     */
+    public static List<Variable> convertMapToList(Map<String, String> variables) {
+
+        if (variables == null) {
+            return null;
+        }
+
+        List<Variable> varList = new ArrayList<>(variables.size());
+        variables.forEach((k, v) -> varList.add(new Variable(k, v)));
+        return varList;
     }
 
     /**

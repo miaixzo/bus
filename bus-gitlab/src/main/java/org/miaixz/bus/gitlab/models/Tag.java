@@ -32,9 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Tag implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852281821331L;
 
@@ -42,18 +39,22 @@ public class Tag implements Serializable {
      * The commit value.
      */
     private Commit commit;
+
     /**
      * The message value.
      */
     private String message;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The release value.
      */
     private Release release;
+
     /**
      * The created at value.
      */

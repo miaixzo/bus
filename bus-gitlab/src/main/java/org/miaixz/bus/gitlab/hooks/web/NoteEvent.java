@@ -37,16 +37,15 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class NoteEvent extends AbstractEvent {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852232895012L;
+
     /**
      * The x gitlab event value.
      */
 
     public static final String X_GITLAB_EVENT = "Note Hook";
+
     /**
      * The object kind value.
      */
@@ -56,34 +55,42 @@ public class NoteEvent extends AbstractEvent {
      * The user value.
      */
     private EventUser user;
+
     /**
      * The project id value.
      */
     private Long projectId;
+
     /**
      * The project value.
      */
     private EventProject project;
+
     /**
      * The repository value.
      */
     private EventRepository repository;
+
     /**
      * The object attributes value.
      */
     private ObjectAttributes objectAttributes;
+
     /**
      * The commit value.
      */
     private EventCommit commit;
+
     /**
      * The issue value.
      */
     private EventIssue issue;
+
     /**
      * The merge request value.
      */
     private EventMergeRequest mergeRequest;
+
     /**
      * The snippet value.
      */
@@ -300,6 +307,17 @@ public class NoteEvent extends AbstractEvent {
     }
 
     /**
+     * Returns the string.
+     *
+     * @return the result
+     */
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
+    }
+
+    /**
      * The noteable type enum.
      *
      * @author Kimi Liu
@@ -376,10 +394,12 @@ public class NoteEvent extends AbstractEvent {
          * The id value.
          */
         private Long id;
+
         /**
          * The note value.
          */
         private String note;
+
         /**
          * The discussion id value.
          */
@@ -389,50 +409,62 @@ public class NoteEvent extends AbstractEvent {
          * The type field.
          */
         private String type;
+
         /**
          * The noteable type value.
          */
         private NoteableType noteableType;
+
         /**
          * The author id value.
          */
         private Long authorId;
+
         /**
          * The created at value.
          */
         private Date createdAt;
+
         /**
          * The updated at value.
          */
         private Date updatedAt;
+
         /**
          * The project id value.
          */
         private Long projectId;
+
         /**
          * The attachment value.
          */
         private String attachment;
+
         /**
          * The line code value.
          */
         private String lineCode;
+
         /**
          * The commit id value.
          */
         private String commitId;
+
         /**
          * The noteable id value.
          */
         private Long noteableId;
+
         /**
          * The system value.
          */
         private Boolean system;
+
         /**
          * The st diff value.
          */
         private Diff stDiff;
+
         /**
          * The url value.
          */
@@ -765,17 +797,6 @@ public class NoteEvent extends AbstractEvent {
             this.url = url;
         }
 
-    }
-
-    /**
-     * Returns the string.
-     *
-     * @return the result
-     */
-
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
     }
 
 }

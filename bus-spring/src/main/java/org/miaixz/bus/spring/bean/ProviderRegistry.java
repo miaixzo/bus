@@ -39,10 +39,12 @@ public class ProviderRegistry implements ApplicationListener<ContextClosedEvent>
      * Application context that owns this registry.
      */
     private final SpringContext context;
+
     /**
      * Bean lookup service used to discover Provider implementations.
      */
     private final BeanProvider beans;
+
     /**
      * Context-local cache of ordered Providers grouped by contract type.
      */
@@ -57,6 +59,17 @@ public class ProviderRegistry implements ApplicationListener<ContextClosedEvent>
     public ProviderRegistry(SpringContext context, BeanProvider beans) {
         this.context = Objects.requireNonNull(context, "context");
         this.beans = Objects.requireNonNull(beans, "beans");
+    }
+
+    /**
+     * Casts a provider collection after assignability has been validated.
+     *
+     * @param <T>       result type
+     * @param providers ordered providers
+     * @return the cached Provider list viewed with its declared contract type
+     */
+    private static <T> List<T> cast(Collection<?> providers) {
+        return (List<T>) providers;
     }
 
     /**
@@ -134,17 +147,6 @@ public class ProviderRegistry implements ApplicationListener<ContextClosedEvent>
         List<?> sortedProviders = new ArrayList<>(beansOfType.values());
         AnnotationAwareOrderComparator.sort(sortedProviders);
         return List.copyOf(sortedProviders);
-    }
-
-    /**
-     * Casts a provider collection after assignability has been validated.
-     *
-     * @param <T>       result type
-     * @param providers ordered providers
-     * @return the cached Provider list viewed with its declared contract type
-     */
-    private static <T> List<T> cast(Collection<?> providers) {
-        return (List<T>) providers;
     }
 
 }

@@ -57,38 +57,47 @@ public class RuntimeServices {
      * Caller-owned executor for asynchronous Source work.
      */
     private final Executor executor;
+
     /**
      * Selected project worker ports.
      */
     private final WorkerSet workers;
+
     /**
      * Framework consumer parser.
      */
     private final ConsumerParser consumerParser;
+
     /**
      * Framework federation relation parser.
      */
     private final FederationParser federationParser;
+
     /**
      * Framework secret parser.
      */
     private final SecretParser secretParser;
+
     /**
      * Framework key parser.
      */
     private final KeyParser keyParser;
+
     /**
      * Framework certificate parser.
      */
     private final CertificateParser certificateParser;
+
     /**
      * Framework subject-attribute parser.
      */
     private final AttributeParser attributeParser;
+
     /**
      * Framework protected-resource parser.
      */
     private final ResourceParser resourceParser;
+
     /**
      * Shared bus-cache backend used to create immutable Source-generation-scoped views.
      */
@@ -98,10 +107,12 @@ public class RuntimeServices {
      * Deployment identifier used to isolate authentication cache keys.
      */
     private final String cacheDeployment;
+
     /**
      * Protocol replay-prevention cache view.
      */
     private final ReplayCache replayCache;
+
     /**
      * Immutable non-relaxable runtime protocol security policies.
      */

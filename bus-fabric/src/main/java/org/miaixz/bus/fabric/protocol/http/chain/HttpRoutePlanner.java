@@ -60,46 +60,6 @@ final class HttpRoutePlanner {
     }
 
     /**
-     * Resolves request proxy configuration.
-     *
-     * @param request request
-     * @return proxy plan
-     */
-    ProxyPlan proxy(final HttpRequest request) {
-        final ProxyPlan configured = request.proxy();
-        Assert.isTrue(
-                configured.isResolved(),
-                () -> new ValidateException("HTTP route requires a resolved proxy plan"));
-        return configured;
-    }
-
-    /**
-     * Plans one immutable route.
-     *
-     * @param target    request target
-     * @param proxy     proxy plan
-     * @param nativeTls whether the connector supports native TLS
-     * @return route plan
-     */
-    Plan plan(final Address target, final ProxyPlan proxy, final boolean nativeTls) {
-        validate(proxy);
-        final Protocol protocol = target.secure() ? Protocol.HTTPS : Protocol.HTTP;
-        Options options = Options.of(Builder.OPTION_TLS, target.secure()).with(Builder.OPTION_SECURE, target.secure())
-                .with(Builder.OPTION_MULTIPLEX, protocol == Protocol.HTTP_2)
-                .with(Builder.OPTION_PROTOCOL, protocol.name).with(Builder.OPTION_ROUTE_PROXY, routeIdentity(proxy))
-                .with(Builder.OPTION_ROUTE_TUNNEL, proxy.requiresTunnel(target));
-        if (tlsPolicy != null) {
-            options = options.with(TlsPolicy.OPTION, tlsPolicy);
-        }
-        final Destination destination = Destination.of(protocol, target, options);
-        final Address connectAddress = proxy.proxy().orElseGet(
-                () -> target.secure() && !nativeTls
-                        ? new Address(Protocol.TCP.toString(), target.host(), target.port(), target.path())
-                        : target);
-        return new Plan(destination, connectAddress, proxy.requiresTunnel(target), mode(proxy));
-    }
-
-    /**
      * Validates supported proxy transports.
      *
      * @param proxy proxy plan
@@ -144,6 +104,46 @@ final class HttpRoutePlanner {
         final String authentication = proxy.authorization().size() == 0 ? ""
                 : "#auth=" + Integer.toHexString(proxy.authorization().asMap().hashCode());
         return proxy.id() + authentication;
+    }
+
+    /**
+     * Resolves request proxy configuration.
+     *
+     * @param request request
+     * @return proxy plan
+     */
+    ProxyPlan proxy(final HttpRequest request) {
+        final ProxyPlan configured = request.proxy();
+        Assert.isTrue(
+                configured.isResolved(),
+                () -> new ValidateException("HTTP route requires a resolved proxy plan"));
+        return configured;
+    }
+
+    /**
+     * Plans one immutable route.
+     *
+     * @param target    request target
+     * @param proxy     proxy plan
+     * @param nativeTls whether the connector supports native TLS
+     * @return route plan
+     */
+    Plan plan(final Address target, final ProxyPlan proxy, final boolean nativeTls) {
+        validate(proxy);
+        final Protocol protocol = target.secure() ? Protocol.HTTPS : Protocol.HTTP;
+        Options options = Options.of(Builder.OPTION_TLS, target.secure()).with(Builder.OPTION_SECURE, target.secure())
+                .with(Builder.OPTION_MULTIPLEX, protocol == Protocol.HTTP_2)
+                .with(Builder.OPTION_PROTOCOL, protocol.name).with(Builder.OPTION_ROUTE_PROXY, routeIdentity(proxy))
+                .with(Builder.OPTION_ROUTE_TUNNEL, proxy.requiresTunnel(target));
+        if (tlsPolicy != null) {
+            options = options.with(TlsPolicy.OPTION, tlsPolicy);
+        }
+        final Destination destination = Destination.of(protocol, target, options);
+        final Address connectAddress = proxy.proxy().orElseGet(
+                () -> target.secure() && !nativeTls
+                        ? new Address(Protocol.TCP.toString(), target.host(), target.port(), target.path())
+                        : target);
+        return new Plan(destination, connectAddress, proxy.requiresTunnel(target), mode(proxy));
     }
 
     /**

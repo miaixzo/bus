@@ -29,6 +29,7 @@ public class MatOfPoint2f extends Mat {
 
     // 32FC2
     private static final int _depth = CvType.CV_32F;
+
     private static final int _channels = 2;
 
     public MatOfPoint2f() {
@@ -42,10 +43,6 @@ public class MatOfPoint2f extends Mat {
         // FIXME: do we need release() here?
     }
 
-    public static MatOfPoint2f fromNativeAddr(long addr) {
-        return new MatOfPoint2f(addr);
-    }
-
     public MatOfPoint2f(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -56,6 +53,10 @@ public class MatOfPoint2f extends Mat {
     public MatOfPoint2f(Point... a) {
         super();
         fromArray(a);
+    }
+
+    public static MatOfPoint2f fromNativeAddr(long addr) {
+        return new MatOfPoint2f(addr);
     }
 
     public void alloc(int elemNumber) {

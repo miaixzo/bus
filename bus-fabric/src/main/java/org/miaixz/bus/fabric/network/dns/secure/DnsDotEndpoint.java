@@ -27,11 +27,7 @@ import java.time.Duration;
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.Lifecycle;
@@ -168,6 +164,60 @@ public class DnsDotEndpoint implements AutoCloseable, Lifecycle {
         this.tlsChannels = ConcurrentHashMap.newKeySet();
         this.started = new AtomicBoolean();
         this.closed = new AtomicBoolean();
+    }
+
+    /**
+     * Compares a candidate v2 header with the fixed PROXY protocol signature.
+     *
+     * @param header candidate v2 header
+     * @return true when the signature matches
+     */
+    private static boolean proxyV2Signature(final byte[] header) {
+        for (int index = 0; index < PROXY_V2_SIGNATURE.length; index++) {
+            if (header[index] != PROXY_V2_SIGNATURE[index]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Creates a TLS policy whose ALPN list is fixed to DNS-over-TLS.
+     *
+     * @param policy configured TLS policy
+     * @return policy with preserved TLS material and fixed DoT ALPN
+     */
+    private static TlsPolicy dotPolicy(final TlsPolicy policy) {
+        final TlsSettings source = policy.settings();
+        final TlsSettings.Builder builder = TlsSettings.builder().versions(source.versions())
+                .clientAuth(source.clientAuthMode()).verifyHostname(source.verifyHostname())
+                .certificate(source.certificate()).applicationProtocols(List.of(ALPN)).supportsTlsExtensions(true);
+        if (source.ciphers().isEmpty()) {
+            builder.allEnabledCipherSuites();
+        } else {
+            builder.ciphers(source.ciphers());
+        }
+        return TlsPolicy.of(policy.context(), builder.build());
+    }
+
+    /**
+     * Returns the peer address of an accepted channel.
+     *
+     * @param channel accepted AIO channel
+     * @return peer IP address, or {@code null} when unavailable
+     */
+    private static InetAddress remoteAddress(final AioChannel channel) {
+        final SocketAddress remote = channel.remote();
+        return remote instanceof InetSocketAddress address ? address.getAddress() : null;
+    }
+
+    /**
+     * Closes a resource while preserving the caller's primary failure.
+     *
+     * @param closeable resource to close
+     */
+    private static void closeQuietly(final AutoCloseable closeable) {
+        IoKit.closeQuietly(closeable);
     }
 
     /**
@@ -436,21 +486,6 @@ public class DnsDotEndpoint implements AutoCloseable, Lifecycle {
     }
 
     /**
-     * Compares a candidate v2 header with the fixed PROXY protocol signature.
-     *
-     * @param header candidate v2 header
-     * @return true when the signature matches
-     */
-    private static boolean proxyV2Signature(final byte[] header) {
-        for (int index = 0; index < PROXY_V2_SIGNATURE.length; index++) {
-            if (header[index] != PROXY_V2_SIGNATURE[index]) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * Writes a DNS TCP-style response frame over TLS.
      *
      * @param conduit  established TLS channel
@@ -541,45 +576,6 @@ public class DnsDotEndpoint implements AutoCloseable, Lifecycle {
                 .readBufferSize(Math.min(options.tcpMaxFrameBytes(), 8192))
                 .writeChunkSize(Math.min(options.tcpMaxFrameBytes(), 8192)).idleTimeout(options.tcpIdleTimeout())
                 .build();
-    }
-
-    /**
-     * Creates a TLS policy whose ALPN list is fixed to DNS-over-TLS.
-     *
-     * @param policy configured TLS policy
-     * @return policy with preserved TLS material and fixed DoT ALPN
-     */
-    private static TlsPolicy dotPolicy(final TlsPolicy policy) {
-        final TlsSettings source = policy.settings();
-        final TlsSettings.Builder builder = TlsSettings.builder().versions(source.versions())
-                .clientAuth(source.clientAuthMode()).verifyHostname(source.verifyHostname())
-                .certificate(source.certificate()).applicationProtocols(List.of(ALPN)).supportsTlsExtensions(true);
-        if (source.ciphers().isEmpty()) {
-            builder.allEnabledCipherSuites();
-        } else {
-            builder.ciphers(source.ciphers());
-        }
-        return TlsPolicy.of(policy.context(), builder.build());
-    }
-
-    /**
-     * Returns the peer address of an accepted channel.
-     *
-     * @param channel accepted AIO channel
-     * @return peer IP address, or {@code null} when unavailable
-     */
-    private static InetAddress remoteAddress(final AioChannel channel) {
-        final SocketAddress remote = channel.remote();
-        return remote instanceof InetSocketAddress address ? address.getAddress() : null;
-    }
-
-    /**
-     * Closes a resource while preserving the caller's primary failure.
-     *
-     * @param closeable resource to close
-     */
-    private static void closeQuietly(final AutoCloseable closeable) {
-        IoKit.closeQuietly(closeable);
     }
 
     /**

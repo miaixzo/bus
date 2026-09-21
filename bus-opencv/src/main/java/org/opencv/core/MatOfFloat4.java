@@ -29,6 +29,7 @@ public class MatOfFloat4 extends Mat {
 
     // 32FC4
     private static final int _depth = CvType.CV_32F;
+
     private static final int _channels = 4;
 
     public MatOfFloat4() {
@@ -42,10 +43,6 @@ public class MatOfFloat4 extends Mat {
         // FIXME: do we need release() here?
     }
 
-    public static MatOfFloat4 fromNativeAddr(long addr) {
-        return new MatOfFloat4(addr);
-    }
-
     public MatOfFloat4(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -56,6 +53,10 @@ public class MatOfFloat4 extends Mat {
     public MatOfFloat4(float... a) {
         super();
         fromArray(a);
+    }
+
+    public static MatOfFloat4 fromNativeAddr(long addr) {
+        return new MatOfFloat4(addr);
     }
 
     public void alloc(int elemNumber) {

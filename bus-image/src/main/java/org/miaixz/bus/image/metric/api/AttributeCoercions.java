@@ -36,9 +36,6 @@ import org.miaixz.bus.image.metric.TransferCapability;
  */
 public class AttributeCoercions implements Iterable<AttributeCoercion>, Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852262865573L;
 

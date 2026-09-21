@@ -57,6 +57,35 @@ public class TlsGuard {
     }
 
     /**
+     * Returns a validated address scheme.
+     *
+     * @param address non-null address supplying the scheme
+     * @return validated lower-case address scheme
+     * @throws ProtocolException if the scheme is invalid
+     */
+    private static String scheme(final Address address) {
+        final String scheme = address.scheme();
+        Assert.isTrue(UrlKit.isScheme(scheme), () -> new ProtocolException("Invalid TLS address scheme"));
+        return scheme.toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Returns whether a cipher suite is weak.
+     *
+     * @param cipher non-blank, single-line cipher-suite name
+     * @return {@code true} when the upper-case name contains NULL, anonymous, export, RC4, MD5, or DES weakness markers
+     * @throws ProtocolException if {@code cipher} is blank or multi-line
+     */
+    private static boolean weakCipher(final String cipher) {
+        Assert.isTrue(
+                !StringKit.isBlank(cipher) && !StringKit.containsAny(cipher, Symbol.C_CR, Symbol.C_LF),
+                () -> new ProtocolException("Invalid TLS cipher suite"));
+        final String upper = cipher.toUpperCase(Locale.ROOT);
+        return upper.contains("_NULL_") || upper.contains("_ANON_") || upper.contains("_EXPORT_")
+                || upper.contains("_RC4_") || upper.contains("_MD5") || upper.contains("_DES_");
+    }
+
+    /**
      * Checks whether an address requires TLS.
      *
      * @param address route address whose scheme is validated and security flag is checked
@@ -107,35 +136,6 @@ public class TlsGuard {
      */
     public String name() {
         return Protocol.TLS.name;
-    }
-
-    /**
-     * Returns a validated address scheme.
-     *
-     * @param address non-null address supplying the scheme
-     * @return validated lower-case address scheme
-     * @throws ProtocolException if the scheme is invalid
-     */
-    private static String scheme(final Address address) {
-        final String scheme = address.scheme();
-        Assert.isTrue(UrlKit.isScheme(scheme), () -> new ProtocolException("Invalid TLS address scheme"));
-        return scheme.toLowerCase(Locale.ROOT);
-    }
-
-    /**
-     * Returns whether a cipher suite is weak.
-     *
-     * @param cipher non-blank, single-line cipher-suite name
-     * @return {@code true} when the upper-case name contains NULL, anonymous, export, RC4, MD5, or DES weakness markers
-     * @throws ProtocolException if {@code cipher} is blank or multi-line
-     */
-    private static boolean weakCipher(final String cipher) {
-        Assert.isTrue(
-                !StringKit.isBlank(cipher) && !StringKit.containsAny(cipher, Symbol.C_CR, Symbol.C_LF),
-                () -> new ProtocolException("Invalid TLS cipher suite"));
-        final String upper = cipher.toUpperCase(Locale.ROOT);
-        return upper.contains("_NULL_") || upper.contains("_ANON_") || upper.contains("_EXPORT_")
-                || upper.contains("_RC4_") || upper.contains("_MD5") || upper.contains("_DES_");
     }
 
 }

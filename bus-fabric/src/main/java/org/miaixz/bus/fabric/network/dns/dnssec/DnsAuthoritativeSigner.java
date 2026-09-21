@@ -118,78 +118,6 @@ public class DnsAuthoritativeSigner {
     }
 
     /**
-     * Signs or appends existing signatures for response records.
-     *
-     * @param zone                 matched authoritative zone
-     * @param owner                response RRSet owner
-     * @param records              records to sign
-     * @param recordClass          DNS record class
-     * @param dnssecOk             true when the client requested DNSSEC records
-     * @param requireOnlineSigning true when dynamic data must be online signed
-     * @return records with RRSIG records appended when required
-     */
-    public List<DnsRecord> sign(
-            final DnsZone zone,
-            final String owner,
-            final List<DnsRecord> records,
-            final int recordClass,
-            final boolean dnssecOk,
-            final boolean requireOnlineSigning) {
-        validateZone(zone);
-        final String normalizedOwner = DnsName.normalize(owner);
-        final List<DnsRecord> checkedRecords = validateRecords(records);
-        if (!dnssecOk || checkedRecords.isEmpty() || rrsigOnly(checkedRecords)) {
-            return checkedRecords;
-        }
-        final ArrayList<DnsRecord> signed = new ArrayList<>(checkedRecords);
-        for (final List<DnsRecord> rrset : rrsets(checkedRecords)) {
-            final List<DnsRecord> existing = existingSignatures(zone, normalizedOwner, rrset, recordClass);
-            if (!existing.isEmpty()) {
-                signed.addAll(existing);
-                continue;
-            }
-            if (requireOnlineSigning || dnssecEnabled(zone)) {
-                final DnsRecord signature = onlineSignature(
-                        zone,
-                        normalizedOwner,
-                        rrset,
-                        recordClass,
-                        requireOnlineSigning);
-                if (signature != null) {
-                    signed.add(signature);
-                }
-            }
-        }
-        return List.copyOf(signed);
-    }
-
-    /**
-     * Creates an online RRSIG for one RRSet.
-     *
-     * @param zone                 matched authoritative zone
-     * @param owner                response RRSet owner
-     * @param rrset                RRSet to sign
-     * @param recordClass          DNS record class
-     * @param requireOnlineSigning true when missing keys are fatal
-     * @return generated RRSIG record
-     */
-    private DnsRecord onlineSignature(
-            final DnsZone zone,
-            final String owner,
-            final List<DnsRecord> rrset,
-            final int recordClass,
-            final boolean requireOnlineSigning) {
-        final DnsSigningKey key = activeSigningKey(zone);
-        if (key == null) {
-            if (requireOnlineSigning || dnssecEnabled(zone)) {
-                throw new ValidateException("DNSSEC authoritative signing key is unavailable");
-            }
-            return null;
-        }
-        return rrsig(owner, rrset, recordClass, key, signingOwner(zone, owner, rrset.getFirst()), Instant.now(clock));
-    }
-
-    /**
      * Returns existing snapshot signatures that cover one RRSet.
      *
      * @param zone        matched authoritative zone
@@ -473,22 +401,6 @@ public class DnsAuthoritativeSigner {
     }
 
     /**
-     * Finds the active signing key for a zone.
-     *
-     * @param zone authoritative zone
-     * @return active key, or {@code null}
-     */
-    private DnsSigningKey activeSigningKey(final DnsZone zone) {
-        final Instant now = Instant.now(clock);
-        for (final DnsSigningKey key : zone.signingKeys()) {
-            if (key.activeAt(now)) {
-                return key;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Groups records into same-owner, same-type RRSets.
      *
      * @param records records to group
@@ -663,6 +575,94 @@ public class DnsAuthoritativeSigner {
             }
         }
         return List.copyOf(records);
+    }
+
+    /**
+     * Signs or appends existing signatures for response records.
+     *
+     * @param zone                 matched authoritative zone
+     * @param owner                response RRSet owner
+     * @param records              records to sign
+     * @param recordClass          DNS record class
+     * @param dnssecOk             true when the client requested DNSSEC records
+     * @param requireOnlineSigning true when dynamic data must be online signed
+     * @return records with RRSIG records appended when required
+     */
+    public List<DnsRecord> sign(
+            final DnsZone zone,
+            final String owner,
+            final List<DnsRecord> records,
+            final int recordClass,
+            final boolean dnssecOk,
+            final boolean requireOnlineSigning) {
+        validateZone(zone);
+        final String normalizedOwner = DnsName.normalize(owner);
+        final List<DnsRecord> checkedRecords = validateRecords(records);
+        if (!dnssecOk || checkedRecords.isEmpty() || rrsigOnly(checkedRecords)) {
+            return checkedRecords;
+        }
+        final ArrayList<DnsRecord> signed = new ArrayList<>(checkedRecords);
+        for (final List<DnsRecord> rrset : rrsets(checkedRecords)) {
+            final List<DnsRecord> existing = existingSignatures(zone, normalizedOwner, rrset, recordClass);
+            if (!existing.isEmpty()) {
+                signed.addAll(existing);
+                continue;
+            }
+            if (requireOnlineSigning || dnssecEnabled(zone)) {
+                final DnsRecord signature = onlineSignature(
+                        zone,
+                        normalizedOwner,
+                        rrset,
+                        recordClass,
+                        requireOnlineSigning);
+                if (signature != null) {
+                    signed.add(signature);
+                }
+            }
+        }
+        return List.copyOf(signed);
+    }
+
+    /**
+     * Creates an online RRSIG for one RRSet.
+     *
+     * @param zone                 matched authoritative zone
+     * @param owner                response RRSet owner
+     * @param rrset                RRSet to sign
+     * @param recordClass          DNS record class
+     * @param requireOnlineSigning true when missing keys are fatal
+     * @return generated RRSIG record
+     */
+    private DnsRecord onlineSignature(
+            final DnsZone zone,
+            final String owner,
+            final List<DnsRecord> rrset,
+            final int recordClass,
+            final boolean requireOnlineSigning) {
+        final DnsSigningKey key = activeSigningKey(zone);
+        if (key == null) {
+            if (requireOnlineSigning || dnssecEnabled(zone)) {
+                throw new ValidateException("DNSSEC authoritative signing key is unavailable");
+            }
+            return null;
+        }
+        return rrsig(owner, rrset, recordClass, key, signingOwner(zone, owner, rrset.getFirst()), Instant.now(clock));
+    }
+
+    /**
+     * Finds the active signing key for a zone.
+     *
+     * @param zone authoritative zone
+     * @return active key, or {@code null}
+     */
+    private DnsSigningKey activeSigningKey(final DnsZone zone) {
+        final Instant now = Instant.now(clock);
+        for (final DnsSigningKey key : zone.signingKeys()) {
+            if (key.activeAt(now)) {
+                return key;
+            }
+        }
+        return null;
     }
 
     /**

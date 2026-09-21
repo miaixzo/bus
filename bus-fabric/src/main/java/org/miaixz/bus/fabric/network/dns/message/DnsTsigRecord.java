@@ -124,6 +124,62 @@ public class DnsTsigRecord {
     }
 
     /**
+     * Validates a non-negative long value.
+     *
+     * @param value value to validate
+     * @param name  diagnostic name
+     * @return validated value
+     */
+    private static long validateNonNegative(final long value, final String name) {
+        if (value < 0L) {
+            throw new ValidateException(name + " must be non-negative");
+        }
+        return value;
+    }
+
+    /**
+     * Validates a non-negative int value.
+     *
+     * @param value value to validate
+     * @param name  diagnostic name
+     * @return validated value
+     */
+    private static int validateNonNegative(final int value, final String name) {
+        if (value < 0) {
+            throw new ValidateException(name + " must be non-negative");
+        }
+        return value;
+    }
+
+    /**
+     * Copies a non-empty byte array.
+     *
+     * @param value candidate bytes
+     * @param name  diagnostic name
+     * @return copied bytes
+     */
+    private static byte[] copy(final byte[] value, final String name) {
+        if (value == null || value.length == 0) {
+            throw new ValidateException(name + " must not be empty");
+        }
+        return Arrays.copyOf(value, value.length);
+    }
+
+    /**
+     * Copies a byte array that may be empty.
+     *
+     * @param value candidate bytes
+     * @param name  diagnostic name
+     * @return copied bytes
+     */
+    private static byte[] copyAllowEmpty(final byte[] value, final String name) {
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return Arrays.copyOf(value, value.length);
+    }
+
+    /**
      * Returns the TSIG key name.
      *
      * @return canonical key name ending with a dot
@@ -229,62 +285,6 @@ public class DnsTsigRecord {
      */
     public int recordOffset() {
         return recordOffset;
-    }
-
-    /**
-     * Validates a non-negative long value.
-     *
-     * @param value value to validate
-     * @param name  diagnostic name
-     * @return validated value
-     */
-    private static long validateNonNegative(final long value, final String name) {
-        if (value < 0L) {
-            throw new ValidateException(name + " must be non-negative");
-        }
-        return value;
-    }
-
-    /**
-     * Validates a non-negative int value.
-     *
-     * @param value value to validate
-     * @param name  diagnostic name
-     * @return validated value
-     */
-    private static int validateNonNegative(final int value, final String name) {
-        if (value < 0) {
-            throw new ValidateException(name + " must be non-negative");
-        }
-        return value;
-    }
-
-    /**
-     * Copies a non-empty byte array.
-     *
-     * @param value candidate bytes
-     * @param name  diagnostic name
-     * @return copied bytes
-     */
-    private static byte[] copy(final byte[] value, final String name) {
-        if (value == null || value.length == 0) {
-            throw new ValidateException(name + " must not be empty");
-        }
-        return Arrays.copyOf(value, value.length);
-    }
-
-    /**
-     * Copies a byte array that may be empty.
-     *
-     * @param value candidate bytes
-     * @param name  diagnostic name
-     * @return copied bytes
-     */
-    private static byte[] copyAllowEmpty(final byte[] value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return Arrays.copyOf(value, value.length);
     }
 
 }

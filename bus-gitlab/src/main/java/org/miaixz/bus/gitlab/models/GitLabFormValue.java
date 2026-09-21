@@ -35,6 +35,7 @@ public class GitLabFormValue {
      * The type field.
      */
     private GitLabFormValueType type;
+
     /**
      * The required value.
      */

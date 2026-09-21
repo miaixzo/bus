@@ -41,18 +41,22 @@ public class SmcKeyIndex {
      * Maximum fan count supported by the SMC key naming scheme.
      */
     public static final int MAX_FANS = 10;
+
     /**
      * Apple Silicon GPU cluster temperature key pattern.
      */
     private static final Pattern GPU_TEMPERATURE_KEY = Pattern.compile("^Tg\\d[\\dA-Za-z]$");
+
     /**
      * Fan current-speed key pattern.
      */
     private static final Pattern FAN_SPEED_KEY = Pattern.compile("^F\\dAc$");
+
     /**
      * SMC keys are exactly four characters.
      */
     private static final int KEY_LENGTH = 4;
+
     /**
      * Maximum plausible SMC key count.
      */

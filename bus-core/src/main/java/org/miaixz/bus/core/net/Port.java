@@ -563,6 +563,16 @@ public enum Port {
             "The registered UDP port for Remote Authentication Dial-In User Service accounting traffic.");
 
     /**
+     * A private static lock object used for thread-safe lazy initialization of the {@code portMap}.
+     */
+    private static final Object LOCK = new Object();
+
+    /**
+     * A static map for efficient lookup of Port by port number. This is lazily initialized on the first call to get().
+     */
+    private static volatile Map<Integer, Port> PORT_MAP;
+
+    /**
      * Stores the integer port number (e.g., 22, 8080).
      */
     private final int port;
@@ -578,16 +588,6 @@ public enum Port {
     private final String desc;
 
     /**
-     * A static map for efficient lookup of Port by port number. This is lazily initialized on the first call to get().
-     */
-    private static volatile Map<Integer, Port> PORT_MAP;
-
-    /**
-     * A private static lock object used for thread-safe lazy initialization of the {@code portMap}.
-     */
-    private static final Object LOCK = new Object();
-
-    /**
      * Private constructor for the Port enum.
      *
      * @param port The integer port number.
@@ -598,6 +598,27 @@ public enum Port {
         this.port = port;
         this.name = name;
         this.desc = desc;
+    }
+
+    /**
+     * Finds a Port enum constant by its integer port number.
+     * <p>
+     * This method uses a lazily initialized, thread-safe cache for efficient lookups.
+     *
+     * @param portNumber The port number to search for (e.g., 22).
+     * @return An {@link Optional} containing the matching {@code Port}, or {@link Optional#empty()} if no match is
+     *         found.
+     */
+    public static Optional<Port> get(int portNumber) {
+        if (PORT_MAP == null) {
+            synchronized (LOCK) {
+                if (PORT_MAP == null) {
+                    PORT_MAP = Stream.of(values())
+                            .collect(Collectors.toUnmodifiableMap(Port::getPort, FunctionX.identity()));
+                }
+            }
+        }
+        return Optional.ofNullable(PORT_MAP.get(portNumber));
     }
 
     /**
@@ -636,27 +657,6 @@ public enum Port {
     @Override
     public String toString() {
         return String.valueOf(this.port);
-    }
-
-    /**
-     * Finds a Port enum constant by its integer port number.
-     * <p>
-     * This method uses a lazily initialized, thread-safe cache for efficient lookups.
-     *
-     * @param portNumber The port number to search for (e.g., 22).
-     * @return An {@link Optional} containing the matching {@code Port}, or {@link Optional#empty()} if no match is
-     *         found.
-     */
-    public static Optional<Port> get(int portNumber) {
-        if (PORT_MAP == null) {
-            synchronized (LOCK) {
-                if (PORT_MAP == null) {
-                    PORT_MAP = Stream.of(values())
-                            .collect(Collectors.toUnmodifiableMap(Port::getPort, FunctionX.identity()));
-                }
-            }
-        }
-        return Optional.ofNullable(PORT_MAP.get(portNumber));
     }
 
 }

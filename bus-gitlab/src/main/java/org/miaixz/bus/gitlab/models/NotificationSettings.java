@@ -35,19 +35,19 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class NotificationSettings implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852266179825L;
+
     /**
      * The level value.
      */
     private Level level;
+
     /**
      * The email value.
      */
     private String email;
+
     /**
      * The events value.
      */
@@ -211,9 +211,6 @@ public class NotificationSettings implements Serializable {
      */
     public static class Events implements Serializable {
 
-        /**
-         * The serial version uid value.
-         */
         @Serial
         private static final long serialVersionUID = 2852266282729L;
 
@@ -221,46 +218,57 @@ public class NotificationSettings implements Serializable {
          * The new note value.
          */
         private Boolean newNote;
+
         /**
          * The new issue value.
          */
         private Boolean newIssue;
+
         /**
          * The reopen issue value.
          */
         private Boolean reopenIssue;
+
         /**
          * The close issue value.
          */
         private Boolean closeIssue;
+
         /**
          * The reassign issue value.
          */
         private Boolean reassignIssue;
+
         /**
          * The new merge request value.
          */
         private Boolean newMergeRequest;
+
         /**
          * The reopen merge request value.
          */
         private Boolean reopenMergeRequest;
+
         /**
          * The close merge request value.
          */
         private Boolean closeMergeRequest;
+
         /**
          * The reassign merge request value.
          */
         private Boolean reassignMergeRequest;
+
         /**
          * The merge merge request value.
          */
         private Boolean mergeMergeRequest;
+
         /**
          * The failed pipeline value.
          */
         private Boolean failedPipeline;
+
         /**
          * The success pipeline value.
          */

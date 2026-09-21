@@ -58,6 +58,174 @@ public class StompCodec {
     }
 
     /**
+     * Parses content length.
+     *
+     * @param headers frame headers containing an optional Content-Length field
+     * @return content length or -1
+     */
+    private static long contentLength(final Headers headers) {
+        final List<String> values = headers.values(Http.Header.CONTENT_LENGTH);
+        if (values.isEmpty()) {
+            return Normal.__1;
+        }
+        if (values.size() != Normal._1) {
+            throw new ProtocolException("STOMP content-length must be unique");
+        }
+        final String value = values.getFirst();
+        if (value.isEmpty()) {
+            throw new ProtocolException("Invalid STOMP content-length");
+        }
+        for (int i = Normal._0; i < value.length(); i++) {
+            if (value.charAt(i) < Symbol.C_ZERO || value.charAt(i) > Symbol.C_NINE) {
+                throw new ProtocolException("Invalid STOMP content-length");
+            }
+        }
+        try {
+            return Long.parseLong(value);
+        } catch (final NumberFormatException e) {
+            throw new ProtocolException("Invalid STOMP content-length", e);
+        }
+    }
+
+    /**
+     * Converts a declared body length after enforcing the materialization limit.
+     *
+     * @param length declared length, or -1
+     * @return bounded length, or -1
+     */
+    private static int materializableLength(final long length) {
+        if (length < Normal.LONG_ZERO) {
+            return Normal.__1;
+        }
+        if (length > Normal.MEBI_64 || length > Integer.MAX_VALUE) {
+            throw new ProtocolException("STOMP content-length exceeds the materialization limit");
+        }
+        return (int) length;
+    }
+
+    /**
+     * Validates an inbound command without normalizing malformed wire data.
+     *
+     * @param command inbound command token exactly as received
+     */
+    private static void validateCommand(final String command) {
+        if (StringKit.isBlank(command)) {
+            throw new ProtocolException("STOMP command must not be blank");
+        }
+        for (int i = Normal._0; i < command.length(); i++) {
+            final char current = command.charAt(i);
+            if (current < 'A' || current > 'Z') {
+                throw new ProtocolException("Invalid STOMP command");
+            }
+        }
+    }
+
+    /**
+     * Escapes a header component.
+     *
+     * @param value raw STOMP header name or value
+     * @return escaped value
+     */
+    private static String escape(final String value) {
+        final StringBuilder escaped = new StringBuilder(value.length());
+        for (int i = Normal._0; i < value.length(); i++) {
+            final char current = value.charAt(i);
+            switch (current) {
+                case Symbol.C_BACKSLASH -> escaped.append("\\\\");
+                case Symbol.C_CR -> escaped.append("\\r");
+                case Symbol.C_LF -> escaped.append("\\n");
+                case Symbol.C_COLON -> escaped.append("\\c");
+                default -> escaped.append(current);
+            }
+        }
+        return escaped.toString();
+    }
+
+    /**
+     * Unescapes a header component.
+     *
+     * @param value escaped STOMP header name or value
+     * @return unescaped value
+     */
+    private static String unescape(final String value) {
+        final StringBuilder unescaped = new StringBuilder(value.length());
+        for (int i = Normal._0; i < value.length(); i++) {
+            final char current = value.charAt(i);
+            if (current != Symbol.C_BACKSLASH) {
+                unescaped.append(current);
+                continue;
+            }
+            if (++i >= value.length()) {
+                throw new ProtocolException("Invalid STOMP header escape");
+            }
+            switch (value.charAt(i)) {
+                case Symbol.C_BACKSLASH -> unescaped.append(Symbol.C_BACKSLASH);
+                case 'r' -> unescaped.append(Symbol.C_CR);
+                case 'n' -> unescaped.append(Symbol.C_LF);
+                case 'c' -> unescaped.append(Symbol.C_COLON);
+                default -> throw new ProtocolException("Invalid STOMP header escape");
+            }
+        }
+        return unescaped.toString();
+    }
+
+    /**
+     * Writes command or header text as UTF-8.
+     *
+     * @param output destination frame buffer
+     * @param value  command or escaped header text
+     */
+    private static void writeAscii(final Buffer output, final String value) {
+        output.writeUtf8(value);
+    }
+
+    /**
+     * Writes a payload body.
+     *
+     * @param output destination frame buffer
+     * @param body   body payload
+     * @param length body length, or -1 when unknown
+     */
+    private static void writeBody(final Buffer output, final Payload body, final long length) {
+        if (length < Normal.LONG_ZERO) {
+            output.write(body.bytes());
+            return;
+        }
+        final Buffer chunk = new Buffer();
+        long written = Normal.LONG_ZERO;
+        try (Source source = body.source()) {
+            while (written < length) {
+                final long read = source.read(chunk, Math.min(Normal._8192, length - written));
+                if (read < Normal.LONG_ZERO) {
+                    throw new ProtocolException("STOMP body ended before content-length");
+                }
+                if (read == Normal.LONG_ZERO) {
+                    continue;
+                }
+                output.write(chunk, read);
+                written += read;
+            }
+            if (source.read(chunk, Normal._1) >= Normal.LONG_ZERO) {
+                throw new ProtocolException("STOMP body exceeds content-length");
+            }
+        } catch (final IOException e) {
+            throw new ProtocolException("Unable to write STOMP body", e);
+        }
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Encodes a frame.
      *
      * @param frame  STOMP frame or shared heartbeat frame to encode
@@ -226,128 +394,6 @@ public class StompCodec {
     }
 
     /**
-     * Parses content length.
-     *
-     * @param headers frame headers containing an optional Content-Length field
-     * @return content length or -1
-     */
-    private static long contentLength(final Headers headers) {
-        final List<String> values = headers.values(Http.Header.CONTENT_LENGTH);
-        if (values.isEmpty()) {
-            return Normal.__1;
-        }
-        if (values.size() != Normal._1) {
-            throw new ProtocolException("STOMP content-length must be unique");
-        }
-        final String value = values.getFirst();
-        if (value.isEmpty()) {
-            throw new ProtocolException("Invalid STOMP content-length");
-        }
-        for (int i = Normal._0; i < value.length(); i++) {
-            if (value.charAt(i) < Symbol.C_ZERO || value.charAt(i) > Symbol.C_NINE) {
-                throw new ProtocolException("Invalid STOMP content-length");
-            }
-        }
-        try {
-            return Long.parseLong(value);
-        } catch (final NumberFormatException e) {
-            throw new ProtocolException("Invalid STOMP content-length", e);
-        }
-    }
-
-    /**
-     * Converts a declared body length after enforcing the materialization limit.
-     *
-     * @param length declared length, or -1
-     * @return bounded length, or -1
-     */
-    private static int materializableLength(final long length) {
-        if (length < Normal.LONG_ZERO) {
-            return Normal.__1;
-        }
-        if (length > Normal.MEBI_64 || length > Integer.MAX_VALUE) {
-            throw new ProtocolException("STOMP content-length exceeds the materialization limit");
-        }
-        return (int) length;
-    }
-
-    /**
-     * Validates an inbound command without normalizing malformed wire data.
-     *
-     * @param command inbound command token exactly as received
-     */
-    private static void validateCommand(final String command) {
-        if (StringKit.isBlank(command)) {
-            throw new ProtocolException("STOMP command must not be blank");
-        }
-        for (int i = Normal._0; i < command.length(); i++) {
-            final char current = command.charAt(i);
-            if (current < 'A' || current > 'Z') {
-                throw new ProtocolException("Invalid STOMP command");
-            }
-        }
-    }
-
-    /**
-     * Escapes a header component.
-     *
-     * @param value raw STOMP header name or value
-     * @return escaped value
-     */
-    private static String escape(final String value) {
-        final StringBuilder escaped = new StringBuilder(value.length());
-        for (int i = Normal._0; i < value.length(); i++) {
-            final char current = value.charAt(i);
-            switch (current) {
-                case Symbol.C_BACKSLASH -> escaped.append("\\\\");
-                case Symbol.C_CR -> escaped.append("\\r");
-                case Symbol.C_LF -> escaped.append("\\n");
-                case Symbol.C_COLON -> escaped.append("\\c");
-                default -> escaped.append(current);
-            }
-        }
-        return escaped.toString();
-    }
-
-    /**
-     * Unescapes a header component.
-     *
-     * @param value escaped STOMP header name or value
-     * @return unescaped value
-     */
-    private static String unescape(final String value) {
-        final StringBuilder unescaped = new StringBuilder(value.length());
-        for (int i = Normal._0; i < value.length(); i++) {
-            final char current = value.charAt(i);
-            if (current != Symbol.C_BACKSLASH) {
-                unescaped.append(current);
-                continue;
-            }
-            if (++i >= value.length()) {
-                throw new ProtocolException("Invalid STOMP header escape");
-            }
-            switch (value.charAt(i)) {
-                case Symbol.C_BACKSLASH -> unescaped.append(Symbol.C_BACKSLASH);
-                case 'r' -> unescaped.append(Symbol.C_CR);
-                case 'n' -> unescaped.append(Symbol.C_LF);
-                case 'c' -> unescaped.append(Symbol.C_COLON);
-                default -> throw new ProtocolException("Invalid STOMP header escape");
-            }
-        }
-        return unescaped.toString();
-    }
-
-    /**
-     * Writes command or header text as UTF-8.
-     *
-     * @param output destination frame buffer
-     * @param value  command or escaped header text
-     */
-    private static void writeAscii(final Buffer output, final String value) {
-        output.writeUtf8(value);
-    }
-
-    /**
      * Decodes a buffered command or header range as UTF-8.
      *
      * @param start inclusive buffered byte index
@@ -379,40 +425,6 @@ public class StompCodec {
         final Buffer target = new Buffer();
         buffer.copyTo(target, offset, length);
         return target.readByteString();
-    }
-
-    /**
-     * Writes a payload body.
-     *
-     * @param output destination frame buffer
-     * @param body   body payload
-     * @param length body length, or -1 when unknown
-     */
-    private static void writeBody(final Buffer output, final Payload body, final long length) {
-        if (length < Normal.LONG_ZERO) {
-            output.write(body.bytes());
-            return;
-        }
-        final Buffer chunk = new Buffer();
-        long written = Normal.LONG_ZERO;
-        try (Source source = body.source()) {
-            while (written < length) {
-                final long read = source.read(chunk, Math.min(Normal._8192, length - written));
-                if (read < Normal.LONG_ZERO) {
-                    throw new ProtocolException("STOMP body ended before content-length");
-                }
-                if (read == Normal.LONG_ZERO) {
-                    continue;
-                }
-                output.write(chunk, read);
-                written += read;
-            }
-            if (source.read(chunk, Normal._1) >= Normal.LONG_ZERO) {
-                throw new ProtocolException("STOMP body exceeds content-length");
-            }
-        } catch (final IOException e) {
-            throw new ProtocolException("Unable to write STOMP body", e);
-        }
     }
 
     /**
@@ -452,18 +464,6 @@ public class StompCodec {
             throw new ProtocolException("STOMP buffer index is too large");
         }
         return (int) index;
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  field name included in the validation failure
-     * @param <T>   reference type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**

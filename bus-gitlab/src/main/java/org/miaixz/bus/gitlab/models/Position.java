@@ -35,94 +35,34 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class Position implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852270036770L;
-
-    /**
-     * The position type enum.
-     *
-     * @author Kimi Liu
-     */
-    public static enum PositionType {
-
-        /**
-         * The text position type.
-         */
-        TEXT,
-        /**
-         * The image position type.
-         */
-        IMAGE,
-        /**
-         * The file position type.
-         */
-        FILE;
-
-        /**
-         * The enum codec value.
-         */
-        private static JacksonJsonEnumCodec<PositionType> enumCodec = new JacksonJsonEnumCodec<>(PositionType.class,
-                false, false);
-
-        /**
-         * Returns the value.
-         *
-         * @param value the value value
-         * @return the result
-         */
-
-        @JsonCreator
-        public static PositionType forValue(String value) {
-            return enumCodec.forValue(value);
-        }
-
-        /**
-         * Returns the value.
-         *
-         * @return the result
-         */
-
-        @JsonValue
-        public String toValue() {
-            return (enumCodec.toString(this));
-        }
-
-        /**
-         * Returns the string.
-         *
-         * @return the result
-         */
-
-        @Override
-        public String toString() {
-            return (enumCodec.toString(this));
-        }
-
-    }
 
     /**
      * The base sha value.
      */
     private String baseSha;
+
     /**
      * The start sha value.
      */
     private String startSha;
+
     /**
      * The head sha value.
      */
     private String headSha;
+
     /**
      * The old path value.
      */
     private String oldPath;
+
     /**
      * The new path value.
      */
     private String newPath;
+
     /**
      * The position type value.
      */
@@ -132,6 +72,7 @@ public class Position implements Serializable {
      * The old line value.
      */
     private Integer oldLine;
+
     /**
      * The new line value.
      */
@@ -141,14 +82,17 @@ public class Position implements Serializable {
      * The width value.
      */
     private Integer width;
+
     /**
      * The height value.
      */
     private Integer height;
+
     /**
      * The x value.
      */
     private Double x;
+
     /**
      * The y value.
      */
@@ -554,6 +498,68 @@ public class Position implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    /**
+     * The position type enum.
+     *
+     * @author Kimi Liu
+     */
+    public static enum PositionType {
+
+        /**
+         * The text position type.
+         */
+        TEXT,
+        /**
+         * The image position type.
+         */
+        IMAGE,
+        /**
+         * The file position type.
+         */
+        FILE;
+
+        /**
+         * The enum codec value.
+         */
+        private static JacksonJsonEnumCodec<PositionType> enumCodec = new JacksonJsonEnumCodec<>(PositionType.class,
+                false, false);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
+
+        @JsonCreator
+        public static PositionType forValue(String value) {
+            return enumCodec.forValue(value);
+        }
+
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
+        @JsonValue
+        public String toValue() {
+            return (enumCodec.toString(this));
+        }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
+
+        @Override
+        public String toString() {
+            return (enumCodec.toString(this));
+        }
+
     }
 
 }

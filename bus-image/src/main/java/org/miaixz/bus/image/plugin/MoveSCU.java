@@ -88,42 +88,52 @@ public class MoveSCU extends Device implements AutoCloseable {
      * The overall status of the C-MOVE operation.
      */
     private final transient Status state;
+
     /**
      * Ensures that only one C-CANCEL request is sent.
      */
     private final AtomicBoolean cancelSent = new AtomicBoolean();
+
     /**
      * The cancel listener registered with the progress object.
      */
     private final CancelListener cancelListener = this::handleCancel;
+
     /**
      * The priority of the C-MOVE request.
      */
     private int priority;
+
     /**
      * The AE Title of the destination for the C-STORE sub-operations.
      */
     private String destination;
+
     /**
      * The information model for the query.
      */
     private InformationModel model;
+
     /**
      * A filter for attributes to be included from an input file.
      */
     private int[] inFilter = DEF_IN_FILTER;
+
     /**
      * The active DICOM association.
      */
     private transient Association as;
+
     /**
      * The number of milliseconds after which to cancel the request.
      */
     private int cancelAfter;
+
     /**
      * A flag to release the association eagerly on cancellation.
      */
     private boolean releaseEager;
+
     /**
      * The handler for DIMSE responses.
      */

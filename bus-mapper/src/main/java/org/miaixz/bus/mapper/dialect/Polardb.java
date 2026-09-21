@@ -48,30 +48,6 @@ public class Polardb extends AbstractDialect {
     private final Engine engine;
 
     /**
-     * Internal Polardb engine families currently supported by the framework.
-     *
-     * @author Kimi Liu
-     */
-    private enum Engine {
-
-        /**
-         * Engine family has not been resolved.
-         */
-        UNKNOWN,
-
-        /**
-         * MySQL-compatible Polardb engine.
-         */
-        MYSQL,
-
-        /**
-         * PostgreSQL-compatible Polardb engine.
-         */
-        POSTGRESQL
-
-    }
-
-    /**
      * Creates the registry template instance used to resolve Polardb URLs.
      */
     public Polardb() {
@@ -299,6 +275,30 @@ public class Polardb extends AbstractDialect {
      */
     private IllegalStateException unresolved() {
         return new IllegalStateException("Polardb template instance must be resolved before use");
+    }
+
+    /**
+     * Internal Polardb engine families currently supported by the framework.
+     *
+     * @author Kimi Liu
+     */
+    private enum Engine {
+
+        /**
+         * Engine family has not been resolved.
+         */
+        UNKNOWN,
+
+        /**
+         * MySQL-compatible Polardb engine.
+         */
+        MYSQL,
+
+        /**
+         * PostgreSQL-compatible Polardb engine.
+         */
+        POSTGRESQL
+
     }
 
 }

@@ -31,8 +31,8 @@ import org.miaixz.bus.core.lang.Assert;
  * the parent class.
  *
  * @param <T> The type of the object being loaded.
- * @see LazyLoader
  * @author Kimi Liu
+ * @see LazyLoader
  */
 public class LazyFunLoader<T> extends LazyLoader<T> {
 

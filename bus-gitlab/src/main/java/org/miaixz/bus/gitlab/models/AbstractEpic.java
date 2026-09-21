@@ -48,9 +48,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
 @Setter
 public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic<E> implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852233623053L;
 
@@ -64,35 +61,43 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
      * The parent iid value.
      */
     private Long parentIid;
+
     /**
      * The description value.
      */
     private String description;
+
     /**
      * The state value.
      */
     private EpicState state;
+
     /**
      * The web url value.
      */
     private String webUrl;
+
     /**
      * The references value.
      */
     private References references;
+
     /**
      * The author value.
      */
     private Author author;
+
     /**
      * The labels value.
      */
     private List<String> labels;
+
     /**
      * The due date value.
      */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date dueDate;
+
     /**
      * The end date value.
      */
@@ -100,36 +105,30 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
     private Date endDate;
 
     /**
-     * Sets the description and returns this epic model.
-     *
-     * @param description the epic description
-     * @return this epic model
-     */
-    public E withDescription(String description) {
-        this.description = description;
-        return (E) (this);
-    }
-
-    /**
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The updated at value.
      */
     private Date updatedAt;
+
     /**
      * The closed at value.
      */
     private Date closedAt;
+
     /**
      * The downvotes value.
      */
     private Integer downvotes;
+
     /**
      * The upvotes value.
      */
     private Integer upvotes;
+
     /**
      * The color value.
      */
@@ -146,6 +145,17 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
      */
     public AbstractEpic() {
         // No initialization required.
+    }
+
+    /**
+     * Sets the description and returns this epic model.
+     *
+     * @param description the epic description
+     * @return this epic model
+     */
+    public E withDescription(String description) {
+        this.description = description;
+        return (E) (this);
     }
 
     /**
@@ -190,6 +200,32 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
     public E withEndDate(Date endDate) {
         this.endDate = endDate;
         return (E) (this);
+    }
+
+    /**
+     * Returns a link by its API link name.
+     *
+     * @param name the link name
+     * @return the matching link or {@code null}
+     */
+    @JsonIgnore
+    public String getLinkByName(String name) {
+        if (links == null || links.isEmpty()) {
+            return (null);
+        }
+
+        return (links.get(name));
+    }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
     }
 
     /**
@@ -249,32 +285,6 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
             return (enumCodec.toString(this));
         }
 
-    }
-
-    /**
-     * Returns a link by its API link name.
-     *
-     * @param name the link name
-     * @return the matching link or {@code null}
-     */
-    @JsonIgnore
-    public String getLinkByName(String name) {
-        if (links == null || links.isEmpty()) {
-            return (null);
-        }
-
-        return (links.get(name));
-    }
-
-    /**
-     * Returns the string.
-     *
-     * @return the result
-     */
-
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
     }
 
 }

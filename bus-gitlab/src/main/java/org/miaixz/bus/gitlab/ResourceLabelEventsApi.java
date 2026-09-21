@@ -31,8 +31,8 @@ import org.miaixz.bus.gitlab.models.LabelEvent;
 /**
  * This class provides an entry point to all the GitLab Resource label events API
  *
- * @see <a href="https://docs.gitlab.com/ce/api/resource_label_events.html">Resource label events API at GitLab</a>
  * @author Kimi Liu
+ * @see <a href="https://docs.gitlab.com/ce/api/resource_label_events.html">Resource label events API at GitLab</a>
  */
 public class ResourceLabelEventsApi extends AbstractApi {
 

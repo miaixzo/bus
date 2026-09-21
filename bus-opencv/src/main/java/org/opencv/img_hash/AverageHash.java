@@ -20,9 +20,10 @@
 package org.opencv.img_hash;
 
 // C++: class AverageHash
+
 /**
  * Computes average hash value of the input image
- *
+ * <p>
  * This is a fast image hashing algorithm, but only work on simple case. For more details, please refer to CITE:
  * lookslikeit
  */

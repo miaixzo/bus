@@ -33,16 +33,15 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class WorkItemEvent extends AbstractEvent {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852233532039L;
+
     /**
      * The x gitlab event value.
      */
 
     public static final String X_GITLAB_EVENT = "Issue Hook";
+
     /**
      * The object kind value.
      */
@@ -52,22 +51,27 @@ public class WorkItemEvent extends AbstractEvent {
      * The user value.
      */
     private User user;
+
     /**
      * The project value.
      */
     private EventProject project;
+
     /**
      * The repository value.
      */
     private EventRepository repository;
+
     /**
      * The object attributes value.
      */
     private ObjectAttributes objectAttributes;
+
     /**
      * The labels value.
      */
     private List<EventLabel> labels;
+
     /**
      * The changes value.
      */

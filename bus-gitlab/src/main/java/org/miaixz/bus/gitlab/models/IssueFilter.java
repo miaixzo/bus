@@ -45,9 +45,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class IssueFilter implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852257636989L;
 
@@ -155,6 +152,7 @@ public class IssueFilter implements Serializable {
     }
 
     /*- properties -*/
+
     /**
      * Returns the iids.
      *
@@ -185,6 +183,16 @@ public class IssueFilter implements Serializable {
     }
 
     /**
+     * Sets the in.
+     *
+     * @param in the in value
+     */
+
+    public void setIn(List<String> in) {
+        this.in = in;
+    }
+
+    /**
      * Returns the state.
      *
      * @return the result
@@ -204,17 +212,8 @@ public class IssueFilter implements Serializable {
         this.state = state;
     }
 
-    /**
-     * Sets the in.
-     *
-     * @param in the in value
-     */
-
-    public void setIn(List<String> in) {
-        this.in = in;
-    }
-
     /*- builder -*/
+
     /**
      * Sets the iids and returns this instance.
      *
@@ -527,6 +526,7 @@ public class IssueFilter implements Serializable {
     }
 
     /*- params generator -*/
+
     /**
      * Returns the query params.
      *
@@ -759,7 +759,6 @@ public class IssueFilter implements Serializable {
      * Add iids to the 'not' filter entry.
      *
      * @param iids the iids to add to the filter
-     *
      * @return the reference to this IssueFilter instance
      */
     public IssueFilter withoutIids(String... iids) {
@@ -866,6 +865,17 @@ public class IssueFilter implements Serializable {
                         .withParam("iteration_title", iterationTitle).withParam("not", toStringMap(not), false);
     }
 
+    private Map<String, Object> toStringMap(Map<IssueField, Object> map) {
+        if (map == null) {
+            return null;
+        }
+        Map<String, Object> result = new LinkedHashMap<>();
+        for (Map.Entry<IssueField, Object> entry : map.entrySet()) {
+            result.put(entry.getKey().toString(), entry.getValue());
+        }
+        return result;
+    }
+
     /**
      * The issue field enum.
      *
@@ -953,17 +963,6 @@ public class IssueFilter implements Serializable {
             return (enumCodec.toString(this));
         }
 
-    }
-
-    private Map<String, Object> toStringMap(Map<IssueField, Object> map) {
-        if (map == null) {
-            return null;
-        }
-        Map<String, Object> result = new LinkedHashMap<>();
-        for (Map.Entry<IssueField, Object> entry : map.entrySet()) {
-            result.put(entry.getKey().toString(), entry.getValue());
-        }
-        return result;
     }
 
 }

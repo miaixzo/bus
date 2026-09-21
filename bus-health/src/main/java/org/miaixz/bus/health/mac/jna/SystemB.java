@@ -41,50 +41,62 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      * Singleton instance of the SystemB library.
      */
     SystemB INSTANCE = Native.load("System", SystemB.class);
+
     /**
      * Command to list file descriptors for a process.
      */
     int PROC_PIDLISTFDS = 1;
+
     /**
      * File descriptor type for a socket.
      */
     int PROX_FDTYPE_SOCKET = 2;
+
     /**
      * Command to get socket information for a process file descriptor.
      */
     int PROC_PIDFDSOCKETINFO = 3;
+
     /**
      * Number of timers in the TCP socket info structure.
      */
     int TSI_T_NTIMERS = 4;
+
     /**
      * Socket information flag for internet sockets.
      */
     int SOCKINFO_IN = 1;
+
     /**
      * Socket information flag for TCP sockets.
      */
     int SOCKINFO_TCP = 2;
+
     /**
      * Size of the ut_user field in the utmpx structure.
      */
     int UTX_USERSIZE = 256;
+
     /**
      * Size of the ut_line field in the utmpx structure.
      */
     int UTX_LINESIZE = 32;
+
     /**
      * Size of the ut_id field in the utmpx structure.
      */
     int UTX_IDSIZE = 4;
+
     /**
      * Size of the ut_host field in the utmpx structure.
      */
     int UTX_HOSTSIZE = 256;
+
     /**
      * The Internet Protocol version 4 (IPv4) address family.
      */
     int AF_INET = 2;
+
     /**
      * The Internet Protocol version 6 (IPv6) address family.
      */

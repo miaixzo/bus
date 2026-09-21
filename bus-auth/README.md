@@ -206,9 +206,9 @@ CompletionStage<Outcome<Identity>> identity = runtime.dispatcher().invoke(
         timeout);
 ```
 
-Device flows use `DeviceStart` and `DevicePoll`; direct flows use `Direct` or `OneTimeCode`. All successful paths converge
-on a verified `Identity`. Bus Auth does not bind that identity to a local account—the integrating project owns that
-decision.
+Device flows use `DeviceStart` and `DevicePoll`; direct flows use `Direct` or `OneTimeCode`. All successful paths
+converge on a verified `Identity`. Bus Auth does not bind that identity to a local account—the integrating project owns
+that decision.
 
 ### Realm and protocol operations
 
@@ -351,23 +351,23 @@ explicit extension path when service discovery is not desired.
 - `WorkerSlots` declares required project data ports; `SourceDriver.Dependencies` declares required framework services.
 - Stable Source IDs, Vendor IDs, Variant IDs, capability keys, endpoint targets, scopes, cursors, and wire behavior form
   the public compatibility boundary.
-- Diagnostic values and `Roster.Fault` must not expose options bodies, tokens, credentials, exceptions, stack traces,
-  or platform payloads.
+- Diagnostic values and `Roster.Fault` must not expose options bodies, tokens, credentials, exceptions, stack traces, or
+  platform payloads.
 
 ## Package responsibilities
 
-| Package | Responsibility |
-|:--|:--|
-| `org.miaixz.bus.auth` | Domain values, `Authorize`, `Registry`, `Roster`, `Dispatcher`, `Policies`, and `Realm` |
-| `org.miaixz.bus.auth.source` | Source discovery, descriptors, modules, drivers, workflows, and scoped service contract |
-| `org.miaixz.bus.auth.source.protocol` | Formal protocol registration and protocol-specific child packages |
-| `org.miaixz.bus.auth.source.vendor` | Vendor manifests, options, connectors, adapters, lookup, and configuration |
-| `org.miaixz.bus.auth.registry` | Complete Blueprint validation and immutable Roster projections |
-| `org.miaixz.bus.auth.runtime` | Runtime assembly, scoped services, atomic reload, dispatch, and lifecycle |
-| `org.miaixz.bus.auth.worker` | Project action ports, Worker slots, listeners, sessions, and compiled Source workers |
-| `org.miaixz.bus.auth.worker.loader` | Asynchronous project-owned data-loading ports |
-| `org.miaixz.bus.auth.resolver` | Pure validation and parsing of project-loaded records |
-| `org.miaixz.bus.auth.shared` | Cross-protocol JOSE, JWT, PKCE, DPoP, claims, and related security building blocks |
+| Package                               | Responsibility                                                                          |
+|:--------------------------------------|:----------------------------------------------------------------------------------------|
+| `org.miaixz.bus.auth`                 | Domain values, `Authorize`, `Registry`, `Roster`, `Dispatcher`, `Policies`, and `Realm` |
+| `org.miaixz.bus.auth.source`          | Source discovery, descriptors, modules, drivers, workflows, and scoped service contract |
+| `org.miaixz.bus.auth.source.protocol` | Formal protocol registration and protocol-specific child packages                       |
+| `org.miaixz.bus.auth.source.vendor`   | Vendor manifests, options, connectors, adapters, lookup, and configuration              |
+| `org.miaixz.bus.auth.registry`        | Complete Blueprint validation and immutable Roster projections                          |
+| `org.miaixz.bus.auth.runtime`         | Runtime assembly, scoped services, atomic reload, dispatch, and lifecycle               |
+| `org.miaixz.bus.auth.worker`          | Project action ports, Worker slots, listeners, sessions, and compiled Source workers    |
+| `org.miaixz.bus.auth.worker.loader`   | Asynchronous project-owned data-loading ports                                           |
+| `org.miaixz.bus.auth.resolver`        | Pure validation and parsing of project-loaded records                                   |
+| `org.miaixz.bus.auth.shared`          | Cross-protocol JOSE, JWT, PKCE, DPoP, claims, and related security building blocks      |
 
 ## Build
 

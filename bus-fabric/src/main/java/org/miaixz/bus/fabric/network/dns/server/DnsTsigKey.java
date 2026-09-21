@@ -171,63 +171,6 @@ public class DnsTsigKey {
     }
 
     /**
-     * Returns the canonical key owner name.
-     *
-     * @return key owner name ending with a dot
-     */
-    public String name() {
-        return name;
-    }
-
-    /**
-     * Returns the canonical TSIG algorithm DNS name.
-     *
-     * @return TSIG algorithm name ending with a dot
-     */
-    public String algorithmName() {
-        return algorithmName;
-    }
-
-    /**
-     * Returns the Java Cryptography Architecture MAC algorithm name.
-     *
-     * @return JCA MAC algorithm name
-     */
-    public String macAlgorithm() {
-        return macAlgorithm;
-    }
-
-    /**
-     * Returns the maximum MAC length carried by this TSIG algorithm.
-     *
-     * @return maximum MAC bytes
-     */
-    public int macLengthBytes() {
-        return macLengthBytes;
-    }
-
-    /**
-     * Returns a copy of the raw shared secret bytes.
-     *
-     * @return shared secret copy
-     */
-    public byte[] secret() {
-        return Arrays.copyOf(secret, secret.length);
-    }
-
-    /**
-     * Returns whether this key matches a parsed TSIG owner and algorithm.
-     *
-     * @param candidateName      parsed TSIG owner name
-     * @param candidateAlgorithm parsed TSIG algorithm name
-     * @return true when both names match canonically
-     */
-    public boolean matches(final String candidateName, final String candidateAlgorithm) {
-        return name.equals(DnsName.normalize(candidateName))
-                && algorithmName.equals(DnsName.normalize(candidateAlgorithm));
-    }
-
-    /**
      * Resolves metadata for a TSIG algorithm DNS name.
      *
      * @param algorithmName TSIG algorithm DNS name
@@ -286,6 +229,63 @@ public class DnsTsigKey {
             throw new ValidateException("DNS TSIG key secret must not be empty");
         }
         return Arrays.copyOf(value, value.length);
+    }
+
+    /**
+     * Returns the canonical key owner name.
+     *
+     * @return key owner name ending with a dot
+     */
+    public String name() {
+        return name;
+    }
+
+    /**
+     * Returns the canonical TSIG algorithm DNS name.
+     *
+     * @return TSIG algorithm name ending with a dot
+     */
+    public String algorithmName() {
+        return algorithmName;
+    }
+
+    /**
+     * Returns the Java Cryptography Architecture MAC algorithm name.
+     *
+     * @return JCA MAC algorithm name
+     */
+    public String macAlgorithm() {
+        return macAlgorithm;
+    }
+
+    /**
+     * Returns the maximum MAC length carried by this TSIG algorithm.
+     *
+     * @return maximum MAC bytes
+     */
+    public int macLengthBytes() {
+        return macLengthBytes;
+    }
+
+    /**
+     * Returns a copy of the raw shared secret bytes.
+     *
+     * @return shared secret copy
+     */
+    public byte[] secret() {
+        return Arrays.copyOf(secret, secret.length);
+    }
+
+    /**
+     * Returns whether this key matches a parsed TSIG owner and algorithm.
+     *
+     * @param candidateName      parsed TSIG owner name
+     * @param candidateAlgorithm parsed TSIG algorithm name
+     * @return true when both names match canonically
+     */
+    public boolean matches(final String candidateName, final String candidateAlgorithm) {
+        return name.equals(DnsName.normalize(candidateName))
+                && algorithmName.equals(DnsName.normalize(candidateAlgorithm));
     }
 
     /**

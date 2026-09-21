@@ -65,6 +65,81 @@ public abstract class FabricX {
     }
 
     /**
+     * Applies headers to a Fabric HTTP builder.
+     *
+     * @param headers headers
+     * @param builder builder
+     */
+    private static void apply(final Header[] headers, final HttpX.Builder builder) {
+        if (headers == null || headers.length == 0) {
+            return;
+        }
+        for (final Header header : headers) {
+            if (header != null && header.name != null && header.value != null) {
+                builder.header(header.name, header.value);
+            }
+        }
+    }
+
+    /**
+     * Parses a duration in seconds.
+     *
+     * @param value        configured value
+     * @param defaultValue default value
+     * @return duration
+     */
+    private static Duration seconds(final long value, final long defaultValue) {
+        return Duration.ofSeconds(value <= 0 ? defaultValue : value);
+    }
+
+    /**
+     * Parses a valid content type.
+     *
+     * @param contentType content type
+     * @return media type
+     */
+    private static MediaType media(final String contentType) {
+        if (StringKit.isBlank(contentType) || StringKit.containsAny(contentType, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException("Content-Type must be non-blank and single-line");
+        }
+        return MediaType.parse(contentType);
+    }
+
+    /**
+     * Returns the last response header value.
+     *
+     * @param response storage response
+     * @param name     header name
+     * @return header value
+     */
+    protected static String header(final Response response, final String name) {
+        return response.header(name);
+    }
+
+    /**
+     * Returns the last response header value or the default value when absent.
+     *
+     * @param response     storage response
+     * @param name         header name
+     * @param defaultValue default value
+     * @return header value
+     */
+    protected static String header(final Response response, final String name, final String defaultValue) {
+        final String value = header(response, name);
+        return value == null ? defaultValue : value;
+    }
+
+    /**
+     * Opens the response body as an input stream and closes the response when the stream is closed.
+     *
+     * @param response storage response
+     * @return response body stream
+     */
+    protected static InputStream stream(final Response response) {
+        return response.stream();
+    }
+
+    /**
      * Sends a GET request.
      *
      * @param url     URL
@@ -280,23 +355,6 @@ public abstract class FabricX {
     }
 
     /**
-     * Applies headers to a Fabric HTTP builder.
-     *
-     * @param headers headers
-     * @param builder builder
-     */
-    private static void apply(final Header[] headers, final HttpX.Builder builder) {
-        if (headers == null || headers.length == 0) {
-            return;
-        }
-        for (final Header header : headers) {
-            if (header != null && header.name != null && header.value != null) {
-                builder.header(header.name, header.value);
-            }
-        }
-    }
-
-    /**
      * Builds the Fabric context for one storage HTTP call.
      *
      * @return Fabric context
@@ -311,70 +369,12 @@ public abstract class FabricX {
     }
 
     /**
-     * Parses a duration in seconds.
-     *
-     * @param value        configured value
-     * @param defaultValue default value
-     * @return duration
-     */
-    private static Duration seconds(final long value, final long defaultValue) {
-        return Duration.ofSeconds(value <= 0 ? defaultValue : value);
-    }
-
-    /**
-     * Parses a valid content type.
-     *
-     * @param contentType content type
-     * @return media type
-     */
-    private static MediaType media(final String contentType) {
-        if (StringKit.isBlank(contentType) || StringKit.containsAny(contentType, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Content-Type must be non-blank and single-line");
-        }
-        return MediaType.parse(contentType);
-    }
-
-    /**
      * Header pair.
      *
      * @param name  header name
      * @param value header value
      */
     protected record Header(String name, Object value) {
-    }
-
-    /**
-     * Returns the last response header value.
-     *
-     * @param response storage response
-     * @param name     header name
-     * @return header value
-     */
-    protected static String header(final Response response, final String name) {
-        return response.header(name);
-    }
-
-    /**
-     * Returns the last response header value or the default value when absent.
-     *
-     * @param response     storage response
-     * @param name         header name
-     * @param defaultValue default value
-     * @return header value
-     */
-    protected static String header(final Response response, final String name, final String defaultValue) {
-        final String value = header(response, name);
-        return value == null ? defaultValue : value;
-    }
-
-    /**
-     * Opens the response body as an input stream and closes the response when the stream is closed.
-     *
-     * @param response storage response
-     * @return response body stream
-     */
-    protected static InputStream stream(final Response response) {
-        return response.stream();
     }
 
     /**

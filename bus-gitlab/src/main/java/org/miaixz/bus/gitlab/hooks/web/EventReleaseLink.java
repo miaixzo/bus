@@ -32,18 +32,22 @@ public class EventReleaseLink {
      * The id value.
      */
     private Long id;
+
     /**
      * The external value.
      */
     private Boolean external;
+
     /**
      * The link type value.
      */
     private String linkType;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The url value.
      */

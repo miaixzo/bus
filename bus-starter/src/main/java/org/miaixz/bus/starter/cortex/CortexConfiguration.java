@@ -117,6 +117,42 @@ public class CortexConfiguration {
     }
 
     /**
+     * Creates the default setting source adapters used by the starter.
+     *
+     * @return ordered setting source adapters
+     */
+    private static List<ItemSourceAdapter> settingSourceAdapters() {
+        return List.of(
+                new InlineSourceAdapter(),
+                new EnvSourceAdapter(),
+                new StoredContentSourceAdapter("JDBC"),
+                new StoredContentSourceAdapter("REDIS"),
+                new StoredContentSourceAdapter("S3"));
+    }
+
+    /**
+     * Narrows the raw cache bean used by Spring auto-configuration to Cortex's cache key/value convention.
+     *
+     * @param cache shared cache bean
+     * @return cache view using string keys and object values
+     */
+    private static CacheX<String, Object> cache(CacheX cache) {
+        return (CacheX<String, Object>) cache;
+    }
+
+    /**
+     * Wraps the shared registry store as a typed Cortex registry store without unchecked casts in bean methods.
+     *
+     * @param store shared registry store
+     * @param type  target asset subtype
+     * @param <T>   target asset subtype
+     * @return typed store view
+     */
+    private static <T extends Assets> RegistryStore<T> typedStore(RegistryStore<Assets> store, Class<T> type) {
+        return store == null ? null : new TypedRegistryStore<>(store, type);
+    }
+
+    /**
      * Creates the default Cortex cache through the shared cache factory.
      * <p>
      * Cortex first resolves {@code bus.cortex.cache.*}. When no Cortex-specific backend settings are present, it falls
@@ -595,20 +631,6 @@ public class CortexConfiguration {
     }
 
     /**
-     * Creates the default setting source adapters used by the starter.
-     *
-     * @return ordered setting source adapters
-     */
-    private static List<ItemSourceAdapter> settingSourceAdapters() {
-        return List.of(
-                new InlineSourceAdapter(),
-                new EnvSourceAdapter(),
-                new StoredContentSourceAdapter("JDBC"),
-                new StoredContentSourceAdapter("REDIS"),
-                new StoredContentSourceAdapter("S3"));
-    }
-
-    /**
      * Binds Cortex-specific cache properties onto the starter default cache options.
      *
      * @param environment Spring environment used for property binding
@@ -681,28 +703,6 @@ public class CortexConfiguration {
             }
         }
         return false;
-    }
-
-    /**
-     * Narrows the raw cache bean used by Spring auto-configuration to Cortex's cache key/value convention.
-     *
-     * @param cache shared cache bean
-     * @return cache view using string keys and object values
-     */
-    private static CacheX<String, Object> cache(CacheX cache) {
-        return (CacheX<String, Object>) cache;
-    }
-
-    /**
-     * Wraps the shared registry store as a typed Cortex registry store without unchecked casts in bean methods.
-     *
-     * @param store shared registry store
-     * @param type  target asset subtype
-     * @param <T>   target asset subtype
-     * @return typed store view
-     */
-    private static <T extends Assets> RegistryStore<T> typedStore(RegistryStore<Assets> store, Class<T> type) {
-        return store == null ? null : new TypedRegistryStore<>(store, type);
     }
 
     /**

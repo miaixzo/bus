@@ -60,6 +60,42 @@ public class DnsDynamicUpdateHandler {
     }
 
     /**
+     * Returns whether the update zone section exactly targets the selected authoritative zone.
+     *
+     * @param zone  selected zone, or {@code null} when no zone matched
+     * @param query decoded DNS update query
+     * @return {@code true} when the update zone equals the selected zone origin
+     */
+    private static boolean zoneMatchesUpdateQuestion(final DnsZone zone, final DnsQuery query) {
+        return zone != null && zone.origin().equals(query.question().name());
+    }
+
+    /**
+     * Applies an external sink result.
+     *
+     * @param query     decoded DNS update query
+     * @param result    sink result
+     * @param installer accepted-snapshot installer supplied by the DNS server
+     * @return DNS update response model
+     */
+    private static DnsResponse applyResult(
+            final DnsQuery query,
+            final DnsUpdateResult result,
+            final SnapshotInstaller installer) {
+        if (result == null) {
+            return DnsResponse.empty(query, DnsResponseCode.SERVFAIL, false);
+        }
+        if (result.responseCode() == DnsUpdateResult.REFUSED) {
+            return DnsResponse.empty(query, DnsResponseCode.REFUSED, false);
+        }
+        final DnsSnapshot snapshot = result.snapshot();
+        if (snapshot != null) {
+            installer.install(snapshot);
+        }
+        return DnsResponse.empty(query, DnsResponseCode.fromCode(result.responseCode()), false);
+    }
+
+    /**
      * Handles a DNS Dynamic Update request.
      *
      * @param current       active runtime index
@@ -97,42 +133,6 @@ public class DnsDynamicUpdateHandler {
         } catch (final RuntimeException e) {
             return DnsResponse.empty(query, DnsResponseCode.SERVFAIL, false);
         }
-    }
-
-    /**
-     * Returns whether the update zone section exactly targets the selected authoritative zone.
-     *
-     * @param zone  selected zone, or {@code null} when no zone matched
-     * @param query decoded DNS update query
-     * @return {@code true} when the update zone equals the selected zone origin
-     */
-    private static boolean zoneMatchesUpdateQuestion(final DnsZone zone, final DnsQuery query) {
-        return zone != null && zone.origin().equals(query.question().name());
-    }
-
-    /**
-     * Applies an external sink result.
-     *
-     * @param query     decoded DNS update query
-     * @param result    sink result
-     * @param installer accepted-snapshot installer supplied by the DNS server
-     * @return DNS update response model
-     */
-    private static DnsResponse applyResult(
-            final DnsQuery query,
-            final DnsUpdateResult result,
-            final SnapshotInstaller installer) {
-        if (result == null) {
-            return DnsResponse.empty(query, DnsResponseCode.SERVFAIL, false);
-        }
-        if (result.responseCode() == DnsUpdateResult.REFUSED) {
-            return DnsResponse.empty(query, DnsResponseCode.REFUSED, false);
-        }
-        final DnsSnapshot snapshot = result.snapshot();
-        if (snapshot != null) {
-            installer.install(snapshot);
-        }
-        return DnsResponse.empty(query, DnsResponseCode.fromCode(result.responseCode()), false);
     }
 
     /**

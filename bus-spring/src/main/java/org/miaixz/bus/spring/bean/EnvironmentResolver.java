@@ -36,14 +36,17 @@ public class EnvironmentResolver {
      * Spring application name property key.
      */
     private static final String APPLICATION_NAME = "spring.application.name";
+
     /**
      * Development profile name.
      */
     private static final String DEVELOPMENT_PROFILE = "dev";
+
     /**
      * Test profile name.
      */
     private static final String TEST_PROFILE = "test";
+
     /**
      * Production profile name.
      */
@@ -61,6 +64,19 @@ public class EnvironmentResolver {
      */
     public EnvironmentResolver(Environment environment) {
         this.environment = Objects.requireNonNull(environment, "environment");
+    }
+
+    /**
+     * Validates the key.
+     *
+     * @param key lookup key
+     * @return the trimmed, non-empty property key
+     */
+    private static String requireKey(String key) {
+        if (key == null || key.isBlank()) {
+            throw new IllegalArgumentException("Property key must not be blank");
+        }
+        return key;
     }
 
     /**
@@ -179,19 +195,6 @@ public class EnvironmentResolver {
     private boolean hasProfile(String expected) {
         return Arrays.stream(getActiveProfiles()).map(profile -> profile.toLowerCase(Locale.ROOT))
                 .anyMatch(expected::equals);
-    }
-
-    /**
-     * Validates the key.
-     *
-     * @param key lookup key
-     * @return the trimmed, non-empty property key
-     */
-    private static String requireKey(String key) {
-        if (key == null || key.isBlank()) {
-            throw new IllegalArgumentException("Property key must not be blank");
-        }
-        return key;
     }
 
 }

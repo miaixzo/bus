@@ -20,17 +20,7 @@
 package org.miaixz.bus.core.center.stream;
 
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
+import java.util.function.*;
 import java.util.stream.*;
 
 /**
@@ -43,12 +33,12 @@ import java.util.stream.*;
  *
  * @param <T> the type of the elements in the stream
  * @param <S> the type of the {@link WrappedStream} implementation itself
+ * @author Kimi Liu
  * @see TerminableWrappedStream
  * @see TransformableWrappedStream
  * @see EnhancedWrappedStream
  * @see EasyStream
  * @see EntryStream
- * @author Kimi Liu
  */
 public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<T>, Iterable<T> {
 

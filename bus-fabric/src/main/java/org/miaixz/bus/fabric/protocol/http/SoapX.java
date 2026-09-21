@@ -57,6 +57,11 @@ public class SoapX {
     private final Context context;
 
     /**
+     * Additional HTTP request headers supplied by the caller.
+     */
+    private final Headers.Builder headers;
+
+    /**
      * Current HTTP target URL.
      */
     private UnoUrl url;
@@ -70,11 +75,6 @@ public class SoapX {
      * Character encoding used for SOAP XML serialization.
      */
     private Charset charset;
-
-    /**
-     * Additional HTTP request headers supplied by the caller.
-     */
-    private final Headers.Builder headers;
 
     /**
      * Optional SOAPAction request header value.
@@ -146,6 +146,146 @@ public class SoapX {
      */
     public static SoapX of(final Context context, final UnoUrl url) {
         return new SoapX(context, url);
+    }
+
+    /**
+     * Extracts a SOAP fault when present.
+     *
+     * @param message SOAP message whose body is inspected
+     * @return contained SOAP fault, or {@code null} when the body has no fault
+     */
+    public static SOAPFault fault(final SOAPMessage message) {
+        try {
+            return require(message, "SOAP message").getSOAPBody().hasFault() ? message.getSOAPBody().getFault() : null;
+        } catch (final SOAPException e) {
+            throw new InternalException("Unable to read SOAP fault", e);
+        }
+    }
+
+    /**
+     * Adds a SOAP element.
+     *
+     * @param parent parent SOAP element receiving the child
+     * @param name   child element name
+     * @param value  scalar value, nested map, SOAP element, or {@code null}
+     * @param prefix optional namespace prefix inherited by nested map elements
+     * @return newly added child SOAP element
+     */
+    private static SOAPElement addElement(
+            final SOAPElement parent,
+            final String name,
+            final Object value,
+            final String prefix) {
+        try {
+            final SOAPElement child = StringKit.isBlank(prefix) ? parent.addChildElement(name(name, "SOAP element"))
+                    : parent.addChildElement(name(name, "SOAP element"), prefix);
+            if (value instanceof SOAPElement soapElement) {
+                child.addChildElement(soapElement);
+            } else if (value instanceof Map<?, ?> map) {
+                for (final Map.Entry<?, ?> entry : map.entrySet()) {
+                    addElement(child, String.valueOf(entry.getKey()), entry.getValue(), prefix);
+                }
+            } else if (value != null) {
+                child.setValue(value.toString());
+            }
+            return child;
+        } catch (final SOAPException e) {
+            throw new InternalException("Unable to add SOAP element", e);
+        }
+    }
+
+    /**
+     * Creates a SOAP message factory.
+     *
+     * @param protocol selected SOAP protocol version
+     * @return Jakarta SOAP message factory for that protocol
+     */
+    private static MessageFactory factory(final Protocol protocol) {
+        try {
+            return MessageFactory.newInstance(
+                    protocol == Protocol.SOAP_1_1 ? SOAPConstants.SOAP_1_1_PROTOCOL : SOAPConstants.SOAP_1_2_PROTOCOL);
+        } catch (final SOAPException | RuntimeException e) {
+            throw new InternalException("Jakarta SOAP MessageFactory is not available", e);
+        }
+    }
+
+    /**
+     * Builds MIME headers for SOAP response parsing.
+     *
+     * @param headers HTTP response headers to copy
+     * @return Jakarta SOAP MIME headers containing every supplied value
+     */
+    private static MimeHeaders mimeHeaders(final Headers headers) {
+        final Headers checkedHeaders = require(headers, "Headers");
+        final MimeHeaders mimeHeaders = new MimeHeaders();
+        checkedHeaders.asMap().forEach((name, values) -> {
+            for (final String value : values) {
+                mimeHeaders.addHeader(name, value);
+            }
+        });
+        return mimeHeaders;
+    }
+
+    /**
+     * Returns default SOAPAction.
+     *
+     * @param name qualified SOAP operation name
+     * @return default SOAPAction derived from its namespace and local part
+     */
+    private static String defaultAction(final QName name) {
+        final String namespace = name.getNamespaceURI();
+        if (StringKit.isBlank(namespace)) {
+            return name.getLocalPart();
+        }
+        if (namespace.endsWith(Symbol.HASH) || namespace.endsWith(Symbol.SLASH) || namespace.endsWith(Symbol.COLON)) {
+            return namespace + name.getLocalPart();
+        }
+        return namespace + Symbol.HASH + name.getLocalPart();
+    }
+
+    /**
+     * Validates a name.
+     *
+     * @param value candidate XML or header name
+     * @param field logical field name included in validation failures
+     * @return validated non-blank single-line name
+     */
+    private static String name(final String value, final String field) {
+        final String checked = Assert
+                .notBlank(value, () -> new ValidateException(field + " must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException(field + " must be non-blank and single-line"));
+        return checked;
+    }
+
+    /**
+     * Validates an optional single-line value.
+     *
+     * @param value candidate optional text
+     * @param field logical field name included in validation failures
+     * @return validated single-line text, or an empty string for {@code null}
+     */
+    private static String optionalLine(final String value, final String field) {
+        if (value == null) {
+            return Normal.EMPTY;
+        }
+        Assert.isFalse(
+                StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException(field + " must be single-line"));
+        return value;
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -489,52 +629,6 @@ public class SoapX {
     }
 
     /**
-     * Extracts a SOAP fault when present.
-     *
-     * @param message SOAP message whose body is inspected
-     * @return contained SOAP fault, or {@code null} when the body has no fault
-     */
-    public static SOAPFault fault(final SOAPMessage message) {
-        try {
-            return require(message, "SOAP message").getSOAPBody().hasFault() ? message.getSOAPBody().getFault() : null;
-        } catch (final SOAPException e) {
-            throw new InternalException("Unable to read SOAP fault", e);
-        }
-    }
-
-    /**
-     * Adds a SOAP element.
-     *
-     * @param parent parent SOAP element receiving the child
-     * @param name   child element name
-     * @param value  scalar value, nested map, SOAP element, or {@code null}
-     * @param prefix optional namespace prefix inherited by nested map elements
-     * @return newly added child SOAP element
-     */
-    private static SOAPElement addElement(
-            final SOAPElement parent,
-            final String name,
-            final Object value,
-            final String prefix) {
-        try {
-            final SOAPElement child = StringKit.isBlank(prefix) ? parent.addChildElement(name(name, "SOAP element"))
-                    : parent.addChildElement(name(name, "SOAP element"), prefix);
-            if (value instanceof SOAPElement soapElement) {
-                child.addChildElement(soapElement);
-            } else if (value instanceof Map<?, ?> map) {
-                for (final Map.Entry<?, ?> entry : map.entrySet()) {
-                    addElement(child, String.valueOf(entry.getKey()), entry.getValue(), prefix);
-                }
-            } else if (value != null) {
-                child.setValue(value.toString());
-            }
-            return child;
-        } catch (final SOAPException e) {
-            throw new InternalException("Unable to add SOAP element", e);
-        }
-    }
-
-    /**
      * Returns a namespace-qualified header name for convenience local-name headers.
      *
      * @param localName unqualified header name
@@ -551,21 +645,6 @@ public class SoapX {
     }
 
     /**
-     * Creates a SOAP message factory.
-     *
-     * @param protocol selected SOAP protocol version
-     * @return Jakarta SOAP message factory for that protocol
-     */
-    private static MessageFactory factory(final Protocol protocol) {
-        try {
-            return MessageFactory.newInstance(
-                    protocol == Protocol.SOAP_1_1 ? SOAPConstants.SOAP_1_1_PROTOCOL : SOAPConstants.SOAP_1_2_PROTOCOL);
-        } catch (final SOAPException | RuntimeException e) {
-            throw new InternalException("Jakarta SOAP MessageFactory is not available", e);
-        }
-    }
-
-    /**
      * Applies charset properties to the current message.
      */
     private void applyMessageProperties() {
@@ -578,23 +657,6 @@ public class SoapX {
         } catch (final SOAPException ignored) {
             // Some providers do not support all optional message properties.
         }
-    }
-
-    /**
-     * Builds MIME headers for SOAP response parsing.
-     *
-     * @param headers HTTP response headers to copy
-     * @return Jakarta SOAP MIME headers containing every supplied value
-     */
-    private static MimeHeaders mimeHeaders(final Headers headers) {
-        final Headers checkedHeaders = require(headers, "Headers");
-        final MimeHeaders mimeHeaders = new MimeHeaders();
-        checkedHeaders.asMap().forEach((name, values) -> {
-            for (final String value : values) {
-                mimeHeaders.addHeader(name, value);
-            }
-        });
-        return mimeHeaders;
     }
 
     /**
@@ -625,68 +687,6 @@ public class SoapX {
         final MediaType base = protocol == Protocol.SOAP_1_1 ? MediaType.TEXT_XML_TYPE
                 : MediaType.APPLICATION_SOAP_XML_TYPE;
         return base.withCharset(charset);
-    }
-
-    /**
-     * Returns default SOAPAction.
-     *
-     * @param name qualified SOAP operation name
-     * @return default SOAPAction derived from its namespace and local part
-     */
-    private static String defaultAction(final QName name) {
-        final String namespace = name.getNamespaceURI();
-        if (StringKit.isBlank(namespace)) {
-            return name.getLocalPart();
-        }
-        if (namespace.endsWith(Symbol.HASH) || namespace.endsWith(Symbol.SLASH) || namespace.endsWith(Symbol.COLON)) {
-            return namespace + name.getLocalPart();
-        }
-        return namespace + Symbol.HASH + name.getLocalPart();
-    }
-
-    /**
-     * Validates a name.
-     *
-     * @param value candidate XML or header name
-     * @param field logical field name included in validation failures
-     * @return validated non-blank single-line name
-     */
-    private static String name(final String value, final String field) {
-        final String checked = Assert
-                .notBlank(value, () -> new ValidateException(field + " must be non-blank and single-line"));
-        Assert.isFalse(
-                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
-                () -> new ValidateException(field + " must be non-blank and single-line"));
-        return checked;
-    }
-
-    /**
-     * Validates an optional single-line value.
-     *
-     * @param value candidate optional text
-     * @param field logical field name included in validation failures
-     * @return validated single-line text, or an empty string for {@code null}
-     */
-    private static String optionalLine(final String value, final String field) {
-        if (value == null) {
-            return Normal.EMPTY;
-        }
-        Assert.isFalse(
-                StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
-                () -> new ValidateException(field + " must be single-line"));
-        return value;
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  field name included in the validation failure
-     * @param <T>   reference type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

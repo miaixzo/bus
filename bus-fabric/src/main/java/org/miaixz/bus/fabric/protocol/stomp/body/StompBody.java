@@ -141,6 +141,28 @@ public class StompBody implements MessageBody, ProgressBody {
     }
 
     /**
+     * Validates a required value.
+     *
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Creates text media with charset metadata.
+     *
+     * @param charset character encoding attached to text/plain metadata
+     * @return media type
+     */
+    private static MediaType textMedia(final java.nio.charset.Charset charset) {
+        return MediaType.TEXT_PLAIN_TYPE.withCharset(charset);
+    }
+
+    /**
      * Returns a progress-aware copy of this STOMP body.
      *
      * @param listener callback receiving transferred and total byte counts
@@ -220,28 +242,6 @@ public class StompBody implements MessageBody, ProgressBody {
             progress.stepRate(rate);
         }
         return this;
-    }
-
-    /**
-     * Validates a required value.
-     *
-     * @param value reference to validate
-     * @param name  field name included in the validation failure
-     * @param <T>   reference type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-    }
-
-    /**
-     * Creates text media with charset metadata.
-     *
-     * @param charset character encoding attached to text/plain metadata
-     * @return media type
-     */
-    private static MediaType textMedia(final java.nio.charset.Charset charset) {
-        return MediaType.TEXT_PLAIN_TYPE.withCharset(charset);
     }
 
 }

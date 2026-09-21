@@ -97,6 +97,25 @@ public class DnsResolution {
     }
 
     /**
+     * Validates and copies records.
+     *
+     * @param records source records
+     * @param section diagnostic section
+     * @return immutable records
+     */
+    private static List<DnsRecord> immutableRecords(final List<DnsRecord> records, final String section) {
+        if (records == null) {
+            throw new ValidateException("DNS resolution " + section + " records must not be null");
+        }
+        for (final DnsRecord record : records) {
+            if (record == null) {
+                throw new ValidateException("DNS resolution " + section + " records must not contain null");
+            }
+        }
+        return List.copyOf(records);
+    }
+
+    /**
      * Returns the response code.
      *
      * @return response code
@@ -130,25 +149,6 @@ public class DnsResolution {
      */
     public List<DnsRecord> authorities() {
         return authorities;
-    }
-
-    /**
-     * Validates and copies records.
-     *
-     * @param records source records
-     * @param section diagnostic section
-     * @return immutable records
-     */
-    private static List<DnsRecord> immutableRecords(final List<DnsRecord> records, final String section) {
-        if (records == null) {
-            throw new ValidateException("DNS resolution " + section + " records must not be null");
-        }
-        for (final DnsRecord record : records) {
-            if (record == null) {
-                throw new ValidateException("DNS resolution " + section + " records must not contain null");
-            }
-        }
-        return List.copyOf(records);
     }
 
 }

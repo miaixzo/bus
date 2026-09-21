@@ -90,16 +90,6 @@ import org.miaixz.bus.storage.magic.ErrorCode;
 public class SharePointProvider extends AbstractProvider {
 
     /**
-     * OAuth 2.0 access token for API authentication.
-     */
-    private String accessToken;
-
-    /**
-     * Token expiration time in milliseconds.
-     */
-    private long tokenExpireTime;
-
-    /**
      * Microsoft Graph API base URL.
      */
     private static final String GRAPH_API_BASE = "https://graph.microsoft.com/v1.0";
@@ -108,6 +98,16 @@ public class SharePointProvider extends AbstractProvider {
      * OAuth 2.0 token endpoint template.
      */
     private static final String TOKEN_ENDPOINT = "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token";
+
+    /**
+     * OAuth 2.0 access token for API authentication.
+     */
+    private String accessToken;
+
+    /**
+     * Token expiration time in milliseconds.
+     */
+    private long tokenExpireTime;
 
     /**
      * Constructs a SharePoint storage provider with the given context. Initializes the HTTP client and obtains an

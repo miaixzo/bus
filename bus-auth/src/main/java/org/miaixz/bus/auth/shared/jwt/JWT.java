@@ -55,14 +55,17 @@ public class JWT {
      * Sensitive compact JWS or JWE representation.
      */
     private final String compact;
+
     /**
      * Parsed outer JOSE Header.
      */
     private final JoseHeader header;
+
     /**
      * Parsed implementation-neutral JWT Claims Set.
      */
     private final JwtClaims claims;
+
     /**
      * Serialization kind derived from exact compact segment count.
      */

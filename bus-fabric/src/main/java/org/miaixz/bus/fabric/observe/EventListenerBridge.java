@@ -122,6 +122,19 @@ public class EventListenerBridge implements EventObserver {
     }
 
     /**
+     * Invokes one listener callback while suppressing runtime callback failures.
+     *
+     * @param task callback invocation to run
+     */
+    private static void invoke(final Runnable task) {
+        try {
+            task.run();
+        } catch (final RuntimeException ignored) {
+            // Observer callbacks must never change protocol execution.
+        }
+    }
+
+    /**
      * Dispatches an observation event first to the generic callback and then to marker-specific callbacks.
      * <p>
      * A null event is ignored. Runtime failures from each callback are isolated independently so later callbacks still
@@ -175,19 +188,6 @@ public class EventListenerBridge implements EventObserver {
                     invoke(() -> listener.failure(event, event.cause()));
                 }
             }
-        }
-    }
-
-    /**
-     * Invokes one listener callback while suppressing runtime callback failures.
-     *
-     * @param task callback invocation to run
-     */
-    private static void invoke(final Runnable task) {
-        try {
-            task.run();
-        } catch (final RuntimeException ignored) {
-            // Observer callbacks must never change protocol execution.
         }
     }
 

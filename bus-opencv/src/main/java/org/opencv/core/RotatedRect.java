@@ -20,13 +20,16 @@
 package org.opencv.core;
 
 //javadoc:RotatedRect_
+
 /**
  * The rotated rect class.
  */
 public class RotatedRect {
 
     public Point center;
+
     public Size size;
+
     public double angle;
 
     public RotatedRect() {

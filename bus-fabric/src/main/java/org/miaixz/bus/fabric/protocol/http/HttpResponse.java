@@ -97,19 +97,9 @@ public class HttpResponse implements AutoCloseable {
     private final Headers headers;
 
     /**
-     * Response body.
-     */
-    private PayloadBody body;
-
-    /**
      * Effective HTTP protocol.
      */
     private final Protocol protocol;
-
-    /**
-     * TLS handshake metadata.
-     */
-    private TlsHandshake handshake;
 
     /**
      * Response trailers supplier.
@@ -132,6 +122,21 @@ public class HttpResponse implements AutoCloseable {
     private final HttpResponse priorResponse;
 
     /**
+     * Successful flag.
+     */
+    private final boolean successful;
+
+    /**
+     * Response body.
+     */
+    private PayloadBody body;
+
+    /**
+     * TLS handshake metadata.
+     */
+    private TlsHandshake handshake;
+
+    /**
      * Request write timestamp.
      */
     private long sentRequestAtMillis;
@@ -140,11 +145,6 @@ public class HttpResponse implements AutoCloseable {
      * Response read timestamp.
      */
     private long receivedResponseAtMillis;
-
-    /**
-     * Successful flag.
-     */
-    private final boolean successful;
 
     /**
      * Closed state.
@@ -224,6 +224,228 @@ public class HttpResponse implements AutoCloseable {
             final Supplier<Headers> trailers) {
         return new HttpResponse(request, code, message, headers, body, protocol, null, trailers, null, null, null,
                 Normal.LONG_ZERO, Normal.LONG_ZERO);
+    }
+
+    /**
+     * Copies response body bytes to a sink.
+     *
+     * @param input    response input
+     * @param output   file output
+     * @param total    total bytes, or -1 when unknown
+     * @param progress progress listener
+     */
+    private static void copyBody(
+            final Source input,
+            final Sink output,
+            final long total,
+            final BiConsumer<Long, Long> progress) {
+        final Buffer buffer = new Buffer();
+        long written = 0;
+        while (true) {
+            final long read;
+            try {
+                read = input.read(buffer, Normal._8192);
+            } catch (final IOException e) {
+                throw new SocketException("Unable to read HTTP response body", e);
+            }
+            if (read < 0) {
+                break;
+            }
+            try {
+                output.write(buffer, read);
+                written += read;
+                if (progress != null) {
+                    progress.accept(written, total);
+                }
+            } catch (final IOException e) {
+                throw new InternalException("Unable to write HTTP response body", e);
+            }
+        }
+        try {
+            output.flush();
+        } catch (final IOException e) {
+            throw new InternalException("Unable to flush HTTP response body", e);
+        }
+    }
+
+    /**
+     * Extracts a filename from Content-Disposition.
+     *
+     * @param value header value
+     * @return safe filename parameter, or {@code null} when absent or unsafe
+     */
+    private static String filenameFromDisposition(final String value) {
+        if (value == null) {
+            return null;
+        }
+        int start = 0;
+        while (start <= value.length()) {
+            final int end = value.indexOf(Symbol.C_SEMICOLON, start);
+            final String trimmed = value.substring(start, end < 0 ? value.length() : end).trim();
+            final int equals = trimmed.indexOf(Symbol.C_EQUAL);
+            if (equals <= 0 || !"filename".equalsIgnoreCase(trimmed.substring(0, equals).trim())) {
+                if (end < 0) {
+                    break;
+                }
+                start = end + 1;
+                continue;
+            }
+            String name = trimmed.substring(equals + 1).trim();
+            if (name.length() >= 2 && name.charAt(0) == Symbol.C_DOUBLE_QUOTES
+                    && name.charAt(name.length() - 1) == Symbol.C_DOUBLE_QUOTES) {
+                name = name.substring(1, name.length() - 1);
+            }
+            return safeFilename(name) ? name : null;
+        }
+        return null;
+    }
+
+    /**
+     * Returns whether a value is safe as a single path filename.
+     *
+     * @param value filename
+     * @return true when safe
+     */
+    private static boolean safeFilename(final String value) {
+        return StringKit.isNotBlank(value)
+                && !StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF, Symbol.C_SLASH, Symbol.C_BACKSLASH);
+    }
+
+    /**
+     * Validates a path string.
+     *
+     * @param value candidate path text
+     * @param name  logical field name included in validation failures
+     * @return validated non-blank single-line path text
+     */
+    private static String validatePathText(final String value, final String name) {
+        Assert.isFalse(
+                StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException(name + " must be non-blank and single-line"));
+        return value;
+    }
+
+    /**
+     * Validates status code.
+     *
+     * @param code candidate HTTP status code
+     * @return validated status code in the range 100 through 599
+     */
+    private static int validateCode(final int code) {
+        Assert.isTrue(
+                code >= Http.Status.CONTINUE && code <= 599,
+                () -> new ValidateException("HTTP status code must be between 100 and 599"));
+        return code;
+    }
+
+    /**
+     * Validates reason phrase.
+     *
+     * @param message candidate HTTP reason phrase
+     * @return validated non-null single-line reason phrase
+     */
+    private static String validateMessage(final String message) {
+        if (message == null || message.indexOf(Symbol.C_CR) >= Normal._0 || message.indexOf(Symbol.C_LF) >= Normal._0) {
+            throw new ValidateException("HTTP reason phrase must be non-null and single-line");
+        }
+        return message;
+    }
+
+    /**
+     * Validates an epoch millisecond timestamp.
+     *
+     * @param timestamp candidate epoch-millisecond timestamp
+     * @param name      field name
+     * @return timestamp
+     */
+    private static long validateTimestamp(final long timestamp, final String name) {
+        if (timestamp < Normal._0) {
+            throw new ValidateException(name + " must be non-negative");
+        }
+        return timestamp;
+    }
+
+    /**
+     * Copies response metadata without carrying the response body or nested response links.
+     *
+     * @param response source response
+     * @return metadata response
+     */
+    private static HttpResponse metadataResponse(final HttpResponse response) {
+        if (response == null) {
+            return null;
+        }
+        if (response.body == PayloadBody.empty() && response.networkResponse == null && response.cacheResponse == null
+                && response.priorResponse == null) {
+            return response;
+        }
+        return new HttpResponse(response.request, response.code, response.message, response.headers,
+                PayloadBody.empty(), response.protocol, response.handshake, response.trailers, null, null, null,
+                response.sentRequestAtMillis, response.receivedResponseAtMillis);
+    }
+
+    /**
+     * Casts a decoded value to the expected type.
+     *
+     * @param value decoded value
+     * @param type  expected type
+     * @param entry entry name
+     * @param <T>   value type
+     * @return cast value
+     */
+    private static <T> T castDecoded(final Object value, final Class<T> type, final String entry) {
+        final Class<T> expected = require(type, "Decoded type");
+        if (value == null) {
+            return null;
+        }
+        if (!expected.isInstance(value)) {
+            throw new ConvertException("{} expected {} but decoded {}", entry, expected.getName(), typeName(value));
+        }
+        return expected.cast(value);
+    }
+
+    /**
+     * Converts a decoded collection to a typed array.
+     *
+     * @param collection  decoded collection whose elements are copied
+     * @param elementType element type
+     * @param <T>         element type
+     * @return array
+     */
+    private static <T> T[] arrayFromCollection(final Collection<?> collection, final Class<T> elementType) {
+        final Class<T> expected = require(elementType, "Decoded element type");
+        final T[] values = (T[]) Array.newInstance(expected, collection.size());
+        int index = 0;
+        for (final Object value : collection) {
+            values[index] = castDecoded(value, expected, "HttpResponse.decodeArray element " + index);
+            index++;
+        }
+        return values;
+    }
+
+    /**
+     * Returns a readable decoded value type name.
+     *
+     * @param value decoded value whose runtime type is described
+     * @return type name
+     */
+    private static String typeName(final Object value) {
+        return value == null ? "null" : value.getClass().getName();
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
     }
 
     /**
@@ -673,48 +895,6 @@ public class HttpResponse implements AutoCloseable {
     }
 
     /**
-     * Copies response body bytes to a sink.
-     *
-     * @param input    response input
-     * @param output   file output
-     * @param total    total bytes, or -1 when unknown
-     * @param progress progress listener
-     */
-    private static void copyBody(
-            final Source input,
-            final Sink output,
-            final long total,
-            final BiConsumer<Long, Long> progress) {
-        final Buffer buffer = new Buffer();
-        long written = 0;
-        while (true) {
-            final long read;
-            try {
-                read = input.read(buffer, Normal._8192);
-            } catch (final IOException e) {
-                throw new SocketException("Unable to read HTTP response body", e);
-            }
-            if (read < 0) {
-                break;
-            }
-            try {
-                output.write(buffer, read);
-                written += read;
-                if (progress != null) {
-                    progress.accept(written, total);
-                }
-            } catch (final IOException e) {
-                throw new InternalException("Unable to write HTTP response body", e);
-            }
-        }
-        try {
-            output.flush();
-        } catch (final IOException e) {
-            throw new InternalException("Unable to flush HTTP response body", e);
-        }
-    }
-
-    /**
      * Resolves a download filename.
      *
      * @return safe filename from Content-Disposition or URL path, with a binary fallback
@@ -732,122 +912,6 @@ public class HttpResponse implements AutoCloseable {
     }
 
     /**
-     * Extracts a filename from Content-Disposition.
-     *
-     * @param value header value
-     * @return safe filename parameter, or {@code null} when absent or unsafe
-     */
-    private static String filenameFromDisposition(final String value) {
-        if (value == null) {
-            return null;
-        }
-        int start = 0;
-        while (start <= value.length()) {
-            final int end = value.indexOf(Symbol.C_SEMICOLON, start);
-            final String trimmed = value.substring(start, end < 0 ? value.length() : end).trim();
-            final int equals = trimmed.indexOf(Symbol.C_EQUAL);
-            if (equals <= 0 || !"filename".equalsIgnoreCase(trimmed.substring(0, equals).trim())) {
-                if (end < 0) {
-                    break;
-                }
-                start = end + 1;
-                continue;
-            }
-            String name = trimmed.substring(equals + 1).trim();
-            if (name.length() >= 2 && name.charAt(0) == Symbol.C_DOUBLE_QUOTES
-                    && name.charAt(name.length() - 1) == Symbol.C_DOUBLE_QUOTES) {
-                name = name.substring(1, name.length() - 1);
-            }
-            return safeFilename(name) ? name : null;
-        }
-        return null;
-    }
-
-    /**
-     * Returns whether a value is safe as a single path filename.
-     *
-     * @param value filename
-     * @return true when safe
-     */
-    private static boolean safeFilename(final String value) {
-        return StringKit.isNotBlank(value)
-                && !StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF, Symbol.C_SLASH, Symbol.C_BACKSLASH);
-    }
-
-    /**
-     * Validates a path string.
-     *
-     * @param value candidate path text
-     * @param name  logical field name included in validation failures
-     * @return validated non-blank single-line path text
-     */
-    private static String validatePathText(final String value, final String name) {
-        Assert.isFalse(
-                StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
-                () -> new ValidateException(name + " must be non-blank and single-line"));
-        return value;
-    }
-
-    /**
-     * Validates status code.
-     *
-     * @param code candidate HTTP status code
-     * @return validated status code in the range 100 through 599
-     */
-    private static int validateCode(final int code) {
-        Assert.isTrue(
-                code >= Http.Status.CONTINUE && code <= 599,
-                () -> new ValidateException("HTTP status code must be between 100 and 599"));
-        return code;
-    }
-
-    /**
-     * Validates reason phrase.
-     *
-     * @param message candidate HTTP reason phrase
-     * @return validated non-null single-line reason phrase
-     */
-    private static String validateMessage(final String message) {
-        if (message == null || message.indexOf(Symbol.C_CR) >= Normal._0 || message.indexOf(Symbol.C_LF) >= Normal._0) {
-            throw new ValidateException("HTTP reason phrase must be non-null and single-line");
-        }
-        return message;
-    }
-
-    /**
-     * Validates an epoch millisecond timestamp.
-     *
-     * @param timestamp candidate epoch-millisecond timestamp
-     * @param name      field name
-     * @return timestamp
-     */
-    private static long validateTimestamp(final long timestamp, final String name) {
-        if (timestamp < Normal._0) {
-            throw new ValidateException(name + " must be non-negative");
-        }
-        return timestamp;
-    }
-
-    /**
-     * Copies response metadata without carrying the response body or nested response links.
-     *
-     * @param response source response
-     * @return metadata response
-     */
-    private static HttpResponse metadataResponse(final HttpResponse response) {
-        if (response == null) {
-            return null;
-        }
-        if (response.body == PayloadBody.empty() && response.networkResponse == null && response.cacheResponse == null
-                && response.priorResponse == null) {
-            return response;
-        }
-        return new HttpResponse(response.request, response.code, response.message, response.headers,
-                PayloadBody.empty(), response.protocol, response.handshake, response.trailers, null, null, null,
-                response.sentRequestAtMillis, response.receivedResponseAtMillis);
-    }
-
-    /**
      * Materializes and decodes this response body.
      *
      * @param codec codec used to decode the materialized response payload
@@ -862,70 +926,6 @@ public class HttpResponse implements AutoCloseable {
         } finally {
             close();
         }
-    }
-
-    /**
-     * Casts a decoded value to the expected type.
-     *
-     * @param value decoded value
-     * @param type  expected type
-     * @param entry entry name
-     * @param <T>   value type
-     * @return cast value
-     */
-    private static <T> T castDecoded(final Object value, final Class<T> type, final String entry) {
-        final Class<T> expected = require(type, "Decoded type");
-        if (value == null) {
-            return null;
-        }
-        if (!expected.isInstance(value)) {
-            throw new ConvertException("{} expected {} but decoded {}", entry, expected.getName(), typeName(value));
-        }
-        return expected.cast(value);
-    }
-
-    /**
-     * Converts a decoded collection to a typed array.
-     *
-     * @param collection  decoded collection whose elements are copied
-     * @param elementType element type
-     * @param <T>         element type
-     * @return array
-     */
-    private static <T> T[] arrayFromCollection(final Collection<?> collection, final Class<T> elementType) {
-        final Class<T> expected = require(elementType, "Decoded element type");
-        final T[] values = (T[]) Array.newInstance(expected, collection.size());
-        int index = 0;
-        for (final Object value : collection) {
-            values[index] = castDecoded(value, expected, "HttpResponse.decodeArray element " + index);
-            index++;
-        }
-        return values;
-    }
-
-    /**
-     * Returns a readable decoded value type name.
-     *
-     * @param value decoded value whose runtime type is described
-     * @return type name
-     */
-    private static String typeName(final Object value) {
-        return value == null ? "null" : value.getClass().getName();
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  field name included in the validation failure
-     * @param <T>   reference type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
     }
 
     /**

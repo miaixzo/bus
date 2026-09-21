@@ -31,8 +31,8 @@ import org.miaixz.bus.gitlab.models.Environment;
 /**
  * This class provides an entry point to all the GitLab API Environments API calls.
  *
- * @see <a href="https://docs.gitlab.com/ce/api/environments.html">Environments API</a>
  * @author Kimi Liu
+ * @see <a href="https://docs.gitlab.com/ce/api/environments.html">Environments API</a>
  */
 public class EnvironmentsApi extends AbstractApi {
 

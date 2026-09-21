@@ -48,34 +48,42 @@ public class ISO8601 {
      */
 
     public static final String PATTERN = Fields.ISO8601_WITH_ZONE_OFFSET;
+
     /**
      * The msec pattern value.
      */
     public static final String MSEC_PATTERN = Fields.ISO8601_MS_WITH_ZONE_OFFSET;
+
     /**
      * The spacey pattern value.
      */
     public static final String SPACEY_PATTERN = "yyyy-MM-dd HH:mm:ss Z";
+
     /**
      * The spacey msec pattern value.
      */
     public static final String SPACEY_MSEC_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS Z";
+
     /**
      * The pattern msec value.
      */
     public static final String PATTERN_MSEC = Fields.ISO8601_MS_WITH_ZONE_OFFSET;
+
     /**
      * The output pattern value.
      */
     public static final String OUTPUT_PATTERN = Fields.UTC;
+
     /**
      * The output msec pattern value.
      */
     public static final String OUTPUT_MSEC_PATTERN = Fields.UTC_MS;
+
     /**
      * The utc pattern value.
      */
     public static final String UTC_PATTERN = Fields.ISO8601_MS_WITH_UTC;
+
     /**
      * The date only pattern value.
      */
@@ -86,6 +94,7 @@ public class ISO8601 {
      */
     private static final DateTimeFormatter ODT_WITH_MSEC_PARSER = new DateTimeFormatterBuilder()
             .appendPattern("yyyy-MM-dd[['T'][ ]HH:mm:ss.SSS[ ][XXXXX][XXXX]]").toFormatter();
+
     /**
      * The odt parser value.
      */
@@ -225,6 +234,26 @@ public class ISO8601 {
     }
 
     // Set up ThreadLocal storage to save a thread local SimpleDateFormat keyed with the format string
+
+    /**
+     * Parses an ISO8601 formatted string a returns a Calendar instance.
+     *
+     * @param dateTimeString the ISO8601 formatted string
+     * @return a Calendar instance for the ISO8601 formatted string
+     * @throws ParseException if the provided string is not in the proper format
+     */
+    public static Calendar toCalendar(String dateTimeString) throws ParseException {
+
+        Date date = toDate(dateTimeString);
+        if (date == null) {
+            return (null);
+        }
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return (cal);
+    }
+
     /**
      * The safe date formatter class.
      *
@@ -252,25 +281,6 @@ public class ISO8601 {
             return (format);
         }
 
-    }
-
-    /**
-     * Parses an ISO8601 formatted string a returns a Calendar instance.
-     *
-     * @param dateTimeString the ISO8601 formatted string
-     * @return a Calendar instance for the ISO8601 formatted string
-     * @throws ParseException if the provided string is not in the proper format
-     */
-    public static Calendar toCalendar(String dateTimeString) throws ParseException {
-
-        Date date = toDate(dateTimeString);
-        if (date == null) {
-            return (null);
-        }
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        return (cal);
     }
 
 }

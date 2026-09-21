@@ -32,10 +32,12 @@ public class EventExternalStatusCheck {
      * The id value.
      */
     private Long id;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The external url value.
      */

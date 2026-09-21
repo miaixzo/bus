@@ -43,11 +43,13 @@ public class SentinelRequestHandler implements HandlerInterceptor {
      * Request attribute storing the handler start timestamp.
      */
     private static final String START_ATTRIBUTE = SentinelRequestHandler.class.getName() + Symbol.DOT + "START";
+
     /**
      * Request attribute storing the observed parameter count.
      */
     private static final String PARAMETER_COUNT_ATTRIBUTE = SentinelRequestHandler.class.getName() + Symbol.DOT
             + "PARAMETERS";
+
     /**
      * Request attribute storing the observed body size.
      */

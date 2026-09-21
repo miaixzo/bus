@@ -318,6 +318,236 @@ public class DnsServerOptions {
     }
 
     /**
+     * Creates a provider request from the active snapshot.
+     *
+     * @param activeSnapshot active snapshot visible before refresh, or {@code null} during startup
+     * @return snapshot provider request
+     */
+    private static DnsSnapshotRequest request(final DnsSnapshot activeSnapshot) {
+        return activeSnapshot == null ? DnsSnapshotRequest.startup() : DnsSnapshotRequest.refresh(activeSnapshot);
+    }
+
+    /**
+     * Validates and copies endpoints.
+     *
+     * @param endpoints source endpoints
+     * @return immutable endpoints
+     */
+    private static List<DnsEndpoint> immutableEndpoints(final List<DnsEndpoint> endpoints) {
+        if (endpoints == null || endpoints.isEmpty()) {
+            throw new ValidateException("DNS server endpoints must not be empty");
+        }
+        for (final DnsEndpoint endpoint : endpoints) {
+            if (endpoint == null) {
+                throw new ValidateException("DNS server endpoints must not contain null");
+            }
+        }
+        return List.copyOf(endpoints);
+    }
+
+    /**
+     * Validates and copies snapshot lifecycle listeners.
+     *
+     * @param listeners source listeners
+     * @return immutable listeners
+     */
+    private static List<DnsSnapshotListener> immutableSnapshotListeners(final List<DnsSnapshotListener> listeners) {
+        if (listeners == null) {
+            throw new ValidateException("DNS snapshot listeners must not be null");
+        }
+        for (final DnsSnapshotListener listener : listeners) {
+            if (listener == null) {
+                throw new ValidateException("DNS snapshot listeners must not contain null");
+            }
+        }
+        return List.copyOf(listeners);
+    }
+
+    /**
+     * Validates and copies CIDR blocks.
+     *
+     * @param cidrs source CIDR blocks
+     * @return immutable CIDR blocks
+     */
+    private static List<CidrBlock> immutableCidrs(final List<CidrBlock> cidrs) {
+        if (cidrs == null) {
+            throw new ValidateException("DNS recursion ACL CIDRs must not be null");
+        }
+        for (final CidrBlock cidr : cidrs) {
+            if (cidr == null) {
+                throw new ValidateException("DNS recursion ACL CIDRs must not contain null");
+            }
+        }
+        return List.copyOf(cidrs);
+    }
+
+    /**
+     * Validates and copies TSIG keys.
+     *
+     * @param keys source TSIG keys
+     * @return immutable TSIG keys
+     */
+    private static List<DnsTsigKey> immutableTsigKeys(final List<DnsTsigKey> keys) {
+        if (keys == null) {
+            throw new ValidateException("DNS TSIG keys must not be null");
+        }
+        for (final DnsTsigKey key : keys) {
+            if (key == null) {
+                throw new ValidateException("DNS TSIG keys must not contain null");
+            }
+        }
+        return List.copyOf(keys);
+    }
+
+    /**
+     * Validates the UDP payload limit.
+     *
+     * @param value candidate payload size
+     * @return validated payload size
+     */
+    private static int validatePayload(final int value) {
+        if (value < Normal._512 || value > Normal._65535) {
+            throw new ValidateException("DNS UDP payload size must be from 512 through 65535");
+        }
+        return value;
+    }
+
+    /**
+     * Validates the cache size.
+     *
+     * @param value candidate cache size
+     * @return validated cache size
+     */
+    private static int validateCacheMaxEntries(final int value) {
+        if (value < 0) {
+            throw new ValidateException("DNS cache max entries must be non-negative");
+        }
+        return value;
+    }
+
+    /**
+     * Validates the cache TTL.
+     *
+     * @param value candidate cache TTL
+     * @return validated cache TTL
+     */
+    private static Duration validateCacheTtl(final Duration value) {
+        if (value == null || value.isNegative() || value.isZero()) {
+            throw new ValidateException("DNS cache ttl must be positive");
+        }
+        return value;
+    }
+
+    /**
+     * Validates a non-negative duration.
+     *
+     * @param value candidate duration
+     * @param name  diagnostic name
+     * @return validated duration
+     */
+    private static Duration validateNonNegativeDuration(final Duration value, final String name) {
+        if (value == null || value.isNegative()) {
+            throw new ValidateException(name + " must be non-negative");
+        }
+        return value;
+    }
+
+    /**
+     * Validates the cache prefetch window.
+     *
+     * @param value candidate prefetch window
+     * @param ttl   cache TTL used as the upper bound
+     * @return validated prefetch window
+     */
+    private static Duration validatePrefetchDuration(final Duration value, final Duration ttl) {
+        final Duration checked = validateNonNegativeDuration(value, "DNS cache prefetch window");
+        if (!checked.isZero() && checked.compareTo(ttl) >= 0) {
+            throw new ValidateException("DNS cache prefetch window must be shorter than cache ttl");
+        }
+        return checked;
+    }
+
+    /**
+     * Validates a rate limit.
+     *
+     * @param value candidate rate limit
+     * @return validated rate limit
+     */
+    private static int validateRateLimit(final int value) {
+        if (value < 0) {
+            throw new ValidateException("DNS rate limit must be non-negative");
+        }
+        return value;
+    }
+
+    /**
+     * Validates DNS Server metrics.
+     *
+     * @param value candidate metrics facade
+     * @return validated metrics facade
+     */
+    private static DnsMetrics validateMetrics(final DnsMetrics value) {
+        if (value == null) {
+            throw new ValidateException("DNS metrics must not be null");
+        }
+        return value;
+    }
+
+    /**
+     * Validates DNS query logging.
+     *
+     * @param value candidate query logger
+     * @return validated query logger
+     */
+    private static DnsQueryLog validateQueryLog(final DnsQueryLog value) {
+        if (value == null) {
+            throw new ValidateException("DNS query log must not be null");
+        }
+        return value;
+    }
+
+    /**
+     * Validates a positive integer option.
+     *
+     * @param value candidate integer
+     * @param name  diagnostic option name
+     * @return validated positive integer
+     */
+    private static int validatePositiveInt(final int value, final String name) {
+        if (value <= 0) {
+            throw new ValidateException(name + " must be positive");
+        }
+        return value;
+    }
+
+    /**
+     * Validates a positive duration option.
+     *
+     * @param value candidate duration
+     * @param name  diagnostic option name
+     * @return validated positive duration
+     */
+    private static Duration validatePositiveDuration(final Duration value, final String name) {
+        if (value == null || value.isNegative() || value.isZero()) {
+            throw new ValidateException(name + " must be positive");
+        }
+        return value;
+    }
+
+    /**
+     * Validates the DNS TCP frame length limit.
+     *
+     * @param value candidate frame length
+     * @return validated frame length
+     */
+    private static int validateFrameBytes(final int value) {
+        if (value < Normal._1 || value > Normal._65535) {
+            throw new ValidateException("DNS TCP max frame bytes must be from 1 through 65535");
+        }
+        return value;
+    }
+
+    /**
      * Returns a copy with a replacement UDP payload size.
      *
      * @param maxUdpPayloadBytes maximum UDP response payload size
@@ -594,16 +824,6 @@ public class DnsServerOptions {
     }
 
     /**
-     * Creates a provider request from the active snapshot.
-     *
-     * @param activeSnapshot active snapshot visible before refresh, or {@code null} during startup
-     * @return snapshot provider request
-     */
-    private static DnsSnapshotRequest request(final DnsSnapshot activeSnapshot) {
-        return activeSnapshot == null ? DnsSnapshotRequest.startup() : DnsSnapshotRequest.refresh(activeSnapshot);
-    }
-
-    /**
      * Returns the maximum UDP response payload size.
      *
      * @return maximum UDP payload bytes
@@ -781,226 +1001,6 @@ public class DnsServerOptions {
      */
     public DnsQueryLog queryLog() {
         return queryLog;
-    }
-
-    /**
-     * Validates and copies endpoints.
-     *
-     * @param endpoints source endpoints
-     * @return immutable endpoints
-     */
-    private static List<DnsEndpoint> immutableEndpoints(final List<DnsEndpoint> endpoints) {
-        if (endpoints == null || endpoints.isEmpty()) {
-            throw new ValidateException("DNS server endpoints must not be empty");
-        }
-        for (final DnsEndpoint endpoint : endpoints) {
-            if (endpoint == null) {
-                throw new ValidateException("DNS server endpoints must not contain null");
-            }
-        }
-        return List.copyOf(endpoints);
-    }
-
-    /**
-     * Validates and copies snapshot lifecycle listeners.
-     *
-     * @param listeners source listeners
-     * @return immutable listeners
-     */
-    private static List<DnsSnapshotListener> immutableSnapshotListeners(final List<DnsSnapshotListener> listeners) {
-        if (listeners == null) {
-            throw new ValidateException("DNS snapshot listeners must not be null");
-        }
-        for (final DnsSnapshotListener listener : listeners) {
-            if (listener == null) {
-                throw new ValidateException("DNS snapshot listeners must not contain null");
-            }
-        }
-        return List.copyOf(listeners);
-    }
-
-    /**
-     * Validates and copies CIDR blocks.
-     *
-     * @param cidrs source CIDR blocks
-     * @return immutable CIDR blocks
-     */
-    private static List<CidrBlock> immutableCidrs(final List<CidrBlock> cidrs) {
-        if (cidrs == null) {
-            throw new ValidateException("DNS recursion ACL CIDRs must not be null");
-        }
-        for (final CidrBlock cidr : cidrs) {
-            if (cidr == null) {
-                throw new ValidateException("DNS recursion ACL CIDRs must not contain null");
-            }
-        }
-        return List.copyOf(cidrs);
-    }
-
-    /**
-     * Validates and copies TSIG keys.
-     *
-     * @param keys source TSIG keys
-     * @return immutable TSIG keys
-     */
-    private static List<DnsTsigKey> immutableTsigKeys(final List<DnsTsigKey> keys) {
-        if (keys == null) {
-            throw new ValidateException("DNS TSIG keys must not be null");
-        }
-        for (final DnsTsigKey key : keys) {
-            if (key == null) {
-                throw new ValidateException("DNS TSIG keys must not contain null");
-            }
-        }
-        return List.copyOf(keys);
-    }
-
-    /**
-     * Validates the UDP payload limit.
-     *
-     * @param value candidate payload size
-     * @return validated payload size
-     */
-    private static int validatePayload(final int value) {
-        if (value < Normal._512 || value > Normal._65535) {
-            throw new ValidateException("DNS UDP payload size must be from 512 through 65535");
-        }
-        return value;
-    }
-
-    /**
-     * Validates the cache size.
-     *
-     * @param value candidate cache size
-     * @return validated cache size
-     */
-    private static int validateCacheMaxEntries(final int value) {
-        if (value < 0) {
-            throw new ValidateException("DNS cache max entries must be non-negative");
-        }
-        return value;
-    }
-
-    /**
-     * Validates the cache TTL.
-     *
-     * @param value candidate cache TTL
-     * @return validated cache TTL
-     */
-    private static Duration validateCacheTtl(final Duration value) {
-        if (value == null || value.isNegative() || value.isZero()) {
-            throw new ValidateException("DNS cache ttl must be positive");
-        }
-        return value;
-    }
-
-    /**
-     * Validates a non-negative duration.
-     *
-     * @param value candidate duration
-     * @param name  diagnostic name
-     * @return validated duration
-     */
-    private static Duration validateNonNegativeDuration(final Duration value, final String name) {
-        if (value == null || value.isNegative()) {
-            throw new ValidateException(name + " must be non-negative");
-        }
-        return value;
-    }
-
-    /**
-     * Validates the cache prefetch window.
-     *
-     * @param value candidate prefetch window
-     * @param ttl   cache TTL used as the upper bound
-     * @return validated prefetch window
-     */
-    private static Duration validatePrefetchDuration(final Duration value, final Duration ttl) {
-        final Duration checked = validateNonNegativeDuration(value, "DNS cache prefetch window");
-        if (!checked.isZero() && checked.compareTo(ttl) >= 0) {
-            throw new ValidateException("DNS cache prefetch window must be shorter than cache ttl");
-        }
-        return checked;
-    }
-
-    /**
-     * Validates a rate limit.
-     *
-     * @param value candidate rate limit
-     * @return validated rate limit
-     */
-    private static int validateRateLimit(final int value) {
-        if (value < 0) {
-            throw new ValidateException("DNS rate limit must be non-negative");
-        }
-        return value;
-    }
-
-    /**
-     * Validates DNS Server metrics.
-     *
-     * @param value candidate metrics facade
-     * @return validated metrics facade
-     */
-    private static DnsMetrics validateMetrics(final DnsMetrics value) {
-        if (value == null) {
-            throw new ValidateException("DNS metrics must not be null");
-        }
-        return value;
-    }
-
-    /**
-     * Validates DNS query logging.
-     *
-     * @param value candidate query logger
-     * @return validated query logger
-     */
-    private static DnsQueryLog validateQueryLog(final DnsQueryLog value) {
-        if (value == null) {
-            throw new ValidateException("DNS query log must not be null");
-        }
-        return value;
-    }
-
-    /**
-     * Validates a positive integer option.
-     *
-     * @param value candidate integer
-     * @param name  diagnostic option name
-     * @return validated positive integer
-     */
-    private static int validatePositiveInt(final int value, final String name) {
-        if (value <= 0) {
-            throw new ValidateException(name + " must be positive");
-        }
-        return value;
-    }
-
-    /**
-     * Validates a positive duration option.
-     *
-     * @param value candidate duration
-     * @param name  diagnostic option name
-     * @return validated positive duration
-     */
-    private static Duration validatePositiveDuration(final Duration value, final String name) {
-        if (value == null || value.isNegative() || value.isZero()) {
-            throw new ValidateException(name + " must be positive");
-        }
-        return value;
-    }
-
-    /**
-     * Validates the DNS TCP frame length limit.
-     *
-     * @param value candidate frame length
-     * @return validated frame length
-     */
-    private static int validateFrameBytes(final int value) {
-        if (value < Normal._1 || value > Normal._65535) {
-            throw new ValidateException("DNS TCP max frame bytes must be from 1 through 65535");
-        }
-        return value;
     }
 
 }

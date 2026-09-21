@@ -88,6 +88,27 @@ public class RollingWindow {
     }
 
     /**
+     * Validates a positive duration.
+     *
+     * @param duration duration to validate and convert
+     * @param name     logical duration name used in validation messages
+     * @return positive duration in nanoseconds
+     * @throws ValidateException if the duration is null, non-positive, or outside nanosecond range
+     */
+    private static long validateDuration(final Duration duration, final String name) {
+        final Duration checked = Assert
+                .notNull(duration, () -> new ValidateException(name + " duration must be positive"));
+        Assert.isTrue(
+                checked.compareTo(Duration.ZERO) > 0,
+                () -> new ValidateException(name + " duration must be positive"));
+        try {
+            return checked.toNanos();
+        } catch (final ArithmeticException e) {
+            throw new ValidateException(name + " duration is out of range", e);
+        }
+    }
+
+    /**
      * Adds a non-negative sample to the bucket containing its timestamp.
      * <p>
      * A sample older than a newer state already occupying the same ring slot is ignored.
@@ -271,27 +292,6 @@ public class RollingWindow {
             throw new ValidateException("Window time is out of range", e);
         }
         return Math.floorDiv(nanos, bucketNanos);
-    }
-
-    /**
-     * Validates a positive duration.
-     *
-     * @param duration duration to validate and convert
-     * @param name     logical duration name used in validation messages
-     * @return positive duration in nanoseconds
-     * @throws ValidateException if the duration is null, non-positive, or outside nanosecond range
-     */
-    private static long validateDuration(final Duration duration, final String name) {
-        final Duration checked = Assert
-                .notNull(duration, () -> new ValidateException(name + " duration must be positive"));
-        Assert.isTrue(
-                checked.compareTo(Duration.ZERO) > 0,
-                () -> new ValidateException(name + " duration must be positive"));
-        try {
-            return checked.toNanos();
-        } catch (final ArithmeticException e) {
-            throw new ValidateException(name + " duration is out of range", e);
-        }
     }
 
     /**

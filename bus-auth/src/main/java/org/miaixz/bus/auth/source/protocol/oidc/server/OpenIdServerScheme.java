@@ -44,6 +44,7 @@ public class OpenIdServerScheme implements ProtocolScheme<OpenIdServerOptions> {
      * Stable Source type identifier.
      */
     public static final String ID = "oidc-server";
+
     /**
      * Processes an OIDC Authentication Request for an authenticated end user.
      */
@@ -53,6 +54,7 @@ public class OpenIdServerScheme implements ProtocolScheme<OpenIdServerOptions> {
             Response.class,
             Capability.Interaction.REDIRECT,
             Capability.Security.SUBJECT_AUTHENTICATED);
+
     /**
      * Publishes OpenID Provider Metadata.
      */
@@ -62,6 +64,7 @@ public class OpenIdServerScheme implements ProtocolScheme<OpenIdServerOptions> {
             Response.class,
             Capability.Interaction.DIRECT,
             Capability.Security.PUBLIC);
+
     /**
      * Publishes the OpenID Provider public JWK Set.
      */
@@ -71,6 +74,7 @@ public class OpenIdServerScheme implements ProtocolScheme<OpenIdServerOptions> {
             Response.class,
             Capability.Interaction.DIRECT,
             Capability.Security.PUBLIC);
+
     /**
      * Returns claims authorized by a bearer access token.
      */
@@ -80,6 +84,7 @@ public class OpenIdServerScheme implements ProtocolScheme<OpenIdServerOptions> {
             Response.class,
             Capability.Interaction.DIRECT,
             Capability.Security.PUBLIC);
+
     /**
      * Ends an OpenID Provider session without creating a response entity.
      */
@@ -89,6 +94,7 @@ public class OpenIdServerScheme implements ProtocolScheme<OpenIdServerOptions> {
             Response.class,
             Capability.Interaction.REDIRECT,
             Capability.Security.PUBLIC);
+
     /**
      * Exact potential OpenID Provider operations, narrowed by the compiled runtime manifest when endpoints are absent.
      */
@@ -103,6 +109,7 @@ public class OpenIdServerScheme implements ProtocolScheme<OpenIdServerOptions> {
             JWK_SET,
             USERINFO,
             END_SESSION));
+
     /**
      * Formal standards implemented by the OpenID Provider.
      */
@@ -116,6 +123,7 @@ public class OpenIdServerScheme implements ProtocolScheme<OpenIdServerOptions> {
                     citation("https://www.rfc-editor.org/rfc/rfc9207", "Authorization response issuer"),
                     citation("https://www.rfc-editor.org/rfc/rfc9700", "OAuth security best current practice")),
             "OpenID Provider");
+
     /**
      * Management form using standard endpoint, OAuth, OIDC, and JOSE member names.
      */

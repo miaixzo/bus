@@ -20,6 +20,7 @@
 package org.opencv.core;
 
 //javadoc:Point_
+
 /**
  * The point class.
  */

@@ -53,13 +53,6 @@ public interface Event extends Serializable {
     String getObjectKind();
 
     /**
-     * Sets the original request URL.
-     *
-     * @param url the original request URL
-     */
-    void setRequestUrl(String url);
-
-    /**
      * Returns the original request URL.
      *
      * @return the original request URL
@@ -68,11 +61,11 @@ public interface Event extends Serializable {
     String getRequestUrl();
 
     /**
-     * Sets the original request query string.
+     * Sets the original request URL.
      *
-     * @param queryString the original request query string
+     * @param url the original request URL
      */
-    void setRequestQueryString(String queryString);
+    void setRequestUrl(String url);
 
     /**
      * Returns the original request query string.
@@ -83,11 +76,11 @@ public interface Event extends Serializable {
     String getRequestQueryString();
 
     /**
-     * Sets the original request secret token.
+     * Sets the original request query string.
      *
-     * @param secretToken the original request secret token
+     * @param queryString the original request query string
      */
-    void setRequestSecretToken(String secretToken);
+    void setRequestQueryString(String queryString);
 
     /**
      * Returns the original request secret token.
@@ -96,5 +89,12 @@ public interface Event extends Serializable {
      */
     @JsonIgnore
     String getRequestSecretToken();
+
+    /**
+     * Sets the original request secret token.
+     *
+     * @param secretToken the original request secret token
+     */
+    void setRequestSecretToken(String secretToken);
 
 }

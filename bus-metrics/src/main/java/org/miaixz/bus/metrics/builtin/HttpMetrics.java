@@ -58,44 +58,6 @@ public class HttpMetrics implements Filter {
     }
 
     /**
-     * Intercepts each HTTP request, starts a timer, and records duration/status/method/uri tags on completion.
-     *
-     * @param request  the incoming servlet request
-     * @param response the outgoing servlet response
-     * @param chain    the filter chain to invoke
-     * @throws IOException      if an I/O error occurs during filtering
-     * @throws ServletException if a servlet error occurs during filtering
-     */
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-        if (!(request instanceof HttpServletRequest req) || !(response instanceof HttpServletResponse res)) {
-            chain.doFilter(request, response);
-            return;
-        }
-        Sample sample = Metrics.timer(Builder.HTTP_SERVER_REQUESTS).start();
-        req.setAttribute(ATTR_SAMPLE, sample);
-        Throwable caught = null;
-        try {
-            Logger.debug(true, "Metrics", "HTTP metrics collection started: method={}", req.getMethod());
-            chain.doFilter(request, response);
-        } catch (IOException | ServletException | RuntimeException e) {
-            caught = e;
-            Logger.warn(
-                    false,
-                    "Metrics",
-                    e,
-                    "HTTP metrics collection observed exception: method={}, status={}, exception={}",
-                    req.getMethod(),
-                    res.getStatus(),
-                    e.getClass().getSimpleName());
-            throw e;
-        } finally {
-            record(sample, req.getMethod(), req.getRequestURI(), res.getStatus(), caught);
-        }
-    }
-
-    /**
      * Stops the timer sample and records duration, method, URI, status, and exception tags.
      *
      * @param sample the in-flight timer sample to stop
@@ -137,6 +99,44 @@ public class HttpMetrics implements Filter {
                 status,
                 exceptionName,
                 durationNs);
+    }
+
+    /**
+     * Intercepts each HTTP request, starts a timer, and records duration/status/method/uri tags on completion.
+     *
+     * @param request  the incoming servlet request
+     * @param response the outgoing servlet response
+     * @param chain    the filter chain to invoke
+     * @throws IOException      if an I/O error occurs during filtering
+     * @throws ServletException if a servlet error occurs during filtering
+     */
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        if (!(request instanceof HttpServletRequest req) || !(response instanceof HttpServletResponse res)) {
+            chain.doFilter(request, response);
+            return;
+        }
+        Sample sample = Metrics.timer(Builder.HTTP_SERVER_REQUESTS).start();
+        req.setAttribute(ATTR_SAMPLE, sample);
+        Throwable caught = null;
+        try {
+            Logger.debug(true, "Metrics", "HTTP metrics collection started: method={}", req.getMethod());
+            chain.doFilter(request, response);
+        } catch (IOException | ServletException | RuntimeException e) {
+            caught = e;
+            Logger.warn(
+                    false,
+                    "Metrics",
+                    e,
+                    "HTTP metrics collection observed exception: method={}, status={}, exception={}",
+                    req.getMethod(),
+                    res.getStatus(),
+                    e.getClass().getSimpleName());
+            throw e;
+        } finally {
+            record(sample, req.getMethod(), req.getRequestURI(), res.getStatus(), caught);
+        }
     }
 
 }

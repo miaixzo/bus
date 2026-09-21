@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.core.center.date.culture.star.twentyeight;
 
-import org.miaixz.bus.core.center.date.culture.Animal;
-import org.miaixz.bus.core.center.date.culture.Land;
-import org.miaixz.bus.core.center.date.culture.Luck;
-import org.miaixz.bus.core.center.date.culture.Samsara;
-import org.miaixz.bus.core.center.date.culture.Winds;
+import org.miaixz.bus.core.center.date.culture.*;
 import org.miaixz.bus.core.center.date.culture.star.seven.SevenStar;
 import org.miaixz.bus.core.lang.Symbol;
 

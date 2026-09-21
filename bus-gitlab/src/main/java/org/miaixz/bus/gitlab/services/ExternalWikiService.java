@@ -30,11 +30,9 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
  */
 public class ExternalWikiService extends NotificationService {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852285037171L;
+
     /**
      * The wikiurl key prop value.
      */

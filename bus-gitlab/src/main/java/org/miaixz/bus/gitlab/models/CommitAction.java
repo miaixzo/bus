@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.Serial;
-import java.io.Serializable;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.Base64;
 
@@ -42,49 +38,39 @@ import org.miaixz.bus.logger.Logger;
  */
 public class CommitAction implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852239693533L;
-
-    /**
-     * Sets the file content and returns this instance.
-     *
-     * @param filePath the file path value
-     * @param encoding the encoding value
-     * @return the result
-     */
-
-    public CommitAction withFileContent(String filePath, Encoding encoding) {
-        File file = new File(filePath);
-        return (withFileContent(file, filePath, encoding));
-    }
 
     /**
      * The action value.
      */
     private Action action;
+
     /**
      * The file path value.
      */
     private String filePath;
+
     /**
      * The previous path value.
      */
     private String previousPath;
+
     /**
      * The content value.
      */
     private String content;
+
     /**
      * The encoding value.
      */
     private Encoding encoding;
+
     /**
      * The last commit id value.
      */
     private String lastCommitId;
+
     /**
      * The execute filemode value.
      */
@@ -118,6 +104,19 @@ public class CommitAction implements Serializable {
         } else {
             return (new String(Files.readAllBytes(file.toPath())));
         }
+    }
+
+    /**
+     * Sets the file content and returns this instance.
+     *
+     * @param filePath the file path value
+     * @param encoding the encoding value
+     * @return the result
+     */
+
+    public CommitAction withFileContent(String filePath, Encoding encoding) {
+        File file = new File(filePath);
+        return (withFileContent(file, filePath, encoding));
     }
 
     /**
@@ -377,6 +376,17 @@ public class CommitAction implements Serializable {
     }
 
     /**
+     * Returns the string.
+     *
+     * @return the result
+     */
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
+    }
+
+    /**
      * The action enum.
      *
      * @author Kimi Liu
@@ -443,17 +453,6 @@ public class CommitAction implements Serializable {
             return (enumCodec.toString(this));
         }
 
-    }
-
-    /**
-     * Returns the string.
-     *
-     * @return the result
-     */
-
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
     }
 
 }

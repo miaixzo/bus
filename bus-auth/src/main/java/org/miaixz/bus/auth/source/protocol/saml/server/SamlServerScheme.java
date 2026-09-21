@@ -45,6 +45,7 @@ public class SamlServerScheme implements ProtocolScheme<SamlServerOptions> {
      * Stable Source type identifier for generic SAML identity-providers.
      */
     public static final String ID = "saml-server";
+
     /**
      * Processes an Authentication Request for an already authenticated subject.
      */
@@ -54,6 +55,7 @@ public class SamlServerScheme implements ProtocolScheme<SamlServerOptions> {
             Response.class,
             Capability.Interaction.REDIRECT,
             Capability.Security.SUBJECT_AUTHENTICATED);
+
     /**
      * Processes a SAML Single Logout Request.
      */
@@ -63,6 +65,7 @@ public class SamlServerScheme implements ProtocolScheme<SamlServerOptions> {
             LogoutResponse.class,
             Capability.Interaction.REDIRECT,
             Capability.Security.PUBLIC);
+
     /**
      * Publishes the identity provider's standard SAML Metadata document.
      */
@@ -72,11 +75,13 @@ public class SamlServerScheme implements ProtocolScheme<SamlServerOptions> {
             EntityDescriptor.class,
             Capability.Interaction.DIRECT,
             Capability.Security.PUBLIC);
+
     /**
      * Exact potential identity-provider operations before endpoint-specific runtime narrowing.
      */
     private static final Capability.Manifest MANIFEST = new Capability.Manifest(
             List.of(SINGLE_SIGN_ON, SINGLE_LOGOUT, METADATA));
+
     /**
      * Formal specifications implemented by this identity-server scheme.
      */
@@ -91,6 +96,7 @@ public class SamlServerScheme implements ProtocolScheme<SamlServerOptions> {
                             "Web Browser SSO and Single Logout Profiles"),
                     citation("https://docs.oasis-open.org/security/saml/v2.0/saml-metadata-2.0-os.pdf", "Metadata")),
             "SAML 2.0 Identity Provider");
+
     /**
      * External management form containing only deployment options owned by a SAML identity-provider.
      */

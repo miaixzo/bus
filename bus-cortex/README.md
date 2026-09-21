@@ -16,8 +16,7 @@ storage abstraction (Memory / Redis / JDBC) with zero extra infrastructure.
 - **Service + Instance Model**: `ApiAssets` (definition) + `Instance` (runtime), following Nacos-style separation
 - **Configuration Center**: Versioned publish, gray release routing, `@ConfigChange` callback annotations
 - **Health Probing**: Pluggable `Prober` (HTTP / TCP / MCP Ping / Process PID), server-side active probing
-- **Space Isolation**: Dynamic space resolution (Token / Header / context), `SpaceGuard` enforced write
-  isolation
+- **Space Isolation**: Dynamic space resolution (Token / Header / context), `SpaceGuard` enforced write isolation
 - **Security**: HMAC-SHA256 Token + RBAC (ADMIN / PROVIDER / CONSUMER), rate limiting, circuit breaking
 - **bus Ecosystem**: VortexBridge auto-syncs to bus-vortex; bus-metrics instrumentation built-in; bus-cache as the sole
   storage dependency
@@ -133,8 +132,8 @@ registered instances. Healthy instances get TTL refreshed; unhealthy instances e
 | `AccessTokenStore`    | HMAC-SHA256 token issuance with CacheX-backed revocation                              |
 | `AccessTokenResolver` | Two-step validation: HMAC verify (anti-forgery) + CacheX blacklist check (revocation) |
 | `AccessGuard`         | RBAC enforcement (ADMIN / PROVIDER / CONSUMER)                                        |
-| `SpaceGuard`      | Cross-space write prevention                                                      |
-| `RateLimiter`         | Token bucket rate limiting per space/method (CacheX counters)                     |
+| `SpaceGuard`          | Cross-space write prevention                                                          |
+| `RateLimiter`         | Token bucket rate limiting per space/method (CacheX counters)                         |
 | `CircuitBreaker`      | State machine: CLOSED → OPEN → HALF_OPEN                                              |
 | `ParamValidator`      | Input validation (regex `^[a-zA-Z0-9._-]{1,128}$`) preventing CacheX key injection    |
 

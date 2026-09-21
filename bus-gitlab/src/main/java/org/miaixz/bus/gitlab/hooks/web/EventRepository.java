@@ -33,26 +33,32 @@ public class EventRepository {
      * The name value.
      */
     private String name;
+
     /**
      * The url value.
      */
     private String url;
+
     /**
      * The description value.
      */
     private String description;
+
     /**
      * The homepage value.
      */
     private String homepage;
+
     /**
      * The git http url value.
      */
     private String git_http_url;
+
     /**
      * The git ssh url value.
      */
     private String git_ssh_url;
+
     /**
      * The visibility level value.
      */

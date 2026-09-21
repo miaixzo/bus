@@ -43,16 +43,6 @@ public class CitizenIdProvider extends AbstractProvider {
     }
 
     /**
-     * Returns the masking strategy used to register this citizen-ID provider.
-     *
-     * @return {@link EnumValue.Masking#CITIZENID}
-     */
-    @Override
-    public EnumValue.Masking type() {
-        return EnumValue.Masking.CITIZENID;
-    }
-
-    /**
      * Masks the given ID card number.
      *
      * @param cardId The ID card number to mask.
@@ -64,6 +54,16 @@ public class CitizenIdProvider extends AbstractProvider {
         // The middle part of a Chinese ID card (18 digits) is 10 digits long (from index 6 to 15).
         final String middle = StringKit.fill(10, shadow);
         return StringKit.build(cardId, middle, prefixLength);
+    }
+
+    /**
+     * Returns the masking strategy used to register this citizen-ID provider.
+     *
+     * @return {@link EnumValue.Masking#CITIZENID}
+     */
+    @Override
+    public EnumValue.Masking type() {
+        return EnumValue.Masking.CITIZENID;
     }
 
     /**

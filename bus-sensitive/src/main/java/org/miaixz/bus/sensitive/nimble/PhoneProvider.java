@@ -43,16 +43,6 @@ public class PhoneProvider extends AbstractProvider {
     }
 
     /**
-     * Returns the masking strategy used to register this phone-number provider.
-     *
-     * @return {@link EnumValue.Masking#PHONE}
-     */
-    @Override
-    public EnumValue.Masking type() {
-        return EnumValue.Masking.PHONE;
-    }
-
-    /**
      * Masks the given phone number, keeping the first 3 and last 4 digits visible.
      *
      * @param phone  The phone number to mask.
@@ -63,6 +53,16 @@ public class PhoneProvider extends AbstractProvider {
         final int prefixLength = 3;
         final String middle = StringKit.fill(4, shadow);
         return StringKit.build(phone, middle, prefixLength);
+    }
+
+    /**
+     * Returns the masking strategy used to register this phone-number provider.
+     *
+     * @return {@link EnumValue.Masking#PHONE}
+     */
+    @Override
+    public EnumValue.Masking type() {
+        return EnumValue.Masking.PHONE;
     }
 
     /**

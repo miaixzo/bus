@@ -34,9 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Changes implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852238919699L;
 
@@ -58,22 +55,27 @@ public class Changes implements Serializable {
      * The deleted file value.
      */
     private Boolean deletedFile;
+
     /**
      * The diff value.
      */
     private String diff;
+
     /**
      * The new file value.
      */
     private Boolean newFile;
+
     /**
      * The new path value.
      */
     private String newPath;
+
     /**
      * The old path value.
      */
     private String oldPath;
+
     /**
      * The renamed file value.
      */

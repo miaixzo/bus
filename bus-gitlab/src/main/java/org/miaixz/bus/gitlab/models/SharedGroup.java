@@ -34,9 +34,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
  */
 public class SharedGroup implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852281256893L;
 
@@ -44,14 +41,17 @@ public class SharedGroup implements Serializable {
      * The group id value.
      */
     private Long groupId;
+
     /**
      * The group name value.
      */
     private String groupName;
+
     /**
      * The group full path value.
      */
     private String groupFullPath;
+
     /**
      * The group access level value.
      */

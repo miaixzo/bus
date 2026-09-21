@@ -128,15 +128,15 @@ public class TenantConfig {
     private final boolean enableSqlCache = true;
 
     /**
+     * Tenant ID resolver.
+     */
+    private final TenantProvider provider;
+
+    /**
      * Whether absence of an authenticated tenant must fail.
      */
     @Builder.Default
     private boolean required = false;
-
-    /**
-     * Tenant ID resolver.
-     */
-    private final TenantProvider provider;
 
     /**
      * Creates a tenant configuration.

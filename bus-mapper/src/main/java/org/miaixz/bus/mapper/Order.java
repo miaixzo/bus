@@ -218,9 +218,6 @@ public interface Order extends org.miaixz.bus.core.Order {
     @Getter
     class SimpleOrder implements Order, Serializable {
 
-        /**
-         * Serialization version for {@link SimpleOrder}.
-         */
         @Serial
         private static final long serialVersionUID = 2852292629090L;
 

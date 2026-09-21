@@ -43,8 +43,8 @@ import org.miaixz.bus.core.xyz.*;
 public abstract class AbstractSetting
         implements TypeGetter<CharSequence>, GroupedTypeGetter<CharSequence, CharSequence>, Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 2852777511686L;
+            @Serial
+            private static final long serialVersionUID = 2852777511686L;
 
     /**
      * The default delimiter for array-type values.

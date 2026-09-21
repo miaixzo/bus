@@ -73,15 +73,6 @@ public interface HttpAuthenticator {
     }
 
     /**
-     * Authenticates a failed request.
-     *
-     * @param request  request that produced the authentication challenge
-     * @param response response containing origin or proxy authentication challenges
-     * @return authenticated request, or null when no follow-up is available
-     */
-    HttpRequest authenticate(HttpRequest request, HttpResponse response);
-
-    /**
      * Marks a challenge as proxy or origin targeted.
      *
      * @param challenge non-null authentication challenge
@@ -109,5 +100,14 @@ public interface HttpAuthenticator {
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
+
+    /**
+     * Authenticates a failed request.
+     *
+     * @param request  request that produced the authentication challenge
+     * @param response response containing origin or proxy authentication challenges
+     * @return authenticated request, or null when no follow-up is available
+     */
+    HttpRequest authenticate(HttpRequest request, HttpResponse response);
 
 }

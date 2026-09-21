@@ -20,23 +20,13 @@
 package org.miaixz.bus.mapper.dialect;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Date;
-import java.util.EnumSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringJoiner;
 
 import jakarta.persistence.EnumType;
 
@@ -50,11 +40,7 @@ import org.miaixz.bus.mapper.feature.paging.Pageable;
 import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
 import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
 import org.miaixz.bus.mapper.feature.schema.TableSnapshot;
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
-import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
-import org.miaixz.bus.mapper.parsing.IndexMeta;
-import org.miaixz.bus.mapper.parsing.PrimaryKeyMeta;
-import org.miaixz.bus.mapper.parsing.TableMeta;
+import org.miaixz.bus.mapper.parsing.*;
 
 /**
  * Base implementation for database dialects.
@@ -142,6 +128,61 @@ public abstract class AbstractDialect implements Dialect {
     public AbstractDialect(String databaseName, String jdbcUrlPrefix) {
         this.databaseName = databaseName;
         this.jdbcUrlPrefix = jdbcUrlPrefix;
+    }
+
+    /**
+     * Converts a JDBC type code to a MyBatis JDBC type.
+     *
+     * @param type the JDBC type code
+     * @return the MyBatis JDBC type
+     */
+    private static JdbcType toJdbcType(int type) {
+        try {
+            return JdbcType.forCode(type);
+        } catch (Exception ignored) {
+            return switch (type) {
+                case Types.VARCHAR, Types.NVARCHAR -> JdbcType.VARCHAR;
+                case Types.INTEGER -> JdbcType.INTEGER;
+                case Types.BIGINT -> JdbcType.BIGINT;
+                case Types.DECIMAL, Types.NUMERIC -> JdbcType.DECIMAL;
+                case Types.BOOLEAN, Types.BIT -> JdbcType.BOOLEAN;
+                case Types.TIMESTAMP, Types.TIMESTAMP_WITH_TIMEZONE -> JdbcType.TIMESTAMP;
+                case Types.DATE -> JdbcType.DATE;
+                case Types.TIME -> JdbcType.TIME;
+                case Types.BLOB, Types.BINARY, Types.VARBINARY, Types.LONGVARBINARY -> JdbcType.BLOB;
+                default -> JdbcType.UNDEFINED;
+            };
+        }
+    }
+
+    /**
+     * Reads a boolean result-set column defensively.
+     *
+     * @param rs     the result set
+     * @param column the column label
+     * @return the boolean value, or {@code false} when unavailable
+     */
+    private static boolean getBoolean(ResultSet rs, String column) {
+        try {
+            return rs.getBoolean(column);
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Reads a string result-set column defensively.
+     *
+     * @param rs     the result set
+     * @param column the column label
+     * @return the string value, or {@code null} when unavailable
+     */
+    private static String getString(ResultSet rs, String column) {
+        try {
+            return rs.getString(column);
+        } catch (SQLException e) {
+            return null;
+        }
     }
 
     /**
@@ -1384,61 +1425,6 @@ public abstract class AbstractDialect implements Dialect {
             return new SqlTypeDescriptor().jdbcType(JdbcType.BLOB).typeName(binaryName);
         }
         return stringType(column);
-    }
-
-    /**
-     * Converts a JDBC type code to a MyBatis JDBC type.
-     *
-     * @param type the JDBC type code
-     * @return the MyBatis JDBC type
-     */
-    private static JdbcType toJdbcType(int type) {
-        try {
-            return JdbcType.forCode(type);
-        } catch (Exception ignored) {
-            return switch (type) {
-                case Types.VARCHAR, Types.NVARCHAR -> JdbcType.VARCHAR;
-                case Types.INTEGER -> JdbcType.INTEGER;
-                case Types.BIGINT -> JdbcType.BIGINT;
-                case Types.DECIMAL, Types.NUMERIC -> JdbcType.DECIMAL;
-                case Types.BOOLEAN, Types.BIT -> JdbcType.BOOLEAN;
-                case Types.TIMESTAMP, Types.TIMESTAMP_WITH_TIMEZONE -> JdbcType.TIMESTAMP;
-                case Types.DATE -> JdbcType.DATE;
-                case Types.TIME -> JdbcType.TIME;
-                case Types.BLOB, Types.BINARY, Types.VARBINARY, Types.LONGVARBINARY -> JdbcType.BLOB;
-                default -> JdbcType.UNDEFINED;
-            };
-        }
-    }
-
-    /**
-     * Reads a boolean result-set column defensively.
-     *
-     * @param rs     the result set
-     * @param column the column label
-     * @return the boolean value, or {@code false} when unavailable
-     */
-    private static boolean getBoolean(ResultSet rs, String column) {
-        try {
-            return rs.getBoolean(column);
-        } catch (SQLException e) {
-            return false;
-        }
-    }
-
-    /**
-     * Reads a string result-set column defensively.
-     *
-     * @param rs     the result set
-     * @param column the column label
-     * @return the string value, or {@code null} when unavailable
-     */
-    private static String getString(ResultSet rs, String column) {
-        try {
-            return rs.getString(column);
-        } catch (SQLException e) {
-            return null;
-        }
     }
 
 }

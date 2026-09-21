@@ -115,6 +115,47 @@ public class CidrBlock {
     }
 
     /**
+     * Validates a prefix length against an address family.
+     *
+     * @param addressBytes address byte length
+     * @param prefixLength prefix length in bits
+     */
+    private static void validatePrefix(final int addressBytes, final int prefixLength) {
+        final int maximum = addressBytes == IPV4_BYTES ? IPV4_BYTES * 8 : IPV6_BYTES * 8;
+        if (addressBytes != IPV4_BYTES && addressBytes != IPV6_BYTES) {
+            throw new ValidateException("CIDR address family is unsupported");
+        }
+        if (prefixLength < 0 || prefixLength > maximum) {
+            throw new ValidateException("CIDR prefix length is out of range");
+        }
+    }
+
+    /**
+     * Applies a network mask to address bytes.
+     *
+     * @param address      source address bytes
+     * @param prefixLength prefix length in bits
+     * @return masked address bytes
+     */
+    private static byte[] masked(final byte[] address, final int prefixLength) {
+        final byte[] masked = Arrays.copyOf(address, address.length);
+        int remaining = prefixLength;
+        for (int index = 0; index < masked.length; index++) {
+            if (remaining >= 8) {
+                remaining -= 8;
+                continue;
+            }
+            if (remaining <= 0) {
+                masked[index] = 0;
+            } else {
+                masked[index] = (byte) (masked[index] & (0xff << (8 - remaining)));
+                remaining = 0;
+            }
+        }
+        return masked;
+    }
+
+    /**
      * Returns whether an address is contained in this CIDR block.
      *
      * @param address client address
@@ -163,47 +204,6 @@ public class CidrBlock {
     @Override
     public String toString() {
         return notation;
-    }
-
-    /**
-     * Validates a prefix length against an address family.
-     *
-     * @param addressBytes address byte length
-     * @param prefixLength prefix length in bits
-     */
-    private static void validatePrefix(final int addressBytes, final int prefixLength) {
-        final int maximum = addressBytes == IPV4_BYTES ? IPV4_BYTES * 8 : IPV6_BYTES * 8;
-        if (addressBytes != IPV4_BYTES && addressBytes != IPV6_BYTES) {
-            throw new ValidateException("CIDR address family is unsupported");
-        }
-        if (prefixLength < 0 || prefixLength > maximum) {
-            throw new ValidateException("CIDR prefix length is out of range");
-        }
-    }
-
-    /**
-     * Applies a network mask to address bytes.
-     *
-     * @param address      source address bytes
-     * @param prefixLength prefix length in bits
-     * @return masked address bytes
-     */
-    private static byte[] masked(final byte[] address, final int prefixLength) {
-        final byte[] masked = Arrays.copyOf(address, address.length);
-        int remaining = prefixLength;
-        for (int index = 0; index < masked.length; index++) {
-            if (remaining >= 8) {
-                remaining -= 8;
-                continue;
-            }
-            if (remaining <= 0) {
-                masked[index] = 0;
-            } else {
-                masked[index] = (byte) (masked[index] & (0xff << (8 - remaining)));
-                remaining = 0;
-            }
-        }
-        return masked;
     }
 
 }

@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.spring.web;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,26 +51,32 @@ public class RequestContext {
      * Prefix isolating request-scoped cache attributes from application attributes.
      */
     private static final String ATTRIBUTE_PREFIX = RequestContext.class.getName() + Symbol.DOT;
+
     /**
      * Request attribute containing the immutable header snapshot.
      */
     private static final String HEADERS_ATTRIBUTE = ATTRIBUTE_PREFIX + "headers";
+
     /**
      * Request attribute containing the immutable parameter snapshot.
      */
     private static final String PARAMETERS_ATTRIBUTE = ATTRIBUTE_PREFIX + "parameters";
+
     /**
      * Request attribute containing the parsed JSON body cache.
      */
     private static final String JSON_BODY_ATTRIBUTE = ATTRIBUTE_PREFIX + "jsonBody";
+
     /**
      * Request attribute containing the immutable parsed JSON-object snapshot.
      */
     private static final String JSON_VALUES_ATTRIBUTE = ATTRIBUTE_PREFIX + "jsonValues";
+
     /**
      * Request attribute containing the immutable cookie snapshot.
      */
     private static final String COOKIES_ATTRIBUTE = ATTRIBUTE_PREFIX + "cookies";
+
     /**
      * Marker distinguishing an absent body from an uninitialized cache.
      */
@@ -85,6 +87,40 @@ public class RequestContext {
      */
     public RequestContext() {
         // No initialization required.
+    }
+
+    /**
+     * Casts an internally created immutable string map.
+     *
+     * @param map source map to copy
+     * @return a string-keyed copy of the supplied map
+     */
+    private static Map<String, String> stringMap(Map<?, ?> map) {
+        return (Map<String, String>) map;
+    }
+
+    /**
+     * Casts an internally created immutable object map.
+     *
+     * @param map source map to cast
+     * @return an object-valued map created by this accessor
+     */
+    private static Map<String, Object> objectMap(Map<?, ?> map) {
+        return (Map<String, Object>) map;
+    }
+
+    /**
+     * Returns the first non-null candidate.
+     *
+     * @param values candidate values in encounter order
+     * @return the first non-null value, or {@code null} when both are absent
+     */
+    private static String firstNonNull(String... values) {
+        for (String value : values) {
+            if (value != null)
+                return value;
+        }
+        return null;
     }
 
     /**
@@ -558,40 +594,6 @@ public class RequestContext {
         } catch (NumberFormatException ignored) {
             return defaultValue;
         }
-    }
-
-    /**
-     * Casts an internally created immutable string map.
-     *
-     * @param map source map to copy
-     * @return a string-keyed copy of the supplied map
-     */
-    private static Map<String, String> stringMap(Map<?, ?> map) {
-        return (Map<String, String>) map;
-    }
-
-    /**
-     * Casts an internally created immutable object map.
-     *
-     * @param map source map to cast
-     * @return an object-valued map created by this accessor
-     */
-    private static Map<String, Object> objectMap(Map<?, ?> map) {
-        return (Map<String, Object>) map;
-    }
-
-    /**
-     * Returns the first non-null candidate.
-     *
-     * @param values candidate values in encounter order
-     * @return the first non-null value, or {@code null} when both are absent
-     */
-    private static String firstNonNull(String... values) {
-        for (String value : values) {
-            if (value != null)
-                return value;
-        }
-        return null;
     }
 
     /**

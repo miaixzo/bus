@@ -96,6 +96,78 @@ public class SseX {
     }
 
     /**
+     * Returns the shared no-op event handler.
+     *
+     * @return no-op event handler
+     */
+    private static Consumer<SseEvent> noopHandler() {
+        return Instances.get(SseX.class.getName() + ".noopHandler", () -> event -> {
+        });
+    }
+
+    /**
+     * Validates required values.
+     *
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Parses a target URI.
+     *
+     * @param value raw SSE endpoint URL
+     * @return validated HTTP or HTTPS target URI
+     */
+    private static URI parseTarget(final String value) {
+        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException("SSE URL must be non-blank and single-line");
+        }
+        try {
+            final URI parsed = new URI(value.trim());
+            final String scheme = parsed.getScheme();
+            if (!Protocol.HTTP.name.equalsIgnoreCase(scheme) && !Protocol.HTTPS.name.equalsIgnoreCase(scheme)) {
+                throw new ProtocolException("SSE URL must use http or https");
+            }
+            Address.from(parsed);
+            return parsed;
+        } catch (final URISyntaxException e) {
+            throw new ProtocolException("Invalid SSE URL", e);
+        }
+    }
+
+    /**
+     * Validates a duration.
+     *
+     * @param duration candidate timeout or retry duration
+     * @param name     field name
+     * @return validated non-negative duration
+     */
+    private static Duration validateDuration(final Duration duration, final String name) {
+        final Duration checked = Assert
+                .notNull(duration, () -> new ValidateException(name + " must be non-null and non-negative"));
+        Assert.isFalse(checked.isNegative(), () -> new ValidateException(name + " must be non-null and non-negative"));
+        return checked;
+    }
+
+    /**
+     * Validates a Last-Event-ID value.
+     *
+     * @param value candidate Last-Event-ID header value
+     * @return validated single-line Last-Event-ID value
+     */
+    private static String validateLastEventId(final String value) {
+        if (StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException("Last-Event-ID must be single-line");
+        }
+        return value;
+    }
+
+    /**
      * Returns the stream protocol.
      *
      * @return HTTP or HTTPS protocol derived from the stream address
@@ -193,16 +265,6 @@ public class SseX {
     }
 
     /**
-     * Returns the shared no-op event handler.
-     *
-     * @return no-op event handler
-     */
-    private static Consumer<SseEvent> noopHandler() {
-        return Instances.get(SseX.class.getName() + ".noopHandler", () -> event -> {
-        });
-    }
-
-    /**
      * Builds a stable reader dispatch key.
      *
      * @return dispatch key
@@ -218,68 +280,6 @@ public class SseX {
      */
     public Call<SseSession> enqueue() {
         return call().enqueue();
-    }
-
-    /**
-     * Validates required values.
-     *
-     * @param value reference to validate
-     * @param name  field name included in the validation failure
-     * @param <T>   reference type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-    }
-
-    /**
-     * Parses a target URI.
-     *
-     * @param value raw SSE endpoint URL
-     * @return validated HTTP or HTTPS target URI
-     */
-    private static URI parseTarget(final String value) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("SSE URL must be non-blank and single-line");
-        }
-        try {
-            final URI parsed = new URI(value.trim());
-            final String scheme = parsed.getScheme();
-            if (!Protocol.HTTP.name.equalsIgnoreCase(scheme) && !Protocol.HTTPS.name.equalsIgnoreCase(scheme)) {
-                throw new ProtocolException("SSE URL must use http or https");
-            }
-            Address.from(parsed);
-            return parsed;
-        } catch (final URISyntaxException e) {
-            throw new ProtocolException("Invalid SSE URL", e);
-        }
-    }
-
-    /**
-     * Validates a duration.
-     *
-     * @param duration candidate timeout or retry duration
-     * @param name     field name
-     * @return validated non-negative duration
-     */
-    private static Duration validateDuration(final Duration duration, final String name) {
-        final Duration checked = Assert
-                .notNull(duration, () -> new ValidateException(name + " must be non-null and non-negative"));
-        Assert.isFalse(checked.isNegative(), () -> new ValidateException(name + " must be non-null and non-negative"));
-        return checked;
-    }
-
-    /**
-     * Validates a Last-Event-ID value.
-     *
-     * @param value candidate Last-Event-ID header value
-     * @return validated single-line Last-Event-ID value
-     */
-    private static String validateLastEventId(final String value) {
-        if (StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Last-Event-ID must be single-line");
-        }
-        return value;
     }
 
     /**

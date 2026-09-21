@@ -74,6 +74,7 @@ public class WindowsHWDiskStore extends AbstractHWDiskStore {
      * The GUID_BUFSIZE constant.
      */
     private static final int GUID_BUFSIZE = 100;
+
     // Windows allows up to 32 characters for NTFS volume labels; +1 for null terminator
     /**
      * The LABEL_BUFSIZE constant.

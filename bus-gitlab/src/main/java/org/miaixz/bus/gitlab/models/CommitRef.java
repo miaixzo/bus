@@ -35,9 +35,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class CommitRef implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852239992782L;
 
@@ -45,6 +42,7 @@ public class CommitRef implements Serializable {
      * The type field.
      */
     private RefType type;
+
     /**
      * The name value.
      */
@@ -55,6 +53,57 @@ public class CommitRef implements Serializable {
      */
     public CommitRef() {
         // No initialization required.
+    }
+
+    /**
+     * Returns the type.
+     *
+     * @return the result
+     */
+
+    public RefType getType() {
+        return type;
+    }
+
+    /**
+     * Sets the type.
+     *
+     * @param type the type value
+     */
+
+    public void setType(RefType type) {
+        this.type = type;
+    }
+
+    /**
+     * Returns the name.
+     *
+     * @return the result
+     */
+
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the name.
+     *
+     * @param name the name value
+     */
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
     }
 
     /**
@@ -120,57 +169,6 @@ public class CommitRef implements Serializable {
             return (enumCodec.toString(this));
         }
 
-    }
-
-    /**
-     * Returns the type.
-     *
-     * @return the result
-     */
-
-    public RefType getType() {
-        return type;
-    }
-
-    /**
-     * Sets the type.
-     *
-     * @param type the type value
-     */
-
-    public void setType(RefType type) {
-        this.type = type;
-    }
-
-    /**
-     * Returns the name.
-     *
-     * @return the result
-     */
-
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Sets the name.
-     *
-     * @param name the name value
-     */
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Returns the string.
-     *
-     * @return the result
-     */
-
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
     }
 
 }

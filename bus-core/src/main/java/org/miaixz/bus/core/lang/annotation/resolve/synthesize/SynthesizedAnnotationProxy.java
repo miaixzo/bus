@@ -63,6 +63,22 @@ public class SynthesizedAnnotationProxy implements InvocationHandler {
     private final Map<String, BiFunctionX<Method, Object[], Object>> methods;
 
     /**
+     * Constructs a new {@code SynthesizedAnnotationProxy}.
+     *
+     * @param annotationAttributeValueProvider the attribute value provider; must not be {@code null}
+     * @param annotation                       the synthesized annotation to proxy; must not be {@code null}
+     */
+    public SynthesizedAnnotationProxy(final AnnotationAttributeValueProvider annotationAttributeValueProvider,
+            final SynthesizedAnnotation annotation) {
+        Assert.notNull(annotationAttributeValueProvider, "annotationAttributeValueProvider must not null");
+        Assert.notNull(annotation, "annotation must not null");
+        this.annotationAttributeValueProvider = annotationAttributeValueProvider;
+        this.annotation = annotation;
+        this.methods = new HashMap<>(9);
+        loadMethods();
+    }
+
+    /**
      * Creates a proxy annotation instance. The generated proxy implements both {@link SynthesizedProxyAnnotation} and
      * the specified annotation type.
      *
@@ -110,22 +126,6 @@ public class SynthesizedAnnotationProxy implements InvocationHandler {
      */
     public static boolean isProxyAnnotation(final Class<?> annotationType) {
         return ClassKit.isAssignable(SynthesizedProxyAnnotation.class, annotationType);
-    }
-
-    /**
-     * Constructs a new {@code SynthesizedAnnotationProxy}.
-     *
-     * @param annotationAttributeValueProvider the attribute value provider; must not be {@code null}
-     * @param annotation                       the synthesized annotation to proxy; must not be {@code null}
-     */
-    public SynthesizedAnnotationProxy(final AnnotationAttributeValueProvider annotationAttributeValueProvider,
-            final SynthesizedAnnotation annotation) {
-        Assert.notNull(annotationAttributeValueProvider, "annotationAttributeValueProvider must not null");
-        Assert.notNull(annotation, "annotation must not null");
-        this.annotationAttributeValueProvider = annotationAttributeValueProvider;
-        this.annotation = annotation;
-        this.methods = new HashMap<>(9);
-        loadMethods();
     }
 
     /**

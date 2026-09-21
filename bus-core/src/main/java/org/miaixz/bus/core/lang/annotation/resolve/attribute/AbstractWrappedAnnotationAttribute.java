@@ -29,10 +29,10 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 /**
  * Base implementation of {@link WrappedAnnotationAttribute}.
  *
+ * @author Kimi Liu
  * @see ForceAliasedAnnotationAttribute
  * @see AliasedAnnotationAttribute
  * @see MirroredAnnotationAttribute
- * @author Kimi Liu
  */
 public abstract class AbstractWrappedAnnotationAttribute implements WrappedAnnotationAttribute {
 

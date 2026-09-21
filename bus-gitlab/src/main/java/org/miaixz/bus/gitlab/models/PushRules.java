@@ -32,9 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class PushRules implements Serializable {
 
-    /**
-     * Serialization version identifier.
-     */
     @Serial
     private static final long serialVersionUID = 2852276372752L;
 
@@ -461,6 +458,15 @@ public class PushRules implements Serializable {
     }
 
     /**
+     * Sets whether commits must use a verified committer email address.
+     *
+     * @param commitCommitterCheck {@code true} if commits must use a verified committer email address
+     */
+    public void setCommitCommitterCheck(Boolean commitCommitterCheck) {
+        this.commitCommitterCheck = commitCommitterCheck;
+    }
+
+    /**
      * Gets whether commit author names must match the GitLab account name.
      *
      * @return {@code true} if commit author names must match the GitLab account name
@@ -487,15 +493,6 @@ public class PushRules implements Serializable {
     public PushRules withCommitCommitterNameCheck(Boolean commitCommitterNameCheck) {
         this.commitCommitterNameCheck = commitCommitterNameCheck;
         return (this);
-    }
-
-    /**
-     * Sets whether commits must use a verified committer email address.
-     *
-     * @param commitCommitterCheck {@code true} if commits must use a verified committer email address
-     */
-    public void setCommitCommitterCheck(Boolean commitCommitterCheck) {
-        this.commitCommitterCheck = commitCommitterCheck;
     }
 
     /**

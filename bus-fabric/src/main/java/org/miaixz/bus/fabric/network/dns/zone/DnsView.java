@@ -108,58 +108,6 @@ public class DnsView {
     }
 
     /**
-     * Returns the view name.
-     *
-     * @return non-blank view name
-     */
-    public String name() {
-        return name;
-    }
-
-    /**
-     * Returns client CIDR blocks matched by this view.
-     *
-     * @return immutable client CIDR blocks
-     */
-    public List<CidrBlock> clientCidrs() {
-        return clientCidrs;
-    }
-
-    /**
-     * Returns zones visible in this view.
-     *
-     * @return immutable zones
-     */
-    public List<DnsZone> zones() {
-        return zones;
-    }
-
-    /**
-     * Returns policy rules scoped to this view.
-     *
-     * @return immutable policy rules
-     */
-    public List<DnsPolicyRule> policies() {
-        return policies;
-    }
-
-    /**
-     * Returns the longest matching CIDR prefix length for a client address.
-     *
-     * @param address client address
-     * @return matching prefix length, or {@code -1}
-     */
-    public int matchPrefixLength(final InetAddress address) {
-        int best = -1;
-        for (final CidrBlock cidr : clientCidrs) {
-            if (cidr.contains(address) && cidr.prefixLength() > best) {
-                best = cidr.prefixLength();
-            }
-        }
-        return best;
-    }
-
-    /**
      * Returns default client CIDRs matching all IPv4 and IPv6 clients.
      *
      * @return immutable default CIDR blocks
@@ -220,6 +168,58 @@ public class DnsView {
             }
         }
         return List.copyOf(policies);
+    }
+
+    /**
+     * Returns the view name.
+     *
+     * @return non-blank view name
+     */
+    public String name() {
+        return name;
+    }
+
+    /**
+     * Returns client CIDR blocks matched by this view.
+     *
+     * @return immutable client CIDR blocks
+     */
+    public List<CidrBlock> clientCidrs() {
+        return clientCidrs;
+    }
+
+    /**
+     * Returns zones visible in this view.
+     *
+     * @return immutable zones
+     */
+    public List<DnsZone> zones() {
+        return zones;
+    }
+
+    /**
+     * Returns policy rules scoped to this view.
+     *
+     * @return immutable policy rules
+     */
+    public List<DnsPolicyRule> policies() {
+        return policies;
+    }
+
+    /**
+     * Returns the longest matching CIDR prefix length for a client address.
+     *
+     * @param address client address
+     * @return matching prefix length, or {@code -1}
+     */
+    public int matchPrefixLength(final InetAddress address) {
+        int best = -1;
+        for (final CidrBlock cidr : clientCidrs) {
+            if (cidr.contains(address) && cidr.prefixLength() > best) {
+                best = cidr.prefixLength();
+            }
+        }
+        return best;
     }
 
 }

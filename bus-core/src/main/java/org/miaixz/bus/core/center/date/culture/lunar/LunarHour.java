@@ -50,21 +50,6 @@ public class LunarHour extends SecondParts {
     public static EightCharProvider provider = new DefaultEightCharProvider();
 
     /**
-     * Validates lunar year, month, day, hour, minute, and second.
-     *
-     * @param year   the lunar year
-     * @param month  the lunar month
-     * @param day    the lunar day
-     * @param hour   the hour (0-23)
-     * @param minute the minute (0-59)
-     * @param second the second (0-59)
-     */
-    public static void validate(int year, int month, int day, int hour, int minute, int second) {
-        SecondParts.validate(hour, minute, second);
-        LunarDay.validate(year, month, day);
-    }
-
-    /**
      * Constructs a LunarHour instance.
      *
      * @param year   the lunar year
@@ -82,6 +67,21 @@ public class LunarHour extends SecondParts {
         this.hour = hour;
         this.minute = minute;
         this.second = second;
+    }
+
+    /**
+     * Validates lunar year, month, day, hour, minute, and second.
+     *
+     * @param year   the lunar year
+     * @param month  the lunar month
+     * @param day    the lunar day
+     * @param hour   the hour (0-23)
+     * @param minute the minute (0-59)
+     * @param second the second (0-59)
+     */
+    public static void validate(int year, int month, int day, int hour, int minute, int second) {
+        SecondParts.validate(hour, minute, second);
+        LunarDay.validate(year, month, day);
     }
 
     /**

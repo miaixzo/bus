@@ -175,6 +175,7 @@ public class GifDecoder {
      * The disposal method for the last graphic control extension.
      */
     protected int dispose = 0;
+
     // 0=no action; 1=leave in place; 2=restore to bg; 3=restore to prev
     /**
      * The last disposal method used.

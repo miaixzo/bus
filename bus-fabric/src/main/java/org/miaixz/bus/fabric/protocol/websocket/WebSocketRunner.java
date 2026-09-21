@@ -113,6 +113,53 @@ public class WebSocketRunner {
     }
 
     /**
+     * Closes a connection lease retained by a failed open attempt.
+     *
+     * @param lease connection lease to close, or {@code null} when ownership was not acquired
+     */
+    private static void closeLease(final ConnectionLease lease) {
+        if (lease != null) {
+            lease.close();
+        }
+    }
+
+    /**
+     * Closes an upgrade result retained by a failed open attempt.
+     *
+     * @param upgrade upgrade result to close, or {@code null} when no result was returned
+     */
+    private static void closeUpgrade(final HttpRunner.Upgrade upgrade) {
+        if (upgrade != null) {
+            upgrade.close();
+        }
+    }
+
+    /**
+     * Preserves runtime failures and wraps checked failures as socket exceptions.
+     *
+     * @param cause opening failure to normalize
+     * @return the original runtime exception, or a socket exception wrapping a checked failure
+     */
+    private static RuntimeException socketFailure(final Throwable cause) {
+        if (cause instanceof RuntimeException runtime) {
+            return runtime;
+        }
+        return new SocketException("Unable to open WebSocket", cause);
+    }
+
+    /**
+     * Validates and returns a required reference.
+     *
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Opens the WebSocket synchronously with a new cancellation scope.
      *
      * @return client session created from a validated HTTP upgrade
@@ -269,53 +316,6 @@ public class WebSocketRunner {
             event.cause(cause);
         }
         spec.observer().emit(event.build());
-    }
-
-    /**
-     * Closes a connection lease retained by a failed open attempt.
-     *
-     * @param lease connection lease to close, or {@code null} when ownership was not acquired
-     */
-    private static void closeLease(final ConnectionLease lease) {
-        if (lease != null) {
-            lease.close();
-        }
-    }
-
-    /**
-     * Closes an upgrade result retained by a failed open attempt.
-     *
-     * @param upgrade upgrade result to close, or {@code null} when no result was returned
-     */
-    private static void closeUpgrade(final HttpRunner.Upgrade upgrade) {
-        if (upgrade != null) {
-            upgrade.close();
-        }
-    }
-
-    /**
-     * Preserves runtime failures and wraps checked failures as socket exceptions.
-     *
-     * @param cause opening failure to normalize
-     * @return the original runtime exception, or a socket exception wrapping a checked failure
-     */
-    private static RuntimeException socketFailure(final Throwable cause) {
-        if (cause instanceof RuntimeException runtime) {
-            return runtime;
-        }
-        return new SocketException("Unable to open WebSocket", cause);
-    }
-
-    /**
-     * Validates and returns a required reference.
-     *
-     * @param value reference to validate
-     * @param name  logical reference name used in the validation message
-     * @param <T>   reference type
-     * @return the validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

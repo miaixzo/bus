@@ -57,6 +57,30 @@ public class AspectjJdbcProxy {
     }
 
     /**
+     * Resolves the effective datasource annotation, preferring the implementation method over its class.
+     *
+     * @param joinPoint intercepted invocation
+     * @return effective datasource annotation, or {@code null}
+     */
+    private static DataSource resolveAnnotation(ProceedingJoinPoint joinPoint) {
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+        Object target = joinPoint.getTarget();
+        if (target != null) {
+            try {
+                method = target.getClass().getMethod(method.getName(), method.getParameterTypes());
+            } catch (NoSuchMethodException ignored) {
+                // The signature method remains authoritative for non-public implementation methods.
+            }
+        }
+        DataSource methodAnnotation = method.getAnnotation(DataSource.class);
+        if (methodAnnotation != null) {
+            return methodAnnotation;
+        }
+        return target == null ? null : target.getClass().getAnnotation(DataSource.class);
+    }
+
+    /**
      * Runs an annotated invocation inside a nested datasource scope.
      * <p>
      * Method annotations take precedence over class annotations. Every invocation restores the exact parent key on
@@ -94,30 +118,6 @@ public class AspectjJdbcProxy {
                     joinPoint.getSignature().getName(),
                     this.dataSourceHolder.getCurrentKey());
         }
-    }
-
-    /**
-     * Resolves the effective datasource annotation, preferring the implementation method over its class.
-     *
-     * @param joinPoint intercepted invocation
-     * @return effective datasource annotation, or {@code null}
-     */
-    private static DataSource resolveAnnotation(ProceedingJoinPoint joinPoint) {
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        Method method = signature.getMethod();
-        Object target = joinPoint.getTarget();
-        if (target != null) {
-            try {
-                method = target.getClass().getMethod(method.getName(), method.getParameterTypes());
-            } catch (NoSuchMethodException ignored) {
-                // The signature method remains authoritative for non-public implementation methods.
-            }
-        }
-        DataSource methodAnnotation = method.getAnnotation(DataSource.class);
-        if (methodAnnotation != null) {
-            return methodAnnotation;
-        }
-        return target == null ? null : target.getClass().getAnnotation(DataSource.class);
     }
 
 }

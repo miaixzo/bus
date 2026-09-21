@@ -502,10 +502,9 @@ public class NotesApi extends AbstractApi {
      * @param mergeRequestIid the merge request IID to create the notes for
      * @param body            the content of note
      * @param createdAt       date the discussion was created (requires admin or project/group owner rights) (Optional)
+     * @param internal        the internal value
      * @return the created Note instance
      * @throws RelevantException if any exception occurs
-     *
-     * @param internal the internal value
      */
     public Note createMergeRequestNote(
             Object projectIdOrPath,

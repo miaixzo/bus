@@ -24,7 +24,10 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.magic.TimerSnapshot;
-import org.miaixz.bus.metrics.nimble.*;
+import org.miaixz.bus.metrics.nimble.Counter;
+import org.miaixz.bus.metrics.nimble.Gauge;
+import org.miaixz.bus.metrics.nimble.Histogram;
+import org.miaixz.bus.metrics.nimble.Timer;
 import org.miaixz.bus.metrics.nimble.indigenous.NativeProvider;
 import org.miaixz.bus.metrics.observe.tag.Tag;
 
@@ -50,6 +53,35 @@ public class PrometheusExporter {
      */
     public PrometheusExporter(Provider provider) {
         this.provider = provider;
+    }
+
+    /**
+     * Converts a metric name to a valid Prometheus metric name by replacing dots and hyphens with underscores.
+     *
+     * @param name the original metric name
+     * @return Prometheus-compatible metric name
+     */
+    private static String prometheusName(String name) {
+        return name.replace(Symbol.C_DOT, Symbol.C_UNDERLINE).replace(Symbol.C_MINUS, Symbol.C_UNDERLINE);
+    }
+
+    /**
+     * Renders a tag array as a Prometheus label string, e.g. {@code key1="v1",key2="v2"}.
+     *
+     * @param tags the tags to render
+     * @return label string, or empty string if no tags
+     */
+    private static String labelsStr(Tag[] tags) {
+        if (tags == null || tags.length == 0) {
+            return Normal.EMPTY;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < tags.length; i++) {
+            if (i > 0)
+                sb.append(Symbol.C_COMMA);
+            sb.append(tags[i].key()).append("=\"").append(tags[i].value()).append(Symbol.C_DOUBLE_QUOTES);
+        }
+        return sb.toString();
     }
 
     /**
@@ -156,35 +188,6 @@ public class PrometheusExporter {
         sb.append(baseName).append("_count")
                 .append(labels.isEmpty() ? Normal.EMPTY : Symbol.BRACE_LEFT + labels + Symbol.BRACE_RIGHT)
                 .append(Symbol.C_SPACE).append(snap.count()).append(Symbol.C_LF);
-    }
-
-    /**
-     * Converts a metric name to a valid Prometheus metric name by replacing dots and hyphens with underscores.
-     *
-     * @param name the original metric name
-     * @return Prometheus-compatible metric name
-     */
-    private static String prometheusName(String name) {
-        return name.replace(Symbol.C_DOT, Symbol.C_UNDERLINE).replace(Symbol.C_MINUS, Symbol.C_UNDERLINE);
-    }
-
-    /**
-     * Renders a tag array as a Prometheus label string, e.g. {@code key1="v1",key2="v2"}.
-     *
-     * @param tags the tags to render
-     * @return label string, or empty string if no tags
-     */
-    private static String labelsStr(Tag[] tags) {
-        if (tags == null || tags.length == 0) {
-            return Normal.EMPTY;
-        }
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < tags.length; i++) {
-            if (i > 0)
-                sb.append(Symbol.C_COMMA);
-            sb.append(tags[i].key()).append("=\"").append(tags[i].value()).append(Symbol.C_DOUBLE_QUOTES);
-        }
-        return sb.toString();
     }
 
 }

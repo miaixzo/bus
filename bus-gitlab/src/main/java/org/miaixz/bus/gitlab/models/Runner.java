@@ -36,9 +36,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class Runner implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852280665555L;
 
@@ -46,38 +43,47 @@ public class Runner implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The description value.
      */
     private String description;
+
     /**
      * The runner type value.
      */
     private RunnerType runnerType;
+
     /**
      * The active value.
      */
     private Boolean active;
+
     /**
      * The is shared value.
      */
     private Boolean isShared;
+
     /**
      * The tags value.
      */
     private List<String> tags;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The online value.
      */
     private Boolean online;
+
     /**
      * The status value.
      */
     private RunnerStatus status;
+
     /**
      * The ip address value.
      */
@@ -208,132 +214,6 @@ public class Runner implements Serializable {
 
     public void setIs_shared(Boolean is_shared) {
         this.isShared = is_shared;
-    }
-
-    /**
-     * Enum to use for RunnersApi filtering on status.
-     *
-     * @author Kimi Liu
-     */
-    public enum RunnerStatus {
-
-        /**
-         * The active runner status.
-         */
-        ACTIVE,
-        /**
-         * The online runner status.
-         */
-        ONLINE,
-        /**
-         * The paused runner status.
-         */
-        PAUSED,
-        /**
-         * The offline runner status.
-         */
-        OFFLINE;
-
-        /**
-         * The enum codec value.
-         */
-        private static JacksonJsonEnumCodec<RunnerStatus> enumCodec = new JacksonJsonEnumCodec<>(RunnerStatus.class);
-
-        /**
-         * Returns the value.
-         *
-         * @param value the value value
-         * @return the result
-         */
-
-        @JsonCreator
-        public static RunnerStatus forValue(String value) {
-            return enumCodec.forValue(value);
-        }
-
-        /**
-         * Returns the value.
-         *
-         * @return the result
-         */
-
-        @JsonValue
-        public String toValue() {
-            return (enumCodec.toString(this));
-        }
-
-        /**
-         * Returns the string.
-         *
-         * @return the result
-         */
-
-        @Override
-        public String toString() {
-            return (enumCodec.toString(this));
-        }
-
-    }
-
-    /**
-     * Enum to use for RunnersApi filtering on type.
-     *
-     * @author Kimi Liu
-     */
-    public enum RunnerType {
-
-        /**
-         * The instance type runner type.
-         */
-        INSTANCE_TYPE,
-        /**
-         * The group type runner type.
-         */
-        GROUP_TYPE,
-        /**
-         * The project type runner type.
-         */
-        PROJECT_TYPE;
-
-        /**
-         * The enum codec value.
-         */
-        private static JacksonJsonEnumCodec<RunnerType> enumCodec = new JacksonJsonEnumCodec<>(RunnerType.class);
-
-        /**
-         * Returns the value.
-         *
-         * @param value the value value
-         * @return the result
-         */
-
-        @JsonCreator
-        public static RunnerType forValue(String value) {
-            return enumCodec.forValue(value);
-        }
-
-        /**
-         * Returns the value.
-         *
-         * @return the result
-         */
-
-        @JsonValue
-        public String toValue() {
-            return (enumCodec.toString(this));
-        }
-
-        /**
-         * Returns the string.
-         *
-         * @return the result
-         */
-
-        @Override
-        public String toString() {
-            return (enumCodec.toString(this));
-        }
-
     }
 
     /**
@@ -521,6 +401,132 @@ public class Runner implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    /**
+     * Enum to use for RunnersApi filtering on status.
+     *
+     * @author Kimi Liu
+     */
+    public enum RunnerStatus {
+
+        /**
+         * The active runner status.
+         */
+        ACTIVE,
+        /**
+         * The online runner status.
+         */
+        ONLINE,
+        /**
+         * The paused runner status.
+         */
+        PAUSED,
+        /**
+         * The offline runner status.
+         */
+        OFFLINE;
+
+        /**
+         * The enum codec value.
+         */
+        private static JacksonJsonEnumCodec<RunnerStatus> enumCodec = new JacksonJsonEnumCodec<>(RunnerStatus.class);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
+
+        @JsonCreator
+        public static RunnerStatus forValue(String value) {
+            return enumCodec.forValue(value);
+        }
+
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
+        @JsonValue
+        public String toValue() {
+            return (enumCodec.toString(this));
+        }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
+
+        @Override
+        public String toString() {
+            return (enumCodec.toString(this));
+        }
+
+    }
+
+    /**
+     * Enum to use for RunnersApi filtering on type.
+     *
+     * @author Kimi Liu
+     */
+    public enum RunnerType {
+
+        /**
+         * The instance type runner type.
+         */
+        INSTANCE_TYPE,
+        /**
+         * The group type runner type.
+         */
+        GROUP_TYPE,
+        /**
+         * The project type runner type.
+         */
+        PROJECT_TYPE;
+
+        /**
+         * The enum codec value.
+         */
+        private static JacksonJsonEnumCodec<RunnerType> enumCodec = new JacksonJsonEnumCodec<>(RunnerType.class);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
+
+        @JsonCreator
+        public static RunnerType forValue(String value) {
+            return enumCodec.forValue(value);
+        }
+
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
+        @JsonValue
+        public String toValue() {
+            return (enumCodec.toString(this));
+        }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
+
+        @Override
+        public String toString() {
+            return (enumCodec.toString(this));
+        }
+
     }
 
 }

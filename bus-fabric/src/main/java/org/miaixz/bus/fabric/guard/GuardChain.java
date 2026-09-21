@@ -82,6 +82,32 @@ public class GuardChain implements GuardRule {
     }
 
     /**
+     * Validates rule list.
+     *
+     * @param rules candidate ordered rule list
+     * @return same list reference after validating the list and every element
+     * @throws ValidateException if the list or one of its elements is {@code null}
+     */
+    private static List<GuardRule> validateRules(final List<GuardRule> rules) {
+        final List<GuardRule> checkedRules = Assert
+                .notNull(rules, () -> new ValidateException("Guard rules must not be null"));
+        for (final GuardRule rule : checkedRules) {
+            validateRule(rule);
+        }
+        return checkedRules;
+    }
+
+    /**
+     * Validates one rule.
+     *
+     * @param rule candidate guard rule
+     * @throws ValidateException if {@code rule} is {@code null}
+     */
+    private static void validateRule(final GuardRule rule) {
+        Assert.notNull(rule, () -> new ValidateException("Guard rule must not be null"));
+    }
+
+    /**
      * Returns the stable composite-rule name.
      *
      * @return stable composite guard name
@@ -132,32 +158,6 @@ public class GuardChain implements GuardRule {
      */
     public List<GuardRule> rules() {
         return List.copyOf(rules);
-    }
-
-    /**
-     * Validates rule list.
-     *
-     * @param rules candidate ordered rule list
-     * @return same list reference after validating the list and every element
-     * @throws ValidateException if the list or one of its elements is {@code null}
-     */
-    private static List<GuardRule> validateRules(final List<GuardRule> rules) {
-        final List<GuardRule> checkedRules = Assert
-                .notNull(rules, () -> new ValidateException("Guard rules must not be null"));
-        for (final GuardRule rule : checkedRules) {
-            validateRule(rule);
-        }
-        return checkedRules;
-    }
-
-    /**
-     * Validates one rule.
-     *
-     * @param rule candidate guard rule
-     * @throws ValidateException if {@code rule} is {@code null}
-     */
-    private static void validateRule(final GuardRule rule) {
-        Assert.notNull(rule, () -> new ValidateException("Guard rule must not be null"));
     }
 
 }

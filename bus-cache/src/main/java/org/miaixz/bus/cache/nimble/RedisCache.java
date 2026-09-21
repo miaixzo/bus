@@ -73,6 +73,11 @@ public class RedisCache<K, V> implements CacheX<K, V>, AutoCloseable {
     private final Executor executor;
 
     /**
+     * Monitor guarding asynchronous admission and resource shutdown.
+     */
+    private final Object lifecycle = new Object();
+
+    /**
      * Number of admitted asynchronous commands that have not completed.
      */
     private int inFlight;
@@ -86,11 +91,6 @@ public class RedisCache<K, V> implements CacheX<K, V>, AutoCloseable {
      * Shared asynchronous close completion, or {@code null} before close begins.
      */
     private CompletableFuture<Void> closeFuture;
-
-    /**
-     * Monitor guarding asynchronous admission and resource shutdown.
-     */
-    private final Object lifecycle = new Object();
 
     /**
      * Constructs a {@code RedisCache} with a given Jedis pool and a default {@link Hessian2Serializer}.
@@ -122,6 +122,41 @@ public class RedisCache<K, V> implements CacheX<K, V>, AutoCloseable {
         this.jedisPool = jedisPool;
         this.serializer = serializer;
         this.executor = executor;
+    }
+
+    /**
+     * Validates the positive TTL required by atomic create and replace.
+     *
+     * @param ttlMillis time to live in milliseconds
+     */
+    private static void requirePositiveTtl(long ttlMillis) {
+        if (ttlMillis <= 0L) {
+            throw new IllegalArgumentException("ttlMillis must be greater than zero");
+        }
+    }
+
+    /**
+     * Encodes one key using the framework UTF-8 constant.
+     *
+     * @param key cache key
+     * @return UTF-8 key bytes
+     */
+    private static byte[] keyBytes(Object key) {
+        return Objects.requireNonNull(key, "key").toString().getBytes(Charset.UTF_8);
+    }
+
+    /**
+     * Copies mutable byte arrays while preserving other value types.
+     *
+     * @param value source value
+     * @param <T>   value type
+     * @return defensive byte-array copy or the original non-array value
+     */
+    private static <T> T copyValue(T value) {
+        if (value instanceof byte[] bytes) {
+            return (T) Arrays.copyOf(bytes, bytes.length);
+        }
+        return value;
     }
 
     /**
@@ -551,41 +586,6 @@ public class RedisCache<K, V> implements CacheX<K, V>, AutoCloseable {
         } catch (Throwable failure) {
             closeFuture.completeExceptionally(failure);
         }
-    }
-
-    /**
-     * Validates the positive TTL required by atomic create and replace.
-     *
-     * @param ttlMillis time to live in milliseconds
-     */
-    private static void requirePositiveTtl(long ttlMillis) {
-        if (ttlMillis <= 0L) {
-            throw new IllegalArgumentException("ttlMillis must be greater than zero");
-        }
-    }
-
-    /**
-     * Encodes one key using the framework UTF-8 constant.
-     *
-     * @param key cache key
-     * @return UTF-8 key bytes
-     */
-    private static byte[] keyBytes(Object key) {
-        return Objects.requireNonNull(key, "key").toString().getBytes(Charset.UTF_8);
-    }
-
-    /**
-     * Copies mutable byte arrays while preserving other value types.
-     *
-     * @param value source value
-     * @param <T>   value type
-     * @return defensive byte-array copy or the original non-array value
-     */
-    private static <T> T copyValue(T value) {
-        if (value instanceof byte[] bytes) {
-            return (T) Arrays.copyOf(bytes, bytes.length);
-        }
-        return value;
     }
 
 }

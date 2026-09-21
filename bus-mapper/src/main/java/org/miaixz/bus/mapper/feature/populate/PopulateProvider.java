@@ -123,10 +123,10 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * }
  * }</pre>
  *
+ * @author Kimi Liu
  * @see PopulateConfig
  * @see PopulateHandler
  * @see MapperProvider
- * @author Kimi Liu
  */
 @FunctionalInterface
 public interface PopulateProvider extends MapperProvider<PopulateConfig> {

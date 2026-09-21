@@ -21,11 +21,7 @@ package org.miaixz.bus.crypto.builtin;
 
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -83,6 +79,30 @@ public class CertificateChainCleaner {
     }
 
     /**
+     * Casts to X509 certificate.
+     *
+     * @param certificate certificate
+     * @return X509 certificate
+     */
+    private static X509Certificate x509(final Certificate certificate) {
+        if (certificate instanceof X509Certificate x509) {
+            return x509;
+        }
+        throw new ProtocolException("Certificate chain must contain X509 certificates");
+    }
+
+    /**
+     * Validates host.
+     *
+     * @param host host
+     */
+    private static void validateHost(final String host) {
+        if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException("Certificate host must be non-blank and single-line");
+        }
+    }
+
+    /**
      * Cleans a raw chain by following issuer signatures up to a trusted root.
      *
      * @param chain raw peer chain
@@ -125,30 +145,6 @@ public class CertificateChainCleaner {
             throw new ProtocolException("Failed to find a trusted cert that signed " + toVerify);
         }
         throw new ProtocolException("Certificate chain too long: " + result);
-    }
-
-    /**
-     * Casts to X509 certificate.
-     *
-     * @param certificate certificate
-     * @return X509 certificate
-     */
-    private static X509Certificate x509(final Certificate certificate) {
-        if (certificate instanceof X509Certificate x509) {
-            return x509;
-        }
-        throw new ProtocolException("Certificate chain must contain X509 certificates");
-    }
-
-    /**
-     * Validates host.
-     *
-     * @param host host
-     */
-    private static void validateHost(final String host) {
-        if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Certificate host must be non-blank and single-line");
-        }
     }
 
 }

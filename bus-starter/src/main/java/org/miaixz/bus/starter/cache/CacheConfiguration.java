@@ -29,10 +29,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.cache.Collector;
-import org.miaixz.bus.cache.Context;
-import org.miaixz.bus.cache.Factory;
+import org.miaixz.bus.cache.*;
 import org.miaixz.bus.cache.Module;
 import org.miaixz.bus.cache.collect.*;
 import org.miaixz.bus.core.xyz.MapKit;

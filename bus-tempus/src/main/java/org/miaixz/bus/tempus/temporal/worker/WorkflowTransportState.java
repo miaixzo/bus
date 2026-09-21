@@ -71,6 +71,21 @@ public enum WorkflowTransportState {
     }
 
     /**
+     * Resolves a raw transport state value.
+     *
+     * @param value raw transport state value
+     * @return resolved transport state
+     */
+    public static WorkflowTransportState of(String value) {
+        for (WorkflowTransportState state : values()) {
+            if (state.matches(value)) {
+                return state;
+            }
+        }
+        return UNKNOWN;
+    }
+
+    /**
      * Gets the raw transport state value.
      *
      * @return raw transport state value
@@ -87,21 +102,6 @@ public enum WorkflowTransportState {
      */
     public boolean matches(String value) {
         return this.value.equals(value);
-    }
-
-    /**
-     * Resolves a raw transport state value.
-     *
-     * @param value raw transport state value
-     * @return resolved transport state
-     */
-    public static WorkflowTransportState of(String value) {
-        for (WorkflowTransportState state : values()) {
-            if (state.matches(value)) {
-                return state;
-            }
-        }
-        return UNKNOWN;
     }
 
 }

@@ -46,7 +46,7 @@ import org.miaixz.bus.core.net.Http;
 
 /**
  * This class logs request and response info masking HTTP header values that are known to contain sensitive information.
- *
+ * <p>
  * This class was patterned after org.glassfish.jersey.logging.LoggingInterceptor, but written in such a way that it
  * could be sub-classed and have its behavior modified.
  *
@@ -85,23 +85,28 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      * Property name for the logging record id property
      */
     protected static final String LOGGING_ID_PROPERTY = MaskingLoggingFilter.class.getName() + ".id";
+
     /**
      * The logger value.
      */
 
     protected final Logger logger;
+
     /**
      * The level value.
      */
     protected final Level level;
+
     /**
      * The max entity size value.
      */
     protected final int maxEntitySize;
+
     /**
      * Counter used to assign logging identifiers.
      */
     protected final AtomicLong _id = new AtomicLong(0);
+
     /**
      * Header names whose values are masked in log output.
      */
@@ -447,6 +452,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
          * The sb value.
          */
         private final StringBuilder sb;
+
         /**
          * The output stream value.
          */

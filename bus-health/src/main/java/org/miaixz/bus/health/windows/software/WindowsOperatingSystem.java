@@ -114,6 +114,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
      */
     private final SupplierX<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromPerfCounters = Memoizer
             .memoize(WindowsOperatingSystem::queryProcessMapFromPerfCounters, Memoizer.defaultExpiration());
+
     /*
      * Cache full thread stats queries. Second query will only populate if first one returns null. Only used if
      * USE_PROCSTATE_SUSPENDED is set true.

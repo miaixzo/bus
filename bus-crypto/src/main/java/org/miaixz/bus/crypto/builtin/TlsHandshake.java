@@ -56,6 +56,20 @@ public record TlsHandshake(String protocol, String cipher, CertificateChain peer
     }
 
     /**
+     * Validates a single-line token.
+     *
+     * @param value value
+     * @param name  field name
+     * @return token
+     */
+    private static String validateToken(final String value, final String name) {
+        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException(name + " must be non-blank and single-line");
+        }
+        return value.trim();
+    }
+
+    /**
      * Returns the negotiated protocol.
      *
      * @return protocol
@@ -92,20 +106,6 @@ public record TlsHandshake(String protocol, String cipher, CertificateChain peer
      */
     public boolean secure() {
         return !protocol.isBlank() && !cipher.isBlank() && !peer.empty();
-    }
-
-    /**
-     * Validates a single-line token.
-     *
-     * @param value value
-     * @param name  field name
-     * @return token
-     */
-    private static String validateToken(final String value, final String name) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException(name + " must be non-blank and single-line");
-        }
-        return value.trim();
     }
 
 }

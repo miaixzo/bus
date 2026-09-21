@@ -19,13 +19,7 @@
 */
 package org.miaixz.bus.extra.json;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ServiceConfigurationError;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.lang.exception.InternalException;

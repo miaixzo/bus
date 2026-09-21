@@ -20,6 +20,7 @@
 package org.opencv.core;
 
 //javadoc: KeyPoint
+
 /**
  * The key point class.
  */

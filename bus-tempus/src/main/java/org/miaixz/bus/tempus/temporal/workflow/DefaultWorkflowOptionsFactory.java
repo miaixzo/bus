@@ -62,6 +62,16 @@ public class DefaultWorkflowOptionsFactory implements WorkflowOptionsFactory {
     }
 
     /**
+     * Resolves null workflow binding options to defaults.
+     *
+     * @param options workflow binding options
+     * @return effective workflow binding options
+     */
+    private static WorkflowBindingOptions effective(WorkflowBindingOptions options) {
+        return options == null ? WorkflowBindingOptions.defaults() : options;
+    }
+
+    /**
      * Creates workflow options from unified workflow binding options.
      *
      * @param options workflow binding options
@@ -219,16 +229,6 @@ public class DefaultWorkflowOptionsFactory implements WorkflowOptionsFactory {
                 effective.resolveWorkflowCacheSize(),
                 effective.resolveMaxWorkflowThreadCount());
         return factoryOptions;
-    }
-
-    /**
-     * Resolves null workflow binding options to defaults.
-     *
-     * @param options workflow binding options
-     * @return effective workflow binding options
-     */
-    private static WorkflowBindingOptions effective(WorkflowBindingOptions options) {
-        return options == null ? WorkflowBindingOptions.defaults() : options;
     }
 
 }

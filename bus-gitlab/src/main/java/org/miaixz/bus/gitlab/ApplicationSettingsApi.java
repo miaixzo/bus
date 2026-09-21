@@ -51,6 +51,81 @@ public class ApplicationSettingsApi extends AbstractApi {
     }
 
     /**
+     * Parses the returned JSON and returns an ApplicationSettings instance.
+     *
+     * @param root the root JsonNode
+     * @return the populated ApplicationSettings instance
+     * @throws RelevantException if any error occurs
+     */
+    public static ApplicationSettings parseApplicationSettings(JsonNode root) throws RelevantException {
+
+        ApplicationSettings appSettings = new ApplicationSettings();
+
+        Iterator<String> fieldNames = root.propertyNames().iterator();
+        while (fieldNames.hasNext()) {
+
+            String fieldName = fieldNames.next();
+            switch (fieldName) {
+                case "id":
+                    appSettings.setId(root.path(fieldName).asLong());
+                    break;
+
+                case "created_at":
+                    try {
+                        String value = root.path(fieldName).asText();
+                        appSettings.setCreatedAt(ISO8601.toDate(value));
+                    } catch (ParseException pe) {
+                        Logger.warn(
+                                false,
+                                "GitLab",
+                                pe,
+                                "GitLab application setting date parsing failed: fieldName={}, valueLength={}, exception={}",
+                                fieldName,
+                                root.path(fieldName).asText().length(),
+                                pe.getClass().getSimpleName());
+                        throw GitLabFailure.exception(pe);
+                    }
+                    break;
+
+                case "updated_at":
+                    try {
+                        String value = root.path(fieldName).asText();
+                        appSettings.setUpdatedAt(ISO8601.toDate(value));
+                    } catch (ParseException pe) {
+                        Logger.warn(
+                                false,
+                                "GitLab",
+                                pe,
+                                "GitLab application setting date parsing failed: fieldName={}, valueLength={}, exception={}",
+                                fieldName,
+                                root.path(fieldName).asText().length(),
+                                pe.getClass().getSimpleName());
+                        throw GitLabFailure.exception(pe);
+                    }
+                    break;
+
+                default:
+                    Setting setting = Setting.forValue(fieldName);
+                    if (setting != null) {
+                        appSettings.addSetting(setting, root.path(fieldName));
+                    } else {
+                        Logger.warn(
+                                false,
+                                "GitLab",
+                                "GitLab application setting preserved as unknown field: fieldName={}, nodeType={}",
+                                fieldName,
+                                root.path(fieldName).getClass().getSimpleName());
+                        appSettings.addSetting(fieldName, root.path(fieldName));
+                    }
+
+                    break;
+            }
+        }
+
+        return (appSettings);
+    }
+
+    /**
      * Get the current application settings of the GitLab instance.
      *
      * <pre>
@@ -135,81 +210,6 @@ public class ApplicationSettingsApi extends AbstractApi {
         Response response = put(Response.Status.OK, form.asMap(), "application", "settings");
         JsonNode root = response.readEntity(JsonNode.class);
         return (parseApplicationSettings(root));
-    }
-
-    /**
-     * Parses the returned JSON and returns an ApplicationSettings instance.
-     *
-     * @param root the root JsonNode
-     * @return the populated ApplicationSettings instance
-     * @throws RelevantException if any error occurs
-     */
-    public static ApplicationSettings parseApplicationSettings(JsonNode root) throws RelevantException {
-
-        ApplicationSettings appSettings = new ApplicationSettings();
-
-        Iterator<String> fieldNames = root.propertyNames().iterator();
-        while (fieldNames.hasNext()) {
-
-            String fieldName = fieldNames.next();
-            switch (fieldName) {
-                case "id":
-                    appSettings.setId(root.path(fieldName).asLong());
-                    break;
-
-                case "created_at":
-                    try {
-                        String value = root.path(fieldName).asText();
-                        appSettings.setCreatedAt(ISO8601.toDate(value));
-                    } catch (ParseException pe) {
-                        Logger.warn(
-                                false,
-                                "GitLab",
-                                pe,
-                                "GitLab application setting date parsing failed: fieldName={}, valueLength={}, exception={}",
-                                fieldName,
-                                root.path(fieldName).asText().length(),
-                                pe.getClass().getSimpleName());
-                        throw GitLabFailure.exception(pe);
-                    }
-                    break;
-
-                case "updated_at":
-                    try {
-                        String value = root.path(fieldName).asText();
-                        appSettings.setUpdatedAt(ISO8601.toDate(value));
-                    } catch (ParseException pe) {
-                        Logger.warn(
-                                false,
-                                "GitLab",
-                                pe,
-                                "GitLab application setting date parsing failed: fieldName={}, valueLength={}, exception={}",
-                                fieldName,
-                                root.path(fieldName).asText().length(),
-                                pe.getClass().getSimpleName());
-                        throw GitLabFailure.exception(pe);
-                    }
-                    break;
-
-                default:
-                    Setting setting = Setting.forValue(fieldName);
-                    if (setting != null) {
-                        appSettings.addSetting(setting, root.path(fieldName));
-                    } else {
-                        Logger.warn(
-                                false,
-                                "GitLab",
-                                "GitLab application setting preserved as unknown field: fieldName={}, nodeType={}",
-                                fieldName,
-                                root.path(fieldName).getClass().getSimpleName());
-                        appSettings.addSetting(fieldName, root.path(fieldName));
-                    }
-
-                    break;
-            }
-        }
-
-        return (appSettings);
     }
 
 }

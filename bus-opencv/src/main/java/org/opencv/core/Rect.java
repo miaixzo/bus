@@ -20,6 +20,7 @@
 package org.opencv.core;
 
 //javadoc:Rect_
+
 /**
  * The rect class.
  */

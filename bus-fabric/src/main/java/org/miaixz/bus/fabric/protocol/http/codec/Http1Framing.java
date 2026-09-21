@@ -38,39 +38,10 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 final class Http1Framing {
 
     /**
-     * Body wire representation.
+     * Prevents instantiation.
      */
-    enum Kind {
-
-        /**
-         * Message semantics prohibit a body.
-         */
-        NONE,
-
-        /**
-         * Content-Length bounds the body.
-         */
-        FIXED,
-
-        /**
-         * Transfer-Encoding chunked bounds the body.
-         */
-        CHUNKED,
-
-        /**
-         * Connection closure terminates the body.
-         */
-        UNKNOWN
-
-    }
-
-    /**
-     * Immutable body-framing decision.
-     *
-     * @param kind   body wire representation
-     * @param length fixed length, zero for no body, or -1 otherwise
-     */
-    record Decision(Kind kind, long length) {
+    private Http1Framing() {
+        // No initialization required.
     }
 
     /**
@@ -217,10 +188,39 @@ final class Http1Framing {
     }
 
     /**
-     * Prevents instantiation.
+     * Body wire representation.
      */
-    private Http1Framing() {
-        // No initialization required.
+    enum Kind {
+
+        /**
+         * Message semantics prohibit a body.
+         */
+        NONE,
+
+        /**
+         * Content-Length bounds the body.
+         */
+        FIXED,
+
+        /**
+         * Transfer-Encoding chunked bounds the body.
+         */
+        CHUNKED,
+
+        /**
+         * Connection closure terminates the body.
+         */
+        UNKNOWN
+
+    }
+
+    /**
+     * Immutable body-framing decision.
+     *
+     * @param kind   body wire representation
+     * @param length fixed length, zero for no body, or -1 otherwise
+     */
+    record Decision(Kind kind, long length) {
     }
 
 }

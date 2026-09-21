@@ -21,11 +21,7 @@ package org.miaixz.bus.fabric.guard.route;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Normal;
@@ -101,6 +97,102 @@ public class AddressGuard {
             throw new ValidateException("Address policy must not be null");
         }
         this.policy = policy;
+    }
+
+    /**
+     * Normalizes a complete DNS result while preserving order and removing duplicate byte addresses.
+     *
+     * @param addresses DNS addresses
+     * @return non-empty normalized immutable address list
+     * @throws ValidateException when the list or an element is null or the list is empty
+     */
+    private static List<InetAddress> normalizeAll(List<InetAddress> addresses) throws ValidateException {
+        if (addresses == null || addresses.isEmpty()) {
+            throw new ValidateException("DNS addresses must not be empty");
+        }
+        Set<InetAddress> unique = new LinkedHashSet<>();
+        for (InetAddress address : addresses) {
+            unique.add(normalize(address));
+        }
+        return List.copyOf(new ArrayList<>(unique));
+    }
+
+    /**
+     * Applies global-route classification and an explicit CIDR exception set.
+     *
+     * @param address          normalized numeric address
+     * @param explicitNetworks CIDRs allowed for this target or peer direction
+     * @throws ProtocolException when an address is always forbidden or a non-global address lacks a matching CIDR
+     */
+    private static void requireAllowed(InetAddress address, Set<CidrBlock> explicitNetworks) throws ProtocolException {
+        if (address.isAnyLocalAddress() || address.isMulticastAddress()) {
+            throw rejected();
+        }
+        if (!isGloballyRoutable(address) && explicitNetworks.stream().noneMatch(network -> network.contains(address))) {
+            throw rejected();
+        }
+    }
+
+    /**
+     * Returns whether an address is globally routable according to the embedded special-purpose network registry.
+     *
+     * @param address normalized address
+     * @return {@code true} when the address is not covered by a non-global network
+     */
+    private static boolean isGloballyRoutable(InetAddress address) {
+        if (GLOBAL_EXCEPTIONS.stream().anyMatch(network -> network.contains(address))) {
+            return true;
+        }
+        return NON_GLOBAL_NETWORKS.stream().noneMatch(network -> network.contains(address));
+    }
+
+    /**
+     * Normalizes an address and converts raw IPv4-mapped IPv6 bytes into an IPv4 address.
+     *
+     * @param address address to normalize
+     * @return normalized address
+     * @throws ValidateException when the address is {@code null} or mapped bytes cannot be represented
+     */
+    private static InetAddress normalize(InetAddress address) throws ValidateException {
+        if (address == null) {
+            throw new ValidateException("Numeric address must not be null");
+        }
+        byte[] bytes = address.getAddress();
+        if (isMapped(bytes)) {
+            try {
+                return InetAddress.getByAddress(Arrays.copyOfRange(bytes, Normal._16 - Normal._4, Normal._16));
+            } catch (UnknownHostException exception) {
+                throw new ValidateException("Mapped IPv4 address is invalid", exception);
+            }
+        }
+        return address;
+    }
+
+    /**
+     * Identifies raw IPv4-mapped IPv6 bytes using the ten-zero and two-{@code ff} prefix.
+     *
+     * @param bytes address bytes
+     * @return {@code true} for an IPv4-mapped IPv6 address
+     */
+    private static boolean isMapped(byte[] bytes) {
+        if (bytes.length != Normal._16) {
+            return false;
+        }
+        for (int index = Normal._0; index < Normal._10; index++) {
+            if (bytes[index] != Normal._0) {
+                return false;
+            }
+        }
+        return bytes[Normal._10] == (byte) 0xff && bytes[Normal._11] == (byte) 0xff;
+    }
+
+    /**
+     * Creates the stable shared IP-rejection exception without leaking an address or host.
+     *
+     * @return protocol exception carrying the shared IP rejection error
+     */
+    private static ProtocolException rejected() {
+        return new ProtocolException(ErrorCode._100903);
     }
 
     /**
@@ -304,102 +396,6 @@ public class AddressGuard {
         if (!policy.allowedSchemes().contains(target.protocol()) || !policy.allowedPorts().contains(target.port())) {
             throw rejected();
         }
-    }
-
-    /**
-     * Normalizes a complete DNS result while preserving order and removing duplicate byte addresses.
-     *
-     * @param addresses DNS addresses
-     * @return non-empty normalized immutable address list
-     * @throws ValidateException when the list or an element is null or the list is empty
-     */
-    private static List<InetAddress> normalizeAll(List<InetAddress> addresses) throws ValidateException {
-        if (addresses == null || addresses.isEmpty()) {
-            throw new ValidateException("DNS addresses must not be empty");
-        }
-        Set<InetAddress> unique = new LinkedHashSet<>();
-        for (InetAddress address : addresses) {
-            unique.add(normalize(address));
-        }
-        return List.copyOf(new ArrayList<>(unique));
-    }
-
-    /**
-     * Applies global-route classification and an explicit CIDR exception set.
-     *
-     * @param address          normalized numeric address
-     * @param explicitNetworks CIDRs allowed for this target or peer direction
-     * @throws ProtocolException when an address is always forbidden or a non-global address lacks a matching CIDR
-     */
-    private static void requireAllowed(InetAddress address, Set<CidrBlock> explicitNetworks) throws ProtocolException {
-        if (address.isAnyLocalAddress() || address.isMulticastAddress()) {
-            throw rejected();
-        }
-        if (!isGloballyRoutable(address) && explicitNetworks.stream().noneMatch(network -> network.contains(address))) {
-            throw rejected();
-        }
-    }
-
-    /**
-     * Returns whether an address is globally routable according to the embedded special-purpose network registry.
-     *
-     * @param address normalized address
-     * @return {@code true} when the address is not covered by a non-global network
-     */
-    private static boolean isGloballyRoutable(InetAddress address) {
-        if (GLOBAL_EXCEPTIONS.stream().anyMatch(network -> network.contains(address))) {
-            return true;
-        }
-        return NON_GLOBAL_NETWORKS.stream().noneMatch(network -> network.contains(address));
-    }
-
-    /**
-     * Normalizes an address and converts raw IPv4-mapped IPv6 bytes into an IPv4 address.
-     *
-     * @param address address to normalize
-     * @return normalized address
-     * @throws ValidateException when the address is {@code null} or mapped bytes cannot be represented
-     */
-    private static InetAddress normalize(InetAddress address) throws ValidateException {
-        if (address == null) {
-            throw new ValidateException("Numeric address must not be null");
-        }
-        byte[] bytes = address.getAddress();
-        if (isMapped(bytes)) {
-            try {
-                return InetAddress.getByAddress(Arrays.copyOfRange(bytes, Normal._16 - Normal._4, Normal._16));
-            } catch (UnknownHostException exception) {
-                throw new ValidateException("Mapped IPv4 address is invalid", exception);
-            }
-        }
-        return address;
-    }
-
-    /**
-     * Identifies raw IPv4-mapped IPv6 bytes using the ten-zero and two-{@code ff} prefix.
-     *
-     * @param bytes address bytes
-     * @return {@code true} for an IPv4-mapped IPv6 address
-     */
-    private static boolean isMapped(byte[] bytes) {
-        if (bytes.length != Normal._16) {
-            return false;
-        }
-        for (int index = Normal._0; index < Normal._10; index++) {
-            if (bytes[index] != Normal._0) {
-                return false;
-            }
-        }
-        return bytes[Normal._10] == (byte) 0xff && bytes[Normal._11] == (byte) 0xff;
-    }
-
-    /**
-     * Creates the stable shared IP-rejection exception without leaking an address or host.
-     *
-     * @return protocol exception carrying the shared IP rejection error
-     */
-    private static ProtocolException rejected() {
-        return new ProtocolException(ErrorCode._100903);
     }
 
 }

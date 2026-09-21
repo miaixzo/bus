@@ -211,24 +211,6 @@ public class UdpChannel implements Lifecycle, AutoCloseable {
     }
 
     /**
-     * Received message paired with the numeric peer reported by the datagram channel.
-     *
-     * @param message immutable received message
-     * @param peer    numeric datagram peer
-     */
-    record ReceivedDatagram(Message message, InetAddress peer) {
-
-        /**
-         * Creates a validated received datagram.
-         */
-        ReceivedDatagram {
-            message = Assert.notNull(message, () -> new ValidateException("UDP message must not be null"));
-            peer = Assert.notNull(peer, () -> new ValidateException("UDP peer must not be null"));
-        }
-
-    }
-
-    /**
      * Returns the local address.
      *
      * @return local address
@@ -332,6 +314,24 @@ public class UdpChannel implements Lifecycle, AutoCloseable {
             }
         });
         return result;
+    }
+
+    /**
+     * Received message paired with the numeric peer reported by the datagram channel.
+     *
+     * @param message immutable received message
+     * @param peer    numeric datagram peer
+     */
+    record ReceivedDatagram(Message message, InetAddress peer) {
+
+        /**
+         * Creates a validated received datagram.
+         */
+        ReceivedDatagram {
+            message = Assert.notNull(message, () -> new ValidateException("UDP message must not be null"));
+            peer = Assert.notNull(peer, () -> new ValidateException("UDP peer must not be null"));
+        }
+
     }
 
 }

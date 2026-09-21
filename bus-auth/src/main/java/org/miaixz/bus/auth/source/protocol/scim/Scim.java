@@ -169,26 +169,32 @@ public class Scim {
          * User resource collection path.
          */
         public static final String USERS = "/Users";
+
         /**
          * Group resource collection path.
          */
         public static final String GROUPS = "/Groups";
+
         /**
          * Bulk request endpoint path.
          */
         public static final String BULK = "/Bulk";
+
         /**
          * Search request endpoint suffix.
          */
         public static final String SEARCH = "/.search";
+
         /**
          * ServiceProviderConfig discovery path.
          */
         public static final String SERVICE_PROVIDER_CONFIG = "/ServiceProviderConfig";
+
         /**
          * ResourceTypes discovery collection path.
          */
         public static final String RESOURCE_TYPES = "/ResourceTypes";
+
         /**
          * Schemas discovery collection path.
          */
@@ -214,6 +220,7 @@ public class Scim {
          * User resource type name.
          */
         public static final String USER = "User";
+
         /**
          * Group resource type name.
          */
@@ -239,10 +246,12 @@ public class Scim {
          * Add operation value.
          */
         public static final String ADD = "add";
+
         /**
          * Remove operation value.
          */
         public static final String REMOVE = "remove";
+
         /**
          * Replace operation value.
          */
@@ -270,378 +279,472 @@ public class Scim {
          *
          */
         public static final String SCHEMAS = "schemas";
+
         /**
          * Standard resource id member name.
          */
         public static final String ID = "id";
+
         /**
          * Standard external identifier member name.
          */
         public static final String EXTERNAL_ID = "externalId";
+
         /**
          * Standard metadata member name.
          */
         public static final String META = "meta";
+
         /**
          * Standard resource type member name.
          */
         public static final String RESOURCE_TYPE = "resourceType";
+
         /**
          * Standard creation timestamp member name.
          */
         public static final String CREATED = "created";
+
         /**
          * Standard modification timestamp member name.
          */
         public static final String LAST_MODIFIED = "lastModified";
+
         /**
          * Standard resource version member name.
          */
         public static final String VERSION = "version";
+
         /**
          * Standard resource location member name.
          */
         public static final String LOCATION = "location";
+
         /**
          * Standard user-name member name.
          */
         public static final String USER_NAME = "userName";
+
         /**
          * Standard structured name member name.
          */
         public static final String NAME = "name";
+
         /**
          * Standard display-name member name.
          */
         public static final String DISPLAY_NAME = "displayName";
+
         /**
          * Standard nickname member name.
          */
         public static final String NICK_NAME = "nickName";
+
         /**
          * Standard profile URL member name.
          */
         public static final String PROFILE_URL = "profileUrl";
+
         /**
          * Standard title member name.
          */
         public static final String TITLE = "title";
+
         /**
          * Standard user-type member name.
          */
         public static final String USER_TYPE = "userType";
+
         /**
          * Standard preferred-language member name.
          */
         public static final String PREFERRED_LANGUAGE = "preferredLanguage";
+
         /**
          * Standard locale member name.
          */
         public static final String LOCALE = "locale";
+
         /**
          * Standard timezone member name.
          */
         public static final String TIMEZONE = "timezone";
+
         /**
          * Standard active-state member name.
          */
         public static final String ACTIVE = "active";
+
         /**
          * Standard password member name.
          */
         public static final String PASSWORD = "password";
+
         /**
          * Standard email collection member name.
          */
         public static final String EMAILS = "emails";
+
         /**
          * Standard telephone collection member name.
          */
         public static final String PHONE_NUMBERS = "phoneNumbers";
+
         /**
          * Standard instant-messaging collection member name.
          */
         public static final String IMS = "ims";
+
         /**
          * Standard photo collection member name.
          */
         public static final String PHOTOS = "photos";
+
         /**
          * Standard address collection member name.
          */
         public static final String ADDRESSES = "addresses";
+
         /**
          * Standard group membership member name.
          */
         public static final String GROUPS = "groups";
+
         /**
          * Standard entitlement collection member name.
          */
         public static final String ENTITLEMENTS = "entitlements";
+
         /**
          * Standard role collection member name.
          */
         public static final String ROLES = "roles";
+
         /**
          * Standard certificate collection member name.
          */
         public static final String X509_CERTIFICATES = "x509Certificates";
+
         /**
          * Standard group members member name.
          */
         public static final String MEMBERS = "members";
+
         /**
          * Standard multi-valued item value member name.
          */
         public static final String VALUE = "value";
+
         /**
          * Standard multi-valued item display member name.
          */
         public static final String DISPLAY = "display";
+
         /**
          * Standard multi-valued item type member name.
          */
         public static final String TYPE = "type";
+
         /**
          * Standard list resources member name.
          */
         public static final String RESOURCES = "Resources";
+
         /**
          * Standard total result count member name.
          */
         public static final String TOTAL_RESULTS = "totalResults";
+
         /**
          * Standard start index member name.
          */
         public static final String START_INDEX = "startIndex";
+
         /**
          * Standard page item count member name.
          */
         public static final String ITEMS_PER_PAGE = "itemsPerPage";
+
         /**
          * Standard requested attribute list member name.
          */
         public static final String ATTRIBUTES = "attributes";
+
         /**
          * Standard excluded attribute list member name.
          */
         public static final String EXCLUDED_ATTRIBUTES = "excludedAttributes";
+
         /**
          * Standard filter member name.
          */
         public static final String FILTER = "filter";
+
         /**
          * Standard sort attribute member name.
          */
         public static final String SORT_BY = "sortBy";
+
         /**
          * Standard sort direction member name.
          */
         public static final String SORT_ORDER = "sortOrder";
+
         /**
          * Standard requested result count member name.
          */
         public static final String COUNT = "count";
+
         /**
          * Standard PatchOp Operations member name.
          */
         public static final String OPERATIONS = "Operations";
+
         /**
          * Standard patch operation member name.
          */
         public static final String OP = "op";
+
         /**
          * Standard patch attribute path member name.
          */
         public static final String PATH = "path";
+
         /**
          * Standard bulk fail-on-errors member name.
          */
         public static final String FAIL_ON_ERRORS = "failOnErrors";
+
         /**
          * Standard bulk identifier member name.
          */
         public static final String BULK_ID = "bulkId";
+
         /**
          * Standard bulk HTTP method member name.
          */
         public static final String METHOD = "method";
+
         /**
          * Standard bulk operation payload member name.
          */
         public static final String DATA = "data";
+
         /**
          * Standard HTTP status member name.
          */
         public static final String STATUS = "status";
+
         /**
          * Standard SCIM error type member name.
          */
         public static final String SCIM_TYPE = "scimType";
+
         /**
          * Standard SCIM error detail member name.
          */
         public static final String DETAIL = "detail";
+
         /**
          * Standard discovery supported flag member name.
          */
         public static final String SUPPORTED = "supported";
+
         /**
          * Standard discovery endpoint member name.
          */
         public static final String ENDPOINT = "endpoint";
+
         /**
          * Standard discovery schema member name.
          */
         public static final String SCHEMA = "schema";
+
         /**
          * Standard schema extension list member name.
          */
         public static final String SCHEMA_EXTENSIONS = "schemaExtensions";
+
         /**
          * Standard description member name.
          */
         public static final String DESCRIPTION = "description";
+
         /**
          * Standard embedded response member name.
          */
         public static final String RESPONSE = "response";
+
         /**
          * Standard discovery resource name member.
          */
         public static final String RESOURCE_NAME = "name";
+
         /**
          * Standard required flag member name.
          */
         public static final String REQUIRED = "required";
+
         /**
          * Standard multi-valued declaration member name.
          */
         public static final String MULTI_VALUED = "multiValued";
+
         /**
          * Standard case-exact declaration member name.
          */
         public static final String CASE_EXACT = "caseExact";
+
         /**
          * Standard mutability declaration member name.
          */
         public static final String MUTABILITY = "mutability";
+
         /**
          * Standard returned declaration member name.
          */
         public static final String RETURNED = "returned";
+
         /**
          * Standard uniqueness declaration member name.
          */
         public static final String UNIQUENESS = "uniqueness";
+
         /**
          * Standard canonical-values declaration member name.
          */
         public static final String CANONICAL_VALUES = "canonicalValues";
+
         /**
          * Standard reference-types declaration member name.
          */
         public static final String REFERENCE_TYPES = "referenceTypes";
+
         /**
          * Standard sub-attributes declaration member name.
          */
         public static final String SUB_ATTRIBUTES = "subAttributes";
+
         /**
          * Standard documentation URI member name.
          */
         public static final String DOCUMENTATION_URI = "documentationUri";
+
         /**
          * Standard patch-support member name.
          */
         public static final String PATCH_SUPPORTED = "patch";
+
         /**
          * Standard bulk-support member name.
          */
         public static final String BULK_SUPPORTED = "bulk";
+
         /**
          * Standard filter-support member name.
          */
         public static final String FILTER_SUPPORTED = "filter";
+
         /**
          * Standard password-change support member name.
          */
         public static final String CHANGE_PASSWORD = "changePassword";
+
         /**
          * Standard sort-support member name.
          */
         public static final String SORT_SUPPORTED = "sort";
+
         /**
          * Standard entity-tag support member name.
          */
         public static final String ETAG_SUPPORTED = "etag";
+
         /**
          * Standard authentication-schemes member name.
          */
         public static final String AUTHENTICATION_SCHEMES = "authenticationSchemes";
+
         /**
          * Standard specification URI member name.
          */
         public static final String SPEC_URI = "specUri";
+
         /**
          * Standard maximum operation count member name.
          */
         public static final String MAX_OPERATIONS = "maxOperations";
+
         /**
          * Standard maximum payload size member name.
          */
         public static final String MAX_PAYLOAD_SIZE = "maxPayloadSize";
+
         /**
          * Standard maximum result count member name.
          */
         public static final String MAX_RESULTS = "maxResults";
+
         /**
          * Standard URI reference sub-attribute name.
          */
         public static final String REFERENCE = "$ref";
+
         /**
          * Standard primary-value marker member name.
          */
         public static final String PRIMARY = "primary";
+
         /**
          * Standard formatted-value member name.
          */
         public static final String FORMATTED = "formatted";
+
         /**
          * Standard family-name member name.
          */
         public static final String FAMILY_NAME = "familyName";
+
         /**
          * Standard given-name member name.
          */
         public static final String GIVEN_NAME = "givenName";
+
         /**
          * Standard middle-name member name.
          */
         public static final String MIDDLE_NAME = "middleName";
+
         /**
          * Standard honorific-prefix member name.
          */
         public static final String HONORIFIC_PREFIX = "honorificPrefix";
+
         /**
          * Standard honorific-suffix member name.
          */
         public static final String HONORIFIC_SUFFIX = "honorificSuffix";
+
         /**
          * Standard street-address member name.
          */
         public static final String STREET_ADDRESS = "streetAddress";
+
         /**
          * Standard locality member name.
          */
         public static final String LOCALITY = "locality";
+
         /**
          * Standard region member name.
          */
         public static final String REGION = "region";
+
         /**
          * Standard postal-code member name.
          */
         public static final String POSTAL_CODE = "postalCode";
+
         /**
          * Standard country member name.
          */

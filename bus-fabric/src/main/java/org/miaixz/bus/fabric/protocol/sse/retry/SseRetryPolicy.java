@@ -81,6 +81,20 @@ public record SseRetryPolicy(Duration initialDelay, Duration maxDelay) implement
     }
 
     /**
+     * Validates a non-negative duration.
+     *
+     * @param value duration candidate
+     * @param name  component name
+     * @return validated duration
+     */
+    static Duration duration(final Duration value, final String name) {
+        final Duration checked = Assert
+                .notNull(value, () -> new ValidateException(name + " must be non-null and non-negative"));
+        Assert.isTrue(!checked.isNegative(), () -> new ValidateException(name + " must be non-null and non-negative"));
+        return checked;
+    }
+
+    /**
      * Adds this complete policy to an option snapshot.
      *
      * @param options option source
@@ -113,20 +127,6 @@ public record SseRetryPolicy(Duration initialDelay, Duration maxDelay) implement
         } catch (final ArithmeticException ignored) {
             return maxDelay;
         }
-    }
-
-    /**
-     * Validates a non-negative duration.
-     *
-     * @param value duration candidate
-     * @param name  component name
-     * @return validated duration
-     */
-    static Duration duration(final Duration value, final String name) {
-        final Duration checked = Assert
-                .notNull(value, () -> new ValidateException(name + " must be non-null and non-negative"));
-        Assert.isTrue(!checked.isNegative(), () -> new ValidateException(name + " must be non-null and non-negative"));
-        return checked;
     }
 
 }

@@ -43,11 +43,6 @@ final class PooledConnection {
     private final Connection connection;
 
     /**
-     * Pool-clock instant recorded when the connection became idle.
-     */
-    private long lastUsedMillis;
-
-    /**
      * Established protocol snapshot captured when this entry was created.
      */
     private final Protocol protocol;
@@ -56,6 +51,11 @@ final class PooledConnection {
      * Non-negative logical lease-capacity snapshot captured when this entry was created.
      */
     private final int capacity;
+
+    /**
+     * Pool-clock instant recorded when the connection became idle.
+     */
+    private long lastUsedMillis;
 
     /**
      * Creates an entry using the connection's current protocol and non-negative capacity snapshots.

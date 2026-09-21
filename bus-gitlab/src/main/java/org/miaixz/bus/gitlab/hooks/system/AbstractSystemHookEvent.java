@@ -30,9 +30,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public abstract class AbstractSystemHookEvent implements SystemHookEvent {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852292516603L;
 
@@ -40,10 +37,12 @@ public abstract class AbstractSystemHookEvent implements SystemHookEvent {
      * The request url value.
      */
     private String requestUrl;
+
     /**
      * The request query string value.
      */
     private String requestQueryString;
+
     /**
      * The request secret token value.
      */

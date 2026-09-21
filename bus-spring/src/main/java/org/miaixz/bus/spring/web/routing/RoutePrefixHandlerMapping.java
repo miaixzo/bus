@@ -45,6 +45,7 @@ public class RoutePrefixHandlerMapping extends RequestMappingHandlerMapping {
      * Bound route prefix handler mapping configuration properties.
      */
     private final RoutePrefixOptions options;
+
     /**
      * Path matcher used to compose route prefixes with controller mappings.
      */

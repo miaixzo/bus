@@ -52,10 +52,12 @@ public class SessionCoordinator {
      * Exact compiled Source identifier.
      */
     private final String sourceId;
+
     /**
      * Framework protocol Session cache.
      */
     private final SessionCache sessionCache;
+
     /**
      * Project Session integration port.
      */

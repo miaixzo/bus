@@ -1677,7 +1677,6 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @param state            mandatory browser correlation value
      * @param error            platform error for failure
      * @param errorDescription optional platform error description
-     *
      * @author Kimi Liu
      */
     private record CallbackWire(String code, String state, String error, String errorDescription) {

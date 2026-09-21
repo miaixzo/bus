@@ -103,6 +103,102 @@ public class SocketX {
     }
 
     /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Resolves the complete Socket-specific or generic TLS policy.
+     *
+     * @param context shared context
+     * @return configured or shared default TLS policy
+     */
+    private static TlsPolicy tlsPolicy(final Context context) {
+        final TlsPolicy configured = context.options().get(SocketOptions.TLS_POLICY);
+        return configured == null ? TlsPolicy.resolve(context.options()) : configured;
+    }
+
+    /**
+     * Parses a target URI.
+     *
+     * @param value raw socket target URL
+     * @return validated socket target URI
+     */
+    private static URI parseTarget(final String value) {
+        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException("Socket URL must be non-blank and single-line");
+        }
+        try {
+            final URI parsed = new URI(value.trim());
+            final String scheme = parsed.getScheme();
+            if (!Protocol.TCP.name.equalsIgnoreCase(scheme) && !Protocol.UDP.name.equalsIgnoreCase(scheme)
+                    && !Protocol.TLS.name.equalsIgnoreCase(scheme) && !SOCKET_X_KCP_SCHEME.equalsIgnoreCase(scheme)
+                    && !Protocol.SOCKET.name.equalsIgnoreCase(scheme) && !AIO_SCHEME.equalsIgnoreCase(scheme)) {
+                throw new ProtocolException("Socket URL must use tcp, tls, udp, kcp, socket, or aio");
+            }
+            Address.from(parsed);
+            return parsed;
+        } catch (final URISyntaxException e) {
+            throw new ProtocolException("Invalid socket URL", e);
+        }
+    }
+
+    /**
+     * Builds a socket URI from transport parts.
+     *
+     * @param scheme supported socket transport scheme
+     * @param host   remote target host name or IP address
+     * @param port   remote target port
+     * @return socket target URL assembled from the transport parts
+     */
+    private static String target(final String scheme, final String host, final int port) {
+        if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException("Socket host must be non-blank and single-line");
+        }
+        if (port < Normal._1 || port > Normal._65535) {
+            throw new ValidateException("Socket port must be between 1 and 65535");
+        }
+        final String current = host.trim();
+        final String authority = current.indexOf(Symbol.C_COLON) >= 0 && !current.startsWith(Symbol.BRACKET_LEFT)
+                ? Symbol.BRACKET_LEFT + current + Symbol.BRACKET_RIGHT
+                : current;
+        return scheme + Symbol.COLON + Symbol.SLASH + Symbol.SLASH + authority + Symbol.C_COLON + port;
+    }
+
+    /**
+     * Validates a duration.
+     *
+     * @param value timeout duration to validate
+     * @return the supplied duration after null and range validation
+     */
+    private static Duration validateDuration(final Duration value) {
+        final Duration checked = Assert
+                .notNull(value, () -> new ValidateException("Timeout must be non-null and non-negative"));
+        Assert.isTrue(!checked.isNegative(), () -> new ValidateException("Timeout must be non-null and non-negative"));
+        return checked;
+    }
+
+    /**
+     * Returns whether a context options map contains socket-specific keys.
+     *
+     * @param options context option snapshot to inspect
+     * @return true when socket-specific keys exist
+     */
+    private static boolean hasSocketOptions(final Options options) {
+        return options.contains(OPTION_SOCKET_READ_BUFFER_SIZE) || options.contains(OPTION_SOCKET_WRITE_CHUNK_SIZE)
+                || options.contains(OPTION_SOCKET_WRITE_CHUNK_COUNT) || options.contains(OPTION_SOCKET_IO_THREADS)
+                || options.contains(OPTION_SOCKET_OPTIONS) || options.contains(OPTION_SOCKET_RETAIN_READ_BUFFER)
+                || options.contains(OPTION_SOCKET_IDLE_TIMEOUT);
+    }
+
+    /**
      * Returns the socket protocol.
      *
      * @return transport protocol derived from the target address
@@ -225,102 +321,6 @@ public class SocketX {
     public String dispatchKey() {
         return spec.address().scheme() + Symbol.COLON + Symbol.SLASH + Symbol.SLASH + spec.address().host()
                 + Symbol.C_COLON + spec.address().port();
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  field name included in the validation failure
-     * @param <T>   reference type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-    }
-
-    /**
-     * Resolves the complete Socket-specific or generic TLS policy.
-     *
-     * @param context shared context
-     * @return configured or shared default TLS policy
-     */
-    private static TlsPolicy tlsPolicy(final Context context) {
-        final TlsPolicy configured = context.options().get(SocketOptions.TLS_POLICY);
-        return configured == null ? TlsPolicy.resolve(context.options()) : configured;
-    }
-
-    /**
-     * Parses a target URI.
-     *
-     * @param value raw socket target URL
-     * @return validated socket target URI
-     */
-    private static URI parseTarget(final String value) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Socket URL must be non-blank and single-line");
-        }
-        try {
-            final URI parsed = new URI(value.trim());
-            final String scheme = parsed.getScheme();
-            if (!Protocol.TCP.name.equalsIgnoreCase(scheme) && !Protocol.UDP.name.equalsIgnoreCase(scheme)
-                    && !Protocol.TLS.name.equalsIgnoreCase(scheme) && !SOCKET_X_KCP_SCHEME.equalsIgnoreCase(scheme)
-                    && !Protocol.SOCKET.name.equalsIgnoreCase(scheme) && !AIO_SCHEME.equalsIgnoreCase(scheme)) {
-                throw new ProtocolException("Socket URL must use tcp, tls, udp, kcp, socket, or aio");
-            }
-            Address.from(parsed);
-            return parsed;
-        } catch (final URISyntaxException e) {
-            throw new ProtocolException("Invalid socket URL", e);
-        }
-    }
-
-    /**
-     * Builds a socket URI from transport parts.
-     *
-     * @param scheme supported socket transport scheme
-     * @param host   remote target host name or IP address
-     * @param port   remote target port
-     * @return socket target URL assembled from the transport parts
-     */
-    private static String target(final String scheme, final String host, final int port) {
-        if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Socket host must be non-blank and single-line");
-        }
-        if (port < Normal._1 || port > Normal._65535) {
-            throw new ValidateException("Socket port must be between 1 and 65535");
-        }
-        final String current = host.trim();
-        final String authority = current.indexOf(Symbol.C_COLON) >= 0 && !current.startsWith(Symbol.BRACKET_LEFT)
-                ? Symbol.BRACKET_LEFT + current + Symbol.BRACKET_RIGHT
-                : current;
-        return scheme + Symbol.COLON + Symbol.SLASH + Symbol.SLASH + authority + Symbol.C_COLON + port;
-    }
-
-    /**
-     * Validates a duration.
-     *
-     * @param value timeout duration to validate
-     * @return the supplied duration after null and range validation
-     */
-    private static Duration validateDuration(final Duration value) {
-        final Duration checked = Assert
-                .notNull(value, () -> new ValidateException("Timeout must be non-null and non-negative"));
-        Assert.isTrue(!checked.isNegative(), () -> new ValidateException("Timeout must be non-null and non-negative"));
-        return checked;
-    }
-
-    /**
-     * Returns whether a context options map contains socket-specific keys.
-     *
-     * @param options context option snapshot to inspect
-     * @return true when socket-specific keys exist
-     */
-    private static boolean hasSocketOptions(final Options options) {
-        return options.contains(OPTION_SOCKET_READ_BUFFER_SIZE) || options.contains(OPTION_SOCKET_WRITE_CHUNK_SIZE)
-                || options.contains(OPTION_SOCKET_WRITE_CHUNK_COUNT) || options.contains(OPTION_SOCKET_IO_THREADS)
-                || options.contains(OPTION_SOCKET_OPTIONS) || options.contains(OPTION_SOCKET_RETAIN_READ_BUFFER)
-                || options.contains(OPTION_SOCKET_IDLE_TIMEOUT);
     }
 
     /**
@@ -1035,6 +1035,43 @@ public class SocketX {
         }
 
         /**
+         * Returns the configured handler.
+         *
+         * @return configured direct handler or the assembled channel demultiplexer
+         */
+        private Handler handler() {
+            if (demuxer != null) {
+                return demuxer.build();
+            }
+            return handler == null ? Demuxer.noop() : handler;
+        }
+
+        /**
+         * Returns the demuxer builder.
+         *
+         * @return lazily initialized channel demultiplexer builder
+         */
+        private Demuxer.Builder demuxer() {
+            if (demuxer == null) {
+                demuxer = Demuxer.builder();
+            }
+            return demuxer;
+        }
+
+        /**
+         * Copies current socket options into a builder.
+         *
+         * @return mutable builder initialized from the current socket option snapshot
+         */
+        private SocketOptions.Builder copySocketOptions() {
+            return SocketOptions.builder().readBufferSize(socketOptions.readBufferSize())
+                    .writeChunkSize(socketOptions.writeChunkSize()).writeChunkCount(socketOptions.writeChunkCount())
+                    .backlog(socketOptions.backlog()).ioThreads(socketOptions.ioThreads())
+                    .socketOptions(socketOptions.socketOptions()).retainReadBuffer(socketOptions.retainReadBuffer())
+                    .idleTimeout(socketOptions.idleTimeout()).kcpWireVersion(socketOptions.kcpWireVersion());
+        }
+
+        /**
          * Named callback that preserves the builder's success and failure forwarding order.
          */
         private static final class HandlerCallback implements Callback<SocketSession> {
@@ -1080,43 +1117,6 @@ public class SocketX {
                 errorHandler.accept(cause);
             }
 
-        }
-
-        /**
-         * Returns the configured handler.
-         *
-         * @return configured direct handler or the assembled channel demultiplexer
-         */
-        private Handler handler() {
-            if (demuxer != null) {
-                return demuxer.build();
-            }
-            return handler == null ? Demuxer.noop() : handler;
-        }
-
-        /**
-         * Returns the demuxer builder.
-         *
-         * @return lazily initialized channel demultiplexer builder
-         */
-        private Demuxer.Builder demuxer() {
-            if (demuxer == null) {
-                demuxer = Demuxer.builder();
-            }
-            return demuxer;
-        }
-
-        /**
-         * Copies current socket options into a builder.
-         *
-         * @return mutable builder initialized from the current socket option snapshot
-         */
-        private SocketOptions.Builder copySocketOptions() {
-            return SocketOptions.builder().readBufferSize(socketOptions.readBufferSize())
-                    .writeChunkSize(socketOptions.writeChunkSize()).writeChunkCount(socketOptions.writeChunkCount())
-                    .backlog(socketOptions.backlog()).ioThreads(socketOptions.ioThreads())
-                    .socketOptions(socketOptions.socketOptions()).retainReadBuffer(socketOptions.retainReadBuffer())
-                    .idleTimeout(socketOptions.idleTimeout()).kcpWireVersion(socketOptions.kcpWireVersion());
         }
 
     }

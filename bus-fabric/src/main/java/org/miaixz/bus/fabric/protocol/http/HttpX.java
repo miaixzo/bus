@@ -117,6 +117,21 @@ public class HttpX {
     }
 
     /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  diagnostic parameter name
+     * @param <T>   type
+     * @return the validated reference
+     */
+    private static <T> T require(final T value, final String name) {
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
+    }
+
+    /**
      * Returns request snapshot.
      *
      * @return request
@@ -230,21 +245,6 @@ public class HttpX {
     }
 
     /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  diagnostic parameter name
-     * @param <T>   type
-     * @return the validated reference
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
-    }
-
-    /**
      * Body mode.
      */
     private enum BodyMode {
@@ -284,6 +284,16 @@ public class HttpX {
         private final Context context;
 
         /**
+         * Header builder.
+         */
+        private final Headers.Builder headers = Headers.builder();
+
+        /**
+         * Materialization limit frozen with the builder's shared context.
+         */
+        private final long materializeMaxBytes;
+
+        /**
          * Target URL.
          */
         private String url;
@@ -297,11 +307,6 @@ public class HttpX {
          * HTTP method.
          */
         private Http.Method method = Http.Method.GET;
-
-        /**
-         * Header builder.
-         */
-        private final Headers.Builder headers = Headers.builder();
 
         /**
          * Query entries.
@@ -394,11 +399,6 @@ public class HttpX {
         private Callback<HttpResponse> callback;
 
         /**
-         * Materialization limit frozen with the builder's shared context.
-         */
-        private final long materializeMaxBytes;
-
-        /**
          * Creates a builder.
          *
          * @param context shared context
@@ -409,6 +409,129 @@ public class HttpX {
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.proxy = ProxyPlan.inherit();
             this.materializeMaxBytes = context.options().materializeMaxBytes();
+        }
+
+        /**
+         * Returns whether URL text is absolute.
+         *
+         * @param value URL text
+         * @return true when absolute
+         */
+        private static boolean absolute(final String value) {
+            return value.startsWith(Protocol.HTTP_PREFIX) || value.startsWith(Protocol.HTTPS_PREFIX);
+        }
+
+        /**
+         * Returns whether URL text still contains a {name} path placeholder.
+         *
+         * @param value URL text
+         * @return true when a placeholder remains
+         */
+        private static boolean hasPathPlaceholder(final String value) {
+            final int left = value.indexOf(Symbol.C_BRACE_LEFT);
+            final int right = value.indexOf(Symbol.C_BRACE_RIGHT, left + 1);
+            return left >= 0 && right > left + 1;
+        }
+
+        /**
+         * Returns the index where query or fragment text starts.
+         *
+         * @param value URL text
+         * @return split index
+         */
+        private static int pathSplit(final String value) {
+            final int query = value.indexOf(Symbol.C_QUESTION_MARK);
+            final int fragment = value.indexOf(Symbol.C_HASH);
+            if (query < 0) {
+                return fragment < 0 ? value.length() : fragment;
+            }
+            if (fragment < 0) {
+                return query;
+            }
+            return Math.min(query, fragment);
+        }
+
+        /**
+         * Temporarily encodes path placeholder braces so URI resolution can preserve them.
+         *
+         * @param value URL text
+         * @return protected URL text
+         */
+        private static String protectPathPlaceholders(final String value) {
+            return value.replace(Symbol.BRACE_LEFT, "%7B").replace(Symbol.BRACE_RIGHT, "%7D");
+        }
+
+        /**
+         * Restores protected path placeholder braces after URI resolution.
+         *
+         * @param value URL text
+         * @return restored URL text
+         */
+        private static String restorePathPlaceholders(final String value) {
+            return value.replace("%7B", Symbol.BRACE_LEFT).replace("%7D", Symbol.BRACE_RIGHT);
+        }
+
+        /**
+         * Encodes a URL component.
+         *
+         * @param value raw component text to percent-encode
+         * @return encoded value
+         */
+        private static String encode(final String value) {
+            return UrlEncoder.encodeAll(value, UTF_8);
+        }
+
+        /**
+         * Validates text input.
+         *
+         * @param value text to validate
+         * @param name  diagnostic parameter name
+         * @return the validated text
+         */
+        private static String validateText(final String value, final String name) {
+            if (value == null || value.isEmpty()) {
+                throw new ValidateException(name + " must be non-blank and single-line");
+            }
+            boolean nonWhitespace = false;
+            for (int index = 0; index < value.length(); index++) {
+                final char current = value.charAt(index);
+                if (current == Symbol.C_CR || current == Symbol.C_LF) {
+                    throw new ValidateException(name + " must be non-blank and single-line");
+                }
+                nonWhitespace |= !Character.isWhitespace(current);
+            }
+            if (!nonWhitespace) {
+                throw new ValidateException(name + " must be non-blank and single-line");
+            }
+            return value;
+        }
+
+        /**
+         * Converts a non-null value to a single-line string.
+         *
+         * @param value object to convert
+         * @param name  value name
+         * @return string value
+         */
+        private static String stringValue(final Object value, final String name) {
+            return validateText(value == null ? null : value.toString(), name);
+        }
+
+        /**
+         * Validates percent encoding.
+         *
+         * @param value encoded text
+         */
+        private static void validatePercent(final String value) {
+            for (int i = 0; i < value.length(); i++) {
+                if (value.charAt(i) == Symbol.C_PERCENT) {
+                    if (i + 2 >= value.length() || !CharKit.isHexChar(value.charAt(i + 1))
+                            || !CharKit.isHexChar(value.charAt(i + 2))) {
+                        throw new ProtocolException("Invalid percent-encoded query value");
+                    }
+                    i += 2;
+                }
+            }
         }
 
         /**
@@ -1846,129 +1969,6 @@ public class HttpX {
                 throw new ValidateException("HTTP body modes are mutually exclusive");
             }
             bodyMode = mode;
-        }
-
-        /**
-         * Returns whether URL text is absolute.
-         *
-         * @param value URL text
-         * @return true when absolute
-         */
-        private static boolean absolute(final String value) {
-            return value.startsWith(Protocol.HTTP_PREFIX) || value.startsWith(Protocol.HTTPS_PREFIX);
-        }
-
-        /**
-         * Returns whether URL text still contains a {name} path placeholder.
-         *
-         * @param value URL text
-         * @return true when a placeholder remains
-         */
-        private static boolean hasPathPlaceholder(final String value) {
-            final int left = value.indexOf(Symbol.C_BRACE_LEFT);
-            final int right = value.indexOf(Symbol.C_BRACE_RIGHT, left + 1);
-            return left >= 0 && right > left + 1;
-        }
-
-        /**
-         * Returns the index where query or fragment text starts.
-         *
-         * @param value URL text
-         * @return split index
-         */
-        private static int pathSplit(final String value) {
-            final int query = value.indexOf(Symbol.C_QUESTION_MARK);
-            final int fragment = value.indexOf(Symbol.C_HASH);
-            if (query < 0) {
-                return fragment < 0 ? value.length() : fragment;
-            }
-            if (fragment < 0) {
-                return query;
-            }
-            return Math.min(query, fragment);
-        }
-
-        /**
-         * Temporarily encodes path placeholder braces so URI resolution can preserve them.
-         *
-         * @param value URL text
-         * @return protected URL text
-         */
-        private static String protectPathPlaceholders(final String value) {
-            return value.replace(Symbol.BRACE_LEFT, "%7B").replace(Symbol.BRACE_RIGHT, "%7D");
-        }
-
-        /**
-         * Restores protected path placeholder braces after URI resolution.
-         *
-         * @param value URL text
-         * @return restored URL text
-         */
-        private static String restorePathPlaceholders(final String value) {
-            return value.replace("%7B", Symbol.BRACE_LEFT).replace("%7D", Symbol.BRACE_RIGHT);
-        }
-
-        /**
-         * Encodes a URL component.
-         *
-         * @param value raw component text to percent-encode
-         * @return encoded value
-         */
-        private static String encode(final String value) {
-            return UrlEncoder.encodeAll(value, UTF_8);
-        }
-
-        /**
-         * Validates text input.
-         *
-         * @param value text to validate
-         * @param name  diagnostic parameter name
-         * @return the validated text
-         */
-        private static String validateText(final String value, final String name) {
-            if (value == null || value.isEmpty()) {
-                throw new ValidateException(name + " must be non-blank and single-line");
-            }
-            boolean nonWhitespace = false;
-            for (int index = 0; index < value.length(); index++) {
-                final char current = value.charAt(index);
-                if (current == Symbol.C_CR || current == Symbol.C_LF) {
-                    throw new ValidateException(name + " must be non-blank and single-line");
-                }
-                nonWhitespace |= !Character.isWhitespace(current);
-            }
-            if (!nonWhitespace) {
-                throw new ValidateException(name + " must be non-blank and single-line");
-            }
-            return value;
-        }
-
-        /**
-         * Converts a non-null value to a single-line string.
-         *
-         * @param value object to convert
-         * @param name  value name
-         * @return string value
-         */
-        private static String stringValue(final Object value, final String name) {
-            return validateText(value == null ? null : value.toString(), name);
-        }
-
-        /**
-         * Validates percent encoding.
-         *
-         * @param value encoded text
-         */
-        private static void validatePercent(final String value) {
-            for (int i = 0; i < value.length(); i++) {
-                if (value.charAt(i) == Symbol.C_PERCENT) {
-                    if (i + 2 >= value.length() || !CharKit.isHexChar(value.charAt(i + 1))
-                            || !CharKit.isHexChar(value.charAt(i + 2))) {
-                        throw new ProtocolException("Invalid percent-encoded query value");
-                    }
-                    i += 2;
-                }
-            }
         }
 
     }

@@ -22,6 +22,7 @@ package org.miaixz.bus.core.io.file;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serial;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -174,6 +175,7 @@ public class FileType {
      */
     public static final Map<String, String> FILE_TYPE = new ConcurrentSkipListMap<>() {
 
+        @Serial
         private static final long serialVersionUID = 2891865203091L;
 
         /**

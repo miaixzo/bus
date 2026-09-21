@@ -40,9 +40,9 @@ Spring APIs are required and activation will be provided by the application.
 | Package                 | Responsibility                                                                                       |
 |-------------------------|------------------------------------------------------------------------------------------------------|
 | `org.miaixz.bus.spring` | `SpringBuilder` and other root Spring integration APIs.                                              |
-| `context`               | Static context access, immutable snapshots, lexical scopes, and propagation policies.               |
+| `context`               | Static context access, immutable snapshots, lexical scopes, and propagation policies.                |
 | `context.task`          | Spring task decoration for bounded cross-thread context propagation.                                 |
-| `context.spi`           | Ordered authenticated-context provider extension point.                                             |
+| `context.spi`           | Ordered authenticated-context provider extension point.                                              |
 | `context.web`           | Servlet request, async, and error-dispatch context lifecycle binding.                                |
 | `annotation`            | Merged annotation handling, placeholder binding, wrapper annotations, and `@RequestObject`.          |
 | `aop`                   | Reusable auto-proxy infrastructure with Bean-name exclusions.                                        |
@@ -62,9 +62,9 @@ Spring APIs are required and activation will be provided by the application.
 | `boot.listener`         | Spring Boot configuration listeners.                                                                 |
 | `boot.startup`          | Startup stages, metrics, reporters, and Bean post-processing.                                        |
 
-The root package intentionally remains populated by `SpringBuilder` and the shared Spring integration contracts.
-Runtime context types live below the dedicated `context` package so static access, propagation, SPI, and Servlet
-binding have explicit architectural boundaries.
+The root package intentionally remains populated by `SpringBuilder` and the shared Spring integration contracts. Runtime
+context types live below the dedicated `context` package so static access, propagation, SPI, and Servlet binding have
+explicit architectural boundaries.
 
 `boot.condition` provides `@ConditionalOnEnabled` and `EnabledCondition`. The condition gives an explicit enable
 annotation priority over the corresponding property, while leaving concrete annotations and property prefixes to the
@@ -88,15 +88,15 @@ Runtime state is held in a classloader-local, thread-confined stack. `ContextBui
 does not resolve Spring Beans, retain an application context, parse transport objects, authenticate users, or perform
 I/O.
 
-| Type                       | Responsibility                                                                                                       |
-|----------------------------|----------------------------------------------------------------------------------------------------------------------|
-| `ContextState`             | Immutable detached snapshot containing request ID, a defensive authorization copy, and resolved credentials.        |
-| `ContextBuilder`           | Static read-only access to request ID, authorization, tenant, credential, token, and API key values.                 |
-| `ContextScope`             | Thread-owned `AutoCloseable` guard that restores the previous state exactly once and in LIFO order.                  |
-| `ContextTransfer`          | Explicit capture, mode filtering, installation, and task wrapping operations.                                        |
-| `ContextTransfer.Mode`     | Selects whether credentials, identity, request correlation, or no values may cross an execution boundary.            |
-| `ContextTaskDecorator`     | Spring `TaskDecorator` that installs a captured snapshot only for one executor task.                                 |
-| `ContextProvider`          | Ordered SPI that authenticates an already normalized initial context.                                                |
+| Type                   | Responsibility                                                                                               |
+|------------------------|--------------------------------------------------------------------------------------------------------------|
+| `ContextState`         | Immutable detached snapshot containing request ID, a defensive authorization copy, and resolved credentials. |
+| `ContextBuilder`       | Static read-only access to request ID, authorization, tenant, credential, token, and API key values.         |
+| `ContextScope`         | Thread-owned `AutoCloseable` guard that restores the previous state exactly once and in LIFO order.          |
+| `ContextTransfer`      | Explicit capture, mode filtering, installation, and task wrapping operations.                                |
+| `ContextTransfer.Mode` | Selects whether credentials, identity, request correlation, or no values may cross an execution boundary.    |
+| `ContextTaskDecorator` | Spring `TaskDecorator` that installs a captured snapshot only for one executor task.                         |
+| `ContextProvider`      | Ordered SPI that authenticates an already normalized initial context.                                        |
 
 `ContextState` never retains `HttpServletRequest`, cached bodies, multipart data, or a thread-local container. Token and
 API-key credentials are resolved once at the Servlet boundary and retained only as immutable credential values with

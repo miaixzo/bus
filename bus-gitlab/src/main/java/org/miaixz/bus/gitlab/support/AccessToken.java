@@ -59,82 +59,10 @@ import org.miaixz.bus.logger.Logger;
 public class AccessToken {
 
     /**
-     * This enum defines the available scopes for a personal access token.
-     *
-     * @author Kimi Liu
-     */
-    public enum Scope {
-
-        /**
-         * The api defines.
-         */
-        API,
-        /**
-         * The read registry defines.
-         */
-        READ_REGISTRY,
-        /**
-         * The read repository defines.
-         */
-        READ_REPOSITORY,
-        /**
-         * The read user defines.
-         */
-        READ_USER,
-        /**
-         * The sudo defines.
-         */
-        SUDO,
-        /**
-         * The write repository defines.
-         */
-        WRITE_REPOSITORY;
-
-        /**
-         * The enum codec value.
-         */
-        private static JacksonJsonEnumCodec<Scope> enumCodec = new JacksonJsonEnumCodec<>(Scope.class);
-
-        /**
-         * Executes the for value operation.
-         *
-         * @param value the value value
-         * @return the result
-         */
-
-        @JsonCreator
-        public static Scope forValue(String value) {
-            return enumCodec.forValue(value);
-        }
-
-        /**
-         * Executes the to value operation.
-         *
-         * @return the result
-         */
-
-        @JsonValue
-        public String toValue() {
-            return (enumCodec.toString(this));
-        }
-
-        /**
-         * Returns the string.
-         *
-         * @return the result
-         */
-
-        @Override
-        public String toString() {
-            return (enumCodec.toString(this));
-        }
-
-    }
-
-    /**
      * The user agent value.
      */
     protected static final String USER_AGENT = "GitLab4J Client";
+
     /**
      * The cookies header value.
      *
@@ -145,6 +73,7 @@ public class AccessToken {
      * Regular expression used to extract an authenticity token from a new user page.
      */
     protected static final String NEW_USER_AUTHENTICITY_TOKEN_REGEX = "\"new_user\".*name=\\\"authenticity_token\\\"\\svalue=\\\"([^\\\"]*)\\\".*new_new_user";
+
     /**
      * Compiled pattern for {@link #NEW_USER_AUTHENTICITY_TOKEN_REGEX}.
      */
@@ -155,6 +84,7 @@ public class AccessToken {
      * Regular expression used to extract an authenticity token from a page.
      */
     protected static final String AUTHENTICITY_TOKEN_REGEX = "name=\\\"authenticity_token\\\"\\svalue=\\\"([^\\\"]*)\\\"";
+
     /**
      * Compiled pattern for {@link #AUTHENTICITY_TOKEN_REGEX}.
      */
@@ -164,6 +94,7 @@ public class AccessToken {
      * Regular expression used to extract a created personal access token.
      */
     protected static final String PERSONAL_ACCESS_TOKEN_REGEX = "name=\\\"created-personal-access-token\\\".*data-clipboard-text=\\\"([^\\\"]*)\\\".*\\/>";
+
     /**
      * Compiled pattern for {@link #PERSONAL_ACCESS_TOKEN_REGEX}.
      */
@@ -173,6 +104,7 @@ public class AccessToken {
      * Regular expression used to extract a revoke personal access token link.
      */
     protected static final String REVOKE_PERSONAL_ACCESS_TOKEN_REGEX = "href=\\\"([^\\\"]*)\\\"";
+
     /**
      * Compiled pattern for {@link #REVOKE_PERSONAL_ACCESS_TOKEN_REGEX}.
      */
@@ -183,6 +115,7 @@ public class AccessToken {
      * Regular expression used to extract a feed token.
      */
     protected static final String FEED_TOKEN_REGEX = "name=\\\"feed_token\\\".*value=\\\"([^\\\"]*)\\\".*\\/>";
+
     /**
      * Compiled pattern for {@link #FEED_TOKEN_REGEX}.
      */
@@ -192,6 +125,7 @@ public class AccessToken {
      * Regular expression used to extract the health check access token.
      */
     protected static final String HEALTH_CHECK_ACCESS_TOKEN_REGEX = "id=\"health-check-token\">([^<]*)<\\/code>";
+
     /**
      * Compiled pattern for {@link #HEALTH_CHECK_ACCESS_TOKEN_REGEX}.
      */
@@ -991,6 +925,79 @@ public class AccessToken {
         }
 
         return (buf.toString());
+    }
+
+    /**
+     * This enum defines the available scopes for a personal access token.
+     *
+     * @author Kimi Liu
+     */
+    public enum Scope {
+
+        /**
+         * The api defines.
+         */
+        API,
+        /**
+         * The read registry defines.
+         */
+        READ_REGISTRY,
+        /**
+         * The read repository defines.
+         */
+        READ_REPOSITORY,
+        /**
+         * The read user defines.
+         */
+        READ_USER,
+        /**
+         * The sudo defines.
+         */
+        SUDO,
+        /**
+         * The write repository defines.
+         */
+        WRITE_REPOSITORY;
+
+        /**
+         * The enum codec value.
+         */
+        private static JacksonJsonEnumCodec<Scope> enumCodec = new JacksonJsonEnumCodec<>(Scope.class);
+
+        /**
+         * Executes the for value operation.
+         *
+         * @param value the value value
+         * @return the result
+         */
+
+        @JsonCreator
+        public static Scope forValue(String value) {
+            return enumCodec.forValue(value);
+        }
+
+        /**
+         * Executes the to value operation.
+         *
+         * @return the result
+         */
+
+        @JsonValue
+        public String toValue() {
+            return (enumCodec.toString(this));
+        }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
+
+        @Override
+        public String toString() {
+            return (enumCodec.toString(this));
+        }
+
     }
 
 }

@@ -44,10 +44,12 @@ public class DubboProperties {
      * Whether the dubbo integration is enabled.
      */
     private final boolean enabled;
+
     /**
      * Package names scanned for Dubbo service components.
      */
     private final String[] basePackages;
+
     /**
      * Marker classes whose packages are included in Dubbo scanning.
      */

@@ -88,16 +88,19 @@ public class ImageParameters {
      * The width value.
      */
     private int width;
+
     //
     /**
      * The bits per sample value.
      */
     private int bitsPerSample;
+
     // Bands
     /**
      * The bands value.
      */
     private int bands;
+
     // Nb of components
     /**
      * The samples per pixel value.
@@ -113,11 +116,13 @@ public class ImageParameters {
      * The big endian value.
      */
     private boolean bigEndian;
+
     // DataBuffer types + TYPE_BIT
     /**
      * The data type value.
      */
     private int dataType;
+
     // Data offset of binary data
     /**
      * The bit offset value.

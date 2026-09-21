@@ -36,7 +36,7 @@ import java.util.RandomAccess;
  *     Partition into 4: [1], [2], [3], [4]
  *     Partition into 5: [1], [2], [3], [4], []
  * </pre>
- *
+ * <p>
  * Partitioning is performed on the original list. The returned partitions are immutable abstract lists, and changes to
  * the original list's elements will also be reflected in the partitions.
  *

@@ -22,11 +22,7 @@ package org.miaixz.bus.core.text.placeholder.template;
 import java.util.*;
 import java.util.function.IntFunction;
 
-import org.miaixz.bus.core.center.function.BiConsumerX;
-import org.miaixz.bus.core.center.function.FunctionX;
-import org.miaixz.bus.core.center.function.PredicateX;
-import org.miaixz.bus.core.center.function.SupplierX;
-import org.miaixz.bus.core.center.function.UnaryOperatorX;
+import org.miaixz.bus.core.center.function.*;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;

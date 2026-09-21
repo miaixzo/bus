@@ -35,8 +35,8 @@ import org.miaixz.bus.vortex.provider.AuthorizeProvider;
  * error message (in the {@link #message} field). It provides a consistent return type for provider methods, simplifying
  * error handling for the caller.
  *
- * @see AuthorizeProvider
  * @author Kimi Liu
+ * @see AuthorizeProvider
  */
 @Getter
 @Setter

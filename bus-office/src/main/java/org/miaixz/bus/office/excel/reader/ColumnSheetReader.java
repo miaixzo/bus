@@ -57,10 +57,10 @@ public class ColumnSheetReader extends AbstractSheetReader<List<Object>> {
         final List<Object> resultList = new ArrayList<>();
 
         final int startRowIndex = Math.max(this.cellRangeAddress.getFirstRow(), sheet.getFirstRowNum());// Read starting
-                                                                                                        // row
-                                                                                                        // (inclusive).
+        // row
+        // (inclusive).
         final int endRowIndex = Math.min(this.cellRangeAddress.getLastRow(), sheet.getLastRowNum());// Read ending row
-                                                                                                    // (inclusive).
+        // (inclusive).
         final int columnIndex = this.cellRangeAddress.getFirstColumn();
 
         final CellEditor cellEditor = this.config.getCellEditor();

@@ -139,6 +139,28 @@ public class DnsRecordSet {
     }
 
     /**
+     * Validates and copies record-data values.
+     *
+     * @param data     source data values
+     * @param typeCode expected type code
+     * @return immutable data values
+     */
+    private static List<DnsRecordData> immutableData(final List<DnsRecordData> data, final int typeCode) {
+        if (data == null || data.isEmpty()) {
+            throw new ValidateException("DNS RRSet data must not be empty");
+        }
+        for (final DnsRecordData value : data) {
+            if (value == null) {
+                throw new ValidateException("DNS RRSet data must not contain null");
+            }
+            if (value.typeCode() != typeCode) {
+                throw new ValidateException("DNS RRSet data type must match the RRSet type");
+            }
+        }
+        return List.copyOf(data);
+    }
+
+    /**
      * Returns the owner name.
      *
      * @return canonical owner name
@@ -203,28 +225,6 @@ public class DnsRecordSet {
             records.add(value.toRecord(name, recordClass, ttl));
         }
         return List.copyOf(records);
-    }
-
-    /**
-     * Validates and copies record-data values.
-     *
-     * @param data     source data values
-     * @param typeCode expected type code
-     * @return immutable data values
-     */
-    private static List<DnsRecordData> immutableData(final List<DnsRecordData> data, final int typeCode) {
-        if (data == null || data.isEmpty()) {
-            throw new ValidateException("DNS RRSet data must not be empty");
-        }
-        for (final DnsRecordData value : data) {
-            if (value == null) {
-                throw new ValidateException("DNS RRSet data must not contain null");
-            }
-            if (value.typeCode() != typeCode) {
-                throw new ValidateException("DNS RRSet data type must match the RRSet type");
-            }
-        }
-        return List.copyOf(data);
     }
 
 }

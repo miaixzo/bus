@@ -186,6 +186,131 @@ public class DnsZone {
     }
 
     /**
+     * Validates and copies zone-specific upstreams.
+     *
+     * @param upstreams source upstreams
+     * @return immutable upstreams
+     */
+    private static List<DnsUpstream> immutableUpstreams(final List<DnsUpstream> upstreams) {
+        if (upstreams == null) {
+            throw new ValidateException("DNS zone upstreams must not be null");
+        }
+        for (final DnsUpstream upstream : upstreams) {
+            if (upstream == null) {
+                throw new ValidateException("DNS zone upstreams must not contain null");
+            }
+        }
+        return List.copyOf(upstreams);
+    }
+
+    /**
+     * Builds the owner-name index.
+     *
+     * @param records records to index
+     * @return immutable owner-name index
+     */
+    private static Map<String, List<DnsRecord>> indexRecords(final List<DnsRecord> records) {
+        final HashMap<String, List<DnsRecord>> mutable = new HashMap<>();
+        for (final DnsRecord record : records) {
+            mutable.computeIfAbsent(record.name(), ignored -> new ArrayList<>()).add(record);
+        }
+        final HashMap<String, List<DnsRecord>> immutable = new HashMap<>();
+        for (final Map.Entry<String, List<DnsRecord>> entry : mutable.entrySet()) {
+            immutable.put(entry.getKey(), List.copyOf(entry.getValue()));
+        }
+        return Map.copyOf(immutable);
+    }
+
+    /**
+     * Rewrites record owner names for wildcard expansion.
+     *
+     * @param records source records
+     * @param owner   replacement owner name
+     * @return records with rewritten owner names
+     */
+    private static List<DnsRecord> rewriteOwner(final List<DnsRecord> records, final String owner) {
+        final ArrayList<DnsRecord> rewritten = new ArrayList<>(records.size());
+        for (final DnsRecord record : records) {
+            rewritten.add(record.withName(owner));
+        }
+        return List.copyOf(rewritten);
+    }
+
+    /**
+     * Returns whether an owner that contains CNAME has disallowed companion records.
+     *
+     * @param named records sharing one owner name
+     * @return true when a non-CNAME companion is not DNSSEC metadata allowed at the same owner
+     */
+    private static boolean containsNonCnameCompanion(final List<DnsRecord> named) {
+        for (final DnsRecord record : named) {
+            if (record.typeCode() != DnsRecordType.CNAME.code() && !sameOwnerDnssecMetadata(record)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether a record type may coexist with CNAME at the same owner.
+     *
+     * @param record record being inspected
+     * @return true when the record is DNSSEC metadata tied to the same owner name
+     */
+    private static boolean sameOwnerDnssecMetadata(final DnsRecord record) {
+        final int typeCode = record.typeCode();
+        return typeCode == DnsRecordType.RRSIG.code() || typeCode == DnsRecordType.NSEC.code()
+                || typeCode == DnsRecordType.NSEC3.code();
+    }
+
+    /**
+     * Requires RRSIG coverage for each non-RRSIG RRSet at one owner name.
+     *
+     * @param owner owner name being validated
+     * @param named records sharing the owner name
+     */
+    private static void validateDnssecCoverage(final String owner, final List<DnsRecord> named) {
+        for (final DnsRecord record : named) {
+            if (record.typeCode() != DnsRecordType.RRSIG.code()
+                    && !hasCoveringRrsig(named, record.typeCode(), record.recordClass())) {
+                throw new ValidateException("DNSSEC signed zone RRSet lacks RRSIG coverage: " + owner);
+            }
+        }
+    }
+
+    /**
+     * Returns whether one owner name has an RRSIG covering a type and class.
+     *
+     * @param named       records sharing one owner name
+     * @param typeCode    covered type code
+     * @param recordClass covered record class
+     * @return true when a matching RRSIG exists
+     */
+    private static boolean hasCoveringRrsig(final List<DnsRecord> named, final int typeCode, final int recordClass) {
+        for (final DnsRecord record : named) {
+            if (record.typeCode() == DnsRecordType.RRSIG.code() && record.recordClass() == recordClass
+                    && rrsigTypeCovered(record) == typeCode) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Reads the covered type from RRSIG RDATA.
+     *
+     * @param record RRSIG record
+     * @return covered DNS type code
+     */
+    private static int rrsigTypeCovered(final DnsRecord record) {
+        final byte[] data = record.wireData();
+        if (data.length < Short.BYTES) {
+            throw new ValidateException("DNSSEC RRSIG record is truncated");
+        }
+        return DnsCodec.readUnsignedShort(data, 0);
+    }
+
+    /**
      * Returns the zone origin.
      *
      * @return canonical zone origin
@@ -375,24 +500,6 @@ public class DnsZone {
     }
 
     /**
-     * Validates and copies zone-specific upstreams.
-     *
-     * @param upstreams source upstreams
-     * @return immutable upstreams
-     */
-    private static List<DnsUpstream> immutableUpstreams(final List<DnsUpstream> upstreams) {
-        if (upstreams == null) {
-            throw new ValidateException("DNS zone upstreams must not be null");
-        }
-        for (final DnsUpstream upstream : upstreams) {
-            if (upstream == null) {
-                throw new ValidateException("DNS zone upstreams must not contain null");
-            }
-        }
-        return List.copyOf(upstreams);
-    }
-
-    /**
      * Validates and copies zone-specific signing keys.
      *
      * @param signingKeys source signing keys
@@ -411,39 +518,6 @@ public class DnsZone {
             }
         }
         return List.copyOf(signingKeys);
-    }
-
-    /**
-     * Builds the owner-name index.
-     *
-     * @param records records to index
-     * @return immutable owner-name index
-     */
-    private static Map<String, List<DnsRecord>> indexRecords(final List<DnsRecord> records) {
-        final HashMap<String, List<DnsRecord>> mutable = new HashMap<>();
-        for (final DnsRecord record : records) {
-            mutable.computeIfAbsent(record.name(), ignored -> new ArrayList<>()).add(record);
-        }
-        final HashMap<String, List<DnsRecord>> immutable = new HashMap<>();
-        for (final Map.Entry<String, List<DnsRecord>> entry : mutable.entrySet()) {
-            immutable.put(entry.getKey(), List.copyOf(entry.getValue()));
-        }
-        return Map.copyOf(immutable);
-    }
-
-    /**
-     * Rewrites record owner names for wildcard expansion.
-     *
-     * @param records source records
-     * @param owner   replacement owner name
-     * @return records with rewritten owner names
-     */
-    private static List<DnsRecord> rewriteOwner(final List<DnsRecord> records, final String owner) {
-        final ArrayList<DnsRecord> rewritten = new ArrayList<>(records.size());
-        for (final DnsRecord record : records) {
-            rewritten.add(record.withName(owner));
-        }
-        return List.copyOf(rewritten);
     }
 
     /**
@@ -495,33 +569,6 @@ public class DnsZone {
     }
 
     /**
-     * Returns whether an owner that contains CNAME has disallowed companion records.
-     *
-     * @param named records sharing one owner name
-     * @return true when a non-CNAME companion is not DNSSEC metadata allowed at the same owner
-     */
-    private static boolean containsNonCnameCompanion(final List<DnsRecord> named) {
-        for (final DnsRecord record : named) {
-            if (record.typeCode() != DnsRecordType.CNAME.code() && !sameOwnerDnssecMetadata(record)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Returns whether a record type may coexist with CNAME at the same owner.
-     *
-     * @param record record being inspected
-     * @return true when the record is DNSSEC metadata tied to the same owner name
-     */
-    private static boolean sameOwnerDnssecMetadata(final DnsRecord record) {
-        final int typeCode = record.typeCode();
-        return typeCode == DnsRecordType.RRSIG.code() || typeCode == DnsRecordType.NSEC.code()
-                || typeCode == DnsRecordType.NSEC3.code();
-    }
-
-    /**
      * Rejects records located below a DNAME owner name.
      */
     private void validateDnameDescendants() {
@@ -555,53 +602,6 @@ public class DnsZone {
         for (final Map.Entry<String, List<DnsRecord>> entry : recordsByName.entrySet()) {
             validateDnssecCoverage(entry.getKey(), entry.getValue());
         }
-    }
-
-    /**
-     * Requires RRSIG coverage for each non-RRSIG RRSet at one owner name.
-     *
-     * @param owner owner name being validated
-     * @param named records sharing the owner name
-     */
-    private static void validateDnssecCoverage(final String owner, final List<DnsRecord> named) {
-        for (final DnsRecord record : named) {
-            if (record.typeCode() != DnsRecordType.RRSIG.code()
-                    && !hasCoveringRrsig(named, record.typeCode(), record.recordClass())) {
-                throw new ValidateException("DNSSEC signed zone RRSet lacks RRSIG coverage: " + owner);
-            }
-        }
-    }
-
-    /**
-     * Returns whether one owner name has an RRSIG covering a type and class.
-     *
-     * @param named       records sharing one owner name
-     * @param typeCode    covered type code
-     * @param recordClass covered record class
-     * @return true when a matching RRSIG exists
-     */
-    private static boolean hasCoveringRrsig(final List<DnsRecord> named, final int typeCode, final int recordClass) {
-        for (final DnsRecord record : named) {
-            if (record.typeCode() == DnsRecordType.RRSIG.code() && record.recordClass() == recordClass
-                    && rrsigTypeCovered(record) == typeCode) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Reads the covered type from RRSIG RDATA.
-     *
-     * @param record RRSIG record
-     * @return covered DNS type code
-     */
-    private static int rrsigTypeCovered(final DnsRecord record) {
-        final byte[] data = record.wireData();
-        if (data.length < Short.BYTES) {
-            throw new ValidateException("DNSSEC RRSIG record is truncated");
-        }
-        return DnsCodec.readUnsignedShort(data, 0);
     }
 
     /**

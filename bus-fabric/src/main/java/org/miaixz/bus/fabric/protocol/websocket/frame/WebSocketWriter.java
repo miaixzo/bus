@@ -80,6 +80,33 @@ public class WebSocketWriter {
     }
 
     /**
+     * Returns a masked payload snapshot.
+     *
+     * @param payload immutable payload copied before masking
+     * @param key     four-byte mask key applied cyclically
+     * @return newly allocated masked payload bytes
+     */
+    private static byte[] mask(final ByteString payload, final byte[] key) {
+        final byte[] bytes = payload.toByteArray();
+        for (int index = Normal._0; index < bytes.length; index++) {
+            bytes[index] = (byte) (bytes[index] ^ key[index & Normal._3]);
+        }
+        return bytes;
+    }
+
+    /**
+     * Validates a required reference.
+     *
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Encodes one frame and writes its complete wire representation without flushing the sink.
      *
      * @param frame immutable frame whose FIN bit, opcode, and payload are encoded
@@ -137,33 +164,6 @@ public class WebSocketWriter {
         for (int shift = Normal._56; shift >= Normal._0; shift -= Byte.SIZE) {
             target.writeByte((int) (length >>> shift) & Builder.UNSIGNED_BYTE_MASK);
         }
-    }
-
-    /**
-     * Returns a masked payload snapshot.
-     *
-     * @param payload immutable payload copied before masking
-     * @param key     four-byte mask key applied cyclically
-     * @return newly allocated masked payload bytes
-     */
-    private static byte[] mask(final ByteString payload, final byte[] key) {
-        final byte[] bytes = payload.toByteArray();
-        for (int index = Normal._0; index < bytes.length; index++) {
-            bytes[index] = (byte) (bytes[index] ^ key[index & Normal._3]);
-        }
-        return bytes;
-    }
-
-    /**
-     * Validates a required reference.
-     *
-     * @param value reference to validate
-     * @param name  logical reference name used in the validation message
-     * @param <T>   reference type
-     * @return the validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

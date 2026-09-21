@@ -31,9 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Membership implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852261832007L;
 
@@ -41,14 +38,17 @@ public class Membership implements Serializable {
      * The source id value.
      */
     private Long sourceId;
+
     /**
      * The source name value.
      */
     private String sourceName;
+
     /**
      * The source type value.
      */
     private MembershipSourceType sourceType;
+
     /**
      * The access level value.
      */

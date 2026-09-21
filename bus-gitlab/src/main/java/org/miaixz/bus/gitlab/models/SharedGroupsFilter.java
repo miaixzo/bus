@@ -34,9 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class SharedGroupsFilter implements Serializable {
 
-    /**
-     * Serialization version identifier.
-     */
     @Serial
     private static final long serialVersionUID = 2852256129064L;
 

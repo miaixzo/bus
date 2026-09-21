@@ -87,28 +87,6 @@ public abstract class AbstractSqlHandler {
     }
 
     /**
-     * Installs the data source key provider owned by the data-access integration.
-     * <p>
-     * The handler invokes this provider when resolving database-specific Mapper settings. It does not retain a data
-     * source or participate in routing.
-     *
-     * @param provider effective data source key provider
-     */
-    public void setDatasourceKeyProvider(Supplier<String> provider) {
-        this.datasourceKeyProvider = provider;
-    }
-
-    /**
-     * Returns the effective JDBC data source key for configuration lookup.
-     *
-     * @return effective data source key, or {@code default} when the provider supplies no key
-     */
-    protected String getDatasourceKey() {
-        String key = datasourceKeyProvider == null ? null : datasourceKeyProvider.get();
-        return StringKit.isEmpty(key) ? "default" : key;
-    }
-
-    /**
      * Checks if a `SqlParser` annotation is present for the given {@link MetaObject}.
      *
      * @param metaObject The meta-object containing the mapped statement.
@@ -233,6 +211,28 @@ public abstract class AbstractSqlHandler {
                     e.getClass().getSimpleName());
             return false;
         }
+    }
+
+    /**
+     * Installs the data source key provider owned by the data-access integration.
+     * <p>
+     * The handler invokes this provider when resolving database-specific Mapper settings. It does not retain a data
+     * source or participate in routing.
+     *
+     * @param provider effective data source key provider
+     */
+    public void setDatasourceKeyProvider(Supplier<String> provider) {
+        this.datasourceKeyProvider = provider;
+    }
+
+    /**
+     * Returns the effective JDBC data source key for configuration lookup.
+     *
+     * @return effective data source key, or {@code default} when the provider supplies no key
+     */
+    protected String getDatasourceKey() {
+        String key = datasourceKeyProvider == null ? null : datasourceKeyProvider.get();
+        return StringKit.isEmpty(key) ? "default" : key;
     }
 
     /**

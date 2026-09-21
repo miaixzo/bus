@@ -20,6 +20,7 @@
 package org.opencv.core;
 
 //javadoc:Rect2d_
+
 /**
  * The rect 2 d class.
  */

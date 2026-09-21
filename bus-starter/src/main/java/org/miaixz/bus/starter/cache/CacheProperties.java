@@ -47,18 +47,22 @@ public class CacheProperties extends Options {
      * Whether the cache integration is enabled.
      */
     private final boolean enabled;
+
     /**
      * Maximum number of entries retained by the cache backend.
      */
     private final DataSize capacity;
+
     /**
      * Time-to-live applied to cache entries.
      */
     private final Duration expiry;
+
     /**
      * Named cache definitions keyed by logical cache name.
      */
     private final Map<String, CacheX> map;
+
     /**
      * Cache provider selected when no named override applies.
      */
@@ -98,8 +102,19 @@ public class CacheProperties extends Options {
     }
 
     /**
-     * Collects non-null cache backend specifications in stable order.
+     * Returns a diagnostic representation without credentials or provider details.
      *
+     * @return safe diagnostic text
+     */
+    @Override
+    public String toString() {
+        return "CacheProperties[enabled=" + enabled + ", capacity=" + capacity + ", expiry=" + expiry + ", namedCaches="
+                + map.size() + ", provider=***]";
+    }
+
+    /**
+     * Collects non-null cache backend specifications in stable order.
+     * <p>
      * Cache statistics collector configuration.
      *
      * @param key      lookup key
@@ -152,17 +167,6 @@ public class CacheProperties extends Options {
         public String toString() {
             return "Collector[key=" + key + ", url=" + url + ", username=***, password=***]";
         }
-    }
-
-    /**
-     * Returns a diagnostic representation without credentials or provider details.
-     *
-     * @return safe diagnostic text
-     */
-    @Override
-    public String toString() {
-        return "CacheProperties[enabled=" + enabled + ", capacity=" + capacity + ", expiry=" + expiry + ", namedCaches="
-                + map.size() + ", provider=***]";
     }
 
 }

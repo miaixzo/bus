@@ -137,19 +137,6 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
     }
 
     /**
-     * Returns these socket settings as generic fabric options.
-     *
-     * @return generic option map containing all represented settings except the KCP wire version
-     */
-    public Options options() {
-        return Options.empty().with(OPTION_SOCKET_READ_BUFFER_SIZE, readBufferSize)
-                .with(OPTION_SOCKET_WRITE_CHUNK_SIZE, writeChunkSize)
-                .with(OPTION_SOCKET_WRITE_CHUNK_COUNT, writeChunkCount).with(OPTION_SOCKET_BACKLOG, backlog)
-                .with(OPTION_SOCKET_IO_THREADS, ioThreads).with(OPTION_SOCKET_OPTIONS, socketOptions)
-                .with(OPTION_SOCKET_RETAIN_READ_BUFFER, retainReadBuffer).with(OPTION_SOCKET_IDLE_TIMEOUT, idleTimeout);
-    }
-
-    /**
      * Validates strictly positive numeric socket options.
      *
      * @param value integer candidate to validate
@@ -269,9 +256,27 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
     }
 
     /**
+     * Returns these socket settings as generic fabric options.
+     *
+     * @return generic option map containing all represented settings except the KCP wire version
+     */
+    public Options options() {
+        return Options.empty().with(OPTION_SOCKET_READ_BUFFER_SIZE, readBufferSize)
+                .with(OPTION_SOCKET_WRITE_CHUNK_SIZE, writeChunkSize)
+                .with(OPTION_SOCKET_WRITE_CHUNK_COUNT, writeChunkCount).with(OPTION_SOCKET_BACKLOG, backlog)
+                .with(OPTION_SOCKET_IO_THREADS, ioThreads).with(OPTION_SOCKET_OPTIONS, socketOptions)
+                .with(OPTION_SOCKET_RETAIN_READ_BUFFER, retainReadBuffer).with(OPTION_SOCKET_IDLE_TIMEOUT, idleTimeout);
+    }
+
+    /**
      * Builder for current socket runtime options.
      */
     public static class Builder {
+
+        /**
+         * Mutable JDK socket options collected before the immutable snapshot is built.
+         */
+        private final LinkedHashMap<SocketOption<?>, Object> socketOptions = new LinkedHashMap<>();
 
         /**
          * Mutable read buffer size candidate.
@@ -297,11 +302,6 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
          * Mutable AIO I/O thread count candidate.
          */
         private int ioThreads = Math.max(Normal._1, Runtime.getRuntime().availableProcessors());
-
-        /**
-         * Mutable JDK socket options collected before the immutable snapshot is built.
-         */
-        private final LinkedHashMap<SocketOption<?>, Object> socketOptions = new LinkedHashMap<>();
 
         /**
          * Mutable read-buffer retention flag candidate.

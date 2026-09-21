@@ -20,11 +20,12 @@
 package org.opencv.img_hash;
 
 // C++: class PHash
+
 /**
  * pHash
- *
+ * <p>
  * Slower than average_hash, but tolerant of minor modifications
- *
+ * <p>
  * This algorithm can combat more variation than averageHash, for more details please refer to CITE: lookslikeit
  */
 public class PHash extends ImgHashBase {

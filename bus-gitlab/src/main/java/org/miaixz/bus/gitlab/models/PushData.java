@@ -33,26 +33,32 @@ public class PushData {
      * The commit count value.
      */
     private Integer commitCount;
+
     /**
      * The action value.
      */
     private ActionType action;
+
     /**
      * The ref type value.
      */
     private String refType;
+
     /**
      * The commit from value.
      */
     private String commitFrom;
+
     /**
      * The commit to value.
      */
     private String commitTo;
+
     /**
      * The ref value.
      */
     private String ref;
+
     /**
      * The commit title value.
      */

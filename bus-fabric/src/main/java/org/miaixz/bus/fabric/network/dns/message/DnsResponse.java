@@ -184,6 +184,25 @@ public class DnsResponse {
     }
 
     /**
+     * Validates and copies a record list.
+     *
+     * @param records source records
+     * @param section diagnostic section name
+     * @return immutable record list
+     */
+    private static List<DnsRecord> immutableRecords(final List<DnsRecord> records, final String section) {
+        if (records == null) {
+            throw new ValidateException("DNS " + section + " records must not be null");
+        }
+        for (final DnsRecord record : records) {
+            if (record == null) {
+                throw new ValidateException("DNS " + section + " records must not contain null");
+            }
+        }
+        return List.copyOf(records);
+    }
+
+    /**
      * Returns a copy marked as truncated.
      *
      * @return truncated response retaining all sections for TCP re-encoding
@@ -281,25 +300,6 @@ public class DnsResponse {
      */
     public DnsExtendedError extendedError() {
         return extendedError;
-    }
-
-    /**
-     * Validates and copies a record list.
-     *
-     * @param records source records
-     * @param section diagnostic section name
-     * @return immutable record list
-     */
-    private static List<DnsRecord> immutableRecords(final List<DnsRecord> records, final String section) {
-        if (records == null) {
-            throw new ValidateException("DNS " + section + " records must not be null");
-        }
-        for (final DnsRecord record : records) {
-            if (record == null) {
-                throw new ValidateException("DNS " + section + " records must not contain null");
-            }
-        }
-        return List.copyOf(records);
     }
 
 }

@@ -41,9 +41,6 @@ import org.miaixz.bus.core.basic.entity.Space;
 @SuperBuilder
 public class Nature extends Space {
 
-    /**
-     * Serialization identifier for the shared runtime base model.
-     */
     @Serial
     private static final long serialVersionUID = 2852290719700L;
 

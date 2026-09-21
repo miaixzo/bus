@@ -71,6 +71,7 @@ public class SingleLogoutService {
      * Standard SAML error response mapper.
      */
     private final SamlErrorMapper errorMapper;
+
     /**
      * Framework coordinator for Source-isolated authentication Session transitions.
      */

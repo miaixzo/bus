@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.starter.jdbc;
 
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.sql.DataSource;
 
@@ -41,13 +37,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import com.zaxxer.hikari.HikariDataSource;
 
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
-import org.miaixz.bus.spring.jdbc.AspectjJdbcProxy;
-import org.miaixz.bus.spring.jdbc.DataSourceFactory;
-import org.miaixz.bus.spring.jdbc.DataSourceHolder;
-import org.miaixz.bus.spring.jdbc.DataSourceListener;
-import org.miaixz.bus.spring.jdbc.DataSourceMapping;
-import org.miaixz.bus.spring.jdbc.DataSourceResolver;
-import org.miaixz.bus.spring.jdbc.DynamicDataSource;
+import org.miaixz.bus.spring.jdbc.*;
 import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableJdbc;
 
@@ -84,6 +74,41 @@ public class JdbcConfiguration {
         JdbcDescriptor descriptor = JdbcDescriptor.defaults();
         this.dataSourceResolver = new DataSourceResolver(environment, descriptor.getPrefixes());
         this.dataSourceFactory = new DataSourceFactory(descriptor.getDefaultType());
+    }
+
+    /**
+     * Releases datasource instances created before JDBC assembly failed.
+     *
+     * @param sources partially created datasource mapping
+     */
+    private static void close(Map<Object, Object> sources) {
+        Set<Object> released = Collections.newSetFromMap(new IdentityHashMap<>());
+        RuntimeException failure = null;
+        for (Object source : sources.values()) {
+            if (!released.add(source) || !(source instanceof AutoCloseable closeable)) {
+                continue;
+            }
+            try {
+                closeable.close();
+            } catch (RuntimeException exception) {
+                if (failure == null) {
+                    failure = exception;
+                } else {
+                    failure.addSuppressed(exception);
+                }
+            } catch (Exception exception) {
+                RuntimeException wrapped = new IllegalStateException(
+                        "Failed to close datasource after JDBC assembly failure", exception);
+                if (failure == null) {
+                    failure = wrapped;
+                } else {
+                    failure.addSuppressed(wrapped);
+                }
+            }
+        }
+        if (failure != null) {
+            throw failure;
+        }
     }
 
     /**
@@ -165,41 +190,6 @@ public class JdbcConfiguration {
     @ConditionalOnMissingBean(type = "org.springframework.transaction.PlatformTransactionManager")
     public DataSourceTransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
-    }
-
-    /**
-     * Releases datasource instances created before JDBC assembly failed.
-     *
-     * @param sources partially created datasource mapping
-     */
-    private static void close(Map<Object, Object> sources) {
-        Set<Object> released = Collections.newSetFromMap(new IdentityHashMap<>());
-        RuntimeException failure = null;
-        for (Object source : sources.values()) {
-            if (!released.add(source) || !(source instanceof AutoCloseable closeable)) {
-                continue;
-            }
-            try {
-                closeable.close();
-            } catch (RuntimeException exception) {
-                if (failure == null) {
-                    failure = exception;
-                } else {
-                    failure.addSuppressed(exception);
-                }
-            } catch (Exception exception) {
-                RuntimeException wrapped = new IllegalStateException(
-                        "Failed to close datasource after JDBC assembly failure", exception);
-                if (failure == null) {
-                    failure = wrapped;
-                } else {
-                    failure.addSuppressed(wrapped);
-                }
-            }
-        }
-        if (failure != null) {
-            throw failure;
-        }
     }
 
 }

@@ -125,103 +125,6 @@ public class Options {
     }
 
     /**
-     * Reads an option using its typed key.
-     *
-     * @param key typed option key
-     * @param <T> option type
-     * @return option value or null
-     */
-    public <T> T get(final Key<T> key) {
-        final Key<T> checkedKey = validateTypedKey(key);
-        final Object value = unmask(values.get(checkedKey));
-        return value == null ? null : checkedKey.type().cast(value);
-    }
-
-    /**
-     * Checks whether a typed option key exists, including an explicit null value.
-     *
-     * @param key typed option key
-     * @return true when present
-     */
-    public boolean contains(final Key<?> key) {
-        return values.containsKey(validateTypedKey(key));
-    }
-
-    /**
-     * Returns options with a replaced typed value.
-     *
-     * @param key   typed option key
-     * @param value option value
-     * @param <T>   option type
-     * @return updated options
-     */
-    public <T> Options with(final Key<T> key, final T value) {
-        final Key<T> checkedKey = validateTypedKey(key);
-        validateValue(checkedKey, value);
-        if (values.containsKey(checkedKey) && Objects.equals(unmask(values.get(checkedKey)), value)) {
-            return this;
-        }
-        final LinkedHashMap<Key<?>, Object> map = new LinkedHashMap<>(values);
-        map.put(checkedKey, mask(value));
-        return new Options(map);
-    }
-
-    /**
-     * Returns options without a typed key.
-     *
-     * @param key typed option key
-     * @return updated options
-     */
-    public Options without(final Key<?> key) {
-        final Key<?> checkedKey = validateTypedKey(key);
-        if (!values.containsKey(checkedKey)) {
-            return this;
-        }
-        final LinkedHashMap<Key<?>, Object> map = new LinkedHashMap<>(values);
-        map.remove(checkedKey);
-        return map.isEmpty() ? empty() : new Options(map);
-    }
-
-    /**
-     * Returns an immutable map snapshot.
-     *
-     * @return option map
-     */
-    public Map<String, Object> asMap() {
-        final LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-        for (final Map.Entry<Key<?>, Object> entry : values.entrySet()) {
-            final String name = entry.getKey().name();
-            if (map.putIfAbsent(name, unmask(entry.getValue())) != null) {
-                throw new ValidateException("Duplicate option name " + name);
-            }
-        }
-        return Collections.unmodifiableMap(map);
-    }
-
-    /**
-     * Returns the maximum bytes allowed when materializing a payload.
-     *
-     * @return materialize byte threshold
-     */
-    public long materializeMaxBytes() {
-        final Long value = get(Builder.OPTION_MATERIALIZE_MAX_BYTES);
-        if (value == null) {
-            return Normal.MEBI_64;
-        }
-        return validateMaterializeMaxBytes(value);
-    }
-
-    /**
-     * Returns options with a replacement payload materialize threshold.
-     *
-     * @param bytes materialize byte threshold
-     * @return updated options
-     */
-    public Options materializeMaxBytes(final long bytes) {
-        return with(Builder.OPTION_MATERIALIZE_MAX_BYTES, validateMaterializeMaxBytes(bytes));
-    }
-
-    /**
      * Converts null values to the sentinel.
      *
      * @param value source value
@@ -326,6 +229,103 @@ public class Options {
         if (value != null && !key.type().isInstance(value)) {
             throw new ValidateException("Option value type mismatch for " + key.name());
         }
+    }
+
+    /**
+     * Reads an option using its typed key.
+     *
+     * @param key typed option key
+     * @param <T> option type
+     * @return option value or null
+     */
+    public <T> T get(final Key<T> key) {
+        final Key<T> checkedKey = validateTypedKey(key);
+        final Object value = unmask(values.get(checkedKey));
+        return value == null ? null : checkedKey.type().cast(value);
+    }
+
+    /**
+     * Checks whether a typed option key exists, including an explicit null value.
+     *
+     * @param key typed option key
+     * @return true when present
+     */
+    public boolean contains(final Key<?> key) {
+        return values.containsKey(validateTypedKey(key));
+    }
+
+    /**
+     * Returns options with a replaced typed value.
+     *
+     * @param key   typed option key
+     * @param value option value
+     * @param <T>   option type
+     * @return updated options
+     */
+    public <T> Options with(final Key<T> key, final T value) {
+        final Key<T> checkedKey = validateTypedKey(key);
+        validateValue(checkedKey, value);
+        if (values.containsKey(checkedKey) && Objects.equals(unmask(values.get(checkedKey)), value)) {
+            return this;
+        }
+        final LinkedHashMap<Key<?>, Object> map = new LinkedHashMap<>(values);
+        map.put(checkedKey, mask(value));
+        return new Options(map);
+    }
+
+    /**
+     * Returns options without a typed key.
+     *
+     * @param key typed option key
+     * @return updated options
+     */
+    public Options without(final Key<?> key) {
+        final Key<?> checkedKey = validateTypedKey(key);
+        if (!values.containsKey(checkedKey)) {
+            return this;
+        }
+        final LinkedHashMap<Key<?>, Object> map = new LinkedHashMap<>(values);
+        map.remove(checkedKey);
+        return map.isEmpty() ? empty() : new Options(map);
+    }
+
+    /**
+     * Returns an immutable map snapshot.
+     *
+     * @return option map
+     */
+    public Map<String, Object> asMap() {
+        final LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+        for (final Map.Entry<Key<?>, Object> entry : values.entrySet()) {
+            final String name = entry.getKey().name();
+            if (map.putIfAbsent(name, unmask(entry.getValue())) != null) {
+                throw new ValidateException("Duplicate option name " + name);
+            }
+        }
+        return Collections.unmodifiableMap(map);
+    }
+
+    /**
+     * Returns the maximum bytes allowed when materializing a payload.
+     *
+     * @return materialize byte threshold
+     */
+    public long materializeMaxBytes() {
+        final Long value = get(Builder.OPTION_MATERIALIZE_MAX_BYTES);
+        if (value == null) {
+            return Normal.MEBI_64;
+        }
+        return validateMaterializeMaxBytes(value);
+    }
+
+    /**
+     * Returns options with a replacement payload materialize threshold.
+     *
+     * @param bytes materialize byte threshold
+     * @return updated options
+     */
+    public Options materializeMaxBytes(final long bytes) {
+        return with(Builder.OPTION_MATERIALIZE_MAX_BYTES, validateMaterializeMaxBytes(bytes));
     }
 
     /**

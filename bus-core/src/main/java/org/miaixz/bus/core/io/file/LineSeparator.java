@@ -30,10 +30,10 @@ import org.miaixz.bus.core.lang.Symbol;
  * Windows system line separator: "\r\n"
  * </pre>
  *
+ * @author Kimi Liu
  * @see #MAC
  * @see #LINUX
  * @see #WINDOWS
- * @author Kimi Liu
  */
 public enum LineSeparator {
 

@@ -20,6 +20,7 @@
 package org.opencv.core;
 
 //javadoc:Size_
+
 /**
  * The size class.
  */

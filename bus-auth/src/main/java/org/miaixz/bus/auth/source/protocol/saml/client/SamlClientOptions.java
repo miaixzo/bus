@@ -75,6 +75,7 @@ public record SamlClientOptions(String entityId, String identityProviderEntityId
      * Maximum clock difference permitted by the SAML Source validation policy.
      */
     private static final Duration MAXIMUM_CLOCK_SKEW = Duration.ofMinutes(5);
+
     /**
      * Maximum assertion age permitted by the SAML Source validation policy.
      */

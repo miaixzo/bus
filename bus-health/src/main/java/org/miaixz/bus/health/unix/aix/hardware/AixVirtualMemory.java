@@ -39,6 +39,7 @@ final class AixVirtualMemory extends AbstractVirtualMemory {
      * The PAGESIZE constant.
      */
     private static final long PAGESIZE = 4096L;
+
     // Memoized perfstat from GlobalMemory
     /**
      * The perfstatMem value.

@@ -35,9 +35,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class ChangelogPayload implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852238869802L;
 
@@ -45,30 +42,37 @@ public class ChangelogPayload implements Serializable {
      * The version value.
      */
     private String version;
+
     /**
      * The from value.
      */
     private String from;
+
     /**
      * The to value.
      */
     private String to;
+
     /**
      * The date value.
      */
     private Date date;
+
     /**
      * The branch value.
      */
     private String branch;
+
     /**
      * The trailer value.
      */
     private String trailer;
+
     /**
      * The file value.
      */
     private String file;
+
     /**
      * The message value.
      */

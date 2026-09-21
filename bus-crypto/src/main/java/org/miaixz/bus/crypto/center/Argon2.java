@@ -35,14 +35,14 @@ public class Argon2 {
     public static final int DEFAULT_HASH_LENGTH = 32;
 
     /**
-     * The length of the hash output in bytes.
-     */
-    private int hashLength = DEFAULT_HASH_LENGTH;
-
-    /**
      * The builder for Argon2 parameters.
      */
     private final Argon2Parameters.Builder paramsBuilder;
+
+    /**
+     * The length of the hash output in bytes.
+     */
+    private int hashLength = DEFAULT_HASH_LENGTH;
 
     /**
      * Constructor, uses {@link Argon2Parameters#ARGON2_id} type by default.

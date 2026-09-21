@@ -21,6 +21,7 @@ package org.opencv.core;
 
 import java.util.Arrays;
 //javadoc:Scalar_
+
 /**
  * The scalar class.
  */
@@ -53,6 +54,10 @@ public class Scalar {
         }
     }
 
+    public static Scalar all(double v) {
+        return new Scalar(v, v, v, v);
+    }
+
     public void set(double[] vals) {
         if (vals != null) {
             val[0] = vals.length > 0 ? vals[0] : 0;
@@ -61,10 +66,6 @@ public class Scalar {
             val[3] = vals.length > 3 ? vals[3] : 0;
         } else
             val[0] = val[1] = val[2] = val[3] = 0;
-    }
-
-    public static Scalar all(double v) {
-        return new Scalar(v, v, v, v);
     }
 
     public Scalar clone() {

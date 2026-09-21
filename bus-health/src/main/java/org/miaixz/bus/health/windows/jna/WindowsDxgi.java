@@ -365,6 +365,7 @@ public class WindowsDxgi {
          * The Revision value.
          */
         public int Revision;
+
         // SIZE_T is pointer-sized; use long (8 bytes on x64, 4 bytes on x86)
         /**
          * The DedicatedVideoMemory value.

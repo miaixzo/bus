@@ -66,6 +66,11 @@ final class TlsHandshakeDriver {
     private final Conduit transport;
 
     /**
+     * Bridge buffer transferring bytes between direct TLS buffers and the conduit.
+     */
+    private final Buffer bridge = new Buffer();
+
+    /**
      * Reusable direct encrypted input maintained in read mode between unwrap operations.
      */
     private ByteBuffer encryptedInput;
@@ -79,11 +84,6 @@ final class TlsHandshakeDriver {
      * Reusable direct scratch buffer for plaintext produced during handshake unwraps.
      */
     private ByteBuffer plaintext;
-
-    /**
-     * Bridge buffer transferring bytes between direct TLS buffers and the conduit.
-     */
-    private final Buffer bridge = new Buffer();
 
     /**
      * Whether negotiated metadata has been frozen for the application-data path.

@@ -37,18 +37,22 @@ public class BodyCacheOptions {
      * Whether eligible request bodies may be cached.
      */
     private final boolean requestCacheEnabled;
+
     /**
      * Whether eligible response bodies may be cached.
      */
     private final boolean responseCacheEnabled;
+
     /**
      * Maximum cached request size in bytes.
      */
     private final long requestLimit;
+
     /**
      * Maximum cached response size in bytes.
      */
     private final long responseLimit;
+
     /**
      * Whether multipart request bodies may be cached.
      */

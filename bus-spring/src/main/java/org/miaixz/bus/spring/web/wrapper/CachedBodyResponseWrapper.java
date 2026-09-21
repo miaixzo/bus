@@ -42,30 +42,37 @@ public class CachedBodyResponseWrapper extends HttpServletResponseWrapper {
      * Bounded diagnostic byte cache.
      */
     private final ByteArrayOutputStream cachedBody = new ByteArrayOutputStream();
+
     /**
      * Maximum retained diagnostic bytes.
      */
     private final int limit;
+
     /**
      * Lazily created pass-through Servlet stream.
      */
     private ServletOutputStream outputStream;
+
     /**
      * Lazily created pass-through response writer.
      */
     private PrintWriter writer;
+
     /**
      * Character encoder writing only to the bounded cache.
      */
     private Writer cachedWriter;
+
     /**
      * Whether callers selected character output.
      */
     private boolean writerAccessed;
+
     /**
      * Whether callers selected byte output.
      */
     private boolean outputStreamAccessed;
+
     /**
      * Whether diagnostic caching has been permanently disabled.
      */
@@ -425,6 +432,7 @@ public class CachedBodyResponseWrapper extends HttpServletResponseWrapper {
          * Target response writer.
          */
         private final Writer delegate;
+
         /**
          * Bounded-cache character encoder.
          */

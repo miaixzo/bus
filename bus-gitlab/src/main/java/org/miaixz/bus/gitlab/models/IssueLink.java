@@ -31,9 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class IssueLink implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852257890367L;
 
@@ -41,10 +38,12 @@ public class IssueLink implements Serializable {
      * The source issue value.
      */
     private Issue sourceIssue;
+
     /**
      * The target issue value.
      */
     private Issue targetIssue;
+
     /**
      * The link type value.
      */

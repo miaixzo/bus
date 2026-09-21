@@ -37,38 +37,8 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class IterationFilter implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852259338991L;
-
-    /**
-     * Returns the query params.
-     *
-     * @param page    the page value
-     * @param perPage the per page value
-     * @return the result
-     */
-
-    @JsonIgnore
-    public GitLabForm getQueryParams(int page, int perPage) {
-        return (getQueryParams().withParam(Constants.PAGE_PARAM, page).withParam(Constants.PER_PAGE_PARAM, perPage));
-    }
-
-    /**
-     * Returns the query params.
-     *
-     * @return the result
-     */
-
-    @JsonIgnore
-    public GitLabForm getQueryParams() {
-        return new GitLabForm().withParam("state", state).withParam("search", search).withParam("in", in)
-                .withParam("include_ancestors", includeAncestors)
-                .withParam("updated_after", ISO8601.toString(updatedAfter, false))
-                .withParam("updated_before", ISO8601.toString(updatedBefore, false));
-    }
 
     /**
      * Return opened, upcoming, current, closed, or all iterations.
@@ -105,6 +75,33 @@ public class IterationFilter implements Serializable {
      */
     public IterationFilter() {
         // No initialization required.
+    }
+
+    /**
+     * Returns the query params.
+     *
+     * @param page    the page value
+     * @param perPage the per page value
+     * @return the result
+     */
+
+    @JsonIgnore
+    public GitLabForm getQueryParams(int page, int perPage) {
+        return (getQueryParams().withParam(Constants.PAGE_PARAM, page).withParam(Constants.PER_PAGE_PARAM, perPage));
+    }
+
+    /**
+     * Returns the query params.
+     *
+     * @return the result
+     */
+
+    @JsonIgnore
+    public GitLabForm getQueryParams() {
+        return new GitLabForm().withParam("state", state).withParam("search", search).withParam("in", in)
+                .withParam("include_ancestors", includeAncestors)
+                .withParam("updated_after", ISO8601.toString(updatedAfter, false))
+                .withParam("updated_before", ISO8601.toString(updatedBefore, false));
     }
 
     /**

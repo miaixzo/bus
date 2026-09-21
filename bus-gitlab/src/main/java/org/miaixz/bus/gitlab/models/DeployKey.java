@@ -32,9 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class DeployKey implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852250986982L;
 
@@ -42,18 +39,22 @@ public class DeployKey implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The title value.
      */
     private String title;
+
     /**
      * The key value.
      */
     private String key;
+
     /**
      * The can push value.
      */
     private Boolean canPush;
+
     /**
      * The created at value.
      */

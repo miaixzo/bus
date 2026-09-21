@@ -30,11 +30,7 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Order;
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
-import org.miaixz.bus.mapper.parsing.FieldMeta;
-import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
-import org.miaixz.bus.mapper.parsing.MapperFactory;
-import org.miaixz.bus.mapper.parsing.TableMeta;
+import org.miaixz.bus.mapper.parsing.*;
 import org.miaixz.bus.mapper.provider.NamingProvider;
 
 /**

@@ -35,17 +35,6 @@ import java.util.concurrent.atomic.AtomicLong;
 public interface CardinalityPolicy {
 
     /**
-     * Evaluate a tag value. Returns the value that should be used (original, "__overflow__", "__other__", or empty for
-     * denied).
-     *
-     * @param value the incoming tag value
-     * @return allowed value, or sentinel if overflow/deny
-     */
-    String evaluate(String value);
-
-    // ── Factories ─────────────────────────────────────────────────────────
-
-    /**
      * Create a {@link FirstN} policy that accepts the first {@code n} distinct values.
      *
      * @param n maximum number of distinct values to allow
@@ -54,6 +43,8 @@ public interface CardinalityPolicy {
     static CardinalityPolicy firstN(int n) {
         return new FirstN(n);
     }
+
+    // ── Factories ─────────────────────────────────────────────────────────
 
     /**
      * Create a {@link TopN} policy that keeps the {@code n} most frequent values.
@@ -73,6 +64,15 @@ public interface CardinalityPolicy {
     static CardinalityPolicy deny() {
         return Deny.INSTANCE;
     }
+
+    /**
+     * Evaluate a tag value. Returns the value that should be used (original, "__overflow__", "__other__", or empty for
+     * denied).
+     *
+     * @param value the incoming tag value
+     * @return allowed value, or sentinel if overflow/deny
+     */
+    String evaluate(String value);
 
     // ── Implementations ───────────────────────────────────────────────────
 

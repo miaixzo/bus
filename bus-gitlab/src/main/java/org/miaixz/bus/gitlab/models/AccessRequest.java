@@ -29,9 +29,6 @@ import java.util.Date;
  */
 public class AccessRequest extends AbstractUser<AccessRequest> {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852235619209L;
 
@@ -39,6 +36,7 @@ public class AccessRequest extends AbstractUser<AccessRequest> {
      * The requested at value.
      */
     private Date requestedAt;
+
     /**
      * The access level value.
      */

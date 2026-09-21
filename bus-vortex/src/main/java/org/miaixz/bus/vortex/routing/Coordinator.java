@@ -58,13 +58,13 @@ import reactor.core.publisher.Mono;
  *
  * @param <I> The input type expected by this coordinator
  * @param <O> The output type produced by this coordinator
+ * @author Kimi Liu
  * @see Executor
  * @see RestExecutor
  * @see WsExecutor
  * @see GrpcExecutor
  * @see MqExecutor
  * @see McpExecutor
- * @author Kimi Liu
  */
 public abstract class Coordinator<I, O> implements Executor<I, O> {
 

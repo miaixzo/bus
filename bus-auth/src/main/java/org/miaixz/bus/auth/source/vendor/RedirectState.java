@@ -53,6 +53,7 @@ final class RedirectState {
      * Cache-key purpose for authoritative callback correlation.
      */
     private static final String STATE_PURPOSE = "vendor-state";
+
     /**
      * Credential-store purpose for one-time PKCE verifier material.
      */
@@ -62,14 +63,17 @@ final class RedirectState {
      * Source space isolating all derived keys.
      */
     private final String spaceId;
+
     /**
      * Exact configured Source identifier.
      */
     private final String sourceId;
+
     /**
      * Source-scoped cache and credential services.
      */
     private final SourceServices services;
+
     /**
      * Whether this selected Vendor flow persists a PKCE verifier.
      */

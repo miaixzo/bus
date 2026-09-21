@@ -29,11 +29,7 @@ import java.util.*;
 import java.util.function.IntConsumer;
 import java.util.regex.Matcher;
 
-import org.miaixz.bus.core.center.function.ConsumerX;
-import org.miaixz.bus.core.center.function.FunctionX;
-import org.miaixz.bus.core.center.function.PredicateX;
-import org.miaixz.bus.core.center.function.SupplierX;
-import org.miaixz.bus.core.center.function.UnaryOperatorX;
+import org.miaixz.bus.core.center.function.*;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.compare.VersionCompare;
 import org.miaixz.bus.core.convert.Convert;

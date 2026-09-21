@@ -58,21 +58,25 @@ public class SolarisFileSystem extends AbstractFileSystem {
      */
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(Builder._UNIX_SOLARIS_FS_PATH_EXCLUDES);
+
     /**
      * The FS_PATH_INCLUDES constant.
      */
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Builder._UNIX_SOLARIS_FS_PATH_INCLUDES);
+
     /**
      * The FS_VOLUME_EXCLUDES constant.
      */
     private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(Builder._UNIX_SOLARIS_FS_VOLUME_EXCLUDES);
+
     /**
      * The FS_VOLUME_INCLUDES constant.
      */
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Builder._UNIX_SOLARIS_FS_VOLUME_INCLUDES);
+
     /**
      * The fileDesc value.
      */

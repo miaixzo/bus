@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.mapper.feature.schema;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,11 +28,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.Charter.Risk;
 import org.miaixz.bus.mapper.behavior.SchemaBehavior;
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
-import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
-import org.miaixz.bus.mapper.parsing.IndexMeta;
-import org.miaixz.bus.mapper.parsing.PrimaryKeyMeta;
-import org.miaixz.bus.mapper.parsing.TableMeta;
+import org.miaixz.bus.mapper.parsing.*;
 
 /**
  * Computes schema differences.
@@ -63,6 +55,115 @@ public class SchemaDiffer {
      */
     public SchemaDiffer(SchemaBehavior operations) {
         this(operations, null);
+    }
+
+    /**
+     * Tests whether expected and actual SQL type names match.
+     *
+     * @param expected the expected SQL type descriptor
+     * @param actual   the actual SQL type descriptor
+     * @return {@code true} when the type names match
+     */
+    private static boolean sameType(SqlTypeDescriptor expected, SqlTypeDescriptor actual) {
+        if (expected == null || actual == null) {
+            return false;
+        }
+        return expected.normalizedTypeName().equals(actual.normalizedTypeName());
+    }
+
+    /**
+     * Tests whether expected and actual type lengths match.
+     *
+     * @param expected the expected SQL type descriptor
+     * @param actual   the actual SQL type descriptor
+     * @return {@code true} when lengths match
+     */
+    private static boolean sameLength(SqlTypeDescriptor expected, SqlTypeDescriptor actual) {
+        return equals(expected.length(), actual.length());
+    }
+
+    /**
+     * Tests whether expected and actual numeric precision and scale match.
+     *
+     * @param expected the expected SQL type descriptor
+     * @param actual   the actual SQL type descriptor
+     * @return {@code true} when precision and scale match
+     */
+    private static boolean sameDecimal(SqlTypeDescriptor expected, SqlTypeDescriptor actual) {
+        return equals(expected.precision(), actual.precision()) && equals(expected.scale(), actual.scale());
+    }
+
+    /**
+     * Computes risk for a numeric size change.
+     *
+     * @param expected the expected value
+     * @param actual   the actual value
+     * @return the schema risk level
+     */
+    private static Risk risk(Integer expected, Integer actual) {
+        if (expected == null || actual == null) {
+            return Risk.CAUTION;
+        }
+        return expected < actual ? Risk.DANGEROUS : Risk.SAFE;
+    }
+
+    /**
+     * Computes risk for a numeric precision or scale change.
+     *
+     * @param expected the expected SQL type descriptor
+     * @param actual   the actual SQL type descriptor
+     * @return the schema risk level
+     */
+    private static Risk decimalRisk(SqlTypeDescriptor expected, SqlTypeDescriptor actual) {
+        if (expected.precision() != null && actual.precision() != null && expected.precision() < actual.precision()) {
+            return Risk.DANGEROUS;
+        }
+        if (expected.scale() != null && actual.scale() != null && expected.scale() < actual.scale()) {
+            return Risk.DANGEROUS;
+        }
+        return Risk.SAFE;
+    }
+
+    /**
+     * Null-safe equality check.
+     *
+     * @param left  the left value
+     * @param right the right value
+     * @return {@code true} when values are equal
+     */
+    private static boolean equals(Object left, Object right) {
+        return left == null ? right == null : left.equals(right);
+    }
+
+    /**
+     * Tests whether an expected comment should be enforced.
+     *
+     * @param comment the expected comment
+     * @return {@code true} when the comment is non-blank
+     */
+    private static boolean hasComment(String comment) {
+        return comment != null && !comment.isBlank();
+    }
+
+    /**
+     * Tests whether expected and actual comments match after trimming metadata padding.
+     *
+     * @param expected the expected comment
+     * @param actual   the actual database comment
+     * @return {@code true} when comments match
+     */
+    private static boolean sameComment(String expected, String actual) {
+        return normalizeComment(expected).equals(normalizeComment(actual));
+    }
+
+    /**
+     * Normalizes a comment for comparison.
+     *
+     * @param comment the comment value
+     * @return the normalized comment
+     */
+    private static String normalizeComment(String comment) {
+        return comment == null ? Normal.EMPTY : comment.trim();
     }
 
     /**
@@ -563,115 +664,6 @@ public class SchemaDiffer {
         if (!exists) {
             indexes.add(index);
         }
-    }
-
-    /**
-     * Tests whether expected and actual SQL type names match.
-     *
-     * @param expected the expected SQL type descriptor
-     * @param actual   the actual SQL type descriptor
-     * @return {@code true} when the type names match
-     */
-    private static boolean sameType(SqlTypeDescriptor expected, SqlTypeDescriptor actual) {
-        if (expected == null || actual == null) {
-            return false;
-        }
-        return expected.normalizedTypeName().equals(actual.normalizedTypeName());
-    }
-
-    /**
-     * Tests whether expected and actual type lengths match.
-     *
-     * @param expected the expected SQL type descriptor
-     * @param actual   the actual SQL type descriptor
-     * @return {@code true} when lengths match
-     */
-    private static boolean sameLength(SqlTypeDescriptor expected, SqlTypeDescriptor actual) {
-        return equals(expected.length(), actual.length());
-    }
-
-    /**
-     * Tests whether expected and actual numeric precision and scale match.
-     *
-     * @param expected the expected SQL type descriptor
-     * @param actual   the actual SQL type descriptor
-     * @return {@code true} when precision and scale match
-     */
-    private static boolean sameDecimal(SqlTypeDescriptor expected, SqlTypeDescriptor actual) {
-        return equals(expected.precision(), actual.precision()) && equals(expected.scale(), actual.scale());
-    }
-
-    /**
-     * Computes risk for a numeric size change.
-     *
-     * @param expected the expected value
-     * @param actual   the actual value
-     * @return the schema risk level
-     */
-    private static Risk risk(Integer expected, Integer actual) {
-        if (expected == null || actual == null) {
-            return Risk.CAUTION;
-        }
-        return expected < actual ? Risk.DANGEROUS : Risk.SAFE;
-    }
-
-    /**
-     * Computes risk for a numeric precision or scale change.
-     *
-     * @param expected the expected SQL type descriptor
-     * @param actual   the actual SQL type descriptor
-     * @return the schema risk level
-     */
-    private static Risk decimalRisk(SqlTypeDescriptor expected, SqlTypeDescriptor actual) {
-        if (expected.precision() != null && actual.precision() != null && expected.precision() < actual.precision()) {
-            return Risk.DANGEROUS;
-        }
-        if (expected.scale() != null && actual.scale() != null && expected.scale() < actual.scale()) {
-            return Risk.DANGEROUS;
-        }
-        return Risk.SAFE;
-    }
-
-    /**
-     * Null-safe equality check.
-     *
-     * @param left  the left value
-     * @param right the right value
-     * @return {@code true} when values are equal
-     */
-    private static boolean equals(Object left, Object right) {
-        return left == null ? right == null : left.equals(right);
-    }
-
-    /**
-     * Tests whether an expected comment should be enforced.
-     *
-     * @param comment the expected comment
-     * @return {@code true} when the comment is non-blank
-     */
-    private static boolean hasComment(String comment) {
-        return comment != null && !comment.isBlank();
-    }
-
-    /**
-     * Tests whether expected and actual comments match after trimming metadata padding.
-     *
-     * @param expected the expected comment
-     * @param actual   the actual database comment
-     * @return {@code true} when comments match
-     */
-    private static boolean sameComment(String expected, String actual) {
-        return normalizeComment(expected).equals(normalizeComment(actual));
-    }
-
-    /**
-     * Normalizes a comment for comparison.
-     *
-     * @param comment the comment value
-     * @return the normalized comment
-     */
-    private static String normalizeComment(String comment) {
-        return comment == null ? Normal.EMPTY : comment.trim();
     }
 
 }

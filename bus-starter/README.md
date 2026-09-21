@@ -84,8 +84,8 @@ without replacing the entire infrastructure graph.
 
 ### Context propagation defaults
 
-`TaskConfiguration` sorts all `TaskDecorator` Beans, removes duplicate instances, ensures one `ContextTaskDecorator`, and
-installs a composite decorator on Spring Boot task executors. `WebConfiguration` always supplies the replaceable
+`TaskConfiguration` sorts all `TaskDecorator` Beans, removes duplicate instances, ensures one `ContextTaskDecorator`,
+and installs a composite decorator on Spring Boot task executors. `WebConfiguration` always supplies the replaceable
 `RequestContext` Bean in Servlet applications and registers `ContextBindingFilter` at
 `Ordered.HIGHEST_PRECEDENCE + 10` for `REQUEST`, `ASYNC`, and `ERROR` dispatches unless binding is disabled.
 
@@ -112,8 +112,8 @@ bus:
       secret-policy: compatible
 ```
 
-Bus preserves every String character and deterministically derives a 256-bit HS256 key through a frozen,
-versioned HKDF-SHA-256 profile, so identical configuration produces identical keys on every cluster node. The default
+Bus preserves every String character and deterministically derives a 256-bit HS256 key through a frozen, versioned
+HKDF-SHA-256 profile, so identical configuration produces identical keys on every cluster node. The default
 `compatible` policy accepts every non-empty String and logs a security warning below 32 UTF-8 bytes. The `strict`
 policy rejects such short values during startup. Derivation satisfies the algorithm's key-length requirement but cannot
 add entropy, so production deployments should still configure a high-entropy secret.
@@ -429,9 +429,9 @@ Message converter target-type policies are:
 - `application`: also discovers Spring Boot application packages and is the default;
 - `all`: allows every target type and must only be used in trusted environments.
 
-`allowed-types` accepts exact class names, `*` for one package segment, and `**` for any number of package segments.
-The compatibility property `auto-type` accepts comma-separated rules; `auto-type: "**"` also explicitly allows every
-target type. Prefer `allowed-types` for new applications.
+`allowed-types` accepts exact class names, `*` for one package segment, and `**` for any number of package segments. The
+compatibility property `auto-type` accepts comma-separated rules; `auto-type: "**"` also explicitly allows every target
+type. Prefer `allowed-types` for new applications.
 
 Request-object binding requires `@RequestObject`, excludes framework and simple scalar types, and does not allow request
 input to replace trusted tenant context. Body caching is bounded; multipart and response diagnostic caching remain

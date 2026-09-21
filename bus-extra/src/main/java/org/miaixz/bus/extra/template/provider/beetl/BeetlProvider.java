@@ -74,16 +74,6 @@ public class BeetlProvider implements TemplateProvider {
     }
 
     /**
-     * Returns the stable Beetl engine name used to identify this template provider.
-     *
-     * @return {@code beetl}
-     */
-    @Override
-    public String type() {
-        return "beetl";
-    }
-
-    /**
      * Creates a new {@link GroupTemplate} instance based on the provided {@link TemplateConfig}. This method determines
      * the appropriate {@link ResourceLoader} based on the resource mode in the config.
      *
@@ -180,6 +170,16 @@ public class BeetlProvider implements TemplateProvider {
      */
     private static GroupTemplate createGroupTemplate(final ResourceLoader<?> loader, final Configuration conf) {
         return new GroupTemplate(loader, conf);
+    }
+
+    /**
+     * Returns the stable Beetl engine name used to identify this template provider.
+     *
+     * @return {@code beetl}
+     */
+    @Override
+    public String type() {
+        return "beetl";
     }
 
     /**

@@ -62,6 +62,11 @@ public class EwmaRate {
     private final double intervalSeconds;
 
     /**
+     * Accumulates event counts between ticks.
+     */
+    private final LongAdder uncounted = new LongAdder();
+
+    /**
      * Whether the first tick has been processed; false until first {@link #tick()} call.
      */
     private volatile boolean initialized = false;
@@ -70,11 +75,6 @@ public class EwmaRate {
      * Current EWMA rate in events/second.
      */
     private volatile double rate = 0.0;
-
-    /**
-     * Accumulates event counts between ticks.
-     */
-    private final LongAdder uncounted = new LongAdder();
 
     /**
      * Create an EWMA rate calculator.

@@ -42,6 +42,40 @@ final class Http2FlowController {
     private final Condition changed = lock.newCondition();
 
     /**
+     * Adds a positive WINDOW_UPDATE delta.
+     *
+     * @param current current window
+     * @param delta   positive delta
+     * @return updated window
+     */
+    static long add(final long current, final long delta) {
+        if (delta <= 0L || current < 0L || current > Integer.MAX_VALUE - delta) {
+            throw new ProtocolException("HTTP/2 flow-control window overflow");
+        }
+        return current + delta;
+    }
+
+    /**
+     * Applies a signed SETTINGS_INITIAL_WINDOW_SIZE delta.
+     *
+     * @param current current stream window
+     * @param delta   signed delta
+     * @return adjusted window
+     */
+    static long adjust(final long current, final long delta) {
+        final long adjusted;
+        try {
+            adjusted = Math.addExact(current, delta);
+        } catch (final ArithmeticException e) {
+            throw new ProtocolException("HTTP/2 flow-control window overflow", e);
+        }
+        if (adjusted > Integer.MAX_VALUE || adjusted < -Integer.MAX_VALUE) {
+            throw new ProtocolException("HTTP/2 flow-control window overflow");
+        }
+        return adjusted;
+    }
+
+    /**
      * Acquires the flow synchronization boundary.
      */
     void lock() {
@@ -80,40 +114,6 @@ final class Http2FlowController {
      */
     long awaitNanos(final long nanos) throws InterruptedException {
         return changed.awaitNanos(nanos);
-    }
-
-    /**
-     * Adds a positive WINDOW_UPDATE delta.
-     *
-     * @param current current window
-     * @param delta   positive delta
-     * @return updated window
-     */
-    static long add(final long current, final long delta) {
-        if (delta <= 0L || current < 0L || current > Integer.MAX_VALUE - delta) {
-            throw new ProtocolException("HTTP/2 flow-control window overflow");
-        }
-        return current + delta;
-    }
-
-    /**
-     * Applies a signed SETTINGS_INITIAL_WINDOW_SIZE delta.
-     *
-     * @param current current stream window
-     * @param delta   signed delta
-     * @return adjusted window
-     */
-    static long adjust(final long current, final long delta) {
-        final long adjusted;
-        try {
-            adjusted = Math.addExact(current, delta);
-        } catch (final ArithmeticException e) {
-            throw new ProtocolException("HTTP/2 flow-control window overflow", e);
-        }
-        if (adjusted > Integer.MAX_VALUE || adjusted < -Integer.MAX_VALUE) {
-            throw new ProtocolException("HTTP/2 flow-control window overflow");
-        }
-        return adjusted;
     }
 
 }

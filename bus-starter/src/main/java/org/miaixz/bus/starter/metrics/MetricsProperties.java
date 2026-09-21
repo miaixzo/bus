@@ -45,50 +45,62 @@ public class MetricsProperties {
      * Whether the metrics integration is enabled.
      */
     private final boolean enabled;
+
     /**
      * Metrics provider selected for collection and publication.
      */
     private final String provider;
+
     /**
      * Whether JVM runtime metrics are collected.
      */
     private final boolean jvm;
+
     /**
      * Whether operating-system metrics are collected.
      */
     private final boolean system;
+
     /**
      * Whether health metrics are included in the metrics endpoint.
      */
     private final boolean health;
+
     /**
      * Whether HTTP request metrics are collected.
      */
     private final boolean http;
+
     /**
      * Request path on which metrics are exposed.
      */
     private final String path;
+
     /**
      * Metrics endpoint activation and access settings.
      */
     private final Endpoint endpoint;
+
     /**
      * Spring Boot startup metric settings.
      */
     private final Startup startup;
+
     /**
      * Limits applied to metric tag cardinality.
      */
     private final Cardinality cardinality;
+
     /**
      * Service-level objectives used to configure metric histograms.
      */
     private final List<SloDefinition> slo;
+
     /**
      * Rolling window used for rate calculations.
      */
     private final RateWindow rateWindow;
+
     /**
      * Cortex export settings for remote metric publication.
      */
@@ -130,6 +142,18 @@ public class MetricsProperties {
         this.slo = slo == null ? List.of() : List.copyOf(slo);
         this.rateWindow = rateWindow == null ? new RateWindow() : rateWindow;
         this.cortex = cortex == null ? new Cortex() : cortex;
+    }
+
+    /**
+     * Validates a required positive duration property.
+     *
+     * @param value configured duration
+     * @param name  configuration property suffix
+     */
+    private static void requirePositive(Duration value, String name) {
+        if (value == null || value.isZero() || value.isNegative()) {
+            throw new IllegalArgumentException("bus.metrics." + name + " must be greater than zero");
+        }
     }
 
     /**
@@ -335,18 +359,6 @@ public class MetricsProperties {
          */
         public Cortex {
             requirePositive(interval, "cortex.interval");
-        }
-    }
-
-    /**
-     * Validates a required positive duration property.
-     *
-     * @param value configured duration
-     * @param name  configuration property suffix
-     */
-    private static void requirePositive(Duration value, String name) {
-        if (value == null || value.isZero() || value.isNegative()) {
-            throw new IllegalArgumentException("bus.metrics." + name + " must be greater than zero");
         }
     }
 

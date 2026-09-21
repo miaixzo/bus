@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * <p>
  * This tool is inspired by:
  * https://github.com/spring-projects/spring-framework/blob/master/spring-core/src/main/java/org/springframework/util/StopWatch.java
- *
+ * <p>
  * Usage example:
  *
  * <pre>{@code

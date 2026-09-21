@@ -39,8 +39,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  * from JDK 16, with some adjustments and additions, offering more operations than JDK 8's {@code Optional}.
  *
  * @param <T> The type of the value held by this {@code Optional}.
- * @see java.util.Optional
  * @author Kimi Liu
+ * @see java.util.Optional
  */
 public class Optional<T> implements Serializable {
 

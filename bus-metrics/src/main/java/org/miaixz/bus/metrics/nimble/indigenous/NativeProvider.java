@@ -55,6 +55,15 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
 public class NativeProvider implements Provider {
 
     /**
+     * Shared daemon scheduler: EWMA tick every 5s, timer rotation every 60s/300s.
+     */
+    private static final ScheduledExecutorService SCHEDULER = Executors.newSingleThreadScheduledExecutor(r -> {
+        Thread t = new Thread(r, Builder.THREAD_NAME_TICK);
+        t.setDaemon(true);
+        return t;
+    });
+
+    /**
      * Registry of all counters keyed by canonical metric key.
      */
     private final ConcurrentHashMap<String, NativeCounter> counters = new ConcurrentHashMap<>();
@@ -95,15 +104,6 @@ public class NativeProvider implements Provider {
     private final NativeSloTracker sloTracker = new NativeSloTracker();
 
     /**
-     * Shared daemon scheduler: EWMA tick every 5s, timer rotation every 60s/300s.
-     */
-    private static final ScheduledExecutorService SCHEDULER = Executors.newSingleThreadScheduledExecutor(r -> {
-        Thread t = new Thread(r, Builder.THREAD_NAME_TICK);
-        t.setDaemon(true);
-        return t;
-    });
-
-    /**
      * Counts 5-second ticks; used to derive 60s (12 ticks) and 300s (60 ticks) rotation intervals.
      */
     private final AtomicInteger tickCount = new AtomicInteger(0);
@@ -127,6 +127,24 @@ public class NativeProvider implements Provider {
                 "Metrics",
                 "Native metrics provider initialization finished: tickIntervalSeconds={}",
                 Builder.TICK_INTERVAL_SECONDS);
+    }
+
+    /**
+     * Builds a canonical registry key: {@code name{k1="v1",k2="v2"}} with tags sorted by key.
+     */
+    static String key(String name, Tag[] tags) {
+        if (tags == null || tags.length == 0) {
+            return name + "{}";
+        }
+        Tag[] sorted = tags.clone();
+        Arrays.sort(sorted, Comparator.comparing(Tag::key));
+        StringBuilder sb = new StringBuilder(name).append(Symbol.C_BRACE_LEFT);
+        for (int i = 0; i < sorted.length; i++) {
+            if (i > 0)
+                sb.append(Symbol.C_COMMA);
+            sb.append(sorted[i]);
+        }
+        return sb.append(Symbol.C_BRACE_RIGHT).toString();
     }
 
     /**
@@ -401,32 +419,14 @@ public class NativeProvider implements Provider {
         return (Collection) histograms.values();
     }
 
+    // ── Registry key ──────────────────────────────────────────────────────
+
     /**
      * Returns all registered LLM timers.
      */
     @Override
     public Iterable<LlmTimer> llmTimers() {
         return (Collection) llmTimers.values();
-    }
-
-    // ── Registry key ──────────────────────────────────────────────────────
-
-    /**
-     * Builds a canonical registry key: {@code name{k1="v1",k2="v2"}} with tags sorted by key.
-     */
-    static String key(String name, Tag[] tags) {
-        if (tags == null || tags.length == 0) {
-            return name + "{}";
-        }
-        Tag[] sorted = tags.clone();
-        Arrays.sort(sorted, Comparator.comparing(Tag::key));
-        StringBuilder sb = new StringBuilder(name).append(Symbol.C_BRACE_LEFT);
-        for (int i = 0; i < sorted.length; i++) {
-            if (i > 0)
-                sb.append(Symbol.C_COMMA);
-            sb.append(sorted[i]);
-        }
-        return sb.append(Symbol.C_BRACE_RIGHT).toString();
     }
 
 }

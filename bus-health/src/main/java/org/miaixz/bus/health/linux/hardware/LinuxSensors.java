@@ -87,6 +87,7 @@ final class LinuxSensors extends AbstractSensors {
      * The NAME constant.
      */
     private static final String NAME = "/name";
+
     // Possible sensor types. See sysfs documentation for others, e.g. current
     /**
      * The TEMP constant.
@@ -102,6 +103,7 @@ final class LinuxSensors extends AbstractSensors {
      * The VOLTAGE constant.
      */
     private static final String VOLTAGE = "in";
+
     // Compile pattern for "temp<digits>_input"
     /**
      * The INPUT_SUFFIX constant.

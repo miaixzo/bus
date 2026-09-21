@@ -27,8 +27,8 @@ import org.miaixz.bus.core.lang.exception.RelevantException;
 /**
  * This class provides an entry point to all the GitLab API Search API calls.
  *
- * @see <a href="https://gitlab.com/help/api/search.md">Search API</a>
  * @author Kimi Liu
+ * @see <a href="https://gitlab.com/help/api/search.md">Search API</a>
  */
 public class SearchApi extends AbstractApi {
 

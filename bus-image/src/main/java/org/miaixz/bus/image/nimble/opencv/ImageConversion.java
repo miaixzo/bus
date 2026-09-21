@@ -40,7 +40,9 @@ import org.opencv.core.MatOfInt;
 public class ImageConversion {
 
     private static final int[] RGB_OFFSETS = { 0, 1, 2 };
+
     private static final int[] BGR_OFFSETS = { 2, 1, 0 };
+
     private static final int[] BANDED_RGB_OFFSETS = { 0, 0, 0 };
 
     /**

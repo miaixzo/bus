@@ -32,18 +32,22 @@ public class ReleaseLinkParams {
      * The name value.
      */
     private String name;
+
     /**
      * The tag name value.
      */
     private String tagName;
+
     /**
      * The url value.
      */
     private String url;
+
     /**
      * The filepath value.
      */
     private String filepath;
+
     /**
      * The link type value.
      */

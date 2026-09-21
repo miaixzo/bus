@@ -488,96 +488,6 @@ public class DnsRecord {
     }
 
     /**
-     * Returns the owner name.
-     *
-     * @return canonical owner name
-     */
-    public String name() {
-        return name;
-    }
-
-    /**
-     * Returns the record type.
-     *
-     * @return known record type, or {@link DnsRecordType#UNKNOWN}
-     */
-    public DnsRecordType type() {
-        return DnsRecordType.fromCode(typeCode);
-    }
-
-    /**
-     * Returns the numeric type code.
-     *
-     * @return unsigned 16-bit DNS type code
-     */
-    public int typeCode() {
-        return typeCode;
-    }
-
-    /**
-     * Returns the record class code.
-     *
-     * @return unsigned 16-bit DNS class code
-     */
-    public int recordClass() {
-        return recordClass;
-    }
-
-    /**
-     * Returns the record TTL.
-     *
-     * @return unsigned 32-bit TTL represented as a Java long
-     */
-    public long ttl() {
-        return ttl;
-    }
-
-    /**
-     * Returns a defensive copy of the RDATA bytes.
-     *
-     * @return RDATA wire bytes
-     */
-    public byte[] wireData() {
-        return Arrays.copyOf(wireData, wireData.length);
-    }
-
-    /**
-     * Returns a copy of this record using another owner name.
-     *
-     * @param owner replacement owner name
-     * @return record with the replacement owner and identical type, class, TTL, and RDATA
-     */
-    public DnsRecord withName(final String owner) {
-        return new DnsRecord(owner, typeCode, recordClass, ttl, wireData);
-    }
-
-    /**
-     * Decodes this record's RDATA as one DNS name.
-     *
-     * @return decoded target name
-     * @throws ProtocolException if RDATA is not exactly one DNS name
-     */
-    public String targetName() {
-        final DnsName.ReadResult result = DnsName.read(wireData, 0);
-        if (result.nextOffset() != wireData.length) {
-            throw new ProtocolException("DNS record RDATA contains trailing data after target name");
-        }
-        return result.name();
-    }
-
-    /**
-     * Returns whether this record matches a query type and class.
-     *
-     * @param queryTypeCode  query type code
-     * @param queryClassCode query class code
-     * @return true when the class matches and the type is exact or ANY
-     */
-    public boolean matches(final int queryTypeCode, final int queryClassCode) {
-        return recordClass == queryClassCode
-                && (typeCode == queryTypeCode || queryTypeCode == DnsRecordType.ANY.code());
-    }
-
-    /**
      * Creates a single-name RDATA record.
      *
      * @param name   owner name
@@ -707,6 +617,96 @@ public class DnsRecord {
             throw new ValidateException(name + " must not be null");
         }
         return value.getBytes(Charset.UTF_8);
+    }
+
+    /**
+     * Returns the owner name.
+     *
+     * @return canonical owner name
+     */
+    public String name() {
+        return name;
+    }
+
+    /**
+     * Returns the record type.
+     *
+     * @return known record type, or {@link DnsRecordType#UNKNOWN}
+     */
+    public DnsRecordType type() {
+        return DnsRecordType.fromCode(typeCode);
+    }
+
+    /**
+     * Returns the numeric type code.
+     *
+     * @return unsigned 16-bit DNS type code
+     */
+    public int typeCode() {
+        return typeCode;
+    }
+
+    /**
+     * Returns the record class code.
+     *
+     * @return unsigned 16-bit DNS class code
+     */
+    public int recordClass() {
+        return recordClass;
+    }
+
+    /**
+     * Returns the record TTL.
+     *
+     * @return unsigned 32-bit TTL represented as a Java long
+     */
+    public long ttl() {
+        return ttl;
+    }
+
+    /**
+     * Returns a defensive copy of the RDATA bytes.
+     *
+     * @return RDATA wire bytes
+     */
+    public byte[] wireData() {
+        return Arrays.copyOf(wireData, wireData.length);
+    }
+
+    /**
+     * Returns a copy of this record using another owner name.
+     *
+     * @param owner replacement owner name
+     * @return record with the replacement owner and identical type, class, TTL, and RDATA
+     */
+    public DnsRecord withName(final String owner) {
+        return new DnsRecord(owner, typeCode, recordClass, ttl, wireData);
+    }
+
+    /**
+     * Decodes this record's RDATA as one DNS name.
+     *
+     * @return decoded target name
+     * @throws ProtocolException if RDATA is not exactly one DNS name
+     */
+    public String targetName() {
+        final DnsName.ReadResult result = DnsName.read(wireData, 0);
+        if (result.nextOffset() != wireData.length) {
+            throw new ProtocolException("DNS record RDATA contains trailing data after target name");
+        }
+        return result.name();
+    }
+
+    /**
+     * Returns whether this record matches a query type and class.
+     *
+     * @param queryTypeCode  query type code
+     * @param queryClassCode query class code
+     * @return true when the class matches and the type is exact or ANY
+     */
+    public boolean matches(final int queryTypeCode, final int queryClassCode) {
+        return recordClass == queryClassCode
+                && (typeCode == queryTypeCode || queryTypeCode == DnsRecordType.ANY.code());
     }
 
 }

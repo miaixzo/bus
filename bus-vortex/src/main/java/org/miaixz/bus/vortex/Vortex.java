@@ -48,14 +48,14 @@ public class Vortex implements SmartLifecycle {
     private final HttpServer httpServer;
 
     /**
-     * Holds the disposable server resource once the server is bound to a port.
-     */
-    private DisposableServer disposableServer;
-
-    /**
      * An atomic flag to track the running state of the server.
      */
     private final AtomicBoolean running = new AtomicBoolean(false);
+
+    /**
+     * Holds the disposable server resource once the server is bound to a port.
+     */
+    private DisposableServer disposableServer;
 
     /**
      * Constructs a new {@code Vortex} server manager.

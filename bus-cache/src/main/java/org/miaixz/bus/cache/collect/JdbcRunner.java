@@ -276,16 +276,6 @@ class JdbcRunner {
         }
 
         /**
-         * Not supported; always throws {@link UnsupportedOperationException}.
-         *
-         * @param seconds ignored
-         */
-        @Override
-        public void setLoginTimeout(int seconds) {
-            throw new UnsupportedOperationException();
-        }
-
-        /**
          * Returns the login timeout, fixed at {@code 0}.
          *
          * @return {@code 0}
@@ -293,6 +283,16 @@ class JdbcRunner {
         @Override
         public int getLoginTimeout() {
             return 0;
+        }
+
+        /**
+         * Not supported; always throws {@link UnsupportedOperationException}.
+         *
+         * @param seconds ignored
+         */
+        @Override
+        public void setLoginTimeout(int seconds) {
+            throw new UnsupportedOperationException();
         }
 
         /**

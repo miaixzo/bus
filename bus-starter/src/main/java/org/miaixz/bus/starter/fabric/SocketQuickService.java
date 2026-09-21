@@ -69,6 +69,16 @@ public class SocketQuickService {
     }
 
     /**
+     * Default handler used when no Spring handler bean is provided.
+     *
+     * @param session active network session
+     * @param message message supplied to this operation
+     */
+    private static void noop(Session session, Message message) {
+        // No-op keeps lifecycle-only starter configurations valid.
+    }
+
+    /**
      * Sets the current fabric message handler.
      *
      * @param handler message handler to invoke
@@ -132,16 +142,6 @@ public class SocketQuickService {
      */
     public synchronized boolean running() {
         return server != null && server.active();
-    }
-
-    /**
-     * Default handler used when no Spring handler bean is provided.
-     *
-     * @param session active network session
-     * @param message message supplied to this operation
-     */
-    private static void noop(Session session, Message message) {
-        // No-op keeps lifecycle-only starter configurations valid.
     }
 
 }

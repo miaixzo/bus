@@ -135,6 +135,110 @@ public class UdpNetwork implements AutoCloseable {
     }
 
     /**
+     * Validates that an address resolves to the UDP transport.
+     *
+     * @param address address whose scheme is validated
+     */
+    private static void requireUdp(final Address address) {
+        final Transport transport = Transport.fromScheme(address.scheme());
+        if (transport != Transport.UDP) {
+            throw new ProtocolException("UDP network does not support transport: " + transport);
+        }
+    }
+
+    /**
+     * Creates a bind socket address.
+     *
+     * @param address fabric address containing the bind host and port
+     * @return internet socket address created from the fabric address
+     */
+    private static InetSocketAddress socket(final Address address) {
+        return NetKit.createAddress(address.host(), address.port());
+    }
+
+    /**
+     * Creates an address retaining the logical scheme and path while replacing its host and port with numeric values.
+     *
+     * @param logical logical source address
+     * @param numeric validated numeric address
+     * @param port    effective numeric port
+     * @return numeric immutable address
+     */
+    private static Address numericAddress(final Address logical, final InetAddress numeric, final int port) {
+        return new Address(logical.scheme(), numeric.getHostAddress(), port, logical.path());
+    }
+
+    /**
+     * Validates server payload and concurrency limits.
+     *
+     * @param maxDatagramBytes maximum datagram bytes
+     * @param maxInFlight      maximum concurrent handlers
+     */
+    private static void validateLimits(final int maxDatagramBytes, final int maxInFlight) {
+        if (maxDatagramBytes < Normal._1 || maxDatagramBytes > Normal._65535 - Normal._28) {
+            throw new ValidateException("Maximum UDP datagram bytes must be between 1 and 65507");
+        }
+        if (maxInFlight < Normal._1 || maxInFlight > Normal._1024) {
+            throw new ValidateException("Maximum UDP in-flight handlers must be between 1 and 1024");
+        }
+    }
+
+    /**
+     * Validates a required address.
+     *
+     * @param address candidate address
+     * @param name    argument label
+     * @return validated address
+     */
+    private static Address requireAddress(final Address address, final String name) {
+        return require(address, name);
+    }
+
+    /**
+     * Validates a required object.
+     *
+     * @param value candidate value
+     * @param name  argument label
+     * @param <T>   value type
+     * @return validated value
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Closes a channel opened by a failed construction path.
+     *
+     * @param channel channel to close, or {@code null}
+     */
+    private static void closeQuietly(final DatagramChannel channel) {
+        if (channel != null) {
+            try {
+                channel.close();
+            } catch (final IOException ignored) {
+                // The construction failure remains authoritative.
+            }
+        }
+    }
+
+    /**
+     * Appends a cleanup failure without suppressing an exception onto itself.
+     *
+     * @param current current failure, or {@code null}
+     * @param next    next failure
+     * @return accumulated failure
+     */
+    private static RuntimeException append(final RuntimeException current, final RuntimeException next) {
+        if (current == null) {
+            return next;
+        }
+        if (current != next) {
+            current.addSuppressed(next);
+        }
+        return current;
+    }
+
+    /**
      * Opens and binds a managed datagram channel to a local UDP address.
      *
      * @param address local UDP address to bind
@@ -399,107 +503,13 @@ public class UdpNetwork implements AutoCloseable {
     }
 
     /**
-     * Validates that an address resolves to the UDP transport.
+     * Rejects channel creation after network closure.
      *
-     * @param address address whose scheme is validated
      */
-    private static void requireUdp(final Address address) {
-        final Transport transport = Transport.fromScheme(address.scheme());
-        if (transport != Transport.UDP) {
-            throw new ProtocolException("UDP network does not support transport: " + transport);
+    private void ensureOpen() {
+        if (closed.get()) {
+            throw new StatefulException("UDP network is closed");
         }
-    }
-
-    /**
-     * Creates a bind socket address.
-     *
-     * @param address fabric address containing the bind host and port
-     * @return internet socket address created from the fabric address
-     */
-    private static InetSocketAddress socket(final Address address) {
-        return NetKit.createAddress(address.host(), address.port());
-    }
-
-    /**
-     * Creates an address retaining the logical scheme and path while replacing its host and port with numeric values.
-     *
-     * @param logical logical source address
-     * @param numeric validated numeric address
-     * @param port    effective numeric port
-     * @return numeric immutable address
-     */
-    private static Address numericAddress(final Address logical, final InetAddress numeric, final int port) {
-        return new Address(logical.scheme(), numeric.getHostAddress(), port, logical.path());
-    }
-
-    /**
-     * Validates server payload and concurrency limits.
-     *
-     * @param maxDatagramBytes maximum datagram bytes
-     * @param maxInFlight      maximum concurrent handlers
-     */
-    private static void validateLimits(final int maxDatagramBytes, final int maxInFlight) {
-        if (maxDatagramBytes < Normal._1 || maxDatagramBytes > Normal._65535 - Normal._28) {
-            throw new ValidateException("Maximum UDP datagram bytes must be between 1 and 65507");
-        }
-        if (maxInFlight < Normal._1 || maxInFlight > Normal._1024) {
-            throw new ValidateException("Maximum UDP in-flight handlers must be between 1 and 1024");
-        }
-    }
-
-    /**
-     * Validates a required address.
-     *
-     * @param address candidate address
-     * @param name    argument label
-     * @return validated address
-     */
-    private static Address requireAddress(final Address address, final String name) {
-        return require(address, name);
-    }
-
-    /**
-     * Validates a required object.
-     *
-     * @param value candidate value
-     * @param name  argument label
-     * @param <T>   value type
-     * @return validated value
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-    }
-
-    /**
-     * Closes a channel opened by a failed construction path.
-     *
-     * @param channel channel to close, or {@code null}
-     */
-    private static void closeQuietly(final DatagramChannel channel) {
-        if (channel != null) {
-            try {
-                channel.close();
-            } catch (final IOException ignored) {
-                // The construction failure remains authoritative.
-            }
-        }
-    }
-
-    /**
-     * Appends a cleanup failure without suppressing an exception onto itself.
-     *
-     * @param current current failure, or {@code null}
-     * @param next    next failure
-     * @return accumulated failure
-     */
-    private static RuntimeException append(final RuntimeException current, final RuntimeException next) {
-        if (current == null) {
-            return next;
-        }
-        if (current != next) {
-            current.addSuppressed(next);
-        }
-        return current;
     }
 
     /**
@@ -851,16 +861,6 @@ public class UdpNetwork implements AutoCloseable {
             }
         }
 
-    }
-
-    /**
-     * Rejects channel creation after network closure.
-     *
-     */
-    private void ensureOpen() {
-        if (closed.get()) {
-            throw new StatefulException("UDP network is closed");
-        }
     }
 
 }

@@ -36,237 +36,57 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class Note implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852265960807L;
-
-    /**
-     * Enum to use for ordering the results.
-     *
-     * @author Kimi Liu
-     */
-    public static enum OrderBy {
-
-        /**
-         * The created at order by.
-         */
-        CREATED_AT,
-        /**
-         * The updated at order by.
-         */
-        UPDATED_AT;
-
-        /**
-         * The enum codec value.
-         */
-        private static JacksonJsonEnumCodec<OrderBy> enumCodec = new JacksonJsonEnumCodec<>(OrderBy.class);
-
-        /**
-         * Returns the value.
-         *
-         * @param value the value value
-         * @return the result
-         */
-
-        @JsonCreator
-        public static OrderBy forValue(String value) {
-            return enumCodec.forValue(value);
-        }
-
-        /**
-         * Returns the value.
-         *
-         * @return the result
-         */
-
-        @JsonValue
-        public String toValue() {
-            return (enumCodec.toString(this));
-        }
-
-        /**
-         * Returns the string.
-         *
-         * @return the result
-         */
-
-        @Override
-        public String toString() {
-            return (enumCodec.toString(this));
-        }
-
-    }
-
-    // This is not used because the GitLab example JSON is using a funny string for the MERGE_REQUEST notable_type
-    // ("Merge request").
-    // Once they fix the bug, the notableType field can be changed from String to NotableType.
-    /**
-     * The noteable type enum.
-     *
-     * @author Kimi Liu
-     */
-    public static enum NoteableType {
-
-        /**
-         * The commit noteable type.
-         */
-        COMMIT,
-        /**
-         * The epic noteable type.
-         */
-        EPIC,
-        /**
-         * The issue noteable type.
-         */
-        ISSUE,
-        /**
-         * The merge request noteable type.
-         */
-        MERGE_REQUEST,
-        /**
-         * The snippet noteable type.
-         */
-        SNIPPET;
-
-        /**
-         * The enum codec value.
-         */
-        private static JacksonJsonEnumCodec<NoteableType> enumCodec = new JacksonJsonEnumCodec<>(NoteableType.class,
-                true, true);
-
-        /**
-         * Returns the value.
-         *
-         * @param value the value value
-         * @return the result
-         */
-
-        @JsonCreator
-        public static NoteableType forValue(String value) {
-            return enumCodec.forValue(value);
-        }
-
-        /**
-         * Returns the value.
-         *
-         * @return the result
-         */
-
-        @JsonValue
-        public String toValue() {
-            return (enumCodec.toString(this));
-        }
-
-        /**
-         * Returns the string.
-         *
-         * @return the result
-         */
-
-        @Override
-        public String toString() {
-            return (enumCodec.toString(this));
-        }
-
-    }
-
-    /**
-     * The type enum.
-     *
-     * @author Kimi Liu
-     */
-    public static enum Type {
-
-        /**
-         * The discussion note type.
-         */
-        DISCUSSION_NOTE,
-        /**
-         * The diff note type.
-         */
-        DIFF_NOTE;
-
-        /**
-         * The enum codec value.
-         */
-        private static JacksonJsonEnumCodec<Type> enumCodec = new JacksonJsonEnumCodec<>(Type.class, true, true);
-
-        /**
-         * Returns the value.
-         *
-         * @param value the value value
-         * @return the result
-         */
-
-        @JsonCreator
-        public static Type forValue(String value) {
-            return enumCodec.forValue(value);
-        }
-
-        /**
-         * Returns the value.
-         *
-         * @return the result
-         */
-
-        @JsonValue
-        public String toValue() {
-            return (enumCodec.toString(this));
-        }
-
-        /**
-         * Returns the string.
-         *
-         * @return the result
-         */
-
-        @Override
-        public String toString() {
-            return (enumCodec.toString(this));
-        }
-
-    }
 
     /**
      * The attachment value.
      */
     private String attachment;
+
+    // This is not used because the GitLab example JSON is using a funny string for the MERGE_REQUEST notable_type
+    // ("Merge request").
+    // Once they fix the bug, the notableType field can be changed from String to NotableType.
     /**
      * The author value.
      */
     private Author author;
+
     /**
      * The body value.
      */
     private String body;
+
     /**
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The downvote value.
      */
     private Boolean downvote;
+
     /**
      * The expires at value.
      */
     private Date expiresAt;
+
     /**
      * The file name value.
      */
     private String fileName;
+
     /**
      * The id value.
      */
     private Long id;
+
     /**
      * The noteable id value.
      */
     private Long noteableId;
 
-    // Use String for noteableType until the constant is fixed in the GitLab API
     /**
      * The noteable type value.
      */
@@ -276,38 +96,48 @@ public class Note implements Serializable {
      * The noteable iid value.
      */
     private Long noteableIid;
+
     /**
      * The system value.
      */
     private Boolean system;
+
+    // Use String for noteableType until the constant is fixed in the GitLab API
     /**
      * The title value.
      */
     private String title;
+
     /**
      * The updated at value.
      */
     private Date updatedAt;
+
     /**
      * The upvote value.
      */
     private Boolean upvote;
+
     /**
      * The resolved value.
      */
     private Boolean resolved;
+
     /**
      * The resolvable value.
      */
     private Boolean resolvable;
+
     /**
      * The resolved by value.
      */
     private Participant resolvedBy;
+
     /**
      * The resolved at value.
      */
     private Date resolvedAt;
+
     /**
      * The internal value.
      */
@@ -779,6 +609,190 @@ public class Note implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    /**
+     * Enum to use for ordering the results.
+     *
+     * @author Kimi Liu
+     */
+    public static enum OrderBy {
+
+        /**
+         * The created at order by.
+         */
+        CREATED_AT,
+        /**
+         * The updated at order by.
+         */
+        UPDATED_AT;
+
+        /**
+         * The enum codec value.
+         */
+        private static JacksonJsonEnumCodec<OrderBy> enumCodec = new JacksonJsonEnumCodec<>(OrderBy.class);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
+
+        @JsonCreator
+        public static OrderBy forValue(String value) {
+            return enumCodec.forValue(value);
+        }
+
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
+        @JsonValue
+        public String toValue() {
+            return (enumCodec.toString(this));
+        }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
+
+        @Override
+        public String toString() {
+            return (enumCodec.toString(this));
+        }
+
+    }
+
+    /**
+     * The noteable type enum.
+     *
+     * @author Kimi Liu
+     */
+    public static enum NoteableType {
+
+        /**
+         * The commit noteable type.
+         */
+        COMMIT,
+        /**
+         * The epic noteable type.
+         */
+        EPIC,
+        /**
+         * The issue noteable type.
+         */
+        ISSUE,
+        /**
+         * The merge request noteable type.
+         */
+        MERGE_REQUEST,
+        /**
+         * The snippet noteable type.
+         */
+        SNIPPET;
+
+        /**
+         * The enum codec value.
+         */
+        private static JacksonJsonEnumCodec<NoteableType> enumCodec = new JacksonJsonEnumCodec<>(NoteableType.class,
+                true, true);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
+
+        @JsonCreator
+        public static NoteableType forValue(String value) {
+            return enumCodec.forValue(value);
+        }
+
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
+        @JsonValue
+        public String toValue() {
+            return (enumCodec.toString(this));
+        }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
+
+        @Override
+        public String toString() {
+            return (enumCodec.toString(this));
+        }
+
+    }
+
+    /**
+     * The type enum.
+     *
+     * @author Kimi Liu
+     */
+    public static enum Type {
+
+        /**
+         * The discussion note type.
+         */
+        DISCUSSION_NOTE,
+        /**
+         * The diff note type.
+         */
+        DIFF_NOTE;
+
+        /**
+         * The enum codec value.
+         */
+        private static JacksonJsonEnumCodec<Type> enumCodec = new JacksonJsonEnumCodec<>(Type.class, true, true);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
+
+        @JsonCreator
+        public static Type forValue(String value) {
+            return enumCodec.forValue(value);
+        }
+
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
+        @JsonValue
+        public String toValue() {
+            return (enumCodec.toString(this));
+        }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
+
+        @Override
+        public String toString() {
+            return (enumCodec.toString(this));
+        }
+
     }
 
 }

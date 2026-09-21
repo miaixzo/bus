@@ -42,18 +42,22 @@ public class BodyCacheProperties {
      * Whether the body cache integration is enabled.
      */
     private final boolean enabled;
+
     /**
      * Maximum request body size retained in memory.
      */
     private final DataSize maxRequestSize;
+
     /**
      * Maximum response body size retained in memory.
      */
     private final DataSize maxResponseSize;
+
     /**
      * Whether bounded multipart requests are eligible for body caching.
      */
     private final boolean includeMultipart;
+
     /**
      * Whether response bodies are cached before being committed.
      */

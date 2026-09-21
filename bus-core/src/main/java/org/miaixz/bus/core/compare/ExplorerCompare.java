@@ -42,9 +42,9 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Using this comparator with {@code Arrays.sort(filenames, new ExplorerCompare());} results in {@code {"xyz1.doc",
  * "xyz2.doc", "xyz12.doc"}}, which matches the order in Windows Explorer.
  *
+ * @author Kimi Liu
  * @see <a href="https://stackoverflow.com/questions/23205020/java-sort-strings-like-windows-explorer">Java - Sort
  *      Strings like Windows Explorer</a>
- * @author Kimi Liu
  */
 public class ExplorerCompare implements Comparator<CharSequence> {
 

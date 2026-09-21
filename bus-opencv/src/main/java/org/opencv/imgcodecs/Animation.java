@@ -28,6 +28,7 @@ import org.opencv.core.Scalar;
 import org.opencv.utils.Converters;
 
 // C++: class Animation
+
 /**
  * Represents an animation with multiple frames. The {@code Animation} struct is designed to store and manage data for
  * animated sequences such as those from animated formats (e.g., GIF, AVIF, APNG, WebP). It provides support for
@@ -43,19 +44,6 @@ public class Animation {
         org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
-    public long getNativeObjAddr() {
-        return nativeObj;
-    }
-
-    // internal usage only
-    public static Animation __fromPtr__(long addr) {
-        return new Animation(addr);
-    }
-
-    //
-    // C++: cv::Animation::Animation(int loopCount = 0, Scalar bgColor = Scalar())
-    //
-
     /**
      * Constructs an Animation object with optional loop count and background color.
      *
@@ -68,7 +56,6 @@ public class Animation {
      *                  <li>If a negative value or a value beyond the maximum of {@code 0xffff} (65535) is provided, it
      *                  is reset to {@code 0} (infinite looping) to maintain valid bounds.</li>
      *                  </ul>
-     *
      * @param bgColor   A {@code Scalar} object representing the background color in BGR format:
      *                  <ul>
      *                  <li>Defaults to {@code Scalar()}, indicating an empty color (usually transparent if supported).
@@ -109,6 +96,10 @@ public class Animation {
         org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
+    //
+    // C++: cv::Animation::Animation(int loopCount = 0, Scalar bgColor = Scalar())
+    //
+
     /**
      * Constructs an Animation object with optional loop count and background color.
      *
@@ -131,89 +122,9 @@ public class Animation {
         org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
-    //
-    // C++: int Animation::loop_count
-    //
-
-    public int get_loop_count() {
-        return get_loop_count_0(nativeObj);
-    }
-
-    //
-    // C++: void Animation::loop_count
-    //
-
-    public void set_loop_count(int loop_count) {
-        set_loop_count_0(nativeObj, loop_count);
-    }
-
-    //
-    // C++: Scalar Animation::bgcolor
-    //
-
-    public Scalar get_bgcolor() {
-        return new Scalar(get_bgcolor_0(nativeObj));
-    }
-
-    //
-    // C++: void Animation::bgcolor
-    //
-
-    public void set_bgcolor(Scalar bgcolor) {
-        set_bgcolor_0(nativeObj, bgcolor.val[0], bgcolor.val[1], bgcolor.val[2], bgcolor.val[3]);
-    }
-
-    //
-    // C++: vector_int Animation::durations
-    //
-
-    public MatOfInt get_durations() {
-        return MatOfInt.fromNativeAddr(get_durations_0(nativeObj));
-    }
-
-    //
-    // C++: void Animation::durations
-    //
-
-    public void set_durations(MatOfInt durations) {
-        Mat durations_mat = durations;
-        set_durations_0(nativeObj, durations_mat.nativeObj);
-    }
-
-    //
-    // C++: vector_Mat Animation::frames
-    //
-
-    public List<Mat> get_frames() {
-        List<Mat> retVal = new ArrayList<Mat>();
-        Mat retValMat = new Mat(get_frames_0(nativeObj));
-        Converters.Mat_to_vector_Mat(retValMat, retVal);
-        return retVal;
-    }
-
-    //
-    // C++: void Animation::frames
-    //
-
-    public void set_frames(List<Mat> frames) {
-        Mat frames_mat = Converters.vector_Mat_to_Mat(frames);
-        set_frames_0(nativeObj, frames_mat.nativeObj);
-    }
-
-    //
-    // C++: Mat Animation::still_image
-    //
-
-    public Mat get_still_image() {
-        return new Mat(get_still_image_0(nativeObj));
-    }
-
-    //
-    // C++: void Animation::still_image
-    //
-
-    public void set_still_image(Mat still_image) {
-        set_still_image_0(nativeObj, still_image.nativeObj);
+    // internal usage only
+    public static Animation __fromPtr__(long addr) {
+        return new Animation(addr);
     }
 
     // C++: cv::Animation::Animation(int loopCount = 0, Scalar bgColor = Scalar())
@@ -224,18 +135,42 @@ public class Animation {
             double bgColor_val2,
             double bgColor_val3);
 
+    //
+    // C++: int Animation::loop_count
+    //
+
     private static native long Animation_1(int loopCount);
 
+    //
+    // C++: void Animation::loop_count
+    //
+
     private static native long Animation_2();
+
+    //
+    // C++: Scalar Animation::bgcolor
+    //
 
     // C++: int Animation::loop_count
     private static native int get_loop_count_0(long nativeObj);
 
+    //
+    // C++: void Animation::bgcolor
+    //
+
     // C++: void Animation::loop_count
     private static native void set_loop_count_0(long nativeObj, int loop_count);
 
+    //
+    // C++: vector_int Animation::durations
+    //
+
     // C++: Scalar Animation::bgcolor
     private static native double[] get_bgcolor_0(long nativeObj);
+
+    //
+    // C++: void Animation::durations
+    //
 
     // C++: void Animation::bgcolor
     private static native void set_bgcolor_0(
@@ -245,14 +180,30 @@ public class Animation {
             double bgcolor_val2,
             double bgcolor_val3);
 
+    //
+    // C++: vector_Mat Animation::frames
+    //
+
     // C++: vector_int Animation::durations
     private static native long get_durations_0(long nativeObj);
+
+    //
+    // C++: void Animation::frames
+    //
 
     // C++: void Animation::durations
     private static native void set_durations_0(long nativeObj, long durations_mat_nativeObj);
 
+    //
+    // C++: Mat Animation::still_image
+    //
+
     // C++: vector_Mat Animation::frames
     private static native long get_frames_0(long nativeObj);
+
+    //
+    // C++: void Animation::still_image
+    //
 
     // C++: void Animation::frames
     private static native void set_frames_0(long nativeObj, long frames_mat_nativeObj);
@@ -265,5 +216,54 @@ public class Animation {
 
     // native support for java finalize() or cleaner
     private static native void delete(long nativeObj);
+
+    public long getNativeObjAddr() {
+        return nativeObj;
+    }
+
+    public int get_loop_count() {
+        return get_loop_count_0(nativeObj);
+    }
+
+    public void set_loop_count(int loop_count) {
+        set_loop_count_0(nativeObj, loop_count);
+    }
+
+    public Scalar get_bgcolor() {
+        return new Scalar(get_bgcolor_0(nativeObj));
+    }
+
+    public void set_bgcolor(Scalar bgcolor) {
+        set_bgcolor_0(nativeObj, bgcolor.val[0], bgcolor.val[1], bgcolor.val[2], bgcolor.val[3]);
+    }
+
+    public MatOfInt get_durations() {
+        return MatOfInt.fromNativeAddr(get_durations_0(nativeObj));
+    }
+
+    public void set_durations(MatOfInt durations) {
+        Mat durations_mat = durations;
+        set_durations_0(nativeObj, durations_mat.nativeObj);
+    }
+
+    public List<Mat> get_frames() {
+        List<Mat> retVal = new ArrayList<Mat>();
+        Mat retValMat = new Mat(get_frames_0(nativeObj));
+        Converters.Mat_to_vector_Mat(retValMat, retVal);
+        return retVal;
+    }
+
+    public void set_frames(List<Mat> frames) {
+        Mat frames_mat = Converters.vector_Mat_to_Mat(frames);
+        set_frames_0(nativeObj, frames_mat.nativeObj);
+    }
+
+    public Mat get_still_image() {
+        return new Mat(get_still_image_0(nativeObj));
+    }
+
+    public void set_still_image(Mat still_image) {
+        set_still_image_0(nativeObj, still_image.nativeObj);
+    }
 
 }

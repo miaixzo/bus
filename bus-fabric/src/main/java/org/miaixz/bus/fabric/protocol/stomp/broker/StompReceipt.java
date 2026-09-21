@@ -53,6 +53,20 @@ public class StompReceipt {
     }
 
     /**
+     * Validates receipt ids.
+     *
+     * @param value receipt identifier to validate
+     * @return unchanged non-blank, single-line identifier
+     * @throws ValidateException if the identifier is blank or contains a carriage return or line feed
+     */
+    private static String validate(final String value) {
+        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException("STOMP receipt id must be non-blank and single-line");
+        }
+        return value;
+    }
+
+    /**
      * Registers one receipt identifier and blocks until it is completed, failed, cancelled, or interrupted.
      * <p>
      * The registration and cancellation callback are removed before this method returns or throws.
@@ -156,20 +170,6 @@ public class StompReceipt {
      */
     public int size() {
         return pending.size();
-    }
-
-    /**
-     * Validates receipt ids.
-     *
-     * @param value receipt identifier to validate
-     * @return unchanged non-blank, single-line identifier
-     * @throws ValidateException if the identifier is blank or contains a carriage return or line feed
-     */
-    private static String validate(final String value) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("STOMP receipt id must be non-blank and single-line");
-        }
-        return value;
     }
 
 }

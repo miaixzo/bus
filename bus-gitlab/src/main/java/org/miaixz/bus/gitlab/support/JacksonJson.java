@@ -36,7 +36,9 @@ import org.miaixz.bus.core.lang.ZoneId;
 import org.miaixz.bus.gitlab.models.User;
 import org.miaixz.bus.logger.Logger;
 
-import tools.jackson.core.*;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.core.JsonParser;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.*;
 import tools.jackson.databind.json.JsonMapper;
@@ -288,6 +290,31 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
     }
 
     /**
+     * Gets the ObjectMapper contained by this instance.
+     *
+     * @return the ObjectMapper contained by this instance
+     */
+    public ObjectMapper getObjectMapper() {
+        return (objectMapper);
+    }
+
+    /**
+     * Unmarshal the JSON data and populate a Map of String keys and values of the provided returnType class.
+     *
+     * @param <T>        the generics type for the Map value
+     * @param returnType an instance of this type class will be contained the values of the Map
+     * @param jsonData   the String containing the JSON data
+     * @return a Map containing the parsed data from the String
+     * @throws JacksonException if a JSON error occurs
+     * @throws IOException      if an error occurs reading the JSON data
+     */
+    public <T> Map<String, T> unmarshalMap(Class<T> returnType, String jsonData) throws JacksonException, IOException {
+        ObjectMapper objectMapper = getContext(null);
+        return (objectMapper.readValue(jsonData, new TypeReference<Map<String, T>>() {
+        }));
+    }
+
+    /**
      * JsonSerializer for serializing dates s yyyy-mm-dd in UTC timezone.
      *
      * @author Kimi Liu
@@ -469,31 +496,6 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
             return (users);
         }
 
-    }
-
-    /**
-     * Gets the ObjectMapper contained by this instance.
-     *
-     * @return the ObjectMapper contained by this instance
-     */
-    public ObjectMapper getObjectMapper() {
-        return (objectMapper);
-    }
-
-    /**
-     * Unmarshal the JSON data and populate a Map of String keys and values of the provided returnType class.
-     *
-     * @param <T>        the generics type for the Map value
-     * @param returnType an instance of this type class will be contained the values of the Map
-     * @param jsonData   the String containing the JSON data
-     * @return a Map containing the parsed data from the String
-     * @throws JacksonException if a JSON error occurs
-     * @throws IOException      if an error occurs reading the JSON data
-     */
-    public <T> Map<String, T> unmarshalMap(Class<T> returnType, String jsonData) throws JacksonException, IOException {
-        ObjectMapper objectMapper = getContext(null);
-        return (objectMapper.readValue(jsonData, new TypeReference<Map<String, T>>() {
-        }));
     }
 
     /**

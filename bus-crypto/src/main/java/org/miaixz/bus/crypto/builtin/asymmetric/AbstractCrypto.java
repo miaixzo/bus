@@ -32,8 +32,8 @@ import java.security.KeyPair;
 public abstract class AbstractCrypto<T extends AbstractCrypto<T>> extends Asymmetric<T>
         implements Encryptor, Decryptor {
 
-    @Serial
-    private static final long serialVersionUID = 2852335251112L;
+            @Serial
+            private static final long serialVersionUID = 2852335251112L;
 
     /**
      * Constructs an {@code AbstractCrypto} instance with the specified algorithm and key pair. If both private and

@@ -202,6 +202,102 @@ public class HttpCache implements AutoCloseable {
     }
 
     /**
+     * Returns a stable non-sensitive cache key hash for logs.
+     *
+     * @param key cache key
+     * @return hexadecimal key hash
+     */
+    private static String keyHash(final String key) {
+        return Integer.toHexString(key.hashCode());
+    }
+
+    /**
+     * Maps a cache action to a stable observation marker.
+     *
+     * @param action cache action
+     * @return observation marker corresponding to the cache action
+     */
+    private static ObservationMarker cacheMarker(final String action) {
+        return switch (action) {
+            case "hit" -> ObservationMarker.CACHE_HIT;
+            case "miss" -> ObservationMarker.CACHE_MISS;
+            case "update" -> ObservationMarker.CACHE_CONDITIONAL_HIT;
+            default -> ObservationMarker.HTTP_RESPONSE;
+        };
+    }
+
+    /**
+     * Opens and validates a cache candidate while preserving snapshot ownership in the returned body.
+     *
+     * @param entry cache entry whose metadata and body are opened
+     * @return decoded response retaining ownership of the opened cache body
+     */
+    private static HttpResponse readCandidate(final CacheEntry entry) {
+        final CacheEntry current = require(entry, "Cache entry");
+        OpenedPayload opened = null;
+        try {
+            final Payload payload = require(current.payload(), "Cache payload");
+            final long actualLength = payload.length();
+            if (actualLength < -1L) {
+                throw new StatefulException("Cached payload length is invalid");
+            }
+            final Source source = require(payload.source(), "Cache body source");
+            opened = new OpenedPayload(source, actualLength, payload instanceof AutoCloseable owner ? owner : source);
+            final HttpResponse response = HttpCacheCodec.fromEntry(CacheEntry.of(current.metadata(), opened));
+            final long declaredLength = response.headers().contentLength();
+            if (declaredLength >= 0L && actualLength >= 0L && declaredLength != actualLength) {
+                response.close();
+                throw new StatefulException("Cached body length does not match Content-Length");
+            }
+            return response;
+        } catch (final RuntimeException e) {
+            if (opened != null) {
+                closeQuietly(opened);
+            } else if (current.payload() instanceof AutoCloseable owner) {
+                closeQuietly(owner);
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Closes a response without allowing cleanup failure to escape candidate isolation.
+     *
+     * @param response response to close, or {@code null}
+     */
+    private static void closeQuietly(final HttpResponse response) {
+        closeQuietly((AutoCloseable) response);
+    }
+
+    /**
+     * Closes a resource without allowing cleanup failure to escape candidate isolation.
+     *
+     * @param closeable resource to close, or {@code null}
+     */
+    private static void closeQuietly(final AutoCloseable closeable) {
+        if (closeable == null) {
+            return;
+        }
+        try {
+            closeable.close();
+        } catch (final Exception ignored) {
+            // Candidate isolation keeps cleanup failure local to the corrupt entry.
+        }
+    }
+
+    /**
+     * Validates required value.
+     *
+     * @param value reference to validate
+     * @param name  diagnostic parameter name
+     * @param <T>   type
+     * @return the validated reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Initializes the underlying cache store when supported.
      */
     public void initialize() {
@@ -767,31 +863,6 @@ public class HttpCache implements AutoCloseable {
     }
 
     /**
-     * Returns a stable non-sensitive cache key hash for logs.
-     *
-     * @param key cache key
-     * @return hexadecimal key hash
-     */
-    private static String keyHash(final String key) {
-        return Integer.toHexString(key.hashCode());
-    }
-
-    /**
-     * Maps a cache action to a stable observation marker.
-     *
-     * @param action cache action
-     * @return observation marker corresponding to the cache action
-     */
-    private static ObservationMarker cacheMarker(final String action) {
-        return switch (action) {
-            case "hit" -> ObservationMarker.CACHE_HIT;
-            case "miss" -> ObservationMarker.CACHE_MISS;
-            case "update" -> ObservationMarker.CACHE_CONDITIONAL_HIT;
-            default -> ObservationMarker.HTTP_RESPONSE;
-        };
-    }
-
-    /**
      * Records a cache strategy request.
      */
     public void recordRequest() {
@@ -848,40 +919,6 @@ public class HttpCache implements AutoCloseable {
     }
 
     /**
-     * Opens and validates a cache candidate while preserving snapshot ownership in the returned body.
-     *
-     * @param entry cache entry whose metadata and body are opened
-     * @return decoded response retaining ownership of the opened cache body
-     */
-    private static HttpResponse readCandidate(final CacheEntry entry) {
-        final CacheEntry current = require(entry, "Cache entry");
-        OpenedPayload opened = null;
-        try {
-            final Payload payload = require(current.payload(), "Cache payload");
-            final long actualLength = payload.length();
-            if (actualLength < -1L) {
-                throw new StatefulException("Cached payload length is invalid");
-            }
-            final Source source = require(payload.source(), "Cache body source");
-            opened = new OpenedPayload(source, actualLength, payload instanceof AutoCloseable owner ? owner : source);
-            final HttpResponse response = HttpCacheCodec.fromEntry(CacheEntry.of(current.metadata(), opened));
-            final long declaredLength = response.headers().contentLength();
-            if (declaredLength >= 0L && actualLength >= 0L && declaredLength != actualLength) {
-                response.close();
-                throw new StatefulException("Cached body length does not match Content-Length");
-            }
-            return response;
-        } catch (final RuntimeException e) {
-            if (opened != null) {
-                closeQuietly(opened);
-            } else if (current.payload() instanceof AutoCloseable owner) {
-                closeQuietly(owner);
-            }
-            throw e;
-        }
-    }
-
-    /**
      * Removes one corrupt key without letting cleanup hide the original candidate failure.
      *
      * @param key corrupt cache key to remove
@@ -895,49 +932,12 @@ public class HttpCache implements AutoCloseable {
     }
 
     /**
-     * Closes a response without allowing cleanup failure to escape candidate isolation.
-     *
-     * @param response response to close, or {@code null}
-     */
-    private static void closeQuietly(final HttpResponse response) {
-        closeQuietly((AutoCloseable) response);
-    }
-
-    /**
-     * Closes a resource without allowing cleanup failure to escape candidate isolation.
-     *
-     * @param closeable resource to close, or {@code null}
-     */
-    private static void closeQuietly(final AutoCloseable closeable) {
-        if (closeable == null) {
-            return;
-        }
-        try {
-            closeable.close();
-        } catch (final Exception ignored) {
-            // Candidate isolation keeps cleanup failure local to the corrupt entry.
-        }
-    }
-
-    /**
      * Ensures this cache is open.
      */
     private void ensureOpen() {
         if (state.get() == State.CLOSED) {
             throw new StatefulException("HTTP cache is closed");
         }
-    }
-
-    /**
-     * Validates required value.
-     *
-     * @param value reference to validate
-     * @param name  diagnostic parameter name
-     * @param <T>   type
-     * @return the validated reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**

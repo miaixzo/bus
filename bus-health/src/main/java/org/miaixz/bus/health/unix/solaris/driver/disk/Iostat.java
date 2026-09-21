@@ -51,6 +51,7 @@ public class Iostat {
      * The IOSTAT_ER constant.
      */
     private static final String IOSTAT_ER = "iostat -er";
+
     // Sample output:
     // errors
     // device,s/w,h/w,trn,tot
@@ -62,6 +63,7 @@ public class Iostat {
      * The IOSTAT_ERN constant.
      */
     private static final String IOSTAT_ERN = "iostat -ern";
+
     // Sample output:
     // errors
     // s/w,h/w,trn,tot,device

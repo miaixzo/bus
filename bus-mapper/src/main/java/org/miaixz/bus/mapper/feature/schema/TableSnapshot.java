@@ -86,60 +86,6 @@ public class TableSnapshot {
     }
 
     /**
-     * Finds a column snapshot by name.
-     *
-     * @param name the column name
-     * @return the matched column snapshot, or {@code null}
-     */
-    public ColumnSnapshot column(String name) {
-        String normalized = normalizeIdentifier(name);
-        return columns.stream().filter(column -> normalizeIdentifier(column.name()).equals(normalized)).findFirst()
-                .orElse(null);
-    }
-
-    /**
-     * Finds an index snapshot by name.
-     *
-     * @param name the index name
-     * @return the matched index metadata, or {@code null}
-     */
-    public IndexMeta index(String name) {
-        String normalized = normalizeIdentifier(name);
-        return indexes.stream().filter(index -> normalizeIdentifier(index.name()).equals(normalized)).findFirst()
-                .orElse(null);
-    }
-
-    /**
-     * Tests whether the table has an index matching the expected index name.
-     *
-     * @param index the expected index metadata
-     * @return {@code true} when the index exists
-     */
-    public boolean hasIndex(IndexMeta index) {
-        return indexes.stream().anyMatch(actual -> sameIndex(actual, index));
-    }
-
-    /**
-     * Tests whether the table has a primary key matching the expected metadata.
-     *
-     * @param expected the expected primary key metadata
-     * @return {@code true} when the primary key matches
-     */
-    public boolean hasPrimaryKey(PrimaryKeyMeta expected) {
-        return samePrimaryKey(this.primaryKey, expected);
-    }
-
-    /**
-     * Tests whether the table has a foreign key matching the expected metadata.
-     *
-     * @param expected the expected foreign key metadata
-     * @return {@code true} when the foreign key matches
-     */
-    public boolean hasForeignKey(ForeignKeyMeta expected) {
-        return foreignKeys.stream().anyMatch(actual -> sameForeignKey(actual, expected));
-    }
-
-    /**
      * Tests whether two index definitions match.
      *
      * @param actual   the database index metadata
@@ -228,6 +174,60 @@ public class TableSnapshot {
         return value == null ? Normal.EMPTY
                 : value.replace(Symbol.BACKTICK, Normal.EMPTY).replace(Symbol.DOUBLE_QUOTES, Normal.EMPTY)
                         .toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Finds a column snapshot by name.
+     *
+     * @param name the column name
+     * @return the matched column snapshot, or {@code null}
+     */
+    public ColumnSnapshot column(String name) {
+        String normalized = normalizeIdentifier(name);
+        return columns.stream().filter(column -> normalizeIdentifier(column.name()).equals(normalized)).findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Finds an index snapshot by name.
+     *
+     * @param name the index name
+     * @return the matched index metadata, or {@code null}
+     */
+    public IndexMeta index(String name) {
+        String normalized = normalizeIdentifier(name);
+        return indexes.stream().filter(index -> normalizeIdentifier(index.name()).equals(normalized)).findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Tests whether the table has an index matching the expected index name.
+     *
+     * @param index the expected index metadata
+     * @return {@code true} when the index exists
+     */
+    public boolean hasIndex(IndexMeta index) {
+        return indexes.stream().anyMatch(actual -> sameIndex(actual, index));
+    }
+
+    /**
+     * Tests whether the table has a primary key matching the expected metadata.
+     *
+     * @param expected the expected primary key metadata
+     * @return {@code true} when the primary key matches
+     */
+    public boolean hasPrimaryKey(PrimaryKeyMeta expected) {
+        return samePrimaryKey(this.primaryKey, expected);
+    }
+
+    /**
+     * Tests whether the table has a foreign key matching the expected metadata.
+     *
+     * @param expected the expected foreign key metadata
+     * @return {@code true} when the foreign key matches
+     */
+    public boolean hasForeignKey(ForeignKeyMeta expected) {
+        return foreignKeys.stream().anyMatch(actual -> sameForeignKey(actual, expected));
     }
 
 }

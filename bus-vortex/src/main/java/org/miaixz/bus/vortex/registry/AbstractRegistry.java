@@ -63,17 +63,17 @@ import reactor.core.publisher.Mono;
 public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBean {
 
     /**
+     * Cache Manager: Encapsulates L2 cache logic.
+     */
+    protected final CacheManager<String, T> cacheManager;
+
+    /**
      * The underlying thread-safe map that stores the registered items.
      * <p>
      * L1 Cache: ConcurrentHashMap, provides the fastest access.
      * </p>
      */
     private final Map<String, T> registry = new ConcurrentHashMap<>();
-
-    /**
-     * Cache Manager: Encapsulates L2 cache logic.
-     */
-    protected final CacheManager<String, T> cacheManager;
 
     /**
      * The function used to generate a unique key for each item stored in the registry.

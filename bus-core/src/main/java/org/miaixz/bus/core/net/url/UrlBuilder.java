@@ -41,8 +41,8 @@ import org.miaixz.bus.core.xyz.UrlKit;
  * [scheme:][//host:port][path][?query][#fragment]
  * </pre>
  *
- * @see <a href="https://en.wikipedia.org/wiki/Uniform_Resource_Identifier">Uniform Resource Identifier</a>
  * @author Kimi Liu
+ * @see <a href="https://en.wikipedia.org/wiki/Uniform_Resource_Identifier">Uniform Resource Identifier</a>
  */
 public class UrlBuilder implements Builder<String> {
 

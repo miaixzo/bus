@@ -30,8 +30,8 @@ import org.miaixz.bus.gitlab.models.AwardEmoji;
 /**
  * This class implements the client side API for the GitLab Award Emoji API calls.
  *
- * @see <a href="https://docs.gitlab.com/ce/api/award_emoji.html">GitLab Award Emoji API Documentaion</a>
  * @author Kimi Liu
+ * @see <a href="https://docs.gitlab.com/ce/api/award_emoji.html">GitLab Award Emoji API Documentaion</a>
  */
 public class AwardEmojiApi extends AbstractApi {
 

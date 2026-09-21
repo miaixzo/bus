@@ -642,6 +642,28 @@ public enum I18n {
     }
 
     /**
+     * Gets a formatted string for a specific i18n from a resource bundle.
+     *
+     * @param i18n       The i18n to use.
+     * @param bundleName The name of the resource bundle.
+     * @param key        The key for the desired string.
+     * @param args       The message arguments.
+     * @return The formatted string.
+     */
+    public static String message(I18n i18n, String bundleName, String key, Object... args) {
+        Locale locale = i18n == null ? Locale.getDefault() : i18n.toLocale();
+        try {
+            ResourceBundle bundle = ResourceBundle.getBundle(bundleName, locale);
+            String message = bundle.getString(key);
+            return ArrayKit.isEmpty(args) ? message : MessageFormat.format(message, args);
+        } catch (MissingResourceException e) {
+            return ArrayKit.isEmpty(args) ? key : MessageFormat.format(key, args);
+        } catch (Exception e) {
+            return ArrayKit.isEmpty(args) ? key : MessageFormat.format(key, args);
+        }
+    }
+
+    /**
      * Returns the language code for this locale.
      *
      * @return The language code.
@@ -681,28 +703,6 @@ public enum I18n {
      */
     public String message(String bundleName, String key, Object... args) {
         return message(this, bundleName, key, args);
-    }
-
-    /**
-     * Gets a formatted string for a specific i18n from a resource bundle.
-     *
-     * @param i18n       The i18n to use.
-     * @param bundleName The name of the resource bundle.
-     * @param key        The key for the desired string.
-     * @param args       The message arguments.
-     * @return The formatted string.
-     */
-    public static String message(I18n i18n, String bundleName, String key, Object... args) {
-        Locale locale = i18n == null ? Locale.getDefault() : i18n.toLocale();
-        try {
-            ResourceBundle bundle = ResourceBundle.getBundle(bundleName, locale);
-            String message = bundle.getString(key);
-            return ArrayKit.isEmpty(args) ? message : MessageFormat.format(message, args);
-        } catch (MissingResourceException e) {
-            return ArrayKit.isEmpty(args) ? key : MessageFormat.format(key, args);
-        } catch (Exception e) {
-            return ArrayKit.isEmpty(args) ? key : MessageFormat.format(key, args);
-        }
     }
 
 }

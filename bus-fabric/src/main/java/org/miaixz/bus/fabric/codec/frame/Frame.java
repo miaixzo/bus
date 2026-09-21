@@ -89,6 +89,17 @@ public record Frame(ByteString payload, int length) {
     }
 
     /**
+     * Validates a charset.
+     *
+     * @param charset charset reference to validate
+     * @return validated non-null charset
+     * @throws ValidateException if {@code charset} is {@code null}
+     */
+    private static Charset validateCharset(final Charset charset) {
+        return Assert.notNull(charset, () -> new ValidateException("Charset must not be null"));
+    }
+
+    /**
      * Decodes the frame payload as text using the supplied charset.
      *
      * @param charset charset used to decode the payload
@@ -105,17 +116,6 @@ public record Frame(ByteString payload, int length) {
             }
             throw new ConvertException("Unable to decode frame text", e);
         }
-    }
-
-    /**
-     * Validates a charset.
-     *
-     * @param charset charset reference to validate
-     * @return validated non-null charset
-     * @throws ValidateException if {@code charset} is {@code null}
-     */
-    private static Charset validateCharset(final Charset charset) {
-        return Assert.notNull(charset, () -> new ValidateException("Charset must not be null"));
     }
 
 }

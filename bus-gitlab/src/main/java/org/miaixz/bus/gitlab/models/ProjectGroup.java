@@ -28,9 +28,6 @@ import java.io.Serial;
  */
 public class ProjectGroup extends AbstractGroup<ProjectGroup> {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852273190535L;
 

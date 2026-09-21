@@ -60,6 +60,7 @@ public class Who {
      */
     private static final DateTimeFormatter WHO_DATE_FORMAT_LINUX = DateTimeFormatter
             .ofPattern(Fields.NORM_DATETIME_MINUTE, Locale.ROOT);
+
     // oshi ttys000 May 4 23:50 (192.168.1.23)
     // middle 12 characters from Thu Nov 24 18:22:48 1986
     /**

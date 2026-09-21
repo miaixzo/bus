@@ -122,6 +122,22 @@ public enum Transport {
     }
 
     /**
+     * Normalizes a scheme.
+     *
+     * @param scheme candidate scheme to trim and validate
+     * @return trimmed lower-case valid scheme
+     * @throws ValidateException if {@code scheme} is null, blank, multi-line, or syntactically invalid
+     */
+    private static String normalize(final String scheme) {
+        final String normalized = scheme == null ? null : scheme.trim();
+        Assert.isTrue(
+                UrlKit.isScheme(normalized),
+                () -> new ValidateException("Network transport scheme must be non-blank and single-line"));
+        // Single-line normalization keeps the lookup table deterministic.
+        return normalized.toLowerCase(Locale.ROOT);
+    }
+
+    /**
      * Returns the default scheme.
      *
      * @return canonical lower-case scheme for this transport
@@ -155,22 +171,6 @@ public enum Transport {
      */
     public Protocol protocol() {
         return protocol;
-    }
-
-    /**
-     * Normalizes a scheme.
-     *
-     * @param scheme candidate scheme to trim and validate
-     * @return trimmed lower-case valid scheme
-     * @throws ValidateException if {@code scheme} is null, blank, multi-line, or syntactically invalid
-     */
-    private static String normalize(final String scheme) {
-        final String normalized = scheme == null ? null : scheme.trim();
-        Assert.isTrue(
-                UrlKit.isScheme(normalized),
-                () -> new ValidateException("Network transport scheme must be non-blank and single-line"));
-        // Single-line normalization keeps the lookup table deterministic.
-        return normalized.toLowerCase(Locale.ROOT);
     }
 
 }

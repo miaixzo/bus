@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.fabric.network.dns.forward;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.Socket;
@@ -104,67 +100,6 @@ public class DnsForwarder {
         }
         this.upstreams = List.copyOf(upstreams);
         this.metrics = metrics;
-    }
-
-    /**
-     * Forwards one wire-format DNS request.
-     *
-     * @param request DNS request bytes
-     * @return upstream DNS response bytes
-     * @throws SocketException if all upstreams fail
-     */
-    public byte[] forward(final byte[] request) {
-        return forward(request, DnsRetryBudget.forwarding());
-    }
-
-    /**
-     * Forwards one wire-format DNS request while consuming a retry budget.
-     *
-     * @param request DNS request bytes
-     * @param budget  retry budget shared by this forwarding flow
-     * @return upstream DNS response bytes, or SERVFAIL when the budget is exhausted
-     * @throws SocketException if all upstreams fail before the budget is exhausted
-     */
-    public byte[] forward(final byte[] request, final DnsRetryBudget budget) {
-        if (request == null || request.length == 0 || request.length > DnsCodec.MAX_MESSAGE_BYTES) {
-            throw new ValidateException("DNS forward request length is invalid");
-        }
-        if (budget == null) {
-            throw new ValidateException("DNS forward retry budget must not be null");
-        }
-        RuntimeException failure = null;
-        DnsRetryBudget cursor = budget;
-        final List<DnsUpstream> selected = HEALTH.select(upstreams);
-        if (selected.isEmpty()) {
-            return servfail(request);
-        }
-        for (final DnsUpstream upstream : selected) {
-            if (cursor.exhausted()) {
-                return servfail(request);
-            }
-            final DnsRetryBudget.Attempt attempt = cursor.reserve(upstream.timeout());
-            cursor = attempt.budget();
-            final long started = System.nanoTime();
-            try {
-                final byte[] response = forward(upstream, request, attempt.timeout());
-                final long elapsedNanos = System.nanoTime() - started;
-                HEALTH.markSuccess(upstream, elapsedNanos);
-                metrics.forwardUpstreamLatency(upstream, elapsedNanos);
-                return response;
-            } catch (final RuntimeException e) {
-                metrics.forwardUpstreamLatency(upstream, System.nanoTime() - started);
-                HEALTH.markFailure(upstream);
-                if (failure == null) {
-                    failure = e;
-                } else {
-                    failure.addSuppressed(e);
-                }
-            }
-        }
-        if (cursor.exhausted()) {
-            return servfail(request);
-        }
-        throw new SocketException("All DNS upstreams failed", failure);
     }
 
     /**
@@ -435,6 +370,67 @@ public class DnsForwarder {
             parameters.setEndpointIdentificationAlgorithm("HTTPS");
         }
         return parameters;
+    }
+
+    /**
+     * Forwards one wire-format DNS request.
+     *
+     * @param request DNS request bytes
+     * @return upstream DNS response bytes
+     * @throws SocketException if all upstreams fail
+     */
+    public byte[] forward(final byte[] request) {
+        return forward(request, DnsRetryBudget.forwarding());
+    }
+
+    /**
+     * Forwards one wire-format DNS request while consuming a retry budget.
+     *
+     * @param request DNS request bytes
+     * @param budget  retry budget shared by this forwarding flow
+     * @return upstream DNS response bytes, or SERVFAIL when the budget is exhausted
+     * @throws SocketException if all upstreams fail before the budget is exhausted
+     */
+    public byte[] forward(final byte[] request, final DnsRetryBudget budget) {
+        if (request == null || request.length == 0 || request.length > DnsCodec.MAX_MESSAGE_BYTES) {
+            throw new ValidateException("DNS forward request length is invalid");
+        }
+        if (budget == null) {
+            throw new ValidateException("DNS forward retry budget must not be null");
+        }
+        RuntimeException failure = null;
+        DnsRetryBudget cursor = budget;
+        final List<DnsUpstream> selected = HEALTH.select(upstreams);
+        if (selected.isEmpty()) {
+            return servfail(request);
+        }
+        for (final DnsUpstream upstream : selected) {
+            if (cursor.exhausted()) {
+                return servfail(request);
+            }
+            final DnsRetryBudget.Attempt attempt = cursor.reserve(upstream.timeout());
+            cursor = attempt.budget();
+            final long started = System.nanoTime();
+            try {
+                final byte[] response = forward(upstream, request, attempt.timeout());
+                final long elapsedNanos = System.nanoTime() - started;
+                HEALTH.markSuccess(upstream, elapsedNanos);
+                metrics.forwardUpstreamLatency(upstream, elapsedNanos);
+                return response;
+            } catch (final RuntimeException e) {
+                metrics.forwardUpstreamLatency(upstream, System.nanoTime() - started);
+                HEALTH.markFailure(upstream);
+                if (failure == null) {
+                    failure = e;
+                } else {
+                    failure.addSuppressed(e);
+                }
+            }
+        }
+        if (cursor.exhausted()) {
+            return servfail(request);
+        }
+        throw new SocketException("All DNS upstreams failed", failure);
     }
 
 }

@@ -66,21 +66,6 @@ public class Http2Stream implements AutoCloseable {
     private final long maxQueuedBytes;
 
     /**
-     * Connection-lock-owned outbound flow-control window.
-     */
-    private long writeWindow;
-
-    /**
-     * Connection-lock-owned inbound flow-control window.
-     */
-    private long receiveWindow;
-
-    /**
-     * Connection-lock-owned consumed bytes pending a stream WINDOW_UPDATE.
-     */
-    private long unacknowledgedBytes;
-
-    /**
      * Callback for body bytes actually consumed by the application.
      */
     private final LongConsumer consumedCallback;
@@ -99,6 +84,26 @@ public class Http2Stream implements AutoCloseable {
      * One-shot stream payload.
      */
     private final StreamPayload payload;
+
+    /**
+     * Reader-owned small-frame coalescing buffer published at 16 KiB or END_STREAM.
+     */
+    private final Buffer inboundBatch = new Buffer();
+
+    /**
+     * Connection-lock-owned outbound flow-control window.
+     */
+    private long writeWindow;
+
+    /**
+     * Connection-lock-owned inbound flow-control window.
+     */
+    private long receiveWindow;
+
+    /**
+     * Connection-lock-owned consumed bytes pending a stream WINDOW_UPDATE.
+     */
+    private long unacknowledgedBytes;
 
     /**
      * Compatibility sink used by parser-side tests and adapters.
@@ -172,11 +177,6 @@ public class Http2Stream implements AutoCloseable {
     private Outcome outcome = Outcome.OPEN;
 
     /**
-     * Reader-owned small-frame coalescing buffer published at 16 KiB or END_STREAM.
-     */
-    private final Buffer inboundBatch = new Buffer();
-
-    /**
      * Creates a stream with no-op ownership callbacks.
      *
      * @param id      positive HTTP/2 stream identifier
@@ -248,6 +248,62 @@ public class Http2Stream implements AutoCloseable {
         this.cancelCallback = require(cancel, "HTTP/2 cancel callback");
         this.payload = new StreamPayload();
         this.trailers = Headers.empty();
+    }
+
+    /**
+     * Tests whether a status header is informational.
+     *
+     * @param status decimal status text, or {@code null}
+     * @return {@code true} when the parsed integer lies from 100 through 199
+     * @throws SocketException if non-null status text is not a decimal integer
+     */
+    private static boolean informational(final String status) {
+        if (status == null) {
+            return false;
+        }
+        try {
+            final int code = Integer.parseInt(status);
+            return code >= Http.Status.CONTINUE && code < Http.Status.OK;
+        } catch (final NumberFormatException e) {
+            throw new SocketException("Invalid HTTP/2 response status", e);
+        }
+    }
+
+    /**
+     * Converts a duration to a saturated nanosecond count.
+     *
+     * @param duration positive duration to convert
+     * @return at least one nanosecond, or {@link Long#MAX_VALUE} when conversion overflows
+     */
+    private static long nanos(final Duration duration) {
+        try {
+            return Math.max(Normal._1, duration.toNanos());
+        } catch (final ArithmeticException e) {
+            return Long.MAX_VALUE;
+        }
+    }
+
+    /**
+     * Runs an optional ownership callback.
+     *
+     * @param callback ownership callback to run, or {@code null} for no operation
+     */
+    private static void run(final Runnable callback) {
+        if (callback != null) {
+            callback.run();
+        }
+    }
+
+    /**
+     * Validates and returns a required reference.
+     *
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -835,59 +891,41 @@ public class Http2Stream implements AutoCloseable {
     }
 
     /**
-     * Tests whether a status header is informational.
-     *
-     * @param status decimal status text, or {@code null}
-     * @return {@code true} when the parsed integer lies from 100 through 199
-     * @throws SocketException if non-null status text is not a decimal integer
+     * Structured terminal fact consumed by the connection and transport owners.
      */
-    private static boolean informational(final String status) {
-        if (status == null) {
-            return false;
-        }
-        try {
-            final int code = Integer.parseInt(status);
-            return code >= Http.Status.CONTINUE && code < Http.Status.OK;
-        } catch (final NumberFormatException e) {
-            throw new SocketException("Invalid HTTP/2 response status", e);
-        }
-    }
-
-    /**
-     * Converts a duration to a saturated nanosecond count.
-     *
-     * @param duration positive duration to convert
-     * @return at least one nanosecond, or {@link Long#MAX_VALUE} when conversion overflows
-     */
-    private static long nanos(final Duration duration) {
-        try {
-            return Math.max(Normal._1, duration.toNanos());
-        } catch (final ArithmeticException e) {
-            return Long.MAX_VALUE;
-        }
-    }
-
-    /**
-     * Runs an optional ownership callback.
-     *
-     * @param callback ownership callback to run, or {@code null} for no operation
-     */
-    private static void run(final Runnable callback) {
-        if (callback != null) {
-            callback.run();
-        }
-    }
-
-    /**
-     * Validates and returns a required reference.
-     *
-     * @param value reference to validate
-     * @param name  logical reference name used in the validation message
-     * @param <T>   reference type
-     * @return the validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    enum Outcome {
+        /**
+         * Stream remains open and has no terminal outcome.
+         */
+        OPEN,
+        /**
+         * Stream completed normally.
+         */
+        COMPLETE,
+        /**
+         * Peer or local endpoint reset the stream for a general reason.
+         */
+        RESET,
+        /**
+         * Peer refused the stream before processing it.
+         */
+        REFUSED_STREAM,
+        /**
+         * GOAWAY proves that the peer did not process this stream.
+         */
+        GOAWAY_UNPROCESSED,
+        /**
+         * GOAWAY cannot prove whether the peer processed this stream.
+         */
+        GOAWAY_POSSIBLY_PROCESSED,
+        /**
+         * The physical HTTP/2 connection failed.
+         */
+        CONNECTION_FAILURE,
+        /**
+         * Caller or runtime cancellation terminated the stream.
+         */
+        CANCELLED
     }
 
     /**
@@ -1027,44 +1065,6 @@ public class Http2Stream implements AutoCloseable {
             receiveData(ByteString.EMPTY, true);
         }
 
-    }
-
-    /**
-     * Structured terminal fact consumed by the connection and transport owners.
-     */
-    enum Outcome {
-        /**
-         * Stream remains open and has no terminal outcome.
-         */
-        OPEN,
-        /**
-         * Stream completed normally.
-         */
-        COMPLETE,
-        /**
-         * Peer or local endpoint reset the stream for a general reason.
-         */
-        RESET,
-        /**
-         * Peer refused the stream before processing it.
-         */
-        REFUSED_STREAM,
-        /**
-         * GOAWAY proves that the peer did not process this stream.
-         */
-        GOAWAY_UNPROCESSED,
-        /**
-         * GOAWAY cannot prove whether the peer processed this stream.
-         */
-        GOAWAY_POSSIBLY_PROCESSED,
-        /**
-         * The physical HTTP/2 connection failed.
-         */
-        CONNECTION_FAILURE,
-        /**
-         * Caller or runtime cancellation terminated the stream.
-         */
-        CANCELLED
     }
 
 }

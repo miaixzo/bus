@@ -45,9 +45,6 @@ import org.miaixz.bus.logger.Logger;
  */
 public class ImageReaderFactory implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852288677583L;
 
@@ -306,9 +303,6 @@ public class ImageReaderFactory implements Serializable {
      */
     public static class ImageReaderParam implements Serializable {
 
-        /**
-         * The serial version uid value.
-         */
         @Serial
         private static final long serialVersionUID = 2852288722533L;
 

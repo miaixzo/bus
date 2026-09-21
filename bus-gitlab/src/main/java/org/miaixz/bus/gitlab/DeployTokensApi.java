@@ -31,7 +31,7 @@ import org.miaixz.bus.gitlab.models.DeployToken;
 /**
  * This class implements the client side API for the GitLab Deploy Tokens API calls. See
  * https://docs.gitlab.com/ee/api/deploy_tokens.html
- *
+ * <p>
  * Since GitLab 12.9
  *
  * @author Kimi Liu

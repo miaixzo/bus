@@ -39,20 +39,6 @@ public class HijriDay extends DayParts {
             "28日", "29日", "30日" };
 
     /**
-     * Validates a Hijri date.
-     *
-     * @param year  Hijri year
-     * @param month Hijri month
-     * @param day   Hijri day
-     * @throws IllegalArgumentException if the date is invalid
-     */
-    public static void validate(int year, int month, int day) {
-        if (day < 1 || day > HijriMonth.fromYm(year, month).getDayCount()) {
-            throw new IllegalArgumentException(String.format("illegal hijri day: %d-%d-%d", year, month, day));
-        }
-    }
-
-    /**
      * Constructs a Hijri day.
      *
      * @param year  Hijri year
@@ -64,6 +50,20 @@ public class HijriDay extends DayParts {
         this.year = year;
         this.month = month;
         this.day = day;
+    }
+
+    /**
+     * Validates a Hijri date.
+     *
+     * @param year  Hijri year
+     * @param month Hijri month
+     * @param day   Hijri day
+     * @throws IllegalArgumentException if the date is invalid
+     */
+    public static void validate(int year, int month, int day) {
+        if (day < 1 || day > HijriMonth.fromYm(year, month).getDayCount()) {
+            throw new IllegalArgumentException(String.format("illegal hijri day: %d-%d-%d", year, month, day));
+        }
     }
 
     /**

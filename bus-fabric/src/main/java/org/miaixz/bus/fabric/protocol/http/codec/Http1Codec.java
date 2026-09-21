@@ -56,28 +56,6 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 public class Http1Codec implements HttpCodec {
 
     /**
-     * Connection-local codec activity independent from the public connection lifecycle.
-     */
-    private enum CodecState {
-
-        /**
-         * Ready for another request or response operation.
-         */
-        IDLE,
-
-        /**
-         * Encoding or decoding the current exchange.
-         */
-        BUSY,
-
-        /**
-         * Cancelled because the exchange or owning call was cancelled.
-         */
-        CANCELLED
-
-    }
-
-    /**
      * Most recently parsed response headers, reused when a server repeats an identical immutable header block.
      */
     private static volatile Headers cachedResponseHeaders;
@@ -113,11 +91,6 @@ public class Http1Codec implements HttpCodec {
     private final AtomicReference<CodecState> state;
 
     /**
-     * Whether the current exchange has not yet received an HTTP status line.
-     */
-    private volatile boolean beforeResponse;
-
-    /**
      * Response body completion flag.
      */
     private final AtomicBoolean bodyComplete;
@@ -136,6 +109,11 @@ public class Http1Codec implements HttpCodec {
      * Reusable lazy trailer view retained with the connection-local codec.
      */
     private final Supplier<Headers> trailerSupplier;
+
+    /**
+     * Whether the current exchange has not yet received an HTTP status line.
+     */
+    private volatile boolean beforeResponse;
 
     /**
      * Complete timeout policy for the current request and its response body.
@@ -158,6 +136,133 @@ public class Http1Codec implements HttpCodec {
         this.trailers = new AtomicReference<>(Headers.empty());
         this.trailerSupplier = this::trailers;
         this.timeout = org.miaixz.bus.fabric.Timeout.defaults();
+    }
+
+    /**
+     * Writes a payload into a core.io sink.
+     *
+     * @param sink    destination receiving payload bytes
+     * @param payload payload whose bytes are copied to the sink
+     * @throws IOException when reading or writing fails
+     */
+    private static void writePayload(final Sink sink, final Payload payload) throws IOException {
+        require(sink, "HTTP body sink");
+        require(payload, "Payload");
+        final Buffer buffer = new Buffer();
+        try (Source input = payload.source()) {
+            long read = input.read(buffer, Normal._8192);
+            while (read != Normal.__1) {
+                sink.write(buffer, read);
+                read = input.read(buffer, Normal._8192);
+            }
+        }
+    }
+
+    /**
+     * Casts a response source to its payload view.
+     *
+     * @param source response source to expose as a payload
+     * @return payload
+     */
+    private static Payload payload(final Source source) {
+        if (source instanceof Payload payload) {
+            return payload;
+        }
+        throw new InternalException("HTTP response source is not payload-backed");
+    }
+
+    /**
+     * Reuses the most recent immutable response-header block when every ordered name/value pair is identical. Parsing
+     * and framing validation still run for every response before this allocation optimization is applied.
+     *
+     * @param parsed validated response headers
+     * @return parsed headers or the identical cached instance
+     */
+    private static Headers canonicalResponseHeaders(final Headers parsed) {
+        final Headers cached = cachedResponseHeaders;
+        if (cached != null && sameHeaders(cached, parsed)) {
+            return cached;
+        }
+        cachedResponseHeaders = parsed;
+        return parsed;
+    }
+
+    /**
+     * Compares ordered header pairs without materializing map or list views.
+     *
+     * @param left  first immutable headers
+     * @param right second immutable headers
+     * @return true when all ordered names and values are equal
+     */
+    private static boolean sameHeaders(final Headers left, final Headers right) {
+        final int size = left.size();
+        if (size != right.size()) {
+            return false;
+        }
+        for (int index = Normal._0; index < size; index++) {
+            if (!left.name(index).equals(right.name(index)) || !left.value(index).equals(right.value(index))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Parses response media.
+     *
+     * @param headers HTTP headers containing the response media type
+     * @return media
+     */
+    private static MediaType media(final Headers headers) {
+        final String contentType = headers.get(Http.Header.CONTENT_TYPE);
+        if (contentType == null) {
+            return MediaType.APPLICATION_OCTET_STREAM_TYPE;
+        }
+        final MediaCache cached = cachedResponseMedia;
+        if (cached != null && cached.value.equals(contentType)) {
+            return cached.media;
+        }
+        final MediaType parsed = MediaType.parse(contentType);
+        cachedResponseMedia = new MediaCache(contentType, parsed);
+        return parsed;
+    }
+
+    /**
+     * Applies a duration to a core.io timeout policy.
+     *
+     * @param timeoutPolicy timeout policy
+     * @param duration      duration applied to every timeout phase
+     */
+    private static void configureTimeout(final Timeout timeoutPolicy, final Duration duration) {
+        timeoutPolicy.timeout(duration);
+    }
+
+    /**
+     * Chooses the bounded timeout used by an early-close drain.
+     *
+     * @param configured configured response-body read timeout
+     * @return positive drain timeout capped at the HTTP/1 safety limit
+     */
+    private static Duration drainTimeout(final Duration configured) {
+        return configured == null || configured.isZero() || configured.isNegative()
+                || configured.compareTo(Builder.HTTP1_CODEC_MAX_DRAIN_DURATION) > Normal._0
+                        ? Builder.HTTP1_CODEC_MAX_DRAIN_DURATION
+                        : configured;
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  field name
+     * @param <T>   value type
+     * @return the validated reference
+     */
+    private static <T> T require(final T value, final String name) {
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
     }
 
     /**
@@ -395,39 +500,6 @@ public class Http1Codec implements HttpCodec {
     }
 
     /**
-     * Writes a payload into a core.io sink.
-     *
-     * @param sink    destination receiving payload bytes
-     * @param payload payload whose bytes are copied to the sink
-     * @throws IOException when reading or writing fails
-     */
-    private static void writePayload(final Sink sink, final Payload payload) throws IOException {
-        require(sink, "HTTP body sink");
-        require(payload, "Payload");
-        final Buffer buffer = new Buffer();
-        try (Source input = payload.source()) {
-            long read = input.read(buffer, Normal._8192);
-            while (read != Normal.__1) {
-                sink.write(buffer, read);
-                read = input.read(buffer, Normal._8192);
-            }
-        }
-    }
-
-    /**
-     * Casts a response source to its payload view.
-     *
-     * @param source response source to expose as a payload
-     * @return payload
-     */
-    private static Payload payload(final Source source) {
-        if (source instanceof Payload payload) {
-            return payload;
-        }
-        throw new InternalException("HTTP response source is not payload-backed");
-    }
-
-    /**
      * Reads response headers.
      *
      * @return headers
@@ -477,59 +549,25 @@ public class Http1Codec implements HttpCodec {
     }
 
     /**
-     * Reuses the most recent immutable response-header block when every ordered name/value pair is identical. Parsing
-     * and framing validation still run for every response before this allocation optimization is applied.
-     *
-     * @param parsed validated response headers
-     * @return parsed headers or the identical cached instance
+     * Connection-local codec activity independent from the public connection lifecycle.
      */
-    private static Headers canonicalResponseHeaders(final Headers parsed) {
-        final Headers cached = cachedResponseHeaders;
-        if (cached != null && sameHeaders(cached, parsed)) {
-            return cached;
-        }
-        cachedResponseHeaders = parsed;
-        return parsed;
-    }
+    private enum CodecState {
 
-    /**
-     * Compares ordered header pairs without materializing map or list views.
-     *
-     * @param left  first immutable headers
-     * @param right second immutable headers
-     * @return true when all ordered names and values are equal
-     */
-    private static boolean sameHeaders(final Headers left, final Headers right) {
-        final int size = left.size();
-        if (size != right.size()) {
-            return false;
-        }
-        for (int index = Normal._0; index < size; index++) {
-            if (!left.name(index).equals(right.name(index)) || !left.value(index).equals(right.value(index))) {
-                return false;
-            }
-        }
-        return true;
-    }
+        /**
+         * Ready for another request or response operation.
+         */
+        IDLE,
 
-    /**
-     * Parses response media.
-     *
-     * @param headers HTTP headers containing the response media type
-     * @return media
-     */
-    private static MediaType media(final Headers headers) {
-        final String contentType = headers.get(Http.Header.CONTENT_TYPE);
-        if (contentType == null) {
-            return MediaType.APPLICATION_OCTET_STREAM_TYPE;
-        }
-        final MediaCache cached = cachedResponseMedia;
-        if (cached != null && cached.value.equals(contentType)) {
-            return cached.media;
-        }
-        final MediaType parsed = MediaType.parse(contentType);
-        cachedResponseMedia = new MediaCache(contentType, parsed);
-        return parsed;
+        /**
+         * Encoding or decoding the current exchange.
+         */
+        BUSY,
+
+        /**
+         * Cancelled because the exchange or owning call was cancelled.
+         */
+        CANCELLED
+
     }
 
     /**
@@ -539,44 +577,6 @@ public class Http1Codec implements HttpCodec {
      * @param media parsed immutable media type
      */
     private record MediaCache(String value, MediaType media) {
-    }
-
-    /**
-     * Applies a duration to a core.io timeout policy.
-     *
-     * @param timeoutPolicy timeout policy
-     * @param duration      duration applied to every timeout phase
-     */
-    private static void configureTimeout(final Timeout timeoutPolicy, final Duration duration) {
-        timeoutPolicy.timeout(duration);
-    }
-
-    /**
-     * Chooses the bounded timeout used by an early-close drain.
-     *
-     * @param configured configured response-body read timeout
-     * @return positive drain timeout capped at the HTTP/1 safety limit
-     */
-    private static Duration drainTimeout(final Duration configured) {
-        return configured == null || configured.isZero() || configured.isNegative()
-                || configured.compareTo(Builder.HTTP1_CODEC_MAX_DRAIN_DURATION) > Normal._0
-                        ? Builder.HTTP1_CODEC_MAX_DRAIN_DURATION
-                        : configured;
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  field name
-     * @param <T>   value type
-     * @return the validated reference
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
     }
 
     /**

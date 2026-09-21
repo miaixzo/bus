@@ -29,7 +29,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
  * Immutable activation and safety limits for automatic request-object binding.
- *
+ * <p>
  * Explicit RequestObject binding activation properties.
  *
  * @author Kimi Liu

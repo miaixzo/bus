@@ -31,9 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Member extends AbstractUser<Member> {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852261708829L;
 
@@ -41,10 +38,12 @@ public class Member extends AbstractUser<Member> {
      * The access level value.
      */
     private AccessLevel accessLevel;
+
     /**
      * The expires at value.
      */
     private Date expiresAt;
+
     /**
      * The group saml identity value.
      */

@@ -34,6 +34,15 @@ public interface JsonPropertyFilter {
     JsonPropertyFilter ALWAYS = (source, name, value) -> true;
 
     /**
+     * Returns the shared filter that accepts every property.
+     *
+     * @return always-accept property filter
+     */
+    static JsonPropertyFilter always() {
+        return ALWAYS;
+    }
+
+    /**
      * Determines whether a property should be serialized.
      *
      * @param source owning object, or {@code null} when the JSON framework cannot expose it
@@ -42,14 +51,5 @@ public interface JsonPropertyFilter {
      * @return {@code true} to accept the property; {@code false} to omit it
      */
     boolean accept(Object source, String name, Object value);
-
-    /**
-     * Returns the shared filter that accepts every property.
-     *
-     * @return always-accept property filter
-     */
-    static JsonPropertyFilter always() {
-        return ALWAYS;
-    }
 
 }

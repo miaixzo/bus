@@ -87,6 +87,60 @@ public class DnsUpstreamHealth {
     }
 
     /**
+     * Updates an upstream RTT sample using a fixed-point EWMA.
+     *
+     * @param state    previous health state, or {@code null}
+     * @param rttNanos latest measured round-trip time in nanoseconds
+     * @return updated EWMA round-trip time in nanoseconds
+     */
+    private static long ewmaRttNanos(final HealthState state, final long rttNanos) {
+        final long safeRtt = Math.max(0L, rttNanos);
+        if (state == null || state.rttNanos == Long.MAX_VALUE) {
+            return safeRtt;
+        }
+        return ((state.rttNanos * RTT_EWMA_OLD_WEIGHT) + safeRtt) / RTT_EWMA_DIVISOR;
+    }
+
+    /**
+     * Validates upstream list.
+     *
+     * @param upstreams upstream list
+     */
+    private static void validateUpstreams(final List<DnsUpstream> upstreams) {
+        if (upstreams == null || upstreams.isEmpty()) {
+            throw new ValidateException("DNS upstream health selection must not be empty");
+        }
+        for (final DnsUpstream upstream : upstreams) {
+            validateUpstream(upstream);
+        }
+    }
+
+    /**
+     * Validates one upstream.
+     *
+     * @param upstream upstream definition
+     */
+    private static void validateUpstream(final DnsUpstream upstream) {
+        if (upstream == null) {
+            throw new ValidateException("DNS upstream health upstream must not be null");
+        }
+    }
+
+    /**
+     * Validates a positive duration.
+     *
+     * @param duration duration to validate
+     * @param name     diagnostic name
+     * @return validated duration
+     */
+    private static Duration validateDuration(final Duration duration, final String name) {
+        if (duration == null || duration.isNegative() || duration.isZero()) {
+            throw new ValidateException(name + " must be positive");
+        }
+        return duration;
+    }
+
+    /**
      * Selects upstreams for an ordinary forwarding request.
      *
      * @param upstreams configured upstreams
@@ -189,60 +243,6 @@ public class DnsUpstreamHealth {
     public String healthKey(final DnsUpstream upstream) {
         validateUpstream(upstream);
         return upstream.healthKey();
-    }
-
-    /**
-     * Updates an upstream RTT sample using a fixed-point EWMA.
-     *
-     * @param state    previous health state, or {@code null}
-     * @param rttNanos latest measured round-trip time in nanoseconds
-     * @return updated EWMA round-trip time in nanoseconds
-     */
-    private static long ewmaRttNanos(final HealthState state, final long rttNanos) {
-        final long safeRtt = Math.max(0L, rttNanos);
-        if (state == null || state.rttNanos == Long.MAX_VALUE) {
-            return safeRtt;
-        }
-        return ((state.rttNanos * RTT_EWMA_OLD_WEIGHT) + safeRtt) / RTT_EWMA_DIVISOR;
-    }
-
-    /**
-     * Validates upstream list.
-     *
-     * @param upstreams upstream list
-     */
-    private static void validateUpstreams(final List<DnsUpstream> upstreams) {
-        if (upstreams == null || upstreams.isEmpty()) {
-            throw new ValidateException("DNS upstream health selection must not be empty");
-        }
-        for (final DnsUpstream upstream : upstreams) {
-            validateUpstream(upstream);
-        }
-    }
-
-    /**
-     * Validates one upstream.
-     *
-     * @param upstream upstream definition
-     */
-    private static void validateUpstream(final DnsUpstream upstream) {
-        if (upstream == null) {
-            throw new ValidateException("DNS upstream health upstream must not be null");
-        }
-    }
-
-    /**
-     * Validates a positive duration.
-     *
-     * @param duration duration to validate
-     * @param name     diagnostic name
-     * @return validated duration
-     */
-    private static Duration validateDuration(final Duration duration, final String name) {
-        if (duration == null || duration.isNegative() || duration.isZero()) {
-            throw new ValidateException(name + " must be positive");
-        }
-        return duration;
     }
 
     /**

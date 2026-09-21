@@ -32,87 +32,14 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class ProtectedTag implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852275572097L;
-
-    /**
-     * The create access level class.
-     *
-     * @author Kimi Liu
-     */
-    public static class CreateAccessLevel implements Serializable {
-
-        /**
-         * The serial version uid value.
-         */
-        @Serial
-        private static final long serialVersionUID = 2852275621375L;
-
-        /**
-         * The access level value.
-         */
-        private AccessLevel access_level;
-        /**
-         * The access level description value.
-         */
-        private String accessLevelDescription;
-
-        /**
-         * Constructs a new {@code CreateAccessLevel} instance.
-         */
-        public CreateAccessLevel() {
-            // No initialization required.
-        }
-
-        /**
-         * Returns the access level.
-         *
-         * @return the result
-         */
-
-        public AccessLevel getAccess_level() {
-            return access_level;
-        }
-
-        /**
-         * Sets the access level.
-         *
-         * @param access_level the access level value
-         */
-
-        public void setAccess_level(AccessLevel access_level) {
-            this.access_level = access_level;
-        }
-
-        /**
-         * Returns the access level description.
-         *
-         * @return the result
-         */
-
-        public String getAccessLevelDescription() {
-            return accessLevelDescription;
-        }
-
-        /**
-         * Sets the access level description.
-         *
-         * @param accessLevelDescription the access level description value
-         */
-
-        public void setAccessLevelDescription(String accessLevelDescription) {
-            this.accessLevelDescription = accessLevelDescription;
-        }
-
-    }
 
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The create access levels value.
      */
@@ -174,6 +101,75 @@ public class ProtectedTag implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    /**
+     * The create access level class.
+     *
+     * @author Kimi Liu
+     */
+    public static class CreateAccessLevel implements Serializable {
+
+        @Serial
+        private static final long serialVersionUID = 2852275621375L;
+
+        /**
+         * The access level value.
+         */
+        private AccessLevel access_level;
+
+        /**
+         * The access level description value.
+         */
+        private String accessLevelDescription;
+
+        /**
+         * Constructs a new {@code CreateAccessLevel} instance.
+         */
+        public CreateAccessLevel() {
+            // No initialization required.
+        }
+
+        /**
+         * Returns the access level.
+         *
+         * @return the result
+         */
+
+        public AccessLevel getAccess_level() {
+            return access_level;
+        }
+
+        /**
+         * Sets the access level.
+         *
+         * @param access_level the access level value
+         */
+
+        public void setAccess_level(AccessLevel access_level) {
+            this.access_level = access_level;
+        }
+
+        /**
+         * Returns the access level description.
+         *
+         * @return the result
+         */
+
+        public String getAccessLevelDescription() {
+            return accessLevelDescription;
+        }
+
+        /**
+         * Sets the access level description.
+         *
+         * @param accessLevelDescription the access level description value
+         */
+
+        public void setAccessLevelDescription(String accessLevelDescription) {
+            this.accessLevelDescription = accessLevelDescription;
+        }
+
     }
 
 }

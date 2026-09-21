@@ -33,9 +33,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
  */
 public class RelatedEpic extends AbstractEpic<RelatedEpic> {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852279095069L;
 
@@ -43,6 +40,7 @@ public class RelatedEpic extends AbstractEpic<RelatedEpic> {
      * The start date is fixed value.
      */
     private Boolean startDateIsFixed;
+
     /**
      * The due date is fixed value.
      */
@@ -58,14 +56,17 @@ public class RelatedEpic extends AbstractEpic<RelatedEpic> {
      * The related epic link id value.
      */
     private Long relatedEpicLinkId;
+
     /**
      * The link type value.
      */
     private LinkType linkType;
+
     /**
      * The link created at value.
      */
     private Date linkCreatedAt;
+
     /**
      * The link updated at value.
      */

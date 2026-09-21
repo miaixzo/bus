@@ -19,19 +19,8 @@
 */
 package org.miaixz.bus.mapper.feature.identifier;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.Set;
+import java.sql.*;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Pattern;
@@ -46,12 +35,7 @@ import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.feature.affix.AffixRuleConfig;
 import org.miaixz.bus.mapper.feature.paging.Sort;
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
-import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
-import org.miaixz.bus.mapper.parsing.IndexMeta;
-import org.miaixz.bus.mapper.parsing.MapperFactory;
-import org.miaixz.bus.mapper.parsing.PrimaryKeyMeta;
-import org.miaixz.bus.mapper.parsing.TableMeta;
+import org.miaixz.bus.mapper.parsing.*;
 import org.miaixz.bus.mapper.runtime.MapperOptions;
 
 /**
@@ -224,6 +208,148 @@ public class IdentifierValidator {
     }
 
     /**
+     * Determines whether any effective scope requires the validator.
+     */
+    private static boolean required(Properties properties) {
+        if (enabled(properties, Normal.DEFAULT)) {
+            return true;
+        }
+        for (String namespace : MapperOptions.resolveNamespaceNames(properties)) {
+            if (enabled(properties, namespace)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Resolves enablement with namespace, shared, default, then enabled-default precedence.
+     */
+    private static boolean enabled(Properties properties, String datasourceKey) {
+        if (properties == null) {
+            return true;
+        }
+        String key = datasourceKey == null || datasourceKey.isBlank() ? Normal.DEFAULT : datasourceKey;
+        String suffix = Symbol.DOT + Args.IDENTIFIER_KEY + Symbol.DOT + Args.PROP_ENABLED;
+        String value = properties.getProperty(key + suffix);
+        if (value == null) {
+            value = properties.getProperty(Args.SHARED_KEY + suffix);
+        }
+        if (value == null) {
+            value = properties.getProperty(Normal.DEFAULT + suffix, Boolean.TRUE.toString());
+        }
+        return Boolean.parseBoolean(value);
+    }
+
+    /**
+     * Adds PostgreSQL words whose server-side category requires identifier quoting.
+     */
+    private static void addPostgreSqlReservedWords(Connection connection, Set<String> reservedWords)
+            throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(POSTGRESQL_RESERVED_WORDS_SQL);
+                ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                addWord(reservedWords, resultSet.getString(1));
+            }
+        }
+    }
+
+    /**
+     * Adds JDBC-reported database keywords for drivers without a more precise classification source.
+     */
+    private static void addJdbcKeywords(DatabaseMetaData metadata, Set<String> reservedWords) throws SQLException {
+        String keywords = metadata.getSQLKeywords();
+        if (keywords != null) {
+            for (String keyword : keywords.split(Symbol.COMMA)) {
+                addWord(reservedWords, keyword);
+            }
+        }
+    }
+
+    /**
+     * Normalizes and adds one non-empty word.
+     */
+    private static void addWord(Set<String> reservedWords, String word) {
+        String normalized = normalize(word);
+        if (!normalized.isEmpty()) {
+            reservedWords.add(normalized);
+        }
+    }
+
+    /**
+     * Adds a non-duplicate quote rule.
+     */
+    private static void addQuote(List<Quote> quotes, Quote quote) {
+        if (!quotes.contains(quote)) {
+            quotes.add(quote);
+        }
+    }
+
+    /**
+     * Removes qualification and common explicit quotes for comparisons and suggestions.
+     */
+    private static String plain(String identifier) {
+        if (identifier == null) {
+            return Normal.EMPTY;
+        }
+        String value = identifier.trim();
+        int dot = value.lastIndexOf(Symbol.C_DOT);
+        if (dot >= 0) {
+            value = value.substring(dot + 1);
+        }
+        if (value.length() > 1 && ((value.startsWith(Symbol.DOUBLE_QUOTES) && value.endsWith(Symbol.DOUBLE_QUOTES))
+                || (value.startsWith(Symbol.BACKTICK) && value.endsWith(Symbol.BACKTICK))
+                || (value.startsWith(Symbol.BRACKET_LEFT) && value.endsWith(Symbol.BRACKET_RIGHT)))) {
+            value = value.substring(1, value.length() - 1);
+        }
+        return value;
+    }
+
+    /**
+     * Joins physical columns for diagnostics.
+     */
+    private static String joined(List<String> columns) {
+        return columns == null ? null : String.join(Symbol.COMMA, columns);
+    }
+
+    /**
+     * Creates an immutable normalized word set.
+     */
+    private static Set<String> words(String... values) {
+        Set<String> words = new LinkedHashSet<>();
+        if (values != null) {
+            for (String value : values) {
+                String normalized = normalize(value);
+                if (!normalized.isEmpty()) {
+                    words.add(normalized);
+                }
+            }
+        }
+        return Set.copyOf(words);
+    }
+
+    /**
+     * Normalizes a keyword.
+     */
+    private static String normalize(String value) {
+        return value == null ? Normal.EMPTY : value.trim().toUpperCase(Locale.ROOT);
+    }
+
+    /**
+     * Normalizes an optional JDBC value.
+     */
+    private static String value(String value) {
+        return value == null ? Normal.EMPTY : value;
+    }
+
+    /**
+     * Formats an optional diagnostic value.
+     */
+    private static String display(String value) {
+        return value == null || value.isBlank() ? Symbol.MINUS : value;
+    }
+
+    /**
      * Tests whether identifier validation is enabled for a datasource namespace.
      *
      * @param datasourceKey datasource namespace
@@ -306,40 +432,6 @@ public class IdentifierValidator {
     }
 
     /**
-     * Determines whether any effective scope requires the validator.
-     */
-    private static boolean required(Properties properties) {
-        if (enabled(properties, Normal.DEFAULT)) {
-            return true;
-        }
-        for (String namespace : MapperOptions.resolveNamespaceNames(properties)) {
-            if (enabled(properties, namespace)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Resolves enablement with namespace, shared, default, then enabled-default precedence.
-     */
-    private static boolean enabled(Properties properties, String datasourceKey) {
-        if (properties == null) {
-            return true;
-        }
-        String key = datasourceKey == null || datasourceKey.isBlank() ? Normal.DEFAULT : datasourceKey;
-        String suffix = Symbol.DOT + Args.IDENTIFIER_KEY + Symbol.DOT + Args.PROP_ENABLED;
-        String value = properties.getProperty(key + suffix);
-        if (value == null) {
-            value = properties.getProperty(Args.SHARED_KEY + suffix);
-        }
-        if (value == null) {
-            value = properties.getProperty(Normal.DEFAULT + suffix, Boolean.TRUE.toString());
-        }
-        return Boolean.parseBoolean(value);
-    }
-
-    /**
      * Resolves and caches the database identifier policy for a connection.
      */
     private Policy policy(Connection connection) throws SQLException {
@@ -377,50 +469,6 @@ public class IdentifierValidator {
                     new Quote(Symbol.BRACKET_LEFT, Symbol.BRACKET_RIGHT, Symbol.BRACKET_RIGHT + Symbol.BRACKET_RIGHT));
         }
         return new Policy(key.product(), Set.copyOf(reservedWords), List.copyOf(quotes));
-    }
-
-    /**
-     * Adds PostgreSQL words whose server-side category requires identifier quoting.
-     */
-    private static void addPostgreSqlReservedWords(Connection connection, Set<String> reservedWords)
-            throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(POSTGRESQL_RESERVED_WORDS_SQL);
-                ResultSet resultSet = statement.executeQuery()) {
-            while (resultSet.next()) {
-                addWord(reservedWords, resultSet.getString(1));
-            }
-        }
-    }
-
-    /**
-     * Adds JDBC-reported database keywords for drivers without a more precise classification source.
-     */
-    private static void addJdbcKeywords(DatabaseMetaData metadata, Set<String> reservedWords) throws SQLException {
-        String keywords = metadata.getSQLKeywords();
-        if (keywords != null) {
-            for (String keyword : keywords.split(Symbol.COMMA)) {
-                addWord(reservedWords, keyword);
-            }
-        }
-    }
-
-    /**
-     * Normalizes and adds one non-empty word.
-     */
-    private static void addWord(Set<String> reservedWords, String word) {
-        String normalized = normalize(word);
-        if (!normalized.isEmpty()) {
-            reservedWords.add(normalized);
-        }
-    }
-
-    /**
-     * Adds a non-duplicate quote rule.
-     */
-    private static void addQuote(List<Quote> quotes, Quote quote) {
-        if (!quotes.contains(quote)) {
-            quotes.add(quote);
-        }
     }
 
     /**
@@ -706,70 +754,6 @@ public class IdentifierValidator {
                 + display(entry.property()) + ", table=" + display(entry.table()) + ", column="
                 + display(entry.column()) + ", identifier=" + display(identifier) + ", reason=" + reason
                 + ", suggestion=" + suggestion;
-    }
-
-    /**
-     * Removes qualification and common explicit quotes for comparisons and suggestions.
-     */
-    private static String plain(String identifier) {
-        if (identifier == null) {
-            return Normal.EMPTY;
-        }
-        String value = identifier.trim();
-        int dot = value.lastIndexOf(Symbol.C_DOT);
-        if (dot >= 0) {
-            value = value.substring(dot + 1);
-        }
-        if (value.length() > 1 && ((value.startsWith(Symbol.DOUBLE_QUOTES) && value.endsWith(Symbol.DOUBLE_QUOTES))
-                || (value.startsWith(Symbol.BACKTICK) && value.endsWith(Symbol.BACKTICK))
-                || (value.startsWith(Symbol.BRACKET_LEFT) && value.endsWith(Symbol.BRACKET_RIGHT)))) {
-            value = value.substring(1, value.length() - 1);
-        }
-        return value;
-    }
-
-    /**
-     * Joins physical columns for diagnostics.
-     */
-    private static String joined(List<String> columns) {
-        return columns == null ? null : String.join(Symbol.COMMA, columns);
-    }
-
-    /**
-     * Creates an immutable normalized word set.
-     */
-    private static Set<String> words(String... values) {
-        Set<String> words = new LinkedHashSet<>();
-        if (values != null) {
-            for (String value : values) {
-                String normalized = normalize(value);
-                if (!normalized.isEmpty()) {
-                    words.add(normalized);
-                }
-            }
-        }
-        return Set.copyOf(words);
-    }
-
-    /**
-     * Normalizes a keyword.
-     */
-    private static String normalize(String value) {
-        return value == null ? Normal.EMPTY : value.trim().toUpperCase(Locale.ROOT);
-    }
-
-    /**
-     * Normalizes an optional JDBC value.
-     */
-    private static String value(String value) {
-        return value == null ? Normal.EMPTY : value;
-    }
-
-    /**
-     * Formats an optional diagnostic value.
-     */
-    private static String display(String value) {
-        return value == null || value.isBlank() ? Symbol.MINUS : value;
     }
 
     /**

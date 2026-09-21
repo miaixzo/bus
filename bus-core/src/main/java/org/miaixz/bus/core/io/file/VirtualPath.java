@@ -376,8 +376,8 @@ public class VirtualPath implements Path {
     public Iterator<Path> iterator() {
         return new Iterator<>() {
 
-            private int index = 0;
             private final List<String> parts = CharsBacker.splitTrim(path, Symbol.SLASH);
+            private int index = 0;
 
             /**
              * Returns true if the iteration has more elements.

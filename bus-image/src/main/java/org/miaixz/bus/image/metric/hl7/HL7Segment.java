@@ -40,9 +40,6 @@ import org.miaixz.bus.core.lang.Symbol;
  */
 public class HL7Segment implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852265199583L;
 

@@ -43,24 +43,38 @@ public class MurmurHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[
 
     // Constants for 32-bit variant
     private static final int C1_32 = 0xcc9e2d51;
+
     private static final int C2_32 = 0x1b873593;
+
     private static final int R1_32 = 15;
+
     private static final int R2_32 = 13;
+
     private static final int M_32 = 5;
+
     private static final int N_32 = 0xe6546b64;
 
     // Constants for 128-bit variant
     private static final long C1 = 0x87c37b91114253d5L;
+
     private static final long C2 = 0x4cf5ad432745937fL;
+
     private static final int R1 = 31;
+
     private static final int R2 = 27;
+
     private static final int R3 = 33;
+
     private static final int M = 5;
+
     private static final int N1 = 0x52dce729;
+
     private static final int N2 = 0x38495ab5;
 
     private static final int DEFAULT_SEED = 0;
+
     private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
+
     private static final ByteOrder DEFAULT_ORDER = ByteOrder.LITTLE_ENDIAN;
 
     /**

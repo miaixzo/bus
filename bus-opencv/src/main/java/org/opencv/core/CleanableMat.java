@@ -29,8 +29,6 @@ public abstract class CleanableMat {
     // A native memory cleaner for the OpenCV library
     public static Cleaner cleaner = Cleaner.create();
 
-    private static native void n_delete(long nativeObj);
-
     public final long nativeObj;
 
     public CleanableMat(long obj) {
@@ -43,5 +41,7 @@ public abstract class CleanableMat {
         long nativeObjCopy = nativeObj;
         cleaner.register(this, () -> n_delete(nativeObjCopy));
     }
+
+    private static native void n_delete(long nativeObj);
 
 }

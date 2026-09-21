@@ -116,56 +116,6 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
     }
 
     /**
-     * Returns the source address.
-     *
-     * @return normalized source IP text, or an empty string for {@code UNKNOWN}
-     */
-    @Override
-    public String source() {
-        return source;
-    }
-
-    /**
-     * Returns the target address.
-     *
-     * @return normalized target IP text, or an empty string for {@code UNKNOWN}
-     */
-    @Override
-    public String target() {
-        return target;
-    }
-
-    /**
-     * Returns the source port.
-     *
-     * @return source TCP port, or {@code 0} for {@code UNKNOWN}
-     */
-    @Override
-    public int sourcePort() {
-        return sourcePort;
-    }
-
-    /**
-     * Returns the target port.
-     *
-     * @return target TCP port, or {@code 0} for {@code UNKNOWN}
-     */
-    @Override
-    public int targetPort() {
-        return targetPort;
-    }
-
-    /**
-     * Returns the cached source address.
-     *
-     * @return cached TCP source endpoint, or {@code null} for {@code UNKNOWN}
-     */
-    @Override
-    public Address sourceAddress() {
-        return sourceAddress;
-    }
-
-    /**
      * Validates a header line.
      *
      * @param line complete header line without a terminator
@@ -314,6 +264,56 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
                 StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
                 () -> new ValidateException(name + " must be non-blank and single-line"));
         return checked;
+    }
+
+    /**
+     * Returns the source address.
+     *
+     * @return normalized source IP text, or an empty string for {@code UNKNOWN}
+     */
+    @Override
+    public String source() {
+        return source;
+    }
+
+    /**
+     * Returns the target address.
+     *
+     * @return normalized target IP text, or an empty string for {@code UNKNOWN}
+     */
+    @Override
+    public String target() {
+        return target;
+    }
+
+    /**
+     * Returns the source port.
+     *
+     * @return source TCP port, or {@code 0} for {@code UNKNOWN}
+     */
+    @Override
+    public int sourcePort() {
+        return sourcePort;
+    }
+
+    /**
+     * Returns the target port.
+     *
+     * @return target TCP port, or {@code 0} for {@code UNKNOWN}
+     */
+    @Override
+    public int targetPort() {
+        return targetPort;
+    }
+
+    /**
+     * Returns the cached source address.
+     *
+     * @return cached TCP source endpoint, or {@code null} for {@code UNKNOWN}
+     */
+    @Override
+    public Address sourceAddress() {
+        return sourceAddress;
     }
 
 }

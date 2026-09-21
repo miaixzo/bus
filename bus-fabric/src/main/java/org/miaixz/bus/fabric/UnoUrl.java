@@ -230,392 +230,6 @@ public class UnoUrl {
     }
 
     /**
-     * Returns the parsed address.
-     *
-     * @return parsed protocol address including normalized path
-     */
-    public Address address() {
-        return address;
-    }
-
-    /**
-     * Returns the URL scheme.
-     *
-     * @return scheme
-     */
-    public String scheme() {
-        return address.scheme();
-    }
-
-    /**
-     * Returns the URL host.
-     *
-     * @return host
-     */
-    public String host() {
-        return address.host();
-    }
-
-    /**
-     * Returns the effective URL port.
-     *
-     * @return port
-     */
-    public int port() {
-        return address.port();
-    }
-
-    /**
-     * Returns the normalized path.
-     *
-     * @return path
-     */
-    public String path() {
-        return path;
-    }
-
-    /**
-     * Returns a query snapshot.
-     *
-     * @return immutable grouped snapshot of decoded query values
-     */
-    public Map<String, List<String>> query() {
-        return immutableQuery(query);
-    }
-
-    /**
-     * Reads the first value for a query key.
-     *
-     * @param key query key
-     * @return first value or null
-     */
-    public String query(final String key) {
-        final List<String> values = query.get(validateKey(key));
-        return values == null || values.isEmpty() ? null : values.get(0);
-    }
-
-    /**
-     * Reads the first value for a query parameter name.
-     *
-     * @param name query key
-     * @return first value or null
-     */
-    public String queryParameter(final String name) {
-        return query(name);
-    }
-
-    /**
-     * Returns a URL with an appended query value.
-     *
-     * @param key   query key
-     * @param value query value
-     * @return new URL with the decoded query pair appended in wire order
-     */
-    public UnoUrl withQuery(final String key, final String value) {
-        validateKey(key);
-        if (value == null) {
-            throw new ValidateException("Query value must not be null");
-        }
-        final ArrayList<QueryParameter> copy = new ArrayList<>(queryParameters);
-        copy.add(new QueryParameter(key, value));
-        return new UnoUrl(address, path, copy, username, password, fragment, null);
-    }
-
-    /**
-     * Returns a URL without all values for a query key.
-     *
-     * @param key query key
-     * @return new URL with every matching decoded query pair removed
-     */
-    public UnoUrl withoutQuery(final String key) {
-        final String checkedKey = validateKey(key);
-        final ArrayList<QueryParameter> copy = new ArrayList<>();
-        for (final QueryParameter parameter : queryParameters) {
-            if (!parameter.name().equals(checkedKey)) {
-                copy.add(parameter);
-            }
-        }
-        return new UnoUrl(address, path, copy, username, password, fragment, null);
-    }
-
-    /**
-     * Returns the encoded URL.
-     *
-     * @return encoded URL
-     */
-    public String encoded() {
-        String current = encoded;
-        if (current != null) {
-            return current;
-        }
-        current = buildEncoded(address, path, queryParameters, username, password, fragment);
-        encoded = current;
-        return current;
-    }
-
-    /**
-     * Returns encoded username.
-     *
-     * @return encoded username
-     */
-    public String encodedUsername() {
-        return username.isEmpty() ? Normal.EMPTY : encode(username);
-    }
-
-    /**
-     * Returns decoded username.
-     *
-     * @return username
-     */
-    public String username() {
-        return username;
-    }
-
-    /**
-     * Returns encoded password.
-     *
-     * @return encoded password
-     */
-    public String encodedPassword() {
-        return password.isEmpty() ? Normal.EMPTY : encode(password);
-    }
-
-    /**
-     * Returns decoded password.
-     *
-     * @return password
-     */
-    public String password() {
-        return password;
-    }
-
-    /**
-     * Returns decoded path segments.
-     *
-     * @return path segments
-     */
-    public List<String> pathSegments() {
-        if (Symbol.SLASH.equals(path)) {
-            return List.of(Normal.EMPTY);
-        }
-        return List.of(path.substring(1).split(Symbol.SLASH, -1));
-    }
-
-    /**
-     * Returns encoded path segments.
-     *
-     * @return encoded path segments
-     */
-    public List<String> encodedPathSegments() {
-        return pathSegments().stream().map(UnoUrl::encode).toList();
-    }
-
-    /**
-     * Returns query pair count.
-     *
-     * @return query size
-     */
-    public int querySize() {
-        return queryParameters.size();
-    }
-
-    /**
-     * Returns query parameter names in first-seen order.
-     *
-     * @return query names
-     */
-    public Set<String> queryParameterNames() {
-        final LinkedHashSet<String> names = new LinkedHashSet<>();
-        queryParameters.forEach(parameter -> names.add(parameter.name()));
-        return Collections.unmodifiableSet(names);
-    }
-
-    /**
-     * Returns values for a query name in URL order.
-     *
-     * @param name query name
-     * @return query values
-     */
-    public List<String> queryParameterValues(final String name) {
-        final String checkedName = validateKey(name);
-        final ArrayList<String> values = new ArrayList<>();
-        for (final QueryParameter parameter : queryParameters) {
-            if (parameter.name().equals(checkedName)) {
-                values.add(parameter.value());
-            }
-        }
-        return List.copyOf(values);
-    }
-
-    /**
-     * Returns query name by pair index.
-     *
-     * @param index pair index
-     * @return query name
-     */
-    public String queryParameterName(final int index) {
-        return queryParameters.get(index).name();
-    }
-
-    /**
-     * Returns query value by pair index.
-     *
-     * @param index pair index
-     * @return query value
-     */
-    public String queryParameterValue(final int index) {
-        return queryParameters.get(index).value();
-    }
-
-    /**
-     * Returns encoded fragment.
-     *
-     * @return encoded fragment or null
-     */
-    public String encodedFragment() {
-        return fragment == null ? null : encode(fragment);
-    }
-
-    /**
-     * Returns decoded fragment.
-     *
-     * @return decoded fragment or null
-     */
-    public String fragment() {
-        return fragment;
-    }
-
-    /**
-     * Returns a redacted URL for logs.
-     *
-     * @return redacted URL
-     */
-    public String redact() {
-        return builder().scheme(scheme()).host(host()).port(port()).path("/...").build().encoded();
-    }
-
-    /**
-     * Resolves a relative or absolute link against this URL.
-     *
-     * @param link relative or absolute URI reference
-     * @return resolved URL, or null when invalid
-     */
-    public UnoUrl resolve(final String link) {
-        if (link == null) {
-            return null;
-        }
-        try {
-            return parse(toUri().resolve(link).toString());
-        } catch (final RuntimeException e) {
-            return null;
-        }
-    }
-
-    /**
-     * Creates a builder initialized from this URL.
-     *
-     * @return builder initialized from every decoded component of this URL
-     */
-    public Builder newBuilder() {
-        final Builder builder = builder().scheme(scheme()).host(host()).port(port()).path(path).username(username)
-                .password(password);
-        if (fragment != null) {
-            builder.fragment(fragment);
-        }
-        queryParameters.forEach(parameter -> builder.query(parameter.name(), parameter.value()));
-        return builder;
-    }
-
-    /**
-     * Resolves a link and returns an initialized builder.
-     *
-     * @param link relative or absolute URI reference
-     * @return builder, or null when invalid
-     */
-    public Builder newBuilder(final String link) {
-        final UnoUrl resolved = resolve(link);
-        return resolved == null ? null : resolved.newBuilder();
-    }
-
-    /**
-     * Converts this URL to a URI.
-     *
-     * @return URI created from the canonical encoded URL
-     */
-    public URI toUri() {
-        final URI cached = uri;
-        if (cached != null) {
-            return cached;
-        }
-        try {
-            final URI parsed = new URI(encoded());
-            uri = parsed;
-            return parsed;
-        } catch (final URISyntaxException e) {
-            throw new ProtocolException("Unable to create URL URI", e);
-        }
-    }
-
-    /**
-     * Converts this URL to a URI.
-     *
-     * @return URI created from the canonical encoded URL
-     */
-    public URI uri() {
-        return toUri();
-    }
-
-    /**
-     * Returns the stable authority including the effective port.
-     *
-     * @return host and port in authority form
-     */
-    public String authority() {
-        String current = authority;
-        if (current == null) {
-            current = host() + Symbol.C_COLON + port();
-            authority = current;
-        }
-        return current;
-    }
-
-    /**
-     * Returns the encoded origin-form path and query without a fragment.
-     *
-     * @return encoded HTTP request target
-     */
-    public String requestTarget() {
-        String current = requestTarget;
-        if (current == null) {
-            final String value = encoded();
-            final int authorityStart = value.indexOf("://") + Normal._3;
-            final int fragmentStart = value.indexOf(Symbol.C_HASH, authorityStart);
-            final int end = fragmentStart < Normal._0 ? value.length() : fragmentStart;
-            final int pathStart = value.indexOf(Symbol.C_SLASH, authorityStart);
-            final int queryStart = value.indexOf(Symbol.C_QUESTION_MARK, authorityStart);
-            if (pathStart >= Normal._0 && pathStart < end) {
-                current = value.substring(pathStart, end);
-            } else if (queryStart >= Normal._0 && queryStart < end) {
-                current = Symbol.SLASH + value.substring(queryStart, end);
-            } else {
-                current = Symbol.SLASH;
-            }
-            requestTarget = current;
-        }
-        return current;
-    }
-
-    /**
-     * Returns the canonical encoded URL text.
-     *
-     * @return encoded URL
-     */
-    @Override
-    public String toString() {
-        return encoded();
-    }
-
-    /**
      * Builds the encoded URL.
      *
      * @param address  normalized scheme, host, and effective port
@@ -1038,6 +652,392 @@ public class UnoUrl {
     }
 
     /**
+     * Returns the parsed address.
+     *
+     * @return parsed protocol address including normalized path
+     */
+    public Address address() {
+        return address;
+    }
+
+    /**
+     * Returns the URL scheme.
+     *
+     * @return scheme
+     */
+    public String scheme() {
+        return address.scheme();
+    }
+
+    /**
+     * Returns the URL host.
+     *
+     * @return host
+     */
+    public String host() {
+        return address.host();
+    }
+
+    /**
+     * Returns the effective URL port.
+     *
+     * @return port
+     */
+    public int port() {
+        return address.port();
+    }
+
+    /**
+     * Returns the normalized path.
+     *
+     * @return path
+     */
+    public String path() {
+        return path;
+    }
+
+    /**
+     * Returns a query snapshot.
+     *
+     * @return immutable grouped snapshot of decoded query values
+     */
+    public Map<String, List<String>> query() {
+        return immutableQuery(query);
+    }
+
+    /**
+     * Reads the first value for a query key.
+     *
+     * @param key query key
+     * @return first value or null
+     */
+    public String query(final String key) {
+        final List<String> values = query.get(validateKey(key));
+        return values == null || values.isEmpty() ? null : values.get(0);
+    }
+
+    /**
+     * Reads the first value for a query parameter name.
+     *
+     * @param name query key
+     * @return first value or null
+     */
+    public String queryParameter(final String name) {
+        return query(name);
+    }
+
+    /**
+     * Returns a URL with an appended query value.
+     *
+     * @param key   query key
+     * @param value query value
+     * @return new URL with the decoded query pair appended in wire order
+     */
+    public UnoUrl withQuery(final String key, final String value) {
+        validateKey(key);
+        if (value == null) {
+            throw new ValidateException("Query value must not be null");
+        }
+        final ArrayList<QueryParameter> copy = new ArrayList<>(queryParameters);
+        copy.add(new QueryParameter(key, value));
+        return new UnoUrl(address, path, copy, username, password, fragment, null);
+    }
+
+    /**
+     * Returns a URL without all values for a query key.
+     *
+     * @param key query key
+     * @return new URL with every matching decoded query pair removed
+     */
+    public UnoUrl withoutQuery(final String key) {
+        final String checkedKey = validateKey(key);
+        final ArrayList<QueryParameter> copy = new ArrayList<>();
+        for (final QueryParameter parameter : queryParameters) {
+            if (!parameter.name().equals(checkedKey)) {
+                copy.add(parameter);
+            }
+        }
+        return new UnoUrl(address, path, copy, username, password, fragment, null);
+    }
+
+    /**
+     * Returns the encoded URL.
+     *
+     * @return encoded URL
+     */
+    public String encoded() {
+        String current = encoded;
+        if (current != null) {
+            return current;
+        }
+        current = buildEncoded(address, path, queryParameters, username, password, fragment);
+        encoded = current;
+        return current;
+    }
+
+    /**
+     * Returns encoded username.
+     *
+     * @return encoded username
+     */
+    public String encodedUsername() {
+        return username.isEmpty() ? Normal.EMPTY : encode(username);
+    }
+
+    /**
+     * Returns decoded username.
+     *
+     * @return username
+     */
+    public String username() {
+        return username;
+    }
+
+    /**
+     * Returns encoded password.
+     *
+     * @return encoded password
+     */
+    public String encodedPassword() {
+        return password.isEmpty() ? Normal.EMPTY : encode(password);
+    }
+
+    /**
+     * Returns decoded password.
+     *
+     * @return password
+     */
+    public String password() {
+        return password;
+    }
+
+    /**
+     * Returns decoded path segments.
+     *
+     * @return path segments
+     */
+    public List<String> pathSegments() {
+        if (Symbol.SLASH.equals(path)) {
+            return List.of(Normal.EMPTY);
+        }
+        return List.of(path.substring(1).split(Symbol.SLASH, -1));
+    }
+
+    /**
+     * Returns encoded path segments.
+     *
+     * @return encoded path segments
+     */
+    public List<String> encodedPathSegments() {
+        return pathSegments().stream().map(UnoUrl::encode).toList();
+    }
+
+    /**
+     * Returns query pair count.
+     *
+     * @return query size
+     */
+    public int querySize() {
+        return queryParameters.size();
+    }
+
+    /**
+     * Returns query parameter names in first-seen order.
+     *
+     * @return query names
+     */
+    public Set<String> queryParameterNames() {
+        final LinkedHashSet<String> names = new LinkedHashSet<>();
+        queryParameters.forEach(parameter -> names.add(parameter.name()));
+        return Collections.unmodifiableSet(names);
+    }
+
+    /**
+     * Returns values for a query name in URL order.
+     *
+     * @param name query name
+     * @return query values
+     */
+    public List<String> queryParameterValues(final String name) {
+        final String checkedName = validateKey(name);
+        final ArrayList<String> values = new ArrayList<>();
+        for (final QueryParameter parameter : queryParameters) {
+            if (parameter.name().equals(checkedName)) {
+                values.add(parameter.value());
+            }
+        }
+        return List.copyOf(values);
+    }
+
+    /**
+     * Returns query name by pair index.
+     *
+     * @param index pair index
+     * @return query name
+     */
+    public String queryParameterName(final int index) {
+        return queryParameters.get(index).name();
+    }
+
+    /**
+     * Returns query value by pair index.
+     *
+     * @param index pair index
+     * @return query value
+     */
+    public String queryParameterValue(final int index) {
+        return queryParameters.get(index).value();
+    }
+
+    /**
+     * Returns encoded fragment.
+     *
+     * @return encoded fragment or null
+     */
+    public String encodedFragment() {
+        return fragment == null ? null : encode(fragment);
+    }
+
+    /**
+     * Returns decoded fragment.
+     *
+     * @return decoded fragment or null
+     */
+    public String fragment() {
+        return fragment;
+    }
+
+    /**
+     * Returns a redacted URL for logs.
+     *
+     * @return redacted URL
+     */
+    public String redact() {
+        return builder().scheme(scheme()).host(host()).port(port()).path("/...").build().encoded();
+    }
+
+    /**
+     * Resolves a relative or absolute link against this URL.
+     *
+     * @param link relative or absolute URI reference
+     * @return resolved URL, or null when invalid
+     */
+    public UnoUrl resolve(final String link) {
+        if (link == null) {
+            return null;
+        }
+        try {
+            return parse(toUri().resolve(link).toString());
+        } catch (final RuntimeException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Creates a builder initialized from this URL.
+     *
+     * @return builder initialized from every decoded component of this URL
+     */
+    public Builder newBuilder() {
+        final Builder builder = builder().scheme(scheme()).host(host()).port(port()).path(path).username(username)
+                .password(password);
+        if (fragment != null) {
+            builder.fragment(fragment);
+        }
+        queryParameters.forEach(parameter -> builder.query(parameter.name(), parameter.value()));
+        return builder;
+    }
+
+    /**
+     * Resolves a link and returns an initialized builder.
+     *
+     * @param link relative or absolute URI reference
+     * @return builder, or null when invalid
+     */
+    public Builder newBuilder(final String link) {
+        final UnoUrl resolved = resolve(link);
+        return resolved == null ? null : resolved.newBuilder();
+    }
+
+    /**
+     * Converts this URL to a URI.
+     *
+     * @return URI created from the canonical encoded URL
+     */
+    public URI toUri() {
+        final URI cached = uri;
+        if (cached != null) {
+            return cached;
+        }
+        try {
+            final URI parsed = new URI(encoded());
+            uri = parsed;
+            return parsed;
+        } catch (final URISyntaxException e) {
+            throw new ProtocolException("Unable to create URL URI", e);
+        }
+    }
+
+    /**
+     * Converts this URL to a URI.
+     *
+     * @return URI created from the canonical encoded URL
+     */
+    public URI uri() {
+        return toUri();
+    }
+
+    /**
+     * Returns the stable authority including the effective port.
+     *
+     * @return host and port in authority form
+     */
+    public String authority() {
+        String current = authority;
+        if (current == null) {
+            current = host() + Symbol.C_COLON + port();
+            authority = current;
+        }
+        return current;
+    }
+
+    /**
+     * Returns the encoded origin-form path and query without a fragment.
+     *
+     * @return encoded HTTP request target
+     */
+    public String requestTarget() {
+        String current = requestTarget;
+        if (current == null) {
+            final String value = encoded();
+            final int authorityStart = value.indexOf("://") + Normal._3;
+            final int fragmentStart = value.indexOf(Symbol.C_HASH, authorityStart);
+            final int end = fragmentStart < Normal._0 ? value.length() : fragmentStart;
+            final int pathStart = value.indexOf(Symbol.C_SLASH, authorityStart);
+            final int queryStart = value.indexOf(Symbol.C_QUESTION_MARK, authorityStart);
+            if (pathStart >= Normal._0 && pathStart < end) {
+                current = value.substring(pathStart, end);
+            } else if (queryStart >= Normal._0 && queryStart < end) {
+                current = Symbol.SLASH + value.substring(queryStart, end);
+            } else {
+                current = Symbol.SLASH;
+            }
+            requestTarget = current;
+        }
+        return current;
+    }
+
+    /**
+     * Returns the canonical encoded URL text.
+     *
+     * @return encoded URL
+     */
+    @Override
+    public String toString() {
+        return encoded();
+    }
+
+    /**
      * Most recent immutable parse result.
      *
      * @param source normalized source text
@@ -1061,6 +1061,16 @@ public class UnoUrl {
      * @author Kimi Liu
      */
     public static class Builder {
+
+        /**
+         * Query candidates in URL order.
+         */
+        private final List<QueryParameter> queryParameters = new ArrayList<>();
+
+        /**
+         * Query candidates.
+         */
+        private final LinkedHashMap<String, List<String>> query = new LinkedHashMap<>();
 
         /**
          * Scheme candidate.
@@ -1096,16 +1106,6 @@ public class UnoUrl {
          * Fragment candidate.
          */
         private String fragment;
-
-        /**
-         * Query candidates in URL order.
-         */
-        private final List<QueryParameter> queryParameters = new ArrayList<>();
-
-        /**
-         * Query candidates.
-         */
-        private final LinkedHashMap<String, List<String>> query = new LinkedHashMap<>();
 
         /**
          * Creates a URL builder.

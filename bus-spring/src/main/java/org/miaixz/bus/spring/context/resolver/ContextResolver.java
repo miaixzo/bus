@@ -57,47 +57,6 @@ public final class ContextResolver {
     }
 
     /**
-     * Resolves one immutable context snapshot from normalized request-boundary values.
-     *
-     * @param requestId        request correlation identifier
-     * @param tokenCredential  Bearer-token credential
-     * @param apiKeyCredential API-key credential
-     * @return resolved immutable context snapshot
-     * @throws IllegalStateException when providers return conflicting authenticated subjects
-     */
-    public ContextState resolve(
-            String requestId,
-            Http.Auth.Credential tokenCredential,
-            Http.Auth.Credential apiKeyCredential) {
-        ContextState initial = ContextState.of(requestId, null, tokenCredential, apiKeyCredential);
-        Authorize authorize = resolveAuthorize(initial);
-        return authorize == null ? initial : initial.withAuthorize(authorize);
-    }
-
-    /**
-     * Invokes every ordered provider and selects a consistent authenticated subject.
-     *
-     * @param initial initial context containing correlation and credential values
-     * @return detached authenticated subject, or {@code null} when no provider authenticates the request
-     * @throws IllegalStateException when two providers return conflicting subjects
-     */
-    private Authorize resolveAuthorize(ContextState initial) {
-        Authorize selected = null;
-        for (ContextProvider provider : providers) {
-            Authorize candidate = provider.getAuthorize(initial);
-            if (candidate == null) {
-                continue;
-            }
-            if (selected == null) {
-                selected = ObjectKit.clone(candidate);
-            } else if (!equivalent(selected, candidate)) {
-                throw new IllegalStateException("Conflicting authenticated context providers");
-            }
-        }
-        return selected;
-    }
-
-    /**
      * Compares all non-static subject fields after normalizing textual values.
      *
      * @param left  first authenticated subject
@@ -136,6 +95,47 @@ public final class ContextResolver {
      */
     private static Object normalizedValue(Object value) {
         return value instanceof String string ? (StringKit.isBlank(string) ? null : string.trim()) : value;
+    }
+
+    /**
+     * Resolves one immutable context snapshot from normalized request-boundary values.
+     *
+     * @param requestId        request correlation identifier
+     * @param tokenCredential  Bearer-token credential
+     * @param apiKeyCredential API-key credential
+     * @return resolved immutable context snapshot
+     * @throws IllegalStateException when providers return conflicting authenticated subjects
+     */
+    public ContextState resolve(
+            String requestId,
+            Http.Auth.Credential tokenCredential,
+            Http.Auth.Credential apiKeyCredential) {
+        ContextState initial = ContextState.of(requestId, null, tokenCredential, apiKeyCredential);
+        Authorize authorize = resolveAuthorize(initial);
+        return authorize == null ? initial : initial.withAuthorize(authorize);
+    }
+
+    /**
+     * Invokes every ordered provider and selects a consistent authenticated subject.
+     *
+     * @param initial initial context containing correlation and credential values
+     * @return detached authenticated subject, or {@code null} when no provider authenticates the request
+     * @throws IllegalStateException when two providers return conflicting subjects
+     */
+    private Authorize resolveAuthorize(ContextState initial) {
+        Authorize selected = null;
+        for (ContextProvider provider : providers) {
+            Authorize candidate = provider.getAuthorize(initial);
+            if (candidate == null) {
+                continue;
+            }
+            if (selected == null) {
+                selected = ObjectKit.clone(candidate);
+            } else if (!equivalent(selected, candidate)) {
+                throw new IllegalStateException("Conflicting authenticated context providers");
+            }
+        }
+        return selected;
     }
 
 }

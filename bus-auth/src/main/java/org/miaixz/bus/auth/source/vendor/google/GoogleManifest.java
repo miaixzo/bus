@@ -69,6 +69,7 @@ public class GoogleManifest implements VendorManifest<GoogleOptions> {
      * Internal identifier of the Google Workspace Realm Variant.
      */
     public static final Vendor.Variant WORKSPACE = new Vendor.Variant("workspace");
+
     /**
      * Ordered read-only Google Admin SDK scopes delegated to the configured administrator.
      */
@@ -77,6 +78,7 @@ public class GoogleManifest implements VendorManifest<GoogleOptions> {
             "https://www.googleapis.com/auth/admin.directory.group.readonly",
             "https://www.googleapis.com/auth/admin.directory.orgunit.readonly",
             "https://www.googleapis.com/auth/admin.directory.rolemanagement.readonly");
+
     /**
      * Exact public operations supported by the compiled Google Source.
      */
@@ -89,6 +91,7 @@ public class GoogleManifest implements VendorManifest<GoogleOptions> {
             OpenIdClientScheme.DISCOVERY,
             OpenIdClientScheme.JWK_SET,
             OpenIdClientScheme.USERINFO));
+
     /**
      * Frozen implementation-neutral coverage description for the Google Workspace Variant.
      */
@@ -103,6 +106,7 @@ public class GoogleManifest implements VendorManifest<GoogleOptions> {
                     Builder.REALM_LIMITATION_UNPAGED_REPLAY,
                     Builder.REALM_LIMITATION_REPLAY_CHANGE_FAILURE,
                     Builder.REALM_LIMITATION_SNAPSHOT_ONLY));
+
     /**
      * Exact implementation-neutral capabilities exposed by the Workspace Realm Variant.
      */
