@@ -50,6 +50,13 @@ public abstract class AbstractElement implements IniElement {
      */
     private IniComment comment;
 
+    /**
+     * Creates an element without an associated comment.
+     *
+     * @param value         parsed element value
+     * @param originalValue original source value
+     * @param lineNumber    source line number
+     */
     public AbstractElement(String value, String originalValue, int lineNumber) {
         this.value = value;
         this.lineNumber = lineNumber;

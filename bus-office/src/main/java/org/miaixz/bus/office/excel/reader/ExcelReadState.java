@@ -28,6 +28,9 @@ import java.util.List;
  */
 public class ExcelReadState {
 
+    /**
+     * Creates an Excel read-state model container.
+     */
     public ExcelReadState() {
         // No initialization required.
     }

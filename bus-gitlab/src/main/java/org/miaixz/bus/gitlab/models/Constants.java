@@ -3258,6 +3258,12 @@ public interface Constants {
          */
         private final Class<T> resultType;
 
+        /**
+         * Creates a search scope mapping.
+         *
+         * @param jsonName   the JSON value used by the GitLab API
+         * @param resultType the Java type returned for the scope
+         */
         public SearchScope(String jsonName, Class<T> resultType) {
             this.jsonName = jsonName;
             this.resultType = resultType;

@@ -46,7 +46,7 @@ public class ImageConversion {
     private static final int[] BANDED_RGB_OFFSETS = { 0, 0, 0 };
 
     /**
-     * * Creates a new instance.
+     * Creates an image conversion utility.
      */
     public ImageConversion() {
         // No initialization required.
@@ -76,12 +76,20 @@ public class ImageConversion {
         return new BufferedImage(colorModel, raster, false, null);
     }
 
+    /**
+     * Converts a planar image to a buffered image.
+     *
+     * @param matrix the planar image to convert, or {@code null}
+     * @return the converted image, or {@code null} when the input is {@code null}
+     */
     public static BufferedImage toBufferedImage(PlanarImage matrix) {
         return matrix == null ? null : toBufferedImage(matrix.toMat());
     }
 
     /**
      * Releases the native memory of a Mat, ignoring null.
+     *
+     * @param mat the matrix to release, or {@code null}
      */
     public static void releaseMat(Mat mat) {
         if (mat != null) {
@@ -91,6 +99,8 @@ public class ImageConversion {
 
     /**
      * Releases the native memory of a PlanarImage, ignoring null.
+     *
+     * @param img the planar image to release, or {@code null}
      */
     public static void releasePlanarImage(PlanarImage img) {
         if (img != null) {
@@ -101,6 +111,8 @@ public class ImageConversion {
     /**
      * Converts an OpenCV type to the corresponding DataBuffer type.
      *
+     * @param cvType the OpenCV matrix type
+     * @return the corresponding {@link DataBuffer} type constant
      * @throws UnsupportedOperationException if the depth is not supported
      */
     public static int convertToDataType(int cvType) {
@@ -115,14 +127,35 @@ public class ImageConversion {
         };
     }
 
+    /**
+     * Converts a rendered image to an OpenCV matrix using BGR channel order.
+     *
+     * @param img the image to convert
+     * @return the converted matrix
+     */
     public static ImageCV toMat(RenderedImage img) {
         return toMat(img, null, true, false);
     }
 
+    /**
+     * Converts a region of a rendered image to an OpenCV matrix using BGR channel order.
+     *
+     * @param img    the image to convert
+     * @param region the source region, or {@code null} for the complete image
+     * @return the converted matrix
+     */
     public static ImageCV toMat(RenderedImage img, Rectangle region) {
         return toMat(img, region, true, false);
     }
 
+    /**
+     * Converts a region of a rendered image to an OpenCV matrix.
+     *
+     * @param img    the image to convert
+     * @param region the source region, or {@code null} for the complete image
+     * @param toBGR  whether three-channel pixels should use BGR order
+     * @return the converted matrix
+     */
     public static ImageCV toMat(RenderedImage img, Rectangle region, boolean toBGR) {
         return toMat(img, region, toBGR, false);
     }
@@ -149,12 +182,22 @@ public class ImageConversion {
         return fromSamples(raster, toBGR, forceShortType);
     }
 
+    /**
+     * Returns the bounds of a planar image.
+     *
+     * @param img the image whose bounds are requested
+     * @return a rectangle covering the complete image
+     */
     public static Rectangle getBounds(PlanarImage img) {
         return new Rectangle(0, 0, img.width(), img.height());
     }
 
     /**
      * Renders a RenderedImage into a new BufferedImage of the given type.
+     *
+     * @param src       the source image
+     * @param imageType the target {@link BufferedImage} type
+     * @return the rendered buffered image
      */
     public static BufferedImage convertTo(RenderedImage src, int imageType) {
         var dst = new BufferedImage(src.getWidth(), src.getHeight(), imageType);
@@ -169,6 +212,9 @@ public class ImageConversion {
 
     /**
      * True for 1 bit per pixel, single band sample models.
+     *
+     * @param sm the sample model to inspect
+     * @return {@code true} when the model represents one-bit single-band pixels
      */
     public static boolean isBinary(SampleModel sm) {
         return sm instanceof MultiPixelPackedSampleModel model && model.getPixelBitStride() == 1
@@ -177,6 +223,9 @@ public class ImageConversion {
 
     /**
      * Returns the image itself when it is a BufferedImage, otherwise copies it into one.
+     *
+     * @param img the rendered image to convert
+     * @return the original buffered image or a converted copy
      */
     public static BufferedImage convertRenderedImage(RenderedImage img) {
         if (img == null) {
@@ -195,6 +244,9 @@ public class ImageConversion {
     /**
      * Unpacks 1-bit pixels into one byte per pixel (0 or 1).
      *
+     * @param raster the binary raster
+     * @param rect   the region to unpack
+     * @return unpacked pixel values
      * @throws IllegalArgumentException if the raster is not binary
      */
     public static byte[] getUnpackedBinaryData(Raster raster, Rectangle rect) {
