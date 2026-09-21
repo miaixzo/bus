@@ -19,16 +19,14 @@
 */
 /**
  * Cross-cutting infrastructure shared by Cortex packages: structured audit logging, distributed identity generation,
- * watch dispatch, reliable change-log records, and instance lifecycle state tracking.
+ * watch dispatch, and reliable change-log records.
  * <p>
  * {@code AuditLogger} writes JSON audit events with optional detail payloads to CacheX under time-suffixed audit keys
  * and retains them for seven days. The {@code magic.identity} subpackage provides {@code CortexIdentity},
  * {@code IdGenerator}, {@code Sequence}, and {@code Fingerprint} for shared identity normalization, IDs, ordered
  * counters, and stable instance fingerprints. The {@code magic.watch} subpackage owns watch subscription lifecycle,
  * dispatch ordering, async fan-out, space limits, and per-watch backlog handling. The {@code magic.event} subpackage
- * owns the first-stage Cortex outbox abstractions and cache fallback store. The {@code magic.state} subpackage provides
- * {@code InstanceState} (UP, DOWN, UNKNOWN, STARTING, and MAINTENANCE) plus mutable {@code InstanceStateHistory}
- * records that capture observed state transitions with timestamps and diagnostic metadata.
+ * owns the first-stage Cortex outbox abstractions and cache fallback store.
  *
  * @author Kimi Liu
  */

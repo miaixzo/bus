@@ -462,7 +462,7 @@ org.miaixz.bus.cortex
 ├── bridge/        bus-vortex sync (VortexBridge, SyncEvent, ApiAssetsConverter)
 ├── guard/         Security & protection (RateLimiter, CircuitBreaker, AccessTokenStore, AccessGuard, SpaceGuard)
 ├── builtin/       Default implementations (CompositeProber, DefaultPublisher, DefaultNotifier)
-└── magic/         Utilities (IdGenerator, Sequence, Fingerprint, AuditLogger, InstanceState)
+└── magic/         Utilities (IdGenerator, Sequence, Fingerprint, AuditLogger)
 ```
 
 -----

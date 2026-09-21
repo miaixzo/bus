@@ -53,7 +53,6 @@ module bus.cortex {
     exports org.miaixz.bus.cortex.magic.event;
     exports org.miaixz.bus.cortex.magic.identity;
     exports org.miaixz.bus.cortex.magic.runtime;
-    exports org.miaixz.bus.cortex.magic.state;
     exports org.miaixz.bus.cortex.magic.watch;
     exports org.miaixz.bus.cortex.registry;
     exports org.miaixz.bus.cortex.registry.api;

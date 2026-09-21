@@ -37,6 +37,60 @@ import org.miaixz.bus.cortex.setting.item.Item;
 public class ItemRevision extends Item {
 
     /**
+     * Immutable operation represented by a revision.
+     */
+    public enum Operation {
+        /**
+         * The revision creates or replaces the active item content.
+         */
+        UPSERT,
+        /**
+         * The revision archives the item through a deletion tombstone.
+         */
+        DELETE
+    }
+
+    /**
+     * Runtime pointer role held by an immutable revision.
+     */
+    public enum Role {
+        /**
+         * The revision is the stable production revision.
+         */
+        STABLE,
+        /**
+         * The revision is the active gray-release revision.
+         */
+        GRAY
+    }
+
+    /**
+     * Governed workflow that created an immutable revision.
+     */
+    public enum Source {
+        /**
+         * The revision was created by a formal publication.
+         */
+        FORMAL,
+        /**
+         * The revision was created for a gray release.
+         */
+        GRAY,
+        /**
+         * The revision restores content from an earlier immutable revision.
+         */
+        ROLLBACK,
+        /**
+         * The revision upgrades a governed reference to newer source content.
+         */
+        REFERENCE_UPGRADE,
+        /**
+         * The revision represents an approved archive operation.
+         */
+        ARCHIVE
+    }
+
+    /**
      * Current item entry identifier.
      */
     private String item_id;

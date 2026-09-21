@@ -37,6 +37,20 @@ import org.miaixz.bus.cortex.Type;
 public class Space extends Setting {
 
     /**
+     * Visibility scope of a setting space.
+     */
+    public enum Scope {
+        /**
+         * The space is visible only to its owner and explicitly authorized principals.
+         */
+        PRIVATE,
+        /**
+         * The space is visible to every authorized principal in the tenant.
+         */
+        PUBLIC
+    }
+
+    /**
      * Legacy space code kept only for compatibility and display. {@code id} remains the authoritative identifier.
      */
     private String code;

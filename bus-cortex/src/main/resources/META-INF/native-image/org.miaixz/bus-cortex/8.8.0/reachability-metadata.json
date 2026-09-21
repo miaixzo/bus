@@ -4452,186 +4452,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.magic.state.InstanceState",
-      "fields": [
-        {
-          "name": "DOWN"
-        },
-        {
-          "name": "MAINTENANCE"
-        },
-        {
-          "name": "STARTING"
-        },
-        {
-          "name": "UNKNOWN"
-        },
-        {
-          "name": "UP"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.cortex.magic.state.InstanceStateHistory",
-      "fields": [
-        {
-          "name": "durationMs"
-        },
-        {
-          "name": "fingerprint"
-        },
-        {
-          "name": "method"
-        },
-        {
-          "name": "space_id"
-        },
-        {
-          "name": "operator"
-        },
-        {
-          "name": "reason"
-        },
-        {
-          "name": "source"
-        },
-        {
-          "name": "state"
-        },
-        {
-          "name": "timestamp"
-        },
-        {
-          "name": "version"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDurationMs",
-          "parameterTypes": []
-        },
-        {
-          "name": "getFingerprint",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMethod",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSpace_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getOperator",
-          "parameterTypes": []
-        },
-        {
-          "name": "getReason",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSource",
-          "parameterTypes": []
-        },
-        {
-          "name": "getState",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTimestamp",
-          "parameterTypes": []
-        },
-        {
-          "name": "getVersion",
-          "parameterTypes": []
-        },
-        {
-          "name": "setDurationMs",
-          "parameterTypes": [
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "setFingerprint",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setMethod",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setSpace_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setOperator",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setReason",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setSource",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setState",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.magic.state.InstanceState"
-          ]
-        },
-        {
-          "name": "setTimestamp",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setVersion",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.cortex.magic.watch.WatchManager",
       "methods": [
         {
@@ -10887,6 +10707,36 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.cortex.setting.app.App$ProfileMode",
+      "fields": [
+        {
+          "name": "ALL"
+        },
+        {
+          "name": "SELECTED"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.cortex.setting.binding.Binding",
       "fields": [
         {
@@ -12662,6 +12512,270 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.cortex.setting.item.Item$Editor",
+      "fields": [
+        {
+          "name": "KEY_VALUE"
+        },
+        {
+          "name": "SOURCE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.item.Item$Kind",
+      "fields": [
+        {
+          "name": "EFFECTIVE"
+        },
+        {
+          "name": "SOURCE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.item.Item$Risk",
+      "fields": [
+        {
+          "name": "HIGH"
+        },
+        {
+          "name": "LOW"
+        },
+        {
+          "name": "MEDIUM"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.item.Item$SecretAction",
+      "fields": [
+        {
+          "name": "DELETE"
+        },
+        {
+          "name": "KEEP"
+        },
+        {
+          "name": "REPLACE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.item.Item$State",
+      "fields": [
+        {
+          "name": "ARCHIVED"
+        },
+        {
+          "name": "CHANGED"
+        },
+        {
+          "name": "GRAY"
+        },
+        {
+          "name": "PUBLISHED"
+        },
+        {
+          "name": "UNPUBLISHED"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.item.Item$ValidationLevel",
+      "fields": [
+        {
+          "name": "FULL"
+        },
+        {
+          "name": "SYNTAX"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.item.Item$ValidationSeverity",
+      "fields": [
+        {
+          "name": "ERROR"
+        },
+        {
+          "name": "INFO"
+        },
+        {
+          "name": "WARNING"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.item.Item$View",
+      "fields": [
+        {
+          "name": "EDITING"
+        },
+        {
+          "name": "EFFECTIVE"
+        },
+        {
+          "name": "GRAY"
+        },
+        {
+          "name": "STABLE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.cortex.setting.item.ItemBindingProjection",
       "methods": [
         {
@@ -13426,6 +13540,105 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.cortex.setting.item.revision.ItemRevision$Operation",
+      "fields": [
+        {
+          "name": "DELETE"
+        },
+        {
+          "name": "UPSERT"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.item.revision.ItemRevision$Role",
+      "fields": [
+        {
+          "name": "GRAY"
+        },
+        {
+          "name": "STABLE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.item.revision.ItemRevision$Source",
+      "fields": [
+        {
+          "name": "ARCHIVE"
+        },
+        {
+          "name": "FORMAL"
+        },
+        {
+          "name": "GRAY"
+        },
+        {
+          "name": "REFERENCE_UPGRADE"
+        },
+        {
+          "name": "ROLLBACK"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.cortex.setting.item.StoreBackedItemStore",
       "methods": [
         {
@@ -13724,6 +13937,36 @@
         },
         {
           "name": "self",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.space.Space$Scope",
+      "fields": [
+        {
+          "name": "PRIVATE"
+        },
+        {
+          "name": "PUBLIC"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
           "parameterTypes": []
         }
       ]
@@ -14221,6 +14464,147 @@
           "parameterTypes": [
             "long"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.Status$Apply",
+      "fields": [
+        {
+          "name": "APPLIED"
+        },
+        {
+          "name": "FAILED"
+        },
+        {
+          "name": "PENDING"
+        },
+        {
+          "name": "UNKNOWN"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.Status$Availability",
+      "fields": [
+        {
+          "name": "AVAILABLE"
+        },
+        {
+          "name": "UNAVAILABLE"
+        },
+        {
+          "name": "UNKNOWN"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.Status$Health",
+      "fields": [
+        {
+          "name": "DOWN"
+        },
+        {
+          "name": "MAINTENANCE"
+        },
+        {
+          "name": "STARTING"
+        },
+        {
+          "name": "UNKNOWN"
+        },
+        {
+          "name": "UP"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.Status$Resource",
+      "fields": [
+        {
+          "name": "ACTIVE"
+        },
+        {
+          "name": "ARCHIVED"
+        },
+        {
+          "name": "DISABLED"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
         }
       ]
     },

@@ -304,6 +304,11 @@ public class SignatureVerifier {
         exchange.getAttributes().put(MCP_CACHED_BODY, body);
         ServerHttpRequest request = new ServerHttpRequestDecorator(exchange.getRequest()) {
 
+            /**
+             * Replays the leased request bytes for downstream MCP handlers.
+             *
+             * @return deferred publisher containing the cached request body
+             */
             @Override
             public Flux<DataBuffer> getBody() {
                 return Flux.defer(() -> Mono.just(exchange.getResponse().bufferFactory().wrap(body.bytes())));

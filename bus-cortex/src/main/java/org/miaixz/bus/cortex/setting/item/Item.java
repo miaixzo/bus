@@ -47,6 +47,150 @@ import org.miaixz.bus.cortex.Type;
 public class Item extends Setting {
 
     /**
+     * Role of an item in source and resolved configuration projections.
+     */
+    public enum Kind {
+        /**
+         * The item owns editable source content.
+         */
+        SOURCE,
+        /**
+         * The item is a resolved projection derived from source content and references.
+         */
+        EFFECTIVE
+    }
+
+    /**
+     * Editing model used to mutate an item's content.
+     */
+    public enum Editor {
+        /**
+         * Content is edited as one complete source document.
+         */
+        SOURCE,
+        /**
+         * Content is edited as structured key-value entries.
+         */
+        KEY_VALUE
+    }
+
+    /**
+     * User-facing lifecycle projection of an item.
+     */
+    public enum State {
+        /**
+         * The item has no stable published revision.
+         */
+        UNPUBLISHED,
+        /**
+         * The editable content matches the stable published revision.
+         */
+        PUBLISHED,
+        /**
+         * The editable content differs from the stable published revision.
+         */
+        CHANGED,
+        /**
+         * The item currently participates in a gray release.
+         */
+        GRAY,
+        /**
+         * The item has been archived.
+         */
+        ARCHIVED
+    }
+
+    /**
+     * Mutation applied to one protected secret path.
+     */
+    public enum SecretAction {
+        /**
+         * Preserve the currently stored secret value.
+         */
+        KEEP,
+        /**
+         * Replace the stored secret with a newly supplied value.
+         */
+        REPLACE,
+        /**
+         * Remove the secret value from the content.
+         */
+        DELETE
+    }
+
+    /**
+     * Depth of content validation requested by a caller.
+     */
+    public enum ValidationLevel {
+        /**
+         * Validate only syntax and basic parsing constraints.
+         */
+        SYNTAX,
+        /**
+         * Run syntax, structure, policy, and semantic validation.
+         */
+        FULL
+    }
+
+    /**
+     * Severity assigned to a validation finding.
+     */
+    public enum ValidationSeverity {
+        /**
+         * The finding blocks the requested operation.
+         */
+        ERROR,
+        /**
+         * The finding is risky but does not necessarily block the operation.
+         */
+        WARNING,
+        /**
+         * The finding is informational only.
+         */
+        INFO
+    }
+
+    /**
+     * Risk classification derived for a configuration change.
+     */
+    public enum Risk {
+        /**
+         * The change has low expected operational impact.
+         */
+        LOW,
+        /**
+         * The change has moderate expected operational impact.
+         */
+        MEDIUM,
+        /**
+         * The change has high expected operational impact and requires stronger review.
+         */
+        HIGH
+    }
+
+    /**
+     * Content projection selected when reading or exporting an item.
+     */
+    public enum View {
+        /**
+         * Read the active stable revision.
+         */
+        STABLE,
+        /**
+         * Read the active gray revision.
+         */
+        GRAY,
+        /**
+         * Read the current editable workspace.
+         */
+        EDITING,
+        /**
+         * Read the governed effective value after resolving references and overrides.
+         */
+        EFFECTIVE
+    }
+
+    /**
      * Setting data identifier within the group.
      */
     private String data_id;
