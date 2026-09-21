@@ -37,6 +37,29 @@ import org.miaixz.bus.cortex.setting.item.Item;
 public class Revision extends Item {
 
     /**
+     * Current item entry identifier.
+     */
+    private String item_id;
+
+    /**
+     * Diff summary against the previous revision when available.
+     */
+    private String diff;
+
+    /**
+     * Parent revision that this revision rolled back from.
+     */
+    private String revert;
+
+    /**
+     * Creates an empty {@code setting.revision} snapshot.
+     */
+    public Revision() {
+        super();
+        setType(Type.ITEM_REVISION.key());
+    }
+
+    /**
      * Immutable operation represented by a revision.
      */
     public enum Operation {
@@ -88,29 +111,6 @@ public class Revision extends Item {
          * The revision represents an approved archive operation.
          */
         ARCHIVE
-    }
-
-    /**
-     * Current item entry identifier.
-     */
-    private String item_id;
-
-    /**
-     * Diff summary against the previous revision when available.
-     */
-    private String diff;
-
-    /**
-     * Parent revision that this revision rolled back from.
-     */
-    private String revert;
-
-    /**
-     * Creates an empty {@code setting.revision} snapshot.
-     */
-    public Revision() {
-        super();
-        setType(Type.ITEM_REVISION.key());
     }
 
 }

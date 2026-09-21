@@ -18,9 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides image processing algorithms and filters.
- * <p>
- * This package contains a comprehensive set of image processing functions including geometric transformations, color
- * space conversions, filtering, feature detection, and other computer vision algorithms.
+ * Persistent rollout entities and durable store contracts for configuration-center implementations.
+ *
+ * @author Kimi Liu
  */
-package org.opencv.imgproc;
+package org.miaixz.bus.cortex.setting.rollout;

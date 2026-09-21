@@ -18,9 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides image hashing algorithms for perceptual image comparison.
- * <p>
- * This package contains implementations of various image hashing algorithms used for duplicate image detection, image
- * similarity comparison, and perceptual hash computation.
+ * Persistent runtime-watch entities and durable store contracts for configuration-center implementations.
+ *
+ * @author Kimi Liu
  */
-package org.opencv.img_hash;
+package org.miaixz.bus.cortex.setting.watch;
