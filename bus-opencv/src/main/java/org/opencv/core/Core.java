@@ -859,8 +859,8 @@ public class Core {
      * Performs the {@code divide} operation.
      *
      * @param scale the {@code scale} value
-     * @param src2 the {@code src2} value
-     * @param dst the {@code dst} value
+     * @param src2  the {@code src2} value
+     * @param dst   the {@code dst} value
      * @param dtype the {@code dtype} value
      */
     public static void divide(double scale, Mat src2, Mat dst, int dtype) {
@@ -875,8 +875,8 @@ public class Core {
      * Performs the {@code divide} operation.
      *
      * @param scale the {@code scale} value
-     * @param src2 the {@code src2} value
-     * @param dst the {@code dst} value
+     * @param src2  the {@code src2} value
+     * @param dst   the {@code dst} value
      */
     public static void divide(double scale, Mat src2, Mat dst) {
         divide_4(scale, src2.nativeObj, dst.nativeObj);
@@ -5176,7 +5176,7 @@ public class Core {
      * Performs the {@code findFileOrKeep} operation.
      *
      * @param relative_path the {@code relative_path} value
-     * @param silentMode the {@code silentMode} value
+     * @param silentMode    the {@code silentMode} value
      * @return the operation result
      */
     public static String findFileOrKeep(String relative_path, boolean silentMode) {
@@ -5245,10 +5245,10 @@ public class Core {
     /**
      * Performs the {@code add} operation.
      *
-     * @param src1 the {@code src1} value
-     * @param src2 the {@code src2} value
-     * @param dst the {@code dst} value
-     * @param mask the {@code mask} value
+     * @param src1  the {@code src1} value
+     * @param src2  the {@code src2} value
+     * @param dst   the {@code dst} value
+     * @param mask  the {@code mask} value
      * @param dtype the {@code dtype} value
      */
     public static void add(Mat src1, Scalar src2, Mat dst, Mat mask, int dtype) {
@@ -5264,7 +5264,7 @@ public class Core {
      *
      * @param src1 the {@code src1} value
      * @param src2 the {@code src2} value
-     * @param dst the {@code dst} value
+     * @param dst  the {@code dst} value
      * @param mask the {@code mask} value
      */
     public static void add(Mat src1, Scalar src2, Mat dst, Mat mask) {
@@ -5276,7 +5276,7 @@ public class Core {
      *
      * @param src1 the {@code src1} value
      * @param src2 the {@code src2} value
-     * @param dst the {@code dst} value
+     * @param dst  the {@code dst} value
      */
     public static void add(Mat src1, Scalar src2, Mat dst) {
         add_5(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
@@ -5285,10 +5285,10 @@ public class Core {
     /**
      * Performs the {@code subtract} operation.
      *
-     * @param src1 the {@code src1} value
-     * @param src2 the {@code src2} value
-     * @param dst the {@code dst} value
-     * @param mask the {@code mask} value
+     * @param src1  the {@code src1} value
+     * @param src2  the {@code src2} value
+     * @param dst   the {@code dst} value
+     * @param mask  the {@code mask} value
      * @param dtype the {@code dtype} value
      */
     public static void subtract(Mat src1, Scalar src2, Mat dst, Mat mask, int dtype) {
@@ -5312,7 +5312,7 @@ public class Core {
      *
      * @param src1 the {@code src1} value
      * @param src2 the {@code src2} value
-     * @param dst the {@code dst} value
+     * @param dst  the {@code dst} value
      * @param mask the {@code mask} value
      */
     public static void subtract(Mat src1, Scalar src2, Mat dst, Mat mask) {
@@ -5324,7 +5324,7 @@ public class Core {
      *
      * @param src1 the {@code src1} value
      * @param src2 the {@code src2} value
-     * @param dst the {@code dst} value
+     * @param dst  the {@code dst} value
      */
     public static void subtract(Mat src1, Scalar src2, Mat dst) {
         subtract_5(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
@@ -5333,9 +5333,9 @@ public class Core {
     /**
      * Performs the {@code multiply} operation.
      *
-     * @param src1 the {@code src1} value
-     * @param src2 the {@code src2} value
-     * @param dst the {@code dst} value
+     * @param src1  the {@code src1} value
+     * @param src2  the {@code src2} value
+     * @param dst   the {@code dst} value
      * @param scale the {@code scale} value
      * @param dtype the {@code dtype} value
      */
@@ -5350,9 +5350,9 @@ public class Core {
     /**
      * Performs the {@code multiply} operation.
      *
-     * @param src1 the {@code src1} value
-     * @param src2 the {@code src2} value
-     * @param dst the {@code dst} value
+     * @param src1  the {@code src1} value
+     * @param src2  the {@code src2} value
+     * @param dst   the {@code dst} value
      * @param scale the {@code scale} value
      */
     public static void multiply(Mat src1, Scalar src2, Mat dst, double scale) {
@@ -5364,7 +5364,7 @@ public class Core {
      *
      * @param src1 the {@code src1} value
      * @param src2 the {@code src2} value
-     * @param dst the {@code dst} value
+     * @param dst  the {@code dst} value
      */
     public static void multiply(Mat src1, Scalar src2, Mat dst) {
         multiply_5(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
@@ -5373,9 +5373,9 @@ public class Core {
     /**
      * Performs the {@code divide} operation.
      *
-     * @param src1 the {@code src1} value
-     * @param src2 the {@code src2} value
-     * @param dst the {@code dst} value
+     * @param src1  the {@code src1} value
+     * @param src2  the {@code src2} value
+     * @param dst   the {@code dst} value
      * @param scale the {@code scale} value
      * @param dtype the {@code dtype} value
      */
@@ -5390,9 +5390,9 @@ public class Core {
     /**
      * Performs the {@code divide} operation.
      *
-     * @param src1 the {@code src1} value
-     * @param src2 the {@code src2} value
-     * @param dst the {@code dst} value
+     * @param src1  the {@code src1} value
+     * @param src2  the {@code src2} value
+     * @param dst   the {@code dst} value
      * @param scale the {@code scale} value
      */
     public static void divide(Mat src1, Scalar src2, Mat dst, double scale) {
@@ -5404,7 +5404,7 @@ public class Core {
      *
      * @param src1 the {@code src1} value
      * @param src2 the {@code src2} value
-     * @param dst the {@code dst} value
+     * @param dst  the {@code dst} value
      */
     public static void divide(Mat src1, Scalar src2, Mat dst) {
         divide_7(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
@@ -5415,7 +5415,7 @@ public class Core {
      *
      * @param src1 the {@code src1} value
      * @param src2 the {@code src2} value
-     * @param dst the {@code dst} value
+     * @param dst  the {@code dst} value
      */
     public static void absdiff(Mat src1, Scalar src2, Mat dst) {
         absdiff_1(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
@@ -5428,9 +5428,9 @@ public class Core {
     /**
      * Performs the {@code compare} operation.
      *
-     * @param src1 the {@code src1} value
-     * @param src2 the {@code src2} value
-     * @param dst the {@code dst} value
+     * @param src1  the {@code src1} value
+     * @param src2  the {@code src2} value
+     * @param dst   the {@code dst} value
      * @param cmpop the {@code cmpop} value
      */
     public static void compare(Mat src1, Scalar src2, Mat dst, int cmpop) {
@@ -5446,7 +5446,7 @@ public class Core {
      *
      * @param src1 the {@code src1} value
      * @param src2 the {@code src2} value
-     * @param dst the {@code dst} value
+     * @param dst  the {@code dst} value
      */
     public static void min(Mat src1, Scalar src2, Mat dst) {
         min_1(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
@@ -5461,7 +5461,7 @@ public class Core {
      *
      * @param src1 the {@code src1} value
      * @param src2 the {@code src2} value
-     * @param dst the {@code dst} value
+     * @param dst  the {@code dst} value
      */
     public static void max(Mat src1, Scalar src2, Mat dst) {
         max_1(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
@@ -5475,7 +5475,7 @@ public class Core {
     /**
      * Performs the {@code minMaxLoc} operation.
      *
-     * @param src the {@code src} value
+     * @param src  the {@code src} value
      * @param mask the {@code mask} value
      * @return the operation result
      */

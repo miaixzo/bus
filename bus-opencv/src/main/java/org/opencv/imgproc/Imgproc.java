@@ -1378,8 +1378,8 @@ public class Imgproc {
     /**
      * Performs the {@code filter2Dp} operation.
      *
-     * @param src the {@code src} value
-     * @param dst the {@code dst} value
+     * @param src    the {@code src} value
+     * @param dst    the {@code dst} value
      * @param kernel the {@code kernel} value
      * @param params the {@code params} value
      */
@@ -1390,8 +1390,8 @@ public class Imgproc {
     /**
      * Performs the {@code filter2Dp} operation.
      *
-     * @param src the {@code src} value
-     * @param dst the {@code dst} value
+     * @param src    the {@code src} value
+     * @param dst    the {@code dst} value
      * @param kernel the {@code kernel} value
      */
     public static void filter2Dp(Mat src, Mat dst, Mat kernel) {
@@ -4963,8 +4963,8 @@ public class Imgproc {
     /**
      * Performs the {@code integral} operation.
      *
-     * @param src the {@code src} value
-     * @param sum the {@code sum} value
+     * @param src    the {@code src} value
+     * @param sum    the {@code sum} value
      * @param sdepth the {@code sdepth} value
      */
     public static void integral(Mat src, Mat sum, int sdepth) {
@@ -4988,10 +4988,10 @@ public class Imgproc {
     /**
      * Performs the {@code integral2} operation.
      *
-     * @param src the {@code src} value
-     * @param sum the {@code sum} value
-     * @param sqsum the {@code sqsum} value
-     * @param sdepth the {@code sdepth} value
+     * @param src     the {@code src} value
+     * @param sum     the {@code sum} value
+     * @param sqsum   the {@code sqsum} value
+     * @param sdepth  the {@code sdepth} value
      * @param sqdepth the {@code sqdepth} value
      */
     public static void integral2(Mat src, Mat sum, Mat sqsum, int sdepth, int sqdepth) {
@@ -5001,9 +5001,9 @@ public class Imgproc {
     /**
      * Performs the {@code integral2} operation.
      *
-     * @param src the {@code src} value
-     * @param sum the {@code sum} value
-     * @param sqsum the {@code sqsum} value
+     * @param src    the {@code src} value
+     * @param sum    the {@code sum} value
+     * @param sqsum  the {@code sqsum} value
      * @param sdepth the {@code sdepth} value
      */
     public static void integral2(Mat src, Mat sum, Mat sqsum, int sdepth) {
@@ -5017,8 +5017,8 @@ public class Imgproc {
     /**
      * Performs the {@code integral2} operation.
      *
-     * @param src the {@code src} value
-     * @param sum the {@code sum} value
+     * @param src   the {@code src} value
+     * @param sum   the {@code sum} value
      * @param sqsum the {@code sqsum} value
      */
     public static void integral2(Mat src, Mat sum, Mat sqsum) {
@@ -5743,12 +5743,12 @@ public class Imgproc {
     /**
      * Performs the {@code calcBackProject} operation.
      *
-     * @param images the {@code images} value
+     * @param images   the {@code images} value
      * @param channels the {@code channels} value
-     * @param hist the {@code hist} value
-     * @param dst the {@code dst} value
-     * @param ranges the {@code ranges} value
-     * @param scale the {@code scale} value
+     * @param hist     the {@code hist} value
+     * @param dst      the {@code dst} value
+     * @param ranges   the {@code ranges} value
+     * @param scale    the {@code scale} value
      */
     public static void calcBackProject(
             List<Mat> images,
@@ -7581,8 +7581,8 @@ public class Imgproc {
     /**
      * Performs the {@code findContoursLinkRuns} operation.
      *
-     * @param image the {@code image} value
-     * @param contours the {@code contours} value
+     * @param image     the {@code image} value
+     * @param contours  the {@code contours} value
      * @param hierarchy the {@code hierarchy} value
      */
     public static void findContoursLinkRuns(Mat image, List<Mat> contours, Mat hierarchy) {
@@ -7595,7 +7595,7 @@ public class Imgproc {
     /**
      * Performs the {@code findContoursLinkRuns} operation.
      *
-     * @param image the {@code image} value
+     * @param image    the {@code image} value
      * @param contours the {@code contours} value
      */
     public static void findContoursLinkRuns(Mat image, List<Mat> contours) {
@@ -10087,11 +10087,11 @@ public class Imgproc {
     /**
      * Performs the {@code getTextSize} operation.
      *
-     * @param text the {@code text} value
-     * @param fontFace the {@code fontFace} value
+     * @param text      the {@code text} value
+     * @param fontFace  the {@code fontFace} value
      * @param fontScale the {@code fontScale} value
      * @param thickness the {@code thickness} value
-     * @param baseLine the {@code baseLine} value
+     * @param baseLine  the {@code baseLine} value
      * @return the operation result
      */
     public static Size getTextSize(String text, int fontFace, double fontScale, int thickness, int[] baseLine) {

@@ -54,7 +54,7 @@ public final class CvType {
     /**
      * Performs the {@code makeType} operation.
      *
-     * @param depth the {@code depth} value
+     * @param depth    the {@code depth} value
      * @param channels the {@code channels} value
      * @return the operation result
      */

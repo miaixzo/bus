@@ -1131,8 +1131,8 @@ public class Imgcodecs {
      * Performs the {@code imwritemulti} operation.
      *
      * @param filename the {@code filename} value
-     * @param img the {@code img} value
-     * @param params the {@code params} value
+     * @param img      the {@code img} value
+     * @param params   the {@code params} value
      * @return the operation result
      */
     public static boolean imwritemulti(String filename, List<Mat> img, MatOfInt params) {
@@ -1149,7 +1149,7 @@ public class Imgcodecs {
      * Performs the {@code imwritemulti} operation.
      *
      * @param filename the {@code filename} value
-     * @param img the {@code img} value
+     * @param img      the {@code img} value
      * @return the operation result
      */
     public static boolean imwritemulti(String filename, List<Mat> img) {

@@ -33,7 +33,7 @@ public class Size {
     /**
      * Creates a new {@code Size} instance.
      *
-     * @param width the {@code width} value
+     * @param width  the {@code width} value
      * @param height the {@code height} value
      */
     public Size(double width, double height) {

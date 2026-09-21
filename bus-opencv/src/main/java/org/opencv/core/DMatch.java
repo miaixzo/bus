@@ -75,7 +75,7 @@ public class DMatch {
      *
      * @param _queryIdx the {@code _queryIdx} value
      * @param _trainIdx the {@code _trainIdx} value
-     * @param _imgIdx the {@code _imgIdx} value
+     * @param _imgIdx   the {@code _imgIdx} value
      * @param _distance the {@code _distance} value
      */
     public DMatch(int _queryIdx, int _trainIdx, int _imgIdx, float _distance) {

@@ -77,7 +77,7 @@ public class MatOfByte extends Mat {
      *
      * @param offset the {@code offset} value
      * @param length the {@code length} value
-     * @param a the {@code a} value
+     * @param a      the {@code a} value
      */
     public MatOfByte(int offset, int length, byte... a) {
         super();
@@ -122,7 +122,7 @@ public class MatOfByte extends Mat {
      *
      * @param offset the {@code offset} value
      * @param length the {@code length} value
-     * @param a the {@code a} value
+     * @param a      the {@code a} value
      */
     public void fromArray(int offset, int length, byte... a) {
         if (offset < 0)

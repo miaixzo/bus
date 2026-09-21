@@ -56,7 +56,7 @@ public class RadialVarianceHash extends ImgHashBase {
     /**
      * Performs the {@code create} operation.
      *
-     * @param sigma the {@code sigma} value
+     * @param sigma          the {@code sigma} value
      * @param numOfAngleLine the {@code numOfAngleLine} value
      * @return the operation result
      */

@@ -118,7 +118,7 @@ public class Scalar {
     /**
      * Performs the {@code mul} operation.
      *
-     * @param it the {@code it} value
+     * @param it    the {@code it} value
      * @param scale the {@code scale} value
      * @return the operation result
      */

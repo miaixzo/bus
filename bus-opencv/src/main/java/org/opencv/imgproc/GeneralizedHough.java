@@ -191,7 +191,7 @@ public class GeneralizedHough extends Algorithm {
     /**
      * Performs the {@code setTemplate} operation.
      *
-     * @param templ the {@code templ} value
+     * @param templ       the {@code templ} value
      * @param templCenter the {@code templCenter} value
      */
     public void setTemplate(Mat templ, Point templCenter) {
@@ -210,9 +210,9 @@ public class GeneralizedHough extends Algorithm {
     /**
      * Performs the {@code setTemplate} operation.
      *
-     * @param edges the {@code edges} value
-     * @param dx the {@code dx} value
-     * @param dy the {@code dy} value
+     * @param edges       the {@code edges} value
+     * @param dx          the {@code dx} value
+     * @param dy          the {@code dy} value
      * @param templCenter the {@code templCenter} value
      */
     public void setTemplate(Mat edges, Mat dx, Mat dy, Point templCenter) {
@@ -223,8 +223,8 @@ public class GeneralizedHough extends Algorithm {
      * Performs the {@code setTemplate} operation.
      *
      * @param edges the {@code edges} value
-     * @param dx the {@code dx} value
-     * @param dy the {@code dy} value
+     * @param dx    the {@code dx} value
+     * @param dy    the {@code dy} value
      */
     public void setTemplate(Mat edges, Mat dx, Mat dy) {
         setTemplate_3(nativeObj, edges.nativeObj, dx.nativeObj, dy.nativeObj);
@@ -233,9 +233,9 @@ public class GeneralizedHough extends Algorithm {
     /**
      * Performs the {@code detect} operation.
      *
-     * @param image the {@code image} value
+     * @param image     the {@code image} value
      * @param positions the {@code positions} value
-     * @param votes the {@code votes} value
+     * @param votes     the {@code votes} value
      */
     public void detect(Mat image, Mat positions, Mat votes) {
         detect_0(nativeObj, image.nativeObj, positions.nativeObj, votes.nativeObj);
@@ -244,7 +244,7 @@ public class GeneralizedHough extends Algorithm {
     /**
      * Performs the {@code detect} operation.
      *
-     * @param image the {@code image} value
+     * @param image     the {@code image} value
      * @param positions the {@code positions} value
      */
     public void detect(Mat image, Mat positions) {
@@ -254,11 +254,11 @@ public class GeneralizedHough extends Algorithm {
     /**
      * Performs the {@code detect} operation.
      *
-     * @param edges the {@code edges} value
-     * @param dx the {@code dx} value
-     * @param dy the {@code dy} value
+     * @param edges     the {@code edges} value
+     * @param dx        the {@code dx} value
+     * @param dy        the {@code dy} value
      * @param positions the {@code positions} value
-     * @param votes the {@code votes} value
+     * @param votes     the {@code votes} value
      */
     public void detect(Mat edges, Mat dx, Mat dy, Mat positions, Mat votes) {
         detect_2(nativeObj, edges.nativeObj, dx.nativeObj, dy.nativeObj, positions.nativeObj, votes.nativeObj);
@@ -267,9 +267,9 @@ public class GeneralizedHough extends Algorithm {
     /**
      * Performs the {@code detect} operation.
      *
-     * @param edges the {@code edges} value
-     * @param dx the {@code dx} value
-     * @param dy the {@code dy} value
+     * @param edges     the {@code edges} value
+     * @param dx        the {@code dx} value
+     * @param dy        the {@code dy} value
      * @param positions the {@code positions} value
      */
     public void detect(Mat edges, Mat dx, Mat dy, Mat positions) {
