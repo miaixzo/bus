@@ -28,11 +28,22 @@ package org.opencv.img_hash;
  */
 public class RadialVarianceHash extends ImgHashBase {
 
-    public RadialVarianceHash(long addr) {
+    /**
+     * Creates a new {@code RadialVarianceHash} instance.
+     *
+     * @param addr the {@code addr} value
+     */
+    protected RadialVarianceHash(long addr) {
         super(addr);
     }
 
     // internal usage only
+    /**
+     * Performs the {@code __fromPtr__} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static RadialVarianceHash __fromPtr__(long addr) {
         return new RadialVarianceHash(addr);
     }
@@ -42,14 +53,32 @@ public class RadialVarianceHash extends ImgHashBase {
     // = 180)
     //
 
+    /**
+     * Performs the {@code create} operation.
+     *
+     * @param sigma the {@code sigma} value
+     * @param numOfAngleLine the {@code numOfAngleLine} value
+     * @return the operation result
+     */
     public static RadialVarianceHash create(double sigma, int numOfAngleLine) {
         return RadialVarianceHash.__fromPtr__(create_0(sigma, numOfAngleLine));
     }
 
+    /**
+     * Performs the {@code create} operation.
+     *
+     * @param sigma the {@code sigma} value
+     * @return the operation result
+     */
     public static RadialVarianceHash create(double sigma) {
         return RadialVarianceHash.__fromPtr__(create_1(sigma));
     }
 
+    /**
+     * Performs the {@code create} operation.
+     *
+     * @return the operation result
+     */
     public static RadialVarianceHash create() {
         return RadialVarianceHash.__fromPtr__(create_2());
     }
@@ -93,18 +122,38 @@ public class RadialVarianceHash extends ImgHashBase {
     // native support for java finalize() or cleaner
     private static native void delete(long nativeObj);
 
+    /**
+     * Performs the {@code getNumOfAngleLine} operation.
+     *
+     * @return the operation result
+     */
     public int getNumOfAngleLine() {
         return getNumOfAngleLine_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setNumOfAngleLine} operation.
+     *
+     * @param value the {@code value} value
+     */
     public void setNumOfAngleLine(int value) {
         setNumOfAngleLine_0(nativeObj, value);
     }
 
+    /**
+     * Performs the {@code getSigma} operation.
+     *
+     * @return the operation result
+     */
     public double getSigma() {
         return getSigma_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code setSigma} operation.
+     *
+     * @param value the {@code value} value
+     */
     public void setSigma(double value) {
         setSigma_0(nativeObj, value);
     }

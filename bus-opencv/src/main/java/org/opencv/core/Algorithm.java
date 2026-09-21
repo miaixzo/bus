@@ -34,15 +34,29 @@ package org.opencv.core;
  */
 public class Algorithm {
 
+    /**
+     * The {@code nativeObj} value.
+     */
     protected final long nativeObj;
 
-    public Algorithm(long addr) {
+    /**
+     * Creates a new {@code Algorithm} instance.
+     *
+     * @param addr the {@code addr} value
+     */
+    protected Algorithm(long addr) {
         nativeObj = addr;
         long nativeObjCopy = nativeObj;
         org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
     // internal usage only
+    /**
+     * Performs the {@code __fromPtr__} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static Algorithm __fromPtr__(long addr) {
         return new Algorithm(addr);
     }
@@ -96,6 +110,11 @@ public class Algorithm {
     // native support for java finalize() or cleaner
     private static native void delete(long nativeObj);
 
+    /**
+     * Performs the {@code getNativeObjAddr} operation.
+     *
+     * @return the operation result
+     */
     public long getNativeObjAddr() {
         return nativeObj;
     }

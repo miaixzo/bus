@@ -20,14 +20,24 @@
 package org.opencv.core;
 
 //javadoc:Rect_
-
 /**
- * The rect class.
+ * Provides the {@code Rect} API.
  */
 public class Rect {
 
+    /**
+     * OpenCV constants used by this API.
+     */
     public int x, y, width, height;
 
+    /**
+     * Creates a new {@code Rect} instance.
+     *
+     * @param x the {@code x} value
+     * @param y the {@code y} value
+     * @param width the {@code width} value
+     * @param height the {@code height} value
+     */
     public Rect(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
@@ -35,10 +45,19 @@ public class Rect {
         this.height = height;
     }
 
+    /**
+     * Creates a new {@code Rect} instance.
+     */
     public Rect() {
         this(0, 0, 0, 0);
     }
 
+    /**
+     * Creates a new {@code Rect} instance.
+     *
+     * @param p1 the {@code p1} value
+     * @param p2 the {@code p2} value
+     */
     public Rect(Point p1, Point p2) {
         x = (int) (p1.x < p2.x ? p1.x : p2.x);
         y = (int) (p1.y < p2.y ? p1.y : p2.y);
@@ -46,14 +65,30 @@ public class Rect {
         height = (int) (p1.y > p2.y ? p1.y : p2.y) - y;
     }
 
+    /**
+     * Creates a new {@code Rect} instance.
+     *
+     * @param p the {@code p} value
+     * @param s the {@code s} value
+     */
     public Rect(Point p, Size s) {
         this((int) p.x, (int) p.y, (int) s.width, (int) s.height);
     }
 
+    /**
+     * Creates a new {@code Rect} instance.
+     *
+     * @param vals the {@code vals} value
+     */
     public Rect(double[] vals) {
         set(vals);
     }
 
+    /**
+     * Performs the {@code set} operation.
+     *
+     * @param vals the {@code vals} value
+     */
     public void set(double[] vals) {
         if (vals != null) {
             x = vals.length > 0 ? (int) vals[0] : 0;
@@ -72,26 +107,57 @@ public class Rect {
         return new Rect(x, y, width, height);
     }
 
+    /**
+     * Performs the {@code tl} operation.
+     *
+     * @return the operation result
+     */
     public Point tl() {
         return new Point(x, y);
     }
 
+    /**
+     * Performs the {@code br} operation.
+     *
+     * @return the operation result
+     */
     public Point br() {
         return new Point(x + width, y + height);
     }
 
+    /**
+     * Performs the {@code size} operation.
+     *
+     * @return the operation result
+     */
     public Size size() {
         return new Size(width, height);
     }
 
+    /**
+     * Performs the {@code area} operation.
+     *
+     * @return the operation result
+     */
     public double area() {
         return width * height;
     }
 
+    /**
+     * Performs the {@code empty} operation.
+     *
+     * @return the operation result
+     */
     public boolean empty() {
         return width <= 0 || height <= 0;
     }
 
+    /**
+     * Performs the {@code contains} operation.
+     *
+     * @param p the {@code p} value
+     * @return the operation result
+     */
     public boolean contains(Point p) {
         return x <= p.x && p.x < x + width && y <= p.y && p.y < y + height;
     }
@@ -126,5 +192,4 @@ public class Rect {
     public String toString() {
         return "{" + x + ", " + y + ", " + width + "x" + height + "}";
     }
-
 }

@@ -32,6 +32,7 @@
 module bus.opencv {
 
     exports org.opencv.core;
+    exports org.opencv.geometry;
     exports org.opencv.img_hash;
     exports org.opencv.imgcodecs;
     exports org.opencv.imgproc;

@@ -23,19 +23,26 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The mat of float 4 class.
+ * Provides the {@code MatOfFloat4} API.
  */
 public class MatOfFloat4 extends Mat {
 
     // 32FC4
     private static final int _depth = CvType.CV_32F;
-
     private static final int _channels = 4;
 
+    /**
+     * Creates a new {@code MatOfFloat4} instance.
+     */
     public MatOfFloat4() {
         super();
     }
 
+    /**
+     * Creates a new {@code MatOfFloat4} instance.
+     *
+     * @param addr the {@code addr} value
+     */
     protected MatOfFloat4(long addr) {
         super(addr);
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -43,6 +50,11 @@ public class MatOfFloat4 extends Mat {
         // FIXME: do we need release() here?
     }
 
+    /**
+     * Creates a new {@code MatOfFloat4} instance.
+     *
+     * @param m the {@code m} value
+     */
     public MatOfFloat4(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -50,20 +62,41 @@ public class MatOfFloat4 extends Mat {
         // FIXME: do we need release() here?
     }
 
+    /**
+     * Creates a new {@code MatOfFloat4} instance.
+     *
+     * @param a the {@code a} value
+     */
     public MatOfFloat4(float... a) {
         super();
         fromArray(a);
     }
 
+    /**
+     * Performs the {@code fromNativeAddr} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static MatOfFloat4 fromNativeAddr(long addr) {
         return new MatOfFloat4(addr);
     }
 
+    /**
+     * Performs the {@code alloc} operation.
+     *
+     * @param elemNumber the {@code elemNumber} value
+     */
     public void alloc(int elemNumber) {
         if (elemNumber > 0)
             super.create(elemNumber, 1, CvType.makeType(_depth, _channels));
     }
 
+    /**
+     * Performs the {@code fromArray} operation.
+     *
+     * @param a the {@code a} value
+     */
     public void fromArray(float... a) {
         if (a == null || a.length == 0)
             return;
@@ -72,6 +105,11 @@ public class MatOfFloat4 extends Mat {
         put(0, 0, a); // TODO: check ret val!
     }
 
+    /**
+     * Performs the {@code toArray} operation.
+     *
+     * @return the operation result
+     */
     public float[] toArray() {
         int num = checkVector(_channels, _depth);
         if (num < 0)
@@ -83,6 +121,11 @@ public class MatOfFloat4 extends Mat {
         return a;
     }
 
+    /**
+     * Performs the {@code fromList} operation.
+     *
+     * @param lb the {@code lb} value
+     */
     public void fromList(List<Float> lb) {
         if (lb == null || lb.size() == 0)
             return;
@@ -93,6 +136,11 @@ public class MatOfFloat4 extends Mat {
         fromArray(a);
     }
 
+    /**
+     * Performs the {@code toList} operation.
+     *
+     * @return the operation result
+     */
     public List<Float> toList() {
         float[] a = toArray();
         Float ab[] = new Float[a.length];
@@ -100,5 +148,4 @@ public class MatOfFloat4 extends Mat {
             ab[i] = a[i];
         return Arrays.asList(ab);
     }
-
 }

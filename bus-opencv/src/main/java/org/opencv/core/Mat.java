@@ -23,12 +23,16 @@ import java.nio.ByteBuffer;
 
 // C++: class Mat
 //javadoc: Mat
-
 /**
- * The mat class.
+ * Provides the {@code Mat} API.
  */
 public class Mat extends CleanableMat {
 
+    /**
+     * Creates a new {@code Mat} instance.
+     *
+     * @param addr the {@code addr} value
+     */
     public Mat(long addr) {
         super(addr);
     }
@@ -38,6 +42,9 @@ public class Mat extends CleanableMat {
     //
 
     // javadoc: Mat::Mat()
+    /**
+     * Creates a new {@code Mat} instance.
+     */
     public Mat() {
         super(n_Mat());
     }
@@ -47,6 +54,13 @@ public class Mat extends CleanableMat {
     //
 
     // javadoc: Mat::Mat(rows, cols, type)
+    /**
+     * Creates a new {@code Mat} instance.
+     *
+     * @param rows the {@code rows} value
+     * @param cols the {@code cols} value
+     * @param type the {@code type} value
+     */
     public Mat(int rows, int cols, int type) {
         super(n_Mat(rows, cols, type));
     }
@@ -56,6 +70,14 @@ public class Mat extends CleanableMat {
     //
 
     // javadoc: Mat::Mat(rows, cols, type, data)
+    /**
+     * Creates a new {@code Mat} instance.
+     *
+     * @param rows the {@code rows} value
+     * @param cols the {@code cols} value
+     * @param type the {@code type} value
+     * @param data the {@code data} value
+     */
     public Mat(int rows, int cols, int type, ByteBuffer data) {
         super(n_Mat(rows, cols, type, data));
     }
@@ -65,6 +87,15 @@ public class Mat extends CleanableMat {
     //
 
     // javadoc: Mat::Mat(rows, cols, type, data, step)
+    /**
+     * Creates a new {@code Mat} instance.
+     *
+     * @param rows the {@code rows} value
+     * @param cols the {@code cols} value
+     * @param type the {@code type} value
+     * @param data the {@code data} value
+     * @param step the {@code step} value
+     */
     public Mat(int rows, int cols, int type, ByteBuffer data, long step) {
         super(n_Mat(rows, cols, type, data, step));
     }
@@ -74,6 +105,12 @@ public class Mat extends CleanableMat {
     //
 
     // javadoc: Mat::Mat(size, type)
+    /**
+     * Creates a new {@code Mat} instance.
+     *
+     * @param size the {@code size} value
+     * @param type the {@code type} value
+     */
     public Mat(Size size, int type) {
         super(n_Mat(size.width, size.height, type));
     }
@@ -83,6 +120,12 @@ public class Mat extends CleanableMat {
     //
 
     // javadoc: Mat::Mat(sizes, type)
+    /**
+     * Creates a new {@code Mat} instance.
+     *
+     * @param sizes the {@code sizes} value
+     * @param type the {@code type} value
+     */
     public Mat(int[] sizes, int type) {
         super(n_Mat(sizes.length, sizes, type));
     }
@@ -92,6 +135,14 @@ public class Mat extends CleanableMat {
     //
 
     // javadoc: Mat::Mat(rows, cols, type, s)
+    /**
+     * Creates a new {@code Mat} instance.
+     *
+     * @param rows the {@code rows} value
+     * @param cols the {@code cols} value
+     * @param type the {@code type} value
+     * @param s the {@code s} value
+     */
     public Mat(int rows, int cols, int type, Scalar s) {
         super(n_Mat(rows, cols, type, s.val[0], s.val[1], s.val[2], s.val[3]));
     }
@@ -101,6 +152,13 @@ public class Mat extends CleanableMat {
     //
 
     // javadoc: Mat::Mat(size, type, s)
+    /**
+     * Creates a new {@code Mat} instance.
+     *
+     * @param size the {@code size} value
+     * @param type the {@code type} value
+     * @param s the {@code s} value
+     */
     public Mat(Size size, int type, Scalar s) {
         super(n_Mat(size.width, size.height, type, s.val[0], s.val[1], s.val[2], s.val[3]));
     }
@@ -110,6 +168,13 @@ public class Mat extends CleanableMat {
     //
 
     // javadoc: Mat::Mat(sizes, type, s)
+    /**
+     * Creates a new {@code Mat} instance.
+     *
+     * @param sizes the {@code sizes} value
+     * @param type the {@code type} value
+     * @param s the {@code s} value
+     */
     public Mat(int[] sizes, int type, Scalar s) {
         super(n_Mat(sizes.length, sizes, type, s.val[0], s.val[1], s.val[2], s.val[3]));
     }
@@ -119,11 +184,24 @@ public class Mat extends CleanableMat {
     //
 
     // javadoc: Mat::Mat(m, rowRange, colRange)
+    /**
+     * Creates a new {@code Mat} instance.
+     *
+     * @param m the {@code m} value
+     * @param rowRange the {@code rowRange} value
+     * @param colRange the {@code colRange} value
+     */
     public Mat(Mat m, Range rowRange, Range colRange) {
         super(n_Mat(m.nativeObj, rowRange.start, rowRange.end, colRange.start, colRange.end));
     }
 
     // javadoc: Mat::Mat(m, rowRange)
+    /**
+     * Creates a new {@code Mat} instance.
+     *
+     * @param m the {@code m} value
+     * @param rowRange the {@code rowRange} value
+     */
     public Mat(Mat m, Range rowRange) {
         super(n_Mat(m.nativeObj, rowRange.start, rowRange.end));
     }
@@ -133,6 +211,12 @@ public class Mat extends CleanableMat {
     //
 
     // javadoc: Mat::Mat(m, ranges)
+    /**
+     * Creates a new {@code Mat} instance.
+     *
+     * @param m the {@code m} value
+     * @param ranges the {@code ranges} value
+     */
     public Mat(Mat m, Range[] ranges) {
         super(n_Mat(m.nativeObj, ranges));
     }
@@ -142,6 +226,12 @@ public class Mat extends CleanableMat {
     //
 
     // javadoc: Mat::Mat(m, roi)
+    /**
+     * Creates a new {@code Mat} instance.
+     *
+     * @param m the {@code m} value
+     * @param roi the {@code roi} value
+     */
     public Mat(Mat m, Rect roi) {
         super(n_Mat(m.nativeObj, roi.y, roi.y + roi.height, roi.x, roi.x + roi.width));
     }
@@ -151,6 +241,12 @@ public class Mat extends CleanableMat {
     //
 
     // javadoc: Mat::diag(d)
+    /**
+     * Performs the {@code diag} operation.
+     *
+     * @param d the {@code d} value
+     * @return the operation result
+     */
     public static Mat diag(Mat d) {
         return new Mat(n_diag(d.nativeObj));
     }
@@ -160,11 +256,26 @@ public class Mat extends CleanableMat {
     //
 
     // javadoc: Mat::eye(rows, cols, type)
+    /**
+     * Performs the {@code eye} operation.
+     *
+     * @param rows the {@code rows} value
+     * @param cols the {@code cols} value
+     * @param type the {@code type} value
+     * @return the operation result
+     */
     public static Mat eye(int rows, int cols, int type) {
         return new Mat(n_eye(rows, cols, type));
     }
 
     // javadoc: Mat::eye(size, type)
+    /**
+     * Performs the {@code eye} operation.
+     *
+     * @param size the {@code size} value
+     * @param type the {@code type} value
+     * @return the operation result
+     */
     public static Mat eye(Size size, int type) {
         return new Mat(n_eye(size.width, size.height, type));
     }
@@ -174,6 +285,14 @@ public class Mat extends CleanableMat {
     //
 
     // javadoc: Mat::ones(rows, cols, type)
+    /**
+     * Performs the {@code ones} operation.
+     *
+     * @param rows the {@code rows} value
+     * @param cols the {@code cols} value
+     * @param type the {@code type} value
+     * @return the operation result
+     */
     public static Mat ones(int rows, int cols, int type) {
         return new Mat(n_ones(rows, cols, type));
     }
@@ -184,16 +303,38 @@ public class Mat extends CleanableMat {
     //
 
     // javadoc: Mat::ones(size, type)
+    /**
+     * Performs the {@code ones} operation.
+     *
+     * @param size the {@code size} value
+     * @param type the {@code type} value
+     * @return the operation result
+     */
     public static Mat ones(Size size, int type) {
         return new Mat(n_ones(size.width, size.height, type));
     }
 
     // javadoc: Mat::ones(sizes, type)
+    /**
+     * Performs the {@code ones} operation.
+     *
+     * @param sizes the {@code sizes} value
+     * @param type the {@code type} value
+     * @return the operation result
+     */
     public static Mat ones(int[] sizes, int type) {
         return new Mat(n_ones(sizes.length, sizes, type));
     }
 
     // javadoc: Mat::zeros(rows, cols, type)
+    /**
+     * Performs the {@code zeros} operation.
+     *
+     * @param rows the {@code rows} value
+     * @param cols the {@code cols} value
+     * @param type the {@code type} value
+     * @return the operation result
+     */
     public static Mat zeros(int rows, int cols, int type) {
         return new Mat(n_zeros(rows, cols, type));
     }
@@ -203,6 +344,13 @@ public class Mat extends CleanableMat {
     //
 
     // javadoc: Mat::zeros(size, type)
+    /**
+     * Performs the {@code zeros} operation.
+     *
+     * @param size the {@code size} value
+     * @param type the {@code type} value
+     * @return the operation result
+     */
     public static Mat zeros(Size size, int type) {
         return new Mat(n_zeros(size.width, size.height, type));
     }
@@ -212,6 +360,13 @@ public class Mat extends CleanableMat {
     //
 
     // javadoc: Mat::zeros(sizes, type)
+    /**
+     * Performs the {@code zeros} operation.
+     *
+     * @param sizes the {@code sizes} value
+     * @param type the {@code type} value
+     * @return the operation result
+     */
     public static Mat zeros(int[] sizes, int type) {
         return new Mat(n_zeros(sizes.length, sizes, type));
     }
@@ -617,8 +772,6 @@ public class Mat extends CleanableMat {
     // C++: int Mat::type()
     //
 
-    // javadoc: Mat::type()
-
     // C++: Mat Mat::reshape(int cn, int newndims, const int* newsz)
     private static native long n_reshape_1(long nativeObj, int cn, int newndims, int[] newsz);
 
@@ -754,36 +907,82 @@ public class Mat extends CleanableMat {
     private static native String nDump(long self);
 
     // javadoc: Mat::adjustROI(dtop, dbottom, dleft, dright)
+    /**
+     * Performs the {@code adjustROI} operation.
+     *
+     * @param dtop the {@code dtop} value
+     * @param dbottom the {@code dbottom} value
+     * @param dleft the {@code dleft} value
+     * @param dright the {@code dright} value
+     * @return the operation result
+     */
     public Mat adjustROI(int dtop, int dbottom, int dleft, int dright) {
         return new Mat(n_adjustROI(nativeObj, dtop, dbottom, dleft, dright));
     }
 
     // javadoc: Mat::assignTo(m, type)
+    /**
+     * Performs the {@code assignTo} operation.
+     *
+     * @param m the {@code m} value
+     * @param type the {@code type} value
+     */
     public void assignTo(Mat m, int type) {
         n_assignTo(nativeObj, m.nativeObj, type);
     }
 
     // javadoc: Mat::assignTo(m)
+    /**
+     * Performs the {@code assignTo} operation.
+     *
+     * @param m the {@code m} value
+     */
     public void assignTo(Mat m) {
         n_assignTo(nativeObj, m.nativeObj);
     }
 
     // javadoc: Mat::channels()
+    /**
+     * Performs the {@code channels} operation.
+     *
+     * @return the operation result
+     */
     public int channels() {
         return n_channels(nativeObj);
     }
 
     // javadoc: Mat::checkVector(elemChannels, depth, requireContinuous)
+    /**
+     * Performs the {@code checkVector} operation.
+     *
+     * @param elemChannels the {@code elemChannels} value
+     * @param depth the {@code depth} value
+     * @param requireContinuous the {@code requireContinuous} value
+     * @return the operation result
+     */
     public int checkVector(int elemChannels, int depth, boolean requireContinuous) {
         return n_checkVector(nativeObj, elemChannels, depth, requireContinuous);
     }
 
     // javadoc: Mat::checkVector(elemChannels, depth)
+    /**
+     * Performs the {@code checkVector} operation.
+     *
+     * @param elemChannels the {@code elemChannels} value
+     * @param depth the {@code depth} value
+     * @return the operation result
+     */
     public int checkVector(int elemChannels, int depth) {
         return n_checkVector(nativeObj, elemChannels, depth);
     }
 
     // javadoc: Mat::checkVector(elemChannels)
+    /**
+     * Performs the {@code checkVector} operation.
+     *
+     * @param elemChannels the {@code elemChannels} value
+     * @return the operation result
+     */
     public int checkVector(int elemChannels) {
         return n_checkVector(nativeObj, elemChannels);
     }
@@ -794,141 +993,301 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc: Mat::col(x)
+    /**
+     * Performs the {@code col} operation.
+     *
+     * @param x the {@code x} value
+     * @return the operation result
+     */
     public Mat col(int x) {
         return new Mat(n_col(nativeObj, x));
     }
 
     // javadoc: Mat::colRange(startcol, endcol)
+    /**
+     * Performs the {@code colRange} operation.
+     *
+     * @param startcol the {@code startcol} value
+     * @param endcol the {@code endcol} value
+     * @return the operation result
+     */
     public Mat colRange(int startcol, int endcol) {
         return new Mat(n_colRange(nativeObj, startcol, endcol));
     }
 
     // javadoc: Mat::colRange(r)
+    /**
+     * Performs the {@code colRange} operation.
+     *
+     * @param r the {@code r} value
+     * @return the operation result
+     */
     public Mat colRange(Range r) {
         return new Mat(n_colRange(nativeObj, r.start, r.end));
     }
 
     // javadoc: Mat::dims()
+    /**
+     * Performs the {@code dims} operation.
+     *
+     * @return the operation result
+     */
     public int dims() {
         return n_dims(nativeObj);
     }
 
     // javadoc: Mat::cols()
+    /**
+     * Performs the {@code cols} operation.
+     *
+     * @return the operation result
+     */
     public int cols() {
         return n_cols(nativeObj);
     }
 
     // javadoc: Mat::convertTo(m, rtype, alpha, beta)
+    /**
+     * Performs the {@code convertTo} operation.
+     *
+     * @param m the {@code m} value
+     * @param rtype the {@code rtype} value
+     * @param alpha the {@code alpha} value
+     * @param beta the {@code beta} value
+     */
     public void convertTo(Mat m, int rtype, double alpha, double beta) {
         n_convertTo(nativeObj, m.nativeObj, rtype, alpha, beta);
     }
 
     // javadoc: Mat::convertTo(m, rtype, alpha)
+    /**
+     * Performs the {@code convertTo} operation.
+     *
+     * @param m the {@code m} value
+     * @param rtype the {@code rtype} value
+     * @param alpha the {@code alpha} value
+     */
     public void convertTo(Mat m, int rtype, double alpha) {
         n_convertTo(nativeObj, m.nativeObj, rtype, alpha);
     }
 
     // javadoc: Mat::convertTo(m, rtype)
+    /**
+     * Performs the {@code convertTo} operation.
+     *
+     * @param m the {@code m} value
+     * @param rtype the {@code rtype} value
+     */
     public void convertTo(Mat m, int rtype) {
         n_convertTo(nativeObj, m.nativeObj, rtype);
     }
 
     // javadoc: Mat::copyTo(m)
+    /**
+     * Performs the {@code copyTo} operation.
+     *
+     * @param m the {@code m} value
+     */
     public void copyTo(Mat m) {
         n_copyTo(nativeObj, m.nativeObj);
     }
 
     // javadoc: Mat::copyTo(m, mask)
+    /**
+     * Performs the {@code copyTo} operation.
+     *
+     * @param m the {@code m} value
+     * @param mask the {@code mask} value
+     */
     public void copyTo(Mat m, Mat mask) {
         n_copyTo(nativeObj, m.nativeObj, mask.nativeObj);
     }
 
     // javadoc: Mat::create(rows, cols, type)
+    /**
+     * Performs the {@code create} operation.
+     *
+     * @param rows the {@code rows} value
+     * @param cols the {@code cols} value
+     * @param type the {@code type} value
+     */
     public void create(int rows, int cols, int type) {
         n_create(nativeObj, rows, cols, type);
     }
 
     // javadoc: Mat::create(size, type)
+    /**
+     * Performs the {@code create} operation.
+     *
+     * @param size the {@code size} value
+     * @param type the {@code type} value
+     */
     public void create(Size size, int type) {
         n_create(nativeObj, size.width, size.height, type);
     }
 
     // javadoc: Mat::create(sizes, type)
+    /**
+     * Performs the {@code create} operation.
+     *
+     * @param sizes the {@code sizes} value
+     * @param type the {@code type} value
+     */
     public void create(int[] sizes, int type) {
         n_create(nativeObj, sizes.length, sizes, type);
     }
 
     // javadoc: Mat::copySize(m)
+    /**
+     * Performs the {@code copySize} operation.
+     *
+     * @param m the {@code m} value
+     */
     public void copySize(Mat m) {
         n_copySize(nativeObj, m.nativeObj);
     }
 
     // javadoc: Mat::cross(m)
+    /**
+     * Performs the {@code cross} operation.
+     *
+     * @param m the {@code m} value
+     * @return the operation result
+     */
     public Mat cross(Mat m) {
         return new Mat(n_cross(nativeObj, m.nativeObj));
     }
 
     // javadoc: Mat::dataAddr()
+    /**
+     * Performs the {@code dataAddr} operation.
+     *
+     * @return the operation result
+     */
     public long dataAddr() {
         return n_dataAddr(nativeObj);
     }
 
     // javadoc: Mat::depth()
+    /**
+     * Performs the {@code depth} operation.
+     *
+     * @return the operation result
+     */
     public int depth() {
         return n_depth(nativeObj);
     }
 
     // javadoc: Mat::diag(d)
+    /**
+     * Performs the {@code diag} operation.
+     *
+     * @param d the {@code d} value
+     * @return the operation result
+     */
     public Mat diag(int d) {
         return new Mat(n_diag(nativeObj, d));
     }
 
     // javadoc: Mat::diag()
+    /**
+     * Performs the {@code diag} operation.
+     *
+     * @return the operation result
+     */
     public Mat diag() {
         return new Mat(n_diag(nativeObj, 0));
     }
 
     // javadoc: Mat::dot(m)
+    /**
+     * Performs the {@code dot} operation.
+     *
+     * @param m the {@code m} value
+     * @return the operation result
+     */
     public double dot(Mat m) {
         return n_dot(nativeObj, m.nativeObj);
     }
 
     // javadoc: Mat::elemSize()
+    /**
+     * Performs the {@code elemSize} operation.
+     *
+     * @return the operation result
+     */
     public long elemSize() {
         return n_elemSize(nativeObj);
     }
 
     // javadoc: Mat::elemSize1()
+    /**
+     * Performs the {@code elemSize1} operation.
+     *
+     * @return the operation result
+     */
     public long elemSize1() {
         return n_elemSize1(nativeObj);
     }
 
     // javadoc: Mat::empty()
+    /**
+     * Performs the {@code empty} operation.
+     *
+     * @return the operation result
+     */
     public boolean empty() {
         return n_empty(nativeObj);
     }
 
     // javadoc: Mat::inv(method)
+    /**
+     * Performs the {@code inv} operation.
+     *
+     * @param method the {@code method} value
+     * @return the operation result
+     */
     public Mat inv(int method) {
         return new Mat(n_inv(nativeObj, method));
     }
 
     // javadoc: Mat::inv()
+    /**
+     * Performs the {@code inv} operation.
+     *
+     * @return the operation result
+     */
     public Mat inv() {
         return new Mat(n_inv(nativeObj));
     }
 
     // javadoc: Mat::isContinuous()
+    /**
+     * Performs the {@code isContinuous} operation.
+     *
+     * @return the operation result
+     */
     public boolean isContinuous() {
         return n_isContinuous(nativeObj);
     }
 
     // javadoc: Mat::isSubmatrix()
+    /**
+     * Performs the {@code isSubmatrix} operation.
+     *
+     * @return the operation result
+     */
     public boolean isSubmatrix() {
         return n_isSubmatrix(nativeObj);
     }
 
     // javadoc: Mat::locateROI(wholeSize, ofs)
+    /**
+     * Performs the {@code locateROI} operation.
+     *
+     * @param wholeSize the {@code wholeSize} value
+     * @param ofs the {@code ofs} value
+     */
     public void locateROI(Size wholeSize, Point ofs) {
         double[] wholeSize_out = new double[2];
         double[] ofs_out = new double[2];
@@ -976,122 +1335,263 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc: Mat::push_back(m)
+    /**
+     * Performs the {@code push_back} operation.
+     *
+     * @param m the {@code m} value
+     */
     public void push_back(Mat m) {
         n_push_back(nativeObj, m.nativeObj);
     }
 
     // javadoc: Mat::release()
+    /**
+     * Performs the {@code release} operation.
+     */
     public void release() {
         n_release(nativeObj);
     }
 
     // javadoc: Mat::reshape(cn, rows)
+    /**
+     * Performs the {@code reshape} operation.
+     *
+     * @param cn the {@code cn} value
+     * @param rows the {@code rows} value
+     * @return the operation result
+     */
     public Mat reshape(int cn, int rows) {
         return new Mat(n_reshape(nativeObj, cn, rows));
     }
 
     // javadoc: Mat::reshape(cn)
+    /**
+     * Performs the {@code reshape} operation.
+     *
+     * @param cn the {@code cn} value
+     * @return the operation result
+     */
     public Mat reshape(int cn) {
         return new Mat(n_reshape(nativeObj, cn));
     }
 
     // javadoc: Mat::reshape(cn, newshape)
+    /**
+     * Performs the {@code reshape} operation.
+     *
+     * @param cn the {@code cn} value
+     * @param newshape the {@code newshape} value
+     * @return the operation result
+     */
     public Mat reshape(int cn, int[] newshape) {
         return new Mat(n_reshape_1(nativeObj, cn, newshape.length, newshape));
     }
 
     // javadoc: Mat::row(y)
+    /**
+     * Performs the {@code row} operation.
+     *
+     * @param y the {@code y} value
+     * @return the operation result
+     */
     public Mat row(int y) {
         return new Mat(n_row(nativeObj, y));
     }
 
     // javadoc: Mat::rowRange(startrow, endrow)
+    /**
+     * Performs the {@code rowRange} operation.
+     *
+     * @param startrow the {@code startrow} value
+     * @param endrow the {@code endrow} value
+     * @return the operation result
+     */
     public Mat rowRange(int startrow, int endrow) {
         return new Mat(n_rowRange(nativeObj, startrow, endrow));
     }
 
     // javadoc: Mat::rowRange(r)
+    /**
+     * Performs the {@code rowRange} operation.
+     *
+     * @param r the {@code r} value
+     * @return the operation result
+     */
     public Mat rowRange(Range r) {
         return new Mat(n_rowRange(nativeObj, r.start, r.end));
     }
 
     // javadoc: Mat::rows()
+    /**
+     * Performs the {@code rows} operation.
+     *
+     * @return the operation result
+     */
     public int rows() {
         return n_rows(nativeObj);
     }
 
     // javadoc: Mat::operator =(s)
+    /**
+     * Performs the {@code setTo} operation.
+     *
+     * @param s the {@code s} value
+     * @return the operation result
+     */
     public Mat setTo(Scalar s) {
         return new Mat(n_setTo(nativeObj, s.val[0], s.val[1], s.val[2], s.val[3]));
     }
 
     // javadoc: Mat::setTo(value, mask)
+    /**
+     * Performs the {@code setTo} operation.
+     *
+     * @param value the {@code value} value
+     * @param mask the {@code mask} value
+     * @return the operation result
+     */
     public Mat setTo(Scalar value, Mat mask) {
         return new Mat(n_setTo(nativeObj, value.val[0], value.val[1], value.val[2], value.val[3], mask.nativeObj));
     }
 
     // javadoc: Mat::setTo(value, mask)
+    /**
+     * Performs the {@code setTo} operation.
+     *
+     * @param value the {@code value} value
+     * @param mask the {@code mask} value
+     * @return the operation result
+     */
     public Mat setTo(Mat value, Mat mask) {
         return new Mat(n_setTo(nativeObj, value.nativeObj, mask.nativeObj));
     }
 
     // javadoc: Mat::setTo(value)
+    /**
+     * Performs the {@code setTo} operation.
+     *
+     * @param value the {@code value} value
+     * @return the operation result
+     */
     public Mat setTo(Mat value) {
         return new Mat(n_setTo(nativeObj, value.nativeObj));
     }
 
     // javadoc: Mat::size()
+    /**
+     * Performs the {@code size} operation.
+     *
+     * @return the operation result
+     */
     public Size size() {
         return new Size(n_size(nativeObj));
     }
 
     // javadoc: Mat::size(int i)
+    /**
+     * Performs the {@code size} operation.
+     *
+     * @param i the {@code i} value
+     * @return the operation result
+     */
     public int size(int i) {
         return n_size_i(nativeObj, i);
     }
 
     // javadoc: Mat::step1(i)
+    /**
+     * Performs the {@code step1} operation.
+     *
+     * @param i the {@code i} value
+     * @return the operation result
+     */
     public long step1(int i) {
         return n_step1(nativeObj, i);
     }
 
     // javadoc: Mat::step1()
+    /**
+     * Performs the {@code step1} operation.
+     *
+     * @return the operation result
+     */
     public long step1() {
         return n_step1(nativeObj);
     }
 
     // javadoc: Mat::operator()(rowStart, rowEnd, colStart, colEnd)
+    /**
+     * Performs the {@code submat} operation.
+     *
+     * @param rowStart the {@code rowStart} value
+     * @param rowEnd the {@code rowEnd} value
+     * @param colStart the {@code colStart} value
+     * @param colEnd the {@code colEnd} value
+     * @return the operation result
+     */
     public Mat submat(int rowStart, int rowEnd, int colStart, int colEnd) {
         return new Mat(n_submat_rr(nativeObj, rowStart, rowEnd, colStart, colEnd));
     }
 
     // javadoc: Mat::operator()(rowRange, colRange)
+    /**
+     * Performs the {@code submat} operation.
+     *
+     * @param rowRange the {@code rowRange} value
+     * @param colRange the {@code colRange} value
+     * @return the operation result
+     */
     public Mat submat(Range rowRange, Range colRange) {
         return new Mat(n_submat_rr(nativeObj, rowRange.start, rowRange.end, colRange.start, colRange.end));
     }
 
     // javadoc: Mat::operator()(ranges[])
+    /**
+     * Performs the {@code submat} operation.
+     *
+     * @param ranges the {@code ranges} value
+     * @return the operation result
+     */
     public Mat submat(Range[] ranges) {
         return new Mat(n_submat_ranges(nativeObj, ranges));
     }
 
     // javadoc: Mat::operator()(roi)
+    /**
+     * Performs the {@code submat} operation.
+     *
+     * @param roi the {@code roi} value
+     * @return the operation result
+     */
     public Mat submat(Rect roi) {
         return new Mat(n_submat(nativeObj, roi.x, roi.y, roi.width, roi.height));
     }
 
     // javadoc: Mat::t()
+    /**
+     * Performs the {@code t} operation.
+     *
+     * @return the operation result
+     */
     public Mat t() {
         return new Mat(n_t(nativeObj));
     }
 
     // javadoc: Mat::total()
+    /**
+     * Performs the {@code total} operation.
+     *
+     * @return the operation result
+     */
     public long total() {
         return n_total(nativeObj);
     }
 
+    // javadoc: Mat::type()
     /**
-     * The type method.
+     * Performs the {@code type} operation.
+     *
+     * @return the operation result
      */
     public int type() {
         return n_type(nativeObj);
@@ -1110,11 +1610,24 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::dump()
+    /**
+     * Performs the {@code dump} operation.
+     *
+     * @return the operation result
+     */
     public String dump() {
         return nDump(nativeObj);
     }
 
     // javadoc:Mat::put(row,col,data)
+    /**
+     * Performs the {@code put} operation.
+     *
+     * @param row the {@code row} value
+     * @param col the {@code col} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int put(int row, int col, double... data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1124,6 +1637,13 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::put(idx,data)
+    /**
+     * Performs the {@code put} operation.
+     *
+     * @param idx the {@code idx} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int put(int[] idx, double... data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1135,6 +1655,14 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::put(row,col,data)
+    /**
+     * Performs the {@code put} operation.
+     *
+     * @param row the {@code row} value
+     * @param col the {@code col} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int put(int row, int col, float[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1147,6 +1675,13 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::put(idx,data)
+    /**
+     * Performs the {@code put} operation.
+     *
+     * @param idx the {@code idx} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int put(int[] idx, float[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1161,6 +1696,14 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::put(row,col,data)
+    /**
+     * Performs the {@code put} operation.
+     *
+     * @param row the {@code row} value
+     * @param col the {@code col} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int put(int row, int col, int[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1173,6 +1716,13 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::put(idx,data)
+    /**
+     * Performs the {@code put} operation.
+     *
+     * @param idx the {@code idx} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int put(int[] idx, int[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1187,6 +1737,14 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::put(row,col,data)
+    /**
+     * Performs the {@code put} operation.
+     *
+     * @param row the {@code row} value
+     * @param col the {@code col} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int put(int row, int col, short[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1199,6 +1757,13 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::put(idx,data)
+    /**
+     * Performs the {@code put} operation.
+     *
+     * @param idx the {@code idx} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int put(int[] idx, short[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1213,6 +1778,14 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::put(row,col,data)
+    /**
+     * Performs the {@code put} operation.
+     *
+     * @param row the {@code row} value
+     * @param col the {@code col} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int put(int row, int col, byte[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1225,6 +1798,13 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::put(idx,data)
+    /**
+     * Performs the {@code put} operation.
+     *
+     * @param idx the {@code idx} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int put(int[] idx, byte[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1239,6 +1819,16 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::put(row,col,data,offset,length)
+    /**
+     * Performs the {@code put} operation.
+     *
+     * @param row the {@code row} value
+     * @param col the {@code col} value
+     * @param data the {@code data} value
+     * @param offset the {@code offset} value
+     * @param length the {@code length} value
+     * @return the operation result
+     */
     public int put(int row, int col, byte[] data, int offset, int length) {
         int t = type();
         if (data == null || length % CvType.channels(t) != 0)
@@ -1251,6 +1841,15 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::put(idx,data,offset,length)
+    /**
+     * Performs the {@code put} operation.
+     *
+     * @param idx the {@code idx} value
+     * @param data the {@code data} value
+     * @param offset the {@code offset} value
+     * @param length the {@code length} value
+     * @return the operation result
+     */
     public int put(int[] idx, byte[] data, int offset, int length) {
         int t = type();
         if (data == null || length % CvType.channels(t) != 0)
@@ -1265,6 +1864,14 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::get(row,col,data)
+    /**
+     * Performs the {@code get} operation.
+     *
+     * @param row the {@code row} value
+     * @param col the {@code col} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int get(int row, int col, byte[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1277,6 +1884,13 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::get(idx,data)
+    /**
+     * Performs the {@code get} operation.
+     *
+     * @param idx the {@code idx} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int get(int[] idx, byte[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1291,6 +1905,14 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::get(row,col,data)
+    /**
+     * Performs the {@code get} operation.
+     *
+     * @param row the {@code row} value
+     * @param col the {@code col} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int get(int row, int col, short[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1303,6 +1925,13 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::get(idx,data)
+    /**
+     * Performs the {@code get} operation.
+     *
+     * @param idx the {@code idx} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int get(int[] idx, short[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1317,6 +1946,14 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::get(row,col,data)
+    /**
+     * Performs the {@code get} operation.
+     *
+     * @param row the {@code row} value
+     * @param col the {@code col} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int get(int row, int col, int[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1329,6 +1966,13 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::get(idx,data)
+    /**
+     * Performs the {@code get} operation.
+     *
+     * @param idx the {@code idx} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int get(int[] idx, int[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1343,6 +1987,14 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::get(row,col,data)
+    /**
+     * Performs the {@code get} operation.
+     *
+     * @param row the {@code row} value
+     * @param col the {@code col} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int get(int row, int col, float[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1355,6 +2007,13 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::get(idx,data)
+    /**
+     * Performs the {@code get} operation.
+     *
+     * @param idx the {@code idx} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int get(int[] idx, float[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1369,6 +2028,14 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::get(row,col,data)
+    /**
+     * Performs the {@code get} operation.
+     *
+     * @param row the {@code row} value
+     * @param col the {@code col} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int get(int row, int col, double[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1381,6 +2048,13 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::get(idx,data)
+    /**
+     * Performs the {@code get} operation.
+     *
+     * @param idx the {@code idx} value
+     * @param data the {@code data} value
+     * @return the operation result
+     */
     public int get(int[] idx, double[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
@@ -1395,11 +2069,24 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::get(row,col)
+    /**
+     * Performs the {@code get} operation.
+     *
+     * @param row the {@code row} value
+     * @param col the {@code col} value
+     * @return the operation result
+     */
     public double[] get(int row, int col) {
         return nGet(nativeObj, row, col);
     }
 
     // javadoc:Mat::get(idx)
+    /**
+     * Performs the {@code get} operation.
+     *
+     * @param idx the {@code idx} value
+     * @return the operation result
+     */
     public double[] get(int[] idx) {
         if (idx.length != dims())
             throw new IllegalArgumentException("Incorrect number of indices");
@@ -1407,16 +2094,36 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::height()
+    /**
+     * Performs the {@code height} operation.
+     *
+     * @return the operation result
+     */
     public int height() {
         return rows();
     }
 
     // javadoc:Mat::width()
+    /**
+     * Performs the {@code width} operation.
+     *
+     * @return the operation result
+     */
     public int width() {
         return cols();
     }
 
     // javadoc:Mat::at(clazz, row, col)
+    /**
+     * Performs the {@code at} operation.
+     *
+     * @param <T> the generic value type
+     * @param clazz the {@code clazz} value
+     * @param row the {@code row} value
+     * @param col the {@code col} value
+     * @return the operation result
+     */
+    @SuppressWarnings("unchecked")
     public <T> Atable<T> at(Class<T> clazz, int row, int col) {
         if (clazz == Byte.class || clazz == byte.class) {
             return (Atable<T>) new AtableByte(this, row, col);
@@ -1434,6 +2141,15 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::at(clazz, idx)
+    /**
+     * Performs the {@code at} operation.
+     *
+     * @param <T> the generic value type
+     * @param clazz the {@code clazz} value
+     * @param idx the {@code idx} value
+     * @return the operation result
+     */
+    @SuppressWarnings("unchecked")
     public <T> Atable<T> at(Class<T> clazz, int[] idx) {
         if (clazz == Byte.class || clazz == byte.class) {
             return (Atable<T>) new AtableByte(this, idx);
@@ -1451,101 +2167,191 @@ public class Mat extends CleanableMat {
     }
 
     // javadoc:Mat::getNativeObjAddr()
+    /**
+     * Performs the {@code getNativeObjAddr} operation.
+     *
+     * @return the operation result
+     */
     public long getNativeObjAddr() {
         return nativeObj;
     }
 
     /**
-     * The atable interface.
+     * Provides the {@code Atable} API.
+     *
+     * @param <T> the generic value type
      */
     public interface Atable<T> {
 
+        /**
+         * Performs the {@code getV} operation.
+         *
+         * @return the operation result
+         */
         T getV();
 
+        /**
+         * Performs the {@code setV} operation.
+         *
+         * @param v the {@code v} value
+         */
         void setV(T v);
 
+        /**
+         * Performs the {@code getV2c} operation.
+         *
+         * @return the operation result
+         */
         Tuple2<T> getV2c();
 
+        /**
+         * Performs the {@code setV2c} operation.
+         *
+         * @param v the {@code v} value
+         */
         void setV2c(Tuple2<T> v);
 
+        /**
+         * Performs the {@code getV3c} operation.
+         *
+         * @return the operation result
+         */
         Tuple3<T> getV3c();
 
+        /**
+         * Performs the {@code setV3c} operation.
+         *
+         * @param v the {@code v} value
+         */
         void setV3c(Tuple3<T> v);
 
+        /**
+         * Performs the {@code getV4c} operation.
+         *
+         * @return the operation result
+         */
         Tuple4<T> getV4c();
 
+        /**
+         * Performs the {@code setV4c} operation.
+         *
+         * @param v the {@code v} value
+         */
         void setV4c(Tuple4<T> v);
-
     }
 
     /**
-     * The tuple 2 class.
+     * Provides the {@code Tuple2} API.
+     *
+     * @param <T> the generic value type
      */
     public static class Tuple2<T> {
 
         private final T _0;
-
         private final T _1;
 
+        /**
+         * Creates a new {@code Tuple2} instance.
+         *
+         * @param _0 the {@code _0} value
+         * @param _1 the {@code _1} value
+         */
         public Tuple2(T _0, T _1) {
             this._0 = _0;
             this._1 = _1;
         }
 
+        /**
+         * Performs the {@code get_0} operation.
+         *
+         * @return the operation result
+         */
         public T get_0() {
             return _0;
         }
 
+        /**
+         * Performs the {@code get_1} operation.
+         *
+         * @return the operation result
+         */
         public T get_1() {
             return _1;
         }
-
     }
 
     /**
-     * The tuple 3 class.
+     * Provides the {@code Tuple3} API.
+     *
+     * @param <T> the generic value type
      */
     public static class Tuple3<T> {
 
         private final T _0;
-
         private final T _1;
-
         private final T _2;
 
+        /**
+         * Creates a new {@code Tuple3} instance.
+         *
+         * @param _0 the {@code _0} value
+         * @param _1 the {@code _1} value
+         * @param _2 the {@code _2} value
+         */
         public Tuple3(T _0, T _1, T _2) {
             this._0 = _0;
             this._1 = _1;
             this._2 = _2;
         }
 
+        /**
+         * Performs the {@code get_0} operation.
+         *
+         * @return the operation result
+         */
         public T get_0() {
             return _0;
         }
 
+        /**
+         * Performs the {@code get_1} operation.
+         *
+         * @return the operation result
+         */
         public T get_1() {
             return _1;
         }
 
+        /**
+         * Performs the {@code get_2} operation.
+         *
+         * @return the operation result
+         */
         public T get_2() {
             return _2;
         }
-
     }
 
     /**
-     * The tuple 4 class.
+     * Provides the {@code Tuple4} API.
+     *
+     * @param <T> the generic value type
      */
     public static class Tuple4<T> {
 
         private final T _0;
-
         private final T _1;
-
         private final T _2;
-
         private final T _3;
 
+        /**
+         * Creates a new {@code Tuple4} instance.
+         *
+         * @param _0 the {@code _0} value
+         * @param _1 the {@code _1} value
+         * @param _2 the {@code _2} value
+         * @param _3 the {@code _3} value
+         */
         public Tuple4(T _0, T _1, T _2, T _3) {
             this._0 = _0;
             this._1 = _1;
@@ -1553,31 +2359,46 @@ public class Mat extends CleanableMat {
             this._3 = _3;
         }
 
+        /**
+         * Performs the {@code get_0} operation.
+         *
+         * @return the operation result
+         */
         public T get_0() {
             return _0;
         }
 
+        /**
+         * Performs the {@code get_1} operation.
+         *
+         * @return the operation result
+         */
         public T get_1() {
             return _1;
         }
 
+        /**
+         * Performs the {@code get_2} operation.
+         *
+         * @return the operation result
+         */
         public T get_2() {
             return _2;
         }
 
+        /**
+         * Performs the {@code get_3} operation.
+         *
+         * @return the operation result
+         */
         public T get_3() {
             return _3;
         }
-
     }
 
-    /**
-     * The atable base class.
-     */
     private static class AtableBase {
 
         protected final Mat mat;
-
         protected final int[] indices;
 
         protected AtableBase(Mat mat, int row, int col) {
@@ -1591,12 +2412,8 @@ public class Mat extends CleanableMat {
             this.mat = mat;
             this.indices = indices;
         }
-
     }
 
-    /**
-     * The atable byte class.
-     */
     private static class AtableByte extends AtableBase implements Atable<Byte> {
 
         public AtableByte(Mat mat, int row, int col) {
@@ -1658,12 +2475,8 @@ public class Mat extends CleanableMat {
             byte[] data = new byte[] { v._0, v._1, v._2, v._3 };
             mat.put(indices, data);
         }
-
     }
 
-    /**
-     * The atable double class.
-     */
     private static class AtableDouble extends AtableBase implements Atable<Double> {
 
         public AtableDouble(Mat mat, int row, int col) {
@@ -1725,12 +2538,8 @@ public class Mat extends CleanableMat {
             double[] data = new double[] { v._0, v._1, v._2, v._3 };
             mat.put(indices, data);
         }
-
     }
 
-    /**
-     * The atable float class.
-     */
     private static class AtableFloat extends AtableBase implements Atable<Float> {
 
         public AtableFloat(Mat mat, int row, int col) {
@@ -1792,12 +2601,8 @@ public class Mat extends CleanableMat {
             double[] data = new double[] { v._0, v._1, v._2, v._3 };
             mat.put(indices, data);
         }
-
     }
 
-    /**
-     * The atable integer class.
-     */
     private static class AtableInteger extends AtableBase implements Atable<Integer> {
 
         public AtableInteger(Mat mat, int row, int col) {
@@ -1859,12 +2664,8 @@ public class Mat extends CleanableMat {
             int[] data = new int[] { v._0, v._1, v._2, v._3 };
             mat.put(indices, data);
         }
-
     }
 
-    /**
-     * The atable short class.
-     */
     private static class AtableShort extends AtableBase implements Atable<Short> {
 
         public AtableShort(Mat mat, int row, int col) {
@@ -1926,7 +2727,5 @@ public class Mat extends CleanableMat {
             short[] data = new short[] { v._0, v._1, v._2, v._3 };
             mat.put(indices, data);
         }
-
     }
-
 }

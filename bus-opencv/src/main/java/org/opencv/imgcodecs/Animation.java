@@ -36,8 +36,16 @@ import org.opencv.utils.Converters;
  */
 public class Animation {
 
+    /**
+     * The {@code nativeObj} value.
+     */
     protected final long nativeObj;
 
+    /**
+     * Creates a new {@code Animation} instance.
+     *
+     * @param addr the {@code addr} value
+     */
     protected Animation(long addr) {
         nativeObj = addr;
         long nativeObjCopy = nativeObj;
@@ -56,6 +64,7 @@ public class Animation {
      *                  <li>If a negative value or a value beyond the maximum of {@code 0xffff} (65535) is provided, it
      *                  is reset to {@code 0} (infinite looping) to maintain valid bounds.</li>
      *                  </ul>
+     *
      * @param bgColor   A {@code Scalar} object representing the background color in BGR format:
      *                  <ul>
      *                  <li>Defaults to {@code Scalar()}, indicating an empty color (usually transparent if supported).
@@ -123,6 +132,12 @@ public class Animation {
     }
 
     // internal usage only
+    /**
+     * Performs the {@code __fromPtr__} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static Animation __fromPtr__(long addr) {
         return new Animation(addr);
     }
@@ -217,35 +232,75 @@ public class Animation {
     // native support for java finalize() or cleaner
     private static native void delete(long nativeObj);
 
+    /**
+     * Performs the {@code getNativeObjAddr} operation.
+     *
+     * @return the operation result
+     */
     public long getNativeObjAddr() {
         return nativeObj;
     }
 
+    /**
+     * Performs the {@code get_loop_count} operation.
+     *
+     * @return the operation result
+     */
     public int get_loop_count() {
         return get_loop_count_0(nativeObj);
     }
 
+    /**
+     * Performs the {@code set_loop_count} operation.
+     *
+     * @param loop_count the {@code loop_count} value
+     */
     public void set_loop_count(int loop_count) {
         set_loop_count_0(nativeObj, loop_count);
     }
 
+    /**
+     * Performs the {@code get_bgcolor} operation.
+     *
+     * @return the operation result
+     */
     public Scalar get_bgcolor() {
         return new Scalar(get_bgcolor_0(nativeObj));
     }
 
+    /**
+     * Performs the {@code set_bgcolor} operation.
+     *
+     * @param bgcolor the {@code bgcolor} value
+     */
     public void set_bgcolor(Scalar bgcolor) {
         set_bgcolor_0(nativeObj, bgcolor.val[0], bgcolor.val[1], bgcolor.val[2], bgcolor.val[3]);
     }
 
+    /**
+     * Performs the {@code get_durations} operation.
+     *
+     * @return the operation result
+     */
     public MatOfInt get_durations() {
         return MatOfInt.fromNativeAddr(get_durations_0(nativeObj));
     }
 
+    /**
+     * Performs the {@code set_durations} operation.
+     *
+     * @param durations the {@code durations} value
+     */
     public void set_durations(MatOfInt durations) {
         Mat durations_mat = durations;
         set_durations_0(nativeObj, durations_mat.nativeObj);
     }
 
+    /**
+     * Performs the {@code get_frames} operation.
+     *
+     * @return the operation result
+     */
     public List<Mat> get_frames() {
         List<Mat> retVal = new ArrayList<Mat>();
         Mat retValMat = new Mat(get_frames_0(nativeObj));
@@ -253,15 +308,30 @@ public class Animation {
         return retVal;
     }
 
+    /**
+     * Performs the {@code set_frames} operation.
+     *
+     * @param frames the {@code frames} value
+     */
     public void set_frames(List<Mat> frames) {
         Mat frames_mat = Converters.vector_Mat_to_Mat(frames);
         set_frames_0(nativeObj, frames_mat.nativeObj);
     }
 
+    /**
+     * Performs the {@code get_still_image} operation.
+     *
+     * @return the operation result
+     */
     public Mat get_still_image() {
         return new Mat(get_still_image_0(nativeObj));
     }
 
+    /**
+     * Performs the {@code set_still_image} operation.
+     *
+     * @param still_image the {@code still_image} value
+     */
     public void set_still_image(Mat still_image) {
         set_still_image_0(nativeObj, still_image.nativeObj);
     }

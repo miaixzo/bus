@@ -28,11 +28,22 @@ package org.opencv.img_hash;
  */
 public class MarrHildrethHash extends ImgHashBase {
 
-    public MarrHildrethHash(long addr) {
+    /**
+     * Creates a new {@code MarrHildrethHash} instance.
+     *
+     * @param addr the {@code addr} value
+     */
+    protected MarrHildrethHash(long addr) {
         super(addr);
     }
 
     // internal usage only
+    /**
+     * Performs the {@code __fromPtr__} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static MarrHildrethHash __fromPtr__(long addr) {
         return new MarrHildrethHash(addr);
     }
@@ -42,6 +53,8 @@ public class MarrHildrethHash extends ImgHashBase {
     //
 
     /**
+     * Performs the {@code create} operation.
+     *
      * @param alpha int scale factor for marr wavelet (default=2).
      * @param scale int level of scale factor (default = 1)
      * @return automatically generated
@@ -55,6 +68,8 @@ public class MarrHildrethHash extends ImgHashBase {
     //
 
     /**
+     * Performs the {@code create} operation.
+     *
      * @param alpha int scale factor for marr wavelet (default=2).
      * @return automatically generated
      */
@@ -67,6 +82,8 @@ public class MarrHildrethHash extends ImgHashBase {
     //
 
     /**
+     * Performs the {@code create} operation.
+     *
      * @return automatically generated
      */
     public static MarrHildrethHash create() {

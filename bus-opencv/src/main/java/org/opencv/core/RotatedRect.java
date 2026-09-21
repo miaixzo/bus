@@ -20,35 +20,61 @@
 package org.opencv.core;
 
 //javadoc:RotatedRect_
-
 /**
- * The rotated rect class.
+ * Provides the {@code RotatedRect} API.
  */
 public class RotatedRect {
 
+    /**
+     * The {@code center} value.
+     */
     public Point center;
-
+    /**
+     * The {@code size} value.
+     */
     public Size size;
-
+    /**
+     * The {@code angle} value.
+     */
     public double angle;
 
+    /**
+     * Creates a new {@code RotatedRect} instance.
+     */
     public RotatedRect() {
         this.center = new Point();
         this.size = new Size();
         this.angle = 0;
     }
 
+    /**
+     * Creates a new {@code RotatedRect} instance.
+     *
+     * @param c the {@code c} value
+     * @param s the {@code s} value
+     * @param a the {@code a} value
+     */
     public RotatedRect(Point c, Size s, double a) {
         this.center = c.clone();
         this.size = s.clone();
         this.angle = a;
     }
 
+    /**
+     * Creates a new {@code RotatedRect} instance.
+     *
+     * @param vals the {@code vals} value
+     */
     public RotatedRect(double[] vals) {
         this();
         set(vals);
     }
 
+    /**
+     * Performs the {@code set} operation.
+     *
+     * @param vals the {@code vals} value
+     */
     public void set(double[] vals) {
         if (vals != null) {
             center.x = vals.length > 0 ? (double) vals[0] : 0;
@@ -65,6 +91,11 @@ public class RotatedRect {
         }
     }
 
+    /**
+     * Performs the {@code points} operation.
+     *
+     * @param pt the {@code pt} value
+     */
     public void points(Point pt[]) {
         double _angle = angle * Math.PI / 180.0;
         double b = (double) Math.cos(_angle) * 0.5f;
@@ -79,6 +110,11 @@ public class RotatedRect {
         pt[3] = new Point(2 * center.x - pt[1].x, 2 * center.y - pt[1].y);
     }
 
+    /**
+     * Performs the {@code boundingRect} operation.
+     *
+     * @return the operation result
+     */
     public Rect boundingRect() {
         Point pt[] = new Point[4];
         points(pt);
@@ -127,5 +163,4 @@ public class RotatedRect {
     public String toString() {
         return "{ " + center + " " + size + " * " + angle + " }";
     }
-
 }

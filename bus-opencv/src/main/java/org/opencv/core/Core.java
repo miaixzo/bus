@@ -30,95 +30,129 @@ import org.opencv.utils.Converters;
  */
 public class Core {
 
+    /**
+     * The {@code VERSION} value.
+     */
     public static final String VERSION = getVersion();
-
+    /**
+     * The {@code NATIVE_LIBRARY_NAME} value.
+     */
     public static final String NATIVE_LIBRARY_NAME = getNativeLibraryName();
-
+    /**
+     * The {@code VERSION_MAJOR} value.
+     */
     public static final int VERSION_MAJOR = getVersionMajorJ();
-
+    /**
+     * The {@code VERSION_MINOR} value.
+     */
     public static final int VERSION_MINOR = getVersionMinorJ();
-
+    /**
+     * The {@code VERSION_REVISION} value.
+     */
     public static final int VERSION_REVISION = getVersionRevisionJ();
-
+    /**
+     * The {@code VERSION_STATUS} value.
+     */
     public static final String VERSION_STATUS = getVersionStatusJ();
-
     // C++: enum <unnamed>
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int SVD_MODIFY_A = 1, SVD_NO_UV = 2, SVD_FULL_UV = 4, FILLED = -1, REDUCE_SUM = 0,
-            REDUCE_AVG = 1, REDUCE_MAX = 2, REDUCE_MIN = 3, RNG_UNIFORM = 0, RNG_NORMAL = 1;
-
+            REDUCE_AVG = 1, REDUCE_MAX = 2, REDUCE_MIN = 3, DATA_LAYOUT_UNKNOWN = 0, DATA_LAYOUT_ND = 1,
+            DATA_LAYOUT_NCHW = 2, DATA_LAYOUT_NCDHW = 3, DATA_LAYOUT_NHWC = 4, DATA_LAYOUT_NDHWC = 5,
+            DATA_LAYOUT_PLANAR = 6, DATA_LAYOUT_BLOCK = 7, RNG_UNIFORM = 0, RNG_NORMAL = 1;
     // C++: enum AlgorithmHint (cv.AlgorithmHint)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int ALGO_HINT_DEFAULT = 0, ALGO_HINT_ACCURATE = 1, ALGO_HINT_APPROX = 2;
-
     // C++: enum BorderTypes (cv.BorderTypes)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int BORDER_CONSTANT = 0, BORDER_REPLICATE = 1, BORDER_REFLECT = 2, BORDER_WRAP = 3,
             BORDER_REFLECT_101 = 4, BORDER_TRANSPARENT = 5, BORDER_REFLECT101 = BORDER_REFLECT_101,
             BORDER_DEFAULT = BORDER_REFLECT_101, BORDER_ISOLATED = 16;
-
     // C++: enum CmpTypes (cv.CmpTypes)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int CMP_EQ = 0, CMP_GT = 1, CMP_GE = 2, CMP_LT = 3, CMP_LE = 4, CMP_NE = 5;
-
     // C++: enum CovarFlags (cv.CovarFlags)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int COVAR_SCRAMBLED = 0, COVAR_NORMAL = 1, COVAR_USE_AVG = 2, COVAR_SCALE = 4, COVAR_ROWS = 8,
             COVAR_COLS = 16;
-
     // C++: enum DecompTypes (cv.DecompTypes)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int DECOMP_LU = 0, DECOMP_SVD = 1, DECOMP_EIG = 2, DECOMP_CHOLESKY = 3, DECOMP_QR = 4,
             DECOMP_NORMAL = 16;
-
-    // C++: enum Code (cv.Error.Code)
-    public static final int StsOk = 0, StsBackTrace = -1, StsError = -2, StsInternal = -3, StsNoMem = -4,
-            StsBadArg = -5, StsBadFunc = -6, StsNoConv = -7, StsAutoTrace = -8, HeaderIsNull = -9, BadImageSize = -10,
-            BadOffset = -11, BadDataPtr = -12, BadStep = -13, BadModelOrChSeq = -14, BadNumChannels = -15,
-            BadNumChannel1U = -16, BadDepth = -17, BadAlphaChannel = -18, BadOrder = -19, BadOrigin = -20,
-            BadAlign = -21, BadCallBack = -22, BadTileSize = -23, BadCOI = -24, BadROISize = -25, MaskIsTiled = -26,
-            StsNullPtr = -27, StsVecLengthErr = -28, StsFilterStructContentErr = -29, StsKernelStructContentErr = -30,
-            StsFilterOffsetErr = -31, StsBadSize = -201, StsDivByZero = -202, StsInplaceNotSupported = -203,
-            StsObjectNotFound = -204, StsUnmatchedFormats = -205, StsBadFlag = -206, StsBadPoint = -207,
-            StsBadMask = -208, StsUnmatchedSizes = -209, StsUnsupportedFormat = -210, StsOutOfRange = -211,
-            StsParseError = -212, StsNotImplemented = -213, StsBadMemBlock = -214, StsAssert = -215,
-            GpuNotSupported = -216, GpuApiCallError = -217, OpenGlNotSupported = -218, OpenGlApiCallError = -219,
-            OpenCLApiCallError = -220, OpenCLDoubleNotSupported = -221, OpenCLInitError = -222,
-            OpenCLNoAMDBlasFft = -223;
-
     // C++: enum FormatType (cv.Formatter.FormatType)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int Formatter_FMT_DEFAULT = 0, Formatter_FMT_MATLAB = 1, Formatter_FMT_CSV = 2,
             Formatter_FMT_PYTHON = 3, Formatter_FMT_NUMPY = 4, Formatter_FMT_C = 5;
-
     // C++: enum GemmFlags (cv.GemmFlags)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int GEMM_1_T = 1, GEMM_2_T = 2, GEMM_3_T = 4;
-
     // C++: enum KmeansFlags (cv.KmeansFlags)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int KMEANS_RANDOM_CENTERS = 0, KMEANS_PP_CENTERS = 2, KMEANS_USE_INITIAL_LABELS = 1;
-
     // C++: enum NormTypes (cv.NormTypes)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int NORM_INF = 1, NORM_L1 = 2, NORM_L2 = 4, NORM_L2SQR = 5, NORM_HAMMING = 6, NORM_HAMMING2 = 7,
             NORM_TYPE_MASK = 7, NORM_RELATIVE = 8, NORM_MINMAX = 32;
-
     // C++: enum Flags (cv.PCA.Flags)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int PCA_DATA_AS_ROW = 0, PCA_DATA_AS_COL = 1, PCA_USE_AVG = 2;
-
     // C++: enum Param (cv.Param)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int Param_INT = 0, Param_BOOLEAN = 1, Param_REAL = 2, Param_STRING = 3, Param_MAT = 4,
             Param_MAT_VECTOR = 5, Param_ALGORITHM = 6, Param_FLOAT = 7, Param_UNSIGNED_INT = 8, Param_UINT64 = 9,
             Param_UCHAR = 11, Param_SCALAR = 12;
-
     // C++: enum ReduceTypes (cv.ReduceTypes)
-    public static final int REDUCE_SUM2 = 4; // C++: enum DftFlags (cv.DftFlags)
+    /**
+     * The {@code REDUCE_SUM2} value.
+     */
+    public static final int REDUCE_SUM2 = 4;
+    // C++: enum RotateFlags (cv.RotateFlags)
+    /**
+     * OpenCV constants used by this API.
+     */
+    public static final int ROTATE_90_CLOCKWISE = 0, ROTATE_180 = 1, ROTATE_90_COUNTERCLOCKWISE = 2; // C++: enum
+                                                                                                     // DftFlags
+                                                                                                     // (cv.DftFlags)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int DFT_INVERSE = 1, DFT_SCALE = 2, DFT_ROWS = 4, DFT_COMPLEX_OUTPUT = 16, DFT_REAL_OUTPUT = 32,
             DFT_COMPLEX_INPUT = 64, DCT_INVERSE = DFT_INVERSE, DCT_ROWS = DFT_ROWS;
-
-    // C++: enum RotateFlags (cv.RotateFlags)
-    public static final int ROTATE_90_CLOCKWISE = 0, ROTATE_180 = 1, ROTATE_90_COUNTERCLOCKWISE = 2;
-
     // C++: enum SortFlags (cv.SortFlags)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int SORT_EVERY_ROW = 0, SORT_EVERY_COLUMN = 1, SORT_ASCENDING = 0, SORT_DESCENDING = 16;
-
     private static final int CV_8U = 0, CV_8S = 1, CV_16U = 2, CV_16S = 3, CV_32S = 4, CV_32F = 5, CV_64F = 6,
             CV_USRTYPE1 = 7;
 
     // these constants are wrapped inside functions to prevent inlining
     private static String getVersion() {
-        return "4.13.0";
+        return "5.0.0";
     }
 
     private static String getNativeLibraryName() {
@@ -126,11 +160,11 @@ public class Core {
     }
 
     private static int getVersionMajorJ() {
-        return 4;
+        return 5;
     }
 
     private static int getVersionMinorJ() {
-        return 13;
+        return 0;
     }
 
     private static int getVersionRevisionJ() {
@@ -189,6 +223,11 @@ public class Core {
     // C++: bool cv::ipp::useIPP()
     //
 
+    /**
+     * Performs the {@code setUseIPP} operation.
+     *
+     * @param flag the {@code flag} value
+     */
     public static void setUseIPP(boolean flag) {
         setUseIPP_0(flag);
     }
@@ -197,6 +236,11 @@ public class Core {
     // C++: void cv::ipp::setUseIPP(bool flag)
     //
 
+    /**
+     * Performs the {@code getIppVersion} operation.
+     *
+     * @return the operation result
+     */
     public static String getIppVersion() {
         return getIppVersion_0();
     }
@@ -205,6 +249,11 @@ public class Core {
     // C++: String cv::ipp::getIppVersion()
     //
 
+    /**
+     * Performs the {@code useIPP_NotExact} operation.
+     *
+     * @return the operation result
+     */
     public static boolean useIPP_NotExact() {
         return useIPP_NotExact_0();
     }
@@ -213,6 +262,11 @@ public class Core {
     // C++: bool cv::ipp::useIPP_NotExact()
     //
 
+    /**
+     * Performs the {@code setUseIPP_NotExact} operation.
+     *
+     * @param flag the {@code flag} value
+     */
     public static void setUseIPP_NotExact(boolean flag) {
         setUseIPP_NotExact_0(flag);
     }
@@ -400,8 +454,8 @@ public class Core {
      * @param src2  second input array or a scalar.
      * @param dst   output array that has the same size and number of channels as the input array(s); the depth is
      *              defined by dtype or src1/src2.
-     * @param mask  optional operation mask - 8-bit single channel array, that specifies elements of the output array to
-     *              be changed.
+     * @param mask  optional operation mask - CV_8U, CV_8S or CV_Bool single channel array, that specifies elements of
+     *              the output array to be changed.
      * @param dtype optional depth of the output array (see the discussion below). SEE: subtract, addWeighted, scaleAdd,
      *              Mat::convertTo
      */
@@ -447,8 +501,8 @@ public class Core {
      * @param src2 second input array or a scalar.
      * @param dst  output array that has the same size and number of channels as the input array(s); the depth is
      *             defined by dtype or src1/src2.
-     * @param mask optional operation mask - 8-bit single channel array, that specifies elements of the output array to
-     *             be changed. SEE: subtract, addWeighted, scaleAdd, Mat::convertTo
+     * @param mask optional operation mask - CV_8U, CV_8S or CV_Bool single channel array, that specifies elements of
+     *             the output array to be changed. SEE: subtract, addWeighted, scaleAdd, Mat::convertTo
      */
     public static void add(Mat src1, Mat src2, Mat dst, Mat mask) {
         add_1(src1.nativeObj, src2.nativeObj, dst.nativeObj, mask.nativeObj);
@@ -487,8 +541,8 @@ public class Core {
      * @param src1 first input array or a scalar.
      * @param src2 second input array or a scalar.
      * @param dst  output array that has the same size and number of channels as the input array(s); the depth is
-     *             defined by dtype or src1/src2. output array to be changed. SEE: subtract, addWeighted, scaleAdd,
-     *             Mat::convertTo
+     *             defined by dtype or src1/src2. of the output array to be changed. SEE: subtract, addWeighted,
+     *             scaleAdd, Mat::convertTo
      */
     public static void add(Mat src1, Mat src2, Mat dst) {
         add_2(src1.nativeObj, src2.nativeObj, dst.nativeObj);
@@ -530,8 +584,8 @@ public class Core {
      * @param src1  first input array or a scalar.
      * @param src2  second input array or a scalar.
      * @param dst   output array of the same size and the same number of channels as the input array.
-     * @param mask  optional operation mask; this is an 8-bit single channel array that specifies elements of the output
-     *              array to be changed.
+     * @param mask  optional operation mask; this is CV_8U, CV8S or CV_Bool single channel array that specifies elements
+     *              of the output array to be changed.
      * @param dtype optional depth of the output array SEE: add, addWeighted, scaleAdd, Mat::convertTo
      */
     public static void subtract(Mat src1, Mat src2, Mat dst, Mat mask, int dtype) {
@@ -578,8 +632,8 @@ public class Core {
      * @param src1 first input array or a scalar.
      * @param src2 second input array or a scalar.
      * @param dst  output array of the same size and the same number of channels as the input array.
-     * @param mask optional operation mask; this is an 8-bit single channel array that specifies elements of the output
-     *             array to be changed. SEE: add, addWeighted, scaleAdd, Mat::convertTo
+     * @param mask optional operation mask; this is CV_8U, CV8S or CV_Bool single channel array that specifies elements
+     *             of the output array to be changed. SEE: add, addWeighted, scaleAdd, Mat::convertTo
      */
     public static void subtract(Mat src1, Mat src2, Mat dst, Mat mask) {
         subtract_1(src1.nativeObj, src2.nativeObj, dst.nativeObj, mask.nativeObj);
@@ -801,6 +855,14 @@ public class Core {
         divide_2(src1.nativeObj, src2.nativeObj, dst.nativeObj);
     }
 
+    /**
+     * Performs the {@code divide} operation.
+     *
+     * @param scale the {@code scale} value
+     * @param src2 the {@code src2} value
+     * @param dst the {@code dst} value
+     * @param dtype the {@code dtype} value
+     */
     public static void divide(double scale, Mat src2, Mat dst, int dtype) {
         divide_3(scale, src2.nativeObj, dst.nativeObj, dtype);
     }
@@ -809,6 +871,13 @@ public class Core {
     // C++: void cv::divide(double scale, Mat src2, Mat& dst, int dtype = -1)
     //
 
+    /**
+     * Performs the {@code divide} operation.
+     *
+     * @param scale the {@code scale} value
+     * @param src2 the {@code src2} value
+     * @param dst the {@code dst} value
+     */
     public static void divide(double scale, Mat src2, Mat dst) {
         divide_4(scale, src2.nativeObj, dst.nativeObj);
     }
@@ -970,28 +1039,6 @@ public class Core {
     }
 
     /**
-     * Converts an array to half precision floating number.
-     * <p>
-     * This function converts FP32 (single precision floating point) from/to FP16 (half precision floating point).
-     * CV_16S format is used to represent FP16 data. There are two use modes (src -&gt; dst): CV_32F -&gt; CV_16S and
-     * CV_16S -&gt; CV_32F. The input array has to have type of CV_32F or CV_16S to represent the bit depth. If the
-     * input array is neither of them, the function will raise an error. The format of half precision floating point is
-     * defined in IEEE 754-2008.
-     *
-     * @param src input array.
-     * @param dst output array.
-     * @deprecated Use Mat::convertTo with CV_16F instead.
-     */
-    @Deprecated
-    public static void convertFp16(Mat src, Mat dst) {
-        convertFp16_0(src.nativeObj, dst.nativeObj);
-    }
-
-    //
-    // C++: void cv::convertFp16(Mat src, Mat& dst)
-    //
-
-    /**
      * Performs a look-up table transform of an array.
      * <p>
      * The function LUT fills the output array with values from the look-up table. Indices of the entries are taken from
@@ -1044,6 +1091,7 @@ public class Core {
      *
      * <b>Note:</b>
      * <ul>
+     * <li>CV_16F/CV_16BF/CV_Bool/CV_64U/CV_64S/CV_32U are not supported for src.</li>
      * <li>If the location of non-zero array elements is important, REF: findNonZero is helpful.</li>
      * <li>If the count of non-zero array elements is important, REF: countNonZero is helpful.</li>
      * </ul>
@@ -1071,6 +1119,7 @@ public class Core {
      *
      * <b>Note:</b>
      * <ul>
+     * <li>CV_16F/CV_16BF/CV_Bool/CV_64U/CV_64S/CV_32U are not supported for src.</li>
      * <li>If only whether there are non-zero elements is important, REF: hasNonZero is helpful.</li>
      * <li>If the location of non-zero array elements is important, REF: findNonZero is helpful.</li>
      * </ul>
@@ -1113,6 +1162,7 @@ public class Core {
      *
      * <b>Note:</b>
      * <ul>
+     * <li>CV_16F/CV_16BF/CV_Bool/CV_64U/CV_64S/CV_32U are not supported for src.</li>
      * <li>If only count of non-zero array elements is important, REF: countNonZero is helpful.</li>
      * <li>If only whether there are non-zero elements is important, REF: hasNonZero is helpful.</li>
      * </ul>
@@ -1138,7 +1188,8 @@ public class Core {
      * Scalar::all(0)
      *
      * @param src  input array that should have from 1 to 4 channels so that the result can be stored in Scalar_ .
-     * @param mask optional operation mask. SEE: countNonZero, meanStdDev, norm, minMaxLoc
+     * @param mask optional operation mask ot type CV_8U, CV_8S or CV_Bool. SEE: countNonZero, meanStdDev, norm,
+     *             minMaxLoc
      * @return automatically generated
      */
     public static Scalar mean(Mat src, Mat mask) {
@@ -1180,7 +1231,8 @@ public class Core {
      * @param src    input array that should have from 1 to 4 channels so that the results can be stored in Scalar_ 's.
      * @param mean   output parameter: calculated mean value.
      * @param stddev output parameter: calculated standard deviation.
-     * @param mask   optional operation mask. SEE: countNonZero, mean, norm, minMaxLoc, calcCovarMatrix
+     * @param mask   optional operation mask of type CV_8U, CV_8S or CV_Bool. SEE: countNonZero, mean, norm, minMaxLoc,
+     *               calcCovarMatrix
      */
     public static void meanStdDev(Mat src, MatOfDouble mean, MatOfDouble stddev, Mat mask) {
         Mat mean_mat = mean;
@@ -1243,7 +1295,8 @@ public class Core {
      *
      * @param src1     first input array.
      * @param normType type of the norm (see #NormTypes).
-     * @param mask     optional operation mask; it must have the same size as src1 and CV_8UC1 type.
+     * @param mask     optional operation mask; it must have the same size as src1 and type CV_8UC1, CV_8SC1 or
+     *                 CV_BoolC1.
      * @return automatically generated
      */
     public static double norm(Mat src1, int normType, Mat mask) {
@@ -1330,7 +1383,8 @@ public class Core {
      * @param src1     first input array.
      * @param src2     second input array of the same size and the same type as src1.
      * @param normType type of the norm (see #NormTypes).
-     * @param mask     optional operation mask; it must have the same size as src1 and CV_8UC1 type.
+     * @param mask     optional operation mask; it must have the same size as src1 and type CV_8UC1, CV_8S1 or
+     *                 CV_BoolC1.
      * @return automatically generated
      */
     public static double norm(Mat src1, Mat src2, int normType, Mat mask) {
@@ -1634,7 +1688,8 @@ public class Core {
      * @param norm_type normalization type (see cv::NormTypes).
      * @param dtype     when negative, the output array has the same type as src; otherwise, it has the same number of
      *                  channels as src and the depth =CV_MAT_DEPTH(dtype).
-     * @param mask      optional operation mask. SEE: norm, Mat::convertTo, SparseMat::convertTo
+     * @param mask      optional operation mask of type CV_8U, CV_8S or CV_Bool. SEE: norm, Mat::convertTo,
+     *                  SparseMat::convertTo
      */
     public static void normalize(Mat src, Mat dst, double alpha, double beta, int norm_type, int dtype, Mat mask) {
         normalize_0(src.nativeObj, dst.nativeObj, alpha, beta, norm_type, dtype, mask.nativeObj);
@@ -2093,6 +2148,8 @@ public class Core {
     }
 
     /**
+     * Performs the {@code merge} operation.
+     *
      *
      * @param mv  input vector of matrices to be merged; all the matrices in mv must have the same size and the same
      *            depth.
@@ -2109,6 +2166,8 @@ public class Core {
     //
 
     /**
+     * Performs the {@code split} operation.
+     *
      *
      * @param m  input multi-channel array.
      * @param mv output vector of arrays; the arrays themselves are reallocated, if needed.
@@ -2125,6 +2184,8 @@ public class Core {
     //
 
     /**
+     * Performs the {@code mixChannels} operation.
+     *
      *
      * @param src    input array or vector of matrices; all of the matrices must have the same size and the same depth.
      * @param dst    output array or vector of matrices; all the matrices <b>must be allocated</b>; their size and depth
@@ -2352,8 +2413,8 @@ public class Core {
      * @param src1 first input array or a scalar.
      * @param src2 second input array or a scalar.
      * @param dst  output array that has the same size and type as the input arrays.
-     * @param mask optional operation mask, 8-bit single channel array, that specifies elements of the output array to
-     *             be changed.
+     * @param mask optional operation mask, CV_8U, CV_8S or CV_Bool single channel array, that specifies elements of the
+     *             output array to be changed.
      */
     public static void bitwise_and(Mat src1, Mat src2, Mat dst, Mat mask) {
         bitwise_and_0(src1.nativeObj, src2.nativeObj, dst.nativeObj, mask.nativeObj);
@@ -2402,8 +2463,8 @@ public class Core {
      * @param src1 first input array or a scalar.
      * @param src2 second input array or a scalar.
      * @param dst  output array that has the same size and type as the input arrays.
-     * @param mask optional operation mask, 8-bit single channel array, that specifies elements of the output array to
-     *             be changed.
+     * @param mask optional operation mask, CV_8U, CV_8S or CV_Bool single channel array, that specifies elements of the
+     *             output array to be changed.
      */
     public static void bitwise_or(Mat src1, Mat src2, Mat dst, Mat mask) {
         bitwise_or_0(src1.nativeObj, src2.nativeObj, dst.nativeObj, mask.nativeObj);
@@ -2451,8 +2512,8 @@ public class Core {
      * @param src1 first input array or a scalar.
      * @param src2 second input array or a scalar.
      * @param dst  output array that has the same size and type as the input arrays.
-     * @param mask optional operation mask, 8-bit single channel array, that specifies elements of the output array to
-     *             be changed.
+     * @param mask optional operation mask, CV_8U, CV_8S or CV_Bool single channel array, that specifies elements of the
+     *             output array to be changed.
      */
     public static void bitwise_xor(Mat src1, Mat src2, Mat dst, Mat mask) {
         bitwise_xor_0(src1.nativeObj, src2.nativeObj, dst.nativeObj, mask.nativeObj);
@@ -2494,8 +2555,8 @@ public class Core {
      *
      * @param src  input array.
      * @param dst  output array that has the same size and type as the input array.
-     * @param mask optional operation mask, 8-bit single channel array, that specifies elements of the output array to
-     *             be changed.
+     * @param mask optional operation mask, CV_8U, CV_8S or CV_Bool single channel array, that specifies elements of the
+     *             output array to be changed.
      */
     public static void bitwise_not(Mat src, Mat dst, Mat mask) {
         bitwise_not_0(src.nativeObj, dst.nativeObj, mask.nativeObj);
@@ -2557,7 +2618,7 @@ public class Core {
      * @param dst  Destination matrix. If it does not have a proper size or type before the operation, it is
      *             reallocated.
      * @param mask Operation mask of the same size as \*this. Its non-zero elements indicate which matrix elements need
-     *             to be copied. The mask has to be of type CV_8U and can have 1 or multiple channels.
+     *             to be copied. The mask has to be of type CV_8U, CV_8S or CV_Bool and can have 1 or multiple channels.
      */
     public static void copyTo(Mat src, Mat dst, Mat mask) {
         copyTo_0(src.nativeObj, dst.nativeObj, mask.nativeObj);
@@ -3028,6 +3089,22 @@ public class Core {
     public static void patchNaNs(Mat a) {
         patchNaNs_1(a.nativeObj);
     }
+
+    /**
+     * Generates a mask of finite float values, i.e. not NaNs nor Infs.
+     * <p>
+     * An element is set to to 255 (all 1-bits) if all channels are finite.
+     *
+     * @param src  Input matrix, should contain float or double elements of 1 to 4 channels
+     * @param mask Output matrix of the same size as input of type CV_8UC1
+     */
+    public static void finiteMask(Mat src, Mat mask) {
+        finiteMask_0(src.nativeObj, mask.nativeObj);
+    }
+
+    //
+    // C++: void cv::finiteMask(Mat src, Mat& mask)
+    //
 
     /**
      * Performs generalized matrix multiplication.
@@ -3958,47 +4035,10 @@ public class Core {
      * whose sizes can be factorized in a product of small prime numbers (2, 3, and 5 in the current implementation).
      * Such an efficient DFT size can be calculated using the getOptimalDFTSize method.
      * <p>
-     * The sample below illustrates how to calculate a DFT-based convolution of two 2D real arrays: <code>
-     *     void convolveDFT(InputArray A, InputArray B, OutputArray C)
-     *     {
-     *         // reallocate the output array if needed
-     *         C.create(abs(A.rows - B.rows)+1, abs(A.cols - B.cols)+1, A.type());
-     *         Size dftSize;
-     *         // calculate the size of DFT transform
-     *         dftSize.width = getOptimalDFTSize(A.cols + B.cols - 1);
-     *         dftSize.height = getOptimalDFTSize(A.rows + B.rows - 1);
-     *
-     *         // allocate temporary buffers and initialize them with 0's
-     *         Mat tempA(dftSize, A.type(), Scalar::all(0));
-     *         Mat tempB(dftSize, B.type(), Scalar::all(0));
-     *
-     *         // copy A and B to the top-left corners of tempA and tempB, respectively
-     *         Mat roiA(tempA, Rect(0,0,A.cols,A.rows));
-     *         A.copyTo(roiA);
-     *         Mat roiB(tempB, Rect(0,0,B.cols,B.rows));
-     *         B.copyTo(roiB);
-     *
-     *         // now transform the padded A &amp; B in-place;
-     *         // use "nonzeroRows" hint for faster processing
-     *         dft(tempA, tempA, 0, A.rows);
-     *         dft(tempB, tempB, 0, B.rows);
-     *
-     *         // multiply the spectrums;
-     *         // the function handles packed spectrum representations well
-     *         mulSpectrums(tempA, tempB, tempA);
-     *
-     *         // transform the product back from the frequency domain.
-     *         // Even though all the result rows will be non-zero,
-     *         // you need only the first C.rows of them, and thus you
-     *         // pass nonzeroRows == C.rows
-     *         dft(tempA, tempA, DFT_INVERSE + DFT_SCALE, C.rows);
-     *
-     *         // now copy the result back to C.
-     *         tempA(Rect(0, 0, C.cols, C.rows)).copyTo(C);
-     *
-     *         // all the temporary buffers will be deallocated automatically
-     *     }
-     * </code> To optimize this sample, consider the following approaches:
+     * The sample below illustrates how to calculate a DFT-based convolution of two 2D real arrays: INCLUDE:
+     * samples/cpp/snippets/dft.cpp An example on DFT-based convolution
+     * <p>
+     * To optimize this sample, consider the following approaches:
      * <ul>
      * <li>Since nonzeroRows != 0 is passed to the forward transform calls and since A and B are copied to the top-left
      * corners of tempA and tempB, respectively, it is not necessary to clear the whole tempA and tempB. It is only
@@ -4102,47 +4142,10 @@ public class Core {
      * whose sizes can be factorized in a product of small prime numbers (2, 3, and 5 in the current implementation).
      * Such an efficient DFT size can be calculated using the getOptimalDFTSize method.
      * <p>
-     * The sample below illustrates how to calculate a DFT-based convolution of two 2D real arrays: <code>
-     *     void convolveDFT(InputArray A, InputArray B, OutputArray C)
-     *     {
-     *         // reallocate the output array if needed
-     *         C.create(abs(A.rows - B.rows)+1, abs(A.cols - B.cols)+1, A.type());
-     *         Size dftSize;
-     *         // calculate the size of DFT transform
-     *         dftSize.width = getOptimalDFTSize(A.cols + B.cols - 1);
-     *         dftSize.height = getOptimalDFTSize(A.rows + B.rows - 1);
-     *
-     *         // allocate temporary buffers and initialize them with 0's
-     *         Mat tempA(dftSize, A.type(), Scalar::all(0));
-     *         Mat tempB(dftSize, B.type(), Scalar::all(0));
-     *
-     *         // copy A and B to the top-left corners of tempA and tempB, respectively
-     *         Mat roiA(tempA, Rect(0,0,A.cols,A.rows));
-     *         A.copyTo(roiA);
-     *         Mat roiB(tempB, Rect(0,0,B.cols,B.rows));
-     *         B.copyTo(roiB);
-     *
-     *         // now transform the padded A &amp; B in-place;
-     *         // use "nonzeroRows" hint for faster processing
-     *         dft(tempA, tempA, 0, A.rows);
-     *         dft(tempB, tempB, 0, B.rows);
-     *
-     *         // multiply the spectrums;
-     *         // the function handles packed spectrum representations well
-     *         mulSpectrums(tempA, tempB, tempA);
-     *
-     *         // transform the product back from the frequency domain.
-     *         // Even though all the result rows will be non-zero,
-     *         // you need only the first C.rows of them, and thus you
-     *         // pass nonzeroRows == C.rows
-     *         dft(tempA, tempA, DFT_INVERSE + DFT_SCALE, C.rows);
-     *
-     *         // now copy the result back to C.
-     *         tempA(Rect(0, 0, C.cols, C.rows)).copyTo(C);
-     *
-     *         // all the temporary buffers will be deallocated automatically
-     *     }
-     * </code> To optimize this sample, consider the following approaches:
+     * The sample below illustrates how to calculate a DFT-based convolution of two 2D real arrays: INCLUDE:
+     * samples/cpp/snippets/dft.cpp An example on DFT-based convolution
+     * <p>
+     * To optimize this sample, consider the following approaches:
      * <ul>
      * <li>Since nonzeroRows != 0 is passed to the forward transform calls and since A and B are copied to the top-left
      * corners of tempA and tempB, respectively, it is not necessary to clear the whole tempA and tempB. It is only
@@ -4241,47 +4244,10 @@ public class Core {
      * whose sizes can be factorized in a product of small prime numbers (2, 3, and 5 in the current implementation).
      * Such an efficient DFT size can be calculated using the getOptimalDFTSize method.
      * <p>
-     * The sample below illustrates how to calculate a DFT-based convolution of two 2D real arrays: <code>
-     *     void convolveDFT(InputArray A, InputArray B, OutputArray C)
-     *     {
-     *         // reallocate the output array if needed
-     *         C.create(abs(A.rows - B.rows)+1, abs(A.cols - B.cols)+1, A.type());
-     *         Size dftSize;
-     *         // calculate the size of DFT transform
-     *         dftSize.width = getOptimalDFTSize(A.cols + B.cols - 1);
-     *         dftSize.height = getOptimalDFTSize(A.rows + B.rows - 1);
-     *
-     *         // allocate temporary buffers and initialize them with 0's
-     *         Mat tempA(dftSize, A.type(), Scalar::all(0));
-     *         Mat tempB(dftSize, B.type(), Scalar::all(0));
-     *
-     *         // copy A and B to the top-left corners of tempA and tempB, respectively
-     *         Mat roiA(tempA, Rect(0,0,A.cols,A.rows));
-     *         A.copyTo(roiA);
-     *         Mat roiB(tempB, Rect(0,0,B.cols,B.rows));
-     *         B.copyTo(roiB);
-     *
-     *         // now transform the padded A &amp; B in-place;
-     *         // use "nonzeroRows" hint for faster processing
-     *         dft(tempA, tempA, 0, A.rows);
-     *         dft(tempB, tempB, 0, B.rows);
-     *
-     *         // multiply the spectrums;
-     *         // the function handles packed spectrum representations well
-     *         mulSpectrums(tempA, tempB, tempA);
-     *
-     *         // transform the product back from the frequency domain.
-     *         // Even though all the result rows will be non-zero,
-     *         // you need only the first C.rows of them, and thus you
-     *         // pass nonzeroRows == C.rows
-     *         dft(tempA, tempA, DFT_INVERSE + DFT_SCALE, C.rows);
-     *
-     *         // now copy the result back to C.
-     *         tempA(Rect(0, 0, C.cols, C.rows)).copyTo(C);
-     *
-     *         // all the temporary buffers will be deallocated automatically
-     *     }
-     * </code> To optimize this sample, consider the following approaches:
+     * The sample below illustrates how to calculate a DFT-based convolution of two 2D real arrays: INCLUDE:
+     * samples/cpp/snippets/dft.cpp An example on DFT-based convolution
+     * <p>
+     * To optimize this sample, consider the following approaches:
      * <ul>
      * <li>Since nonzeroRows != 0 is passed to the forward transform calls and since A and B are copied to the top-left
      * corners of tempA and tempB, respectively, it is not necessary to clear the whole tempA and tempB. It is only
@@ -4534,6 +4500,46 @@ public class Core {
      */
     public static void mulSpectrums(Mat a, Mat b, Mat c, int flags) {
         mulSpectrums_1(a.nativeObj, b.nativeObj, c.nativeObj, flags);
+    }
+
+    /**
+     * Performs the per-element division of the first Fourier spectrum by the second Fourier spectrum.
+     * <p>
+     * The function cv::divSpectrums performs the per-element division of the first array by the second array. The
+     * arrays are CCS-packed or complex matrices that are results of a real or complex Fourier transform.
+     *
+     * @param a     first input array.
+     * @param b     second input array of the same size and type as src1 .
+     * @param c     output array of the same size and type as src1 .
+     * @param flags operation flags; currently, the only supported flag is cv::DFT_ROWS, which indicates that each row
+     *              of src1 and src2 is an independent 1D Fourier spectrum. If you do not want to use this flag, then
+     *              simply add a {@code 0} as value.
+     * @param conjB optional flag that conjugates the second input array before the multiplication (true) or not
+     *              (false).
+     */
+    public static void divSpectrums(Mat a, Mat b, Mat c, int flags, boolean conjB) {
+        divSpectrums_0(a.nativeObj, b.nativeObj, c.nativeObj, flags, conjB);
+    }
+
+    //
+    // C++: void cv::divSpectrums(Mat a, Mat b, Mat& c, int flags, bool conjB = false)
+    //
+
+    /**
+     * Performs the per-element division of the first Fourier spectrum by the second Fourier spectrum.
+     * <p>
+     * The function cv::divSpectrums performs the per-element division of the first array by the second array. The
+     * arrays are CCS-packed or complex matrices that are results of a real or complex Fourier transform.
+     *
+     * @param a     first input array.
+     * @param b     second input array of the same size and type as src1 .
+     * @param c     output array of the same size and type as src1 .
+     * @param flags operation flags; currently, the only supported flag is cv::DFT_ROWS, which indicates that each row
+     *              of src1 and src2 is an independent 1D Fourier spectrum. If you do not want to use this flag, then
+     *              simply add a {@code 0} as value. or not (false).
+     */
+    public static void divSpectrums(Mat a, Mat b, Mat c, int flags) {
+        divSpectrums_1(a.nativeObj, b.nativeObj, c.nativeObj, flags);
     }
 
     /**
@@ -5042,6 +5048,11 @@ public class Core {
     // C++: int cv::getNumberOfCPUs()
     //
 
+    /**
+     * Performs the {@code getDefaultAlgorithmHint} operation.
+     *
+     * @return the operation result
+     */
     public static int getDefaultAlgorithmHint() {
         return getDefaultAlgorithmHint_0();
     }
@@ -5161,6 +5172,13 @@ public class Core {
         return findFile_2(relative_path);
     }
 
+    /**
+     * Performs the {@code findFileOrKeep} operation.
+     *
+     * @param relative_path the {@code relative_path} value
+     * @param silentMode the {@code silentMode} value
+     * @return the operation result
+     */
     public static String findFileOrKeep(String relative_path, boolean silentMode) {
         return findFileOrKeep_0(relative_path, silentMode);
     }
@@ -5169,6 +5187,12 @@ public class Core {
     // C++: String cv::samples::findFileOrKeep(String relative_path, bool silentMode = false)
     //
 
+    /**
+     * Performs the {@code findFileOrKeep} operation.
+     *
+     * @param relative_path the {@code relative_path} value
+     * @return the operation result
+     */
     public static String findFileOrKeep(String relative_path) {
         return findFileOrKeep_1(relative_path);
     }
@@ -5205,6 +5229,11 @@ public class Core {
     // C++: void cv::samples::addSamplesDataSearchSubDirectory(String subdir)
     //
 
+    /**
+     * Performs the {@code setErrorVerbosity} operation.
+     *
+     * @param verbose the {@code verbose} value
+     */
     public static void setErrorVerbosity(boolean verbose) {
         setErrorVerbosity_0(verbose);
     }
@@ -5213,6 +5242,15 @@ public class Core {
     // C++: void cv::setErrorVerbosity(bool verbose)
     //
 
+    /**
+     * Performs the {@code add} operation.
+     *
+     * @param src1 the {@code src1} value
+     * @param src2 the {@code src2} value
+     * @param dst the {@code dst} value
+     * @param mask the {@code mask} value
+     * @param dtype the {@code dtype} value
+     */
     public static void add(Mat src1, Scalar src2, Mat dst, Mat mask, int dtype) {
         add_3(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, mask.nativeObj, dtype);
     }
@@ -5221,14 +5259,38 @@ public class Core {
     // C++: void cv::add(Mat src1, Scalar src2, Mat& dst, Mat mask = Mat(), int dtype = -1)
     //
 
+    /**
+     * Performs the {@code add} operation.
+     *
+     * @param src1 the {@code src1} value
+     * @param src2 the {@code src2} value
+     * @param dst the {@code dst} value
+     * @param mask the {@code mask} value
+     */
     public static void add(Mat src1, Scalar src2, Mat dst, Mat mask) {
         add_4(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, mask.nativeObj);
     }
 
+    /**
+     * Performs the {@code add} operation.
+     *
+     * @param src1 the {@code src1} value
+     * @param src2 the {@code src2} value
+     * @param dst the {@code dst} value
+     */
     public static void add(Mat src1, Scalar src2, Mat dst) {
         add_5(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
     }
 
+    /**
+     * Performs the {@code subtract} operation.
+     *
+     * @param src1 the {@code src1} value
+     * @param src2 the {@code src2} value
+     * @param dst the {@code dst} value
+     * @param mask the {@code mask} value
+     * @param dtype the {@code dtype} value
+     */
     public static void subtract(Mat src1, Scalar src2, Mat dst, Mat mask, int dtype) {
         subtract_3(
                 src1.nativeObj,
@@ -5245,14 +5307,38 @@ public class Core {
     // C++: void cv::subtract(Mat src1, Scalar src2, Mat& dst, Mat mask = Mat(), int dtype = -1)
     //
 
+    /**
+     * Performs the {@code subtract} operation.
+     *
+     * @param src1 the {@code src1} value
+     * @param src2 the {@code src2} value
+     * @param dst the {@code dst} value
+     * @param mask the {@code mask} value
+     */
     public static void subtract(Mat src1, Scalar src2, Mat dst, Mat mask) {
         subtract_4(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, mask.nativeObj);
     }
 
+    /**
+     * Performs the {@code subtract} operation.
+     *
+     * @param src1 the {@code src1} value
+     * @param src2 the {@code src2} value
+     * @param dst the {@code dst} value
+     */
     public static void subtract(Mat src1, Scalar src2, Mat dst) {
         subtract_5(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
     }
 
+    /**
+     * Performs the {@code multiply} operation.
+     *
+     * @param src1 the {@code src1} value
+     * @param src2 the {@code src2} value
+     * @param dst the {@code dst} value
+     * @param scale the {@code scale} value
+     * @param dtype the {@code dtype} value
+     */
     public static void multiply(Mat src1, Scalar src2, Mat dst, double scale, int dtype) {
         multiply_3(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, scale, dtype);
     }
@@ -5261,14 +5347,38 @@ public class Core {
     // C++: void cv::multiply(Mat src1, Scalar src2, Mat& dst, double scale = 1, int dtype = -1)
     //
 
+    /**
+     * Performs the {@code multiply} operation.
+     *
+     * @param src1 the {@code src1} value
+     * @param src2 the {@code src2} value
+     * @param dst the {@code dst} value
+     * @param scale the {@code scale} value
+     */
     public static void multiply(Mat src1, Scalar src2, Mat dst, double scale) {
         multiply_4(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, scale);
     }
 
+    /**
+     * Performs the {@code multiply} operation.
+     *
+     * @param src1 the {@code src1} value
+     * @param src2 the {@code src2} value
+     * @param dst the {@code dst} value
+     */
     public static void multiply(Mat src1, Scalar src2, Mat dst) {
         multiply_5(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
     }
 
+    /**
+     * Performs the {@code divide} operation.
+     *
+     * @param src1 the {@code src1} value
+     * @param src2 the {@code src2} value
+     * @param dst the {@code dst} value
+     * @param scale the {@code scale} value
+     * @param dtype the {@code dtype} value
+     */
     public static void divide(Mat src1, Scalar src2, Mat dst, double scale, int dtype) {
         divide_5(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, scale, dtype);
     }
@@ -5277,14 +5387,36 @@ public class Core {
     // C++: void cv::divide(Mat src1, Scalar src2, Mat& dst, double scale = 1, int dtype = -1)
     //
 
+    /**
+     * Performs the {@code divide} operation.
+     *
+     * @param src1 the {@code src1} value
+     * @param src2 the {@code src2} value
+     * @param dst the {@code dst} value
+     * @param scale the {@code scale} value
+     */
     public static void divide(Mat src1, Scalar src2, Mat dst, double scale) {
         divide_6(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, scale);
     }
 
+    /**
+     * Performs the {@code divide} operation.
+     *
+     * @param src1 the {@code src1} value
+     * @param src2 the {@code src2} value
+     * @param dst the {@code dst} value
+     */
     public static void divide(Mat src1, Scalar src2, Mat dst) {
         divide_7(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
     }
 
+    /**
+     * Performs the {@code absdiff} operation.
+     *
+     * @param src1 the {@code src1} value
+     * @param src2 the {@code src2} value
+     * @param dst the {@code dst} value
+     */
     public static void absdiff(Mat src1, Scalar src2, Mat dst) {
         absdiff_1(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
     }
@@ -5293,6 +5425,14 @@ public class Core {
     // C++: void cv::absdiff(Mat src1, Scalar src2, Mat& dst)
     //
 
+    /**
+     * Performs the {@code compare} operation.
+     *
+     * @param src1 the {@code src1} value
+     * @param src2 the {@code src2} value
+     * @param dst the {@code dst} value
+     * @param cmpop the {@code cmpop} value
+     */
     public static void compare(Mat src1, Scalar src2, Mat dst, int cmpop) {
         compare_1(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, cmpop);
     }
@@ -5301,6 +5441,13 @@ public class Core {
     // C++: void cv::compare(Mat src1, Scalar src2, Mat& dst, int cmpop)
     //
 
+    /**
+     * Performs the {@code min} operation.
+     *
+     * @param src1 the {@code src1} value
+     * @param src2 the {@code src2} value
+     * @param dst the {@code dst} value
+     */
     public static void min(Mat src1, Scalar src2, Mat dst) {
         min_1(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
     }
@@ -5309,6 +5456,13 @@ public class Core {
     // C++: void cv::min(Mat src1, Scalar src2, Mat& dst)
     //
 
+    /**
+     * Performs the {@code max} operation.
+     *
+     * @param src1 the {@code src1} value
+     * @param src2 the {@code src2} value
+     * @param dst the {@code dst} value
+     */
     public static void max(Mat src1, Scalar src2, Mat dst) {
         max_1(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
     }
@@ -5318,6 +5472,13 @@ public class Core {
     //
 
     // javadoc: minMaxLoc(src, mask)
+    /**
+     * Performs the {@code minMaxLoc} operation.
+     *
+     * @param src the {@code src} value
+     * @param mask the {@code mask} value
+     * @return the operation result
+     */
     public static MinMaxLocResult minMaxLoc(Mat src, Mat mask) {
         MinMaxLocResult res = new MinMaxLocResult();
         long maskNativeObj = 0;
@@ -5334,9 +5495,13 @@ public class Core {
         return res;
     }
 
-// manual port
-
     // javadoc: minMaxLoc(src)
+    /**
+     * Performs the {@code minMaxLoc} operation.
+     *
+     * @param src the {@code src} value
+     * @return the operation result
+     */
     public static MinMaxLocResult minMaxLoc(Mat src) {
         return minMaxLoc(src, null);
     }
@@ -5475,9 +5640,6 @@ public class Core {
     private static native void convertScaleAbs_1(long src_nativeObj, long dst_nativeObj, double alpha);
 
     private static native void convertScaleAbs_2(long src_nativeObj, long dst_nativeObj);
-
-    // C++: void cv::convertFp16(Mat src, Mat& dst)
-    private static native void convertFp16_0(long src_nativeObj, long dst_nativeObj);
 
     // C++: void cv::LUT(Mat src, Mat lut, Mat& dst)
     private static native void LUT_0(long src_nativeObj, long lut_nativeObj, long dst_nativeObj);
@@ -5796,6 +5958,9 @@ public class Core {
 
     private static native void patchNaNs_1(long a_nativeObj);
 
+    // C++: void cv::finiteMask(Mat src, Mat& mask)
+    private static native void finiteMask_0(long src_nativeObj, long mask_nativeObj);
+
     // C++: void cv::gemm(Mat src1, Mat src2, double alpha, Mat src3, double beta, Mat& dst, int flags = 0)
     private static native void gemm_0(
             long src1_nativeObj,
@@ -6026,6 +6191,16 @@ public class Core {
             boolean conjB);
 
     private static native void mulSpectrums_1(long a_nativeObj, long b_nativeObj, long c_nativeObj, int flags);
+
+    // C++: void cv::divSpectrums(Mat a, Mat b, Mat& c, int flags, bool conjB = false)
+    private static native void divSpectrums_0(
+            long a_nativeObj,
+            long b_nativeObj,
+            long c_nativeObj,
+            int flags,
+            boolean conjB);
+
+    private static native void divSpectrums_1(long a_nativeObj, long b_nativeObj, long c_nativeObj, int flags);
 
     // C++: int cv::getOptimalDFTSize(int vecsize)
     private static native int getOptimalDFTSize_0(int vecsize);
@@ -6298,14 +6473,29 @@ public class Core {
      */
     public static class MinMaxLocResult {
 
+        /**
+         * The {@code minVal} value.
+         */
         public double minVal;
 
+        /**
+         * The {@code maxVal} value.
+         */
         public double maxVal;
 
+        /**
+         * The {@code minLoc} value.
+         */
         public Point minLoc;
 
+        /**
+         * The {@code maxLoc} value.
+         */
         public Point maxLoc;
 
+        /**
+         * Creates a new {@code MinMaxLocResult} instance.
+         */
         public MinMaxLocResult() {
             minVal = 0;
             maxVal = 0;

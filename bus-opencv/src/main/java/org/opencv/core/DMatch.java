@@ -31,26 +31,37 @@ public class DMatch {
      * Query descriptor index.
      */
     public int queryIdx;
-
     /**
      * Train descriptor index.
      */
     public int trainIdx;
-
     /**
      * Train image index.
      */
     public int imgIdx;
 
     // javadoc: DMatch::distance
+    /**
+     * The {@code distance} value.
+     */
     public float distance;
 
     // javadoc: DMatch::DMatch()
+    /**
+     * Creates a new {@code DMatch} instance.
+     */
     public DMatch() {
         this(-1, -1, Float.MAX_VALUE);
     }
 
     // javadoc: DMatch::DMatch(_queryIdx, _trainIdx, _distance)
+    /**
+     * Creates a new {@code DMatch} instance.
+     *
+     * @param _queryIdx the {@code _queryIdx} value
+     * @param _trainIdx the {@code _trainIdx} value
+     * @param _distance the {@code _distance} value
+     */
     public DMatch(int _queryIdx, int _trainIdx, float _distance) {
         queryIdx = _queryIdx;
         trainIdx = _trainIdx;
@@ -59,6 +70,14 @@ public class DMatch {
     }
 
     // javadoc: DMatch::DMatch(_queryIdx, _trainIdx, _imgIdx, _distance)
+    /**
+     * Creates a new {@code DMatch} instance.
+     *
+     * @param _queryIdx the {@code _queryIdx} value
+     * @param _trainIdx the {@code _trainIdx} value
+     * @param _imgIdx the {@code _imgIdx} value
+     * @param _distance the {@code _distance} value
+     */
     public DMatch(int _queryIdx, int _trainIdx, int _imgIdx, float _distance) {
         queryIdx = _queryIdx;
         trainIdx = _trainIdx;
@@ -66,6 +85,12 @@ public class DMatch {
         distance = _distance;
     }
 
+    /**
+     * Performs the {@code lessThan} operation.
+     *
+     * @param it the {@code it} value
+     * @return the operation result
+     */
     public boolean lessThan(DMatch it) {
         return distance < it.distance;
     }

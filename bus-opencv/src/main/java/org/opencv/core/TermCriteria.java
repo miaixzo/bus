@@ -20,9 +20,8 @@
 package org.opencv.core;
 
 //javadoc:TermCriteria
-
 /**
- * The term criteria class.
+ * Provides the {@code TermCriteria} API.
  */
 public class TermCriteria {
 
@@ -30,24 +29,26 @@ public class TermCriteria {
      * The maximum number of iterations or elements to compute
      */
     public static final int COUNT = 1;
-
     /**
      * The maximum number of iterations or elements to compute
      */
     public static final int MAX_ITER = COUNT;
-
     /**
      * The desired accuracy threshold or change in parameters at which the iterative algorithm is terminated.
      */
     public static final int EPS = 2;
 
     /**
-     * The type field.
+     * The {@code type} value.
      */
     public int type;
-
+    /**
+     * The {@code maxCount} value.
+     */
     public int maxCount;
-
+    /**
+     * The {@code epsilon} value.
+     */
     public double epsilon;
 
     /**
@@ -70,10 +71,20 @@ public class TermCriteria {
         this(0, 0, 0.0);
     }
 
+    /**
+     * Creates a new {@code TermCriteria} instance.
+     *
+     * @param vals the {@code vals} value
+     */
     public TermCriteria(double[] vals) {
         set(vals);
     }
 
+    /**
+     * Performs the {@code set} operation.
+     *
+     * @param vals the {@code vals} value
+     */
     public void set(double[] vals) {
         if (vals != null) {
             type = vals.length > 0 ? (int) vals[0] : 0;
@@ -118,5 +129,4 @@ public class TermCriteria {
     public String toString() {
         return "{ type: " + type + ", maxCount: " + maxCount + ", epsilon: " + epsilon + "}";
     }
-
 }

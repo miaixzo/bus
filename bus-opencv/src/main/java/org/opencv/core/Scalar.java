@@ -19,32 +19,64 @@
 */
 package org.opencv.core;
 
-import java.util.Arrays;
 //javadoc:Scalar_
-
 /**
- * The scalar class.
+ * Provides the {@code Scalar} API.
  */
 public class Scalar {
 
+    /**
+     * The {@code val} value.
+     */
     public double val[];
 
+    /**
+     * Creates a new {@code Scalar} instance.
+     *
+     * @param v0 the {@code v0} value
+     * @param v1 the {@code v1} value
+     * @param v2 the {@code v2} value
+     * @param v3 the {@code v3} value
+     */
     public Scalar(double v0, double v1, double v2, double v3) {
         val = new double[] { v0, v1, v2, v3 };
     }
 
+    /**
+     * Creates a new {@code Scalar} instance.
+     *
+     * @param v0 the {@code v0} value
+     * @param v1 the {@code v1} value
+     * @param v2 the {@code v2} value
+     */
     public Scalar(double v0, double v1, double v2) {
         val = new double[] { v0, v1, v2, 0 };
     }
 
+    /**
+     * Creates a new {@code Scalar} instance.
+     *
+     * @param v0 the {@code v0} value
+     * @param v1 the {@code v1} value
+     */
     public Scalar(double v0, double v1) {
         val = new double[] { v0, v1, 0, 0 };
     }
 
+    /**
+     * Creates a new {@code Scalar} instance.
+     *
+     * @param v0 the {@code v0} value
+     */
     public Scalar(double v0) {
         val = new double[] { v0, 0, 0, 0 };
     }
 
+    /**
+     * Creates a new {@code Scalar} instance.
+     *
+     * @param vals the {@code vals} value
+     */
     public Scalar(double[] vals) {
         if (vals != null && vals.length == 4)
             val = vals.clone();
@@ -54,10 +86,21 @@ public class Scalar {
         }
     }
 
+    /**
+     * Performs the {@code all} operation.
+     *
+     * @param v the {@code v} value
+     * @return the operation result
+     */
     public static Scalar all(double v) {
         return new Scalar(v, v, v, v);
     }
 
+    /**
+     * Performs the {@code set} operation.
+     *
+     * @param vals the {@code vals} value
+     */
     public void set(double[] vals) {
         if (vals != null) {
             val[0] = vals.length > 0 ? vals[0] : 0;
@@ -72,19 +115,42 @@ public class Scalar {
         return new Scalar(val);
     }
 
+    /**
+     * Performs the {@code mul} operation.
+     *
+     * @param it the {@code it} value
+     * @param scale the {@code scale} value
+     * @return the operation result
+     */
     public Scalar mul(Scalar it, double scale) {
         return new Scalar(val[0] * it.val[0] * scale, val[1] * it.val[1] * scale, val[2] * it.val[2] * scale,
                 val[3] * it.val[3] * scale);
     }
 
+    /**
+     * Performs the {@code mul} operation.
+     *
+     * @param it the {@code it} value
+     * @return the operation result
+     */
     public Scalar mul(Scalar it) {
         return mul(it, 1);
     }
 
+    /**
+     * Performs the {@code conj} operation.
+     *
+     * @return the operation result
+     */
     public Scalar conj() {
         return new Scalar(val[0], -val[1], -val[2], -val[3]);
     }
 
+    /**
+     * Performs the {@code isReal} operation.
+     *
+     * @return the operation result
+     */
     public boolean isReal() {
         return val[1] == 0 && val[2] == 0 && val[3] == 0;
     }
@@ -93,7 +159,7 @@ public class Scalar {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + Arrays.hashCode(val);
+        result = prime * result + java.util.Arrays.hashCode(val);
         return result;
     }
 
@@ -104,7 +170,7 @@ public class Scalar {
         if (!(obj instanceof Scalar))
             return false;
         Scalar it = (Scalar) obj;
-        if (!Arrays.equals(val, it.val))
+        if (!java.util.Arrays.equals(val, it.val))
             return false;
         return true;
     }

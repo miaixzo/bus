@@ -29,11 +29,22 @@ import org.opencv.core.Mat;
  */
 public class ImgHashBase extends Algorithm {
 
-    public ImgHashBase(long addr) {
+    /**
+     * Creates a new {@code ImgHashBase} instance.
+     *
+     * @param addr the {@code addr} value
+     */
+    protected ImgHashBase(long addr) {
         super(addr);
     }
 
     // internal usage only
+    /**
+     * Performs the {@code __fromPtr__} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static ImgHashBase __fromPtr__(long addr) {
         return new ImgHashBase(addr);
     }

@@ -23,19 +23,26 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The mat of rect 2 d class.
+ * Provides the {@code MatOfRect2d} API.
  */
 public class MatOfRect2d extends Mat {
 
     // 64FC4
     private static final int _depth = CvType.CV_64F;
-
     private static final int _channels = 4;
 
+    /**
+     * Creates a new {@code MatOfRect2d} instance.
+     */
     public MatOfRect2d() {
         super();
     }
 
+    /**
+     * Creates a new {@code MatOfRect2d} instance.
+     *
+     * @param addr the {@code addr} value
+     */
     protected MatOfRect2d(long addr) {
         super(addr);
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -43,6 +50,11 @@ public class MatOfRect2d extends Mat {
         // FIXME: do we need release() here?
     }
 
+    /**
+     * Creates a new {@code MatOfRect2d} instance.
+     *
+     * @param m the {@code m} value
+     */
     public MatOfRect2d(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -50,20 +62,41 @@ public class MatOfRect2d extends Mat {
         // FIXME: do we need release() here?
     }
 
+    /**
+     * Creates a new {@code MatOfRect2d} instance.
+     *
+     * @param a the {@code a} value
+     */
     public MatOfRect2d(Rect2d... a) {
         super();
         fromArray(a);
     }
 
+    /**
+     * Performs the {@code fromNativeAddr} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static MatOfRect2d fromNativeAddr(long addr) {
         return new MatOfRect2d(addr);
     }
 
+    /**
+     * Performs the {@code alloc} operation.
+     *
+     * @param elemNumber the {@code elemNumber} value
+     */
     public void alloc(int elemNumber) {
         if (elemNumber > 0)
             super.create(elemNumber, 1, CvType.makeType(_depth, _channels));
     }
 
+    /**
+     * Performs the {@code fromArray} operation.
+     *
+     * @param a the {@code a} value
+     */
     public void fromArray(Rect2d... a) {
         if (a == null || a.length == 0)
             return;
@@ -80,6 +113,11 @@ public class MatOfRect2d extends Mat {
         put(0, 0, buff); // TODO: check ret val!
     }
 
+    /**
+     * Performs the {@code toArray} operation.
+     *
+     * @return the operation result
+     */
     public Rect2d[] toArray() {
         int num = (int) total();
         Rect2d[] a = new Rect2d[num];
@@ -93,14 +131,23 @@ public class MatOfRect2d extends Mat {
         return a;
     }
 
+    /**
+     * Performs the {@code fromList} operation.
+     *
+     * @param lr the {@code lr} value
+     */
     public void fromList(List<Rect2d> lr) {
         Rect2d ap[] = lr.toArray(new Rect2d[0]);
         fromArray(ap);
     }
 
+    /**
+     * Performs the {@code toList} operation.
+     *
+     * @return the operation result
+     */
     public List<Rect2d> toList() {
         Rect2d[] ar = toArray();
         return Arrays.asList(ar);
     }
-
 }

@@ -30,11 +30,22 @@ import org.opencv.core.MatOfDouble;
  */
 public class BlockMeanHash extends ImgHashBase {
 
-    public BlockMeanHash(long addr) {
+    /**
+     * Creates a new {@code BlockMeanHash} instance.
+     *
+     * @param addr the {@code addr} value
+     */
+    protected BlockMeanHash(long addr) {
         super(addr);
     }
 
     // internal usage only
+    /**
+     * Performs the {@code __fromPtr__} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static BlockMeanHash __fromPtr__(long addr) {
         return new BlockMeanHash(addr);
     }
@@ -43,6 +54,12 @@ public class BlockMeanHash extends ImgHashBase {
     // C++: void cv::img_hash::BlockMeanHash::setMode(int mode)
     //
 
+    /**
+     * Performs the {@code create} operation.
+     *
+     * @param mode the {@code mode} value
+     * @return the operation result
+     */
     public static BlockMeanHash create(int mode) {
         return BlockMeanHash.__fromPtr__(create_0(mode));
     }
@@ -51,6 +68,11 @@ public class BlockMeanHash extends ImgHashBase {
     // C++: vector_double cv::img_hash::BlockMeanHash::getMean()
     //
 
+    /**
+     * Performs the {@code create} operation.
+     *
+     * @return the operation result
+     */
     public static BlockMeanHash create() {
         return BlockMeanHash.__fromPtr__(create_1());
     }
@@ -82,6 +104,11 @@ public class BlockMeanHash extends ImgHashBase {
         setMode_0(nativeObj, mode);
     }
 
+    /**
+     * Performs the {@code getMean} operation.
+     *
+     * @return the operation result
+     */
     public MatOfDouble getMean() {
         return MatOfDouble.fromNativeAddr(getMean_0(nativeObj));
     }

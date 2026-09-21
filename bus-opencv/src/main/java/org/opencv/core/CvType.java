@@ -19,34 +19,46 @@
 */
 package org.opencv.core;
 
+//NOTE: Type constants and related functions are ported from modules/core/include/opencv2/core/hal/interface.h
+
 /**
- * The cv type class.
+ * Provides the {@code CvType} API.
  */
-public class CvType {
+public final class CvType {
 
     // type depth constants
-    public static final int CV_8U = 0, CV_8S = 1, CV_16U = 2, CV_16S = 3, CV_32S = 4, CV_32F = 5, CV_64F = 6,
-            CV_16F = 7;
-
     /**
-     * @deprecated please use {@link #CV_16F}
+     * OpenCV constants used by this API.
      */
-    @Deprecated
-    public static final int CV_USRTYPE1 = CV_16F;
-
-    private static final int CV_CN_MAX = 512, CV_CN_SHIFT = 3, CV_DEPTH_MAX = (1 << CV_CN_SHIFT);
-
+    public static final int CV_8U = 0, CV_8S = 1, CV_16U = 2, CV_16S = 3, CV_32S = 4, CV_32F = 5, CV_64F = 6,
+            CV_16F = 7, CV_16BF = 8, CV_Bool = 9, CV_64U = 10, CV_64S = 11, CV_32U = 12;
+    private static final int CV_CN_MAX = 128, CV_CN_SHIFT = 5, CV_DEPTH_MAX = (1 << CV_CN_SHIFT);
     // predefined type constants
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int CV_8UC1 = CV_8UC(1), CV_8UC2 = CV_8UC(2), CV_8UC3 = CV_8UC(3), CV_8UC4 = CV_8UC(4),
             CV_8SC1 = CV_8SC(1), CV_8SC2 = CV_8SC(2), CV_8SC3 = CV_8SC(3), CV_8SC4 = CV_8SC(4), CV_16UC1 = CV_16UC(1),
             CV_16UC2 = CV_16UC(2), CV_16UC3 = CV_16UC(3), CV_16UC4 = CV_16UC(4), CV_16SC1 = CV_16SC(1),
             CV_16SC2 = CV_16SC(2), CV_16SC3 = CV_16SC(3), CV_16SC4 = CV_16SC(4), CV_32SC1 = CV_32SC(1),
-            CV_32SC2 = CV_32SC(2), CV_32SC3 = CV_32SC(3), CV_32SC4 = CV_32SC(4), CV_32FC1 = CV_32FC(1),
+            CV_32SC2 = CV_32SC(2), CV_32SC3 = CV_32SC(3), CV_32SC4 = CV_32SC(4), CV_32UC1 = CV_32UC(1),
+            CV_32UC2 = CV_32UC(2), CV_32UC3 = CV_32UC(3), CV_32UC4 = CV_32UC(4), CV_64SC1 = CV_64SC(1),
+            CV_64SC2 = CV_64SC(2), CV_64SC3 = CV_64SC(3), CV_64SC4 = CV_64SC(4), CV_64UC1 = CV_64UC(1),
+            CV_64UC2 = CV_64UC(2), CV_64UC3 = CV_64UC(3), CV_64UC4 = CV_64UC(4), CV_32FC1 = CV_32FC(1),
             CV_32FC2 = CV_32FC(2), CV_32FC3 = CV_32FC(3), CV_32FC4 = CV_32FC(4), CV_64FC1 = CV_64FC(1),
             CV_64FC2 = CV_64FC(2), CV_64FC3 = CV_64FC(3), CV_64FC4 = CV_64FC(4), CV_16FC1 = CV_16FC(1),
-            CV_16FC2 = CV_16FC(2), CV_16FC3 = CV_16FC(3), CV_16FC4 = CV_16FC(4);
+            CV_16FC2 = CV_16FC(2), CV_16FC3 = CV_16FC(3), CV_16FC4 = CV_16FC(4), CV_16BFC1 = CV_16BFC(1),
+            CV_16BFC2 = CV_16BFC(2), CV_16BFC3 = CV_16BFC(3), CV_16BFC4 = CV_16BFC(4), CV_BoolC1 = CV_BoolC(1),
+            CV_BoolC2 = CV_BoolC(2), CV_BoolC3 = CV_BoolC(3), CV_BoolC4 = CV_BoolC(4);
 
-    public static int makeType(int depth, int channels) {
+    /**
+     * Performs the {@code makeType} operation.
+     *
+     * @param depth the {@code depth} value
+     * @param channels the {@code channels} value
+     * @return the operation result
+     */
+    public static final int makeType(int depth, int channels) {
         if (channels <= 0 || channels >= CV_CN_MAX) {
             throw new UnsupportedOperationException("Channels count should be 1.." + (CV_CN_MAX - 1));
         }
@@ -56,52 +68,175 @@ public class CvType {
         return (depth & (CV_DEPTH_MAX - 1)) + ((channels - 1) << CV_CN_SHIFT);
     }
 
-    public static int CV_8UC(int ch) {
+    /**
+     * Performs the {@code CV_8UC} operation.
+     *
+     * @param ch the {@code ch} value
+     * @return the operation result
+     */
+    public static final int CV_8UC(int ch) {
         return makeType(CV_8U, ch);
     }
 
-    public static int CV_8SC(int ch) {
+    /**
+     * Performs the {@code CV_8SC} operation.
+     *
+     * @param ch the {@code ch} value
+     * @return the operation result
+     */
+    public static final int CV_8SC(int ch) {
         return makeType(CV_8S, ch);
     }
 
-    public static int CV_16UC(int ch) {
+    /**
+     * Performs the {@code CV_16UC} operation.
+     *
+     * @param ch the {@code ch} value
+     * @return the operation result
+     */
+    public static final int CV_16UC(int ch) {
         return makeType(CV_16U, ch);
     }
 
-    public static int CV_16SC(int ch) {
+    /**
+     * Performs the {@code CV_16SC} operation.
+     *
+     * @param ch the {@code ch} value
+     * @return the operation result
+     */
+    public static final int CV_16SC(int ch) {
         return makeType(CV_16S, ch);
     }
 
-    public static int CV_32SC(int ch) {
+    /**
+     * Performs the {@code CV_32SC} operation.
+     *
+     * @param ch the {@code ch} value
+     * @return the operation result
+     */
+    public static final int CV_32SC(int ch) {
         return makeType(CV_32S, ch);
     }
 
-    public static int CV_32FC(int ch) {
+    /**
+     * Performs the {@code CV_32UC} operation.
+     *
+     * @param ch the {@code ch} value
+     * @return the operation result
+     */
+    public static final int CV_32UC(int ch) {
+        return makeType(CV_32U, ch);
+    }
+
+    /**
+     * Performs the {@code CV_64SC} operation.
+     *
+     * @param ch the {@code ch} value
+     * @return the operation result
+     */
+    public static final int CV_64SC(int ch) {
+        return makeType(CV_64S, ch);
+    }
+
+    /**
+     * Performs the {@code CV_64UC} operation.
+     *
+     * @param ch the {@code ch} value
+     * @return the operation result
+     */
+    public static final int CV_64UC(int ch) {
+        return makeType(CV_64U, ch);
+    }
+
+    /**
+     * Performs the {@code CV_32FC} operation.
+     *
+     * @param ch the {@code ch} value
+     * @return the operation result
+     */
+    public static final int CV_32FC(int ch) {
         return makeType(CV_32F, ch);
     }
 
-    public static int CV_64FC(int ch) {
+    /**
+     * Performs the {@code CV_64FC} operation.
+     *
+     * @param ch the {@code ch} value
+     * @return the operation result
+     */
+    public static final int CV_64FC(int ch) {
         return makeType(CV_64F, ch);
     }
 
-    public static int CV_16FC(int ch) {
+    /**
+     * Performs the {@code CV_16FC} operation.
+     *
+     * @param ch the {@code ch} value
+     * @return the operation result
+     */
+    public static final int CV_16FC(int ch) {
         return makeType(CV_16F, ch);
     }
 
-    public static int channels(int type) {
+    /**
+     * Performs the {@code CV_16BFC} operation.
+     *
+     * @param ch the {@code ch} value
+     * @return the operation result
+     */
+    public static final int CV_16BFC(int ch) {
+        return makeType(CV_16BF, ch);
+    }
+
+    /**
+     * Performs the {@code CV_BoolC} operation.
+     *
+     * @param ch the {@code ch} value
+     * @return the operation result
+     */
+    public static final int CV_BoolC(int ch) {
+        return makeType(CV_Bool, ch);
+    }
+
+    /**
+     * Performs the {@code channels} operation.
+     *
+     * @param type the {@code type} value
+     * @return the operation result
+     */
+    public static final int channels(int type) {
         return (type >> CV_CN_SHIFT) + 1;
     }
 
-    public static int depth(int type) {
+    /**
+     * Performs the {@code depth} operation.
+     *
+     * @param type the {@code type} value
+     * @return the operation result
+     */
+    public static final int depth(int type) {
         return type & (CV_DEPTH_MAX - 1);
     }
 
-    public static boolean isInteger(int type) {
+    /**
+     * Performs the {@code isInteger} operation.
+     *
+     * @param type the {@code type} value
+     * @return the operation result
+     */
+    public static final boolean isInteger(int type) {
         return depth(type) < CV_32F;
     }
 
-    public static int ELEM_SIZE(int type) {
+    /**
+     * Performs the {@code ELEM_SIZE} operation.
+     *
+     * @param type the {@code type} value
+     * @return the operation result
+     */
+    public static final int ELEM_SIZE(int type) {
         switch (depth(type)) {
+            case CV_Bool:
             case CV_8U:
             case CV_8S:
                 return channels(type);
@@ -109,12 +244,16 @@ public class CvType {
             case CV_16U:
             case CV_16S:
             case CV_16F:
+            case CV_16BF:
                 return 2 * channels(type);
 
             case CV_32S:
+            case CV_32U:
             case CV_32F:
                 return 4 * channels(type);
 
+            case CV_64U:
+            case CV_64S:
             case CV_64F:
                 return 8 * channels(type);
 
@@ -123,7 +262,13 @@ public class CvType {
         }
     }
 
-    public static String typeToString(int type) {
+    /**
+     * Performs the {@code typeToString} operation.
+     *
+     * @param type the {@code type} value
+     * @return the operation result
+     */
+    public static final String typeToString(int type) {
         String s;
         switch (depth(type)) {
             case CV_8U:
@@ -146,8 +291,20 @@ public class CvType {
                 s = "CV_32S";
                 break;
 
+            case CV_32U:
+                s = "CV_32U";
+                break;
+
             case CV_32F:
                 s = "CV_32F";
+                break;
+
+            case CV_64U:
+                s = "CV_64U";
+                break;
+
+            case CV_64S:
+                s = "CV_64S";
                 break;
 
             case CV_64F:
@@ -156,6 +313,14 @@ public class CvType {
 
             case CV_16F:
                 s = "CV_16F";
+                break;
+
+            case CV_16BF:
+                s = "CV_16BF";
+                break;
+
+            case CV_Bool:
+                s = "CV_Bool";
                 break;
 
             default:

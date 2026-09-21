@@ -20,60 +20,124 @@
 package org.opencv.imgproc;
 
 //javadoc:Moments
-
 /**
- * The moments class.
+ * Provides the {@code Moments} API.
  */
 public class Moments {
 
+    /**
+     * The {@code m00} value.
+     */
     public double m00;
-
+    /**
+     * The {@code m10} value.
+     */
     public double m10;
-
+    /**
+     * The {@code m01} value.
+     */
     public double m01;
-
+    /**
+     * The {@code m20} value.
+     */
     public double m20;
-
+    /**
+     * The {@code m11} value.
+     */
     public double m11;
-
+    /**
+     * The {@code m02} value.
+     */
     public double m02;
-
+    /**
+     * The {@code m30} value.
+     */
     public double m30;
-
+    /**
+     * The {@code m21} value.
+     */
     public double m21;
-
+    /**
+     * The {@code m12} value.
+     */
     public double m12;
-
+    /**
+     * The {@code m03} value.
+     */
     public double m03;
 
+    /**
+     * The {@code mu20} value.
+     */
     public double mu20;
-
+    /**
+     * The {@code mu11} value.
+     */
     public double mu11;
-
+    /**
+     * The {@code mu02} value.
+     */
     public double mu02;
-
+    /**
+     * The {@code mu30} value.
+     */
     public double mu30;
-
+    /**
+     * The {@code mu21} value.
+     */
     public double mu21;
-
+    /**
+     * The {@code mu12} value.
+     */
     public double mu12;
-
+    /**
+     * The {@code mu03} value.
+     */
     public double mu03;
 
+    /**
+     * The {@code nu20} value.
+     */
     public double nu20;
-
+    /**
+     * The {@code nu11} value.
+     */
     public double nu11;
-
+    /**
+     * The {@code nu02} value.
+     */
     public double nu02;
-
+    /**
+     * The {@code nu30} value.
+     */
     public double nu30;
-
+    /**
+     * The {@code nu21} value.
+     */
     public double nu21;
-
+    /**
+     * The {@code nu12} value.
+     */
     public double nu12;
-
+    /**
+     * The {@code nu03} value.
+     */
     public double nu03;
 
+    /**
+     * Creates a new {@code Moments} instance.
+     *
+     * @param m00 the {@code m00} value
+     * @param m10 the {@code m10} value
+     * @param m01 the {@code m01} value
+     * @param m20 the {@code m20} value
+     * @param m11 the {@code m11} value
+     * @param m02 the {@code m02} value
+     * @param m30 the {@code m30} value
+     * @param m21 the {@code m21} value
+     * @param m12 the {@code m12} value
+     * @param m03 the {@code m03} value
+     */
     public Moments(double m00, double m10, double m01, double m20, double m11, double m02, double m30, double m21,
             double m12, double m03) {
         this.m00 = m00;
@@ -89,14 +153,27 @@ public class Moments {
         this.completeState();
     }
 
+    /**
+     * Creates a new {@code Moments} instance.
+     */
     public Moments() {
         this(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
 
+    /**
+     * Creates a new {@code Moments} instance.
+     *
+     * @param vals the {@code vals} value
+     */
     public Moments(double[] vals) {
         set(vals);
     }
 
+    /**
+     * Performs the {@code set} operation.
+     *
+     * @param vals the {@code vals} value
+     */
     public void set(double[] vals) {
         if (vals != null) {
             m00 = vals.length > 0 ? vals[0] : 0;
@@ -149,6 +226,9 @@ public class Moments {
                 + ", " + "\n]";
     }
 
+    /**
+     * Performs the {@code completeState} operation.
+     */
     protected void completeState() {
         double cx = 0, cy = 0;
         double mu20, mu11, mu02;
@@ -194,196 +274,435 @@ public class Moments {
 
     }
 
+    /**
+     * Performs the {@code get_m00} operation.
+     *
+     * @return the operation result
+     */
     public double get_m00() {
         return this.m00;
     }
 
+    /**
+     * Performs the {@code set_m00} operation.
+     *
+     * @param m00 the {@code m00} value
+     */
     public void set_m00(double m00) {
         this.m00 = m00;
     }
 
+    /**
+     * Performs the {@code get_m10} operation.
+     *
+     * @return the operation result
+     */
     public double get_m10() {
         return this.m10;
     }
 
+    /**
+     * Performs the {@code set_m10} operation.
+     *
+     * @param m10 the {@code m10} value
+     */
     public void set_m10(double m10) {
         this.m10 = m10;
     }
 
+    /**
+     * Performs the {@code get_m01} operation.
+     *
+     * @return the operation result
+     */
     public double get_m01() {
         return this.m01;
     }
 
+    /**
+     * Performs the {@code set_m01} operation.
+     *
+     * @param m01 the {@code m01} value
+     */
     public void set_m01(double m01) {
         this.m01 = m01;
     }
 
+    /**
+     * Performs the {@code get_m20} operation.
+     *
+     * @return the operation result
+     */
     public double get_m20() {
         return this.m20;
     }
 
+    /**
+     * Performs the {@code set_m20} operation.
+     *
+     * @param m20 the {@code m20} value
+     */
     public void set_m20(double m20) {
         this.m20 = m20;
     }
 
+    /**
+     * Performs the {@code get_m11} operation.
+     *
+     * @return the operation result
+     */
     public double get_m11() {
         return this.m11;
     }
 
+    /**
+     * Performs the {@code set_m11} operation.
+     *
+     * @param m11 the {@code m11} value
+     */
     public void set_m11(double m11) {
         this.m11 = m11;
     }
 
+    /**
+     * Performs the {@code get_m02} operation.
+     *
+     * @return the operation result
+     */
     public double get_m02() {
         return this.m02;
     }
 
+    /**
+     * Performs the {@code set_m02} operation.
+     *
+     * @param m02 the {@code m02} value
+     */
     public void set_m02(double m02) {
         this.m02 = m02;
     }
 
+    /**
+     * Performs the {@code get_m30} operation.
+     *
+     * @return the operation result
+     */
     public double get_m30() {
         return this.m30;
     }
 
+    /**
+     * Performs the {@code set_m30} operation.
+     *
+     * @param m30 the {@code m30} value
+     */
     public void set_m30(double m30) {
         this.m30 = m30;
     }
 
+    /**
+     * Performs the {@code get_m21} operation.
+     *
+     * @return the operation result
+     */
     public double get_m21() {
         return this.m21;
     }
 
+    /**
+     * Performs the {@code set_m21} operation.
+     *
+     * @param m21 the {@code m21} value
+     */
     public void set_m21(double m21) {
         this.m21 = m21;
     }
 
+    /**
+     * Performs the {@code get_m12} operation.
+     *
+     * @return the operation result
+     */
     public double get_m12() {
         return this.m12;
     }
 
+    /**
+     * Performs the {@code set_m12} operation.
+     *
+     * @param m12 the {@code m12} value
+     */
     public void set_m12(double m12) {
         this.m12 = m12;
     }
 
+    /**
+     * Performs the {@code get_m03} operation.
+     *
+     * @return the operation result
+     */
     public double get_m03() {
         return this.m03;
     }
 
+    /**
+     * Performs the {@code set_m03} operation.
+     *
+     * @param m03 the {@code m03} value
+     */
     public void set_m03(double m03) {
         this.m03 = m03;
     }
 
+    /**
+     * Performs the {@code get_mu20} operation.
+     *
+     * @return the operation result
+     */
     public double get_mu20() {
         return this.mu20;
     }
 
+    /**
+     * Performs the {@code set_mu20} operation.
+     *
+     * @param mu20 the {@code mu20} value
+     */
     public void set_mu20(double mu20) {
         this.mu20 = mu20;
     }
 
+    /**
+     * Performs the {@code get_mu11} operation.
+     *
+     * @return the operation result
+     */
     public double get_mu11() {
         return this.mu11;
     }
 
+    /**
+     * Performs the {@code set_mu11} operation.
+     *
+     * @param mu11 the {@code mu11} value
+     */
     public void set_mu11(double mu11) {
         this.mu11 = mu11;
     }
 
+    /**
+     * Performs the {@code get_mu02} operation.
+     *
+     * @return the operation result
+     */
     public double get_mu02() {
         return this.mu02;
     }
 
+    /**
+     * Performs the {@code set_mu02} operation.
+     *
+     * @param mu02 the {@code mu02} value
+     */
     public void set_mu02(double mu02) {
         this.mu02 = mu02;
     }
 
+    /**
+     * Performs the {@code get_mu30} operation.
+     *
+     * @return the operation result
+     */
     public double get_mu30() {
         return this.mu30;
     }
 
+    /**
+     * Performs the {@code set_mu30} operation.
+     *
+     * @param mu30 the {@code mu30} value
+     */
     public void set_mu30(double mu30) {
         this.mu30 = mu30;
     }
 
+    /**
+     * Performs the {@code get_mu21} operation.
+     *
+     * @return the operation result
+     */
     public double get_mu21() {
         return this.mu21;
     }
 
+    /**
+     * Performs the {@code set_mu21} operation.
+     *
+     * @param mu21 the {@code mu21} value
+     */
     public void set_mu21(double mu21) {
         this.mu21 = mu21;
     }
 
+    /**
+     * Performs the {@code get_mu12} operation.
+     *
+     * @return the operation result
+     */
     public double get_mu12() {
         return this.mu12;
     }
 
+    /**
+     * Performs the {@code set_mu12} operation.
+     *
+     * @param mu12 the {@code mu12} value
+     */
     public void set_mu12(double mu12) {
         this.mu12 = mu12;
     }
 
+    /**
+     * Performs the {@code get_mu03} operation.
+     *
+     * @return the operation result
+     */
     public double get_mu03() {
         return this.mu03;
     }
 
+    /**
+     * Performs the {@code set_mu03} operation.
+     *
+     * @param mu03 the {@code mu03} value
+     */
     public void set_mu03(double mu03) {
         this.mu03 = mu03;
     }
 
+    /**
+     * Performs the {@code get_nu20} operation.
+     *
+     * @return the operation result
+     */
     public double get_nu20() {
         return this.nu20;
     }
 
+    /**
+     * Performs the {@code set_nu20} operation.
+     *
+     * @param nu20 the {@code nu20} value
+     */
     public void set_nu20(double nu20) {
         this.nu20 = nu20;
     }
 
+    /**
+     * Performs the {@code get_nu11} operation.
+     *
+     * @return the operation result
+     */
     public double get_nu11() {
         return this.nu11;
     }
 
+    /**
+     * Performs the {@code set_nu11} operation.
+     *
+     * @param nu11 the {@code nu11} value
+     */
     public void set_nu11(double nu11) {
         this.nu11 = nu11;
     }
 
+    /**
+     * Performs the {@code get_nu02} operation.
+     *
+     * @return the operation result
+     */
     public double get_nu02() {
         return this.nu02;
     }
 
+    /**
+     * Performs the {@code set_nu02} operation.
+     *
+     * @param nu02 the {@code nu02} value
+     */
     public void set_nu02(double nu02) {
         this.nu02 = nu02;
     }
 
+    /**
+     * Performs the {@code get_nu30} operation.
+     *
+     * @return the operation result
+     */
     public double get_nu30() {
         return this.nu30;
     }
 
+    /**
+     * Performs the {@code set_nu30} operation.
+     *
+     * @param nu30 the {@code nu30} value
+     */
     public void set_nu30(double nu30) {
         this.nu30 = nu30;
     }
 
+    /**
+     * Performs the {@code get_nu21} operation.
+     *
+     * @return the operation result
+     */
     public double get_nu21() {
         return this.nu21;
     }
 
+    /**
+     * Performs the {@code set_nu21} operation.
+     *
+     * @param nu21 the {@code nu21} value
+     */
     public void set_nu21(double nu21) {
         this.nu21 = nu21;
     }
 
+    /**
+     * Performs the {@code get_nu12} operation.
+     *
+     * @return the operation result
+     */
     public double get_nu12() {
         return this.nu12;
     }
 
+    /**
+     * Performs the {@code set_nu12} operation.
+     *
+     * @param nu12 the {@code nu12} value
+     */
     public void set_nu12(double nu12) {
         this.nu12 = nu12;
     }
 
+    /**
+     * Performs the {@code get_nu03} operation.
+     *
+     * @return the operation result
+     */
     public double get_nu03() {
         return this.nu03;
     }
 
+    /**
+     * Performs the {@code set_nu03} operation.
+     *
+     * @param nu03 the {@code nu03} value
+     */
     public void set_nu03(double nu03) {
         this.nu03 = nu03;
     }
-
 }

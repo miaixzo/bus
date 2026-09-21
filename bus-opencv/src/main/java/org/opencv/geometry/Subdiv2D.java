@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.opencv.imgproc;
+package org.opencv.geometry;
 
 import java.util.List;
 
@@ -27,18 +27,28 @@ import org.opencv.utils.Converters;
 // C++: class Subdiv2D
 
 /**
- * The subdiv 2 d class.
+ * Provides the {@code Subdiv2D} API.
  */
 public class Subdiv2D {
 
     // C++: enum <unnamed>
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int PTLOC_ERROR = -2, PTLOC_OUTSIDE_RECT = -1, PTLOC_INSIDE = 0, PTLOC_VERTEX = 1,
             PTLOC_ON_EDGE = 2, NEXT_AROUND_ORG = 0x00, NEXT_AROUND_DST = 0x22, PREV_AROUND_ORG = 0x11,
             PREV_AROUND_DST = 0x33, NEXT_AROUND_LEFT = 0x13, NEXT_AROUND_RIGHT = 0x31, PREV_AROUND_LEFT = 0x20,
             PREV_AROUND_RIGHT = 0x02;
-
+    /**
+     * The {@code nativeObj} value.
+     */
     protected final long nativeObj;
 
+    /**
+     * Creates a new {@code Subdiv2D} instance.
+     *
+     * @param addr the {@code addr} value
+     */
     protected Subdiv2D(long addr) {
         nativeObj = addr;
         long nativeObjCopy = nativeObj;
@@ -56,6 +66,8 @@ public class Subdiv2D {
     }
 
     /**
+     * Performs the {@code Subdiv2D} operation.
+     *
      *
      *
      * @param rect Rectangle that includes all of the 2D points that are to be added to the subdivision.
@@ -75,6 +87,12 @@ public class Subdiv2D {
     //
 
     // internal usage only
+    /**
+     * Performs the {@code __fromPtr__} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static Subdiv2D __fromPtr__(long addr) {
         return new Subdiv2D(addr);
     }
@@ -235,6 +253,11 @@ public class Subdiv2D {
     // native support for java finalize() or cleaner
     private static native void delete(long nativeObj);
 
+    /**
+     * Performs the {@code getNativeObjAddr} operation.
+     *
+     * @return the operation result
+     */
     public long getNativeObjAddr() {
         return nativeObj;
     }
@@ -245,6 +268,7 @@ public class Subdiv2D {
      * Creates a new empty Delaunay subdivision
      *
      * @param rect Rectangle that includes all of the 2D points that are to be added to the subdivision.
+     *
      */
     public void initDelaunay(Rect rect) {
         initDelaunay_0(nativeObj, rect.x, rect.y, rect.width, rect.height);
@@ -287,19 +311,13 @@ public class Subdiv2D {
      *               <p>
      *               The function locates the input point within the subdivision and gives one of the triangle edges or
      *               vertices.
-     * @return an integer which specify one of the following five cases for point location:
-     *         <ul>
-     *         <li>The point falls into some facet. The function returns #PTLOC_INSIDE and edge will contain one of
-     *         edges of the facet.</li>
-     *         <li>The point falls onto the edge. The function returns #PTLOC_ON_EDGE and edge will contain this edge.
-     *         </li>
-     *         <li>The point coincides with one of the subdivision vertices. The function returns #PTLOC_VERTEX and
-     *         vertex will contain a pointer to the vertex.</li>
-     *         <li>The point is outside the subdivision reference rectangle. The function returns #PTLOC_OUTSIDE_RECT
-     *         and no pointers are filled.</li>
-     *         <li>One of input arguments is invalid. A runtime error is raised or, if silent or "parent" error
-     *         processing mode is selected, #PTLOC_ERROR is returned.</li>
-     *         </ul>
+     * @return an integer which specify one of the following five cases for point location: - The point falls into some
+     *         facet. The function returns #PTLOC_INSIDE and edge will contain one of edges of the facet. - The point
+     *         falls onto the edge. The function returns #PTLOC_ON_EDGE and edge will contain this edge. - The point
+     *         coincides with one of the subdivision vertices. The function returns #PTLOC_VERTEX and vertex will
+     *         contain a pointer to the vertex. - The point is outside the subdivision reference rectangle. The function
+     *         returns #PTLOC_OUTSIDE_RECT and no pointers are filled. - One of input arguments is invalid. A runtime
+     *         error is raised or, if silent or "parent" error processing mode is selected, #PTLOC_ERROR is returned.
      */
     public int locate(Point pt, int[] edge, int[] vertex) {
         double[] edge_out = new double[1];
@@ -394,6 +412,7 @@ public class Subdiv2D {
      * @param idx          Vector of vertices IDs to consider. For all vertices you can pass empty vector.
      * @param facetList    Output vector of the Voronoi facets.
      * @param facetCenters Output vector of the Voronoi facets center points.
+     *
      */
     public void getVoronoiFacetList(MatOfInt idx, List<MatOfPoint2f> facetList, MatOfPoint2f facetCenters) {
         Mat idx_mat = idx;
@@ -410,6 +429,7 @@ public class Subdiv2D {
      * @param vertex    vertex ID.
      * @param firstEdge Optional. The first edge ID which is connected to the vertex.
      * @return vertex (x,y)
+     *
      */
     public Point getVertex(int vertex, int[] firstEdge) {
         double[] firstEdge_out = new double[1];
@@ -424,6 +444,7 @@ public class Subdiv2D {
      *
      * @param vertex vertex ID.
      * @return vertex (x,y)
+     *
      */
     public Point getVertex(int vertex) {
         return new Point(getVertex_1(nativeObj, vertex));
@@ -434,17 +455,13 @@ public class Subdiv2D {
      *
      * @param edge         Subdivision edge ID.
      * @param nextEdgeType Parameter specifying which of the related edges to return. The following values are possible:
-     *                     <ul>
-     *                     <li>NEXT_AROUND_ORG next around the edge origin ( eOnext on the picture below if e is the
-     *                     input edge)</li>
-     *                     <li>NEXT_AROUND_DST next around the edge vertex ( eDnext )</li>
-     *                     <li>PREV_AROUND_ORG previous around the edge origin (reversed eRnext )</li>
-     *                     <li>PREV_AROUND_DST previous around the edge destination (reversed eLnext )</li>
-     *                     <li>NEXT_AROUND_LEFT next around the left facet ( eLnext )</li>
-     *                     <li>NEXT_AROUND_RIGHT next around the right facet ( eRnext )</li>
-     *                     <li>PREV_AROUND_LEFT previous around the left facet (reversed eOnext )</li>
-     *                     <li>PREV_AROUND_RIGHT previous around the right facet (reversed eDnext )</li>
-     *                     </ul>
+     *                     - NEXT_AROUND_ORG next around the edge origin ( eOnext on the picture below if e is the input
+     *                     edge) - NEXT_AROUND_DST next around the edge vertex ( eDnext ) - PREV_AROUND_ORG previous
+     *                     around the edge origin (reversed eRnext ) - PREV_AROUND_DST previous around the edge
+     *                     destination (reversed eLnext ) - NEXT_AROUND_LEFT next around the left facet ( eLnext ) -
+     *                     NEXT_AROUND_RIGHT next around the right facet ( eRnext ) - PREV_AROUND_LEFT previous around
+     *                     the left facet (reversed eOnext ) - PREV_AROUND_RIGHT previous around the right facet
+     *                     (reversed eDnext )
      *                     <p>
      *                     ![sample output](pics/quadedge.png)
      * @return edge ID related to the input edge.
@@ -469,19 +486,21 @@ public class Subdiv2D {
      *
      * @param edge   Subdivision edge ID.
      * @param rotate Parameter specifying which of the edges of the same quad-edge as the input one to return. The
-     *               following values are possible:
-     *               <ul>
-     *               <li>0 - the input edge ( e on the picture below if e is the input edge)</li>
-     *               <li>1 - the rotated edge ( eRot )</li>
-     *               <li>2 - the reversed edge (reversed e (in green))</li>
-     *               <li>3 - the reversed rotated edge (reversed eRot (in green))</li>
-     *               </ul>
+     *               following values are possible: - 0 - the input edge ( e on the picture below if e is the input
+     *               edge) - 1 - the rotated edge ( eRot ) - 2 - the reversed edge (reversed e (in green)) - 3 - the
+     *               reversed rotated edge (reversed eRot (in green))
      * @return one of the edges ID of the same quad-edge as the input edge.
      */
     public int rotateEdge(int edge, int rotate) {
         return rotateEdge_0(nativeObj, edge, rotate);
     }
 
+    /**
+     * Performs the {@code symEdge} operation.
+     *
+     * @param edge the {@code edge} value
+     * @return the operation result
+     */
     public int symEdge(int edge) {
         return symEdge_0(nativeObj, edge);
     }
