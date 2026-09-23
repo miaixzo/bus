@@ -21,8 +21,6 @@ package org.miaixz.bus.core.basic.entity;
 
 import java.io.Serial;
 
-import jakarta.persistence.Column;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -51,31 +49,26 @@ public class Audit extends Entity {
      * </ul>
      */
     @Logical
-    @Column(nullable = false)
     protected Integer status;
 
     /**
      * Identifier of the user who created the entity.
      */
-    @Column(length = 24, nullable = false)
     protected String creator;
 
     /**
      * Entity creation timestamp in milliseconds.
      */
-    @Column(nullable = false)
     protected Long created;
 
     /**
      * Identifier of the user who last modified the entity.
      */
-    @Column(length = 24, nullable = false)
     protected String modifier;
 
     /**
      * Entity modification timestamp in milliseconds.
      */
-    @Column(nullable = false)
     protected Long modified;
 
     /**

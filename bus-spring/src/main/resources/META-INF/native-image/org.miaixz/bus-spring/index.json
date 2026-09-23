@@ -26,7 +26,7 @@
       "8.8.19"
     ],
     "allowed-packages": [
-      "org.miaixz.bus.spring"
+      "org.miaixz"
     ]
   }
 ]
