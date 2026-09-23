@@ -75,6 +75,26 @@ public class Consts extends Normal {
     public static final Integer ONE = _1;
 
     /**
+     * Numeric alias representing a positive yes value in persisted boolean-compatible columns.
+     */
+    public static final Integer YES = ONE;
+
+    /**
+     * Numeric alias representing a negative no value in persisted boolean-compatible columns.
+     */
+    public static final Integer NO = ZERO;
+
+    /**
+     * Numeric alias representing a true value in persisted boolean-compatible columns.
+     */
+    public static final Integer TRUE = ONE;
+
+    /**
+     * Numeric alias representing a false value in persisted boolean-compatible columns.
+     */
+    public static final Integer FALSE = ZERO;
+
+    /**
      * General-purpose numeric identifier 2.
      * <p>
      * Can be used to represent various business concepts such as:
