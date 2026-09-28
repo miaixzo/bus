@@ -31,6 +31,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -216,6 +217,10 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
      */
     @Override
     public OSProcess getProcess(int pid) {
+        if (pid < Normal._0) {
+            // A negative PID is the internal "all processes" sentinel, not a real process identifier.
+            return null;
+        }
         List<OSProcess> procs = getProcessListFromProcfs(pid);
         if (procs.isEmpty()) {
             return null;

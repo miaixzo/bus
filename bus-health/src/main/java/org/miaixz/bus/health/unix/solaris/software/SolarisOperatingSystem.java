@@ -193,6 +193,10 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
      */
     @Override
     public OSProcess getProcess(int pid) {
+        if (pid < Normal._0) {
+            // A negative PID is the internal "all processes" sentinel, not a real process identifier.
+            return null;
+        }
         List<OSProcess> procs = getProcessListFromProcfs(pid);
         if (procs.isEmpty()) {
             return null;

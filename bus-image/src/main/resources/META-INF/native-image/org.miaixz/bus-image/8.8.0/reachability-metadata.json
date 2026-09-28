@@ -32718,6 +32718,12 @@
       "fields": [
         {
           "name": "boundary"
+        },
+        {
+          "name": "buffer0"
+        },
+        {
+          "name": "firstNotDashIndex"
         }
       ],
       "methods": [
@@ -32731,6 +32737,13 @@
         {
           "name": "close",
           "parameterTypes": []
+        },
+        {
+          "name": "indexOfNot",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte"
+          ]
         },
         {
           "name": "isBoundary",
