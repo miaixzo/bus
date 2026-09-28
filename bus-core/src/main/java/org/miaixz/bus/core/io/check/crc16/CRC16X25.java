@@ -53,18 +53,9 @@ public class CRC16X25 extends CRC16Checksum {
         this.wCRCin = 0xffff;
     }
 
-    /**
-     * Updates the CRC16-X25 checksum with the specified array of bytes. After the superclass update, the internal CRC
-     * value is XORed with 0xFFFF.
-     *
-     * @param b   The byte array to update the checksum with.
-     * @param off The start offset in the data.
-     * @param len The number of bytes to use for the update.
-     */
     @Override
-    public void update(final byte[] b, final int off, final int len) {
-        super.update(b, off, len);
-        wCRCin ^= 0xffff;
+    public long getValue() {
+        return (wCRCin ^ 0xffff) & 0xffff;
     }
 
     /**

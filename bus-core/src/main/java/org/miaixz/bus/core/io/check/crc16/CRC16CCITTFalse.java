@@ -81,6 +81,7 @@ public class CRC16CCITTFalse extends CRC16Checksum {
             if (c15 ^ bit)
                 wCRCin ^= WC_POLY;
         }
+        wCRCin &= 0xffff;
     }
 
 }

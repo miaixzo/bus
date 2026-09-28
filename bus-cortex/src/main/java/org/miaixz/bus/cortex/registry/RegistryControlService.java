@@ -386,6 +386,13 @@ public class RegistryControlService {
         return result;
     }
 
+    /**
+     * Executes a registry batch with the first supporting executor.
+     *
+     * @param operation  batch operation
+     * @param operations registry operations
+     * @return aggregate batch result
+     */
     private BatchResult executeBatch(BatchOperation operation, RegistryBatchOperations operations) {
         for (RegistryBatchExecutor executor : batchExecutors) {
             boolean supported;
@@ -537,6 +544,17 @@ public class RegistryControlService {
                 asset == null ? null : asset.getVersion());
     }
 
+    /**
+     * Applies registry guard policy using explicit asset coordinates.
+     *
+     * @param action  guarded action
+     * @param type    registry type
+     * @param space   space identifier
+     * @param id      asset identifier
+     * @param app_id  application identifier
+     * @param method  protocol method
+     * @param version protocol version
+     */
     private void enforceRegistry(
             String action,
             Type type,
@@ -1183,66 +1201,148 @@ public class RegistryControlService {
      */
     private class ControlRegistryBatchOperations implements RegistryBatchOperations {
 
+        /**
+         * Returns the shared registry key strategy.
+         *
+         * @return registry key strategy
+         */
         @Override
         public Keying<Keying.RegistrySpec> keying() {
             return keying;
         }
 
+        /**
+         * Returns registry types supported by this control service.
+         *
+         * @return supported registry types
+         */
         @Override
         public List<Type> supportedTypes() {
             return RegistryControlService.this.supportedTypes();
         }
 
+        /**
+         * Normalizes one source entry for batch execution.
+         *
+         * @param operation batch operation
+         * @param source    source asset
+         * @return prepared asset
+         */
         @Override
         public Assets prepareEntry(BatchOperation operation, Assets source) {
             return prepareBatchEntry(operation, source);
         }
 
+        /**
+         * Builds the route key for one asset.
+         *
+         * @param entry registry asset
+         * @return normalized route key
+         */
         @Override
         public RegistryRouteKey routeKey(Assets entry) {
             return RegistryRouteKey.of(entry);
         }
 
+        /**
+         * Normalizes one registry asset.
+         *
+         * @param asset registry asset
+         * @return normalized asset
+         */
         @Override
         public Assets normalize(Assets asset) {
             return RegistryControlService.this.normalize(asset);
         }
 
+        /**
+         * Enforces registry guard policy for one batch entry.
+         *
+         * @param action guarded action
+         * @param type   registry type
+         * @param asset  registry asset
+         */
         @Override
         public void enforce(String action, Type type, Assets asset) {
             enforceRegistry(action, type, asset);
         }
 
+        /**
+         * Resolves an existing registry asset.
+         *
+         * @param entry registry asset
+         * @return existing asset or {@code null}
+         */
         @Override
         public Assets resolveExisting(Assets entry) {
             return RegistryControlService.this.resolveExisting(entry);
         }
 
+        /**
+         * Creates or updates one registry asset.
+         *
+         * @param entry registry asset
+         * @return persisted asset
+         */
         @Override
         public Assets upsert(Assets entry) {
             return RegistryControlService.this.upsert(entry);
         }
 
+        /**
+         * Creates or updates one registry asset with a resolved current value.
+         *
+         * @param entry    registry asset
+         * @param existing existing asset or {@code null}
+         * @return persisted asset
+         */
         @Override
         public Assets upsert(Assets entry, Assets existing) {
             return RegistryControlService.this.upsert(entry, existing, true);
         }
 
+        /**
+         * Deletes one registry asset by identity.
+         *
+         * @param type  registry type
+         * @param space space identifier
+         * @param id    asset identifier
+         */
         @Override
         public void delete(Type type, String space, String id) {
             RegistryControlService.this.delete(type, space, id);
         }
 
+        /**
+         * Deletes one registry asset with a resolved current value.
+         *
+         * @param type     registry type
+         * @param space    space identifier
+         * @param id       asset identifier
+         * @param existing existing asset
+         */
         @Override
         public void delete(Type type, String space, String id, Assets existing) {
             RegistryControlService.this.delete(type, space, id, existing, true);
         }
 
+        /**
+         * Resolves a concrete registry by type.
+         *
+         * @param type registry type
+         * @return concrete registry
+         */
         @Override
         public StoreBackedRegistry<? extends Assets> registry(Type type) {
             return RegistryControlService.this.registry(type);
         }
 
+        /**
+         * Resolves the persistent store for one registry type.
+         *
+         * @param type registry type
+         * @return registry store
+         */
         @Override
         public RegistryStore<? extends Assets> store(Type type) {
             StoreBackedRegistry<? extends Assets> registry = RegistryControlService.this.registry(type);

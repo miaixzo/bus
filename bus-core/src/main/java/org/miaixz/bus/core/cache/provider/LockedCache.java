@@ -107,6 +107,8 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
                 if (null == co) {
                     v = supplier.get();
                     putWithoutLock(key, v, timeout);
+                } else {
+                    v = co.get(isUpdateLastAccess);
                 }
             } finally {
                 lock.unlock();

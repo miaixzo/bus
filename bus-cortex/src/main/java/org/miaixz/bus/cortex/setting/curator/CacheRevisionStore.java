@@ -25,269 +25,156 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.cortex.Keying;
-import org.miaixz.bus.cortex.Keying.SettingSpec;
-import org.miaixz.bus.cortex.Suite;
-import org.miaixz.bus.cortex.Trait;
-import org.miaixz.bus.cortex.builtin.SettingGenerator;
-import org.miaixz.bus.cortex.setting.item.ItemBindingProjection;
 import org.miaixz.bus.cortex.setting.revision.Revision;
 import org.miaixz.bus.cortex.setting.revision.RevisionNumbers;
 import org.miaixz.bus.cortex.setting.revision.RevisionStore;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**
- * Cache-backed {@code setting.revision} store.
+ * Cache-backed append-only revision store.
  *
  * @author Kimi Liu
  */
 public class CacheRevisionStore implements RevisionStore {
 
     /**
-     * Shared cache that stores serialized {@code setting.revision} snapshots.
+     * Namespace prefix for cached revisions.
+     */
+    private static final String PREFIX = "cortex:setting:revision:";
+
+    /**
+     * Cache used as the append-only revision backend.
      */
     private final CacheX<String, Object> cacheX;
 
     /**
-     * Setting-domain key strategy.
-     */
-    private final Keying<SettingSpec> keying;
-
-    /**
-     * Creates a CacheRevisionStore.
+     * Creates a cache-backed revision store.
      *
-     * @param cacheX shared cache backend
+     * @param cacheX revision cache
      */
     public CacheRevisionStore(CacheX<String, Object> cacheX) {
-        this(cacheX, SettingGenerator.INSTANCE);
-    }
-
-    /**
-     * Creates a CacheRevisionStore.
-     *
-     * @param cacheX shared cache backend
-     * @param keying setting-domain key strategy
-     */
-    public CacheRevisionStore(CacheX<String, Object> cacheX, Keying<SettingSpec> keying) {
+        if (cacheX == null) {
+            throw new IllegalArgumentException("Revision cache is required");
+        }
         this.cacheX = cacheX;
-        this.keying = keying == null ? SettingGenerator.INSTANCE : keying;
     }
 
     /**
-     * Stores one {@code setting.revision} snapshot in the backing cache.
+     * Appends one immutable revision.
      *
-     * @param revision {@code setting.revision} snapshot
-     * @return stored revision
+     * @param revision revision to append
+     * @return appended revision
      */
     @Override
     public Revision save(Revision revision) {
-        if (revision == null) {
-            return null;
+        if (revision == null || revision.getItem_id() == null || revision.getRevision() == null) {
+            throw new IllegalArgumentException("Revision item_id and revision are required");
         }
-        String json = JsonKit.toJsonString(revision);
-        for (String key : revisionKeys(revision)) {
-            cacheX.write(key, json, 0L);
+        String key = key(revision.getTenant_id(), revision.getItem_id(), revision.getRevision());
+        if (cacheX.read(key) != null) {
+            throw new IllegalStateException("Revision already exists: " + revision.getRevision());
         }
+        cacheX.write(key, JsonKit.toJsonString(revision), 0L);
         return revision;
     }
 
     /**
-     * Finds one {@code setting.revision} snapshot by its logical revision key.
+     * Finds one revision by tenant, item, and revision number.
      *
-     * @param space      space
-     * @param group      setting group
-     * @param data_id    setting data identifier
-     * @param profile    optional profile
-     * @param revisionNo revision number
-     * @return matching revision or {@code null}
+     * @param tenant_id tenant identifier, when available
+     * @param item_id   item identifier
+     * @param revision  item-scoped revision number
+     * @return matching revision, or {@code null} when absent
      */
     @Override
-    public Revision find(String space, String group, String data_id, String profile, String revisionNo) {
-        Object raw = cacheX.read(revisionKey(space, group, data_id, profile, revisionNo));
-        if (raw instanceof String json) {
-            return JsonKit.toPojo(json, Revision.class);
+    public Revision find(String tenant_id, String item_id, String revision) {
+        Object value = cacheX.read(key(tenant_id, item_id, revision));
+        if (value instanceof Revision snapshot) {
+            return snapshot;
         }
-        return null;
+        return value instanceof String json ? JsonKit.toPojo(json, Revision.class) : null;
     }
 
     /**
-     * Deletes one {@code setting.revision} snapshot from the backing cache.
+     * Lists revisions for one item in newest-first order.
      *
-     * @param space      space
-     * @param group      setting group
-     * @param data_id    setting data identifier
-     * @param profile    optional profile
-     * @param revisionNo revision number
+     * @param tenant_id tenant identifier, when available
+     * @param item_id   item identifier
+     * @return immutable revisions
      */
     @Override
-    public Revision delete(String space, String group, String data_id, String profile, String revisionNo) {
-        Revision revision = find(space, group, data_id, profile, revisionNo);
-        if (revision == null) {
-            cacheX.remove(revisionKey(space, group, data_id, profile, revisionNo));
-            return null;
+    public List<Revision> query(String tenant_id, String item_id) {
+        Map<String, Object> values = cacheX.scan(prefix(tenant_id, item_id));
+        if (values == null || values.isEmpty()) {
+            return List.of();
         }
-        cacheX.remove(revisionKeys(revision).toArray(String[]::new));
-        return revision;
-    }
-
-    /**
-     * Queries all {@code setting.revision} snapshots for one logical setting entry.
-     *
-     * @param space   space
-     * @param group   setting group
-     * @param data_id setting data identifier
-     * @param profile optional profile
-     * @return revisions ordered from newest to oldest
-     */
-    @Override
-    public List<Revision> query(String space, String group, String data_id, String profile) {
-        Map<String, Object> entries = cacheX.scan(revisionPrefix(space, group, data_id, profile));
-        List<Revision> result = new ArrayList<>();
-        for (Object value : entries.values()) {
-            if (value instanceof String json) {
-                Revision revision = JsonKit.toPojo(json, Revision.class);
-                if (revision != null) {
-                    result.add(revision);
-                }
+        List<Revision> revisions = new ArrayList<>(values.size());
+        for (Object value : values.values()) {
+            Revision revision = value instanceof Revision snapshot ? snapshot
+                    : value instanceof String json ? JsonKit.toPojo(json, Revision.class) : null;
+            if (revision != null) {
+                revisions.add(revision);
             }
         }
-        result.sort(
-                Comparator.comparingLong((Revision revision) -> RevisionNumbers.sortKey(revision.getRevision()))
-                        .reversed());
-        return result;
+        revisions.sort(
+                Comparator.comparingLong((Revision value) -> RevisionNumbers.sortKey(value.getRevision())).reversed());
+        return revisions;
     }
 
     /**
-     * Retains only the most recent revision snapshots for one logical setting entry.
+     * Removes revisions older than the configured retention boundary.
      *
-     * @param space        space
-     * @param group        setting group
-     * @param data_id      setting data identifier
-     * @param profile      optional profile
-     * @param maxRevisions maximum revisions to retain
+     * @param tenant_id    tenant identifier, when available
+     * @param item_id      item identifier
+     * @param maxRevisions maximum number of newest revisions to retain
      */
     @Override
-    public void retainLatest(String space, String group, String data_id, String profile, int maxRevisions) {
-        if (maxRevisions <= 0) {
-            return;
+    public void retainLatest(String tenant_id, String item_id, int maxRevisions) {
+        if (maxRevisions < 1) {
+            throw new IllegalArgumentException("maxRevisions must be positive");
         }
-        List<Revision> revisions = query(space, group, data_id, profile);
+        List<Revision> revisions = query(tenant_id, item_id);
         if (revisions.size() <= maxRevisions) {
             return;
         }
-        List<String> expiredKeys = new ArrayList<>();
-        for (int i = maxRevisions; i < revisions.size(); i++) {
-            expiredKeys.addAll(revisionKeys(revisions.get(i)));
+        List<String> expired = new ArrayList<>();
+        for (int index = maxRevisions; index < revisions.size(); index++) {
+            Revision revision = revisions.get(index);
+            expired.add(key(tenant_id, item_id, revision.getRevision()));
         }
-        if (!expiredKeys.isEmpty()) {
-            cacheX.remove(expiredKeys.toArray(String[]::new));
-        }
+        cacheX.remove(expired.toArray(String[]::new));
     }
 
     /**
-     * Persists rollback metadata on an existing revision snapshot.
+     * Builds the full key for one revision.
      *
-     * @param space      space
-     * @param group      setting group
-     * @param data_id    setting data identifier
-     * @param profile    optional profile
-     * @param revisionNo revision number to update
-     * @param revert     source revision number
-     * @return updated revision or {@code null}
-     */
-    @Override
-    public Revision markRollback(
-            String space,
-            String group,
-            String data_id,
-            String profile,
-            String revisionNo,
-            String revert) {
-        Revision revision = find(space, group, data_id, profile, revisionNo);
-        if (revision == null) {
-            return null;
-        }
-        revision.setRevert(revert);
-        return save(revision);
-    }
-
-    /**
-     * Returns strongly typed capability flags for the fallback cache-backed revision store.
-     *
-     * @return capability flags
-     */
-    @Override
-    public Suite storeCapabilities() {
-        return Suite.of(Trait.DELETE, Trait.ROLLBACK_METADATA).with(Trait.DURABLE, false);
-    }
-
-    /**
-     * Returns capability flags for the fallback cache-backed revision store using legacy string keys.
-     *
-     * @return capability flags
-     */
-    @Override
-    public Map<String, Boolean> capabilities() {
-        return storeCapabilities().asMap();
-    }
-
-    /**
-     * Builds all cache keys that should point to the supplied revision.
-     *
-     * @param revision item revision
-     * @return revision cache keys
-     */
-    private List<String> revisionKeys(Revision revision) {
-        List<String> profiles = ItemBindingProjection.normalizedProfileIds(revision);
-        if (profiles == null || profiles.isEmpty()) {
-            return List.of(
-                    revisionKey(
-                            revision.getSpace_id(),
-                            revision.getGroup(),
-                            revision.getData_id(),
-                            null,
-                            revision.getRevision()));
-        }
-        List<String> keys = new ArrayList<>(profiles.size());
-        for (String profile : profiles) {
-            String key = revisionKey(
-                    revision.getSpace_id(),
-                    revision.getGroup(),
-                    revision.getData_id(),
-                    profile,
-                    revision.getRevision());
-            if (!keys.contains(key)) {
-                keys.add(key);
-            }
-        }
-        return keys;
-    }
-
-    /**
-     * Builds one revision cache key.
-     *
-     * @param space    space
-     * @param group    setting group
-     * @param dataId   setting data identifier
-     * @param profile  optional profile
-     * @param revision revision number
+     * @param tenant_id tenant identifier, when available
+     * @param item_id   item identifier
+     * @param revision  item-scoped revision number
      * @return revision cache key
      */
-    private String revisionKey(String space, String group, String dataId, String profile, String revision) {
-        return keying.key(SettingSpec.revision(space, group, dataId, profile, revision));
+    private String key(String tenant_id, String item_id, String revision) {
+        return prefix(tenant_id, item_id) + value(revision);
     }
 
     /**
-     * Builds the revision scan prefix.
+     * Builds the scan prefix for all revisions of one item.
      *
-     * @param space   space
-     * @param group   setting group
-     * @param dataId  setting data identifier
-     * @param profile optional profile
-     * @return revision prefix
+     * @param tenant_id tenant identifier, when available
+     * @param item_id   item identifier
+     * @return item revision prefix
      */
-    private String revisionPrefix(String space, String group, String dataId, String profile) {
-        return keying.prefix(SettingSpec.revision(space, group, dataId, profile, null));
+    private String prefix(String tenant_id, String item_id) {
+        return PREFIX + value(tenant_id) + ':' + value(item_id) + ':';
     }
 
+    /**
+     * Normalizes a nullable key segment.
+     *
+     * @param value segment value
+     * @return normalized segment
+     */
+    private String value(String value) {
+        return value == null ? "_" : value;
+    }
 }

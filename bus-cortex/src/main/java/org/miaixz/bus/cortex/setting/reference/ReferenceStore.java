@@ -17,22 +17,52 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.setting.binding;
+package org.miaixz.bus.cortex.setting.reference;
+
+import java.util.List;
 
 /**
- * Binding targets supported by setting resource binding rows.
+ * Durable directed-resource relationship contract.
  *
  * @author Kimi Liu
  */
-public enum BindingType {
+public interface ReferenceStore {
 
     /**
-     * Binding row targets a setting application.
+     * Persists one directed relationship.
+     *
+     * @param reference relationship to persist
+     * @return persisted relationship
      */
-    APP,
-    /**
-     * Binding row targets a setting profile.
-     */
-    PROFILE
+    Reference save(Reference reference);
 
+    /**
+     * Removes one relationship selected by its business coordinates.
+     *
+     * @param tenant_id tenant identifier, when available
+     * @param source_id source resource identifier
+     * @param target_id target resource identifier
+     * @param type      relationship type
+     */
+    void remove(String tenant_id, String source_id, String target_id, String type);
+
+    /**
+     * Lists relationships that originate from one resource.
+     *
+     * @param tenant_id tenant identifier, when available
+     * @param source_id source resource identifier
+     * @param type      optional relationship type
+     * @return outgoing relationships
+     */
+    List<Reference> outgoing(String tenant_id, String source_id, String type);
+
+    /**
+     * Lists relationships that point to one resource.
+     *
+     * @param tenant_id tenant identifier, when available
+     * @param target_id target resource identifier
+     * @param type      optional relationship type
+     * @return incoming relationships
+     */
+    List<Reference> incoming(String tenant_id, String target_id, String type);
 }

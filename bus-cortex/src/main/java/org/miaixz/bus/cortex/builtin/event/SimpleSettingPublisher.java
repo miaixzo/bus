@@ -71,11 +71,11 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
      *
      * @param space   logical space identifier
      * @param group   setting group
-     * @param data_id setting data identifier
+     * @param code    setting code
      * @param content setting content
      */
-    public void publish(String space, String group, String data_id, String content) {
-        publish(space, group, data_id, null, content);
+    public void publish(String space, String group, String code, String content) {
+        publish(space, group, code, null, content);
     }
 
     /**
@@ -83,12 +83,12 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
      *
      * @param space   logical space identifier
      * @param group   setting group
-     * @param data_id setting data identifier
+     * @param code    setting code
      * @param profile optional setting profile
      * @param content setting content
      */
-    public void publish(String space, String group, String data_id, String profile, String content) {
-        publish(space, group, data_id, profile, content, 0L);
+    public void publish(String space, String group, String code, String profile, String content) {
+        publish(space, group, code, profile, content, 0L);
     }
 
     /**
@@ -96,14 +96,14 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
      *
      * @param space   logical space identifier
      * @param group   setting group
-     * @param data_id setting data identifier
+     * @param code    setting code
      * @param profile optional profile
      * @param content setting content
      * @param ttlMs   explicit ttl in milliseconds
      */
     @Override
-    public void publish(String space, String group, String data_id, String profile, String content, long ttlMs) {
-        cacheX.write(overlayKey(space, group, data_id, profile), content, ttlMs);
+    public void publish(String space, String group, String code, String profile, String content, long ttlMs) {
+        cacheX.write(overlayKey(space, group, code, profile), content, ttlMs);
     }
 
     /**
@@ -111,13 +111,13 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
      *
      * @param space   logical space identifier
      * @param group   setting group
-     * @param data_id setting data identifier
+     * @param code    setting code
      * @param profile optional setting profile
      * @return cached setting content, or {@code null} when absent
      */
     @Override
-    public String get(String space, String group, String data_id, String profile) {
-        Object value = cacheX.read(overlayKey(space, group, data_id, profile));
+    public String get(String space, String group, String code, String profile) {
+        Object value = cacheX.read(overlayKey(space, group, code, profile));
         return value == null ? null : value.toString();
     }
 
@@ -126,12 +126,12 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
      *
      * @param space   logical space identifier
      * @param group   setting group
-     * @param data_id setting data identifier
+     * @param code    setting code
      * @param profile optional profile
      */
     @Override
-    public void delete(String space, String group, String data_id, String profile) {
-        cacheX.remove(overlayKey(space, group, data_id, profile));
+    public void delete(String space, String group, String code, String profile) {
+        cacheX.remove(overlayKey(space, group, code, profile));
     }
 
     /**

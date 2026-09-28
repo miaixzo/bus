@@ -22,9 +22,10 @@ package org.miaixz.bus.core.codec;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * Implementation of the Caesar cipher. The Caesar cipher is one of the simplest and most widely known encryption
- * techniques. It is a type of substitution cipher in which each letter in the plaintext is replaced by a letter some
- * fixed number of positions down the alphabet. Algorithm source: <a href=
+ * Implementation of the Caesar cipher. Only the 52 English letters defined in {@link #TABLE} are shifted; digits,
+ * symbols, Chinese characters, and other characters remain unchanged. The Caesar cipher is one of the simplest and most
+ * widely known encryption techniques. It is a type of substitution cipher in which each letter in the plaintext is
+ * replaced by a letter some fixed number of positions down the alphabet. Algorithm source: <a href=
  * "https://github.com/zhaorenjie110/SymmetricEncryptionAndDecryption">https://github.com/zhaorenjie110/SymmetricEncryptionAndDecryption</a>
  *
  * @author Kimi Liu
@@ -60,7 +61,7 @@ public class Caesar {
         char c;
         for (int i = 0; i < len; i++) {
             c = message.charAt(i);
-            if (!Character.isLetter(c)) {
+            if (isNotCaesarChar(c)) {
                 continue;
             }
             plain[i] = encodeChar(c, offset);
@@ -84,12 +85,22 @@ public class Caesar {
         char c;
         for (int i = 0; i < len; i++) {
             c = cipherText.charAt(i);
-            if (!Character.isLetter(c)) {
+            if (isNotCaesarChar(c)) {
                 continue;
             }
             plain[i] = decodeChar(c, offset);
         }
         return new String(plain);
+    }
+
+    /**
+     * Checks whether the character is outside the Caesar alphabet.
+     *
+     * @param c The character to check.
+     * @return {@code true} if the character should be left unchanged.
+     */
+    private static boolean isNotCaesarChar(final char c) {
+        return TABLE.indexOf(c) < 0;
     }
 
     /**
@@ -101,7 +112,10 @@ public class Caesar {
      * @return The encrypted character.
      */
     private static char encodeChar(final char c, final int offset) {
-        final int position = (TABLE.indexOf(c) + offset) % 52;
+        int position = (TABLE.indexOf(c) + offset) % 52;
+        if (position < 0) {
+            position += 52;
+        }
         return TABLE.charAt(position);
 
     }

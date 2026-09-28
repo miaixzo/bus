@@ -19,302 +19,187 @@
 */
 package org.miaixz.bus.cortex.setting.item;
 
-import java.util.List;
-import java.util.Map;
-
-import jakarta.persistence.Transient;
+import jakarta.persistence.Column;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.cortex.Setting;
-import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.core.basic.entity.Space;
 
 /**
- * Full current-state setting item model.
- * <p>
- * This resource owns the durable item coordinates, source metadata, content, gray rule, and runtime application/profile
- * bindings directly. It is no longer a thin runtime patch on top of {@link Setting}; instead it is the primary resource
- * model for current-state setting entries.
- * </p>
+ * Current state of one setting item.
  *
  * @author Kimi Liu
  */
-@Setter
 @Getter
+@Setter
 @SuperBuilder
-public class Item extends Setting {
+public class Item extends Space {
 
     /**
-     * Setting data identifier within the group.
+     * Profile that owns the item.
      */
-    private String data_id;
-
+    private String profile_id;
     /**
-     * Setting group name within the space.
+     * Current stable revision identifier.
      */
+    private String stable_id;
+    /**
+     * Current gray revision identifier.
+     */
+    private String gray_id;
+    /**
+     * Active gray rollout identifier.
+     */
+    private String rollout_id;
+    /**
+     * Persisted item kind.
+     */
+    private String kind;
+    /**
+     * Logical setting group.
+     */
+    @Column(name = "\"group\"")
     private String group;
-
     /**
-     * Source type used to resolve the effective value.
+     * Stable setting code.
      */
-    private String source;
-
+    private String code;
     /**
-     * Source-specific descriptor such as an environment variable name or external resource address.
+     * Digest of immutable item coordinates.
      */
-    private String spec;
-
+    private String fingerprint;
     /**
-     * Optional gray-release rule.
-     */
-    private String rule;
-
-    /**
-     * Logical content format.
-     */
-    private String format;
-
-    /**
-     * Current logical setting value.
+     * Editable source content.
      */
     private String content;
-
+    /**
+     * Content format.
+     */
+    private String format;
+    /**
+     * Editing mode.
+     */
+    private String editor;
+    /**
+     * Content source type.
+     */
+    private String source;
+    /**
+     * External source descriptor.
+     */
+    private String spec;
     /**
      * Delivery exposure policy.
      */
     private String exposure;
-
     /**
-     * Monotonic revision number for the current {@code setting.item} state.
-     * <p>
-     * Kept as {@code version} for source and storage compatibility while new code uses {@link #getRevision()} and
-     * {@link #setRevision(String)}.
-     * </p>
-     */
-    private String version;
-
-    /**
-     * Content checksum used for idempotent publish and diff calculation.
-     */
-    private String checksum;
-
-    /**
-     * Encryption flag of the stored content, where {@code 1} means encrypted and {@code 0} means plain text.
+     * Encrypted-content flag.
      */
     private Integer encrypted;
-
     /**
-     * Optional logical labels.
+     * Structured editor payload stored as text.
      */
-    @Transient
-    private Map<String, String> labels;
-
+    private String payload;
     /**
-     * Aggregated application bindings loaded from {@code setting_item_binding}.
+     * Labels stored as text.
      */
-    @Transient
-    private List<String> app_ids;
-
+    private String labels;
     /**
-     * Aggregated profile bindings loaded from {@code setting_item_binding}.
+     * Source extension stored as text.
      */
-    @Transient
-    private List<String> profile_ids;
-
+    private String extension;
     /**
-     * Structured extension attributes for adapters that need richer integration parameters.
+     * Semantic content checksum.
      */
-    @Transient
-    private Map<String, Object> extension;
+    private String checksum;
+    /**
+     * Optimistic editing edition.
+     */
+    private Long edition;
+    /**
+     * Runtime delivery generation.
+     */
+    private Long generation;
+    /**
+     * Optional item description.
+     */
+    private String description;
 
     /**
-     * Creates an empty current-state setting item.
+     * Creates an empty setting item.
      */
     public Item() {
-        super();
-        setType(Type.ITEM.key());
+        // No initialization required.
     }
 
     /**
-     * Returns the current item revision number.
+     * Supported item purposes.
      *
-     * @return item revision number
-     */
-    public String getRevision() {
-        return version;
-    }
-
-    /**
-     * Assigns the current item revision number.
-     *
-     * @param revision item revision number
-     */
-    public void setRevision(String revision) {
-        this.version = revision;
-    }
-
-    /**
-     * Returns the current item revision number using storage-oriented naming.
-     *
-     * @return item revision number
-     */
-    public String getRevisionNo() {
-        return version;
-    }
-
-    /**
-     * Assigns the current item revision number using storage-oriented naming.
-     *
-     * @param revisionNo item revision number
-     */
-    public void setRevisionNo(String revisionNo) {
-        this.version = revisionNo;
-    }
-
-    /**
-     * Role of an item in source and resolved configuration projections.
+     * @author Kimi Liu
      */
     public enum Kind {
-        /**
-         * The item owns editable source content.
-         */
+        /** User-authored source configuration. */
         SOURCE,
-        /**
-         * The item is a resolved projection derived from source content and references.
-         */
+        /** Materialized effective configuration. */
         EFFECTIVE
     }
 
     /**
-     * Editing model used to mutate an item's content.
+     * Supported content editing modes.
+     *
+     * @author Kimi Liu
      */
     public enum Editor {
-        /**
-         * Content is edited as one complete source document.
-         */
+        /** Source-text editing mode. */
         SOURCE,
-        /**
-         * Content is edited as structured key-value entries.
-         */
+        /** Structured key-value editing mode. */
         KEY_VALUE
     }
 
     /**
-     * User-facing lifecycle projection of an item.
+     * User-facing item states.
+     *
+     * @author Kimi Liu
      */
     public enum State {
-        /**
-         * The item has no stable published revision.
-         */
+        /** Item has never been published. */
         UNPUBLISHED,
-        /**
-         * The editable content matches the stable published revision.
-         */
+        /** Item matches its stable published revision. */
         PUBLISHED,
-        /**
-         * The editable content differs from the stable published revision.
-         */
+        /** Item contains unpublished changes. */
         CHANGED,
-        /**
-         * The item currently participates in a gray release.
-         */
+        /** Item has an active gray revision. */
         GRAY,
-        /**
-         * The item has been archived.
-         */
+        /** Item is archived. */
         ARCHIVED
     }
 
     /**
-     * Mutation applied to one protected secret path.
+     * Supported protected-value mutations.
+     *
+     * @author Kimi Liu
      */
     public enum SecretAction {
-        /**
-         * Preserve the currently stored secret value.
-         */
+        /** Keeps the existing protected value. */
         KEEP,
-        /**
-         * Replace the stored secret with a newly supplied value.
-         */
+        /** Replaces the existing protected value. */
         REPLACE,
-        /**
-         * Remove the secret value from the content.
-         */
+        /** Deletes the existing protected value. */
         DELETE
     }
 
     /**
-     * Depth of content validation requested by a caller.
+     * Supported validation depths.
+     *
+     * @author Kimi Liu
      */
     public enum ValidationLevel {
-        /**
-         * Validate only syntax and basic parsing constraints.
-         */
+        /** Performs syntax validation only. */
         SYNTAX,
-        /**
-         * Run syntax, structure, policy, and semantic validation.
-         */
+        /** Performs syntax and business validation. */
         FULL
-    }
-
-    /**
-     * Severity assigned to a validation finding.
-     */
-    public enum ValidationSeverity {
-        /**
-         * The finding blocks the requested operation.
-         */
-        ERROR,
-        /**
-         * The finding is risky but does not necessarily block the operation.
-         */
-        WARNING,
-        /**
-         * The finding is informational only.
-         */
-        INFO
-    }
-
-    /**
-     * Risk classification derived for a configuration change.
-     */
-    public enum Risk {
-        /**
-         * The change has low expected operational impact.
-         */
-        LOW,
-        /**
-         * The change has moderate expected operational impact.
-         */
-        MEDIUM,
-        /**
-         * The change has high expected operational impact and requires stronger review.
-         */
-        HIGH
-    }
-
-    /**
-     * Content projection selected when reading or exporting an item.
-     */
-    public enum View {
-        /**
-         * Read the active stable revision.
-         */
-        STABLE,
-        /**
-         * Read the active gray revision.
-         */
-        GRAY,
-        /**
-         * Read the current editable workspace.
-         */
-        EDITING,
-        /**
-         * Read the governed effective value after resolving references and overrides.
-         */
-        EFFECTIVE
     }
 
 }

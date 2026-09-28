@@ -23,44 +23,55 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.cortex.Setting;
-import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.core.basic.entity.Tenant;
 
 /**
- * Profile directory entry for the setting domain.
+ * Configuration profile directory entry.
  *
  * @author Kimi Liu
  */
 @Getter
 @Setter
 @SuperBuilder
-public class Profile extends Setting {
+public class Profile extends Tenant {
 
     /**
-     * Legacy profile code kept only for compatibility and display. {@code id} remains the authoritative identifier.
+     * Stable profile code.
      */
     private String code;
-
     /**
      * Display name.
      */
     private String name;
-
     /**
-     * Display sort position.
+     * Display order.
      */
     private Integer sort;
-
     /**
      * Whether the profile is built in.
      */
-    private Boolean builtin;
+    private Integer builtin;
+    /**
+     * Whether destructive changes are guarded.
+     */
+    private Integer guarded;
+    /**
+     * Approval policy stored as text.
+     */
+    private String policy;
+    /**
+     * Whether the creator may approve their own rollout.
+     */
+    private Integer self;
+    /**
+     * Optional profile description.
+     */
+    private String description;
 
     /**
-     * Creates an empty profile directory entry.
+     * Creates an empty profile.
      */
     public Profile() {
-        setType(Type.PROFILE.key());
+        // No initialization required.
     }
-
 }

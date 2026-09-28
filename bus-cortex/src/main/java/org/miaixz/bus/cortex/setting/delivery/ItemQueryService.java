@@ -26,7 +26,6 @@ import java.util.Map;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.setting.curator.ItemCuratorService;
 import org.miaixz.bus.cortex.setting.item.Item;
-import org.miaixz.bus.cortex.setting.item.ItemBindingProjection;
 import org.miaixz.bus.cortex.setting.item.ItemExposure;
 import org.miaixz.bus.cortex.setting.item.ItemQuery;
 import org.miaixz.bus.cortex.setting.secret.SecretMasker;
@@ -91,11 +90,6 @@ public class ItemQueryService {
         if (settingCuratorService != null && !settingCuratorService.allows(query)) {
             return query.getFallbackValue();
         }
-        Item entry = settingCuratorService
-                .find(query.getSpace_id(), query.getGroup(), query.getData_id(), query.getProfile_id());
-        if (entry != null && !ItemBindingProjection.bindsToApp(entry, query.getApp_id())) {
-            return query.getFallbackValue();
-        }
         String overlay = runtimeOverlay(query, true);
         if (overlay != null) {
             return overlay;
@@ -118,7 +112,7 @@ public class ItemQueryService {
             if (query == null) {
                 continue;
             }
-            String key = query.getGroup() + Symbol.COLON + query.getData_id();
+            String key = query.getGroup() + Symbol.COLON + query.getCode();
             if (query.getProfile_id() != null && !query.getProfile_id().isBlank()) {
                 key += Symbol.COLON + query.getProfile_id();
             }
@@ -141,12 +135,8 @@ public class ItemQueryService {
         if (settingCuratorService != null && !settingCuratorService.allows(query)) {
             return null;
         }
-        Item entry = settingCuratorService
-                .find(query.getSpace_id(), query.getGroup(), query.getData_id(), query.getProfile_id());
-        if (entry != null && !ItemBindingProjection.bindsToApp(entry, query.getApp_id())) {
-            return null;
-        }
-        return secretMasker.mask(entry);
+        List<Item> entries = settingCuratorService.query(query);
+        return entries.isEmpty() ? null : secretMasker.mask(entries.getFirst());
     }
 
     /**
@@ -177,7 +167,7 @@ public class ItemQueryService {
                         : settingCuratorService.watchKey(
                                 query.getSpace_id(),
                                 query.getGroup(),
-                                query.getData_id(),
+                                query.getCode(),
                                 query.getProfile_id()));
         result.put("previewSource", durablePresent ? "durable-setting" : "none");
         return result;
@@ -197,11 +187,8 @@ public class ItemQueryService {
         if (respectPreference && !query.isPreferOverlay()) {
             return null;
         }
-        return runtimeSettingOverlayService.resolveRuntimeOverlay(
-                query.getSpace_id(),
-                query.getGroup(),
-                query.getData_id(),
-                query.getProfile_id());
+        return runtimeSettingOverlayService
+                .resolveRuntimeOverlay(query.getSpace_id(), query.getGroup(), query.getCode(), query.getProfile_id());
     }
 
 }

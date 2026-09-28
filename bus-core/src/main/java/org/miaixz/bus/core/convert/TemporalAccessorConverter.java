@@ -27,11 +27,13 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 
 import org.miaixz.bus.core.center.date.DateTime;
 import org.miaixz.bus.core.center.date.Resolver;
 import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -118,6 +120,8 @@ public class TemporalAccessorConverter extends AbstractConverter {
             return parseFromInstant(targetClass, dateTime.toInstant(), dateTime.getZoneId());
         } else if (value instanceof Calendar calendar) {
             return parseFromInstant(targetClass, calendar.toInstant(), calendar.getTimeZone().toZoneId());
+        } else if (value instanceof Map<?, ?> map) {
+            return parseFromMap(targetClass, map);
         } else {
             return parseFromCharSequence(targetClass, convertToString(value));
         }
@@ -330,6 +334,37 @@ public class TemporalAccessorConverter extends AbstractConverter {
             result = OffsetTime.ofInstant(instant, zoneId);
         }
         return result;
+    }
+
+    /**
+     * Converts map fields to a java.time object.
+     *
+     * @param targetClass The target type.
+     * @param map         The source map.
+     * @return The java.time object.
+     * @throws ConvertException if the target type is not supported.
+     */
+    private TemporalAccessor parseFromMap(final Class<?> targetClass, final Map<?, ?> map) {
+        if (LocalDate.class.equals(targetClass)) {
+            return LocalDate
+                    .of(Convert.toInt(map.get("year")), Convert.toInt(map.get("month")), Convert.toInt(map.get("day")));
+        } else if (LocalDateTime.class.equals(targetClass)) {
+            return LocalDateTime.of(
+                    Convert.toInt(map.get("year")),
+                    Convert.toInt(map.get("month")),
+                    Convert.toInt(map.get("day")),
+                    Convert.toInt(map.get("hour")),
+                    Convert.toInt(map.get("minute")),
+                    Convert.toInt(map.get("second")),
+                    Convert.toInt(map.get("nano")));
+        } else if (LocalTime.class.equals(targetClass)) {
+            return LocalTime.of(
+                    Convert.toInt(map.get("hour")),
+                    Convert.toInt(map.get("minute")),
+                    Convert.toInt(map.get("second")),
+                    Convert.toInt(map.get("nano")));
+        }
+        throw new ConvertException("Unsupported type: [{}] from map: [{}]", targetClass, map);
     }
 
 }
