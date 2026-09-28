@@ -34,103 +34,103 @@ import org.miaixz.bus.core.lang.Symbol;
 public interface Curator {
 
     /**
-     * Returns the latest published content for the given group and data ID.
+     * Returns the latest published content for the given group and code.
      *
-     * @param group   setting group name
-     * @param data_id setting data identifier
+     * @param group setting group name
+     * @param code  setting code
      * @return current setting content, or {@code null} if absent
      */
-    String get(String group, String data_id);
+    String get(String group, String code);
 
     /**
      * Returns setting content after applying client-specific gray routing rules.
      *
      * @param group    setting group name
-     * @param data_id  setting data identifier
+     * @param code     setting code
      * @param clientIp client IP used for gray-rule selection
      * @return resolved setting content, or {@code null} if absent
      */
-    String get(String group, String data_id, String clientIp);
+    String get(String group, String code, String clientIp);
 
     /**
      * Returns the latest published content for one profile.
      *
      * @param group   setting group name
-     * @param data_id setting data identifier
+     * @param code    setting code
      * @param profile {@code setting.profile}
      * @return current setting content, or {@code null} if absent
      */
-    default String getProfile(String group, String data_id, String profile) {
-        return get(group, data_id);
+    default String getProfile(String group, String code, String profile) {
+        return get(group, code);
     }
 
     /**
      * Returns setting content after applying client-specific gray routing rules and profile matching.
      *
      * @param group    setting group name
-     * @param data_id  setting data identifier
+     * @param code     setting code
      * @param profile  {@code setting.profile}
      * @param clientIp client IP used for gray-rule selection
      * @return resolved setting content, or {@code null} if absent
      */
-    default String get(String group, String data_id, String profile, String clientIp) {
-        return getProfile(group, data_id, profile);
+    default String get(String group, String code, String profile, String clientIp) {
+        return getProfile(group, code, profile);
     }
 
     /**
-     * Publishes new content for the given group and data ID.
+     * Publishes new content for the given group and code.
      *
      * @param group   setting group name
-     * @param data_id setting data identifier
+     * @param code    setting code
      * @param content setting content to publish
      */
-    void publish(String group, String data_id, String content);
+    void publish(String group, String code, String content);
 
     /**
      * Publishes new content for one profile.
      *
      * @param group   setting group name
-     * @param data_id setting data identifier
+     * @param code    setting code
      * @param profile {@code setting.profile}
      * @param content setting content to publish
      */
-    default void publish(String group, String data_id, String profile, String content) {
-        publish(group, data_id, content);
+    default void publish(String group, String code, String profile, String content) {
+        publish(group, code, content);
     }
 
     /**
      * Rolls back the setting entry to a historical item revision.
      *
      * @param group    setting group name
-     * @param data_id  setting data identifier
+     * @param code     setting code
      * @param revision historical revision to restore
      */
-    void rollback(String group, String data_id, String revision);
+    void rollback(String group, String code, String revision);
 
     /**
      * Rolls back one profile-specific setting entry to a historical item revision.
      *
      * @param group    setting group name
-     * @param data_id  setting data identifier
+     * @param code     setting code
      * @param profile  {@code setting.profile}
      * @param revision historical revision to restore
      */
-    default void rollback(String group, String data_id, String profile, String revision) {
-        rollback(group, data_id, revision);
+    default void rollback(String group, String code, String profile, String revision) {
+        rollback(group, code, revision);
     }
 
     /**
      * Resolves a batch of setting values keyed by logical identifier.
      *
-     * @param groupAndDataIds logical identifiers in {@code group:data_id} form
+     * @param groupAndCodes logical identifiers in {@code group:code} form
      * @return resolved values
      */
-    default Map<String, String> batchGet(List<String> groupAndDataIds) {
+    default Map<String, String> batchGet(List<String> groupAndCodes) {
         Map<String, String> result = new LinkedHashMap<>();
-        if (groupAndDataIds == null) {
+        if (groupAndCodes == null) {
             return result;
         }
-        for (String item : groupAndDataIds) {
+        for (String item : groupAndCodes) {
             if (item == null || item.isBlank()) {
                 continue;
             }
@@ -147,12 +147,12 @@ public interface Curator {
      * Resolves one setting value with fallback content.
      *
      * @param group    setting group name
-     * @param data_id  setting data identifier
+     * @param code     setting code
      * @param fallback fallback content
      * @return resolved setting content or fallback
      */
-    default String getOrDefault(String group, String data_id, String fallback) {
-        String value = get(group, data_id);
+    default String getOrDefault(String group, String code, String fallback) {
+        String value = get(group, code);
         return value == null ? fallback : value;
     }
 
@@ -160,11 +160,11 @@ public interface Curator {
      * Subscribes to setting changes and returns a watch identifier.
      *
      * @param group    setting group name
-     * @param data_id  setting data identifier
+     * @param code     setting code
      * @param listener listener invoked with updated content
      * @return watch identifier used to cancel the subscription
      */
-    String watch(String group, String data_id, ConsumerX<String> listener);
+    String watch(String group, String code, ConsumerX<String> listener);
 
     /**
      * Cancels a previously registered setting watch.

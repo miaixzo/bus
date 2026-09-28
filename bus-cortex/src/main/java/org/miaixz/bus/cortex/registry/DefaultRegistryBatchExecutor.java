@@ -66,16 +66,35 @@ public class DefaultRegistryBatchExecutor implements RegistryBatchExecutor {
         this.batchResolvers = List.copyOf(resolvers);
     }
 
+    /**
+     * Returns the lowest-priority order reserved for the default executor.
+     *
+     * @return default executor order
+     */
     @Override
     public int order() {
         return Integer.MAX_VALUE;
     }
 
+    /**
+     * Accepts every operation not handled by a higher-priority executor.
+     *
+     * @param operation  batch operation
+     * @param operations registry operations
+     * @return always {@code true}
+     */
     @Override
     public boolean supports(BatchOperation operation, RegistryBatchOperations operations) {
         return true;
     }
 
+    /**
+     * Executes one registry batch with per-entry failure isolation.
+     *
+     * @param operation  batch operation
+     * @param operations registry operations
+     * @return aggregate batch result
+     */
     @Override
     public BatchResult execute(BatchOperation operation, RegistryBatchOperations operations) {
         BatchResult result = new BatchResult();
@@ -117,6 +136,14 @@ public class DefaultRegistryBatchExecutor implements RegistryBatchExecutor {
         return result;
     }
 
+    /**
+     * Resolves an optional batch lookup using the first supporting resolver.
+     *
+     * @param operation  batch operation
+     * @param operations registry operations
+     * @param result     aggregate result receiving resolver warnings
+     * @return resolved lookup or an empty lookup
+     */
     private RegistryBatchLookup resolveLookup(
             BatchOperation operation,
             RegistryBatchOperations operations,
@@ -174,6 +201,15 @@ public class DefaultRegistryBatchExecutor implements RegistryBatchExecutor {
         return RegistryBatchLookup.empty();
     }
 
+    /**
+     * Applies one normalized batch entry.
+     *
+     * @param operation  batch operation
+     * @param entry      normalized registry asset
+     * @param result     aggregate batch result
+     * @param operations registry operations
+     * @param lookup     optional preloaded lookup
+     */
     private void applyBatchEntry(
             BatchOperation operation,
             Assets entry,
@@ -222,6 +258,14 @@ public class DefaultRegistryBatchExecutor implements RegistryBatchExecutor {
         }
     }
 
+    /**
+     * Resolves an existing asset from the batch lookup or registry fallback.
+     *
+     * @param entry      normalized registry asset
+     * @param operations registry operations
+     * @param lookup     optional preloaded lookup
+     * @return existing asset or {@code null}
+     */
     private Assets resolveExisting(Assets entry, RegistryBatchOperations operations, RegistryBatchLookup lookup) {
         RegistryRouteKey routeKey = operations.routeKey(entry);
         if (routeKey == null || lookup == null) {
@@ -240,6 +284,13 @@ public class DefaultRegistryBatchExecutor implements RegistryBatchExecutor {
         return operations.resolveExisting(entry);
     }
 
+    /**
+     * Determines whether an authoritative API route lookup can skip fallback resolution.
+     *
+     * @param entry    normalized registry asset
+     * @param routeKey normalized route key
+     * @return {@code true} when method-version fallback is unnecessary
+     */
     private boolean canSkipMethodVersionFallback(Assets entry, RegistryRouteKey routeKey) {
         return entry != null && routeKey != null && Integer.valueOf(Type.API.key()).equals(routeKey.type())
                 && entry.getMethod() != null && entry.getVersion() != null && entry.getVerb() != null;

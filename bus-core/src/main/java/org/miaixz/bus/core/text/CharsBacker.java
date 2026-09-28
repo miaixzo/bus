@@ -3172,7 +3172,11 @@ public class CharsBacker extends CharsValidator {
         if (Normal.__1 == startInclude) {
             return toStringOrNull(text);
         }
-        return replaceByCodePoint(text, startInclude, startInclude + searchStr.length(), replacedStr);
+
+        final int startIncludeByCodePoint = Character.codePointCount(text, 0, startInclude);
+        final int endExcludeByCodePoint = startIncludeByCodePoint
+                + Character.codePointCount(searchStr, 0, searchStr.length());
+        return replaceByCodePoint(text, startIncludeByCodePoint, endExcludeByCodePoint, replacedStr);
     }
 
     /**

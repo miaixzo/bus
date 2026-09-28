@@ -55,16 +55,33 @@ public class Callout {
      */
     private static final DataCodec<String> TEXT_CODEC = new DataCodec<>() {
 
+        /**
+         * Encodes text as a UTF-8 payload.
+         *
+         * @param value text value
+         * @return encoded payload
+         */
         @Override
         public Payload encode(String value) {
             return Payload.of(value == null ? Normal.EMPTY : value, Charset.UTF_8);
         }
 
+        /**
+         * Decodes a payload using strict UTF-8 validation.
+         *
+         * @param payload encoded payload
+         * @return decoded text
+         */
         @Override
         public String decode(Payload payload) {
             return decodeText(payload);
         }
 
+        /**
+         * Returns the media type produced by this codec.
+         *
+         * @return UTF-8 plain-text media type
+         */
         @Override
         public MediaType media() {
             return MediaType.TEXT_PLAIN_TYPE.withCharset(Charset.UTF_8);
@@ -206,6 +223,8 @@ public class Callout {
 
     /**
      * Local replacement for the previous HTTP result state categories used by Callout.
+     *
+     * @author Kimi Liu
      */
     private enum ResultState {
 
@@ -344,6 +363,7 @@ public class Callout {
      * @param status response status, or 0 when no status was available
      * @param body   decoded response body
      * @param error  failure cause
+     * @author Kimi Liu
      */
     private record Result(ResultState state, int status, String body, Throwable error) {
 

@@ -21,31 +21,27 @@ package org.miaixz.bus.cortex.setting.revision;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import org.miaixz.bus.cortex.Suite;
-import org.miaixz.bus.cortex.Trait;
 
 /**
- * History store abstraction for {@code setting.revision} snapshots.
+ * Append-only store contract for immutable setting revisions.
  *
  * @author Kimi Liu
  */
 public interface RevisionStore {
 
     /**
-     * Persists one {@code setting.revision} snapshot.
+     * Appends one immutable revision.
      *
-     * @param revision revision snapshot
-     * @return stored revision
+     * @param revision revision to append
+     * @return persisted revision
      */
     Revision save(Revision revision);
 
     /**
-     * Saves a batch of revision snapshots.
+     * Appends each non-null revision in encounter order.
      *
-     * @param revisions revision snapshots
-     * @return stored revision snapshots
+     * @param revisions revisions to append
+     * @return persisted revisions
      */
     default List<Revision> saveAll(List<Revision> revisions) {
         if (revisions == null || revisions.isEmpty()) {
@@ -61,137 +57,42 @@ public interface RevisionStore {
     }
 
     /**
-     * Deletes one concrete revision snapshot. Implementations should make this operation idempotent so callers can use
-     * it as publish compensation after a partially failed current-state update.
+     * Finds one immutable revision.
      *
-     * @param space    space
-     * @param group    setting group
-     * @param data_id  setting data identifier
-     * @param profile  optional profile
-     * @param revision revision number
-     * @return deleted revision snapshot, or {@code null} when absent
+     * @param tenant_id tenant identifier, when available
+     * @param item_id   item identifier
+     * @param revision  item-scoped revision number
+     * @return matching revision, or {@code null} when absent
      */
-    Revision delete(String space, String group, String data_id, String profile, String revision);
+    Revision find(String tenant_id, String item_id, String revision);
 
     /**
-     * Finds one concrete revision.
+     * Lists revisions for one item in newest-first order.
      *
-     * @param space    space
-     * @param group    setting group
-     * @param data_id  setting data identifier
-     * @param profile  optional profile
-     * @param revision revision number
-     * @return matching revision or {@code null}
+     * @param tenant_id tenant identifier, when available
+     * @param item_id   item identifier
+     * @return item revisions
      */
-    Revision find(String space, String group, String data_id, String profile, String revision);
+    List<Revision> query(String tenant_id, String item_id);
 
     /**
-     * Queries all known {@code setting.revision} snapshots for one entry.
+     * Returns the latest revision for one item.
      *
-     * @param space   space
-     * @param group   setting group
-     * @param data_id setting data identifier
-     * @param profile optional profile
-     * @return revisions ordered from newest to oldest
+     * @param tenant_id tenant identifier, when available
+     * @param item_id   item identifier
+     * @return latest revision, or {@code null} when absent
      */
-    List<Revision> query(String space, String group, String data_id, String profile);
-
-    /**
-     * Lists a page of revisions.
-     *
-     * @param space   space
-     * @param group   group
-     * @param data_id data_id
-     * @param profile profile
-     * @param offset  offset
-     * @param limit   page size
-     * @return paged revisions
-     */
-    default List<Revision> list(String space, String group, String data_id, String profile, int offset, int limit) {
-        List<Revision> revisions = query(space, group, data_id, profile);
-        if (revisions == null || revisions.isEmpty()) {
-            return List.of();
-        }
-        int from = Math.max(offset, 0);
-        if (from >= revisions.size()) {
-            return List.of();
-        }
-        int size = limit > 0 ? limit : revisions.size();
-        return revisions.subList(from, Math.min(revisions.size(), from + size));
+    default Revision latest(String tenant_id, String item_id) {
+        List<Revision> revisions = query(tenant_id, item_id);
+        return revisions == null || revisions.isEmpty() ? null : revisions.getFirst();
     }
 
     /**
-     * Trims history so that only the latest revisions remain.
+     * Retains at most the requested number of newest revisions.
      *
-     * @param space        space
-     * @param group        setting group
-     * @param data_id      setting data identifier
-     * @param profile      optional profile
-     * @param maxRevisions max revisions to keep
+     * @param tenant_id    tenant identifier, when available
+     * @param item_id      item identifier
+     * @param maxRevisions maximum number of revisions to retain
      */
-    void retainLatest(String space, String group, String data_id, String profile, int maxRevisions);
-
-    /**
-     * Marks one revision as a rollback of another revision and persists the updated metadata.
-     *
-     * <p>
-     * Revision stores are primarily append-oriented, but rollback metadata is assigned only after the rollback publish
-     * succeeds. Implementations must therefore update the already-written revision snapshot atomically when their
-     * backing storage supports it, or fail without mutating state when it does not.
-     *
-     * @param space    space
-     * @param group    setting group
-     * @param data_id  setting data identifier
-     * @param profile  optional profile
-     * @param revision revision number to update
-     * @param revert   source revision number
-     * @return updated revision, or {@code null} when the revision does not exist
-     */
-    default Revision markRollback(
-            String space,
-            String group,
-            String data_id,
-            String profile,
-            String revision,
-            String revert) {
-        Revision snapshot = find(space, group, data_id, profile, revision);
-        if (snapshot == null) {
-            return null;
-        }
-        snapshot.setRevert(revert);
-        return save(snapshot);
-    }
-
-    /**
-     * Returns the latest revision for one setting entry.
-     *
-     * @param space   space
-     * @param group   group
-     * @param data_id data_id
-     * @param profile profile
-     * @return latest revision or {@code null}
-     */
-    default Revision latest(String space, String group, String data_id, String profile) {
-        List<Revision> revisions = list(space, group, data_id, profile, 0, 1);
-        return revisions.isEmpty() ? null : revisions.getFirst();
-    }
-
-    /**
-     * Returns strongly typed revision-store capability hints.
-     *
-     * @return capability flags
-     */
-    default Suite storeCapabilities() {
-        return Suite.of(Trait.DURABLE, Trait.DELETE, Trait.ROLLBACK_METADATA);
-    }
-
-    /**
-     * Returns revision-store capability hints using legacy string keys.
-     *
-     * @return capability flags
-     */
-    default Map<String, Boolean> capabilities() {
-        return storeCapabilities().asMap();
-    }
-
+    void retainLatest(String tenant_id, String item_id, int maxRevisions);
 }

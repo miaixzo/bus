@@ -21,35 +21,27 @@ package org.miaixz.bus.cortex.setting.item;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import org.miaixz.bus.cortex.Suite;
-import org.miaixz.bus.cortex.Trait;
 
 /**
- * Durable source-of-truth contract for current-state setting entries.
- *
- * <p>
- * This mirrors {@code RegistryStore}: implementations persist the durable model only. {@link StoreBackedItemStore}
- * coordinates this store with {@code CacheX} for hot reads and cache rebuilds.
+ * Durable store contract for current setting state.
  *
  * @author Kimi Liu
  */
 public interface ItemStore {
 
     /**
-     * Creates or updates one current-state setting entry in durable storage.
+     * Persists the current state of one item.
      *
-     * @param entry entry to store
-     * @return stored entry snapshot
+     * @param entry item state to persist
+     * @return persisted item state
      */
     Item save(Item entry);
 
     /**
-     * Saves a batch of current-state setting entries.
+     * Persists each non-null item in encounter order.
      *
-     * @param entries setting entries
-     * @return stored entry snapshots
+     * @param entries item states to persist
+     * @return persisted item states
      */
     default List<Item> saveAll(List<Item> entries) {
         if (entries == null || entries.isEmpty()) {
@@ -65,51 +57,31 @@ public interface ItemStore {
     }
 
     /**
-     * Deletes one current-state setting entry from durable storage.
+     * Deletes one item by its tenant and identifier.
      *
-     * @param space   space
-     * @param group   setting group
-     * @param data_id setting data identifier
-     * @param profile optional profile
-     * @return deleted entry snapshot, or {@code null} when absent
+     * @param tenant_id tenant identifier, when available
+     * @param id        item identifier
+     * @return deleted item, or {@code null} when absent
      */
-    Item delete(String space, String group, String data_id, String profile);
+    Item delete(String tenant_id, String id);
 
     /**
-     * Finds one current-state setting entry in durable storage.
+     * Finds one item by its immutable business coordinates.
      *
-     * @param space   space
-     * @param group   setting group
-     * @param data_id setting data identifier
-     * @param profile optional profile
-     * @return matching entry or {@code null}
+     * @param tenant_id  tenant identifier, when available
+     * @param space_id   space identifier
+     * @param profile_id profile identifier, when applicable
+     * @param group      item group
+     * @param code       item code
+     * @return matching item, or {@code null} when absent
      */
-    Item find(String space, String group, String data_id, String profile);
+    Item find(String tenant_id, String space_id, String profile_id, String group, String code);
 
     /**
-     * Queries current-state setting entries from durable storage.
+     * Queries items using the supplied business criteria.
      *
-     * @param query query filter
-     * @return matching entries
+     * @param query item query
+     * @return matching items
      */
     List<Item> query(ItemQuery query);
-
-    /**
-     * Returns strongly typed durable-store capability hints.
-     *
-     * @return capability flags
-     */
-    default Suite storeCapabilities() {
-        return Suite.of(Trait.BATCH, Trait.QUERY, Trait.DURABLE);
-    }
-
-    /**
-     * Returns durable-store capability hints using legacy string keys.
-     *
-     * @return capability flags
-     */
-    default Map<String, Boolean> capabilities() {
-        return storeCapabilities().asMap();
-    }
-
 }

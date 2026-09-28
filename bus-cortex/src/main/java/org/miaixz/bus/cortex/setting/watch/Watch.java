@@ -19,14 +19,11 @@
 */
 package org.miaixz.bus.cortex.setting.watch;
 
-import jakarta.persistence.Transient;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.basic.entity.Tenant;
-import org.miaixz.bus.cortex.Type;
 
 /**
  * Persistent runtime-watch attributes shared by configuration-center implementations.
@@ -56,7 +53,7 @@ public class Watch extends Tenant {
     /**
      * Revision currently authorized for this watch.
      */
-    private String target_revision_id;
+    private String target_id;
 
     /**
      * Current authorized target generation.
@@ -76,7 +73,7 @@ public class Watch extends Tenant {
     /**
      * Revision confirmed by the latest successful acknowledgement.
      */
-    private String last_applied_revision_id;
+    private String applied_id;
 
     /**
      * Database timestamp of the latest acknowledgement.
@@ -93,29 +90,6 @@ public class Watch extends Tenant {
      */
     public Watch() {
         // No initialization required.
-    }
-
-    /**
-     * Returns the fixed Cortex runtime-watch type.
-     *
-     * @return stable runtime-watch type key
-     */
-    @Transient
-    public Integer getType() {
-        return Type.WATCH.key();
-    }
-
-    /**
-     * Accepts the fixed Cortex runtime-watch type for bean compatibility.
-     *
-     * @param type supplied Cortex type key
-     * @throws IllegalArgumentException when a different non-null type is supplied
-     */
-    @Transient
-    public void setType(Integer type) {
-        if (type != null && type.intValue() != Type.WATCH.key()) {
-            throw new IllegalArgumentException("Unsupported type for Watch: " + type);
-        }
     }
 
 }

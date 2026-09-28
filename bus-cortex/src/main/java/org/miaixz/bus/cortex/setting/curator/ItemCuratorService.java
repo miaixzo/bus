@@ -19,12 +19,10 @@
 */
 package org.miaixz.bus.cortex.setting.curator;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Keying.SettingSpec;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
@@ -34,108 +32,87 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.setting.SettingEnforcer;
 import org.miaixz.bus.cortex.setting.SettingPublisher;
 import org.miaixz.bus.cortex.setting.item.*;
+import org.miaixz.bus.cortex.setting.reference.Reference;
+import org.miaixz.bus.cortex.setting.reference.ReferenceStore;
 import org.miaixz.bus.cortex.setting.revision.Revision;
 import org.miaixz.bus.cortex.setting.revision.RevisionStore;
 
 /**
- * Application service for the setting domain.
+ * Application service for setting reads, publication and revision history.
  *
  * @author Kimi Liu
  */
 public class ItemCuratorService {
 
     /**
-     * Current-state store for setting entries.
+     * Current item store.
      */
     private final StoreBackedItemStore entryStore;
-
     /**
-     * Revision-history store used for rollback and audits.
+     * Immutable revision store.
      */
     private final RevisionStore revisionStore;
-
     /**
-     * Effective-value resolver for external and internal reads.
+     * Resource relationship store.
+     */
+    private final ReferenceStore referenceStore;
+    /**
+     * Item content resolver.
      */
     private final ItemValueResolver resolver;
-
     /**
-     * Publisher that coordinates current-state writes and history snapshots.
+     * Durable item publisher.
      */
     private final SettingPublisher publisher;
-
     /**
-     * Optional centralized setting enforcer.
+     * Optional scope and input enforcer.
      */
     private final SettingEnforcer enforcer;
-
     /**
-     * Optional shared Cortex guard.
+     * Optional authorization guard.
      */
     private final CortexGuard cortexGuard;
-
     /**
      * Setting-domain key strategy.
      */
     private final Keying<SettingSpec> keying;
 
     /**
-     * Creates an ItemCuratorService.
+     * Creates an item curator with required dependencies and default policy components.
      *
-     * @param entryStore    current-state store
-     * @param revisionStore revision-history store
-     * @param resolver      effective-value resolver
-     * @param publisher     publisher responsible for revision-tracked updates
+     * @param entryStore     current item store
+     * @param revisionStore  immutable revision store
+     * @param referenceStore resource relationship store
+     * @param resolver       content resolver
+     * @param publisher      durable publisher
      */
-    public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore, ItemValueResolver resolver,
-            SettingPublisher publisher) {
-        this(entryStore, revisionStore, resolver, publisher, null, null, SettingGenerator.INSTANCE);
+    public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore,
+            ReferenceStore referenceStore, ItemValueResolver resolver, SettingPublisher publisher) {
+        this(entryStore, revisionStore, referenceStore, resolver, publisher, null, null, SettingGenerator.INSTANCE);
     }
 
     /**
-     * Creates an ItemCuratorService with an optional setting enforcer.
+     * Creates an item curator with explicit policy and key components.
      *
-     * @param entryStore    current-state store
-     * @param revisionStore revision-history store
-     * @param resolver      effective-value resolver
-     * @param publisher     publisher responsible for revision-tracked updates
-     * @param enforcer      optional centralized setting enforcer
+     * @param entryStore     current item store
+     * @param revisionStore  immutable revision store
+     * @param referenceStore resource relationship store
+     * @param resolver       content resolver
+     * @param publisher      durable publisher
+     * @param enforcer       optional scope enforcer
+     * @param cortexGuard    optional authorization guard
+     * @param keying         setting-domain key strategy
      */
-    public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore, ItemValueResolver resolver,
-            SettingPublisher publisher, SettingEnforcer enforcer) {
-        this(entryStore, revisionStore, resolver, publisher, enforcer, null, SettingGenerator.INSTANCE);
-    }
-
-    /**
-     * Creates an ItemCuratorService with optional setting and shared guards.
-     *
-     * @param entryStore    current-state store
-     * @param revisionStore revision-history store
-     * @param resolver      resolver
-     * @param publisher     publisher
-     * @param enforcer      setting enforcer
-     * @param cortexGuard   shared guard
-     */
-    public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore, ItemValueResolver resolver,
-            SettingPublisher publisher, SettingEnforcer enforcer, CortexGuard cortexGuard) {
-        this(entryStore, revisionStore, resolver, publisher, enforcer, cortexGuard, SettingGenerator.INSTANCE);
-    }
-
-    /**
-     * Creates an ItemCuratorService with explicit setting key strategy.
-     *
-     * @param entryStore    current-state store
-     * @param revisionStore revision-history store
-     * @param resolver      resolver
-     * @param publisher     publisher
-     * @param enforcer      setting enforcer
-     * @param cortexGuard   shared guard
-     * @param keying        setting-domain key strategy
-     */
-    public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore, ItemValueResolver resolver,
-            SettingPublisher publisher, SettingEnforcer enforcer, CortexGuard cortexGuard, Keying<SettingSpec> keying) {
+    public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore,
+            ReferenceStore referenceStore, ItemValueResolver resolver, SettingPublisher publisher,
+            SettingEnforcer enforcer, CortexGuard cortexGuard, Keying<SettingSpec> keying) {
+        if (entryStore == null || revisionStore == null || referenceStore == null || resolver == null
+                || publisher == null) {
+            throw new IllegalArgumentException("Item curator dependencies are required");
+        }
         this.entryStore = entryStore;
         this.revisionStore = revisionStore;
+        this.referenceStore = referenceStore;
         this.resolver = resolver;
         this.publisher = publisher;
         this.enforcer = enforcer;
@@ -144,182 +121,164 @@ public class ItemCuratorService {
     }
 
     /**
-     * Publishes a setting entry through the revision-tracked publisher.
+     * Validates and publishes one item.
      *
-     * @param entry setting entry
-     * @return stored entry
+     * @param entry item to publish
+     * @return persisted item
      */
     public Item publish(Item entry) {
         return publisher.publish(validateItem(entry));
     }
 
     /**
-     * Publishes a plain inline setting item.
+     * Publishes inline content for one item coordinate.
      *
-     * @param space   space
-     * @param group   setting group
-     * @param data_id setting data identifier
-     * @param content inline content
-     * @return stored entry
+     * @param space   space identifier
+     * @param group   item group
+     * @param code    item code
+     * @param content source content
+     * @return persisted item
      */
-    public Item publishInline(String space, String group, String data_id, String content) {
+    public Item publishInline(String space, String group, String code, String content) {
         Item entry = new Item();
         entry.setSpace_id(CortexIdentity.space(space));
         entry.setGroup(group);
-        entry.setData_id(data_id);
+        entry.setCode(code);
         entry.setContent(content);
         return publish(entry);
     }
 
     /**
-     * Deletes one setting entry from the current state store.
+     * Deletes one authorized item.
      *
-     * @param space   space
-     * @param group   setting group
-     * @param data_id setting data identifier
-     * @param profile optional profile
-     * @return deleted entry or {@code null}
+     * @param space   space identifier
+     * @param group   item group
+     * @param code    item code
+     * @param profile optional profile identifier
+     * @return deleted item, or {@code null} when absent
      */
-    public Item delete(String space, String group, String data_id, String profile) {
-        requireAllowed("delete", space, null, profile, profileScope(space, group, data_id, profile));
-        return publisher.delete(space, group, data_id, profile);
+    public Item delete(String space, String group, String code, String profile) {
+        requireAllowed("delete", space, null, profile, profileScope(space, group, code, profile));
+        return publisher.delete(space, group, code, profile);
     }
 
     /**
-     * Rolls back the current setting entry to a previous revision.
+     * Rolls an item back to one historical revision.
      *
-     * @param space    space
-     * @param group    setting group
-     * @param data_id  setting data identifier
-     * @param profile  optional profile
-     * @param revision historical revision
-     * @return newly published current entry after rollback, or {@code null}
+     * @param space    space identifier
+     * @param group    item group
+     * @param code     item code
+     * @param profile  optional profile identifier
+     * @param revision item-scoped revision number
+     * @return republished item, or {@code null} when absent
      */
-    public Item rollback(String space, String group, String data_id, String profile, String revision) {
-        requireAllowed("rollback", space, null, profile, profileScope(space, group, data_id, profile));
-        return publisher.rollback(space, group, data_id, profile, revision);
+    public Item rollback(String space, String group, String code, String profile, String revision) {
+        requireAllowed("rollback", space, null, profile, profileScope(space, group, code, profile));
+        return publisher.rollback(space, group, code, profile, revision);
     }
 
     /**
-     * Finds the current setting entry.
+     * Finds one current item by business coordinates.
      *
-     * @param space   space
-     * @param group   setting group
-     * @param data_id setting data identifier
-     * @param profile optional profile
-     * @return current entry
+     * @param space   space identifier
+     * @param group   item group
+     * @param code    item code
+     * @param profile optional profile identifier
+     * @return matching item, or {@code null} when absent
      */
-    public Item find(String space, String group, String data_id, String profile) {
-        return entryStore.find(space, group, data_id, profile);
+    public Item find(String space, String group, String code, String profile) {
+        return entryStore.find(null, CortexIdentity.space(space), profile, group, code);
     }
 
     /**
-     * Queries current setting entries.
+     * Queries items after scope validation.
      *
-     * @param query query filter
-     * @return matching entries
+     * @param query item query
+     * @return matching authorized items
      */
     public List<Item> query(ItemQuery query) {
-        query = prepare(query);
-        if (!allows(query)) {
+        ItemQuery prepared = prepare(query);
+        if (prepared == null || !allows(prepared)) {
             return List.of();
         }
-        return filterByApp(entryStore.query(query), query == null ? null : query.getApp_id());
+        return entryStore.query(prepared);
     }
 
     /**
-     * Resolves one effective setting value.
+     * Resolves item content without an exposure filter.
      *
-     * @param query query filter
-     * @return resolved value
+     * @param query item query
+     * @return resolved content or the configured fallback
      */
     public String resolve(ItemQuery query) {
         return resolve(query, null);
     }
 
     /**
-     * Resolves one effective setting value with an optional exposure guard.
+     * Resolves item content with an optional exposure filter.
      *
-     * @param query            query filter
-     * @param requiredExposure required exposure policy, or {@code null} to disable filtering
-     * @return resolved value
+     * @param query    item query
+     * @param exposure required exposure, when present
+     * @return resolved content or the configured fallback
      */
-    public String resolve(ItemQuery query, ItemExposure requiredExposure) {
-        query = prepare(query);
-        if (query == null) {
+    public String resolve(ItemQuery query, ItemExposure exposure) {
+        ItemQuery prepared = prepare(query);
+        if (prepared == null || !allows(prepared)) {
+            return prepared == null ? null : prepared.getFallbackValue();
+        }
+        Item item = find(prepared.getSpace_id(), prepared.getGroup(), prepared.getCode(), prepared.getProfile_id());
+        if (item == null || !visibleToApp(item, prepared.getApp_id())) {
+            return prepared.getFallbackValue();
+        }
+        if (exposure != null && !exposure.name().equals(item.getExposure())) {
             return null;
         }
-        if (!allows(query)) {
-            return query.getFallbackValue();
-        }
-        Item entry = entryStore.find(query.getSpace_id(), query.getGroup(), query.getData_id(), query.getProfile_id());
-        if (entry != null && !ItemBindingProjection.bindsToApp(entry, query.getApp_id())) {
-            return query.getFallbackValue();
-        }
-        if (requiredExposure != null && (entry == null || !requiredExposure.name().equals(entry.getExposure()))) {
-            return null;
-        }
-        String resolved = resolver.resolve(entry, query.getRequestContext());
-        if (resolved == null && query.getFallbackValue() != null) {
-            return query.getFallbackValue();
-        }
-        return resolved;
+        String value = resolver.resolve(item, prepared.getRequestContext());
+        return value == null ? prepared.getFallbackValue() : value;
     }
 
     /**
-     * Exports resolved setting values for a scope.
+     * Exports all visible item values in one scope.
      *
-     * @param scope export scope
-     * @return resolved values keyed by logical setting identifier
+     * @param scope item scope
+     * @return values keyed by canonical export keys
      */
     public Map<String, String> export(ItemScope scope) {
         return export(scope, null);
     }
 
     /**
-     * Exports resolved setting values for a scope with an optional exposure filter.
+     * Exports visible values matching an optional exposure filter.
      *
-     * @param scope            export scope
-     * @param requiredExposure required exposure policy, or {@code null} to export all entries
-     * @return resolved values keyed by logical setting identifier
+     * @param scope    item scope
+     * @param exposure required exposure, when present
+     * @return values keyed by canonical export keys
      */
-    public Map<String, String> export(ItemScope scope, ItemExposure requiredExposure) {
-        scope = prepare(scope);
-        if (!allows(
-                scope == null ? null : scope.getSpace_id(),
-                scope == null ? null : scope.getApp_id(),
-                scope == null ? null : scope.getProfile_id())) {
+    public Map<String, String> export(ItemScope scope, ItemExposure exposure) {
+        ItemScope prepared = prepare(scope);
+        if (prepared == null || !allows(prepared.getSpace_id(), prepared.getApp_id(), prepared.getProfile_id())) {
             return Map.of();
         }
-        ItemQuery query = new ItemQuery();
-        if (scope != null) {
-            query.setSpace_id(scope.getSpace_id());
-            query.setGroup(scope.getGroup());
-            query.setProfile_id(scope.getProfile_id());
-            query.setApp_id(scope.getApp_id());
-            query.setLabels(scope.getLabels());
-            query.setSelectors(scope.getSelectors());
-            query.setLimit(scope.getLimit());
-            query.setOffset(scope.getOffset());
-        }
-        List<Item> entries = query(query);
         Map<String, String> result = new LinkedHashMap<>();
-        GrayRequestContext requestContext = new GrayRequestContext();
-        for (Item entry : entries) {
-            if (entry == null || requiredExposure != null && !requiredExposure.name().equals(entry.getExposure())) {
-                continue;
+        for (Item item : entryStore.query(prepared)) {
+            if (exposure == null || exposure.name().equals(item.getExposure())) {
+                result.put(
+                        keying.key(
+                                SettingSpec.export(
+                                        item.getSpace_id(),
+                                        item.getGroup(),
+                                        item.getCode(),
+                                        item.getProfile_id())),
+                        resolver.resolve(item, null));
             }
-            result.put(
-                    exportKey(entry, scope == null ? null : scope.getProfile_id()),
-                    resolver.resolve(entry, requestContext));
         }
         return result;
     }
 
     /**
-     * Applies the optional relation guard to one query.
+     * Applies query validation when an enforcer is configured.
      *
-     * @param query query to validate
+     * @param query item query
      * @return validated query
      */
     public ItemQuery prepare(ItemQuery query) {
@@ -327,9 +286,9 @@ public class ItemCuratorService {
     }
 
     /**
-     * Applies the optional relation guard to one scope.
+     * Applies scope validation when an enforcer is configured.
      *
-     * @param scope scope to validate
+     * @param scope item scope
      * @return validated scope
      */
     public ItemScope prepare(ItemScope scope) {
@@ -337,61 +296,164 @@ public class ItemCuratorService {
     }
 
     /**
-     * Applies the optional write guard to one item.
+     * Validates item input and enforces publish authorization.
      *
-     * @param entry entry to validate
-     * @return validated entry
+     * @param item item to validate
+     * @return validated item
      */
-    public Item validateItem(Item entry) {
-        Item validated = enforcer == null ? entry : enforcer.validateItem(entry);
+    public Item validateItem(Item item) {
+        Item validated = enforcer == null ? item : enforcer.validateItem(item);
         if (validated != null) {
             requireAllowed(
                     "publish",
                     validated.getSpace_id(),
-                    first(ItemBindingProjection.normalizedAppIds(validated)),
-                    first(ItemBindingProjection.normalizedProfileIds(validated)),
+                    null,
+                    validated.getProfile_id(),
                     profileScope(
                             validated.getSpace_id(),
                             validated.getGroup(),
-                            validated.getData_id(),
-                            first(ItemBindingProjection.normalizedProfileIds(validated))));
+                            validated.getCode(),
+                            validated.getProfile_id()));
         }
         return validated;
     }
 
     /**
-     * Returns whether the supplied query is allowed by the centralized relation guard.
+     * Tests whether one query scope is allowed.
      *
-     * @param query query
-     * @return {@code true} when the relation is allowed
+     * @param query item query
+     * @return {@code true} when the query is allowed
      */
     public boolean allows(ItemQuery query) {
-        return allows(
-                query == null ? null : query.getSpace_id(),
-                query == null ? null : query.getApp_id(),
-                query == null ? null : query.getProfile_id());
+        return query != null && allows(query.getSpace_id(), query.getApp_id(), query.getProfile_id());
     }
 
     /**
-     * Returns whether the supplied app/profile relation is allowed.
+     * Tests whether one explicit scope is allowed.
      *
      * @param space_id   space identifier
-     * @param app_id     application identifier
-     * @param profile_id profile identifier
-     * @return {@code true} when the relation is allowed
+     * @param app_id     application identifier, when present
+     * @param profile_id profile identifier, when present
+     * @return {@code true} when the scope is allowed
      */
     public boolean allows(String space_id, String app_id, String profile_id) {
         return enforcer == null || enforcer.allows(space_id, app_id, profile_id);
     }
 
     /**
-     * Enforces setting scope access for one curator action.
+     * Finds one immutable item revision.
      *
-     * @param action     guarded action
+     * @param space    space identifier
+     * @param group    item group
+     * @param code     item code
+     * @param profile  optional profile identifier
+     * @param revision item-scoped revision number
+     * @return matching revision, or {@code null} when absent
+     */
+    public Revision revision(String space, String group, String code, String profile, String revision) {
+        Item item = find(space, group, code, profile);
+        return item == null ? null : revisionStore.find(item.getTenant_id(), item.getId(), revision);
+    }
+
+    /**
+     * Lists immutable revisions for one item.
+     *
+     * @param space   space identifier
+     * @param group   item group
+     * @param code    item code
+     * @param profile optional profile identifier
+     * @return item revisions
+     */
+    public List<Revision> revisions(String space, String group, String code, String profile) {
+        Item item = find(space, group, code, profile);
+        return item == null ? List.of() : revisionStore.query(item.getTenant_id(), item.getId());
+    }
+
+    /**
+     * Evicts and reloads one current item.
+     *
+     * @param space   space identifier
+     * @param group   item group
+     * @param code    item code
+     * @param profile optional profile identifier
+     * @return reloaded item, or {@code null} when absent
+     */
+    public Item refresh(String space, String group, String code, String profile) {
+        return entryStore.refresh(null, CortexIdentity.space(space), profile, group, code);
+    }
+
+    /**
+     * Rebuilds cache entries for one item scope.
+     *
+     * @param scope item scope
+     * @return cached items
+     */
+    public List<Item> rebuild(ItemScope scope) {
+        return entryStore.rebuild(scope);
+    }
+
+    /**
+     * Resolves one source value without applying runtime delivery routing.
+     *
+     * @param query item query
+     * @return preview content, or {@code null} when absent
+     */
+    public String preview(ItemQuery query) {
+        if (query == null) {
+            return null;
+        }
+        return resolver.preview(find(query.getSpace_id(), query.getGroup(), query.getCode(), query.getProfile_id()));
+    }
+
+    /**
+     * Evicts one current item from the coordinate cache.
+     *
+     * @param space   space identifier
+     * @param group   item group
+     * @param code    item code
+     * @param profile optional profile identifier
+     */
+    public void evict(String space, String group, String code, String profile) {
+        entryStore.evict(null, CortexIdentity.space(space), group, code, profile);
+    }
+
+    /**
+     * Builds the canonical watch key for one item coordinate.
+     *
+     * @param space   space identifier
+     * @param group   item group
+     * @param code    item code
+     * @param profile optional profile identifier
+     * @return watch key
+     */
+    public String watchKey(String space, String group, String code, String profile) {
+        return keying.key(SettingSpec.watch(space, group, code, profile));
+    }
+
+    /**
+     * Tests application visibility through persisted item relationships.
+     *
+     * @param item   item to inspect
+     * @param app_id application identifier, when filtering is required
+     * @return {@code true} when the item is visible
+     */
+    private boolean visibleToApp(Item item, String app_id) {
+        if (app_id == null || app_id.isBlank()) {
+            return true;
+        }
+        List<Reference> references = referenceStore
+                .outgoing(item.getTenant_id(), item.getId(), Reference.Type.ITEM_APP.name());
+        return references != null && references.stream().anyMatch(reference -> app_id.equals(reference.getTarget_id()));
+    }
+
+    /**
+     * Enforces an action against one item scope.
+     *
+     * @param action     action name
      * @param space_id   space identifier
-     * @param app_id     application identifier
-     * @param profile_id profile identifier
-     * @param resourceId guarded resource identifier
+     * @param app_id     application identifier, when present
+     * @param profile_id profile identifier, when present
+     * @param resourceId canonical resource identifier
      */
     private void requireAllowed(String action, String space_id, String app_id, String profile_id, String resourceId) {
         if (cortexGuard != null) {
@@ -404,160 +466,21 @@ public class ItemCuratorService {
             context.setApp_id(app_id);
             context.setProfile_id(profile_id);
             cortexGuard.enforce(context);
-            return;
-        }
-        if (!allows(space_id, app_id, profile_id)) {
+        } else if (!allows(space_id, app_id, profile_id)) {
             throw new IllegalArgumentException("Setting scope is not allowed");
         }
     }
 
     /**
-     * Returns the first value from a list.
+     * Builds the canonical profile-scope resource identifier.
      *
-     * @param values values to inspect
-     * @return first value or {@code null}
+     * @param space   space identifier
+     * @param group   item group
+     * @param code    item code
+     * @param profile optional profile identifier
+     * @return profile-scope key
      */
-    private String first(List<String> values) {
-        return values == null || values.isEmpty() ? null : values.getFirst();
+    private String profileScope(String space, String group, String code, String profile) {
+        return keying.key(SettingSpec.profileScope(space, group, code, profile));
     }
-
-    /**
-     * Loads a historical revision.
-     *
-     * @param space    space
-     * @param group    setting group
-     * @param data_id  setting data identifier
-     * @param profile  optional profile
-     * @param revision historical revision
-     * @return matching revision or {@code null}
-     */
-    public Revision revision(String space, String group, String data_id, String profile, String revision) {
-        return revisionStore.find(space, group, data_id, profile, revision);
-    }
-
-    /**
-     * Lists {@code setting.revision} snapshots for one entry.
-     *
-     * @param space   space
-     * @param group   setting group
-     * @param data_id setting data identifier
-     * @param profile optional profile
-     * @return revisions from newest to oldest
-     */
-    public List<Revision> revisions(String space, String group, String data_id, String profile) {
-        return revisionStore.query(space, group, data_id, profile);
-    }
-
-    /**
-     * Refreshes one current entry from durable state.
-     *
-     * @param space   space
-     * @param group   setting group
-     * @param data_id setting data identifier
-     * @param profile optional profile
-     * @return refreshed entry
-     */
-    public Item refresh(String space, String group, String data_id, String profile) {
-        return entryStore.refresh(space, group, data_id, profile);
-    }
-
-    /**
-     * Rebuilds setting cache for a scope.
-     *
-     * @param scope rebuild scope
-     * @return rebuilt entries
-     */
-    public List<Item> rebuild(ItemScope scope) {
-        return entryStore.rebuild(scope);
-    }
-
-    /**
-     * Resolves one preview value using the adapter preview path.
-     *
-     * @param query query filter
-     * @return preview value
-     */
-    public String preview(ItemQuery query) {
-        if (query == null) {
-            return null;
-        }
-        Item entry = find(query.getSpace_id(), query.getGroup(), query.getData_id(), query.getProfile_id());
-        return resolver.preview(entry);
-    }
-
-    /**
-     * Evicts one current entry from cache.
-     *
-     * @param space   space
-     * @param group   setting group
-     * @param data_id setting data identifier
-     * @param profile optional profile
-     */
-    public void evict(String space, String group, String data_id, String profile) {
-        entryStore.evict(space, group, data_id, profile);
-    }
-
-    /**
-     * Builds the logical export key for one resolved setting entry.
-     *
-     * @param entry setting entry being exported
-     * @return export key including profile when present
-     */
-    private String exportKey(Item entry, String profile) {
-        List<String> profiles = ItemBindingProjection.normalizedProfileIds(entry);
-        String resolvedProfile = StringKit.isNotEmpty(profile) ? profile
-                : profiles == null || profiles.isEmpty() ? null : profiles.getFirst();
-        return keying
-                .key(SettingSpec.export(entry.getSpace_id(), entry.getGroup(), entry.getData_id(), resolvedProfile));
-    }
-
-    /**
-     * Returns the logical watch key used for setting notifications.
-     *
-     * @param space   space
-     * @param group   setting group
-     * @param data_id setting data identifier
-     * @param profile optional profile
-     * @return logical watch key
-     */
-    public String watchKey(String space, String group, String data_id, String profile) {
-        return keying.key(SettingSpec.watch(space, group, data_id, profile));
-    }
-
-    /**
-     * Filters queried settings by application binding.
-     *
-     * @param entries queried settings
-     * @param app_id  application identifier
-     * @return settings visible to the application
-     */
-    private List<Item> filterByApp(List<Item> entries, String app_id) {
-        if (entries == null || entries.isEmpty()) {
-            return List.of();
-        }
-        if (app_id == null || app_id.isBlank()) {
-            return entries;
-        }
-        List<Item> result = new ArrayList<>(entries.size());
-        for (Item entry : entries) {
-            if (entry != null && ItemBindingProjection.bindsToApp(entry, app_id)) {
-                result.add(entry);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Builds the logical profile scope used by permission and audit checks.
-     *
-     * @param space   space
-     * @param group   setting group
-     * @param dataId  setting data identifier
-     * @param profile optional profile
-     * @return profile scope
-     */
-    private String profileScope(String space, String group, String dataId, String profile) {
-        return keying.key(SettingSpec.profileScope(space, group, dataId, profile));
-    }
-
 }

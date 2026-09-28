@@ -23,94 +23,135 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.cortex.Type;
-import org.miaixz.bus.cortex.setting.item.Item;
+import org.miaixz.bus.core.basic.entity.Tenant;
 
 /**
- * Historical current-state item snapshot.
+ * Immutable published snapshot of a setting item.
  *
  * @author Kimi Liu
  */
 @Getter
 @Setter
 @SuperBuilder
-public class Revision extends Item {
+public class Revision extends Tenant {
 
     /**
-     * Current item entry identifier.
+     * Owning item identifier.
      */
     private String item_id;
-
     /**
-     * Diff summary against the previous revision when available.
+     * Rollout that created the revision.
      */
-    private String diff;
-
+    private String rollout_id;
     /**
-     * Parent revision that this revision rolled back from.
+     * Source revision used for derivation or rollback.
      */
-    private String revert;
+    private String source_id;
+    /**
+     * Monotonic item revision number.
+     */
+    private String revision;
+    /**
+     * Item edition captured by the snapshot.
+     */
+    private Long edition;
+    /**
+     * Item generation captured by the snapshot.
+     */
+    private Long baseline;
+    /**
+     * Immutable content.
+     */
+    private String content;
+    /**
+     * Immutable content format.
+     */
+    private String format;
+    /**
+     * Immutable content source.
+     */
+    private String source;
+    /**
+     * Immutable source descriptor.
+     */
+    private String spec;
+    /**
+     * Immutable exposure policy.
+     */
+    private String exposure;
+    /**
+     * Immutable encryption flag.
+     */
+    private Integer encrypted;
+    /**
+     * Immutable labels text.
+     */
+    private String labels;
+    /**
+     * Immutable extension text.
+     */
+    private String extension;
+    /**
+     * Snapshot checksum.
+     */
+    private String checksum;
+    /**
+     * Snapshot operation.
+     */
+    private String operation;
+    /**
+     * Binding snapshot stored as text.
+     */
+    private String bindings;
+    /**
+     * Reference snapshot stored as text.
+     */
+    private String reference;
+    /**
+     * Gray rule snapshot stored as text.
+     */
+    private String rule;
+    /**
+     * Editing snapshot stored as text.
+     */
+    private String editing;
+    /**
+     * Protected-value snapshot stored as text.
+     */
+    private String secrets;
+    /**
+     * Optional snapshot description.
+     */
+    private String description;
 
     /**
-     * Creates an empty {@code setting.revision} snapshot.
+     * Creates an empty immutable revision.
      */
     public Revision() {
-        super();
-        setType(Type.ITEM_REVISION.key());
+        // No initialization required.
     }
 
     /**
-     * Immutable operation represented by a revision.
+     * Supported immutable snapshot operations.
+     *
+     * @author Kimi Liu
      */
     public enum Operation {
-        /**
-         * The revision creates or replaces the active item content.
-         */
+        /** Creates or replaces the current item state. */
         UPSERT,
-        /**
-         * The revision archives the item through a deletion tombstone.
-         */
+        /** Archives the current item state. */
         DELETE
     }
 
     /**
-     * Runtime pointer role held by an immutable revision.
+     * Supported runtime pointer roles.
+     *
+     * @author Kimi Liu
      */
     public enum Role {
-        /**
-         * The revision is the stable production revision.
-         */
+        /** Stable revision pointer used by ordinary runtime reads. */
         STABLE,
-        /**
-         * The revision is the active gray-release revision.
-         */
+        /** Gray revision pointer used by matched runtime reads. */
         GRAY
     }
-
-    /**
-     * Governed workflow that created an immutable revision.
-     */
-    public enum Source {
-        /**
-         * The revision was created by a formal publication.
-         */
-        FORMAL,
-        /**
-         * The revision was created for a gray release.
-         */
-        GRAY,
-        /**
-         * The revision restores content from an earlier immutable revision.
-         */
-        ROLLBACK,
-        /**
-         * The revision upgrades a governed reference to newer source content.
-         */
-        REFERENCE_UPGRADE,
-        /**
-         * The revision represents an approved archive operation.
-         */
-        ARCHIVE
-    }
-
 }

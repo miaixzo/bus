@@ -23,16 +23,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.cortex.Vector;
-
 /**
- * Lookup criteria for a specific setting entry or a filtered setting list.
- *
- * <p>
- * Setting-only resolution semantics should accumulate here rather than backflowing into {@link Vector}. Application
- * scope is inherited from {@code app_id}, and profile remains the environment dimension. The logical entry coordinate
- * is {@code data_id}.
- * </p>
+ * Lookup criteria for a setting item.
  *
  * @author Kimi Liu
  */
@@ -42,31 +34,30 @@ import org.miaixz.bus.cortex.Vector;
 public class ItemQuery extends ItemScope {
 
     /**
-     * Setting data identifier.
+     * Stable setting code.
      */
-    private String data_id;
+    private String code;
 
     /**
-     * Optional fallback content returned when the target entry cannot be resolved.
+     * Value returned when no item can be resolved.
      */
     private String fallbackValue;
 
     /**
-     * Whether overlay content should be preferred during resolution.
+     * Whether runtime overlays take precedence over durable content.
      */
     @lombok.Builder.Default
     private boolean preferOverlay = true;
 
     /**
-     * Request context used for gray-release evaluation after space, profile, and application matching.
+     * Runtime request attributes used by delivery policies.
      */
     private GrayRequestContext requestContext;
 
     /**
-     * Creates an empty setting query.
+     * Creates an empty item query.
      */
     public ItemQuery() {
         // No initialization required.
     }
-
 }

@@ -25,9 +25,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.cortex.setting.item.*;
+import org.miaixz.bus.cortex.setting.item.GrayRequestContext;
+import org.miaixz.bus.cortex.setting.item.Item;
+import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 import org.miaixz.bus.cortex.setting.secret.SecretCodec;
-import org.miaixz.bus.extra.json.JsonKit;
 
 /**
  * Resolves effective setting values using source adapters, rules and secret handling.
@@ -42,11 +43,6 @@ public class ItemValueResolver {
     private final Map<String, ItemSourceAdapter> adapters;
 
     /**
-     * Gray-rule matcher used for conditional delivery.
-     */
-    private final GrayRuleMatcher grayRuleMatcher;
-
-    /**
      * Secret codec used to decrypt protected resolved values.
      */
     private final SecretCodec secretCodec;
@@ -54,12 +50,10 @@ public class ItemValueResolver {
     /**
      * Creates an ItemValueResolver.
      *
-     * @param adapters        configured source adapters
-     * @param grayRuleMatcher rule matcher
-     * @param secretCodec     secret codec used for protected values
+     * @param adapters    configured source adapters
+     * @param secretCodec secret codec used for protected values
      */
-    public ItemValueResolver(List<ItemSourceAdapter> adapters, GrayRuleMatcher grayRuleMatcher,
-            SecretCodec secretCodec) {
+    public ItemValueResolver(List<ItemSourceAdapter> adapters, SecretCodec secretCodec) {
         this.adapters = new LinkedHashMap<>();
         if (adapters != null) {
             for (ItemSourceAdapter adapter : adapters) {
@@ -71,7 +65,6 @@ public class ItemValueResolver {
                 }
             }
         }
-        this.grayRuleMatcher = grayRuleMatcher;
         this.secretCodec = secretCodec;
     }
 
@@ -91,11 +84,6 @@ public class ItemValueResolver {
             throw new IllegalArgumentException("Invalid setting source metadata for " + entry.getId());
         }
         String resolved = adapter.resolve(entry);
-        GrayRule rule = rule(entry);
-        if (rule != null && requestContext != null && grayRuleMatcher.matches(rule, requestContext)
-                && rule.getGrayContent() != null) {
-            resolved = rule.getGrayContent();
-        }
         if (ItemNormalizer.isEncryptedFlagEnabled(entry.getEncrypted()) && resolved != null) {
             return secretCodec.decrypt(resolved);
         }
@@ -155,19 +143,6 @@ public class ItemValueResolver {
             return null;
         }
         return source.trim().toUpperCase(Locale.ROOT);
-    }
-
-    /**
-     * Parses one serialized rule string into the structured rule model.
-     *
-     * @param entry setting entry
-     * @return parsed rule, or {@code null} when absent
-     */
-    private GrayRule rule(Item entry) {
-        if (entry == null || StringKit.isEmpty(entry.getRule())) {
-            return null;
-        }
-        return JsonKit.toPojo(entry.getRule(), GrayRule.class);
     }
 
 }

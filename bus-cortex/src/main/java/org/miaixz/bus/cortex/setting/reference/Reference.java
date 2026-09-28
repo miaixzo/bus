@@ -17,9 +17,62 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.cortex.setting.reference;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.core.basic.entity.Tenant;
+
 /**
- * Shared setting binding models and durable store contracts used by item, app, and profile scoped resources.
+ * Directed relationship between two service-center resources.
  *
  * @author Kimi Liu
  */
-package org.miaixz.bus.cortex.setting.binding;
+@Getter
+@Setter
+@SuperBuilder
+public class Reference extends Tenant {
+
+    /**
+     * Source resource identifier.
+     */
+    private String source_id;
+    /**
+     * Target resource identifier.
+     */
+    private String target_id;
+    /**
+     * Relationship type name.
+     */
+    private String type;
+
+    /**
+     * Creates an empty relationship.
+     */
+    public Reference() {
+        // No initialization required.
+    }
+
+    /**
+     * Supported relationship types.
+     *
+     * @author Kimi Liu
+     */
+    public enum Type {
+        /** Associates a space with an application. */
+        SPACE_APP,
+        /** Associates a space with a profile. */
+        SPACE_PROFILE,
+        /** Associates an application with a profile. */
+        APP_PROFILE,
+        /** Associates an item with an application. */
+        ITEM_APP,
+        /** Associates an item with another item dependency. */
+        ITEM_REFERENCE,
+        /** Associates a rollout with an item. */
+        ROLLOUT_ITEM
+    }
+
+}

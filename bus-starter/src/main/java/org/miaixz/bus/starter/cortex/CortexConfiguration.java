@@ -72,9 +72,9 @@ import org.miaixz.bus.cortex.setting.curator.*;
 import org.miaixz.bus.cortex.setting.delivery.ItemExportService;
 import org.miaixz.bus.cortex.setting.delivery.ItemQueryService;
 import org.miaixz.bus.cortex.setting.delivery.RuntimeItemOverlayService;
-import org.miaixz.bus.cortex.setting.item.GrayRuleMatcher;
 import org.miaixz.bus.cortex.setting.item.ItemStore;
 import org.miaixz.bus.cortex.setting.item.StoreBackedItemStore;
+import org.miaixz.bus.cortex.setting.reference.ReferenceStore;
 import org.miaixz.bus.cortex.setting.revision.RevisionStore;
 import org.miaixz.bus.cortex.setting.secret.NoOpSecretCodec;
 import org.miaixz.bus.cortex.setting.secret.SecretCodec;
@@ -473,6 +473,7 @@ public class CortexConfiguration {
      *
      * @param cache          shared cache abstraction
      * @param storeProvider  optional durable current-state store
+     * @param referenceStoreProvider optional durable relationship store
      * @param keyingProvider optional setting keying provider
      * @return store-backed current-state setting coordinator
      */
@@ -481,13 +482,19 @@ public class CortexConfiguration {
     public StoreBackedItemStore storeBackedSettingStore(
             @Qualifier("cortexCache") CacheX cache,
             ObjectProvider<ItemStore> storeProvider,
+            ObjectProvider<ReferenceStore> referenceStoreProvider,
             @Qualifier("settingKeying") ObjectProvider<Keying<Keying.SettingSpec>> keyingProvider) {
         ItemStore store = storeProvider.getIfAvailable();
+        ReferenceStore referenceStore = referenceStoreProvider.getIfAvailable();
         if (store == null && properties.isServerEnabled() && properties.isSettingEnabled()) {
             throw new IllegalStateException(
                     "A production SettingStore is required when bus.cortex.server-enabled=true");
         }
-        return new StoreBackedItemStore(cache(cache), store,
+        if (referenceStore == null && properties.isServerEnabled() && properties.isSettingEnabled()) {
+            throw new IllegalStateException(
+                    "A production ReferenceStore is required when bus.cortex.server-enabled=true");
+        }
+        return new StoreBackedItemStore(cache(cache), store, referenceStore,
                 keyingProvider.getIfAvailable(() -> SettingGenerator.INSTANCE));
     }
 
@@ -501,7 +508,7 @@ public class CortexConfiguration {
     @Bean
     @ConditionalOnMissingBean(RevisionStore.class)
     public RevisionStore revisionStore(@Qualifier("cortexCache") CacheX cache) {
-        return new CacheRevisionStore(cache(cache), SettingGenerator.INSTANCE);
+        return new CacheRevisionStore(cache(cache));
     }
 
     /**
@@ -509,6 +516,7 @@ public class CortexConfiguration {
      *
      * @param settingStore    current-state setting store
      * @param revisionStore   revision history store
+     * @param referenceStore  resource relationship store
      * @param watchManager    watch manager
      * @param secretCodec     secret codec
      * @param settingEnforcer optional setting relation enforcer provider
@@ -521,6 +529,7 @@ public class CortexConfiguration {
     public ItemCuratorService settingCuratorService(
             StoreBackedItemStore settingStore,
             RevisionStore revisionStore,
+            ReferenceStore referenceStore,
             WatchManager watchManager,
             SecretCodec secretCodec,
             ObjectProvider<SettingEnforcer> settingEnforcer,
@@ -531,11 +540,11 @@ public class CortexConfiguration {
             throw new IllegalStateException(
                     "A production RevisionStore is required when bus.cortex.server-enabled=true");
         }
-        ItemValueResolver resolver = new ItemValueResolver(settingSourceAdapters(), new GrayRuleMatcher(), secretCodec);
+        ItemValueResolver resolver = new ItemValueResolver(settingSourceAdapters(), secretCodec);
         Keying<Keying.SettingSpec> settingKeying = keyingProvider.getIfAvailable(() -> SettingGenerator.INSTANCE);
         SettingPublisher settingPublisher = new SettingPublisher(settingStore, revisionStore, watchManager, secretCodec,
-                properties.requireMaxSettingVersions(), settingKeying, null);
-        return new ItemCuratorService(settingStore, revisionStore, resolver, settingPublisher,
+                properties.requireMaxSettingVersions(), settingKeying);
+        return new ItemCuratorService(settingStore, revisionStore, referenceStore, resolver, settingPublisher,
                 settingEnforcer.getIfAvailable(), cortexGuard.getIfAvailable(), settingKeying);
     }
 

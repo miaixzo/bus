@@ -31,32 +31,32 @@ public interface RuntimeItemOverlayPublisher {
      *
      * @param space   space identifier
      * @param group   setting group
-     * @param data_id setting data identifier
+     * @param code    setting code
      * @param profile profile identifier
      * @param content overlay content
      * @param ttlMs   time-to-live in milliseconds
      */
-    void publish(String space, String group, String data_id, String profile, String content, long ttlMs);
+    void publish(String space, String group, String code, String profile, String content, long ttlMs);
 
     /**
      * Reads a runtime-only setting overlay.
      *
      * @param space   space identifier
      * @param group   setting group
-     * @param data_id setting data identifier
+     * @param code    setting code
      * @param profile profile identifier
      * @return overlay content or {@code null}
      */
-    String get(String space, String group, String data_id, String profile);
+    String get(String space, String group, String code, String profile);
 
     /**
      * Deletes a runtime-only setting overlay.
      *
      * @param space   space identifier
      * @param group   setting group
-     * @param data_id setting data identifier
+     * @param code    setting code
      * @param profile profile identifier
      */
-    void delete(String space, String group, String data_id, String profile);
+    void delete(String space, String group, String code, String profile);
 
 }

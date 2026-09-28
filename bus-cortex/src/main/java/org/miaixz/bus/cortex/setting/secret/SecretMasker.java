@@ -20,13 +20,12 @@
 package org.miaixz.bus.cortex.setting.secret;
 
 import org.miaixz.bus.cortex.setting.item.Item;
-import org.miaixz.bus.cortex.setting.item.ItemBindingProjection;
 import org.miaixz.bus.cortex.setting.item.ItemExposure;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 import org.miaixz.bus.cortex.setting.revision.Revision;
 
 /**
- * Masks sensitive setting values for management views and audit-safe output.
+ * Masks protected values in management responses.
  *
  * @author Kimi Liu
  */
@@ -40,19 +39,16 @@ public class SecretMasker {
     }
 
     /**
-     * Returns a masked representation of a secret.
+     * Masks one scalar value while retaining a small identifying prefix and suffix.
      *
-     * @param value original value
-     * @return masked value
+     * @param value value to mask
+     * @return masked value, or the original null or empty value
      */
     public String mask(String value) {
         if (value == null || value.isEmpty()) {
             return value;
         }
-        if (value.length() <= 4) {
-            return "****";
-        }
-        return value.substring(0, 2) + "****" + value.substring(value.length() - 2);
+        return value.length() <= 4 ? "****" : value.substring(0, 2) + "****" + value.substring(value.length() - 2);
     }
 
     /**
@@ -65,20 +61,21 @@ public class SecretMasker {
         if (entry == null) {
             return null;
         }
-        Item copy = Item.builder().space_id(entry.getSpace_id()).id(entry.getId()).type(entry.getType())
-                .status(entry.getStatus()).creator(entry.getCreator()).created(entry.getCreated())
-                .modifier(entry.getModifier()).modified(entry.getModified())
-                .profile_ids(ItemBindingProjection.normalizedProfileIds(entry))
-                .app_ids(ItemBindingProjection.normalizedAppIds(entry)).group(entry.getGroup())
-                .data_id(entry.getData_id()).content(entry.getContent()).source(entry.getSource()).spec(entry.getSpec())
-                .extension(entry.getExtension()).labels(entry.getLabels()).format(entry.getFormat())
-                .exposure(entry.getExposure()).encrypted(entry.getEncrypted()).rule(entry.getRule())
-                .checksum(entry.getChecksum()).description(entry.getDescription()).build();
-        copy.setRevision(entry.getRevision());
-        if (ItemNormalizer.isEncryptedFlagEnabled(entry.getEncrypted())
-                || ItemExposure.SECRET.name().equals(entry.getExposure())) {
+        Item copy = Item.builder().id(entry.getId()).tenant_id(entry.getTenant_id()).space_id(entry.getSpace_id())
+                .profile_id(entry.getProfile_id()).stable_id(entry.getStable_id()).gray_id(entry.getGray_id())
+                .rollout_id(entry.getRollout_id()).kind(entry.getKind()).group(entry.getGroup()).code(entry.getCode())
+                .fingerprint(entry.getFingerprint()).content(entry.getContent()).format(entry.getFormat())
+                .editor(entry.getEditor()).source(entry.getSource()).spec(entry.getSpec()).exposure(entry.getExposure())
+                .encrypted(entry.getEncrypted()).payload(entry.getPayload()).labels(entry.getLabels())
+                .extension(entry.getExtension()).checksum(entry.getChecksum()).edition(entry.getEdition())
+                .generation(entry.getGeneration()).description(entry.getDescription()).status(entry.getStatus())
+                .creator(entry.getCreator()).created(entry.getCreated()).modifier(entry.getModifier())
+                .modified(entry.getModified()).build();
+        if (protectedContent(entry.getEncrypted(), entry.getExposure())) {
             copy.setContent(mask(entry.getContent()));
+            copy.setPayload(mask(entry.getPayload()));
             copy.setSpec(mask(entry.getSpec()));
+            copy.setExtension(mask(entry.getExtension()));
         }
         return copy;
     }
@@ -93,22 +90,35 @@ public class SecretMasker {
         if (revision == null) {
             return null;
         }
-        Revision copy = Revision.builder().item_id(revision.getItem_id()).space_id(revision.getSpace_id())
-                .group(revision.getGroup()).data_id(revision.getData_id())
-                .profile_ids(ItemBindingProjection.normalizedProfileIds(revision))
-                .app_ids(ItemBindingProjection.normalizedAppIds(revision)).content(revision.getContent())
-                .source(revision.getSource()).spec(revision.getSpec()).extension(revision.getExtension())
-                .format(revision.getFormat()).exposure(revision.getExposure()).encrypted(revision.getEncrypted())
-                .rule(revision.getRule()).checksum(revision.getChecksum()).diff(revision.getDiff())
-                .revert(revision.getRevert()).status(revision.getStatus()).created(revision.getCreated())
-                .modified(revision.getModified()).build();
-        copy.setRevision(revision.getRevision());
-        if (ItemNormalizer.isEncryptedFlagEnabled(revision.getEncrypted())
-                || ItemExposure.SECRET.name().equals(revision.getExposure())) {
+        Revision copy = Revision.builder().id(revision.getId()).tenant_id(revision.getTenant_id())
+                .item_id(revision.getItem_id()).rollout_id(revision.getRollout_id()).source_id(revision.getSource_id())
+                .revision(revision.getRevision()).edition(revision.getEdition()).baseline(revision.getBaseline())
+                .content(revision.getContent()).format(revision.getFormat()).source(revision.getSource())
+                .spec(revision.getSpec()).exposure(revision.getExposure()).encrypted(revision.getEncrypted())
+                .labels(revision.getLabels()).extension(revision.getExtension()).checksum(revision.getChecksum())
+                .operation(revision.getOperation()).bindings(revision.getBindings()).reference(revision.getReference())
+                .rule(revision.getRule()).editing(revision.getEditing()).secrets(revision.getSecrets())
+                .description(revision.getDescription()).status(revision.getStatus()).creator(revision.getCreator())
+                .created(revision.getCreated()).modifier(revision.getModifier()).modified(revision.getModified())
+                .build();
+        if (protectedContent(revision.getEncrypted(), revision.getExposure())) {
             copy.setContent(mask(revision.getContent()));
             copy.setSpec(mask(revision.getSpec()));
+            copy.setExtension(mask(revision.getExtension()));
+            copy.setSecrets(mask(revision.getSecrets()));
         }
         return copy;
+    }
+
+    /**
+     * Tests whether content requires management-response masking.
+     *
+     * @param encrypted persisted encryption flag
+     * @param exposure  persisted exposure policy
+     * @return {@code true} when the content is encrypted or secret
+     */
+    private boolean protectedContent(Integer encrypted, String exposure) {
+        return ItemNormalizer.isEncryptedFlagEnabled(encrypted) || ItemExposure.SECRET.name().equals(exposure);
     }
 
 }

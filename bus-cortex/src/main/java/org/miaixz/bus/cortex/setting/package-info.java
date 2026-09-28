@@ -20,20 +20,9 @@
 /**
  * Umbrella package for the Cortex setting domain.
  * <p>
- * The root package acts as the umbrella of the setting domain rather than the final home of every resource model.
- * {@link org.miaixz.bus.cortex.Setting} is the shared base for space, app, profile, current-state item, and
- * item-revision resources. {@code Type} identifies these setting-owned resource kinds without routing them through
- * registry dispatch. Space is the root resource of the setting domain. Applications and profiles are space-scoped
- * directory resources, and current-state content is modeled as {@code setting.item}. The canonical relationship is
- * {@code space -> app -> item} plus {@code space -> profile}. App/profile bindings for one item are stored in
- * relationship tables and aggregated into runtime-only fields rather than being encoded in one scalar column on the
- * item itself. The item resource therefore owns current-state setting content, lookup scope, query objects, cache keys,
- * normalization policy, request context, gray-routing operations, and the lightweight watcher instead of continuing as
- * scattered root-level setting models. Revision history is a first-class sibling resource under
- * {@code setting.revision}; its current item snapshot remains compatible with setting publication while leaving the
- * package boundary available for additional revision variants. The {@code curator} subpackage handles current-state
- * persistence, revision history, source adapters, and effective-value resolution. The {@code delivery} subpackage adds
- * export and runtime overlay services, while {@code secret} contains secret codecs and masking operations.
+ * The package defines the public setting models and the runtime composition built on {@code ItemStore},
+ * {@code RevisionStore}, and {@code ReferenceStore}. Space variants are expressed by {@code Space.variant}; there is no
+ * separate namespace model. All extensible resource relationships are directed {@code Reference} records.
  *
  * @author Kimi Liu
  */

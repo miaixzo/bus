@@ -19,15 +19,11 @@
 */
 package org.miaixz.bus.cortex.setting.rollout;
 
-import jakarta.persistence.Transient;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.basic.entity.Tenant;
-import org.miaixz.bus.core.lang.annotation.Ignore;
-import org.miaixz.bus.cortex.Type;
 
 /**
  * Persistent rollout attributes shared by configuration-center implementations.
@@ -67,8 +63,7 @@ public class Rollout extends Tenant {
     /**
      * Frozen approval policy JSON.
      */
-    @Ignore
-    private String policy_json;
+    private String policy;
 
     /**
      * Digest of the normalized rollout plan and policy.
@@ -88,8 +83,7 @@ public class Rollout extends Tenant {
     /**
      * Active gray selector JSON when present.
      */
-    @Ignore
-    private String rule_json;
+    private String rule;
 
     /**
      * Gray-rule business edition.
@@ -106,29 +100,6 @@ public class Rollout extends Tenant {
      */
     public Rollout() {
         // No initialization required.
-    }
-
-    /**
-     * Returns the fixed Cortex rollout type.
-     *
-     * @return stable rollout type key
-     */
-    @Transient
-    public Integer getType() {
-        return Type.ROLLOUT.key();
-    }
-
-    /**
-     * Accepts the fixed Cortex rollout type for bean compatibility.
-     *
-     * @param type supplied Cortex type key
-     * @throws IllegalArgumentException when a different non-null type is supplied
-     */
-    @Transient
-    public void setType(Integer type) {
-        if (type != null && type.intValue() != Type.ROLLOUT.key()) {
-            throw new IllegalArgumentException("Unsupported type for Rollout: " + type);
-        }
     }
 
 }

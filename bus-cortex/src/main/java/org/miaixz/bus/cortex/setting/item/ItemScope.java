@@ -36,9 +36,8 @@ import org.miaixz.bus.cortex.builtin.Selector;
  *
  * <p>
  * Scope flags that only make sense for setting export, rebuild, or admin scan flows should stay here instead of being
- * generalized back into {@link Vector}. The durable item identity remains {@code space + group + data_id};
- * {@code profile_id} and {@code app_id} are delivery filters evaluated against aggregated binding sets loaded from
- * {@code setting_item_binding}.
+ * generalized back into {@link Vector}. The durable item identity remains {@code space_id + profile_id + group + code};
+ * {@code app_id} is a delivery filter evaluated through {@code ITEM_APP} records in the shared reference store.
  * </p>
  *
  * @author Kimi Liu

@@ -19,566 +19,303 @@
 */
 package org.miaixz.bus.cortex.setting;
 
-import java.util.List;
-
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Keying.SettingSpec;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
-import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
-import org.miaixz.bus.cortex.magic.event.CortexChangeRecord;
 import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.cortex.setting.item.Item;
-import org.miaixz.bus.cortex.setting.item.ItemBindingProjection;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 import org.miaixz.bus.cortex.setting.item.StoreBackedItemStore;
 import org.miaixz.bus.cortex.setting.revision.Revision;
 import org.miaixz.bus.cortex.setting.revision.RevisionNumbers;
 import org.miaixz.bus.cortex.setting.revision.RevisionStore;
 import org.miaixz.bus.cortex.setting.secret.SecretCodec;
-import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.logger.Logger;
 
 /**
- * Setting publisher responsible for current-state updates and item revision history.
+ * Coordinates current-state changes, immutable revisions and notifications.
  *
  * @author Kimi Liu
  */
 public class SettingPublisher {
 
     /**
-     * Watch-event source name used for durable setting mutations.
-     */
-    public static final String SETTING_DURABLE_SOURCE = "setting-durable";
-
-    /**
-     * Watch-event type emitted after a durable publish.
-     */
-    private static final String DURABLE_PUBLISH_EVENT = "durable-publish";
-
-    /**
-     * Watch-event type emitted after a rollback publish.
-     */
-    private static final String ROLLBACK_EVENT = "rollback";
-
-    /**
-     * Watch-event type emitted after durable deletion.
-     */
-    private static final String DURABLE_DELETE_EVENT = "durable-delete";
-
-    /**
-     * Current-state setting store.
+     * Store used for durable current item state.
      */
     private final StoreBackedItemStore entryStore;
 
     /**
-     * Revision history store.
+     * Append-only revision store.
      */
     private final RevisionStore revisionStore;
 
     /**
-     * Watch manager notified after publish and delete operations.
+     * Manager notified after successful state changes.
      */
     private final WatchManager watchManager;
 
     /**
-     * Secret codec used when the entry stores encrypted content.
+     * Codec used to protect encrypted content.
      */
     private final SecretCodec secretCodec;
 
     /**
-     * Maximum number of retained revisions per setting entry.
+     * Maximum retained revisions per item.
      */
     private final int maxRevisions;
 
     /**
-     * Optional reliable change log used as a first-stage outbox.
-     */
-    private final CortexChangeLogStore changeLogStore;
-
-    /**
-     * Setting-domain key strategy.
+     * Key strategy used for setting watch notifications.
      */
     private final Keying<SettingSpec> keying;
 
     /**
-     * Creates a SettingPublisher with default history retention.
+     * Creates a publisher with default revision retention and key strategy.
      *
-     * @param entryStore    current-state setting store
-     * @param revisionStore revision history store
-     * @param watchManager  watch manager
-     * @param secretCodec   secret codec
+     * @param entryStore    current item store
+     * @param revisionStore immutable revision store
+     * @param watchManager  watch notification manager
+     * @param secretCodec   protected-content codec
      */
     public SettingPublisher(StoreBackedItemStore entryStore, RevisionStore revisionStore, WatchManager watchManager,
             SecretCodec secretCodec) {
-        this(entryStore, revisionStore, watchManager, secretCodec, 10, SettingGenerator.INSTANCE, null);
+        this(entryStore, revisionStore, watchManager, secretCodec, 10, SettingGenerator.INSTANCE);
     }
 
     /**
-     * Creates a SettingPublisher with explicit history retention.
+     * Creates a publisher with explicit revision retention.
      *
-     * @param entryStore    current-state setting store
-     * @param revisionStore revision history store
-     * @param watchManager  watch manager
-     * @param secretCodec   secret codec
-     * @param maxRevisions  max revisions to retain
+     * @param entryStore    current item store
+     * @param revisionStore immutable revision store
+     * @param watchManager  watch notification manager
+     * @param secretCodec   protected-content codec
+     * @param maxRevisions  maximum retained revisions per item
      */
     public SettingPublisher(StoreBackedItemStore entryStore, RevisionStore revisionStore, WatchManager watchManager,
             SecretCodec secretCodec, int maxRevisions) {
-        this(entryStore, revisionStore, watchManager, secretCodec, maxRevisions, SettingGenerator.INSTANCE, null);
+        this(entryStore, revisionStore, watchManager, secretCodec, maxRevisions, SettingGenerator.INSTANCE);
     }
 
     /**
-     * Creates a SettingPublisher with explicit history retention and optional outbox recording.
+     * Creates a publisher with explicit retention and key strategy.
      *
-     * @param entryStore     current-state setting store
-     * @param revisionStore  revision history store
-     * @param watchManager   watch manager
-     * @param secretCodec    secret codec
-     * @param maxRevisions   max revisions to retain
-     * @param changeLogStore optional outbox store
+     * @param entryStore    current item store
+     * @param revisionStore immutable revision store
+     * @param watchManager  watch notification manager
+     * @param secretCodec   protected-content codec
+     * @param maxRevisions  maximum retained revisions per item
+     * @param keying        setting key strategy
      */
     public SettingPublisher(StoreBackedItemStore entryStore, RevisionStore revisionStore, WatchManager watchManager,
-            SecretCodec secretCodec, int maxRevisions, CortexChangeLogStore changeLogStore) {
-        this(entryStore, revisionStore, watchManager, secretCodec, maxRevisions, SettingGenerator.INSTANCE,
-                changeLogStore);
-    }
-
-    /**
-     * Creates a SettingPublisher with explicit history retention, key strategy, and optional outbox recording.
-     *
-     * @param entryStore     current-state setting store
-     * @param revisionStore  revision history store
-     * @param watchManager   watch manager
-     * @param secretCodec    secret codec
-     * @param maxRevisions   max revisions to retain
-     * @param keying         setting-domain key strategy
-     * @param changeLogStore optional outbox store
-     */
-    public SettingPublisher(StoreBackedItemStore entryStore, RevisionStore revisionStore, WatchManager watchManager,
-            SecretCodec secretCodec, int maxRevisions, Keying<SettingSpec> keying,
-            CortexChangeLogStore changeLogStore) {
+            SecretCodec secretCodec, int maxRevisions, Keying<SettingSpec> keying) {
+        if (entryStore == null || revisionStore == null || watchManager == null || secretCodec == null) {
+            throw new IllegalArgumentException("Setting publisher dependencies are required");
+        }
         this.entryStore = entryStore;
         this.revisionStore = revisionStore;
         this.watchManager = watchManager;
         this.secretCodec = secretCodec;
-        this.maxRevisions = maxRevisions;
-        this.changeLogStore = changeLogStore;
+        this.maxRevisions = Math.max(maxRevisions, 1);
         this.keying = keying == null ? SettingGenerator.INSTANCE : keying;
     }
 
     /**
-     * Publishes a plain inline setting value.
+     * Publishes inline content for one setting coordinate.
      *
-     * @param space   space
-     * @param group   setting group
-     * @param data_id setting data identifier
-     * @param content inline content
-     * @return stored setting entry
+     * @param space   space identifier
+     * @param group   item group
+     * @param code    item code
+     * @param content source content
+     * @return persisted current item
      */
-    public Item publish(String space, String group, String data_id, String content) {
+    public Item publish(String space, String group, String code, String content) {
         Item entry = new Item();
         entry.setSpace_id(CortexIdentity.space(space));
         entry.setGroup(group);
-        entry.setData_id(data_id);
+        entry.setCode(code);
         entry.setContent(content);
-        entry.setSource(ItemNormalizer.INLINE_SOURCE);
         return publish(entry);
     }
 
     /**
-     * Publishes a setting entry, assigns a new revision number, records history and notifies watchers.
+     * Publishes one fully described item.
      *
-     * @param entry setting entry to publish
-     * @return stored setting entry
+     * @param entry item to publish
+     * @return persisted current item
      */
     public Item publish(Item entry) {
-        return publish(entry, false, SETTING_DURABLE_SOURCE, DURABLE_PUBLISH_EVENT, "Setting published");
+        return publish(entry, null);
     }
 
     /**
-     * Publishes a setting entry and optionally forces a new revision even when content checksum matches current state.
+     * Publishes one item derived from an optional source revision.
      *
-     * @param entry         setting entry to publish
-     * @param forceRevision whether checksum idempotency should be bypassed
-     * @param source        logical event source recorded for watchers
-     * @param eventType     logical event type recorded for watchers
-     * @param summary       human-readable event summary recorded for watchers
-     * @return stored setting entry
+     * @param entry     item to publish
+     * @param source_id source revision identifier, when applicable
+     * @return persisted current item
      */
-    private Item publish(Item entry, boolean forceRevision, String source, String eventType, String summary) {
-        Item prepared = prepare(entry);
-        String profile = ItemBindingProjection.firstProfileId(prepared);
-        Logger.info(
-                true,
-                "Cortex",
-                "Setting publish started: space={}, group={}, dataId={}, profile={}, forceRevision={}, contentChars={}",
+    private Item publish(Item entry, String source_id) {
+        Item prepared = ItemNormalizer.normalize(entry);
+        requireCoordinates(prepared);
+        Item current = entryStore.find(
+                prepared.getTenant_id(),
                 prepared.getSpace_id(),
+                prepared.getProfile_id(),
                 prepared.getGroup(),
-                prepared.getData_id(),
-                profile,
-                forceRevision,
-                prepared.getContent() == null ? 0 : prepared.getContent().length());
-        Item current = entryStore.find(prepared.getSpace_id(), prepared.getGroup(), prepared.getData_id(), profile);
-        if (!matchesExactProfile(current, profile)) {
-            current = null;
-        }
-        if (!forceRevision && current != null && current.getChecksum() != null
-                && current.getChecksum().equals(prepared.getChecksum())) {
-            Logger.info(
-                    false,
-                    "Cortex",
-                    "Setting publish skipped: space={}, group={}, dataId={}, profile={}, reason={}, revision={}",
-                    prepared.getSpace_id(),
-                    prepared.getGroup(),
-                    prepared.getData_id(),
-                    profile,
-                    "checksumUnchanged",
-                    current.getRevision());
+                prepared.getCode());
+        if (current != null && current.getChecksum() != null && current.getChecksum().equals(prepared.getChecksum())) {
             return current;
         }
-        prepared.setRevision(RevisionNumbers.next(current == null ? null : current.getRevision()));
-        String notifyContent = prepared.getContent();
-        if (ItemNormalizer.isEncryptedFlagEnabled(prepared.getEncrypted()) && prepared.getContent() != null) {
-            prepared.setContent(secretCodec.encrypt(prepared.getContent()));
+        Revision latest = current == null ? null : revisionStore.latest(current.getTenant_id(), current.getId());
+        String revisionNo = RevisionNumbers.next(latest == null ? null : latest.getRevision());
+        prepared.setEdition(next(current == null ? null : current.getEdition()));
+        prepared.setGeneration(next(current == null ? null : current.getGeneration()));
+        if (prepared.getId() == null) {
+            prepared.setId(ID.objectId());
         }
+        String plainContent = prepared.getContent();
+        if (ItemNormalizer.isEncryptedFlagEnabled(prepared.getEncrypted()) && plainContent != null) {
+            prepared.setContent(secretCodec.encrypt(plainContent));
+            prepared.setChecksum(ItemNormalizer.checksum(prepared));
+        }
+        Revision revision = snapshot(prepared, revisionNo, source_id, Revision.Operation.UPSERT);
+        prepared.setStable_id(revision.getId());
+        revisionStore.save(revision);
         Item stored = entryStore.save(prepared);
-        Revision previous = current == null ? null
-                : revisionStore.latest(current.getSpace_id(), current.getGroup(), current.getData_id(), profile);
-        Revision revision = toRevision(stored, previous);
-        try {
-            revisionStore.save(revision);
-            revisionStore
-                    .retainLatest(stored.getSpace_id(), stored.getGroup(), stored.getData_id(), profile, maxRevisions);
-        } catch (RuntimeException | Error e) {
-            Logger.error(
-                    false,
-                    "Cortex",
-                    e,
-                    "Setting revision persistence failed: space={}, group={}, dataId={}, profile={}, revision={}, exception={}",
-                    stored.getSpace_id(),
-                    stored.getGroup(),
-                    stored.getData_id(),
-                    profile,
-                    stored.getRevision(),
-                    e.getClass().getSimpleName());
-            compensateCurrentState(current, stored, revision, e);
-            throw e;
-        }
-        appendChangeLog("publish", stored, revision);
-        List<String> profiles = ItemBindingProjection.normalizedProfileIds(stored);
-        if (profiles == null || profiles.isEmpty()) {
-            watchManager.notifySetting(
-                    watchKey(stored.getSpace_id(), stored.getGroup(), stored.getData_id(), null),
-                    notifyContent,
-                    source,
-                    eventType,
-                    summary);
-        } else {
-            for (String profileId : profiles) {
-                watchManager.notifySetting(
-                        watchKey(stored.getSpace_id(), stored.getGroup(), stored.getData_id(), profileId),
-                        notifyContent,
-                        source,
-                        eventType,
-                        summary);
-            }
-        }
-        Logger.info(
-                false,
-                "Cortex",
-                "Setting publish completed: space={}, group={}, dataId={}, profileCount={}, revision={}, encrypted={}",
-                stored.getSpace_id(),
-                stored.getGroup(),
-                stored.getData_id(),
-                profiles == null ? 0 : profiles.size(),
-                stored.getRevision(),
-                stored.getEncrypted());
+        revisionStore.retainLatest(stored.getTenant_id(), stored.getId(), maxRevisions);
+        notify(stored, plainContent, "durable-publish", "Setting published");
         return stored;
     }
 
     /**
-     * Deletes one setting entry and notifies watchers.
+     * Deletes one current item after appending a tombstone revision.
      *
-     * @param space   space
-     * @param group   setting group
-     * @param data_id setting data identifier
-     * @param profile optional profile
-     * @return deleted entry or {@code null}
+     * @param space   space identifier
+     * @param group   item group
+     * @param code    item code
+     * @param profile optional profile identifier
+     * @return deleted item, or {@code null} when absent
      */
-    public Item delete(String space, String group, String data_id, String profile) {
-        Logger.info(
-                true,
-                "Cortex",
-                "Setting delete started: space={}, group={}, dataId={}, profile={}",
-                space,
-                group,
-                data_id,
-                profile);
-        Item deleted = entryStore.delete(space, group, data_id, profile);
-        if (deleted != null) {
-            appendChangeLog("delete", deleted, null);
-            watchManager.notifySetting(
-                    watchKey(space, group, data_id, profile),
-                    null,
-                    SETTING_DURABLE_SOURCE,
-                    DURABLE_DELETE_EVENT,
-                    "Setting deleted");
+    public Item delete(String space, String group, String code, String profile) {
+        Item current = entryStore.find(null, CortexIdentity.space(space), profile, group, code);
+        if (current == null) {
+            return null;
         }
-        Logger.info(
-                false,
-                "Cortex",
-                "Setting delete completed: space={}, group={}, dataId={}, profile={}, deleted={}",
-                space,
-                group,
-                data_id,
-                profile,
-                deleted != null);
+        Revision latest = revisionStore.latest(current.getTenant_id(), current.getId());
+        Revision tombstone = snapshot(
+                current,
+                RevisionNumbers.next(latest == null ? null : latest.getRevision()),
+                null,
+                Revision.Operation.DELETE);
+        tombstone.setContent(null);
+        revisionStore.save(tombstone);
+        Item deleted = entryStore.delete(current.getTenant_id(), current.getId());
+        revisionStore.retainLatest(current.getTenant_id(), current.getId(), maxRevisions);
+        notify(current, null, "durable-delete", "Setting deleted");
         return deleted;
     }
 
     /**
-     * Re-publishes the contents of a historical revision as the latest current state.
+     * Republishes content from one historical revision.
      *
-     * @param space    space
-     * @param group    setting group
-     * @param data_id  setting data identifier
-     * @param profile  optional profile
-     * @param revision historical revision
-     * @return newly stored current entry or {@code null} when the revision does not exist
+     * @param space    space identifier
+     * @param group    item group
+     * @param code     item code
+     * @param profile  optional profile identifier
+     * @param revision item-scoped revision number
+     * @return republished item, or {@code null} when the item or revision is absent
      */
-    public Item rollback(String space, String group, String data_id, String profile, String revision) {
-        Logger.info(
-                true,
-                "Cortex",
-                "Setting rollback started: space={}, group={}, dataId={}, profile={}, revision={}",
-                space,
-                group,
-                data_id,
-                profile,
-                revision);
-        Revision snapshot = revisionStore.find(space, group, data_id, profile, revision);
-        if (snapshot == null) {
-            Logger.warn(
-                    false,
-                    "Cortex",
-                    "Setting rollback skipped: space={}, group={}, dataId={}, profile={}, revision={}, reason={}",
-                    space,
-                    group,
-                    data_id,
-                    profile,
-                    revision,
-                    "missingRevision");
+    public Item rollback(String space, String group, String code, String profile, String revision) {
+        Item current = entryStore.find(null, CortexIdentity.space(space), profile, group, code);
+        if (current == null) {
             return null;
         }
-        Item entry = new Item();
-        entry.setSpace_id(snapshot.getSpace_id());
-        entry.setGroup(snapshot.getGroup());
-        entry.setData_id(snapshot.getData_id());
-        ItemBindingProjection.normalizeProfileIdsInto(entry, ItemBindingProjection.normalizedProfileIds(snapshot));
-        ItemBindingProjection.normalizeAppIdsInto(entry, ItemBindingProjection.normalizedAppIds(snapshot));
-        entry.setContent(snapshot.getContent());
-        entry.setSource(snapshot.getSource());
-        entry.setSpec(snapshot.getSpec());
-        ItemBindingProjection.copyExtensionInto(entry, snapshot.getExtension());
-        entry.setFormat(snapshot.getFormat());
-        entry.setExposure(snapshot.getExposure());
-        entry.setEncrypted(snapshot.getEncrypted());
-        entry.setRule(snapshot.getRule());
-        entry.setChecksum(snapshot.getChecksum());
-        if (ItemNormalizer.isEncryptedFlagEnabled(entry.getEncrypted()) && entry.getContent() != null) {
-            entry.setContent(secretCodec.decrypt(entry.getContent()));
+        Revision source = revisionStore.find(current.getTenant_id(), current.getId(), revision);
+        if (source == null) {
+            return null;
         }
-        Item prepared = ItemNormalizer.normalize(entry);
-        Item published = publish(prepared, true, SETTING_DURABLE_SOURCE, ROLLBACK_EVENT, "Setting rolled back");
-        if (published != null) {
-            Revision latest = revisionStore.latest(space, group, data_id, profile);
-            if (latest != null) {
-                revisionStore.markRollback(space, group, data_id, profile, latest.getRevision(), revision);
-            }
-        }
-        Logger.info(
-                false,
-                "Cortex",
-                "Setting rollback completed: space={}, group={}, dataId={}, profile={}, fromRevision={}, newRevision={}",
-                space,
-                group,
-                data_id,
-                profile,
-                revision,
-                published == null ? null : published.getRevision());
-        return published;
+        current.setContent(source.getContent());
+        current.setFormat(source.getFormat());
+        current.setSource(source.getSource());
+        current.setSpec(source.getSpec());
+        current.setExposure(source.getExposure());
+        current.setEncrypted(source.getEncrypted());
+        current.setLabels(source.getLabels());
+        current.setExtension(source.getExtension());
+        current.setDescription(source.getDescription());
+        current.setChecksum(null);
+        return publish(current, source.getId());
     }
 
     /**
-     * Restores the previous current-state snapshot when revision persistence fails after current-state save.
+     * Creates an immutable snapshot from the supplied current item state.
      *
-     * @param previous previous current-state entry
-     * @param stored   newly stored current-state entry
-     * @param revision revision snapshot that failed to complete
-     * @param failure  original publish failure
+     * @param item       current item
+     * @param revisionNo item-scoped revision number
+     * @param source_id  source revision identifier, when applicable
+     * @param operation  snapshot operation
+     * @return immutable revision snapshot
      */
-    private void compensateCurrentState(Item previous, Item stored, Revision revision, Throwable failure) {
-        try {
-            if (stored != null && revision != null) {
-                revisionStore.delete(
-                        revision.getSpace_id(),
-                        revision.getGroup(),
-                        revision.getData_id(),
-                        ItemBindingProjection.firstProfileId(revision),
-                        revision.getRevision());
-            }
-            if (previous != null) {
-                entryStore.save(previous);
-            } else if (stored != null) {
-                entryStore.delete(
-                        stored.getSpace_id(),
-                        stored.getGroup(),
-                        stored.getData_id(),
-                        ItemBindingProjection.firstProfileId(stored));
-            }
-        } catch (RuntimeException | Error compensationFailure) {
-            Logger.error(
-                    false,
-                    "Cortex",
-                    compensationFailure,
-                    "Setting publish compensation failed: space={}, group={}, dataId={}, profile={}, exception={}",
-                    stored == null ? null : stored.getSpace_id(),
-                    stored == null ? null : stored.getGroup(),
-                    stored == null ? null : stored.getData_id(),
-                    stored == null ? null : ItemBindingProjection.firstProfileId(stored),
-                    compensationFailure.getClass().getSimpleName());
-            failure.addSuppressed(compensationFailure);
-        }
+    private Revision snapshot(Item item, String revisionNo, String source_id, Revision.Operation operation) {
+        return Revision.builder().id(ID.objectId()).tenant_id(item.getTenant_id()).item_id(item.getId())
+                .rollout_id(item.getRollout_id()).source_id(source_id).revision(revisionNo).edition(item.getEdition())
+                .baseline(item.getGeneration()).content(item.getContent()).format(item.getFormat())
+                .source(item.getSource()).spec(item.getSpec()).exposure(item.getExposure())
+                .encrypted(item.getEncrypted()).labels(item.getLabels()).extension(item.getExtension())
+                .checksum(item.getChecksum()).operation(operation.name()).description(item.getDescription())
+                .status(item.getStatus()).creator(item.getCreator()).created(item.getCreated())
+                .modifier(item.getModifier()).modified(item.getModified()).build();
     }
 
     /**
-     * Applies publisher defaults before the entry is written to current state.
+     * Notifies subscribers after a committed item change.
      *
-     * @param entry incoming setting entry
-     * @return normalized entry ready for persistence
+     * @param item      changed item
+     * @param content   delivered plain content
+     * @param eventType notification event type
+     * @param summary   notification summary
      */
-    private Item prepare(Item entry) {
-        return ItemNormalizer.normalize(entry, keying);
+    private void notify(Item item, String content, String eventType, String summary) {
+        watchManager.notifySetting(
+                watchKey(item.getSpace_id(), item.getGroup(), item.getCode(), item.getProfile_id()),
+                content,
+                "setting-center",
+                eventType,
+                summary);
     }
 
     /**
-     * Converts the current stored entry into a revision snapshot.
+     * Builds the watch key for one item coordinate.
      *
-     * @param entry    current setting entry
-     * @param previous previous recorded revision, or {@code null} for the initial revision
-     * @return revision snapshot recorded for history and rollback
-     */
-    private Revision toRevision(Item entry, Revision previous) {
-        Revision revision = Revision.builder().item_id(entry.getId()).space_id(entry.getSpace_id())
-                .group(entry.getGroup()).data_id(entry.getData_id())
-                .profile_ids(ItemBindingProjection.normalizedProfileIds(entry))
-                .app_ids(ItemBindingProjection.normalizedAppIds(entry)).content(entry.getContent())
-                .source(entry.getSource()).spec(entry.getSpec()).extension(entry.getExtension())
-                .format(entry.getFormat()).exposure(entry.getExposure()).encrypted(entry.getEncrypted())
-                .rule(entry.getRule()).checksum(entry.getChecksum()).status(entry.getStatus())
-                .diff(previous == null ? "initial" : diff(previous, entry)).created(System.currentTimeMillis()).build();
-        revision.setRevision(entry.getRevision());
-        return revision;
-    }
-
-    /**
-     * Produces a lightweight diff summary against the previous revision.
-     *
-     * @param previous previous revision
-     * @param current  current entry
-     * @return diff summary
-     */
-    private String diff(Revision previous, Item current) {
-        if (previous == null || current == null) {
-            return "initial";
-        }
-        if (!StringKit.equals(previous.getChecksum(), current.getChecksum())) {
-            return "content";
-        }
-        if (!StringKit.equals(previous.getSource(), current.getSource())
-                || !StringKit.equals(previous.getSpec(), current.getSpec())) {
-            return "source";
-        }
-        if (!StringKit.equals(previous.getRule(), current.getRule())) {
-            return "gray";
-        }
-        return "metadata";
-    }
-
-    /**
-     * Appends one setting-domain change record to the optional change log.
-     *
-     * @param action   setting event action
-     * @param item     current setting item
-     * @param revision current setting revision
-     */
-    private void appendChangeLog(String action, Item item, Revision revision) {
-        if (changeLogStore == null || item == null) {
-            return;
-        }
-        CortexChangeRecord record = new CortexChangeRecord();
-        record.setDomain("setting");
-        record.setAction(action);
-        record.setResourceType("ITEM");
-        record.setResourceId(
-                profileScope(
-                        item.getSpace_id(),
-                        item.getGroup(),
-                        item.getData_id(),
-                        ItemBindingProjection.firstProfileId(item)));
-        record.setSpace_id(item.getSpace_id());
-        record.setPayload(JsonKit.toJsonString(revision == null ? item : revision));
-        record.setSequence(RevisionNumbers.sortKey(item.getRevision()));
-        record.setIdempotencyKey(
-                "setting:" + action + Symbol.COLON + record.getResourceId() + Symbol.COLON + item.getRevision());
-        changeLogStore.append(record);
-    }
-
-    /**
-     * Returns whether an item is bound exactly to the supplied profile.
-     *
-     * @param entry   setting item
-     * @param profile normalized profile identifier
-     * @return {@code true} when the item is bound to the profile only
-     */
-    private boolean matchesExactProfile(Item entry, String profile) {
-        if (entry == null) {
-            return false;
-        }
-        List<String> profiles = ItemBindingProjection.normalizedProfileIds(entry);
-        if (StringKit.isEmpty(profile)) {
-            return profiles == null || profiles.isEmpty();
-        }
-        return profiles != null && profiles.contains(profile.trim().toLowerCase());
-    }
-
-    /**
-     * Builds one watch key.
-     *
-     * @param space   space
-     * @param group   setting group
-     * @param dataId  setting data identifier
-     * @param profile optional profile
+     * @param space   space identifier
+     * @param group   item group
+     * @param code    item code
+     * @param profile optional profile identifier
      * @return watch key
      */
-    private String watchKey(String space, String group, String dataId, String profile) {
-        return keying.key(SettingSpec.watch(space, group, dataId, profile));
+    private String watchKey(String space, String group, String code, String profile) {
+        return keying.key(SettingSpec.watch(space, group, code, profile));
     }
 
     /**
-     * Builds one logical profile scope.
+     * Advances a nullable counter.
      *
-     * @param space   space
-     * @param group   setting group
-     * @param dataId  setting data identifier
-     * @param profile optional profile
-     * @return profile scope key
+     * @param value current value
+     * @return {@code 1} for {@code null}, otherwise the incremented value
      */
-    private String profileScope(String space, String group, String dataId, String profile) {
-        return keying.key(SettingSpec.profileScope(space, group, dataId, profile));
+    private long next(Long value) {
+        return value == null ? 1L : value + 1L;
     }
 
+    /**
+     * Verifies that the required item coordinates are present.
+     *
+     * @param item item to validate
+     */
+    private void requireCoordinates(Item item) {
+        if (item.getSpace_id() == null || item.getGroup() == null || item.getCode() == null) {
+            throw new IllegalArgumentException("Item space_id, group and code are required");
+        }
+    }
 }

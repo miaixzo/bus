@@ -17,63 +17,54 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.setting.binding;
+package org.miaixz.bus.cortex.setting.approval;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.core.basic.entity.Space;
+import org.miaixz.bus.core.basic.entity.Tenant;
 
 /**
- * Relation row between one setting resource and an application or profile target.
+ * Immutable approval decision for a rollout stage.
  *
  * @author Kimi Liu
  */
 @Getter
 @Setter
 @SuperBuilder
-public class Binding extends Space {
+public class Approval extends Tenant {
 
     /**
-     * Owning setting resource identifier. The physical column remains {@code item_id} for the existing item binding
-     * table, while service-level code may treat it as the owner id.
+     * Rollout being approved.
      */
-    private String item_id;
+    private String rollout_id;
+    /**
+     * Transfer target when applicable.
+     */
+    private String target_id;
+    /**
+     * Approval policy stage.
+     */
+    private String stage;
+    /**
+     * Rollout checksum observed by the approver.
+     */
+    private String checksum;
+    /**
+     * Approval decision.
+     */
+    private String decision;
+    /**
+     * Optional approval comment.
+     */
+    private String comment;
 
     /**
-     * Binding kind. Allowed values are {@code APP} and {@code PROFILE}.
+     * Creates an empty approval record.
      */
-    private String type;
-
-    /**
-     * Referenced target identifier.
-     */
-    private String ref_id;
-
-    /**
-     * Creates an empty setting binding.
-     */
-    public Binding() {
+    public Approval() {
         // No initialization required.
-    }
-
-    /**
-     * Semantic alias for callers that bind non-item setting resources.
-     *
-     * @return owning setting resource identifier
-     */
-    public String getOwner_id() {
-        return item_id;
-    }
-
-    /**
-     * Semantic alias for callers that bind non-item setting resources.
-     *
-     * @param owner_id owning setting resource identifier
-     */
-    public void setOwner_id(String owner_id) {
-        this.item_id = owner_id;
     }
 
 }
