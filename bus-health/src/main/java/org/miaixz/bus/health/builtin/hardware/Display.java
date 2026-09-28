@@ -63,4 +63,33 @@ public interface Display {
         return Optional.empty();
     }
 
+    /**
+     * Gets the mode in which the windowing system is currently driving this display.
+     *
+     * @return an optional containing the current display mode, or an empty optional if it is unavailable
+     */
+    default Optional<DisplayMode> getCurrentMode() {
+        return Optional.empty();
+    }
+
+    /**
+     * Reports whether this display is built into the device.
+     *
+     * @return an optional containing {@code true} for a built-in display or {@code false} for an external display, or
+     *         an empty optional if the platform cannot determine the value
+     */
+    default Optional<Boolean> isBuiltIn() {
+        return Optional.empty();
+    }
+
+    /**
+     * Reports whether this display is the primary display. The result is a snapshot of the windowing-system state and
+     * is not guaranteed to be unique because cloned displays can share the primary display's desktop position.
+     *
+     * @return an optional containing the primary status, or an empty optional if the platform cannot determine it
+     */
+    default Optional<Boolean> isPrimary() {
+        return Optional.empty();
+    }
+
 }

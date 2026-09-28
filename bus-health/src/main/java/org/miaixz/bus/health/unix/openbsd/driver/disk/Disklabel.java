@@ -65,9 +65,9 @@ public class Disklabel {
         List<HWPartition> partitions = new ArrayList<>();
         // Save some values to return to the caller to populate HWDiskStore values
         String totalMarker = "total sectors:";
-        long totalSectors = 1L;
+        long totalSectors = Normal._0;
         String bpsMarker = "bytes/sector:";
-        int bytesPerSector = 1;
+        int bytesPerSector = Normal._0;
         String labelMarker = "label:";
         String label = Normal.EMPTY;
         String duidMarker = "duid:";
@@ -90,7 +90,8 @@ public class Disklabel {
             // boundend: 15693824
             // drivedata: 0
             if (line.contains(totalMarker)) {
-                totalSectors = Parsing.parseLongOrDefault(Parsing.getTextAfterString(line, totalMarker).trim(), 1L);
+                totalSectors = Parsing
+                        .parseLongOrDefault(Parsing.getTextAfterString(line, totalMarker).trim(), Normal._0);
             } else if (line.contains(bpsMarker)) {
                 bytesPerSector = Parsing.getFirstIntValue(line);
             } else if (line.contains(labelMarker)) {
@@ -151,7 +152,7 @@ public class Disklabel {
                 if (split.length > 5) {
                     String name = split[0].substring(5 + diskName.length());
                     Pair<Integer, Integer> majorMinor = getMajorMinor(diskName, name);
-                    long partSize = Parsing.parseLongOrDefault(split[1], 1L) * 512L;
+                    long partSize = Parsing.parseLongOrDefault(split[1], Normal._0) * Normal._512;
                     partitions.add(
                             new HWPartition(split[0], split[0].substring(5), Normal.UNKNOWN, Normal.UNKNOWN, partSize,
                                     majorMinor.getLeft(), majorMinor.getRight(), split[5]));

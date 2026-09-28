@@ -20,7 +20,10 @@
 package org.miaixz.bus.health.mac.hardware;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.CoreFoundation;
@@ -31,14 +34,18 @@ import com.sun.jna.platform.mac.IOKitUtil;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Edid;
+import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.Display;
 import org.miaixz.bus.health.builtin.hardware.DisplayInfo;
+import org.miaixz.bus.health.builtin.hardware.DisplayMode;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractDisplay;
+import org.miaixz.bus.health.mac.driver.CoreGraphicsDisplay;
 import org.miaixz.bus.health.mac.jna.CoreGraphics;
 import org.miaixz.bus.health.mac.jna.ObjCRuntime;
 import org.miaixz.bus.logger.Logger;
@@ -69,12 +76,22 @@ final class MacDisplay extends AbstractDisplay {
     private final String devicePort;
 
     /**
+     * Whether the enumeration path identifies this display as built in, or {@code null} when CoreGraphics must decide.
+     */
+    private final Boolean builtIn;
+
+    /**
+     * The shared, memoized CoreGraphics display query for this enumeration batch.
+     */
+    private final SupplierX<List<CoreGraphicsDisplay>> coreGraphicsDisplays;
+
+    /**
      * Constructor for MacDisplay.
      *
      * @param edid A byte array representing a display EDID (Extended Display Identification Data).
      */
     MacDisplay(byte[] edid) {
-        this(edid, Normal.UNKNOWN);
+        this(edid, Normal.UNKNOWN, null, Memoizer.memoize(MacDisplay::queryCoreGraphicsDisplays));
     }
 
     /**
@@ -84,8 +101,23 @@ final class MacDisplay extends AbstractDisplay {
      * @param devicePort The device port this display is attached to.
      */
     MacDisplay(byte[] edid, String devicePort) {
+        this(edid, devicePort, null, Memoizer.memoize(MacDisplay::queryCoreGraphicsDisplays));
+    }
+
+    /**
+     * Constructor for a display with a real EDID and a shared CoreGraphics query.
+     *
+     * @param edid                 the display EDID
+     * @param devicePort           the device port
+     * @param builtIn              the known built-in status, or {@code null}
+     * @param coreGraphicsDisplays the batch's memoized CoreGraphics query
+     */
+    private MacDisplay(byte[] edid, String devicePort, Boolean builtIn,
+            SupplierX<List<CoreGraphicsDisplay>> coreGraphicsDisplays) {
         super(edid);
         this.devicePort = devicePort;
+        this.builtIn = builtIn;
+        this.coreGraphicsDisplays = coreGraphicsDisplays;
         Logger.debug(false, "Health", "Initialized MacDisplay");
     }
 
@@ -95,7 +127,7 @@ final class MacDisplay extends AbstractDisplay {
      * @param displayInfo The synthesized display information.
      */
     MacDisplay(DisplayInfo displayInfo) {
-        this(displayInfo, Normal.UNKNOWN);
+        this(displayInfo, Normal.UNKNOWN, Memoizer.memoize(MacDisplay::queryCoreGraphicsDisplays));
     }
 
     /**
@@ -105,8 +137,22 @@ final class MacDisplay extends AbstractDisplay {
      * @param devicePort  The device port this display is attached to.
      */
     MacDisplay(DisplayInfo displayInfo, String devicePort) {
+        this(displayInfo, devicePort, Memoizer.memoize(MacDisplay::queryCoreGraphicsDisplays));
+    }
+
+    /**
+     * Constructor for a synthetic built-in display with a shared CoreGraphics query.
+     *
+     * @param displayInfo          the synthesized display information
+     * @param devicePort           the device port
+     * @param coreGraphicsDisplays the batch's memoized CoreGraphics query
+     */
+    private MacDisplay(DisplayInfo displayInfo, String devicePort,
+            SupplierX<List<CoreGraphicsDisplay>> coreGraphicsDisplays) {
         super(displayInfo);
         this.devicePort = devicePort;
+        this.builtIn = Boolean.TRUE;
+        this.coreGraphicsDisplays = coreGraphicsDisplays;
         Logger.debug(false, "Health", "Initialized MacDisplay (synthetic)");
     }
 
@@ -118,13 +164,28 @@ final class MacDisplay extends AbstractDisplay {
      */
     public static List<Display> getDisplays() {
         List<Display> displays = new ArrayList<>();
+        SupplierX<List<CoreGraphicsDisplay>> coreGraphicsDisplays = Memoizer
+                .memoize(MacDisplay::queryCoreGraphicsDisplays);
         // Intel-based Macs
-        displays.addAll(getDisplaysFromService("IODisplayConnect", "IODisplayEDID", "IOService", null));
+        displays.addAll(
+                getDisplaysFromService(
+                        "IODisplayConnect",
+                        "IODisplayEDID",
+                        "IOService",
+                        null,
+                        null,
+                        coreGraphicsDisplays));
         // Apple Silicon-based Macs
         displays.addAll(
-                getDisplaysFromService("IOPortTransportStateDisplayPort", "EDID", null, "TransportDescription"));
+                getDisplaysFromService(
+                        "IOPortTransportStateDisplayPort",
+                        "EDID",
+                        null,
+                        "TransportDescription",
+                        Boolean.FALSE,
+                        coreGraphicsDisplays));
         // Apple Silicon built-in panel without a physical EDID.
-        displays.addAll(getAppleSiliconBuiltInDisplay());
+        displays.addAll(getAppleSiliconBuiltInDisplay(coreGraphicsDisplays));
 
         return displays;
     }
@@ -137,13 +198,17 @@ final class MacDisplay extends AbstractDisplay {
      * @param childEntryName The name of the child entry to search in, or {@code null} to search directly in the
      *                       service.
      * @param portKeyName    The key name for the port property, or {@code null} when unavailable.
+     * @param builtIn        The known built-in status, or {@code null} when CoreGraphics must determine it.
+     * @param cgDisplays     The batch's memoized CoreGraphics query.
      * @return A list of {@link Display} objects found using this service.
      */
     private static List<Display> getDisplaysFromService(
             String serviceName,
             String edidKeyName,
             String childEntryName,
-            String portKeyName) {
+            String portKeyName,
+            Boolean builtIn,
+            SupplierX<List<CoreGraphicsDisplay>> cgDisplays) {
         List<Display> displays = new ArrayList<>();
 
         IOIterator serviceIterator = IOKitUtil.getMatchingServices(serviceName);
@@ -168,8 +233,10 @@ final class MacDisplay extends AbstractDisplay {
                                     String transport = portKeyName == null ? null
                                             : cfRegistryEntryGetString(propertySource, portKeyName);
                                     displays.add(
-                                            new MacDisplay(p.getByteArray(0, length), getStringValueOrUnknown(
-                                                    StringKit.subBefore(transport, Symbol.C_SLASH, false))));
+                                            new MacDisplay(p.getByteArray(0, length),
+                                                    getStringValueOrUnknown(
+                                                            StringKit.subBefore(transport, Symbol.C_SLASH, false)),
+                                                    builtIn, cgDisplays));
                                 }
                             } finally {
                                 edid.release();
@@ -195,9 +262,10 @@ final class MacDisplay extends AbstractDisplay {
      * External monitors are skipped because they are enumerated through {@code IOPortTransportStateDisplayPort}; only
      * the built-in panel without a physical EDID is synthesized from {@code DisplayAttributes}.
      *
+     * @param cgDisplays The batch's memoized CoreGraphics query.
      * @return A list containing the built-in display, or an empty list if it is not found.
      */
-    private static List<Display> getAppleSiliconBuiltInDisplay() {
+    private static List<Display> getAppleSiliconBuiltInDisplay(SupplierX<List<CoreGraphicsDisplay>> cgDisplays) {
         List<Display> displays = new ArrayList<>();
         IOIterator iter = IOKitUtil.getMatchingServices("IOMobileFramebuffer");
         if (iter == null) {
@@ -209,7 +277,7 @@ final class MacDisplay extends AbstractDisplay {
             IORegistryEntry fb = iter.next();
             while (fb != null) {
                 try {
-                    addBuiltInDisplay(fb, cfExternal, cfAttrs, displays);
+                    addBuiltInDisplay(fb, cfExternal, cfAttrs, displays, cgDisplays);
                 } finally {
                     fb.release();
                 }
@@ -230,12 +298,14 @@ final class MacDisplay extends AbstractDisplay {
      * @param cfExternal The CoreFoundation key for the external display flag.
      * @param cfAttrs    The CoreFoundation key for display attributes.
      * @param displays   The target display list.
+     * @param cgDisplays The batch's memoized CoreGraphics query.
      */
     private static void addBuiltInDisplay(
             IORegistryEntry fb,
             CFStringRef cfExternal,
             CFStringRef cfAttrs,
-            List<Display> displays) {
+            List<Display> displays,
+            SupplierX<List<CoreGraphicsDisplay>> cgDisplays) {
         CFTypeRef externalRef = fb.createCFProperty(cfExternal);
         if (externalRef != null) {
             try {
@@ -265,7 +335,7 @@ final class MacDisplay extends AbstractDisplay {
         try {
             DisplayInfo info = synthesize(fb, new CFDictionaryRef(attrsRaw.getPointer()), devicePort);
             if (info != null) {
-                displays.add(new MacDisplay(info, devicePort));
+                displays.add(new MacDisplay(info, devicePort, cgDisplays));
             }
         } finally {
             attrsRaw.release();
@@ -342,20 +412,81 @@ final class MacDisplay extends AbstractDisplay {
      */
     private static int findBuiltInDisplayId() {
         CoreGraphics cg = CoreGraphics.INSTANCE;
-        IntByReference count = new IntByReference();
-        if (cg.CGGetActiveDisplayList(0, null, count) != 0 || count.getValue() == 0) {
-            return -1;
-        }
-        int[] displayIds = new int[count.getValue()];
-        if (cg.CGGetActiveDisplayList(displayIds.length, displayIds, count) != 0) {
-            return -1;
-        }
-        for (int id : displayIds) {
-            if (cg.CGDisplayIsBuiltin(id) != 0) {
+        for (int id : getActiveDisplayIds(cg)) {
+            if (cg.CGDisplayIsBuiltin(id) != Normal._0) {
                 return id;
             }
         }
-        return -1;
+        return Normal.__1;
+    }
+
+    /**
+     * Lists active CoreGraphics display identifiers.
+     *
+     * @param coreGraphics The CoreGraphics binding.
+     * @return Active display identifiers, or an empty array.
+     */
+    private static int[] getActiveDisplayIds(CoreGraphics coreGraphics) {
+        IntByReference count = new IntByReference();
+        if (coreGraphics.CGGetActiveDisplayList(Normal._0, null, count) != Normal._0 || count.getValue() == Normal._0) {
+            return new int[Normal._0];
+        }
+        int[] displayIds = new int[count.getValue()];
+        if (coreGraphics.CGGetActiveDisplayList(displayIds.length, displayIds, count) != Normal._0) {
+            return new int[Normal._0];
+        }
+        return Arrays.copyOf(displayIds, Math.min(count.getValue(), displayIds.length));
+    }
+
+    /**
+     * Queries every active CoreGraphics display for identity, mode, built-in status, and main-display status.
+     *
+     * @return Active CoreGraphics display snapshots.
+     */
+    private static List<CoreGraphicsDisplay> queryCoreGraphicsDisplays() {
+        try {
+            CoreGraphics coreGraphics = CoreGraphics.INSTANCE;
+            List<CoreGraphicsDisplay> displays = new ArrayList<>();
+            for (int id : getActiveDisplayIds(coreGraphics)) {
+                displays.add(
+                        new CoreGraphicsDisplay(coreGraphics.CGDisplayVendorNumber(id),
+                                coreGraphics.CGDisplayModelNumber(id), coreGraphics.CGDisplaySerialNumber(id),
+                                coreGraphics.CGDisplayIsBuiltin(id) != Normal._0,
+                                coreGraphics.CGDisplayIsMain(id) != Normal._0, readMode(coreGraphics, id)));
+            }
+            return displays;
+        } catch (Throwable throwable) {
+            Logger.debug(false, "Health", "Failed to query CoreGraphics displays: {}", throwable.getMessage());
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Reads one display's current CoreGraphics mode.
+     *
+     * @param coreGraphics The CoreGraphics binding.
+     * @param displayId    The display identifier.
+     * @return The current mode, or {@code null}.
+     */
+    private static DisplayMode readMode(CoreGraphics coreGraphics, int displayId) {
+        Pointer mode = coreGraphics.CGDisplayCopyDisplayMode(displayId);
+        if (mode == null) {
+            return null;
+        }
+        try {
+            CoreGraphics.CGRectByValue bounds = coreGraphics.CGDisplayBounds(displayId);
+            return CoreGraphicsDisplay.toMode(
+                    bounds.origin.x,
+                    bounds.origin.y,
+                    bounds.size.width,
+                    bounds.size.height,
+                    coreGraphics.CGDisplayModeGetPixelWidth(mode),
+                    coreGraphics.CGDisplayModeGetPixelHeight(mode),
+                    coreGraphics.CGDisplayModeGetRefreshRate(mode),
+                    coreGraphics.CGDisplayRotation(displayId));
+        } finally {
+            coreGraphics.CGDisplayModeRelease(mode);
+        }
     }
 
     /**
@@ -552,6 +683,19 @@ final class MacDisplay extends AbstractDisplay {
     }
 
     /**
+     * Finds the CoreGraphics display matching this IOKit display.
+     *
+     * @return The unique matching CoreGraphics display, or an empty optional.
+     */
+    private Optional<CoreGraphicsDisplay> findCoreGraphicsDisplay() {
+        List<CoreGraphicsDisplay> displays = this.coreGraphicsDisplays.get();
+        if (getDisplayInfo().isEdidSynthetic()) {
+            return CoreGraphicsDisplay.matchBuiltIn(displays);
+        }
+        return CoreGraphicsDisplay.matchEdid(displays, getDisplayInfo().getEdid());
+    }
+
+    /**
      * Gets the platform-specific device port name.
      *
      * @return The platform-specific device port name.
@@ -559,6 +703,27 @@ final class MacDisplay extends AbstractDisplay {
     @Override
     public String getDevicePort() {
         return this.devicePort;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<DisplayMode> getCurrentMode() {
+        return findCoreGraphicsDisplay().flatMap(CoreGraphicsDisplay::getMode);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<Boolean> isBuiltIn() {
+        if (this.builtIn != null) {
+            return Optional.of(this.builtIn);
+        }
+        return findCoreGraphicsDisplay().map(CoreGraphicsDisplay::isBuiltIn);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<Boolean> isPrimary() {
+        return findCoreGraphicsDisplay().map(CoreGraphicsDisplay::isMain);
     }
 
 }

@@ -21,6 +21,7 @@ package org.miaixz.bus.health.mac.jna;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.platform.mac.CoreFoundation.CFArrayRef;
@@ -117,6 +118,22 @@ public interface CoreGraphics extends Library {
     int CGDisplayIsBuiltin(int display);
 
     /**
+     * Returns whether the display is the main display.
+     *
+     * @param display The display identifier.
+     * @return Nonzero when the display is the main display.
+     */
+    int CGDisplayIsMain(int display);
+
+    /**
+     * Returns the display vendor number.
+     *
+     * @param display The display identifier.
+     * @return The vendor number.
+     */
+    int CGDisplayVendorNumber(int display);
+
+    /**
      * Returns the display model number.
      *
      * @param display The display identifier.
@@ -139,6 +156,61 @@ public interface CoreGraphics extends Library {
      * @return A size structure containing width and height in millimeters.
      */
     CGSizeByValue CGDisplayScreenSize(int display);
+
+    /**
+     * Returns the display bounds in global desktop coordinates.
+     *
+     * @param display The display identifier.
+     * @return The display bounds.
+     */
+    CGRectByValue CGDisplayBounds(int display);
+
+    /**
+     * Copies the display's current mode.
+     *
+     * @param display The display identifier.
+     * @return A display mode reference, or {@code null}.
+     */
+    Pointer CGDisplayCopyDisplayMode(int display);
+
+    /**
+     * Returns a display mode's native pixel width.
+     *
+     * @param mode The display mode reference.
+     * @return The native pixel width.
+     */
+    long CGDisplayModeGetPixelWidth(Pointer mode);
+
+    /**
+     * Returns a display mode's native pixel height.
+     *
+     * @param mode The display mode reference.
+     * @return The native pixel height.
+     */
+    long CGDisplayModeGetPixelHeight(Pointer mode);
+
+    /**
+     * Returns a display mode's refresh rate.
+     *
+     * @param mode The display mode reference.
+     * @return The refresh rate in hertz, or 0 when not fixed.
+     */
+    double CGDisplayModeGetRefreshRate(Pointer mode);
+
+    /**
+     * Returns the display's clockwise rotation.
+     *
+     * @param display The display identifier.
+     * @return The rotation in degrees.
+     */
+    double CGDisplayRotation(int display);
+
+    /**
+     * Releases a display mode reference.
+     *
+     * @param mode The display mode reference.
+     */
+    void CGDisplayModeRelease(Pointer mode);
 
     /**
      * JNA wrapper for the CGPoint structure.
@@ -261,6 +333,29 @@ public interface CoreGraphics extends Library {
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
+        }
+
+    }
+
+    /**
+     * JNA wrapper for a CGRect structure returned by value.
+     *
+     * @author Kimi Liu
+     */
+    @FieldOrder({ "origin", "size" })
+    class CGRectByValue extends Structure implements Structure.ByValue {
+
+        /** The rectangle origin. */
+        public CGPoint origin = new CGPoint();
+
+        /** The rectangle size. */
+        public CGSize size = new CGSize();
+
+        /**
+         * Constructs a new CGRectByValue instance.
+         */
+        public CGRectByValue() {
+            // No initialization required.
         }
 
     }

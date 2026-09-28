@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
@@ -31,10 +32,12 @@ import com.sun.jna.platform.win32.*;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.builtin.hardware.Display;
+import org.miaixz.bus.health.builtin.hardware.DisplayMode;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractDisplay;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.health.windows.driver.DisplayConnector;
+import org.miaixz.bus.health.windows.driver.DisplayConnector.Connector;
 import org.miaixz.bus.health.windows.jna.User32;
 import org.miaixz.bus.logger.Logger;
 
@@ -69,7 +72,7 @@ final class WindowsDisplay extends AbstractDisplay {
     /**
      * The platform-specific device port name.
      */
-    private final String devicePort;
+    private final Connector connector;
 
     /**
      * Constructor for WindowsDisplay.
@@ -77,18 +80,18 @@ final class WindowsDisplay extends AbstractDisplay {
      * @param edid a byte array representing a display EDID
      */
     WindowsDisplay(byte[] edid) {
-        this(edid, Normal.UNKNOWN);
+        this(edid, null);
     }
 
     /**
      * Constructor for WindowsDisplay with a device port.
      *
-     * @param edid       a byte array representing a display EDID
-     * @param devicePort the connector this display is attached to
+     * @param edid      a byte array representing a display EDID
+     * @param connector the connector this display is attached to, or {@code null} if unavailable
      */
-    WindowsDisplay(byte[] edid, String devicePort) {
+    WindowsDisplay(byte[] edid, Connector connector) {
         super(edid);
-        this.devicePort = devicePort;
+        this.connector = connector;
         Logger.debug(false, "Health", "Initialized WindowsDisplay");
     }
 
@@ -99,7 +102,7 @@ final class WindowsDisplay extends AbstractDisplay {
      */
     public static List<Display> getDisplays() {
         List<Display> displays = new ArrayList<>();
-        Map<String, String> portByPath = queryConnectorPorts();
+        Map<String, Connector> connectorByPath = queryConnectors();
 
         WinNT.HANDLE hDevInfo = SU.SetupDiGetClassDevs(
                 GUID_DEVINTERFACE_MONITOR,
@@ -140,8 +143,12 @@ final class WindowsDisplay extends AbstractDisplay {
                                         pType,
                                         edid,
                                         lpcbData) == WinError.ERROR_SUCCESS) {
-                                    String port = lookupPort(hDevInfo, info, deviceInterfaceData, portByPath);
-                                    Display display = new WindowsDisplay(edid, port);
+                                    Connector connector = lookupConnector(
+                                            hDevInfo,
+                                            info,
+                                            deviceInterfaceData,
+                                            connectorByPath);
+                                    Display display = new WindowsDisplay(edid, connector);
                                     displays.add(display);
                                 }
                             }
@@ -163,27 +170,27 @@ final class WindowsDisplay extends AbstractDisplay {
      * @param hDevInfo            the device information set handle
      * @param info                the device information data
      * @param deviceInterfaceData the device interface data
-     * @param portByPath          the normalized device path to port name map
-     * @return the connector name, or {@link Normal#UNKNOWN} if unavailable
+     * @param connectorByPath     the normalized device path to connector map
+     * @return the connector, or {@code null} if unavailable
      */
-    private static String lookupPort(
+    private static Connector lookupConnector(
             WinNT.HANDLE hDevInfo,
             Struct.CloseableSpDevinfoData info,
             Struct.CloseableSpDeviceInterfaceData deviceInterfaceData,
-            Map<String, String> portByPath) {
+            Map<String, Connector> connectorByPath) {
         if (!SU.SetupDiEnumDeviceInterfaces(
                 hDevInfo,
                 info.getPointer(),
                 GUID_DEVINTERFACE_MONITOR,
                 0,
                 deviceInterfaceData)) {
-            return Normal.UNKNOWN;
+            return null;
         }
         String path = getDeviceInterfacePath(hDevInfo, deviceInterfaceData);
         if (path == null) {
-            return Normal.UNKNOWN;
+            return null;
         }
-        return portByPath.getOrDefault(DisplayConnector.normalizePath(path), Normal.UNKNOWN);
+        return connectorByPath.get(DisplayConnector.normalizePath(path));
     }
 
     /**
@@ -224,10 +231,10 @@ final class WindowsDisplay extends AbstractDisplay {
      *
      * @return the normalized device path to connector name map
      */
-    private static Map<String, String> queryConnectorPorts() {
+    private static Map<String, Connector> queryConnectors() {
         User32 user32 = User32.INSTANCE;
         for (int attempt = Normal._0; attempt < Normal._3; attempt++) {
-            Map<String, String> map = queryConnectorPortsOnce(user32);
+            Map<String, Connector> map = queryConnectorsOnce(user32);
             if (map != null) {
                 return map;
             }
@@ -242,8 +249,8 @@ final class WindowsDisplay extends AbstractDisplay {
      * @param user32 the User32 binding
      * @return the connector map, or {@code null} when the caller should retry
      */
-    private static Map<String, String> queryConnectorPortsOnce(User32 user32) {
-        Map<String, String> map = new HashMap<>();
+    private static Map<String, Connector> queryConnectorsOnce(User32 user32) {
+        Map<String, Connector> map = new HashMap<>();
         try (ByRef.CloseableIntByReference numPaths = new ByRef.CloseableIntByReference();
                 ByRef.CloseableIntByReference numModes = new ByRef.CloseableIntByReference()) {
             if (user32.GetDisplayConfigBufferSizes(Normal._2, numPaths, numModes) != WinError.ERROR_SUCCESS) {
@@ -266,6 +273,7 @@ final class WindowsDisplay extends AbstractDisplay {
                     return map;
                 }
                 int actualPaths = numPaths.getValue();
+                int actualModes = numModes.getValue();
                 for (int i = Normal._0; i < actualPaths; i++) {
                     long base = (long) i * Normal._72;
                     int flags = paths.getInt(base + Normal._68);
@@ -274,7 +282,9 @@ final class WindowsDisplay extends AbstractDisplay {
                     }
                     long adapterId = paths.getLong(base + Normal._20);
                     int targetId = paths.getInt(base + Normal._28);
-                    addConnector(map, user32, adapterId, targetId);
+                    DisplayMode mode = DisplayConnector
+                            .readMode(offset -> paths.getInt(base + offset), modes::getInt, actualModes);
+                    addConnector(map, user32, adapterId, targetId, mode);
                 }
             }
         }
@@ -284,12 +294,18 @@ final class WindowsDisplay extends AbstractDisplay {
     /**
      * Adds one connector from a {@code DISPLAYCONFIG_TARGET_DEVICE_NAME} response.
      *
-     * @param map       the normalized device path to connector name map
+     * @param map       the normalized device path to connector map
      * @param user32    the User32 binding
      * @param adapterId the target adapter identifier
      * @param targetId  the target identifier
+     * @param mode      the current display mode, or {@code null}
      */
-    private static void addConnector(Map<String, String> map, User32 user32, long adapterId, int targetId) {
+    private static void addConnector(
+            Map<String, Connector> map,
+            User32 user32,
+            long adapterId,
+            int targetId,
+            DisplayMode mode) {
         try (Memory targetDeviceName = new Memory(Normal._400 + Normal._20)) {
             targetDeviceName.clear();
             targetDeviceName.setInt(Normal._0, Normal._2);
@@ -304,7 +320,7 @@ final class WindowsDisplay extends AbstractDisplay {
             String key = DisplayConnector
                     .normalizePath(targetDeviceName.getWideString(Normal._128 + Normal._32 + Normal._4));
             if (!Normal.UNKNOWN.equals(key)) {
-                map.put(key, DisplayConnector.connectorName(outputTechnology, connectorInstance));
+                map.put(key, new Connector(outputTechnology, connectorInstance, mode));
             }
         }
     }
@@ -316,7 +332,25 @@ final class WindowsDisplay extends AbstractDisplay {
      */
     @Override
     public String getDevicePort() {
-        return this.devicePort;
+        return this.connector == null ? Normal.UNKNOWN : this.connector.getName();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<DisplayMode> getCurrentMode() {
+        return this.connector == null ? Optional.empty() : this.connector.getMode();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<Boolean> isBuiltIn() {
+        return this.connector == null ? Optional.empty() : Optional.of(this.connector.isBuiltIn());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<Boolean> isPrimary() {
+        return getCurrentMode().map(mode -> mode.getX() == Normal._0 && mode.getY() == Normal._0);
     }
 
 }
