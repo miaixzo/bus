@@ -20,9 +20,9 @@
 package org.miaixz.bus.health.unix.openbsd.hardware;
 
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -100,13 +100,11 @@ final class OpenBsdSoundCard extends AbstractSoundCard {
                 key = Normal.EMPTY;
             }
         }
-        List<SoundCard> soundCards = new ArrayList<>();
-        for (Entry<String, String> entry : nameMap.entrySet()) {
-            soundCards.add(
-                    new OpenBsdSoundCard(versionMap.get(entry.getKey()), entry.getValue(),
-                            codecMap.get(entry.getKey())));
-        }
-        return soundCards;
+        return nameMap.entrySet().stream()
+                .map(
+                        entry -> new OpenBsdSoundCard(versionMap.get(entry.getKey()), entry.getValue(),
+                                codecMap.get(entry.getKey())))
+                .collect(Collectors.toList());
     }
 
 }

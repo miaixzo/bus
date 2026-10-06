@@ -13257,6 +13257,12 @@
           "parameterTypes": []
         },
         {
+          "name": "parseBiosVendor",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "queryBiosReleaseDate",
           "parameterTypes": []
         },
@@ -29037,11 +29043,27 @@
           ]
         },
         {
+          "name": "parseTcpState",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "queryNetstat",
           "parameterTypes": []
         },
         {
           "name": "queryNetstat",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "querySolarisNetstat",
+          "parameterTypes": []
+        },
+        {
+          "name": "querySolarisNetstat",
           "parameterTypes": [
             "java.util.List"
           ]
@@ -29078,6 +29100,19 @@
           "name": "queryUdpStats",
           "parameterTypes": [
             "java.util.List"
+          ]
+        },
+        {
+          "name": "solarisSectionType",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toAddressBytes",
+          "parameterTypes": [
+            "java.lang.String"
           ]
         }
       ]
@@ -36627,6 +36662,10 @@
       "methods": [
         {
           "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getConnections",
           "parameterTypes": []
         },
         {

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -144,22 +145,20 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
         }
 
         // Build tree and return
-        List<UsbDevice> controllerDevices = new ArrayList<>();
-        for (String devusb : rootHubs) {
-            controllerDevices.add(
-                    buildDeviceTree(
-                            devusb,
-                            "0000",
-                            "0000",
-                            nameMap,
-                            vendorMap,
-                            vendorIdMap,
-                            productIdMap,
-                            serialMap,
-                            hubMap,
-                            OpenBsdUsbDevice::new));
-        }
-        return controllerDevices;
+        return rootHubs.stream()
+                .map(
+                        devusb -> buildDeviceTree(
+                                devusb,
+                                "0000",
+                                "0000",
+                                nameMap,
+                                vendorMap,
+                                vendorIdMap,
+                                productIdMap,
+                                serialMap,
+                                hubMap,
+                                OpenBsdUsbDevice::new))
+                .collect(Collectors.toList());
     }
 
 }

@@ -20,6 +20,7 @@
 package org.miaixz.bus.health.mac.hardware;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.sun.jna.platform.mac.CoreFoundation;
 import com.sun.jna.platform.mac.CoreFoundation.CFIndex;
@@ -186,21 +187,19 @@ public class MacUsbDevice extends AbstractUsbDevice {
         root.release();
 
         // Build tree and return
-        List<UsbDevice> controllerDevices = new ArrayList<>();
-        for (Long controller : usbControllers) {
-            controllerDevices.add(
-                    getDeviceAndChildren(
-                            controller,
-                            "0000",
-                            "0000",
-                            nameMap,
-                            vendorMap,
-                            vendorIdMap,
-                            productIdMap,
-                            serialMap,
-                            hubMap));
-        }
-        return controllerDevices;
+        return usbControllers.stream()
+                .map(
+                        controller -> getDeviceAndChildren(
+                                controller,
+                                "0000",
+                                "0000",
+                                nameMap,
+                                vendorMap,
+                                vendorIdMap,
+                                productIdMap,
+                                serialMap,
+                                hubMap))
+                .collect(Collectors.toList());
     }
 
     /**

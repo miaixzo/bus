@@ -21,6 +21,7 @@ package org.miaixz.bus.health.windows;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import com.sun.jna.platform.win32.COM.Wbemcli;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
@@ -211,11 +212,10 @@ public class PerfCounterWildcardQuery {
                 // Start at 1, first counter defines instance filter
                 for (int i = 1; i < props.length; i++) {
                     T prop = props[i];
-                    List<Long> values = new ArrayList<>();
-                    for (PerfDataKit.PerfCounter counter : counterListMap.get(prop)) {
-                        values.add(pdhQueryHandler.queryCounter(counter));
-                    }
-                    valuesMap.put(prop, values);
+                    valuesMap.put(
+                            prop,
+                            counterListMap.getOrDefault(prop, Collections.emptyList()).stream()
+                                    .map(pdhQueryHandler::queryCounter).collect(Collectors.toList()));
                 }
             } else {
                 return Pair.of(Collections.emptyList(), Collections.emptyMap());

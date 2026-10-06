@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -65,12 +66,8 @@ public class DrmEdid {
      * @return a list of EDID byte arrays, or an empty list if none are found
      */
     static List<byte[]> getEdidArrays(File drmDir) {
-        List<Triplet<String, Integer, byte[]>> data = getDisplayData(drmDir);
-        List<byte[]> edids = new ArrayList<>(data.size());
-        for (Triplet<String, Integer, byte[]> display : data) {
-            edids.add(display.getRight());
-        }
-        return Collections.unmodifiableList(edids);
+        return Collections
+                .unmodifiableList(getDisplayData(drmDir).stream().map(Triplet::getRight).collect(Collectors.toList()));
     }
 
     /**

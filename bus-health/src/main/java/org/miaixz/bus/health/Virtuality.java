@@ -20,6 +20,7 @@
 package org.miaixz.bus.health;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
@@ -111,13 +112,8 @@ public final class Virtuality {
      * @return The MAC addresses to test.
      */
     private static List<String> candidateMacAddresses(List<NetworkIF> networkIFs) {
-        List<String> macs = new ArrayList<>();
-        for (NetworkIF nif : networkIFs) {
-            if (!CONNECTOR_REPORTED || nif.isConnectorPresent()) {
-                macs.add(nif.getMacaddr());
-            }
-        }
-        return macs;
+        return networkIFs.stream().filter(nif -> !CONNECTOR_REPORTED || nif.isConnectorPresent())
+                .map(NetworkIF::getMacaddr).collect(Collectors.toList());
     }
 
     /**

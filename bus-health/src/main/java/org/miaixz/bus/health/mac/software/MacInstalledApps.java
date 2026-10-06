@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Fields;
@@ -215,12 +216,9 @@ public class MacInstalledApps {
             return Collections.emptyList();
         }
 
-        List<String> dictBlocks = extractTopLevelBlocks(arrayBody, "<dict>", "</dict>");
-        List<Map<String, String>> out = new ArrayList<>();
-        for (String dictInner : dictBlocks) {
-            out.add(parseDict(dictInner));
-        }
-        return out;
+        return Collections.unmodifiableList(
+                extractTopLevelBlocks(arrayBody, "<dict>", "</dict>").stream().map(MacInstalledApps::parseDict)
+                        .collect(Collectors.toList()));
     }
 
     /**

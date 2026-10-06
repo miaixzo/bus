@@ -19,8 +19,20 @@
 */
 /**
  * Provides cross-platform implementation to retrieve hardware information such as CPU, Memory, Display, Disks, Network
- * Interfaces, Power Sources, Sensors, and USB Devices
+ * Interfaces, Power Sources, Sensors, and USB Devices.
+ * <p>
+ * A getter generally reports a value it could not read as a sentinel:
+ * <ul>
+ * <li>a string is {@link Normal#UNKNOWN} or, for some free-text values, the empty string;</li>
+ * <li>a collection, map, or array is empty;</li>
+ * <li>a number is outside its legitimate range: {@code 0} where zero cannot be a real value, such as a size or
+ * frequency, {@code -1} where it can, such as a count, and {@link Double#NaN} for some floating-point
+ * measurements.</li>
+ * </ul>
+ * Where a getter uses a more specific sentinel, its own Javadoc names it.
  *
  * @author Kimi Liu
  */
 package org.miaixz.bus.health.builtin.hardware;
+
+import org.miaixz.bus.core.lang.Normal;

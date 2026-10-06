@@ -20,6 +20,7 @@
 package org.miaixz.bus.health.unix.solaris.hardware;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -150,14 +151,13 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
             }
         }
 
-        // Build tree and return
-        List<UsbDevice> controllerDevices = new ArrayList<>();
-        for (String controller : usbControllers) {
-            // Only do controllers that are USB device type
-            if (PCI_TYPE_USB.equals(deviceTypeMap.getOrDefault(controller, Normal.EMPTY))
-                    || "usb".equals(deviceTypeMap.getOrDefault(controller, Normal.EMPTY))) {
-                controllerDevices.add(
-                        buildDeviceTree(
+        // Build trees only for controllers with a USB device type.
+        return usbControllers.stream()
+                .filter(
+                        controller -> PCI_TYPE_USB.equals(deviceTypeMap.getOrDefault(controller, Normal.EMPTY))
+                                || "usb".equals(deviceTypeMap.getOrDefault(controller, Normal.EMPTY)))
+                .map(
+                        controller -> buildDeviceTree(
                                 controller,
                                 "0000",
                                 "0000",
@@ -167,10 +167,8 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
                                 productIdMap,
                                 Collections.emptyMap(),
                                 hubMap,
-                                SolarisUsbDevice::new));
-            }
-        }
-        return controllerDevices;
+                                SolarisUsbDevice::new))
+                .collect(Collectors.toList());
     }
 
 }

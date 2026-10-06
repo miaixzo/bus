@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -168,11 +169,10 @@ final class LinuxSoundCard extends AbstractSoundCard {
      * @return List of {@link LinuxSoundCard} objects.
      */
     public static List<SoundCard> getSoundCards() {
-        List<SoundCard> soundCards = new ArrayList<>();
-        for (File cardFile : getCardFolders()) {
-            soundCards.add(new LinuxSoundCard(getSoundCardVersion(), getCardName(cardFile), getCardCodec(cardFile)));
-        }
-        return soundCards;
+        String version = getSoundCardVersion();
+        return getCardFolders().stream()
+                .map(cardFile -> new LinuxSoundCard(version, getCardName(cardFile), getCardCodec(cardFile)))
+                .collect(Collectors.toList());
     }
 
 }
