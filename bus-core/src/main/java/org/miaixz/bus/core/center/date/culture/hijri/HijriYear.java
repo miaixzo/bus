@@ -22,7 +22,7 @@ package org.miaixz.bus.core.center.date.culture.hijri;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.center.date.culture.parts.YearParts;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractYear;
 
 /**
  * Represents a year in the tabular Hijri calendar.
@@ -32,7 +32,7 @@ import org.miaixz.bus.core.center.date.culture.parts.YearParts;
  *
  * @author Kimi Liu
  */
-public class HijriYear extends YearParts {
+public class HijriYear extends AbstractYear {
 
     /**
      * Constructs a Hijri year.
@@ -40,8 +40,8 @@ public class HijriYear extends YearParts {
      * @param year Hijri year
      */
     public HijriYear(int year) {
+        super(year);
         validate(year);
-        this.year = year;
     }
 
     /**
@@ -82,15 +82,6 @@ public class HijriYear extends YearParts {
         int i = Math.floorMod(year - 1, 30);
         return i == 1 || i == 4 || i == 6 || i == 9 || i == 12 || i == 15 || i == 17 || i == 20 || i == 23 || i == 25
                 || i == 28;
-    }
-
-    /**
-     * Gets the display name.
-     *
-     * @return display name
-     */
-    public String getName() {
-        return year + "年";
     }
 
     /**

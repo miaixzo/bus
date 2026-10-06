@@ -22,19 +22,15 @@ package org.miaixz.bus.core.center.date.culture.lunar;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.center.date.culture.Direction;
-import org.miaixz.bus.core.center.date.culture.Twenty;
 import org.miaixz.bus.core.center.date.culture.Vesta;
-import org.miaixz.bus.core.center.date.culture.parts.YearParts;
-import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
-import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractTraditionalYear;
 
 /**
  * Represents a year in the Lunar calendar.
  *
  * @author Kimi Liu
  */
-public class LunarYear extends YearParts {
+public class LunarYear extends AbstractTraditionalYear {
 
     /**
      * Cached leap month data: maps leap month to list of years.
@@ -81,8 +77,8 @@ public class LunarYear extends YearParts {
      * @param year the lunar year
      */
     public LunarYear(int year) {
+        super(year);
         validate(year);
-        this.year = year;
     }
 
     /**
@@ -106,15 +102,6 @@ public class LunarYear extends YearParts {
     }
 
     /**
-     * Gets the Sixty Cycle (Gan-Zhi) for this year.
-     *
-     * @return the Sixty Cycle
-     */
-    public SixtyCycle getSixtyCycle() {
-        return SixtyCycle.fromIndex(year - 4);
-    }
-
-    /**
      * Gets the number of days in this year.
      *
      * @return the number of days
@@ -128,15 +115,6 @@ public class LunarYear extends YearParts {
     }
 
     /**
-     * Gets the number of months in this year.
-     *
-     * @return the number of months (12 or 13 if there's a leap month)
-     */
-    public int getMonthCount() {
-        return getLeapMonth() < 1 ? 12 : 13;
-    }
-
-    /**
      * Gets the name of this year following the Chinese national standard "Compilation and Promulgation of the Lunar
      * Calendar" GB/T 33661-2017.
      * <p>
@@ -147,34 +125,6 @@ public class LunarYear extends YearParts {
      */
     public String getName() {
         return String.format("农历%s年", getSixtyCycle());
-    }
-
-    /**
-     * Gets the Yun (20-year cycle) for this year.
-     *
-     * @return the Yun
-     */
-    public Twenty getTwenty() {
-        return Twenty.fromIndex((int) Math.floor((year - 1864) / 20D));
-    }
-
-    /**
-     * Gets the nine stars for this year.
-     *
-     * @return the nine star
-     */
-    public NineStar getNineStar() {
-        return NineStar.fromIndex(63 + getTwenty().getSixty().getIndex() * 3 - getSixtyCycle().getIndex());
-    }
-
-    /**
-     * Gets the Jupiter direction (Tai Sui position) for this year.
-     *
-     * @return the direction
-     */
-    public Direction getJupiterDirection() {
-        return Direction.fromIndex(
-                new int[] { 0, 7, 7, 2, 3, 3, 8, 1, 1, 6, 0, 0 }[getSixtyCycle().getEarthBranch().getIndex()]);
     }
 
     /**

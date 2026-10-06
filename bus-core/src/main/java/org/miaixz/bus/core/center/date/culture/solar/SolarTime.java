@@ -51,13 +51,8 @@ public class SolarTime extends SecondParts {
      * @throws IllegalArgumentException if any parameter is invalid
      */
     public SolarTime(int year, int month, int day, int hour, int minute, int second) {
+        super(year, month, day, hour, minute, second);
         validate(year, month, day, hour, minute, second);
-        this.year = year;
-        this.month = month;
-        this.day = day;
-        this.hour = hour;
-        this.minute = minute;
-        this.second = second;
     }
 
     /**
@@ -232,7 +227,7 @@ public class SolarTime extends SecondParts {
      */
     public Phase getPhase() {
         LunarMonth month = getLunarHour().getLunarDay().getLunarMonth().next(1);
-        Phase p = Phase.fromIndex(month.getYear(), month.getMonthWithLeap(), 0);
+        Phase p = Phase.fromIndex(month.getYear(), month.getMonthValue(), 0);
         while (p.getSolarTime().isAfter(this)) {
             p = p.next(-1);
         }

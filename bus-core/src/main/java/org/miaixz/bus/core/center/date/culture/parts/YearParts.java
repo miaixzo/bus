@@ -47,6 +47,15 @@ public abstract class YearParts extends Loops {
     }
 
     /**
+     * Constructs a new {@code YearParts} instance.
+     *
+     * @param year the year value
+     */
+    public YearParts(final int year) {
+        this.year = year;
+    }
+
+    /**
      * Gets the year.
      *
      * @return the year value in the calendar system

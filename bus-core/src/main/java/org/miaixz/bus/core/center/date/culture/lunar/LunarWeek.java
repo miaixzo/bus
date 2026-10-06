@@ -22,7 +22,8 @@ package org.miaixz.bus.core.center.date.culture.lunar;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.center.date.culture.Week;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractMonth;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractWeek;
 import org.miaixz.bus.core.center.date.culture.parts.WeekParts;
 
 /**
@@ -30,7 +31,7 @@ import org.miaixz.bus.core.center.date.culture.parts.WeekParts;
  *
  * @author Kimi Liu
  */
-public class LunarWeek extends WeekParts {
+public class LunarWeek extends AbstractWeek {
 
     /**
      * Constructs a LunarWeek instance.
@@ -41,11 +42,8 @@ public class LunarWeek extends WeekParts {
      * @param start the starting day of week (1-7 for Monday-Sunday, 0 for Sunday)
      */
     public LunarWeek(int year, int month, int index, int start) {
+        super(year, month, index, start);
         validate(year, month, index, start);
-        this.year = year;
-        this.month = month;
-        this.index = index;
-        this.start = start;
     }
 
     /**
@@ -88,22 +86,22 @@ public class LunarWeek extends WeekParts {
     }
 
     /**
+     * Gets the abstract month containing this week.
+     *
+     * @return the abstract month
+     */
+    @Override
+    public AbstractMonth getAbstractMonth() {
+        return getLunarMonth();
+    }
+
+    /**
      * Gets the name of this week (e.g., "第一周", "第二周").
      *
      * @return the week name
      */
     public String getName() {
-        return Week.WHICH[index];
-    }
-
-    /**
-     * Returns the string representation of this object.
-     *
-     * @return the string representation
-     */
-    @Override
-    public String toString() {
-        return getLunarMonth() + getName();
+        return NAMES[index];
     }
 
     /**
@@ -113,28 +111,8 @@ public class LunarWeek extends WeekParts {
      * @return the lunar week after n weeks
      */
     public LunarWeek next(int n) {
-        int d = index + n;
-        LunarMonth m = getLunarMonth();
-        if (n > 0) {
-            int weekCount = m.getWeekCount(start);
-            while (d >= weekCount) {
-                d -= weekCount;
-                m = m.next(1);
-                if (m.getFirstDay().getWeek().getIndex() != start) {
-                    d += 1;
-                }
-                weekCount = m.getWeekCount(start);
-            }
-        } else {
-            while (d < 0) {
-                if (m.getFirstDay().getWeek().getIndex() != start) {
-                    d -= 1;
-                }
-                m = m.next(-1);
-                d += m.getWeekCount(start);
-            }
-        }
-        return fromYm(m.getYear(), m.getMonthWithLeap(), d, start);
+        AbstractWeek w = super.next(n);
+        return fromYm(w.getYear(), w.getMonth(), w.getIndex(), start);
     }
 
     /**

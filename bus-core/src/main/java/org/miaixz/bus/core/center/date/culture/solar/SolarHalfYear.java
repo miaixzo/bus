@@ -49,8 +49,8 @@ public class SolarHalfYear extends YearParts {
      * @throws IllegalArgumentException if the index is not 0 or 1
      */
     public SolarHalfYear(int year, int index) {
+        super(year);
         validate(year, index);
-        this.year = year;
         this.index = index;
     }
 

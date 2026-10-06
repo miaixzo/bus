@@ -22,12 +22,10 @@ package org.miaixz.bus.core.center.date.culture.rabjung;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.Zodiac;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractTraditionalYear;
 import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.solar.SolarYear;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Represents a year in the Tibetan calendar (Gregorian year 1027 is the first year of the Tibetan calendar, the first
@@ -35,22 +33,7 @@ import org.miaixz.bus.core.lang.Symbol;
  *
  * @author Kimi Liu
  */
-public class RabjungYear extends Loops {
-
-    /**
-     * The Rabjung (Victorious Cycle) sequence number, starting from 0.
-     */
-    protected int rabByungIndex;
-
-    /**
-     * Element (Five Phases) index, starting from 0.
-     */
-    protected int elementIndex;
-
-    /**
-     * Zodiac animal index, starting from 0.
-     */
-    protected int zodiacIndex;
+public class RabjungYear extends AbstractTraditionalYear {
 
     /**
      * Constructs a Rabjung year with the given indices.
@@ -61,6 +44,20 @@ public class RabjungYear extends Loops {
      * @throws IllegalArgumentException if any index is out of valid range
      */
     public RabjungYear(int rabByungIndex, int elementIndex, int zodiacIndex) {
+        this(resolveYear(rabByungIndex, elementIndex, zodiacIndex));
+    }
+
+    /**
+     * Constructs a Rabjung year from a Gregorian year.
+     *
+     * @param year Gregorian year
+     */
+    public RabjungYear(int year) {
+        super(year);
+        validate(year);
+    }
+
+    private static int resolveYear(int rabByungIndex, int elementIndex, int zodiacIndex) {
         if (rabByungIndex < 0 || rabByungIndex > 150) {
             throw new IllegalArgumentException("illegal rab-byung index: " + rabByungIndex);
         }
@@ -70,9 +67,8 @@ public class RabjungYear extends Loops {
         if (zodiacIndex < 0 || zodiacIndex >= Zodiac.NAMES.length) {
             throw new IllegalArgumentException("illegal zodiac index: " + zodiacIndex);
         }
-        this.rabByungIndex = rabByungIndex;
-        this.elementIndex = elementIndex;
-        this.zodiacIndex = zodiacIndex;
+        return 1024 + rabByungIndex * 60
+                + SixtyCycle.fromIndex(6 * (elementIndex * 2 + zodiacIndex % 2) - 5 * zodiacIndex).getIndex();
     }
 
     /**
@@ -93,8 +89,7 @@ public class RabjungYear extends Loops {
      * @return A new {@link RabjungYear} instance.
      */
     public static RabjungYear fromSixtyCycle(int rabByungIndex, SixtyCycle sixtyCycle) {
-        return new RabjungYear(rabByungIndex, sixtyCycle.getHeavenStem().getElement().getIndex(),
-                sixtyCycle.getEarthBranch().getZodiac().getIndex());
+        return fromYear(1024 + rabByungIndex * 60 + sixtyCycle.getIndex());
     }
 
     /**
@@ -108,7 +103,9 @@ public class RabjungYear extends Loops {
      *                                  Cycle.
      */
     public static RabjungYear fromElementZodiac(int rabByungIndex, RabjungElement element, Zodiac zodiac) {
-        return new RabjungYear(rabByungIndex, element.getIndex(), zodiac.getIndex());
+        return fromSixtyCycle(
+                rabByungIndex,
+                SixtyCycle.fromIndex(6 * (element.getIndex() * 2 + zodiac.getIndex() % 2) - 5 * zodiac.getIndex()));
     }
 
     /**
@@ -118,8 +115,7 @@ public class RabjungYear extends Loops {
      * @return A new {@link RabjungYear} instance.
      */
     public static RabjungYear fromYear(int year) {
-        validate(year);
-        return fromSixtyCycle((year - 1024) / 60, SixtyCycle.fromIndex(year - 4));
+        return new RabjungYear(year);
     }
 
     /**
@@ -128,16 +124,7 @@ public class RabjungYear extends Loops {
      * @return The Rabjung sequence number, starting from 0.
      */
     public int getRabByungIndex() {
-        return rabByungIndex;
-    }
-
-    /**
-     * Gets the Sixty Cycle (GanZhi) of this Tibetan year.
-     *
-     * @return The {@link SixtyCycle} of this year.
-     */
-    public SixtyCycle getSixtyCycle() {
-        return SixtyCycle.fromIndex(6 * (elementIndex * 2 + zodiacIndex % 2) - 5 * zodiacIndex);
+        return (year - 1024) / 60;
     }
 
     /**
@@ -146,7 +133,7 @@ public class RabjungYear extends Loops {
      * @return The {@link Zodiac} of this year.
      */
     public Zodiac getZodiac() {
-        return Zodiac.fromIndex(zodiacIndex);
+        return getSixtyCycle().getEarthBranch().getZodiac();
     }
 
     /**
@@ -155,7 +142,7 @@ public class RabjungYear extends Loops {
      * @return The {@link RabjungElement} of this year.
      */
     public RabjungElement getElement() {
-        return RabjungElement.fromIndex(elementIndex);
+        return RabjungElement.fromIndex(getSixtyCycle().getHeavenStem().getElement().getIndex());
     }
 
     /**
@@ -164,26 +151,18 @@ public class RabjungYear extends Loops {
      * @return The localized display name of this Tibetan year.
      */
     public String getName() {
-        String[] digits = { Symbol.UL_ZERO, Symbol.L_ONE, Symbol.S_TWO, Symbol.S_THREE, Symbol.S_FOUR, Symbol.S_FIVE,
-                Symbol.L_SIX, Symbol.L_SEVEN, Symbol.L_EIGHT, Symbol.L_NINE };
-        String[] units = { Normal.EMPTY, Symbol.L_TEN, Symbol.L_ONE_HUNDRED };
-        int n = rabByungIndex + 1;
-        StringBuilder s = new StringBuilder();
-        int pos = 0;
-        while (n > 0) {
-            int digit = n % 10;
-            if (digit > 0) {
-                s.insert(0, digits[digit] + units[pos]);
-            } else if (s.length() > 0) {
-                s.insert(0, digits[digit]);
-            }
-            n /= 10;
-            pos++;
-        }
-        if (0 == s.indexOf("一十")) {
-            s.delete(0, 1);
-        }
-        return String.format("第%s饶迥%s%s年", s, getElement(), getZodiac());
+        int n = getRabByungIndex() + 1;
+        String d = "零一二三四五六七八九";
+        String s = n > 99 ? d.charAt(n / 100) + "百" : "";
+        n %= 100;
+        return String.format(
+                "第%s饶迥%s%s年",
+                n == 0 ? s
+                        : n < 10 ? s + (s.isEmpty() ? "" : "零") + d.charAt(n)
+                                : s + (n < 20 ? (s.isEmpty() ? "" : "一") : d.charAt(n / 10)) + "十"
+                                        + (n % 10 > 0 ? d.charAt(n % 10) + "" : ""),
+                getElement(),
+                getZodiac());
     }
 
     /**
@@ -193,16 +172,7 @@ public class RabjungYear extends Loops {
      * @return The {@link RabjungYear} after {@code n} years.
      */
     public RabjungYear next(int n) {
-        return fromYear(getYear() + n);
-    }
-
-    /**
-     * Gets the Gregorian year corresponding to this Tibetan year.
-     *
-     * @return The Gregorian year.
-     */
-    public int getYear() {
-        return 1024 + rabByungIndex * 60 + getSixtyCycle().getIndex();
+        return fromYear(year + n);
     }
 
     /**
@@ -214,8 +184,7 @@ public class RabjungYear extends Loops {
         int y = 1;
         int m = 4;
         int t = 1;
-        int currentYear = getYear();
-        while (y < currentYear) {
+        while (y < year) {
             int i = m + 31 + t;
             y += 2;
             m = i - 23;
@@ -225,7 +194,7 @@ public class RabjungYear extends Loops {
             }
             t = 1 - t;
         }
-        return y == currentYear ? m : 0;
+        return y == year ? m : 0;
     }
 
     /**
@@ -234,7 +203,7 @@ public class RabjungYear extends Loops {
      * @return The {@link SolarYear} corresponding to this Tibetan year.
      */
     public SolarYear getSolarYear() {
-        return SolarYear.fromYear(getYear());
+        return SolarYear.fromYear(year);
     }
 
     /**
@@ -243,16 +212,7 @@ public class RabjungYear extends Loops {
      * @return The first {@link RabjungMonth} of this year.
      */
     public RabjungMonth getFirstMonth() {
-        return RabjungMonth.fromYm(getYear(), 1);
-    }
-
-    /**
-     * Gets the number of months in this Tibetan year.
-     *
-     * @return The number of months. Typically 12, or 13 if there is a leap month.
-     */
-    public int getMonthCount() {
-        return getLeapMonth() < 1 ? 12 : 13;
+        return RabjungMonth.fromYm(year, 1);
     }
 
     /**
@@ -262,12 +222,11 @@ public class RabjungYear extends Loops {
      */
     public List<RabjungMonth> getMonths() {
         List<RabjungMonth> l = new ArrayList<>(13);
-        int y = getYear();
         int leapMonth = getLeapMonth();
         for (int i = 1; i < 13; i++) {
-            l.add(RabjungMonth.fromYm(y, i));
+            l.add(RabjungMonth.fromYm(year, i));
             if (i == leapMonth) {
-                l.add(RabjungMonth.fromYm(y, -i));
+                l.add(RabjungMonth.fromYm(year, -i));
             }
         }
         return l;

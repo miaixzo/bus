@@ -55,6 +55,24 @@ public abstract class SecondParts extends DayParts {
     }
 
     /**
+     * Constructs second-based date parts.
+     *
+     * @param year   the year value
+     * @param month  the month value
+     * @param day    the day value
+     * @param hour   the hour value
+     * @param minute the minute value
+     * @param second the second value
+     */
+    public SecondParts(final int year, final int month, final int day, final int hour, final int minute,
+            final int second) {
+        super(year, month, day);
+        this.hour = hour;
+        this.minute = minute;
+        this.second = second;
+    }
+
+    /**
      * Validates the time components.
      *
      * @param hour   the hour to validate (0-23)

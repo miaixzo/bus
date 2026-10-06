@@ -22,7 +22,7 @@ package org.miaixz.bus.core.center.date.culture.solar;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.center.date.culture.parts.YearParts;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractYear;
 import org.miaixz.bus.core.center.date.culture.rabjung.RabjungYear;
 
 /**
@@ -34,7 +34,7 @@ import org.miaixz.bus.core.center.date.culture.rabjung.RabjungYear;
  *
  * @author Kimi Liu
  */
-public class SolarYear extends YearParts {
+public class SolarYear extends AbstractYear {
 
     /**
      * Constructs a SolarYear instance.
@@ -43,8 +43,8 @@ public class SolarYear extends YearParts {
      * @throws IllegalArgumentException if the year is out of range
      */
     public SolarYear(int year) {
+        super(year);
         this.validate(year);
-        this.year = year;
     }
 
     /**
@@ -98,16 +98,7 @@ public class SolarYear extends YearParts {
      *
      * @return the localized display name of this year
      */
-    public String getName() {
-        return String.format("%d年", year);
-    }
-
-    /**
-     * Gets the next or previous year.
-     *
-     * @param n the number of years to move (positive for forward, negative for backward)
-     * @return the SolarYear n years from this one
-     */
+    @Override
     public SolarYear next(int n) {
         return fromYear(year + n);
     }

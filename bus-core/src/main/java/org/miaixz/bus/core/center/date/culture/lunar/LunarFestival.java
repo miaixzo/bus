@@ -22,6 +22,7 @@ package org.miaixz.bus.core.center.date.culture.lunar;
 import org.miaixz.bus.core.center.date.culture.festival.AbstractFestival;
 import org.miaixz.bus.core.center.date.culture.festival.Festival;
 import org.miaixz.bus.core.center.date.culture.festival.FestivalRegistry;
+import org.miaixz.bus.core.center.date.culture.parts.MonthParts;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTermDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.lang.Symbol;
@@ -67,25 +68,23 @@ public class LunarFestival extends AbstractFestival {
      * @throws IllegalArgumentException if the index is out of valid range.
      */
     public static LunarFestival fromIndex(int year, int index) {
-        if (index < 0 || index >= NAMES.length) {
-            return null;
-        }
-        int start = index * 8;
-        Festival e = new Festival(NAMES[index], Symbol.AT + DATA.substring(start, start + 8));
-        switch (e.getType()) {
-            case LUNAR_DAY:
-                int[] m = e.getMonth(year);
-                LunarDay d = LunarDay.fromYmd(m[0], m[1], e.getValue(3));
-                int offset = e.getValue(5);
-                return new LunarFestival(index, e, 0 == offset ? d : d.next(offset));
+        Festival e = buildEvent(NAMES, DATA, index);
+        if (null != e) {
+            switch (e.getType()) {
+                case LUNAR_DAY:
+                    MonthParts m = e.getMonth(year);
+                    LunarDay d = LunarDay.fromYmd(m.getYear(), m.getMonth(), e.getValue(3));
+                    int offset = e.getValue(5);
+                    return new LunarFestival(index, e, 0 == offset ? d : d.next(offset));
 
-            case TERM_DAY:
-                return new LunarFestival(index, e,
-                        SolarTerms.fromIndex(year, e.getValue(2)).getSolarDay().getLunarDay());
+                case TERM_DAY:
+                    return new LunarFestival(index, e,
+                            SolarTerms.fromIndex(year, e.getValue(2)).getSolarDay().getLunarDay());
 
-            default:
-                return null;
+                default:
+            }
         }
+        return null;
     }
 
     /**
@@ -109,9 +108,10 @@ public class LunarFestival extends AbstractFestival {
                             return new LunarFestival(i, e, d);
                         }
                     } else {
-                        int[] m = e.getMonth(d.getYear());
+                        MonthParts m = e.getMonth(d.getYear());
                         LunarDay next = d.next(-offset);
-                        if (next.getYear() == m[0] && next.getMonth() == m[1] && next.getDay() == e.getValue(3)) {
+                        if (next.getYear() == m.getYear() && next.getMonth() == m.getMonth()
+                                && next.getDay() == e.getValue(3)) {
                             return new LunarFestival(i, e, d);
                         }
                     }

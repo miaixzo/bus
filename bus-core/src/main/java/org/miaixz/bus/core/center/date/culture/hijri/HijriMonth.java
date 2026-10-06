@@ -22,14 +22,15 @@ package org.miaixz.bus.core.center.date.culture.hijri;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.center.date.culture.parts.MonthParts;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractMonth;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractYear;
 
 /**
  * Represents a month in the tabular Hijri calendar.
  *
  * @author Kimi Liu
  */
-public class HijriMonth extends MonthParts {
+public class HijriMonth extends AbstractMonth {
 
     /**
      * Localized Hijri month names.
@@ -44,9 +45,8 @@ public class HijriMonth extends MonthParts {
      * @param month Hijri month, 1-12
      */
     public HijriMonth(int year, int month) {
+        super(year, month);
         validate(year, month);
-        this.year = year;
-        this.month = month;
     }
 
     /**
@@ -82,6 +82,16 @@ public class HijriMonth extends MonthParts {
     }
 
     /**
+     * Gets the abstract year containing this month.
+     *
+     * @return abstract year
+     */
+    @Override
+    public AbstractYear getAbstractYear() {
+        return getHijriYear();
+    }
+
+    /**
      * Gets the number of days in this month. Odd months have 30 days, even months have 29 days, and month 12 has 30
      * days in leap years.
      *
@@ -111,16 +121,6 @@ public class HijriMonth extends MonthParts {
      */
     public String getName() {
         return NAMES[getIndexInYear()];
-    }
-
-    /**
-     * Returns the display text of this month.
-     *
-     * @return display text
-     */
-    @Override
-    public String toString() {
-        return getHijriYear() + getName();
     }
 
     /**

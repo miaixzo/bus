@@ -37,6 +37,15 @@ public abstract class Tradition implements Culture {
     }
 
     /**
+     * Returns the display name of this traditional culture item.
+     *
+     * @return the display name
+     */
+    public String getName() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * Validates that a value is within the given inclusive range.
      *
      * @param value the value to validate

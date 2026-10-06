@@ -24,7 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.core.center.date.culture.parts.MonthParts;
+import org.miaixz.bus.core.center.date.culture.lunar.LunarMonth;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractLeapMonth;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractYear;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 
@@ -33,12 +35,7 @@ import org.miaixz.bus.core.lang.Symbol;
  *
  * @author Kimi Liu
  */
-public class RabjungMonth extends MonthParts {
-
-    /**
-     * Names of Tibetan months.
-     */
-    public static final String[] NAMES = { "正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月" };
+public class RabjungMonth extends AbstractLeapMonth {
 
     /**
      * Aliases for Tibetan months.
@@ -73,21 +70,14 @@ public class RabjungMonth extends MonthParts {
     }
 
     /**
-     * Indicates if this is a leap month.
-     */
-    protected boolean leap;
-
-    /**
      * Constructs a {@code RabjungMonth} from the given Tibetan year and month.
      *
      * @param year  The Tibetan year.
      * @param month The Tibetan month, negative for leap months.
      */
     public RabjungMonth(int year, int month) {
+        super(year, month);
         this.validate(year, month);
-        this.year = year;
-        this.month = Math.abs(month);
-        this.leap = month < 0;
     }
 
     /**
@@ -135,12 +125,13 @@ public class RabjungMonth extends MonthParts {
     }
 
     /**
-     * Gets the month number, returning a negative value if it's a leap month.
+     * Gets the abstract year.
      *
-     * @return The month number, negative for leap months.
+     * @return the abstract year
      */
-    public int getMonthWithLeap() {
-        return leap ? -month : month;
+    @Override
+    public AbstractYear getAbstractYear() {
+        return getRabByungYear();
     }
 
     /**
@@ -162,21 +153,12 @@ public class RabjungMonth extends MonthParts {
     }
 
     /**
-     * Checks if this is a leap month.
-     *
-     * @return {@code true} if it's a leap month, {@code false} otherwise.
-     */
-    public boolean isLeap() {
-        return leap;
-    }
-
-    /**
      * Gets the name of this Tibetan month.
      *
      * @return The name of this Tibetan month.
      */
     public String getName() {
-        return (leap ? "闰" : Normal.EMPTY) + NAMES[month - 1];
+        return (leap ? "闰" : Normal.EMPTY) + LunarMonth.NAMES[month - 1];
     }
 
     /**
@@ -189,51 +171,14 @@ public class RabjungMonth extends MonthParts {
     }
 
     /**
-     * Returns the string representation of this object.
-     *
-     * @return the string representation
-     */
-    @Override
-    public String toString() {
-        return getRabByungYear() + getName();
-    }
-
-    /**
      * Gets the Tibetan month after a specified number of months.
      *
      * @param n The number of months to add.
      * @return The {@link RabjungMonth} after {@code n} months.
      */
     public RabjungMonth next(int n) {
-        if (n == 0) {
-            return fromYm(getYear(), getMonthWithLeap());
-        }
-        int m = getIndexInYear() + 1 + n;
-        RabjungYear y = getRabByungYear();
-        if (n > 0) {
-            int monthCount = y.getMonthCount();
-            while (m > monthCount) {
-                m -= monthCount;
-                y = y.next(1);
-                monthCount = y.getMonthCount();
-            }
-        } else {
-            while (m <= 0) {
-                y = y.next(-1);
-                m += y.getMonthCount();
-            }
-        }
-        boolean leap = false;
-        int leapMonth = y.getLeapMonth();
-        if (leapMonth > 0) {
-            if (m == leapMonth + 1) {
-                leap = true;
-            }
-            if (m > leapMonth) {
-                m--;
-            }
-        }
-        return fromYm(y.getYear(), leap ? -m : m);
+        AbstractLeapMonth m = super.next(n);
+        return fromYm(m.getYear(), m.getMonthValue());
     }
 
     /**
@@ -242,7 +187,7 @@ public class RabjungMonth extends MonthParts {
      * @return The first {@link RabjungDay} of this month.
      */
     public RabjungDay getFirstDay() {
-        return new RabjungDay(year, getMonthWithLeap(), 1);
+        return new RabjungDay(year, getMonthValue(), 1);
     }
 
     /**
@@ -254,7 +199,7 @@ public class RabjungMonth extends MonthParts {
         List<RabjungDay> l = new ArrayList<>();
         List<Integer> missDays = getMissDays();
         List<Integer> leapDays = getLeapDays();
-        int m = getMonthWithLeap();
+        int m = getMonthValue();
         for (int i = 1; i < 31; i++) {
             if (missDays.contains(i)) {
                 continue;

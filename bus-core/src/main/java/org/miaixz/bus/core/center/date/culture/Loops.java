@@ -36,4 +36,15 @@ public abstract class Loops extends Tradition implements Culture {
         // No initialization required.
     }
 
+    /**
+     * Returns a new instance that is {@code n} units after this one.
+     *
+     * @param n The number of units to advance.
+     * @return The new instance.
+     */
+    @Override
+    public Culture next(int n) {
+        throw new UnsupportedOperationException();
+    }
+
 }
