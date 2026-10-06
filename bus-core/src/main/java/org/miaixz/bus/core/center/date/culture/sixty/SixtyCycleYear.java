@@ -22,10 +22,7 @@ package org.miaixz.bus.core.center.date.culture.sixty;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.center.date.culture.Direction;
-import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.Twenty;
-import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractTraditionalYear;
 
 /**
  * Represents a Sixty-Year Cycle year, a traditional Chinese calendar unit. This class extends {@link Loops} for
@@ -33,12 +30,16 @@ import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
  *
  * @author Kimi Liu
  */
-public class SixtyCycleYear extends Loops {
+public class SixtyCycleYear extends AbstractTraditionalYear {
 
     /**
-     * The Gregorian year.
+     * Validates the supported year range.
+     *
+     * @param year the Gregorian year
      */
-    protected int year;
+    public static void validate(int year) {
+        validateRange(year, -1, 9999, "sixty cycle year");
+    }
 
     /**
      * Constructs a {@code SixtyCycleYear} instance with the specified Gregorian year.
@@ -47,8 +48,8 @@ public class SixtyCycleYear extends Loops {
      * @throws IllegalArgumentException if the year is out of the supported range.
      */
     public SixtyCycleYear(int year) {
-        validateRange(year, -1, 9999, "sixty cycle year");
-        this.year = year;
+        super(year);
+        validate(year);
     }
 
     /**
@@ -62,58 +63,12 @@ public class SixtyCycleYear extends Loops {
     }
 
     /**
-     * Gets the Gregorian year.
-     *
-     * @return The Gregorian year.
-     */
-    public int getYear() {
-        return year;
-    }
-
-    /**
-     * Gets the Sixty-Year Cycle value for this year.
-     *
-     * @return The {@link SixtyCycle} instance.
-     */
-    public SixtyCycle getSixtyCycle() {
-        return SixtyCycle.fromIndex(year - 4);
-    }
-
-    /**
      * Gets the name of this Sixty-Year Cycle Year.
      *
      * @return The name of the year as a formatted string.
      */
     public String getName() {
         return String.format("%s年", getSixtyCycle());
-    }
-
-    /**
-     * Gets the twenty-year cycle to which this year belongs.
-     *
-     * @return The {@link Twenty} instance.
-     */
-    public Twenty getTwenty() {
-        return Twenty.fromIndex((int) Math.floor((year - 1864) / 20D));
-    }
-
-    /**
-     * Gets the nine-star marker associated with this year.
-     *
-     * @return The {@link NineStar} instance.
-     */
-    public NineStar getNineStar() {
-        return NineStar.fromIndex(63 + getTwenty().getSixty().getIndex() * 3 - getSixtyCycle().getIndex());
-    }
-
-    /**
-     * Gets the Jupiter direction for this year.
-     *
-     * @return The {@link Direction} of Jupiter.
-     */
-    public Direction getJupiterDirection() {
-        return Direction.fromIndex(
-                new int[] { 0, 7, 7, 2, 3, 3, 8, 1, 1, 6, 0, 0 }[getSixtyCycle().getEarthBranch().getIndex()]);
     }
 
     /**

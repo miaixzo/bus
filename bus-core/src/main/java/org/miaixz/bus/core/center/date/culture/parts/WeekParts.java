@@ -34,6 +34,11 @@ import org.miaixz.bus.core.center.date.culture.Week;
 public abstract class WeekParts extends MonthParts {
 
     /**
+     * Names of week indexes within a month.
+     */
+    public static final String[] NAMES = { "第一周", "第二周", "第三周", "第四周", "第五周", "第六周" };
+
+    /**
      * The week index within the month (0-5).
      */
     protected int index;
@@ -48,6 +53,20 @@ public abstract class WeekParts extends MonthParts {
      */
     public WeekParts() {
         // No initialization required.
+    }
+
+    /**
+     * Constructs week-based date parts.
+     *
+     * @param year  the year value
+     * @param month the month value
+     * @param index the week index
+     * @param start the starting weekday
+     */
+    public WeekParts(final int year, final int month, final int index, final int start) {
+        super(year, month);
+        this.index = index;
+        this.start = start;
     }
 
     /**

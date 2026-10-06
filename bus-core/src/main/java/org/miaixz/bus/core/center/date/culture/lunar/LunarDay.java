@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.*;
 import org.miaixz.bus.core.center.date.culture.fetus.FetusDay;
-import org.miaixz.bus.core.center.date.culture.parts.DayParts;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractDay;
 import org.miaixz.bus.core.center.date.culture.ren.MinorRen;
 import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycleDay;
@@ -41,7 +41,7 @@ import org.miaixz.bus.core.center.date.culture.star.twentyeight.TwentyEightStar;
  *
  * @author Kimi Liu
  */
-public class LunarDay extends DayParts {
+public class LunarDay extends AbstractDay {
 
     /**
      * Chinese names for lunar days from 1 to 30.
@@ -58,10 +58,8 @@ public class LunarDay extends DayParts {
      * @throws IllegalArgumentException if the day is invalid for the given month/year
      */
     public LunarDay(int year, int month, int day) {
+        super(year, month, day);
         validate(year, month, day);
-        this.year = year;
-        this.month = month;
-        this.day = day;
     }
 
     /**
@@ -248,7 +246,7 @@ public class LunarDay extends DayParts {
     public Phase.PhaseDay getPhaseDay() {
         SolarDay today = getSolarDay();
         LunarMonth m = getLunarMonth().next(1);
-        Phase p = Phase.fromIndex(m.getYear(), m.getMonthWithLeap(), 0);
+        Phase p = Phase.fromIndex(m.getYear(), m.getMonthValue(), 0);
         SolarDay d = p.getSolarDay();
         while (d.isAfter(today)) {
             p = p.next(-1);

@@ -48,7 +48,7 @@ public class Vesta extends Loops {
      * @param lunarYear The lunar year.
      */
     public Vesta(int lunarYear) {
-        firstDaySixtyCycle = LunarDay.fromYmd(lunarYear, 1, 1).getSixtyCycle();
+        firstDaySixtyCycle = new LunarDay(lunarYear, 1, 1).getSixtyCycle();
     }
 
     /**

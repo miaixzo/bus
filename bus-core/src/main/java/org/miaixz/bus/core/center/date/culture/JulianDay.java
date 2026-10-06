@@ -71,7 +71,7 @@ public class JulianDay extends Loops {
      * @return a new {@code JulianDay} instance.
      */
     public static JulianDay fromYmdHms(int year, int month, int day, int hour, int minute, int second) {
-        double d = day + ((second / 60 + minute) / 60 + hour) / 24;
+        double d = day + ((second / 60D + minute) / 60 + hour) / 24;
         int n = 0;
         // Determine if the date is Gregorian
         boolean g = year * 372 + month * 31 + (int) d >= 588829;
@@ -162,8 +162,8 @@ public class JulianDay extends Loops {
         int second = (int) Math.round(f);
 
         // Handle leap second overflow
-        return second < 60 ? SolarTime.fromYmdHms(y, m, d, hour, minute, second)
-                : SolarTime.fromYmdHms(y, m, d, hour, minute, second - 60).next(60);
+        return second < 60 ? new SolarTime(y, m, d, hour, minute, second)
+                : new SolarTime(y, m, d, hour, minute, second - 60).next(60);
     }
 
     /**

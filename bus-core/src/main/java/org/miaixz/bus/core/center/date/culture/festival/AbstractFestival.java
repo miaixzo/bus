@@ -21,6 +21,7 @@ package org.miaixz.bus.core.center.date.culture.festival;
 
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.parts.DayParts;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Abstract base class for festival instances.
@@ -92,6 +93,22 @@ public abstract class AbstractFestival extends Loops {
     @Override
     public String toString() {
         return String.format("%s %s", day, getName());
+    }
+
+    /**
+     * Builds a festival definition from compact data.
+     *
+     * @param names festival names
+     * @param data  compact festival data
+     * @param index festival index
+     * @return festival definition, or {@code null} if the index is invalid
+     */
+    protected static Festival buildEvent(String[] names, String data, int index) {
+        if (index < 0 || index >= names.length) {
+            return null;
+        }
+        int start = index * 8;
+        return new Festival(names[index], Symbol.AT + data.substring(start, start + 8));
     }
 
 }

@@ -20,6 +20,7 @@
 package org.miaixz.bus.core.center.date.culture.eightchar.provider.impl;
 
 import org.miaixz.bus.core.center.date.culture.eightchar.ChildLimitInfo;
+import org.miaixz.bus.core.center.date.culture.parts.SecondParts;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
@@ -37,15 +38,7 @@ public class LunarSect2ChildLimitProvider extends AbstractChildLimitProvider {
         // No initialization required.
     }
 
-    /**
-     * Calculates and returns the Child Limit information based on Lunar Sect 2 rules.
-     *
-     * @param birthTime The Gregorian birth time.
-     * @param term      The solar term (节令) relevant to the calculation.
-     * @return The {@link ChildLimitInfo} containing details about the Child Limit.
-     */
-    @Override
-    public ChildLimitInfo getInfo(SolarTime birthTime, SolarTerms term) {
+    protected SecondParts compute(SolarTime birthTime, SolarTerms term) {
         // Minutes difference between birth time and solar term time
         int minutes = Math.abs(term.getJulianDay().getSolarTime().subtract(birthTime)) / 60;
         int year = minutes / 4320;
@@ -55,8 +48,21 @@ public class LunarSect2ChildLimitProvider extends AbstractChildLimitProvider {
         int day = minutes / 12;
         minutes %= 12;
         int hour = minutes * 2;
+        return new SecondParts(year, month, day, hour, 0, 0) {
+        };
+    }
 
-        return next(birthTime, year, month, day, hour, 0, 0);
+    /**
+     * Calculates and returns the Child Limit information based on Lunar Sect 2 rules.
+     *
+     * @param birthTime The Gregorian birth time.
+     * @param term      The solar term (节令) relevant to the calculation.
+     * @return The {@link ChildLimitInfo} containing details about the Child Limit.
+     */
+    @Override
+    public ChildLimitInfo getInfo(SolarTime birthTime, SolarTerms term) {
+        SecondParts t = compute(birthTime, term);
+        return next(birthTime, t.getYear(), t.getMonth(), t.getDay(), t.getHour(), 0, 0);
     }
 
 }

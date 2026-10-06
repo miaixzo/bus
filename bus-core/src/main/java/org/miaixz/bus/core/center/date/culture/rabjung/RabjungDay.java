@@ -19,7 +19,9 @@
 */
 package org.miaixz.bus.core.center.date.culture.rabjung;
 
-import org.miaixz.bus.core.center.date.culture.parts.DayParts;
+import org.miaixz.bus.core.center.date.culture.Week;
+import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.lang.Normal;
 
@@ -29,13 +31,7 @@ import org.miaixz.bus.core.lang.Normal;
  *
  * @author Kimi Liu
  */
-public class RabjungDay extends DayParts {
-
-    /**
-     * Names of Tibetan calendar days.
-     */
-    public static final String[] NAMES = { "初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三",
-            "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十" };
+public class RabjungDay extends AbstractDay {
 
     /**
      * Indicates if this is a leap day.
@@ -50,11 +46,14 @@ public class RabjungDay extends DayParts {
      * @param day   The Tibetan day, negative for leap days.
      */
     public RabjungDay(int year, int month, int day) {
+        super(year, month, Math.abs(day));
         validate(year, month, day);
-        this.year = year;
-        this.month = month;
-        this.day = Math.abs(day);
         this.leap = day < 0;
+    }
+
+    @Override
+    public Week getWeek() {
+        return getSolarDay().getWeek();
     }
 
     /**
@@ -122,7 +121,7 @@ public class RabjungDay extends DayParts {
                 }
             }
         }
-        return new RabjungDay(m.getYear(), m.getMonthWithLeap(), day);
+        return new RabjungDay(m.getYear(), m.getMonthValue(), day);
     }
 
     /**
@@ -158,7 +157,7 @@ public class RabjungDay extends DayParts {
      * @return The name of the Tibetan day.
      */
     public String getName() {
-        return (leap ? "闰" : Normal.EMPTY) + NAMES[day - 1];
+        return (leap ? "闰" : Normal.EMPTY) + LunarDay.NAMES[day - 1];
     }
 
     /**

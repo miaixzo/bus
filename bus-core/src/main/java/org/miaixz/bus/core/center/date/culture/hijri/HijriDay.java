@@ -20,7 +20,8 @@
 package org.miaixz.bus.core.center.date.culture.hijri;
 
 import org.miaixz.bus.core.center.date.culture.JulianDay;
-import org.miaixz.bus.core.center.date.culture.parts.DayParts;
+import org.miaixz.bus.core.center.date.culture.Week;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 
 /**
@@ -29,7 +30,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
  *
  * @author Kimi Liu
  */
-public class HijriDay extends DayParts {
+public class HijriDay extends AbstractDay {
 
     /**
      * Localized day labels from 1 to 30.
@@ -46,10 +47,13 @@ public class HijriDay extends DayParts {
      * @param day   Hijri day
      */
     public HijriDay(int year, int month, int day) {
+        super(year, month, day);
         validate(year, month, day);
-        this.year = year;
-        this.month = month;
-        this.day = day;
+    }
+
+    @Override
+    public Week getWeek() {
+        return getJulianDay().getWeek();
     }
 
     /**

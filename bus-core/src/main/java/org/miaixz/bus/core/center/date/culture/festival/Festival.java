@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarMonth;
+import org.miaixz.bus.core.center.date.culture.parts.MonthParts;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarMonth;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
@@ -150,16 +151,17 @@ public class Festival extends Loops {
      * Resolves the logical festival month for the specified year.
      *
      * @param year target year
-     * @return a two-element array containing resolved year and month
+     * @return resolved month
      */
-    public int[] getMonth(int year) {
+    public MonthParts getMonth(int year) {
         int y = year;
         int m = getValue(2);
         if (m > 12) {
             m = 1;
             y += 1;
         }
-        return new int[] { y, m };
+        return new MonthParts(y, m) {
+        };
     }
 
     /**
@@ -256,20 +258,34 @@ public class Festival extends Loops {
      * @param year year
      * @return solar day, or {@code null} if not applicable
      */
-    protected SolarDay getSolarDayBySolarDay(int year) {
-        int[] month = getMonth(year);
-        int y = month[0];
-        int m = month[1];
+    private SolarDay getSolarDayByDay(int year, boolean lunar) {
+        MonthParts month = getMonth(year);
+        int y = month.getYear();
+        int m = month.getMonth();
         int d = getValue(3);
         int delay = getValue(4);
-        int lastDay = SolarMonth.fromYm(y, m).getDayCount();
+        int lastDay = lunar ? LunarMonth.fromYm(y, m).getDayCount() : SolarMonth.fromYm(y, m).getDayCount();
         if (d > lastDay) {
             if (0 == delay) {
                 return null;
             }
-            return delay < 0 ? SolarDay.fromYmd(y, m, d + delay) : SolarDay.fromYmd(y, m, lastDay).next(delay);
+            if (delay < 0) {
+                return lunar ? LunarDay.fromYmd(y, m, d + delay).getSolarDay() : SolarDay.fromYmd(y, m, d + delay);
+            }
+            return lunar ? LunarDay.fromYmd(y, m, lastDay).getSolarDay().next(delay)
+                    : SolarDay.fromYmd(y, m, lastDay).next(delay);
         }
-        return SolarDay.fromYmd(y, m, d);
+        return lunar ? LunarDay.fromYmd(y, m, d).getSolarDay() : SolarDay.fromYmd(y, m, d);
+    }
+
+    /**
+     * Resolves the solar day for a solar-day-based festival rule.
+     *
+     * @param year year
+     * @return solar day, or {@code null} if not applicable
+     */
+    protected SolarDay getSolarDayBySolarDay(int year) {
+        return getSolarDayByDay(year, false);
     }
 
     /**
@@ -279,20 +295,7 @@ public class Festival extends Loops {
      * @return solar day, or {@code null} if not applicable
      */
     protected SolarDay getSolarDayByLunarDay(int year) {
-        int[] month = getMonth(year);
-        int y = month[0];
-        int m = month[1];
-        int d = getValue(3);
-        int delay = getValue(4);
-        int lastDay = LunarMonth.fromYm(y, m).getDayCount();
-        if (d > lastDay) {
-            if (0 == delay) {
-                return null;
-            }
-            return delay < 0 ? LunarDay.fromYmd(y, m, d + delay).getSolarDay()
-                    : LunarDay.fromYmd(y, m, lastDay).getSolarDay().next(delay);
-        }
-        return LunarDay.fromYmd(y, m, d).getSolarDay();
+        return getSolarDayByDay(year, true);
     }
 
     /**
