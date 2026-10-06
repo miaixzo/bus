@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.health.unix.shared.hardware;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
@@ -106,12 +106,10 @@ public class UnixDisplay extends AbstractDisplay {
      */
     public static List<Display> getDisplays() {
         List<Output> outputs = Xrandr.getOutputs();
-        List<Display> displays = new ArrayList<>(outputs.size());
         SupplierX<List<Output>> sharedData = () -> outputs;
-        for (Output output : outputs) {
-            displays.add(new UnixDisplay(output.getEdid(), output.getName(), output.getConnectorId(), sharedData));
-        }
-        return displays;
+        return outputs.stream()
+                .map(output -> new UnixDisplay(output.getEdid(), output.getName(), output.getConnectorId(), sharedData))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -134,12 +132,9 @@ public class UnixDisplay extends AbstractDisplay {
     static List<Display> getDisplays(
             List<Triplet<String, Integer, byte[]>> drmData,
             SupplierX<List<Output>> xrandrQuery) {
-        List<Display> displays = new ArrayList<>(drmData.size());
         SupplierX<List<Output>> sharedData = Memoizer.memoize(xrandrQuery);
-        for (Triplet<String, Integer, byte[]> drm : drmData) {
-            displays.add(new UnixDisplay(drm.getRight(), drm.getLeft(), drm.getMiddle(), sharedData));
-        }
-        return displays;
+        return drmData.stream().map(drm -> new UnixDisplay(drm.getRight(), drm.getLeft(), drm.getMiddle(), sharedData))
+                .collect(Collectors.toList());
     }
 
     /**

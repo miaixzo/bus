@@ -82,18 +82,18 @@ public class NetStat {
     }
 
     /**
-     * Query netstat to get all TCP and UDP connections.
+     * Query netstat for all TCP and UDP connections, including listening and unconnected sockets.
      *
      * @return A list of {@link InternetProtocolStats.IPConnection} objects representing TCP and UDP connections.
      */
     public static List<InternetProtocolStats.IPConnection> queryNetstat() {
-        return queryNetstat(Executor.runNative("netstat -n"));
+        return queryNetstat(Executor.runNative("netstat -an"));
     }
 
     /**
      * Parse netstat output for TCP and UDP connections.
      *
-     * @param lines output of {@code netstat -n}
+     * @param lines output of {@code netstat -an}
      * @return A list of {@link InternetProtocolStats.IPConnection} objects representing TCP and UDP connections.
      */
     static List<InternetProtocolStats.IPConnection> queryNetstat(List<String> lines) {
@@ -103,25 +103,135 @@ public class NetStat {
             if (s.startsWith(Protocol.TCP.name) || s.startsWith(Protocol.UDP.name)) {
                 split = Pattern.SPACES_PATTERN.split(s);
                 if (split.length >= 5) {
-                    String state = (split.length == 6) ? split[5] : null;
-                    // Substitution if required
-                    if ("SYN_RCVD".equals(state)) {
-                        state = "SYN_RECV";
-                    }
                     String type = split[0];
                     Pair<byte[], Integer> local = parseIP(split[3]);
                     Pair<byte[], Integer> foreign = parseIP(split[4]);
                     connections.add(
                             new InternetProtocolStats.IPConnection(type, local.getLeft(), local.getRight(),
                                     foreign.getLeft(), foreign.getRight(),
-                                    state == null ? InternetProtocolStats.TcpState.NONE
-                                            : InternetProtocolStats.TcpState.valueOf(state),
-                                    Parsing.parseIntOrDefault(split[2], 0), Parsing.parseIntOrDefault(split[1], 0),
-                                    -1));
+                                    split.length == Normal._6 ? parseTcpState(split[Normal._5])
+                                            : InternetProtocolStats.TcpState.NONE,
+                                    Parsing.parseIntOrDefault(split[Normal._2], Normal._0),
+                                    Parsing.parseIntOrDefault(split[Normal._1], Normal._0), Normal.__1));
                 }
             }
         }
         return connections;
+    }
+
+    /**
+     * Query Solaris netstat for all TCP and UDP connections, including listening and unconnected sockets.
+     *
+     * @return A list of {@link InternetProtocolStats.IPConnection} objects representing TCP and UDP connections.
+     */
+    public static List<InternetProtocolStats.IPConnection> querySolarisNetstat() {
+        return querySolarisNetstat(Executor.runNative("netstat -an"));
+    }
+
+    /**
+     * Parse Solaris netstat output for TCP and UDP connections. Solaris groups connections into sections headed by
+     * protocol and address family, such as {@code TCP: IPv4}, and each row starts with the local address.
+     *
+     * @param lines output of {@code netstat -an}
+     * @return A list of {@link InternetProtocolStats.IPConnection} objects representing TCP and UDP connections.
+     */
+    static List<InternetProtocolStats.IPConnection> querySolarisNetstat(List<String> lines) {
+        List<InternetProtocolStats.IPConnection> connections = new ArrayList<>();
+        String type = null;
+        for (String value : lines) {
+            String line = value.trim();
+            if (line.isEmpty()) {
+                continue;
+            }
+            String[] split = Pattern.SPACES_PATTERN.split(line, Normal.__1);
+            if (split[Normal._0].indexOf(Symbol.C_DOT) < Normal._0) {
+                // Every row starts with an address.port; anything else is a section heading, column heading, or rule.
+                type = solarisSectionType(line, type);
+                continue;
+            }
+            if (type == null) {
+                continue;
+            }
+            Pair<byte[], Integer> local = parseIP(split[Normal._0]);
+            // An unconnected UDP socket leaves the remote address blank, putting the state in the second field.
+            Pair<byte[], Integer> foreign = split.length > Normal._1
+                    && split[Normal._1].indexOf(Symbol.C_DOT) >= Normal._0 ? parseIP(split[Normal._1])
+                            : Pair.of(Normal.EMPTY_BYTE_ARRAY, Normal._0);
+            if (type.startsWith(Protocol.TCP.name)) {
+                // Local Address, Remote Address, Swind, Send-Q, Rwind, Recv-Q, State, and If on IPv6.
+                if (split.length >= Normal._7) {
+                    connections.add(
+                            new InternetProtocolStats.IPConnection(type, local.getLeft(), local.getRight(),
+                                    foreign.getLeft(), foreign.getRight(), parseTcpState(split[Normal._6]),
+                                    Parsing.parseIntOrDefault(split[Normal._3], Normal._0),
+                                    Parsing.parseIntOrDefault(split[Normal._5], Normal._0), Normal.__1));
+                }
+            } else if (split.length >= Normal._3) {
+                // Local Address, Remote Address, State, buffer sizes, and overflow counts; UDP has no queues.
+                connections.add(
+                        new InternetProtocolStats.IPConnection(type, local.getLeft(), local.getRight(),
+                                foreign.getLeft(), foreign.getRight(), InternetProtocolStats.TcpState.NONE, Normal._0,
+                                Normal._0, Normal.__1));
+            }
+        }
+        return connections;
+    }
+
+    /**
+     * Resolves the connection type associated with a Solaris netstat section heading.
+     *
+     * @param line the current heading or separator line
+     * @param type the current connection type, or {@code null} outside a supported section
+     * @return the resolved connection type, or {@code null} outside a supported section
+     */
+    private static String solarisSectionType(String line, String type) {
+        switch (line) {
+            case "TCP: IPv4":
+                return "tcp4";
+
+            case "TCP: IPv6":
+                return "tcp6";
+
+            case "UDP: IPv4":
+                return "udp4";
+
+            case "UDP: IPv6":
+                return "udp6";
+
+            default:
+                // Column headings and rules stay in the current section; any other heading leaves it.
+                return line.startsWith("Local Address") || line.startsWith(Symbol.MINUS) ? type : null;
+        }
+    }
+
+    /**
+     * Maps a native netstat TCP state to the public connection-state enumeration.
+     *
+     * @param state the native TCP state name
+     * @return the corresponding TCP state, or {@link InternetProtocolStats.TcpState#UNKNOWN}
+     */
+    private static InternetProtocolStats.TcpState parseTcpState(String state) {
+        switch (state) {
+            case "SYN_RCVD":
+            case "SYN_RECEIVED":
+                return InternetProtocolStats.TcpState.SYN_RECV;
+
+            case "CLOSED":
+            case "LISTEN":
+            case "SYN_SENT":
+            case "ESTABLISHED":
+            case "FIN_WAIT_1":
+            case "FIN_WAIT_2":
+            case "CLOSE_WAIT":
+            case "CLOSING":
+            case "LAST_ACK":
+            case "TIME_WAIT":
+                return InternetProtocolStats.TcpState.valueOf(state);
+
+            default:
+                // Solaris also reports IDLE and BOUND, which have no equivalent.
+                return InternetProtocolStats.TcpState.UNKNOWN;
+        }
     }
 
     /**
@@ -139,9 +249,13 @@ public class NetStat {
         if (portPos > 0 && s.length() > portPos) {
             int port = Parsing.parseIntOrDefault(s.substring(portPos + 1), 0);
             String ip = s.substring(0, portPos);
+            if (Symbol.STAR.equals(ip)) {
+                // Any address; not a host name to look up.
+                return Pair.of(Normal.EMPTY_BYTE_ARRAY, port);
+            }
             try {
                 // Try to parse existing IP
-                return Pair.of(InetAddress.getByName(ip).getAddress(), port);
+                return Pair.of(toAddressBytes(ip), port);
             } catch (UnknownHostException e) {
                 try {
                     // Try again with trailing ::
@@ -152,13 +266,33 @@ public class NetStat {
                     } else {
                         ip = ip + "::0";
                     }
-                    return Pair.of(InetAddress.getByName(ip).getAddress(), port);
+                    return Pair.of(toAddressBytes(ip), port);
                 } catch (UnknownHostException e2) {
                     return Pair.of(Normal.EMPTY_BYTE_ARRAY, port);
                 }
             }
         }
         return Pair.of(Normal.EMPTY_BYTE_ARRAY, 0);
+    }
+
+    /**
+     * Parses an IP address while preserving the 16-byte form of an IPv4-mapped IPv6 address.
+     *
+     * @param ip the textual IP address
+     * @return the address bytes
+     * @throws UnknownHostException if the address cannot be parsed
+     */
+    private static byte[] toAddressBytes(String ip) throws UnknownHostException {
+        byte[] address = InetAddress.getByName(ip).getAddress();
+        // InetAddress collapses an IPv4-mapped IPv6 address to four bytes, although the socket is IPv6.
+        if (address.length == Normal._4 && ip.indexOf(Symbol.C_COLON) >= 0) {
+            byte[] mapped = new byte[Normal._16];
+            mapped[Normal._10] = (byte) 0xff;
+            mapped[Normal._11] = (byte) 0xff;
+            System.arraycopy(address, 0, mapped, Normal._12, Normal._4);
+            return mapped;
+        }
+        return address;
     }
 
     /**

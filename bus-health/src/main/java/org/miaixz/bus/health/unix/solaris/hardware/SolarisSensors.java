@@ -19,9 +19,6 @@
 */
 package org.miaixz.bus.health.unix.solaris.hardware;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
@@ -67,18 +64,9 @@ final class SolarisSensors extends AbstractSensors {
      */
     @Override
     public int[] queryFanSpeeds() {
-        List<Integer> speedList = new ArrayList<>();
-        // Return max found temp
-        for (String line : Executor.runNative("/usr/sbin/prtpicl -v -c fan")) {
-            if (line.trim().startsWith("Speed:")) {
-                speedList.add(Parsing.parseLastInt(line, 0));
-            }
-        }
-        int[] fans = new int[speedList.size()];
-        for (int i = 0; i < speedList.size(); i++) {
-            fans[i] = speedList.get(i);
-        }
-        return fans;
+        return Executor.runNative("/usr/sbin/prtpicl -v -c fan").stream()
+                .filter(line -> line.trim().startsWith("Speed:"))
+                .mapToInt(line -> Parsing.parseLastInt(line, Normal._0)).toArray();
     }
 
     /**

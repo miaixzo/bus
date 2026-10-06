@@ -251,7 +251,7 @@ final class LinuxSensors extends AbstractSensors {
         }
 
         if (selectedPath != null) {
-            this.sensorsMap.put(sensor, String.format(Locale.ROOT, "%s/%s", selectedPath, sensor));
+            this.sensorsMap.put(sensor, selectedPath + Symbol.SLASH + sensor);
         }
     }
 
@@ -340,7 +340,7 @@ final class LinuxSensors extends AbstractSensors {
             long millidegrees = 0;
             if (tempStr.contains(HWMON)) {
                 // First attempt should be CPU temperature at index 1, if available
-                millidegrees = Builder.getLongFromFile(String.format(Locale.ROOT, "%s1%s", tempStr, INPUT_SUFFIX));
+                millidegrees = Builder.getLongFromFile(tempStr + Normal._1 + INPUT_SUFFIX);
                 // Should return a single line of millidegrees Celsius
                 if (millidegrees > 0) {
                     return millidegrees / 1000d;
@@ -418,7 +418,7 @@ final class LinuxSensors extends AbstractSensors {
         String voltageStr = this.sensorsMap.get(VOLTAGE);
         if (voltageStr != null) {
             // Should return a single line of millivolt
-            return Builder.getIntFromFile(String.format(Locale.ROOT, "%s1%s", voltageStr, INPUT_SUFFIX)) / 1000d;
+            return Builder.getIntFromFile(voltageStr + Normal._1 + INPUT_SUFFIX) / 1000d;
         }
         return 0d;
     }

@@ -20,6 +20,7 @@
 package org.miaixz.bus.health.builtin.hardware.common;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -157,22 +158,20 @@ public abstract class AbstractUsbDevice implements UsbDevice {
             UsbDeviceFactory factory) {
         String vendorId = vendorIdMap.getOrDefault(id, vid);
         String productId = productIdMap.getOrDefault(id, pid);
-        List<UsbDevice> connectedDevices = new ArrayList<>();
-        for (String childId : hubMap.getOrDefault(id, Collections.emptyList())) {
-            connectedDevices.add(
-                    buildDeviceTree(
-                            childId,
-                            vendorId,
-                            productId,
-                            nameMap,
-                            vendorMap,
-                            vendorIdMap,
-                            productIdMap,
-                            serialMap,
-                            hubMap,
-                            factory));
-        }
-        Collections.sort(connectedDevices);
+        List<UsbDevice> connectedDevices = hubMap.getOrDefault(id, Collections.emptyList()).stream()
+                .map(
+                        childId -> buildDeviceTree(
+                                childId,
+                                vendorId,
+                                productId,
+                                nameMap,
+                                vendorMap,
+                                vendorIdMap,
+                                productIdMap,
+                                serialMap,
+                                hubMap,
+                                factory))
+                .sorted().collect(Collectors.toList());
         return factory.create(
                 nameMap.getOrDefault(id, vendorId + Symbol.COLON + productId),
                 vendorMap.getOrDefault(id, Normal.EMPTY),

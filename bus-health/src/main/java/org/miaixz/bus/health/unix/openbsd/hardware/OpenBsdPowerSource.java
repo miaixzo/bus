@@ -20,8 +20,8 @@
 package org.miaixz.bus.health.unix.openbsd.hardware;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -84,11 +84,8 @@ public class OpenBsdPowerSource extends AbstractPowerSource {
      */
     public static List<PowerSource> getPowerSources() {
         List<String> sensorLines = Systat.querySensorLines();
-        List<PowerSource> psList = new ArrayList<>();
-        for (String name : Systat.parsePowerSourceNames(sensorLines)) {
-            psList.add(getPowerSource(name, sensorLines));
-        }
-        return psList;
+        return Systat.parsePowerSourceNames(sensorLines).stream().map(name -> getPowerSource(name, sensorLines))
+                .collect(Collectors.toList());
     }
 
     /**
