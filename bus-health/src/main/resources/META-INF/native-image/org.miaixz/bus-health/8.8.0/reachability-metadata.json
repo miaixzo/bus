@@ -2242,6 +2242,23 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice$UsbDeviceFactory",
+      "methods": [
+        {
+          "name": "create",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.health.builtin.hardware.common.AbstractVirtualMemory",
       "methods": [
         {
@@ -13253,14 +13270,14 @@
           "parameterTypes": []
         },
         {
-          "name": "queryBiosDescription",
-          "parameterTypes": []
-        },
-        {
           "name": "parseBiosVendor",
           "parameterTypes": [
             "java.lang.String"
           ]
+        },
+        {
+          "name": "queryBiosDescription",
+          "parameterTypes": []
         },
         {
           "name": "queryBiosReleaseDate",
@@ -18027,6 +18044,71 @@
         {
           "name": "getSoundCards",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.mac.hardware.MacUsbDevice",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "addDeviceAndChildrenToMaps",
+          "parameterTypes": [
+            "com.sun.jna.platform.mac.IOKit$IORegistryEntry",
+            "long",
+            "java.util.Map",
+            "java.util.Map",
+            "java.util.Map",
+            "java.util.Map",
+            "java.util.Map",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "getControllerIdByLocation",
+          "parameterTypes": [
+            "long",
+            "com.sun.jna.platform.mac.CoreFoundation$CFTypeRef",
+            "com.sun.jna.platform.mac.CoreFoundation$CFStringRef",
+            "com.sun.jna.platform.mac.CoreFoundation$CFStringRef",
+            "java.util.Map",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "getDeviceAndChildren",
+          "parameterTypes": [
+            "java.lang.Long",
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.Map",
+            "java.util.Map",
+            "java.util.Map",
+            "java.util.Map",
+            "java.util.Map",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "getUsbDevices",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUsbDevices",
+          "parameterTypes": [
+            "boolean"
+          ]
         }
       ]
     },
@@ -29390,6 +29472,84 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.health.unix.shared.driver.Xrandr$OutputBuilder",
+      "fields": [
+        {
+          "name": "connectorId"
+        },
+        {
+          "name": "edid"
+        },
+        {
+          "name": "height"
+        },
+        {
+          "name": "inCurrentMode"
+        },
+        {
+          "name": "modeHeight"
+        },
+        {
+          "name": "modeWidth"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "primary"
+        },
+        {
+          "name": "refreshRate"
+        },
+        {
+          "name": "rotation"
+        },
+        {
+          "name": "width"
+        },
+        {
+          "name": "x"
+        },
+        {
+          "name": "y"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "build",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "parseModeLine",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parseRotation",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "parseTimingValue",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.health.unix.shared.driver.Xwininfo",
       "methods": [
         {
@@ -40271,6 +40431,111 @@
           "parameterTypes": [
             "boolean"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore",
+      "fields": [
+        {
+          "name": "currentQueueLength"
+        },
+        {
+          "name": "partitionList"
+        },
+        {
+          "name": "readBytes"
+        },
+        {
+          "name": "reads"
+        },
+        {
+          "name": "timeStamp"
+        },
+        {
+          "name": "transferTime"
+        },
+        {
+          "name": "writeBytes"
+        },
+        {
+          "name": "writes"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "long",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getCurrentQueueLength",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDisks",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIndexFromName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getPartitions",
+          "parameterTypes": []
+        },
+        {
+          "name": "getReadBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getReads",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTimeStamp",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTransferTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWriteBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWrites",
+          "parameterTypes": []
+        },
+        {
+          "name": "parseWindowsMediaType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryPartitionMaps",
+          "parameterTypes": [
+            "org.miaixz.bus.health.windows.WmiQueryHandler"
+          ]
+        },
+        {
+          "name": "queryReadWriteStats",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "updateAttributes",
+          "parameterTypes": []
         }
       ]
     },
@@ -62422,6 +62687,63 @@
             "com.sun.jna.platform.win32.Guid$REFIID",
             "com.sun.jna.ptr.PointerByReference"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.windows.PerfCounterWildcardQuery",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "queryInstancesAndValues",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryInstancesAndValues",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryInstancesAndValuesFromPDH",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryInstancesAndValuesFromPDH",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryInstancesAndValuesFromWMI",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.windows.PerfCounterWildcardQuery$PdhCounterWildcardProperty",
+      "methods": [
+        {
+          "name": "getCounter",
+          "parameterTypes": []
         }
       ]
     },
