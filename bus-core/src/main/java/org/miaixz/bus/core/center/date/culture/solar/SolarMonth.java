@@ -132,10 +132,9 @@ public class SolarMonth extends AbstractMonth {
     }
 
     /**
-     * Gets the number of weeks in this month.
+     * Gets the name of this month.
      *
-     * @param start the start day of week (1=Monday, 2=Tuesday, ..., 0=Sunday)
-     * @return the number of weeks in this month
+     * @return the name of this month
      */
     @Override
     public String getName() {

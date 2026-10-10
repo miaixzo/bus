@@ -44,6 +44,7 @@
 ### Maven 依赖
 
 ```xml
+
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-opencv</artifactId>
@@ -130,11 +131,11 @@ public class FaceDetectionExample {
         // 在人脸周围绘制矩形
         for (Rect rect : faces.toArray()) {
             Imgproc.rectangle(
-                image,
-                new Point(rect.x, rect.y),
-                new Point(rect.x + rect.width, rect.y + rect.height),
-                new Scalar(0, 255, 0),
-                2
+                    image,
+                    new Point(rect.x, rect.y),
+                    new Point(rect.x + rect.width, rect.y + rect.height),
+                    new Scalar(0, 255, 0),
+                    2
             );
         }
 
@@ -184,10 +185,10 @@ public class VideoExample {
 
         // 创建视频写入器
         VideoWriter writer = new VideoWriter(
-            outputPath,
-            Videoio_fourcc('m', 'p', '4', 'v'),
-            fps,
-            new Size(width, height)
+                outputPath,
+                Videoio_fourcc('m', 'p', '4', 'v'),
+                fps,
+                new Size(width, height)
         );
 
         Mat frame = new Mat();
@@ -218,14 +219,14 @@ public class ObjectDetectionExample {
 
         // 使用训练好的模型检测特定对象
         List<DetectedObject> objects = ObjectDetector.detect(
-            image,
-            ObjectDetector.HAAR_CASCADE_FRONTALFACE
+                image,
+                ObjectDetector.HAAR_CASCADE_FRONTALFACE
         );
 
         // 处理检测到的对象
         for (DetectedObject obj : objects) {
             System.out.println("检测到: " + obj.getLabel()
-                + " 位置 " + obj.getBoundingBox());
+                    + " 位置 " + obj.getBoundingBox());
         }
     }
 
@@ -266,16 +267,19 @@ extend:
 ```java
 // 完成后始终释放 Mat 资源
 Mat image = Imgcodecs.imread("image.jpg");
-try {
-    // 处理图像
-} finally {
-    image.release();
+try{
+        // 处理图像
+        }finally{
+        image.
+
+release();
 }
 
 // 或使用 try-with-resources 模式
-try (Mat image = Imgcodecs.imread("image.jpg")) {
-    // 处理图像
-}
+        try(
+Mat image = Imgcodecs.imread("image.jpg")){
+        // 处理图像
+        }
 ```
 
 ### 并行处理
@@ -283,10 +287,16 @@ try (Mat image = Imgcodecs.imread("image.jpg")) {
 ```java
 // 并行处理多个图像
 List<String> imagePaths = Arrays.asList("img1.jpg", "img2.jpg", "img3.jpg");
-imagePaths.parallelStream().forEach(path -> {
-    Mat image = Imgcodecs.imread(path);
-    // 处理图像
-    image.release();
+imagePaths.
+
+parallelStream().
+
+forEach(path ->{
+Mat image = Imgcodecs.imread(path);
+// 处理图像
+    image.
+
+release();
 });
 ```
 

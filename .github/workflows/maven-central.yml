@@ -15,6 +15,8 @@ on:
 env:
   JAVA_VERSION: '25'
   COMPILER_RELEASE: '21'
+  MAVEN_VERSION: '3.9.16'
+  MAVEN_SHA512: '831a8591fe20c8243b1dbe7d71e3244f31d1665b0804b2e825e38cbbe5ce0cafb8338851f90780735568773e0a6cd07bbec107cda0b896b008b861075358b6f6'
 
 permissions:
   contents: read
@@ -136,6 +138,22 @@ jobs:
           server-password: MAVEN_CENTRAL_TOKEN_PASSWORD
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      # Maven 3.10.0 writes maven-metadata-local.xml into the Central staging
+      # directory, which Sonatype rejects because it has no version-level POM.
+      - name: Set Up Maven
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          MAVEN_ARCHIVE="$RUNNER_TEMP/apache-maven-$MAVEN_VERSION-bin.tar.gz"
+          MAVEN_URL="https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$MAVEN_VERSION/apache-maven-$MAVEN_VERSION-bin.tar.gz"
+
+          curl --fail --silent --show-error --location "$MAVEN_URL" --output "$MAVEN_ARCHIVE"
+          echo "$MAVEN_SHA512  $MAVEN_ARCHIVE" | sha512sum --check --strict
+          tar --extract --gzip --file "$MAVEN_ARCHIVE" --directory "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/apache-maven-$MAVEN_VERSION/bin" >> "$GITHUB_PATH"
+          "$RUNNER_TEMP/apache-maven-$MAVEN_VERSION/bin/mvn" --version
 
       - name: Publish Project
         uses: ./.github/actions/maven-central
