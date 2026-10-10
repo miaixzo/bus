@@ -44,6 +44,18 @@ public abstract class DayParts extends MonthParts {
     }
 
     /**
+     * Constructs day-based date parts.
+     *
+     * @param year  the year value
+     * @param month the month value
+     * @param day   the day value
+     */
+    public DayParts(final int year, final int month, final int day) {
+        super(year, month);
+        this.day = day;
+    }
+
+    /**
      * Gets the day of the month.
      *
      * @return the day of the month (1-31, depending on the month)

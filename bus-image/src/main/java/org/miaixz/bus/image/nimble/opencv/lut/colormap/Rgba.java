@@ -29,7 +29,9 @@ import java.awt.*;
 public record Rgba(float red, float green, float blue, float alpha) {
 
     public static final Rgba TRANSPARENT = new Rgba(0f, 0f, 0f, 0f);
+
     public static final Rgba BLACK = new Rgba(0f, 0f, 0f, 1f);
+
     public static final Rgba WHITE = new Rgba(1f, 1f, 1f, 1f);
 
     public Rgba {

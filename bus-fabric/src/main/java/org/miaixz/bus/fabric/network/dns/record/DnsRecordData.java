@@ -44,50 +44,6 @@ import org.miaixz.bus.fabric.network.dns.message.DnsName;
 public interface DnsRecordData {
 
     /**
-     * Returns the known DNS record type.
-     *
-     * @return known record type, or {@link DnsRecordType#UNKNOWN}
-     */
-    DnsRecordType type();
-
-    /**
-     * Returns the numeric DNS record type.
-     *
-     * @return unsigned 16-bit DNS record type code
-     */
-    int typeCode();
-
-    /**
-     * Returns a defensive copy of RDATA bytes.
-     *
-     * @return wire-format RDATA bytes
-     */
-    byte[] wireData();
-
-    /**
-     * Converts this data value into an Internet-class DNS record.
-     *
-     * @param name owner name
-     * @param ttl  unsigned 32-bit record TTL
-     * @return immutable DNS record
-     */
-    default DnsRecord toRecord(final String name, final long ttl) {
-        return toRecord(name, DnsRecord.CLASS_IN, ttl);
-    }
-
-    /**
-     * Converts this data value into a DNS record.
-     *
-     * @param name        owner name
-     * @param recordClass unsigned 16-bit record class
-     * @param ttl         unsigned 32-bit record TTL
-     * @return immutable DNS record
-     */
-    default DnsRecord toRecord(final String name, final int recordClass, final long ttl) {
-        return DnsRecord.raw(name, typeCode(), recordClass, ttl, wireData());
-    }
-
-    /**
      * Creates record data from an existing DNS record.
      *
      * @param record source DNS record
@@ -391,6 +347,50 @@ public interface DnsRecordData {
     }
 
     /**
+     * Returns the known DNS record type.
+     *
+     * @return known record type, or {@link DnsRecordType#UNKNOWN}
+     */
+    DnsRecordType type();
+
+    /**
+     * Returns the numeric DNS record type.
+     *
+     * @return unsigned 16-bit DNS record type code
+     */
+    int typeCode();
+
+    /**
+     * Returns a defensive copy of RDATA bytes.
+     *
+     * @return wire-format RDATA bytes
+     */
+    byte[] wireData();
+
+    /**
+     * Converts this data value into an Internet-class DNS record.
+     *
+     * @param name owner name
+     * @param ttl  unsigned 32-bit record TTL
+     * @return immutable DNS record
+     */
+    default DnsRecord toRecord(final String name, final long ttl) {
+        return toRecord(name, DnsRecord.CLASS_IN, ttl);
+    }
+
+    /**
+     * Converts this data value into a DNS record.
+     *
+     * @param name        owner name
+     * @param recordClass unsigned 16-bit record class
+     * @param ttl         unsigned 32-bit record TTL
+     * @return immutable DNS record
+     */
+    default DnsRecord toRecord(final String name, final int recordClass, final long ttl) {
+        return DnsRecord.raw(name, typeCode(), recordClass, ttl, wireData());
+    }
+
+    /**
      * Immutable wire-format record-data implementation.
      *
      * @author Kimi Liu
@@ -416,6 +416,22 @@ public interface DnsRecordData {
         public Wire(final int typeCode, final byte[] wireData) {
             this.typeCode = DnsCodec.validateUnsignedShort(typeCode, "DNS record type");
             this.wireData = copyWireData(wireData);
+        }
+
+        /**
+         * Copies RDATA bytes after enforcing DNS RDATA size.
+         *
+         * @param wireData source RDATA
+         * @return copied RDATA
+         */
+        private static byte[] copyWireData(final byte[] wireData) {
+            if (wireData == null) {
+                throw new ValidateException("DNS record data bytes must not be null");
+            }
+            if (wireData.length > Normal._65535) {
+                throw new ValidateException("DNS record data bytes exceed 65535 bytes");
+            }
+            return Arrays.copyOf(wireData, wireData.length);
         }
 
         /**
@@ -485,22 +501,6 @@ public interface DnsRecordData {
         @Override
         public String toString() {
             return "DnsRecordData[type=" + type() + ", typeCode=" + typeCode + ", bytes=" + wireData.length + "]";
-        }
-
-        /**
-         * Copies RDATA bytes after enforcing DNS RDATA size.
-         *
-         * @param wireData source RDATA
-         * @return copied RDATA
-         */
-        private static byte[] copyWireData(final byte[] wireData) {
-            if (wireData == null) {
-                throw new ValidateException("DNS record data bytes must not be null");
-            }
-            if (wireData.length > Normal._65535) {
-                throw new ValidateException("DNS record data bytes exceed 65535 bytes");
-            }
-            return Arrays.copyOf(wireData, wireData.length);
         }
 
     }

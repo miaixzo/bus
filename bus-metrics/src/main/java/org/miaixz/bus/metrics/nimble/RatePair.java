@@ -19,6 +19,11 @@
 */
 package org.miaixz.bus.metrics.nimble;
 
+import java.util.Objects;
+
+import org.miaixz.bus.metrics.Provider;
+import org.miaixz.bus.metrics.observe.tag.Tag;
+
 /**
  * Combines a success Meter and an error Meter, providing direct access to error rate and success rate. Useful for
  * circuit-breaker decisions without external PromQL.
@@ -26,6 +31,81 @@ package org.miaixz.bus.metrics.nimble;
  * @author Kimi Liu
  */
 public interface RatePair {
+
+    /**
+     * Creates a rate pair from provider-owned meters using the canonical plural suffixes.
+     *
+     * @param provider provider that owns the meters
+     * @param name     metric name prefix
+     * @param tags     optional tags
+     * @return rate pair sharing the provider's meter state
+     * @throws IllegalArgumentException if the metric name is blank
+     */
+    static RatePair create(Provider provider, String name, Tag... tags) {
+        Objects.requireNonNull(provider, "Metrics provider must not be null");
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Rate-pair name must not be blank");
+        }
+        Meter total = provider.meter(name + ".total", tags);
+        Meter errors = provider.meter(name + ".errors", tags);
+        Meter successes = provider.meter(name + ".successes", tags);
+        return of(total, errors, successes);
+    }
+
+    /**
+     * Creates a rate pair from three existing meters.
+     *
+     * @param total     meter receiving every event
+     * @param errors    meter receiving failed events
+     * @param successes meter receiving successful events
+     * @return delegating rate pair
+     */
+    static RatePair of(Meter total, Meter errors, Meter successes) {
+        Meter checkedTotal = Objects.requireNonNull(total, "Total meter must not be null");
+        Meter checkedErrors = Objects.requireNonNull(errors, "Error meter must not be null");
+        Meter checkedSuccesses = Objects.requireNonNull(successes, "Success meter must not be null");
+        return new RatePair() {
+
+            @Override
+            public void recordSuccess() {
+                checkedTotal.increment();
+                checkedSuccesses.increment();
+            }
+
+            @Override
+            public void recordError() {
+                checkedTotal.increment();
+                checkedErrors.increment();
+            }
+
+            @Override
+            public double errorRate() {
+                double totalRate = checkedTotal.oneMinuteRate();
+                return totalRate <= 0 ? 0.0 : checkedErrors.oneMinuteRate() / totalRate;
+            }
+
+            @Override
+            public double successRate() {
+                double totalRate = checkedTotal.oneMinuteRate();
+                return totalRate <= 0 ? 1.0 : checkedSuccesses.oneMinuteRate() / totalRate;
+            }
+
+            @Override
+            public Meter total() {
+                return checkedTotal;
+            }
+
+            @Override
+            public Meter errors() {
+                return checkedErrors;
+            }
+
+            @Override
+            public Meter successes() {
+                return checkedSuccesses;
+            }
+        };
+    }
 
     /**
      * Record one successful event into both the total and success meters.

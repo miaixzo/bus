@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarMonth;
+import org.miaixz.bus.core.center.date.culture.parts.MonthParts;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarMonth;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
@@ -49,6 +50,18 @@ public class Festival extends Loops {
     protected String data;
 
     /**
+     * Constructs a festival with the given name and encoded data.
+     *
+     * @param name festival name
+     * @param data encoded festival data
+     */
+    public Festival(String name, String data) {
+        validate(data);
+        this.name = name;
+        this.data = data;
+    }
+
+    /**
      * Validates the encoded festival data.
      *
      * @param data encoded data string (must be exactly 9 characters)
@@ -61,18 +74,6 @@ public class Festival extends Loops {
         if (data.length() != 9) {
             throw new IllegalArgumentException("illegal event data: " + data);
         }
-    }
-
-    /**
-     * Constructs a festival with the given name and encoded data.
-     *
-     * @param name festival name
-     * @param data encoded festival data
-     */
-    public Festival(String name, String data) {
-        validate(data);
-        this.name = name;
-        this.data = data;
     }
 
     /**
@@ -93,6 +94,37 @@ public class Festival extends Loops {
     public static Festival fromName(String name) {
         Matcher matcher = Pattern.compile(String.format(FestivalRegistry.REGEX, name)).matcher(FestivalRegistry.DATA);
         return matcher.find() ? new Festival(name, matcher.group(1)) : null;
+    }
+
+    /**
+     * Gets festivals matching the given solar day.
+     *
+     * @param d solar day
+     * @return list of matching festivals
+     */
+    public static List<Festival> fromSolarDay(SolarDay d) {
+        List<Festival> l = new ArrayList<>();
+        for (Festival e : all()) {
+            if (d.equals(e.getSolarDay(d.getYear()))) {
+                l.add(e);
+            }
+        }
+        return l;
+    }
+
+    /**
+     * Gets all registered festivals.
+     *
+     * @return list of all festivals
+     */
+    public static List<Festival> all() {
+        List<Festival> l = new ArrayList<>();
+        Matcher matcher = Pattern.compile(String.format(FestivalRegistry.REGEX, ".[^@]+"))
+                .matcher(FestivalRegistry.DATA);
+        while (matcher.find()) {
+            l.add(new Festival(matcher.group(2), matcher.group(1)));
+        }
+        return l;
     }
 
     /**
@@ -119,16 +151,17 @@ public class Festival extends Loops {
      * Resolves the logical festival month for the specified year.
      *
      * @param year target year
-     * @return a two-element array containing resolved year and month
+     * @return resolved month
      */
-    public int[] getMonth(int year) {
+    public MonthParts getMonth(int year) {
         int y = year;
         int m = getValue(2);
         if (m > 12) {
             m = 1;
             y += 1;
         }
-        return new int[] { y, m };
+        return new MonthParts(y, m) {
+        };
     }
 
     /**
@@ -170,37 +203,6 @@ public class Festival extends Loops {
             n = n * size + getCharIndex(6 + i);
         }
         return n;
-    }
-
-    /**
-     * Gets festivals matching the given solar day.
-     *
-     * @param d solar day
-     * @return list of matching festivals
-     */
-    public static List<Festival> fromSolarDay(SolarDay d) {
-        List<Festival> l = new ArrayList<>();
-        for (Festival e : all()) {
-            if (d.equals(e.getSolarDay(d.getYear()))) {
-                l.add(e);
-            }
-        }
-        return l;
-    }
-
-    /**
-     * Gets all registered festivals.
-     *
-     * @return list of all festivals
-     */
-    public static List<Festival> all() {
-        List<Festival> l = new ArrayList<>();
-        Matcher matcher = Pattern.compile(String.format(FestivalRegistry.REGEX, ".[^@]+"))
-                .matcher(FestivalRegistry.DATA);
-        while (matcher.find()) {
-            l.add(new Festival(matcher.group(2), matcher.group(1)));
-        }
-        return l;
     }
 
     /**
@@ -256,20 +258,34 @@ public class Festival extends Loops {
      * @param year year
      * @return solar day, or {@code null} if not applicable
      */
-    protected SolarDay getSolarDayBySolarDay(int year) {
-        int[] month = getMonth(year);
-        int y = month[0];
-        int m = month[1];
+    private SolarDay getSolarDayByDay(int year, boolean lunar) {
+        MonthParts month = getMonth(year);
+        int y = month.getYear();
+        int m = month.getMonth();
         int d = getValue(3);
         int delay = getValue(4);
-        int lastDay = SolarMonth.fromYm(y, m).getDayCount();
+        int lastDay = lunar ? LunarMonth.fromYm(y, m).getDayCount() : SolarMonth.fromYm(y, m).getDayCount();
         if (d > lastDay) {
             if (0 == delay) {
                 return null;
             }
-            return delay < 0 ? SolarDay.fromYmd(y, m, d + delay) : SolarDay.fromYmd(y, m, lastDay).next(delay);
+            if (delay < 0) {
+                return lunar ? LunarDay.fromYmd(y, m, d + delay).getSolarDay() : SolarDay.fromYmd(y, m, d + delay);
+            }
+            return lunar ? LunarDay.fromYmd(y, m, lastDay).getSolarDay().next(delay)
+                    : SolarDay.fromYmd(y, m, lastDay).next(delay);
         }
-        return SolarDay.fromYmd(y, m, d);
+        return lunar ? LunarDay.fromYmd(y, m, d).getSolarDay() : SolarDay.fromYmd(y, m, d);
+    }
+
+    /**
+     * Resolves the solar day for a solar-day-based festival rule.
+     *
+     * @param year year
+     * @return solar day, or {@code null} if not applicable
+     */
+    protected SolarDay getSolarDayBySolarDay(int year) {
+        return getSolarDayByDay(year, false);
     }
 
     /**
@@ -279,20 +295,7 @@ public class Festival extends Loops {
      * @return solar day, or {@code null} if not applicable
      */
     protected SolarDay getSolarDayByLunarDay(int year) {
-        int[] month = getMonth(year);
-        int y = month[0];
-        int m = month[1];
-        int d = getValue(3);
-        int delay = getValue(4);
-        int lastDay = LunarMonth.fromYm(y, m).getDayCount();
-        if (d > lastDay) {
-            if (0 == delay) {
-                return null;
-            }
-            return delay < 0 ? LunarDay.fromYmd(y, m, d + delay).getSolarDay()
-                    : LunarDay.fromYmd(y, m, lastDay).getSolarDay().next(delay);
-        }
-        return LunarDay.fromYmd(y, m, d).getSolarDay();
+        return getSolarDayByDay(year, true);
     }
 
     /**

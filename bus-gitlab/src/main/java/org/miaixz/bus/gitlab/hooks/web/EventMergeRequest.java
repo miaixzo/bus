@@ -40,94 +40,117 @@ public class EventMergeRequest {
      * The assignee id value.
      */
     private Long assigneeId;
+
     /**
      * The author id value.
      */
     private Long authorId;
+
     /**
      * The branch name value.
      */
     private String branchName;
+
     /**
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The description value.
      */
     private String description;
+
     /**
      * The id value.
      */
     private Long id;
+
     /**
      * The iid value.
      */
     private Long iid;
+
     /**
      * The merge commit sha value.
      */
     private String mergeCommitSha;
+
     /**
      * The merge status value.
      */
     private String mergeStatus;
+
     /**
      * The detailed merge status value.
      */
     private String detailedMergeStatus;
+
     /**
      * The milestone id value.
      */
     private Long milestoneId;
+
     /**
      * The position value.
      */
     private Integer position;
+
     /**
      * The locked at value.
      */
     private Date lockedAt;
+
     /**
      * The project id value.
      */
     private Long projectId;
+
     /**
      * The source branch value.
      */
     private String sourceBranch;
+
     /**
      * The source project id value.
      */
     private Long sourceProjectId;
+
     /**
      * The st commits value.
      */
     private String stCommits;
+
     /**
      * The st diffs value.
      */
     private String stDiffs;
+
     /**
      * The state value.
      */
     private String state;
+
     /**
      * The state id value.
      */
     private Long stateId;
+
     /**
      * The target branch value.
      */
     private String targetBranch;
+
     /**
      * The target project id value.
      */
     private Long targetProjectId;
+
     /**
      * The title value.
      */
     private String title;
+
     /**
      * The updated at value.
      */
@@ -137,38 +160,47 @@ public class EventMergeRequest {
      * The source value.
      */
     private EventProject source;
+
     /**
      * The target value.
      */
     private EventProject target;
+
     /**
      * The last commit value.
      */
     private EventCommit lastCommit;
+
     /**
      * The blocking discussions resolved value.
      */
     private Boolean blockingDiscussionsResolved;
+
     /**
      * The work in progress value.
      */
     private Boolean workInProgress;
+
     /**
      * The first contribution value.
      */
     private Boolean firstContribution;
+
     /**
      * The url value.
      */
     private String url;
+
     /**
      * The labels value.
      */
     private List<EventLabel> labels;
+
     /**
      * The action value.
      */
     private String action;
+
     /**
      * The assignee value.
      */
@@ -178,6 +210,7 @@ public class EventMergeRequest {
      * The updated by id value.
      */
     private Long updatedById;
+
     /**
      * The merge error value.
      */
@@ -187,22 +220,27 @@ public class EventMergeRequest {
      * Parameters used when the merge request is merged or scheduled for auto-merge.
      */
     private MergeParams mergeParams;
+
     /**
      * The merge when pipeline succeeds value.
      */
     private Boolean mergeWhenPipelineSucceeds;
+
     /**
      * The merge user id value.
      */
     private Long mergeUserId;
+
     /**
      * The deleted at value.
      */
     private Date deletedAt;
+
     /**
      * The in progress merge commit sha value.
      */
     private String inProgressMergeCommitSha;
+
     /**
      * The lock version value.
      */
@@ -212,54 +250,67 @@ public class EventMergeRequest {
      * The last edited at value.
      */
     private Date lastEditedAt;
+
     /**
      * The last edited by id value.
      */
     private Long lastEditedById;
+
     /**
      * The head pipeline id value.
      */
     private Long headPipelineId;
+
     /**
      * The ref fetched value.
      */
     private Boolean refFetched;
+
     /**
      * The merge iid value.
      */
     private Long mergeIid;
+
     /**
      * The total time spent value.
      */
     private Integer totalTimeSpent;
+
     /**
      * The human total time spent value.
      */
     private Duration humanTotalTimeSpent;
+
     /**
      * The time change value.
      */
     private Integer timeChange;
+
     /**
      * The time estimate value.
      */
     private Integer timeEstimate;
+
     /**
      * The human time estimate value.
      */
     private Duration humanTimeEstimate;
+
     /**
      * The human time change value.
      */
     private Duration humanTimeChange;
+
     /**
      * The assignee ids value.
      */
     private List<Long> assigneeIds;
+
     /**
      * The reviewer ids value.
      */
     private List<Long> reviewerIds;
+
     /**
      * The oldrev value.
      */
@@ -1391,6 +1442,17 @@ public class EventMergeRequest {
     }
 
     /**
+     * Returns the string.
+     *
+     * @return the result
+     */
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
+    }
+
+    /**
      * Merge parameters included in merge request webhook payloads.
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -1649,17 +1711,6 @@ public class EventMergeRequest {
 
         }
 
-    }
-
-    /**
-     * Returns the string.
-     *
-     * @return the result
-     */
-
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
     }
 
 }

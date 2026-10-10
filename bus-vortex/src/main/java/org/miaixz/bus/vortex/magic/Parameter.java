@@ -20,15 +20,7 @@
 package org.miaixz.bus.vortex.magic;
 
 import java.lang.reflect.Array;
-import java.util.AbstractMap;
-import java.util.AbstractSet;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.miaixz.bus.vortex.Holder;
 
@@ -76,6 +68,78 @@ public class Parameter extends AbstractMap<String, Object> {
         this.objectView = Collections.unmodifiableMap(this);
         this.stringView = stringOnly ? Collections.unmodifiableMap((Map<String, String>) (Map<?, ?>) this.values)
                 : null;
+    }
+
+    /**
+     * Sanitizes a business parameter map.
+     *
+     * @param source The original parameter map.
+     * @return A sanitized copy of the input map.
+     */
+    public static Map<String, Object> sanitizeParameters(Map<?, ?> source) {
+        Parameter sanitized = new Parameter();
+        sanitized.ingest(source);
+        return new LinkedHashMap<>(sanitized.values);
+    }
+
+    /**
+     * Sanitizes a query-parameter map and keeps only string values that remain valid after normalization.
+     *
+     * @param source The original query-parameter map.
+     * @return A sanitized string-only copy.
+     */
+    public static Map<String, String> sanitizeQueryParameters(Map<?, ?> source) {
+        Parameter sanitized = new Parameter(true);
+        sanitized.ingest(source);
+        return new LinkedHashMap<>(sanitized.asStringMap());
+    }
+
+    /**
+     * Sanitizes a single value.
+     *
+     * @param value The original value.
+     * @return The sanitized value, or {@code null} when the value should be removed.
+     */
+    public static Object sanitizeValue(Object value) {
+        if (!Holder.isSanitizeNullLikeParameters()) {
+            return value;
+        }
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof CharSequence sequence) {
+            String text = sequence.toString();
+            String normalized = text.trim();
+            if ("null".equalsIgnoreCase(normalized) || "undefined".equalsIgnoreCase(normalized)) {
+                return null;
+            }
+            return text;
+        }
+        if (value instanceof Map<?, ?> map) {
+            return sanitizeParameters(map);
+        }
+        if (value instanceof Iterable<?> iterable) {
+            List<Object> sanitized = new ArrayList<>();
+            for (Object item : iterable) {
+                Object candidate = sanitizeValue(item);
+                if (candidate != null) {
+                    sanitized.add(candidate);
+                }
+            }
+            return sanitized;
+        }
+        if (value.getClass().isArray()) {
+            List<Object> sanitized = new ArrayList<>();
+            int length = Array.getLength(value);
+            for (int i = 0; i < length; i++) {
+                Object candidate = sanitizeValue(Array.get(value, i));
+                if (candidate != null) {
+                    sanitized.add(candidate);
+                }
+            }
+            return sanitized;
+        }
+        return value;
     }
 
     /**
@@ -247,78 +311,6 @@ public class Parameter extends AbstractMap<String, Object> {
                 return values.size();
             }
         };
-    }
-
-    /**
-     * Sanitizes a business parameter map.
-     *
-     * @param source The original parameter map.
-     * @return A sanitized copy of the input map.
-     */
-    public static Map<String, Object> sanitizeParameters(Map<?, ?> source) {
-        Parameter sanitized = new Parameter();
-        sanitized.ingest(source);
-        return new LinkedHashMap<>(sanitized.values);
-    }
-
-    /**
-     * Sanitizes a query-parameter map and keeps only string values that remain valid after normalization.
-     *
-     * @param source The original query-parameter map.
-     * @return A sanitized string-only copy.
-     */
-    public static Map<String, String> sanitizeQueryParameters(Map<?, ?> source) {
-        Parameter sanitized = new Parameter(true);
-        sanitized.ingest(source);
-        return new LinkedHashMap<>(sanitized.asStringMap());
-    }
-
-    /**
-     * Sanitizes a single value.
-     *
-     * @param value The original value.
-     * @return The sanitized value, or {@code null} when the value should be removed.
-     */
-    public static Object sanitizeValue(Object value) {
-        if (!Holder.isSanitizeNullLikeParameters()) {
-            return value;
-        }
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof CharSequence sequence) {
-            String text = sequence.toString();
-            String normalized = text.trim();
-            if ("null".equalsIgnoreCase(normalized) || "undefined".equalsIgnoreCase(normalized)) {
-                return null;
-            }
-            return text;
-        }
-        if (value instanceof Map<?, ?> map) {
-            return sanitizeParameters(map);
-        }
-        if (value instanceof Iterable<?> iterable) {
-            List<Object> sanitized = new ArrayList<>();
-            for (Object item : iterable) {
-                Object candidate = sanitizeValue(item);
-                if (candidate != null) {
-                    sanitized.add(candidate);
-                }
-            }
-            return sanitized;
-        }
-        if (value.getClass().isArray()) {
-            List<Object> sanitized = new ArrayList<>();
-            int length = Array.getLength(value);
-            for (int i = 0; i < length; i++) {
-                Object candidate = sanitizeValue(Array.get(value, i));
-                if (candidate != null) {
-                    sanitized.add(candidate);
-                }
-            }
-            return sanitized;
-        }
-        return value;
     }
 
     /**

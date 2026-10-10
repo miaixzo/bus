@@ -26,6 +26,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
@@ -546,7 +547,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
     private static String fallback(
             final JsonValue.ObjectValue object,
             final String name,
-            final java.util.function.Supplier<String> fallback) {
+            final Supplier<String> fallback) {
         final JsonValue value = object.values().get(name);
         if (value == null || value instanceof JsonValue.NullValue) {
             return fallback.get();

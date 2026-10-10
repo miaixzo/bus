@@ -20,20 +20,32 @@
 package org.opencv.img_hash;
 
 // C++: class PHash
+
 /**
  * pHash
- *
+ * <p>
  * Slower than average_hash, but tolerant of minor modifications
- *
+ * <p>
  * This algorithm can combat more variation than averageHash, for more details please refer to CITE: lookslikeit
  */
 public class PHash extends ImgHashBase {
 
-    public PHash(long addr) {
+    /**
+     * Creates a new {@code PHash} instance.
+     *
+     * @param addr the {@code addr} value
+     */
+    protected PHash(long addr) {
         super(addr);
     }
 
     // internal usage only
+    /**
+     * Performs the {@code __fromPtr__} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static PHash __fromPtr__(long addr) {
         return new PHash(addr);
     }
@@ -42,6 +54,11 @@ public class PHash extends ImgHashBase {
     // C++: static Ptr_PHash cv::img_hash::PHash::create()
     //
 
+    /**
+     * Performs the {@code create} operation.
+     *
+     * @return the operation result
+     */
     public static PHash create() {
         return PHash.__fromPtr__(create_0());
     }

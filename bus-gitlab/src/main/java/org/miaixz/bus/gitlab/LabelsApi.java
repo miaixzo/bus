@@ -31,9 +31,9 @@ import org.miaixz.bus.gitlab.models.Label;
 /**
  * This class provides an entry point to all the GitLab API project and group label calls.
  *
+ * @author Kimi Liu
  * @see <a href="https://docs.gitlab.com/ce/api/labels.html">Labels API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/group_labels.html">Group Labels API at GitLab</a>
- * @author Kimi Liu
  */
 public class LabelsApi extends AbstractApi {
 

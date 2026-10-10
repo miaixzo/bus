@@ -113,6 +113,33 @@ public class StompFrame {
     }
 
     /**
+     * Validates and normalizes command names.
+     *
+     * @param value command text to validate and normalize
+     * @return trimmed uppercase command
+     * @throws ValidateException if the command is blank or contains a line break
+     */
+    private static String validateCommand(final String value) {
+        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException("STOMP command must be non-blank and single-line");
+        }
+        return value.trim().toUpperCase(Locale.ROOT);
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Returns command.
      *
      * @return uppercase STOMP command, or an empty string for the heartbeat singleton
@@ -188,33 +215,6 @@ public class StompFrame {
         }
         return "StompFrame[command=" + command + ", headers=" + headers + ", body=" + body + ", receipt=" + receipt
                 + "]";
-    }
-
-    /**
-     * Validates and normalizes command names.
-     *
-     * @param value command text to validate and normalize
-     * @return trimmed uppercase command
-     * @throws ValidateException if the command is blank or contains a line break
-     */
-    private static String validateCommand(final String value) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("STOMP command must be non-blank and single-line");
-        }
-        return value.trim().toUpperCase(Locale.ROOT);
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  logical field name included in the validation error
-     * @param <T>   reference type
-     * @return validated non-null reference
-     * @throws ValidateException if {@code value} is {@code null}
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

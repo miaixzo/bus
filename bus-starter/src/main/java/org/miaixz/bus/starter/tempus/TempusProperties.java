@@ -55,6 +55,16 @@ public class TempusProperties extends WorkflowBindingOptions {
     }
 
     /**
+     * Returns whether a configuration string is absent or blank.
+     *
+     * @param value configuration string
+     * @return {@code true} when the string is absent or blank
+     */
+    private static boolean blank(String value) {
+        return value == null || value.isBlank();
+    }
+
+    /**
      * Validates connection, binding, timeout, retry, and worker bounds after binding.
      */
     public void validate() {
@@ -83,16 +93,6 @@ public class TempusProperties extends WorkflowBindingOptions {
             throw new IllegalArgumentException(
                     "bus.tempus timeouts, retry limits and worker capacities must be positive");
         }
-    }
-
-    /**
-     * Returns whether a configuration string is absent or blank.
-     *
-     * @param value configuration string
-     * @return {@code true} when the string is absent or blank
-     */
-    private static boolean blank(String value) {
-        return value == null || value.isBlank();
     }
 
     /**

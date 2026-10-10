@@ -35,17 +35,6 @@ import java.util.concurrent.atomic.AtomicLong;
 public interface CardinalityPolicy {
 
     /**
-     * Evaluate a tag value. Returns the value that should be used (original, "__overflow__", "__other__", or empty for
-     * denied).
-     *
-     * @param value the incoming tag value
-     * @return allowed value, or sentinel if overflow/deny
-     */
-    String evaluate(String value);
-
-    // ── Factories ─────────────────────────────────────────────────────────
-
-    /**
      * Create a {@link FirstN} policy that accepts the first {@code n} distinct values.
      *
      * @param n maximum number of distinct values to allow
@@ -56,9 +45,10 @@ public interface CardinalityPolicy {
     }
 
     /**
-     * Create a {@link TopN} policy that keeps the {@code n} most frequent values.
+     * Creates a {@link TopN} compatibility policy that admits at most {@code n} direct values and maps the rest to a
+     * shared sentinel.
      *
-     * @param n number of top values to retain
+     * @param n number of direct values to retain
      * @return a new TopN policy
      */
     static CardinalityPolicy topN(int n) {
@@ -74,7 +64,14 @@ public interface CardinalityPolicy {
         return Deny.INSTANCE;
     }
 
-    // ── Implementations ───────────────────────────────────────────────────
+    /**
+     * Evaluate a tag value. Returns the value that should be used (original, "__overflow__", "__other__", or empty for
+     * denied).
+     *
+     * @param value the incoming tag value
+     * @return allowed value, or sentinel if overflow/deny
+     */
+    String evaluate(String value);
 
     /**
      * Accept the first N distinct values; replace subsequent novel values with "__overflow__".
@@ -97,8 +94,12 @@ public interface CardinalityPolicy {
          * Creates a FirstN policy with the given maximum distinct value count.
          *
          * @param max maximum number of distinct values to allow before overflowing
+         * @throws IllegalArgumentException if {@code max} is not positive
          */
         public FirstN(int max) {
+            if (max <= 0) {
+                throw new IllegalArgumentException("FirstN maximum must be positive");
+            }
             this.max = max;
         }
 
@@ -110,21 +111,24 @@ public interface CardinalityPolicy {
          */
         @Override
         public String evaluate(String value) {
-            if (seen.contains(value)) {
-                return value;
+            synchronized (seen) {
+                if (seen.contains(value)) {
+                    return value;
+                }
+                if (seen.size() < max) {
+                    seen.add(value);
+                    return value;
+                }
+                return "__overflow__";
             }
-            if (seen.size() < max) {
-                seen.add(value);
-                return value;
-            }
-            return "__overflow__";
         }
 
     }
 
     /**
-     * Keep the N most frequent values using a Count-Min Sketch approximation; infrequent values are replaced with
-     * "__other__".
+     * Retains a bounded set of directly exported values and maps every value outside that admitted set to
+     * {@code "__other__"}. Frequencies are tracked only for admitted values, so the policy never creates more than
+     * {@code N + 1} exported values over its lifetime.
      *
      * @author Kimi Liu
      */
@@ -136,7 +140,7 @@ public interface CardinalityPolicy {
         private final int max;
 
         /**
-         * Frequency map for all observed values; bounded to {@code max * 4} entries before pruning.
+         * Frequency counters for the bounded admitted value set.
          */
         private final ConcurrentHashMap<String, AtomicLong> freq = new ConcurrentHashMap<>();
 
@@ -144,8 +148,12 @@ public interface CardinalityPolicy {
          * Creates a TopN policy with the given maximum retained value count.
          *
          * @param max number of top-frequency values to retain
+         * @throws IllegalArgumentException if {@code max} is not positive
          */
         public TopN(int max) {
+            if (max <= 0) {
+                throw new IllegalArgumentException("TopN maximum must be positive");
+            }
             this.max = max;
         }
 
@@ -157,36 +165,18 @@ public interface CardinalityPolicy {
          */
         @Override
         public String evaluate(String value) {
-            freq.computeIfAbsent(value, k -> new AtomicLong(0)).incrementAndGet();
-            // Keep only top-N by pruning low-frequency entries when map exceeds 4×max
-            if (freq.size() > max * 4) {
-                prune();
+            synchronized (freq) {
+                AtomicLong existing = freq.get(value);
+                if (existing != null) {
+                    existing.incrementAndGet();
+                    return value;
+                }
+                if (freq.size() < max) {
+                    freq.put(value, new AtomicLong(1));
+                    return value;
+                }
+                return "__other__";
             }
-            // Check if this value is in top-N
-            long myFreq = freq.getOrDefault(value, new AtomicLong(0)).get();
-            long threshold = computeThreshold();
-            return myFreq >= threshold ? value : "__other__";
-        }
-
-        /**
-         * Returns the minimum frequency threshold for a value to be considered top-N.
-         *
-         * @return the frequency threshold
-         */
-        private long computeThreshold() {
-            if (freq.size() <= max) {
-                return 0;
-            }
-            long[] sorted = freq.values().stream().mapToLong(AtomicLong::get).sorted().toArray();
-            return sorted[Math.max(0, sorted.length - max)];
-        }
-
-        /**
-         * Removes low-frequency entries from the frequency map to keep it bounded.
-         */
-        private void prune() {
-            long threshold = computeThreshold();
-            freq.entrySet().removeIf(e -> e.getValue().get() < threshold);
         }
 
     }
@@ -218,7 +208,7 @@ public interface CardinalityPolicy {
          */
         @Override
         public String evaluate(String value) {
-            return null; // null signals "strip this tag"
+            return null;
         }
 
     }

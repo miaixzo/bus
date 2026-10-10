@@ -83,10 +83,12 @@ public class UpsSCU {
             throw new UnsupportedOperationException();
         }
     };
+
     /**
      * The default status to be returned in N-EVENT-REPORT responses.
      */
     private static int status;
+
     /**
      * The Application Entity for this SCU.
      */
@@ -101,6 +103,7 @@ public class UpsSCU {
      * The A-ASSOCIATE-RQ message.
      */
     private final AAssociateRQ rq = new AAssociateRQ();
+
     /**
      * A factory for creating DIMSE response handlers.
      */
@@ -161,10 +164,12 @@ public class UpsSCU {
             };
         }
     };
+
     /**
      * The active DICOM association.
      */
     private Association as;
+
     /**
      * The path to an XML file containing UPS data.
      */

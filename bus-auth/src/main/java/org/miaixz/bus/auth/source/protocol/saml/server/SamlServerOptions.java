@@ -67,6 +67,7 @@ public record SamlServerOptions(String entityId, Endpoint singleSignOnServiceEnd
      * Maximum assertion lifetime permitted by the SAML identity-provider issuance policy.
      */
     private static final Duration MAXIMUM_ASSERTION_LIFETIME = Duration.ofHours(24);
+
     /**
      * Maximum clock difference permitted by the SAML identity-provider validation policy.
      */

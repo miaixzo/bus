@@ -36,9 +36,6 @@ import org.miaixz.bus.image.galaxy.data.ValidationResult;
  */
 public class ImageServiceException extends IOException {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852276570267L;
 

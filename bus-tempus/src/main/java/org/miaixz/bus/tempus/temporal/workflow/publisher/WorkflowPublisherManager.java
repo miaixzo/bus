@@ -87,6 +87,26 @@ public class WorkflowPublisherManager implements Publisher {
     }
 
     /**
+     * Completes workflow binding options with publisher binding defaults.
+     *
+     * @param source  source workflow binding options
+     * @param binding workflow binding
+     * @return completed workflow binding options
+     */
+    private static WorkflowBindingOptions completeOptions(
+            WorkflowBindingOptions source,
+            WorkflowPublisherBinding binding) {
+        WorkflowBindingOptions target = source == null ? WorkflowBindingOptions.defaults() : source;
+        if (!StringKit.hasText(target.getTaskQueue())) {
+            target.setTaskQueue(binding.getTaskQueue());
+        }
+        if (!StringKit.hasText(target.getWorkflowType())) {
+            target.setWorkflowType(binding.getWorkflowType());
+        }
+        return target;
+    }
+
+    /**
      * Publishes a workflow execution with the specified arguments.
      * <p>
      * On transient connection errors, the cached client is invalidated and the publish is retried once.
@@ -298,26 +318,6 @@ public class WorkflowPublisherManager implements Publisher {
                     e.getClass().getSimpleName());
             return null;
         }
-    }
-
-    /**
-     * Completes workflow binding options with publisher binding defaults.
-     *
-     * @param source  source workflow binding options
-     * @param binding workflow binding
-     * @return completed workflow binding options
-     */
-    private static WorkflowBindingOptions completeOptions(
-            WorkflowBindingOptions source,
-            WorkflowPublisherBinding binding) {
-        WorkflowBindingOptions target = source == null ? WorkflowBindingOptions.defaults() : source;
-        if (!StringKit.hasText(target.getTaskQueue())) {
-            target.setTaskQueue(binding.getTaskQueue());
-        }
-        if (!StringKit.hasText(target.getWorkflowType())) {
-            target.setWorkflowType(binding.getWorkflowType());
-        }
-        return target;
     }
 
 }

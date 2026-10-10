@@ -33,7 +33,7 @@ public class BucketWindow {
     /**
      * Number of one-second buckets in the ring; covers a 5-minute window.
      */
-    private static final int RING_SIZE = 300; // 5 minutes of 1-second buckets
+    private static final int RING_SIZE = 300;
 
     /**
      * Ring buffer of per-second accumulators.
@@ -60,14 +60,14 @@ public class BucketWindow {
      *
      * @param value the value to add
      */
-    public void record(long value) {
+    public synchronized void record(long value) {
         buckets[currentBucket].add(value);
     }
 
     /**
-     * Advance time by one second. Called by NativeTimer's background scheduler.
+     * Advances this independent utility by one second and clears the newly active bucket.
      */
-    public void advance() {
+    public synchronized void advance() {
         int next = (currentBucket + 1) % RING_SIZE;
         buckets[next].reset();
         currentBucket = next;
@@ -78,8 +78,12 @@ public class BucketWindow {
      *
      * @param seconds time window in seconds
      * @return sum of all values in the selected window
+     * @throws IllegalArgumentException if {@code seconds} is not positive
      */
-    public long sum(int seconds) {
+    public synchronized long sum(int seconds) {
+        if (seconds <= 0) {
+            throw new IllegalArgumentException("Bucket window seconds must be positive");
+        }
         int cur = currentBucket;
         long total = 0;
         for (int i = 0; i < seconds && i < RING_SIZE; i++) {

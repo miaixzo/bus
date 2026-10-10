@@ -37,13 +37,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.dns.dnssec.DnsDnssecValidator;
 import org.miaixz.bus.fabric.network.dns.forward.DnsForwarder;
 import org.miaixz.bus.fabric.network.dns.forward.DnsUpstream;
-import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
-import org.miaixz.bus.fabric.network.dns.message.DnsDecodedResponse;
-import org.miaixz.bus.fabric.network.dns.message.DnsName;
-import org.miaixz.bus.fabric.network.dns.message.DnsQuery;
-import org.miaixz.bus.fabric.network.dns.message.DnsQuestion;
-import org.miaixz.bus.fabric.network.dns.message.DnsResponse;
-import org.miaixz.bus.fabric.network.dns.message.DnsResponseCode;
+import org.miaixz.bus.fabric.network.dns.message.*;
 import org.miaixz.bus.fabric.network.dns.record.DnsRecord;
 import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
 import org.miaixz.bus.fabric.network.dns.zone.DnsTrustAnchor;
@@ -167,82 +161,6 @@ public class DnsRecursiveResolver {
     }
 
     /**
-     * Builds the immutable QNAME-minimization plan for one decoded client query.
-     *
-     * @param query decoded caller query
-     * @return immutable recursion plan
-     */
-    public DnsRecursionPlanner.DnsRecursionPlan plan(final DnsQuery query) {
-        return recursionPlanner.plan(query);
-    }
-
-    /**
-     * Resolves one query by forwarding to roots and following referrals that contain usable glue.
-     *
-     * @param query   decoded caller query
-     * @param request original query wire bytes
-     * @return DNS response model with recursion available
-     */
-    public DnsResponse resolve(final DnsQuery query, final byte[] request) {
-        return resolve(query, request, new HashSet<>(), DnsRetryBudget.recursive());
-    }
-
-    /**
-     * Resolves one query while retaining the current NS-address lookup stack.
-     *
-     * @param query              decoded caller query
-     * @param request            original query wire bytes
-     * @param addressLookupStack name-server address lookups currently in progress
-     * @param budget             retry budget shared by the recursive flow
-     * @return DNS response model with recursion available
-     */
-    private DnsResponse resolve(
-            final DnsQuery query,
-            final byte[] request,
-            final Set<String> addressLookupStack,
-            final DnsRetryBudget budget) {
-        if (query == null) {
-            throw new ValidateException("DNS recursive query must not be null");
-        }
-        if (request == null || request.length == 0) {
-            throw new ValidateException("DNS recursive request must not be empty");
-        }
-        if (budget == null) {
-            throw new ValidateException("DNS recursive retry budget must not be null");
-        }
-        List<DnsUpstream> candidates = roots;
-        DnsRetryBudget cursor = budget;
-        RuntimeException failure = null;
-        for (int depth = 0; depth < MAX_REFERRAL_DEPTH; depth++) {
-            if (cursor.exhausted()) {
-                return DnsResponse.empty(query, DnsResponseCode.SERVFAIL, false);
-            }
-            final DnsDecodedResponse decoded;
-            try {
-                final DnsNameServerRacer.DnsNameServerRace race = new DnsNameServerRacer(candidates)
-                        .race(query, request, cursor);
-                cursor = race.budget();
-                decoded = DnsCodec.decodeResponse(race.response());
-            } catch (final RuntimeException e) {
-                failure = appendFailure(failure, e);
-                break;
-            }
-            if (finalResponse(decoded)) {
-                return dnssecValidator.validate(query, decoded);
-            }
-            final List<DnsUpstream> referrals = referralUpstreams(query, decoded, addressLookupStack);
-            if (referrals.isEmpty()) {
-                return dnssecValidator.validate(query, decoded);
-            }
-            candidates = referrals;
-        }
-        if (failure != null) {
-            throw new SocketException("DNS recursive resolution failed", failure);
-        }
-        return DnsResponse.empty(query, DnsResponseCode.SERVFAIL, false);
-    }
-
-    /**
      * Returns whether a decoded response is final for this resolver.
      *
      * @param response decoded response
@@ -256,96 +174,6 @@ public class DnsRecursiveResolver {
             return true;
         }
         return !containsType(response.authorities(), DnsRecordType.NS);
-    }
-
-    /**
-     * Extracts referral upstreams from NS authority records and matching A or AAAA glue.
-     *
-     * @param query              original query used to derive internal lookup identifiers
-     * @param response           decoded referral response
-     * @param addressLookupStack name-server address lookups currently in progress
-     * @return referral upstreams, or an empty list when no usable glue is present
-     */
-    private List<DnsUpstream> referralUpstreams(
-            final DnsQuery query,
-            final DnsDecodedResponse response,
-            final Set<String> addressLookupStack) {
-        final Set<String> nameservers = nameserverNames(response.authorities());
-        if (nameservers.isEmpty()) {
-            return List.of();
-        }
-        final ArrayList<DnsUpstream> upstreams = new ArrayList<>();
-        for (final DnsRecord record : response.additionals()) {
-            if (nameservers.contains(record.name()) && addressRecord(record)) {
-                upstreams.add(DnsUpstream.udp(addressLiteral(record), referralPort, referralTimeout));
-            }
-        }
-        if (!upstreams.isEmpty()) {
-            return List.copyOf(upstreams);
-        }
-        return resolveNameserverAddresses(query, nameservers, addressLookupStack);
-    }
-
-    /**
-     * Resolves name-server host names when a referral did not carry glue.
-     *
-     * @param query              original query used to derive internal lookup identifiers
-     * @param nameservers        referred name-server host names
-     * @param addressLookupStack name-server address lookups currently in progress
-     * @return referral upstreams resolved from A and AAAA answers
-     */
-    private List<DnsUpstream> resolveNameserverAddresses(
-            final DnsQuery query,
-            final Set<String> nameservers,
-            final Set<String> addressLookupStack) {
-        final ArrayList<DnsUpstream> upstreams = new ArrayList<>();
-        for (final String nameserver : nameservers) {
-            appendResolvedAddressUpstreams(upstreams, query, nameserver, DnsRecordType.A.code(), addressLookupStack);
-            appendResolvedAddressUpstreams(upstreams, query, nameserver, DnsRecordType.AAAA.code(), addressLookupStack);
-        }
-        return List.copyOf(upstreams);
-    }
-
-    /**
-     * Appends upstreams resolved from one internal address lookup.
-     *
-     * @param upstreams          mutable target upstream list
-     * @param query              original query used to derive the internal identifier
-     * @param nameserver         referred name-server host name
-     * @param typeCode           address query type code
-     * @param addressLookupStack name-server address lookups currently in progress
-     */
-    private void appendResolvedAddressUpstreams(
-            final ArrayList<DnsUpstream> upstreams,
-            final DnsQuery query,
-            final String nameserver,
-            final int typeCode,
-            final Set<String> addressLookupStack) {
-        final String lookupKey = nameserver + Symbol.OR + typeCode;
-        if (!addressLookupStack.add(lookupKey)) {
-            return;
-        }
-        final DnsQuery addressQuery = new DnsQuery(internalQueryId(query, nameserver, typeCode), DnsQuery.OPCODE_QUERY,
-                true, new DnsQuestion(nameserver, typeCode, DnsRecord.CLASS_IN), 0, false);
-        try {
-            final DnsResponse response = resolve(
-                    addressQuery,
-                    encodeInternalQuery(addressQuery),
-                    addressLookupStack,
-                    DnsRetryBudget.recursive());
-            if (response.responseCode() != DnsResponseCode.NOERROR) {
-                return;
-            }
-            for (final DnsRecord answer : response.answers()) {
-                if (answer.typeCode() == typeCode) {
-                    upstreams.add(DnsUpstream.udp(addressLiteral(answer), referralPort, referralTimeout));
-                }
-            }
-        } catch (final RuntimeException ignored) {
-            return;
-        } finally {
-            addressLookupStack.remove(lookupKey);
-        }
     }
 
     /**
@@ -466,6 +294,172 @@ public class DnsRecursiveResolver {
             throw new ValidateException("DNS recursive referral port is out of range");
         }
         return port;
+    }
+
+    /**
+     * Builds the immutable QNAME-minimization plan for one decoded client query.
+     *
+     * @param query decoded caller query
+     * @return immutable recursion plan
+     */
+    public DnsRecursionPlanner.DnsRecursionPlan plan(final DnsQuery query) {
+        return recursionPlanner.plan(query);
+    }
+
+    /**
+     * Resolves one query by forwarding to roots and following referrals that contain usable glue.
+     *
+     * @param query   decoded caller query
+     * @param request original query wire bytes
+     * @return DNS response model with recursion available
+     */
+    public DnsResponse resolve(final DnsQuery query, final byte[] request) {
+        return resolve(query, request, new HashSet<>(), DnsRetryBudget.recursive());
+    }
+
+    /**
+     * Resolves one query while retaining the current NS-address lookup stack.
+     *
+     * @param query              decoded caller query
+     * @param request            original query wire bytes
+     * @param addressLookupStack name-server address lookups currently in progress
+     * @param budget             retry budget shared by the recursive flow
+     * @return DNS response model with recursion available
+     */
+    private DnsResponse resolve(
+            final DnsQuery query,
+            final byte[] request,
+            final Set<String> addressLookupStack,
+            final DnsRetryBudget budget) {
+        if (query == null) {
+            throw new ValidateException("DNS recursive query must not be null");
+        }
+        if (request == null || request.length == 0) {
+            throw new ValidateException("DNS recursive request must not be empty");
+        }
+        if (budget == null) {
+            throw new ValidateException("DNS recursive retry budget must not be null");
+        }
+        List<DnsUpstream> candidates = roots;
+        DnsRetryBudget cursor = budget;
+        RuntimeException failure = null;
+        for (int depth = 0; depth < MAX_REFERRAL_DEPTH; depth++) {
+            if (cursor.exhausted()) {
+                return DnsResponse.empty(query, DnsResponseCode.SERVFAIL, false);
+            }
+            final DnsDecodedResponse decoded;
+            try {
+                final DnsNameServerRacer.DnsNameServerRace race = new DnsNameServerRacer(candidates)
+                        .race(query, request, cursor);
+                cursor = race.budget();
+                decoded = DnsCodec.decodeResponse(race.response());
+            } catch (final RuntimeException e) {
+                failure = appendFailure(failure, e);
+                break;
+            }
+            if (finalResponse(decoded)) {
+                return dnssecValidator.validate(query, decoded);
+            }
+            final List<DnsUpstream> referrals = referralUpstreams(query, decoded, addressLookupStack);
+            if (referrals.isEmpty()) {
+                return dnssecValidator.validate(query, decoded);
+            }
+            candidates = referrals;
+        }
+        if (failure != null) {
+            throw new SocketException("DNS recursive resolution failed", failure);
+        }
+        return DnsResponse.empty(query, DnsResponseCode.SERVFAIL, false);
+    }
+
+    /**
+     * Extracts referral upstreams from NS authority records and matching A or AAAA glue.
+     *
+     * @param query              original query used to derive internal lookup identifiers
+     * @param response           decoded referral response
+     * @param addressLookupStack name-server address lookups currently in progress
+     * @return referral upstreams, or an empty list when no usable glue is present
+     */
+    private List<DnsUpstream> referralUpstreams(
+            final DnsQuery query,
+            final DnsDecodedResponse response,
+            final Set<String> addressLookupStack) {
+        final Set<String> nameservers = nameserverNames(response.authorities());
+        if (nameservers.isEmpty()) {
+            return List.of();
+        }
+        final ArrayList<DnsUpstream> upstreams = new ArrayList<>();
+        for (final DnsRecord record : response.additionals()) {
+            if (nameservers.contains(record.name()) && addressRecord(record)) {
+                upstreams.add(DnsUpstream.udp(addressLiteral(record), referralPort, referralTimeout));
+            }
+        }
+        if (!upstreams.isEmpty()) {
+            return List.copyOf(upstreams);
+        }
+        return resolveNameserverAddresses(query, nameservers, addressLookupStack);
+    }
+
+    /**
+     * Resolves name-server host names when a referral did not carry glue.
+     *
+     * @param query              original query used to derive internal lookup identifiers
+     * @param nameservers        referred name-server host names
+     * @param addressLookupStack name-server address lookups currently in progress
+     * @return referral upstreams resolved from A and AAAA answers
+     */
+    private List<DnsUpstream> resolveNameserverAddresses(
+            final DnsQuery query,
+            final Set<String> nameservers,
+            final Set<String> addressLookupStack) {
+        final ArrayList<DnsUpstream> upstreams = new ArrayList<>();
+        for (final String nameserver : nameservers) {
+            appendResolvedAddressUpstreams(upstreams, query, nameserver, DnsRecordType.A.code(), addressLookupStack);
+            appendResolvedAddressUpstreams(upstreams, query, nameserver, DnsRecordType.AAAA.code(), addressLookupStack);
+        }
+        return List.copyOf(upstreams);
+    }
+
+    /**
+     * Appends upstreams resolved from one internal address lookup.
+     *
+     * @param upstreams          mutable target upstream list
+     * @param query              original query used to derive the internal identifier
+     * @param nameserver         referred name-server host name
+     * @param typeCode           address query type code
+     * @param addressLookupStack name-server address lookups currently in progress
+     */
+    private void appendResolvedAddressUpstreams(
+            final ArrayList<DnsUpstream> upstreams,
+            final DnsQuery query,
+            final String nameserver,
+            final int typeCode,
+            final Set<String> addressLookupStack) {
+        final String lookupKey = nameserver + Symbol.OR + typeCode;
+        if (!addressLookupStack.add(lookupKey)) {
+            return;
+        }
+        final DnsQuery addressQuery = new DnsQuery(internalQueryId(query, nameserver, typeCode), DnsQuery.OPCODE_QUERY,
+                true, new DnsQuestion(nameserver, typeCode, DnsRecord.CLASS_IN), 0, false);
+        try {
+            final DnsResponse response = resolve(
+                    addressQuery,
+                    encodeInternalQuery(addressQuery),
+                    addressLookupStack,
+                    DnsRetryBudget.recursive());
+            if (response.responseCode() != DnsResponseCode.NOERROR) {
+                return;
+            }
+            for (final DnsRecord answer : response.answers()) {
+                if (answer.typeCode() == typeCode) {
+                    upstreams.add(DnsUpstream.udp(addressLiteral(answer), referralPort, referralTimeout));
+                }
+            }
+        } catch (final RuntimeException ignored) {
+            return;
+        } finally {
+            addressLookupStack.remove(lookupKey);
+        }
     }
 
 }

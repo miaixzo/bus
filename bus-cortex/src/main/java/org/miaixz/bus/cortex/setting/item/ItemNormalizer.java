@@ -19,123 +19,135 @@
 */
 package org.miaixz.bus.cortex.setting.item;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.cortex.Keying;
-import org.miaixz.bus.cortex.Keying.SettingSpec;
-import org.miaixz.bus.cortex.Type;
-import org.miaixz.bus.cortex.builtin.SettingGenerator;
+import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
+import org.miaixz.bus.crypto.Builder;
 
 /**
- * Canonical normalization policy for setting entries.
+ * Canonical business normalization for setting items.
  *
  * @author Kimi Liu
  */
-public class ItemNormalizer {
+public final class ItemNormalizer {
 
     /**
-     * Built-in source used for inline setting content.
+     * Source name used for content stored directly on an item.
      */
     public static final String INLINE_SOURCE = "INLINE";
 
     /**
-     * Keeps configuration-item normalization on the static API.
+     * Prevents utility-class instantiation.
      */
-    public ItemNormalizer() {
+    private ItemNormalizer() {
         // No initialization required.
     }
 
     /**
-     * Applies canonical defaults and derived identifiers to one setting entry before persistence or resolution.
+     * Applies canonical identifiers and default values to one item.
      *
-     * @param entry raw setting entry
-     * @return normalized setting entry
+     * @param entry item to normalize, or {@code null} to create one
+     * @return normalized item
      */
     public static Item normalize(Item entry) {
-        return normalize(entry, SettingGenerator.INSTANCE);
-    }
-
-    /**
-     * Applies canonical defaults and derived identifiers to one setting entry before persistence or resolution.
-     *
-     * @param entry  raw setting entry
-     * @param keying setting-domain key strategy
-     * @return normalized setting entry
-     */
-    public static Item normalize(Item entry, Keying<SettingSpec> keying) {
         Item prepared = entry == null ? new Item() : entry;
-        ItemBindingProjection.normalizeProfileIdsInto(prepared, ItemBindingProjection.normalizedProfileIds(prepared));
-        ItemBindingProjection.normalizeAppIdsInto(prepared, ItemBindingProjection.normalizedAppIds(prepared));
-        if (prepared.getExtension() != null && !(prepared.getExtension() instanceof LinkedHashMap<?, ?>)) {
-            ItemBindingProjection.copyExtensionInto(prepared, new LinkedHashMap<>(prepared.getExtension()));
-        }
         prepared.setSpace_id(CortexIdentity.space(prepared.getSpace_id()));
-        prepared.setType(Type.ITEM.key());
-        Keying<SettingSpec> resolvedKeying = keying == null ? SettingGenerator.INSTANCE : keying;
-        prepared.setId(
-                resolvedKeying
-                        .key(SettingSpec.itemId(prepared.getSpace_id(), prepared.getGroup(), prepared.getData_id())));
-        if (prepared.getSource() == null) {
+        if (StringKit.isEmpty(prepared.getId())) {
+            prepared.setId(ID.objectId());
+        }
+        if (StringKit.isEmpty(prepared.getKind())) {
+            prepared.setKind(Item.Kind.SOURCE.name());
+        }
+        if (StringKit.isEmpty(prepared.getSource())) {
             prepared.setSource(INLINE_SOURCE);
         }
-        if (prepared.getFormat() == null) {
+        if (StringKit.isEmpty(prepared.getFormat())) {
             prepared.setFormat(ItemFormat.TEXT.name());
         }
-        if (prepared.getExposure() == null) {
+        if (StringKit.isEmpty(prepared.getEditor())) {
+            prepared.setEditor(Item.Editor.SOURCE.name());
+        }
+        if (StringKit.isEmpty(prepared.getExposure())) {
             prepared.setExposure(ItemExposure.INTERNAL.name());
         }
         if (prepared.getEncrypted() == null) {
             prepared.setEncrypted(0);
         }
-        if (prepared.getStatus() == null) {
-            prepared.setStatus(1);
+        if (prepared.getEdition() == null) {
+            prepared.setEdition(0L);
         }
-        if (prepared.getChecksum() == null || prepared.getChecksum().isBlank()) {
+        if (prepared.getGeneration() == null) {
+            prepared.setGeneration(0L);
+        }
+        if (StringKit.isEmpty(prepared.getFingerprint())) {
+            prepared.setFingerprint(fingerprint(prepared));
+        }
+        if (StringKit.isEmpty(prepared.getChecksum())) {
             prepared.setChecksum(checksum(prepared));
         }
         return prepared;
     }
 
     /**
-     * Computes a stable checksum for one setting entry.
+     * Calculates the immutable-coordinate fingerprint of one item.
      *
-     * @param entry setting entry
-     * @return checksum text
+     * @param entry item whose coordinates are hashed
+     * @return SHA-256 fingerprint
      */
-    public static String checksum(Item entry) {
-        if (entry == null) {
-            return Symbol.ZERO;
-        }
-        Map<String, Object> extension = entry.getExtension();
-        return Integer.toHexString(
-                Objects.hash(
-                        entry.getSpace_id(),
-                        entry.getGroup(),
-                        entry.getData_id(),
-                        ItemBindingProjection.normalizedAppIds(entry),
-                        ItemBindingProjection.normalizedProfileIds(entry),
-                        entry.getContent(),
-                        entry.getSource(),
-                        entry.getSpec(),
-                        extension == null ? null : new LinkedHashMap<>(extension),
-                        entry.getFormat(),
-                        entry.getExposure(),
-                        entry.getEncrypted(),
-                        entry.getRule()));
+    public static String fingerprint(Item entry) {
+        return Builder.sha256(
+                String.join(
+                        "\u001f",
+                        value(entry.getTenant_id()),
+                        value(entry.getSpace_id()),
+                        value(entry.getProfile_id()),
+                        value(entry.getGroup()),
+                        value(entry.getCode()),
+                        value(entry.getKind())));
     }
 
     /**
-     * Returns whether the encrypted flag represents encrypted content.
+     * Calculates the semantic-content checksum of one item.
      *
-     * @param encrypted encrypted flag
-     * @return {@code true} when the flag is enabled
+     * @param entry item whose content is hashed
+     * @return SHA-256 checksum
+     */
+    public static String checksum(Item entry) {
+        if (entry == null) {
+            return Builder.sha256("");
+        }
+        return Builder.sha256(
+                String.join(
+                        "\u001f",
+                        value(entry.getContent()),
+                        value(entry.getPayload()),
+                        value(entry.getFormat()),
+                        value(entry.getEditor()),
+                        value(entry.getSource()),
+                        value(entry.getSpec()),
+                        value(entry.getExposure()),
+                        value(entry.getEncrypted()),
+                        value(entry.getLabels()),
+                        value(entry.getExtension())));
+    }
+
+    /**
+     * Tests whether the persisted encryption flag is enabled.
+     *
+     * @param encrypted persisted encryption flag
+     * @return {@code true} when the flag is exactly {@code 1}
      */
     public static boolean isEncryptedFlagEnabled(Integer encrypted) {
         return encrypted != null && encrypted.intValue() == 1;
     }
 
+    /**
+     * Converts a nullable value to its canonical hash input.
+     *
+     * @param value source value
+     * @return empty text for {@code null}, otherwise the string value
+     */
+    private static String value(Object value) {
+        return value == null ? "" : String.valueOf(value);
+    }
 }

@@ -32,9 +32,6 @@ import org.miaixz.bus.image.metric.TransferCapability;
  */
 public class NoRolesException extends IOException {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852273231891L;
 

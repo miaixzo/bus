@@ -33,7 +33,9 @@ public record ColorMapDomain(DomainKind kind, String unit, double min, double ma
     public static final ColorMapDomain RELATIVE = new ColorMapDomain(DomainKind.RELATIVE, null, 0.0, 1.0, null);
 
     public static final String REFERENCE_MAX = "max";
+
     public static final String REFERENCE_WINDOW = "window";
+
     public static final String REFERENCE_PRESCRIPTION = "prescription";
 
     public ColorMapDomain {

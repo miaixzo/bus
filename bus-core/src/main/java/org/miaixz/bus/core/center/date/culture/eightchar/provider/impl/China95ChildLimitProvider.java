@@ -20,6 +20,7 @@
 package org.miaixz.bus.core.center.date.culture.eightchar.provider.impl;
 
 import org.miaixz.bus.core.center.date.culture.eightchar.ChildLimitInfo;
+import org.miaixz.bus.core.center.date.culture.parts.SecondParts;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
@@ -28,7 +29,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
  *
  * @author Kimi Liu
  */
-public class China95ChildLimitProvider extends AbstractChildLimitProvider {
+public class China95ChildLimitProvider extends LunarSect2ChildLimitProvider {
 
     /**
      * Creates a new {@code China95ChildLimitProvider} instance.
@@ -46,15 +47,8 @@ public class China95ChildLimitProvider extends AbstractChildLimitProvider {
      */
     @Override
     public ChildLimitInfo getInfo(SolarTime birthTime, SolarTerms term) {
-        // Minutes difference between birth time and solar term time
-        int minutes = Math.abs(term.getJulianDay().getSolarTime().subtract(birthTime)) / 60;
-        int year = minutes / 4320;
-        minutes %= 4320;
-        int month = minutes / 360;
-        minutes %= 360;
-        int day = minutes / 12;
-
-        return next(birthTime, year, month, day, 0, 0, 0);
+        SecondParts t = compute(birthTime, term);
+        return next(birthTime, t.getYear(), t.getMonth(), t.getDay(), 0, 0, 0);
     }
 
 }

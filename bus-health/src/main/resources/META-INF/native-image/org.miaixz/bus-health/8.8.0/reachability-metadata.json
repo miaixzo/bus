@@ -2242,6 +2242,23 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice$UsbDeviceFactory",
+      "methods": [
+        {
+          "name": "create",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.health.builtin.hardware.common.AbstractVirtualMemory",
       "methods": [
         {
@@ -2312,6 +2329,35 @@
         },
         {
           "name": "isClosed",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.builtin.hardware.Display",
+      "methods": [
+        {
+          "name": "getCurrentMode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDevicePort",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDisplayInfo",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOutputName",
+          "parameterTypes": []
+        },
+        {
+          "name": "isBuiltIn",
+          "parameterTypes": []
+        },
+        {
+          "name": "isPrimary",
           "parameterTypes": []
         }
       ]
@@ -2498,6 +2544,133 @@
         },
         {
           "name": "isEdidSynthetic",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.builtin.hardware.DisplayMode",
+      "methods": [
+        {
+          "name": "getHeight",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPixelHeight",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPixelWidth",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRefreshRate",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRotation",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWidth",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX",
+          "parameterTypes": []
+        },
+        {
+          "name": "getY",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.builtin.hardware.DisplayModeImpl",
+      "fields": [
+        {
+          "name": "height"
+        },
+        {
+          "name": "pixelHeight"
+        },
+        {
+          "name": "pixelWidth"
+        },
+        {
+          "name": "refreshRate"
+        },
+        {
+          "name": "rotation"
+        },
+        {
+          "name": "width"
+        },
+        {
+          "name": "x"
+        },
+        {
+          "name": "y"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int",
+            "int",
+            "int",
+            "double",
+            "int"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getHeight",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPixelHeight",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPixelWidth",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRefreshRate",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRotation",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWidth",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX",
+          "parameterTypes": []
+        },
+        {
+          "name": "getY",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
           "parameterTypes": []
         },
         {
@@ -13097,6 +13270,12 @@
           "parameterTypes": []
         },
         {
+          "name": "parseBiosVendor",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "queryBiosDescription",
           "parameterTypes": []
         },
@@ -17015,6 +17194,80 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.health.mac.driver.CoreGraphicsDisplay",
+      "fields": [
+        {
+          "name": "builtIn"
+        },
+        {
+          "name": "main"
+        },
+        {
+          "name": "mode"
+        },
+        {
+          "name": "model"
+        },
+        {
+          "name": "serial"
+        },
+        {
+          "name": "vendor"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "boolean",
+            "boolean",
+            "org.miaixz.bus.health.builtin.hardware.DisplayMode"
+          ]
+        },
+        {
+          "name": "getMode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isBuiltIn",
+          "parameterTypes": []
+        },
+        {
+          "name": "isMain",
+          "parameterTypes": []
+        },
+        {
+          "name": "matchBuiltIn",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "matchEdid",
+          "parameterTypes": [
+            "java.util.List",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "toMode",
+          "parameterTypes": [
+            "double",
+            "double",
+            "double",
+            "double",
+            "long",
+            "long",
+            "double",
+            "double"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.health.mac.driver.CpuFrequencyResidency",
       "methods": [
         {
@@ -17353,14 +17606,6 @@
           "parameterTypes": []
         },
         {
-          "name": "getDisplaysFromService",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "<init>",
           "parameterTypes": [
             "byte[]",
@@ -17381,7 +17626,19 @@
           ]
         },
         {
+          "name": "getCurrentMode",
+          "parameterTypes": []
+        },
+        {
           "name": "getDevicePort",
+          "parameterTypes": []
+        },
+        {
+          "name": "isBuiltIn",
+          "parameterTypes": []
+        },
+        {
+          "name": "isPrimary",
           "parameterTypes": []
         }
       ]
@@ -17787,6 +18044,71 @@
         {
           "name": "getSoundCards",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.mac.hardware.MacUsbDevice",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "addDeviceAndChildrenToMaps",
+          "parameterTypes": [
+            "com.sun.jna.platform.mac.IOKit$IORegistryEntry",
+            "long",
+            "java.util.Map",
+            "java.util.Map",
+            "java.util.Map",
+            "java.util.Map",
+            "java.util.Map",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "getControllerIdByLocation",
+          "parameterTypes": [
+            "long",
+            "com.sun.jna.platform.mac.CoreFoundation$CFTypeRef",
+            "com.sun.jna.platform.mac.CoreFoundation$CFStringRef",
+            "com.sun.jna.platform.mac.CoreFoundation$CFStringRef",
+            "java.util.Map",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "getDeviceAndChildren",
+          "parameterTypes": [
+            "java.lang.Long",
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.Map",
+            "java.util.Map",
+            "java.util.Map",
+            "java.util.Map",
+            "java.util.Map",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "getUsbDevices",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUsbDevices",
+          "parameterTypes": [
+            "boolean"
+          ]
         }
       ]
     },
@@ -18286,7 +18608,55 @@
           ]
         },
         {
+          "name": "CGDisplayIsMain",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
           "name": "CGDisplayModelNumber",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "CGDisplayBounds",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "CGDisplayCopyDisplayMode",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "CGDisplayModeGetPixelHeight",
+          "parameterTypes": [
+            "com.sun.jna.Pointer"
+          ]
+        },
+        {
+          "name": "CGDisplayModeGetPixelWidth",
+          "parameterTypes": [
+            "com.sun.jna.Pointer"
+          ]
+        },
+        {
+          "name": "CGDisplayModeGetRefreshRate",
+          "parameterTypes": [
+            "com.sun.jna.Pointer"
+          ]
+        },
+        {
+          "name": "CGDisplayModeRelease",
+          "parameterTypes": [
+            "com.sun.jna.Pointer"
+          ]
+        },
+        {
+          "name": "CGDisplayRotation",
           "parameterTypes": [
             "int"
           ]
@@ -18299,6 +18669,12 @@
         },
         {
           "name": "CGDisplaySerialNumber",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "CGDisplayVendorNumber",
           "parameterTypes": [
             "int"
           ]
@@ -18782,6 +19158,23 @@
             "java.lang.String",
             "java.lang.Object"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.mac.jna.CoreGraphics$CGRectByValue",
+      "fields": [
+        {
+          "name": "origin"
+        },
+        {
+          "name": "size"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
         }
       ]
     },
@@ -28732,11 +29125,27 @@
           ]
         },
         {
+          "name": "parseTcpState",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "queryNetstat",
           "parameterTypes": []
         },
         {
           "name": "queryNetstat",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "querySolarisNetstat",
+          "parameterTypes": []
+        },
+        {
+          "name": "querySolarisNetstat",
           "parameterTypes": [
             "java.util.List"
           ]
@@ -28773,6 +29182,19 @@
           "name": "queryUdpStats",
           "parameterTypes": [
             "java.util.List"
+          ]
+        },
+        {
+          "name": "solarisSectionType",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toAddressBytes",
+          "parameterTypes": [
+            "java.lang.String"
           ]
         }
       ]
@@ -28978,21 +29400,151 @@
           ]
         },
         {
-          "name": "getDisplayData",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDisplayData",
+          "name": "findOutput",
           "parameterTypes": [
-            "java.util.List"
+            "java.util.List",
+            "int",
+            "byte[]"
           ]
         },
         {
-          "name": "findOutputName",
+          "name": "getOutputs",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOutputs",
           "parameterTypes": [
-            "java.util.Map",
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.unix.shared.driver.Xrandr$Output",
+      "fields": [
+        {
+          "name": "connectorId"
+        },
+        {
+          "name": "edid"
+        },
+        {
+          "name": "mode"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "primary"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
             "int",
+            "byte[]",
+            "org.miaixz.bus.health.builtin.hardware.DisplayMode",
+            "boolean"
+          ]
+        },
+        {
+          "name": "getConnectorId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEdid",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "isPrimary",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.unix.shared.driver.Xrandr$OutputBuilder",
+      "fields": [
+        {
+          "name": "connectorId"
+        },
+        {
+          "name": "edid"
+        },
+        {
+          "name": "height"
+        },
+        {
+          "name": "inCurrentMode"
+        },
+        {
+          "name": "modeHeight"
+        },
+        {
+          "name": "modeWidth"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "primary"
+        },
+        {
+          "name": "refreshRate"
+        },
+        {
+          "name": "rotation"
+        },
+        {
+          "name": "width"
+        },
+        {
+          "name": "x"
+        },
+        {
+          "name": "y"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "build",
+          "parameterTypes": [
             "byte[]"
+          ]
+        },
+        {
+          "name": "parseModeLine",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parseRotation",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "parseTimingValue",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
           ]
         }
       ]
@@ -29208,6 +29760,10 @@
           ]
         },
         {
+          "name": "getCurrentMode",
+          "parameterTypes": []
+        },
+        {
           "name": "getDevicePort",
           "parameterTypes": []
         },
@@ -29220,6 +29776,14 @@
           "parameterTypes": [
             "java.util.List"
           ]
+        },
+        {
+          "name": "isBuiltIn",
+          "parameterTypes": []
+        },
+        {
+          "name": "isPrimary",
+          "parameterTypes": []
         }
       ]
     },
@@ -36261,6 +36825,10 @@
           "parameterTypes": []
         },
         {
+          "name": "getConnections",
+          "parameterTypes": []
+        },
+        {
           "name": "getTcpStats",
           "parameterTypes": []
         },
@@ -36927,10 +37495,60 @@
           ]
         },
         {
+          "name": "isBuiltIn",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
           "name": "normalizePath",
           "parameterTypes": [
             "java.lang.String"
           ]
+        },
+        {
+          "name": "readMode",
+          "parameterTypes": [
+            "java.util.function.LongToIntFunction",
+            "java.util.function.LongToIntFunction",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.windows.driver.DisplayConnector$Connector",
+      "fields": [
+        {
+          "name": "builtIn"
+        },
+        {
+          "name": "mode"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "int",
+            "org.miaixz.bus.health.builtin.hardware.DisplayMode"
+          ]
+        },
+        {
+          "name": "getMode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "isBuiltIn",
+          "parameterTypes": []
         }
       ]
     },
@@ -39592,6 +40210,44 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.health.windows.hardware.WindowsDisplay",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "org.miaixz.bus.health.windows.driver.DisplayConnector$Connector"
+          ]
+        },
+        {
+          "name": "getCurrentMode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDevicePort",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDisplays",
+          "parameterTypes": []
+        },
+        {
+          "name": "isBuiltIn",
+          "parameterTypes": []
+        },
+        {
+          "name": "isPrimary",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.health.windows.hardware.WindowsFirmware",
       "methods": [
         {
@@ -39775,6 +40431,111 @@
           "parameterTypes": [
             "boolean"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore",
+      "fields": [
+        {
+          "name": "currentQueueLength"
+        },
+        {
+          "name": "partitionList"
+        },
+        {
+          "name": "readBytes"
+        },
+        {
+          "name": "reads"
+        },
+        {
+          "name": "timeStamp"
+        },
+        {
+          "name": "transferTime"
+        },
+        {
+          "name": "writeBytes"
+        },
+        {
+          "name": "writes"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "long",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getCurrentQueueLength",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDisks",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIndexFromName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getPartitions",
+          "parameterTypes": []
+        },
+        {
+          "name": "getReadBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getReads",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTimeStamp",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTransferTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWriteBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWrites",
+          "parameterTypes": []
+        },
+        {
+          "name": "parseWindowsMediaType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryPartitionMaps",
+          "parameterTypes": [
+            "org.miaixz.bus.health.windows.WmiQueryHandler"
+          ]
+        },
+        {
+          "name": "queryReadWriteStats",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "updateAttributes",
+          "parameterTypes": []
         }
       ]
     },
@@ -61926,6 +62687,63 @@
             "com.sun.jna.platform.win32.Guid$REFIID",
             "com.sun.jna.ptr.PointerByReference"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.windows.PerfCounterWildcardQuery",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "queryInstancesAndValues",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryInstancesAndValues",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryInstancesAndValuesFromPDH",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryInstancesAndValuesFromPDH",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryInstancesAndValuesFromWMI",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.windows.PerfCounterWildcardQuery$PdhCounterWildcardProperty",
+      "methods": [
+        {
+          "name": "getCounter",
+          "parameterTypes": []
         }
       ]
     },

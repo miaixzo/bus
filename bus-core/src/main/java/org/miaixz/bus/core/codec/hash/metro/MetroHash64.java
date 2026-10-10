@@ -43,8 +43,11 @@ public class MetroHash64 extends AbstractMetroHash<MetroHash64> implements Hash6
      * Predefined constants for the MetroHash64 algorithm.
      */
     private static final long K0 = 0xD6D018F5L;
+
     private static final long K1 = 0xA2AA033BL;
+
     private static final long K2 = 0x62992FC1L;
+
     private static final long K3 = 0x30BC5B29L;
 
     /**

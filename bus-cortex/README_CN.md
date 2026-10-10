@@ -127,8 +127,8 @@ TTL；不健康实例不续期，TTL 到期后由 CacheX 自动清理。
 | `AccessTokenStore`    | HMAC-SHA256 签发 Token，CacheX 支持主动吊销                      |
 | `AccessTokenResolver` | 两步校验：HMAC 重新验签（防伪造）+ CacheX 黑名单检查（支持吊销） |
 | `AccessGuard`         | RBAC 权限校验（ADMIN / PROVIDER / CONSUMER）                     |
-| `SpaceGuard`      | 阻止跨 space 写操作                                          |
-| `RateLimiter`         | 令牌桶限流，按 space/method 维度（CacheX 计数）              |
+| `SpaceGuard`          | 阻止跨 space 写操作                                              |
+| `RateLimiter`         | 令牌桶限流，按 space/method 维度（CacheX 计数）                  |
 | `CircuitBreaker`      | 状态机：CLOSED → OPEN → HALF_OPEN                                |
 | `ParamValidator`      | 入参校验（正则 `^[a-zA-Z0-9._-]{1,128}$`），防 CacheX key 注入   |
 
@@ -456,7 +456,7 @@ org.miaixz.bus.cortex
 ├── bridge/        bus-vortex 同步（VortexBridge, SyncEvent, ApiAssetsConverter）
 ├── guard/         安全防护（RateLimiter, CircuitBreaker, AccessTokenStore, AccessGuard, SpaceGuard）
 ├── builtin/       默认实现（CompositeProber, DefaultPublisher, DefaultNotifier）
-└── magic/         工具类（IdGenerator, Sequence, Fingerprint, AuditLogger, InstanceState）
+└── magic/         工具类（IdGenerator, Sequence, Fingerprint, AuditLogger）
 ```
 
 -----

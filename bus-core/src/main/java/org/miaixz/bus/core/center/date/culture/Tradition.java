@@ -39,6 +39,30 @@ public abstract class Tradition implements Culture {
     /**
      * Returns the display name of this traditional culture item.
      *
+     * @return the display name
+     */
+    public String getName() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Validates that a value is within the given inclusive range.
+     *
+     * @param value the value to validate
+     * @param min   the minimum valid value
+     * @param max   the maximum valid value
+     * @param field the field name used in the exception message
+     * @throws IllegalArgumentException if the value is outside the range
+     */
+    protected static void validateRange(int value, int min, int max, String field) {
+        if (value < min || value > max) {
+            throw new IllegalArgumentException(String.format("illegal %s: %d", field, value));
+        }
+    }
+
+    /**
+     * Returns the display name of this traditional culture item.
+     *
      * @return The name of the traditional element.
      */
     @Override
@@ -66,21 +90,6 @@ public abstract class Tradition implements Culture {
      */
     protected int indexOf(int index, int size) {
         return Math.floorMod(index, size);
-    }
-
-    /**
-     * Validates that a value is within the given inclusive range.
-     *
-     * @param value the value to validate
-     * @param min   the minimum valid value
-     * @param max   the maximum valid value
-     * @param field the field name used in the exception message
-     * @throws IllegalArgumentException if the value is outside the range
-     */
-    protected static void validateRange(int value, int min, int max, String field) {
-        if (value < min || value > max) {
-            throw new IllegalArgumentException(String.format("illegal %s: %d", field, value));
-        }
     }
 
 }

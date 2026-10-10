@@ -44,9 +44,6 @@ import tools.jackson.databind.node.ObjectNode;
  */
 public class Todo implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852282035620L;
 
@@ -54,18 +51,22 @@ public class Todo implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The project value.
      */
     private Project project;
+
     /**
      * The author value.
      */
     private Author author;
+
     /**
      * The action name value.
      */
     private TodoAction actionName;
+
     /**
      * The target type value.
      */
@@ -81,14 +82,17 @@ public class Todo implements Serializable {
      * The target url value.
      */
     private String targetUrl;
+
     /**
      * The body value.
      */
     private String body;
+
     /**
      * The state value.
      */
     private TodoState state;
+
     /**
      * The created at value.
      */
@@ -358,6 +362,7 @@ public class Todo implements Serializable {
 
     // This deserializer will determine the target type and deserialize to the correct class (either MergeRequest or
     // Issue).
+
     /**
      * The target deserializer class.
      *

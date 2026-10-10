@@ -20,7 +20,9 @@
 package org.miaixz.bus.metrics.nimble.indigenous;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.metrics.observe.slo.ErrorBudget;
@@ -34,6 +36,11 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  * @author Kimi Liu
  */
 public class NativeSloTracker implements SloTracker {
+
+    /**
+     * Default rolling SLO window of thirty minutes.
+     */
+    private static final long DEFAULT_WINDOW_MILLIS = 30 * 60 * 1000L;
 
     /**
      * Registered SLO definitions keyed by SLO name.
@@ -53,20 +60,44 @@ public class NativeSloTracker implements SloTracker {
     }
 
     /**
-     * Immutable definition of a registered SLO, including its associated {@link ErrorBudget}.
+     * Validates a non-blank SLO or metric name.
      *
-     * @param timerOrMeterName name of the timer or meter metric being observed
-     * @param isLatency        true for latency-based SLOs; false for availability-based
-     * @param thresholdMs      latency threshold in milliseconds (latency SLOs only)
-     * @param maxErrorRatio    maximum allowed error ratio (availability SLOs only)
-     * @param target           SLO target fraction, e.g. 0.999
-     * @param tags             optional tag filters
-     * @param budget           the error budget tracking instance
-     * @author Kimi Liu
+     * @param label field label
+     * @param value field value
+     * @return validated value
      */
-    private record SloDefinition(String timerOrMeterName, boolean isLatency, long thresholdMs, double maxErrorRatio,
-            double target, Tag[] tags, ErrorBudget budget) {
+    private static String requireName(String label, String value) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException(label + " must not be blank");
+        }
+        return value;
+    }
 
+    /**
+     * Validates an SLO target.
+     *
+     * @param target target fraction
+     * @return validated target
+     */
+    private static double requireTarget(double target) {
+        if (!Double.isFinite(target) || target <= 0 || target > 1) {
+            throw new IllegalArgumentException("SLO target must be greater than 0 and no greater than 1");
+        }
+        return target;
+    }
+
+    /**
+     * Defensively copies metric metadata tags.
+     *
+     * @param tags source tags
+     * @return immutable-by-ownership tag array
+     */
+    private static Tag[] copyTags(Tag[] tags) {
+        Tag[] copied = tags == null ? new Tag[0] : tags.clone();
+        for (Tag tag : copied) {
+            Objects.requireNonNull(tag, "SLO tag must not be null");
+        }
+        return copied;
     }
 
     /**
@@ -81,10 +112,16 @@ public class NativeSloTracker implements SloTracker {
      */
     @Override
     public SloTracker trackLatency(String sloName, String timerName, long thresholdMs, double target, Tag... tags) {
+        if (thresholdMs < 0) {
+            throw new IllegalArgumentException("Latency threshold must be non-negative");
+        }
+        String checkedName = requireName("SLO name", sloName);
+        String checkedMetric = requireName("Timer name", timerName);
+        double checkedTarget = requireTarget(target);
         definitions.put(
-                sloName,
-                new SloDefinition(timerName, true, thresholdMs, 0, target, tags,
-                        new ErrorBudget(target, 30 * 60 * 1000L)));
+                checkedName,
+                new SloDefinition(checkedMetric, true, thresholdMs, 0, checkedTarget, copyTags(tags),
+                        new ErrorBudget(checkedTarget, DEFAULT_WINDOW_MILLIS), new AtomicBoolean()));
         return this;
     }
 
@@ -105,10 +142,17 @@ public class NativeSloTracker implements SloTracker {
             double maxErrorRatio,
             double target,
             Tag... tags) {
+        if (!Double.isFinite(maxErrorRatio) || maxErrorRatio < 0 || maxErrorRatio >= 1) {
+            throw new IllegalArgumentException("Maximum error ratio must be at least 0 and less than 1");
+        }
+        String checkedName = requireName("SLO name", sloName);
+        String checkedMetric = requireName("Meter name", meterName);
+        double checkedTarget = requireTarget(target);
+        double effectiveTarget = Math.max(checkedTarget, 1.0 - maxErrorRatio);
         definitions.put(
-                sloName,
-                new SloDefinition(meterName, false, 0, maxErrorRatio, target, tags,
-                        new ErrorBudget(target, 30 * 60 * 1000L)));
+                checkedName,
+                new SloDefinition(checkedMetric, false, 0, maxErrorRatio, effectiveTarget, copyTags(tags),
+                        new ErrorBudget(effectiveTarget, DEFAULT_WINDOW_MILLIS), new AtomicBoolean()));
         return this;
     }
 
@@ -157,7 +201,9 @@ public class NativeSloTracker implements SloTracker {
      */
     @Override
     public SloTracker onBudgetExhausted(String sloName, ConsumerX<SloEvent> callback) {
-        exhaustedCallbacks.put(sloName, callback);
+        exhaustedCallbacks.put(
+                requireName("SLO name", sloName),
+                Objects.requireNonNull(callback, "SLO callback must not be null"));
         return this;
     }
 
@@ -165,7 +211,7 @@ public class NativeSloTracker implements SloTracker {
      * Record a single request observation for the named SLO.
      *
      * @param sloName    SLO name
-     * @param durationMs measured request duration in milliseconds
+     * @param durationMs measured non-negative request duration in milliseconds
      * @param error      true if the request ended in error
      */
     @Override
@@ -173,6 +219,9 @@ public class NativeSloTracker implements SloTracker {
         SloDefinition def = definitions.get(sloName);
         if (def == null) {
             return;
+        }
+        if (durationMs < 0) {
+            throw new IllegalArgumentException("SLO duration must be non-negative");
         }
         boolean good;
         if (def.isLatency()) {
@@ -185,15 +234,35 @@ public class NativeSloTracker implements SloTracker {
         } else {
             def.budget().recordBad();
         }
-        // Check budget exhaustion
-        if (def.budget().errorBudgetRemaining() <= 0) {
+        double remaining = def.budget().errorBudgetRemaining();
+        boolean exhausted = remaining <= 0;
+        boolean previouslyExhausted = def.exhausted().getAndSet(exhausted);
+        if (exhausted && !previouslyExhausted) {
             ConsumerX<SloEvent> cb = exhaustedCallbacks.get(sloName);
             if (cb != null) {
                 cb.accept(
-                        new SloEvent(sloName, def.target(), def.budget().compliance(), 0.0, def.budget().burnRate(),
-                                Instant.now()));
+                        new SloEvent(sloName, def.target(), def.budget().compliance(), remaining,
+                                def.budget().burnRate(), Instant.now()));
             }
         }
+    }
+
+    /**
+     * Immutable definition of a registered SLO, including its associated {@link ErrorBudget}.
+     *
+     * @param timerOrMeterName name of the timer or meter metric being observed
+     * @param isLatency        true for latency-based SLOs; false for availability-based
+     * @param thresholdMs      latency threshold in milliseconds (latency SLOs only)
+     * @param maxErrorRatio    maximum allowed error ratio (availability SLOs only)
+     * @param target           SLO target fraction, e.g. 0.999
+     * @param tags             optional tag filters
+     * @param budget           the error budget tracking instance
+     * @param exhausted        edge-trigger state
+     * @author Kimi Liu
+     */
+    private record SloDefinition(String timerOrMeterName, boolean isLatency, long thresholdMs, double maxErrorRatio,
+            double target, Tag[] tags, ErrorBudget budget, AtomicBoolean exhausted) {
+
     }
 
 }

@@ -39,46 +39,57 @@ public class WorkerSet {
      * Optional project binding resolver.
      */
     private final BindingResolver bindingResolver;
+
     /**
      * Optional project consumer loader.
      */
     private final ConsumerLoader consumerLoader;
+
     /**
      * Optional project consumer evidence verifier.
      */
     private final ConsumerVerifier consumerVerifier;
+
     /**
      * Optional project federation relation loader.
      */
     private final FederationLoader federationLoader;
+
     /**
      * Optional project secret loader.
      */
     private final SecretLoader secretLoader;
+
     /**
      * Optional project credential store.
      */
     private final CredentialStore credentialStore;
+
     /**
      * Optional project key loader.
      */
     private final KeyLoader keyLoader;
+
     /**
      * Optional project certificate loader.
      */
     private final CertificateLoader certificateLoader;
+
     /**
      * Optional project attribute loader.
      */
     private final AttributeLoader attributeLoader;
+
     /**
      * Optional project resource loader.
      */
     private final ResourceLoader resourceLoader;
+
     /**
      * Optional project consent service.
      */
     private final ConsentService consentService;
+
     /**
      * Optional project Session worker.
      */
@@ -243,46 +254,57 @@ public class WorkerSet {
          * Selected binding resolver.
          */
         private BindingResolver bindingResolver;
+
         /**
          * Selected consumer loader.
          */
         private ConsumerLoader consumerLoader;
+
         /**
          * Selected consumer evidence verifier.
          */
         private ConsumerVerifier consumerVerifier;
+
         /**
          * Selected federation relation loader.
          */
         private FederationLoader federationLoader;
+
         /**
          * Selected secret loader.
          */
         private SecretLoader secretLoader;
+
         /**
          * Selected credential store.
          */
         private CredentialStore credentialStore;
+
         /**
          * Selected key loader.
          */
         private KeyLoader keyLoader;
+
         /**
          * Selected certificate loader.
          */
         private CertificateLoader certificateLoader;
+
         /**
          * Selected attribute loader.
          */
         private AttributeLoader attributeLoader;
+
         /**
          * Selected resource loader.
          */
         private ResourceLoader resourceLoader;
+
         /**
          * Selected consent service.
          */
         private ConsentService consentService;
+
         /**
          * Selected Session worker.
          */

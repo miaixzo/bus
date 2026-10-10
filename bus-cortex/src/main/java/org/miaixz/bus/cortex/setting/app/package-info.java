@@ -20,8 +20,7 @@
 /**
  * Application directory abstractions for the setting domain.
  * <p>
- * App is a space-scoped directory resource and inherits the shared setting-domain base fields from
- * {@link org.miaixz.bus.cortex.Setting}. The canonical relationship is {@code space -> app -> item}. App can expose
- * zero to many {@code profile_ids}; an empty set means all space-scoped profiles are allowed.
+ * App contains only application directory attributes. Space, profile, and item relationships are expressed by
+ * {@code Reference} records and are not projected onto the model.
  */
 package org.miaixz.bus.cortex.setting.app;

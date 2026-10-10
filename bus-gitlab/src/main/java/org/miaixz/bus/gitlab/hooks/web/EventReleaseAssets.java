@@ -34,10 +34,12 @@ public class EventReleaseAssets {
      * The count value.
      */
     private Integer count;
+
     /**
      * The links value.
      */
     private List<EventReleaseLink> links;
+
     /**
      * The sources value.
      */

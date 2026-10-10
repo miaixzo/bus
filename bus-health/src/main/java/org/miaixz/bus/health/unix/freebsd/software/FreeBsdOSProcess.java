@@ -83,102 +83,127 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
      */
     private final SupplierX<Map<String, String>> environmentVariables = Memoizer
             .memoize(this::queryEnvironmentVariables);
+
     /**
      * The commandLine value.
      */
     private final SupplierX<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+
     /**
      * The path value.
      */
     private volatile String path = Normal.EMPTY;
+
     /**
      * The name value.
      */
     private volatile String name;
+
     /**
      * The state value.
      */
     private volatile State state = State.INVALID;
+
     /**
      * The user value.
      */
     private volatile String user;
+
     /**
      * The userID value.
      */
     private volatile String userID;
+
     /**
      * The group value.
      */
     private volatile String group;
+
     /**
      * The groupID value.
      */
     private volatile String groupID;
+
     /**
      * The parentProcessID value.
      */
     private volatile int parentProcessID;
+
     /**
      * The threadCount value.
      */
     private volatile int threadCount;
+
     /**
      * The priority value.
      */
     private volatile int priority;
+
     /**
      * The virtualSize value.
      */
     private volatile long virtualSize;
+
     /**
      * The residentSetSize value.
      */
     private volatile long residentSetSize;
+
     /**
      * The kernelTime value.
      */
     private volatile long kernelTime;
+
     /**
      * The userTime value.
      */
     private volatile long userTime;
+
     /**
      * The startTime value.
      */
     private volatile long startTime;
+
     /**
      * The upTime value.
      */
     private volatile long upTime;
+
     /**
      * The bytesRead value.
      */
     private volatile long bytesRead;
+
     /**
      * The bytesWritten value.
      */
     private volatile long bytesWritten;
+
     /**
      * The minorFaults value.
      */
     private volatile long minorFaults;
+
     /**
      * The majorFaults value.
      */
     private volatile long majorFaults;
+
     /**
      * The contextSwitches value.
      */
     private volatile long contextSwitches;
+
     /**
      * The voluntaryContextSwitches value.
      */
     private volatile long voluntaryContextSwitches;
+
     /**
      * The involuntaryContextSwitches value.
      */
     private volatile long involuntaryContextSwitches;
+
     /**
      * The commandLineBackup value.
      */

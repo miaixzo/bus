@@ -20,6 +20,7 @@
 package org.miaixz.bus.health.linux.hardware;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.sun.jna.platform.linux.Udev;
 import com.sun.jna.platform.linux.Udev.UdevDevice;
@@ -203,22 +204,20 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
         }
 
         // Build tree and return
-        List<UsbDevice> controllerDevices = new ArrayList<>();
-        for (String controller : usbControllers) {
-            controllerDevices.add(
-                    buildDeviceTree(
-                            controller,
-                            "0000",
-                            "0000",
-                            nameMap,
-                            vendorMap,
-                            vendorIdMap,
-                            productIdMap,
-                            serialMap,
-                            hubMap,
-                            LinuxUsbDevice::new));
-        }
-        return controllerDevices;
+        return usbControllers.stream()
+                .map(
+                        controller -> buildDeviceTree(
+                                controller,
+                                "0000",
+                                "0000",
+                                nameMap,
+                                vendorMap,
+                                vendorIdMap,
+                                productIdMap,
+                                serialMap,
+                                hubMap,
+                                LinuxUsbDevice::new))
+                .collect(Collectors.toList());
     }
 
 }

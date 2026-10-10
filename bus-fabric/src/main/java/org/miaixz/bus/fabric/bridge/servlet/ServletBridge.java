@@ -57,6 +57,21 @@ public class ServletBridge implements Translator<HttpRequest> {
     }
 
     /**
+     * Resolves a canonical HTTP method.
+     *
+     * @param value external method text to resolve
+     * @return canonical HTTP method enum value
+     * @throws ValidateException if the method is not recognized
+     */
+    private static Http.Method method(final String value) {
+        try {
+            return Http.Method.of(value);
+        } catch (final IllegalArgumentException e) {
+            throw new ValidateException("Unsupported HTTP method: " + value, e);
+        }
+    }
+
+    /**
      * Returns whether an ingestion declares servlet metadata or provides any non-blank method.
      *
      * @param ingestion immutable external ingestion to inspect
@@ -105,21 +120,6 @@ public class ServletBridge implements Translator<HttpRequest> {
      */
     public HttpRequest toRequest(final Ingestion ingestion) {
         return translate(ingestion);
-    }
-
-    /**
-     * Resolves a canonical HTTP method.
-     *
-     * @param value external method text to resolve
-     * @return canonical HTTP method enum value
-     * @throws ValidateException if the method is not recognized
-     */
-    private static Http.Method method(final String value) {
-        try {
-            return Http.Method.of(value);
-        } catch (final IllegalArgumentException e) {
-            throw new ValidateException("Unsupported HTTP method: " + value, e);
-        }
     }
 
 }

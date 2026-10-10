@@ -1018,7 +1018,6 @@ public class ScimResourceCodec {
      * @param entitlements      optional entitlement array
      * @param roles             optional role array
      * @param x509Certificates  optional certificate array
-     *
      * @author Kimi Liu
      */
     private record UserDocument(JsonValue schemas, Optional<JsonValue> id, Optional<JsonValue> externalId,
@@ -1041,7 +1040,6 @@ public class ScimResourceCodec {
      * @param meta        optional resource metadata
      * @param displayName required display name
      * @param members     optional membership array
-     *
      * @author Kimi Liu
      */
     private record GroupDocument(JsonValue schemas, Optional<JsonValue> id, Optional<JsonValue> externalId,
@@ -1057,7 +1055,6 @@ public class ScimResourceCodec {
      * @param lastModified optional modification instant
      * @param version      optional entity-tag
      * @param location     optional resource location
-     *
      * @author Kimi Liu
      */
     private record MetaDocument(JsonValue resourceType, Optional<JsonValue> created, Optional<JsonValue> lastModified,
@@ -1074,7 +1071,6 @@ public class ScimResourceCodec {
      * @param middleName      optional middle name
      * @param honorificPrefix optional prefix
      * @param honorificSuffix optional suffix
-     *
      * @author Kimi Liu
      */
     private record NameDocument(Optional<JsonValue> formatted, Optional<JsonValue> familyName,
@@ -1090,7 +1086,6 @@ public class ScimResourceCodec {
      * @param display optional display value
      * @param type    optional type
      * @param primary optional primary flag
-     *
      * @author Kimi Liu
      */
     private record MultiValueDocument(JsonValue value, Optional<JsonValue> display, Optional<JsonValue> type,
@@ -1109,7 +1104,6 @@ public class ScimResourceCodec {
      * @param country       optional country
      * @param type          optional address type
      * @param primary       optional primary flag
-     *
      * @author Kimi Liu
      */
     private record AddressDocument(Optional<JsonValue> formatted, Optional<JsonValue> streetAddress,
@@ -1125,7 +1119,6 @@ public class ScimResourceCodec {
      * @param reference optional group reference
      * @param display   optional display value
      * @param type      optional membership type
-     *
      * @author Kimi Liu
      */
     private record MembershipDocument(JsonValue value, @Member(Scim.Attributes.REFERENCE) Optional<JsonValue> reference,
@@ -1140,7 +1133,6 @@ public class ScimResourceCodec {
      * @param reference optional member reference
      * @param type      optional resource type
      * @param display   optional display value
-     *
      * @author Kimi Liu
      */
     private record GroupMemberDocument(JsonValue value,

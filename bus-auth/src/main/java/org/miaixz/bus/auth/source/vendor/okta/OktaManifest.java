@@ -66,14 +66,17 @@ public class OktaManifest implements VendorManifest<OktaOptions> {
      * Stable identifier of the Okta service-app management Variant.
      */
     public static final Vendor.Variant MANAGEMENT = new Vendor.Variant("management");
+
     /**
      * Ordered Okta Management API scopes accepted by the service-app Variant.
      */
     static final List<String> MANAGEMENT_SCOPES = List.of("okta.users.read", "okta.groups.read", "okta.roles.read");
+
     /**
      * Manifest-owned issuer template resolved from the two external Okta selectors.
      */
     private static final String ISSUER = "https://{instance}.okta.com/oauth2/{authorizationServerId}";
+
     /**
      * Exact Source authentication and standard OIDC operations exposed by the Okta adapter.
      */
@@ -86,11 +89,13 @@ public class OktaManifest implements VendorManifest<OktaOptions> {
             OpenIdClientScheme.DISCOVERY,
             OpenIdClientScheme.JWK_SET,
             OpenIdClientScheme.USERINFO));
+
     /**
      * Historical default Okta login scopes preserved in deterministic request order.
      */
     private static final List<String> DEFAULT_SCOPES = List
             .of("openid", "profile", "email", "address", "phone", "offline_access");
+
     /**
      * Frozen implementation-neutral coverage description for Okta service-app management.
      */
@@ -104,6 +109,7 @@ public class OktaManifest implements VendorManifest<OktaOptions> {
                     "organization-and-service-apps-not-enumerated",
                     Builder.REALM_LIMITATION_REPEATED_RESOURCES,
                     Builder.REALM_LIMITATION_SNAPSHOT_ONLY));
+
     /**
      * Exact implementation-neutral capabilities exposed by the management Variant.
      */

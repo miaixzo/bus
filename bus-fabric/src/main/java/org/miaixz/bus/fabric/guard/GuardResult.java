@@ -68,13 +68,6 @@ public record GuardResult(boolean passed, String reason) {
     }
 
     /**
-     * Throws when this result is rejected.
-     */
-    public void throwIfRejected() {
-        Assert.isTrue(passed, () -> new ValidateException(reason));
-    }
-
-    /**
      * Validates rejection reason.
      *
      * @param reason rejection reason
@@ -85,6 +78,13 @@ public record GuardResult(boolean passed, String reason) {
                 !StringKit.isBlank(reason) && !StringKit.containsAny(reason, Symbol.C_CR, Symbol.C_LF),
                 () -> new ValidateException("Guard rejection reason must be non-blank and single-line"));
         return reason;
+    }
+
+    /**
+     * Throws when this result is rejected.
+     */
+    public void throwIfRejected() {
+        Assert.isTrue(passed, () -> new ValidateException(reason));
     }
 
 }

@@ -22,20 +22,32 @@ package org.miaixz.bus.core.center.date.culture.hijri;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.center.date.culture.parts.MonthParts;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractMonth;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractYear;
 
 /**
  * Represents a month in the tabular Hijri calendar.
  *
  * @author Kimi Liu
  */
-public class HijriMonth extends MonthParts {
+public class HijriMonth extends AbstractMonth {
 
     /**
      * Localized Hijri month names.
      */
     public static final String[] NAMES = { "穆哈兰姆月", "色法尔月", "赖比尔·敖外鲁月", "赖比尔·阿色尼月", "主马达·敖外鲁月", "主马达·阿色尼月", "赖哲卜月",
             "舍尔邦月", "赖买丹月", "闪瓦鲁月", "都尔喀尔德月", "都尔黑哲月" };
+
+    /**
+     * Constructs a Hijri month.
+     *
+     * @param year  Hijri year
+     * @param month Hijri month, 1-12
+     */
+    public HijriMonth(int year, int month) {
+        super(year, month);
+        validate(year, month);
+    }
 
     /**
      * Validates a Hijri year and month.
@@ -47,18 +59,6 @@ public class HijriMonth extends MonthParts {
     public static void validate(int year, int month) {
         validateRange(month, 1, 12, "hijri month");
         HijriYear.validate(year);
-    }
-
-    /**
-     * Constructs a Hijri month.
-     *
-     * @param year  Hijri year
-     * @param month Hijri month, 1-12
-     */
-    public HijriMonth(int year, int month) {
-        validate(year, month);
-        this.year = year;
-        this.month = month;
     }
 
     /**
@@ -79,6 +79,16 @@ public class HijriMonth extends MonthParts {
      */
     public HijriYear getHijriYear() {
         return HijriYear.fromYear(year);
+    }
+
+    /**
+     * Gets the abstract year containing this month.
+     *
+     * @return abstract year
+     */
+    @Override
+    public AbstractYear getAbstractYear() {
+        return getHijriYear();
     }
 
     /**
@@ -111,16 +121,6 @@ public class HijriMonth extends MonthParts {
      */
     public String getName() {
         return NAMES[getIndexInYear()];
-    }
-
-    /**
-     * Returns the display text of this month.
-     *
-     * @return display text
-     */
-    @Override
-    public String toString() {
-        return getHijriYear() + getName();
     }
 
     /**

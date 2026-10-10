@@ -223,7 +223,7 @@ List<Project> allProjects = projectPager.all();
 **急切求值不支持从服务器的并行读取，但它确实支持获取数据后的 Stream 并行处理。**
 
 要使用___惰性求值___进行流式传输，请使用返回 `Pager` 实例的 GitLab-API 方法，然后在 `Pager` 实例上调用
-`lazyStream()` 方法来创建惰性求值 Stream。Stream 使用 `Pager` 实例来分页浏览可用项目。**惰性 Stream
+`lazyStream()` 方法来创建惰性求值 Stream。Stream 使用 `Pager` 实例来分页浏览可用项目。 **惰性 Stream
 不支持并行操作或跳过。**
 
 #### **急切求值条件用法:**

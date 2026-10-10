@@ -29,6 +29,7 @@ import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
 import org.miaixz.bus.health.builtin.software.common.AbstractInternetProtocolStats;
+import org.miaixz.bus.health.unix.shared.driver.NetStat;
 
 /**
  * Internet Protocol Stats implementation
@@ -43,6 +44,16 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
      */
     public SolarisInternetProtocolStats() {
         // No initialization required.
+    }
+
+    /**
+     * Returns all TCP and UDP connections reported by Solaris netstat.
+     *
+     * @return the current TCP and UDP connections
+     */
+    @Override
+    public List<InternetProtocolStats.IPConnection> getConnections() {
+        return NetStat.querySolarisNetstat();
     }
 
     /**

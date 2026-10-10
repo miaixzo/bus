@@ -30,12 +30,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 
 import org.miaixz.bus.spring.SpringBuilder;
-import org.miaixz.bus.spring.bean.BeanMetadata;
-import org.miaixz.bus.spring.bean.BeanProvider;
-import org.miaixz.bus.spring.bean.BeanRegistry;
-import org.miaixz.bus.spring.bean.EnvironmentResolver;
-import org.miaixz.bus.spring.bean.ProviderRegistry;
-import org.miaixz.bus.spring.bean.SpringContext;
+import org.miaixz.bus.spring.bean.*;
 import org.miaixz.bus.spring.context.task.ContextTaskDecorator;
 
 /**

@@ -30,9 +30,6 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
  */
 public class CustomIssueTrackerService extends NotificationService {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852283856060L;
 

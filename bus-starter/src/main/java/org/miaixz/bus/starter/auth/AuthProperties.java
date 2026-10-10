@@ -98,6 +98,22 @@ public class AuthProperties {
     }
 
     /**
+     * Controls whether Spring configuration accepts short JWT String key material.
+     *
+     * @author Kimi Liu
+     */
+    public enum SecretPolicy {
+        /**
+         * Accepts every non-empty String and warns once for values shorter than 32 UTF-8 bytes.
+         */
+        COMPATIBLE,
+        /**
+         * Rejects values shorter than 32 UTF-8 bytes during context initialization.
+         */
+        STRICT
+    }
+
+    /**
      * Carries optional shared HS256 JWT settings from {@code bus.auth.jwt}.
      *
      * @param secret       exact non-empty String key material
@@ -123,22 +139,6 @@ public class AuthProperties {
             return "Jwt[secret=<masked>, secretPolicy=" + secretPolicy + ']';
         }
 
-    }
-
-    /**
-     * Controls whether Spring configuration accepts short JWT String key material.
-     *
-     * @author Kimi Liu
-     */
-    public enum SecretPolicy {
-        /**
-         * Accepts every non-empty String and warns once for values shorter than 32 UTF-8 bytes.
-         */
-        COMPATIBLE,
-        /**
-         * Rejects values shorter than 32 UTF-8 bytes during context initialization.
-         */
-        STRICT
     }
 
     /**

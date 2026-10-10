@@ -20,7 +20,8 @@
 package org.miaixz.bus.core.center.date.culture.hijri;
 
 import org.miaixz.bus.core.center.date.culture.JulianDay;
-import org.miaixz.bus.core.center.date.culture.parts.DayParts;
+import org.miaixz.bus.core.center.date.culture.Week;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 
 /**
@@ -29,7 +30,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
  *
  * @author Kimi Liu
  */
-public class HijriDay extends DayParts {
+public class HijriDay extends AbstractDay {
 
     /**
      * Localized day labels from 1 to 30.
@@ -37,6 +38,23 @@ public class HijriDay extends DayParts {
     public static final String[] NAMES = { "1日", "2日", "3日", "4日", "5日", "6日", "7日", "8日", "9日", "10日", "11日", "12日",
             "13日", "14日", "15日", "16日", "17日", "18日", "19日", "20日", "21日", "22日", "23日", "24日", "25日", "26日", "27日",
             "28日", "29日", "30日" };
+
+    /**
+     * Constructs a Hijri day.
+     *
+     * @param year  Hijri year
+     * @param month Hijri month
+     * @param day   Hijri day
+     */
+    public HijriDay(int year, int month, int day) {
+        super(year, month, day);
+        validate(year, month, day);
+    }
+
+    @Override
+    public Week getWeek() {
+        return getJulianDay().getWeek();
+    }
 
     /**
      * Validates a Hijri date.
@@ -50,20 +68,6 @@ public class HijriDay extends DayParts {
         if (day < 1 || day > HijriMonth.fromYm(year, month).getDayCount()) {
             throw new IllegalArgumentException(String.format("illegal hijri day: %d-%d-%d", year, month, day));
         }
-    }
-
-    /**
-     * Constructs a Hijri day.
-     *
-     * @param year  Hijri year
-     * @param month Hijri month
-     * @param day   Hijri day
-     */
-    public HijriDay(int year, int month, int day) {
-        validate(year, month, day);
-        this.year = year;
-        this.month = month;
-        this.day = day;
     }
 
     /**

@@ -18,9 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Sliding-window accumulators: BucketWindow maintains a ring of time-bucketed counters for 1-minute and 5-minute
- * rolling sums; EwmaRate computes exponentially weighted moving average rates (1m/5m/15m) ticked every 5 seconds by a
- * shared daemon scheduler.
+ * Independent window utilities. BucketWindow is a manually advanced ring of one-second counters, while EwmaRate
+ * computes exponentially weighted rates advanced by an owning provider.
  *
  * @author Kimi Liu
  */

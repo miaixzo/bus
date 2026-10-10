@@ -171,7 +171,7 @@ public class Builder {
      * @param value      The string with placeholders.
      * @return The string with placeholders replaced.
      */
-    public static String replaceYamlValue(final java.util.Properties properties, String value) {
+    public static String replaceYamlValue(final Properties properties, String value) {
         return Yaml.replaceRefValue(properties, value);
     }
 

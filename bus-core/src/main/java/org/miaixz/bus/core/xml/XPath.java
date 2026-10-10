@@ -35,8 +35,8 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 /**
  * Creates and evaluates XPath expressions.
  *
- * @see <a href="https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">Introduction to the JAXP XPath API</a>
  * @author Kimi Liu
+ * @see <a href="https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">Introduction to the JAXP XPath API</a>
  */
 public class XPath {
 

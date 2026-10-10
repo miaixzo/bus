@@ -191,15 +191,6 @@ public enum DnsRecordType {
     }
 
     /**
-     * Returns the numeric DNS type code.
-     *
-     * @return unsigned 16-bit DNS type code
-     */
-    public int code() {
-        return code;
-    }
-
-    /**
      * Resolves a type constant from a wire type code.
      *
      * @param code unsigned 16-bit DNS type code
@@ -212,6 +203,15 @@ public enum DnsRecordType {
             }
         }
         return UNKNOWN;
+    }
+
+    /**
+     * Returns the numeric DNS type code.
+     *
+     * @return unsigned 16-bit DNS type code
+     */
+    public int code() {
+        return code;
     }
 
 }

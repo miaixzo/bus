@@ -19,8 +19,13 @@
 */
 package org.miaixz.bus.metrics.nimble.prometheus;
 
-import java.util.Collections;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.function.ToDoubleFunction;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
@@ -30,18 +35,24 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.guard.CardinalityGuard;
+import org.miaixz.bus.metrics.guard.CardinalityViolation;
+import org.miaixz.bus.metrics.guard.MetricFamilyRegistry;
 import org.miaixz.bus.metrics.magic.TimerSnapshot;
 import org.miaixz.bus.metrics.nimble.*;
-import org.miaixz.bus.metrics.nimble.indigenous.NativeMeter;
-import org.miaixz.bus.metrics.nimble.indigenous.NativeSloTracker;
+import org.miaixz.bus.metrics.nimble.Timer;
+import org.miaixz.bus.metrics.nimble.indigenous.*;
 import org.miaixz.bus.metrics.observe.slo.SloTracker;
 import org.miaixz.bus.metrics.observe.tag.Tag;
 
 import io.prometheus.metrics.core.metrics.Counter;
-import io.prometheus.metrics.core.metrics.Gauge;
 import io.prometheus.metrics.core.metrics.Histogram;
 import io.prometheus.metrics.core.metrics.Summary;
+import io.prometheus.metrics.model.registry.Collector;
 import io.prometheus.metrics.model.registry.PrometheusRegistry;
+import io.prometheus.metrics.model.snapshots.CounterSnapshot;
+import io.prometheus.metrics.model.snapshots.GaugeSnapshot;
+import io.prometheus.metrics.model.snapshots.Labels;
+import io.prometheus.metrics.model.snapshots.MetricSnapshot;
 
 /**
  * Provider implementation backed by the Prometheus Java client SDK.
@@ -61,10 +72,119 @@ public class PrometheusProvider implements Provider {
     private final PrometheusRegistry registry;
 
     /**
+     * Provider-local cardinality policies and observed values.
+     */
+    private final CardinalityGuard.Scope cardinalityGuard;
+
+    /**
+     * Backend-independent family identity registry with Prometheus normalization.
+     */
+    private final MetricFamilyRegistry familyRegistry = new MetricFamilyRegistry(
+            NativePrometheusTextEncoder::exportName, NativePrometheusTextEncoder::normalizeName);
+
+    /**
+     * Counter collectors indexed by normalized family identity.
+     */
+    private final ConcurrentHashMap<String, Counter> counterFamilies = new ConcurrentHashMap<>();
+
+    /**
+     * Callback gauge collectors indexed by canonical logical family.
+     */
+    private final ConcurrentHashMap<org.miaixz.bus.metrics.guard.MetricFamilyKey.Logical, GaugeFamily> callbackGaugeFamilies = new ConcurrentHashMap<>();
+
+    /**
+     * Summary collectors indexed by normalized family identity.
+     */
+    private final ConcurrentHashMap<String, Summary> summaryFamilies = new ConcurrentHashMap<>();
+
+    /**
+     * Histogram collectors indexed by normalized family identity.
+     */
+    private final ConcurrentHashMap<String, Histogram> histogramFamilies = new ConcurrentHashMap<>();
+
+    /**
+     * Family leases owned by active and legacy instruments.
+     */
+    private final ConcurrentHashMap<String, MetricFamilyRegistry.Lease> activeLeases = new ConcurrentHashMap<>();
+
+    /**
+     * Collectors created and therefore unregisterable by this adapter.
+     */
+    private final Set<Collector> ownedCollectors = ConcurrentHashMap.newKeySet();
+
+    /**
+     * Live observable collector registrations.
+     */
+    private final Set<MetricRegistration> observableRegistrations = ConcurrentHashMap.newKeySet();
+
+    /**
+     * Active Bus counters indexed by canonical series identity.
+     */
+    private final ConcurrentHashMap<String, org.miaixz.bus.metrics.nimble.Counter> activeCounters = new ConcurrentHashMap<>();
+    /**
+     * Active Bus gauges indexed by canonical series identity.
+     */
+    private final ConcurrentHashMap<String, org.miaixz.bus.metrics.nimble.Gauge> activeGauges = new ConcurrentHashMap<>();
+    /**
+     * Active Bus timers indexed by canonical series identity.
+     */
+    private final ConcurrentHashMap<String, Timer> activeTimers = new ConcurrentHashMap<>();
+    /**
+     * Active Bus histograms indexed by canonical series identity.
+     */
+    private final ConcurrentHashMap<String, org.miaixz.bus.metrics.nimble.Histogram> activeHistograms = new ConcurrentHashMap<>();
+    /**
+     * Legacy meters indexed by canonical series identity.
+     */
+    private final ConcurrentHashMap<String, MeterAdapter> meters = new ConcurrentHashMap<>();
+    /**
+     * Shared rate pairs indexed by canonical series identity.
+     */
+    private final ConcurrentHashMap<String, RatePair> ratePairs = new ConcurrentHashMap<>();
+    /**
+     * Shared LLM timers indexed by canonical series identity.
+     */
+    private final ConcurrentHashMap<String, LlmTimer> llmTimers = new ConcurrentHashMap<>();
+
+    /**
+     * Whether this adapter has released its registrations.
+     */
+    private final AtomicBoolean closed = new AtomicBoolean();
+
+    /**
+     * Provider self-diagnostics implementation.
+     */
+    private final MetricDiagnostics diagnostics;
+    /**
+     * Reentrancy guard preventing a diagnostic metric from recursively reporting its own cardinality decision.
+     */
+    private final ThreadLocal<Boolean> cardinalityDiagnosticInProgress = ThreadLocal.withInitial(() -> false);
+
+    /**
+     * Stable service-level objective tracker.
+     */
+    private final SloTracker sloTracker = new NativeSloTracker();
+
+    /**
+     * Provider-owned scheduler for legacy rate ticks.
+     */
+    private final ScheduledExecutorService scheduler;
+
+    /**
+     * Listener that publishes cardinality decisions through provider diagnostics.
+     */
+    private final Consumer<CardinalityViolation> cardinalityListener;
+
+    /**
+     * Capabilities exposed to binders and endpoints.
+     */
+    private final ProviderCapabilities capabilities;
+
+    /**
      * Creates a PrometheusProvider backed by the default Prometheus registry.
      */
     public PrometheusProvider() {
-        this(PrometheusRegistry.defaultRegistry);
+        this(PrometheusRegistry.defaultRegistry, CardinalityGuard.globalScope());
     }
 
     /**
@@ -73,17 +193,130 @@ public class PrometheusProvider implements Provider {
      * @param registry the Prometheus registry to register metrics into
      */
     public PrometheusProvider(PrometheusRegistry registry) {
+        this(registry, CardinalityGuard.globalScope());
+    }
+
+    /**
+     * Creates a provider with caller-owned registry and isolated cardinality state.
+     *
+     * @param registry         caller-owned registry
+     * @param cardinalityGuard provider-local cardinality scope
+     */
+    public PrometheusProvider(PrometheusRegistry registry, CardinalityGuard.Scope cardinalityGuard) {
         Logger.info(
                 true,
                 "Metrics",
                 "Prometheus metrics provider initialization started: registryClass={}",
                 null == registry ? null : registry.getClass().getName());
-        this.registry = registry;
+        this.registry = Objects.requireNonNull(registry, "PrometheusRegistry must not be null");
+        this.cardinalityGuard = Objects.requireNonNull(cardinalityGuard, "Cardinality scope must not be null");
+        PrometheusSnapshotTextEncoder encoder = new PrometheusSnapshotTextEncoder();
+        ScrapeSupport scrape = new ScrapeSupport() {
+
+            @Override
+            public String scrape() {
+                return encoder.encode(PrometheusProvider.this.registry.scrape());
+            }
+
+            @Override
+            public String contentType() {
+                return Builder.PROMETHEUS_CONTENT_TYPE;
+            }
+        };
+        this.capabilities = new ProviderCapabilities(true, Optional.of(scrape), Optional.empty());
+        this.scheduler = Executors.newSingleThreadScheduledExecutor(task -> {
+            Thread thread = new Thread(task, Builder.THREAD_NAME_TICK);
+            thread.setDaemon(true);
+            return thread;
+        });
+        this.diagnostics = MetricDiagnostics.create(this);
+        this.cardinalityListener = violation -> {
+            if (cardinalityDiagnosticInProgress.get()) {
+                return;
+            }
+            cardinalityDiagnosticInProgress.set(true);
+            try {
+                diagnostics.resourceDropped(
+                        "cardinality",
+                        "denied".equals(violation.replacedWith()) ? "denied" : "replaced");
+            } finally {
+                cardinalityDiagnosticInProgress.remove();
+            }
+        };
+        cardinalityGuard.addViolationListener(cardinalityListener);
+        scheduler.scheduleAtFixedRate(
+                this::tickMeters,
+                Builder.TICK_INTERVAL_SECONDS,
+                Builder.TICK_INTERVAL_SECONDS,
+                TimeUnit.SECONDS);
         Logger.info(
                 false,
                 "Metrics",
                 "Prometheus metrics provider initialization finished: registryClass={}",
                 null == registry ? null : registry.getClass().getName());
+    }
+
+    /**
+     * Creates an adapter from a late-bound optional registry without exposing Prometheus in the caller's signature.
+     *
+     * @param registry         caller-owned Prometheus registry
+     * @param cardinalityGuard provider-local cardinality scope
+     * @return Prometheus-backed provider
+     * @throws NullPointerException if the registry is {@code null}
+     * @throws ClassCastException   if the object is not a Prometheus registry
+     */
+    public static Provider fromRegistry(Object registry, CardinalityGuard.Scope cardinalityGuard) {
+        Object checked = Objects.requireNonNull(registry, "PrometheusRegistry must not be null");
+        return new PrometheusProvider(PrometheusRegistry.class.cast(checked), cardinalityGuard);
+    }
+
+    /**
+     * Creates an adapter with a provider-private registry for an explicitly selected Prometheus backend.
+     *
+     * @param cardinalityGuard provider-local cardinality scope
+     * @return Prometheus-backed provider with a private registry
+     */
+    public static Provider withPrivateRegistry(CardinalityGuard.Scope cardinalityGuard) {
+        return new PrometheusProvider(new PrometheusRegistry(), cardinalityGuard);
+    }
+
+    /**
+     * Returns a stable copy of tags sorted by label name.
+     *
+     * @param tags source tags
+     * @return sorted tag copy
+     */
+    private static Tag[] sortedTags(Tag[] tags) {
+        Tag[] sorted = tags.clone();
+        java.util.Arrays.sort(sorted, java.util.Comparator.comparing(Tag::key));
+        return sorted;
+    }
+
+    /**
+     * Validates that a descriptor matches an active instrument API.
+     *
+     * @param descriptor descriptor to validate
+     * @param kind       expected instrument kind
+     * @param numberKind expected numeric kind
+     */
+    private static void validate(MetricDescriptor descriptor, InstrumentKind kind, NumberKind numberKind) {
+        Objects.requireNonNull(descriptor, "Metric descriptor must not be null");
+        if (descriptor.kind() != kind || descriptor.numberKind() != numberKind) {
+            throw new IllegalArgumentException("Metric descriptor is incompatible with active " + kind + " API");
+        }
+    }
+
+    /**
+     * Builds the canonical key for one typed active series.
+     *
+     * @param descriptor family descriptor
+     * @param attributes series attributes
+     * @return canonical series key
+     */
+    private static String activeKey(
+            MetricDescriptor descriptor,
+            org.miaixz.bus.metrics.observe.tag.Attributes attributes) {
+        return org.miaixz.bus.metrics.guard.MetricFamilyKey.identity(descriptor).logical() + attributes.toString();
     }
 
     /**
@@ -102,11 +335,14 @@ public class PrometheusProvider implements Provider {
      * @return array of tag key strings
      */
     private String[] labelNames(Tag[] tags) {
-        if (tags == null || tags.length == 0)
+        if (tags == null || tags.length == 0) {
             return Normal.EMPTY_STRING_ARRAY;
-        String[] names = new String[tags.length];
-        for (int i = 0; i < tags.length; i++)
-            names[i] = tags[i].key();
+        }
+        Tag[] sorted = sortedTags(tags);
+        String[] names = new String[sorted.length];
+        for (int i = 0; i < sorted.length; i++) {
+            names[i] = sorted[i].key();
+        }
         return names;
     }
 
@@ -117,12 +353,26 @@ public class PrometheusProvider implements Provider {
      * @return array of tag value strings
      */
     private String[] labelValues(Tag[] tags) {
-        if (tags == null || tags.length == 0)
+        if (tags == null || tags.length == 0) {
             return Normal.EMPTY_STRING_ARRAY;
-        String[] values = new String[tags.length];
-        for (int i = 0; i < tags.length; i++)
-            values[i] = tags[i].value();
+        }
+        Tag[] sorted = sortedTags(tags);
+        String[] values = new String[sorted.length];
+        for (int i = 0; i < sorted.length; i++) {
+            values[i] = sorted[i].value();
+        }
         return values;
+    }
+
+    /**
+     * Builds a family key from the normalized name and sorted label names.
+     *
+     * @param name metric name
+     * @param tags metric tags
+     * @return normalized family key
+     */
+    private String familyKey(String name, Tag[] tags) {
+        return prometheusName(name) + java.util.Arrays.toString(labelNames(tags));
     }
 
     /**
@@ -136,6 +386,33 @@ public class PrometheusProvider implements Provider {
     }
 
     /**
+     * Acquires one family lease when a descriptor is first observed.
+     *
+     * @param descriptor family descriptor
+     */
+    private void track(MetricDescriptor descriptor) {
+        String key = descriptor.scope() + '|' + descriptor.name() + '|' + descriptor.kind() + '|'
+                + descriptor.numberKind() + '|' + descriptor.unit() + '|' + descriptor.attributes();
+        activeLeases.computeIfAbsent(key, ignored -> familyRegistry.acquire(descriptor));
+    }
+
+    /**
+     * Validates and cardinality-guards a typed attribute set.
+     *
+     * @param descriptor family descriptor
+     * @param attributes proposed attributes
+     * @return guarded attributes
+     */
+    private org.miaixz.bus.metrics.observe.tag.Attributes guard(
+            MetricDescriptor descriptor,
+            org.miaixz.bus.metrics.observe.tag.Attributes attributes) {
+        descriptor.validateAttributes(attributes);
+        org.miaixz.bus.metrics.observe.tag.Attributes guarded = cardinalityGuard.enforce(descriptor.name(), attributes);
+        descriptor.validateAttributes(guarded);
+        return guarded;
+    }
+
+    /**
      * Creates or retrieves a Prometheus-backed counter.
      *
      * @param name metric name
@@ -144,39 +421,50 @@ public class PrometheusProvider implements Provider {
      */
     @Override
     public org.miaixz.bus.metrics.nimble.Counter counter(String name, Tag... tags) {
-        tags = CardinalityGuard.enforce(name, tags);
-        Tag[] finalTags = tags;
-        Counter c = Counter.builder().name(prometheusName(name)).labelNames(labelNames(tags)).register(registry);
-        return new org.miaixz.bus.metrics.nimble.Counter() {
+        Tag[] guarded = cardinalityGuard.enforce(name, tags);
+        org.miaixz.bus.metrics.observe.tag.Attributes attributes = org.miaixz.bus.metrics.observe.tag.Attributes
+                .fromTags(guarded);
+        return counter(MetricDescriptor.counter(name, attributes), attributes);
+    }
 
-            /**
-             * Increments the counter by 1.
-             */
-            @Override
-            public void increment() {
-                c.labelValues(labelValues(finalTags)).inc();
-            }
+    @Override
+    public org.miaixz.bus.metrics.nimble.Counter counter(
+            MetricDescriptor descriptor,
+            org.miaixz.bus.metrics.observe.tag.Attributes attributes) {
+        validate(descriptor, InstrumentKind.COUNTER, NumberKind.LONG);
+        org.miaixz.bus.metrics.observe.tag.Attributes guarded = guard(descriptor, attributes);
+        String key = activeKey(descriptor, guarded);
+        return activeCounters.computeIfAbsent(key, ignored -> {
+            ensureOpen();
+            track(descriptor);
+            Tag[] finalTags = guarded.toTags();
+            Counter collector = counterFamilies.computeIfAbsent(familyKey(descriptor.name(), finalTags), family -> {
+                Counter created = Counter.builder().name(NativePrometheusTextEncoder.exportName(descriptor))
+                        .help(descriptor.description()).labelNames(labelNames(finalTags)).register(registry);
+                ownedCollectors.add(created);
+                return created;
+            });
+            return new org.miaixz.bus.metrics.nimble.Counter() {
 
-            /**
-             * Increments the counter by the given amount.
-             *
-             * @param amount the amount to add
-             */
-            @Override
-            public void increment(long amount) {
-                c.labelValues(labelValues(finalTags)).inc(amount);
-            }
+                @Override
+                public void increment() {
+                    increment(1);
+                }
 
-            /**
-             * Returns the current counter value.
-             *
-             * @return current count
-             */
-            @Override
-            public long count() {
-                return (long) c.labelValues(labelValues(finalTags)).get();
-            }
-        };
+                @Override
+                public void increment(long amount) {
+                    if (amount < 0) {
+                        throw new IllegalArgumentException("Counter increment must be non-negative");
+                    }
+                    collector.labelValues(labelValues(finalTags)).inc(amount);
+                }
+
+                @Override
+                public long count() {
+                    return collector.labelValues(labelValues(finalTags)).getLongValue();
+                }
+            };
+        });
     }
 
     /**
@@ -188,81 +476,13 @@ public class PrometheusProvider implements Provider {
      */
     @Override
     public Meter meter(String name, Tag... tags) {
-        tags = CardinalityGuard.enforce(name, tags);
-        Tag[] finalTags = tags;
-        Counter c = Counter.builder().name(prometheusName(name)).labelNames(labelNames(tags)).register(registry);
-        NativeMeter nm = new NativeMeter();
-        return new Meter() {
-
-            /**
-             * Increments the meter by 1.
-             */
-            @Override
-            public void increment() {
-                increment(1);
-            }
-
-            /**
-             * Increments the meter by the given amount.
-             *
-             * @param amount the amount to add
-             */
-            @Override
-            public void increment(long amount) {
-                c.labelValues(labelValues(finalTags)).inc(amount);
-                nm.increment(amount);
-            }
-
-            /**
-             * Returns the current total count.
-             *
-             * @return current count
-             */
-            @Override
-            public long count() {
-                return (long) c.labelValues(labelValues(finalTags)).get();
-            }
-
-            /**
-             * Returns the 1-minute EWMA rate.
-             *
-             * @return 1-minute rate
-             */
-            @Override
-            public double oneMinuteRate() {
-                return nm.oneMinuteRate();
-            }
-
-            /**
-             * Returns the 5-minute EWMA rate.
-             *
-             * @return 5-minute rate
-             */
-            @Override
-            public double fiveMinuteRate() {
-                return nm.fiveMinuteRate();
-            }
-
-            /**
-             * Returns the 15-minute EWMA rate.
-             *
-             * @return 15-minute rate
-             */
-            @Override
-            public double fifteenMinuteRate() {
-                return nm.fifteenMinuteRate();
-            }
-
-            /**
-             * Returns the mean rate since creation.
-             *
-             * @return mean rate
-             */
-            @Override
-            public double meanRate() {
-                return nm.meanRate();
-            }
-        };
+        ensureOpen();
+        Tag[] guarded = cardinalityGuard.enforce(name, tags);
+        String key = name + org.miaixz.bus.metrics.observe.tag.Attributes.fromTags(guarded);
+        return meters.computeIfAbsent(key, ignored -> {
+            org.miaixz.bus.metrics.nimble.Counter counter = counter(name, guarded);
+            return new MeterAdapter(counter);
+        });
     }
 
     /**
@@ -274,81 +494,10 @@ public class PrometheusProvider implements Provider {
      */
     @Override
     public RatePair ratePair(String name, Tag... tags) {
-        Meter total = meter(name + ".total", tags);
-        Meter errors = meter(name + ".errors", tags);
-        Meter successes = meter(name + ".successes", tags);
-        return new RatePair() {
-
-            /**
-             * Records a successful operation, incrementing both total and success meters.
-             */
-            @Override
-            public void recordSuccess() {
-                total.increment();
-                successes.increment();
-            }
-
-            /**
-             * Records a failed operation, incrementing both total and error meters.
-             */
-            @Override
-            public void recordError() {
-                total.increment();
-                errors.increment();
-            }
-
-            /**
-             * Returns the 1-minute error rate as a fraction of total rate.
-             *
-             * @return error rate [0.0, 1.0]
-             */
-            @Override
-            public double errorRate() {
-                double t = total.oneMinuteRate();
-                return t <= 0 ? 0.0 : errors.oneMinuteRate() / t;
-            }
-
-            /**
-             * Returns the 1-minute success rate as a fraction of total rate.
-             *
-             * @return success rate [0.0, 1.0]
-             */
-            @Override
-            public double successRate() {
-                double t = total.oneMinuteRate();
-                return t <= 0 ? 1.0 : successes.oneMinuteRate() / t;
-            }
-
-            /**
-             * Returns the total meter.
-             *
-             * @return total meter
-             */
-            @Override
-            public Meter total() {
-                return total;
-            }
-
-            /**
-             * Returns the errors meter.
-             *
-             * @return errors meter
-             */
-            @Override
-            public Meter errors() {
-                return errors;
-            }
-
-            /**
-             * Returns the successes meter.
-             *
-             * @return successes meter
-             */
-            @Override
-            public Meter successes() {
-                return successes;
-            }
-        };
+        ensureOpen();
+        Tag[] guarded = cardinalityGuard.enforce(name, tags);
+        String key = name + org.miaixz.bus.metrics.observe.tag.Attributes.fromTags(guarded);
+        return ratePairs.computeIfAbsent(key, ignored -> RatePair.create(this, name, guarded));
     }
 
     /**
@@ -362,14 +511,38 @@ public class PrometheusProvider implements Provider {
      */
     @Override
     public <T> org.miaixz.bus.metrics.nimble.Gauge gauge(String name, T stateObj, ToDoubleFunction<T> fn, Tag... tags) {
-        tags = CardinalityGuard.enforce(name, tags);
-        Tag[] finalTags = tags;
-        Gauge g = Gauge.builder().name(prometheusName(name)).labelNames(labelNames(tags)).register(registry);
-        return () -> {
-            double v = fn.applyAsDouble(stateObj);
-            g.labelValues(labelValues(finalTags)).set(v);
-            return v;
-        };
+        Tag[] guarded = cardinalityGuard.enforce(name, tags);
+        org.miaixz.bus.metrics.observe.tag.Attributes attributes = org.miaixz.bus.metrics.observe.tag.Attributes
+                .fromTags(guarded);
+        return gauge(MetricDescriptor.gauge(name, attributes), attributes, stateObj, fn);
+    }
+
+    @Override
+    public <T> org.miaixz.bus.metrics.nimble.Gauge gauge(
+            MetricDescriptor descriptor,
+            org.miaixz.bus.metrics.observe.tag.Attributes attributes,
+            T stateObj,
+            ToDoubleFunction<T> fn) {
+        validate(descriptor, InstrumentKind.GAUGE, NumberKind.DOUBLE);
+        Objects.requireNonNull(stateObj, "Gauge state must not be null");
+        Objects.requireNonNull(fn, "Gauge function must not be null");
+        org.miaixz.bus.metrics.observe.tag.Attributes guarded = guard(descriptor, attributes);
+        String key = activeKey(descriptor, guarded);
+        return activeGauges.computeIfAbsent(key, ignored -> {
+            ensureOpen();
+            track(descriptor);
+            org.miaixz.bus.metrics.guard.MetricFamilyKey.Logical logical = org.miaixz.bus.metrics.guard.MetricFamilyKey
+                    .identity(descriptor).logical();
+            GaugeFamily family = callbackGaugeFamilies.computeIfAbsent(logical, unused -> {
+                GaugeFamily created = new GaugeFamily(descriptor);
+                registry.register(created);
+                ownedCollectors.add(created);
+                return created;
+            });
+            org.miaixz.bus.metrics.nimble.Gauge result = () -> fn.applyAsDouble(stateObj);
+            family.add(guarded, result);
+            return result;
+        });
     }
 
     /**
@@ -381,130 +554,95 @@ public class PrometheusProvider implements Provider {
      */
     @Override
     public Timer timer(String name, Tag... tags) {
-        tags = CardinalityGuard.enforce(name, tags);
-        Tag[] finalTags = tags;
-        Summary s = Summary.builder().name(prometheusName(name) + "_seconds").labelNames(labelNames(tags))
-                .quantile(0.5, 0.05).quantile(0.95, 0.01).quantile(0.99, 0.001).quantile(0.999, 0.0001)
-                .register(registry);
-        return new Timer() {
+        Tag[] guarded = cardinalityGuard.enforce(name, tags);
+        org.miaixz.bus.metrics.observe.tag.Attributes attributes = org.miaixz.bus.metrics.observe.tag.Attributes
+                .fromTags(guarded);
+        return timer(MetricDescriptor.timer(name, attributes), attributes);
+    }
 
-            /**
-             * Starts a timer sample and returns a handle that records the duration on stop.
-             *
-             * @return a new in-flight timing sample
-             */
-            @Override
-            public Sample start() {
-                long t0 = System.nanoTime();
-                return () -> {
-                    long nanos = System.nanoTime() - t0;
-                    s.labelValues(labelValues(finalTags)).observe(nanos / 1e9);
-                    return nanos;
-                };
-            }
+    @Override
+    public Timer timer(MetricDescriptor descriptor, org.miaixz.bus.metrics.observe.tag.Attributes attributes) {
+        validate(descriptor, InstrumentKind.TIMER, NumberKind.DOUBLE);
+        org.miaixz.bus.metrics.observe.tag.Attributes guarded = guard(descriptor, attributes);
+        String key = activeKey(descriptor, guarded);
+        return activeTimers.computeIfAbsent(key, ignored -> {
+            ensureOpen();
+            track(descriptor);
+            Tag[] finalTags = guarded.toTags();
+            Summary summary = summaryFamilies.computeIfAbsent(
+                    NativePrometheusTextEncoder.exportName(descriptor) + Arrays.toString(labelNames(finalTags)),
+                    family -> {
+                        Summary created = Summary.builder().name(NativePrometheusTextEncoder.exportName(descriptor))
+                                .help(descriptor.description()).labelNames(labelNames(finalTags)).quantile(0.5, 0.05)
+                                .quantile(0.95, 0.01).quantile(0.99, 0.001).quantile(0.999, 0.0001).register(registry);
+                        ownedCollectors.add(created);
+                        return created;
+                    });
+            NativeTimer mirror = new NativeTimer(descriptor.name(), finalTags);
+            return new Timer() {
 
-            /**
-             * Records a duration directly.
-             *
-             * @param amount duration value
-             * @param unit   time unit of {@code amount}
-             */
-            @Override
-            public void record(long amount, TimeUnit unit) {
-                s.labelValues(labelValues(finalTags)).observe(unit.toNanos(amount) / 1e9);
-            }
+                @Override
+                public Sample start() {
+                    long started = System.nanoTime();
+                    return () -> {
+                        long duration = System.nanoTime() - started;
+                        record(duration, TimeUnit.NANOSECONDS);
+                        return duration;
+                    };
+                }
 
-            /**
-             * Returns the total number of recordings.
-             *
-             * @return recording count
-             */
-            @Override
-            public long count() {
-                return s.collect().getDataPoints().stream().mapToLong(dp -> dp.getCount()).sum();
-            }
+                @Override
+                public void record(long amount, TimeUnit unit) {
+                    if (amount < 0) {
+                        throw new IllegalArgumentException("Timer amount must be non-negative");
+                    }
+                    Objects.requireNonNull(unit, "Timer unit must not be null");
+                    summary.labelValues(labelValues(finalTags)).observe(unit.toNanos(amount) / 1e9);
+                    mirror.record(amount, unit);
+                }
 
-            /**
-             * Returns the total time accumulated; not supported by Prometheus Summary.
-             *
-             * @param unit desired time unit
-             * @return 0 (not supported)
-             */
-            @Override
-            public double totalTime(TimeUnit unit) {
-                return 0;
-            }
+                @Override
+                public long count() {
+                    return mirror.count();
+                }
 
-            /**
-             * Returns the maximum recorded duration; not supported by Prometheus Summary.
-             *
-             * @param unit desired time unit
-             * @return 0 (not supported)
-             */
-            @Override
-            public double max(TimeUnit unit) {
-                return 0;
-            }
+                @Override
+                public double totalTime(TimeUnit unit) {
+                    return mirror.totalTime(unit);
+                }
 
-            /**
-             * Returns the estimated percentile value from the Prometheus Summary.
-             *
-             * @param p    percentile 0.0–1.0
-             * @param unit desired time unit
-             * @return estimated percentile value
-             */
-            @Override
-            public double percentile(double p, TimeUnit unit) {
-                return s.collect().getDataPoints().stream()
-                        .flatMap(dp -> java.util.stream.StreamSupport.stream(dp.getQuantiles().spliterator(), false))
-                        .filter(q -> Double.compare(q.getQuantile(), p) == 0)
-                        .mapToDouble(q -> q.getValue() * unit.toNanos(1) / 1e9).findFirst().orElse(0);
-            }
+                @Override
+                public double max(TimeUnit unit) {
+                    return mirror.max(unit);
+                }
 
-            /**
-             * Returns the estimated percentile value; window parameter is ignored for Prometheus Summary.
-             *
-             * @param p      percentile 0.0–1.0
-             * @param unit   desired time unit
-             * @param window rolling window (ignored)
-             * @return estimated percentile value
-             */
-            @Override
-            public double percentile(double p, TimeUnit unit, Window window) {
-                return percentile(p, unit);
-            }
+                @Override
+                public double percentile(double percentile, TimeUnit unit) {
+                    return mirror.percentile(percentile, unit);
+                }
 
-            /**
-             * SLA violation callbacks are not supported by Prometheus Summary; returns this timer unchanged.
-             *
-             * @param percentile percentile to monitor
-             * @param threshold  threshold value
-             * @param unit       threshold unit
-             * @param checkEvery check interval in recordings
-             * @param callback   violation callback
-             * @return this timer
-             */
-            @Override
-            public Timer onViolation(
-                    double percentile,
-                    long threshold,
-                    TimeUnit unit,
-                    int checkEvery,
-                    ConsumerX<ViolationEvent> callback) {
-                return this;
-            }
+                @Override
+                public double percentile(double percentile, TimeUnit unit, Window window) {
+                    return mirror.percentile(percentile, unit, window);
+                }
 
-            /**
-             * Returns a minimal snapshot with count only; histogram buckets are not available from Prometheus Summary.
-             *
-             * @return timer snapshot
-             */
-            @Override
-            public TimerSnapshot snapshot() {
-                return new TimerSnapshot(name, finalTags, count(), 0, 0, Normal.EMPTY_LONG_ARRAY,
-                        Normal.EMPTY_DOUBLE_ARRAY);
-            }
-        };
+                @Override
+                public Timer onViolation(
+                        double percentile,
+                        long threshold,
+                        TimeUnit unit,
+                        int checkEvery,
+                        ConsumerX<ViolationEvent> callback) {
+                    mirror.onViolation(percentile, threshold, unit, checkEvery, callback);
+                    return this;
+                }
+
+                @Override
+                public TimerSnapshot snapshot() {
+                    return mirror.snapshot();
+                }
+            };
+        });
     }
 
     /**
@@ -516,73 +654,69 @@ public class PrometheusProvider implements Provider {
      */
     @Override
     public org.miaixz.bus.metrics.nimble.Histogram histogram(String name, Tag... tags) {
-        tags = CardinalityGuard.enforce(name, tags);
-        Tag[] finalTags = tags;
-        Histogram h = Histogram.builder().name(prometheusName(name)).labelNames(labelNames(tags)).register(registry);
-        return new org.miaixz.bus.metrics.nimble.Histogram() {
+        Tag[] guarded = cardinalityGuard.enforce(name, tags);
+        org.miaixz.bus.metrics.observe.tag.Attributes attributes = org.miaixz.bus.metrics.observe.tag.Attributes
+                .fromTags(guarded);
+        return histogram(MetricDescriptor.histogram(name, attributes), attributes);
+    }
 
-            /**
-             * Records a single observed value.
-             *
-             * @param value the value to record
-             */
-            @Override
-            public void record(double value) {
-                h.labelValues(labelValues(finalTags)).observe(value);
-            }
+    @Override
+    public org.miaixz.bus.metrics.nimble.Histogram histogram(
+            MetricDescriptor descriptor,
+            org.miaixz.bus.metrics.observe.tag.Attributes attributes) {
+        validate(descriptor, InstrumentKind.HISTOGRAM, NumberKind.DOUBLE);
+        org.miaixz.bus.metrics.observe.tag.Attributes guarded = guard(descriptor, attributes);
+        String key = activeKey(descriptor, guarded);
+        return activeHistograms.computeIfAbsent(key, ignored -> {
+            ensureOpen();
+            track(descriptor);
+            Tag[] finalTags = guarded.toTags();
+            Histogram collector = histogramFamilies.computeIfAbsent(
+                    NativePrometheusTextEncoder.exportName(descriptor) + Arrays.toString(labelNames(finalTags)),
+                    family -> {
+                        Histogram created = Histogram.builder().name(NativePrometheusTextEncoder.exportName(descriptor))
+                                .help(descriptor.description()).labelNames(labelNames(finalTags)).register(registry);
+                        ownedCollectors.add(created);
+                        return created;
+                    });
+            NativeHistogram mirror = new NativeHistogram(descriptor.name(), finalTags);
+            return new org.miaixz.bus.metrics.nimble.Histogram() {
 
-            /**
-             * Returns the total number of observations.
-             *
-             * @return observation count
-             */
-            @Override
-            public long count() {
-                return h.collect().getDataPoints().stream().mapToLong(dp -> dp.getCount()).sum();
-            }
+                @Override
+                public void record(double value) {
+                    if (!Double.isFinite(value)) {
+                        throw new IllegalArgumentException("Histogram value must be finite");
+                    }
+                    collector.labelValues(labelValues(finalTags)).observe(value);
+                    mirror.record(value);
+                }
 
-            /**
-             * Returns the sum of all observed values.
-             *
-             * @return total amount
-             */
-            @Override
-            public double totalAmount() {
-                return h.collect().getDataPoints().stream().mapToDouble(dp -> dp.getSum()).sum();
-            }
+                @Override
+                public long count() {
+                    return mirror.count();
+                }
 
-            /**
-             * Returns the maximum observed value; not supported by Prometheus Histogram.
-             *
-             * @return 0 (not supported)
-             */
-            @Override
-            public double max() {
-                return 0;
-            }
+                @Override
+                public double totalAmount() {
+                    return mirror.totalAmount();
+                }
 
-            /**
-             * Returns the estimated percentile; not supported by Prometheus Histogram.
-             *
-             * @param p percentile 0.0–1.0
-             * @return 0 (not supported)
-             */
-            @Override
-            public double percentile(double p) {
-                return 0;
-            }
+                @Override
+                public double max() {
+                    return mirror.max();
+                }
 
-            /**
-             * Returns a snapshot with count and total amount; bucket details are not available.
-             *
-             * @return histogram snapshot
-             */
-            @Override
-            public TimerSnapshot snapshot() {
-                return new TimerSnapshot(name, finalTags, count(), totalAmount(), 0, Normal.EMPTY_LONG_ARRAY,
-                        Normal.EMPTY_DOUBLE_ARRAY);
-            }
-        };
+                @Override
+                public double percentile(double percentile) {
+                    return mirror.percentile(percentile);
+                }
+
+                @Override
+                public TimerSnapshot snapshot() {
+                    return mirror.snapshot();
+                }
+            };
+        });
     }
 
     /**
@@ -594,141 +728,452 @@ public class PrometheusProvider implements Provider {
      */
     @Override
     public LlmTimer llmTimer(String name, Tag... tags) {
-        Tag[] finalTags = tags;
-        return (model, provider_, operation) -> {
-            long startNs = System.nanoTime();
-            return new LlmSample() {
+        ensureOpen();
+        Tag[] guarded = cardinalityGuard.enforce(name, tags);
+        String key = name + org.miaixz.bus.metrics.observe.tag.Attributes.fromTags(guarded);
+        return llmTimers.computeIfAbsent(key, ignored -> new NativeLlmTimer(name, guarded, this));
+    }
 
-                /**
-                 * Nanosecond timestamp of the first token; -1 if not yet recorded.
-                 */
-                private volatile long firstTokenNs = -1;
+    @Override
+    public MetricRegistration registerObservable(MetricDescriptor descriptor, ObservableCallback callback) {
+        ensureOpen();
+        Objects.requireNonNull(descriptor, "Metric descriptor must not be null");
+        Objects.requireNonNull(callback, "Observable callback must not be null");
+        if (descriptor.kind() == InstrumentKind.TIMER || descriptor.kind() == InstrumentKind.HISTOGRAM) {
+            throw new IllegalArgumentException("Observable distributions are not supported: " + descriptor.name());
+        }
+        MetricFamilyRegistry.Lease lease = familyRegistry.acquire(descriptor);
+        ObservableCollector registration = new ObservableCollector(descriptor, callback, lease);
+        try {
+            registration.initialize();
+            registry.register(registration);
+            ownedCollectors.add(registration);
+            observableRegistrations.add(registration);
+            return registration;
+        } catch (RuntimeException exception) {
+            registration.close();
+            throw exception;
+        }
+    }
 
-                /**
-                 * Records the nanosecond timestamp of the first token received.
-                 */
-                @Override
-                public void recordFirstToken() {
-                    firstTokenNs = System.nanoTime();
-                }
+    @Override
+    public MetricDiagnostics diagnostics() {
+        return diagnostics;
+    }
 
-                /**
-                 * Stops the sample and records duration, TTFT, ITL, and token counts.
-                 *
-                 * @param inputTokens  number of input tokens consumed
-                 * @param outputTokens number of output tokens generated
-                 * @param finishReason reason the generation stopped
-                 */
-                @Override
-                public void stop(int inputTokens, int outputTokens, String finishReason) {
-                    long totalNs = System.nanoTime() - startNs;
-                    timer(
-                            name + Builder.LLM_SUFFIX_DURATION,
-                            Tag.of(Builder.TAG_MODEL, model),
-                            Tag.of(Builder.TAG_PROVIDER, provider_),
-                            Tag.of(Builder.TAG_OPERATION, operation),
-                            Tag.of(Builder.TAG_FINISH_REASON, finishReason)).record(totalNs, TimeUnit.NANOSECONDS);
-                    if (firstTokenNs > 0) {
-                        timer(
-                                name + Builder.LLM_SUFFIX_TTFT,
-                                Tag.of(Builder.TAG_MODEL, model),
-                                Tag.of(Builder.TAG_PROVIDER, provider_))
-                                        .record(firstTokenNs - startNs, TimeUnit.NANOSECONDS);
-                        if (outputTokens > 1) {
-                            timer(
-                                    name + Builder.LLM_SUFFIX_ITL,
-                                    Tag.of(Builder.TAG_MODEL, model),
-                                    Tag.of(Builder.TAG_PROVIDER, provider_)).record(
-                                            (totalNs - (firstTokenNs - startNs)) / (outputTokens - 1),
-                                            TimeUnit.NANOSECONDS);
-                        }
-                    }
-                    counter(
-                            name + Builder.LLM_SUFFIX_TOKENS,
-                            Tag.of(Builder.TAG_MODEL, model),
-                            Tag.of(Builder.TAG_PROVIDER, provider_),
-                            Tag.of(Builder.TAG_TYPE, "input")).increment(inputTokens);
-                    counter(
-                            name + Builder.LLM_SUFFIX_TOKENS,
-                            Tag.of(Builder.TAG_MODEL, model),
-                            Tag.of(Builder.TAG_PROVIDER, provider_),
-                            Tag.of(Builder.TAG_TYPE, "output")).increment(outputTokens);
-                }
+    @Override
+    public ProviderCapabilities capabilities() {
+        return capabilities;
+    }
 
-                /**
-                 * Records an error counter and delegates to {@link #stop} with zero tokens.
-                 *
-                 * @param t the throwable that caused the error
-                 */
-                @Override
-                public void error(Throwable t) {
-                    counter(
-                            name + Builder.LLM_SUFFIX_ERRORS,
-                            Tag.of(Builder.TAG_MODEL, model),
-                            Tag.of(Builder.TAG_PROVIDER, provider_),
-                            Tag.of(Builder.TAG_ERROR_TYPE, t.getClass().getSimpleName())).increment();
-                    stop(0, 0, "error");
-                }
-            };
-        };
+    @Override
+    public void close() {
+        if (!closed.compareAndSet(false, true)) {
+            return;
+        }
+        cardinalityGuard.removeViolationListener(cardinalityListener);
+        scheduler.shutdownNow();
+        new ArrayList<>(observableRegistrations).forEach(MetricRegistration::close);
+        new ArrayList<>(ownedCollectors).forEach(registry::unregister);
+        ownedCollectors.clear();
+        activeLeases.values().forEach(MetricFamilyRegistry.Lease::close);
+        activeLeases.clear();
+        counterFamilies.clear();
+        summaryFamilies.clear();
+        histogramFamilies.clear();
+        callbackGaugeFamilies.clear();
+        activeCounters.clear();
+        activeGauges.clear();
+        activeTimers.clear();
+        activeHistograms.clear();
+        meters.clear();
+        ratePairs.clear();
+        llmTimers.clear();
     }
 
     /**
-     * Returns a new NativeSloTracker for SLO compliance tracking.
+     * Ensures that the provider still accepts operations.
+     */
+    private void ensureOpen() {
+        if (closed.get()) {
+            throw new IllegalStateException("Prometheus metrics provider is closed");
+        }
+    }
+
+    /**
+     * Converts typed Bus attributes to Prometheus labels.
      *
-     * @return a new SloTracker instance
+     * @param attributes Bus attributes
+     * @return Prometheus labels
+     */
+    private Labels labels(org.miaixz.bus.metrics.observe.tag.Attributes attributes) {
+        List<String> names = new ArrayList<>(attributes.values().size());
+        List<String> values = new ArrayList<>(attributes.values().size());
+        for (org.miaixz.bus.metrics.observe.tag.Attributes.Value<?> entry : attributes.values()) {
+            names.add(entry.descriptor().key());
+            values.add(String.valueOf(entry.value()));
+        }
+        return Labels.of(names, values);
+    }
+
+    /**
+     * Returns the stable provider-local SLO tracker.
+     *
+     * @return provider-local SLO tracker
      */
     @Override
     public SloTracker sloTracker() {
-        return new NativeSloTracker();
+        return sloTracker;
     }
 
     /**
-     * Returns an empty iterable; Prometheus registry enumeration is not supported.
+     * Returns the provider-owned counters.
      */
     @Override
     public Iterable<org.miaixz.bus.metrics.nimble.Counter> counters() {
-        return Collections.emptyList();
+        return List.copyOf(activeCounters.values());
     }
 
     /**
-     * Returns an empty iterable; Prometheus registry enumeration is not supported.
+     * Returns the provider-owned legacy meters.
      */
     @Override
     public Iterable<Meter> meters() {
-        return Collections.emptyList();
+        return List.copyOf(meters.values());
     }
 
     /**
-     * Returns an empty iterable; Prometheus registry enumeration is not supported.
+     * Returns the provider-owned gauges.
      */
     @Override
     public Iterable<org.miaixz.bus.metrics.nimble.Gauge> gauges() {
-        return Collections.emptyList();
+        return List.copyOf(activeGauges.values());
     }
 
     /**
-     * Returns an empty iterable; Prometheus registry enumeration is not supported.
+     * Returns the provider-owned timers.
      */
     @Override
     public Iterable<Timer> timers() {
-        return Collections.emptyList();
+        return List.copyOf(activeTimers.values());
     }
 
     /**
-     * Returns an empty iterable; Prometheus registry enumeration is not supported.
+     * Returns the provider-owned histograms.
      */
     @Override
     public Iterable<org.miaixz.bus.metrics.nimble.Histogram> histograms() {
-        return Collections.emptyList();
+        return List.copyOf(activeHistograms.values());
     }
 
     /**
-     * Returns an empty iterable; Prometheus registry enumeration is not supported.
+     * Returns the provider-owned LLM timers.
      */
     @Override
     public Iterable<LlmTimer> llmTimers() {
-        return Collections.emptyList();
+        return List.copyOf(llmTimers.values());
+    }
+
+    /**
+     * Advances every provider-owned rate meter.
+     */
+    private void tickMeters() {
+        if (!closed.get()) {
+            meters.values().forEach(MeterAdapter::tick);
+        }
+    }
+
+    /**
+     * Bus rate meter backed by a Prometheus counter and native rate mirror.
+     */
+    private static final class MeterAdapter implements Meter {
+
+        /**
+         * Counter receiving cumulative updates.
+         */
+        private final org.miaixz.bus.metrics.nimble.Counter counter;
+        /**
+         * Native meter providing rolling rates.
+         */
+        private final NativeMeter rates = new NativeMeter();
+
+        /**
+         * Creates a rate adapter.
+         *
+         * @param counter backing counter
+         */
+        private MeterAdapter(org.miaixz.bus.metrics.nimble.Counter counter) {
+            this.counter = counter;
+        }
+
+        @Override
+        public void increment() {
+            increment(1);
+        }
+
+        @Override
+        public void increment(long amount) {
+            if (amount < 0) {
+                throw new IllegalArgumentException("Meter increment must be non-negative");
+            }
+            counter.increment(amount);
+            rates.increment(amount);
+        }
+
+        @Override
+        public long count() {
+            return rates.count();
+        }
+
+        @Override
+        public double oneMinuteRate() {
+            return rates.oneMinuteRate();
+        }
+
+        @Override
+        public double fiveMinuteRate() {
+            return rates.fiveMinuteRate();
+        }
+
+        @Override
+        public double fifteenMinuteRate() {
+            return rates.fifteenMinuteRate();
+        }
+
+        @Override
+        public double meanRate() {
+            return rates.meanRate();
+        }
+
+        /**
+         * Advances the EWMA windows by one five-second interval.
+         */
+        private void tick() {
+            rates.tick();
+        }
+    }
+
+    /**
+     * Prometheus callback collector that reads all current series in one gauge family at scrape time.
+     */
+    private final class GaugeFamily implements Collector {
+
+        /**
+         * Canonical descriptor for this family.
+         */
+        private final MetricDescriptor descriptor;
+        /**
+         * Live gauge series indexed by attributes.
+         */
+        private final ConcurrentHashMap<org.miaixz.bus.metrics.observe.tag.Attributes, org.miaixz.bus.metrics.nimble.Gauge> series = new ConcurrentHashMap<>();
+
+        /**
+         * Creates an empty callback family.
+         *
+         * @param descriptor canonical family descriptor
+         */
+        private GaugeFamily(MetricDescriptor descriptor) {
+            this.descriptor = descriptor;
+        }
+
+        /**
+         * Adds one live series to the family.
+         *
+         * @param attributes series attributes
+         * @param gauge      live value supplier
+         */
+        private void add(
+                org.miaixz.bus.metrics.observe.tag.Attributes attributes,
+                org.miaixz.bus.metrics.nimble.Gauge gauge) {
+            series.putIfAbsent(attributes, gauge);
+        }
+
+        @Override
+        public MetricSnapshot collect() {
+            GaugeSnapshot.Builder builder = GaugeSnapshot.builder()
+                    .name(NativePrometheusTextEncoder.exportName(descriptor)).help(descriptor.description());
+            series.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.comparing(Object::toString)))
+                    .forEach(entry -> {
+                        double value = entry.getValue().value();
+                        if (Double.isFinite(value)) {
+                            builder.dataPoint(
+                                    GaugeSnapshot.GaugeDataPointSnapshot.builder().labels(labels(entry.getKey()))
+                                            .value(value).build());
+                        } else {
+                            diagnostics.collectionError("prometheus", "invalid_gauge");
+                        }
+                    });
+            return builder.build();
+        }
+    }
+
+    /**
+     * Observable Bus family exposed as a Prometheus custom collector.
+     */
+    private final class ObservableCollector implements Collector, MetricRegistration {
+
+        /**
+         * Registered family descriptor.
+         */
+        private final MetricDescriptor descriptor;
+        /**
+         * User callback invoked during collection.
+         */
+        private final ObservableCallback callback;
+        /**
+         * Lease protecting the registered family identity.
+         */
+        private final MetricFamilyRegistry.Lease lease;
+        /**
+         * Whether this collector has been closed.
+         */
+        private final AtomicBoolean registrationClosed = new AtomicBoolean();
+
+        /**
+         * Attribute sets established during initialization.
+         */
+        private volatile Set<org.miaixz.bus.metrics.observe.tag.Attributes> seeded = Set.of();
+
+        /**
+         * Creates an observable collector.
+         *
+         * @param descriptor family descriptor
+         * @param callback   observation callback
+         * @param lease      family identity lease
+         */
+        private ObservableCollector(MetricDescriptor descriptor, ObservableCallback callback,
+                MetricFamilyRegistry.Lease lease) {
+            this.descriptor = descriptor;
+            this.callback = callback;
+            this.lease = lease;
+        }
+
+        /**
+         * Runs the callback once to freeze the allowed resource inventory.
+         */
+        private void initialize() {
+            Measurement measurement = observe(null);
+            seeded = Set.copyOf(measurement.values.keySet());
+        }
+
+        @Override
+        public MetricSnapshot collect() {
+            Measurement measurement;
+            try {
+                measurement = observe(seeded);
+            } catch (RuntimeException exception) {
+                diagnostics.collectionError("prometheus", "callback");
+                measurement = new Measurement(descriptor, seeded);
+            }
+            if (descriptor.kind() == InstrumentKind.COUNTER) {
+                CounterSnapshot.Builder builder = CounterSnapshot.builder().name(prometheusName(descriptor.name()))
+                        .help(descriptor.description());
+                measurement.values.forEach(
+                        (attributes, value) -> builder.dataPoint(
+                                CounterSnapshot.CounterDataPointSnapshot.builder().labels(labels(attributes))
+                                        .value(value.doubleValue()).build()));
+                return builder.build();
+            }
+            GaugeSnapshot.Builder builder = GaugeSnapshot.builder().name(prometheusName(descriptor.name()))
+                    .help(descriptor.description());
+            measurement.values.forEach(
+                    (attributes, value) -> builder.dataPoint(
+                            GaugeSnapshot.GaugeDataPointSnapshot.builder().labels(labels(attributes))
+                                    .value(value.doubleValue()).build()));
+            return builder.build();
+        }
+
+        /**
+         * Invokes the callback into a fresh measurement buffer.
+         *
+         * @param allowed allowed resource identities, or {@code null} while seeding
+         * @return populated measurement buffer
+         */
+        private Measurement observe(Set<org.miaixz.bus.metrics.observe.tag.Attributes> allowed) {
+            Measurement measurement = new Measurement(descriptor, allowed);
+            callback.observe(measurement);
+            return measurement;
+        }
+
+        @Override
+        public void close() {
+            if (registrationClosed.compareAndSet(false, true)) {
+                observableRegistrations.remove(this);
+                if (ownedCollectors.remove(this)) {
+                    registry.unregister(this);
+                }
+                lease.close();
+            }
+        }
+    }
+
+    /**
+     * Measurement buffer supplied to one Prometheus observable callback.
+     */
+    private final class Measurement implements ObservableMeasurement {
+
+        /**
+         * Descriptor that determines valid point shape.
+         */
+        private final MetricDescriptor descriptor;
+        /**
+         * Seeded resource identities, or {@code null} while seeding.
+         */
+        private final Set<org.miaixz.bus.metrics.observe.tag.Attributes> allowed;
+        /**
+         * Values observed in the current callback, indexed by attributes.
+         */
+        private final Map<org.miaixz.bus.metrics.observe.tag.Attributes, Number> values = new LinkedHashMap<>();
+
+        /**
+         * Creates an observable measurement buffer.
+         *
+         * @param descriptor family descriptor
+         * @param allowed    seeded resource identities, or {@code null} while seeding
+         */
+        private Measurement(MetricDescriptor descriptor, Set<org.miaixz.bus.metrics.observe.tag.Attributes> allowed) {
+            this.descriptor = descriptor;
+            this.allowed = allowed;
+        }
+
+        @Override
+        public void recordLong(long value, org.miaixz.bus.metrics.observe.tag.Attributes attributes) {
+            if (descriptor.numberKind() != NumberKind.LONG) {
+                diagnostics.collectionError("prometheus", "number_kind");
+                return;
+            }
+            record(attributes, value);
+        }
+
+        @Override
+        public void recordDouble(double value, org.miaixz.bus.metrics.observe.tag.Attributes attributes) {
+            if (descriptor.numberKind() != NumberKind.DOUBLE || !Double.isFinite(value)) {
+                diagnostics.collectionError("prometheus", "invalid_double");
+                return;
+            }
+            record(attributes, value);
+        }
+
+        /**
+         * Validates and records one observable value.
+         *
+         * @param attributes point attributes
+         * @param value      numeric point value
+         */
+        private void record(org.miaixz.bus.metrics.observe.tag.Attributes attributes, Number value) {
+            try {
+                descriptor.validateAttributes(attributes);
+                if (allowed != null && !allowed.contains(attributes)) {
+                    diagnostics.resourceDropped("prometheus", "inventory_changed");
+                    return;
+                }
+                if (values.putIfAbsent(attributes, value) != null) {
+                    diagnostics.collectionError("prometheus", "duplicate_attributes");
+                }
+            } catch (RuntimeException exception) {
+                diagnostics.collectionError("prometheus", "invalid_point");
+            }
+        }
     }
 
 }

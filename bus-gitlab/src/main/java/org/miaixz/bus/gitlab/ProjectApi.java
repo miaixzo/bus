@@ -38,6 +38,7 @@ import org.miaixz.bus.logger.Logger;
 /**
  * This class provides an entry point to all the GitLab API project calls.
  *
+ * @author Kimi Liu
  * @see <a href="https://docs.gitlab.com/ce/api/projects.html">Projects API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/project_statistics.html">Project statistics API</a>
  * @see <a href="https://docs.gitlab.com/ce/api/members.html">Group and project members API at GitLab</a>
@@ -50,7 +51,6 @@ import org.miaixz.bus.logger.Logger;
  *      events API</a>
  * @see <a href="https://docs.gitlab.com/ce/api/custom_attributes.html">Custom Attributes API</a>
  * @see <a href="https://docs.gitlab.com/ce/api/remote_mirrors.html">Project remote mirrors API</a>
- * @author Kimi Liu
  */
 public class ProjectApi extends AbstractApi implements Constants {
 
@@ -1030,7 +1030,7 @@ public class ProjectApi extends AbstractApi implements Constants {
     /**
      * Creates new project owned by the current user. The following properties on the Project instance are utilized in
      * the creation of the project:
-     *
+     * <p>
      * name (name or path are required) - new project name path (name or path are required) - new project path
      * defaultBranch (optional) - master by default description (optional) - short project description visibility
      * (optional) - Limit by visibility public, internal, or private visibilityLevel (optional) issuesEnabled (optional)
@@ -1320,7 +1320,7 @@ public class ProjectApi extends AbstractApi implements Constants {
     /**
      * Updates a project. The following properties on the Project instance are utilized in the edit of the project, null
      * values are not updated:
-     *
+     * <p>
      * id (required) - existing project id, either id or path must be provided name (optional) - project name path
      * (optional) - project path, either id or path must be provided defaultBranch (optional) - master by default
      * description (optional) - short project description visibility (optional) - Limit by visibility public, internal,
@@ -1341,7 +1341,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      * buildCoverageRegex (optional) - set build coverage regex ciConfigPath (optional) - Set path to CI configuration
      * file ciForwardDeploymentEnabled (optional) - When a new deployment job starts, skip older deployment jobs that
      * are still pending squashOption (optional) - set squash option for merge requests
-     *
+     * <p>
      * NOTE: The following parameters specified by the GitLab API edit project are not supported: import_url tag_list
      * array avatar initialize_with_readme
      *
@@ -2822,9 +2822,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     *
      * @param snippetId       the ID of the project's snippet
-     *
      * @throws RelevantException if any exception occurs
      */
     public void deleteSnippet(Object projectIdOrPath, Long snippetId) throws RelevantException {
@@ -2959,7 +2957,7 @@ public class ProjectApi extends AbstractApi implements Constants {
 
     /**
      * Get all uploads of the project sorted by created_at in descending order.
-     *
+     * <p>
      * You must have at least the Maintainer role to use this endpoint.
      *
      * <pre>
@@ -3068,7 +3066,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      * <pre>
      * <code>GitLab Endpoint: POST /projects/:id/push_rule</code>
      * </pre>
-     *
+     * <p>
      * The following properties on the PushRules instance are utilized in the creation of the push rule:
      *
      * <code>
@@ -3087,7 +3085,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      * is consistent with their GitLab account name.
      * rejectUnsignedCommits (optional) - Reject commit when it is not signed through GPG
      * rejectNonDcoCommits (optional) - Reject commit when it is not DCO certified
-     *</code>
+     * </code>
      *
      * @param projectIdOrPath the project in the form of a Long(ID), String(path), or Project instance, required
      * @param pushRule        the PushRule instance containing the push rule configuration to add
@@ -3124,7 +3122,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      * <pre>
      * <code>GitLab Endpoint: PUT /projects/:id/push_rule/:push_rule_id</code>
      * </pre>
-     *
+     * <p>
      * The following properties on the PushRules instance are utilized when updating the push rule:
      *
      * <code>
@@ -3143,7 +3141,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      * is consistent with their GitLab account name.
      * rejectUnsignedCommits (optional) - Reject commit when it is not signed through GPG
      * rejectNonDcoCommits (optional) - Reject commit when it is not DCO certified
-     *</code>
+     * </code>
      *
      * @param projectIdOrPath the project in the form of a Long(ID), String(path), or Project instance, required
      * @param pushRule        the PushRules instance containing the push rule configuration to update

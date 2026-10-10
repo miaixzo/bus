@@ -86,6 +86,28 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
     }
 
     /**
+     * Returns a stable, duplicate-free address snapshot.
+     *
+     * @param addresses resolver-ordered address list to validate and copy
+     * @return immutable list containing the first occurrence of each address
+     * @throws ValidateException if the list or any element is {@code null}
+     */
+    private static List<InetAddress> normalizeAddresses(final List<InetAddress> addresses) {
+        final List<InetAddress> checkedAddresses = Assert
+                .notNull(addresses, () -> new ValidateException("DNS addresses must not be null"));
+        final HashSet<InetAddress> seen = new HashSet<>();
+        final ArrayList<InetAddress> normalized = new ArrayList<>(checkedAddresses.size());
+        for (final InetAddress address : checkedAddresses) {
+            final InetAddress checkedAddress = Assert
+                    .notNull(address, () -> new ValidateException("DNS addresses must contain no null elements"));
+            if (seen.add(checkedAddress)) {
+                normalized.add(checkedAddress);
+            }
+        }
+        return List.copyOf(normalized);
+    }
+
+    /**
      * Returns the host.
      *
      * @return normalized queried host
@@ -151,28 +173,6 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
      */
     public boolean hasTtl() {
         return !Duration.ZERO.equals(ttl);
-    }
-
-    /**
-     * Returns a stable, duplicate-free address snapshot.
-     *
-     * @param addresses resolver-ordered address list to validate and copy
-     * @return immutable list containing the first occurrence of each address
-     * @throws ValidateException if the list or any element is {@code null}
-     */
-    private static List<InetAddress> normalizeAddresses(final List<InetAddress> addresses) {
-        final List<InetAddress> checkedAddresses = Assert
-                .notNull(addresses, () -> new ValidateException("DNS addresses must not be null"));
-        final HashSet<InetAddress> seen = new HashSet<>();
-        final ArrayList<InetAddress> normalized = new ArrayList<>(checkedAddresses.size());
-        for (final InetAddress address : checkedAddresses) {
-            final InetAddress checkedAddress = Assert
-                    .notNull(address, () -> new ValidateException("DNS addresses must contain no null elements"));
-            if (seen.add(checkedAddress)) {
-                normalized.add(checkedAddress);
-            }
-        }
-        return List.copyOf(normalized);
     }
 
 }

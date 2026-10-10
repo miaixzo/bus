@@ -23,6 +23,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.spring.mapper.MapperFactoryBean;
@@ -74,6 +75,25 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
      */
     public MapperScannerRegistrar() {
         // No initialization required.
+    }
+
+    /**
+     * Finds the mapper enable annotation declared by an application source.
+     *
+     * @param registry current Bean definition registry
+     * @return merged annotation attributes, or {@code null} when properties activated the feature
+     */
+    private static AnnotationMetadata findEnableMapperMetadata(BeanDefinitionRegistry registry) {
+        for (String beanName : registry.getBeanDefinitionNames()) {
+            if (registry.getBeanDefinition(beanName) instanceof AnnotatedBeanDefinition definition) {
+                AnnotationMetadata metadata = definition.getMetadata();
+                if (metadata.hasAnnotation(EnableMapper.class.getName())
+                        || metadata.hasMetaAnnotation(EnableMapper.class.getName())) {
+                    return metadata;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -177,7 +197,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
                 "Mapper scanner registration started: basePackageCount={}, annotationClass={}",
                 basePackage.size(),
                 annotationClass.getName());
-        java.util.Set<org.springframework.beans.factory.config.BeanDefinitionHolder> beanDefinitions = scanner
+        Set<org.springframework.beans.factory.config.BeanDefinitionHolder> beanDefinitions = scanner
                 .doScan(ArrayKit.ofArray(basePackage, String.class));
         Logger.info(
                 false,
@@ -185,25 +205,6 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
                 "Mapper scanner registration finished: basePackageCount={}, mapperBeanCount={}",
                 basePackage.size(),
                 beanDefinitions.size());
-    }
-
-    /**
-     * Finds the mapper enable annotation declared by an application source.
-     *
-     * @param registry current Bean definition registry
-     * @return merged annotation attributes, or {@code null} when properties activated the feature
-     */
-    private static AnnotationMetadata findEnableMapperMetadata(BeanDefinitionRegistry registry) {
-        for (String beanName : registry.getBeanDefinitionNames()) {
-            if (registry.getBeanDefinition(beanName) instanceof AnnotatedBeanDefinition definition) {
-                AnnotationMetadata metadata = definition.getMetadata();
-                if (metadata.hasAnnotation(EnableMapper.class.getName())
-                        || metadata.hasMetaAnnotation(EnableMapper.class.getName())) {
-                    return metadata;
-                }
-            }
-        }
-        return null;
     }
 
     /**

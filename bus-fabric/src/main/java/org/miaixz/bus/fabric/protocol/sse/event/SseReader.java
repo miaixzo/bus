@@ -44,28 +44,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public class SseReader implements AutoCloseable {
 
     /**
-     * Reader-local parsing state independent from the owning session lifecycle.
-     */
-    private enum ReaderState {
-
-        /**
-         * Open and ready to parse the first event.
-         */
-        OPEN,
-
-        /**
-         * Actively parsing the event stream.
-         */
-        READING,
-
-        /**
-         * Source closed and no further parsing allowed.
-         */
-        CLOSED
-
-    }
-
-    /**
      * UTF-8 event-stream source owned and closed by this reader.
      */
     private final Source input;
@@ -81,14 +59,14 @@ public class SseReader implements AutoCloseable {
     private final AtomicReference<ReaderState> state;
 
     /**
-     * Expandable buffer containing the current line without its line terminator.
-     */
-    private byte[] line;
-
-    /**
      * Fixed-size byte array used for batched reads from the intermediate source buffer.
      */
     private final byte[] inputBuffer;
+
+    /**
+     * Expandable buffer containing the current line without its line terminator.
+     */
+    private byte[] line;
 
     /**
      * Index of the next unread byte in {@link #inputBuffer}.
@@ -121,6 +99,53 @@ public class SseReader implements AutoCloseable {
         this.state = new AtomicReference<>(ReaderState.OPEN);
         this.line = new byte[Normal._128];
         this.inputBuffer = new byte[Normal._8192];
+    }
+
+    /**
+     * Returns the value start offset for common colon-terminated fields.
+     *
+     * @param field recognized numeric field code
+     * @return byte offset immediately after that field's colon
+     */
+    private static int commonValueStart(final int field) {
+        return switch (field) {
+            case Normal._1 -> Normal._5;
+            case Normal._2, Normal._4 -> Normal._6;
+            case Normal._3 -> Normal._3;
+            default -> Normal._0;
+        };
+    }
+
+    /**
+     * Appends one data field.
+     *
+     * @param data  accumulator containing previously decoded data fields
+     * @param value next decoded data-field value
+     */
+    private static void appendData(final StringBuilder data, final String value) {
+        if (!data.isEmpty()) {
+            data.append(Symbol.C_LF);
+        }
+        data.append(value);
+    }
+
+    /**
+     * Creates an event from accumulated fields.
+     *
+     * @param id          last valid event identifier, or null
+     * @param event       last event type, or null
+     * @param data        single decoded data line, or null
+     * @param dataBuilder multi-line data accumulator, or null when at most one data line was seen
+     * @param retry       last valid retry delay, or null
+     * @return immutable event containing the accumulated field values
+     */
+    private static SseEvent event(
+            final String id,
+            final String event,
+            final String data,
+            final StringBuilder dataBuilder,
+            final Duration retry) {
+        return SseEvent.of(id, event, dataBuilder == null ? data : dataBuilder.toString(), retry);
     }
 
     /**
@@ -535,21 +560,6 @@ public class SseReader implements AutoCloseable {
     }
 
     /**
-     * Returns the value start offset for common colon-terminated fields.
-     *
-     * @param field recognized numeric field code
-     * @return byte offset immediately after that field's colon
-     */
-    private static int commonValueStart(final int field) {
-        return switch (field) {
-            case Normal._1 -> Normal._5;
-            case Normal._2, Normal._4 -> Normal._6;
-            case Normal._3 -> Normal._3;
-            default -> Normal._0;
-        };
-    }
-
-    /**
      * Returns the field code.
      *
      * @param nameEnd exclusive end offset of the field name
@@ -604,38 +614,6 @@ public class SseReader implements AutoCloseable {
     }
 
     /**
-     * Appends one data field.
-     *
-     * @param data  accumulator containing previously decoded data fields
-     * @param value next decoded data-field value
-     */
-    private static void appendData(final StringBuilder data, final String value) {
-        if (!data.isEmpty()) {
-            data.append(Symbol.C_LF);
-        }
-        data.append(value);
-    }
-
-    /**
-     * Creates an event from accumulated fields.
-     *
-     * @param id          last valid event identifier, or null
-     * @param event       last event type, or null
-     * @param data        single decoded data line, or null
-     * @param dataBuilder multi-line data accumulator, or null when at most one data line was seen
-     * @param retry       last valid retry delay, or null
-     * @return immutable event containing the accumulated field values
-     */
-    private static SseEvent event(
-            final String id,
-            final String event,
-            final String data,
-            final StringBuilder dataBuilder,
-            final Duration retry) {
-        return SseEvent.of(id, event, dataBuilder == null ? data : dataBuilder.toString(), retry);
-    }
-
-    /**
      * Parses retry milliseconds. Invalid values are ignored by SSE parsing.
      *
      * @param start inclusive retry-value offset in the current line
@@ -655,6 +633,28 @@ public class SseReader implements AutoCloseable {
             millis = millis * Normal._10 + digit;
         }
         return Duration.ofMillis(millis);
+    }
+
+    /**
+     * Reader-local parsing state independent from the owning session lifecycle.
+     */
+    private enum ReaderState {
+
+        /**
+         * Open and ready to parse the first event.
+         */
+        OPEN,
+
+        /**
+         * Actively parsing the event stream.
+         */
+        READING,
+
+        /**
+         * Source closed and no further parsing allowed.
+         */
+        CLOSED
+
     }
 
     /**

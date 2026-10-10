@@ -46,15 +46,15 @@ import org.miaixz.bus.logger.Logger;
 public class JmsConsumer implements Consumer {
 
     /**
+     * The underlying Jakarta Messaging {@link MessageConsumer} instance responsible for receiving messages.
+     */
+    private final MessageConsumer consumer;
+
+    /**
      * The name of the consumer group to which this consumer belongs. This is used as the topic identifier for the
      * internal {@link Message} representation.
      */
     private String consumerGroup;
-
-    /**
-     * The underlying Jakarta Messaging {@link MessageConsumer} instance responsible for receiving messages.
-     */
-    private final MessageConsumer consumer;
 
     /**
      * Constructs a {@code JmsConsumer} with the specified consumer group name and the underlying Jakarta Messaging

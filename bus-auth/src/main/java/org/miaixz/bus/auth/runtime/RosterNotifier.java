@@ -46,26 +46,32 @@ final class RosterNotifier {
      * Immutable project listeners in deterministic delivery order.
      */
     private final List<RosterListener> listeners;
+
     /**
      * Caller-owned executor used to deliver listener callbacks.
      */
     private final Executor executor;
+
     /**
      * Bounded pending notification queue guarded by this instance monitor.
      */
     private final Queue<Notification> pending = new ArrayDeque<>();
+
     /**
      * Whether one queue-draining task is currently scheduled or running.
      */
     private boolean dispatching;
+
     /**
      * Whether shutdown has permanently disabled new notifications.
      */
     private boolean closed;
+
     /**
      * Number of dropped observations awaiting one overflow callback.
      */
     private long dropped;
+
     /**
      * Latest committed revision reported with an observation gap.
      */

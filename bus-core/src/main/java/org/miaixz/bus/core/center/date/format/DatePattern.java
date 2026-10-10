@@ -481,6 +481,7 @@ public class DatePattern {
     private static class TextField implements Rule {
 
         private final int mField;
+
         private final String[] mValues;
 
         TextField(final int field, final String[] values) {
@@ -646,6 +647,7 @@ public class DatePattern {
     private static class PaddedNumberField implements NumberRule {
 
         private final int mField;
+
         private final int mSize;
 
         PaddedNumberField(final int field, final int size) {
@@ -1092,8 +1094,11 @@ public class DatePattern {
     private static class TimeZoneNameRule implements Rule {
 
         private final Locale mLocale;
+
         private final int mStyle;
+
         private final String mStandard;
+
         private final String mDaylight;
 
         TimeZoneNameRule(final TimeZone timeZone, final Locale locale, final int style) {
@@ -1143,7 +1148,9 @@ public class DatePattern {
     private static class TimeZoneNumberRule implements Rule {
 
         static final TimeZoneNumberRule INSTANCE_COLON = new TimeZoneNumberRule(true);
+
         static final TimeZoneNumberRule INSTANCE_NO_COLON = new TimeZoneNumberRule(false);
+
         final boolean mColon;
 
         TimeZoneNumberRule(final boolean colon) {
@@ -1198,8 +1205,11 @@ public class DatePattern {
     private static class Iso8601_Rule implements Rule {
 
         static final Iso8601_Rule ISO8601_HOURS = new Iso8601_Rule(3);
+
         static final Iso8601_Rule ISO8601_HOURS_MINUTES = new Iso8601_Rule(5);
+
         static final Iso8601_Rule ISO8601_HOURS_COLON_MINUTES = new Iso8601_Rule(6);
+
         final int length;
 
         Iso8601_Rule(final int length) {
@@ -1270,7 +1280,9 @@ public class DatePattern {
     private static class TimeZoneDisplayKey {
 
         private final TimeZone mTimeZone;
+
         private final int mStyle;
+
         private final Locale mLocale;
 
         TimeZoneDisplayKey(final TimeZone timeZone, final boolean daylight, final int style, final Locale locale) {

@@ -22,60 +22,39 @@ package org.opencv.imgproc;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfFloat;
-import org.opencv.core.MatOfInt;
-import org.opencv.core.MatOfInt4;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
-import org.opencv.core.Point;
-import org.opencv.core.Rect;
-import org.opencv.core.RotatedRect;
-import org.opencv.core.Scalar;
-import org.opencv.core.Size;
-import org.opencv.core.TermCriteria;
+import org.opencv.core.*;
 import org.opencv.utils.Converters;
 
 // C++: class Imgproc
 
 /**
- * The imgproc class.
+ * Provides the {@code Imgproc} API.
  */
 public class Imgproc {
 
-    private static final int IPL_BORDER_CONSTANT = 0, IPL_BORDER_REPLICATE = 1, IPL_BORDER_REFLECT = 2,
-            IPL_BORDER_WRAP = 3, IPL_BORDER_REFLECT_101 = 4, IPL_BORDER_TRANSPARENT = 5, CV_INTER_NN = 0,
-            CV_INTER_LINEAR = 1, CV_INTER_CUBIC = 2, CV_INTER_AREA = 3, CV_INTER_LANCZOS4 = 4, CV_MOP_ERODE = 0,
-            CV_MOP_DILATE = 1, CV_MOP_OPEN = 2, CV_MOP_CLOSE = 3, CV_MOP_GRADIENT = 4, CV_MOP_TOPHAT = 5,
-            CV_MOP_BLACKHAT = 6, CV_RETR_EXTERNAL = 0, CV_RETR_LIST = 1, CV_RETR_CCOMP = 2, CV_RETR_TREE = 3,
-            CV_RETR_FLOODFILL = 4, CV_CHAIN_APPROX_NONE = 1, CV_CHAIN_APPROX_SIMPLE = 2, CV_CHAIN_APPROX_TC89_L1 = 3,
-            CV_CHAIN_APPROX_TC89_KCOS = 4, CV_THRESH_BINARY = 0, CV_THRESH_BINARY_INV = 1, CV_THRESH_TRUNC = 2,
-            CV_THRESH_TOZERO = 3, CV_THRESH_TOZERO_INV = 4, CV_THRESH_MASK = 7, CV_THRESH_OTSU = 8,
-            CV_THRESH_TRIANGLE = 16, CV_THRESH_DRYRUN = 128;
-
-    // C++: enum <unnamed>
-    public static final int CV_GAUSSIAN_5x5 = 7, CV_SCHARR = -1, CV_MAX_SOBEL_KSIZE = 7, CV_RGBA2mRGBA = 125,
-            CV_mRGBA2RGBA = 126, CV_WARP_FILL_OUTLIERS = 8, CV_WARP_INVERSE_MAP = 16, CV_WARP_RELATIVE_MAP = 32,
-            CV_CHAIN_CODE = 0, CV_LINK_RUNS = 5, CV_POLY_APPROX_DP = 0, CV_CONTOURS_MATCH_I1 = 1,
-            CV_CONTOURS_MATCH_I2 = 2, CV_CONTOURS_MATCH_I3 = 3, CV_CLOCKWISE = 1, CV_COUNTER_CLOCKWISE = 2,
-            CV_COMP_CORREL = 0, CV_COMP_CHISQR = 1, CV_COMP_INTERSECT = 2, CV_COMP_BHATTACHARYYA = 3,
-            CV_COMP_HELLINGER = CV_COMP_BHATTACHARYYA, CV_COMP_CHISQR_ALT = 4, CV_COMP_KL_DIV = 5, CV_DIST_MASK_3 = 3,
-            CV_DIST_MASK_5 = 5, CV_DIST_MASK_PRECISE = 0, CV_DIST_LABEL_CCOMP = 0, CV_DIST_LABEL_PIXEL = 1,
-            CV_DIST_USER = -1, CV_DIST_L1 = 1, CV_DIST_L2 = 2, CV_DIST_C = 3, CV_DIST_L12 = 4, CV_DIST_FAIR = 5,
-            CV_DIST_WELSCH = 6, CV_DIST_HUBER = 7, CV_CANNY_L2_GRADIENT = (1 << 31), CV_HOUGH_STANDARD = 0,
-            CV_HOUGH_PROBABILISTIC = 1, CV_HOUGH_MULTI_SCALE = 2, CV_HOUGH_GRADIENT = 3;
-
-    // C++: enum MorphShapes_c (MorphShapes_c)
-    public static final int CV_SHAPE_RECT = 0, CV_SHAPE_CROSS = 1, CV_SHAPE_ELLIPSE = 2, CV_SHAPE_DIAMOND = 3,
-            CV_SHAPE_CUSTOM = 100;
-
-    // C++: enum SmoothMethod_c (SmoothMethod_c)
-    public static final int CV_BLUR_NO_SCALE = 0, CV_BLUR = 1, CV_GAUSSIAN = 2, CV_MEDIAN = 3, CV_BILATERAL = 4;
-
     // C++: enum AdaptiveThresholdTypes (cv.AdaptiveThresholdTypes)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int ADAPTIVE_THRESH_MEAN_C = 0, ADAPTIVE_THRESH_GAUSSIAN_C = 1;
-
-    // C++: enum ColorConversionCodes (cv.ColorConversionCodes)
+    // C++: enum ColormapTypes (cv.ColormapTypes)
+    /**
+     * OpenCV constants used by this API.
+     */
+    public static final int COLORMAP_AUTUMN = 0, COLORMAP_BONE = 1, COLORMAP_JET = 2, COLORMAP_WINTER = 3,
+            COLORMAP_RAINBOW = 4, COLORMAP_OCEAN = 5, COLORMAP_SUMMER = 6, COLORMAP_SPRING = 7, COLORMAP_COOL = 8,
+            COLORMAP_HSV = 9, COLORMAP_PINK = 10, COLORMAP_HOT = 11, COLORMAP_PARULA = 12, COLORMAP_MAGMA = 13,
+            COLORMAP_INFERNO = 14, COLORMAP_PLASMA = 15, COLORMAP_VIRIDIS = 16, COLORMAP_CIVIDIS = 17,
+            COLORMAP_TWILIGHT = 18, COLORMAP_TWILIGHT_SHIFTED = 19, COLORMAP_TURBO = 20, COLORMAP_DEEPGREEN = 21;
+    // C++: enum ConnectedComponentsAlgorithmsTypes (cv.ConnectedComponentsAlgorithmsTypes)
+    /**
+     * Provides the {@code ColorConversionCodes} API.
+     */
+    public static final int CCL_DEFAULT = -1, CCL_WU = 0, CCL_GRANA = 1, CCL_BOLELLI = 2, CCL_SAUF = 3, CCL_BBDT = 4,
+            CCL_SPAGHETTI = 5; // C++: enum ColorConversionCodes (cv.ColorConversionCodes)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int COLOR_BGR2BGRA = 0, COLOR_RGB2RGBA = COLOR_BGR2BGRA, COLOR_BGRA2BGR = 1,
             COLOR_RGBA2RGB = COLOR_BGRA2BGR, COLOR_BGR2RGBA = 2, COLOR_RGB2BGRA = COLOR_BGR2RGBA, COLOR_RGBA2BGR = 3,
             COLOR_BGRA2RGB = COLOR_RGBA2BGR, COLOR_BGR2RGB = 4, COLOR_RGB2BGR = COLOR_BGR2RGB, COLOR_BGRA2RGBA = 5,
@@ -171,116 +150,151 @@ public class Imgproc {
             COLOR_RGBA2YUV_YVYU = 153, COLOR_BGRA2YUV_YVYU = 154, COLOR_RGBA2YUV_YUYV = COLOR_RGBA2YUV_YUY2,
             COLOR_BGRA2YUV_YUYV = COLOR_BGRA2YUV_YUY2, COLOR_RGBA2YUV_YUNV = COLOR_RGBA2YUV_YUY2,
             COLOR_BGRA2YUV_YUNV = COLOR_BGRA2YUV_YUY2, COLOR_COLORCVT_MAX = 155;
-
-    // C++: enum ColormapTypes (cv.ColormapTypes)
-    public static final int COLORMAP_AUTUMN = 0, COLORMAP_BONE = 1, COLORMAP_JET = 2, COLORMAP_WINTER = 3,
-            COLORMAP_RAINBOW = 4, COLORMAP_OCEAN = 5, COLORMAP_SUMMER = 6, COLORMAP_SPRING = 7, COLORMAP_COOL = 8,
-            COLORMAP_HSV = 9, COLORMAP_PINK = 10, COLORMAP_HOT = 11, COLORMAP_PARULA = 12, COLORMAP_MAGMA = 13,
-            COLORMAP_INFERNO = 14, COLORMAP_PLASMA = 15, COLORMAP_VIRIDIS = 16, COLORMAP_CIVIDIS = 17,
-            COLORMAP_TWILIGHT = 18, COLORMAP_TWILIGHT_SHIFTED = 19, COLORMAP_TURBO = 20, COLORMAP_DEEPGREEN = 21;
-
-    // C++: enum ConnectedComponentsAlgorithmsTypes (cv.ConnectedComponentsAlgorithmsTypes)
-    public static final int CCL_DEFAULT = -1, CCL_WU = 0, CCL_GRANA = 1, CCL_BOLELLI = 2, CCL_SAUF = 3, CCL_BBDT = 4,
-            CCL_SPAGHETTI = 5;
-
     // C++: enum ConnectedComponentsTypes (cv.ConnectedComponentsTypes)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int CC_STAT_LEFT = 0, CC_STAT_TOP = 1, CC_STAT_WIDTH = 2, CC_STAT_HEIGHT = 3, CC_STAT_AREA = 4,
             CC_STAT_MAX = 5;
-
     // C++: enum ContourApproximationModes (cv.ContourApproximationModes)
-    public static final int CHAIN_APPROX_NONE = 1, CHAIN_APPROX_SIMPLE = 2, CHAIN_APPROX_TC89_L1 = 3,
-            CHAIN_APPROX_TC89_KCOS = 4;
-
+    /**
+     * OpenCV constants used by this API.
+     */
+    public static final int CHAIN_CODE = 0, CHAIN_APPROX_NONE = 1, CHAIN_APPROX_SIMPLE = 2, CHAIN_APPROX_TC89_L1 = 3,
+            CHAIN_APPROX_TC89_KCOS = 4, LINK_RUNS = 5;
     // C++: enum DistanceTransformLabelTypes (cv.DistanceTransformLabelTypes)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int DIST_LABEL_CCOMP = 0, DIST_LABEL_PIXEL = 1;
-
     // C++: enum DistanceTransformMasks (cv.DistanceTransformMasks)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int DIST_MASK_3 = 3, DIST_MASK_5 = 5, DIST_MASK_PRECISE = 0;
-
-    // C++: enum DistanceTypes (cv.DistanceTypes)
-    public static final int DIST_USER = -1, DIST_L1 = 1, DIST_L2 = 2, DIST_C = 3, DIST_L12 = 4, DIST_FAIR = 5,
-            DIST_WELSCH = 6, DIST_HUBER = 7;
-
     // C++: enum FloodFillFlags (cv.FloodFillFlags)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int FLOODFILL_FIXED_RANGE = 1 << 16, FLOODFILL_MASK_ONLY = 1 << 17;
-
     // C++: enum GrabCutClasses (cv.GrabCutClasses)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int GC_BGD = 0, GC_FGD = 1, GC_PR_BGD = 2, GC_PR_FGD = 3;
-
     // C++: enum GrabCutModes (cv.GrabCutModes)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int GC_INIT_WITH_RECT = 0, GC_INIT_WITH_MASK = 1, GC_EVAL = 2, GC_EVAL_FREEZE_MODEL = 3;
-
     // C++: enum HersheyFonts (cv.HersheyFonts)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int FONT_HERSHEY_SIMPLEX = 0, FONT_HERSHEY_PLAIN = 1, FONT_HERSHEY_DUPLEX = 2,
             FONT_HERSHEY_COMPLEX = 3, FONT_HERSHEY_TRIPLEX = 4, FONT_HERSHEY_COMPLEX_SMALL = 5,
             FONT_HERSHEY_SCRIPT_SIMPLEX = 6, FONT_HERSHEY_SCRIPT_COMPLEX = 7, FONT_ITALIC = 16;
-
     // C++: enum HistCompMethods (cv.HistCompMethods)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int HISTCMP_CORREL = 0, HISTCMP_CHISQR = 1, HISTCMP_INTERSECT = 2, HISTCMP_BHATTACHARYYA = 3,
             HISTCMP_HELLINGER = HISTCMP_BHATTACHARYYA, HISTCMP_CHISQR_ALT = 4, HISTCMP_KL_DIV = 5;
-
     // C++: enum HoughModes (cv.HoughModes)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int HOUGH_STANDARD = 0, HOUGH_PROBABILISTIC = 1, HOUGH_MULTI_SCALE = 2, HOUGH_GRADIENT = 3,
             HOUGH_GRADIENT_ALT = 4;
-
     // C++: enum InterpolationFlags (cv.InterpolationFlags)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int INTER_NEAREST = 0, INTER_LINEAR = 1, INTER_CUBIC = 2, INTER_AREA = 3, INTER_LANCZOS4 = 4,
             INTER_LINEAR_EXACT = 5, INTER_NEAREST_EXACT = 6, INTER_MAX = 7, WARP_FILL_OUTLIERS = 8,
             WARP_INVERSE_MAP = 16, WARP_RELATIVE_MAP = 32;
-
-    // C++: enum InterpolationMasks (cv.InterpolationMasks)
+    // C++: enum LineSegmentDetectorModes (cv.LineSegmentDetectorModes)
+    /**
+     * OpenCV constants used by this API.
+     */
+    public static final int LSD_REFINE_NONE = 0, LSD_REFINE_STD = 1, LSD_REFINE_ADV = 2;
+    // C++: enum LineTypes (cv.LineTypes)
+    /**
+     * OpenCV constants used by this API.
+     */
+    public static final int FILLED = -1, LINE_4 = 4, LINE_8 = 8, LINE_AA = 16;
+    // C++: enum MarkerTypes (cv.MarkerTypes)
+    /**
+     * Provides the {@code InterpolationMasks} API.
+     */
+    public static final int MARKER_CROSS = 0, MARKER_TILTED_CROSS = 1, MARKER_STAR = 2, MARKER_DIAMOND = 3,
+            MARKER_SQUARE = 4, MARKER_TRIANGLE_UP = 5, MARKER_TRIANGLE_DOWN = 6; // C++: enum InterpolationMasks
+                                                                                 // (cv.InterpolationMasks)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int INTER_BITS = 5, INTER_BITS2 = INTER_BITS * 2, INTER_TAB_SIZE = 1 << INTER_BITS,
             INTER_TAB_SIZE2 = INTER_TAB_SIZE * INTER_TAB_SIZE;
-
-    // C++: enum LineSegmentDetectorModes (cv.LineSegmentDetectorModes)
-    public static final int LSD_REFINE_NONE = 0, LSD_REFINE_STD = 1, LSD_REFINE_ADV = 2;
-
-    // C++: enum LineTypes (cv.LineTypes)
-    public static final int FILLED = -1, LINE_4 = 4, LINE_8 = 8, LINE_AA = 16;
-
-    // C++: enum MarkerTypes (cv.MarkerTypes)
-    public static final int MARKER_CROSS = 0, MARKER_TILTED_CROSS = 1, MARKER_STAR = 2, MARKER_DIAMOND = 3,
-            MARKER_SQUARE = 4, MARKER_TRIANGLE_UP = 5, MARKER_TRIANGLE_DOWN = 6;
-
     // C++: enum MorphShapes (cv.MorphShapes)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int MORPH_RECT = 0, MORPH_CROSS = 1, MORPH_ELLIPSE = 2, MORPH_DIAMOND = 3;
-
     // C++: enum MorphTypes (cv.MorphTypes)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int MORPH_ERODE = 0, MORPH_DILATE = 1, MORPH_OPEN = 2, MORPH_CLOSE = 3, MORPH_GRADIENT = 4,
             MORPH_TOPHAT = 5, MORPH_BLACKHAT = 6, MORPH_HITMISS = 7;
-
-    // C++: enum RectanglesIntersectTypes (cv.RectanglesIntersectTypes)
-    public static final int INTERSECT_NONE = 0, INTERSECT_PARTIAL = 1, INTERSECT_FULL = 2;
-
+    // C++: enum PutTextFlags (cv.PutTextFlags)
+    /**
+     * OpenCV constants used by this API.
+     */
+    public static final int PUT_TEXT_ALIGN_LEFT = 0, PUT_TEXT_ALIGN_CENTER = 1, PUT_TEXT_ALIGN_RIGHT = 2,
+            PUT_TEXT_ALIGN_MASK = 3, PUT_TEXT_ORIGIN_TL = 0, PUT_TEXT_ORIGIN_BL = 32, PUT_TEXT_WRAP = 128;
     // C++: enum RetrievalModes (cv.RetrievalModes)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int RETR_EXTERNAL = 0, RETR_LIST = 1, RETR_CCOMP = 2, RETR_TREE = 3, RETR_FLOODFILL = 4;
-
     // C++: enum ShapeMatchModes (cv.ShapeMatchModes)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int CONTOURS_MATCH_I1 = 1, CONTOURS_MATCH_I2 = 2, CONTOURS_MATCH_I3 = 3;
-
     // C++: enum SpecialFilter (cv.SpecialFilter)
+    /**
+     * The {@code FILTER_SCHARR} value.
+     */
     public static final int FILTER_SCHARR = -1;
-
     // C++: enum TemplateMatchModes (cv.TemplateMatchModes)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int TM_SQDIFF = 0, TM_SQDIFF_NORMED = 1, TM_CCORR = 2, TM_CCORR_NORMED = 3, TM_CCOEFF = 4,
             TM_CCOEFF_NORMED = 5;
-
     // C++: enum ThresholdTypes (cv.ThresholdTypes)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int THRESH_BINARY = 0, THRESH_BINARY_INV = 1, THRESH_TRUNC = 2, THRESH_TOZERO = 3,
             THRESH_TOZERO_INV = 4, THRESH_MASK = 7, THRESH_OTSU = 8, THRESH_TRIANGLE = 16, THRESH_DRYRUN = 128;
-
+    // C++: enum UndistortTypes (cv.UndistortTypes)
+    /**
+     * OpenCV constants used by this API.
+     */
+    public static final int PROJ_SPHERICAL_ORTHO = 0, PROJ_SPHERICAL_EQRECT = 1;
     // C++: enum WarpPolarMode (cv.WarpPolarMode)
+    /**
+     * OpenCV constants used by this API.
+     */
     public static final int WARP_POLAR_LINEAR = 0, WARP_POLAR_LOG = 256;
-
-    //
-    // C++: Ptr_LineSegmentDetector cv::createLineSegmentDetector(int refine = LSD_REFINE_STD, double scale = 0.8,
-    // double sigma_scale = 0.6, double quant = 2.0, double ang_th = 22.5, double log_eps = 0, double density_th = 0.7,
-    // int n_bins = 1024)
-    //
+    private static final int IPL_BORDER_CONSTANT = 0, IPL_BORDER_REPLICATE = 1, IPL_BORDER_REFLECT = 2,
+            IPL_BORDER_WRAP = 3, IPL_BORDER_REFLECT_101 = 4, IPL_BORDER_TRANSPARENT = 5;
 
     /**
      * Creates a smart pointer to a LineSegmentDetector object and initializes it.
-     *
+     * <p>
      * The LineSegmentDetector algorithm is defined using the standard values. Only advanced users may want to edit
      * those, as to tailor it for their own application.
      *
@@ -309,7 +323,7 @@ public class Imgproc {
 
     /**
      * Creates a smart pointer to a LineSegmentDetector object and initializes it.
-     *
+     * <p>
      * The LineSegmentDetector algorithm is defined using the standard values. Only advanced users may want to edit
      * those, as to tailor it for their own application.
      *
@@ -334,9 +348,15 @@ public class Imgproc {
                 createLineSegmentDetector_1(refine, scale, sigma_scale, quant, ang_th, log_eps, density_th));
     }
 
+    //
+    // C++: Ptr_LineSegmentDetector cv::createLineSegmentDetector(LineSegmentDetectorModes refine = LSD_REFINE_STD,
+    // double scale = 0.8, double sigma_scale = 0.6, double quant = 2.0, double ang_th = 22.5, double log_eps = 0,
+    // double density_th = 0.7, int n_bins = 1024)
+    //
+
     /**
      * Creates a smart pointer to a LineSegmentDetector object and initializes it.
-     *
+     * <p>
      * The LineSegmentDetector algorithm is defined using the standard values. Only advanced users may want to edit
      * those, as to tailor it for their own application.
      *
@@ -361,7 +381,7 @@ public class Imgproc {
 
     /**
      * Creates a smart pointer to a LineSegmentDetector object and initializes it.
-     *
+     * <p>
      * The LineSegmentDetector algorithm is defined using the standard values. Only advanced users may want to edit
      * those, as to tailor it for their own application.
      *
@@ -383,7 +403,7 @@ public class Imgproc {
 
     /**
      * Creates a smart pointer to a LineSegmentDetector object and initializes it.
-     *
+     * <p>
      * The LineSegmentDetector algorithm is defined using the standard values. Only advanced users may want to edit
      * those, as to tailor it for their own application.
      *
@@ -403,7 +423,7 @@ public class Imgproc {
 
     /**
      * Creates a smart pointer to a LineSegmentDetector object and initializes it.
-     *
+     * <p>
      * The LineSegmentDetector algorithm is defined using the standard values. Only advanced users may want to edit
      * those, as to tailor it for their own application.
      *
@@ -418,7 +438,7 @@ public class Imgproc {
 
     /**
      * Creates a smart pointer to a LineSegmentDetector object and initializes it.
-     *
+     * <p>
      * The LineSegmentDetector algorithm is defined using the standard values. Only advanced users may want to edit
      * those, as to tailor it for their own application.
      *
@@ -432,7 +452,7 @@ public class Imgproc {
 
     /**
      * Creates a smart pointer to a LineSegmentDetector object and initializes it.
-     *
+     * <p>
      * The LineSegmentDetector algorithm is defined using the standard values. Only advanced users may want to edit
      * those, as to tailor it for their own application.
      *
@@ -445,7 +465,7 @@ public class Imgproc {
 
     /**
      * Creates a smart pointer to a LineSegmentDetector object and initializes it.
-     *
+     * <p>
      * The LineSegmentDetector algorithm is defined using the standard values. Only advanced users may want to edit
      * those, as to tailor it for their own application.
      *
@@ -455,19 +475,15 @@ public class Imgproc {
         return LineSegmentDetector.__fromPtr__(createLineSegmentDetector_8());
     }
 
-    //
-    // C++: Mat cv::getGaussianKernel(int ksize, double sigma, int ktype = CV_64F)
-    //
-
     /**
      * Returns Gaussian filter coefficients.
-     *
+     * <p>
      * The function computes and returns the \(\texttt{ksize} \times 1\) matrix of Gaussian filter coefficients:
-     *
+     * <p>
      * \(G_i= \alpha *e^{-(i-( \texttt{ksize} -1)/2)^2/(2* \texttt{sigma}^2)},\)
-     *
+     * <p>
      * where \(i=0..\texttt{ksize}-1\) and \(\alpha\) is the scale factor chosen so that \(\sum_i G_i=1\).
-     *
+     * <p>
      * Two of such generated kernels can be passed to sepFilter2D. Those functions automatically recognize smoothing
      * kernels (a symmetrical kernel with sum of weights equal to 1) and handle them accordingly. You may also use the
      * higher-level GaussianBlur.
@@ -485,13 +501,13 @@ public class Imgproc {
 
     /**
      * Returns Gaussian filter coefficients.
-     *
+     * <p>
      * The function computes and returns the \(\texttt{ksize} \times 1\) matrix of Gaussian filter coefficients:
-     *
+     * <p>
      * \(G_i= \alpha *e^{-(i-( \texttt{ksize} -1)/2)^2/(2* \texttt{sigma}^2)},\)
-     *
+     * <p>
      * where \(i=0..\texttt{ksize}-1\) and \(\alpha\) is the scale factor chosen so that \(\sum_i G_i=1\).
-     *
+     * <p>
      * Two of such generated kernels can be passed to sepFilter2D. Those functions automatically recognize smoothing
      * kernels (a symmetrical kernel with sum of weights equal to 1) and handle them accordingly. You may also use the
      * higher-level GaussianBlur.
@@ -507,13 +523,12 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::getDerivKernels(Mat& kx, Mat& ky, int dx, int dy, int ksize, bool normalize = false, int ktype =
-    // CV_32F)
+    // C++: Mat cv::getGaussianKernel(int ksize, double sigma, int ktype = CV_64F)
     //
 
     /**
      * Returns filter coefficients for computing spatial image derivatives.
-     *
+     * <p>
      * The function computes and returns the filter coefficients for spatial image derivatives. When
      * {@code ksize=FILTER_SCHARR}, the Scharr \(3 \times 3\) kernels are generated (see #Scharr). Otherwise, Sobel
      * kernels are generated (see #Sobel). The filters are normally passed to #sepFilter2D or to
@@ -536,7 +551,7 @@ public class Imgproc {
 
     /**
      * Returns filter coefficients for computing spatial image derivatives.
-     *
+     * <p>
      * The function computes and returns the filter coefficients for spatial image derivatives. When
      * {@code ksize=FILTER_SCHARR}, the Scharr \(3 \times 3\) kernels are generated (see #Scharr). Otherwise, Sobel
      * kernels are generated (see #Sobel). The filters are normally passed to #sepFilter2D or to
@@ -556,9 +571,14 @@ public class Imgproc {
         getDerivKernels_1(kx.nativeObj, ky.nativeObj, dx, dy, ksize, normalize);
     }
 
+    //
+    // C++: void cv::getDerivKernels(Mat& kx, Mat& ky, int dx, int dy, int ksize, bool normalize = false, int ktype =
+    // CV_32F)
+    //
+
     /**
      * Returns filter coefficients for computing spatial image derivatives.
-     *
+     * <p>
      * The function computes and returns the filter coefficients for spatial image derivatives. When
      * {@code ksize=FILTER_SCHARR}, the Scharr \(3 \times 3\) kernels are generated (see #Scharr). Otherwise, Sobel
      * kernels are generated (see #Sobel). The filters are normally passed to #sepFilter2D or to
@@ -577,14 +597,9 @@ public class Imgproc {
         getDerivKernels_2(kx.nativeObj, ky.nativeObj, dx, dy, ksize);
     }
 
-    //
-    // C++: Mat cv::getGaborKernel(Size ksize, double sigma, double theta, double lambd, double gamma, double psi =
-    // CV_PI*0.5, int ktype = CV_64F)
-    //
-
     /**
      * Returns Gabor filter coefficients.
-     *
+     * <p>
      * For more details about gabor filter equations and parameters, see: [Gabor
      * Filter](https://en.wikipedia.org/wiki/Gabor_filter).
      *
@@ -610,7 +625,7 @@ public class Imgproc {
 
     /**
      * Returns Gabor filter coefficients.
-     *
+     * <p>
      * For more details about gabor filter equations and parameters, see: [Gabor
      * Filter](https://en.wikipedia.org/wiki/Gabor_filter).
      *
@@ -626,9 +641,14 @@ public class Imgproc {
         return new Mat(getGaborKernel_1(ksize.width, ksize.height, sigma, theta, lambd, gamma, psi));
     }
 
+    //
+    // C++: Mat cv::getGaborKernel(Size ksize, double sigma, double theta, double lambd, double gamma, double psi =
+    // CV_PI*0.5, int ktype = CV_64F)
+    //
+
     /**
      * Returns Gabor filter coefficients.
-     *
+     * <p>
      * For more details about gabor filter equations and parameters, see: [Gabor
      * Filter](https://en.wikipedia.org/wiki/Gabor_filter).
      *
@@ -643,13 +663,9 @@ public class Imgproc {
         return new Mat(getGaborKernel_2(ksize.width, ksize.height, sigma, theta, lambd, gamma));
     }
 
-    //
-    // C++: Mat cv::getStructuringElement(int shape, Size ksize, Point anchor = Point(-1,-1))
-    //
-
     /**
      * Returns a structuring element of the specified size and shape for morphological operations.
-     *
+     * <p>
      * The function constructs and returns the structuring element that can be further passed to #erode, #dilate or
      * #morphologyEx. But you can also construct an arbitrary binary mask yourself and use it as the structuring
      * element.
@@ -667,7 +683,7 @@ public class Imgproc {
 
     /**
      * Returns a structuring element of the specified size and shape for morphological operations.
-     *
+     * <p>
      * The function constructs and returns the structuring element that can be further passed to #erode, #dilate or
      * #morphologyEx. But you can also construct an arbitrary binary mask yourself and use it as the structuring
      * element.
@@ -683,12 +699,12 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::medianBlur(Mat src, Mat& dst, int ksize)
+    // C++: Mat cv::getStructuringElement(int shape, Size ksize, Point anchor = Point(-1,-1))
     //
 
     /**
      * Blurs an image using the median filter.
-     *
+     * <p>
      * The function smoothes an image using the median filter with the \(\texttt{ksize} \times \texttt{ksize}\)
      * aperture. Each channel of a multi-channel image is processed independently. In-place operation is supported.
      *
@@ -704,14 +720,9 @@ public class Imgproc {
         medianBlur_0(src.nativeObj, dst.nativeObj, ksize);
     }
 
-    //
-    // C++: void cv::GaussianBlur(Mat src, Mat& dst, Size ksize, double sigmaX, double sigmaY = 0, int borderType =
-    // BORDER_DEFAULT, AlgorithmHint hint = cv::ALGO_HINT_DEFAULT)
-    //
-
     /**
      * Blurs an image using a Gaussian filter.
-     *
+     * <p>
      * The function convolves the source image with the specified Gaussian kernel. In-place filtering is supported.
      *
      * @param src        input image; the image can have any number of channels, which are processed independently, but
@@ -726,8 +737,8 @@ public class Imgproc {
      *                   possible future modifications of all this semantics, it is recommended to specify all of ksize,
      *                   sigmaX, and sigmaY.
      * @param borderType pixel extrapolation method, see #BorderTypes. #BORDER_WRAP is not supported.
-     * @param hint       Implementation modfication flags. See #AlgorithmHint
-     *
+     * @param hint       Implementation modification flags. See #AlgorithmHint
+     *                   <p>
      *                   SEE: sepFilter2D, filter2D, blur, boxFilter, bilateralFilter, medianBlur
      */
     public static void GaussianBlur(
@@ -741,9 +752,13 @@ public class Imgproc {
         GaussianBlur_0(src.nativeObj, dst.nativeObj, ksize.width, ksize.height, sigmaX, sigmaY, borderType, hint);
     }
 
+    //
+    // C++: void cv::medianBlur(Mat src, Mat& dst, int ksize)
+    //
+
     /**
      * Blurs an image using a Gaussian filter.
-     *
+     * <p>
      * The function convolves the source image with the specified Gaussian kernel. In-place filtering is supported.
      *
      * @param src        input image; the image can have any number of channels, which are processed independently, but
@@ -758,16 +773,21 @@ public class Imgproc {
      *                   possible future modifications of all this semantics, it is recommended to specify all of ksize,
      *                   sigmaX, and sigmaY.
      * @param borderType pixel extrapolation method, see #BorderTypes. #BORDER_WRAP is not supported.
-     *
+     *                   <p>
      *                   SEE: sepFilter2D, filter2D, blur, boxFilter, bilateralFilter, medianBlur
      */
     public static void GaussianBlur(Mat src, Mat dst, Size ksize, double sigmaX, double sigmaY, int borderType) {
         GaussianBlur_1(src.nativeObj, dst.nativeObj, ksize.width, ksize.height, sigmaX, sigmaY, borderType);
     }
 
+    //
+    // C++: void cv::GaussianBlur(Mat src, Mat& dst, Size ksize, double sigmaX, double sigmaY = 0, int borderType =
+    // BORDER_DEFAULT, AlgorithmHint hint = cv::ALGO_HINT_DEFAULT)
+    //
+
     /**
      * Blurs an image using a Gaussian filter.
-     *
+     * <p>
      * The function convolves the source image with the specified Gaussian kernel. In-place filtering is supported.
      *
      * @param src    input image; the image can have any number of channels, which are processed independently, but the
@@ -780,7 +800,7 @@ public class Imgproc {
      *               sigmaX, if both sigmas are zeros, they are computed from ksize.width and ksize.height, respectively
      *               (see #getGaussianKernel for details); to fully control the result regardless of possible future
      *               modifications of all this semantics, it is recommended to specify all of ksize, sigmaX, and sigmaY.
-     *
+     *               <p>
      *               SEE: sepFilter2D, filter2D, blur, boxFilter, bilateralFilter, medianBlur
      */
     public static void GaussianBlur(Mat src, Mat dst, Size ksize, double sigmaX, double sigmaY) {
@@ -789,7 +809,7 @@ public class Imgproc {
 
     /**
      * Blurs an image using a Gaussian filter.
-     *
+     * <p>
      * The function convolves the source image with the specified Gaussian kernel. In-place filtering is supported.
      *
      * @param src    input image; the image can have any number of channels, which are processed independently, but the
@@ -801,33 +821,28 @@ public class Imgproc {
      *               are computed from ksize.width and ksize.height, respectively (see #getGaussianKernel for details);
      *               to fully control the result regardless of possible future modifications of all this semantics, it
      *               is recommended to specify all of ksize, sigmaX, and sigmaY.
-     *
+     *               <p>
      *               SEE: sepFilter2D, filter2D, blur, boxFilter, bilateralFilter, medianBlur
      */
     public static void GaussianBlur(Mat src, Mat dst, Size ksize, double sigmaX) {
         GaussianBlur_3(src.nativeObj, dst.nativeObj, ksize.width, ksize.height, sigmaX);
     }
 
-    //
-    // C++: void cv::bilateralFilter(Mat src, Mat& dst, int d, double sigmaColor, double sigmaSpace, int borderType =
-    // BORDER_DEFAULT)
-    //
-
     /**
      * Applies the bilateral filter to an image.
-     *
+     * <p>
      * The function applies bilateral filtering to the input image, as described in
      * https://homepages.inf.ed.ac.uk/rbf/CVonline/LOCAL_COPIES/MANDUCHI1/Bilateral_Filtering.html bilateralFilter can
      * reduce unwanted noise very well while keeping edges fairly sharp. However, it is very slow compared to most
      * filters.
-     *
+     * <p>
      * _Sigma values_: For simplicity, you can set the 2 sigma values to be the same. If they are small (&lt; 10), the
      * filter will not have much effect, whereas if they are large (&gt; 150), they will have a very strong effect,
      * making the image look "cartoonish".
-     *
+     * <p>
      * _Filter size_: Large filters (d &gt; 5) are very slow, so it is recommended to use d=5 for real-time
      * applications, and perhaps d=9 for offline applications that need heavy noise filtering.
-     *
+     * <p>
      * This filter does not work inplace.
      *
      * @param src        Source 8-bit or floating-point, 1-channel or 3-channel image.
@@ -849,19 +864,19 @@ public class Imgproc {
 
     /**
      * Applies the bilateral filter to an image.
-     *
+     * <p>
      * The function applies bilateral filtering to the input image, as described in
      * https://homepages.inf.ed.ac.uk/rbf/CVonline/LOCAL_COPIES/MANDUCHI1/Bilateral_Filtering.html bilateralFilter can
      * reduce unwanted noise very well while keeping edges fairly sharp. However, it is very slow compared to most
      * filters.
-     *
+     * <p>
      * _Sigma values_: For simplicity, you can set the 2 sigma values to be the same. If they are small (&lt; 10), the
      * filter will not have much effect, whereas if they are large (&gt; 150), they will have a very strong effect,
      * making the image look "cartoonish".
-     *
+     * <p>
      * _Filter size_: Large filters (d &gt; 5) are very slow, so it is recommended to use d=5 for real-time
      * applications, and perhaps d=9 for offline applications that need heavy noise filtering.
-     *
+     * <p>
      * This filter does not work inplace.
      *
      * @param src        Source 8-bit or floating-point, 1-channel or 3-channel image.
@@ -881,23 +896,23 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::boxFilter(Mat src, Mat& dst, int ddepth, Size ksize, Point anchor = Point(-1,-1), bool normalize =
-    // true, int borderType = BORDER_DEFAULT)
+    // C++: void cv::bilateralFilter(Mat src, Mat& dst, int d, double sigmaColor, double sigmaSpace, int borderType =
+    // BORDER_DEFAULT)
     //
 
     /**
      * Blurs an image using the box filter.
-     *
+     * <p>
      * The function smooths an image using the kernel:
-     *
+     * <p>
      * \(\texttt{K} = \alpha \begin{bmatrix} 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 1 &amp; 1 \\ 1 &amp; 1 &amp; 1 &amp;
      * \cdots &amp; 1 &amp; 1 \\ \hdotsfor{6} \\ 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 1 &amp; 1 \end{bmatrix}\)
-     *
+     * <p>
      * where
-     *
+     * <p>
      * \(\alpha = \begin{cases} \frac{1}{\texttt{ksize.width*ksize.height}} &amp; \texttt{when } \texttt{normalize=true}
      * \\1 &amp; \texttt{otherwise}\end{cases}\)
-     *
+     * <p>
      * Unnormalized box filter is useful for computing various integral characteristics over each pixel neighborhood,
      * such as covariance matrices of image derivatives (used in dense optical flow algorithms, and so on). If you need
      * to compute pixel sums over variable-size windows, use #integral.
@@ -933,17 +948,17 @@ public class Imgproc {
 
     /**
      * Blurs an image using the box filter.
-     *
+     * <p>
      * The function smooths an image using the kernel:
-     *
+     * <p>
      * \(\texttt{K} = \alpha \begin{bmatrix} 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 1 &amp; 1 \\ 1 &amp; 1 &amp; 1 &amp;
      * \cdots &amp; 1 &amp; 1 \\ \hdotsfor{6} \\ 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 1 &amp; 1 \end{bmatrix}\)
-     *
+     * <p>
      * where
-     *
+     * <p>
      * \(\alpha = \begin{cases} \frac{1}{\texttt{ksize.width*ksize.height}} &amp; \texttt{when } \texttt{normalize=true}
      * \\1 &amp; \texttt{otherwise}\end{cases}\)
-     *
+     * <p>
      * Unnormalized box filter is useful for computing various integral characteristics over each pixel neighborhood,
      * such as covariance matrices of image derivatives (used in dense optical flow algorithms, and so on). If you need
      * to compute pixel sums over variable-size windows, use #integral.
@@ -960,19 +975,24 @@ public class Imgproc {
         boxFilter_1(src.nativeObj, dst.nativeObj, ddepth, ksize.width, ksize.height, anchor.x, anchor.y, normalize);
     }
 
+    //
+    // C++: void cv::boxFilter(Mat src, Mat& dst, int ddepth, Size ksize, Point anchor = Point(-1,-1), bool normalize =
+    // true, int borderType = BORDER_DEFAULT)
+    //
+
     /**
      * Blurs an image using the box filter.
-     *
+     * <p>
      * The function smooths an image using the kernel:
-     *
+     * <p>
      * \(\texttt{K} = \alpha \begin{bmatrix} 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 1 &amp; 1 \\ 1 &amp; 1 &amp; 1 &amp;
      * \cdots &amp; 1 &amp; 1 \\ \hdotsfor{6} \\ 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 1 &amp; 1 \end{bmatrix}\)
-     *
+     * <p>
      * where
-     *
+     * <p>
      * \(\alpha = \begin{cases} \frac{1}{\texttt{ksize.width*ksize.height}} &amp; \texttt{when } \texttt{normalize=true}
      * \\1 &amp; \texttt{otherwise}\end{cases}\)
-     *
+     * <p>
      * Unnormalized box filter is useful for computing various integral characteristics over each pixel neighborhood,
      * such as covariance matrices of image derivatives (used in dense optical flow algorithms, and so on). If you need
      * to compute pixel sums over variable-size windows, use #integral.
@@ -990,17 +1010,17 @@ public class Imgproc {
 
     /**
      * Blurs an image using the box filter.
-     *
+     * <p>
      * The function smooths an image using the kernel:
-     *
+     * <p>
      * \(\texttt{K} = \alpha \begin{bmatrix} 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 1 &amp; 1 \\ 1 &amp; 1 &amp; 1 &amp;
      * \cdots &amp; 1 &amp; 1 \\ \hdotsfor{6} \\ 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 1 &amp; 1 \end{bmatrix}\)
-     *
+     * <p>
      * where
-     *
+     * <p>
      * \(\alpha = \begin{cases} \frac{1}{\texttt{ksize.width*ksize.height}} &amp; \texttt{when } \texttt{normalize=true}
      * \\1 &amp; \texttt{otherwise}\end{cases}\)
-     *
+     * <p>
      * Unnormalized box filter is useful for computing various integral characteristics over each pixel neighborhood,
      * such as covariance matrices of image derivatives (used in dense optical flow algorithms, and so on). If you need
      * to compute pixel sums over variable-size windows, use #integral.
@@ -1014,17 +1034,12 @@ public class Imgproc {
         boxFilter_3(src.nativeObj, dst.nativeObj, ddepth, ksize.width, ksize.height);
     }
 
-    //
-    // C++: void cv::sqrBoxFilter(Mat src, Mat& dst, int ddepth, Size ksize, Point anchor = Point(-1, -1), bool
-    // normalize = true, int borderType = BORDER_DEFAULT)
-    //
-
     /**
      * Calculates the normalized sum of squares of the pixel values overlapping the filter.
-     *
+     * <p>
      * For every pixel \( (x, y) \) in the source image, the function calculates the sum of squares of those neighboring
      * pixel values which overlap the filter placed over the pixel \( (x, y) \).
-     *
+     * <p>
      * The unnormalized square box filter can be useful in computing local image statistics such as the local variance
      * and standard deviation around the neighborhood of a pixel.
      *
@@ -1060,10 +1075,10 @@ public class Imgproc {
 
     /**
      * Calculates the normalized sum of squares of the pixel values overlapping the filter.
-     *
+     * <p>
      * For every pixel \( (x, y) \) in the source image, the function calculates the sum of squares of those neighboring
      * pixel values which overlap the filter placed over the pixel \( (x, y) \).
-     *
+     * <p>
      * The unnormalized square box filter can be useful in computing local image statistics such as the local variance
      * and standard deviation around the neighborhood of a pixel.
      *
@@ -1079,12 +1094,17 @@ public class Imgproc {
         sqrBoxFilter_1(src.nativeObj, dst.nativeObj, ddepth, ksize.width, ksize.height, anchor.x, anchor.y, normalize);
     }
 
+    //
+    // C++: void cv::sqrBoxFilter(Mat src, Mat& dst, int ddepth, Size ksize, Point anchor = Point(-1, -1), bool
+    // normalize = true, int borderType = BORDER_DEFAULT)
+    //
+
     /**
      * Calculates the normalized sum of squares of the pixel values overlapping the filter.
-     *
+     * <p>
      * For every pixel \( (x, y) \) in the source image, the function calculates the sum of squares of those neighboring
      * pixel values which overlap the filter placed over the pixel \( (x, y) \).
-     *
+     * <p>
      * The unnormalized square box filter can be useful in computing local image statistics such as the local variance
      * and standard deviation around the neighborhood of a pixel.
      *
@@ -1101,10 +1121,10 @@ public class Imgproc {
 
     /**
      * Calculates the normalized sum of squares of the pixel values overlapping the filter.
-     *
+     * <p>
      * For every pixel \( (x, y) \) in the source image, the function calculates the sum of squares of those neighboring
      * pixel values which overlap the filter placed over the pixel \( (x, y) \).
-     *
+     * <p>
      * The unnormalized square box filter can be useful in computing local image statistics such as the local variance
      * and standard deviation around the neighborhood of a pixel.
      *
@@ -1117,19 +1137,15 @@ public class Imgproc {
         sqrBoxFilter_3(src.nativeObj, dst.nativeObj, ddepth, ksize.width, ksize.height);
     }
 
-    //
-    // C++: void cv::blur(Mat src, Mat& dst, Size ksize, Point anchor = Point(-1,-1), int borderType = BORDER_DEFAULT)
-    //
-
     /**
      * Blurs an image using the normalized box filter.
-     *
+     * <p>
      * The function smooths an image using the kernel:
-     *
+     * <p>
      * \(\texttt{K} = \frac{1}{\texttt{ksize.width*ksize.height}} \begin{bmatrix} 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 1
      * &amp; 1 \\ 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 1 &amp; 1 \\ \hdotsfor{6} \\ 1 &amp; 1 &amp; 1 &amp; \cdots &amp;
      * 1 &amp; 1 \\ \end{bmatrix}\)
-     *
+     * <p>
      * The call {@code blur(src, dst, ksize, anchor, borderType)} is equivalent to `boxFilter(src, dst, src.type(),
      * ksize, anchor, true, borderType)`.
      *
@@ -1147,13 +1163,13 @@ public class Imgproc {
 
     /**
      * Blurs an image using the normalized box filter.
-     *
+     * <p>
      * The function smooths an image using the kernel:
-     *
+     * <p>
      * \(\texttt{K} = \frac{1}{\texttt{ksize.width*ksize.height}} \begin{bmatrix} 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 1
      * &amp; 1 \\ 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 1 &amp; 1 \\ \hdotsfor{6} \\ 1 &amp; 1 &amp; 1 &amp; \cdots &amp;
      * 1 &amp; 1 \\ \end{bmatrix}\)
-     *
+     * <p>
      * The call {@code blur(src, dst, ksize, anchor, borderType)} is equivalent to `boxFilter(src, dst, src.type(),
      * ksize, anchor, true, borderType)`.
      *
@@ -1168,15 +1184,19 @@ public class Imgproc {
         blur_1(src.nativeObj, dst.nativeObj, ksize.width, ksize.height, anchor.x, anchor.y);
     }
 
+    //
+    // C++: void cv::blur(Mat src, Mat& dst, Size ksize, Point anchor = Point(-1,-1), int borderType = BORDER_DEFAULT)
+    //
+
     /**
      * Blurs an image using the normalized box filter.
-     *
+     * <p>
      * The function smooths an image using the kernel:
-     *
+     * <p>
      * \(\texttt{K} = \frac{1}{\texttt{ksize.width*ksize.height}} \begin{bmatrix} 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 1
      * &amp; 1 \\ 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 1 &amp; 1 \\ \hdotsfor{6} \\ 1 &amp; 1 &amp; 1 &amp; \cdots &amp;
      * 1 &amp; 1 \\ \end{bmatrix}\)
-     *
+     * <p>
      * The call {@code blur(src, dst, ksize, anchor, borderType)} is equivalent to `boxFilter(src, dst, src.type(),
      * ksize, anchor, true, borderType)`.
      *
@@ -1189,13 +1209,9 @@ public class Imgproc {
         blur_2(src.nativeObj, dst.nativeObj, ksize.width, ksize.height);
     }
 
-    //
-    // C++: void cv::stackBlur(Mat src, Mat& dst, Size ksize)
-    //
-
     /**
      * Blurs an image using the stackBlur.
-     *
+     * <p>
      * The function applies and stackBlur to an image. stackBlur can generate similar results as Gaussian blur, and the
      * time consumption does not increase with the increase of kernel size. It creates a kind of moving stack of colors
      * whilst scanning through the image. Thereby it just has to add one new block of color to the right side of the
@@ -1214,27 +1230,22 @@ public class Imgproc {
         stackBlur_0(src.nativeObj, dst.nativeObj, ksize.width, ksize.height);
     }
 
-    //
-    // C++: void cv::filter2D(Mat src, Mat& dst, int ddepth, Mat kernel, Point anchor = Point(-1,-1), double delta = 0,
-    // int borderType = BORDER_DEFAULT)
-    //
-
     /**
      * Convolves an image with the kernel.
-     *
+     * <p>
      * The function applies an arbitrary linear filter to an image. In-place operation is supported. When the aperture
      * is partially outside the image, the function interpolates outlier pixel values according to the specified border
      * mode.
-     *
+     * <p>
      * The function does actually compute correlation, not the convolution:
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \sum _{ \substack{0\leq x' &lt; \texttt{kernel.cols}\\{0\leq y' &lt;
      * \texttt{kernel.rows}}}} \texttt{kernel} (x',y')* \texttt{src} (x+x'- \texttt{anchor.x} ,y+y'- \texttt{anchor.y}
      * )\)
-     *
+     * <p>
      * That is, the kernel is not mirrored around the anchor point. If you need a real convolution, flip the kernel
      * using #flip and set the new anchor to `(kernel.cols - anchor.x - 1, kernel.rows - anchor.y - 1)`.
-     *
+     * <p>
      * The function uses the DFT-based algorithm in case of sufficiently large kernels (~{@code 11 x 11} or larger) and
      * the direct algorithm for small kernels.
      *
@@ -1255,22 +1266,26 @@ public class Imgproc {
         filter2D_0(src.nativeObj, dst.nativeObj, ddepth, kernel.nativeObj, anchor.x, anchor.y, delta, borderType);
     }
 
+    //
+    // C++: void cv::stackBlur(Mat src, Mat& dst, Size ksize)
+    //
+
     /**
      * Convolves an image with the kernel.
-     *
+     * <p>
      * The function applies an arbitrary linear filter to an image. In-place operation is supported. When the aperture
      * is partially outside the image, the function interpolates outlier pixel values according to the specified border
      * mode.
-     *
+     * <p>
      * The function does actually compute correlation, not the convolution:
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \sum _{ \substack{0\leq x' &lt; \texttt{kernel.cols}\\{0\leq y' &lt;
      * \texttt{kernel.rows}}}} \texttt{kernel} (x',y')* \texttt{src} (x+x'- \texttt{anchor.x} ,y+y'- \texttt{anchor.y}
      * )\)
-     *
+     * <p>
      * That is, the kernel is not mirrored around the anchor point. If you need a real convolution, flip the kernel
      * using #flip and set the new anchor to `(kernel.cols - anchor.x - 1, kernel.rows - anchor.y - 1)`.
-     *
+     * <p>
      * The function uses the DFT-based algorithm in case of sufficiently large kernels (~{@code 11 x 11} or larger) and
      * the direct algorithm for small kernels.
      *
@@ -1290,22 +1305,27 @@ public class Imgproc {
         filter2D_1(src.nativeObj, dst.nativeObj, ddepth, kernel.nativeObj, anchor.x, anchor.y, delta);
     }
 
+    //
+    // C++: void cv::filter2D(Mat src, Mat& dst, int ddepth, Mat kernel, Point anchor = Point(-1,-1), double delta = 0,
+    // int borderType = BORDER_DEFAULT)
+    //
+
     /**
      * Convolves an image with the kernel.
-     *
+     * <p>
      * The function applies an arbitrary linear filter to an image. In-place operation is supported. When the aperture
      * is partially outside the image, the function interpolates outlier pixel values according to the specified border
      * mode.
-     *
+     * <p>
      * The function does actually compute correlation, not the convolution:
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \sum _{ \substack{0\leq x' &lt; \texttt{kernel.cols}\\{0\leq y' &lt;
      * \texttt{kernel.rows}}}} \texttt{kernel} (x',y')* \texttt{src} (x+x'- \texttt{anchor.x} ,y+y'- \texttt{anchor.y}
      * )\)
-     *
+     * <p>
      * That is, the kernel is not mirrored around the anchor point. If you need a real convolution, flip the kernel
      * using #flip and set the new anchor to `(kernel.cols - anchor.x - 1, kernel.rows - anchor.y - 1)`.
-     *
+     * <p>
      * The function uses the DFT-based algorithm in case of sufficiently large kernels (~{@code 11 x 11} or larger) and
      * the direct algorithm for small kernels.
      *
@@ -1325,20 +1345,20 @@ public class Imgproc {
 
     /**
      * Convolves an image with the kernel.
-     *
+     * <p>
      * The function applies an arbitrary linear filter to an image. In-place operation is supported. When the aperture
      * is partially outside the image, the function interpolates outlier pixel values according to the specified border
      * mode.
-     *
+     * <p>
      * The function does actually compute correlation, not the convolution:
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \sum _{ \substack{0\leq x' &lt; \texttt{kernel.cols}\\{0\leq y' &lt;
      * \texttt{kernel.rows}}}} \texttt{kernel} (x',y')* \texttt{src} (x+x'- \texttt{anchor.x} ,y+y'- \texttt{anchor.y}
      * )\)
-     *
+     * <p>
      * That is, the kernel is not mirrored around the anchor point. If you need a real convolution, flip the kernel
      * using #flip and set the new anchor to `(kernel.cols - anchor.x - 1, kernel.rows - anchor.y - 1)`.
-     *
+     * <p>
      * The function uses the DFT-based algorithm in case of sufficiently large kernels (~{@code 11 x 11} or larger) and
      * the direct algorithm for small kernels.
      *
@@ -1355,14 +1375,36 @@ public class Imgproc {
         filter2D_3(src.nativeObj, dst.nativeObj, ddepth, kernel.nativeObj);
     }
 
+    /**
+     * Performs the {@code filter2Dp} operation.
+     *
+     * @param src    the {@code src} value
+     * @param dst    the {@code dst} value
+     * @param kernel the {@code kernel} value
+     * @param params the {@code params} value
+     */
+    public static void filter2Dp(Mat src, Mat dst, Mat kernel, Filter2DParams params) {
+        filter2Dp_0(src.nativeObj, dst.nativeObj, kernel.nativeObj, params.getNativeObjAddr());
+    }
+
+    /**
+     * Performs the {@code filter2Dp} operation.
+     *
+     * @param src    the {@code src} value
+     * @param dst    the {@code dst} value
+     * @param kernel the {@code kernel} value
+     */
+    public static void filter2Dp(Mat src, Mat dst, Mat kernel) {
+        filter2Dp_1(src.nativeObj, dst.nativeObj, kernel.nativeObj);
+    }
+
     //
-    // C++: void cv::sepFilter2D(Mat src, Mat& dst, int ddepth, Mat kernelX, Mat kernelY, Point anchor = Point(-1,-1),
-    // double delta = 0, int borderType = BORDER_DEFAULT)
+    // C++: void cv::filter2D(Mat src, Mat& dst, Mat kernel, Filter2DParams params = Filter2DParams())
     //
 
     /**
      * Applies a separable linear filter to an image.
-     *
+     * <p>
      * The function applies a separable linear filter to the image. That is, first, every row of src is filtered with
      * the 1D kernel kernelX. Then, every column of the result is filtered with the 1D kernel kernelY. The final result
      * shifted by delta is stored in dst .
@@ -1401,7 +1443,7 @@ public class Imgproc {
 
     /**
      * Applies a separable linear filter to an image.
-     *
+     * <p>
      * The function applies a separable linear filter to the image. That is, first, every row of src is filtered with
      * the 1D kernel kernelX. Then, every column of the result is filtered with the 1D kernel kernelY. The final result
      * shifted by delta is stored in dst .
@@ -1428,9 +1470,14 @@ public class Imgproc {
                 delta);
     }
 
+    //
+    // C++: void cv::sepFilter2D(Mat src, Mat& dst, int ddepth, Mat kernelX, Mat kernelY, Point anchor = Point(-1,-1),
+    // double delta = 0, int borderType = BORDER_DEFAULT)
+    //
+
     /**
      * Applies a separable linear filter to an image.
-     *
+     * <p>
      * The function applies a separable linear filter to the image. That is, first, every row of src is filtered with
      * the 1D kernel kernelX. Then, every column of the result is filtered with the 1D kernel kernelY. The final result
      * shifted by delta is stored in dst .
@@ -1449,7 +1496,7 @@ public class Imgproc {
 
     /**
      * Applies a separable linear filter to an image.
-     *
+     * <p>
      * The function applies a separable linear filter to the image. That is, first, every row of src is filtered with
      * the 1D kernel kernelX. Then, every column of the result is filtered with the 1D kernel kernelY. The final result
      * shifted by delta is stored in dst .
@@ -1465,37 +1512,32 @@ public class Imgproc {
         sepFilter2D_3(src.nativeObj, dst.nativeObj, ddepth, kernelX.nativeObj, kernelY.nativeObj);
     }
 
-    //
-    // C++: void cv::Sobel(Mat src, Mat& dst, int ddepth, int dx, int dy, int ksize = 3, double scale = 1, double delta
-    // = 0, int borderType = BORDER_DEFAULT)
-    //
-
     /**
      * Calculates the first, second, third, or mixed image derivatives using an extended Sobel operator.
-     *
+     * <p>
      * In all cases except one, the \(\texttt{ksize} \times \texttt{ksize}\) separable kernel is used to calculate the
      * derivative. When \(\texttt{ksize = 1}\), the \(3 \times 1\) or \(1 \times 3\) kernel is used (that is, no
      * Gaussian smoothing is done). {@code ksize = 1} can only be used for the first or the second x- or y- derivatives.
-     *
+     * <p>
      * There is also the special value {@code ksize = #FILTER_SCHARR (-1)} that corresponds to the \(3\times3\) Scharr
      * filter that may give more accurate results than the \(3\times3\) Sobel. The Scharr aperture is
-     *
+     * <p>
      * \(\vecthreethree{-3}{0}{3}{-10}{0}{10}{-3}{0}{3}\)
-     *
+     * <p>
      * for the x-derivative, or transposed for the y-derivative.
-     *
+     * <p>
      * The function calculates an image derivative by convolving the image with the appropriate kernel:
-     *
+     * <p>
      * \(\texttt{dst} = \frac{\partial^{xorder+yorder} \texttt{src}}{\partial x^{xorder} \partial y^{yorder}}\)
-     *
+     * <p>
      * The Sobel operators combine Gaussian smoothing and differentiation, so the result is more or less resistant to
      * the noise. Most often, the function is called with ( xorder = 1, yorder = 0, ksize = 3) or ( xorder = 0, yorder =
      * 1, ksize = 3) to calculate the first x- or y- image derivative. The first case corresponds to a kernel of:
-     *
+     * <p>
      * \(\vecthreethree{-1}{0}{1}{-2}{0}{2}{-1}{0}{1}\)
-     *
+     * <p>
      * The second case corresponds to a kernel of:
-     *
+     * <p>
      * \(\vecthreethree{-1}{-2}{-1}{0}{0}{0}{1}{2}{1}\)
      *
      * @param src        input image.
@@ -1526,30 +1568,30 @@ public class Imgproc {
 
     /**
      * Calculates the first, second, third, or mixed image derivatives using an extended Sobel operator.
-     *
+     * <p>
      * In all cases except one, the \(\texttt{ksize} \times \texttt{ksize}\) separable kernel is used to calculate the
      * derivative. When \(\texttt{ksize = 1}\), the \(3 \times 1\) or \(1 \times 3\) kernel is used (that is, no
      * Gaussian smoothing is done). {@code ksize = 1} can only be used for the first or the second x- or y- derivatives.
-     *
+     * <p>
      * There is also the special value {@code ksize = #FILTER_SCHARR (-1)} that corresponds to the \(3\times3\) Scharr
      * filter that may give more accurate results than the \(3\times3\) Sobel. The Scharr aperture is
-     *
+     * <p>
      * \(\vecthreethree{-3}{0}{3}{-10}{0}{10}{-3}{0}{3}\)
-     *
+     * <p>
      * for the x-derivative, or transposed for the y-derivative.
-     *
+     * <p>
      * The function calculates an image derivative by convolving the image with the appropriate kernel:
-     *
+     * <p>
      * \(\texttt{dst} = \frac{\partial^{xorder+yorder} \texttt{src}}{\partial x^{xorder} \partial y^{yorder}}\)
-     *
+     * <p>
      * The Sobel operators combine Gaussian smoothing and differentiation, so the result is more or less resistant to
      * the noise. Most often, the function is called with ( xorder = 1, yorder = 0, ksize = 3) or ( xorder = 0, yorder =
      * 1, ksize = 3) to calculate the first x- or y- image derivative. The first case corresponds to a kernel of:
-     *
+     * <p>
      * \(\vecthreethree{-1}{0}{1}{-2}{0}{2}{-1}{0}{1}\)
-     *
+     * <p>
      * The second case corresponds to a kernel of:
-     *
+     * <p>
      * \(\vecthreethree{-1}{-2}{-1}{0}{0}{0}{1}{2}{1}\)
      *
      * @param src    input image.
@@ -1568,32 +1610,37 @@ public class Imgproc {
         Sobel_1(src.nativeObj, dst.nativeObj, ddepth, dx, dy, ksize, scale, delta);
     }
 
+    //
+    // C++: void cv::Sobel(Mat src, Mat& dst, int ddepth, int dx, int dy, int ksize = 3, double scale = 1, double delta
+    // = 0, int borderType = BORDER_DEFAULT)
+    //
+
     /**
      * Calculates the first, second, third, or mixed image derivatives using an extended Sobel operator.
-     *
+     * <p>
      * In all cases except one, the \(\texttt{ksize} \times \texttt{ksize}\) separable kernel is used to calculate the
      * derivative. When \(\texttt{ksize = 1}\), the \(3 \times 1\) or \(1 \times 3\) kernel is used (that is, no
      * Gaussian smoothing is done). {@code ksize = 1} can only be used for the first or the second x- or y- derivatives.
-     *
+     * <p>
      * There is also the special value {@code ksize = #FILTER_SCHARR (-1)} that corresponds to the \(3\times3\) Scharr
      * filter that may give more accurate results than the \(3\times3\) Sobel. The Scharr aperture is
-     *
+     * <p>
      * \(\vecthreethree{-3}{0}{3}{-10}{0}{10}{-3}{0}{3}\)
-     *
+     * <p>
      * for the x-derivative, or transposed for the y-derivative.
-     *
+     * <p>
      * The function calculates an image derivative by convolving the image with the appropriate kernel:
-     *
+     * <p>
      * \(\texttt{dst} = \frac{\partial^{xorder+yorder} \texttt{src}}{\partial x^{xorder} \partial y^{yorder}}\)
-     *
+     * <p>
      * The Sobel operators combine Gaussian smoothing and differentiation, so the result is more or less resistant to
      * the noise. Most often, the function is called with ( xorder = 1, yorder = 0, ksize = 3) or ( xorder = 0, yorder =
      * 1, ksize = 3) to calculate the first x- or y- image derivative. The first case corresponds to a kernel of:
-     *
+     * <p>
      * \(\vecthreethree{-1}{0}{1}{-2}{0}{2}{-1}{0}{1}\)
-     *
+     * <p>
      * The second case corresponds to a kernel of:
-     *
+     * <p>
      * \(\vecthreethree{-1}{-2}{-1}{0}{0}{0}{1}{2}{1}\)
      *
      * @param src    input image.
@@ -1613,30 +1660,30 @@ public class Imgproc {
 
     /**
      * Calculates the first, second, third, or mixed image derivatives using an extended Sobel operator.
-     *
+     * <p>
      * In all cases except one, the \(\texttt{ksize} \times \texttt{ksize}\) separable kernel is used to calculate the
      * derivative. When \(\texttt{ksize = 1}\), the \(3 \times 1\) or \(1 \times 3\) kernel is used (that is, no
      * Gaussian smoothing is done). {@code ksize = 1} can only be used for the first or the second x- or y- derivatives.
-     *
+     * <p>
      * There is also the special value {@code ksize = #FILTER_SCHARR (-1)} that corresponds to the \(3\times3\) Scharr
      * filter that may give more accurate results than the \(3\times3\) Sobel. The Scharr aperture is
-     *
+     * <p>
      * \(\vecthreethree{-3}{0}{3}{-10}{0}{10}{-3}{0}{3}\)
-     *
+     * <p>
      * for the x-derivative, or transposed for the y-derivative.
-     *
+     * <p>
      * The function calculates an image derivative by convolving the image with the appropriate kernel:
-     *
+     * <p>
      * \(\texttt{dst} = \frac{\partial^{xorder+yorder} \texttt{src}}{\partial x^{xorder} \partial y^{yorder}}\)
-     *
+     * <p>
      * The Sobel operators combine Gaussian smoothing and differentiation, so the result is more or less resistant to
      * the noise. Most often, the function is called with ( xorder = 1, yorder = 0, ksize = 3) or ( xorder = 0, yorder =
      * 1, ksize = 3) to calculate the first x- or y- image derivative. The first case corresponds to a kernel of:
-     *
+     * <p>
      * \(\vecthreethree{-1}{0}{1}{-2}{0}{2}{-1}{0}{1}\)
-     *
+     * <p>
      * The second case corresponds to a kernel of:
-     *
+     * <p>
      * \(\vecthreethree{-1}{-2}{-1}{0}{0}{0}{1}{2}{1}\)
      *
      * @param src    input image.
@@ -1654,30 +1701,30 @@ public class Imgproc {
 
     /**
      * Calculates the first, second, third, or mixed image derivatives using an extended Sobel operator.
-     *
+     * <p>
      * In all cases except one, the \(\texttt{ksize} \times \texttt{ksize}\) separable kernel is used to calculate the
      * derivative. When \(\texttt{ksize = 1}\), the \(3 \times 1\) or \(1 \times 3\) kernel is used (that is, no
      * Gaussian smoothing is done). {@code ksize = 1} can only be used for the first or the second x- or y- derivatives.
-     *
+     * <p>
      * There is also the special value {@code ksize = #FILTER_SCHARR (-1)} that corresponds to the \(3\times3\) Scharr
      * filter that may give more accurate results than the \(3\times3\) Sobel. The Scharr aperture is
-     *
+     * <p>
      * \(\vecthreethree{-3}{0}{3}{-10}{0}{10}{-3}{0}{3}\)
-     *
+     * <p>
      * for the x-derivative, or transposed for the y-derivative.
-     *
+     * <p>
      * The function calculates an image derivative by convolving the image with the appropriate kernel:
-     *
+     * <p>
      * \(\texttt{dst} = \frac{\partial^{xorder+yorder} \texttt{src}}{\partial x^{xorder} \partial y^{yorder}}\)
-     *
+     * <p>
      * The Sobel operators combine Gaussian smoothing and differentiation, so the result is more or less resistant to
      * the noise. Most often, the function is called with ( xorder = 1, yorder = 0, ksize = 3) or ( xorder = 0, yorder =
      * 1, ksize = 3) to calculate the first x- or y- image derivative. The first case corresponds to a kernel of:
-     *
+     * <p>
      * \(\vecthreethree{-1}{0}{1}{-2}{0}{2}{-1}{0}{1}\)
-     *
+     * <p>
      * The second case corresponds to a kernel of:
-     *
+     * <p>
      * \(\vecthreethree{-1}{-2}{-1}{0}{0}{0}{1}{2}{1}\)
      *
      * @param src    input image.
@@ -1692,13 +1739,9 @@ public class Imgproc {
         Sobel_4(src.nativeObj, dst.nativeObj, ddepth, dx, dy);
     }
 
-    //
-    // C++: void cv::spatialGradient(Mat src, Mat& dx, Mat& dy, int ksize = 3, int borderType = BORDER_DEFAULT)
-    //
-
     /**
      * Calculates the first order image derivative in both x and y using a Sobel operator
-     *
+     * <p>
      * Equivalent to calling:
      *
      * <code>
@@ -1712,7 +1755,7 @@ public class Imgproc {
      * @param ksize      size of Sobel kernel. It must be 3.
      * @param borderType pixel extrapolation method, see #BorderTypes. Only #BORDER_DEFAULT=#BORDER_REFLECT_101 and
      *                   #BORDER_REPLICATE are supported.
-     *
+     *                   <p>
      *                   SEE: Sobel
      */
     public static void spatialGradient(Mat src, Mat dx, Mat dy, int ksize, int borderType) {
@@ -1721,7 +1764,7 @@ public class Imgproc {
 
     /**
      * Calculates the first order image derivative in both x and y using a Sobel operator
-     *
+     * <p>
      * Equivalent to calling:
      *
      * <code>
@@ -1734,16 +1777,20 @@ public class Imgproc {
      * @param dy    output image with first-order derivative in y.
      * @param ksize size of Sobel kernel. It must be 3. Only #BORDER_DEFAULT=#BORDER_REFLECT_101 and #BORDER_REPLICATE
      *              are supported.
-     *
+     *              <p>
      *              SEE: Sobel
      */
     public static void spatialGradient(Mat src, Mat dx, Mat dy, int ksize) {
         spatialGradient_1(src.nativeObj, dx.nativeObj, dy.nativeObj, ksize);
     }
 
+    //
+    // C++: void cv::spatialGradient(Mat src, Mat& dx, Mat& dy, int ksize = 3, int borderType = BORDER_DEFAULT)
+    //
+
     /**
      * Calculates the first order image derivative in both x and y using a Sobel operator
-     *
+     * <p>
      * Equivalent to calling:
      *
      * <code>
@@ -1755,27 +1802,22 @@ public class Imgproc {
      * @param dx  output image with first-order derivative in x.
      * @param dy  output image with first-order derivative in y. Only #BORDER_DEFAULT=#BORDER_REFLECT_101 and
      *            #BORDER_REPLICATE are supported.
-     *
+     *            <p>
      *            SEE: Sobel
      */
     public static void spatialGradient(Mat src, Mat dx, Mat dy) {
         spatialGradient_2(src.nativeObj, dx.nativeObj, dy.nativeObj);
     }
 
-    //
-    // C++: void cv::Scharr(Mat src, Mat& dst, int ddepth, int dx, int dy, double scale = 1, double delta = 0, int
-    // borderType = BORDER_DEFAULT)
-    //
-
     /**
      * Calculates the first x- or y- image derivative using Scharr operator.
-     *
+     * <p>
      * The function computes the first x- or y- spatial image derivative using the Scharr operator. The call
-     *
+     * <p>
      * \(\texttt{Scharr(src, dst, ddepth, dx, dy, scale, delta, borderType)}\)
-     *
+     * <p>
      * is equivalent to
-     *
+     * <p>
      * \(\texttt{Sobel(src, dst, ddepth, dx, dy, FILTER_SCHARR, scale, delta, borderType)} .\)
      *
      * @param src        input image.
@@ -1802,13 +1844,13 @@ public class Imgproc {
 
     /**
      * Calculates the first x- or y- image derivative using Scharr operator.
-     *
+     * <p>
      * The function computes the first x- or y- spatial image derivative using the Scharr operator. The call
-     *
+     * <p>
      * \(\texttt{Scharr(src, dst, ddepth, dx, dy, scale, delta, borderType)}\)
-     *
+     * <p>
      * is equivalent to
-     *
+     * <p>
      * \(\texttt{Sobel(src, dst, ddepth, dx, dy, FILTER_SCHARR, scale, delta, borderType)} .\)
      *
      * @param src    input image.
@@ -1824,15 +1866,20 @@ public class Imgproc {
         Scharr_1(src.nativeObj, dst.nativeObj, ddepth, dx, dy, scale, delta);
     }
 
+    //
+    // C++: void cv::Scharr(Mat src, Mat& dst, int ddepth, int dx, int dy, double scale = 1, double delta = 0, int
+    // borderType = BORDER_DEFAULT)
+    //
+
     /**
      * Calculates the first x- or y- image derivative using Scharr operator.
-     *
+     * <p>
      * The function computes the first x- or y- spatial image derivative using the Scharr operator. The call
-     *
+     * <p>
      * \(\texttt{Scharr(src, dst, ddepth, dx, dy, scale, delta, borderType)}\)
-     *
+     * <p>
      * is equivalent to
-     *
+     * <p>
      * \(\texttt{Sobel(src, dst, ddepth, dx, dy, FILTER_SCHARR, scale, delta, borderType)} .\)
      *
      * @param src    input image.
@@ -1849,13 +1896,13 @@ public class Imgproc {
 
     /**
      * Calculates the first x- or y- image derivative using Scharr operator.
-     *
+     * <p>
      * The function computes the first x- or y- spatial image derivative using the Scharr operator. The call
-     *
+     * <p>
      * \(\texttt{Scharr(src, dst, ddepth, dx, dy, scale, delta, borderType)}\)
-     *
+     * <p>
      * is equivalent to
-     *
+     * <p>
      * \(\texttt{Sobel(src, dst, ddepth, dx, dy, FILTER_SCHARR, scale, delta, borderType)} .\)
      *
      * @param src    input image.
@@ -1868,23 +1915,18 @@ public class Imgproc {
         Scharr_3(src.nativeObj, dst.nativeObj, ddepth, dx, dy);
     }
 
-    //
-    // C++: void cv::Laplacian(Mat src, Mat& dst, int ddepth, int ksize = 1, double scale = 1, double delta = 0, int
-    // borderType = BORDER_DEFAULT)
-    //
-
     /**
      * Calculates the Laplacian of an image.
-     *
+     * <p>
      * The function calculates the Laplacian of the source image by adding up the second x and y derivatives calculated
      * using the Sobel operator:
-     *
+     * <p>
      * \(\texttt{dst} = \Delta \texttt{src} = \frac{\partial^2 \texttt{src}}{\partial x^2} + \frac{\partial^2
      * \texttt{src}}{\partial y^2}\)
-     *
+     * <p>
      * This is done when {@code ksize &gt; 1}. When {@code ksize == 1}, the Laplacian is computed by filtering the image
      * with the following \(3 \times 3\) aperture:
-     *
+     * <p>
      * \(\vecthreethree {0}{1}{0}{1}{-4}{1}{0}{1}{0}\)
      *
      * @param src        Source image.
@@ -1903,16 +1945,16 @@ public class Imgproc {
 
     /**
      * Calculates the Laplacian of an image.
-     *
+     * <p>
      * The function calculates the Laplacian of the source image by adding up the second x and y derivatives calculated
      * using the Sobel operator:
-     *
+     * <p>
      * \(\texttt{dst} = \Delta \texttt{src} = \frac{\partial^2 \texttt{src}}{\partial x^2} + \frac{\partial^2
      * \texttt{src}}{\partial y^2}\)
-     *
+     * <p>
      * This is done when {@code ksize &gt; 1}. When {@code ksize == 1}, the Laplacian is computed by filtering the image
      * with the following \(3 \times 3\) aperture:
-     *
+     * <p>
      * \(\vecthreethree {0}{1}{0}{1}{-4}{1}{0}{1}{0}\)
      *
      * @param src    Source image.
@@ -1928,18 +1970,23 @@ public class Imgproc {
         Laplacian_1(src.nativeObj, dst.nativeObj, ddepth, ksize, scale, delta);
     }
 
+    //
+    // C++: void cv::Laplacian(Mat src, Mat& dst, int ddepth, int ksize = 1, double scale = 1, double delta = 0, int
+    // borderType = BORDER_DEFAULT)
+    //
+
     /**
      * Calculates the Laplacian of an image.
-     *
+     * <p>
      * The function calculates the Laplacian of the source image by adding up the second x and y derivatives calculated
      * using the Sobel operator:
-     *
+     * <p>
      * \(\texttt{dst} = \Delta \texttt{src} = \frac{\partial^2 \texttt{src}}{\partial x^2} + \frac{\partial^2
      * \texttt{src}}{\partial y^2}\)
-     *
+     * <p>
      * This is done when {@code ksize &gt; 1}. When {@code ksize == 1}, the Laplacian is computed by filtering the image
      * with the following \(3 \times 3\) aperture:
-     *
+     * <p>
      * \(\vecthreethree {0}{1}{0}{1}{-4}{1}{0}{1}{0}\)
      *
      * @param src    Source image.
@@ -1956,16 +2003,16 @@ public class Imgproc {
 
     /**
      * Calculates the Laplacian of an image.
-     *
+     * <p>
      * The function calculates the Laplacian of the source image by adding up the second x and y derivatives calculated
      * using the Sobel operator:
-     *
+     * <p>
      * \(\texttt{dst} = \Delta \texttt{src} = \frac{\partial^2 \texttt{src}}{\partial x^2} + \frac{\partial^2
      * \texttt{src}}{\partial y^2}\)
-     *
+     * <p>
      * This is done when {@code ksize &gt; 1}. When {@code ksize == 1}, the Laplacian is computed by filtering the image
      * with the following \(3 \times 3\) aperture:
-     *
+     * <p>
      * \(\vecthreethree {0}{1}{0}{1}{-4}{1}{0}{1}{0}\)
      *
      * @param src    Source image.
@@ -1980,16 +2027,16 @@ public class Imgproc {
 
     /**
      * Calculates the Laplacian of an image.
-     *
+     * <p>
      * The function calculates the Laplacian of the source image by adding up the second x and y derivatives calculated
      * using the Sobel operator:
-     *
+     * <p>
      * \(\texttt{dst} = \Delta \texttt{src} = \frac{\partial^2 \texttt{src}}{\partial x^2} + \frac{\partial^2
      * \texttt{src}}{\partial y^2}\)
-     *
+     * <p>
      * This is done when {@code ksize &gt; 1}. When {@code ksize == 1}, the Laplacian is computed by filtering the image
      * with the following \(3 \times 3\) aperture:
-     *
+     * <p>
      * \(\vecthreethree {0}{1}{0}{1}{-4}{1}{0}{1}{0}\)
      *
      * @param src    Source image.
@@ -2001,14 +2048,9 @@ public class Imgproc {
         Laplacian_4(src.nativeObj, dst.nativeObj, ddepth);
     }
 
-    //
-    // C++: void cv::Canny(Mat image, Mat& edges, double threshold1, double threshold2, int apertureSize = 3, bool
-    // L2gradient = false)
-    //
-
     /**
      * Finds edges in an image using the Canny algorithm CITE: Canny86 .
-     *
+     * <p>
      * The function finds edges in the input image and marks them in the output map edges using the Canny algorithm. The
      * smallest value between threshold1 and threshold2 is used for edge linking. The largest value is used to find
      * initial segments of strong edges. See &lt;https://en.wikipedia.org/wiki/Canny_edge_detector&gt;
@@ -2034,7 +2076,7 @@ public class Imgproc {
 
     /**
      * Finds edges in an image using the Canny algorithm CITE: Canny86 .
-     *
+     * <p>
      * The function finds edges in the input image and marks them in the output map edges using the Canny algorithm. The
      * smallest value between threshold1 and threshold2 is used for edge linking. The largest value is used to find
      * initial segments of strong edges. See &lt;https://en.wikipedia.org/wiki/Canny_edge_detector&gt;
@@ -2051,9 +2093,14 @@ public class Imgproc {
         Canny_1(image.nativeObj, edges.nativeObj, threshold1, threshold2, apertureSize);
     }
 
+    //
+    // C++: void cv::Canny(Mat image, Mat& edges, double threshold1, double threshold2, int apertureSize = 3, bool
+    // L2gradient = false)
+    //
+
     /**
      * Finds edges in an image using the Canny algorithm CITE: Canny86 .
-     *
+     * <p>
      * The function finds edges in the input image and marks them in the output map edges using the Canny algorithm. The
      * smallest value between threshold1 and threshold2 is used for edge linking. The largest value is used to find
      * initial segments of strong edges. See &lt;https://en.wikipedia.org/wiki/Canny_edge_detector&gt;
@@ -2069,13 +2116,9 @@ public class Imgproc {
         Canny_2(image.nativeObj, edges.nativeObj, threshold1, threshold2);
     }
 
-    //
-    // C++: void cv::Canny(Mat dx, Mat dy, Mat& edges, double threshold1, double threshold2, bool L2gradient = false)
-    //
-
     /**
      * \overload
-     *
+     * <p>
      * Finds edges in an image using the Canny algorithm with custom image gradient.
      *
      * @param dx         16-bit x derivative of input image (CV_16SC1 or CV_16SC3).
@@ -2093,7 +2136,7 @@ public class Imgproc {
 
     /**
      * \overload
-     *
+     * <p>
      * Finds edges in an image using the Canny algorithm with custom image gradient.
      *
      * @param dx         16-bit x derivative of input image (CV_16SC1 or CV_16SC3).
@@ -2109,12 +2152,12 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::cornerMinEigenVal(Mat src, Mat& dst, int blockSize, int ksize = 3, int borderType = BORDER_DEFAULT)
+    // C++: void cv::Canny(Mat dx, Mat dy, Mat& edges, double threshold1, double threshold2, bool L2gradient = false)
     //
 
     /**
      * Calculates the minimal eigenvalue of gradient matrices for corner detection.
-     *
+     * <p>
      * The function is similar to cornerEigenValsAndVecs but it calculates and stores only the minimal eigenvalue of the
      * covariance matrix of derivatives, that is, \(\min(\lambda_1, \lambda_2)\) in terms of the formulae in the
      * cornerEigenValsAndVecs description.
@@ -2131,7 +2174,7 @@ public class Imgproc {
 
     /**
      * Calculates the minimal eigenvalue of gradient matrices for corner detection.
-     *
+     * <p>
      * The function is similar to cornerEigenValsAndVecs but it calculates and stores only the minimal eigenvalue of the
      * covariance matrix of derivatives, that is, \(\min(\lambda_1, \lambda_2)\) in terms of the formulae in the
      * cornerEigenValsAndVecs description.
@@ -2145,9 +2188,13 @@ public class Imgproc {
         cornerMinEigenVal_1(src.nativeObj, dst.nativeObj, blockSize, ksize);
     }
 
+    //
+    // C++: void cv::cornerMinEigenVal(Mat src, Mat& dst, int blockSize, int ksize = 3, int borderType = BORDER_DEFAULT)
+    //
+
     /**
      * Calculates the minimal eigenvalue of gradient matrices for corner detection.
-     *
+     * <p>
      * The function is similar to cornerEigenValsAndVecs but it calculates and stores only the minimal eigenvalue of the
      * covariance matrix of derivatives, that is, \(\min(\lambda_1, \lambda_2)\) in terms of the formulae in the
      * cornerEigenValsAndVecs description.
@@ -2160,21 +2207,16 @@ public class Imgproc {
         cornerMinEigenVal_2(src.nativeObj, dst.nativeObj, blockSize);
     }
 
-    //
-    // C++: void cv::cornerHarris(Mat src, Mat& dst, int blockSize, int ksize, double k, int borderType =
-    // BORDER_DEFAULT)
-    //
-
     /**
      * Harris corner detector.
-     *
+     * <p>
      * The function runs the Harris corner detector on the image. Similarly to cornerMinEigenVal and
      * cornerEigenValsAndVecs , for each pixel \((x, y)\) it calculates a \(2\times2\) gradient covariance matrix
      * \(M^{(x,y)}\) over a \(\texttt{blockSize} \times \texttt{blockSize}\) neighborhood. Then, it computes the
      * following characteristic:
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \mathrm{det} M^{(x,y)} - k \cdot \left ( \mathrm{tr} M^{(x,y)} \right )^2\)
-     *
+     * <p>
      * Corners in the image can be found as the local maxima of this response map.
      *
      * @param src        Input single-channel 8-bit or floating-point image.
@@ -2191,14 +2233,14 @@ public class Imgproc {
 
     /**
      * Harris corner detector.
-     *
+     * <p>
      * The function runs the Harris corner detector on the image. Similarly to cornerMinEigenVal and
      * cornerEigenValsAndVecs , for each pixel \((x, y)\) it calculates a \(2\times2\) gradient covariance matrix
      * \(M^{(x,y)}\) over a \(\texttt{blockSize} \times \texttt{blockSize}\) neighborhood. Then, it computes the
      * following characteristic:
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \mathrm{det} M^{(x,y)} - k \cdot \left ( \mathrm{tr} M^{(x,y)} \right )^2\)
-     *
+     * <p>
      * Corners in the image can be found as the local maxima of this response map.
      *
      * @param src       Input single-channel 8-bit or floating-point image.
@@ -2213,21 +2255,21 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::cornerEigenValsAndVecs(Mat src, Mat& dst, int blockSize, int ksize, int borderType =
+    // C++: void cv::cornerHarris(Mat src, Mat& dst, int blockSize, int ksize, double k, int borderType =
     // BORDER_DEFAULT)
     //
 
     /**
      * Calculates eigenvalues and eigenvectors of image blocks for corner detection.
-     *
+     * <p>
      * For every pixel \(p\) , the function cornerEigenValsAndVecs considers a blockSize \(\times\) blockSize
      * neighborhood \(S(p)\) . It calculates the covariation matrix of derivatives over the neighborhood as:
-     *
+     * <p>
      * \(M = \begin{bmatrix} \sum _{S(p)}(dI/dx)^2 &amp; \sum _{S(p)}dI/dx dI/dy \\ \sum _{S(p)}dI/dx dI/dy &amp; \sum
      * _{S(p)}(dI/dy)^2 \end{bmatrix}\)
-     *
+     * <p>
      * where the derivatives are computed using the Sobel operator.
-     *
+     * <p>
      * After that, it finds eigenvectors and eigenvalues of \(M\) and stores them in the destination image as
      * \((\lambda_1, \lambda_2, x_1, y_1, x_2, y_2)\) where
      *
@@ -2236,7 +2278,7 @@ public class Imgproc {
      * <li>\(x_1, y_1\) are the eigenvectors corresponding to \(\lambda_1\)</li>
      * <li>\(x_2, y_2\) are the eigenvectors corresponding to \(\lambda_2\)</li>
      * </ul>
-     *
+     * <p>
      * The output of the function can be used for robust edge or corner detection.
      *
      * @param src        Input single-channel 8-bit or floating-point image.
@@ -2244,7 +2286,7 @@ public class Imgproc {
      * @param blockSize  Neighborhood size (see details below).
      * @param ksize      Aperture parameter for the Sobel operator.
      * @param borderType Pixel extrapolation method. See #BorderTypes. #BORDER_WRAP is not supported.
-     *
+     *                   <p>
      *                   SEE: cornerMinEigenVal, cornerHarris, preCornerDetect
      */
     public static void cornerEigenValsAndVecs(Mat src, Mat dst, int blockSize, int ksize, int borderType) {
@@ -2253,15 +2295,15 @@ public class Imgproc {
 
     /**
      * Calculates eigenvalues and eigenvectors of image blocks for corner detection.
-     *
+     * <p>
      * For every pixel \(p\) , the function cornerEigenValsAndVecs considers a blockSize \(\times\) blockSize
      * neighborhood \(S(p)\) . It calculates the covariation matrix of derivatives over the neighborhood as:
-     *
+     * <p>
      * \(M = \begin{bmatrix} \sum _{S(p)}(dI/dx)^2 &amp; \sum _{S(p)}dI/dx dI/dy \\ \sum _{S(p)}dI/dx dI/dy &amp; \sum
      * _{S(p)}(dI/dy)^2 \end{bmatrix}\)
-     *
+     * <p>
      * where the derivatives are computed using the Sobel operator.
-     *
+     * <p>
      * After that, it finds eigenvectors and eigenvalues of \(M\) and stores them in the destination image as
      * \((\lambda_1, \lambda_2, x_1, y_1, x_2, y_2)\) where
      *
@@ -2270,14 +2312,14 @@ public class Imgproc {
      * <li>\(x_1, y_1\) are the eigenvectors corresponding to \(\lambda_1\)</li>
      * <li>\(x_2, y_2\) are the eigenvectors corresponding to \(\lambda_2\)</li>
      * </ul>
-     *
+     * <p>
      * The output of the function can be used for robust edge or corner detection.
      *
      * @param src       Input single-channel 8-bit or floating-point image.
      * @param dst       Image to store the results. It has the same size as src and the type CV_32FC(6) .
      * @param blockSize Neighborhood size (see details below).
      * @param ksize     Aperture parameter for the Sobel operator.
-     *
+     *                  <p>
      *                  SEE: cornerMinEigenVal, cornerHarris, preCornerDetect
      */
     public static void cornerEigenValsAndVecs(Mat src, Mat dst, int blockSize, int ksize) {
@@ -2285,26 +2327,27 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::preCornerDetect(Mat src, Mat& dst, int ksize, int borderType = BORDER_DEFAULT)
+    // C++: void cv::cornerEigenValsAndVecs(Mat src, Mat& dst, int blockSize, int ksize, int borderType =
+    // BORDER_DEFAULT)
     //
 
     /**
      * Calculates a feature map for corner detection.
-     *
+     * <p>
      * The function calculates the complex spatial derivative-based function of the source image
-     *
+     * <p>
      * \(\texttt{dst} = (D_x \texttt{src} )^2 \cdot D_{yy} \texttt{src} + (D_y \texttt{src} )^2 \cdot D_{xx}
      * \texttt{src} - 2 D_x \texttt{src} \cdot D_y \texttt{src} \cdot D_{xy} \texttt{src}\)
-     *
+     * <p>
      * where \(D_x\),\(D_y\) are the first image derivatives, \(D_{xx}\),\(D_{yy}\) are the second image derivatives,
      * and \(D_{xy}\) is the mixed derivative.
-     *
+     * <p>
      * The corners can be found as local maximums of the functions, as shown below: <code>
-     *     Mat corners, dilated_corners;
-     *     preCornerDetect(image, corners, 3);
-     *     // dilation with 3x3 rectangular structuring element
-     *     dilate(corners, dilated_corners, Mat(), 1);
-     *     Mat corner_mask = corners == dilated_corners;
+     * Mat corners, dilated_corners;
+     * preCornerDetect(image, corners, 3);
+     * // dilation with 3x3 rectangular structuring element
+     * dilate(corners, dilated_corners, Mat(), 1);
+     * Mat corner_mask = corners == dilated_corners;
      * </code>
      *
      * @param src        Source single-channel 8-bit of floating-point image.
@@ -2318,21 +2361,21 @@ public class Imgproc {
 
     /**
      * Calculates a feature map for corner detection.
-     *
+     * <p>
      * The function calculates the complex spatial derivative-based function of the source image
-     *
+     * <p>
      * \(\texttt{dst} = (D_x \texttt{src} )^2 \cdot D_{yy} \texttt{src} + (D_y \texttt{src} )^2 \cdot D_{xx}
      * \texttt{src} - 2 D_x \texttt{src} \cdot D_y \texttt{src} \cdot D_{xy} \texttt{src}\)
-     *
+     * <p>
      * where \(D_x\),\(D_y\) are the first image derivatives, \(D_{xx}\),\(D_{yy}\) are the second image derivatives,
      * and \(D_{xy}\) is the mixed derivative.
-     *
+     * <p>
      * The corners can be found as local maximums of the functions, as shown below: <code>
-     *     Mat corners, dilated_corners;
-     *     preCornerDetect(image, corners, 3);
-     *     // dilation with 3x3 rectangular structuring element
-     *     dilate(corners, dilated_corners, Mat(), 1);
-     *     Mat corner_mask = corners == dilated_corners;
+     * Mat corners, dilated_corners;
+     * preCornerDetect(image, corners, 3);
+     * // dilation with 3x3 rectangular structuring element
+     * dilate(corners, dilated_corners, Mat(), 1);
+     * Mat corner_mask = corners == dilated_corners;
      * </code>
      *
      * @param src   Source single-channel 8-bit of floating-point image.
@@ -2344,34 +2387,34 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::cornerSubPix(Mat image, Mat& corners, Size winSize, Size zeroZone, TermCriteria criteria)
+    // C++: void cv::preCornerDetect(Mat src, Mat& dst, int ksize, int borderType = BORDER_DEFAULT)
     //
 
     /**
      * Refines the corner locations.
-     *
+     * <p>
      * The function iterates to find the sub-pixel accurate location of corners or radial saddle points as described in
      * CITE: forstner1987fast, and as shown on the figure below.
-     *
+     * <p>
      * ![image](pics/cornersubpix.png)
-     *
+     * <p>
      * Sub-pixel accurate corner locator is based on the observation that every vector from the center \(q\) to a point
      * \(p\) located within a neighborhood of \(q\) is orthogonal to the image gradient at \(p\) subject to image and
      * measurement noise. Consider the expression:
-     *
+     * <p>
      * \(\epsilon _i = {DI_{p_i}}^T \cdot (q - p_i)\)
-     *
+     * <p>
      * where \({DI_{p_i}}\) is an image gradient at one of the points \(p_i\) in a neighborhood of \(q\) . The value of
      * \(q\) is to be found so that \(\epsilon_i\) is minimized. A system of equations may be set up with \(\epsilon_i\)
      * set to zero:
-     *
+     * <p>
      * \(\sum _i(DI_{p_i} \cdot {DI_{p_i}}^T) \cdot q - \sum _i(DI_{p_i} \cdot {DI_{p_i}}^T \cdot p_i)\)
-     *
+     * <p>
      * where the gradients are summed within a neighborhood ("search window") of \(q\) . Calling the first gradient term
      * \(G\) and the second gradient term \(b\) gives:
-     *
+     * <p>
      * \(q = G^{-1} \cdot b\)
-     *
+     * <p>
      * The algorithm sets the center of the neighborhood window at this new center \(q\) and then iterates until the
      * center stays within a set threshold.
      *
@@ -2399,629 +2442,9 @@ public class Imgproc {
                 criteria.epsilon);
     }
 
-    //
-    // C++: void cv::goodFeaturesToTrack(Mat image, vector_Point& corners, int maxCorners, double qualityLevel, double
-    // minDistance, Mat mask = Mat(), int blockSize = 3, bool useHarrisDetector = false, double k = 0.04)
-    //
-
-    /**
-     * Determines strong corners on an image.
-     *
-     * The function finds the most prominent corners in the image or in the specified image region, as described in
-     * CITE: Shi94
-     *
-     * <ul>
-     * <li>Function calculates the corner quality measure at every source image pixel using the #cornerMinEigenVal or
-     * #cornerHarris .</li>
-     * <li>Function performs a non-maximum suppression (the local maximums in *3 x 3* neighborhood are retained).</li>
-     * <li>The corners with the minimal eigenvalue less than \(\texttt{qualityLevel} \cdot \max_{x,y}
-     * qualityMeasureMap(x,y)\) are rejected.</li>
-     * <li>The remaining corners are sorted by the quality measure in the descending order.</li>
-     * <li>Function throws away each corner for which there is a stronger corner at a distance less than maxDistance.
-     * </li>
-     * </ul>
-     *
-     * The function can be used to initialize a point-based tracker of an object.
-     *
-     * <b>Note:</b> If the function is called with different values A and B of the parameter qualityLevel , and A &gt;
-     * B, the vector of returned corners with qualityLevel=A will be the prefix of the output vector with qualityLevel=B
-     * .
-     *
-     * @param image             Input 8-bit or floating-point 32-bit, single-channel image.
-     * @param corners           Output vector of detected corners.
-     * @param maxCorners        Maximum number of corners to return. If there are more corners than are found, the
-     *                          strongest of them is returned. {@code maxCorners &lt;= 0} implies that no limit on the
-     *                          maximum is set and all detected corners are returned.
-     * @param qualityLevel      Parameter characterizing the minimal accepted quality of image corners. The parameter
-     *                          value is multiplied by the best corner quality measure, which is the minimal eigenvalue
-     *                          (see #cornerMinEigenVal ) or the Harris function response (see #cornerHarris ). The
-     *                          corners with the quality measure less than the product are rejected. For example, if the
-     *                          best corner has the quality measure = 1500, and the qualityLevel=0.01 , then all the
-     *                          corners with the quality measure less than 15 are rejected.
-     * @param minDistance       Minimum possible Euclidean distance between the returned corners.
-     * @param mask              Optional region of interest. If the image is not empty (it needs to have the type
-     *                          CV_8UC1 and the same size as image ), it specifies the region in which the corners are
-     *                          detected.
-     * @param blockSize         Size of an average block for computing a derivative covariation matrix over each pixel
-     *                          neighborhood. See cornerEigenValsAndVecs .
-     * @param useHarrisDetector Parameter indicating whether to use a Harris detector (see #cornerHarris) or
-     *                          #cornerMinEigenVal.
-     * @param k                 Free parameter of the Harris detector.
-     *
-     *                          SEE: cornerMinEigenVal, cornerHarris, calcOpticalFlowPyrLK, estimateRigidTransform,
-     */
-    public static void goodFeaturesToTrack(
-            Mat image,
-            MatOfPoint corners,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            Mat mask,
-            int blockSize,
-            boolean useHarrisDetector,
-            double k) {
-        Mat corners_mat = corners;
-        goodFeaturesToTrack_0(
-                image.nativeObj,
-                corners_mat.nativeObj,
-                maxCorners,
-                qualityLevel,
-                minDistance,
-                mask.nativeObj,
-                blockSize,
-                useHarrisDetector,
-                k);
-    }
-
-    /**
-     * Determines strong corners on an image.
-     *
-     * The function finds the most prominent corners in the image or in the specified image region, as described in
-     * CITE: Shi94
-     *
-     * <ul>
-     * <li>Function calculates the corner quality measure at every source image pixel using the #cornerMinEigenVal or
-     * #cornerHarris .</li>
-     * <li>Function performs a non-maximum suppression (the local maximums in *3 x 3* neighborhood are retained).</li>
-     * <li>The corners with the minimal eigenvalue less than \(\texttt{qualityLevel} \cdot \max_{x,y}
-     * qualityMeasureMap(x,y)\) are rejected.</li>
-     * <li>The remaining corners are sorted by the quality measure in the descending order.</li>
-     * <li>Function throws away each corner for which there is a stronger corner at a distance less than maxDistance.
-     * </li>
-     * </ul>
-     *
-     * The function can be used to initialize a point-based tracker of an object.
-     *
-     * <b>Note:</b> If the function is called with different values A and B of the parameter qualityLevel , and A &gt;
-     * B, the vector of returned corners with qualityLevel=A will be the prefix of the output vector with qualityLevel=B
-     * .
-     *
-     * @param image             Input 8-bit or floating-point 32-bit, single-channel image.
-     * @param corners           Output vector of detected corners.
-     * @param maxCorners        Maximum number of corners to return. If there are more corners than are found, the
-     *                          strongest of them is returned. {@code maxCorners &lt;= 0} implies that no limit on the
-     *                          maximum is set and all detected corners are returned.
-     * @param qualityLevel      Parameter characterizing the minimal accepted quality of image corners. The parameter
-     *                          value is multiplied by the best corner quality measure, which is the minimal eigenvalue
-     *                          (see #cornerMinEigenVal ) or the Harris function response (see #cornerHarris ). The
-     *                          corners with the quality measure less than the product are rejected. For example, if the
-     *                          best corner has the quality measure = 1500, and the qualityLevel=0.01 , then all the
-     *                          corners with the quality measure less than 15 are rejected.
-     * @param minDistance       Minimum possible Euclidean distance between the returned corners.
-     * @param mask              Optional region of interest. If the image is not empty (it needs to have the type
-     *                          CV_8UC1 and the same size as image ), it specifies the region in which the corners are
-     *                          detected.
-     * @param blockSize         Size of an average block for computing a derivative covariation matrix over each pixel
-     *                          neighborhood. See cornerEigenValsAndVecs .
-     * @param useHarrisDetector Parameter indicating whether to use a Harris detector (see #cornerHarris) or
-     *                          #cornerMinEigenVal.
-     *
-     *                          SEE: cornerMinEigenVal, cornerHarris, calcOpticalFlowPyrLK, estimateRigidTransform,
-     */
-    public static void goodFeaturesToTrack(
-            Mat image,
-            MatOfPoint corners,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            Mat mask,
-            int blockSize,
-            boolean useHarrisDetector) {
-        Mat corners_mat = corners;
-        goodFeaturesToTrack_1(
-                image.nativeObj,
-                corners_mat.nativeObj,
-                maxCorners,
-                qualityLevel,
-                minDistance,
-                mask.nativeObj,
-                blockSize,
-                useHarrisDetector);
-    }
-
-    /**
-     * Determines strong corners on an image.
-     *
-     * The function finds the most prominent corners in the image or in the specified image region, as described in
-     * CITE: Shi94
-     *
-     * <ul>
-     * <li>Function calculates the corner quality measure at every source image pixel using the #cornerMinEigenVal or
-     * #cornerHarris .</li>
-     * <li>Function performs a non-maximum suppression (the local maximums in *3 x 3* neighborhood are retained).</li>
-     * <li>The corners with the minimal eigenvalue less than \(\texttt{qualityLevel} \cdot \max_{x,y}
-     * qualityMeasureMap(x,y)\) are rejected.</li>
-     * <li>The remaining corners are sorted by the quality measure in the descending order.</li>
-     * <li>Function throws away each corner for which there is a stronger corner at a distance less than maxDistance.
-     * </li>
-     * </ul>
-     *
-     * The function can be used to initialize a point-based tracker of an object.
-     *
-     * <b>Note:</b> If the function is called with different values A and B of the parameter qualityLevel , and A &gt;
-     * B, the vector of returned corners with qualityLevel=A will be the prefix of the output vector with qualityLevel=B
-     * .
-     *
-     * @param image        Input 8-bit or floating-point 32-bit, single-channel image.
-     * @param corners      Output vector of detected corners.
-     * @param maxCorners   Maximum number of corners to return. If there are more corners than are found, the strongest
-     *                     of them is returned. {@code maxCorners &lt;= 0} implies that no limit on the maximum is set
-     *                     and all detected corners are returned.
-     * @param qualityLevel Parameter characterizing the minimal accepted quality of image corners. The parameter value
-     *                     is multiplied by the best corner quality measure, which is the minimal eigenvalue (see
-     *                     #cornerMinEigenVal ) or the Harris function response (see #cornerHarris ). The corners with
-     *                     the quality measure less than the product are rejected. For example, if the best corner has
-     *                     the quality measure = 1500, and the qualityLevel=0.01 , then all the corners with the quality
-     *                     measure less than 15 are rejected.
-     * @param minDistance  Minimum possible Euclidean distance between the returned corners.
-     * @param mask         Optional region of interest. If the image is not empty (it needs to have the type CV_8UC1 and
-     *                     the same size as image ), it specifies the region in which the corners are detected.
-     * @param blockSize    Size of an average block for computing a derivative covariation matrix over each pixel
-     *                     neighborhood. See cornerEigenValsAndVecs . or #cornerMinEigenVal.
-     *
-     *                     SEE: cornerMinEigenVal, cornerHarris, calcOpticalFlowPyrLK, estimateRigidTransform,
-     */
-    public static void goodFeaturesToTrack(
-            Mat image,
-            MatOfPoint corners,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            Mat mask,
-            int blockSize) {
-        Mat corners_mat = corners;
-        goodFeaturesToTrack_2(
-                image.nativeObj,
-                corners_mat.nativeObj,
-                maxCorners,
-                qualityLevel,
-                minDistance,
-                mask.nativeObj,
-                blockSize);
-    }
-
-    /**
-     * Determines strong corners on an image.
-     *
-     * The function finds the most prominent corners in the image or in the specified image region, as described in
-     * CITE: Shi94
-     *
-     * <ul>
-     * <li>Function calculates the corner quality measure at every source image pixel using the #cornerMinEigenVal or
-     * #cornerHarris .</li>
-     * <li>Function performs a non-maximum suppression (the local maximums in *3 x 3* neighborhood are retained).</li>
-     * <li>The corners with the minimal eigenvalue less than \(\texttt{qualityLevel} \cdot \max_{x,y}
-     * qualityMeasureMap(x,y)\) are rejected.</li>
-     * <li>The remaining corners are sorted by the quality measure in the descending order.</li>
-     * <li>Function throws away each corner for which there is a stronger corner at a distance less than maxDistance.
-     * </li>
-     * </ul>
-     *
-     * The function can be used to initialize a point-based tracker of an object.
-     *
-     * <b>Note:</b> If the function is called with different values A and B of the parameter qualityLevel , and A &gt;
-     * B, the vector of returned corners with qualityLevel=A will be the prefix of the output vector with qualityLevel=B
-     * .
-     *
-     * @param image        Input 8-bit or floating-point 32-bit, single-channel image.
-     * @param corners      Output vector of detected corners.
-     * @param maxCorners   Maximum number of corners to return. If there are more corners than are found, the strongest
-     *                     of them is returned. {@code maxCorners &lt;= 0} implies that no limit on the maximum is set
-     *                     and all detected corners are returned.
-     * @param qualityLevel Parameter characterizing the minimal accepted quality of image corners. The parameter value
-     *                     is multiplied by the best corner quality measure, which is the minimal eigenvalue (see
-     *                     #cornerMinEigenVal ) or the Harris function response (see #cornerHarris ). The corners with
-     *                     the quality measure less than the product are rejected. For example, if the best corner has
-     *                     the quality measure = 1500, and the qualityLevel=0.01 , then all the corners with the quality
-     *                     measure less than 15 are rejected.
-     * @param minDistance  Minimum possible Euclidean distance between the returned corners.
-     * @param mask         Optional region of interest. If the image is not empty (it needs to have the type CV_8UC1 and
-     *                     the same size as image ), it specifies the region in which the corners are detected. pixel
-     *                     neighborhood. See cornerEigenValsAndVecs . or #cornerMinEigenVal.
-     *
-     *                     SEE: cornerMinEigenVal, cornerHarris, calcOpticalFlowPyrLK, estimateRigidTransform,
-     */
-    public static void goodFeaturesToTrack(
-            Mat image,
-            MatOfPoint corners,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            Mat mask) {
-        Mat corners_mat = corners;
-        goodFeaturesToTrack_3(
-                image.nativeObj,
-                corners_mat.nativeObj,
-                maxCorners,
-                qualityLevel,
-                minDistance,
-                mask.nativeObj);
-    }
-
-    /**
-     * Determines strong corners on an image.
-     *
-     * The function finds the most prominent corners in the image or in the specified image region, as described in
-     * CITE: Shi94
-     *
-     * <ul>
-     * <li>Function calculates the corner quality measure at every source image pixel using the #cornerMinEigenVal or
-     * #cornerHarris .</li>
-     * <li>Function performs a non-maximum suppression (the local maximums in *3 x 3* neighborhood are retained).</li>
-     * <li>The corners with the minimal eigenvalue less than \(\texttt{qualityLevel} \cdot \max_{x,y}
-     * qualityMeasureMap(x,y)\) are rejected.</li>
-     * <li>The remaining corners are sorted by the quality measure in the descending order.</li>
-     * <li>Function throws away each corner for which there is a stronger corner at a distance less than maxDistance.
-     * </li>
-     * </ul>
-     *
-     * The function can be used to initialize a point-based tracker of an object.
-     *
-     * <b>Note:</b> If the function is called with different values A and B of the parameter qualityLevel , and A &gt;
-     * B, the vector of returned corners with qualityLevel=A will be the prefix of the output vector with qualityLevel=B
-     * .
-     *
-     * @param image        Input 8-bit or floating-point 32-bit, single-channel image.
-     * @param corners      Output vector of detected corners.
-     * @param maxCorners   Maximum number of corners to return. If there are more corners than are found, the strongest
-     *                     of them is returned. {@code maxCorners &lt;= 0} implies that no limit on the maximum is set
-     *                     and all detected corners are returned.
-     * @param qualityLevel Parameter characterizing the minimal accepted quality of image corners. The parameter value
-     *                     is multiplied by the best corner quality measure, which is the minimal eigenvalue (see
-     *                     #cornerMinEigenVal ) or the Harris function response (see #cornerHarris ). The corners with
-     *                     the quality measure less than the product are rejected. For example, if the best corner has
-     *                     the quality measure = 1500, and the qualityLevel=0.01 , then all the corners with the quality
-     *                     measure less than 15 are rejected.
-     * @param minDistance  Minimum possible Euclidean distance between the returned corners. CV_8UC1 and the same size
-     *                     as image ), it specifies the region in which the corners are detected. pixel neighborhood.
-     *                     See cornerEigenValsAndVecs . or #cornerMinEigenVal.
-     *
-     *                     SEE: cornerMinEigenVal, cornerHarris, calcOpticalFlowPyrLK, estimateRigidTransform,
-     */
-    public static void goodFeaturesToTrack(
-            Mat image,
-            MatOfPoint corners,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance) {
-        Mat corners_mat = corners;
-        goodFeaturesToTrack_4(image.nativeObj, corners_mat.nativeObj, maxCorners, qualityLevel, minDistance);
-    }
-
-    //
-    // C++: void cv::goodFeaturesToTrack(Mat image, vector_Point& corners, int maxCorners, double qualityLevel, double
-    // minDistance, Mat mask, int blockSize, int gradientSize, bool useHarrisDetector = false, double k = 0.04)
-    //
-
-    public static void goodFeaturesToTrack(
-            Mat image,
-            MatOfPoint corners,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            Mat mask,
-            int blockSize,
-            int gradientSize,
-            boolean useHarrisDetector,
-            double k) {
-        Mat corners_mat = corners;
-        goodFeaturesToTrack_5(
-                image.nativeObj,
-                corners_mat.nativeObj,
-                maxCorners,
-                qualityLevel,
-                minDistance,
-                mask.nativeObj,
-                blockSize,
-                gradientSize,
-                useHarrisDetector,
-                k);
-    }
-
-    public static void goodFeaturesToTrack(
-            Mat image,
-            MatOfPoint corners,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            Mat mask,
-            int blockSize,
-            int gradientSize,
-            boolean useHarrisDetector) {
-        Mat corners_mat = corners;
-        goodFeaturesToTrack_6(
-                image.nativeObj,
-                corners_mat.nativeObj,
-                maxCorners,
-                qualityLevel,
-                minDistance,
-                mask.nativeObj,
-                blockSize,
-                gradientSize,
-                useHarrisDetector);
-    }
-
-    public static void goodFeaturesToTrack(
-            Mat image,
-            MatOfPoint corners,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            Mat mask,
-            int blockSize,
-            int gradientSize) {
-        Mat corners_mat = corners;
-        goodFeaturesToTrack_7(
-                image.nativeObj,
-                corners_mat.nativeObj,
-                maxCorners,
-                qualityLevel,
-                minDistance,
-                mask.nativeObj,
-                blockSize,
-                gradientSize);
-    }
-
-    //
-    // C++: void cv::goodFeaturesToTrack(Mat image, Mat& corners, int maxCorners, double qualityLevel, double
-    // minDistance, Mat mask, Mat& cornersQuality, int blockSize = 3, int gradientSize = 3, bool useHarrisDetector =
-    // false, double k = 0.04)
-    //
-
-    /**
-     * Same as above, but returns also quality measure of the detected corners.
-     *
-     * @param image             Input 8-bit or floating-point 32-bit, single-channel image.
-     * @param corners           Output vector of detected corners.
-     * @param maxCorners        Maximum number of corners to return. If there are more corners than are found, the
-     *                          strongest of them is returned. {@code maxCorners &lt;= 0} implies that no limit on the
-     *                          maximum is set and all detected corners are returned.
-     * @param qualityLevel      Parameter characterizing the minimal accepted quality of image corners. The parameter
-     *                          value is multiplied by the best corner quality measure, which is the minimal eigenvalue
-     *                          (see #cornerMinEigenVal ) or the Harris function response (see #cornerHarris ). The
-     *                          corners with the quality measure less than the product are rejected. For example, if the
-     *                          best corner has the quality measure = 1500, and the qualityLevel=0.01 , then all the
-     *                          corners with the quality measure less than 15 are rejected.
-     * @param minDistance       Minimum possible Euclidean distance between the returned corners.
-     * @param mask              Region of interest. If the image is not empty (it needs to have the type CV_8UC1 and the
-     *                          same size as image ), it specifies the region in which the corners are detected.
-     * @param cornersQuality    Output vector of quality measure of the detected corners.
-     * @param blockSize         Size of an average block for computing a derivative covariation matrix over each pixel
-     *                          neighborhood. See cornerEigenValsAndVecs .
-     * @param gradientSize      Aperture parameter for the Sobel operator used for derivatives computation. See
-     *                          cornerEigenValsAndVecs .
-     * @param useHarrisDetector Parameter indicating whether to use a Harris detector (see #cornerHarris) or
-     *                          #cornerMinEigenVal.
-     * @param k                 Free parameter of the Harris detector.
-     */
-    public static void goodFeaturesToTrackWithQuality(
-            Mat image,
-            Mat corners,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            Mat mask,
-            Mat cornersQuality,
-            int blockSize,
-            int gradientSize,
-            boolean useHarrisDetector,
-            double k) {
-        goodFeaturesToTrackWithQuality_0(
-                image.nativeObj,
-                corners.nativeObj,
-                maxCorners,
-                qualityLevel,
-                minDistance,
-                mask.nativeObj,
-                cornersQuality.nativeObj,
-                blockSize,
-                gradientSize,
-                useHarrisDetector,
-                k);
-    }
-
-    /**
-     * Same as above, but returns also quality measure of the detected corners.
-     *
-     * @param image             Input 8-bit or floating-point 32-bit, single-channel image.
-     * @param corners           Output vector of detected corners.
-     * @param maxCorners        Maximum number of corners to return. If there are more corners than are found, the
-     *                          strongest of them is returned. {@code maxCorners &lt;= 0} implies that no limit on the
-     *                          maximum is set and all detected corners are returned.
-     * @param qualityLevel      Parameter characterizing the minimal accepted quality of image corners. The parameter
-     *                          value is multiplied by the best corner quality measure, which is the minimal eigenvalue
-     *                          (see #cornerMinEigenVal ) or the Harris function response (see #cornerHarris ). The
-     *                          corners with the quality measure less than the product are rejected. For example, if the
-     *                          best corner has the quality measure = 1500, and the qualityLevel=0.01 , then all the
-     *                          corners with the quality measure less than 15 are rejected.
-     * @param minDistance       Minimum possible Euclidean distance between the returned corners.
-     * @param mask              Region of interest. If the image is not empty (it needs to have the type CV_8UC1 and the
-     *                          same size as image ), it specifies the region in which the corners are detected.
-     * @param cornersQuality    Output vector of quality measure of the detected corners.
-     * @param blockSize         Size of an average block for computing a derivative covariation matrix over each pixel
-     *                          neighborhood. See cornerEigenValsAndVecs .
-     * @param gradientSize      Aperture parameter for the Sobel operator used for derivatives computation. See
-     *                          cornerEigenValsAndVecs .
-     * @param useHarrisDetector Parameter indicating whether to use a Harris detector (see #cornerHarris) or
-     *                          #cornerMinEigenVal.
-     */
-    public static void goodFeaturesToTrackWithQuality(
-            Mat image,
-            Mat corners,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            Mat mask,
-            Mat cornersQuality,
-            int blockSize,
-            int gradientSize,
-            boolean useHarrisDetector) {
-        goodFeaturesToTrackWithQuality_1(
-                image.nativeObj,
-                corners.nativeObj,
-                maxCorners,
-                qualityLevel,
-                minDistance,
-                mask.nativeObj,
-                cornersQuality.nativeObj,
-                blockSize,
-                gradientSize,
-                useHarrisDetector);
-    }
-
-    /**
-     * Same as above, but returns also quality measure of the detected corners.
-     *
-     * @param image          Input 8-bit or floating-point 32-bit, single-channel image.
-     * @param corners        Output vector of detected corners.
-     * @param maxCorners     Maximum number of corners to return. If there are more corners than are found, the
-     *                       strongest of them is returned. {@code maxCorners &lt;= 0} implies that no limit on the
-     *                       maximum is set and all detected corners are returned.
-     * @param qualityLevel   Parameter characterizing the minimal accepted quality of image corners. The parameter value
-     *                       is multiplied by the best corner quality measure, which is the minimal eigenvalue (see
-     *                       #cornerMinEigenVal ) or the Harris function response (see #cornerHarris ). The corners with
-     *                       the quality measure less than the product are rejected. For example, if the best corner has
-     *                       the quality measure = 1500, and the qualityLevel=0.01 , then all the corners with the
-     *                       quality measure less than 15 are rejected.
-     * @param minDistance    Minimum possible Euclidean distance between the returned corners.
-     * @param mask           Region of interest. If the image is not empty (it needs to have the type CV_8UC1 and the
-     *                       same size as image ), it specifies the region in which the corners are detected.
-     * @param cornersQuality Output vector of quality measure of the detected corners.
-     * @param blockSize      Size of an average block for computing a derivative covariation matrix over each pixel
-     *                       neighborhood. See cornerEigenValsAndVecs .
-     * @param gradientSize   Aperture parameter for the Sobel operator used for derivatives computation. See
-     *                       cornerEigenValsAndVecs . or #cornerMinEigenVal.
-     */
-    public static void goodFeaturesToTrackWithQuality(
-            Mat image,
-            Mat corners,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            Mat mask,
-            Mat cornersQuality,
-            int blockSize,
-            int gradientSize) {
-        goodFeaturesToTrackWithQuality_2(
-                image.nativeObj,
-                corners.nativeObj,
-                maxCorners,
-                qualityLevel,
-                minDistance,
-                mask.nativeObj,
-                cornersQuality.nativeObj,
-                blockSize,
-                gradientSize);
-    }
-
-    /**
-     * Same as above, but returns also quality measure of the detected corners.
-     *
-     * @param image          Input 8-bit or floating-point 32-bit, single-channel image.
-     * @param corners        Output vector of detected corners.
-     * @param maxCorners     Maximum number of corners to return. If there are more corners than are found, the
-     *                       strongest of them is returned. {@code maxCorners &lt;= 0} implies that no limit on the
-     *                       maximum is set and all detected corners are returned.
-     * @param qualityLevel   Parameter characterizing the minimal accepted quality of image corners. The parameter value
-     *                       is multiplied by the best corner quality measure, which is the minimal eigenvalue (see
-     *                       #cornerMinEigenVal ) or the Harris function response (see #cornerHarris ). The corners with
-     *                       the quality measure less than the product are rejected. For example, if the best corner has
-     *                       the quality measure = 1500, and the qualityLevel=0.01 , then all the corners with the
-     *                       quality measure less than 15 are rejected.
-     * @param minDistance    Minimum possible Euclidean distance between the returned corners.
-     * @param mask           Region of interest. If the image is not empty (it needs to have the type CV_8UC1 and the
-     *                       same size as image ), it specifies the region in which the corners are detected.
-     * @param cornersQuality Output vector of quality measure of the detected corners.
-     * @param blockSize      Size of an average block for computing a derivative covariation matrix over each pixel
-     *                       neighborhood. See cornerEigenValsAndVecs . See cornerEigenValsAndVecs . or
-     *                       #cornerMinEigenVal.
-     */
-    public static void goodFeaturesToTrackWithQuality(
-            Mat image,
-            Mat corners,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            Mat mask,
-            Mat cornersQuality,
-            int blockSize) {
-        goodFeaturesToTrackWithQuality_3(
-                image.nativeObj,
-                corners.nativeObj,
-                maxCorners,
-                qualityLevel,
-                minDistance,
-                mask.nativeObj,
-                cornersQuality.nativeObj,
-                blockSize);
-    }
-
-    /**
-     * Same as above, but returns also quality measure of the detected corners.
-     *
-     * @param image          Input 8-bit or floating-point 32-bit, single-channel image.
-     * @param corners        Output vector of detected corners.
-     * @param maxCorners     Maximum number of corners to return. If there are more corners than are found, the
-     *                       strongest of them is returned. {@code maxCorners &lt;= 0} implies that no limit on the
-     *                       maximum is set and all detected corners are returned.
-     * @param qualityLevel   Parameter characterizing the minimal accepted quality of image corners. The parameter value
-     *                       is multiplied by the best corner quality measure, which is the minimal eigenvalue (see
-     *                       #cornerMinEigenVal ) or the Harris function response (see #cornerHarris ). The corners with
-     *                       the quality measure less than the product are rejected. For example, if the best corner has
-     *                       the quality measure = 1500, and the qualityLevel=0.01 , then all the corners with the
-     *                       quality measure less than 15 are rejected.
-     * @param minDistance    Minimum possible Euclidean distance between the returned corners.
-     * @param mask           Region of interest. If the image is not empty (it needs to have the type CV_8UC1 and the
-     *                       same size as image ), it specifies the region in which the corners are detected.
-     * @param cornersQuality Output vector of quality measure of the detected corners. pixel neighborhood. See
-     *                       cornerEigenValsAndVecs . See cornerEigenValsAndVecs . or #cornerMinEigenVal.
-     */
-    public static void goodFeaturesToTrackWithQuality(
-            Mat image,
-            Mat corners,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            Mat mask,
-            Mat cornersQuality) {
-        goodFeaturesToTrackWithQuality_4(
-                image.nativeObj,
-                corners.nativeObj,
-                maxCorners,
-                qualityLevel,
-                minDistance,
-                mask.nativeObj,
-                cornersQuality.nativeObj);
-    }
-
-    //
-    // C++: void cv::HoughLines(Mat image, Mat& lines, double rho, double theta, int threshold, double srn = 0, double
-    // stn = 0, double min_theta = 0, double max_theta = CV_PI, bool use_edgeval = false)
-    //
-
     /**
      * Finds lines in a binary image using the standard Hough transform.
-     *
+     * <p>
      * The function implements the standard or standard multi-scale Hough transform algorithm for line detection. See
      * &lt;https://homepages.inf.ed.ac.uk/rbf/HIPR2/hough.htm&gt; for a good explanation of Hough transform.
      *
@@ -3071,9 +2494,13 @@ public class Imgproc {
                 use_edgeval);
     }
 
+    //
+    // C++: void cv::cornerSubPix(Mat image, Mat& corners, Size winSize, Size zeroZone, TermCriteria criteria)
+    //
+
     /**
      * Finds lines in a binary image using the standard Hough transform.
-     *
+     * <p>
      * The function implements the standard or standard multi-scale Hough transform algorithm for line detection. See
      * &lt;https://homepages.inf.ed.ac.uk/rbf/HIPR2/hough.htm&gt; for a good explanation of Hough transform.
      *
@@ -3111,9 +2538,14 @@ public class Imgproc {
         HoughLines_1(image.nativeObj, lines.nativeObj, rho, theta, threshold, srn, stn, min_theta, max_theta);
     }
 
+    //
+    // C++: void cv::HoughLines(Mat image, Mat& lines, double rho, double theta, int threshold, double srn = 0, double
+    // stn = 0, double min_theta = 0, double max_theta = CV_PI, bool use_edgeval = false)
+    //
+
     /**
      * Finds lines in a binary image using the standard Hough transform.
-     *
+     * <p>
      * The function implements the standard or standard multi-scale Hough transform algorithm for line detection. See
      * &lt;https://homepages.inf.ed.ac.uk/rbf/HIPR2/hough.htm&gt; for a good explanation of Hough transform.
      *
@@ -3151,7 +2583,7 @@ public class Imgproc {
 
     /**
      * Finds lines in a binary image using the standard Hough transform.
-     *
+     * <p>
      * The function implements the standard or standard multi-scale Hough transform algorithm for line detection. See
      * &lt;https://homepages.inf.ed.ac.uk/rbf/HIPR2/hough.htm&gt; for a good explanation of Hough transform.
      *
@@ -3187,7 +2619,7 @@ public class Imgproc {
 
     /**
      * Finds lines in a binary image using the standard Hough transform.
-     *
+     * <p>
      * The function implements the standard or standard multi-scale Hough transform algorithm for line detection. See
      * &lt;https://homepages.inf.ed.ac.uk/rbf/HIPR2/hough.htm&gt; for a good explanation of Hough transform.
      *
@@ -3214,7 +2646,7 @@ public class Imgproc {
 
     /**
      * Finds lines in a binary image using the standard Hough transform.
-     *
+     * <p>
      * The function implements the standard or standard multi-scale Hough transform algorithm for line detection. See
      * &lt;https://homepages.inf.ed.ac.uk/rbf/HIPR2/hough.htm&gt; for a good explanation of Hough transform.
      *
@@ -3237,24 +2669,19 @@ public class Imgproc {
         HoughLines_5(image.nativeObj, lines.nativeObj, rho, theta, threshold);
     }
 
-    //
-    // C++: void cv::HoughLinesP(Mat image, Mat& lines, double rho, double theta, int threshold, double minLineLength =
-    // 0, double maxLineGap = 0)
-    //
-
     /**
      * Finds line segments in a binary image using the probabilistic Hough transform.
-     *
+     * <p>
      * The function implements the probabilistic Hough transform algorithm for line detection, described in CITE:
      * Matas00
-     *
+     * <p>
      * See the line detection example below: INCLUDE: snippets/imgproc_HoughLinesP.cpp This is a sample picture the
      * function parameters have been tuned for:
-     *
+     * <p>
      * ![image](pics/building.jpg)
-     *
+     * <p>
      * And this is the output of the above program in case of the probabilistic Hough transform:
-     *
+     * <p>
      * ![image](pics/houghp.png)
      *
      * @param image         8-bit, single-channel binary source image. The image may be modified by the function.
@@ -3267,7 +2694,7 @@ public class Imgproc {
      *                      \(&gt;\texttt{threshold}\) ).
      * @param minLineLength Minimum line length. Line segments shorter than that are rejected.
      * @param maxLineGap    Maximum allowed gap between points on the same line to link them.
-     *
+     *                      <p>
      *                      SEE: LineSegmentDetector
      */
     public static void HoughLinesP(
@@ -3283,17 +2710,17 @@ public class Imgproc {
 
     /**
      * Finds line segments in a binary image using the probabilistic Hough transform.
-     *
+     * <p>
      * The function implements the probabilistic Hough transform algorithm for line detection, described in CITE:
      * Matas00
-     *
+     * <p>
      * See the line detection example below: INCLUDE: snippets/imgproc_HoughLinesP.cpp This is a sample picture the
      * function parameters have been tuned for:
-     *
+     * <p>
      * ![image](pics/building.jpg)
-     *
+     * <p>
      * And this is the output of the above program in case of the probabilistic Hough transform:
-     *
+     * <p>
      * ![image](pics/houghp.png)
      *
      * @param image         8-bit, single-channel binary source image. The image may be modified by the function.
@@ -3305,7 +2732,7 @@ public class Imgproc {
      * @param threshold     %Accumulator threshold parameter. Only those lines are returned that get enough votes (
      *                      \(&gt;\texttt{threshold}\) ).
      * @param minLineLength Minimum line length. Line segments shorter than that are rejected.
-     *
+     *                      <p>
      *                      SEE: LineSegmentDetector
      */
     public static void HoughLinesP(
@@ -3318,19 +2745,24 @@ public class Imgproc {
         HoughLinesP_1(image.nativeObj, lines.nativeObj, rho, theta, threshold, minLineLength);
     }
 
+    //
+    // C++: void cv::HoughLinesP(Mat image, Mat& lines, double rho, double theta, int threshold, double minLineLength =
+    // 0, double maxLineGap = 0)
+    //
+
     /**
      * Finds line segments in a binary image using the probabilistic Hough transform.
-     *
+     * <p>
      * The function implements the probabilistic Hough transform algorithm for line detection, described in CITE:
      * Matas00
-     *
+     * <p>
      * See the line detection example below: INCLUDE: snippets/imgproc_HoughLinesP.cpp This is a sample picture the
      * function parameters have been tuned for:
-     *
+     * <p>
      * ![image](pics/building.jpg)
-     *
+     * <p>
      * And this is the output of the above program in case of the probabilistic Hough transform:
-     *
+     * <p>
      * ![image](pics/houghp.png)
      *
      * @param image     8-bit, single-channel binary source image. The image may be modified by the function.
@@ -3340,21 +2772,16 @@ public class Imgproc {
      * @param theta     Angle resolution of the accumulator in radians.
      * @param threshold %Accumulator threshold parameter. Only those lines are returned that get enough votes (
      *                  \(&gt;\texttt{threshold}\) ).
-     *
+     *                  <p>
      *                  SEE: LineSegmentDetector
      */
     public static void HoughLinesP(Mat image, Mat lines, double rho, double theta, int threshold) {
         HoughLinesP_2(image.nativeObj, lines.nativeObj, rho, theta, threshold);
     }
 
-    //
-    // C++: void cv::HoughLinesPointSet(Mat point, Mat& lines, int lines_max, int threshold, double min_rho, double
-    // max_rho, double rho_step, double min_theta, double max_theta, double theta_step)
-    //
-
     /**
      * Finds lines in a set of points using the standard Hough transform.
-     *
+     * <p>
      * The function finds lines in a set of points using a modification of the Hough transform. INCLUDE:
      * snippets/imgproc_HoughLinesPointSet.cpp
      *
@@ -3398,23 +2825,18 @@ public class Imgproc {
                 theta_step);
     }
 
-    //
-    // C++: void cv::HoughCircles(Mat image, Mat& circles, int method, double dp, double minDist, double param1 = 100,
-    // double param2 = 100, int minRadius = 0, int maxRadius = 0)
-    //
-
     /**
      * Finds circles in a grayscale image using the Hough transform.
-     *
+     * <p>
      * The function finds circles in a grayscale image using a modification of the Hough transform.
-     *
+     * <p>
      * Example: : INCLUDE: snippets/imgproc_HoughLinesCircles.cpp
      *
      * <b>Note:</b> Usually the function detects the centers of circles well. However, it may fail to find correct
      * radii. You can assist to the function by specifying the radius range ( minRadius and maxRadius ) if you know it.
      * Or, in the case of #HOUGH_GRADIENT method you may set maxRadius to a negative number to return centers only
      * without radius search, and find the correct radius using an additional procedure.
-     *
+     * <p>
      * It also helps to smooth image a bit unless it's already soft. For example, GaussianBlur() with 7x7 kernel and
      * 1.5x1.5 sigma or similar blurring may help.
      *
@@ -3444,7 +2866,7 @@ public class Imgproc {
      * @param minRadius Minimum circle radius.
      * @param maxRadius Maximum circle radius. If &lt;= 0, uses the maximum image dimension. If &lt; 0, #HOUGH_GRADIENT
      *                  returns centers without finding the radius. #HOUGH_GRADIENT_ALT always computes circle radiuses.
-     *
+     *                  <p>
      *                  SEE: fitEllipse, minEnclosingCircle
      */
     public static void HoughCircles(
@@ -3460,18 +2882,23 @@ public class Imgproc {
         HoughCircles_0(image.nativeObj, circles.nativeObj, method, dp, minDist, param1, param2, minRadius, maxRadius);
     }
 
+    //
+    // C++: void cv::HoughLinesPointSet(Mat point, Mat& lines, int lines_max, int threshold, double min_rho, double
+    // max_rho, double rho_step, double min_theta, double max_theta, double theta_step)
+    //
+
     /**
      * Finds circles in a grayscale image using the Hough transform.
-     *
+     * <p>
      * The function finds circles in a grayscale image using a modification of the Hough transform.
-     *
+     * <p>
      * Example: : INCLUDE: snippets/imgproc_HoughLinesCircles.cpp
      *
      * <b>Note:</b> Usually the function detects the centers of circles well. However, it may fail to find correct
      * radii. You can assist to the function by specifying the radius range ( minRadius and maxRadius ) if you know it.
      * Or, in the case of #HOUGH_GRADIENT method you may set maxRadius to a negative number to return centers only
      * without radius search, and find the correct radius using an additional procedure.
-     *
+     * <p>
      * It also helps to smooth image a bit unless it's already soft. For example, GaussianBlur() with 7x7 kernel and
      * 1.5x1.5 sigma or similar blurring may help.
      *
@@ -3500,7 +2927,7 @@ public class Imgproc {
      *                  then also try to limit the search range [minRadius, maxRadius] to avoid many false circles.
      * @param minRadius Minimum circle radius. centers without finding the radius. #HOUGH_GRADIENT_ALT always computes
      *                  circle radiuses.
-     *
+     *                  <p>
      *                  SEE: fitEllipse, minEnclosingCircle
      */
     public static void HoughCircles(
@@ -3515,18 +2942,23 @@ public class Imgproc {
         HoughCircles_1(image.nativeObj, circles.nativeObj, method, dp, minDist, param1, param2, minRadius);
     }
 
+    //
+    // C++: void cv::HoughCircles(Mat image, Mat& circles, int method, double dp, double minDist, double param1 = 100,
+    // double param2 = 100, int minRadius = 0, int maxRadius = 0)
+    //
+
     /**
      * Finds circles in a grayscale image using the Hough transform.
-     *
+     * <p>
      * The function finds circles in a grayscale image using a modification of the Hough transform.
-     *
+     * <p>
      * Example: : INCLUDE: snippets/imgproc_HoughLinesCircles.cpp
      *
      * <b>Note:</b> Usually the function detects the centers of circles well. However, it may fail to find correct
      * radii. You can assist to the function by specifying the radius range ( minRadius and maxRadius ) if you know it.
      * Or, in the case of #HOUGH_GRADIENT method you may set maxRadius to a negative number to return centers only
      * without radius search, and find the correct radius using an additional procedure.
-     *
+     * <p>
      * It also helps to smooth image a bit unless it's already soft. For example, GaussianBlur() with 7x7 kernel and
      * 1.5x1.5 sigma or similar blurring may help.
      *
@@ -3554,7 +2986,7 @@ public class Imgproc {
      *                better detection of small circles, you may decrease it to 0.85, 0.8 or even less. But then also
      *                try to limit the search range [minRadius, maxRadius] to avoid many false circles. centers without
      *                finding the radius. #HOUGH_GRADIENT_ALT always computes circle radiuses.
-     *
+     *                <p>
      *                SEE: fitEllipse, minEnclosingCircle
      */
     public static void HoughCircles(
@@ -3570,16 +3002,16 @@ public class Imgproc {
 
     /**
      * Finds circles in a grayscale image using the Hough transform.
-     *
+     * <p>
      * The function finds circles in a grayscale image using a modification of the Hough transform.
-     *
+     * <p>
      * Example: : INCLUDE: snippets/imgproc_HoughLinesCircles.cpp
      *
      * <b>Note:</b> Usually the function detects the centers of circles well. However, it may fail to find correct
      * radii. You can assist to the function by specifying the radius range ( minRadius and maxRadius ) if you know it.
      * Or, in the case of #HOUGH_GRADIENT method you may set maxRadius to a negative number to return centers only
      * without radius search, and find the correct radius using an additional procedure.
-     *
+     * <p>
      * It also helps to smooth image a bit unless it's already soft. For example, GaussianBlur() with 7x7 kernel and
      * 1.5x1.5 sigma or similar blurring may help.
      *
@@ -3606,7 +3038,7 @@ public class Imgproc {
      *                be fine. If you want get better detection of small circles, you may decrease it to 0.85, 0.8 or
      *                even less. But then also try to limit the search range [minRadius, maxRadius] to avoid many false
      *                circles. centers without finding the radius. #HOUGH_GRADIENT_ALT always computes circle radiuses.
-     *
+     *                <p>
      *                SEE: fitEllipse, minEnclosingCircle
      */
     public static void HoughCircles(Mat image, Mat circles, int method, double dp, double minDist, double param1) {
@@ -3615,16 +3047,16 @@ public class Imgproc {
 
     /**
      * Finds circles in a grayscale image using the Hough transform.
-     *
+     * <p>
      * The function finds circles in a grayscale image using a modification of the Hough transform.
-     *
+     * <p>
      * Example: : INCLUDE: snippets/imgproc_HoughLinesCircles.cpp
      *
      * <b>Note:</b> Usually the function detects the centers of circles well. However, it may fail to find correct
      * radii. You can assist to the function by specifying the radius range ( minRadius and maxRadius ) if you know it.
      * Or, in the case of #HOUGH_GRADIENT method you may set maxRadius to a negative number to return centers only
      * without radius search, and find the correct radius using an additional procedure.
-     *
+     * <p>
      * It also helps to smooth image a bit unless it's already soft. For example, GaussianBlur() with 7x7 kernel and
      * 1.5x1.5 sigma or similar blurring may help.
      *
@@ -3650,33 +3082,28 @@ public class Imgproc {
      *                circles, you may decrease it to 0.85, 0.8 or even less. But then also try to limit the search
      *                range [minRadius, maxRadius] to avoid many false circles. centers without finding the radius.
      *                #HOUGH_GRADIENT_ALT always computes circle radiuses.
-     *
+     *                <p>
      *                SEE: fitEllipse, minEnclosingCircle
      */
     public static void HoughCircles(Mat image, Mat circles, int method, double dp, double minDist) {
         HoughCircles_4(image.nativeObj, circles.nativeObj, method, dp, minDist);
     }
 
-    //
-    // C++: void cv::erode(Mat src, Mat& dst, Mat kernel, Point anchor = Point(-1,-1), int iterations = 1, int
-    // borderType = BORDER_CONSTANT, Scalar borderValue = morphologyDefaultBorderValue())
-    //
-
     /**
      * Erodes an image by using a specific structuring element.
-     *
+     * <p>
      * The function erodes the source image using the specified structuring element that determines the shape of a pixel
      * neighborhood over which the minimum is taken:
-     *
-     * \(\texttt{dst} (x,y) = \min _{(x',y'): \, \texttt{element} (x',y') \ne0 } \texttt{src} (x+x',y+y')\)
-     *
+     * <p>
+     * \(\texttt{dst} (x,y) = \min _{(x',y'): \, \texttt{kernel} (x',y') \ne0 } \texttt{src} (x+x',y+y')\)
+     * <p>
      * The function supports the in-place mode. Erosion can be applied several ( iterations ) times. In case of
      * multi-channel images, each channel is processed independently.
      *
      * @param src         input image; the number of channels can be arbitrary, but the depth should be one of CV_8U,
      *                    CV_16U, CV_16S, CV_32F or CV_64F.
      * @param dst         output image of the same size and type as src.
-     * @param kernel      structuring element used for erosion; if {@code element=Mat()}, a {@code 3 x 3} rectangular
+     * @param kernel      structuring element used for erosion; if {@code kernel=Mat()}, a {@code 3 x 3} rectangular
      *                    structuring element is used. Kernel can be created using #getStructuringElement.
      * @param anchor      position of the anchor within the element; default value (-1, -1) means that the anchor is at
      *                    the element center.
@@ -3708,19 +3135,19 @@ public class Imgproc {
 
     /**
      * Erodes an image by using a specific structuring element.
-     *
+     * <p>
      * The function erodes the source image using the specified structuring element that determines the shape of a pixel
      * neighborhood over which the minimum is taken:
-     *
-     * \(\texttt{dst} (x,y) = \min _{(x',y'): \, \texttt{element} (x',y') \ne0 } \texttt{src} (x+x',y+y')\)
-     *
+     * <p>
+     * \(\texttt{dst} (x,y) = \min _{(x',y'): \, \texttt{kernel} (x',y') \ne0 } \texttt{src} (x+x',y+y')\)
+     * <p>
      * The function supports the in-place mode. Erosion can be applied several ( iterations ) times. In case of
      * multi-channel images, each channel is processed independently.
      *
      * @param src        input image; the number of channels can be arbitrary, but the depth should be one of CV_8U,
      *                   CV_16U, CV_16S, CV_32F or CV_64F.
      * @param dst        output image of the same size and type as src.
-     * @param kernel     structuring element used for erosion; if {@code element=Mat()}, a {@code 3 x 3} rectangular
+     * @param kernel     structuring element used for erosion; if {@code kernel=Mat()}, a {@code 3 x 3} rectangular
      *                   structuring element is used. Kernel can be created using #getStructuringElement.
      * @param anchor     position of the anchor within the element; default value (-1, -1) means that the anchor is at
      *                   the element center.
@@ -3732,21 +3159,26 @@ public class Imgproc {
         erode_1(src.nativeObj, dst.nativeObj, kernel.nativeObj, anchor.x, anchor.y, iterations, borderType);
     }
 
+    //
+    // C++: void cv::erode(Mat src, Mat& dst, Mat kernel, Point anchor = Point(-1,-1), int iterations = 1, int
+    // borderType = BORDER_CONSTANT, Scalar borderValue = morphologyDefaultBorderValue())
+    //
+
     /**
      * Erodes an image by using a specific structuring element.
-     *
+     * <p>
      * The function erodes the source image using the specified structuring element that determines the shape of a pixel
      * neighborhood over which the minimum is taken:
-     *
-     * \(\texttt{dst} (x,y) = \min _{(x',y'): \, \texttt{element} (x',y') \ne0 } \texttt{src} (x+x',y+y')\)
-     *
+     * <p>
+     * \(\texttt{dst} (x,y) = \min _{(x',y'): \, \texttt{kernel} (x',y') \ne0 } \texttt{src} (x+x',y+y')\)
+     * <p>
      * The function supports the in-place mode. Erosion can be applied several ( iterations ) times. In case of
      * multi-channel images, each channel is processed independently.
      *
      * @param src        input image; the number of channels can be arbitrary, but the depth should be one of CV_8U,
      *                   CV_16U, CV_16S, CV_32F or CV_64F.
      * @param dst        output image of the same size and type as src.
-     * @param kernel     structuring element used for erosion; if {@code element=Mat()}, a {@code 3 x 3} rectangular
+     * @param kernel     structuring element used for erosion; if {@code kernel=Mat()}, a {@code 3 x 3} rectangular
      *                   structuring element is used. Kernel can be created using #getStructuringElement.
      * @param anchor     position of the anchor within the element; default value (-1, -1) means that the anchor is at
      *                   the element center.
@@ -3758,19 +3190,19 @@ public class Imgproc {
 
     /**
      * Erodes an image by using a specific structuring element.
-     *
+     * <p>
      * The function erodes the source image using the specified structuring element that determines the shape of a pixel
      * neighborhood over which the minimum is taken:
-     *
-     * \(\texttt{dst} (x,y) = \min _{(x',y'): \, \texttt{element} (x',y') \ne0 } \texttt{src} (x+x',y+y')\)
-     *
+     * <p>
+     * \(\texttt{dst} (x,y) = \min _{(x',y'): \, \texttt{kernel} (x',y') \ne0 } \texttt{src} (x+x',y+y')\)
+     * <p>
      * The function supports the in-place mode. Erosion can be applied several ( iterations ) times. In case of
      * multi-channel images, each channel is processed independently.
      *
      * @param src    input image; the number of channels can be arbitrary, but the depth should be one of CV_8U, CV_16U,
      *               CV_16S, CV_32F or CV_64F.
      * @param dst    output image of the same size and type as src.
-     * @param kernel structuring element used for erosion; if {@code element=Mat()}, a {@code 3 x 3} rectangular
+     * @param kernel structuring element used for erosion; if {@code kernel=Mat()}, a {@code 3 x 3} rectangular
      *               structuring element is used. Kernel can be created using #getStructuringElement.
      * @param anchor position of the anchor within the element; default value (-1, -1) means that the anchor is at the
      *               element center. SEE: dilate, morphologyEx, getStructuringElement
@@ -3781,19 +3213,19 @@ public class Imgproc {
 
     /**
      * Erodes an image by using a specific structuring element.
-     *
+     * <p>
      * The function erodes the source image using the specified structuring element that determines the shape of a pixel
      * neighborhood over which the minimum is taken:
-     *
-     * \(\texttt{dst} (x,y) = \min _{(x',y'): \, \texttt{element} (x',y') \ne0 } \texttt{src} (x+x',y+y')\)
-     *
+     * <p>
+     * \(\texttt{dst} (x,y) = \min _{(x',y'): \, \texttt{kernel} (x',y') \ne0 } \texttt{src} (x+x',y+y')\)
+     * <p>
      * The function supports the in-place mode. Erosion can be applied several ( iterations ) times. In case of
      * multi-channel images, each channel is processed independently.
      *
      * @param src    input image; the number of channels can be arbitrary, but the depth should be one of CV_8U, CV_16U,
      *               CV_16S, CV_32F or CV_64F.
      * @param dst    output image of the same size and type as src.
-     * @param kernel structuring element used for erosion; if {@code element=Mat()}, a {@code 3 x 3} rectangular
+     * @param kernel structuring element used for erosion; if {@code kernel=Mat()}, a {@code 3 x 3} rectangular
      *               structuring element is used. Kernel can be created using #getStructuringElement. anchor is at the
      *               element center. SEE: dilate, morphologyEx, getStructuringElement
      */
@@ -3801,30 +3233,25 @@ public class Imgproc {
         erode_4(src.nativeObj, dst.nativeObj, kernel.nativeObj);
     }
 
-    //
-    // C++: void cv::dilate(Mat src, Mat& dst, Mat kernel, Point anchor = Point(-1,-1), int iterations = 1, int
-    // borderType = BORDER_CONSTANT, Scalar borderValue = morphologyDefaultBorderValue())
-    //
-
     /**
      * Dilates an image by using a specific structuring element.
-     *
+     * <p>
      * The function dilates the source image using the specified structuring element that determines the shape of a
-     * pixel neighborhood over which the maximum is taken: \(\texttt{dst} (x,y) = \max _{(x',y'): \, \texttt{element}
+     * pixel neighborhood over which the maximum is taken: \(\texttt{dst} (x,y) = \max _{(x',y'): \, \texttt{kernel}
      * (x',y') \ne0 } \texttt{src} (x+x',y+y')\)
-     *
+     * <p>
      * The function supports the in-place mode. Dilation can be applied several ( iterations ) times. In case of
      * multi-channel images, each channel is processed independently.
      *
      * @param src         input image; the number of channels can be arbitrary, but the depth should be one of CV_8U,
      *                    CV_16U, CV_16S, CV_32F or CV_64F.
      * @param dst         output image of the same size and type as src.
-     * @param kernel      structuring element used for dilation; if element=Mat(), a 3 x 3 rectangular structuring
-     *                    element is used. Kernel can be created using #getStructuringElement
+     * @param kernel      structuring element used for dilation; if {@code kernel=Mat()}, a {@code 3 x 3} rectangular
+     *                    structuring element is used. Kernel can be created using #getStructuringElement
      * @param anchor      position of the anchor within the element; default value (-1, -1) means that the anchor is at
      *                    the element center.
      * @param iterations  number of times dilation is applied.
-     * @param borderType  pixel extrapolation method, see #BorderTypes. #BORDER_WRAP is not suported.
+     * @param borderType  pixel extrapolation method, see #BorderTypes. #BORDER_WRAP is not supported.
      * @param borderValue border value in case of a constant border SEE: erode, morphologyEx, getStructuringElement
      */
     public static void dilate(
@@ -3851,44 +3278,49 @@ public class Imgproc {
 
     /**
      * Dilates an image by using a specific structuring element.
-     *
+     * <p>
      * The function dilates the source image using the specified structuring element that determines the shape of a
-     * pixel neighborhood over which the maximum is taken: \(\texttt{dst} (x,y) = \max _{(x',y'): \, \texttt{element}
+     * pixel neighborhood over which the maximum is taken: \(\texttt{dst} (x,y) = \max _{(x',y'): \, \texttt{kernel}
      * (x',y') \ne0 } \texttt{src} (x+x',y+y')\)
-     *
+     * <p>
      * The function supports the in-place mode. Dilation can be applied several ( iterations ) times. In case of
      * multi-channel images, each channel is processed independently.
      *
      * @param src        input image; the number of channels can be arbitrary, but the depth should be one of CV_8U,
      *                   CV_16U, CV_16S, CV_32F or CV_64F.
      * @param dst        output image of the same size and type as src.
-     * @param kernel     structuring element used for dilation; if element=Mat(), a 3 x 3 rectangular structuring
-     *                   element is used. Kernel can be created using #getStructuringElement
+     * @param kernel     structuring element used for dilation; if {@code kernel=Mat()}, a {@code 3 x 3} rectangular
+     *                   structuring element is used. Kernel can be created using #getStructuringElement
      * @param anchor     position of the anchor within the element; default value (-1, -1) means that the anchor is at
      *                   the element center.
      * @param iterations number of times dilation is applied.
-     * @param borderType pixel extrapolation method, see #BorderTypes. #BORDER_WRAP is not suported. SEE: erode,
+     * @param borderType pixel extrapolation method, see #BorderTypes. #BORDER_WRAP is not supported. SEE: erode,
      *                   morphologyEx, getStructuringElement
      */
     public static void dilate(Mat src, Mat dst, Mat kernel, Point anchor, int iterations, int borderType) {
         dilate_1(src.nativeObj, dst.nativeObj, kernel.nativeObj, anchor.x, anchor.y, iterations, borderType);
     }
 
+    //
+    // C++: void cv::dilate(Mat src, Mat& dst, Mat kernel, Point anchor = Point(-1,-1), int iterations = 1, int
+    // borderType = BORDER_CONSTANT, Scalar borderValue = morphologyDefaultBorderValue())
+    //
+
     /**
      * Dilates an image by using a specific structuring element.
-     *
+     * <p>
      * The function dilates the source image using the specified structuring element that determines the shape of a
-     * pixel neighborhood over which the maximum is taken: \(\texttt{dst} (x,y) = \max _{(x',y'): \, \texttt{element}
+     * pixel neighborhood over which the maximum is taken: \(\texttt{dst} (x,y) = \max _{(x',y'): \, \texttt{kernel}
      * (x',y') \ne0 } \texttt{src} (x+x',y+y')\)
-     *
+     * <p>
      * The function supports the in-place mode. Dilation can be applied several ( iterations ) times. In case of
      * multi-channel images, each channel is processed independently.
      *
      * @param src        input image; the number of channels can be arbitrary, but the depth should be one of CV_8U,
      *                   CV_16U, CV_16S, CV_32F or CV_64F.
      * @param dst        output image of the same size and type as src.
-     * @param kernel     structuring element used for dilation; if element=Mat(), a 3 x 3 rectangular structuring
-     *                   element is used. Kernel can be created using #getStructuringElement
+     * @param kernel     structuring element used for dilation; if {@code kernel=Mat()}, a {@code 3 x 3} rectangular
+     *                   structuring element is used. Kernel can be created using #getStructuringElement
      * @param anchor     position of the anchor within the element; default value (-1, -1) means that the anchor is at
      *                   the element center.
      * @param iterations number of times dilation is applied. SEE: erode, morphologyEx, getStructuringElement
@@ -3899,19 +3331,19 @@ public class Imgproc {
 
     /**
      * Dilates an image by using a specific structuring element.
-     *
+     * <p>
      * The function dilates the source image using the specified structuring element that determines the shape of a
-     * pixel neighborhood over which the maximum is taken: \(\texttt{dst} (x,y) = \max _{(x',y'): \, \texttt{element}
+     * pixel neighborhood over which the maximum is taken: \(\texttt{dst} (x,y) = \max _{(x',y'): \, \texttt{kernel}
      * (x',y') \ne0 } \texttt{src} (x+x',y+y')\)
-     *
+     * <p>
      * The function supports the in-place mode. Dilation can be applied several ( iterations ) times. In case of
      * multi-channel images, each channel is processed independently.
      *
      * @param src    input image; the number of channels can be arbitrary, but the depth should be one of CV_8U, CV_16U,
      *               CV_16S, CV_32F or CV_64F.
      * @param dst    output image of the same size and type as src.
-     * @param kernel structuring element used for dilation; if element=Mat(), a 3 x 3 rectangular structuring element is
-     *               used. Kernel can be created using #getStructuringElement
+     * @param kernel structuring element used for dilation; if {@code kernel=Mat()}, a {@code 3 x 3} rectangular
+     *               structuring element is used. Kernel can be created using #getStructuringElement
      * @param anchor position of the anchor within the element; default value (-1, -1) means that the anchor is at the
      *               element center. SEE: erode, morphologyEx, getStructuringElement
      */
@@ -3921,36 +3353,31 @@ public class Imgproc {
 
     /**
      * Dilates an image by using a specific structuring element.
-     *
+     * <p>
      * The function dilates the source image using the specified structuring element that determines the shape of a
-     * pixel neighborhood over which the maximum is taken: \(\texttt{dst} (x,y) = \max _{(x',y'): \, \texttt{element}
+     * pixel neighborhood over which the maximum is taken: \(\texttt{dst} (x,y) = \max _{(x',y'): \, \texttt{kernel}
      * (x',y') \ne0 } \texttt{src} (x+x',y+y')\)
-     *
+     * <p>
      * The function supports the in-place mode. Dilation can be applied several ( iterations ) times. In case of
      * multi-channel images, each channel is processed independently.
      *
      * @param src    input image; the number of channels can be arbitrary, but the depth should be one of CV_8U, CV_16U,
      *               CV_16S, CV_32F or CV_64F.
      * @param dst    output image of the same size and type as src.
-     * @param kernel structuring element used for dilation; if element=Mat(), a 3 x 3 rectangular structuring element is
-     *               used. Kernel can be created using #getStructuringElement anchor is at the element center. SEE:
-     *               erode, morphologyEx, getStructuringElement
+     * @param kernel structuring element used for dilation; if {@code kernel=Mat()}, a {@code 3 x 3} rectangular
+     *               structuring element is used. Kernel can be created using #getStructuringElement anchor is at the
+     *               element center. SEE: erode, morphologyEx, getStructuringElement
      */
     public static void dilate(Mat src, Mat dst, Mat kernel) {
         dilate_4(src.nativeObj, dst.nativeObj, kernel.nativeObj);
     }
 
-    //
-    // C++: void cv::morphologyEx(Mat src, Mat& dst, int op, Mat kernel, Point anchor = Point(-1,-1), int iterations =
-    // 1, int borderType = BORDER_CONSTANT, Scalar borderValue = morphologyDefaultBorderValue())
-    //
-
     /**
      * Performs advanced morphological transformations.
-     *
+     * <p>
      * The function cv::morphologyEx can perform advanced morphological transformations using an erosion and dilation as
      * basic operations.
-     *
+     * <p>
      * Any of the operations can be done in-place. In case of multi-channel images, each channel is processed
      * independently.
      *
@@ -3994,10 +3421,10 @@ public class Imgproc {
 
     /**
      * Performs advanced morphological transformations.
-     *
+     * <p>
      * The function cv::morphologyEx can perform advanced morphological transformations using an erosion and dilation as
      * basic operations.
-     *
+     * <p>
      * Any of the operations can be done in-place. In case of multi-channel images, each channel is processed
      * independently.
      *
@@ -4025,12 +3452,17 @@ public class Imgproc {
         morphologyEx_1(src.nativeObj, dst.nativeObj, op, kernel.nativeObj, anchor.x, anchor.y, iterations, borderType);
     }
 
+    //
+    // C++: void cv::morphologyEx(Mat src, Mat& dst, int op, Mat kernel, Point anchor = Point(-1,-1), int iterations =
+    // 1, int borderType = BORDER_CONSTANT, Scalar borderValue = morphologyDefaultBorderValue())
+    //
+
     /**
      * Performs advanced morphological transformations.
-     *
+     * <p>
      * The function cv::morphologyEx can perform advanced morphological transformations using an erosion and dilation as
      * basic operations.
-     *
+     * <p>
      * Any of the operations can be done in-place. In case of multi-channel images, each channel is processed
      * independently.
      *
@@ -4052,10 +3484,10 @@ public class Imgproc {
 
     /**
      * Performs advanced morphological transformations.
-     *
+     * <p>
      * The function cv::morphologyEx can perform advanced morphological transformations using an erosion and dilation as
      * basic operations.
-     *
+     * <p>
      * Any of the operations can be done in-place. In case of multi-channel images, each channel is processed
      * independently.
      *
@@ -4076,10 +3508,10 @@ public class Imgproc {
 
     /**
      * Performs advanced morphological transformations.
-     *
+     * <p>
      * The function cv::morphologyEx can perform advanced morphological transformations using an erosion and dilation as
      * basic operations.
-     *
+     * <p>
      * Any of the operations can be done in-place. In case of multi-channel images, each channel is processed
      * independently.
      *
@@ -4097,24 +3529,19 @@ public class Imgproc {
         morphologyEx_4(src.nativeObj, dst.nativeObj, op, kernel.nativeObj);
     }
 
-    //
-    // C++: void cv::resize(Mat src, Mat& dst, Size dsize, double fx = 0, double fy = 0, int interpolation =
-    // INTER_LINEAR)
-    //
-
     /**
      * Resizes an image.
-     *
+     * <p>
      * The function resize resizes the image src down to or up to the specified size. Note that the initial dst type or
      * size are not taken into account. Instead, the size and type are derived from the
      * {@code src},{@code dsize},{@code fx}, and {@code fy}. If you want to resize src so that it fits the pre-created
      * dst, you may call the function as follows: <code>
-     *     // explicitly specify dsize=dst.size(); fx and fy will be computed from that.
-     *     resize(src, dst, dst.size(), 0, 0, interpolation);
+     * // explicitly specify dsize=dst.size(); fx and fy will be computed from that.
+     * resize(src, dst, dst.size(), 0, 0, interpolation);
      * </code> If you want to decimate the image by factor of 2 in each direction, you can call the function this way:
      * <code>
-     *     // specify fx and fy and let the function compute the destination image size.
-     *     resize(src, dst, Size(), 0.5, 0.5, interpolation);
+     * // specify fx and fy and let the function compute the destination image size.
+     * resize(src, dst, Size(), 0.5, 0.5, interpolation);
      * </code> To shrink an image, it will generally look best with #INTER_AREA interpolation, whereas to enlarge an
      * image, it will generally look best with #INTER_CUBIC (slow) or #INTER_LINEAR (faster but still looks OK).
      *
@@ -4129,7 +3556,7 @@ public class Imgproc {
      * @param fy            scale factor along the vertical axis; when it equals 0, it is computed as
      *                      \(\texttt{(double)dsize.height/src.rows}\)
      * @param interpolation interpolation method, see #InterpolationFlags
-     *
+     *                      <p>
      *                      SEE: warpAffine, warpPerspective, remap
      */
     public static void resize(Mat src, Mat dst, Size dsize, double fx, double fy, int interpolation) {
@@ -4138,17 +3565,17 @@ public class Imgproc {
 
     /**
      * Resizes an image.
-     *
+     * <p>
      * The function resize resizes the image src down to or up to the specified size. Note that the initial dst type or
      * size are not taken into account. Instead, the size and type are derived from the
      * {@code src},{@code dsize},{@code fx}, and {@code fy}. If you want to resize src so that it fits the pre-created
      * dst, you may call the function as follows: <code>
-     *     // explicitly specify dsize=dst.size(); fx and fy will be computed from that.
-     *     resize(src, dst, dst.size(), 0, 0, interpolation);
+     * // explicitly specify dsize=dst.size(); fx and fy will be computed from that.
+     * resize(src, dst, dst.size(), 0, 0, interpolation);
      * </code> If you want to decimate the image by factor of 2 in each direction, you can call the function this way:
      * <code>
-     *     // specify fx and fy and let the function compute the destination image size.
-     *     resize(src, dst, Size(), 0.5, 0.5, interpolation);
+     * // specify fx and fy and let the function compute the destination image size.
+     * resize(src, dst, Size(), 0.5, 0.5, interpolation);
      * </code> To shrink an image, it will generally look best with #INTER_AREA interpolation, whereas to enlarge an
      * image, it will generally look best with #INTER_CUBIC (slow) or #INTER_LINEAR (faster but still looks OK).
      *
@@ -4161,26 +3588,31 @@ public class Imgproc {
      *              \(\texttt{(double)dsize.width/src.cols}\)
      * @param fy    scale factor along the vertical axis; when it equals 0, it is computed as
      *              \(\texttt{(double)dsize.height/src.rows}\)
-     *
+     *              <p>
      *              SEE: warpAffine, warpPerspective, remap
      */
     public static void resize(Mat src, Mat dst, Size dsize, double fx, double fy) {
         resize_1(src.nativeObj, dst.nativeObj, dsize.width, dsize.height, fx, fy);
     }
 
+    //
+    // C++: void cv::resize(Mat src, Mat& dst, Size dsize, double fx = 0, double fy = 0, int interpolation =
+    // INTER_LINEAR)
+    //
+
     /**
      * Resizes an image.
-     *
+     * <p>
      * The function resize resizes the image src down to or up to the specified size. Note that the initial dst type or
      * size are not taken into account. Instead, the size and type are derived from the
      * {@code src},{@code dsize},{@code fx}, and {@code fy}. If you want to resize src so that it fits the pre-created
      * dst, you may call the function as follows: <code>
-     *     // explicitly specify dsize=dst.size(); fx and fy will be computed from that.
-     *     resize(src, dst, dst.size(), 0, 0, interpolation);
+     * // explicitly specify dsize=dst.size(); fx and fy will be computed from that.
+     * resize(src, dst, dst.size(), 0, 0, interpolation);
      * </code> If you want to decimate the image by factor of 2 in each direction, you can call the function this way:
      * <code>
-     *     // specify fx and fy and let the function compute the destination image size.
-     *     resize(src, dst, Size(), 0.5, 0.5, interpolation);
+     * // specify fx and fy and let the function compute the destination image size.
+     * resize(src, dst, Size(), 0.5, 0.5, interpolation);
      * </code> To shrink an image, it will generally look best with #INTER_AREA interpolation, whereas to enlarge an
      * image, it will generally look best with #INTER_CUBIC (slow) or #INTER_LINEAR (faster but still looks OK).
      *
@@ -4191,7 +3623,7 @@ public class Imgproc {
      *              Size(round(fx*src.cols), round(fy*src.rows))}\) Either dsize or both fx and fy must be non-zero.
      * @param fx    scale factor along the horizontal axis; when it equals 0, it is computed as
      *              \(\texttt{(double)dsize.width/src.cols}\) \(\texttt{(double)dsize.height/src.rows}\)
-     *
+     *              <p>
      *              SEE: warpAffine, warpPerspective, remap
      */
     public static void resize(Mat src, Mat dst, Size dsize, double fx) {
@@ -4200,17 +3632,17 @@ public class Imgproc {
 
     /**
      * Resizes an image.
-     *
+     * <p>
      * The function resize resizes the image src down to or up to the specified size. Note that the initial dst type or
      * size are not taken into account. Instead, the size and type are derived from the
      * {@code src},{@code dsize},{@code fx}, and {@code fy}. If you want to resize src so that it fits the pre-created
      * dst, you may call the function as follows: <code>
-     *     // explicitly specify dsize=dst.size(); fx and fy will be computed from that.
-     *     resize(src, dst, dst.size(), 0, 0, interpolation);
+     * // explicitly specify dsize=dst.size(); fx and fy will be computed from that.
+     * resize(src, dst, dst.size(), 0, 0, interpolation);
      * </code> If you want to decimate the image by factor of 2 in each direction, you can call the function this way:
      * <code>
-     *     // specify fx and fy and let the function compute the destination image size.
-     *     resize(src, dst, Size(), 0.5, 0.5, interpolation);
+     * // specify fx and fy and let the function compute the destination image size.
+     * resize(src, dst, Size(), 0.5, 0.5, interpolation);
      * </code> To shrink an image, it will generally look best with #INTER_AREA interpolation, whereas to enlarge an
      * image, it will generally look best with #INTER_CUBIC (slow) or #INTER_LINEAR (faster but still looks OK).
      *
@@ -4220,26 +3652,21 @@ public class Imgproc {
      * @param dsize output image size; if it equals zero ({@code None} in Python), it is computed as: \(\texttt{dsize =
      *              Size(round(fx*src.cols), round(fy*src.rows))}\) Either dsize or both fx and fy must be non-zero.
      *              \(\texttt{(double)dsize.width/src.cols}\) \(\texttt{(double)dsize.height/src.rows}\)
-     *
+     *              <p>
      *              SEE: warpAffine, warpPerspective, remap
      */
     public static void resize(Mat src, Mat dst, Size dsize) {
         resize_3(src.nativeObj, dst.nativeObj, dsize.width, dsize.height);
     }
 
-    //
-    // C++: void cv::warpAffine(Mat src, Mat& dst, Mat M, Size dsize, int flags = INTER_LINEAR, int borderMode =
-    // BORDER_CONSTANT, Scalar borderValue = Scalar())
-    //
-
     /**
      * Applies an affine transformation to an image.
-     *
+     * <p>
      * The function warpAffine transforms the source image using the specified matrix:
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \texttt{src} ( \texttt{M} _{11} x + \texttt{M} _{12} y + \texttt{M} _{13}, \texttt{M}
      * _{21} x + \texttt{M} _{22} y + \texttt{M} _{23})\)
-     *
+     * <p>
      * when the flag #WARP_INVERSE_MAP is set. Otherwise, the transformation is first inverted with
      * #invertAffineTransform and then put in the formula above instead of M. The function cannot operate in-place.
      *
@@ -4254,11 +3681,63 @@ public class Imgproc {
      *                    that the pixels in the destination image corresponding to the "outliers" in the source image
      *                    are not modified by the function.
      * @param borderValue value used in case of a constant border; by default, it is 0.
+     * @param hint        Implementation modification flags. Set #ALGO_HINT_APPROX to use FP16 precision (if available)
+     *                    for linear calculation for faster speed. See #AlgorithmHint.
+     *                    <p>
+     *                    SEE: warpPerspective, resize, remap, getRectSubPix, transform
+     */
+    public static void warpAffine(
+            Mat src,
+            Mat dst,
+            Mat M,
+            Size dsize,
+            int flags,
+            int borderMode,
+            Scalar borderValue,
+            int hint) {
+        warpAffine_0(
+                src.nativeObj,
+                dst.nativeObj,
+                M.nativeObj,
+                dsize.width,
+                dsize.height,
+                flags,
+                borderMode,
+                borderValue.val[0],
+                borderValue.val[1],
+                borderValue.val[2],
+                borderValue.val[3],
+                hint);
+    }
+
+    /**
+     * Applies an affine transformation to an image.
+     * <p>
+     * The function warpAffine transforms the source image using the specified matrix:
+     * <p>
+     * \(\texttt{dst} (x,y) = \texttt{src} ( \texttt{M} _{11} x + \texttt{M} _{12} y + \texttt{M} _{13}, \texttt{M}
+     * _{21} x + \texttt{M} _{22} y + \texttt{M} _{23})\)
+     * <p>
+     * when the flag #WARP_INVERSE_MAP is set. Otherwise, the transformation is first inverted with
+     * #invertAffineTransform and then put in the formula above instead of M. The function cannot operate in-place.
      *
+     * @param src         input image.
+     * @param dst         output image that has the size dsize and the same type as src .
+     * @param M           \(2\times 3\) transformation matrix.
+     * @param dsize       size of the output image.
+     * @param flags       combination of interpolation methods (see #InterpolationFlags) and the optional flag
+     *                    #WARP_INVERSE_MAP that means that M is the inverse transformation (
+     *                    \(\texttt{dst}\rightarrow\texttt{src}\) ).
+     * @param borderMode  pixel extrapolation method (see #BorderTypes); when borderMode=#BORDER_TRANSPARENT, it means
+     *                    that the pixels in the destination image corresponding to the "outliers" in the source image
+     *                    are not modified by the function.
+     * @param borderValue value used in case of a constant border; by default, it is 0. for linear calculation for
+     *                    faster speed. See #AlgorithmHint.
+     *                    <p>
      *                    SEE: warpPerspective, resize, remap, getRectSubPix, transform
      */
     public static void warpAffine(Mat src, Mat dst, Mat M, Size dsize, int flags, int borderMode, Scalar borderValue) {
-        warpAffine_0(
+        warpAffine_1(
                 src.nativeObj,
                 dst.nativeObj,
                 M.nativeObj,
@@ -4272,14 +3751,19 @@ public class Imgproc {
                 borderValue.val[3]);
     }
 
+    //
+    // C++: void cv::warpAffine(Mat src, Mat& dst, Mat M, Size dsize, int flags = INTER_LINEAR, int borderMode =
+    // BORDER_CONSTANT, Scalar borderValue = Scalar(), AlgorithmHint hint = cv::ALGO_HINT_DEFAULT)
+    //
+
     /**
      * Applies an affine transformation to an image.
-     *
+     * <p>
      * The function warpAffine transforms the source image using the specified matrix:
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \texttt{src} ( \texttt{M} _{11} x + \texttt{M} _{12} y + \texttt{M} _{13}, \texttt{M}
      * _{21} x + \texttt{M} _{22} y + \texttt{M} _{23})\)
-     *
+     * <p>
      * when the flag #WARP_INVERSE_MAP is set. Otherwise, the transformation is first inverted with
      * #invertAffineTransform and then put in the formula above instead of M. The function cannot operate in-place.
      *
@@ -4292,22 +3776,22 @@ public class Imgproc {
      *                   \(\texttt{dst}\rightarrow\texttt{src}\) ).
      * @param borderMode pixel extrapolation method (see #BorderTypes); when borderMode=#BORDER_TRANSPARENT, it means
      *                   that the pixels in the destination image corresponding to the "outliers" in the source image
-     *                   are not modified by the function.
-     *
+     *                   are not modified by the function. for linear calculation for faster speed. See #AlgorithmHint.
+     *                   <p>
      *                   SEE: warpPerspective, resize, remap, getRectSubPix, transform
      */
     public static void warpAffine(Mat src, Mat dst, Mat M, Size dsize, int flags, int borderMode) {
-        warpAffine_1(src.nativeObj, dst.nativeObj, M.nativeObj, dsize.width, dsize.height, flags, borderMode);
+        warpAffine_2(src.nativeObj, dst.nativeObj, M.nativeObj, dsize.width, dsize.height, flags, borderMode);
     }
 
     /**
      * Applies an affine transformation to an image.
-     *
+     * <p>
      * The function warpAffine transforms the source image using the specified matrix:
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \texttt{src} ( \texttt{M} _{11} x + \texttt{M} _{12} y + \texttt{M} _{13}, \texttt{M}
      * _{21} x + \texttt{M} _{22} y + \texttt{M} _{23})\)
-     *
+     * <p>
      * when the flag #WARP_INVERSE_MAP is set. Otherwise, the transformation is first inverted with
      * #invertAffineTransform and then put in the formula above instead of M. The function cannot operate in-place.
      *
@@ -4319,22 +3803,22 @@ public class Imgproc {
      *              #WARP_INVERSE_MAP that means that M is the inverse transformation (
      *              \(\texttt{dst}\rightarrow\texttt{src}\) ). borderMode=#BORDER_TRANSPARENT, it means that the pixels
      *              in the destination image corresponding to the "outliers" in the source image are not modified by the
-     *              function.
-     *
+     *              function. for linear calculation for faster speed. See #AlgorithmHint.
+     *              <p>
      *              SEE: warpPerspective, resize, remap, getRectSubPix, transform
      */
     public static void warpAffine(Mat src, Mat dst, Mat M, Size dsize, int flags) {
-        warpAffine_2(src.nativeObj, dst.nativeObj, M.nativeObj, dsize.width, dsize.height, flags);
+        warpAffine_3(src.nativeObj, dst.nativeObj, M.nativeObj, dsize.width, dsize.height, flags);
     }
 
     /**
      * Applies an affine transformation to an image.
-     *
+     * <p>
      * The function warpAffine transforms the source image using the specified matrix:
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \texttt{src} ( \texttt{M} _{11} x + \texttt{M} _{12} y + \texttt{M} _{13}, \texttt{M}
      * _{21} x + \texttt{M} _{22} y + \texttt{M} _{23})\)
-     *
+     * <p>
      * when the flag #WARP_INVERSE_MAP is set. Otherwise, the transformation is first inverted with
      * #invertAffineTransform and then put in the formula above instead of M. The function cannot operate in-place.
      *
@@ -4344,27 +3828,22 @@ public class Imgproc {
      * @param dsize size of the output image. flag #WARP_INVERSE_MAP that means that M is the inverse transformation (
      *              \(\texttt{dst}\rightarrow\texttt{src}\) ). borderMode=#BORDER_TRANSPARENT, it means that the pixels
      *              in the destination image corresponding to the "outliers" in the source image are not modified by the
-     *              function.
-     *
+     *              function. for linear calculation for faster speed. See #AlgorithmHint.
+     *              <p>
      *              SEE: warpPerspective, resize, remap, getRectSubPix, transform
      */
     public static void warpAffine(Mat src, Mat dst, Mat M, Size dsize) {
-        warpAffine_3(src.nativeObj, dst.nativeObj, M.nativeObj, dsize.width, dsize.height);
+        warpAffine_4(src.nativeObj, dst.nativeObj, M.nativeObj, dsize.width, dsize.height);
     }
-
-    //
-    // C++: void cv::warpPerspective(Mat src, Mat& dst, Mat M, Size dsize, int flags = INTER_LINEAR, int borderMode =
-    // BORDER_CONSTANT, Scalar borderValue = Scalar())
-    //
 
     /**
      * Applies a perspective transformation to an image.
-     *
+     * <p>
      * The function warpPerspective transforms the source image using the specified matrix:
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \texttt{src} \left ( \frac{M_{11} x + M_{12} y + M_{13}}{M_{31} x + M_{32} y + M_{33}} ,
      * \frac{M_{21} x + M_{22} y + M_{23}}{M_{31} x + M_{32} y + M_{33}} \right )\)
-     *
+     * <p>
      * when the flag #WARP_INVERSE_MAP is set. Otherwise, the transformation is first inverted with invert and then put
      * in the formula above instead of M. The function cannot operate in-place.
      *
@@ -4377,7 +3856,57 @@ public class Imgproc {
      *                    \(\texttt{dst}\rightarrow\texttt{src}\) ).
      * @param borderMode  pixel extrapolation method (#BORDER_CONSTANT or #BORDER_REPLICATE).
      * @param borderValue value used in case of a constant border; by default, it equals 0.
+     * @param hint        Implementation modification flags. Set #ALGO_HINT_APPROX to use FP16 precision (if available)
+     *                    for linear calculation for faster speed. See #AlgorithmHint.
+     *                    <p>
+     *                    SEE: warpAffine, resize, remap, getRectSubPix, perspectiveTransform
+     */
+    public static void warpPerspective(
+            Mat src,
+            Mat dst,
+            Mat M,
+            Size dsize,
+            int flags,
+            int borderMode,
+            Scalar borderValue,
+            int hint) {
+        warpPerspective_0(
+                src.nativeObj,
+                dst.nativeObj,
+                M.nativeObj,
+                dsize.width,
+                dsize.height,
+                flags,
+                borderMode,
+                borderValue.val[0],
+                borderValue.val[1],
+                borderValue.val[2],
+                borderValue.val[3],
+                hint);
+    }
+
+    /**
+     * Applies a perspective transformation to an image.
+     * <p>
+     * The function warpPerspective transforms the source image using the specified matrix:
+     * <p>
+     * \(\texttt{dst} (x,y) = \texttt{src} \left ( \frac{M_{11} x + M_{12} y + M_{13}}{M_{31} x + M_{32} y + M_{33}} ,
+     * \frac{M_{21} x + M_{22} y + M_{23}}{M_{31} x + M_{32} y + M_{33}} \right )\)
+     * <p>
+     * when the flag #WARP_INVERSE_MAP is set. Otherwise, the transformation is first inverted with invert and then put
+     * in the formula above instead of M. The function cannot operate in-place.
      *
+     * @param src         input image.
+     * @param dst         output image that has the size dsize and the same type as src .
+     * @param M           \(3\times 3\) transformation matrix.
+     * @param dsize       size of the output image.
+     * @param flags       combination of interpolation methods (#INTER_LINEAR or #INTER_NEAREST) and the optional flag
+     *                    #WARP_INVERSE_MAP, that sets M as the inverse transformation (
+     *                    \(\texttt{dst}\rightarrow\texttt{src}\) ).
+     * @param borderMode  pixel extrapolation method (#BORDER_CONSTANT or #BORDER_REPLICATE).
+     * @param borderValue value used in case of a constant border; by default, it equals 0. for linear calculation for
+     *                    faster speed. See #AlgorithmHint.
+     *                    <p>
      *                    SEE: warpAffine, resize, remap, getRectSubPix, perspectiveTransform
      */
     public static void warpPerspective(
@@ -4388,7 +3917,7 @@ public class Imgproc {
             int flags,
             int borderMode,
             Scalar borderValue) {
-        warpPerspective_0(
+        warpPerspective_1(
                 src.nativeObj,
                 dst.nativeObj,
                 M.nativeObj,
@@ -4402,14 +3931,19 @@ public class Imgproc {
                 borderValue.val[3]);
     }
 
+    //
+    // C++: void cv::warpPerspective(Mat src, Mat& dst, Mat M, Size dsize, int flags = INTER_LINEAR, int borderMode =
+    // BORDER_CONSTANT, Scalar borderValue = Scalar(), AlgorithmHint hint = cv::ALGO_HINT_DEFAULT)
+    //
+
     /**
      * Applies a perspective transformation to an image.
-     *
+     * <p>
      * The function warpPerspective transforms the source image using the specified matrix:
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \texttt{src} \left ( \frac{M_{11} x + M_{12} y + M_{13}}{M_{31} x + M_{32} y + M_{33}} ,
      * \frac{M_{21} x + M_{22} y + M_{23}}{M_{31} x + M_{32} y + M_{33}} \right )\)
-     *
+     * <p>
      * when the flag #WARP_INVERSE_MAP is set. Otherwise, the transformation is first inverted with invert and then put
      * in the formula above instead of M. The function cannot operate in-place.
      *
@@ -4420,22 +3954,23 @@ public class Imgproc {
      * @param flags      combination of interpolation methods (#INTER_LINEAR or #INTER_NEAREST) and the optional flag
      *                   #WARP_INVERSE_MAP, that sets M as the inverse transformation (
      *                   \(\texttt{dst}\rightarrow\texttt{src}\) ).
-     * @param borderMode pixel extrapolation method (#BORDER_CONSTANT or #BORDER_REPLICATE).
-     *
+     * @param borderMode pixel extrapolation method (#BORDER_CONSTANT or #BORDER_REPLICATE). for linear calculation for
+     *                   faster speed. See #AlgorithmHint.
+     *                   <p>
      *                   SEE: warpAffine, resize, remap, getRectSubPix, perspectiveTransform
      */
     public static void warpPerspective(Mat src, Mat dst, Mat M, Size dsize, int flags, int borderMode) {
-        warpPerspective_1(src.nativeObj, dst.nativeObj, M.nativeObj, dsize.width, dsize.height, flags, borderMode);
+        warpPerspective_2(src.nativeObj, dst.nativeObj, M.nativeObj, dsize.width, dsize.height, flags, borderMode);
     }
 
     /**
      * Applies a perspective transformation to an image.
-     *
+     * <p>
      * The function warpPerspective transforms the source image using the specified matrix:
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \texttt{src} \left ( \frac{M_{11} x + M_{12} y + M_{13}}{M_{31} x + M_{32} y + M_{33}} ,
      * \frac{M_{21} x + M_{22} y + M_{23}}{M_{31} x + M_{32} y + M_{33}} \right )\)
-     *
+     * <p>
      * when the flag #WARP_INVERSE_MAP is set. Otherwise, the transformation is first inverted with invert and then put
      * in the formula above instead of M. The function cannot operate in-place.
      *
@@ -4445,22 +3980,23 @@ public class Imgproc {
      * @param dsize size of the output image.
      * @param flags combination of interpolation methods (#INTER_LINEAR or #INTER_NEAREST) and the optional flag
      *              #WARP_INVERSE_MAP, that sets M as the inverse transformation (
-     *              \(\texttt{dst}\rightarrow\texttt{src}\) ).
-     *
+     *              \(\texttt{dst}\rightarrow\texttt{src}\) ). for linear calculation for faster speed. See
+     *              #AlgorithmHint.
+     *              <p>
      *              SEE: warpAffine, resize, remap, getRectSubPix, perspectiveTransform
      */
     public static void warpPerspective(Mat src, Mat dst, Mat M, Size dsize, int flags) {
-        warpPerspective_2(src.nativeObj, dst.nativeObj, M.nativeObj, dsize.width, dsize.height, flags);
+        warpPerspective_3(src.nativeObj, dst.nativeObj, M.nativeObj, dsize.width, dsize.height, flags);
     }
 
     /**
      * Applies a perspective transformation to an image.
-     *
+     * <p>
      * The function warpPerspective transforms the source image using the specified matrix:
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \texttt{src} \left ( \frac{M_{11} x + M_{12} y + M_{13}}{M_{31} x + M_{32} y + M_{33}} ,
      * \frac{M_{21} x + M_{22} y + M_{23}}{M_{31} x + M_{32} y + M_{33}} \right )\)
-     *
+     * <p>
      * when the flag #WARP_INVERSE_MAP is set. Otherwise, the transformation is first inverted with invert and then put
      * in the formula above instead of M. The function cannot operate in-place.
      *
@@ -4468,37 +4004,33 @@ public class Imgproc {
      * @param dst   output image that has the size dsize and the same type as src .
      * @param M     \(3\times 3\) transformation matrix.
      * @param dsize size of the output image. optional flag #WARP_INVERSE_MAP, that sets M as the inverse transformation
-     *              ( \(\texttt{dst}\rightarrow\texttt{src}\) ).
-     *
+     *              ( \(\texttt{dst}\rightarrow\texttt{src}\) ). for linear calculation for faster speed. See
+     *              #AlgorithmHint.
+     *              <p>
      *              SEE: warpAffine, resize, remap, getRectSubPix, perspectiveTransform
      */
     public static void warpPerspective(Mat src, Mat dst, Mat M, Size dsize) {
-        warpPerspective_3(src.nativeObj, dst.nativeObj, M.nativeObj, dsize.width, dsize.height);
+        warpPerspective_4(src.nativeObj, dst.nativeObj, M.nativeObj, dsize.width, dsize.height);
     }
-
-    //
-    // C++: void cv::remap(Mat src, Mat& dst, Mat map1, Mat map2, int interpolation, int borderMode = BORDER_CONSTANT,
-    // Scalar borderValue = Scalar())
-    //
 
     /**
      * Applies a generic geometrical transformation to an image.
-     *
+     * <p>
      * The function remap transforms the source image using the specified map:
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \texttt{src} (map_x(x,y),map_y(x,y))\)
-     *
+     * <p>
      * with the WARP_RELATIVE_MAP flag :
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \texttt{src} (x+map_x(x,y),y+map_y(x,y))\)
-     *
+     * <p>
      * where values of pixels with non-integer coordinates are computed using one of available interpolation methods.
      * \(map_x\) and \(map_y\) can be encoded as separate floating-point maps in \(map_1\) and \(map_2\) respectively,
      * or interleaved floating-point maps of \((x,y)\) in \(map_1\), or fixed-point maps created by using #convertMaps.
      * The reason you might want to convert from floating to fixed-point representations of a map is that they can yield
      * much faster (\~2x) remapping operations. In the converted case, \(map_1\) contains pairs (cvFloor(x), cvFloor(y))
      * and \(map_2\) contains indices in a table of interpolation coefficients.
-     *
+     * <p>
      * This function cannot operate in-place.
      *
      * @param src           Source image.
@@ -4515,9 +4047,11 @@ public class Imgproc {
      * @param borderMode    Pixel extrapolation method (see #BorderTypes). When borderMode=#BORDER_TRANSPARENT, it means
      *                      that the pixels in the destination image that corresponds to the "outliers" in the source
      *                      image are not modified by the function.
-     * @param borderValue   Value used in case of a constant border. By default, it is 0. <b>Note:</b> Due to current
-     *                      implementation limitations the size of an input and output images should be less than
-     *                      32767x32767.
+     * @param borderValue   Value used in case of a constant border. By default, it is 0.
+     * @param hint          Implementation modification flags. Set #ALGO_HINT_APPROX to use FP16 precision (if
+     *                      available) for linear calculation for faster speed. See #AlgorithmHint. <b>Note:</b> Due to
+     *                      current implementation limitations the size of an input and output images should be less
+     *                      than 32767x32767.
      */
     public static void remap(
             Mat src,
@@ -4526,7 +4060,8 @@ public class Imgproc {
             Mat map2,
             int interpolation,
             int borderMode,
-            Scalar borderValue) {
+            Scalar borderValue,
+            int hint) {
         remap_0(
                 src.nativeObj,
                 dst.nativeObj,
@@ -4537,27 +4072,28 @@ public class Imgproc {
                 borderValue.val[0],
                 borderValue.val[1],
                 borderValue.val[2],
-                borderValue.val[3]);
+                borderValue.val[3],
+                hint);
     }
 
     /**
      * Applies a generic geometrical transformation to an image.
-     *
+     * <p>
      * The function remap transforms the source image using the specified map:
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \texttt{src} (map_x(x,y),map_y(x,y))\)
-     *
+     * <p>
      * with the WARP_RELATIVE_MAP flag :
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \texttt{src} (x+map_x(x,y),y+map_y(x,y))\)
-     *
+     * <p>
      * where values of pixels with non-integer coordinates are computed using one of available interpolation methods.
      * \(map_x\) and \(map_y\) can be encoded as separate floating-point maps in \(map_1\) and \(map_2\) respectively,
      * or interleaved floating-point maps of \((x,y)\) in \(map_1\), or fixed-point maps created by using #convertMaps.
      * The reason you might want to convert from floating to fixed-point representations of a map is that they can yield
      * much faster (\~2x) remapping operations. In the converted case, \(map_1\) contains pairs (cvFloor(x), cvFloor(y))
      * and \(map_2\) contains indices in a table of interpolation coefficients.
-     *
+     * <p>
      * This function cannot operate in-place.
      *
      * @param src           Source image.
@@ -4573,31 +4109,96 @@ public class Imgproc {
      *                      WARP_RELATIVE_MAP)
      * @param borderMode    Pixel extrapolation method (see #BorderTypes). When borderMode=#BORDER_TRANSPARENT, it means
      *                      that the pixels in the destination image that corresponds to the "outliers" in the source
-     *                      image are not modified by the function. <b>Note:</b> Due to current implementation
-     *                      limitations the size of an input and output images should be less than 32767x32767.
+     *                      image are not modified by the function.
+     * @param borderValue   Value used in case of a constant border. By default, it is 0. for linear calculation for
+     *                      faster speed. See #AlgorithmHint. <b>Note:</b> Due to current implementation limitations the
+     *                      size of an input and output images should be less than 32767x32767.
      */
-    public static void remap(Mat src, Mat dst, Mat map1, Mat map2, int interpolation, int borderMode) {
-        remap_1(src.nativeObj, dst.nativeObj, map1.nativeObj, map2.nativeObj, interpolation, borderMode);
+    public static void remap(
+            Mat src,
+            Mat dst,
+            Mat map1,
+            Mat map2,
+            int interpolation,
+            int borderMode,
+            Scalar borderValue) {
+        remap_1(
+                src.nativeObj,
+                dst.nativeObj,
+                map1.nativeObj,
+                map2.nativeObj,
+                interpolation,
+                borderMode,
+                borderValue.val[0],
+                borderValue.val[1],
+                borderValue.val[2],
+                borderValue.val[3]);
     }
+
+    //
+    // C++: void cv::remap(Mat src, Mat& dst, Mat map1, Mat map2, int interpolation, int borderMode = BORDER_CONSTANT,
+    // Scalar borderValue = Scalar(), AlgorithmHint hint = cv::ALGO_HINT_DEFAULT)
+    //
 
     /**
      * Applies a generic geometrical transformation to an image.
-     *
+     * <p>
      * The function remap transforms the source image using the specified map:
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \texttt{src} (map_x(x,y),map_y(x,y))\)
-     *
+     * <p>
      * with the WARP_RELATIVE_MAP flag :
-     *
+     * <p>
      * \(\texttt{dst} (x,y) = \texttt{src} (x+map_x(x,y),y+map_y(x,y))\)
-     *
+     * <p>
      * where values of pixels with non-integer coordinates are computed using one of available interpolation methods.
      * \(map_x\) and \(map_y\) can be encoded as separate floating-point maps in \(map_1\) and \(map_2\) respectively,
      * or interleaved floating-point maps of \((x,y)\) in \(map_1\), or fixed-point maps created by using #convertMaps.
      * The reason you might want to convert from floating to fixed-point representations of a map is that they can yield
      * much faster (\~2x) remapping operations. In the converted case, \(map_1\) contains pairs (cvFloor(x), cvFloor(y))
      * and \(map_2\) contains indices in a table of interpolation coefficients.
+     * <p>
+     * This function cannot operate in-place.
      *
+     * @param src           Source image.
+     * @param dst           Destination image. It has the same size as map1 and the same type as src .
+     * @param map1          The first map of either (x,y) points or just x values having the type CV_16SC2 , CV_32FC1,
+     *                      or CV_32FC2. See #convertMaps for details on converting a floating point representation to
+     *                      fixed-point for speed.
+     * @param map2          The second map of y values having the type CV_16UC1, CV_32FC1, or none (empty map if map1 is
+     *                      (x,y) points), respectively.
+     * @param interpolation Interpolation method (see #InterpolationFlags). The methods #INTER_AREA #INTER_LINEAR_EXACT
+     *                      and #INTER_NEAREST_EXACT are not supported by this function. The extra flag
+     *                      WARP_RELATIVE_MAP can be ORed to the interpolation method (e.g. INTER_LINEAR |
+     *                      WARP_RELATIVE_MAP)
+     * @param borderMode    Pixel extrapolation method (see #BorderTypes). When borderMode=#BORDER_TRANSPARENT, it means
+     *                      that the pixels in the destination image that corresponds to the "outliers" in the source
+     *                      image are not modified by the function. for linear calculation for faster speed. See
+     *                      #AlgorithmHint. <b>Note:</b> Due to current implementation limitations the size of an input
+     *                      and output images should be less than 32767x32767.
+     */
+    public static void remap(Mat src, Mat dst, Mat map1, Mat map2, int interpolation, int borderMode) {
+        remap_2(src.nativeObj, dst.nativeObj, map1.nativeObj, map2.nativeObj, interpolation, borderMode);
+    }
+
+    /**
+     * Applies a generic geometrical transformation to an image.
+     * <p>
+     * The function remap transforms the source image using the specified map:
+     * <p>
+     * \(\texttt{dst} (x,y) = \texttt{src} (map_x(x,y),map_y(x,y))\)
+     * <p>
+     * with the WARP_RELATIVE_MAP flag :
+     * <p>
+     * \(\texttt{dst} (x,y) = \texttt{src} (x+map_x(x,y),y+map_y(x,y))\)
+     * <p>
+     * where values of pixels with non-integer coordinates are computed using one of available interpolation methods.
+     * \(map_x\) and \(map_y\) can be encoded as separate floating-point maps in \(map_1\) and \(map_2\) respectively,
+     * or interleaved floating-point maps of \((x,y)\) in \(map_1\), or fixed-point maps created by using #convertMaps.
+     * The reason you might want to convert from floating to fixed-point representations of a map is that they can yield
+     * much faster (\~2x) remapping operations. In the converted case, \(map_1\) contains pairs (cvFloor(x), cvFloor(y))
+     * and \(map_2\) contains indices in a table of interpolation coefficients.
+     * <p>
      * This function cannot operate in-place.
      *
      * @param src           Source image.
@@ -4612,21 +4213,17 @@ public class Imgproc {
      *                      WARP_RELATIVE_MAP can be ORed to the interpolation method (e.g. INTER_LINEAR |
      *                      WARP_RELATIVE_MAP) borderMode=#BORDER_TRANSPARENT, it means that the pixels in the
      *                      destination image that corresponds to the "outliers" in the source image are not modified by
-     *                      the function. <b>Note:</b> Due to current implementation limitations the size of an input
-     *                      and output images should be less than 32767x32767.
+     *                      the function. for linear calculation for faster speed. See #AlgorithmHint. <b>Note:</b> Due
+     *                      to current implementation limitations the size of an input and output images should be less
+     *                      than 32767x32767.
      */
     public static void remap(Mat src, Mat dst, Mat map1, Mat map2, int interpolation) {
-        remap_2(src.nativeObj, dst.nativeObj, map1.nativeObj, map2.nativeObj, interpolation);
+        remap_3(src.nativeObj, dst.nativeObj, map1.nativeObj, map2.nativeObj, interpolation);
     }
-
-    //
-    // C++: void cv::convertMaps(Mat map1, Mat map2, Mat& dstmap1, Mat& dstmap2, int dstmap1type, bool nninterpolation =
-    // false)
-    //
 
     /**
      * Converts image transformation maps from one representation to another.
-     *
+     * <p>
      * The function converts a pair of maps for remap from one representation to another. The following options (
      * (map1.type(), map2.type()) \(\rightarrow\) (dstmap1.type(), dstmap2.type()) ) are supported:
      *
@@ -4654,7 +4251,7 @@ public class Imgproc {
      * @param dstmap1type     Type of the first output map that should be CV_16SC2, CV_32FC1, or CV_32FC2 .
      * @param nninterpolation Flag indicating whether the fixed-point maps are used for the nearest-neighbor or for a
      *                        more complex interpolation.
-     *
+     *                        <p>
      *                        SEE: remap, undistort, initUndistortRectifyMap
      */
     public static void convertMaps(
@@ -4675,7 +4272,7 @@ public class Imgproc {
 
     /**
      * Converts image transformation maps from one representation to another.
-     *
+     * <p>
      * The function converts a pair of maps for remap from one representation to another. The following options (
      * (map1.type(), map2.type()) \(\rightarrow\) (dstmap1.type(), dstmap2.type()) ) are supported:
      *
@@ -4702,7 +4299,7 @@ public class Imgproc {
      * @param dstmap2     The second output map.
      * @param dstmap1type Type of the first output map that should be CV_16SC2, CV_32FC1, or CV_32FC2 . nearest-neighbor
      *                    or for a more complex interpolation.
-     *
+     *                    <p>
      *                    SEE: remap, undistort, initUndistortRectifyMap
      */
     public static void convertMaps(Mat map1, Mat map2, Mat dstmap1, Mat dstmap2, int dstmap1type) {
@@ -4710,128 +4307,405 @@ public class Imgproc {
     }
 
     //
-    // C++: Mat cv::getRotationMatrix2D(Point2f center, double angle, double scale)
+    // C++: void cv::convertMaps(Mat map1, Mat map2, Mat& dstmap1, Mat& dstmap2, int dstmap1type, bool nninterpolation =
+    // false)
     //
 
     /**
-     * Calculates an affine matrix of 2D rotation.
+     * Transforms an image to compensate for lens distortion.
+     * <p>
+     * The function transforms an image to compensate radial and tangential lens distortion.
+     * <p>
+     * The function is simply a combination of #initUndistortRectifyMap (with unity R ) and #remap (with bilinear
+     * interpolation). See the former function for details of the transformation being performed.
+     * <p>
+     * Those pixels in the destination image, for which there is no correspondent pixels in the source image, are filled
+     * with zeros (black color).
+     * <p>
+     * A particular subset of the source image that will be visible in the corrected image can be regulated by
+     * newCameraMatrix. You can use #getOptimalNewCameraMatrix to compute the appropriate newCameraMatrix depending on
+     * your requirements.
+     * <p>
+     * The camera matrix and the distortion parameters can be determined using #calibrateCamera. If the resolution of
+     * images is different from the resolution used at the calibration stage, \(f_x, f_y, c_x\) and \(c_y\) need to be
+     * scaled accordingly, while the distortion coefficients remain the same.
      *
-     * The function calculates the following matrix:
-     *
-     * \(\begin{bmatrix} \alpha &amp; \beta &amp; (1- \alpha ) \cdot \texttt{center.x} - \beta \cdot \texttt{center.y}
-     * \\ - \beta &amp; \alpha &amp; \beta \cdot \texttt{center.x} + (1- \alpha ) \cdot \texttt{center.y}
-     * \end{bmatrix}\)
-     *
-     * where
-     *
-     * \(\begin{array}{l} \alpha = \texttt{scale} \cdot \cos \texttt{angle} , \\ \beta = \texttt{scale} \cdot \sin
-     * \texttt{angle} \end{array}\)
-     *
-     * The transformation maps the rotation center to itself. If this is not the target, adjust the shift.
-     *
-     * @param center Center of the rotation in the source image.
-     * @param angle  Rotation angle in degrees. Positive values mean counter-clockwise rotation (the coordinate origin
-     *               is assumed to be the top-left corner).
-     * @param scale  Isotropic scale factor.
-     *
-     *               SEE: getAffineTransform, warpAffine, transform
-     * @return automatically generated
+     * @param src             Input (distorted) image.
+     * @param dst             Output (corrected) image that has the same size and type as src .
+     * @param cameraMatrix    Input camera matrix \(A = \vecthreethree{f_x}{0}{c_x}{0}{f_y}{c_y}{0}{0}{1}\) .
+     * @param distCoeffs      Input vector of distortion coefficients \((k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6[, s_1,
+     *                        s_2, s_3, s_4[, \tau_x, \tau_y]]]])\) of 4, 5, 8, 12 or 14 elements. If the vector is
+     *                        NULL/empty, the zero distortion coefficients are assumed.
+     * @param newCameraMatrix Camera matrix of the distorted image. By default, it is the same as cameraMatrix but you
+     *                        may additionally scale and shift the result by using a different matrix.
      */
-    public static Mat getRotationMatrix2D(Point center, double angle, double scale) {
-        return new Mat(getRotationMatrix2D_0(center.x, center.y, angle, scale));
-    }
-
-    //
-    // C++: void cv::invertAffineTransform(Mat M, Mat& iM)
-    //
-
-    /**
-     * Inverts an affine transformation.
-     *
-     * The function computes an inverse affine transformation represented by \(2 \times 3\) matrix M:
-     *
-     * \(\begin{bmatrix} a_{11} &amp; a_{12} &amp; b_1 \\ a_{21} &amp; a_{22} &amp; b_2 \end{bmatrix}\)
-     *
-     * The result is also a \(2 \times 3\) matrix of the same type as M.
-     *
-     * @param M  Original affine transformation.
-     * @param iM Output reverse affine transformation.
-     */
-    public static void invertAffineTransform(Mat M, Mat iM) {
-        invertAffineTransform_0(M.nativeObj, iM.nativeObj);
-    }
-
-    //
-    // C++: Mat cv::getPerspectiveTransform(Mat src, Mat dst, int solveMethod = DECOMP_LU)
-    //
-
-    /**
-     * Calculates a perspective transform from four pairs of the corresponding points.
-     *
-     * The function calculates the \(3 \times 3\) matrix of a perspective transform so that:
-     *
-     * \(\begin{bmatrix} t_i x'_i \\ t_i y'_i \\ t_i \end{bmatrix} = \texttt{map_matrix} \cdot \begin{bmatrix} x_i \\
-     * y_i \\ 1 \end{bmatrix}\)
-     *
-     * where
-     *
-     * \(dst(i)=(x'_i,y'_i), src(i)=(x_i, y_i), i=0,1,2,3\)
-     *
-     * @param src         Coordinates of quadrangle vertices in the source image.
-     * @param dst         Coordinates of the corresponding quadrangle vertices in the destination image.
-     * @param solveMethod method passed to cv::solve (#DecompTypes)
-     *
-     *                    SEE: findHomography, warpPerspective, perspectiveTransform
-     * @return automatically generated
-     */
-    public static Mat getPerspectiveTransform(Mat src, Mat dst, int solveMethod) {
-        return new Mat(getPerspectiveTransform_0(src.nativeObj, dst.nativeObj, solveMethod));
+    public static void undistort(Mat src, Mat dst, Mat cameraMatrix, Mat distCoeffs, Mat newCameraMatrix) {
+        undistort_0(
+                src.nativeObj,
+                dst.nativeObj,
+                cameraMatrix.nativeObj,
+                distCoeffs.nativeObj,
+                newCameraMatrix.nativeObj);
     }
 
     /**
-     * Calculates a perspective transform from four pairs of the corresponding points.
+     * Transforms an image to compensate for lens distortion.
+     * <p>
+     * The function transforms an image to compensate radial and tangential lens distortion.
+     * <p>
+     * The function is simply a combination of #initUndistortRectifyMap (with unity R ) and #remap (with bilinear
+     * interpolation). See the former function for details of the transformation being performed.
+     * <p>
+     * Those pixels in the destination image, for which there is no correspondent pixels in the source image, are filled
+     * with zeros (black color).
+     * <p>
+     * A particular subset of the source image that will be visible in the corrected image can be regulated by
+     * newCameraMatrix. You can use #getOptimalNewCameraMatrix to compute the appropriate newCameraMatrix depending on
+     * your requirements.
+     * <p>
+     * The camera matrix and the distortion parameters can be determined using #calibrateCamera. If the resolution of
+     * images is different from the resolution used at the calibration stage, \(f_x, f_y, c_x\) and \(c_y\) need to be
+     * scaled accordingly, while the distortion coefficients remain the same.
      *
-     * The function calculates the \(3 \times 3\) matrix of a perspective transform so that:
-     *
-     * \(\begin{bmatrix} t_i x'_i \\ t_i y'_i \\ t_i \end{bmatrix} = \texttt{map_matrix} \cdot \begin{bmatrix} x_i \\
-     * y_i \\ 1 \end{bmatrix}\)
-     *
-     * where
-     *
-     * \(dst(i)=(x'_i,y'_i), src(i)=(x_i, y_i), i=0,1,2,3\)
-     *
-     * @param src Coordinates of quadrangle vertices in the source image.
-     * @param dst Coordinates of the corresponding quadrangle vertices in the destination image.
-     *
-     *            SEE: findHomography, warpPerspective, perspectiveTransform
-     * @return automatically generated
+     * @param src          Input (distorted) image.
+     * @param dst          Output (corrected) image that has the same size and type as src .
+     * @param cameraMatrix Input camera matrix \(A = \vecthreethree{f_x}{0}{c_x}{0}{f_y}{c_y}{0}{0}{1}\) .
+     * @param distCoeffs   Input vector of distortion coefficients \((k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6[, s_1,
+     *                     s_2, s_3, s_4[, \tau_x, \tau_y]]]])\) of 4, 5, 8, 12 or 14 elements. If the vector is
+     *                     NULL/empty, the zero distortion coefficients are assumed. cameraMatrix but you may
+     *                     additionally scale and shift the result by using a different matrix.
      */
-    public static Mat getPerspectiveTransform(Mat src, Mat dst) {
-        return new Mat(getPerspectiveTransform_1(src.nativeObj, dst.nativeObj));
+    public static void undistort(Mat src, Mat dst, Mat cameraMatrix, Mat distCoeffs) {
+        undistort_1(src.nativeObj, dst.nativeObj, cameraMatrix.nativeObj, distCoeffs.nativeObj);
     }
 
     //
-    // C++: Mat cv::getAffineTransform(vector_Point2f src, vector_Point2f dst)
+    // C++: void cv::undistort(Mat src, Mat& dst, Mat cameraMatrix, Mat distCoeffs, Mat newCameraMatrix = Mat())
     //
 
-    public static Mat getAffineTransform(MatOfPoint2f src, MatOfPoint2f dst) {
-        Mat src_mat = src;
-        Mat dst_mat = dst;
-        return new Mat(getAffineTransform_0(src_mat.nativeObj, dst_mat.nativeObj));
+    /**
+     * Computes the undistortion and rectification transformation map.
+     * <p>
+     * The function computes the joint undistortion and rectification transformation and represents the result in the
+     * form of maps for #remap. The undistorted image looks like original, as if it is captured with a camera using the
+     * camera matrix =newCameraMatrix and zero distortion. In case of a monocular camera, newCameraMatrix is usually
+     * equal to cameraMatrix, or it can be computed by #getOptimalNewCameraMatrix for a better control over scaling. In
+     * case of a stereo camera, newCameraMatrix is normally set to P1 or P2 computed by #stereoRectify .
+     * <p>
+     * Also, this new camera is oriented differently in the coordinate space, according to R. That, for example, helps
+     * to align two heads of a stereo camera so that the epipolar lines on both images become horizontal and have the
+     * same y- coordinate (in case of a horizontally aligned stereo camera).
+     * <p>
+     * The function actually builds the maps for the inverse mapping algorithm that is used by #remap. That is, for each
+     * pixel \((u, v)\) in the destination (corrected and rectified) image, the function computes the corresponding
+     * coordinates in the source image (that is, in the original image from camera). The following process is applied:
+     * \( \begin{array}{l} x \leftarrow (u - {c'}_x)/{f'}_x \\ y \leftarrow (v - {c'}_y)/{f'}_y \\ {[X\,Y\,W]} ^T
+     * \leftarrow R^{-1}*[x \, y \, 1]^T \\ x' \leftarrow X/W \\ y' \leftarrow Y/W \\ r^2 \leftarrow x'^2 + y'^2 \\ x''
+     * \leftarrow x' \frac{1 + k_1 r^2 + k_2 r^4 + k_3 r^6}{1 + k_4 r^2 + k_5 r^4 + k_6 r^6} + 2p_1 x' y' + p_2(r^2 + 2
+     * x'^2) + s_1 r^2 + s_2 r^4\\ y'' \leftarrow y' \frac{1 + k_1 r^2 + k_2 r^4 + k_3 r^6}{1 + k_4 r^2 + k_5 r^4 + k_6
+     * r^6} + p_1 (r^2 + 2 y'^2) + 2 p_2 x' y' + s_3 r^2 + s_4 r^4 \\ s\vecthree{x'''}{y'''}{1} =
+     * \vecthreethree{R_{33}(\tau_x, \tau_y)}{0}{-R_{13}((\tau_x, \tau_y)} {0}{R_{33}(\tau_x, \tau_y)}{-R_{23}(\tau_x,
+     * \tau_y)} {0}{0}{1} R(\tau_x, \tau_y) \vecthree{x''}{y''}{1}\\ map_x(u,v) \leftarrow x''' f_x + c_x \\ map_y(u,v)
+     * \leftarrow y''' f_y + c_y \end{array} \) where \((k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6[, s_1, s_2, s_3, s_4[,
+     * \tau_x, \tau_y]]]])\) are the distortion coefficients.
+     * <p>
+     * In case of a stereo camera, this function is called twice: once for each camera head, after #stereoRectify, which
+     * in its turn is called after #stereoCalibrate. But if the stereo camera was not calibrated, it is still possible
+     * to compute the rectification transformations directly from the fundamental matrix using
+     * #stereoRectifyUncalibrated. For each camera, the function computes homography H as the rectification
+     * transformation in a pixel domain, not a rotation matrix R in 3D space. R can be computed from H as \(\texttt{R} =
+     * \texttt{cameraMatrix} ^{-1} \cdot \texttt{H} \cdot \texttt{cameraMatrix}\) where cameraMatrix can be chosen
+     * arbitrarily.
+     *
+     * @param cameraMatrix    Input camera matrix \(A=\vecthreethree{f_x}{0}{c_x}{0}{f_y}{c_y}{0}{0}{1}\) .
+     * @param distCoeffs      Input vector of distortion coefficients \((k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6[, s_1,
+     *                        s_2, s_3, s_4[, \tau_x, \tau_y]]]])\) of 4, 5, 8, 12 or 14 elements. If the vector is
+     *                        NULL/empty, the zero distortion coefficients are assumed.
+     * @param R               Optional rectification transformation in the object space (3x3 matrix). R1 or R2 ,
+     *                        computed by #stereoRectify can be passed here. If the matrix is empty, the identity
+     *                        transformation is assumed. In #initUndistortRectifyMap R assumed to be an identity matrix.
+     * @param newCameraMatrix New camera matrix \(A'=\vecthreethree{f_x'}{0}{c_x'}{0}{f_y'}{c_y'}{0}{0}{1}\).
+     * @param size            Undistorted image size.
+     * @param m1type          Type of the first output map that can be CV_32FC1, CV_32FC2 or CV_16SC2, see #convertMaps
+     * @param map1            The first output map.
+     * @param map2            The second output map.
+     */
+    public static void initUndistortRectifyMap(
+            Mat cameraMatrix,
+            Mat distCoeffs,
+            Mat R,
+            Mat newCameraMatrix,
+            Size size,
+            int m1type,
+            Mat map1,
+            Mat map2) {
+        initUndistortRectifyMap_0(
+                cameraMatrix.nativeObj,
+                distCoeffs.nativeObj,
+                R.nativeObj,
+                newCameraMatrix.nativeObj,
+                size.width,
+                size.height,
+                m1type,
+                map1.nativeObj,
+                map2.nativeObj);
+    }
+
+    /**
+     * Computes the projection and inverse-rectification transformation map. In essense, this is the inverse of
+     * #initUndistortRectifyMap to accomodate stereo-rectification of projectors ('inverse-cameras') in projector-camera
+     * pairs.
+     * <p>
+     * The function computes the joint projection and inverse rectification transformation and represents the result in
+     * the form of maps for #remap. The projected image looks like a distorted version of the original which, once
+     * projected by a projector, should visually match the original. In case of a monocular camera, newCameraMatrix is
+     * usually equal to cameraMatrix, or it can be computed by #getOptimalNewCameraMatrix for a better control over
+     * scaling. In case of a projector-camera pair, newCameraMatrix is normally set to P1 or P2 computed by
+     * #stereoRectify .
+     * <p>
+     * The projector is oriented differently in the coordinate space, according to R. In case of projector-camera pairs,
+     * this helps align the projector (in the same manner as #initUndistortRectifyMap for the camera) to create a
+     * stereo-rectified pair. This allows epipolar lines on both images to become horizontal and have the same
+     * y-coordinate (in case of a horizontally aligned projector-camera pair).
+     * <p>
+     * The function builds the maps for the inverse mapping algorithm that is used by #remap. That is, for each pixel
+     * \((u, v)\) in the destination (projected and inverse-rectified) image, the function computes the corresponding
+     * coordinates in the source image (that is, in the original digital image). The following process is applied:
+     * <p>
+     * \( \begin{array}{l} \text{newCameraMatrix}\\ x \leftarrow (u - {c'}_x)/{f'}_x \\ y \leftarrow (v - {c'}_y)/{f'}_y
+     * \\
+     * <p>
+     * \\\text{Undistortion} \\\scriptsize{\textit{though equation shown is for radial undistortion, function implements
+     * cv::undistortPoints()}}\\ r^2 \leftarrow x^2 + y^2 \\ \theta \leftarrow \frac{1 + k_1 r^2 + k_2 r^4 + k_3 r^6}{1
+     * + k_4 r^2 + k_5 r^4 + k_6 r^6}\\ x' \leftarrow \frac{x}{\theta} \\ y' \leftarrow \frac{y}{\theta} \\
+     * <p>
+     * \\\text{Rectification}\\ {[X\,Y\,W]} ^T \leftarrow R*[x' \, y' \, 1]^T \\ x'' \leftarrow X/W \\ y'' \leftarrow
+     * Y/W \\
+     * <p>
+     * \\\text{cameraMatrix}\\ map_x(u,v) \leftarrow x'' f_x + c_x \\ map_y(u,v) \leftarrow y'' f_y + c_y \end{array} \)
+     * where \((k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6[, s_1, s_2, s_3, s_4[, \tau_x, \tau_y]]]])\) are the distortion
+     * coefficients vector distCoeffs.
+     * <p>
+     * In case of a stereo-rectified projector-camera pair, this function is called for the projector while
+     * #initUndistortRectifyMap is called for the camera head. This is done after #stereoRectify, which in turn is
+     * called after #stereoCalibrate. If the projector-camera pair is not calibrated, it is still possible to compute
+     * the rectification transformations directly from the fundamental matrix using #stereoRectifyUncalibrated. For the
+     * projector and camera, the function computes homography H as the rectification transformation in a pixel domain,
+     * not a rotation matrix R in 3D space. R can be computed from H as \(\texttt{R} = \texttt{cameraMatrix} ^{-1} \cdot
+     * \texttt{H} \cdot \texttt{cameraMatrix}\) where cameraMatrix can be chosen arbitrarily.
+     *
+     * @param cameraMatrix    Input camera matrix \(A=\vecthreethree{f_x}{0}{c_x}{0}{f_y}{c_y}{0}{0}{1}\) .
+     * @param distCoeffs      Input vector of distortion coefficients \((k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6[, s_1,
+     *                        s_2, s_3, s_4[, \tau_x, \tau_y]]]])\) of 4, 5, 8, 12 or 14 elements. If the vector is
+     *                        NULL/empty, the zero distortion coefficients are assumed.
+     * @param R               Optional rectification transformation in the object space (3x3 matrix). R1 or R2, computed
+     *                        by #stereoRectify can be passed here. If the matrix is empty, the identity transformation
+     *                        is assumed.
+     * @param newCameraMatrix New camera matrix \(A'=\vecthreethree{f_x'}{0}{c_x'}{0}{f_y'}{c_y'}{0}{0}{1}\).
+     * @param size            Distorted image size.
+     * @param m1type          Type of the first output map. Can be CV_32FC1, CV_32FC2 or CV_16SC2, see #convertMaps
+     * @param map1            The first output map for #remap.
+     * @param map2            The second output map for #remap.
+     */
+    public static void initInverseRectificationMap(
+            Mat cameraMatrix,
+            Mat distCoeffs,
+            Mat R,
+            Mat newCameraMatrix,
+            Size size,
+            int m1type,
+            Mat map1,
+            Mat map2) {
+        initInverseRectificationMap_0(
+                cameraMatrix.nativeObj,
+                distCoeffs.nativeObj,
+                R.nativeObj,
+                newCameraMatrix.nativeObj,
+                size.width,
+                size.height,
+                m1type,
+                map1.nativeObj,
+                map2.nativeObj);
     }
 
     //
-    // C++: void cv::getRectSubPix(Mat image, Size patchSize, Point2f center, Mat& patch, int patchType = -1)
+    // C++: void cv::initUndistortRectifyMap(Mat cameraMatrix, Mat distCoeffs, Mat R, Mat newCameraMatrix, Size size,
+    // int m1type, Mat& map1, Mat& map2)
     //
+
+    /**
+     * Computes undistortion and rectification maps for image transform by cv::remap(). If D is empty zero distortion is
+     * used, if R or P is empty identity matrixes are used.
+     *
+     * @param K      Camera intrinsic matrix \(cameramatrix{K}\).
+     * @param D      Input vector of distortion coefficients \(\distcoeffsfisheye\).
+     * @param R      Rectification transformation in the object space: 3x3 1-channel, or vector: 3x1/1x3 1-channel or
+     *               1x1 3-channel
+     * @param P      New camera intrinsic matrix (3x3) or new projection matrix (3x4)
+     * @param size   Undistorted image size.
+     * @param m1type Type of the first output map that can be CV_32FC1 or CV_16SC2 . See convertMaps() for details.
+     * @param map1   The first output map.
+     * @param map2   The second output map.
+     */
+    public static void fisheye_initUndistortRectifyMap(
+            Mat K,
+            Mat D,
+            Mat R,
+            Mat P,
+            Size size,
+            int m1type,
+            Mat map1,
+            Mat map2) {
+        fisheye_initUndistortRectifyMap_0(
+                K.nativeObj,
+                D.nativeObj,
+                R.nativeObj,
+                P.nativeObj,
+                size.width,
+                size.height,
+                m1type,
+                map1.nativeObj,
+                map2.nativeObj);
+    }
+
+    //
+    // C++: void cv::initInverseRectificationMap(Mat cameraMatrix, Mat distCoeffs, Mat R, Mat newCameraMatrix, Size
+    // size, int m1type, Mat& map1, Mat& map2)
+    //
+
+    /**
+     * Transforms an image to compensate for fisheye lens distortion.
+     *
+     * @param distorted   image with fisheye lens distortion.
+     * @param undistorted Output image with compensated fisheye lens distortion.
+     * @param K           Camera intrinsic matrix \(cameramatrix{K}\).
+     * @param D           Input vector of distortion coefficients \(\distcoeffsfisheye\).
+     * @param Knew        Camera intrinsic matrix of the distorted image. By default, it is the identity matrix but you
+     *                    may additionally scale and shift the result by using a different matrix.
+     * @param new_size    the new size
+     *                    <p>
+     *                    The function transforms an image to compensate radial and tangential lens distortion.
+     *                    <p>
+     *                    The function is simply a combination of #cv::fisheye::initUndistortRectifyMap (with unity R )
+     *                    and remap (with bilinear interpolation). See the former function for details of the
+     *                    transformation being performed.
+     *                    <p>
+     *                    See below the results of undistortImage.
+     *                    <ul>
+     *                    <li>a\) result of undistort of perspective camera model (all possible coefficients (k_1, k_2,
+     *                    k_3, k_4, k_5, k_6) of distortion were optimized under calibration)
+     *                    <ul>
+     *                    <li>b\) result of #cv::fisheye::undistortImage of fisheye camera model (all possible
+     *                    coefficients (k_1, k_2, k_3, k_4) of fisheye distortion were optimized under calibration)</li>
+     *                    <li>c\) original image was captured with fisheye lens</li>
+     *                    </ul>
+     *                    <p>
+     *                    Pictures a) and b) almost the same. But if we consider points of image located far from the
+     *                    center of image, we can notice that on image a) these points are distorted.</li>
+     *                    </ul>
+     *                    <p>
+     *                    ![image](pics/fisheye_undistorted.jpg)
+     */
+    public static void fisheye_undistortImage(Mat distorted, Mat undistorted, Mat K, Mat D, Mat Knew, Size new_size) {
+        fisheye_undistortImage_0(
+                distorted.nativeObj,
+                undistorted.nativeObj,
+                K.nativeObj,
+                D.nativeObj,
+                Knew.nativeObj,
+                new_size.width,
+                new_size.height);
+    }
+
+    //
+    // C++: void cv::fisheye::initUndistortRectifyMap(Mat K, Mat D, Mat R, Mat P, Size size, int m1type, Mat& map1, Mat&
+    // map2)
+    //
+
+    /**
+     * Transforms an image to compensate for fisheye lens distortion.
+     *
+     * @param distorted   image with fisheye lens distortion.
+     * @param undistorted Output image with compensated fisheye lens distortion.
+     * @param K           Camera intrinsic matrix \(cameramatrix{K}\).
+     * @param D           Input vector of distortion coefficients \(\distcoeffsfisheye\).
+     * @param Knew        Camera intrinsic matrix of the distorted image. By default, it is the identity matrix but you
+     *                    may additionally scale and shift the result by using a different matrix.
+     *                    <p>
+     *                    The function transforms an image to compensate radial and tangential lens distortion.
+     *                    <p>
+     *                    The function is simply a combination of #cv::fisheye::initUndistortRectifyMap (with unity R )
+     *                    and remap (with bilinear interpolation). See the former function for details of the
+     *                    transformation being performed.
+     *                    <p>
+     *                    See below the results of undistortImage.
+     *                    <ul>
+     *                    <li>a\) result of undistort of perspective camera model (all possible coefficients (k_1, k_2,
+     *                    k_3, k_4, k_5, k_6) of distortion were optimized under calibration)
+     *                    <ul>
+     *                    <li>b\) result of #cv::fisheye::undistortImage of fisheye camera model (all possible
+     *                    coefficients (k_1, k_2, k_3, k_4) of fisheye distortion were optimized under calibration)</li>
+     *                    <li>c\) original image was captured with fisheye lens</li>
+     *                    </ul>
+     *                    <p>
+     *                    Pictures a) and b) almost the same. But if we consider points of image located far from the
+     *                    center of image, we can notice that on image a) these points are distorted.</li>
+     *                    </ul>
+     *                    <p>
+     *                    ![image](pics/fisheye_undistorted.jpg)
+     */
+    public static void fisheye_undistortImage(Mat distorted, Mat undistorted, Mat K, Mat D, Mat Knew) {
+        fisheye_undistortImage_1(distorted.nativeObj, undistorted.nativeObj, K.nativeObj, D.nativeObj, Knew.nativeObj);
+    }
+
+    //
+    // C++: void cv::fisheye::undistortImage(Mat distorted, Mat& undistorted, Mat K, Mat D, Mat Knew = cv::Mat(), Size
+    // new_size = Size())
+    //
+
+    /**
+     * Transforms an image to compensate for fisheye lens distortion.
+     *
+     * @param distorted   image with fisheye lens distortion.
+     * @param undistorted Output image with compensated fisheye lens distortion.
+     * @param K           Camera intrinsic matrix \(cameramatrix{K}\).
+     * @param D           Input vector of distortion coefficients \(\distcoeffsfisheye\). may additionally scale and
+     *                    shift the result by using a different matrix.
+     *                    <p>
+     *                    The function transforms an image to compensate radial and tangential lens distortion.
+     *                    <p>
+     *                    The function is simply a combination of #cv::fisheye::initUndistortRectifyMap (with unity R )
+     *                    and remap (with bilinear interpolation). See the former function for details of the
+     *                    transformation being performed.
+     *                    <p>
+     *                    See below the results of undistortImage.
+     *                    <ul>
+     *                    <li>a\) result of undistort of perspective camera model (all possible coefficients (k_1, k_2,
+     *                    k_3, k_4, k_5, k_6) of distortion were optimized under calibration)
+     *                    <ul>
+     *                    <li>b\) result of #cv::fisheye::undistortImage of fisheye camera model (all possible
+     *                    coefficients (k_1, k_2, k_3, k_4) of fisheye distortion were optimized under calibration)</li>
+     *                    <li>c\) original image was captured with fisheye lens</li>
+     *                    </ul>
+     *                    <p>
+     *                    Pictures a) and b) almost the same. But if we consider points of image located far from the
+     *                    center of image, we can notice that on image a) these points are distorted.</li>
+     *                    </ul>
+     *                    <p>
+     *                    ![image](pics/fisheye_undistorted.jpg)
+     */
+    public static void fisheye_undistortImage(Mat distorted, Mat undistorted, Mat K, Mat D) {
+        fisheye_undistortImage_2(distorted.nativeObj, undistorted.nativeObj, K.nativeObj, D.nativeObj);
+    }
 
     /**
      * Retrieves a pixel rectangle from an image with sub-pixel accuracy.
-     *
+     * <p>
      * The function getRectSubPix extracts pixels from src:
-     *
+     * <p>
      * \(patch(x, y) = src(x + \texttt{center.x} - ( \texttt{dst.cols} -1)*0.5, y + \texttt{center.y} - (
      * \texttt{dst.rows} -1)*0.5)\)
-     *
+     * <p>
      * where the values of the pixels at non-integer coordinates are retrieved using bilinear interpolation. Every
      * channel of multi-channel images is processed independently. Also the image should be a single channel or three
      * channel image. While the center of the rectangle must be inside the image, parts of the rectangle may be outside.
@@ -4842,7 +4716,7 @@ public class Imgproc {
      *                  center must be inside the image.
      * @param patch     Extracted patch that has the size patchSize and the same number of channels as src .
      * @param patchType Depth of the extracted pixels. By default, they have the same depth as src .
-     *
+     *                  <p>
      *                  SEE: warpAffine, warpPerspective
      */
     public static void getRectSubPix(Mat image, Size patchSize, Point center, Mat patch, int patchType) {
@@ -4858,12 +4732,12 @@ public class Imgproc {
 
     /**
      * Retrieves a pixel rectangle from an image with sub-pixel accuracy.
-     *
+     * <p>
      * The function getRectSubPix extracts pixels from src:
-     *
+     * <p>
      * \(patch(x, y) = src(x + \texttt{center.x} - ( \texttt{dst.cols} -1)*0.5, y + \texttt{center.y} - (
      * \texttt{dst.rows} -1)*0.5)\)
-     *
+     * <p>
      * where the values of the pixels at non-integer coordinates are retrieved using bilinear interpolation. Every
      * channel of multi-channel images is processed independently. Also the image should be a single channel or three
      * channel image. While the center of the rectangle must be inside the image, parts of the rectangle may be outside.
@@ -4873,7 +4747,7 @@ public class Imgproc {
      * @param center    Floating point coordinates of the center of the extracted rectangle within the source image. The
      *                  center must be inside the image.
      * @param patch     Extracted patch that has the size patchSize and the same number of channels as src .
-     *
+     *                  <p>
      *                  SEE: warpAffine, warpPerspective
      */
     public static void getRectSubPix(Mat image, Size patchSize, Point center, Mat patch) {
@@ -4881,117 +4755,34 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::logPolar(Mat src, Mat& dst, Point2f center, double M, int flags)
-    //
-
-    /**
-     * Remaps an image to semilog-polar coordinates space.
-     *
-     * @deprecated This function produces same result as cv::warpPolar(src, dst, src.size(), center, maxRadius,
-     *             flags+WARP_POLAR_LOG);
-     *
-     *
-     *             Transform the source image using the following transformation (See REF: polar_remaps_reference_image
-     *             "Polar remaps reference image d)"): \(\begin{array}{l} dst( \rho , \phi ) = src(x,y) \\ dst.size()
-     *             \leftarrow src.size() \end{array}\)
-     *
-     *             where \(\begin{array}{l} I = (dx,dy) = (x - center.x,y - center.y) \\ \rho = M \cdot
-     *             log_e(\texttt{magnitude} (I)) ,\\ \phi = Kangle \cdot \texttt{angle} (I) \\ \end{array}\)
-     *
-     *             and \(\begin{array}{l} M = src.cols / log_e(maxRadius) \\ Kangle = src.rows / 2\Pi \\ \end{array}\)
-     *
-     *             The function emulates the human "foveal" vision and can be used for fast scale and rotation-invariant
-     *             template matching, for object tracking and so forth.
-     * @param src    Source image
-     * @param dst    Destination image. It will have same size and type as src.
-     * @param center The transformation center; where the output precision is maximal
-     * @param M      Magnitude scale parameter. It determines the radius of the bounding circle to transform too.
-     * @param flags  A combination of interpolation methods, see #InterpolationFlags
-     *
-     *               <b>Note:</b>
-     *               <ul>
-     *               <li>The function can not operate in-place.</li>
-     *               <li>To calculate magnitude and angle in degrees #cartToPolar is used internally thus angles are
-     *               measured from 0 to 360 with accuracy about 0.3 degrees.</li>
-     *               </ul>
-     *
-     *               SEE: cv::linearPolar
-     */
-    @Deprecated
-    public static void logPolar(Mat src, Mat dst, Point center, double M, int flags) {
-        logPolar_0(src.nativeObj, dst.nativeObj, center.x, center.y, M, flags);
-    }
-
-    //
-    // C++: void cv::linearPolar(Mat src, Mat& dst, Point2f center, double maxRadius, int flags)
-    //
-
-    /**
-     * Remaps an image to polar coordinates space.
-     *
-     * @deprecated This function produces same result as cv::warpPolar(src, dst, src.size(), center, maxRadius, flags)
-     *
-     *
-     *             Transform the source image using the following transformation (See REF: polar_remaps_reference_image
-     *             "Polar remaps reference image c)"): \(\begin{array}{l} dst( \rho , \phi ) = src(x,y) \\ dst.size()
-     *             \leftarrow src.size() \end{array}\)
-     *
-     *             where \(\begin{array}{l} I = (dx,dy) = (x - center.x,y - center.y) \\ \rho = Kmag \cdot
-     *             \texttt{magnitude} (I) ,\\ \phi = angle \cdot \texttt{angle} (I) \end{array}\)
-     *
-     *             and \(\begin{array}{l} Kx = src.cols / maxRadius \\ Ky = src.rows / 2\Pi \end{array}\)
-     *
-     *
-     * @param src       Source image
-     * @param dst       Destination image. It will have same size and type as src.
-     * @param center    The transformation center;
-     * @param maxRadius The radius of the bounding circle to transform. It determines the inverse magnitude scale
-     *                  parameter too.
-     * @param flags     A combination of interpolation methods, see #InterpolationFlags
-     *
-     *                  <b>Note:</b>
-     *                  <ul>
-     *                  <li>The function can not operate in-place.</li>
-     *                  <li>To calculate magnitude and angle in degrees #cartToPolar is used internally thus angles are
-     *                  measured from 0 to 360 with accuracy about 0.3 degrees.</li>
-     *                  </ul>
-     *
-     *                  SEE: cv::logPolar
-     */
-    @Deprecated
-    public static void linearPolar(Mat src, Mat dst, Point center, double maxRadius, int flags) {
-        linearPolar_0(src.nativeObj, dst.nativeObj, center.x, center.y, maxRadius, flags);
-    }
-
-    //
-    // C++: void cv::warpPolar(Mat src, Mat& dst, Size dsize, Point2f center, double maxRadius, int flags)
+    // C++: void cv::getRectSubPix(Mat image, Size patchSize, Point2f center, Mat& patch, int patchType = -1)
     //
 
     /**
      * Remaps an image to polar or semilog-polar coordinates space
-     *
+     * <p>
      * polar_remaps_reference_image ![Polar remaps reference](pics/polar_remap_doc.png)
-     *
+     * <p>
      * Transform the source image using the following transformation: \( dst(\rho , \phi ) = src(x,y) \)
-     *
+     * <p>
      * where \( \begin{array}{l} \vec{I} = (x - center.x, \;y - center.y) \\ \phi = Kangle \cdot \texttt{angle}
      * (\vec{I}) \\ \rho = \left\{\begin{matrix} Klin \cdot \texttt{magnitude} (\vec{I}) &amp; default \\ Klog \cdot
      * log_e(\texttt{magnitude} (\vec{I})) &amp; if \; semilog \\ \end{matrix}\right. \end{array} \)
-     *
+     * <p>
      * and \( \begin{array}{l} Kangle = dsize.height / 2\Pi \\ Klin = dsize.width / maxRadius \\ Klog = dsize.width /
      * log_e(maxRadius) \\ \end{array} \)
      *
-     *
+     * <p>
      * \par Linear vs semilog mapping
-     *
+     * <p>
      * Polar mapping can be linear or semi-log. Add one of #WarpPolarMode to {@code flags} to specify the polar mapping
      * mode.
-     *
+     * <p>
      * Linear is the default mode.
-     *
+     * <p>
      * The semilog mapping emulates the human "foveal" vision that permit very high acuity on the line of sight (central
      * vision) in contrast to peripheral vision where acuity is minor.
-     *
+     * <p>
      * \par Option on {@code dsize}:
      *
      * <ul>
@@ -5012,12 +4803,12 @@ public class Imgproc {
      * the bounding circle will be scaled to {@code dsize}.</li>
      * </ul>
      *
-     *
+     * <p>
      * \par Reverse mapping
-     *
+     * <p>
      * You can get reverse mapping adding #WARP_INVERSE_MAP to {@code flags} \snippet polar_transforms.cpp InverseMap
-     *
-     * In addiction, to calculate the original coordinate from a polar mapped coordinate \((rho, phi)-&gt;(x, y)\):
+     * <p>
+     * In addition, to calculate the original coordinate from a polar mapped coordinate \((rho, phi)-&gt;(x, y)\):
      * \snippet polar_transforms.cpp InverseCoordinate
      *
      * @param src       Source image.
@@ -5040,41 +4831,37 @@ public class Imgproc {
      *                  <li>This function uses #remap. Due to current implementation limitations the size of an input
      *                  and output images should be less than 32767x32767.</li>
      *                  </ul>
-     *
+     *                  <p>
      *                  SEE: cv::remap
      */
     public static void warpPolar(Mat src, Mat dst, Size dsize, Point center, double maxRadius, int flags) {
         warpPolar_0(src.nativeObj, dst.nativeObj, dsize.width, dsize.height, center.x, center.y, maxRadius, flags);
     }
 
-    //
-    // C++: void cv::integral(Mat src, Mat& sum, Mat& sqsum, Mat& tilted, int sdepth = -1, int sqdepth = -1)
-    //
-
     /**
      * Calculates the integral of an image.
-     *
+     * <p>
      * The function calculates one or more integral images for the source image as follows:
-     *
+     * <p>
      * \(\texttt{sum} (X,Y) = \sum _{x&lt;X,y&lt;Y} \texttt{image} (x,y)\)
-     *
+     * <p>
      * \(\texttt{sqsum} (X,Y) = \sum _{x&lt;X,y&lt;Y} \texttt{image} (x,y)^2\)
-     *
+     * <p>
      * \(\texttt{tilted} (X,Y) = \sum _{y&lt;Y,abs(x-X+1) \leq Y-y-1} \texttt{image} (x,y)\)
-     *
+     * <p>
      * Using these integral images, you can calculate sum, mean, and standard deviation over a specific up-right or
      * rotated rectangular region of the image in a constant time, for example:
-     *
+     * <p>
      * \(\sum _{x_1 \leq x &lt; x_2, \, y_1 \leq y &lt; y_2} \texttt{image} (x,y) = \texttt{sum} (x_2,y_2)- \texttt{sum}
      * (x_1,y_2)- \texttt{sum} (x_2,y_1)+ \texttt{sum} (x_1,y_1)\)
-     *
+     * <p>
      * It makes possible to do a fast blurring or fast block correlation with a variable window size, for example. In
      * case of multi-channel images, sums for each channel are accumulated independently.
-     *
+     * <p>
      * As a practical example, the next figure shows the calculation of the integral of a straight rectangle
      * Rect(4,4,3,2) and of a tilted rectangle Rect(5,1,2,3) . The selected pixels in the original image are shown, as
      * well as the relative pixels in the integral images sum and tilted .
-     *
+     * <p>
      * ![integral calculation example](pics/integral.png)
      *
      * @param src     input image as \(W \times H\), 8-bit or floating-point (32f or 64f).
@@ -5090,30 +4877,34 @@ public class Imgproc {
         integral3_0(src.nativeObj, sum.nativeObj, sqsum.nativeObj, tilted.nativeObj, sdepth, sqdepth);
     }
 
+    //
+    // C++: void cv::warpPolar(Mat src, Mat& dst, Size dsize, Point2f center, double maxRadius, int flags)
+    //
+
     /**
      * Calculates the integral of an image.
-     *
+     * <p>
      * The function calculates one or more integral images for the source image as follows:
-     *
+     * <p>
      * \(\texttt{sum} (X,Y) = \sum _{x&lt;X,y&lt;Y} \texttt{image} (x,y)\)
-     *
+     * <p>
      * \(\texttt{sqsum} (X,Y) = \sum _{x&lt;X,y&lt;Y} \texttt{image} (x,y)^2\)
-     *
+     * <p>
      * \(\texttt{tilted} (X,Y) = \sum _{y&lt;Y,abs(x-X+1) \leq Y-y-1} \texttt{image} (x,y)\)
-     *
+     * <p>
      * Using these integral images, you can calculate sum, mean, and standard deviation over a specific up-right or
      * rotated rectangular region of the image in a constant time, for example:
-     *
+     * <p>
      * \(\sum _{x_1 \leq x &lt; x_2, \, y_1 \leq y &lt; y_2} \texttt{image} (x,y) = \texttt{sum} (x_2,y_2)- \texttt{sum}
      * (x_1,y_2)- \texttt{sum} (x_2,y_1)+ \texttt{sum} (x_1,y_1)\)
-     *
+     * <p>
      * It makes possible to do a fast blurring or fast block correlation with a variable window size, for example. In
      * case of multi-channel images, sums for each channel are accumulated independently.
-     *
+     * <p>
      * As a practical example, the next figure shows the calculation of the integral of a straight rectangle
      * Rect(4,4,3,2) and of a tilted rectangle Rect(5,1,2,3) . The selected pixels in the original image are shown, as
      * well as the relative pixels in the integral images sum and tilted .
-     *
+     * <p>
      * ![integral calculation example](pics/integral.png)
      *
      * @param src    input image as \(W \times H\), 8-bit or floating-point (32f or 64f).
@@ -5128,30 +4919,34 @@ public class Imgproc {
         integral3_1(src.nativeObj, sum.nativeObj, sqsum.nativeObj, tilted.nativeObj, sdepth);
     }
 
+    //
+    // C++: void cv::integral(Mat src, Mat& sum, Mat& sqsum, Mat& tilted, int sdepth = -1, int sqdepth = -1)
+    //
+
     /**
      * Calculates the integral of an image.
-     *
+     * <p>
      * The function calculates one or more integral images for the source image as follows:
-     *
+     * <p>
      * \(\texttt{sum} (X,Y) = \sum _{x&lt;X,y&lt;Y} \texttt{image} (x,y)\)
-     *
+     * <p>
      * \(\texttt{sqsum} (X,Y) = \sum _{x&lt;X,y&lt;Y} \texttt{image} (x,y)^2\)
-     *
+     * <p>
      * \(\texttt{tilted} (X,Y) = \sum _{y&lt;Y,abs(x-X+1) \leq Y-y-1} \texttt{image} (x,y)\)
-     *
+     * <p>
      * Using these integral images, you can calculate sum, mean, and standard deviation over a specific up-right or
      * rotated rectangular region of the image in a constant time, for example:
-     *
+     * <p>
      * \(\sum _{x_1 \leq x &lt; x_2, \, y_1 \leq y &lt; y_2} \texttt{image} (x,y) = \texttt{sum} (x_2,y_2)- \texttt{sum}
      * (x_1,y_2)- \texttt{sum} (x_2,y_1)+ \texttt{sum} (x_1,y_1)\)
-     *
+     * <p>
      * It makes possible to do a fast blurring or fast block correlation with a variable window size, for example. In
      * case of multi-channel images, sums for each channel are accumulated independently.
-     *
+     * <p>
      * As a practical example, the next figure shows the calculation of the integral of a straight rectangle
      * Rect(4,4,3,2) and of a tilted rectangle Rect(5,1,2,3) . The selected pixels in the original image are shown, as
      * well as the relative pixels in the integral images sum and tilted .
-     *
+     * <p>
      * ![integral calculation example](pics/integral.png)
      *
      * @param src    input image as \(W \times H\), 8-bit or floating-point (32f or 64f).
@@ -5165,55 +4960,88 @@ public class Imgproc {
         integral3_2(src.nativeObj, sum.nativeObj, sqsum.nativeObj, tilted.nativeObj);
     }
 
-    //
-    // C++: void cv::integral(Mat src, Mat& sum, int sdepth = -1)
-    //
-
+    /**
+     * Performs the {@code integral} operation.
+     *
+     * @param src    the {@code src} value
+     * @param sum    the {@code sum} value
+     * @param sdepth the {@code sdepth} value
+     */
     public static void integral(Mat src, Mat sum, int sdepth) {
         integral_0(src.nativeObj, sum.nativeObj, sdepth);
     }
 
+    /**
+     * Performs the {@code integral} operation.
+     *
+     * @param src the {@code src} value
+     * @param sum the {@code sum} value
+     */
     public static void integral(Mat src, Mat sum) {
         integral_1(src.nativeObj, sum.nativeObj);
+    }
+
+    //
+    // C++: void cv::integral(Mat src, Mat& sum, int sdepth = -1)
+    //
+
+    /**
+     * Performs the {@code integral2} operation.
+     *
+     * @param src     the {@code src} value
+     * @param sum     the {@code sum} value
+     * @param sqsum   the {@code sqsum} value
+     * @param sdepth  the {@code sdepth} value
+     * @param sqdepth the {@code sqdepth} value
+     */
+    public static void integral2(Mat src, Mat sum, Mat sqsum, int sdepth, int sqdepth) {
+        integral2_0(src.nativeObj, sum.nativeObj, sqsum.nativeObj, sdepth, sqdepth);
+    }
+
+    /**
+     * Performs the {@code integral2} operation.
+     *
+     * @param src    the {@code src} value
+     * @param sum    the {@code sum} value
+     * @param sqsum  the {@code sqsum} value
+     * @param sdepth the {@code sdepth} value
+     */
+    public static void integral2(Mat src, Mat sum, Mat sqsum, int sdepth) {
+        integral2_1(src.nativeObj, sum.nativeObj, sqsum.nativeObj, sdepth);
     }
 
     //
     // C++: void cv::integral(Mat src, Mat& sum, Mat& sqsum, int sdepth = -1, int sqdepth = -1)
     //
 
-    public static void integral2(Mat src, Mat sum, Mat sqsum, int sdepth, int sqdepth) {
-        integral2_0(src.nativeObj, sum.nativeObj, sqsum.nativeObj, sdepth, sqdepth);
-    }
-
-    public static void integral2(Mat src, Mat sum, Mat sqsum, int sdepth) {
-        integral2_1(src.nativeObj, sum.nativeObj, sqsum.nativeObj, sdepth);
-    }
-
+    /**
+     * Performs the {@code integral2} operation.
+     *
+     * @param src   the {@code src} value
+     * @param sum   the {@code sum} value
+     * @param sqsum the {@code sqsum} value
+     */
     public static void integral2(Mat src, Mat sum, Mat sqsum) {
         integral2_2(src.nativeObj, sum.nativeObj, sqsum.nativeObj);
     }
 
-    //
-    // C++: void cv::accumulate(Mat src, Mat& dst, Mat mask = Mat())
-    //
-
     /**
      * Adds an image to the accumulator image.
-     *
+     * <p>
      * The function adds src or some of its elements to dst :
-     *
+     * <p>
      * \(\texttt{dst} (x,y) \leftarrow \texttt{dst} (x,y) + \texttt{src} (x,y) \quad \text{if} \quad \texttt{mask} (x,y)
      * \ne 0\)
-     *
+     * <p>
      * The function supports multi-channel images. Each channel is processed independently.
-     *
+     * <p>
      * The function cv::accumulate can be used, for example, to collect statistics of a scene background viewed by a
      * still camera and for the further foreground-background segmentation.
      *
      * @param src  Input image of type CV_8UC(n), CV_16UC(n), CV_32FC(n) or CV_64FC(n), where n is a positive integer.
      * @param dst  %Accumulator image with the same number of channels as input image, and a depth of CV_32F or CV_64F.
      * @param mask Optional operation mask.
-     *
+     *             <p>
      *             SEE: accumulateSquare, accumulateProduct, accumulateWeighted
      */
     public static void accumulate(Mat src, Mat dst, Mat mask) {
@@ -5222,20 +5050,20 @@ public class Imgproc {
 
     /**
      * Adds an image to the accumulator image.
-     *
+     * <p>
      * The function adds src or some of its elements to dst :
-     *
+     * <p>
      * \(\texttt{dst} (x,y) \leftarrow \texttt{dst} (x,y) + \texttt{src} (x,y) \quad \text{if} \quad \texttt{mask} (x,y)
      * \ne 0\)
-     *
+     * <p>
      * The function supports multi-channel images. Each channel is processed independently.
-     *
+     * <p>
      * The function cv::accumulate can be used, for example, to collect statistics of a scene background viewed by a
      * still camera and for the further foreground-background segmentation.
      *
      * @param src Input image of type CV_8UC(n), CV_16UC(n), CV_32FC(n) or CV_64FC(n), where n is a positive integer.
      * @param dst %Accumulator image with the same number of channels as input image, and a depth of CV_32F or CV_64F.
-     *
+     *            <p>
      *            SEE: accumulateSquare, accumulateProduct, accumulateWeighted
      */
     public static void accumulate(Mat src, Mat dst) {
@@ -5243,23 +5071,23 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::accumulateSquare(Mat src, Mat& dst, Mat mask = Mat())
+    // C++: void cv::accumulate(Mat src, Mat& dst, Mat mask = Mat())
     //
 
     /**
      * Adds the square of a source image to the accumulator image.
-     *
+     * <p>
      * The function adds the input image src or its selected region, raised to a power of 2, to the accumulator dst :
-     *
+     * <p>
      * \(\texttt{dst} (x,y) \leftarrow \texttt{dst} (x,y) + \texttt{src} (x,y)^2 \quad \text{if} \quad \texttt{mask}
      * (x,y) \ne 0\)
-     *
+     * <p>
      * The function supports multi-channel images. Each channel is processed independently.
      *
      * @param src  Input image as 1- or 3-channel, 8-bit or 32-bit floating point.
      * @param dst  %Accumulator image with the same number of channels as input image, 32-bit or 64-bit floating-point.
      * @param mask Optional operation mask.
-     *
+     *             <p>
      *             SEE: accumulateSquare, accumulateProduct, accumulateWeighted
      */
     public static void accumulateSquare(Mat src, Mat dst, Mat mask) {
@@ -5268,17 +5096,17 @@ public class Imgproc {
 
     /**
      * Adds the square of a source image to the accumulator image.
-     *
+     * <p>
      * The function adds the input image src or its selected region, raised to a power of 2, to the accumulator dst :
-     *
+     * <p>
      * \(\texttt{dst} (x,y) \leftarrow \texttt{dst} (x,y) + \texttt{src} (x,y)^2 \quad \text{if} \quad \texttt{mask}
      * (x,y) \ne 0\)
-     *
+     * <p>
      * The function supports multi-channel images. Each channel is processed independently.
      *
      * @param src Input image as 1- or 3-channel, 8-bit or 32-bit floating point.
      * @param dst %Accumulator image with the same number of channels as input image, 32-bit or 64-bit floating-point.
-     *
+     *            <p>
      *            SEE: accumulateSquare, accumulateProduct, accumulateWeighted
      */
     public static void accumulateSquare(Mat src, Mat dst) {
@@ -5286,24 +5114,24 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::accumulateProduct(Mat src1, Mat src2, Mat& dst, Mat mask = Mat())
+    // C++: void cv::accumulateSquare(Mat src, Mat& dst, Mat mask = Mat())
     //
 
     /**
      * Adds the per-element product of two input images to the accumulator image.
-     *
+     * <p>
      * The function adds the product of two images or their selected regions to the accumulator dst :
-     *
+     * <p>
      * \(\texttt{dst} (x,y) \leftarrow \texttt{dst} (x,y) + \texttt{src1} (x,y) \cdot \texttt{src2} (x,y) \quad
      * \text{if} \quad \texttt{mask} (x,y) \ne 0\)
-     *
+     * <p>
      * The function supports multi-channel images. Each channel is processed independently.
      *
      * @param src1 First input image, 1- or 3-channel, 8-bit or 32-bit floating point.
      * @param src2 Second input image of the same type and the same size as src1 .
      * @param dst  %Accumulator image with the same number of channels as input images, 32-bit or 64-bit floating-point.
      * @param mask Optional operation mask.
-     *
+     *             <p>
      *             SEE: accumulate, accumulateSquare, accumulateWeighted
      */
     public static void accumulateProduct(Mat src1, Mat src2, Mat dst, Mat mask) {
@@ -5312,18 +5140,18 @@ public class Imgproc {
 
     /**
      * Adds the per-element product of two input images to the accumulator image.
-     *
+     * <p>
      * The function adds the product of two images or their selected regions to the accumulator dst :
-     *
+     * <p>
      * \(\texttt{dst} (x,y) \leftarrow \texttt{dst} (x,y) + \texttt{src1} (x,y) \cdot \texttt{src2} (x,y) \quad
      * \text{if} \quad \texttt{mask} (x,y) \ne 0\)
-     *
+     * <p>
      * The function supports multi-channel images. Each channel is processed independently.
      *
      * @param src1 First input image, 1- or 3-channel, 8-bit or 32-bit floating point.
      * @param src2 Second input image of the same type and the same size as src1 .
      * @param dst  %Accumulator image with the same number of channels as input images, 32-bit or 64-bit floating-point.
-     *
+     *             <p>
      *             SEE: accumulate, accumulateSquare, accumulateWeighted
      */
     public static void accumulateProduct(Mat src1, Mat src2, Mat dst) {
@@ -5331,18 +5159,18 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::accumulateWeighted(Mat src, Mat& dst, double alpha, Mat mask = Mat())
+    // C++: void cv::accumulateProduct(Mat src1, Mat src2, Mat& dst, Mat mask = Mat())
     //
 
     /**
      * Updates a running average.
-     *
+     * <p>
      * The function calculates the weighted sum of the input image src and the accumulator dst so that dst becomes a
      * running average of a frame sequence:
-     *
+     * <p>
      * \(\texttt{dst} (x,y) \leftarrow (1- \texttt{alpha} ) \cdot \texttt{dst} (x,y) + \texttt{alpha} \cdot \texttt{src}
      * (x,y) \quad \text{if} \quad \texttt{mask} (x,y) \ne 0\)
-     *
+     * <p>
      * That is, alpha regulates the update speed (how fast the accumulator "forgets" about earlier images). The function
      * supports multi-channel images. Each channel is processed independently.
      *
@@ -5350,7 +5178,7 @@ public class Imgproc {
      * @param dst   %Accumulator image with the same number of channels as input image, 32-bit or 64-bit floating-point.
      * @param alpha Weight of the input image.
      * @param mask  Optional operation mask.
-     *
+     *              <p>
      *              SEE: accumulate, accumulateSquare, accumulateProduct
      */
     public static void accumulateWeighted(Mat src, Mat dst, double alpha, Mat mask) {
@@ -5359,20 +5187,20 @@ public class Imgproc {
 
     /**
      * Updates a running average.
-     *
+     * <p>
      * The function calculates the weighted sum of the input image src and the accumulator dst so that dst becomes a
      * running average of a frame sequence:
-     *
+     * <p>
      * \(\texttt{dst} (x,y) \leftarrow (1- \texttt{alpha} ) \cdot \texttt{dst} (x,y) + \texttt{alpha} \cdot \texttt{src}
      * (x,y) \quad \text{if} \quad \texttt{mask} (x,y) \ne 0\)
-     *
+     * <p>
      * That is, alpha regulates the update speed (how fast the accumulator "forgets" about earlier images). The function
      * supports multi-channel images. Each channel is processed independently.
      *
      * @param src   Input image as 1- or 3-channel, 8-bit or 32-bit floating point.
      * @param dst   %Accumulator image with the same number of channels as input image, 32-bit or 64-bit floating-point.
      * @param alpha Weight of the input image.
-     *
+     *              <p>
      *              SEE: accumulate, accumulateSquare, accumulateProduct
      */
     public static void accumulateWeighted(Mat src, Mat dst, double alpha) {
@@ -5380,19 +5208,19 @@ public class Imgproc {
     }
 
     //
-    // C++: Point2d cv::phaseCorrelate(Mat src1, Mat src2, Mat window = Mat(), double* response = 0)
+    // C++: void cv::accumulateWeighted(Mat src, Mat& dst, double alpha, Mat mask = Mat())
     //
 
     /**
      * The function is used to detect translational shifts that occur between two images.
-     *
+     * <p>
      * The operation takes advantage of the Fourier shift theorem for detecting the translational shift in the frequency
      * domain. It can be used for fast image registration as well as motion estimation. For more information please see
      * &lt;https://en.wikipedia.org/wiki/Phase_correlation&gt;
-     *
+     * <p>
      * Calculates the cross-power spectrum of two supplied source arrays. The arrays are padded if needed with
      * getOptimalDFTSize.
-     *
+     * <p>
      * The function performs the following equations:
      * <ul>
      * <li>First it applies a Hanning window to each image to remove possible edge effects, if it's provided by user.
@@ -5416,7 +5244,7 @@ public class Imgproc {
      * @param window   Floating point array with windowing coefficients to reduce edge effects (optional).
      * @param response Signal power within the 5x5 centroid around the peak, between 0 and 1 (optional).
      * @return detected phase shift (sub-pixel) between the two arrays.
-     *
+     *         <p>
      *         SEE: dft, getOptimalDFTSize, idft, mulSpectrums createHanningWindow
      */
     public static Point phaseCorrelate(Mat src1, Mat src2, Mat window, double[] response) {
@@ -5429,14 +5257,14 @@ public class Imgproc {
 
     /**
      * The function is used to detect translational shifts that occur between two images.
-     *
+     * <p>
      * The operation takes advantage of the Fourier shift theorem for detecting the translational shift in the frequency
      * domain. It can be used for fast image registration as well as motion estimation. For more information please see
      * &lt;https://en.wikipedia.org/wiki/Phase_correlation&gt;
-     *
+     * <p>
      * Calculates the cross-power spectrum of two supplied source arrays. The arrays are padded if needed with
      * getOptimalDFTSize.
-     *
+     * <p>
      * The function performs the following equations:
      * <ul>
      * <li>First it applies a Hanning window to each image to remove possible edge effects, if it's provided by user.
@@ -5459,23 +5287,27 @@ public class Imgproc {
      * @param src2   Source floating point array (CV_32FC1 or CV_64FC1)
      * @param window Floating point array with windowing coefficients to reduce edge effects (optional).
      * @return detected phase shift (sub-pixel) between the two arrays.
-     *
+     *         <p>
      *         SEE: dft, getOptimalDFTSize, idft, mulSpectrums createHanningWindow
      */
     public static Point phaseCorrelate(Mat src1, Mat src2, Mat window) {
         return new Point(phaseCorrelate_1(src1.nativeObj, src2.nativeObj, window.nativeObj));
     }
 
+    //
+    // C++: Point2d cv::phaseCorrelate(Mat src1, Mat src2, Mat window = Mat(), double* response = 0)
+    //
+
     /**
      * The function is used to detect translational shifts that occur between two images.
-     *
+     * <p>
      * The operation takes advantage of the Fourier shift theorem for detecting the translational shift in the frequency
      * domain. It can be used for fast image registration as well as motion estimation. For more information please see
      * &lt;https://en.wikipedia.org/wiki/Phase_correlation&gt;
-     *
+     * <p>
      * Calculates the cross-power spectrum of two supplied source arrays. The arrays are padded if needed with
      * getOptimalDFTSize.
-     *
+     * <p>
      * The function performs the following equations:
      * <ul>
      * <li>First it applies a Hanning window to each image to remove possible edge effects, if it's provided by user.
@@ -5497,20 +5329,16 @@ public class Imgproc {
      * @param src1 Source floating point array (CV_32FC1 or CV_64FC1)
      * @param src2 Source floating point array (CV_32FC1 or CV_64FC1)
      * @return detected phase shift (sub-pixel) between the two arrays.
-     *
+     *         <p>
      *         SEE: dft, getOptimalDFTSize, idft, mulSpectrums createHanningWindow
      */
     public static Point phaseCorrelate(Mat src1, Mat src2) {
         return new Point(phaseCorrelate_2(src1.nativeObj, src2.nativeObj));
     }
 
-    //
-    // C++: Point2d cv::phaseCorrelateIterative(Mat src1, Mat src2, int L2size = 7, int maxIters = 10)
-    //
-
     /**
      * Detects translational shifts between two images.
-     *
+     * <p>
      * This function extends the standard REF: phaseCorrelate method by improving sub-pixel accuracy through iterative
      * shift refinement in the phase-correlation space, as described in CITE: hrazdira2020iterative.
      *
@@ -5519,7 +5347,7 @@ public class Imgproc {
      * @param L2size   The size of the correlation neighborhood used by the iterative shift refinement algorithm.
      * @param maxIters The maximum number of iterations the iterative refinement algorithm will run.
      * @return detected sub-pixel shift between the two arrays.
-     *
+     *         <p>
      *         SEE: phaseCorrelate, dft, idft, createHanningWindow
      */
     public static Point phaseCorrelateIterative(Mat src1, Mat src2, int L2size, int maxIters) {
@@ -5528,7 +5356,7 @@ public class Imgproc {
 
     /**
      * Detects translational shifts between two images.
-     *
+     * <p>
      * This function extends the standard REF: phaseCorrelate method by improving sub-pixel accuracy through iterative
      * shift refinement in the phase-correlation space, as described in CITE: hrazdira2020iterative.
      *
@@ -5536,43 +5364,43 @@ public class Imgproc {
      * @param src2   Source floating point array (CV_32FC1 or CV_64FC1)
      * @param L2size The size of the correlation neighborhood used by the iterative shift refinement algorithm.
      * @return detected sub-pixel shift between the two arrays.
-     *
+     *         <p>
      *         SEE: phaseCorrelate, dft, idft, createHanningWindow
      */
     public static Point phaseCorrelateIterative(Mat src1, Mat src2, int L2size) {
         return new Point(phaseCorrelateIterative_1(src1.nativeObj, src2.nativeObj, L2size));
     }
 
+    //
+    // C++: Point2d cv::phaseCorrelateIterative(Mat src1, Mat src2, int L2size = 7, int maxIters = 10)
+    //
+
     /**
      * Detects translational shifts between two images.
-     *
+     * <p>
      * This function extends the standard REF: phaseCorrelate method by improving sub-pixel accuracy through iterative
      * shift refinement in the phase-correlation space, as described in CITE: hrazdira2020iterative.
      *
      * @param src1 Source floating point array (CV_32FC1 or CV_64FC1)
      * @param src2 Source floating point array (CV_32FC1 or CV_64FC1)
      * @return detected sub-pixel shift between the two arrays.
-     *
+     *         <p>
      *         SEE: phaseCorrelate, dft, idft, createHanningWindow
      */
     public static Point phaseCorrelateIterative(Mat src1, Mat src2) {
         return new Point(phaseCorrelateIterative_2(src1.nativeObj, src2.nativeObj));
     }
 
-    //
-    // C++: void cv::createHanningWindow(Mat& dst, Size winSize, int type)
-    //
-
     /**
      * This function computes a Hanning window coefficients in two dimensions.
-     *
+     * <p>
      * See (https://en.wikipedia.org/wiki/Hann_function) and (https://en.wikipedia.org/wiki/Window_function) for more
      * information.
-     *
+     * <p>
      * An example is shown below: <code>
-     *     // create hanning window of size 100x100 and type CV_32F
-     *     Mat hann;
-     *     createHanningWindow(hann, Size(100, 100), CV_32F);
+     * // create hanning window of size 100x100 and type CV_32F
+     * Mat hann;
+     * createHanningWindow(hann, Size(100, 100), CV_32F);
      * </code>
      *
      * @param dst     Destination array to place Hann coefficients in
@@ -5583,58 +5411,14 @@ public class Imgproc {
         createHanningWindow_0(dst.nativeObj, winSize.width, winSize.height, type);
     }
 
-    //
-    // C++: void cv::divSpectrums(Mat a, Mat b, Mat& c, int flags, bool conjB = false)
-    //
-
-    /**
-     * Performs the per-element division of the first Fourier spectrum by the second Fourier spectrum.
-     *
-     * The function cv::divSpectrums performs the per-element division of the first array by the second array. The
-     * arrays are CCS-packed or complex matrices that are results of a real or complex Fourier transform.
-     *
-     * @param a     first input array.
-     * @param b     second input array of the same size and type as src1 .
-     * @param c     output array of the same size and type as src1 .
-     * @param flags operation flags; currently, the only supported flag is cv::DFT_ROWS, which indicates that each row
-     *              of src1 and src2 is an independent 1D Fourier spectrum. If you do not want to use this flag, then
-     *              simply add a {@code 0} as value.
-     * @param conjB optional flag that conjugates the second input array before the multiplication (true) or not
-     *              (false).
-     */
-    public static void divSpectrums(Mat a, Mat b, Mat c, int flags, boolean conjB) {
-        divSpectrums_0(a.nativeObj, b.nativeObj, c.nativeObj, flags, conjB);
-    }
-
-    /**
-     * Performs the per-element division of the first Fourier spectrum by the second Fourier spectrum.
-     *
-     * The function cv::divSpectrums performs the per-element division of the first array by the second array. The
-     * arrays are CCS-packed or complex matrices that are results of a real or complex Fourier transform.
-     *
-     * @param a     first input array.
-     * @param b     second input array of the same size and type as src1 .
-     * @param c     output array of the same size and type as src1 .
-     * @param flags operation flags; currently, the only supported flag is cv::DFT_ROWS, which indicates that each row
-     *              of src1 and src2 is an independent 1D Fourier spectrum. If you do not want to use this flag, then
-     *              simply add a {@code 0} as value. or not (false).
-     */
-    public static void divSpectrums(Mat a, Mat b, Mat c, int flags) {
-        divSpectrums_1(a.nativeObj, b.nativeObj, c.nativeObj, flags);
-    }
-
-    //
-    // C++: double cv::threshold(Mat src, Mat& dst, double thresh, double maxval, int type)
-    //
-
     /**
      * Applies a fixed-level threshold to each array element.
-     *
+     * <p>
      * The function applies fixed-level thresholding to a multiple-channel array. The function is typically used to get
      * a bi-level (binary) image out of a grayscale image ( #compare could be also used for this purpose) or for
      * removing a noise, that is, filtering out pixels with too small or too large values. There are several types of
      * thresholding supported by the function. They are determined by type parameter.
-     *
+     * <p>
      * Also, the special values #THRESH_OTSU or #THRESH_TRIANGLE may be combined with one of the above values. In these
      * cases, the function determines the optimal threshold value using the Otsu's or Triangle algorithm and uses it
      * instead of the specified thresh.
@@ -5648,7 +5432,7 @@ public class Imgproc {
      * @param maxval maximum value to use with the #THRESH_BINARY and #THRESH_BINARY_INV thresholding types.
      * @param type   thresholding type (see #ThresholdTypes).
      * @return the computed threshold value if Otsu's or Triangle methods used.
-     *
+     *         <p>
      *         SEE: thresholdWithMask, adaptiveThreshold, findContours, compare, min, max
      */
     public static double threshold(Mat src, Mat dst, double thresh, double maxval, int type) {
@@ -5656,7 +5440,7 @@ public class Imgproc {
     }
 
     //
-    // C++: double cv::thresholdWithMask(Mat src, Mat& dst, Mat mask, double thresh, double maxval, int type)
+    // C++: void cv::createHanningWindow(Mat& dst, Size winSize, int type)
     //
 
     /**
@@ -5672,7 +5456,7 @@ public class Imgproc {
      * @param maxval maximum value to use with the #THRESH_BINARY and #THRESH_BINARY_INV thresholding types.
      * @param type   thresholding type (see #ThresholdTypes).
      * @return the computed threshold value if Otsu's or Triangle methods used.
-     *
+     *         <p>
      *         SEE: threshold, adaptiveThreshold, findContours, compare, min, max
      */
     public static double thresholdWithMask(Mat src, Mat dst, Mat mask, double thresh, double maxval, int type) {
@@ -5680,20 +5464,19 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::adaptiveThreshold(Mat src, Mat& dst, double maxValue, int adaptiveMethod, int thresholdType, int
-    // blockSize, double C)
+    // C++: double cv::threshold(Mat src, Mat& dst, double thresh, double maxval, int type)
     //
 
     /**
      * Applies an adaptive threshold to an array.
-     *
+     * <p>
      * The function transforms a grayscale image to a binary image according to the formulae:
      * <ul>
      * <li><b>THRESH_BINARY</b> \(dst(x,y) = \fork{\texttt{maxValue}}{if \(src(x,y) &gt; T(x,y)\)}{0}{otherwise}\)</li>
      * <li><b>THRESH_BINARY_INV</b> \(dst(x,y) = \fork{0}{if \(src(x,y) &gt; T(x,y)\)}{\texttt{maxValue}}{otherwise}\)
      * where \(T(x,y)\) is a threshold calculated individually for each pixel (see adaptiveMethod parameter).</li>
      * </ul>
-     *
+     * <p>
      * The function can process the image in-place.
      *
      * @param src            Source 8-bit single-channel image.
@@ -5707,7 +5490,7 @@ public class Imgproc {
      *                       5, 7, and so on.
      * @param C              Constant subtracted from the mean or weighted mean (see the details below). Normally, it is
      *                       positive but may be zero or negative as well.
-     *
+     *                       <p>
      *                       SEE: threshold, blur, GaussianBlur
      */
     public static void adaptiveThreshold(
@@ -5722,25 +5505,25 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::pyrDown(Mat src, Mat& dst, Size dstsize = Size(), int borderType = BORDER_DEFAULT)
+    // C++: double cv::thresholdWithMask(Mat src, Mat& dst, Mat mask, double thresh, double maxval, int type)
     //
 
     /**
      * Blurs an image and downsamples it.
-     *
+     * <p>
      * By default, size of the output image is computed as {@code Size((src.cols+1)/2, (src.rows+1)/2)}, but in any
      * case, the following conditions should be satisfied:
-     *
+     * <p>
      * \(\begin{array}{l} | \texttt{dstsize.width} *2-src.cols| \leq 2 \\ | \texttt{dstsize.height} *2-src.rows| \leq 2
      * \end{array}\)
-     *
+     * <p>
      * The function performs the downsampling step of the Gaussian pyramid construction. First, it convolves the source
      * image with the kernel:
-     *
+     * <p>
      * \(\frac{1}{256} \begin{bmatrix} 1 &amp; 4 &amp; 6 &amp; 4 &amp; 1 \\ 4 &amp; 16 &amp; 24 &amp; 16 &amp; 4 \\ 6
      * &amp; 24 &amp; 36 &amp; 24 &amp; 6 \\ 4 &amp; 16 &amp; 24 &amp; 16 &amp; 4 \\ 1 &amp; 4 &amp; 6 &amp; 4 &amp; 1
      * \end{bmatrix}\)
-     *
+     * <p>
      * Then, it downsamples the image by rejecting even rows and columns.
      *
      * @param src        input image.
@@ -5752,22 +5535,27 @@ public class Imgproc {
         pyrDown_0(src.nativeObj, dst.nativeObj, dstsize.width, dstsize.height, borderType);
     }
 
+    //
+    // C++: void cv::adaptiveThreshold(Mat src, Mat& dst, double maxValue, int adaptiveMethod, int thresholdType, int
+    // blockSize, double C)
+    //
+
     /**
      * Blurs an image and downsamples it.
-     *
+     * <p>
      * By default, size of the output image is computed as {@code Size((src.cols+1)/2, (src.rows+1)/2)}, but in any
      * case, the following conditions should be satisfied:
-     *
+     * <p>
      * \(\begin{array}{l} | \texttt{dstsize.width} *2-src.cols| \leq 2 \\ | \texttt{dstsize.height} *2-src.rows| \leq 2
      * \end{array}\)
-     *
+     * <p>
      * The function performs the downsampling step of the Gaussian pyramid construction. First, it convolves the source
      * image with the kernel:
-     *
+     * <p>
      * \(\frac{1}{256} \begin{bmatrix} 1 &amp; 4 &amp; 6 &amp; 4 &amp; 1 \\ 4 &amp; 16 &amp; 24 &amp; 16 &amp; 4 \\ 6
      * &amp; 24 &amp; 36 &amp; 24 &amp; 6 \\ 4 &amp; 16 &amp; 24 &amp; 16 &amp; 4 \\ 1 &amp; 4 &amp; 6 &amp; 4 &amp; 1
      * \end{bmatrix}\)
-     *
+     * <p>
      * Then, it downsamples the image by rejecting even rows and columns.
      *
      * @param src     input image.
@@ -5778,22 +5566,26 @@ public class Imgproc {
         pyrDown_1(src.nativeObj, dst.nativeObj, dstsize.width, dstsize.height);
     }
 
+    //
+    // C++: void cv::pyrDown(Mat src, Mat& dst, Size dstsize = Size(), int borderType = BORDER_DEFAULT)
+    //
+
     /**
      * Blurs an image and downsamples it.
-     *
+     * <p>
      * By default, size of the output image is computed as {@code Size((src.cols+1)/2, (src.rows+1)/2)}, but in any
      * case, the following conditions should be satisfied:
-     *
+     * <p>
      * \(\begin{array}{l} | \texttt{dstsize.width} *2-src.cols| \leq 2 \\ | \texttt{dstsize.height} *2-src.rows| \leq 2
      * \end{array}\)
-     *
+     * <p>
      * The function performs the downsampling step of the Gaussian pyramid construction. First, it convolves the source
      * image with the kernel:
-     *
+     * <p>
      * \(\frac{1}{256} \begin{bmatrix} 1 &amp; 4 &amp; 6 &amp; 4 &amp; 1 \\ 4 &amp; 16 &amp; 24 &amp; 16 &amp; 4 \\ 6
      * &amp; 24 &amp; 36 &amp; 24 &amp; 6 \\ 4 &amp; 16 &amp; 24 &amp; 16 &amp; 4 \\ 1 &amp; 4 &amp; 6 &amp; 4 &amp; 1
      * \end{bmatrix}\)
-     *
+     * <p>
      * Then, it downsamples the image by rejecting even rows and columns.
      *
      * @param src input image.
@@ -5803,19 +5595,15 @@ public class Imgproc {
         pyrDown_2(src.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::pyrUp(Mat src, Mat& dst, Size dstsize = Size(), int borderType = BORDER_DEFAULT)
-    //
-
     /**
      * Upsamples an image and then blurs it.
-     *
+     * <p>
      * By default, size of the output image is computed as {@code Size(src.cols\*2, (src.rows\*2)}, but in any case, the
      * following conditions should be satisfied:
-     *
+     * <p>
      * \(\begin{array}{l} | \texttt{dstsize.width} -src.cols*2| \leq ( \texttt{dstsize.width} \mod 2) \\ |
      * \texttt{dstsize.height} -src.rows*2| \leq ( \texttt{dstsize.height} \mod 2) \end{array}\)
-     *
+     * <p>
      * The function performs the upsampling step of the Gaussian pyramid construction, though it can actually be used to
      * construct the Laplacian pyramid. First, it upsamples the source image by injecting even zero rows and columns and
      * then convolves the result with the same kernel as in pyrDown multiplied by 4.
@@ -5831,13 +5619,13 @@ public class Imgproc {
 
     /**
      * Upsamples an image and then blurs it.
-     *
+     * <p>
      * By default, size of the output image is computed as {@code Size(src.cols\*2, (src.rows\*2)}, but in any case, the
      * following conditions should be satisfied:
-     *
+     * <p>
      * \(\begin{array}{l} | \texttt{dstsize.width} -src.cols*2| \leq ( \texttt{dstsize.width} \mod 2) \\ |
      * \texttt{dstsize.height} -src.rows*2| \leq ( \texttt{dstsize.height} \mod 2) \end{array}\)
-     *
+     * <p>
      * The function performs the upsampling step of the Gaussian pyramid construction, though it can actually be used to
      * construct the Laplacian pyramid. First, it upsamples the source image by injecting even zero rows and columns and
      * then convolves the result with the same kernel as in pyrDown multiplied by 4.
@@ -5850,15 +5638,19 @@ public class Imgproc {
         pyrUp_1(src.nativeObj, dst.nativeObj, dstsize.width, dstsize.height);
     }
 
+    //
+    // C++: void cv::pyrUp(Mat src, Mat& dst, Size dstsize = Size(), int borderType = BORDER_DEFAULT)
+    //
+
     /**
      * Upsamples an image and then blurs it.
-     *
+     * <p>
      * By default, size of the output image is computed as {@code Size(src.cols\*2, (src.rows\*2)}, but in any case, the
      * following conditions should be satisfied:
-     *
+     * <p>
      * \(\begin{array}{l} | \texttt{dstsize.width} -src.cols*2| \leq ( \texttt{dstsize.width} \mod 2) \\ |
      * \texttt{dstsize.height} -src.rows*2| \leq ( \texttt{dstsize.height} \mod 2) \end{array}\)
-     *
+     * <p>
      * The function performs the upsampling step of the Gaussian pyramid construction, though it can actually be used to
      * construct the Laplacian pyramid. First, it upsamples the source image by injecting even zero rows and columns and
      * then convolves the result with the same kernel as in pyrDown multiplied by 4.
@@ -5870,16 +5662,11 @@ public class Imgproc {
         pyrUp_2(src.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::calcHist(vector_Mat images, vector_int channels, Mat mask, Mat& hist, vector_int histSize,
-    // vector_float ranges, bool accumulate = false)
-    //
-
     /**
      *
      *
      * this variant supports only uniform histograms.
-     *
+     * <p>
      * ranges argument is either empty vector or a flattened vector of histSize.size()*2 elements (histSize.size()
      * element pairs). The first and second elements of each pair specify the lower and upper boundaries.
      *
@@ -5917,7 +5704,7 @@ public class Imgproc {
      *
      *
      * this variant supports only uniform histograms.
-     *
+     * <p>
      * ranges argument is either empty vector or a flattened vector of histSize.size()*2 elements (histSize.size()
      * element pairs). The first and second elements of each pair specify the lower and upper boundaries.
      *
@@ -5949,10 +5736,20 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::calcBackProject(vector_Mat images, vector_int channels, Mat hist, Mat& dst, vector_float ranges,
-    // double scale)
+    // C++: void cv::calcHist(vector_Mat images, vector_int channels, Mat mask, Mat& hist, vector_int histSize,
+    // vector_float ranges, bool accumulate = false)
     //
 
+    /**
+     * Performs the {@code calcBackProject} operation.
+     *
+     * @param images   the {@code images} value
+     * @param channels the {@code channels} value
+     * @param hist     the {@code hist} value
+     * @param dst      the {@code dst} value
+     * @param ranges   the {@code ranges} value
+     * @param scale    the {@code scale} value
+     */
     public static void calcBackProject(
             List<Mat> images,
             MatOfInt channels,
@@ -5972,17 +5769,13 @@ public class Imgproc {
                 scale);
     }
 
-    //
-    // C++: double cv::compareHist(Mat H1, Mat H2, int method)
-    //
-
     /**
      * Compares two histograms.
-     *
+     * <p>
      * The function cv::compareHist compares two dense or two sparse histograms using the specified method.
-     *
+     * <p>
      * The function returns \(d(H_1, H_2)\) .
-     *
+     * <p>
      * While the function works well with 1-, 2-, 3-dimensional dense histograms, it may not be suitable for
      * high-dimensional sparse histograms. In such histograms, because of aliasing and sampling problems, the
      * coordinates of non-zero histogram bins can slightly shift. To compare such histograms or more general sparse
@@ -5998,12 +5791,13 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::equalizeHist(Mat src, Mat& dst)
+    // C++: void cv::calcBackProject(vector_Mat images, vector_int channels, Mat hist, Mat& dst, vector_float ranges,
+    // double scale)
     //
 
     /**
      * Equalizes the histogram of a grayscale image.
-     *
+     * <p>
      * The function equalizes the histogram of the input image using the following algorithm:
      *
      * <ul>
@@ -6012,7 +5806,7 @@ public class Imgproc {
      * <li>Compute the integral of the histogram: \(H'_i = \sum _{0 \le j &lt; i} H(j)\)</li>
      * <li>Transform the image using \(H'\) as a look-up table: \(\texttt{dst}(x,y) = H'(\texttt{src}(x,y))\)</li>
      * </ul>
-     *
+     * <p>
      * The algorithm normalizes the brightness and increases the contrast of the image.
      *
      * @param src Source 8-bit single channel image.
@@ -6023,7 +5817,7 @@ public class Imgproc {
     }
 
     //
-    // C++: Ptr_CLAHE cv::createCLAHE(double clipLimit = 40.0, Size tileGridSize = Size(8, 8))
+    // C++: double cv::compareHist(Mat H1, Mat H2, int method)
     //
 
     /**
@@ -6038,6 +5832,10 @@ public class Imgproc {
         return CLAHE.__fromPtr__(createCLAHE_0(clipLimit, tileGridSize.width, tileGridSize.height));
     }
 
+    //
+    // C++: void cv::equalizeHist(Mat src, Mat& dst)
+    //
+
     /**
      * Creates a smart pointer to a cv::CLAHE class and initializes it.
      *
@@ -6049,9 +5847,13 @@ public class Imgproc {
         return CLAHE.__fromPtr__(createCLAHE_1(clipLimit));
     }
 
+    //
+    // C++: Ptr_CLAHE cv::createCLAHE(double clipLimit = 40.0, Size tileGridSize = Size(8, 8))
+    //
+
     /**
      * Creates a smart pointer to a cv::CLAHE class and initializes it.
-     *
+     * <p>
      * equally sized rectangular tiles. tileGridSize defines the number of tiles in row and column.
      *
      * @return automatically generated
@@ -6060,14 +5862,9 @@ public class Imgproc {
         return CLAHE.__fromPtr__(createCLAHE_2());
     }
 
-    //
-    // C++: float cv::wrapperEMD(Mat signature1, Mat signature2, int distType, Mat cost = Mat(), Ptr_float& lowerBound =
-    // Ptr<float>(), Mat& flow = Mat())
-    //
-
     /**
      * Computes the "minimal work" distance between two weighted point configurations.
-     *
+     * <p>
      * The function computes the earth mover distance and/or a lower boundary of the distance between the two weighted
      * point configurations. One of the applications described in CITE: RubnerSept98, CITE: Rubner2000 is
      * multi-dimensional histogram comparison for image retrieval. EMD is a transportation problem that is solved using
@@ -6105,7 +5902,7 @@ public class Imgproc {
 
     /**
      * Computes the "minimal work" distance between two weighted point configurations.
-     *
+     * <p>
      * The function computes the earth mover distance and/or a lower boundary of the distance between the two weighted
      * point configurations. One of the applications described in CITE: RubnerSept98, CITE: Rubner2000 is
      * multi-dimensional histogram comparison for image retrieval. EMD is a transportation problem that is solved using
@@ -6140,9 +5937,14 @@ public class Imgproc {
         return EMD_1(signature1.nativeObj, signature2.nativeObj, distType, cost.nativeObj);
     }
 
+    //
+    // C++: float cv::wrapperEMD(Mat signature1, Mat signature2, int distType, Mat cost = Mat(), Ptr_float& lowerBound =
+    // Ptr<float>(), Mat& flow = Mat())
+    //
+
     /**
      * Computes the "minimal work" distance between two weighted point configurations.
-     *
+     * <p>
      * The function computes the earth mover distance and/or a lower boundary of the distance between the two weighted
      * point configurations. One of the applications described in CITE: RubnerSept98, CITE: Rubner2000 is
      * multi-dimensional histogram comparison for image retrieval. EMD is a transportation problem that is solved using
@@ -6175,16 +5977,12 @@ public class Imgproc {
         return EMD_3(signature1.nativeObj, signature2.nativeObj, distType);
     }
 
-    //
-    // C++: void cv::watershed(Mat image, Mat& markers)
-    //
-
     /**
      * Performs a marker-based image segmentation using the watershed algorithm.
-     *
+     * <p>
      * The function implements one of the variants of watershed, non-parametric marker-based segmentation algorithm,
      * described in CITE: Meyer92 .
-     *
+     * <p>
      * Before passing the image to the function, you have to roughly outline the desired regions in the image markers
      * with positive (&gt;0) indices. So, every region is represented as one or more connected components with the pixel
      * values 1, 2, 3, and so on. Such markers can be retrieved from a binary mask using #findContours and #drawContours
@@ -6198,41 +5996,36 @@ public class Imgproc {
      *
      * @param image   Input 8-bit 3-channel image.
      * @param markers Input/output 32-bit single-channel image (map) of markers. It should have the same size as image .
-     *
+     *                <p>
      *                SEE: findContours
      */
     public static void watershed(Mat image, Mat markers) {
         watershed_0(image.nativeObj, markers.nativeObj);
     }
 
-    //
-    // C++: void cv::pyrMeanShiftFiltering(Mat src, Mat& dst, double sp, double sr, int maxLevel = 1, TermCriteria
-    // termcrit = TermCriteria(TermCriteria::MAX_ITER+TermCriteria::EPS,5,1))
-    //
-
     /**
      * Performs initial step of meanshift segmentation of an image.
-     *
+     * <p>
      * The function implements the filtering stage of meanshift segmentation, that is, the output of the function is the
      * filtered "posterized" image with color gradients and fine-grain texture flattened. At every pixel (X,Y) of the
      * input image (or down-sized input image, see below) the function executes meanshift iterations, that is, the pixel
      * (X,Y) neighborhood in the joint space-color hyperspace is considered:
-     *
+     * <p>
      * \((x,y): X- \texttt{sp} \le x \le X+ \texttt{sp} , Y- \texttt{sp} \le y \le Y+ \texttt{sp} , ||(R,G,B)-(r,g,b)||
      * \le \texttt{sr}\)
-     *
+     * <p>
      * where (R,G,B) and (r,g,b) are the vectors of color components at (X,Y) and (x,y), respectively (though, the
      * algorithm does not depend on the color space used, so any 3-component color space can be used instead). Over the
      * neighborhood the average spatial value (X',Y') and average color vector (R',G',B') are found and they act as the
      * neighborhood center on the next iteration:
-     *
+     * <p>
      * \((X,Y)~(X',Y'), (R,G,B)~(R',G',B').\)
-     *
+     * <p>
      * After the iterations over, the color components of the initial pixel (that is, the pixel from where the
      * iterations started) are set to the final value (average color at the last iteration):
-     *
+     * <p>
      * \(I(X,Y) &lt;- (R*,G*,B*)\)
-     *
+     * <p>
      * When maxLevel &gt; 0, the gaussian pyramid of maxLevel+1 levels is built, and the above procedure is run on the
      * smallest layer first. After that, the results are propagated to the larger layer and the iterations are run again
      * only on those pixels where the layer colors differ by more than sr from the lower-resolution layer of the
@@ -6264,29 +6057,33 @@ public class Imgproc {
                 termcrit.epsilon);
     }
 
+    //
+    // C++: void cv::watershed(Mat image, Mat& markers)
+    //
+
     /**
      * Performs initial step of meanshift segmentation of an image.
-     *
+     * <p>
      * The function implements the filtering stage of meanshift segmentation, that is, the output of the function is the
      * filtered "posterized" image with color gradients and fine-grain texture flattened. At every pixel (X,Y) of the
      * input image (or down-sized input image, see below) the function executes meanshift iterations, that is, the pixel
      * (X,Y) neighborhood in the joint space-color hyperspace is considered:
-     *
+     * <p>
      * \((x,y): X- \texttt{sp} \le x \le X+ \texttt{sp} , Y- \texttt{sp} \le y \le Y+ \texttt{sp} , ||(R,G,B)-(r,g,b)||
      * \le \texttt{sr}\)
-     *
+     * <p>
      * where (R,G,B) and (r,g,b) are the vectors of color components at (X,Y) and (x,y), respectively (though, the
      * algorithm does not depend on the color space used, so any 3-component color space can be used instead). Over the
      * neighborhood the average spatial value (X',Y') and average color vector (R',G',B') are found and they act as the
      * neighborhood center on the next iteration:
-     *
+     * <p>
      * \((X,Y)~(X',Y'), (R,G,B)~(R',G',B').\)
-     *
+     * <p>
      * After the iterations over, the color components of the initial pixel (that is, the pixel from where the
      * iterations started) are set to the final value (average color at the last iteration):
-     *
+     * <p>
      * \(I(X,Y) &lt;- (R*,G*,B*)\)
-     *
+     * <p>
      * When maxLevel &gt; 0, the gaussian pyramid of maxLevel+1 levels is built, and the above procedure is run on the
      * smallest layer first. After that, the results are propagated to the larger layer and the iterations are run again
      * only on those pixels where the layer colors differ by more than sr from the lower-resolution layer of the
@@ -6303,29 +6100,34 @@ public class Imgproc {
         pyrMeanShiftFiltering_1(src.nativeObj, dst.nativeObj, sp, sr, maxLevel);
     }
 
+    //
+    // C++: void cv::pyrMeanShiftFiltering(Mat src, Mat& dst, double sp, double sr, int maxLevel = 1, TermCriteria
+    // termcrit = TermCriteria(TermCriteria::MAX_ITER+TermCriteria::EPS,5,1))
+    //
+
     /**
      * Performs initial step of meanshift segmentation of an image.
-     *
+     * <p>
      * The function implements the filtering stage of meanshift segmentation, that is, the output of the function is the
      * filtered "posterized" image with color gradients and fine-grain texture flattened. At every pixel (X,Y) of the
      * input image (or down-sized input image, see below) the function executes meanshift iterations, that is, the pixel
      * (X,Y) neighborhood in the joint space-color hyperspace is considered:
-     *
+     * <p>
      * \((x,y): X- \texttt{sp} \le x \le X+ \texttt{sp} , Y- \texttt{sp} \le y \le Y+ \texttt{sp} , ||(R,G,B)-(r,g,b)||
      * \le \texttt{sr}\)
-     *
+     * <p>
      * where (R,G,B) and (r,g,b) are the vectors of color components at (X,Y) and (x,y), respectively (though, the
      * algorithm does not depend on the color space used, so any 3-component color space can be used instead). Over the
      * neighborhood the average spatial value (X',Y') and average color vector (R',G',B') are found and they act as the
      * neighborhood center on the next iteration:
-     *
+     * <p>
      * \((X,Y)~(X',Y'), (R,G,B)~(R',G',B').\)
-     *
+     * <p>
      * After the iterations over, the color components of the initial pixel (that is, the pixel from where the
      * iterations started) are set to the final value (average color at the last iteration):
-     *
+     * <p>
      * \(I(X,Y) &lt;- (R*,G*,B*)\)
-     *
+     * <p>
      * When maxLevel &gt; 0, the gaussian pyramid of maxLevel+1 levels is built, and the above procedure is run on the
      * smallest layer first. After that, the results are propagated to the larger layer and the iterations are run again
      * only on those pixels where the layer colors differ by more than sr from the lower-resolution layer of the
@@ -6341,14 +6143,9 @@ public class Imgproc {
         pyrMeanShiftFiltering_2(src.nativeObj, dst.nativeObj, sp, sr);
     }
 
-    //
-    // C++: void cv::grabCut(Mat img, Mat& mask, Rect rect, Mat& bgdModel, Mat& fgdModel, int iterCount, int mode =
-    // GC_EVAL)
-    //
-
     /**
      * Runs the GrabCut algorithm.
-     *
+     * <p>
      * The function implements the [GrabCut image segmentation algorithm](https://en.wikipedia.org/wiki/GrabCut).
      *
      * @param img       Input 8-bit 3-channel image.
@@ -6380,7 +6177,7 @@ public class Imgproc {
 
     /**
      * Runs the GrabCut algorithm.
-     *
+     * <p>
      * The function implements the [GrabCut image segmentation algorithm](https://en.wikipedia.org/wiki/GrabCut).
      *
      * @param img       Input 8-bit 3-channel image.
@@ -6409,19 +6206,19 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::distanceTransform(Mat src, Mat& dst, Mat& labels, int distanceType, int maskSize, int labelType =
-    // DIST_LABEL_CCOMP)
+    // C++: void cv::grabCut(Mat img, Mat& mask, Rect rect, Mat& bgdModel, Mat& fgdModel, int iterCount, int mode =
+    // GC_EVAL)
     //
 
     /**
      * Calculates the distance to the closest zero pixel for each pixel of the source image.
-     *
+     * <p>
      * The function cv::distanceTransform calculates the approximate or precise distance from every binary image pixel
      * to the nearest zero pixel. For zero image pixels, the distance will obviously be zero.
-     *
+     * <p>
      * When maskSize == #DIST_MASK_PRECISE and distanceType == #DIST_L2 , the function runs the algorithm described in
      * CITE: Felzenszwalb04 . This algorithm is parallelized with the TBB library.
-     *
+     * <p>
      * In other cases, the algorithm CITE: Borgefors86 is used. This means that for a pixel the function finds the
      * shortest path to the nearest zero pixel consisting of basic shifts: horizontal, vertical, diagonal, or knight's
      * move (the latest is available for a \(5\times 5\) mask). The overall distance is calculated as a sum of these
@@ -6440,18 +6237,18 @@ public class Imgproc {
      * </ul>
      * <li>DIST_C: {@code a = 1, b = 1}</li>
      * </ul>
-     *
+     * <p>
      * Typically, for a fast, coarse distance estimation #DIST_L2, a \(3\times 3\) mask is used. For a more accurate
      * distance estimation #DIST_L2, a \(5\times 5\) mask or the precise algorithm is used. Note that both the precise
      * and the approximate algorithms are linear on the number of pixels.
-     *
+     * <p>
      * This variant of the function does not only compute the minimum distance for each pixel \((x, y)\) but also
      * identifies the nearest connected component consisting of zero pixels (labelType==#DIST_LABEL_CCOMP) or the
      * nearest zero pixel (labelType==#DIST_LABEL_PIXEL). Index of the component/pixel is stored in
      * {@code labels(x, y)}. When labelType==#DIST_LABEL_CCOMP, the function automatically finds connected components of
      * zero pixels in the input image and marks them with distinct labels. When labelType==#DIST_LABEL_PIXEL, the
      * function scans through the input image and marks all the zero pixels with distinct labels.
-     *
+     * <p>
      * In this mode, the complexity is still linear. That is, the function provides a very fast way to compute the
      * Voronoi diagram for a binary image. Currently, the second variant can use only the approximate distance transform
      * algorithm, i.e. maskSize=#DIST_MASK_PRECISE is not supported yet.
@@ -6486,13 +6283,13 @@ public class Imgproc {
 
     /**
      * Calculates the distance to the closest zero pixel for each pixel of the source image.
-     *
+     * <p>
      * The function cv::distanceTransform calculates the approximate or precise distance from every binary image pixel
      * to the nearest zero pixel. For zero image pixels, the distance will obviously be zero.
-     *
+     * <p>
      * When maskSize == #DIST_MASK_PRECISE and distanceType == #DIST_L2 , the function runs the algorithm described in
      * CITE: Felzenszwalb04 . This algorithm is parallelized with the TBB library.
-     *
+     * <p>
      * In other cases, the algorithm CITE: Borgefors86 is used. This means that for a pixel the function finds the
      * shortest path to the nearest zero pixel consisting of basic shifts: horizontal, vertical, diagonal, or knight's
      * move (the latest is available for a \(5\times 5\) mask). The overall distance is calculated as a sum of these
@@ -6511,18 +6308,18 @@ public class Imgproc {
      * </ul>
      * <li>DIST_C: {@code a = 1, b = 1}</li>
      * </ul>
-     *
+     * <p>
      * Typically, for a fast, coarse distance estimation #DIST_L2, a \(3\times 3\) mask is used. For a more accurate
      * distance estimation #DIST_L2, a \(5\times 5\) mask or the precise algorithm is used. Note that both the precise
      * and the approximate algorithms are linear on the number of pixels.
-     *
+     * <p>
      * This variant of the function does not only compute the minimum distance for each pixel \((x, y)\) but also
      * identifies the nearest connected component consisting of zero pixels (labelType==#DIST_LABEL_CCOMP) or the
      * nearest zero pixel (labelType==#DIST_LABEL_PIXEL). Index of the component/pixel is stored in
      * {@code labels(x, y)}. When labelType==#DIST_LABEL_CCOMP, the function automatically finds connected components of
      * zero pixels in the input image and marks them with distinct labels. When labelType==#DIST_LABEL_PIXEL, the
      * function scans through the input image and marks all the zero pixels with distinct labels.
-     *
+     * <p>
      * In this mode, the complexity is still linear. That is, the function provides a very fast way to compute the
      * Voronoi diagram for a binary image. Currently, the second variant can use only the approximate distance transform
      * algorithm, i.e. maskSize=#DIST_MASK_PRECISE is not supported yet.
@@ -6543,10 +6340,13 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::distanceTransform(Mat src, Mat& dst, int distanceType, int maskSize, int dstType = CV_32F)
+    // C++: void cv::distanceTransform(Mat src, Mat& dst, Mat& labels, int distanceType, int maskSize, int labelType =
+    // DIST_LABEL_CCOMP)
     //
 
     /**
+     * Performs the {@code distanceTransform} operation.
+     *
      *
      * @param src          8-bit, single-channel (binary) source image.
      * @param dst          Output image with calculated distances. It is a 8-bit or 32-bit floating-point,
@@ -6563,6 +6363,8 @@ public class Imgproc {
     }
 
     /**
+     * Performs the {@code distanceTransform} operation.
+     *
      *
      * @param src          8-bit, single-channel (binary) source image.
      * @param dst          Output image with calculated distances. It is a 8-bit or 32-bit floating-point,
@@ -6578,13 +6380,12 @@ public class Imgproc {
     }
 
     //
-    // C++: int cv::floodFill(Mat& image, Mat& mask, Point seedPoint, Scalar newVal, Rect* rect = 0, Scalar loDiff =
-    // Scalar(), Scalar upDiff = Scalar(), int flags = 4)
+    // C++: void cv::distanceTransform(Mat src, Mat& dst, int distanceType, int maskSize, int dstType = CV_32F)
     //
 
     /**
      * Fills a connected component with the given color.
-     *
+     * <p>
      * The function cv::floodFill fills a connected component starting from the seed point with the specified color. The
      * connectivity is determined by the color/brightness closeness of the neighbor pixels. The pixel at \((x,y)\) is
      * considered to belong to the repainted domain if:
@@ -6619,7 +6420,7 @@ public class Imgproc {
      * (x,y)_b \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_b+ \texttt{upDiff} _b\)</li>
      * </ul>
      *
-     *
+     * <p>
      * where \(src(x',y')\) is the value of one of pixel neighbors that is already known to belong to the component.
      * That is, to be added to the connected component, a color/brightness of the pixel should be close enough to:
      * <ul>
@@ -6627,7 +6428,7 @@ public class Imgproc {
      * range.</li>
      * <li>Color/brightness of the seed point in case of a fixed range.</li>
      * </ul>
-     *
+     * <p>
      * Use these functions to either mark a connected component with the specified color in-place, or build a mask and
      * then extract the contour, or copy the region to another image, and so on.
      *
@@ -6662,7 +6463,7 @@ public class Imgproc {
      *
      *                  <b>Note:</b> Since the mask is larger than the filled image, a pixel \((x, y)\) in image
      *                  corresponds to the pixel \((x+1, y+1)\) in the mask .
-     *
+     *                  <p>
      *                  SEE: findContours
      * @return automatically generated
      */
@@ -6706,7 +6507,7 @@ public class Imgproc {
 
     /**
      * Fills a connected component with the given color.
-     *
+     * <p>
      * The function cv::floodFill fills a connected component starting from the seed point with the specified color. The
      * connectivity is determined by the color/brightness closeness of the neighbor pixels. The pixel at \((x,y)\) is
      * considered to belong to the repainted domain if:
@@ -6741,7 +6542,7 @@ public class Imgproc {
      * (x,y)_b \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_b+ \texttt{upDiff} _b\)</li>
      * </ul>
      *
-     *
+     * <p>
      * where \(src(x',y')\) is the value of one of pixel neighbors that is already known to belong to the component.
      * That is, to be added to the connected component, a color/brightness of the pixel should be close enough to:
      * <ul>
@@ -6749,7 +6550,7 @@ public class Imgproc {
      * range.</li>
      * <li>Color/brightness of the seed point in case of a fixed range.</li>
      * </ul>
-     *
+     * <p>
      * Use these functions to either mark a connected component with the specified color in-place, or build a mask and
      * then extract the contour, or copy the region to another image, and so on.
      *
@@ -6782,7 +6583,7 @@ public class Imgproc {
      *
      *                  <b>Note:</b> Since the mask is larger than the filled image, a pixel \((x, y)\) in image
      *                  corresponds to the pixel \((x+1, y+1)\) in the mask .
-     *
+     *                  <p>
      *                  SEE: findContours
      * @return automatically generated
      */
@@ -6822,9 +6623,14 @@ public class Imgproc {
         return retVal;
     }
 
+    //
+    // C++: int cv::floodFill(Mat& image, Mat& mask, Point seedPoint, Scalar newVal, Rect* rect = 0, Scalar loDiff =
+    // Scalar(), Scalar upDiff = Scalar(), int flags = 4)
+    //
+
     /**
      * Fills a connected component with the given color.
-     *
+     * <p>
      * The function cv::floodFill fills a connected component starting from the seed point with the specified color. The
      * connectivity is determined by the color/brightness closeness of the neighbor pixels. The pixel at \((x,y)\) is
      * considered to belong to the repainted domain if:
@@ -6859,7 +6665,7 @@ public class Imgproc {
      * (x,y)_b \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_b+ \texttt{upDiff} _b\)</li>
      * </ul>
      *
-     *
+     * <p>
      * where \(src(x',y')\) is the value of one of pixel neighbors that is already known to belong to the component.
      * That is, to be added to the connected component, a color/brightness of the pixel should be close enough to:
      * <ul>
@@ -6867,7 +6673,7 @@ public class Imgproc {
      * range.</li>
      * <li>Color/brightness of the seed point in case of a fixed range.</li>
      * </ul>
-     *
+     * <p>
      * Use these functions to either mark a connected component with the specified color in-place, or build a mask and
      * then extract the contour, or copy the region to another image, and so on.
      *
@@ -6899,7 +6705,7 @@ public class Imgproc {
      *
      *                  <b>Note:</b> Since the mask is larger than the filled image, a pixel \((x, y)\) in image
      *                  corresponds to the pixel \((x+1, y+1)\) in the mask .
-     *
+     *                  <p>
      *                  SEE: findContours
      * @return automatically generated
      */
@@ -6930,7 +6736,7 @@ public class Imgproc {
 
     /**
      * Fills a connected component with the given color.
-     *
+     * <p>
      * The function cv::floodFill fills a connected component starting from the seed point with the specified color. The
      * connectivity is determined by the color/brightness closeness of the neighbor pixels. The pixel at \((x,y)\) is
      * considered to belong to the repainted domain if:
@@ -6965,7 +6771,7 @@ public class Imgproc {
      * (x,y)_b \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_b+ \texttt{upDiff} _b\)</li>
      * </ul>
      *
-     *
+     * <p>
      * where \(src(x',y')\) is the value of one of pixel neighbors that is already known to belong to the component.
      * That is, to be added to the connected component, a color/brightness of the pixel should be close enough to:
      * <ul>
@@ -6973,7 +6779,7 @@ public class Imgproc {
      * range.</li>
      * <li>Color/brightness of the seed point in case of a fixed range.</li>
      * </ul>
-     *
+     * <p>
      * Use these functions to either mark a connected component with the specified color in-place, or build a mask and
      * then extract the contour, or copy the region to another image, and so on.
      *
@@ -7004,7 +6810,7 @@ public class Imgproc {
      *
      *                  <b>Note:</b> Since the mask is larger than the filled image, a pixel \((x, y)\) in image
      *                  corresponds to the pixel \((x+1, y+1)\) in the mask .
-     *
+     *                  <p>
      *                  SEE: findContours
      * @return automatically generated
      */
@@ -7031,7 +6837,7 @@ public class Imgproc {
 
     /**
      * Fills a connected component with the given color.
-     *
+     * <p>
      * The function cv::floodFill fills a connected component starting from the seed point with the specified color. The
      * connectivity is determined by the color/brightness closeness of the neighbor pixels. The pixel at \((x,y)\) is
      * considered to belong to the repainted domain if:
@@ -7066,7 +6872,7 @@ public class Imgproc {
      * (x,y)_b \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_b+ \texttt{upDiff} _b\)</li>
      * </ul>
      *
-     *
+     * <p>
      * where \(src(x',y')\) is the value of one of pixel neighbors that is already known to belong to the component.
      * That is, to be added to the connected component, a color/brightness of the pixel should be close enough to:
      * <ul>
@@ -7074,7 +6880,7 @@ public class Imgproc {
      * range.</li>
      * <li>Color/brightness of the seed point in case of a fixed range.</li>
      * </ul>
-     *
+     * <p>
      * Use these functions to either mark a connected component with the specified color in-place, or build a mask and
      * then extract the contour, or copy the region to another image, and so on.
      *
@@ -7104,7 +6910,7 @@ public class Imgproc {
      *
      *                  <b>Note:</b> Since the mask is larger than the filled image, a pixel \((x, y)\) in image
      *                  corresponds to the pixel \((x+1, y+1)\) in the mask .
-     *
+     *                  <p>
      *                  SEE: findContours
      * @return automatically generated
      */
@@ -7119,10 +6925,6 @@ public class Imgproc {
                 newVal.val[2],
                 newVal.val[3]);
     }
-
-    //
-    // C++: void cv::blendLinear(Mat src1, Mat src2, Mat weights1, Mat weights2, Mat& dst)
-    //
 
     /**
      *
@@ -7139,27 +6941,23 @@ public class Imgproc {
         blendLinear_0(src1.nativeObj, src2.nativeObj, weights1.nativeObj, weights2.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::cvtColor(Mat src, Mat& dst, int code, int dstCn = 0, AlgorithmHint hint = cv::ALGO_HINT_DEFAULT)
-    //
-
     /**
      * Converts an image from one color space to another.
-     *
+     * <p>
      * The function converts an input image from one color space to another. In case of a transformation to-from RGB
      * color space, the order of the channels should be specified explicitly (RGB or BGR). Note that the default color
      * format in OpenCV is often referred to as RGB but it is actually BGR (the bytes are reversed). So the first byte
      * in a standard (24-bit) color image will be an 8-bit Blue component, the second byte will be Green, and the third
      * byte will be Red. The fourth, fifth, and sixth bytes would then be the second pixel (Blue, then Green, then Red),
      * and so on.
-     *
+     * <p>
      * The conventional ranges for R, G, and B channel values are:
      * <ul>
      * <li>0 to 255 for CV_8U images</li>
      * <li>0 to 65535 for CV_16U images</li>
      * <li>0 to 1 for CV_32F images</li>
      * </ul>
-     *
+     * <p>
      * In case of linear transformations, the range does not matter. But in case of a non-linear transformation, an
      * input RGB image should be normalized to the proper value range to get the correct results, for example, for RGB
      * \(\rightarrow\) L\*u\*v\* transformation. For example, if you have a 32-bit floating-point image directly
@@ -7170,7 +6968,7 @@ public class Imgproc {
      * </code> If you use #cvtColor with 8-bit images, the conversion will have some information lost. For many
      * applications, this will not be noticeable but it is recommended to use 32-bit images in applications that need
      * the full range of colors or that convert an image before an operation and then convert back.
-     *
+     * <p>
      * If conversion adds the alpha channel, its value will set to the maximum of corresponding channel range: 255 for
      * CV_8U, 65535 for CV_16U, 1 for CV_32F.
      *
@@ -7179,7 +6977,7 @@ public class Imgproc {
      * @param code  color space conversion code (see #ColorConversionCodes).
      * @param dstCn number of channels in the destination image; if the parameter is 0, the number of the channels is
      *              derived automatically from src and code.
-     * @param hint  Implementation modfication flags. See #AlgorithmHint
+     * @param hint  Implementation modification flags. See #AlgorithmHint
      *
      *              <b>Note:</b> The source image (src) must be of an appropriate type for the desired color conversion.
      *              see ColorConversionCodes SEE: REF: imgproc_color_conversions
@@ -7188,23 +6986,27 @@ public class Imgproc {
         cvtColor_0(src.nativeObj, dst.nativeObj, code, dstCn, hint);
     }
 
+    //
+    // C++: void cv::blendLinear(Mat src1, Mat src2, Mat weights1, Mat weights2, Mat& dst)
+    //
+
     /**
      * Converts an image from one color space to another.
-     *
+     * <p>
      * The function converts an input image from one color space to another. In case of a transformation to-from RGB
      * color space, the order of the channels should be specified explicitly (RGB or BGR). Note that the default color
      * format in OpenCV is often referred to as RGB but it is actually BGR (the bytes are reversed). So the first byte
      * in a standard (24-bit) color image will be an 8-bit Blue component, the second byte will be Green, and the third
      * byte will be Red. The fourth, fifth, and sixth bytes would then be the second pixel (Blue, then Green, then Red),
      * and so on.
-     *
+     * <p>
      * The conventional ranges for R, G, and B channel values are:
      * <ul>
      * <li>0 to 255 for CV_8U images</li>
      * <li>0 to 65535 for CV_16U images</li>
      * <li>0 to 1 for CV_32F images</li>
      * </ul>
-     *
+     * <p>
      * In case of linear transformations, the range does not matter. But in case of a non-linear transformation, an
      * input RGB image should be normalized to the proper value range to get the correct results, for example, for RGB
      * \(\rightarrow\) L\*u\*v\* transformation. For example, if you have a 32-bit floating-point image directly
@@ -7215,7 +7017,7 @@ public class Imgproc {
      * </code> If you use #cvtColor with 8-bit images, the conversion will have some information lost. For many
      * applications, this will not be noticeable but it is recommended to use 32-bit images in applications that need
      * the full range of colors or that convert an image before an operation and then convert back.
-     *
+     * <p>
      * If conversion adds the alpha channel, its value will set to the maximum of corresponding channel range: 255 for
      * CV_8U, 65535 for CV_16U, 1 for CV_32F.
      *
@@ -7232,23 +7034,27 @@ public class Imgproc {
         cvtColor_1(src.nativeObj, dst.nativeObj, code, dstCn);
     }
 
+    //
+    // C++: void cv::cvtColor(Mat src, Mat& dst, int code, int dstCn = 0, AlgorithmHint hint = cv::ALGO_HINT_DEFAULT)
+    //
+
     /**
      * Converts an image from one color space to another.
-     *
+     * <p>
      * The function converts an input image from one color space to another. In case of a transformation to-from RGB
      * color space, the order of the channels should be specified explicitly (RGB or BGR). Note that the default color
      * format in OpenCV is often referred to as RGB but it is actually BGR (the bytes are reversed). So the first byte
      * in a standard (24-bit) color image will be an 8-bit Blue component, the second byte will be Green, and the third
      * byte will be Red. The fourth, fifth, and sixth bytes would then be the second pixel (Blue, then Green, then Red),
      * and so on.
-     *
+     * <p>
      * The conventional ranges for R, G, and B channel values are:
      * <ul>
      * <li>0 to 255 for CV_8U images</li>
      * <li>0 to 65535 for CV_16U images</li>
      * <li>0 to 1 for CV_32F images</li>
      * </ul>
-     *
+     * <p>
      * In case of linear transformations, the range does not matter. But in case of a non-linear transformation, an
      * input RGB image should be normalized to the proper value range to get the correct results, for example, for RGB
      * \(\rightarrow\) L\*u\*v\* transformation. For example, if you have a 32-bit floating-point image directly
@@ -7259,7 +7065,7 @@ public class Imgproc {
      * </code> If you use #cvtColor with 8-bit images, the conversion will have some information lost. For many
      * applications, this will not be noticeable but it is recommended to use 32-bit images in applications that need
      * the full range of colors or that convert an image before an operation and then convert back.
-     *
+     * <p>
      * If conversion adds the alpha channel, its value will set to the maximum of corresponding channel range: 255 for
      * CV_8U, 65535 for CV_16U, 1 for CV_32F.
      *
@@ -7275,14 +7081,9 @@ public class Imgproc {
         cvtColor_2(src.nativeObj, dst.nativeObj, code);
     }
 
-    //
-    // C++: void cv::cvtColorTwoPlane(Mat src1, Mat src2, Mat& dst, int code, AlgorithmHint hint =
-    // cv::ALGO_HINT_DEFAULT)
-    //
-
     /**
      * Converts an image from one color space to another where the source image is stored in two planes.
-     *
+     * <p>
      * This function only supports YUV420 to RGB conversion as of now.
      *
      * @param src1 8-bit image (#CV_8U) of the Y plane.
@@ -7299,7 +7100,7 @@ public class Imgproc {
      *             <li>#COLOR_YUV2BGRA_NV21</li>
      *             <li>#COLOR_YUV2RGBA_NV21</li>
      *             </ul>
-     * @param hint Implementation modfication flags. See #AlgorithmHint
+     * @param hint Implementation modification flags. See #AlgorithmHint
      */
     public static void cvtColorTwoPlane(Mat src1, Mat src2, Mat dst, int code, int hint) {
         cvtColorTwoPlane_0(src1.nativeObj, src2.nativeObj, dst.nativeObj, code, hint);
@@ -7307,7 +7108,7 @@ public class Imgproc {
 
     /**
      * Converts an image from one color space to another where the source image is stored in two planes.
-     *
+     * <p>
      * This function only supports YUV420 to RGB conversion as of now.
      *
      * @param src1 8-bit image (#CV_8U) of the Y plane.
@@ -7330,7 +7131,8 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::demosaicing(Mat src, Mat& dst, int code, int dstCn = 0)
+    // C++: void cv::cvtColorTwoPlane(Mat src1, Mat src2, Mat& dst, int code, AlgorithmHint hint =
+    // cv::ALGO_HINT_DEFAULT)
     //
 
     /**
@@ -7341,33 +7143,33 @@ public class Imgproc {
      * @param code  Color space conversion code (see the description below).
      * @param dstCn number of channels in the destination image; if the parameter is 0, the number of the channels is
      *              derived automatically from src and code.
-     *
+     *              <p>
      *              The function can do the following transformations:
      *
      *              <ul>
      *              <li>Demosaicing using bilinear interpolation</li>
      *              </ul>
-     *
+     *              <p>
      *              #COLOR_BayerBG2BGR , #COLOR_BayerGB2BGR , #COLOR_BayerRG2BGR , #COLOR_BayerGR2BGR
-     *
+     *              <p>
      *              #COLOR_BayerBG2GRAY , #COLOR_BayerGB2GRAY , #COLOR_BayerRG2GRAY , #COLOR_BayerGR2GRAY
      *
      *              <ul>
      *              <li>Demosaicing using Variable Number of Gradients.</li>
      *              </ul>
-     *
+     *              <p>
      *              #COLOR_BayerBG2BGR_VNG , #COLOR_BayerGB2BGR_VNG , #COLOR_BayerRG2BGR_VNG , #COLOR_BayerGR2BGR_VNG
      *
      *              <ul>
      *              <li>Edge-Aware Demosaicing.</li>
      *              </ul>
-     *
+     *              <p>
      *              #COLOR_BayerBG2BGR_EA , #COLOR_BayerGB2BGR_EA , #COLOR_BayerRG2BGR_EA , #COLOR_BayerGR2BGR_EA
      *
      *              <ul>
      *              <li>Demosaicing with alpha channel</li>
      *              </ul>
-     *
+     *              <p>
      *              #COLOR_BayerBG2BGRA , #COLOR_BayerGB2BGRA , #COLOR_BayerRG2BGRA , #COLOR_BayerGR2BGRA
      *
      *              <b>Note:</b> The source image (src) must be of an appropriate type for the desired color conversion.
@@ -7384,33 +7186,33 @@ public class Imgproc {
      * @param dst  output image of the same size and depth as src.
      * @param code Color space conversion code (see the description below). channels is derived automatically from src
      *             and code.
-     *
+     *             <p>
      *             The function can do the following transformations:
      *
      *             <ul>
      *             <li>Demosaicing using bilinear interpolation</li>
      *             </ul>
-     *
+     *             <p>
      *             #COLOR_BayerBG2BGR , #COLOR_BayerGB2BGR , #COLOR_BayerRG2BGR , #COLOR_BayerGR2BGR
-     *
+     *             <p>
      *             #COLOR_BayerBG2GRAY , #COLOR_BayerGB2GRAY , #COLOR_BayerRG2GRAY , #COLOR_BayerGR2GRAY
      *
      *             <ul>
      *             <li>Demosaicing using Variable Number of Gradients.</li>
      *             </ul>
-     *
+     *             <p>
      *             #COLOR_BayerBG2BGR_VNG , #COLOR_BayerGB2BGR_VNG , #COLOR_BayerRG2BGR_VNG , #COLOR_BayerGR2BGR_VNG
      *
      *             <ul>
      *             <li>Edge-Aware Demosaicing.</li>
      *             </ul>
-     *
+     *             <p>
      *             #COLOR_BayerBG2BGR_EA , #COLOR_BayerGB2BGR_EA , #COLOR_BayerRG2BGR_EA , #COLOR_BayerGR2BGR_EA
      *
      *             <ul>
      *             <li>Demosaicing with alpha channel</li>
      *             </ul>
-     *
+     *             <p>
      *             #COLOR_BayerBG2BGRA , #COLOR_BayerGB2BGRA , #COLOR_BayerRG2BGRA , #COLOR_BayerGR2BGRA
      *
      *             <b>Note:</b> The source image (src) must be of an appropriate type for the desired color conversion.
@@ -7421,89 +7223,17 @@ public class Imgproc {
     }
 
     //
-    // C++: Moments cv::moments(Mat array, bool binaryImage = false)
-    //
-
-    /**
-     * Calculates all of the moments up to the third order of a polygon or rasterized shape.
-     *
-     * The function computes moments, up to the 3rd order, of a vector shape or a rasterized shape. The results are
-     * returned in the structure cv::Moments.
-     *
-     * @param array       Single chanel raster image (CV_8U, CV_16U, CV_16S, CV_32F, CV_64F) or an array ( \(1 \times
-     *                    N\) or \(N \times 1\) ) of 2D points (Point or Point2f).
-     * @param binaryImage If it is true, all non-zero image pixels are treated as 1's. The parameter is used for images
-     *                    only.
-     * @return moments.
-     *
-     *         <b>Note:</b> Only applicable to contour moments calculations from Python bindings: Note that the numpy
-     *         type for the input array should be either np.int32 or np.float32.
-     *
-     *         <b>Note:</b> For contour-based moments, the zeroth-order moment \c m00 represents the contour area.
-     *
-     *         If the input contour is degenerate (for example, a single point or all points are collinear), the area is
-     *         zero and therefore \c m00 == 0.
-     *
-     *         In this case, the centroid coordinates (\c m10/m00, \c m01/m00) are undefined and must be handled
-     *         explicitly by the caller.
-     *
-     *         A common workaround is to compute the center using cv::boundingRect() or by averaging the input points.
-     *
-     *         SEE: contourArea, arcLength
-     */
-    public static Moments moments(Mat array, boolean binaryImage) {
-        return new Moments(moments_0(array.nativeObj, binaryImage));
-    }
-
-    /**
-     * Calculates all of the moments up to the third order of a polygon or rasterized shape.
-     *
-     * The function computes moments, up to the 3rd order, of a vector shape or a rasterized shape. The results are
-     * returned in the structure cv::Moments.
-     *
-     * @param array Single chanel raster image (CV_8U, CV_16U, CV_16S, CV_32F, CV_64F) or an array ( \(1 \times N\) or
-     *              \(N \times 1\) ) of 2D points (Point or Point2f). used for images only.
-     * @return moments.
-     *
-     *         <b>Note:</b> Only applicable to contour moments calculations from Python bindings: Note that the numpy
-     *         type for the input array should be either np.int32 or np.float32.
-     *
-     *         <b>Note:</b> For contour-based moments, the zeroth-order moment \c m00 represents the contour area.
-     *
-     *         If the input contour is degenerate (for example, a single point or all points are collinear), the area is
-     *         zero and therefore \c m00 == 0.
-     *
-     *         In this case, the centroid coordinates (\c m10/m00, \c m01/m00) are undefined and must be handled
-     *         explicitly by the caller.
-     *
-     *         A common workaround is to compute the center using cv::boundingRect() or by averaging the input points.
-     *
-     *         SEE: contourArea, arcLength
-     */
-    public static Moments moments(Mat array) {
-        return new Moments(moments_1(array.nativeObj));
-    }
-
-    //
-    // C++: void cv::HuMoments(Moments m, Mat& hu)
-    //
-
-    public static void HuMoments(Moments m, Mat hu) {
-        HuMoments_0(m.m00, m.m10, m.m01, m.m20, m.m11, m.m02, m.m30, m.m21, m.m12, m.m03, hu.nativeObj);
-    }
-
-    //
-    // C++: void cv::matchTemplate(Mat image, Mat templ, Mat& result, int method, Mat mask = Mat())
+    // C++: void cv::demosaicing(Mat src, Mat& dst, int code, int dstCn = 0)
     //
 
     /**
      * Compares a template against overlapped image regions.
-     *
+     * <p>
      * The function slides through image , compares the overlapped patches of size \(w \times h\) against templ using
      * the specified method and stores the comparison results in result . #TemplateMatchModes describes the formulae for
      * the available comparison methods ( \(I\) denotes image, \(T\) template, \(R\) result, \(M\) the optional mask ).
      * The summation is done over template and/or the image patch: \(x' = 0...w-1, y' = 0...h-1\)
-     *
+     * <p>
      * After the function finishes the comparison, the best matches can be found as global minimums (when #TM_SQDIFF was
      * used) or maximums (when #TM_CCORR or #TM_CCOEFF was used) using the #minMaxLoc function. In case of a color
      * image, template summation in the numerator and each sum in the denominator is done over all of the channels and
@@ -7528,12 +7258,12 @@ public class Imgproc {
 
     /**
      * Compares a template against overlapped image regions.
-     *
+     * <p>
      * The function slides through image , compares the overlapped patches of size \(w \times h\) against templ using
      * the specified method and stores the comparison results in result . #TemplateMatchModes describes the formulae for
      * the available comparison methods ( \(I\) denotes image, \(T\) template, \(R\) result, \(M\) the optional mask ).
      * The summation is done over template and/or the image patch: \(x' = 0...w-1, y' = 0...h-1\)
-     *
+     * <p>
      * After the function finishes the comparison, the best matches can be found as global minimums (when #TM_SQDIFF was
      * used) or maximums (when #TM_CCORR or #TM_CCOEFF was used) using the #minMaxLoc function. In case of a color
      * image, template summation in the numerator and each sum in the denominator is done over all of the channels and
@@ -7555,12 +7285,12 @@ public class Imgproc {
     }
 
     //
-    // C++: int cv::connectedComponents(Mat image, Mat& labels, int connectivity, int ltype, int ccltype)
+    // C++: void cv::matchTemplate(Mat image, Mat templ, Mat& result, int method, Mat mask = Mat())
     //
 
     /**
      * computes the connected components labeled image of boolean image
-     *
+     * <p>
      * image with 4 or 8 way connectivity - returns N, the total number of labels [0, N-1] where 0 represents the
      * background label. ltype specifies the output label image type, an important consideration based on the total
      * number of labels or alternatively the total number of pixels in the source image. ccltype specifies the connected
@@ -7586,11 +7316,9 @@ public class Imgproc {
         return connectedComponentsWithAlgorithm_0(image.nativeObj, labels.nativeObj, connectivity, ltype, ccltype);
     }
 
-    //
-    // C++: int cv::connectedComponents(Mat image, Mat& labels, int connectivity = 8, int ltype = CV_32S)
-    //
-
     /**
+     * Performs the {@code connectedComponents} operation.
+     *
      *
      *
      * @param image        the 8-bit single-channel image to be labeled
@@ -7603,7 +7331,13 @@ public class Imgproc {
         return connectedComponents_0(image.nativeObj, labels.nativeObj, connectivity, ltype);
     }
 
+    //
+    // C++: int cv::connectedComponents(Mat image, Mat& labels, int connectivity, int ltype, int ccltype)
+    //
+
     /**
+     * Performs the {@code connectedComponents} operation.
+     *
      *
      *
      * @param image        the 8-bit single-channel image to be labeled
@@ -7615,7 +7349,13 @@ public class Imgproc {
         return connectedComponents_1(image.nativeObj, labels.nativeObj, connectivity);
     }
 
+    //
+    // C++: int cv::connectedComponents(Mat image, Mat& labels, int connectivity = 8, int ltype = CV_32S)
+    //
+
     /**
+     * Performs the {@code connectedComponents} operation.
+     *
      *
      *
      * @param image  the 8-bit single-channel image to be labeled
@@ -7626,15 +7366,10 @@ public class Imgproc {
         return connectedComponents_2(image.nativeObj, labels.nativeObj);
     }
 
-    //
-    // C++: int cv::connectedComponentsWithStats(Mat image, Mat& labels, Mat& stats, Mat& centroids, int connectivity,
-    // int ltype, int ccltype)
-    //
-
     /**
      * computes the connected components labeled image of boolean image and also produces a statistics output for each
      * label
-     *
+     * <p>
      * image with 4 or 8 way connectivity - returns N, the total number of labels [0, N-1] where 0 represents the
      * background label. ltype specifies the output label image type, an important consideration based on the total
      * number of labels or alternatively the total number of pixels in the source image. ccltype specifies the connected
@@ -7674,12 +7409,9 @@ public class Imgproc {
                 ccltype);
     }
 
-    //
-    // C++: int cv::connectedComponentsWithStats(Mat image, Mat& labels, Mat& stats, Mat& centroids, int connectivity =
-    // 8, int ltype = CV_32S)
-    //
-
     /**
+     * Performs the {@code connectedComponentsWithStats} operation.
+     *
      *
      * @param image        the 8-bit single-channel image to be labeled
      * @param labels       destination labeled image
@@ -7708,7 +7440,14 @@ public class Imgproc {
                 ltype);
     }
 
+    //
+    // C++: int cv::connectedComponentsWithStats(Mat image, Mat& labels, Mat& stats, Mat& centroids, int connectivity,
+    // int ltype, int ccltype)
+    //
+
     /**
+     * Performs the {@code connectedComponentsWithStats} operation.
+     *
      *
      * @param image        the 8-bit single-channel image to be labeled
      * @param labels       destination labeled image
@@ -7729,7 +7468,14 @@ public class Imgproc {
                 connectivity);
     }
 
+    //
+    // C++: int cv::connectedComponentsWithStats(Mat image, Mat& labels, Mat& stats, Mat& centroids, int connectivity =
+    // 8, int ltype = CV_32S)
+    //
+
     /**
+     * Performs the {@code connectedComponentsWithStats} operation.
+     *
      *
      * @param image     the 8-bit single-channel image to be labeled
      * @param labels    destination labeled image
@@ -7744,17 +7490,17 @@ public class Imgproc {
         return connectedComponentsWithStats_2(image.nativeObj, labels.nativeObj, stats.nativeObj, centroids.nativeObj);
     }
 
-    //
-    // C++: void cv::findContours(Mat image, vector_vector_Point& contours, Mat& hierarchy, int mode, int method, Point
-    // offset = Point())
-    //
-
     /**
      * Finds contours in a binary image.
+     * <p>
+     * The function retrieves contours from the binary image. The contours are a useful tool for shape analysis and
+     * object detection and recognition. See squares.cpp in the OpenCV sample directory.
      *
-     * The function retrieves contours from the binary image using the algorithm CITE: Suzuki85 . The contours are a
-     * useful tool for shape analysis and object detection and recognition. See squares.cpp in the OpenCV sample
-     * directory. <b>Note:</b> Since opencv 3.2 source image is not modified by this function.
+     * <b>Note:</b> Since OpenCV 4.14, when mode is #RETR_LIST and no hierarchy is requested, this function
+     * automatically uses the TRUCO parallel algorithm CITE: TRUCO2026, a scalable lock-free method for contour
+     * extraction. In all other cases, the sequential CITE: Suzuki85 algorithm is used.
+     *
+     * <b>Note:</b> Since opencv 3.2 source image is not modified by this function.
      *
      * @param image     Source, an 8-bit single-channel image. Non-zero pixels are treated as 1's. Zero pixels remain
      *                  0's, so the image is treated as binary . You can use #compare, #inRange, #threshold ,
@@ -7791,10 +7537,15 @@ public class Imgproc {
 
     /**
      * Finds contours in a binary image.
+     * <p>
+     * The function retrieves contours from the binary image. The contours are a useful tool for shape analysis and
+     * object detection and recognition. See squares.cpp in the OpenCV sample directory.
      *
-     * The function retrieves contours from the binary image using the algorithm CITE: Suzuki85 . The contours are a
-     * useful tool for shape analysis and object detection and recognition. See squares.cpp in the OpenCV sample
-     * directory. <b>Note:</b> Since opencv 3.2 source image is not modified by this function.
+     * <b>Note:</b> Since OpenCV 4.14, when mode is #RETR_LIST and no hierarchy is requested, this function
+     * automatically uses the TRUCO parallel algorithm CITE: TRUCO2026, a scalable lock-free method for contour
+     * extraction. In all other cases, the sequential CITE: Suzuki85 algorithm is used.
+     *
+     * <b>Note:</b> Since opencv 3.2 source image is not modified by this function.
      *
      * @param image     Source, an 8-bit single-channel image. Non-zero pixels are treated as 1's. Zero pixels remain
      *                  0's, so the image is treated as binary . You can use #compare, #inRange, #threshold ,
@@ -7823,9 +7574,17 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::findContoursLinkRuns(Mat image, vector_Mat& contours, Mat& hierarchy)
+    // C++: void cv::findContours(Mat image, vector_vector_Point& contours, Mat& hierarchy, int mode, int method, Point
+    // offset = Point())
     //
 
+    /**
+     * Performs the {@code findContoursLinkRuns} operation.
+     *
+     * @param image     the {@code image} value
+     * @param contours  the {@code contours} value
+     * @param hierarchy the {@code hierarchy} value
+     */
     public static void findContoursLinkRuns(Mat image, List<Mat> contours, Mat hierarchy) {
         Mat contours_mat = new Mat();
         findContoursLinkRuns_0(image.nativeObj, contours_mat.nativeObj, hierarchy.nativeObj);
@@ -7833,10 +7592,12 @@ public class Imgproc {
         contours_mat.release();
     }
 
-    //
-    // C++: void cv::findContoursLinkRuns(Mat image, vector_Mat& contours)
-    //
-
+    /**
+     * Performs the {@code findContoursLinkRuns} operation.
+     *
+     * @param image    the {@code image} value
+     * @param contours the {@code contours} value
+     */
     public static void findContoursLinkRuns(Mat image, List<Mat> contours) {
         Mat contours_mat = new Mat();
         findContoursLinkRuns_1(image.nativeObj, contours_mat.nativeObj);
@@ -7845,765 +7606,7 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::approxPolyDP(vector_Point2f curve, vector_Point2f& approxCurve, double epsilon, bool closed)
-    //
-
-    /**
-     * Approximates a polygonal curve(s) with the specified precision.
-     *
-     * The function cv::approxPolyDP approximates a curve or a polygon with another curve/polygon with less vertices so
-     * that the distance between them is less or equal to the specified precision. It uses the Douglas-Peucker algorithm
-     * &lt;https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm&gt;
-     *
-     * @param curve       Input vector of a 2D point stored in std::vector or Mat
-     * @param approxCurve Result of the approximation. The type should match the type of the input curve.
-     * @param epsilon     Parameter specifying the approximation accuracy. This is the maximum distance between the
-     *                    original curve and its approximation.
-     * @param closed      If true, the approximated curve is closed (its first and last vertices are connected).
-     *                    Otherwise, it is not closed.
-     */
-    public static void approxPolyDP(MatOfPoint2f curve, MatOfPoint2f approxCurve, double epsilon, boolean closed) {
-        Mat curve_mat = curve;
-        Mat approxCurve_mat = approxCurve;
-        approxPolyDP_0(curve_mat.nativeObj, approxCurve_mat.nativeObj, epsilon, closed);
-    }
-
-    //
-    // C++: void cv::approxPolyN(Mat curve, Mat& approxCurve, int nsides, float epsilon_percentage = -1.0, bool
-    // ensure_convex = true)
-    //
-
-    /**
-     * Approximates a polygon with a convex hull with a specified accuracy and number of sides.
-     *
-     * The cv::approxPolyN function approximates a polygon with a convex hull so that the difference between the contour
-     * area of the original contour and the new polygon is minimal. It uses a greedy algorithm for contracting two
-     * vertices into one in such a way that the additional area is minimal. Straight lines formed by each edge of the
-     * convex contour are drawn and the areas of the resulting triangles are considered. Each vertex will lie either on
-     * the original contour or outside it.
-     *
-     * The algorithm based on the paper CITE: LowIlie2003 .
-     *
-     * @param curve              Input vector of a 2D points stored in std::vector or Mat, points must be float or
-     *                           integer.
-     * @param approxCurve        Result of the approximation. The type is vector of a 2D point (Point2f or Point) in
-     *                           std::vector or Mat.
-     * @param nsides             The parameter defines the number of sides of the result polygon.
-     * @param epsilon_percentage defines the percentage of the maximum of additional area. If it equals -1, it is not
-     *                           used. Otherwise algorithm stops if additional area is greater than contourArea(_curve)
-     *                           * percentage. If additional area exceeds the limit, algorithm returns as many vertices
-     *                           as there were at the moment the limit was exceeded.
-     * @param ensure_convex      If it is true, algorithm creates a convex hull of input contour. Otherwise input vector
-     *                           should be convex.
-     */
-    public static void approxPolyN(
-            Mat curve,
-            Mat approxCurve,
-            int nsides,
-            float epsilon_percentage,
-            boolean ensure_convex) {
-        approxPolyN_0(curve.nativeObj, approxCurve.nativeObj, nsides, epsilon_percentage, ensure_convex);
-    }
-
-    /**
-     * Approximates a polygon with a convex hull with a specified accuracy and number of sides.
-     *
-     * The cv::approxPolyN function approximates a polygon with a convex hull so that the difference between the contour
-     * area of the original contour and the new polygon is minimal. It uses a greedy algorithm for contracting two
-     * vertices into one in such a way that the additional area is minimal. Straight lines formed by each edge of the
-     * convex contour are drawn and the areas of the resulting triangles are considered. Each vertex will lie either on
-     * the original contour or outside it.
-     *
-     * The algorithm based on the paper CITE: LowIlie2003 .
-     *
-     * @param curve              Input vector of a 2D points stored in std::vector or Mat, points must be float or
-     *                           integer.
-     * @param approxCurve        Result of the approximation. The type is vector of a 2D point (Point2f or Point) in
-     *                           std::vector or Mat.
-     * @param nsides             The parameter defines the number of sides of the result polygon.
-     * @param epsilon_percentage defines the percentage of the maximum of additional area. If it equals -1, it is not
-     *                           used. Otherwise algorithm stops if additional area is greater than contourArea(_curve)
-     *                           * percentage. If additional area exceeds the limit, algorithm returns as many vertices
-     *                           as there were at the moment the limit was exceeded.
-     */
-    public static void approxPolyN(Mat curve, Mat approxCurve, int nsides, float epsilon_percentage) {
-        approxPolyN_1(curve.nativeObj, approxCurve.nativeObj, nsides, epsilon_percentage);
-    }
-
-    /**
-     * Approximates a polygon with a convex hull with a specified accuracy and number of sides.
-     *
-     * The cv::approxPolyN function approximates a polygon with a convex hull so that the difference between the contour
-     * area of the original contour and the new polygon is minimal. It uses a greedy algorithm for contracting two
-     * vertices into one in such a way that the additional area is minimal. Straight lines formed by each edge of the
-     * convex contour are drawn and the areas of the resulting triangles are considered. Each vertex will lie either on
-     * the original contour or outside it.
-     *
-     * The algorithm based on the paper CITE: LowIlie2003 .
-     *
-     * @param curve       Input vector of a 2D points stored in std::vector or Mat, points must be float or integer.
-     * @param approxCurve Result of the approximation. The type is vector of a 2D point (Point2f or Point) in
-     *                    std::vector or Mat.
-     * @param nsides      The parameter defines the number of sides of the result polygon. If it equals -1, it is not
-     *                    used. Otherwise algorithm stops if additional area is greater than contourArea(_curve) *
-     *                    percentage. If additional area exceeds the limit, algorithm returns as many vertices as there
-     *                    were at the moment the limit was exceeded.
-     */
-    public static void approxPolyN(Mat curve, Mat approxCurve, int nsides) {
-        approxPolyN_2(curve.nativeObj, approxCurve.nativeObj, nsides);
-    }
-
-    //
-    // C++: double cv::arcLength(vector_Point2f curve, bool closed)
-    //
-
-    /**
-     * Calculates a contour perimeter or a curve length.
-     *
-     * The function computes a curve length or a closed contour perimeter.
-     *
-     * @param curve  Input vector of 2D points, stored in std::vector or Mat.
-     * @param closed Flag indicating whether the curve is closed or not.
-     * @return automatically generated
-     */
-    public static double arcLength(MatOfPoint2f curve, boolean closed) {
-        Mat curve_mat = curve;
-        return arcLength_0(curve_mat.nativeObj, closed);
-    }
-
-    //
-    // C++: Rect cv::boundingRect(Mat array)
-    //
-
-    /**
-     * Calculates the up-right bounding rectangle of a point set or non-zero pixels of gray-scale image.
-     *
-     * The function calculates and returns the minimal up-right bounding rectangle for the specified point set or
-     * non-zero pixels of gray-scale image.
-     *
-     * @param array Input gray-scale image or 2D point set, stored in std::vector or Mat.
-     * @return automatically generated
-     */
-    public static Rect boundingRect(Mat array) {
-        return new Rect(boundingRect_0(array.nativeObj));
-    }
-
-    //
-    // C++: double cv::contourArea(Mat contour, bool oriented = false)
-    //
-
-    /**
-     * Calculates a contour area.
-     *
-     * The function computes a contour area. Similarly to moments , the area is computed using the Green formula. Thus,
-     * the returned area and the number of non-zero pixels, if you draw the contour using #drawContours or #fillPoly ,
-     * can be different. Also, the function will most certainly give a wrong results for contours with
-     * self-intersections.
-     *
-     * Example: <code>
-     *     vector&lt;Point&gt; contour;
-     *     contour.push_back(Point2f(0, 0));
-     *     contour.push_back(Point2f(10, 0));
-     *     contour.push_back(Point2f(10, 10));
-     *     contour.push_back(Point2f(5, 4));
-     *
-     *     double area0 = contourArea(contour);
-     *     vector&lt;Point&gt; approx;
-     *     approxPolyDP(contour, approx, 5, true);
-     *     double area1 = contourArea(approx);
-     *
-     *     cout &lt;&lt; "area0 =" &lt;&lt; area0 &lt;&lt; endl &lt;&lt;
-     *             "area1 =" &lt;&lt; area1 &lt;&lt; endl &lt;&lt;
-     *             "approx poly vertices" &lt;&lt; approx.size() &lt;&lt; endl;
-     * </code>
-     *
-     * @param contour  Input vector of 2D points (contour vertices), stored in std::vector or Mat.
-     * @param oriented Oriented area flag. If it is true, the function returns a signed area value, depending on the
-     *                 contour orientation (clockwise or counter-clockwise). Using this feature you can determine
-     *                 orientation of a contour by taking the sign of an area. By default, the parameter is false, which
-     *                 means that the absolute value is returned.
-     * @return automatically generated
-     */
-    public static double contourArea(Mat contour, boolean oriented) {
-        return contourArea_0(contour.nativeObj, oriented);
-    }
-
-    /**
-     * Calculates a contour area.
-     *
-     * The function computes a contour area. Similarly to moments , the area is computed using the Green formula. Thus,
-     * the returned area and the number of non-zero pixels, if you draw the contour using #drawContours or #fillPoly ,
-     * can be different. Also, the function will most certainly give a wrong results for contours with
-     * self-intersections.
-     *
-     * Example: <code>
-     *     vector&lt;Point&gt; contour;
-     *     contour.push_back(Point2f(0, 0));
-     *     contour.push_back(Point2f(10, 0));
-     *     contour.push_back(Point2f(10, 10));
-     *     contour.push_back(Point2f(5, 4));
-     *
-     *     double area0 = contourArea(contour);
-     *     vector&lt;Point&gt; approx;
-     *     approxPolyDP(contour, approx, 5, true);
-     *     double area1 = contourArea(approx);
-     *
-     *     cout &lt;&lt; "area0 =" &lt;&lt; area0 &lt;&lt; endl &lt;&lt;
-     *             "area1 =" &lt;&lt; area1 &lt;&lt; endl &lt;&lt;
-     *             "approx poly vertices" &lt;&lt; approx.size() &lt;&lt; endl;
-     * </code>
-     *
-     * @param contour Input vector of 2D points (contour vertices), stored in std::vector or Mat. depending on the
-     *                contour orientation (clockwise or counter-clockwise). Using this feature you can determine
-     *                orientation of a contour by taking the sign of an area. By default, the parameter is false, which
-     *                means that the absolute value is returned.
-     * @return automatically generated
-     */
-    public static double contourArea(Mat contour) {
-        return contourArea_1(contour.nativeObj);
-    }
-
-    //
-    // C++: RotatedRect cv::minAreaRect(vector_Point2f points)
-    //
-
-    /**
-     * Finds a rotated rectangle of the minimum area enclosing the input 2D point set.
-     *
-     * The function calculates and returns the minimum-area bounding rectangle (possibly rotated) for a specified point
-     * set. The angle of rotation represents the angle between the line connecting the starting and ending points (based
-     * on the clockwise order with greatest index for the corner with greatest \(y\)) and the horizontal axis. This
-     * angle always falls between \([-90, 0)\) because, if the object rotates more than a rect angle, the next edge is
-     * used to measure the angle. The starting and ending points change as the object rotates.Developer should keep in
-     * mind that the returned RotatedRect can contain negative indices when data is close to the containing Mat element
-     * boundary.
-     *
-     * @param points Input vector of 2D points, stored in std::vector&lt;&gt; or Mat
-     * @return automatically generated
-     */
-    public static RotatedRect minAreaRect(MatOfPoint2f points) {
-        Mat points_mat = points;
-        return new RotatedRect(minAreaRect_0(points_mat.nativeObj));
-    }
-
-    //
-    // C++: void cv::boxPoints(RotatedRect box, Mat& points)
-    //
-
-    /**
-     * Finds the four vertices of a rotated rect. Useful to draw the rotated rectangle.
-     *
-     * The function finds the four vertices of a rotated rectangle. The four vertices are returned in clockwise order
-     * starting from the point with greatest \(y\). If two points have the same \(y\) coordinate the rightmost is the
-     * starting point. This function is useful to draw the rectangle. In C++, instead of using this function, you can
-     * directly use RotatedRect::points method. Please visit the REF: tutorial_bounding_rotated_ellipses "tutorial on
-     * Creating Bounding rotated boxes and ellipses for contours" for more information.
-     *
-     * @param box    The input rotated rectangle. It may be the output of REF: minAreaRect.
-     * @param points The output array of four vertices of rectangles.
-     */
-    public static void boxPoints(RotatedRect box, Mat points) {
-        boxPoints_0(box.center.x, box.center.y, box.size.width, box.size.height, box.angle, points.nativeObj);
-    }
-
-    //
-    // C++: void cv::minEnclosingCircle(vector_Point2f points, Point2f& center, float& radius)
-    //
-
-    /**
-     * Finds a circle of the minimum area enclosing a 2D point set.
-     *
-     * The function finds the minimal enclosing circle of a 2D point set using an iterative algorithm.
-     *
-     * @param points Input vector of 2D points, stored in std::vector&lt;&gt; or Mat
-     * @param center Output center of the circle.
-     * @param radius Output radius of the circle.
-     */
-    public static void minEnclosingCircle(MatOfPoint2f points, Point center, float[] radius) {
-        Mat points_mat = points;
-        double[] center_out = new double[2];
-        double[] radius_out = new double[1];
-        minEnclosingCircle_0(points_mat.nativeObj, center_out, radius_out);
-        if (center != null) {
-            center.x = center_out[0];
-            center.y = center_out[1];
-        }
-        if (radius != null)
-            radius[0] = (float) radius_out[0];
-    }
-
-    //
-    // C++: double cv::minEnclosingTriangle(Mat points, Mat& triangle)
-    //
-
-    /**
-     * Finds a triangle of minimum area enclosing a 2D point set and returns its area.
-     *
-     * The function finds a triangle of minimum area enclosing the given set of 2D points and returns its area. The
-     * output for a given 2D point set is shown in the image below. 2D points are depicted in red* and the enclosing
-     * triangle in *yellow*.
-     *
-     * ![Sample output of the minimum enclosing triangle function](pics/minenclosingtriangle.png)
-     *
-     * The implementation of the algorithm is based on O'Rourke's CITE: ORourke86 and Klee and Laskowski's CITE:
-     * KleeLaskowski85 papers. O'Rourke provides a \(\theta(n)\) algorithm for finding the minimal enclosing triangle of
-     * a 2D convex polygon with n vertices. Since the #minEnclosingTriangle function takes a 2D point set as input an
-     * additional preprocessing step of computing the convex hull of the 2D point set is required. The complexity of the
-     * #convexHull function is \(O(n log(n))\) which is higher than \(\theta(n)\). Thus the overall complexity of the
-     * function is \(O(n log(n))\).
-     *
-     * @param points   Input vector of 2D points with depth CV_32S or CV_32F, stored in std::vector&lt;&gt; or Mat
-     * @param triangle Output vector of three 2D points defining the vertices of the triangle. The depth of the
-     *                 OutputArray must be CV_32F.
-     * @return automatically generated
-     */
-    public static double minEnclosingTriangle(Mat points, Mat triangle) {
-        return minEnclosingTriangle_0(points.nativeObj, triangle.nativeObj);
-    }
-
-    //
-    // C++: double cv::minEnclosingConvexPolygon(Mat points, Mat& polygon, int k)
-    //
-
-    /**
-     * Finds a convex polygon of minimum area enclosing a 2D point set and returns its area.
-     *
-     * This function takes a given set of 2D points and finds the enclosing polygon with k vertices and minimal area. It
-     * takes the set of points and the parameter k as input and returns the area of the minimal enclosing polygon.
-     *
-     * The Implementation is based on a paper by Aggarwal, Chang and Yap CITE: Aggarwal1985. They provide a
-     * \(\theta(n²log(n)log(k))\) algorithm for finding the minimal convex polygon with k vertices enclosing a 2D convex
-     * polygon with n vertices (k &lt; n). Since the #minEnclosingConvexPolygon function takes a 2D point set as input,
-     * an additional preprocessing step of computing the convex hull of the 2D point set is required. The complexity of
-     * the #convexHull function is \(O(n log(n))\) which is lower than \(\theta(n²log(n)log(k))\). Thus the overall
-     * complexity of the function is \(O(n²log(n)log(k))\).
-     *
-     * @param points  Input vector of 2D points, stored in std::vector&lt;&gt; or Mat
-     * @param polygon Output vector of 2D points defining the vertices of the enclosing polygon
-     * @param k       Number of vertices of the output polygon
-     * @return automatically generated
-     */
-    public static double minEnclosingConvexPolygon(Mat points, Mat polygon, int k) {
-        return minEnclosingConvexPolygon_0(points.nativeObj, polygon.nativeObj, k);
-    }
-
-    //
-    // C++: double cv::matchShapes(Mat contour1, Mat contour2, int method, double parameter)
-    //
-
-    /**
-     * Compares two shapes.
-     *
-     * The function compares two shapes. All three implemented methods use the Hu invariants (see #HuMoments)
-     *
-     * @param contour1  First contour or grayscale image.
-     * @param contour2  Second contour or grayscale image.
-     * @param method    Comparison method, see #ShapeMatchModes
-     * @param parameter Method-specific parameter (not supported now).
-     * @return automatically generated
-     */
-    public static double matchShapes(Mat contour1, Mat contour2, int method, double parameter) {
-        return matchShapes_0(contour1.nativeObj, contour2.nativeObj, method, parameter);
-    }
-
-    //
-    // C++: void cv::convexHull(vector_Point points, vector_int& hull, bool clockwise = false, _hidden_ returnPoints =
-    // true)
-    //
-
-    /**
-     * Finds the convex hull of a point set.
-     *
-     * The function cv::convexHull finds the convex hull of a 2D point set using the Sklansky's algorithm CITE:
-     * Sklansky82 that has *O(N logN)* complexity in the current implementation.
-     *
-     * @param points    Input 2D point set, stored in std::vector or Mat.
-     * @param hull      Output convex hull. It is either an integer vector of indices or vector of points. In the first
-     *                  case, the hull elements are 0-based indices of the convex hull points in the original array
-     *                  (since the set of convex hull points is a subset of the original point set). In the second case,
-     *                  hull elements are the convex hull points themselves.
-     * @param clockwise Orientation flag. If it is true, the output convex hull is oriented clockwise. Otherwise, it is
-     *                  oriented counter-clockwise. The assumed coordinate system has its X axis pointing to the right,
-     *                  and its Y axis pointing upwards. returns convex hull points. Otherwise, it returns indices of
-     *                  the convex hull points. When the output array is std::vector, the flag is ignored, and the
-     *                  output depends on the type of the vector: std::vector&lt;int&gt; implies returnPoints=false,
-     *                  std::vector&lt;Point&gt; implies returnPoints=true.
-     *
-     *                  <b>Note:</b> {@code points} and {@code hull} should be different arrays, inplace processing
-     *                  isn't supported.
-     *
-     *                  Check REF: tutorial_hull "the corresponding tutorial" for more details.
-     *
-     *                  useful links:
-     *
-     *                  https://www.learnopencv.com/convex-hull-using-opencv-in-python-and-c/
-     */
-    public static void convexHull(MatOfPoint points, MatOfInt hull, boolean clockwise) {
-        Mat points_mat = points;
-        Mat hull_mat = hull;
-        convexHull_0(points_mat.nativeObj, hull_mat.nativeObj, clockwise);
-    }
-
-    /**
-     * Finds the convex hull of a point set.
-     *
-     * The function cv::convexHull finds the convex hull of a 2D point set using the Sklansky's algorithm CITE:
-     * Sklansky82 that has *O(N logN)* complexity in the current implementation.
-     *
-     * @param points Input 2D point set, stored in std::vector or Mat.
-     * @param hull   Output convex hull. It is either an integer vector of indices or vector of points. In the first
-     *               case, the hull elements are 0-based indices of the convex hull points in the original array (since
-     *               the set of convex hull points is a subset of the original point set). In the second case, hull
-     *               elements are the convex hull points themselves. Otherwise, it is oriented counter-clockwise. The
-     *               assumed coordinate system has its X axis pointing to the right, and its Y axis pointing upwards.
-     *               returns convex hull points. Otherwise, it returns indices of the convex hull points. When the
-     *               output array is std::vector, the flag is ignored, and the output depends on the type of the vector:
-     *               std::vector&lt;int&gt; implies returnPoints=false, std::vector&lt;Point&gt; implies
-     *               returnPoints=true.
-     *
-     *               <b>Note:</b> {@code points} and {@code hull} should be different arrays, inplace processing isn't
-     *               supported.
-     *
-     *               Check REF: tutorial_hull "the corresponding tutorial" for more details.
-     *
-     *               useful links:
-     *
-     *               https://www.learnopencv.com/convex-hull-using-opencv-in-python-and-c/
-     */
-    public static void convexHull(MatOfPoint points, MatOfInt hull) {
-        Mat points_mat = points;
-        Mat hull_mat = hull;
-        convexHull_2(points_mat.nativeObj, hull_mat.nativeObj);
-    }
-
-    //
-    // C++: void cv::convexityDefects(vector_Point contour, vector_int convexhull, vector_Vec4i& convexityDefects)
-    //
-
-    /**
-     * Finds the convexity defects of a contour.
-     *
-     * The figure below displays convexity defects of a hand contour:
-     *
-     * ![image](pics/defects.png)
-     *
-     * @param contour          Input contour.
-     * @param convexhull       Convex hull obtained using convexHull that should contain indices of the contour points
-     *                         that make the hull.
-     * @param convexityDefects The output vector of convexity defects. In C++ and the new Python/Java interface each
-     *                         convexity defect is represented as 4-element integer vector (a.k.a. #Vec4i):
-     *                         (start_index, end_index, farthest_pt_index, fixpt_depth), where indices are 0-based
-     *                         indices in the original contour of the convexity defect beginning, end and the farthest
-     *                         point, and fixpt_depth is fixed-point approximation (with 8 fractional bits) of the
-     *                         distance between the farthest contour point and the hull. That is, to get the
-     *                         floating-point value of the depth will be fixpt_depth/256.0.
-     */
-    public static void convexityDefects(MatOfPoint contour, MatOfInt convexhull, MatOfInt4 convexityDefects) {
-        Mat contour_mat = contour;
-        Mat convexhull_mat = convexhull;
-        Mat convexityDefects_mat = convexityDefects;
-        convexityDefects_0(contour_mat.nativeObj, convexhull_mat.nativeObj, convexityDefects_mat.nativeObj);
-    }
-
-    //
-    // C++: bool cv::isContourConvex(vector_Point contour)
-    //
-
-    /**
-     * Tests a contour convexity.
-     *
-     * The function tests whether the input contour is convex or not. The contour must be simple, that is, without
-     * self-intersections. Otherwise, the function output is undefined.
-     *
-     * @param contour Input vector of 2D points, stored in std::vector&lt;&gt; or Mat
-     * @return automatically generated
-     */
-    public static boolean isContourConvex(MatOfPoint contour) {
-        Mat contour_mat = contour;
-        return isContourConvex_0(contour_mat.nativeObj);
-    }
-
-    //
-    // C++: float cv::intersectConvexConvex(Mat p1, Mat p2, Mat& p12, bool handleNested = true)
-    //
-
-    /**
-     * Finds intersection of two convex polygons
-     *
-     * @param p1           First polygon
-     * @param p2           Second polygon
-     * @param p12          Output polygon describing the intersecting area
-     * @param handleNested When true, an intersection is found if one of the polygons is fully enclosed in the other.
-     *                     When false, no intersection is found. If the polygons share a side or the vertex of one
-     *                     polygon lies on an edge of the other, they are not considered nested and an intersection will
-     *                     be found regardless of the value of handleNested.
-     *
-     * @return Area of intersecting polygon. May be negative, if algorithm has not converged, e.g. non-convex input.
-     *
-     *         <b>Note:</b> intersectConvexConvex doesn't confirm that both polygons are convex and will return invalid
-     *         results if they aren't.
-     */
-    public static float intersectConvexConvex(Mat p1, Mat p2, Mat p12, boolean handleNested) {
-        return intersectConvexConvex_0(p1.nativeObj, p2.nativeObj, p12.nativeObj, handleNested);
-    }
-
-    /**
-     * Finds intersection of two convex polygons
-     *
-     * @param p1  First polygon
-     * @param p2  Second polygon
-     * @param p12 Output polygon describing the intersecting area When false, no intersection is found. If the polygons
-     *            share a side or the vertex of one polygon lies on an edge of the other, they are not considered nested
-     *            and an intersection will be found regardless of the value of handleNested.
-     *
-     * @return Area of intersecting polygon. May be negative, if algorithm has not converged, e.g. non-convex input.
-     *
-     *         <b>Note:</b> intersectConvexConvex doesn't confirm that both polygons are convex and will return invalid
-     *         results if they aren't.
-     */
-    public static float intersectConvexConvex(Mat p1, Mat p2, Mat p12) {
-        return intersectConvexConvex_1(p1.nativeObj, p2.nativeObj, p12.nativeObj);
-    }
-
-    //
-    // C++: RotatedRect cv::fitEllipse(vector_Point2f points)
-    //
-
-    /**
-     * Fits an ellipse around a set of 2D points.
-     *
-     * The function calculates the ellipse that fits (in a least-squares sense) a set of 2D points best of all. It
-     * returns the rotated rectangle in which the ellipse is inscribed. The first algorithm described by CITE:
-     * Fitzgibbon95 is used. Developer should keep in mind that it is possible that the returned ellipse/rotatedRect
-     * data contains negative indices, due to the data points being close to the border of the containing Mat element.
-     *
-     * @param points Input 2D point set, stored in std::vector&lt;&gt; or Mat
-     *
-     *               <b>Note:</b> Input point types are REF: Point2i or REF: Point2f and at least 5 points are required.
-     *               <b>Note:</b> REF: getClosestEllipsePoints function can be used to compute the ellipse fitting
-     *               error.
-     * @return automatically generated
-     */
-    public static RotatedRect fitEllipse(MatOfPoint2f points) {
-        Mat points_mat = points;
-        return new RotatedRect(fitEllipse_0(points_mat.nativeObj));
-    }
-
-    //
-    // C++: RotatedRect cv::fitEllipseAMS(Mat points)
-    //
-
-    /**
-     * Fits an ellipse around a set of 2D points.
-     *
-     * The function calculates the ellipse that fits a set of 2D points. It returns the rotated rectangle in which the
-     * ellipse is inscribed. The Approximate Mean Square (AMS) proposed by CITE: Taubin1991 is used.
-     *
-     * For an ellipse, this basis set is \( \chi= \left(x^2, x y, y^2, x, y, 1\right) \), which is a set of six free
-     * coefficients \( A^T=\left\{A_{\text{xx}},A_{\text{xy}},A_{\text{yy}},A_x,A_y,A_0\right\} \). However, to specify
-     * an ellipse, all that is needed is five numbers; the major and minor axes lengths \( (a,b) \), the position \(
-     * (x_0,y_0) \), and the orientation \( \theta \). This is because the basis set includes lines, quadratics,
-     * parabolic and hyperbolic functions as well as elliptical functions as possible fits. If the fit is found to be a
-     * parabolic or hyperbolic function then the standard #fitEllipse method is used. The AMS method restricts the fit
-     * to parabolic, hyperbolic and elliptical curves by imposing the condition that \( A^T ( D_x^T D_x + D_y^T D_y) A =
-     * 1 \) where the matrices \( Dx \) and \( Dy \) are the partial derivatives of the design matrix \( D \) with
-     * respect to x and y. The matrices are formed row by row applying the following to each of the points in the set:
-     * \(align*}{ D(i,:)&amp;=\left\{x_i^2, x_i y_i, y_i^2, x_i, y_i, 1\right\} &amp; D_x(i,:)&amp;=\left\{2
-     * x_i,y_i,0,1,0,0\right\} &amp; D_y(i,:)&amp;=\left\{0,x_i,2 y_i,0,1,0\right\} \) The AMS method minimizes the cost
-     * function \(equation*}{ \epsilon ^2=\frac{ A^T D^T D A }{ A^T (D_x^T D_x + D_y^T D_y) A^T } \)
-     *
-     * The minimum cost is found by solving the generalized eigenvalue problem.
-     *
-     * \(equation*}{ D^T D A = \lambda \left( D_x^T D_x + D_y^T D_y\right) A \)
-     *
-     * @param points Input 2D point set, stored in std::vector&lt;&gt; or Mat
-     *
-     *               <b>Note:</b> Input point types are REF: Point2i or REF: Point2f and at least 5 points are required.
-     *               <b>Note:</b> REF: getClosestEllipsePoints function can be used to compute the ellipse fitting
-     *               error.
-     * @return automatically generated
-     */
-    public static RotatedRect fitEllipseAMS(Mat points) {
-        return new RotatedRect(fitEllipseAMS_0(points.nativeObj));
-    }
-
-    //
-    // C++: RotatedRect cv::fitEllipseDirect(Mat points)
-    //
-
-    /**
-     * Fits an ellipse around a set of 2D points.
-     *
-     * The function calculates the ellipse that fits a set of 2D points. It returns the rotated rectangle in which the
-     * ellipse is inscribed. The Direct least square (Direct) method by CITE: oy1998NumericallySD is used.
-     *
-     * For an ellipse, this basis set is \( \chi= \left(x^2, x y, y^2, x, y, 1\right) \), which is a set of six free
-     * coefficients \( A^T=\left\{A_{\text{xx}},A_{\text{xy}},A_{\text{yy}},A_x,A_y,A_0\right\} \). However, to specify
-     * an ellipse, all that is needed is five numbers; the major and minor axes lengths \( (a,b) \), the position \(
-     * (x_0,y_0) \), and the orientation \( \theta \). This is because the basis set includes lines, quadratics,
-     * parabolic and hyperbolic functions as well as elliptical functions as possible fits. The Direct method confines
-     * the fit to ellipses by ensuring that \( 4 A_{xx} A_{yy}- A_{xy}^2 &gt; 0 \). The condition imposed is that \( 4
-     * A_{xx} A_{yy}- A_{xy}^2=1 \) which satisfies the inequality and as the coefficients can be arbitrarily scaled is
-     * not overly restrictive.
-     *
-     * \(equation*}{ \epsilon ^2= A^T D^T D A \quad \text{with} \quad A^T C A =1 \quad \text{and} \quad
-     * C=\left(\begin{matrix} 0 &amp; 0 &amp; 2 &amp; 0 &amp; 0 &amp; 0 \\ 0 &amp; -1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
-     * 2 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp;
-     * 0 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \end{matrix} \right) \)
-     *
-     * The minimum cost is found by solving the generalized eigenvalue problem.
-     *
-     * \(equation*}{ D^T D A = \lambda \left( C\right) A \)
-     *
-     * The system produces only one positive eigenvalue \( \lambda\) which is chosen as the solution with its
-     * eigenvector \(\mathbf{u}\). These are used to find the coefficients
-     *
-     * \(equation*}{ A = \sqrt{\frac{1}{\mathbf{u}^T C \mathbf{u}}} \mathbf{u} \) The scaling factor guarantees that
-     * \(A^T C A =1\).
-     *
-     * @param points Input 2D point set, stored in std::vector&lt;&gt; or Mat
-     *
-     *               <b>Note:</b> Input point types are REF: Point2i or REF: Point2f and at least 5 points are required.
-     *               <b>Note:</b> REF: getClosestEllipsePoints function can be used to compute the ellipse fitting
-     *               error.
-     * @return automatically generated
-     */
-    public static RotatedRect fitEllipseDirect(Mat points) {
-        return new RotatedRect(fitEllipseDirect_0(points.nativeObj));
-    }
-
-    //
-    // C++: void cv::getClosestEllipsePoints(RotatedRect ellipse_params, Mat points, Mat& closest_pts)
-    //
-
-    /**
-     * Compute for each 2d point the nearest 2d point located on a given ellipse.
-     *
-     * The function computes the nearest 2d location on a given ellipse for a vector of 2d points and is based on CITE:
-     * Chatfield2017 code. This function can be used to compute for instance the ellipse fitting error.
-     *
-     * @param ellipse_params Ellipse parameters
-     * @param points         Input 2d points
-     * @param closest_pts    For each 2d point, their corresponding closest 2d point located on a given ellipse
-     *
-     *                       <b>Note:</b> Input point types are REF: Point2i or REF: Point2f SEE: fitEllipse,
-     *                       fitEllipseAMS, fitEllipseDirect
-     */
-    public static void getClosestEllipsePoints(RotatedRect ellipse_params, Mat points, Mat closest_pts) {
-        getClosestEllipsePoints_0(
-                ellipse_params.center.x,
-                ellipse_params.center.y,
-                ellipse_params.size.width,
-                ellipse_params.size.height,
-                ellipse_params.angle,
-                points.nativeObj,
-                closest_pts.nativeObj);
-    }
-
-    //
-    // C++: void cv::fitLine(Mat points, Mat& line, int distType, double param, double reps, double aeps)
-    //
-
-    /**
-     * Fits a line to a 2D or 3D point set.
-     *
-     * The function fitLine fits a line to a 2D or 3D point set by minimizing \(\sum_i \rho(r_i)\) where \(r_i\) is a
-     * distance between the \(i^{th}\) point, the line and \(\rho(r)\) is a distance function, one of the following:
-     * <ul>
-     * <li>DIST_L2 \(\rho (r) = r^2/2 \quad \text{(the simplest and the fastest least-squares method)}\)</li>
-     * <li>DIST_L1 \(\rho (r) = r\)</li>
-     * <li>DIST_L12 \(\rho (r) = 2 \cdot ( \sqrt{1 + \frac{r^2}{2}} - 1)\)</li>
-     * <li>DIST_FAIR \(\rho \left (r \right ) = C^2 \cdot \left ( \frac{r}{C} - \log{\left(1 + \frac{r}{C}\right)}
-     * \right ) \quad \text{where} \quad C=1.3998\)</li>
-     * <li>DIST_WELSCH \(\rho \left (r \right ) = \frac{C^2}{2} \cdot \left ( 1 -
-     * \exp{\left(-\left(\frac{r}{C}\right)^2\right)} \right ) \quad \text{where} \quad C=2.9846\)</li>
-     * <li>DIST_HUBER \(\rho (r) = \fork{r^2/2}{if \(r &lt; C\)}{C \cdot (r-C/2)}{otherwise} \quad \text{where} \quad
-     * C=1.345\)</li>
-     * </ul>
-     *
-     * The algorithm is based on the M-estimator ( &lt;https://en.wikipedia.org/wiki/M-estimator&gt; ) technique that
-     * iteratively fits the line using the weighted least-squares algorithm. After each iteration the weights \(w_i\)
-     * are adjusted to be inversely proportional to \(\rho(r_i)\) .
-     *
-     * @param points   Input vector of 2D or 3D points, stored in std::vector&lt;&gt; or Mat.
-     * @param line     Output line parameters. In case of 2D fitting, it should be a vector of 4 elements (like Vec4f) -
-     *                 (vx, vy, x0, y0), where (vx, vy) is a normalized vector collinear to the line and (x0, y0) is a
-     *                 point on the line. In case of 3D fitting, it should be a vector of 6 elements (like Vec6f) - (vx,
-     *                 vy, vz, x0, y0, z0), where (vx, vy, vz) is a normalized vector collinear to the line and (x0, y0,
-     *                 z0) is a point on the line.
-     * @param distType Distance used by the M-estimator, see #DistanceTypes
-     * @param param    Numerical parameter ( C ) for some types of distances. If it is 0, an optimal value is chosen.
-     * @param reps     Sufficient accuracy for the radius (distance between the coordinate origin and the line).
-     * @param aeps     Sufficient accuracy for the angle. 0.01 would be a good default value for reps and aeps.
-     */
-    public static void fitLine(Mat points, Mat line, int distType, double param, double reps, double aeps) {
-        fitLine_0(points.nativeObj, line.nativeObj, distType, param, reps, aeps);
-    }
-
-    //
-    // C++: double cv::pointPolygonTest(vector_Point2f contour, Point2f pt, bool measureDist)
-    //
-
-    /**
-     * Performs a point-in-contour test.
-     *
-     * The function determines whether the point is inside a contour, outside, or lies on an edge (or coincides with a
-     * vertex). It returns positive (inside), negative (outside), or zero (on an edge) value, correspondingly. When
-     * measureDist=false , the return value is +1, -1, and 0, respectively. Otherwise, the return value is a signed
-     * distance between the point and the nearest contour edge.
-     *
-     * See below a sample output of the function where each image pixel is tested against the contour:
-     *
-     * ![sample output](pics/pointpolygon.png)
-     *
-     * @param contour     Input contour.
-     * @param pt          Point tested against the contour.
-     * @param measureDist If true, the function estimates the signed distance from the point to the nearest contour
-     *                    edge. Otherwise, the function only checks if the point is inside a contour or not.
-     * @return automatically generated
-     */
-    public static double pointPolygonTest(MatOfPoint2f contour, Point pt, boolean measureDist) {
-        Mat contour_mat = contour;
-        return pointPolygonTest_0(contour_mat.nativeObj, pt.x, pt.y, measureDist);
-    }
-
-    //
-    // C++: int cv::rotatedRectangleIntersection(RotatedRect rect1, RotatedRect rect2, Mat& intersectingRegion)
-    //
-
-    /**
-     * Finds out if there is any intersection between two rotated rectangles.
-     *
-     * If there is then the vertices of the intersecting region are returned as well.
-     *
-     * Below are some examples of intersection configurations. The hatched pattern indicates the intersecting region and
-     * the red vertices are returned by the function.
-     *
-     * ![intersection examples](pics/intersection.png)
-     *
-     * @param rect1              First rectangle
-     * @param rect2              Second rectangle
-     * @param intersectingRegion The output array of the vertices of the intersecting region. It returns at most 8
-     *                           vertices. Stored as std::vector&lt;cv::Point2f&gt; or cv::Mat as Mx1 of type CV_32FC2.
-     * @return One of #RectanglesIntersectTypes
-     */
-    public static int rotatedRectangleIntersection(RotatedRect rect1, RotatedRect rect2, Mat intersectingRegion) {
-        return rotatedRectangleIntersection_0(
-                rect1.center.x,
-                rect1.center.y,
-                rect1.size.width,
-                rect1.size.height,
-                rect1.angle,
-                rect2.center.x,
-                rect2.center.y,
-                rect2.size.width,
-                rect2.size.height,
-                rect2.angle,
-                intersectingRegion.nativeObj);
-    }
-
-    //
-    // C++: Ptr_GeneralizedHoughBallard cv::createGeneralizedHoughBallard()
+    // C++: void cv::findContoursLinkRuns(Mat image, vector_Mat& contours, Mat& hierarchy)
     //
 
     /**
@@ -8616,7 +7619,7 @@ public class Imgproc {
     }
 
     //
-    // C++: Ptr_GeneralizedHoughGuil cv::createGeneralizedHoughGuil()
+    // C++: void cv::findContoursLinkRuns(Mat image, vector_Mat& contours)
     //
 
     /**
@@ -8629,7 +7632,7 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::applyColorMap(Mat src, Mat& dst, int colormap)
+    // C++: Ptr_GeneralizedHoughBallard cv::createGeneralizedHoughBallard()
     //
 
     /**
@@ -8645,7 +7648,7 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::applyColorMap(Mat src, Mat& dst, Mat userColor)
+    // C++: Ptr_GeneralizedHoughGuil cv::createGeneralizedHoughGuil()
     //
 
     /**
@@ -8662,13 +7665,12 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::line(Mat& img, Point pt1, Point pt2, Scalar color, int thickness = 1, int lineType = LINE_8, int
-    // shift = 0)
+    // C++: void cv::applyColorMap(Mat src, Mat& dst, int colormap)
     //
 
     /**
      * Draws a line segment connecting two points.
-     *
+     * <p>
      * The function line draws the line segment between pt1 and pt2 points in the image. The line is clipped by the
      * image boundaries. For non-antialiased lines with integer coordinates, the 8-connected or 4-connected Bresenham
      * algorithm is used. Thick lines are drawn with rounding endings. Antialiased lines are drawn using Gaussian
@@ -8698,9 +7700,13 @@ public class Imgproc {
                 shift);
     }
 
+    //
+    // C++: void cv::applyColorMap(Mat src, Mat& dst, Mat userColor)
+    //
+
     /**
      * Draws a line segment connecting two points.
-     *
+     * <p>
      * The function line draws the line segment between pt1 and pt2 points in the image. The line is clipped by the
      * image boundaries. For non-antialiased lines with integer coordinates, the 8-connected or 4-connected Bresenham
      * algorithm is used. Thick lines are drawn with rounding endings. Antialiased lines are drawn using Gaussian
@@ -8728,9 +7734,14 @@ public class Imgproc {
                 lineType);
     }
 
+    //
+    // C++: void cv::line(Mat& img, Point pt1, Point pt2, Scalar color, int thickness = 1, int lineType = LINE_8, int
+    // shift = 0)
+    //
+
     /**
      * Draws a line segment connecting two points.
-     *
+     * <p>
      * The function line draws the line segment between pt1 and pt2 points in the image. The line is clipped by the
      * image boundaries. For non-antialiased lines with integer coordinates, the 8-connected or 4-connected Bresenham
      * algorithm is used. Thick lines are drawn with rounding endings. Antialiased lines are drawn using Gaussian
@@ -8758,7 +7769,7 @@ public class Imgproc {
 
     /**
      * Draws a line segment connecting two points.
-     *
+     * <p>
      * The function line draws the line segment between pt1 and pt2 points in the image. The line is clipped by the
      * image boundaries. For non-antialiased lines with integer coordinates, the 8-connected or 4-connected Bresenham
      * algorithm is used. Thick lines are drawn with rounding endings. Antialiased lines are drawn using Gaussian
@@ -8773,14 +7784,9 @@ public class Imgproc {
         line_3(img.nativeObj, pt1.x, pt1.y, pt2.x, pt2.y, color.val[0], color.val[1], color.val[2], color.val[3]);
     }
 
-    //
-    // C++: void cv::arrowedLine(Mat& img, Point pt1, Point pt2, Scalar color, int thickness = 1, int line_type = 8, int
-    // shift = 0, double tipLength = 0.1)
-    //
-
     /**
      * Draws an arrow segment pointing from the first point to the second one.
-     *
+     * <p>
      * The function cv::arrowedLine draws an arrow between pt1 and pt2 points in the image. See also #line.
      *
      * @param img       Image.
@@ -8819,7 +7825,7 @@ public class Imgproc {
 
     /**
      * Draws an arrow segment pointing from the first point to the second one.
-     *
+     * <p>
      * The function cv::arrowedLine draws an arrow between pt1 and pt2 points in the image. See also #line.
      *
      * @param img       Image.
@@ -8853,9 +7859,14 @@ public class Imgproc {
                 shift);
     }
 
+    //
+    // C++: void cv::arrowedLine(Mat& img, Point pt1, Point pt2, Scalar color, int thickness = 1, int line_type = 8, int
+    // shift = 0, double tipLength = 0.1)
+    //
+
     /**
      * Draws an arrow segment pointing from the first point to the second one.
-     *
+     * <p>
      * The function cv::arrowedLine draws an arrow between pt1 and pt2 points in the image. See also #line.
      *
      * @param img       Image.
@@ -8882,7 +7893,7 @@ public class Imgproc {
 
     /**
      * Draws an arrow segment pointing from the first point to the second one.
-     *
+     * <p>
      * The function cv::arrowedLine draws an arrow between pt1 and pt2 points in the image. See also #line.
      *
      * @param img       Image.
@@ -8907,7 +7918,7 @@ public class Imgproc {
 
     /**
      * Draws an arrow segment pointing from the first point to the second one.
-     *
+     * <p>
      * The function cv::arrowedLine draws an arrow between pt1 and pt2 points in the image. See also #line.
      *
      * @param img   Image.
@@ -8928,14 +7939,73 @@ public class Imgproc {
                 color.val[3]);
     }
 
+    /**
+     * Draw axes of the world/object coordinate system from pose estimation. SEE: solvePnP
+     *
+     * @param image        Input/output image. It must have 1 or 3 channels. The number of channels is not altered.
+     * @param cameraMatrix Input 3x3 floating-point matrix of camera intrinsic parameters. \(\cameramatrix{A}\)
+     * @param distCoeffs   Input vector of distortion coefficients \(\distcoeffs\). If the vector is empty, the zero
+     *                     distortion coefficients are assumed.
+     * @param rvec         Rotation vector (see REF: Rodrigues ) that, together with tvec, brings points from the model
+     *                     coordinate system to the camera coordinate system.
+     * @param tvec         Translation vector.
+     * @param length       Length of the painted axes in the same unit than tvec (usually in meters).
+     * @param thickness    Line thickness of the painted axes.
+     *                     <p>
+     *                     This function draws the axes of the world/object coordinate system w.r.t. to the camera
+     *                     frame. OX is drawn in red, OY in green and OZ in blue.
+     */
+    public static void drawFrameAxes(
+            Mat image,
+            Mat cameraMatrix,
+            Mat distCoeffs,
+            Mat rvec,
+            Mat tvec,
+            float length,
+            int thickness) {
+        drawFrameAxes_0(
+                image.nativeObj,
+                cameraMatrix.nativeObj,
+                distCoeffs.nativeObj,
+                rvec.nativeObj,
+                tvec.nativeObj,
+                length,
+                thickness);
+    }
+
+    /**
+     * Draw axes of the world/object coordinate system from pose estimation. SEE: solvePnP
+     *
+     * @param image        Input/output image. It must have 1 or 3 channels. The number of channels is not altered.
+     * @param cameraMatrix Input 3x3 floating-point matrix of camera intrinsic parameters. \(\cameramatrix{A}\)
+     * @param distCoeffs   Input vector of distortion coefficients \(\distcoeffs\). If the vector is empty, the zero
+     *                     distortion coefficients are assumed.
+     * @param rvec         Rotation vector (see REF: Rodrigues ) that, together with tvec, brings points from the model
+     *                     coordinate system to the camera coordinate system.
+     * @param tvec         Translation vector.
+     * @param length       Length of the painted axes in the same unit than tvec (usually in meters).
+     *                     <p>
+     *                     This function draws the axes of the world/object coordinate system w.r.t. to the camera
+     *                     frame. OX is drawn in red, OY in green and OZ in blue.
+     */
+    public static void drawFrameAxes(Mat image, Mat cameraMatrix, Mat distCoeffs, Mat rvec, Mat tvec, float length) {
+        drawFrameAxes_1(
+                image.nativeObj,
+                cameraMatrix.nativeObj,
+                distCoeffs.nativeObj,
+                rvec.nativeObj,
+                tvec.nativeObj,
+                length);
+    }
+
     //
-    // C++: void cv::rectangle(Mat& img, Point pt1, Point pt2, Scalar color, int thickness = 1, int lineType = LINE_8,
-    // int shift = 0)
+    // C++: void cv::drawFrameAxes(Mat& image, Mat cameraMatrix, Mat distCoeffs, Mat rvec, Mat tvec, float length, int
+    // thickness = 3)
     //
 
     /**
      * Draws a simple, thick, or filled up-right rectangle.
-     *
+     * <p>
      * The function cv::rectangle draws a rectangle outline or a filled rectangle whose two opposite corners are pt1 and
      * pt2.
      *
@@ -8966,7 +8036,7 @@ public class Imgproc {
 
     /**
      * Draws a simple, thick, or filled up-right rectangle.
-     *
+     * <p>
      * The function cv::rectangle draws a rectangle outline or a filled rectangle whose two opposite corners are pt1 and
      * pt2.
      *
@@ -8993,9 +8063,14 @@ public class Imgproc {
                 lineType);
     }
 
+    //
+    // C++: void cv::rectangle(Mat& img, Point pt1, Point pt2, Scalar color, int thickness = 1, int lineType = LINE_8,
+    // int shift = 0)
+    //
+
     /**
      * Draws a simple, thick, or filled up-right rectangle.
-     *
+     * <p>
      * The function cv::rectangle draws a rectangle outline or a filled rectangle whose two opposite corners are pt1 and
      * pt2.
      *
@@ -9022,7 +8097,7 @@ public class Imgproc {
 
     /**
      * Draws a simple, thick, or filled up-right rectangle.
-     *
+     * <p>
      * The function cv::rectangle draws a rectangle outline or a filled rectangle whose two opposite corners are pt1 and
      * pt2.
      *
@@ -9035,11 +8110,6 @@ public class Imgproc {
     public static void rectangle(Mat img, Point pt1, Point pt2, Scalar color) {
         rectangle_3(img.nativeObj, pt1.x, pt1.y, pt2.x, pt2.y, color.val[0], color.val[1], color.val[2], color.val[3]);
     }
-
-    //
-    // C++: void cv::rectangle(Mat& img, Rect rec, Scalar color, int thickness = 1, int lineType = LINE_8, int shift =
-    // 0)
-    //
 
     /**
      *
@@ -9097,6 +8167,11 @@ public class Imgproc {
                 lineType);
     }
 
+    //
+    // C++: void cv::rectangle(Mat& img, Rect rec, Scalar color, int thickness = 1, int lineType = LINE_8, int shift =
+    // 0)
+    //
+
     /**
      *
      *
@@ -9145,14 +8220,9 @@ public class Imgproc {
                 color.val[3]);
     }
 
-    //
-    // C++: void cv::circle(Mat& img, Point center, int radius, Scalar color, int thickness = 1, int lineType = LINE_8,
-    // int shift = 0)
-    //
-
     /**
      * Draws a circle.
-     *
+     * <p>
      * The function cv::circle draws a simple or filled circle with a given center and radius.
      *
      * @param img       Image where the circle is drawn.
@@ -9181,7 +8251,7 @@ public class Imgproc {
 
     /**
      * Draws a circle.
-     *
+     * <p>
      * The function cv::circle draws a simple or filled circle with a given center and radius.
      *
      * @param img       Image where the circle is drawn.
@@ -9206,9 +8276,14 @@ public class Imgproc {
                 lineType);
     }
 
+    //
+    // C++: void cv::circle(Mat& img, Point center, int radius, Scalar color, int thickness = 1, int lineType = LINE_8,
+    // int shift = 0)
+    //
+
     /**
      * Draws a circle.
-     *
+     * <p>
      * The function cv::circle draws a simple or filled circle with a given center and radius.
      *
      * @param img       Image where the circle is drawn.
@@ -9233,7 +8308,7 @@ public class Imgproc {
 
     /**
      * Draws a circle.
-     *
+     * <p>
      * The function cv::circle draws a simple or filled circle with a given center and radius.
      *
      * @param img    Image where the circle is drawn.
@@ -9245,14 +8320,9 @@ public class Imgproc {
         circle_3(img.nativeObj, center.x, center.y, radius, color.val[0], color.val[1], color.val[2], color.val[3]);
     }
 
-    //
-    // C++: void cv::ellipse(Mat& img, Point center, Size axes, double angle, double startAngle, double endAngle, Scalar
-    // color, int thickness = 1, int lineType = LINE_8, int shift = 0)
-    //
-
     /**
      * Draws a simple or thick elliptic arc or fills an ellipse sector.
-     *
+     * <p>
      * The function cv::ellipse with more parameters draws an ellipse outline, a filled ellipse, an elliptic arc, or a
      * filled ellipse sector. The drawing code uses general parametric form. A piecewise-linear curve is used to
      * approximate the elliptic arc boundary. If you need more control of the ellipse rendering, you can retrieve the
@@ -9260,7 +8330,7 @@ public class Imgproc {
      * variant of the function and want to draw the whole ellipse, not an arc, pass {@code startAngle=0} and
      * {@code endAngle=360}. If {@code startAngle} is greater than {@code endAngle}, they are swapped. The figure below
      * explains the meaning of the parameters to draw the blue arc.
-     *
+     * <p>
      * ![Parameters of Elliptic Arc](pics/ellipse.svg)
      *
      * @param img        Image.
@@ -9306,7 +8376,7 @@ public class Imgproc {
 
     /**
      * Draws a simple or thick elliptic arc or fills an ellipse sector.
-     *
+     * <p>
      * The function cv::ellipse with more parameters draws an ellipse outline, a filled ellipse, an elliptic arc, or a
      * filled ellipse sector. The drawing code uses general parametric form. A piecewise-linear curve is used to
      * approximate the elliptic arc boundary. If you need more control of the ellipse rendering, you can retrieve the
@@ -9314,7 +8384,7 @@ public class Imgproc {
      * variant of the function and want to draw the whole ellipse, not an arc, pass {@code startAngle=0} and
      * {@code endAngle=360}. If {@code startAngle} is greater than {@code endAngle}, they are swapped. The figure below
      * explains the meaning of the parameters to draw the blue arc.
-     *
+     * <p>
      * ![Parameters of Elliptic Arc](pics/ellipse.svg)
      *
      * @param img        Image.
@@ -9355,9 +8425,14 @@ public class Imgproc {
                 lineType);
     }
 
+    //
+    // C++: void cv::ellipse(Mat& img, Point center, Size axes, double angle, double startAngle, double endAngle, Scalar
+    // color, int thickness = 1, int lineType = LINE_8, int shift = 0)
+    //
+
     /**
      * Draws a simple or thick elliptic arc or fills an ellipse sector.
-     *
+     * <p>
      * The function cv::ellipse with more parameters draws an ellipse outline, a filled ellipse, an elliptic arc, or a
      * filled ellipse sector. The drawing code uses general parametric form. A piecewise-linear curve is used to
      * approximate the elliptic arc boundary. If you need more control of the ellipse rendering, you can retrieve the
@@ -9365,7 +8440,7 @@ public class Imgproc {
      * variant of the function and want to draw the whole ellipse, not an arc, pass {@code startAngle=0} and
      * {@code endAngle=360}. If {@code startAngle} is greater than {@code endAngle}, they are swapped. The figure below
      * explains the meaning of the parameters to draw the blue arc.
-     *
+     * <p>
      * ![Parameters of Elliptic Arc](pics/ellipse.svg)
      *
      * @param img        Image.
@@ -9405,7 +8480,7 @@ public class Imgproc {
 
     /**
      * Draws a simple or thick elliptic arc or fills an ellipse sector.
-     *
+     * <p>
      * The function cv::ellipse with more parameters draws an ellipse outline, a filled ellipse, an elliptic arc, or a
      * filled ellipse sector. The drawing code uses general parametric form. A piecewise-linear curve is used to
      * approximate the elliptic arc boundary. If you need more control of the ellipse rendering, you can retrieve the
@@ -9413,7 +8488,7 @@ public class Imgproc {
      * variant of the function and want to draw the whole ellipse, not an arc, pass {@code startAngle=0} and
      * {@code endAngle=360}. If {@code startAngle} is greater than {@code endAngle}, they are swapped. The figure below
      * explains the meaning of the parameters to draw the blue arc.
-     *
+     * <p>
      * ![Parameters of Elliptic Arc](pics/ellipse.svg)
      *
      * @param img        Image.
@@ -9447,11 +8522,9 @@ public class Imgproc {
                 color.val[3]);
     }
 
-    //
-    // C++: void cv::ellipse(Mat& img, RotatedRect box, Scalar color, int thickness = 1, int lineType = LINE_8)
-    //
-
     /**
+     * Performs the {@code ellipse} operation.
+     *
      *
      * @param img       Image.
      * @param box       Alternative ellipse representation via RotatedRect. This means that the function draws an
@@ -9478,6 +8551,8 @@ public class Imgproc {
     }
 
     /**
+     * Performs the {@code ellipse} operation.
+     *
      *
      * @param img       Image.
      * @param box       Alternative ellipse representation via RotatedRect. This means that the function draws an
@@ -9501,7 +8576,13 @@ public class Imgproc {
                 thickness);
     }
 
+    //
+    // C++: void cv::ellipse(Mat& img, RotatedRect box, Scalar color, int thickness = 1, int lineType = LINE_8)
+    //
+
     /**
+     * Performs the {@code ellipse} operation.
+     *
      *
      * @param img   Image.
      * @param box   Alternative ellipse representation via RotatedRect. This means that the function draws an ellipse
@@ -9522,14 +8603,9 @@ public class Imgproc {
                 color.val[3]);
     }
 
-    //
-    // C++: void cv::drawMarker(Mat& img, Point position, Scalar color, int markerType = MARKER_CROSS, int markerSize =
-    // 20, int thickness = 1, int line_type = 8)
-    //
-
     /**
      * Draws a marker on a predefined position in an image.
-     *
+     * <p>
      * The function cv::drawMarker draws a marker on a given position in the image. For the moment several marker types
      * are supported, see #MarkerTypes for more information.
      *
@@ -9565,7 +8641,7 @@ public class Imgproc {
 
     /**
      * Draws a marker on a predefined position in an image.
-     *
+     * <p>
      * The function cv::drawMarker draws a marker on a given position in the image. For the moment several marker types
      * are supported, see #MarkerTypes for more information.
      *
@@ -9596,9 +8672,14 @@ public class Imgproc {
                 thickness);
     }
 
+    //
+    // C++: void cv::drawMarker(Mat& img, Point position, Scalar color, int markerType = MARKER_CROSS, int markerSize =
+    // 20, int thickness = 1, int line_type = 8)
+    //
+
     /**
      * Draws a marker on a predefined position in an image.
-     *
+     * <p>
      * The function cv::drawMarker draws a marker on a given position in the image. For the moment several marker types
      * are supported, see #MarkerTypes for more information.
      *
@@ -9623,7 +8704,7 @@ public class Imgproc {
 
     /**
      * Draws a marker on a predefined position in an image.
-     *
+     * <p>
      * The function cv::drawMarker draws a marker on a given position in the image. For the moment several marker types
      * are supported, see #MarkerTypes for more information.
      *
@@ -9646,7 +8727,7 @@ public class Imgproc {
 
     /**
      * Draws a marker on a predefined position in an image.
-     *
+     * <p>
      * The function cv::drawMarker draws a marker on a given position in the image. For the moment several marker types
      * are supported, see #MarkerTypes for more information.
      *
@@ -9658,13 +8739,9 @@ public class Imgproc {
         drawMarker_4(img.nativeObj, position.x, position.y, color.val[0], color.val[1], color.val[2], color.val[3]);
     }
 
-    //
-    // C++: void cv::fillConvexPoly(Mat& img, vector_Point points, Scalar color, int lineType = LINE_8, int shift = 0)
-    //
-
     /**
      * Fills a convex polygon.
-     *
+     * <p>
      * The function cv::fillConvexPoly draws a filled convex polygon. This function is much faster than the function
      * #fillPoly . It can fill not only convex polygons but any monotonic polygon without self-intersections, that is, a
      * polygon whose contour intersects every horizontal line (scan line) twice at the most (though, its top-most and/or
@@ -9691,7 +8768,7 @@ public class Imgproc {
 
     /**
      * Fills a convex polygon.
-     *
+     * <p>
      * The function cv::fillConvexPoly draws a filled convex polygon. This function is much faster than the function
      * #fillPoly . It can fill not only convex polygons but any monotonic polygon without self-intersections, that is, a
      * polygon whose contour intersects every horizontal line (scan line) twice at the most (though, its top-most and/or
@@ -9714,9 +8791,13 @@ public class Imgproc {
                 lineType);
     }
 
+    //
+    // C++: void cv::fillConvexPoly(Mat& img, vector_Point points, Scalar color, int lineType = LINE_8, int shift = 0)
+    //
+
     /**
      * Fills a convex polygon.
-     *
+     * <p>
      * The function cv::fillConvexPoly draws a filled convex polygon. This function is much faster than the function
      * #fillPoly . It can fill not only convex polygons but any monotonic polygon without self-intersections, that is, a
      * polygon whose contour intersects every horizontal line (scan line) twice at the most (though, its top-most and/or
@@ -9731,14 +8812,9 @@ public class Imgproc {
         fillConvexPoly_2(img.nativeObj, points_mat.nativeObj, color.val[0], color.val[1], color.val[2], color.val[3]);
     }
 
-    //
-    // C++: void cv::fillPoly(Mat& img, vector_vector_Point pts, Scalar color, int lineType = LINE_8, int shift = 0,
-    // Point offset = Point())
-    //
-
     /**
      * Fills the area bounded by one or more polygons.
-     *
+     * <p>
      * The function cv::fillPoly fills an area bounded by several polygonal contours. The function can fill complex
      * areas, for example, areas with holes, contours with self-intersections (some of their parts), and so forth.
      *
@@ -9767,7 +8843,7 @@ public class Imgproc {
 
     /**
      * Fills the area bounded by one or more polygons.
-     *
+     * <p>
      * The function cv::fillPoly fills an area bounded by several polygonal contours. The function can fill complex
      * areas, for example, areas with holes, contours with self-intersections (some of their parts), and so forth.
      *
@@ -9791,9 +8867,14 @@ public class Imgproc {
                 shift);
     }
 
+    //
+    // C++: void cv::fillPoly(Mat& img, vector_vector_Point pts, Scalar color, int lineType = LINE_8, int shift = 0,
+    // Point offset = Point())
+    //
+
     /**
      * Fills the area bounded by one or more polygons.
-     *
+     * <p>
      * The function cv::fillPoly fills an area bounded by several polygonal contours. The function can fill complex
      * areas, for example, areas with holes, contours with self-intersections (some of their parts), and so forth.
      *
@@ -9810,7 +8891,7 @@ public class Imgproc {
 
     /**
      * Fills the area bounded by one or more polygons.
-     *
+     * <p>
      * The function cv::fillPoly fills an area bounded by several polygonal contours. The function can fill complex
      * areas, for example, areas with holes, contours with self-intersections (some of their parts), and so forth.
      *
@@ -9824,11 +8905,6 @@ public class Imgproc {
         fillPoly_3(img.nativeObj, pts_mat.nativeObj, color.val[0], color.val[1], color.val[2], color.val[3]);
     }
 
-    //
-    // C++: void cv::polylines(Mat& img, vector_vector_Point pts, bool isClosed, Scalar color, int thickness = 1, int
-    // lineType = LINE_8, int shift = 0)
-    //
-
     /**
      * Draws several polygonal curves.
      *
@@ -9840,7 +8916,7 @@ public class Imgproc {
      * @param thickness Thickness of the polyline edges.
      * @param lineType  Type of the line segments. See #LineTypes
      * @param shift     Number of fractional bits in the vertex coordinates.
-     *
+     *                  <p>
      *                  The function cv::polylines draws one or more polygonal curves.
      */
     public static void polylines(
@@ -9876,7 +8952,7 @@ public class Imgproc {
      * @param color     Polyline color.
      * @param thickness Thickness of the polyline edges.
      * @param lineType  Type of the line segments. See #LineTypes
-     *
+     *                  <p>
      *                  The function cv::polylines draws one or more polygonal curves.
      */
     public static void polylines(
@@ -9900,6 +8976,11 @@ public class Imgproc {
                 lineType);
     }
 
+    //
+    // C++: void cv::polylines(Mat& img, vector_vector_Point pts, bool isClosed, Scalar color, int thickness = 1, int
+    // lineType = LINE_8, int shift = 0)
+    //
+
     /**
      * Draws several polygonal curves.
      *
@@ -9909,7 +8990,7 @@ public class Imgproc {
      *                  draws a line from the last vertex of each curve to its first vertex.
      * @param color     Polyline color.
      * @param thickness Thickness of the polyline edges.
-     *
+     *                  <p>
      *                  The function cv::polylines draws one or more polygonal curves.
      */
     public static void polylines(Mat img, List<MatOfPoint> pts, boolean isClosed, Scalar color, int thickness) {
@@ -9934,7 +9015,7 @@ public class Imgproc {
      * @param isClosed Flag indicating whether the drawn polylines are closed or not. If they are closed, the function
      *                 draws a line from the last vertex of each curve to its first vertex.
      * @param color    Polyline color.
-     *
+     *                 <p>
      *                 The function cv::polylines draws one or more polygonal curves.
      */
     public static void polylines(Mat img, List<MatOfPoint> pts, boolean isClosed, Scalar color) {
@@ -9943,14 +9024,9 @@ public class Imgproc {
         polylines_3(img.nativeObj, pts_mat.nativeObj, isClosed, color.val[0], color.val[1], color.val[2], color.val[3]);
     }
 
-    //
-    // C++: void cv::drawContours(Mat& image, vector_vector_Point contours, int contourIdx, Scalar color, int thickness
-    // = 1, int lineType = LINE_8, Mat hierarchy = Mat(), int maxLevel = INT_MAX, Point offset = Point())
-    //
-
     /**
      * Draws contours outlines or filled contours.
-     *
+     * <p>
      * The function draws contour outlines in the image if \(\texttt{thickness} \ge 0\) or fills the area bounded by the
      * contours if \(\texttt{thickness}&lt;0\) . The example below shows how to retrieve connected components from the
      * binary image and label them: : INCLUDE: snippets/imgproc_drawContours.cpp
@@ -10006,7 +9082,7 @@ public class Imgproc {
 
     /**
      * Draws contours outlines or filled contours.
-     *
+     * <p>
      * The function draws contour outlines in the image if \(\texttt{thickness} \ge 0\) or fills the area bounded by the
      * contours if \(\texttt{thickness}&lt;0\) . The example below shows how to retrieve connected components from the
      * binary image and label them: : INCLUDE: snippets/imgproc_drawContours.cpp
@@ -10056,9 +9132,14 @@ public class Imgproc {
                 maxLevel);
     }
 
+    //
+    // C++: void cv::drawContours(Mat& image, vector_vector_Point contours, int contourIdx, Scalar color, int thickness
+    // = 1, int lineType = LINE_8, Mat hierarchy = Mat(), int maxLevel = INT_MAX, Point offset = Point())
+    //
+
     /**
      * Draws contours outlines or filled contours.
-     *
+     * <p>
      * The function draws contour outlines in the image if \(\texttt{thickness} \ge 0\) or fills the area bounded by the
      * contours if \(\texttt{thickness}&lt;0\) . The example below shows how to retrieve connected components from the
      * binary image and label them: : INCLUDE: snippets/imgproc_drawContours.cpp
@@ -10106,7 +9187,7 @@ public class Imgproc {
 
     /**
      * Draws contours outlines or filled contours.
-     *
+     * <p>
      * The function draws contour outlines in the image if \(\texttt{thickness} \ge 0\) or fills the area bounded by the
      * contours if \(\texttt{thickness}&lt;0\) . The example below shows how to retrieve connected components from the
      * binary image and label them: : INCLUDE: snippets/imgproc_drawContours.cpp
@@ -10151,7 +9232,7 @@ public class Imgproc {
 
     /**
      * Draws contours outlines or filled contours.
-     *
+     * <p>
      * The function draws contour outlines in the image if \(\texttt{thickness} \ge 0\) or fills the area bounded by the
      * contours if \(\texttt{thickness}&lt;0\) . The example below shows how to retrieve connected components from the
      * binary image and label them: : INCLUDE: snippets/imgproc_drawContours.cpp
@@ -10188,7 +9269,7 @@ public class Imgproc {
 
     /**
      * Draws contours outlines or filled contours.
-     *
+     * <p>
      * The function draws contour outlines in the image if \(\texttt{thickness} \ge 0\) or fills the area bounded by the
      * contours if \(\texttt{thickness}&lt;0\) . The example below shows how to retrieve connected components from the
      * binary image and label them: : INCLUDE: snippets/imgproc_drawContours.cpp
@@ -10220,11 +9301,9 @@ public class Imgproc {
                 color.val[3]);
     }
 
-    //
-    // C++: bool cv::clipLine(Rect imgRect, Point& pt1, Point& pt2)
-    //
-
     /**
+     * Performs the {@code clipLine} operation.
+     *
      *
      * @param imgRect Image rectangle.
      * @param pt1     First line point.
@@ -10256,14 +9335,9 @@ public class Imgproc {
         return retVal;
     }
 
-    //
-    // C++: void cv::ellipse2Poly(Point center, Size axes, int angle, int arcStart, int arcEnd, int delta, vector_Point&
-    // pts)
-    //
-
     /**
      * Approximates an elliptic arc with a polyline.
-     *
+     * <p>
      * The function ellipse2Poly computes the vertices of a polyline that approximates the specified elliptic arc. It is
      * used by #ellipse. If {@code arcStart} is greater than {@code arcEnd}, they are swapped.
      *
@@ -10288,16 +9362,15 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::putText(Mat& img, String text, Point org, int fontFace, double fontScale, Scalar color, int
-    // thickness = 1, int lineType = LINE_8, bool bottomLeftOrigin = false)
+    // C++: bool cv::clipLine(Rect imgRect, Point& pt1, Point& pt2)
     //
 
     /**
      * Draws a text string.
-     *
+     * <p>
      * The function cv::putText renders the specified text string in the image. Symbols that cannot be rendered using
      * the specified font are replaced by question marks. See #getTextSize for a text rendering code example.
-     *
+     * <p>
      * The {@code fontScale} parameter is a scale factor that is multiplied by the base font size:
      * <ul>
      * <li>When scale &gt; 1, the text is magnified.</li>
@@ -10342,12 +9415,17 @@ public class Imgproc {
                 bottomLeftOrigin);
     }
 
+    //
+    // C++: void cv::ellipse2Poly(Point center, Size axes, int angle, int arcStart, int arcEnd, int delta, vector_Point&
+    // pts)
+    //
+
     /**
      * Draws a text string.
-     *
+     * <p>
      * The function cv::putText renders the specified text string in the image. Symbols that cannot be rendered using
      * the specified font are replaced by question marks. See #getTextSize for a text rendering code example.
-     *
+     * <p>
      * The {@code fontScale} parameter is a scale factor that is multiplied by the base font size:
      * <ul>
      * <li>When scale &gt; 1, the text is magnified.</li>
@@ -10388,12 +9466,17 @@ public class Imgproc {
                 lineType);
     }
 
+    //
+    // C++: void cv::putText(Mat& img, String text, Point org, int fontFace, double fontScale, Scalar color, int
+    // thickness = 1, int lineType = LINE_8, bool bottomLeftOrigin = false)
+    //
+
     /**
      * Draws a text string.
-     *
+     * <p>
      * The function cv::putText renders the specified text string in the image. Symbols that cannot be rendered using
      * the specified font are replaced by question marks. See #getTextSize for a text rendering code example.
-     *
+     * <p>
      * The {@code fontScale} parameter is a scale factor that is multiplied by the base font size:
      * <ul>
      * <li>When scale &gt; 1, the text is magnified.</li>
@@ -10433,10 +9516,10 @@ public class Imgproc {
 
     /**
      * Draws a text string.
-     *
+     * <p>
      * The function cv::putText renders the specified text string in the image. Symbols that cannot be rendered using
      * the specified font are replaced by question marks. See #getTextSize for a text rendering code example.
-     *
+     * <p>
      * The {@code fontScale} parameter is a scale factor that is multiplied by the base font size:
      * <ul>
      * <li>When scale &gt; 1, the text is magnified.</li>
@@ -10465,10 +9548,6 @@ public class Imgproc {
                 color.val[3]);
     }
 
-    //
-    // C++: double cv::getFontScaleFromHeight(int fontFace, int pixelHeight, int thickness = 1)
-    //
-
     /**
      * Calculates the font-specific size to use to achieve a given height in pixels.
      *
@@ -10476,7 +9555,7 @@ public class Imgproc {
      * @param pixelHeight Pixel height to compute the fontScale for
      * @param thickness   Thickness of lines used to render the text.See putText for details.
      * @return The fontSize to use for cv::putText
-     *
+     *         <p>
      *         SEE: cv::putText
      */
     public static double getFontScaleFromHeight(int fontFace, int pixelHeight, int thickness) {
@@ -10489,7 +9568,7 @@ public class Imgproc {
      * @param fontFace    Font to use, see cv::HersheyFonts.
      * @param pixelHeight Pixel height to compute the fontScale for
      * @return The fontSize to use for cv::putText
-     *
+     *         <p>
      *         SEE: cv::putText
      */
     public static double getFontScaleFromHeight(int fontFace, int pixelHeight) {
@@ -10497,15 +9576,189 @@ public class Imgproc {
     }
 
     //
-    // C++: void cv::HoughLinesWithAccumulator(Mat image, Mat& lines, double rho, double theta, int threshold, double
-    // srn = 0, double stn = 0, double min_theta = 0, double max_theta = CV_PI, bool use_edgeval = false)
+    // C++: double cv::getFontScaleFromHeight(int fontFace, int pixelHeight, int thickness = 1)
     //
+
+    /**
+     * Draws a text string using specified font.
+     * <p>
+     * The function cv::putText renders the specified text string in the image. Symbols that cannot be rendered using
+     * the specified font are replaced by question marks. See #getTextSize for a text rendering code example. The
+     * function returns the coordinates in pixels from where the text can be continued.
+     *
+     * @param img    Image.
+     * @param text   Text string to be drawn.
+     * @param org    Bottom-left corner of the first character of the printed text (see PUT_TEXT_ALIGN_... though)
+     * @param color  Text color.
+     * @param fface  The font to use for the text
+     * @param size   Font size in pixels (by default) or pts
+     * @param weight Font weight, 100..1000, where 100 is "thin" font, 400 is "regular", 600 is "semibold", 800 is
+     *               "bold" and beyond that is "black". The parameter is ignored if the font is not a variable font or
+     *               if it does not provide variation along 'wght' axis. If the weight is 0, then the weight, currently
+     *               set via setInstance(), is used.
+     * @param flags  Various flags, see PUT_TEXT_...
+     * @param wrap   The optional text wrapping range: In the case of left-to-right (LTR) text if the printed character
+     *               would cross wrap.end boundary, the "cursor" is set to wrap.start. In the case of right-to-left
+     *               (RTL) text it's vice versa. If the parameters is not set, [org.x, img.cols] is used for LTR text
+     *               and [0, org.x] is for RTL one.
+     * @return automatically generated
+     */
+    public static Point putText(
+            Mat img,
+            String text,
+            Point org,
+            Scalar color,
+            FontFace fface,
+            int size,
+            int weight,
+            int flags,
+            Range wrap) {
+        return new Point(putText_4(
+                img.nativeObj,
+                text,
+                org.x,
+                org.y,
+                color.val[0],
+                color.val[1],
+                color.val[2],
+                color.val[3],
+                fface.getNativeObjAddr(),
+                size,
+                weight,
+                flags,
+                wrap.start,
+                wrap.end));
+    }
+
+    /**
+     * Draws a text string using specified font.
+     * <p>
+     * The function cv::putText renders the specified text string in the image. Symbols that cannot be rendered using
+     * the specified font are replaced by question marks. See #getTextSize for a text rendering code example. The
+     * function returns the coordinates in pixels from where the text can be continued.
+     *
+     * @param img    Image.
+     * @param text   Text string to be drawn.
+     * @param org    Bottom-left corner of the first character of the printed text (see PUT_TEXT_ALIGN_... though)
+     * @param color  Text color.
+     * @param fface  The font to use for the text
+     * @param size   Font size in pixels (by default) or pts
+     * @param weight Font weight, 100..1000, where 100 is "thin" font, 400 is "regular", 600 is "semibold", 800 is
+     *               "bold" and beyond that is "black". The parameter is ignored if the font is not a variable font or
+     *               if it does not provide variation along 'wght' axis. If the weight is 0, then the weight, currently
+     *               set via setInstance(), is used.
+     * @param flags  Various flags, see PUT_TEXT_... In the case of left-to-right (LTR) text if the printed character
+     *               would cross wrap.end boundary, the "cursor" is set to wrap.start. In the case of right-to-left
+     *               (RTL) text it's vice versa. If the parameters is not set, [org.x, img.cols] is used for LTR text
+     *               and [0, org.x] is for RTL one.
+     * @return automatically generated
+     */
+    public static Point putText(
+            Mat img,
+            String text,
+            Point org,
+            Scalar color,
+            FontFace fface,
+            int size,
+            int weight,
+            int flags) {
+        return new Point(putText_5(
+                img.nativeObj,
+                text,
+                org.x,
+                org.y,
+                color.val[0],
+                color.val[1],
+                color.val[2],
+                color.val[3],
+                fface.getNativeObjAddr(),
+                size,
+                weight,
+                flags));
+    }
+
+    //
+    // C++: Point cv::putText(Mat& img, String text, Point org, Scalar color, FontFace fface, int size, int weight = 0,
+    // PutTextFlags flags = PUT_TEXT_ALIGN_LEFT, Range wrap = Range())
+    //
+
+    /**
+     * Draws a text string using specified font.
+     * <p>
+     * The function cv::putText renders the specified text string in the image. Symbols that cannot be rendered using
+     * the specified font are replaced by question marks. See #getTextSize for a text rendering code example. The
+     * function returns the coordinates in pixels from where the text can be continued.
+     *
+     * @param img    Image.
+     * @param text   Text string to be drawn.
+     * @param org    Bottom-left corner of the first character of the printed text (see PUT_TEXT_ALIGN_... though)
+     * @param color  Text color.
+     * @param fface  The font to use for the text
+     * @param size   Font size in pixels (by default) or pts
+     * @param weight Font weight, 100..1000, where 100 is "thin" font, 400 is "regular", 600 is "semibold", 800 is
+     *               "bold" and beyond that is "black". The parameter is ignored if the font is not a variable font or
+     *               if it does not provide variation along 'wght' axis. If the weight is 0, then the weight, currently
+     *               set via setInstance(), is used. In the case of left-to-right (LTR) text if the printed character
+     *               would cross wrap.end boundary, the "cursor" is set to wrap.start. In the case of right-to-left
+     *               (RTL) text it's vice versa. If the parameters is not set, [org.x, img.cols] is used for LTR text
+     *               and [0, org.x] is for RTL one.
+     * @return automatically generated
+     */
+    public static Point putText(Mat img, String text, Point org, Scalar color, FontFace fface, int size, int weight) {
+        return new Point(putText_6(
+                img.nativeObj,
+                text,
+                org.x,
+                org.y,
+                color.val[0],
+                color.val[1],
+                color.val[2],
+                color.val[3],
+                fface.getNativeObjAddr(),
+                size,
+                weight));
+    }
+
+    /**
+     * Draws a text string using specified font.
+     * <p>
+     * The function cv::putText renders the specified text string in the image. Symbols that cannot be rendered using
+     * the specified font are replaced by question marks. See #getTextSize for a text rendering code example. The
+     * function returns the coordinates in pixels from where the text can be continued.
+     *
+     * @param img   Image.
+     * @param text  Text string to be drawn.
+     * @param org   Bottom-left corner of the first character of the printed text (see PUT_TEXT_ALIGN_... though)
+     * @param color Text color.
+     * @param fface The font to use for the text
+     * @param size  Font size in pixels (by default) or pts where 100 is "thin" font, 400 is "regular", 600 is
+     *              "semibold", 800 is "bold" and beyond that is "black". The parameter is ignored if the font is not a
+     *              variable font or if it does not provide variation along 'wght' axis. If the weight is 0, then the
+     *              weight, currently set via setInstance(), is used. In the case of left-to-right (LTR) text if the
+     *              printed character would cross wrap.end boundary, the "cursor" is set to wrap.start. In the case of
+     *              right-to-left (RTL) text it's vice versa. If the parameters is not set, [org.x, img.cols] is used
+     *              for LTR text and [0, org.x] is for RTL one.
+     * @return automatically generated
+     */
+    public static Point putText(Mat img, String text, Point org, Scalar color, FontFace fface, int size) {
+        return new Point(putText_7(
+                img.nativeObj,
+                text,
+                org.x,
+                org.y,
+                color.val[0],
+                color.val[1],
+                color.val[2],
+                color.val[3],
+                fface.getNativeObjAddr(),
+                size));
+    }
 
     /**
      * Finds lines in a binary image using the standard Hough transform and get accumulator.
      *
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
-     *
+     * <p>
      * SEE: HoughLines
      *
      * @param image       automatically generated
@@ -10547,7 +9800,7 @@ public class Imgproc {
      * Finds lines in a binary image using the standard Hough transform and get accumulator.
      *
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
-     *
+     * <p>
      * SEE: HoughLines
      *
      * @param image     automatically generated
@@ -10582,11 +9835,16 @@ public class Imgproc {
                 max_theta);
     }
 
+    //
+    // C++: void cv::HoughLinesWithAccumulator(Mat image, Mat& lines, double rho, double theta, int threshold, double
+    // srn = 0, double stn = 0, double min_theta = 0, double max_theta = CV_PI, bool use_edgeval = false)
+    //
+
     /**
      * Finds lines in a binary image using the standard Hough transform and get accumulator.
      *
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
-     *
+     * <p>
      * SEE: HoughLines
      *
      * @param image     automatically generated
@@ -10614,7 +9872,7 @@ public class Imgproc {
      * Finds lines in a binary image using the standard Hough transform and get accumulator.
      *
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
-     *
+     * <p>
      * SEE: HoughLines
      *
      * @param image     automatically generated
@@ -10640,7 +9898,7 @@ public class Imgproc {
      * Finds lines in a binary image using the standard Hough transform and get accumulator.
      *
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
-     *
+     * <p>
      * SEE: HoughLines
      *
      * @param image     automatically generated
@@ -10664,7 +9922,7 @@ public class Imgproc {
      * Finds lines in a binary image using the standard Hough transform and get accumulator.
      *
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
-     *
+     * <p>
      * SEE: HoughLines
      *
      * @param image     automatically generated
@@ -10677,16 +9935,11 @@ public class Imgproc {
         HoughLinesWithAccumulator_5(image.nativeObj, lines.nativeObj, rho, theta, threshold);
     }
 
-    //
-    // C++: void cv::HoughCirclesWithAccumulator(Mat image, Mat& circles, int method, double dp, double minDist, double
-    // param1 = 100, double param2 = 100, int minRadius = 0, int maxRadius = 0)
-    //
-
     /**
      * Finds circles in a grayscale image using the Hough transform and get accumulator.
      *
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
-     *
+     * <p>
      * SEE: HoughCircles
      *
      * @param image     automatically generated
@@ -10725,7 +9978,7 @@ public class Imgproc {
      * Finds circles in a grayscale image using the Hough transform and get accumulator.
      *
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
-     *
+     * <p>
      * SEE: HoughCircles
      *
      * @param image     automatically generated
@@ -10757,11 +10010,16 @@ public class Imgproc {
                 minRadius);
     }
 
+    //
+    // C++: void cv::HoughCirclesWithAccumulator(Mat image, Mat& circles, int method, double dp, double minDist, double
+    // param1 = 100, double param2 = 100, int minRadius = 0, int maxRadius = 0)
+    //
+
     /**
      * Finds circles in a grayscale image using the Hough transform and get accumulator.
      *
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
-     *
+     * <p>
      * SEE: HoughCircles
      *
      * @param image   automatically generated
@@ -10787,7 +10045,7 @@ public class Imgproc {
      * Finds circles in a grayscale image using the Hough transform and get accumulator.
      *
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
-     *
+     * <p>
      * SEE: HoughCircles
      *
      * @param image   automatically generated
@@ -10811,7 +10069,7 @@ public class Imgproc {
      * Finds circles in a grayscale image using the Hough transform and get accumulator.
      *
      * <b>Note:</b> This function is for bindings use only. Use original function in C++ code
-     *
+     * <p>
      * SEE: HoughCircles
      *
      * @param image   automatically generated
@@ -10824,8 +10082,18 @@ public class Imgproc {
         HoughCirclesWithAccumulator_4(image.nativeObj, circles.nativeObj, method, dp, minDist);
     }
 
-// C++: Size getTextSize(const String& text, int fontFace, double fontScale, int thickness, int* baseLine);
+    // C++: Size getTextSize(const String& text, int fontFace, double fontScale, int thickness, int* baseLine);
 //javadoc:getTextSize(text, fontFace, fontScale, thickness, baseLine)
+    /**
+     * Performs the {@code getTextSize} operation.
+     *
+     * @param text      the {@code text} value
+     * @param fontFace  the {@code fontFace} value
+     * @param fontScale the {@code fontScale} value
+     * @param thickness the {@code thickness} value
+     * @param baseLine  the {@code baseLine} value
+     * @return the operation result
+     */
     public static Size getTextSize(String text, int fontFace, double fontScale, int thickness, int[] baseLine) {
         if (baseLine != null && baseLine.length != 1)
             throw new java.lang.IllegalArgumentException("'baseLine' must be 'int[1]' or 'null'.");
@@ -10833,9 +10101,9 @@ public class Imgproc {
         return retVal;
     }
 
-    // C++: Ptr_LineSegmentDetector cv::createLineSegmentDetector(int refine = LSD_REFINE_STD, double scale = 0.8,
-    // double sigma_scale = 0.6, double quant = 2.0, double ang_th = 22.5, double log_eps = 0, double density_th = 0.7,
-    // int n_bins = 1024)
+    // C++: Ptr_LineSegmentDetector cv::createLineSegmentDetector(LineSegmentDetectorModes refine = LSD_REFINE_STD,
+    // double scale = 0.8, double sigma_scale = 0.6, double quant = 2.0, double ang_th = 22.5, double log_eps = 0,
+    // double density_th = 0.7, int n_bins = 1024)
     private static native long createLineSegmentDetector_0(
             int refine,
             double scale,
@@ -11137,6 +10405,15 @@ public class Imgproc {
 
     private static native void filter2D_3(long src_nativeObj, long dst_nativeObj, int ddepth, long kernel_nativeObj);
 
+    // C++: void cv::filter2D(Mat src, Mat& dst, Mat kernel, Filter2DParams params = Filter2DParams())
+    private static native void filter2Dp_0(
+            long src_nativeObj,
+            long dst_nativeObj,
+            long kernel_nativeObj,
+            long params_nativeObj);
+
+    private static native void filter2Dp_1(long src_nativeObj, long dst_nativeObj, long kernel_nativeObj);
+
     // C++: void cv::sepFilter2D(Mat src, Mat& dst, int ddepth, Mat kernelX, Mat kernelY, Point anchor = Point(-1,-1),
     // double delta = 0, int borderType = BORDER_DEFAULT)
     private static native void sepFilter2D_0(
@@ -11379,146 +10656,6 @@ public class Imgproc {
             int criteria_type,
             int criteria_maxCount,
             double criteria_epsilon);
-
-    // C++: void cv::goodFeaturesToTrack(Mat image, vector_Point& corners, int maxCorners, double qualityLevel, double
-    // minDistance, Mat mask = Mat(), int blockSize = 3, bool useHarrisDetector = false, double k = 0.04)
-    private static native void goodFeaturesToTrack_0(
-            long image_nativeObj,
-            long corners_mat_nativeObj,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            long mask_nativeObj,
-            int blockSize,
-            boolean useHarrisDetector,
-            double k);
-
-    private static native void goodFeaturesToTrack_1(
-            long image_nativeObj,
-            long corners_mat_nativeObj,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            long mask_nativeObj,
-            int blockSize,
-            boolean useHarrisDetector);
-
-    private static native void goodFeaturesToTrack_2(
-            long image_nativeObj,
-            long corners_mat_nativeObj,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            long mask_nativeObj,
-            int blockSize);
-
-    private static native void goodFeaturesToTrack_3(
-            long image_nativeObj,
-            long corners_mat_nativeObj,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            long mask_nativeObj);
-
-    private static native void goodFeaturesToTrack_4(
-            long image_nativeObj,
-            long corners_mat_nativeObj,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance);
-
-    // C++: void cv::goodFeaturesToTrack(Mat image, vector_Point& corners, int maxCorners, double qualityLevel, double
-    // minDistance, Mat mask, int blockSize, int gradientSize, bool useHarrisDetector = false, double k = 0.04)
-    private static native void goodFeaturesToTrack_5(
-            long image_nativeObj,
-            long corners_mat_nativeObj,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            long mask_nativeObj,
-            int blockSize,
-            int gradientSize,
-            boolean useHarrisDetector,
-            double k);
-
-    private static native void goodFeaturesToTrack_6(
-            long image_nativeObj,
-            long corners_mat_nativeObj,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            long mask_nativeObj,
-            int blockSize,
-            int gradientSize,
-            boolean useHarrisDetector);
-
-    private static native void goodFeaturesToTrack_7(
-            long image_nativeObj,
-            long corners_mat_nativeObj,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            long mask_nativeObj,
-            int blockSize,
-            int gradientSize);
-
-    // C++: void cv::goodFeaturesToTrack(Mat image, Mat& corners, int maxCorners, double qualityLevel, double
-    // minDistance, Mat mask, Mat& cornersQuality, int blockSize = 3, int gradientSize = 3, bool useHarrisDetector =
-    // false, double k = 0.04)
-    private static native void goodFeaturesToTrackWithQuality_0(
-            long image_nativeObj,
-            long corners_nativeObj,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            long mask_nativeObj,
-            long cornersQuality_nativeObj,
-            int blockSize,
-            int gradientSize,
-            boolean useHarrisDetector,
-            double k);
-
-    private static native void goodFeaturesToTrackWithQuality_1(
-            long image_nativeObj,
-            long corners_nativeObj,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            long mask_nativeObj,
-            long cornersQuality_nativeObj,
-            int blockSize,
-            int gradientSize,
-            boolean useHarrisDetector);
-
-    private static native void goodFeaturesToTrackWithQuality_2(
-            long image_nativeObj,
-            long corners_nativeObj,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            long mask_nativeObj,
-            long cornersQuality_nativeObj,
-            int blockSize,
-            int gradientSize);
-
-    private static native void goodFeaturesToTrackWithQuality_3(
-            long image_nativeObj,
-            long corners_nativeObj,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            long mask_nativeObj,
-            long cornersQuality_nativeObj,
-            int blockSize);
-
-    private static native void goodFeaturesToTrackWithQuality_4(
-            long image_nativeObj,
-            long corners_nativeObj,
-            int maxCorners,
-            double qualityLevel,
-            double minDistance,
-            long mask_nativeObj,
-            long cornersQuality_nativeObj);
 
     // C++: void cv::HoughLines(Mat image, Mat& lines, double rho, double theta, int threshold, double srn = 0, double
     // stn = 0, double min_theta = 0, double max_theta = CV_PI, bool use_edgeval = false)
@@ -11826,7 +10963,7 @@ public class Imgproc {
             double dsize_height);
 
     // C++: void cv::warpAffine(Mat src, Mat& dst, Mat M, Size dsize, int flags = INTER_LINEAR, int borderMode =
-    // BORDER_CONSTANT, Scalar borderValue = Scalar())
+    // BORDER_CONSTANT, Scalar borderValue = Scalar(), AlgorithmHint hint = cv::ALGO_HINT_DEFAULT)
     private static native void warpAffine_0(
             long src_nativeObj,
             long dst_nativeObj,
@@ -11838,7 +10975,8 @@ public class Imgproc {
             double borderValue_val0,
             double borderValue_val1,
             double borderValue_val2,
-            double borderValue_val3);
+            double borderValue_val3,
+            int hint);
 
     private static native void warpAffine_1(
             long src_nativeObj,
@@ -11847,7 +10985,11 @@ public class Imgproc {
             double dsize_width,
             double dsize_height,
             int flags,
-            int borderMode);
+            int borderMode,
+            double borderValue_val0,
+            double borderValue_val1,
+            double borderValue_val2,
+            double borderValue_val3);
 
     private static native void warpAffine_2(
             long src_nativeObj,
@@ -11855,9 +10997,18 @@ public class Imgproc {
             long M_nativeObj,
             double dsize_width,
             double dsize_height,
-            int flags);
+            int flags,
+            int borderMode);
 
     private static native void warpAffine_3(
+            long src_nativeObj,
+            long dst_nativeObj,
+            long M_nativeObj,
+            double dsize_width,
+            double dsize_height,
+            int flags);
+
+    private static native void warpAffine_4(
             long src_nativeObj,
             long dst_nativeObj,
             long M_nativeObj,
@@ -11865,7 +11016,7 @@ public class Imgproc {
             double dsize_height);
 
     // C++: void cv::warpPerspective(Mat src, Mat& dst, Mat M, Size dsize, int flags = INTER_LINEAR, int borderMode =
-    // BORDER_CONSTANT, Scalar borderValue = Scalar())
+    // BORDER_CONSTANT, Scalar borderValue = Scalar(), AlgorithmHint hint = cv::ALGO_HINT_DEFAULT)
     private static native void warpPerspective_0(
             long src_nativeObj,
             long dst_nativeObj,
@@ -11877,7 +11028,8 @@ public class Imgproc {
             double borderValue_val0,
             double borderValue_val1,
             double borderValue_val2,
-            double borderValue_val3);
+            double borderValue_val3,
+            int hint);
 
     private static native void warpPerspective_1(
             long src_nativeObj,
@@ -11886,7 +11038,11 @@ public class Imgproc {
             double dsize_width,
             double dsize_height,
             int flags,
-            int borderMode);
+            int borderMode,
+            double borderValue_val0,
+            double borderValue_val1,
+            double borderValue_val2,
+            double borderValue_val3);
 
     private static native void warpPerspective_2(
             long src_nativeObj,
@@ -11894,9 +11050,18 @@ public class Imgproc {
             long M_nativeObj,
             double dsize_width,
             double dsize_height,
-            int flags);
+            int flags,
+            int borderMode);
 
     private static native void warpPerspective_3(
+            long src_nativeObj,
+            long dst_nativeObj,
+            long M_nativeObj,
+            double dsize_width,
+            double dsize_height,
+            int flags);
+
+    private static native void warpPerspective_4(
             long src_nativeObj,
             long dst_nativeObj,
             long M_nativeObj,
@@ -11904,8 +11069,21 @@ public class Imgproc {
             double dsize_height);
 
     // C++: void cv::remap(Mat src, Mat& dst, Mat map1, Mat map2, int interpolation, int borderMode = BORDER_CONSTANT,
-    // Scalar borderValue = Scalar())
+    // Scalar borderValue = Scalar(), AlgorithmHint hint = cv::ALGO_HINT_DEFAULT)
     private static native void remap_0(
+            long src_nativeObj,
+            long dst_nativeObj,
+            long map1_nativeObj,
+            long map2_nativeObj,
+            int interpolation,
+            int borderMode,
+            double borderValue_val0,
+            double borderValue_val1,
+            double borderValue_val2,
+            double borderValue_val3,
+            int hint);
+
+    private static native void remap_1(
             long src_nativeObj,
             long dst_nativeObj,
             long map1_nativeObj,
@@ -11917,7 +11095,7 @@ public class Imgproc {
             double borderValue_val2,
             double borderValue_val3);
 
-    private static native void remap_1(
+    private static native void remap_2(
             long src_nativeObj,
             long dst_nativeObj,
             long map1_nativeObj,
@@ -11925,7 +11103,7 @@ public class Imgproc {
             int interpolation,
             int borderMode);
 
-    private static native void remap_2(
+    private static native void remap_3(
             long src_nativeObj,
             long dst_nativeObj,
             long map1_nativeObj,
@@ -11949,19 +11127,82 @@ public class Imgproc {
             long dstmap2_nativeObj,
             int dstmap1type);
 
-    // C++: Mat cv::getRotationMatrix2D(Point2f center, double angle, double scale)
-    private static native long getRotationMatrix2D_0(double center_x, double center_y, double angle, double scale);
+    // C++: void cv::undistort(Mat src, Mat& dst, Mat cameraMatrix, Mat distCoeffs, Mat newCameraMatrix = Mat())
+    private static native void undistort_0(
+            long src_nativeObj,
+            long dst_nativeObj,
+            long cameraMatrix_nativeObj,
+            long distCoeffs_nativeObj,
+            long newCameraMatrix_nativeObj);
 
-    // C++: void cv::invertAffineTransform(Mat M, Mat& iM)
-    private static native void invertAffineTransform_0(long M_nativeObj, long iM_nativeObj);
+    private static native void undistort_1(
+            long src_nativeObj,
+            long dst_nativeObj,
+            long cameraMatrix_nativeObj,
+            long distCoeffs_nativeObj);
 
-    // C++: Mat cv::getPerspectiveTransform(Mat src, Mat dst, int solveMethod = DECOMP_LU)
-    private static native long getPerspectiveTransform_0(long src_nativeObj, long dst_nativeObj, int solveMethod);
+    // C++: void cv::initUndistortRectifyMap(Mat cameraMatrix, Mat distCoeffs, Mat R, Mat newCameraMatrix, Size size,
+    // int m1type, Mat& map1, Mat& map2)
+    private static native void initUndistortRectifyMap_0(
+            long cameraMatrix_nativeObj,
+            long distCoeffs_nativeObj,
+            long R_nativeObj,
+            long newCameraMatrix_nativeObj,
+            double size_width,
+            double size_height,
+            int m1type,
+            long map1_nativeObj,
+            long map2_nativeObj);
 
-    private static native long getPerspectiveTransform_1(long src_nativeObj, long dst_nativeObj);
+    // C++: void cv::initInverseRectificationMap(Mat cameraMatrix, Mat distCoeffs, Mat R, Mat newCameraMatrix, Size
+    // size, int m1type, Mat& map1, Mat& map2)
+    private static native void initInverseRectificationMap_0(
+            long cameraMatrix_nativeObj,
+            long distCoeffs_nativeObj,
+            long R_nativeObj,
+            long newCameraMatrix_nativeObj,
+            double size_width,
+            double size_height,
+            int m1type,
+            long map1_nativeObj,
+            long map2_nativeObj);
 
-    // C++: Mat cv::getAffineTransform(vector_Point2f src, vector_Point2f dst)
-    private static native long getAffineTransform_0(long src_mat_nativeObj, long dst_mat_nativeObj);
+    // C++: void cv::fisheye::initUndistortRectifyMap(Mat K, Mat D, Mat R, Mat P, Size size, int m1type, Mat& map1, Mat&
+    // map2)
+    private static native void fisheye_initUndistortRectifyMap_0(
+            long K_nativeObj,
+            long D_nativeObj,
+            long R_nativeObj,
+            long P_nativeObj,
+            double size_width,
+            double size_height,
+            int m1type,
+            long map1_nativeObj,
+            long map2_nativeObj);
+
+    // C++: void cv::fisheye::undistortImage(Mat distorted, Mat& undistorted, Mat K, Mat D, Mat Knew = cv::Mat(), Size
+    // new_size = Size())
+    private static native void fisheye_undistortImage_0(
+            long distorted_nativeObj,
+            long undistorted_nativeObj,
+            long K_nativeObj,
+            long D_nativeObj,
+            long Knew_nativeObj,
+            double new_size_width,
+            double new_size_height);
+
+    private static native void fisheye_undistortImage_1(
+            long distorted_nativeObj,
+            long undistorted_nativeObj,
+            long K_nativeObj,
+            long D_nativeObj,
+            long Knew_nativeObj);
+
+    private static native void fisheye_undistortImage_2(
+            long distorted_nativeObj,
+            long undistorted_nativeObj,
+            long K_nativeObj,
+            long D_nativeObj);
 
     // C++: void cv::getRectSubPix(Mat image, Size patchSize, Point2f center, Mat& patch, int patchType = -1)
     private static native void getRectSubPix_0(
@@ -11980,24 +11221,6 @@ public class Imgproc {
             double center_x,
             double center_y,
             long patch_nativeObj);
-
-    // C++: void cv::logPolar(Mat src, Mat& dst, Point2f center, double M, int flags)
-    private static native void logPolar_0(
-            long src_nativeObj,
-            long dst_nativeObj,
-            double center_x,
-            double center_y,
-            double M,
-            int flags);
-
-    // C++: void cv::linearPolar(Mat src, Mat& dst, Point2f center, double maxRadius, int flags)
-    private static native void linearPolar_0(
-            long src_nativeObj,
-            long dst_nativeObj,
-            double center_x,
-            double center_y,
-            double maxRadius,
-            int flags);
 
     // C++: void cv::warpPolar(Mat src, Mat& dst, Size dsize, Point2f center, double maxRadius, int flags)
     private static native void warpPolar_0(
@@ -12105,16 +11328,6 @@ public class Imgproc {
             double winSize_width,
             double winSize_height,
             int type);
-
-    // C++: void cv::divSpectrums(Mat a, Mat b, Mat& c, int flags, bool conjB = false)
-    private static native void divSpectrums_0(
-            long a_nativeObj,
-            long b_nativeObj,
-            long c_nativeObj,
-            int flags,
-            boolean conjB);
-
-    private static native void divSpectrums_1(long a_nativeObj, long b_nativeObj, long c_nativeObj, int flags);
 
     // C++: double cv::threshold(Mat src, Mat& dst, double thresh, double maxval, int type)
     private static native double threshold_0(
@@ -12427,25 +11640,6 @@ public class Imgproc {
 
     private static native void demosaicing_1(long src_nativeObj, long dst_nativeObj, int code);
 
-    // C++: Moments cv::moments(Mat array, bool binaryImage = false)
-    private static native double[] moments_0(long array_nativeObj, boolean binaryImage);
-
-    private static native double[] moments_1(long array_nativeObj);
-
-    // C++: void cv::HuMoments(Moments m, Mat& hu)
-    private static native void HuMoments_0(
-            double m_m00,
-            double m_m10,
-            double m_m01,
-            double m_m20,
-            double m_m11,
-            double m_m02,
-            double m_m30,
-            double m_m21,
-            double m_m12,
-            double m_m03,
-            long hu_nativeObj);
-
     // C++: void cv::matchTemplate(Mat image, Mat templ, Mat& result, int method, Mat mask = Mat())
     private static native void matchTemplate_0(
             long image_nativeObj,
@@ -12480,7 +11674,6 @@ public class Imgproc {
     private static native int connectedComponents_2(long image_nativeObj, long labels_nativeObj);
 
     // C++: int cv::connectedComponentsWithStats(Mat image, Mat& labels, Mat& stats, Mat& centroids, int connectivity,
-
     // int ltype, int ccltype)
     private static native int connectedComponentsWithStatsWithAlgorithm_0(
             long image_nativeObj,
@@ -12492,7 +11685,6 @@ public class Imgproc {
             int ccltype);
 
     // C++: int cv::connectedComponentsWithStats(Mat image, Mat& labels, Mat& stats, Mat& centroids, int connectivity =
-
     // 8, int ltype = CV_32S)
     private static native int connectedComponentsWithStats_0(
             long image_nativeObj,
@@ -12541,145 +11733,6 @@ public class Imgproc {
 
     // C++: void cv::findContoursLinkRuns(Mat image, vector_Mat& contours)
     private static native void findContoursLinkRuns_1(long image_nativeObj, long contours_mat_nativeObj);
-
-    // C++: void cv::approxPolyDP(vector_Point2f curve, vector_Point2f& approxCurve, double epsilon, bool closed)
-    private static native void approxPolyDP_0(
-            long curve_mat_nativeObj,
-            long approxCurve_mat_nativeObj,
-            double epsilon,
-            boolean closed);
-
-    // C++: void cv::approxPolyN(Mat curve, Mat& approxCurve, int nsides, float epsilon_percentage = -1.0, bool
-    // ensure_convex = true)
-    private static native void approxPolyN_0(
-            long curve_nativeObj,
-            long approxCurve_nativeObj,
-            int nsides,
-            float epsilon_percentage,
-            boolean ensure_convex);
-
-    private static native void approxPolyN_1(
-            long curve_nativeObj,
-            long approxCurve_nativeObj,
-            int nsides,
-            float epsilon_percentage);
-
-    private static native void approxPolyN_2(long curve_nativeObj, long approxCurve_nativeObj, int nsides);
-
-    // C++: double cv::arcLength(vector_Point2f curve, bool closed)
-    private static native double arcLength_0(long curve_mat_nativeObj, boolean closed);
-
-    // C++: Rect cv::boundingRect(Mat array)
-    private static native double[] boundingRect_0(long array_nativeObj);
-
-    // C++: double cv::contourArea(Mat contour, bool oriented = false)
-    private static native double contourArea_0(long contour_nativeObj, boolean oriented);
-
-    private static native double contourArea_1(long contour_nativeObj);
-
-    // C++: RotatedRect cv::minAreaRect(vector_Point2f points)
-    private static native double[] minAreaRect_0(long points_mat_nativeObj);
-
-    // C++: void cv::boxPoints(RotatedRect box, Mat& points)
-    private static native void boxPoints_0(
-            double box_center_x,
-            double box_center_y,
-            double box_size_width,
-            double box_size_height,
-            double box_angle,
-            long points_nativeObj);
-
-    // C++: void cv::minEnclosingCircle(vector_Point2f points, Point2f& center, float& radius)
-    private static native void minEnclosingCircle_0(
-            long points_mat_nativeObj,
-            double[] center_out,
-            double[] radius_out);
-
-    // C++: double cv::minEnclosingTriangle(Mat points, Mat& triangle)
-    private static native double minEnclosingTriangle_0(long points_nativeObj, long triangle_nativeObj);
-
-    // C++: double cv::minEnclosingConvexPolygon(Mat points, Mat& polygon, int k)
-    private static native double minEnclosingConvexPolygon_0(long points_nativeObj, long polygon_nativeObj, int k);
-
-    // C++: double cv::matchShapes(Mat contour1, Mat contour2, int method, double parameter)
-    private static native double matchShapes_0(
-            long contour1_nativeObj,
-            long contour2_nativeObj,
-            int method,
-            double parameter);
-
-    // C++: void cv::convexHull(vector_Point points, vector_int& hull, bool clockwise = false, _hidden_ returnPoints =
-    // true)
-    private static native void convexHull_0(long points_mat_nativeObj, long hull_mat_nativeObj, boolean clockwise);
-
-    private static native void convexHull_2(long points_mat_nativeObj, long hull_mat_nativeObj);
-
-    // C++: void cv::convexityDefects(vector_Point contour, vector_int convexhull, vector_Vec4i& convexityDefects)
-    private static native void convexityDefects_0(
-            long contour_mat_nativeObj,
-            long convexhull_mat_nativeObj,
-            long convexityDefects_mat_nativeObj);
-
-    // C++: bool cv::isContourConvex(vector_Point contour)
-    private static native boolean isContourConvex_0(long contour_mat_nativeObj);
-
-    // C++: float cv::intersectConvexConvex(Mat p1, Mat p2, Mat& p12, bool handleNested = true)
-    private static native float intersectConvexConvex_0(
-            long p1_nativeObj,
-            long p2_nativeObj,
-            long p12_nativeObj,
-            boolean handleNested);
-
-    private static native float intersectConvexConvex_1(long p1_nativeObj, long p2_nativeObj, long p12_nativeObj);
-
-    // C++: RotatedRect cv::fitEllipse(vector_Point2f points)
-    private static native double[] fitEllipse_0(long points_mat_nativeObj);
-
-    // C++: RotatedRect cv::fitEllipseAMS(Mat points)
-    private static native double[] fitEllipseAMS_0(long points_nativeObj);
-
-    // C++: RotatedRect cv::fitEllipseDirect(Mat points)
-    private static native double[] fitEllipseDirect_0(long points_nativeObj);
-
-    // C++: void cv::getClosestEllipsePoints(RotatedRect ellipse_params, Mat points, Mat& closest_pts)
-    private static native void getClosestEllipsePoints_0(
-            double ellipse_params_center_x,
-            double ellipse_params_center_y,
-            double ellipse_params_size_width,
-            double ellipse_params_size_height,
-            double ellipse_params_angle,
-            long points_nativeObj,
-            long closest_pts_nativeObj);
-
-    // C++: void cv::fitLine(Mat points, Mat& line, int distType, double param, double reps, double aeps)
-    private static native void fitLine_0(
-            long points_nativeObj,
-            long line_nativeObj,
-            int distType,
-            double param,
-            double reps,
-            double aeps);
-
-    // C++: double cv::pointPolygonTest(vector_Point2f contour, Point2f pt, bool measureDist)
-    private static native double pointPolygonTest_0(
-            long contour_mat_nativeObj,
-            double pt_x,
-            double pt_y,
-            boolean measureDist);
-
-    // C++: int cv::rotatedRectangleIntersection(RotatedRect rect1, RotatedRect rect2, Mat& intersectingRegion)
-    private static native int rotatedRectangleIntersection_0(
-            double rect1_center_x,
-            double rect1_center_y,
-            double rect1_size_width,
-            double rect1_size_height,
-            double rect1_angle,
-            double rect2_center_x,
-            double rect2_center_y,
-            double rect2_size_width,
-            double rect2_size_height,
-            double rect2_angle,
-            long intersectingRegion_nativeObj);
 
     // C++: Ptr_GeneralizedHoughBallard cv::createGeneralizedHoughBallard()
     private static native long createGeneralizedHoughBallard_0();
@@ -12811,6 +11864,25 @@ public class Imgproc {
             double color_val1,
             double color_val2,
             double color_val3);
+
+    // C++: void cv::drawFrameAxes(Mat& image, Mat cameraMatrix, Mat distCoeffs, Mat rvec, Mat tvec, float length, int
+    // thickness = 3)
+    private static native void drawFrameAxes_0(
+            long image_nativeObj,
+            long cameraMatrix_nativeObj,
+            long distCoeffs_nativeObj,
+            long rvec_nativeObj,
+            long tvec_nativeObj,
+            float length,
+            int thickness);
+
+    private static native void drawFrameAxes_1(
+            long image_nativeObj,
+            long cameraMatrix_nativeObj,
+            long distCoeffs_nativeObj,
+            long rvec_nativeObj,
+            long tvec_nativeObj,
+            float length);
 
     // C++: void cv::rectangle(Mat& img, Point pt1, Point pt2, Scalar color, int thickness = 1, int lineType = LINE_8,
     // int shift = 0)
@@ -13396,6 +12468,63 @@ public class Imgproc {
     private static native double getFontScaleFromHeight_0(int fontFace, int pixelHeight, int thickness);
 
     private static native double getFontScaleFromHeight_1(int fontFace, int pixelHeight);
+
+    // C++: Point cv::putText(Mat& img, String text, Point org, Scalar color, FontFace fface, int size, int weight = 0,
+    // PutTextFlags flags = PUT_TEXT_ALIGN_LEFT, Range wrap = Range())
+    private static native double[] putText_4(
+            long img_nativeObj,
+            String text,
+            double org_x,
+            double org_y,
+            double color_val0,
+            double color_val1,
+            double color_val2,
+            double color_val3,
+            long fface_nativeObj,
+            int size,
+            int weight,
+            int flags,
+            int wrap_start,
+            int wrap_end);
+
+    private static native double[] putText_5(
+            long img_nativeObj,
+            String text,
+            double org_x,
+            double org_y,
+            double color_val0,
+            double color_val1,
+            double color_val2,
+            double color_val3,
+            long fface_nativeObj,
+            int size,
+            int weight,
+            int flags);
+
+    private static native double[] putText_6(
+            long img_nativeObj,
+            String text,
+            double org_x,
+            double org_y,
+            double color_val0,
+            double color_val1,
+            double color_val2,
+            double color_val3,
+            long fface_nativeObj,
+            int size,
+            int weight);
+
+    private static native double[] putText_7(
+            long img_nativeObj,
+            String text,
+            double org_x,
+            double org_y,
+            double color_val0,
+            double color_val1,
+            double color_val2,
+            double color_val3,
+            long fface_nativeObj,
+            int size);
 
     // C++: void cv::HoughLinesWithAccumulator(Mat image, Mat& lines, double rho, double theta, int threshold, double
     // srn = 0, double stn = 0, double min_theta = 0, double max_theta = CV_PI, bool use_edgeval = false)

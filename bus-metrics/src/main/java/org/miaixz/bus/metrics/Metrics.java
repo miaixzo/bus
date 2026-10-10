@@ -19,9 +19,12 @@
 */
 package org.miaixz.bus.metrics;
 
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.ToDoubleFunction;
 
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.metrics.guard.ProviderLease;
 import org.miaixz.bus.metrics.nimble.*;
 import org.miaixz.bus.metrics.observe.slo.SloTracker;
 import org.miaixz.bus.metrics.observe.tag.Tag;
@@ -35,18 +38,14 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  * Usage examples:
  *
  * <pre>{@code
- * // Counter
  * Metrics.counter("order.created", "region", "cn").increment();
  *
- * // Meter with in-process req/s
  * Meter qps = Metrics.meter("http.requests", "method", "GET");
  * qps.increment();
  * double rps = qps.oneMinuteRate();
  *
- * // Timer with SLA violation callback
  * Metrics.timer("payment.process").onViolation(0.99, 500, MILLIS, 100, e -> alert(e));
  *
- * // LLM timer
  * LlmSample s = Metrics.llmTimer("ai.chat").start("claude-opus-4-6", "anthropic", "chat");
  * s.recordFirstToken();
  * s.stop(inputTokens, outputTokens, stopReason);
@@ -57,9 +56,13 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
 public class Metrics {
 
     /**
-     * Active metrics provider; lazily initialised via SPI on first access.
+     * Initial facade state before a provider is resolved or installed.
      */
-    private static volatile Provider PROVIDER;
+    private static final State EMPTY = new State(Mode.EMPTY, null, null, null);
+    /**
+     * Atomically managed provider and lease ownership state.
+     */
+    private static final AtomicReference<State> STATE = new AtomicReference<>(EMPTY);
 
     /**
      * Constructs a new Metrics instance.
@@ -74,20 +77,23 @@ public class Metrics {
      * @return the current {@link Provider}
      */
     public static Provider getProvider() {
-        if (PROVIDER == null) {
-            synchronized (Metrics.class) {
-                if (PROVIDER == null) {
-                    Logger.info(true, "Metrics", "Metrics provider initialization started");
-                    PROVIDER = Factory.get();
-                    Logger.info(
-                            false,
-                            "Metrics",
-                            "Metrics provider initialization finished: providerClass={}",
-                            PROVIDER.getClass().getName());
-                }
+        while (true) {
+            State current = STATE.get();
+            if (current.provider != null) {
+                return current.provider;
+            }
+            Logger.info(true, "Metrics", "Metrics provider initialization started");
+            Provider provider = Objects.requireNonNull(Factory.get(), "Metrics SPI provider must not be null");
+            State initialized = new State(Mode.SPI_DEFAULT, provider, null, null);
+            if (STATE.compareAndSet(current, initialized)) {
+                Logger.info(
+                        false,
+                        "Metrics",
+                        "Metrics provider initialization finished: providerClass={}",
+                        provider.getClass().getName());
+                return provider;
             }
         }
-        return PROVIDER;
     }
 
     /**
@@ -101,12 +107,79 @@ public class Metrics {
                 "Metrics",
                 "Metrics provider override started: providerClass={}",
                 null == provider ? null : provider.getClass().getName());
-        PROVIDER = provider;
+        STATE.set(provider == null ? EMPTY : new State(Mode.EXPLICIT, provider, null, null));
         Logger.info(
                 false,
                 "Metrics",
                 "Metrics provider override finished: providerClass={}",
                 null == provider ? null : provider.getClass().getName());
+    }
+
+    /**
+     * Temporarily installs a provider for an owning runtime such as one Spring application context.
+     * <p>
+     * A lease may replace the lazy SPI default, or wrap an explicitly installed identical instance. It never silently
+     * replaces a different explicit or leased provider.
+     *
+     * @param provider provider to install
+     * @param owner    identity token for the owning runtime
+     * @return compare-and-restore lease
+     * @throws IllegalStateException if a different explicit provider or another active lease already owns the facade
+     */
+    public static ProviderLease installProvider(Provider provider, Object owner) {
+        Provider checkedProvider = Objects.requireNonNull(provider, "Metrics provider must not be null");
+        Object checkedOwner = Objects.requireNonNull(owner, "Metrics provider owner must not be null");
+        while (true) {
+            State previous = STATE.get();
+            if (previous.mode == Mode.EXPLICIT && previous.provider != checkedProvider) {
+                throw new IllegalStateException(
+                        "Cannot install metrics Provider because a different explicit Provider is active: "
+                                + previous.provider.getClass().getName());
+            }
+            if (previous.mode == Mode.LEASED) {
+                throw new IllegalStateException(
+                        "Cannot install metrics Provider because another owner already holds the lease");
+            }
+            Object leaseToken = new Object();
+            State installed = new State(Mode.LEASED, checkedProvider, checkedOwner, leaseToken);
+            if (STATE.compareAndSet(previous, installed)) {
+                Logger.info(
+                        false,
+                        "Metrics",
+                        "Metrics provider lease installed: providerClass={}, previousState={}",
+                        checkedProvider.getClass().getName(),
+                        previous.mode);
+                return new ProviderLease(checkedOwner, checkedProvider, previous,
+                        () -> restoreLease(checkedOwner, checkedProvider, leaseToken, previous));
+            }
+        }
+    }
+
+    /**
+     * Restores the state captured by a provider lease when ownership still matches.
+     *
+     * @param owner      lease owner identity
+     * @param provider   leased provider
+     * @param leaseToken unique lease token
+     * @param previous   state captured before installation
+     */
+    private static void restoreLease(Object owner, Provider provider, Object leaseToken, State previous) {
+        while (true) {
+            State current = STATE.get();
+            if (current.mode != Mode.LEASED || current.owner != owner || current.provider != provider
+                    || current.leaseToken != leaseToken) {
+                return;
+            }
+            if (STATE.compareAndSet(current, previous)) {
+                Logger.info(
+                        false,
+                        "Metrics",
+                        "Metrics provider lease restored previous state: providerClass={}, restoredState={}",
+                        provider.getClass().getName(),
+                        previous.mode);
+                return;
+            }
+        }
     }
 
     /**
@@ -222,6 +295,39 @@ public class Metrics {
      */
     public static SloTracker slo() {
         return getProvider().sloTracker();
+    }
+
+    /**
+     * Provider facade ownership modes.
+     */
+    private enum Mode {
+        /**
+         * No provider has been resolved.
+         */
+        EMPTY,
+        /**
+         * Provider was loaded lazily through the compatibility SPI.
+         */
+        SPI_DEFAULT,
+        /**
+         * Provider was installed explicitly through the compatibility facade.
+         */
+        EXPLICIT,
+        /**
+         * Provider is temporarily owned by a reversible runtime lease.
+         */
+        LEASED
+    }
+
+    /**
+     * Immutable provider facade state.
+     *
+     * @param mode       ownership mode
+     * @param provider   active provider, or {@code null}
+     * @param owner      lease owner, or {@code null}
+     * @param leaseToken unique lease token, or {@code null}
+     */
+    private record State(Mode mode, Provider provider, Object owner, Object leaseToken) {
     }
 
 }

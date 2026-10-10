@@ -28,11 +28,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.cortex.Builder;
-import org.miaixz.bus.cortex.Callout;
-import org.miaixz.bus.cortex.Instance;
-import org.miaixz.bus.cortex.Listener;
+import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
 import org.miaixz.bus.cortex.magic.event.CortexChangeRecord;
 import org.miaixz.bus.cortex.magic.event.CortexChangeStatus;
@@ -98,11 +94,6 @@ public class VortexBridge
     private final LinkedBlockingQueue<RegistryChange<Assets>> queue = new LinkedBlockingQueue<>(10000);
 
     /**
-     * Whether the background worker should keep processing events.
-     */
-    private volatile boolean running = true;
-
-    /**
      * Dropped event count caused by queue overflow or exhausted retries.
      */
     private final AtomicLong droppedCount = new AtomicLong();
@@ -128,14 +119,19 @@ public class VortexBridge
     private final AtomicLong deadCount = new AtomicLong();
 
     /**
-     * Last delivery failure message.
-     */
-    private volatile String lastError;
-
-    /**
      * Background worker thread responsible for delivering sync events.
      */
     private final Thread workerThread;
+
+    /**
+     * Whether the background worker should keep processing events.
+     */
+    private volatile boolean running = true;
+
+    /**
+     * Last delivery failure message.
+     */
+    private volatile String lastError;
 
     /**
      * Creates a VortexBridge and starts the background sync worker.

@@ -31,9 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Branch implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852238379559L;
 
@@ -41,34 +38,42 @@ public class Branch implements Serializable {
      * The commit value.
      */
     private Commit commit;
+
     /**
      * The developers can merge value.
      */
     private Boolean developersCanMerge;
+
     /**
      * The developers can push value.
      */
     private Boolean developersCanPush;
+
     /**
      * The merged value.
      */
     private Boolean merged;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The is protected value.
      */
     private Boolean isProtected;
+
     /**
      * The is default value.
      */
     private Boolean isDefault;
+
     /**
      * The can push value.
      */
     private Boolean canPush;
+
     /**
      * The web url value.
      */
@@ -79,6 +84,17 @@ public class Branch implements Serializable {
      */
     public Branch() {
         // No initialization required.
+    }
+
+    /**
+     * Returns whether the valid is enabled.
+     *
+     * @param branch the branch value
+     * @return the result
+     */
+
+    public static boolean isValid(Branch branch) {
+        return (branch != null && branch.getName() != null);
     }
 
     /**
@@ -259,17 +275,6 @@ public class Branch implements Serializable {
 
     public void setWebUrl(String webUrl) {
         this.webUrl = webUrl;
-    }
-
-    /**
-     * Returns whether the valid is enabled.
-     *
-     * @param branch the branch value
-     * @return the result
-     */
-
-    public static boolean isValid(Branch branch) {
-        return (branch != null && branch.getName() != null);
     }
 
     /**

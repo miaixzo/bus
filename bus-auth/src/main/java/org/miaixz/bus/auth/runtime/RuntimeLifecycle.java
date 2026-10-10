@@ -38,10 +38,12 @@ final class RuntimeLifecycle {
      * Monitor guarding lifecycle state and operation count.
      */
     private final Object gate = new Object();
+
     /**
      * Current lifecycle state guarded by {@link #gate}.
      */
     private Lifecycle.State state = Lifecycle.State.RUNNING;
+
     /**
      * Number of admitted operations still holding leases.
      */
@@ -142,6 +144,7 @@ final class RuntimeLifecycle {
          * Lifecycle gate that admitted this operation.
          */
         private final RuntimeLifecycle lifecycle;
+
         /**
          * Idempotent release marker.
          */

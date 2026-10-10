@@ -51,38 +51,47 @@ public class ElasticProperties {
      * Whether the elastic integration is enabled.
      */
     private final boolean enabled;
+
     /**
      * Elasticsearch node addresses used to build the low-level client.
      */
     private final String hosts;
+
     /**
      * Username used for HTTP basic authentication.
      */
     private final String username;
+
     /**
      * Password used for HTTP basic authentication.
      */
     private final String password;
+
     /**
      * HTTP scheme applied to host entries that omit one.
      */
     private final String schema;
+
     /**
      * Maximum time allowed to establish a connection.
      */
     private final Duration connectTimeout;
+
     /**
      * Maximum inactivity time while waiting for socket data.
      */
     private final Duration socketTimeout;
+
     /**
      * Maximum time allowed to obtain a connection from the pool.
      */
     private final Duration connectionRequestTimeout;
+
     /**
      * Maximum number of pooled connections across all routes.
      */
     private final int maxConnectTotal;
+
     /**
      * Maximum number of pooled connections for one route.
      */

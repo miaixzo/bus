@@ -857,19 +857,31 @@ public class Galaxy {
     }
 
     /**
+     * High-precision calculation for a solar term or new moon.
+     *
+     * @param qi whether to calculate a solar term ({@code true}) or new moon ({@code false})
+     * @param w  an angular parameter
+     * @return the calculated time parameter
+     */
+    public static double qiShuoHigh(boolean qi, double w) {
+        double t = (qi ? saLonT2(w) : msaLonT2(w)) * 36525;
+        t = t - dtT(t) + ONE_THIRD;
+        double v = ((t + 0.5) % 1) * SECOND_PER_DAY;
+        int n = qi ? 1200 : 1800;
+        if (v < n || v > SECOND_PER_DAY - n) {
+            t = (qi ? saLonT(w) : msaLonT(w)) * 36525 - dtT(t) + ONE_THIRD;
+        }
+        return t;
+    }
+
+    /**
      * High-precision calculation for a solar term ('qi').
      *
      * @param w An angular parameter.
      * @return The calculated time parameter.
      */
     public static double qiHigh(double w) {
-        double t = saLonT2(w) * 36525;
-        t = t - dtT(t) + ONE_THIRD;
-        double v = ((t + 0.5) % 1) * SECOND_PER_DAY;
-        if (v < 1200 || v > SECOND_PER_DAY - 1200) {
-            t = saLonT(w) * 36525 - dtT(t) + ONE_THIRD;
-        }
-        return t;
+        return qiShuoHigh(true, w);
     }
 
     /**
@@ -879,13 +891,12 @@ public class Galaxy {
      * @return The calculated time parameter.
      */
     public static double shuoHigh(double w) {
-        double t = msaLonT2(w) * 36525;
-        t = t - dtT(t) + ONE_THIRD;
-        double v = ((t + 0.5) % 1) * SECOND_PER_DAY;
-        if (v < 1800 || v > SECOND_PER_DAY - 1800) {
-            t = msaLonT(w) * 36525 - dtT(t) + ONE_THIRD;
-        }
-        return t;
+        return qiShuoHigh(false, w);
+    }
+
+    private static double low(double t) {
+        double n = t + 1.8;
+        return (32 * n * n - 20) / SECOND_PER_DAY / 36525;
     }
 
     /**
@@ -902,7 +913,7 @@ public class Galaxy {
         double n = 48950621.66 + 6283319653.318 * t + 53 * t * t + 334166 * Math.cos(4.669257 + 628.307585 * t)
                 + 3489 * Math.cos(4.6261 + 1256.61517 * t) + 2060.6 * Math.cos(2.67823 + 628.307585 * t) * t - 994
                 - 834 * Math.sin(2.1824 - 33.75705 * t);
-        t -= (n / 10000000 - w) / 628.332 + (32 * (t + 1.8) * (t + 1.8) - 20) / SECOND_PER_DAY / 36525;
+        t -= (n / 10000000 - w) / 628.332 + low(t);
         return t * 36525 + ONE_THIRD;
     }
 
@@ -916,8 +927,7 @@ public class Galaxy {
         double v = 7771.37714500204;
         double t = (w + 1.08472) / v;
         t -= (-0.0000331 * t * t + 0.10976 * Math.cos(0.785 + 8328.6914 * t) + 0.02224 * Math.cos(0.187 + 7214.0629 * t)
-                - 0.03342 * Math.cos(4.669 + 628.3076 * t)) / v
-                + (32 * (t + 1.8) * (t + 1.8) - 20) / SECOND_PER_DAY / 36525;
+                - 0.03342 * Math.cos(4.669 + 628.3076 * t)) / v + low(t);
         return t * 36525 + ONE_THIRD;
     }
 
@@ -933,7 +943,7 @@ public class Galaxy {
     private static double qiShuo(boolean qi, boolean high, double jd, int pc) {
         double w = qi ? Math.floor((jd + pc - 2451259) / 365.2422 * 24) * Math.PI / 12
                 : Math.floor((jd + pc - 2451551) / 29.5306) * PI_2;
-        double d = qi ? high ? qiHigh(w) : qiLow(w) : high ? shuoHigh(w) : shuoLow(w);
+        double d = qi ? (high ? qiHigh(w) : qiLow(w)) : high ? shuoHigh(w) : shuoLow(w);
         return Math.floor(d + 0.5);
     }
 

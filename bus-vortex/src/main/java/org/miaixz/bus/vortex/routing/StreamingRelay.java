@@ -20,6 +20,7 @@
 package org.miaixz.bus.vortex.routing;
 
 import java.time.Duration;
+import java.util.concurrent.TimeoutException;
 
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.PooledDataBuffer;
@@ -90,9 +91,7 @@ public class StreamingRelay {
                         long bytesPerSecond = (long) (bytes[0] / (elapsedNanos / 1_000_000_000.0d));
                         if (bytesPerSecond < Holder.get().getDownloadMinimumBytesPerSecond()) {
                             Octets.release(buffer);
-                            sink.error(
-                                    new java.util.concurrent.TimeoutException(
-                                            "Download rate below configured minimum"));
+                            sink.error(new TimeoutException("Download rate below configured minimum"));
                             return;
                         }
                     }

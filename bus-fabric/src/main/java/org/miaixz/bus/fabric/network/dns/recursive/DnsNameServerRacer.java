@@ -23,25 +23,14 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.dns.forward.DnsForwarder;
 import org.miaixz.bus.fabric.network.dns.forward.DnsUpstream;
-import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
-import org.miaixz.bus.fabric.network.dns.message.DnsDecodedResponse;
-import org.miaixz.bus.fabric.network.dns.message.DnsQuery;
-import org.miaixz.bus.fabric.network.dns.message.DnsResponse;
-import org.miaixz.bus.fabric.network.dns.message.DnsResponseCode;
+import org.miaixz.bus.fabric.network.dns.message.*;
 
 /**
  * Concurrent name-server racer used by recursive referral resolution.
@@ -96,83 +85,6 @@ public class DnsNameServerRacer {
             }
         }
         this.nameServers = List.copyOf(nameServers);
-    }
-
-    /**
-     * Races one DNS request across candidate name servers.
-     *
-     * @param query   decoded DNS query used to build SERVFAIL when every candidate fails
-     * @param request original DNS request wire bytes
-     * @return first legal DNS response, or a SERVFAIL response when every candidate fails
-     */
-    public byte[] race(final DnsQuery query, final byte[] request) {
-        return race(query, request, DnsRetryBudget.recursive()).response();
-    }
-
-    /**
-     * Races one DNS request across candidate name servers while consuming a retry budget.
-     *
-     * @param query   decoded DNS query used to build SERVFAIL when every candidate fails
-     * @param request original DNS request wire bytes
-     * @param budget  retry budget shared by the recursive flow
-     * @return race response and remaining budget
-     */
-    public DnsNameServerRace race(final DnsQuery query, final byte[] request, final DnsRetryBudget budget) {
-        if (query == null) {
-            throw new ValidateException("DNS name-server race query must not be null");
-        }
-        if (request == null || request.length == 0 || request.length > DnsCodec.MAX_MESSAGE_BYTES) {
-            throw new ValidateException("DNS name-server race request length is invalid");
-        }
-        if (budget == null) {
-            throw new ValidateException("DNS name-server race retry budget must not be null");
-        }
-        final List<DnsUpstream> healthy = healthyCandidates(nameServers);
-        final List<DnsUpstream> failed = failedCandidates(nameServers);
-        DnsRetryBudget cursor = budget;
-        RaceGroup result = new RaceGroup(RaceResult.failure(null), cursor);
-        if (!healthy.isEmpty()) {
-            result = raceGroup(healthy, request, cursor);
-            cursor = result.budget();
-            if (result.result().success()) {
-                return new DnsNameServerRace(result.result().response(), cursor);
-            }
-        }
-        if (!failed.isEmpty()) {
-            result = raceGroup(failed, request, cursor);
-            cursor = result.budget();
-            if (result.result().success()) {
-                return new DnsNameServerRace(result.result().response(), cursor);
-            }
-        }
-        return new DnsNameServerRace(servfail(query), cursor);
-    }
-
-    /**
-     * Returns the current health snapshot for one name server.
-     *
-     * @param nameServer name-server upstream
-     * @return immutable health snapshot
-     */
-    public DnsNameServerHealth health(final DnsUpstream nameServer) {
-        if (nameServer == null) {
-            throw new ValidateException("DNS name-server health upstream must not be null");
-        }
-        final HealthState state = HEALTH.get(healthKey(nameServer));
-        final long now = System.nanoTime();
-        if (state == null) {
-            return new DnsNameServerHealth(true, 0, Long.MAX_VALUE);
-        }
-        return new DnsNameServerHealth(state.retryAfterNanos <= now, state.consecutiveFailures, state.rttNanos);
-    }
-
-    /**
-     * Returns the immutable candidate name servers.
-     *
-     * @return candidate name servers
-     */
-    public List<DnsUpstream> nameServers() {
-        return nameServers;
     }
 
     /**
@@ -445,6 +357,83 @@ public class DnsNameServerRacer {
             thread.setDaemon(true);
             return thread;
         };
+    }
+
+    /**
+     * Races one DNS request across candidate name servers.
+     *
+     * @param query   decoded DNS query used to build SERVFAIL when every candidate fails
+     * @param request original DNS request wire bytes
+     * @return first legal DNS response, or a SERVFAIL response when every candidate fails
+     */
+    public byte[] race(final DnsQuery query, final byte[] request) {
+        return race(query, request, DnsRetryBudget.recursive()).response();
+    }
+
+    /**
+     * Races one DNS request across candidate name servers while consuming a retry budget.
+     *
+     * @param query   decoded DNS query used to build SERVFAIL when every candidate fails
+     * @param request original DNS request wire bytes
+     * @param budget  retry budget shared by the recursive flow
+     * @return race response and remaining budget
+     */
+    public DnsNameServerRace race(final DnsQuery query, final byte[] request, final DnsRetryBudget budget) {
+        if (query == null) {
+            throw new ValidateException("DNS name-server race query must not be null");
+        }
+        if (request == null || request.length == 0 || request.length > DnsCodec.MAX_MESSAGE_BYTES) {
+            throw new ValidateException("DNS name-server race request length is invalid");
+        }
+        if (budget == null) {
+            throw new ValidateException("DNS name-server race retry budget must not be null");
+        }
+        final List<DnsUpstream> healthy = healthyCandidates(nameServers);
+        final List<DnsUpstream> failed = failedCandidates(nameServers);
+        DnsRetryBudget cursor = budget;
+        RaceGroup result = new RaceGroup(RaceResult.failure(null), cursor);
+        if (!healthy.isEmpty()) {
+            result = raceGroup(healthy, request, cursor);
+            cursor = result.budget();
+            if (result.result().success()) {
+                return new DnsNameServerRace(result.result().response(), cursor);
+            }
+        }
+        if (!failed.isEmpty()) {
+            result = raceGroup(failed, request, cursor);
+            cursor = result.budget();
+            if (result.result().success()) {
+                return new DnsNameServerRace(result.result().response(), cursor);
+            }
+        }
+        return new DnsNameServerRace(servfail(query), cursor);
+    }
+
+    /**
+     * Returns the current health snapshot for one name server.
+     *
+     * @param nameServer name-server upstream
+     * @return immutable health snapshot
+     */
+    public DnsNameServerHealth health(final DnsUpstream nameServer) {
+        if (nameServer == null) {
+            throw new ValidateException("DNS name-server health upstream must not be null");
+        }
+        final HealthState state = HEALTH.get(healthKey(nameServer));
+        final long now = System.nanoTime();
+        if (state == null) {
+            return new DnsNameServerHealth(true, 0, Long.MAX_VALUE);
+        }
+        return new DnsNameServerHealth(state.retryAfterNanos <= now, state.consecutiveFailures, state.rttNanos);
+    }
+
+    /**
+     * Returns the immutable candidate name servers.
+     *
+     * @return candidate name servers
+     */
+    public List<DnsUpstream> nameServers() {
+        return nameServers;
     }
 
     /**

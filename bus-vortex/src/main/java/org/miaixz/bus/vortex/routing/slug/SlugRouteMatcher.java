@@ -67,6 +67,43 @@ public class SlugRouteMatcher {
     }
 
     /**
+     * Renders one slug target template by replacing its single placeholder with the matched slug.
+     *
+     * @param template target template
+     * @param slug     matched slug value
+     * @return rendered target string
+     */
+    public static String render(String template, String slug) {
+        String placeholder = placeholder(template);
+        if (placeholder == null) {
+            return template;
+        }
+        return template.replace(placeholder, StringKit.toStringOrEmpty(slug));
+    }
+
+    /**
+     * Finds the single placeholder token in a slug target template.
+     *
+     * @param template target template
+     * @return placeholder token including braces, or {@code null} when the template is invalid
+     */
+    private static String placeholder(String template) {
+        if (StringKit.isBlank(template)) {
+            return null;
+        }
+        int left = template.indexOf(Symbol.C_BRACE_LEFT);
+        int right = template.indexOf(Symbol.C_BRACE_RIGHT, left + 1);
+        if (left < 0 || right < 0 || right == left + 1) {
+            return null;
+        }
+        if (template.indexOf(Symbol.C_BRACE_LEFT, right + 1) >= 0
+                || template.indexOf(Symbol.C_BRACE_RIGHT, right + 1) >= 0) {
+            return null;
+        }
+        return template.substring(left, right + 1);
+    }
+
+    /**
      * Matches a WebFlux exchange to one public slug route.
      *
      * @param exchange current server exchange
@@ -108,21 +145,6 @@ public class SlugRouteMatcher {
             appId = request.headers().firstHeader(Args.APP_ID);
         }
         return match(request.path(), spec(space, appId, request.method().name()));
-    }
-
-    /**
-     * Renders one slug target template by replacing its single placeholder with the matched slug.
-     *
-     * @param template target template
-     * @param slug     matched slug value
-     * @return rendered target string
-     */
-    public static String render(String template, String slug) {
-        String placeholder = placeholder(template);
-        if (placeholder == null) {
-            return template;
-        }
-        return template.replace(placeholder, StringKit.toStringOrEmpty(slug));
     }
 
     /**
@@ -336,28 +358,6 @@ public class SlugRouteMatcher {
             normalized = normalized.substring(0, normalized.length() - 1);
         }
         return normalized;
-    }
-
-    /**
-     * Finds the single placeholder token in a slug target template.
-     *
-     * @param template target template
-     * @return placeholder token including braces, or {@code null} when the template is invalid
-     */
-    private static String placeholder(String template) {
-        if (StringKit.isBlank(template)) {
-            return null;
-        }
-        int left = template.indexOf(Symbol.C_BRACE_LEFT);
-        int right = template.indexOf(Symbol.C_BRACE_RIGHT, left + 1);
-        if (left < 0 || right < 0 || right == left + 1) {
-            return null;
-        }
-        if (template.indexOf(Symbol.C_BRACE_LEFT, right + 1) >= 0
-                || template.indexOf(Symbol.C_BRACE_RIGHT, right + 1) >= 0) {
-            return null;
-        }
-        return template.substring(left, right + 1);
     }
 
     /**

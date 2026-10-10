@@ -76,11 +76,13 @@ public class MacOSProcess extends AbstractOSProcess {
      * The MAC_RLIMIT_NOFILE constant.
      */
     private static final int MAC_RLIMIT_NOFILE = 8;
+
     // 64-bit flag
     /**
      * The P_LP64 constant.
      */
     private static final int P_LP64 = 0x4;
+
     /*
      * macOS States:
      */

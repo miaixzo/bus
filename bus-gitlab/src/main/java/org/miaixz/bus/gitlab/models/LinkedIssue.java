@@ -31,9 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class LinkedIssue extends AbstractIssue {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852260826605L;
 
@@ -41,14 +38,17 @@ public class LinkedIssue extends AbstractIssue {
      * The issue link id value.
      */
     private Long issueLinkId;
+
     /**
      * The link type value.
      */
     private LinkType linkType;
+
     /**
      * The link created at value.
      */
     private Date linkCreatedAt;
+
     /**
      * The link updated at value.
      */

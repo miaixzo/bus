@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.logger.nimble.slf4j;
 
+import java.io.Serial;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.spi.LocationAwareLogger;
@@ -35,6 +37,7 @@ import org.miaixz.bus.logger.magic.AbstractProvider;
  */
 public class Slf4jLoggingProvider extends AbstractProvider {
 
+    @Serial
     private static final long serialVersionUID = 2806829135068L;
 
     /**

@@ -29,9 +29,6 @@ import java.io.Serializable;
  */
 public class Email implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852252307991L;
 
@@ -39,6 +36,7 @@ public class Email implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The email value.
      */

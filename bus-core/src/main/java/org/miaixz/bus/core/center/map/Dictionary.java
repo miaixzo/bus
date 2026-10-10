@@ -47,9 +47,6 @@ import org.miaixz.bus.core.xyz.SetKit;
  */
 public class Dictionary extends CustomKeyMap<String, Object> implements TypeGetter<String> {
 
-    /**
-     * The serialization version identifier for this class.
-     */
     @Serial
     private static final long serialVersionUID = 2852273032017L;
 

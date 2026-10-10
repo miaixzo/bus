@@ -54,15 +54,6 @@ public enum ReleaseTrack {
     }
 
     /**
-     * Returns the normalized storage key.
-     *
-     * @return normalized track key
-     */
-    public String key() {
-        return key;
-    }
-
-    /**
      * Normalizes a raw release track, using the stable track when no value is supplied.
      *
      * @param track raw release track
@@ -70,6 +61,15 @@ public enum ReleaseTrack {
      */
     public static String normalize(String track) {
         return track == null || track.isBlank() ? STABLE.key : track.trim().toLowerCase();
+    }
+
+    /**
+     * Returns the normalized storage key.
+     *
+     * @return normalized track key
+     */
+    public String key() {
+        return key;
     }
 
 }

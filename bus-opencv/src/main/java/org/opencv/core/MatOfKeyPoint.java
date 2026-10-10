@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The mat of key point class.
+ * Provides the {@code MatOfKeyPoint} API.
  */
 public class MatOfKeyPoint extends Mat {
 
@@ -31,10 +31,18 @@ public class MatOfKeyPoint extends Mat {
     private static final int _depth = CvType.CV_32F;
     private static final int _channels = 7;
 
+    /**
+     * Creates a new {@code MatOfKeyPoint} instance.
+     */
     public MatOfKeyPoint() {
         super();
     }
 
+    /**
+     * Creates a new {@code MatOfKeyPoint} instance.
+     *
+     * @param addr the {@code addr} value
+     */
     protected MatOfKeyPoint(long addr) {
         super(addr);
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -42,10 +50,11 @@ public class MatOfKeyPoint extends Mat {
         // FIXME: do we need release() here?
     }
 
-    public static MatOfKeyPoint fromNativeAddr(long addr) {
-        return new MatOfKeyPoint(addr);
-    }
-
+    /**
+     * Creates a new {@code MatOfKeyPoint} instance.
+     *
+     * @param m the {@code m} value
+     */
     public MatOfKeyPoint(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -53,16 +62,41 @@ public class MatOfKeyPoint extends Mat {
         // FIXME: do we need release() here?
     }
 
+    /**
+     * Creates a new {@code MatOfKeyPoint} instance.
+     *
+     * @param a the {@code a} value
+     */
     public MatOfKeyPoint(KeyPoint... a) {
         super();
         fromArray(a);
     }
 
+    /**
+     * Performs the {@code fromNativeAddr} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
+    public static MatOfKeyPoint fromNativeAddr(long addr) {
+        return new MatOfKeyPoint(addr);
+    }
+
+    /**
+     * Performs the {@code alloc} operation.
+     *
+     * @param elemNumber the {@code elemNumber} value
+     */
     public void alloc(int elemNumber) {
         if (elemNumber > 0)
             super.create(elemNumber, 1, CvType.makeType(_depth, _channels));
     }
 
+    /**
+     * Performs the {@code fromArray} operation.
+     *
+     * @param a the {@code a} value
+     */
     public void fromArray(KeyPoint... a) {
         if (a == null || a.length == 0)
             return;
@@ -82,6 +116,11 @@ public class MatOfKeyPoint extends Mat {
         put(0, 0, buff); // TODO: check ret val!
     }
 
+    /**
+     * Performs the {@code toArray} operation.
+     *
+     * @return the operation result
+     */
     public KeyPoint[] toArray() {
         int num = (int) total();
         KeyPoint[] a = new KeyPoint[num];
@@ -96,14 +135,23 @@ public class MatOfKeyPoint extends Mat {
         return a;
     }
 
+    /**
+     * Performs the {@code fromList} operation.
+     *
+     * @param lkp the {@code lkp} value
+     */
     public void fromList(List<KeyPoint> lkp) {
         KeyPoint akp[] = lkp.toArray(new KeyPoint[0]);
         fromArray(akp);
     }
 
+    /**
+     * Performs the {@code toList} operation.
+     *
+     * @return the operation result
+     */
     public List<KeyPoint> toList() {
         KeyPoint[] akp = toArray();
         return Arrays.asList(akp);
     }
-
 }

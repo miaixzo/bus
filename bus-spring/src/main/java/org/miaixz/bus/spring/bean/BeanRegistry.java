@@ -52,6 +52,48 @@ public class BeanRegistry {
     }
 
     /**
+     * Rejects duplicate names, aliases, and already registered Bean types.
+     *
+     * @param factory target Bean factory
+     * @param name    proposed Bean name
+     * @param type    proposed Bean type
+     */
+    private static void validateRegistration(DefaultListableBeanFactory factory, String name, Class<?> type) {
+        requireName(name);
+        Objects.requireNonNull(type, "type");
+        if (factory.containsBeanDefinition(name) || factory.containsSingleton(name) || factory.isAlias(name)) {
+            throw new IllegalStateException("Bean name '" + name + "' is already registered");
+        }
+        String[] conflicts = factory.getBeanNamesForType(type, true, false);
+        if (conflicts.length > 0) {
+            throw new IllegalStateException(
+                    "Bean type '" + type.getName() + "' is already registered as " + Arrays.toString(conflicts));
+        }
+    }
+
+    /**
+     * Derives the conventional lower-camel-case Bean name for a class.
+     *
+     * @param type Bean type
+     * @return conventional Bean name
+     */
+    private static String beanName(Class<?> type) {
+        Objects.requireNonNull(type, "type");
+        return Introspector.decapitalize(type.getSimpleName());
+    }
+
+    /**
+     * Validates a required Bean name.
+     *
+     * @param name Bean name to validate
+     */
+    private static void requireName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Bean name must not be blank");
+        }
+    }
+
+    /**
      * Registers a root Bean definition using the conventional Bean name.
      *
      * @param type Bean implementation class
@@ -143,48 +185,6 @@ public class BeanRegistry {
             throw new IllegalStateException("Bean registration requires a DefaultListableBeanFactory");
         }
         return factory;
-    }
-
-    /**
-     * Rejects duplicate names, aliases, and already registered Bean types.
-     *
-     * @param factory target Bean factory
-     * @param name    proposed Bean name
-     * @param type    proposed Bean type
-     */
-    private static void validateRegistration(DefaultListableBeanFactory factory, String name, Class<?> type) {
-        requireName(name);
-        Objects.requireNonNull(type, "type");
-        if (factory.containsBeanDefinition(name) || factory.containsSingleton(name) || factory.isAlias(name)) {
-            throw new IllegalStateException("Bean name '" + name + "' is already registered");
-        }
-        String[] conflicts = factory.getBeanNamesForType(type, true, false);
-        if (conflicts.length > 0) {
-            throw new IllegalStateException(
-                    "Bean type '" + type.getName() + "' is already registered as " + Arrays.toString(conflicts));
-        }
-    }
-
-    /**
-     * Derives the conventional lower-camel-case Bean name for a class.
-     *
-     * @param type Bean type
-     * @return conventional Bean name
-     */
-    private static String beanName(Class<?> type) {
-        Objects.requireNonNull(type, "type");
-        return Introspector.decapitalize(type.getSimpleName());
-    }
-
-    /**
-     * Validates a required Bean name.
-     *
-     * @param name Bean name to validate
-     */
-    private static void requireName(String name) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Bean name must not be blank");
-        }
     }
 
 }

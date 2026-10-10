@@ -29,7 +29,6 @@ import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.cortex.setting.item.Item;
-import org.miaixz.bus.cortex.setting.item.ItemBindingProjection;
 
 /**
  * Lightweight runtime overlay publisher outside the revision-tracked curator write path.
@@ -93,16 +92,16 @@ public class RuntimeItemOverlayService {
     }
 
     /**
-     * Publishes one runtime overlay without creating {@code setting.item.revision} snapshots.
+     * Publishes one runtime overlay without creating {@code setting.revision} snapshots.
      *
      * @param space   space
      * @param group   setting group
-     * @param data_id setting data identifier
+     * @param code    setting data identifier
      * @param profile optional {@code setting.profile}
      * @param content overlay content
      */
-    public void publishRuntimeOverlay(String space, String group, String data_id, String profile, String content) {
-        publishRuntimeOverlay(space, group, data_id, profile, content, 0L);
+    public void publishRuntimeOverlay(String space, String group, String code, String profile, String content) {
+        publishRuntimeOverlay(space, group, code, profile, content, 0L);
     }
 
     /**
@@ -110,7 +109,7 @@ public class RuntimeItemOverlayService {
      *
      * @param space   space
      * @param group   setting group
-     * @param data_id setting data identifier
+     * @param code    setting data identifier
      * @param profile optional profile
      * @param content overlay content
      * @param ttlMs   explicit ttl in milliseconds, {@code 0} keeps the publisher default
@@ -118,14 +117,14 @@ public class RuntimeItemOverlayService {
     public void publishRuntimeOverlay(
             String space,
             String group,
-            String data_id,
+            String code,
             String profile,
             String content,
             long ttlMs) {
         String resolvedSpace = CortexIdentity.space(space);
-        publisher.publish(resolvedSpace, group, data_id, profile, content, ttlMs);
+        publisher.publish(resolvedSpace, group, code, profile, content, ttlMs);
         watchManager.notifySetting(
-                watchKey(resolvedSpace, group, data_id, profile),
+                watchKey(resolvedSpace, group, code, profile),
                 content,
                 OVERLAY_SOURCE,
                 OVERLAY_PUBLISH_EVENT,
@@ -133,7 +132,7 @@ public class RuntimeItemOverlayService {
     }
 
     /**
-     * Warms one runtime overlay snapshot without creating {@code setting.item.revision} snapshots.
+     * Warms one runtime overlay snapshot without creating {@code setting.revision} snapshots.
      *
      * @param entries snapshot entries
      */
@@ -142,27 +141,15 @@ public class RuntimeItemOverlayService {
             return;
         }
         for (Item entry : entries) {
-            if (entry == null || entry.getGroup() == null || entry.getData_id() == null) {
+            if (entry == null || entry.getGroup() == null || entry.getCode() == null) {
                 continue;
             }
-            List<String> profiles = ItemBindingProjection.normalizedProfileIds(entry);
-            if (profiles == null || profiles.isEmpty()) {
-                publishRuntimeOverlay(
-                        entry.getSpace_id(),
-                        entry.getGroup(),
-                        entry.getData_id(),
-                        null,
-                        entry.getContent());
-                continue;
-            }
-            for (String profile : profiles) {
-                publishRuntimeOverlay(
-                        entry.getSpace_id(),
-                        entry.getGroup(),
-                        entry.getData_id(),
-                        profile,
-                        entry.getContent());
-            }
+            publishRuntimeOverlay(
+                    entry.getSpace_id(),
+                    entry.getGroup(),
+                    entry.getCode(),
+                    entry.getProfile_id(),
+                    entry.getContent());
         }
     }
 
@@ -171,12 +158,12 @@ public class RuntimeItemOverlayService {
      *
      * @param space   space
      * @param group   setting group
-     * @param data_id setting data identifier
+     * @param code    setting data identifier
      * @param profile optional {@code setting.profile}
      * @return runtime overlay, or {@code null} when absent
      */
-    public String resolveRuntimeOverlay(String space, String group, String data_id, String profile) {
-        return publisher.get(CortexIdentity.space(space), group, data_id, profile);
+    public String resolveRuntimeOverlay(String space, String group, String code, String profile) {
+        return publisher.get(CortexIdentity.space(space), group, code, profile);
     }
 
     /**
@@ -184,14 +171,14 @@ public class RuntimeItemOverlayService {
      *
      * @param space   space
      * @param group   group
-     * @param data_id data identifier
+     * @param code    data identifier
      * @param profile profile
      * @return overlay view
      */
-    public Map<String, Object> describe(String space, String group, String data_id, String profile) {
+    public Map<String, Object> describe(String space, String group, String code, String profile) {
         Map<String, Object> result = new LinkedHashMap<>();
-        String content = resolveRuntimeOverlay(space, group, data_id, profile);
-        result.put("key", overlayKey(space, group, data_id, profile));
+        String content = resolveRuntimeOverlay(space, group, code, profile);
+        result.put("key", overlayKey(space, group, code, profile));
         result.put("present", content != null);
         result.put("content", content);
         return result;
@@ -202,14 +189,14 @@ public class RuntimeItemOverlayService {
      *
      * @param space   space
      * @param group   group
-     * @param data_id data identifier
+     * @param code    data identifier
      * @param profile profile
      */
-    public void clearRuntimeOverlay(String space, String group, String data_id, String profile) {
+    public void clearRuntimeOverlay(String space, String group, String code, String profile) {
         String resolvedSpace = CortexIdentity.space(space);
-        publisher.delete(resolvedSpace, group, data_id, profile);
+        publisher.delete(resolvedSpace, group, code, profile);
         watchManager.notifySetting(
-                watchKey(resolvedSpace, group, data_id, profile),
+                watchKey(resolvedSpace, group, code, profile),
                 null,
                 OVERLAY_SOURCE,
                 OVERLAY_CLEAR_EVENT,

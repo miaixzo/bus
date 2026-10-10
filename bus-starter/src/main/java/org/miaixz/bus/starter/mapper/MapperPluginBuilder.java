@@ -914,15 +914,6 @@ public class MapperPluginBuilder {
     }
 
     /**
-     * Resolved datasource target for one Mapper startup pass.
-     *
-     * @param dataSource data source used for metadata reads and optional DDL execution
-     */
-    private record ResolvedDataSource(DataSource dataSource) {
-
-    }
-
-    /**
      * Finds a provider bean by type from the Spring container.
      * <p>
      * A missing provider is normal for most applications, so lookup failures are treated as absence rather than startup
@@ -942,6 +933,15 @@ public class MapperPluginBuilder {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * Resolved datasource target for one Mapper startup pass.
+     *
+     * @param dataSource data source used for metadata reads and optional DDL execution
+     */
+    private record ResolvedDataSource(DataSource dataSource) {
+
     }
 
 }

@@ -117,6 +117,34 @@ public class DispatchHandle implements Lifecycle {
     }
 
     /**
+     * Validates dispatch keys.
+     *
+     * @param value candidate dispatch key
+     * @return trimmed, non-blank, single-line dispatch key
+     * @throws ValidateException if the candidate is blank or contains a carriage return or line feed
+     */
+    private static String validateKey(final String value) {
+        final String current = Assert
+                .notBlank(value, () -> new ValidateException("Dispatch key must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(current, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Dispatch key must be non-blank and single-line"));
+        return current.trim();
+    }
+
+    /**
+     * Validates and returns a required reference.
+     *
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Returns the dispatch key.
      *
      * @return trimmed, single-line key used for dispatch accounting
@@ -252,34 +280,6 @@ public class DispatchHandle implements Lifecycle {
                 return;
             }
         }
-    }
-
-    /**
-     * Validates dispatch keys.
-     *
-     * @param value candidate dispatch key
-     * @return trimmed, non-blank, single-line dispatch key
-     * @throws ValidateException if the candidate is blank or contains a carriage return or line feed
-     */
-    private static String validateKey(final String value) {
-        final String current = Assert
-                .notBlank(value, () -> new ValidateException("Dispatch key must be non-blank and single-line"));
-        Assert.isFalse(
-                StringKit.containsAny(current, Symbol.C_CR, Symbol.C_LF),
-                () -> new ValidateException("Dispatch key must be non-blank and single-line"));
-        return current.trim();
-    }
-
-    /**
-     * Validates and returns a required reference.
-     *
-     * @param value reference to validate
-     * @param name  logical reference name used in the validation message
-     * @param <T>   reference type
-     * @return the validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

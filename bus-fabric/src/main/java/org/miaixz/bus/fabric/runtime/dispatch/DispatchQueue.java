@@ -61,11 +61,6 @@ public class DispatchQueue implements AutoCloseable {
     private final Map<DispatchHandle, Entry> queuedEntries;
 
     /**
-     * Queue-local enqueue sequence used to order diagnostic snapshots.
-     */
-    private long sequence;
-
-    /**
      * Reserved or running tasks indexed by handle identity in promotion order.
      */
     private final LinkedHashMap<DispatchHandle, Entry> running;
@@ -74,6 +69,11 @@ public class DispatchQueue implements AutoCloseable {
      * Running counts per key.
      */
     private final Map<String, Integer> runningByKey;
+
+    /**
+     * Queue-local enqueue sequence used to order diagnostic snapshots.
+     */
+    private long sequence;
 
     /**
      * Whether this queue permanently rejects new short tasks.
@@ -92,6 +92,18 @@ public class DispatchQueue implements AutoCloseable {
         this.queuedEntries = new IdentityHashMap<>();
         this.running = new LinkedHashMap<>();
         this.runningByKey = new HashMap<>();
+    }
+
+    /**
+     * Validates and returns a required reference.
+     *
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -365,18 +377,6 @@ public class DispatchQueue implements AutoCloseable {
         } else {
             runningByKey.put(key, count - Normal._1);
         }
-    }
-
-    /**
-     * Validates and returns a required reference.
-     *
-     * @param value reference to validate
-     * @param name  logical reference name used in the validation message
-     * @param <T>   reference type
-     * @return the validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**

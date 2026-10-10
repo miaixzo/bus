@@ -32,6 +32,7 @@ public class WorkItemChanges extends EventChanges {
      * The heath status value.
      */
     private ChangeContainer<String> heathStatus;
+
     /**
      * The last edited at value.
      */

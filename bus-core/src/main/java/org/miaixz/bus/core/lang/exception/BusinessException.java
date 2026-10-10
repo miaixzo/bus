@@ -33,9 +33,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
 @ToString
 public class BusinessException extends UncheckedException {
 
-    /**
-     * The serialization version identifier.
-     */
     @Serial
     private static final long serialVersionUID = 2852252217177L;
 

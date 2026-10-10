@@ -193,6 +193,7 @@ public class SensitiveRequestBodyAdvice extends BaseAdvice
          * Immutable copy of the original request headers.
          */
         private final HttpHeaders headers;
+
         /**
          * Cached request body bytes used for repeated reads.
          */

@@ -41,14 +41,17 @@ public class SensitiveProperties {
      * Whether the sensitive integration is enabled.
      */
     private final boolean enabled;
+
     /**
      * Encryption rules keyed by the protected data category.
      */
     private final Encrypt encrypt;
+
     /**
      * Decryption rules keyed by the protected data category.
      */
     private final Decrypt decrypt;
+
     /**
      * Whether sensitive processing emits diagnostic events without exposing protected values.
      */
@@ -68,6 +71,14 @@ public class SensitiveProperties {
         this.encrypt = encrypt;
         this.decrypt = decrypt;
         this.debug = debug;
+    }
+
+    /**
+     * @return masked diagnostic representation
+     */
+    @Override
+    public String toString() {
+        return "SensitiveProperties[enabled=" + enabled + ", debug=" + debug + ", encrypt=***, decrypt=***]";
     }
 
     /**
@@ -156,14 +167,6 @@ public class SensitiveProperties {
         public String toString() {
             return "Decrypt[key=***, type=" + type + "]";
         }
-    }
-
-    /**
-     * @return masked diagnostic representation
-     */
-    @Override
-    public String toString() {
-        return "SensitiveProperties[enabled=" + enabled + ", debug=" + debug + ", encrypt=***, decrypt=***]";
     }
 
 }

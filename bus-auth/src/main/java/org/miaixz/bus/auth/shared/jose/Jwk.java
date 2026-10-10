@@ -46,34 +46,42 @@ public class Jwk {
      * Required key type member name.
      */
     public static final String KEY_TYPE = "kty";
+
     /**
      * Optional public key use member name.
      */
     public static final String PUBLIC_KEY_USE = "use";
+
     /**
      * Optional key operations member name.
      */
     public static final String KEY_OPERATIONS = "key_ops";
+
     /**
      * Optional intended algorithm member name.
      */
     public static final String ALGORITHM = "alg";
+
     /**
      * Optional key identifier member name.
      */
     public static final String KEY_ID = "kid";
+
     /**
      * Optional X.509 certificate URL member name.
      */
     public static final String CERTIFICATE_URL = "x5u";
+
     /**
      * Optional X.509 certificate chain member name.
      */
     public static final String CERTIFICATE_CHAIN = "x5c";
+
     /**
      * Optional SHA-1 certificate thumbprint member name.
      */
     public static final String CERTIFICATE_THUMBPRINT = "x5t";
+
     /**
      * Optional SHA-256 certificate thumbprint member name.
      */
@@ -83,6 +91,7 @@ public class Jwk {
      * Common registered parameters shared by every JWK key type.
      */
     private final Common common;
+
     /**
      * Parameters governed by the selected JWK key type.
      */

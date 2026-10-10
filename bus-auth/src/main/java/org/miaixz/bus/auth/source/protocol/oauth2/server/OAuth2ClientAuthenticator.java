@@ -72,10 +72,12 @@ public class OAuth2ClientAuthenticator implements ClientAuthenticator<Request> {
      * Configured endpoint and its accepted client-authentication methods.
      */
     private final Endpoint endpoint;
+
     /**
      * Source-scoped project loaders and framework parsers.
      */
     private final SourceServices services;
+
     /**
      * Strict application/x-www-form-urlencoded codec.
      */

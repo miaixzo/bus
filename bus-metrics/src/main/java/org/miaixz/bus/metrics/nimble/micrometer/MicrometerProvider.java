@@ -19,423 +19,336 @@
 */
 package org.miaixz.bus.metrics.nimble.micrometer;
 
-import java.util.Collections;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.function.ToDoubleFunction;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.guard.CardinalityGuard;
+import org.miaixz.bus.metrics.guard.CardinalityViolation;
+import org.miaixz.bus.metrics.guard.MetricFamilyKey;
+import org.miaixz.bus.metrics.guard.MetricFamilyRegistry;
 import org.miaixz.bus.metrics.magic.TimerSnapshot;
 import org.miaixz.bus.metrics.nimble.*;
-import org.miaixz.bus.metrics.nimble.indigenous.NativeMeter;
-import org.miaixz.bus.metrics.nimble.indigenous.NativeSloTracker;
+import org.miaixz.bus.metrics.nimble.Timer;
+import org.miaixz.bus.metrics.nimble.indigenous.*;
 import org.miaixz.bus.metrics.observe.slo.SloTracker;
+import org.miaixz.bus.metrics.observe.tag.Attributes;
 import org.miaixz.bus.metrics.observe.tag.Tag;
 
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.FunctionCounter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tags;
 
 /**
- * Provider implementation that delegates to a Micrometer {@link MeterRegistry}.
- * <p>
- * CardinalityGuard and onViolation callbacks are applied in this adapter layer, before values reach the underlying
- * registry. Meter (EWMA rates) and LlmTimer are implemented locally since Micrometer has no equivalent.
+ * Provider adapter for a caller-owned Micrometer {@link MeterRegistry}.
  *
  * @author Kimi Liu
  */
 public class MicrometerProvider implements Provider {
 
     /**
-     * The Micrometer registry used to register all metric instruments.
+     * Largest integer that a {@code double} represents exactly.
+     */
+    private static final double MAX_EXACT_DOUBLE_INTEGER = 9_007_199_254_740_992.0;
+
+    /**
+     * Caller-owned Micrometer registry.
      */
     private final MeterRegistry registry;
+    /**
+     * Provider-local cardinality policies and observed values.
+     */
+    private final CardinalityGuard.Scope cardinalityGuard;
+    /**
+     * Backend-independent family identity registry.
+     */
+    private final MetricFamilyRegistry familyRegistry = new MetricFamilyRegistry();
+    /**
+     * Micrometer meters created and therefore removable by this adapter.
+     */
+    private final Set<io.micrometer.core.instrument.Meter> ownedMeters = ConcurrentHashMap.newKeySet();
+    /**
+     * Active counters indexed by canonical family and attributes.
+     */
+    private final ConcurrentHashMap<String, ActiveMetric<Counter>> counters = new ConcurrentHashMap<>();
+    /**
+     * Legacy meters indexed by their canonical keys.
+     */
+    private final ConcurrentHashMap<String, MeterAdapter> meters = new ConcurrentHashMap<>();
+    /**
+     * Shared rate pairs indexed by their canonical keys.
+     */
+    private final ConcurrentHashMap<String, RatePair> ratePairs = new ConcurrentHashMap<>();
+    /**
+     * Legacy and typed gauges indexed by their canonical keys.
+     */
+    private final ConcurrentHashMap<String, Gauge> gauges = new ConcurrentHashMap<>();
+    /**
+     * Active timers indexed by canonical family and attributes.
+     */
+    private final ConcurrentHashMap<String, ActiveMetric<Timer>> timers = new ConcurrentHashMap<>();
+    /**
+     * Active histograms indexed by canonical family and attributes.
+     */
+    private final ConcurrentHashMap<String, ActiveMetric<Histogram>> histograms = new ConcurrentHashMap<>();
+    /**
+     * Legacy LLM timers indexed by their canonical keys.
+     */
+    private final ConcurrentHashMap<String, LlmTimer> llmTimers = new ConcurrentHashMap<>();
+    /**
+     * Live observable callback registrations.
+     */
+    private final Set<ObservableRegistration> observables = ConcurrentHashMap.newKeySet();
+    /**
+     * Legacy service-level objective tracker.
+     */
+    private final NativeSloTracker sloTracker = new NativeSloTracker();
+    /**
+     * Whether this adapter has released its registrations.
+     */
+    private final AtomicBoolean closed = new AtomicBoolean();
+    /**
+     * Provider self-diagnostics implementation.
+     */
+    private final MetricDiagnostics diagnostics;
+    /**
+     * Reentrancy guard preventing a diagnostic metric from recursively reporting its own cardinality decision.
+     */
+    private final ThreadLocal<Boolean> cardinalityDiagnosticInProgress = ThreadLocal.withInitial(() -> false);
+    /**
+     * Provider-owned scheduler for legacy rate ticks.
+     */
+    private final ScheduledExecutorService scheduler;
+    /**
+     * Listener that publishes cardinality decisions through provider diagnostics.
+     */
+    private final Consumer<CardinalityViolation> cardinalityListener;
+    /**
+     * Capabilities exposed to binders and endpoints.
+     */
+    private final ProviderCapabilities capabilities;
 
     /**
-     * Create a provider backed by the given Micrometer registry.
+     * Creates an adapter using the legacy global cardinality scope.
      *
-     * @param registry the Micrometer MeterRegistry to delegate to
+     * @param registry caller-owned registry
      */
     public MicrometerProvider(MeterRegistry registry) {
-        Logger.info(
-                true,
-                "Metrics",
-                "Micrometer metrics provider initialization started: registryClass={}",
-                null == registry ? null : registry.getClass().getName());
-        this.registry = registry;
-        Logger.info(
-                false,
-                "Metrics",
-                "Micrometer metrics provider initialization finished: registryClass={}",
-                null == registry ? null : registry.getClass().getName());
+        this(registry, CardinalityGuard.globalScope());
     }
 
     /**
-     * Convert bus-metrics tags to Micrometer {@link Tags}.
+     * Creates an adapter using isolated cardinality state.
      *
-     * @param tags bus-metrics tag array, may be null or empty
-     * @return equivalent Micrometer Tags
+     * @param registry         caller-owned registry
+     * @param cardinalityGuard provider-local cardinality scope
      */
-    private Tags toMicrometerTags(Tag[] tags) {
-        if (tags == null || tags.length == 0) {
-            return Tags.empty();
+    public MicrometerProvider(MeterRegistry registry, CardinalityGuard.Scope cardinalityGuard) {
+        this.registry = Objects.requireNonNull(registry, "MeterRegistry must not be null");
+        this.cardinalityGuard = Objects.requireNonNull(cardinalityGuard, "Cardinality scope must not be null");
+        this.capabilities = new ProviderCapabilities(true, scrapeCapability(registry), Optional.empty());
+        this.scheduler = Executors.newSingleThreadScheduledExecutor(task -> {
+            Thread thread = new Thread(task, Builder.THREAD_NAME_TICK);
+            thread.setDaemon(true);
+            return thread;
+        });
+        this.diagnostics = MetricDiagnostics.create(this);
+        this.cardinalityListener = violation -> {
+            if (cardinalityDiagnosticInProgress.get()) {
+                return;
+            }
+            cardinalityDiagnosticInProgress.set(true);
+            try {
+                diagnostics.resourceDropped(
+                        "cardinality",
+                        "denied".equals(violation.replacedWith()) ? "denied" : "replaced");
+            } finally {
+                cardinalityDiagnosticInProgress.remove();
+            }
+        };
+        cardinalityGuard.addViolationListener(cardinalityListener);
+        scheduler.scheduleAtFixedRate(
+                this::tickMeters,
+                Builder.TICK_INTERVAL_SECONDS,
+                Builder.TICK_INTERVAL_SECONDS,
+                TimeUnit.SECONDS);
+    }
+
+    /**
+     * Creates an adapter from a late-bound optional registry without exposing Micrometer in the caller's signature.
+     *
+     * @param registry         caller-owned Micrometer registry
+     * @param cardinalityGuard provider-local cardinality scope
+     * @return Micrometer-backed provider
+     * @throws NullPointerException if the registry is {@code null}
+     * @throws ClassCastException   if the object is not a Micrometer registry
+     */
+    public static Provider fromRegistry(Object registry, CardinalityGuard.Scope cardinalityGuard) {
+        Object checked = Objects.requireNonNull(registry, "MeterRegistry must not be null");
+        return new MicrometerProvider(MeterRegistry.class.cast(checked), cardinalityGuard);
+    }
+
+    /**
+     * Validates that a descriptor matches an active instrument API.
+     *
+     * @param descriptor descriptor to validate
+     * @param kind       expected instrument kind
+     * @param numberKind expected numeric kind
+     */
+    private static void validate(MetricDescriptor descriptor, InstrumentKind kind, NumberKind numberKind) {
+        Objects.requireNonNull(descriptor, "Metric descriptor must not be null");
+        if (descriptor.kind() != kind || descriptor.numberKind() != numberKind) {
+            throw new IllegalArgumentException("Metric descriptor is incompatible with active " + kind + " API");
         }
-        String[] kvs = new String[tags.length * 2];
-        for (int i = 0; i < tags.length; i++) {
-            kvs[i * 2] = tags[i].key();
-            kvs[i * 2 + 1] = tags[i].value();
+    }
+
+    /**
+     * Builds the canonical key for one typed active series.
+     *
+     * @param descriptor family descriptor
+     * @param attributes series attributes
+     * @return canonical series key
+     */
+    private static String activeKey(MetricDescriptor descriptor, Attributes attributes) {
+        return MetricFamilyKey.identity(descriptor).logical() + attributes.toString();
+    }
+
+    /**
+     * Builds the legacy canonical key for one tagged series.
+     *
+     * @param name metric name
+     * @param tags metric tags
+     * @return canonical series key
+     */
+    private static String key(String name, Tag[] tags) {
+        return name + Attributes.fromTags(tags).toString();
+    }
+
+    /**
+     * Converts typed attributes to Micrometer tags.
+     *
+     * @param attributes typed attributes
+     * @return Micrometer tags
+     */
+    private static Tags tags(Attributes attributes) {
+        List<io.micrometer.core.instrument.Tag> tags = attributes.values().stream().map(
+                value -> io.micrometer.core.instrument.Tag.of(value.descriptor().key(), String.valueOf(value.value())))
+                .toList();
+        return Tags.of(tags);
+    }
+
+    /**
+     * Converts an empty base unit to Micrometer's absent-unit representation.
+     *
+     * @param value descriptor unit
+     * @return unit value, or {@code null} when empty
+     */
+    private static String emptyToNull(String value) {
+        return value.isEmpty() ? null : value;
+    }
+
+    /**
+     * Detects an optional no-argument scrape method without linking an exporter module.
+     *
+     * @param registry caller-owned registry
+     * @return scrape capability when the registry exposes it
+     */
+    private static Optional<ScrapeSupport> scrapeCapability(MeterRegistry registry) {
+        try {
+            Method method = registry.getClass().getMethod("scrape");
+            if (method.getParameterCount() != 0 || method.getReturnType() != String.class
+                    || !method.trySetAccessible()) {
+                return Optional.empty();
+            }
+            return Optional.of(new ScrapeSupport() {
+
+                @Override
+                public String scrape() {
+                    try {
+                        return (String) method.invoke(registry);
+                    } catch (IllegalAccessException | InvocationTargetException exception) {
+                        throw new IllegalStateException("Micrometer registry scrape failed", exception);
+                    }
+                }
+
+                @Override
+                public String contentType() {
+                    return Builder.PROMETHEUS_CONTENT_TYPE;
+                }
+            });
+        } catch (NoSuchMethodException exception) {
+            return Optional.empty();
         }
-        return Tags.of(kvs);
     }
 
     /**
-     * Creates or retrieves a Micrometer-backed counter.
+     * Adapts a Micrometer timer to the Bus timer contract.
      *
-     * @param name metric name
-     * @param tags optional tags
-     * @return a Counter delegating to a Micrometer Counter
+     * @param name  metric name
+     * @param tags  metric tags
+     * @param meter Micrometer timer
+     * @return Bus timer adapter
      */
-    @Override
-    public Counter counter(String name, Tag... tags) {
-        tags = CardinalityGuard.enforce(name, tags);
-        io.micrometer.core.instrument.Counter c = io.micrometer.core.instrument.Counter.builder(name)
-                .tags(toMicrometerTags(tags)).register(registry);
-        return new Counter() {
-
-            /**
-             * Increments the counter by one.
-             */
-            @Override
-            public void increment() {
-                c.increment();
-            }
-
-            /**
-             * Increments the counter by the given amount.
-             *
-             * @param amount the number to add
-             */
-            @Override
-            public void increment(long amount) {
-                c.increment(amount);
-            }
-
-            /**
-             * Returns the current counter value.
-             *
-             * @return total count as a long
-             */
-            @Override
-            public long count() {
-                return (long) c.count();
-            }
-        };
-    }
-
-    /**
-     * Creates a Micrometer-backed meter (Micrometer Counter + local EWMA rates).
-     *
-     * @param name metric name
-     * @param tags optional tags
-     * @return a Meter backed by a Micrometer Counter with local EWMA rate tracking
-     */
-    @Override
-    public Meter meter(String name, Tag... tags) {
-        tags = CardinalityGuard.enforce(name, tags);
-        // Micrometer has no Meter type; use local NativeMeter for EWMA
-        NativeMeter nm = new NativeMeter();
-        Tag[] finalTags = tags;
-        // Register underlying counter in Micrometer for Prometheus export
-        io.micrometer.core.instrument.Counter c = io.micrometer.core.instrument.Counter.builder(name)
-                .tags(toMicrometerTags(tags)).register(registry);
-        return new Meter() {
-
-            /**
-             * Increments the meter by one.
-             */
-            @Override
-            public void increment() {
-                increment(1);
-            }
-
-            /**
-             * Increments the meter by the given amount, updating both the Micrometer counter and local EWMA.
-             *
-             * @param amount the number to add
-             */
-            @Override
-            public void increment(long amount) {
-                c.increment(amount);
-                nm.increment(amount);
-            }
-
-            /**
-             * Returns the current total count from the Micrometer counter.
-             *
-             * @return total count as a long
-             */
-            @Override
-            public long count() {
-                return (long) c.count();
-            }
-
-            /**
-             * Returns the one-minute exponentially weighted moving average rate.
-             *
-             * @return one-minute EWMA rate
-             */
-            @Override
-            public double oneMinuteRate() {
-                return nm.oneMinuteRate();
-            }
-
-            /**
-             * Returns the five-minute exponentially weighted moving average rate.
-             *
-             * @return five-minute EWMA rate
-             */
-            @Override
-            public double fiveMinuteRate() {
-                return nm.fiveMinuteRate();
-            }
-
-            /**
-             * Returns the fifteen-minute exponentially weighted moving average rate.
-             *
-             * @return fifteen-minute EWMA rate
-             */
-            @Override
-            public double fifteenMinuteRate() {
-                return nm.fifteenMinuteRate();
-            }
-
-            /**
-             * Returns the mean rate since the meter was created.
-             *
-             * @return mean rate
-             */
-            @Override
-            public double meanRate() {
-                return nm.meanRate();
-            }
-        };
-    }
-
-    /**
-     * Creates a RatePair backed by three Micrometer counters (total, errors, successes).
-     *
-     * @param name metric name prefix
-     * @param tags optional tags
-     * @return a RatePair tracking success/error rates
-     */
-    @Override
-    public RatePair ratePair(String name, Tag... tags) {
-        // RatePair: delegate success/error to two Micrometer counters + local EWMA
-        Meter total = meter(name + ".total", tags);
-        Meter errors = meter(name + ".errors", tags);
-        Meter successes = meter(name + ".successes", tags);
-        return new RatePair() {
-
-            /**
-             * Records a successful event, incrementing both total and successes meters.
-             */
-            @Override
-            public void recordSuccess() {
-                total.increment();
-                successes.increment();
-            }
-
-            /**
-             * Records an error event, incrementing both total and errors meters.
-             */
-            @Override
-            public void recordError() {
-                total.increment();
-                errors.increment();
-            }
-
-            /**
-             * Returns the one-minute error rate as a fraction of total rate.
-             *
-             * @return error rate between 0.0 and 1.0
-             */
-            @Override
-            public double errorRate() {
-                double t = total.oneMinuteRate();
-                return t <= 0 ? 0.0 : errors.oneMinuteRate() / t;
-            }
-
-            /**
-             * Returns the one-minute success rate as a fraction of total rate.
-             *
-             * @return success rate between 0.0 and 1.0
-             */
-            @Override
-            public double successRate() {
-                double t = total.oneMinuteRate();
-                return t <= 0 ? 1.0 : successes.oneMinuteRate() / t;
-            }
-
-            /**
-             * Returns the total meter tracking all events.
-             *
-             * @return total meter
-             */
-            @Override
-            public Meter total() {
-                return total;
-            }
-
-            /**
-             * Returns the meter tracking error events.
-             *
-             * @return errors meter
-             */
-            @Override
-            public Meter errors() {
-                return errors;
-            }
-
-            /**
-             * Returns the meter tracking successful events.
-             *
-             * @return successes meter
-             */
-            @Override
-            public Meter successes() {
-                return successes;
-            }
-        };
-    }
-
-    /**
-     * Creates a Micrometer-backed gauge that reads from the given state object.
-     *
-     * @param name     metric name
-     * @param stateObj object whose state is sampled on each read
-     * @param fn       function to extract a double value from the state object
-     * @param tags     optional tags
-     * @return a Gauge delegating to a Micrometer Gauge
-     */
-    @Override
-    public <T> Gauge gauge(String name, T stateObj, ToDoubleFunction<T> fn, Tag... tags) {
-        tags = CardinalityGuard.enforce(name, tags);
-        io.micrometer.core.instrument.Gauge.builder(name, stateObj, fn).tags(toMicrometerTags(tags)).register(registry);
-        return () -> fn.applyAsDouble(stateObj);
-    }
-
-    /**
-     * Creates a Micrometer-backed timer with P50/P95/P99/P999 percentiles.
-     *
-     * @param name metric name
-     * @param tags optional tags
-     * @return a Timer delegating to a Micrometer Timer
-     */
-    @Override
-    public Timer timer(String name, Tag... tags) {
-        tags = CardinalityGuard.enforce(name, tags);
-        Tag[] finalTags = tags;
-        io.micrometer.core.instrument.Timer t = io.micrometer.core.instrument.Timer.builder(name)
-                .tags(toMicrometerTags(tags)).publishPercentiles(0.5, 0.95, 0.99, 0.999).register(registry);
+    private static Timer timerAdapter(String name, Tag[] tags, io.micrometer.core.instrument.Timer meter) {
+        NativeTimer mirror = new NativeTimer(name, tags);
         return new Timer() {
 
-            /**
-             * Starts a timer sample and returns a handle that records the duration on stop.
-             *
-             * @return a new in-flight timing sample
-             */
             @Override
             public Sample start() {
-                io.micrometer.core.instrument.Timer.Sample s = io.micrometer.core.instrument.Timer.start(registry);
+                long start = System.nanoTime();
                 return () -> {
-                    long nanos = s.stop(t);
-                    return nanos;
+                    long duration = System.nanoTime() - start;
+                    record(duration, TimeUnit.NANOSECONDS);
+                    return duration;
                 };
             }
 
-            /**
-             * Records a duration directly.
-             *
-             * @param amount the duration amount
-             * @param unit   the time unit of the amount
-             */
             @Override
             public void record(long amount, TimeUnit unit) {
-                t.record(amount, unit);
+                if (amount < 0) {
+                    throw new IllegalArgumentException("Timer amount must be non-negative");
+                }
+                Objects.requireNonNull(unit, "Timer unit must not be null");
+                meter.record(amount, unit);
+                mirror.record(amount, unit);
             }
 
-            /**
-             * Returns the total number of recorded events.
-             *
-             * @return event count
-             */
             @Override
             public long count() {
-                return t.count();
+                return mirror.count();
             }
 
-            /**
-             * Returns the total time of all recorded events in the given unit.
-             *
-             * @param unit the time unit for the result
-             * @return total time
-             */
             @Override
             public double totalTime(TimeUnit unit) {
-                return t.totalTime(unit);
+                return mirror.totalTime(unit);
             }
 
-            /**
-             * Returns the maximum recorded duration in the given unit.
-             *
-             * @param unit the time unit for the result
-             * @return maximum duration
-             */
             @Override
             public double max(TimeUnit unit) {
-                return t.max(unit);
+                return mirror.max(unit);
             }
 
-            /**
-             * Returns the percentile value in the given unit.
-             *
-             * @param p    percentile between 0.0 and 1.0
-             * @param unit the time unit for the result
-             * @return percentile value
-             */
             @Override
-            public double percentile(double p, TimeUnit unit) {
-                return t.percentile(p, unit);
+            public double percentile(double percentile, TimeUnit unit) {
+                return mirror.percentile(percentile, unit);
             }
 
-            /**
-             * Returns the percentile value; rolling window is not supported by Micrometer, delegates to global
-             * percentile.
-             *
-             * @param p      percentile between 0.0 and 1.0
-             * @param unit   the time unit for the result
-             * @param window the rolling window (ignored)
-             * @return percentile value
-             */
             @Override
-            public double percentile(double p, TimeUnit unit, Window window) {
-                // Micrometer doesn't support rolling window percentiles natively
-                return percentile(p, unit);
+            public double percentile(double percentile, TimeUnit unit, Window window) {
+                return mirror.percentile(percentile, unit, window);
             }
 
-            /**
-             * SLA violation callbacks are not supported by Micrometer; returns this timer unchanged.
-             *
-             * @param percentile the percentile to monitor
-             * @param threshold  the threshold value
-             * @param unit       the time unit for the threshold
-             * @param checkEvery check interval in seconds
-             * @param callback   callback to invoke on violation
-             * @return this timer
-             */
             @Override
             public Timer onViolation(
                     double percentile,
@@ -443,250 +356,675 @@ public class MicrometerProvider implements Provider {
                     TimeUnit unit,
                     int checkEvery,
                     ConsumerX<ViolationEvent> callback) {
-                // Micrometer has no callback mechanism; implement locally with a counter
-                // We register a gauge that fires the callback when percentile exceeds threshold
-                // This is a best-effort check on each read — callers using onViolation
-                // with Micrometer provider will get callbacks on percentile() calls.
+                mirror.onViolation(percentile, threshold, unit, checkEvery, callback);
                 return this;
             }
 
-            /**
-             * Returns a snapshot with count, total, and max; bucket data is not available from Micrometer.
-             *
-             * @return timer snapshot
-             */
             @Override
             public TimerSnapshot snapshot() {
-                return new TimerSnapshot(name, finalTags, t.count(), t.totalTime(TimeUnit.NANOSECONDS),
-                        t.max(TimeUnit.NANOSECONDS), Normal.EMPTY_LONG_ARRAY, Normal.EMPTY_DOUBLE_ARRAY);
+                return mirror.snapshot();
             }
         };
     }
 
     /**
-     * Creates a Micrometer-backed histogram using a DistributionSummary with P50/P95/P99 percentiles.
+     * Adapts a Micrometer distribution summary to the Bus histogram contract.
      *
-     * @param name metric name
-     * @param tags optional tags
-     * @return a Histogram delegating to a Micrometer DistributionSummary
+     * @param name  metric name
+     * @param tags  metric tags
+     * @param meter Micrometer distribution summary
+     * @return Bus histogram adapter
      */
-    @Override
-    public Histogram histogram(String name, Tag... tags) {
-        tags = CardinalityGuard.enforce(name, tags);
-        Tag[] finalTags = tags;
-        io.micrometer.core.instrument.DistributionSummary ds = io.micrometer.core.instrument.DistributionSummary
-                .builder(name).tags(toMicrometerTags(tags)).publishPercentiles(0.5, 0.95, 0.99).register(registry);
+    private static Histogram histogramAdapter(String name, Tag[] tags, DistributionSummary meter) {
+        NativeHistogram mirror = new NativeHistogram(name, tags);
         return new Histogram() {
 
-            /**
-             * Records a single observation value.
-             *
-             * @param value the observed value
-             */
             @Override
             public void record(double value) {
-                ds.record(value);
+                if (!Double.isFinite(value)) {
+                    throw new IllegalArgumentException("Histogram value must be finite");
+                }
+                meter.record(value);
+                mirror.record(value);
             }
 
-            /**
-             * Returns the total number of recorded observations.
-             *
-             * @return observation count
-             */
             @Override
             public long count() {
-                return ds.count();
+                return mirror.count();
             }
 
-            /**
-             * Returns the sum of all recorded observation values.
-             *
-             * @return total amount
-             */
             @Override
             public double totalAmount() {
-                return ds.totalAmount();
+                return mirror.totalAmount();
             }
 
-            /**
-             * Returns the maximum recorded observation value.
-             *
-             * @return maximum value
-             */
             @Override
             public double max() {
-                return ds.max();
+                return mirror.max();
             }
 
-            /**
-             * Returns the percentile value for the given quantile.
-             *
-             * @param p percentile between 0.0 and 1.0
-             * @return percentile value
-             */
             @Override
-            public double percentile(double p) {
-                return ds.percentile(p);
+            public double percentile(double percentile) {
+                return mirror.percentile(percentile);
             }
 
-            /**
-             * Returns a snapshot with count, total, and max; bucket data is not available from Micrometer.
-             *
-             * @return histogram snapshot
-             */
             @Override
             public TimerSnapshot snapshot() {
-                return new TimerSnapshot(name, finalTags, ds.count(), ds.totalAmount(), ds.max(),
-                        Normal.EMPTY_LONG_ARRAY, Normal.EMPTY_DOUBLE_ARRAY);
+                return mirror.snapshot();
             }
         };
     }
 
-    /**
-     * Creates an LlmTimer backed by this provider's timers and counters.
-     *
-     * @param name metric name prefix
-     * @param tags optional tags
-     * @return an LlmTimer for tracking LLM request latency, tokens, and errors
-     */
     @Override
-    public LlmTimer llmTimer(String name, Tag... tags) {
-        // LlmTimer not in Micrometer — use native implementation backed by this provider's counters/timers
-        Tag[] finalTags = tags;
-        return (model, provider_, operation) -> {
-            long startNs = System.nanoTime();
-            return new LlmSample() {
+    public Counter counter(String name, Tag... tags) {
+        Tag[] guarded = cardinalityGuard.enforce(name, tags);
+        Attributes attributes = Attributes.fromTags(guarded);
+        return counter(MetricDescriptor.counter(name, attributes), attributes);
+    }
 
-                /**
-                 * Nanosecond timestamp of the first token; -1 if not yet recorded.
-                 */
-                private volatile long firstTokenNs = -1;
+    @Override
+    public Counter counter(MetricDescriptor descriptor, Attributes attributes) {
+        validate(descriptor, InstrumentKind.COUNTER, NumberKind.LONG);
+        Attributes guarded = guard(descriptor, attributes);
+        return active(descriptor, guarded, counters, () -> {
+            io.micrometer.core.instrument.Counter meter = io.micrometer.core.instrument.Counter
+                    .builder(descriptor.name()).description(descriptor.description())
+                    .baseUnit(emptyToNull(descriptor.unit())).tags(tags(guarded)).register(registry);
+            ownedMeters.add(meter);
+            Counter counter = new Counter() {
 
-                /**
-                 * Records the nanosecond timestamp of the first token received.
-                 */
                 @Override
-                public void recordFirstToken() {
-                    firstTokenNs = System.nanoTime();
+                public void increment() {
+                    meter.increment();
                 }
 
-                /**
-                 * Stops the sample and records duration, TTFT, ITL, and token counts.
-                 *
-                 * @param inputTokens  number of input tokens consumed
-                 * @param outputTokens number of output tokens generated
-                 * @param finishReason reason the generation stopped
-                 */
                 @Override
-                public void stop(int inputTokens, int outputTokens, String finishReason) {
-                    long totalNs = System.nanoTime() - startNs;
-                    timer(
-                            name + Builder.LLM_SUFFIX_DURATION,
-                            Tag.of(Builder.TAG_MODEL, model),
-                            Tag.of(Builder.TAG_PROVIDER, provider_),
-                            Tag.of(Builder.TAG_OPERATION, operation),
-                            Tag.of(Builder.TAG_FINISH_REASON, finishReason)).record(totalNs, TimeUnit.NANOSECONDS);
-                    if (firstTokenNs > 0) {
-                        timer(
-                                name + Builder.LLM_SUFFIX_TTFT,
-                                Tag.of(Builder.TAG_MODEL, model),
-                                Tag.of(Builder.TAG_PROVIDER, provider_))
-                                        .record(firstTokenNs - startNs, TimeUnit.NANOSECONDS);
-                        if (outputTokens > 1) {
-                            timer(
-                                    name + Builder.LLM_SUFFIX_ITL,
-                                    Tag.of(Builder.TAG_MODEL, model),
-                                    Tag.of(Builder.TAG_PROVIDER, provider_)).record(
-                                            (totalNs - (firstTokenNs - startNs)) / (outputTokens - 1),
-                                            TimeUnit.NANOSECONDS);
-                        }
+                public void increment(long amount) {
+                    if (amount < 0) {
+                        throw new IllegalArgumentException("Counter increment must be non-negative");
                     }
-                    counter(
-                            name + Builder.LLM_SUFFIX_TOKENS,
-                            Tag.of(Builder.TAG_MODEL, model),
-                            Tag.of(Builder.TAG_PROVIDER, provider_),
-                            Tag.of(Builder.TAG_TYPE, "input")).increment(inputTokens);
-                    counter(
-                            name + Builder.LLM_SUFFIX_TOKENS,
-                            Tag.of(Builder.TAG_MODEL, model),
-                            Tag.of(Builder.TAG_PROVIDER, provider_),
-                            Tag.of(Builder.TAG_TYPE, "output")).increment(outputTokens);
+                    meter.increment(amount);
                 }
 
-                /**
-                 * Records an error counter and delegates to {@link #stop} with zero tokens.
-                 *
-                 * @param t the throwable that caused the error
-                 */
                 @Override
-                public void error(Throwable t) {
-                    counter(
-                            name + Builder.LLM_SUFFIX_ERRORS,
-                            Tag.of(Builder.TAG_MODEL, model),
-                            Tag.of(Builder.TAG_PROVIDER, provider_),
-                            Tag.of(Builder.TAG_ERROR_TYPE, t.getClass().getSimpleName())).increment();
-                    stop(0, 0, "error");
+                public long count() {
+                    return (long) meter.count();
                 }
             };
-        };
+            return new Created<>(counter, meter);
+        });
     }
 
-    /**
-     * Returns a new NativeSloTracker for SLO compliance tracking.
-     *
-     * @return a new SloTracker instance
-     */
+    @Override
+    public Meter meter(String name, Tag... tags) {
+        ensureOpen();
+        Tag[] guarded = cardinalityGuard.enforce(name, tags);
+        String key = key(name, guarded);
+        return meters.computeIfAbsent(key, ignored -> {
+            io.micrometer.core.instrument.Counter counter = io.micrometer.core.instrument.Counter.builder(name)
+                    .tags(tags(Attributes.fromTags(guarded))).register(registry);
+            ownedMeters.add(counter);
+            return new MeterAdapter(counter);
+        });
+    }
+
+    @Override
+    public RatePair ratePair(String name, Tag... tags) {
+        ensureOpen();
+        Tag[] guarded = cardinalityGuard.enforce(name, tags);
+        return ratePairs.computeIfAbsent(key(name, guarded), ignored -> RatePair.create(this, name, guarded));
+    }
+
+    @Override
+    public <T> Gauge gauge(String name, T stateObj, ToDoubleFunction<T> fn, Tag... tags) {
+        Tag[] guarded = cardinalityGuard.enforce(name, tags);
+        Attributes attributes = Attributes.fromTags(guarded);
+        return gauge(MetricDescriptor.gauge(name, attributes), attributes, stateObj, fn);
+    }
+
+    @Override
+    public <T> Gauge gauge(MetricDescriptor descriptor, Attributes attributes, T stateObj, ToDoubleFunction<T> fn) {
+        validate(descriptor, InstrumentKind.GAUGE, NumberKind.DOUBLE);
+        Objects.requireNonNull(stateObj, "Gauge state must not be null");
+        Objects.requireNonNull(fn, "Gauge function must not be null");
+        Attributes guarded = guard(descriptor, attributes);
+        String activeKey = activeKey(descriptor, guarded);
+        return gauges.computeIfAbsent(activeKey, ignored -> {
+            MetricFamilyRegistry.Lease lease = familyRegistry.acquire(descriptor);
+            io.micrometer.core.instrument.Gauge meter = io.micrometer.core.instrument.Gauge
+                    .builder(descriptor.name(), stateObj, fn).description(descriptor.description())
+                    .baseUnit(emptyToNull(descriptor.unit())).tags(tags(guarded)).register(registry);
+            ownedMeters.add(meter);
+            return new LeasedGauge(meter, lease);
+        });
+    }
+
+    @Override
+    public Timer timer(String name, Tag... tags) {
+        Tag[] guarded = cardinalityGuard.enforce(name, tags);
+        Attributes attributes = Attributes.fromTags(guarded);
+        return timer(MetricDescriptor.timer(name, attributes), attributes);
+    }
+
+    @Override
+    public Timer timer(MetricDescriptor descriptor, Attributes attributes) {
+        validate(descriptor, InstrumentKind.TIMER, NumberKind.DOUBLE);
+        Attributes guarded = guard(descriptor, attributes);
+        return active(descriptor, guarded, timers, () -> {
+            io.micrometer.core.instrument.Timer meter = io.micrometer.core.instrument.Timer.builder(descriptor.name())
+                    .description(descriptor.description()).tags(tags(guarded)).publishPercentiles(0.5, 0.95, 0.99)
+                    .register(registry);
+            ownedMeters.add(meter);
+            Timer timer = timerAdapter(descriptor.name(), guarded.toTags(), meter);
+            return new Created<>(timer, meter);
+        });
+    }
+
+    @Override
+    public Histogram histogram(String name, Tag... tags) {
+        Tag[] guarded = cardinalityGuard.enforce(name, tags);
+        Attributes attributes = Attributes.fromTags(guarded);
+        return histogram(MetricDescriptor.histogram(name, attributes), attributes);
+    }
+
+    @Override
+    public Histogram histogram(MetricDescriptor descriptor, Attributes attributes) {
+        validate(descriptor, InstrumentKind.HISTOGRAM, NumberKind.DOUBLE);
+        Attributes guarded = guard(descriptor, attributes);
+        return active(descriptor, guarded, histograms, () -> {
+            DistributionSummary meter = DistributionSummary.builder(descriptor.name())
+                    .description(descriptor.description()).baseUnit(emptyToNull(descriptor.unit())).tags(tags(guarded))
+                    .publishPercentiles(0.5, 0.95, 0.99).register(registry);
+            ownedMeters.add(meter);
+            Histogram histogram = histogramAdapter(descriptor.name(), guarded.toTags(), meter);
+            return new Created<>(histogram, meter);
+        });
+    }
+
+    @Override
+    public LlmTimer llmTimer(String name, Tag... tags) {
+        ensureOpen();
+        Tag[] guarded = cardinalityGuard.enforce(name, tags);
+        return llmTimers.computeIfAbsent(key(name, guarded), ignored -> new NativeLlmTimer(name, guarded, this));
+    }
+
+    @Override
+    public MetricRegistration registerObservable(MetricDescriptor descriptor, ObservableCallback callback) {
+        ensureOpen();
+        Objects.requireNonNull(callback, "Observable callback must not be null");
+        if (descriptor.kind() == InstrumentKind.TIMER || descriptor.kind() == InstrumentKind.HISTOGRAM) {
+            throw new IllegalArgumentException("Observable distributions are not supported: " + descriptor.name());
+        }
+        MetricFamilyRegistry.Lease lease = familyRegistry.acquire(descriptor);
+        ObservableRegistration registration = new ObservableRegistration(descriptor, callback, lease);
+        try {
+            registration.initialize();
+            observables.add(registration);
+            return registration;
+        } catch (RuntimeException exception) {
+            registration.close();
+            throw exception;
+        }
+    }
+
+    @Override
+    public MetricDiagnostics diagnostics() {
+        return diagnostics;
+    }
+
+    @Override
+    public ProviderCapabilities capabilities() {
+        return capabilities;
+    }
+
     @Override
     public SloTracker sloTracker() {
-        return new NativeSloTracker();
+        return sloTracker;
     }
 
-    /**
-     * Returns an empty iterable; Micrometer registry enumeration is not supported.
-     */
     @Override
     public Iterable<Counter> counters() {
-        return Collections.emptyList();
+        return counters.values().stream().map(ActiveMetric::instrument).toList();
     }
 
-    /**
-     * Returns an empty iterable; Micrometer registry enumeration is not supported.
-     */
     @Override
     public Iterable<Meter> meters() {
-        return Collections.emptyList();
+        return List.copyOf(meters.values());
     }
 
-    /**
-     * Returns an empty iterable; Micrometer registry enumeration is not supported.
-     */
     @Override
     public Iterable<Gauge> gauges() {
-        return Collections.emptyList();
+        return List.copyOf(gauges.values());
     }
 
-    /**
-     * Returns an empty iterable; Micrometer registry enumeration is not supported.
-     */
     @Override
     public Iterable<Timer> timers() {
-        return Collections.emptyList();
+        return timers.values().stream().map(ActiveMetric::instrument).toList();
     }
 
-    /**
-     * Returns an empty iterable; Micrometer registry enumeration is not supported.
-     */
     @Override
     public Iterable<Histogram> histograms() {
-        return Collections.emptyList();
+        return histograms.values().stream().map(ActiveMetric::instrument).toList();
+    }
+
+    @Override
+    public Iterable<LlmTimer> llmTimers() {
+        return List.copyOf(llmTimers.values());
+    }
+
+    @Override
+    public void close() {
+        if (!closed.compareAndSet(false, true)) {
+            return;
+        }
+        cardinalityGuard.removeViolationListener(cardinalityListener);
+        scheduler.shutdownNow();
+        new ArrayList<>(observables).forEach(ObservableRegistration::close);
+        counters.values().forEach(value -> value.lease().close());
+        gauges.values().stream().filter(LeasedGauge.class::isInstance).map(LeasedGauge.class::cast)
+                .forEach(LeasedGauge::close);
+        timers.values().forEach(value -> value.lease().close());
+        histograms.values().forEach(value -> value.lease().close());
+        new ArrayList<>(ownedMeters).forEach(registry::remove);
+        ownedMeters.clear();
+        counters.clear();
+        meters.clear();
+        ratePairs.clear();
+        gauges.clear();
+        timers.clear();
+        histograms.clear();
+        llmTimers.clear();
     }
 
     /**
-     * Returns an empty iterable; Micrometer registry enumeration is not supported.
+     * Returns or atomically creates one active instrument series.
+     *
+     * @param descriptor family descriptor
+     * @param attributes series attributes
+     * @param values     active series registry
+     * @param creator    backend instrument creator
+     * @param <T>        instrument type
+     * @return existing or newly created instrument
      */
-    @Override
-    public Iterable<LlmTimer> llmTimers() {
-        return Collections.emptyList();
+    private <T> T active(
+            MetricDescriptor descriptor,
+            Attributes attributes,
+            ConcurrentHashMap<String, ActiveMetric<T>> values,
+            java.util.function.Supplier<Created<T>> creator) {
+        ensureOpen();
+        return values.computeIfAbsent(activeKey(descriptor, attributes), ignored -> {
+            MetricFamilyRegistry.Lease lease = familyRegistry.acquire(descriptor);
+            try {
+                Created<T> created = creator.get();
+                return new ActiveMetric<>(created.instrument(), created.meter(), lease);
+            } catch (RuntimeException exception) {
+                lease.close();
+                throw exception;
+            }
+        }).instrument();
+    }
+
+    /**
+     * Validates and cardinality-guards a series attribute set.
+     *
+     * @param descriptor family descriptor
+     * @param attributes proposed attributes
+     * @return guarded attributes
+     */
+    private Attributes guard(MetricDescriptor descriptor, Attributes attributes) {
+        descriptor.validateAttributes(attributes);
+        Attributes guarded = cardinalityGuard.enforce(descriptor.name(), attributes);
+        descriptor.validateAttributes(guarded);
+        return guarded;
+    }
+
+    /**
+     * Ensures that the provider still accepts operations.
+     */
+    private void ensureOpen() {
+        if (closed.get()) {
+            throw new IllegalStateException("Micrometer metrics provider is closed");
+        }
+    }
+
+    /**
+     * Advances every provider-owned rate meter.
+     */
+    private void tickMeters() {
+        if (!closed.get()) {
+            meters.values().forEach(MeterAdapter::tick);
+        }
+    }
+
+    /**
+     * Bus rate meter backed by a Micrometer counter and a native rate mirror.
+     */
+    private static final class MeterAdapter implements Meter {
+
+        /**
+         * Micrometer counter receiving cumulative updates.
+         */
+        private final io.micrometer.core.instrument.Counter counter;
+        /**
+         * Native meter providing rolling rate reads.
+         */
+        private final NativeMeter rates = new NativeMeter();
+
+        /**
+         * Creates a rate adapter.
+         *
+         * @param counter backing Micrometer counter
+         */
+        private MeterAdapter(io.micrometer.core.instrument.Counter counter) {
+            this.counter = counter;
+        }
+
+        @Override
+        public void increment() {
+            increment(1);
+        }
+
+        @Override
+        public void increment(long amount) {
+            if (amount < 0) {
+                throw new IllegalArgumentException("Meter increment must be non-negative");
+            }
+            counter.increment(amount);
+            rates.increment(amount);
+        }
+
+        @Override
+        public long count() {
+            return rates.count();
+        }
+
+        @Override
+        public double oneMinuteRate() {
+            return rates.oneMinuteRate();
+        }
+
+        @Override
+        public double fiveMinuteRate() {
+            return rates.fiveMinuteRate();
+        }
+
+        @Override
+        public double fifteenMinuteRate() {
+            return rates.fifteenMinuteRate();
+        }
+
+        @Override
+        public double meanRate() {
+            return rates.meanRate();
+        }
+
+        /**
+         * Advances the EWMA windows by one five-second interval.
+         */
+        private void tick() {
+            rates.tick();
+        }
+    }
+
+    /**
+     * Newly created Bus instrument and its Micrometer meter.
+     *
+     * @param instrument Bus instrument adapter
+     * @param meter      registered Micrometer meter
+     * @param <T>        instrument type
+     */
+    private record Created<T>(T instrument, io.micrometer.core.instrument.Meter meter) {
+    }
+
+    /**
+     * Active instrument, backing meter, and family lease.
+     *
+     * @param instrument Bus instrument adapter
+     * @param meter      registered Micrometer meter
+     * @param lease      family identity lease
+     * @param <T>        instrument type
+     */
+    private record ActiveMetric<T>(T instrument, io.micrometer.core.instrument.Meter meter,
+            MetricFamilyRegistry.Lease lease) {
+    }
+
+    /**
+     * Gauge adapter that also owns a family identity lease.
+     */
+    private static final class LeasedGauge implements Gauge {
+
+        /**
+         * Registered Micrometer gauge.
+         */
+        private final io.micrometer.core.instrument.Gauge meter;
+        /**
+         * Family identity lease released with this gauge.
+         */
+        private final MetricFamilyRegistry.Lease lease;
+
+        /**
+         * Creates a leased gauge adapter.
+         *
+         * @param meter registered Micrometer gauge
+         * @param lease family identity lease
+         */
+        private LeasedGauge(io.micrometer.core.instrument.Gauge meter, MetricFamilyRegistry.Lease lease) {
+            this.meter = meter;
+            this.lease = lease;
+        }
+
+        @Override
+        public double value() {
+            return meter.value();
+        }
+
+        /**
+         * Releases the family identity lease.
+         */
+        private void close() {
+            lease.close();
+        }
+    }
+
+    /**
+     * Provider-owned observable callback registration and its Micrometer meters.
+     */
+    private final class ObservableRegistration implements MetricRegistration {
+
+        /**
+         * Registered family descriptor.
+         */
+        private final MetricDescriptor descriptor;
+        /**
+         * User callback invoked during refresh.
+         */
+        private final ObservableCallback callback;
+        /**
+         * Lease protecting the registered family identity.
+         */
+        private final MetricFamilyRegistry.Lease lease;
+        /**
+         * Whether this registration has been closed.
+         */
+        private final AtomicBoolean registrationClosed = new AtomicBoolean();
+        /**
+         * Latest values indexed by their resource attributes.
+         */
+        private final Map<Attributes, Double> values = new ConcurrentHashMap<>();
+        /**
+         * Micrometer meters created for the seeded resource inventory.
+         */
+        private final List<io.micrometer.core.instrument.Meter> meters = new ArrayList<>();
+
+        /**
+         * Attribute sets established during initialization.
+         */
+        private volatile Set<Attributes> seeded = Set.of();
+        /**
+         * Monotonic time of the most recent callback refresh.
+         */
+        private volatile long lastRefreshNanos;
+
+        /**
+         * Creates an observable registration.
+         *
+         * @param descriptor family descriptor
+         * @param callback   observation callback
+         * @param lease      family identity lease
+         */
+        private ObservableRegistration(MetricDescriptor descriptor, ObservableCallback callback,
+                MetricFamilyRegistry.Lease lease) {
+            this.descriptor = descriptor;
+            this.callback = callback;
+            this.lease = lease;
+        }
+
+        /**
+         * Seeds resource identities and registers the corresponding Micrometer meters.
+         */
+        private void initialize() {
+            Measurement seed = observe(null);
+            values.putAll(seed.values);
+            seeded = Set.copyOf(seed.values.keySet());
+            for (Attributes attributes : seeded) {
+                io.micrometer.core.instrument.Meter meter;
+                if (descriptor.kind() == InstrumentKind.COUNTER) {
+                    meter = FunctionCounter.builder(descriptor.name(), attributes, this::value)
+                            .description(descriptor.description()).baseUnit(emptyToNull(descriptor.unit()))
+                            .tags(tags(attributes)).register(registry);
+                } else {
+                    meter = io.micrometer.core.instrument.Gauge.builder(descriptor.name(), attributes, this::value)
+                            .description(descriptor.description()).baseUnit(emptyToNull(descriptor.unit()))
+                            .tags(tags(attributes)).register(registry);
+                }
+                meters.add(meter);
+                ownedMeters.add(meter);
+            }
+        }
+
+        /**
+         * Refreshes and returns one seeded resource value.
+         *
+         * @param attributes seeded resource attributes
+         * @return most recently observed value
+         */
+        private double value(Attributes attributes) {
+            refresh();
+            return values.getOrDefault(attributes, 0.0);
+        }
+
+        /**
+         * Refreshes observable values at most once per coalescing interval.
+         */
+        private synchronized void refresh() {
+            long now = System.nanoTime();
+            if (now - lastRefreshNanos < 1_000_000L) {
+                return;
+            }
+            try {
+                Measurement measurement = observe(seeded);
+                values.putAll(measurement.values);
+                lastRefreshNanos = now;
+            } catch (RuntimeException exception) {
+                diagnostics.collectionError("micrometer", "callback");
+            }
+        }
+
+        /**
+         * Invokes the callback into a fresh measurement buffer.
+         *
+         * @param allowed allowed resource identities, or {@code null} while seeding
+         * @return populated measurement buffer
+         */
+        private Measurement observe(Set<Attributes> allowed) {
+            Measurement measurement = new Measurement(descriptor, allowed);
+            callback.observe(measurement);
+            return measurement;
+        }
+
+        @Override
+        public void close() {
+            if (registrationClosed.compareAndSet(false, true)) {
+                observables.remove(this);
+                meters.forEach(meter -> {
+                    registry.remove(meter);
+                    ownedMeters.remove(meter);
+                });
+                lease.close();
+            }
+        }
+    }
+
+    /**
+     * Measurement buffer supplied to one Micrometer observable callback.
+     */
+    private final class Measurement implements ObservableMeasurement {
+
+        /**
+         * Descriptor that determines valid point shape.
+         */
+        private final MetricDescriptor descriptor;
+        /**
+         * Seeded resource identities, or {@code null} while seeding.
+         */
+        private final Set<Attributes> allowed;
+        /**
+         * Collected numeric values indexed by attributes.
+         */
+        private final Map<Attributes, Double> values = new ConcurrentHashMap<>();
+
+        /**
+         * Creates a callback measurement buffer.
+         *
+         * @param descriptor observable family descriptor
+         * @param allowed    seeded resource identities, or {@code null} while seeding
+         */
+        private Measurement(MetricDescriptor descriptor, Set<Attributes> allowed) {
+            this.descriptor = descriptor;
+            this.allowed = allowed;
+        }
+
+        @Override
+        public void recordLong(long value, Attributes attributes) {
+            if (descriptor.numberKind() != NumberKind.LONG) {
+                diagnostics.collectionError("micrometer", "number_kind");
+                return;
+            }
+            if (Math.abs((double) value) > MAX_EXACT_DOUBLE_INTEGER) {
+                diagnostics.precisionLoss("micrometer", descriptor.name());
+            }
+            record(attributes, value);
+        }
+
+        @Override
+        public void recordDouble(double value, Attributes attributes) {
+            if (descriptor.numberKind() != NumberKind.DOUBLE || !Double.isFinite(value)) {
+                diagnostics.collectionError("micrometer", "invalid_double");
+                return;
+            }
+            record(attributes, value);
+        }
+
+        /**
+         * Validates and records one observable value.
+         *
+         * @param attributes point attributes
+         * @param value      numeric value
+         */
+        private void record(Attributes attributes, double value) {
+            try {
+                descriptor.validateAttributes(attributes);
+                if (allowed != null && !allowed.contains(attributes)) {
+                    diagnostics.resourceDropped("micrometer", "inventory_changed");
+                    return;
+                }
+                if (values.putIfAbsent(attributes, value) != null) {
+                    diagnostics.collectionError("micrometer", "duplicate_attributes");
+                }
+            } catch (RuntimeException exception) {
+                diagnostics.collectionError("micrometer", "invalid_point");
+            }
+        }
     }
 
 }

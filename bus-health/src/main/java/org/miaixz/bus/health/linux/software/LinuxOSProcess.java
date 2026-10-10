@@ -96,30 +96,37 @@ public class LinuxOSProcess extends AbstractOSProcess {
      */
     private final SupplierX<Map<String, String>> environmentVariables = Memoizer
             .memoize(this::queryEnvironmentVariables);
+
     /**
      * The bitness value.
      */
     private final SupplierX<Integer> bitness = Memoizer.memoize(this::queryBitness);
+
     /**
      * The user value.
      */
     private final SupplierX<String> user = Memoizer.memoize(this::queryUser);
+
     /**
      * The group value.
      */
     private final SupplierX<String> group = Memoizer.memoize(this::queryGroup);
+
     /**
      * The path value.
      */
     private volatile String path = Normal.EMPTY;
+
     /**
      * The userID value.
      */
     private volatile String userID;
+
     /**
      * The groupID value.
      */
     private volatile String groupID;
+
     /**
      * The name value.
      */

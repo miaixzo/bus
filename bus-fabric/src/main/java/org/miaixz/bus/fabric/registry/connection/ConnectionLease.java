@@ -41,14 +41,6 @@ public class ConnectionLease {
      */
     private static final VarHandle STATE;
 
-    static {
-        try {
-            STATE = MethodHandles.lookup().findVarHandle(ConnectionLease.class, "state", int.class);
-        } catch (final ReflectiveOperationException e) {
-            throw new ExceptionInInitializerError(e);
-        }
-    }
-
     /**
      * Lease is active.
      */
@@ -69,6 +61,14 @@ public class ConnectionLease {
      */
     private static final AtomicLong IDS = new AtomicLong();
 
+    static {
+        try {
+            STATE = MethodHandles.lookup().findVarHandle(ConnectionLease.class, "state", int.class);
+        } catch (final ReflectiveOperationException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
     /**
      * Pool responsible for atomic release and close transitions.
      */
@@ -85,11 +85,6 @@ public class ConnectionLease {
     private final Connection connection;
 
     /**
-     * Lazily materialized diagnostic identifier.
-     */
-    private volatile String id;
-
-    /**
      * Wall-clock time recorded when the lease was acquired.
      */
     private final long acquiredAtMillis;
@@ -103,6 +98,11 @@ public class ConnectionLease {
      * Whether this lease uses a previously established physical connection.
      */
     private final boolean reusedConnection;
+
+    /**
+     * Lazily materialized diagnostic identifier.
+     */
+    private volatile String id;
 
     /**
      * VarHandle-managed state initialized to {@link #LEASED}.
@@ -227,6 +227,22 @@ public class ConnectionLease {
             final Connection connection,
             final long acquiredAtMillis) {
         return new ConnectionLease(pool, destination, connection, acquiredAtMillis, true, false);
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  logical reference name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
+     */
+    private static <T> T require(final T value, final String name) {
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
     }
 
     /**
@@ -363,22 +379,6 @@ public class ConnectionLease {
      */
     ConnectionPool pool() {
         return pool;
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  logical reference name included in the validation error
-     * @param <T>   reference type
-     * @return validated non-null reference
-     * @throws ValidateException if {@code value} is {@code null}
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
     }
 
 }

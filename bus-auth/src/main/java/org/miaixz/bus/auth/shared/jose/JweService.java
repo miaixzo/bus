@@ -58,46 +58,57 @@ public class JweService {
      * Exact JWE JSON protected Header member name.
      */
     private static final String PROTECTED = "protected";
+
     /**
      * Exact JWE JSON shared unprotected Header member name.
      */
     private static final String UNPROTECTED = "unprotected";
+
     /**
      * Exact JWE JSON per-recipient Header member name.
      */
     private static final String HEADER = "header";
+
     /**
      * Exact JWE JSON external additional authenticated data member name.
      */
     private static final String AAD = "aad";
+
     /**
      * Exact JWE JSON encrypted content-encryption key member name.
      */
     private static final String ENCRYPTED_KEY = "encrypted_key";
+
     /**
      * Exact JWE JSON initialization vector member name.
      */
     private static final String INITIALIZATION_VECTOR = "iv";
+
     /**
      * Exact JWE JSON ciphertext member name.
      */
     private static final String CIPHERTEXT = "ciphertext";
+
     /**
      * Exact JWE JSON authentication tag member name.
      */
     private static final String TAG = "tag";
+
     /**
      * Exact General JWE JSON recipients member name.
      */
     private static final String RECIPIENTS = "recipients";
+
     /**
      * Shared algorithm and key-direction guard.
      */
     private final AlgorithmGuard algorithmGuard;
+
     /**
      * Immutable key-management algorithm allow-list.
      */
     private final Set<String> allowedKeyAlgorithms;
+
     /**
      * Immutable content-encryption algorithm allow-list.
      */

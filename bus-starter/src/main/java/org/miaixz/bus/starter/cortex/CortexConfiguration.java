@@ -72,10 +72,10 @@ import org.miaixz.bus.cortex.setting.curator.*;
 import org.miaixz.bus.cortex.setting.delivery.ItemExportService;
 import org.miaixz.bus.cortex.setting.delivery.ItemQueryService;
 import org.miaixz.bus.cortex.setting.delivery.RuntimeItemOverlayService;
-import org.miaixz.bus.cortex.setting.item.GrayRuleMatcher;
 import org.miaixz.bus.cortex.setting.item.ItemStore;
 import org.miaixz.bus.cortex.setting.item.StoreBackedItemStore;
-import org.miaixz.bus.cortex.setting.item.revision.ItemRevisionStore;
+import org.miaixz.bus.cortex.setting.reference.ReferenceStore;
+import org.miaixz.bus.cortex.setting.revision.RevisionStore;
 import org.miaixz.bus.cortex.setting.secret.NoOpSecretCodec;
 import org.miaixz.bus.cortex.setting.secret.SecretCodec;
 import org.miaixz.bus.cortex.setting.secret.SecretMasker;
@@ -114,6 +114,42 @@ public class CortexConfiguration {
      */
     public CortexConfiguration(CortexProperties properties) {
         this.properties = properties;
+    }
+
+    /**
+     * Creates the default setting source adapters used by the starter.
+     *
+     * @return ordered setting source adapters
+     */
+    private static List<ItemSourceAdapter> settingSourceAdapters() {
+        return List.of(
+                new InlineSourceAdapter(),
+                new EnvSourceAdapter(),
+                new StoredContentSourceAdapter("JDBC"),
+                new StoredContentSourceAdapter("REDIS"),
+                new StoredContentSourceAdapter("S3"));
+    }
+
+    /**
+     * Narrows the raw cache bean used by Spring auto-configuration to Cortex's cache key/value convention.
+     *
+     * @param cache shared cache bean
+     * @return cache view using string keys and object values
+     */
+    private static CacheX<String, Object> cache(CacheX cache) {
+        return (CacheX<String, Object>) cache;
+    }
+
+    /**
+     * Wraps the shared registry store as a typed Cortex registry store without unchecked casts in bean methods.
+     *
+     * @param store shared registry store
+     * @param type  target asset subtype
+     * @param <T>   target asset subtype
+     * @return typed store view
+     */
+    private static <T extends Assets> RegistryStore<T> typedStore(RegistryStore<Assets> store, Class<T> type) {
+        return store == null ? null : new TypedRegistryStore<>(store, type);
     }
 
     /**
@@ -435,9 +471,10 @@ public class CortexConfiguration {
     /**
      * Creates the store-backed current-state setting coordinator.
      *
-     * @param cache          shared cache abstraction
-     * @param storeProvider  optional durable current-state store
-     * @param keyingProvider optional setting keying provider
+     * @param cache                  shared cache abstraction
+     * @param storeProvider          optional durable current-state store
+     * @param referenceStoreProvider optional durable relationship store
+     * @param keyingProvider         optional setting keying provider
      * @return store-backed current-state setting coordinator
      */
     @Bean
@@ -445,27 +482,33 @@ public class CortexConfiguration {
     public StoreBackedItemStore storeBackedSettingStore(
             @Qualifier("cortexCache") CacheX cache,
             ObjectProvider<ItemStore> storeProvider,
+            ObjectProvider<ReferenceStore> referenceStoreProvider,
             @Qualifier("settingKeying") ObjectProvider<Keying<Keying.SettingSpec>> keyingProvider) {
         ItemStore store = storeProvider.getIfAvailable();
+        ReferenceStore referenceStore = referenceStoreProvider.getIfAvailable();
         if (store == null && properties.isServerEnabled() && properties.isSettingEnabled()) {
             throw new IllegalStateException(
                     "A production SettingStore is required when bus.cortex.server-enabled=true");
         }
-        return new StoreBackedItemStore(cache(cache), store,
+        if (referenceStore == null && properties.isServerEnabled() && properties.isSettingEnabled()) {
+            throw new IllegalStateException(
+                    "A production ReferenceStore is required when bus.cortex.server-enabled=true");
+        }
+        return new StoreBackedItemStore(cache(cache), store, referenceStore,
                 keyingProvider.getIfAvailable(() -> SettingGenerator.INSTANCE));
     }
 
     /**
-     * Creates the default {@code setting.item.revision} store when the host application does not provide persistent
-     * history storage.
+     * Creates the default {@code setting.revision} store when the host application does not provide persistent history
+     * storage.
      *
      * @param cache shared cache abstraction
-     * @return cache-backed {@code setting.item.revision} store
+     * @return cache-backed {@code setting.revision} store
      */
     @Bean
-    @ConditionalOnMissingBean(ItemRevisionStore.class)
-    public ItemRevisionStore revisionStore(@Qualifier("cortexCache") CacheX cache) {
-        return new CacheItemRevisionStore(cache(cache), SettingGenerator.INSTANCE);
+    @ConditionalOnMissingBean(RevisionStore.class)
+    public RevisionStore revisionStore(@Qualifier("cortexCache") CacheX cache) {
+        return new CacheRevisionStore(cache(cache));
     }
 
     /**
@@ -473,6 +516,7 @@ public class CortexConfiguration {
      *
      * @param settingStore    current-state setting store
      * @param revisionStore   revision history store
+     * @param referenceStore  resource relationship store
      * @param watchManager    watch manager
      * @param secretCodec     secret codec
      * @param settingEnforcer optional setting relation enforcer provider
@@ -484,22 +528,23 @@ public class CortexConfiguration {
     @ConditionalOnMissingBean(ItemCuratorService.class)
     public ItemCuratorService settingCuratorService(
             StoreBackedItemStore settingStore,
-            ItemRevisionStore revisionStore,
+            RevisionStore revisionStore,
+            ReferenceStore referenceStore,
             WatchManager watchManager,
             SecretCodec secretCodec,
             ObjectProvider<SettingEnforcer> settingEnforcer,
             ObjectProvider<CortexGuard> cortexGuard,
             @Qualifier("settingKeying") ObjectProvider<Keying<Keying.SettingSpec>> keyingProvider) {
-        if (revisionStore instanceof CacheItemRevisionStore && properties.isServerEnabled()
+        if (revisionStore instanceof CacheRevisionStore && properties.isServerEnabled()
                 && properties.isSettingEnabled()) {
             throw new IllegalStateException(
-                    "A production ItemRevisionStore is required when bus.cortex.server-enabled=true");
+                    "A production RevisionStore is required when bus.cortex.server-enabled=true");
         }
-        ItemValueResolver resolver = new ItemValueResolver(settingSourceAdapters(), new GrayRuleMatcher(), secretCodec);
+        ItemValueResolver resolver = new ItemValueResolver(settingSourceAdapters(), secretCodec);
         Keying<Keying.SettingSpec> settingKeying = keyingProvider.getIfAvailable(() -> SettingGenerator.INSTANCE);
         SettingPublisher settingPublisher = new SettingPublisher(settingStore, revisionStore, watchManager, secretCodec,
-                properties.requireMaxSettingVersions(), settingKeying, null);
-        return new ItemCuratorService(settingStore, revisionStore, resolver, settingPublisher,
+                properties.requireMaxSettingVersions(), settingKeying);
+        return new ItemCuratorService(settingStore, revisionStore, referenceStore, resolver, settingPublisher,
                 settingEnforcer.getIfAvailable(), cortexGuard.getIfAvailable(), settingKeying);
     }
 
@@ -595,20 +640,6 @@ public class CortexConfiguration {
     }
 
     /**
-     * Creates the default setting source adapters used by the starter.
-     *
-     * @return ordered setting source adapters
-     */
-    private static List<ItemSourceAdapter> settingSourceAdapters() {
-        return List.of(
-                new InlineSourceAdapter(),
-                new EnvSourceAdapter(),
-                new StoredContentSourceAdapter("JDBC"),
-                new StoredContentSourceAdapter("REDIS"),
-                new StoredContentSourceAdapter("S3"));
-    }
-
-    /**
      * Binds Cortex-specific cache properties onto the starter default cache options.
      *
      * @param environment Spring environment used for property binding
@@ -681,28 +712,6 @@ public class CortexConfiguration {
             }
         }
         return false;
-    }
-
-    /**
-     * Narrows the raw cache bean used by Spring auto-configuration to Cortex's cache key/value convention.
-     *
-     * @param cache shared cache bean
-     * @return cache view using string keys and object values
-     */
-    private static CacheX<String, Object> cache(CacheX cache) {
-        return (CacheX<String, Object>) cache;
-    }
-
-    /**
-     * Wraps the shared registry store as a typed Cortex registry store without unchecked casts in bean methods.
-     *
-     * @param store shared registry store
-     * @param type  target asset subtype
-     * @param <T>   target asset subtype
-     * @return typed store view
-     */
-    private static <T extends Assets> RegistryStore<T> typedStore(RegistryStore<Assets> store, Class<T> type) {
-        return store == null ? null : new TypedRegistryStore<>(store, type);
     }
 
     /**

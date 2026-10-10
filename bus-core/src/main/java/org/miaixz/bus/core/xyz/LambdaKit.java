@@ -25,14 +25,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-import org.miaixz.bus.core.center.function.BiConsumerX;
-import org.miaixz.bus.core.center.function.BiFunctionX;
-import org.miaixz.bus.core.center.function.BiPredicateX;
-import org.miaixz.bus.core.center.function.ConsumerX;
-import org.miaixz.bus.core.center.function.FunctionX;
-import org.miaixz.bus.core.center.function.LambdaFactory;
-import org.miaixz.bus.core.center.function.LambdaX;
-import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.*;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;

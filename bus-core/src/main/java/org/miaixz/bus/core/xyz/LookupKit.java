@@ -47,15 +47,15 @@ public class LookupKit {
      */
     private static final LookupFactory factory;
 
+    static {
+        factory = new MethodLookupFactory();
+    }
+
     /**
      * Constructs a new LookupKit instance.
      */
     public LookupKit() {
         // No initialization required.
-    }
-
-    static {
-        factory = new MethodLookupFactory();
     }
 
     /**

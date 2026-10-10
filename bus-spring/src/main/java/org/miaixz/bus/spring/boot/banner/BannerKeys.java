@@ -41,18 +41,22 @@ public class BannerKeys {
      * Short Bus Boot banner title.
      */
     public static final String BUS_BOOT_BANNER = " :: Bus Boot :: ";
+
     /**
      * Short Spring Boot banner title.
      */
     public static final String SPRING_BOOT_BANNER = " :: Spring Boot :: ";
+
     /**
      * Conventional Spring banner resource name.
      */
     public static final String SPRING_BANNER_TEXT = "banner.txt";
+
     /**
      * Spring property selecting a banner resource.
      */
     public static final String SPRING_BANNER_LOCATION = "spring.banner.location";
+
     /**
      * Bus property controlling banner output.
      */

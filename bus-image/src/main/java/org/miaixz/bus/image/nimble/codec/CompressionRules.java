@@ -33,9 +33,6 @@ import java.util.List;
  */
 public class CompressionRules implements Iterable<CompressionRule>, Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852288199011L;
 

@@ -127,17 +127,6 @@ public class CertificatePolicy implements Policy {
     }
 
     /**
-     * Adds this policy to an immutable option snapshot.
-     *
-     * @param options option source
-     * @return updated option snapshot
-     */
-    @Override
-    public Options from(final Options options) {
-        return Assert.notNull(options, () -> new ValidateException("Options must not be null")).with(OPTION, this);
-    }
-
-    /**
      * Creates a builder.
      *
      * @return new certificate policy builder with system-trust defaults
@@ -153,6 +142,215 @@ public class CertificatePolicy implements Policy {
      */
     public static ReuseIdentity newReuseIdentity() {
         return new ReuseIdentity();
+    }
+
+    /**
+     * Copies pin entries.
+     *
+     * @param source source pins
+     * @return copied pins
+     */
+    private static Map<String, Set<String>> copyPins(final Map<String, Set<String>> source) {
+        final LinkedHashMap<String, Set<String>> copy = new LinkedHashMap<>();
+        if (source != null) {
+            for (final Map.Entry<String, Set<String>> entry : source.entrySet()) {
+                final String host = validatePinHost(entry.getKey());
+                final LinkedHashSet<String> values = new LinkedHashSet<>();
+                if (entry.getValue() == null) {
+                    throw new ValidateException("Certificate pin values must not be null");
+                }
+                for (final String pin : entry.getValue()) {
+                    values.add(validatePin(pin));
+                }
+                copy.put(host, Set.copyOf(values));
+            }
+        }
+        return Map.copyOf(copy);
+    }
+
+    /**
+     * Converts certificates to X509 certificates.
+     *
+     * @param chain certificate chain
+     * @return X509 certificates
+     */
+    private static X509Certificate[] x509Certificates(final List<Certificate> chain) {
+        final X509Certificate[] certificates = new X509Certificate[chain.size()];
+        for (int i = 0; i < chain.size(); i++) {
+            final Certificate certificate = chain.get(i);
+            if (!(certificate instanceof X509Certificate x509)) {
+                throw new ProtocolException("Certificate chain must contain X509 certificates");
+            }
+            certificates[i] = x509;
+        }
+        return certificates;
+    }
+
+    /**
+     * Computes a certificate pin.
+     *
+     * @param certificate certificate whose subject public key is hashed
+     * @return SHA-256 certificate pin string
+     */
+    public static String pin(final Certificate certificate) {
+        return CertificatePin.sha256(certificate);
+    }
+
+    /**
+     * Computes a SHA-1 certificate pin string.
+     *
+     * @param certificate certificate whose subject public key is hashed
+     * @return SHA-1 certificate pin string
+     */
+    public static String sha1Pin(final Certificate certificate) {
+        return CertificatePin.sha1(certificate);
+    }
+
+    /**
+     * Loads the default X509 trust manager.
+     *
+     * @return trust manager
+     */
+    private static X509TrustManager defaultTrustManager() {
+        final X509TrustManager trustManager = AnyTrustManager.getDefaultTrustManager();
+        if (trustManager == null) {
+            throw new ProtocolException("Default X509 trust manager is not available");
+        }
+        return trustManager;
+    }
+
+    /**
+     * Validates a host.
+     *
+     * @param host concrete peer host without wildcards
+     * @return normalized host
+     */
+    private static String validateHost(final String host) {
+        final String normalized = NetKit.normalizeHost(host);
+        if (normalized.indexOf(Symbol.C_STAR) >= 0) {
+            throw new ValidateException("Certificate host must not contain wildcards");
+        }
+        return normalized;
+    }
+
+    /**
+     * Validates a pin host pattern.
+     *
+     * @param host host or wildcard pattern
+     * @return normalized pattern
+     */
+    private static String validatePinHost(final String host) {
+        if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException("Certificate pin host must be non-blank and single-line");
+        }
+        final String normalized = host.trim().toLowerCase(Locale.ROOT);
+        if (normalized.startsWith("*.")) {
+            final String suffix = NetKit.normalizeHost(normalized.substring(Normal._2));
+            if (suffix.isBlank() || suffix.indexOf(Symbol.C_STAR) >= 0 || suffix.indexOf(Symbol.C_DOT) < 0) {
+                throw new ValidateException("Certificate pin wildcard must cover a concrete domain");
+            }
+            return "*." + suffix;
+        }
+        if (normalized.indexOf(Symbol.C_STAR) >= 0) {
+            throw new ValidateException("Certificate pin wildcard must start with *.");
+        }
+        return normalized;
+    }
+
+    /**
+     * Validates a pin.
+     *
+     * @param pin candidate SHA-256 or SHA-1 pin string
+     * @return validated canonical pin string
+     */
+    private static String validatePin(final String pin) {
+        return CertificatePin.validate(pin);
+    }
+
+    /**
+     * Verifies a hostname against certificate subject names.
+     *
+     * @param host        normalized host
+     * @param certificate leaf X.509 certificate whose subject names are inspected
+     * @return true when matched
+     */
+    private static boolean verifyHostname(final String host, final X509Certificate certificate) {
+        try {
+            final Collection<List<?>> subjectAltNames = certificate.getSubjectAlternativeNames();
+            boolean hasDnsName = false;
+            if (subjectAltNames != null) {
+                for (final List<?> subjectAltName : subjectAltNames) {
+                    if (subjectAltName.size() < Normal._2 || !(subjectAltName.get(Normal._0) instanceof Integer type)
+                            || subjectAltName.get(Normal._1) == null) {
+                        continue;
+                    }
+                    final String value = subjectAltName.get(Normal._1).toString();
+                    if (type == Normal._2) {
+                        hasDnsName = true;
+                        if (matchDns(host, value)) {
+                            return true;
+                        }
+                    } else if (type == Normal._7 && host.equalsIgnoreCase(value)) {
+                        return true;
+                    }
+                }
+            }
+            if (hasDnsName) {
+                return false;
+            }
+            final String commonName = commonName(certificate);
+            return commonName != null && matchDns(host, commonName);
+        } catch (final CertificateParsingException e) {
+            throw new ProtocolException("Unable to parse certificate subject names", e);
+        }
+    }
+
+    /**
+     * Matches a DNS name with optional single-label wildcard support.
+     *
+     * @param host    normalized host
+     * @param pattern certificate DNS pattern
+     * @return true when matched
+     */
+    private static boolean matchDns(final String host, final String pattern) {
+        final String value = pattern.toLowerCase(Locale.ROOT);
+        if (!value.startsWith("*.")) {
+            return host.equals(value);
+        }
+        final String suffix = value.substring(1);
+        if (!host.endsWith(suffix)) {
+            return false;
+        }
+        final String prefix = host.substring(0, host.length() - suffix.length());
+        return !prefix.isEmpty() && prefix.indexOf(Symbol.C_DOT) < 0;
+    }
+
+    /**
+     * Extracts a simple CN from the subject DN.
+     *
+     * @param certificate X.509 certificate whose subject DN is inspected
+     * @return common name or null
+     */
+    private static String commonName(final X509Certificate certificate) {
+        final String subject = certificate.getSubjectX500Principal().getName();
+        for (final String part : subject.split(Symbol.COMMA)) {
+            final String trimmed = part.trim();
+            if (trimmed.regionMatches(true, Normal._0, "CN=", Normal._0, Normal._3)) {
+                return trimmed.substring(Normal._3).trim();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Adds this policy to an immutable option snapshot.
+     *
+     * @param options option source
+     * @return updated option snapshot
+     */
+    @Override
+    public Options from(final Options options) {
+        return Assert.notNull(options, () -> new ValidateException("Options must not be null")).with(OPTION, this);
     }
 
     /**
@@ -268,30 +466,6 @@ public class CertificatePolicy implements Policy {
     }
 
     /**
-     * Copies pin entries.
-     *
-     * @param source source pins
-     * @return copied pins
-     */
-    private static Map<String, Set<String>> copyPins(final Map<String, Set<String>> source) {
-        final LinkedHashMap<String, Set<String>> copy = new LinkedHashMap<>();
-        if (source != null) {
-            for (final Map.Entry<String, Set<String>> entry : source.entrySet()) {
-                final String host = validatePinHost(entry.getKey());
-                final LinkedHashSet<String> values = new LinkedHashSet<>();
-                if (entry.getValue() == null) {
-                    throw new ValidateException("Certificate pin values must not be null");
-                }
-                for (final String pin : entry.getValue()) {
-                    values.add(validatePin(pin));
-                }
-                copy.put(host, Set.copyOf(values));
-            }
-        }
-        return Map.copyOf(copy);
-    }
-
-    /**
      * Cleans the chain with an adapter when one is configured.
      *
      * @param host         normalized peer host supplied to the cleaner
@@ -303,24 +477,6 @@ public class CertificatePolicy implements Policy {
             return CertificateChain.of(certificates);
         }
         return chainCleaner.clean(certificates, host);
-    }
-
-    /**
-     * Converts certificates to X509 certificates.
-     *
-     * @param chain certificate chain
-     * @return X509 certificates
-     */
-    private static X509Certificate[] x509Certificates(final List<Certificate> chain) {
-        final X509Certificate[] certificates = new X509Certificate[chain.size()];
-        for (int i = 0; i < chain.size(); i++) {
-            final Certificate certificate = chain.get(i);
-            if (!(certificate instanceof X509Certificate x509)) {
-                throw new ProtocolException("Certificate chain must contain X509 certificates");
-            }
-            certificates[i] = x509;
-        }
-        return certificates;
     }
 
     /**
@@ -359,77 +515,6 @@ public class CertificatePolicy implements Policy {
     }
 
     /**
-     * Computes a certificate pin.
-     *
-     * @param certificate certificate whose subject public key is hashed
-     * @return SHA-256 certificate pin string
-     */
-    public static String pin(final Certificate certificate) {
-        return CertificatePin.sha256(certificate);
-    }
-
-    /**
-     * Computes a SHA-1 certificate pin string.
-     *
-     * @param certificate certificate whose subject public key is hashed
-     * @return SHA-1 certificate pin string
-     */
-    public static String sha1Pin(final Certificate certificate) {
-        return CertificatePin.sha1(certificate);
-    }
-
-    /**
-     * Loads the default X509 trust manager.
-     *
-     * @return trust manager
-     */
-    private static X509TrustManager defaultTrustManager() {
-        final X509TrustManager trustManager = AnyTrustManager.getDefaultTrustManager();
-        if (trustManager == null) {
-            throw new ProtocolException("Default X509 trust manager is not available");
-        }
-        return trustManager;
-    }
-
-    /**
-     * Validates a host.
-     *
-     * @param host concrete peer host without wildcards
-     * @return normalized host
-     */
-    private static String validateHost(final String host) {
-        final String normalized = NetKit.normalizeHost(host);
-        if (normalized.indexOf(Symbol.C_STAR) >= 0) {
-            throw new ValidateException("Certificate host must not contain wildcards");
-        }
-        return normalized;
-    }
-
-    /**
-     * Validates a pin host pattern.
-     *
-     * @param host host or wildcard pattern
-     * @return normalized pattern
-     */
-    private static String validatePinHost(final String host) {
-        if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("Certificate pin host must be non-blank and single-line");
-        }
-        final String normalized = host.trim().toLowerCase(Locale.ROOT);
-        if (normalized.startsWith("*.")) {
-            final String suffix = NetKit.normalizeHost(normalized.substring(Normal._2));
-            if (suffix.isBlank() || suffix.indexOf(Symbol.C_STAR) >= 0 || suffix.indexOf(Symbol.C_DOT) < 0) {
-                throw new ValidateException("Certificate pin wildcard must cover a concrete domain");
-            }
-            return "*." + suffix;
-        }
-        if (normalized.indexOf(Symbol.C_STAR) >= 0) {
-            throw new ValidateException("Certificate pin wildcard must start with *.");
-        }
-        return normalized;
-    }
-
-    /**
      * Returns pins that apply to a concrete host.
      *
      * @param host normalized concrete peer host
@@ -449,91 +534,6 @@ public class CertificatePolicy implements Policy {
             }
         }
         return Set.copyOf(matched);
-    }
-
-    /**
-     * Validates a pin.
-     *
-     * @param pin candidate SHA-256 or SHA-1 pin string
-     * @return validated canonical pin string
-     */
-    private static String validatePin(final String pin) {
-        return CertificatePin.validate(pin);
-    }
-
-    /**
-     * Verifies a hostname against certificate subject names.
-     *
-     * @param host        normalized host
-     * @param certificate leaf X.509 certificate whose subject names are inspected
-     * @return true when matched
-     */
-    private static boolean verifyHostname(final String host, final X509Certificate certificate) {
-        try {
-            final Collection<List<?>> subjectAltNames = certificate.getSubjectAlternativeNames();
-            boolean hasDnsName = false;
-            if (subjectAltNames != null) {
-                for (final List<?> subjectAltName : subjectAltNames) {
-                    if (subjectAltName.size() < Normal._2 || !(subjectAltName.get(Normal._0) instanceof Integer type)
-                            || subjectAltName.get(Normal._1) == null) {
-                        continue;
-                    }
-                    final String value = subjectAltName.get(Normal._1).toString();
-                    if (type == Normal._2) {
-                        hasDnsName = true;
-                        if (matchDns(host, value)) {
-                            return true;
-                        }
-                    } else if (type == Normal._7 && host.equalsIgnoreCase(value)) {
-                        return true;
-                    }
-                }
-            }
-            if (hasDnsName) {
-                return false;
-            }
-            final String commonName = commonName(certificate);
-            return commonName != null && matchDns(host, commonName);
-        } catch (final CertificateParsingException e) {
-            throw new ProtocolException("Unable to parse certificate subject names", e);
-        }
-    }
-
-    /**
-     * Matches a DNS name with optional single-label wildcard support.
-     *
-     * @param host    normalized host
-     * @param pattern certificate DNS pattern
-     * @return true when matched
-     */
-    private static boolean matchDns(final String host, final String pattern) {
-        final String value = pattern.toLowerCase(Locale.ROOT);
-        if (!value.startsWith("*.")) {
-            return host.equals(value);
-        }
-        final String suffix = value.substring(1);
-        if (!host.endsWith(suffix)) {
-            return false;
-        }
-        final String prefix = host.substring(0, host.length() - suffix.length());
-        return !prefix.isEmpty() && prefix.indexOf(Symbol.C_DOT) < 0;
-    }
-
-    /**
-     * Extracts a simple CN from the subject DN.
-     *
-     * @param certificate X.509 certificate whose subject DN is inspected
-     * @return common name or null
-     */
-    private static String commonName(final X509Certificate certificate) {
-        final String subject = certificate.getSubjectX500Principal().getName();
-        for (final String part : subject.split(Symbol.COMMA)) {
-            final String trimmed = part.trim();
-            if (trimmed.regionMatches(true, Normal._0, "CN=", Normal._0, Normal._3)) {
-                return trimmed.substring(Normal._3).trim();
-            }
-        }
-        return null;
     }
 
     /**

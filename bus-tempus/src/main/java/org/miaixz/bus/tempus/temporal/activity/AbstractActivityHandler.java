@@ -66,6 +66,19 @@ public abstract class AbstractActivityHandler<R, C>
     }
 
     /**
+     * Creates the shared scheduler used for periodic activity heartbeat emission.
+     *
+     * @return the heartbeat scheduler
+     */
+    private static ScheduledExecutorService createHeartbeatScheduler() {
+        ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(
+                Math.max(2, Runtime.getRuntime().availableProcessors() / 2),
+                ThreadKit.newNamedThreadFactory("temporal-heartbeat", true));
+        executor.setRemoveOnCancelPolicy(true);
+        return executor;
+    }
+
+    /**
      * Executes the activity for the specified request.
      *
      * @param request the activity input
@@ -478,19 +491,6 @@ public abstract class AbstractActivityHandler<R, C>
             }
         }
         return null;
-    }
-
-    /**
-     * Creates the shared scheduler used for periodic activity heartbeat emission.
-     *
-     * @return the heartbeat scheduler
-     */
-    private static ScheduledExecutorService createHeartbeatScheduler() {
-        ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(
-                Math.max(2, Runtime.getRuntime().availableProcessors() / 2),
-                ThreadKit.newNamedThreadFactory("temporal-heartbeat", true));
-        executor.setRemoveOnCancelPolicy(true);
-        return executor;
     }
 
     /**

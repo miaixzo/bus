@@ -50,8 +50,9 @@ public interface Timer {
     /**
      * Record a duration directly.
      *
-     * @param amount duration value
+     * @param amount non-negative duration value
      * @param unit   time unit of {@code amount}
+     * @throws IllegalArgumentException when {@code amount} is negative
      */
     void record(long amount, TimeUnit unit);
 
@@ -74,7 +75,7 @@ public interface Timer {
      * Returns the maximum recorded duration.
      *
      * @param unit desired time unit
-     * @return max duration in the given unit
+     * @return max duration in the given unit, or {@code 0} when empty
      */
     double max(TimeUnit unit);
 
@@ -83,7 +84,7 @@ public interface Timer {
      *
      * @param p    percentile 0.0–1.0 (e.g. 0.99 for P99)
      * @param unit desired time unit
-     * @return estimated percentile value
+     * @return estimated percentile value, or {@link Double#NaN} when empty
      */
     double percentile(double p, TimeUnit unit);
 
@@ -93,7 +94,7 @@ public interface Timer {
      * @param p      percentile 0.0–1.0
      * @param unit   desired time unit
      * @param window rolling window (ONE_MINUTE, FIVE_MINUTES, or LIFETIME)
-     * @return estimated percentile value
+     * @return estimated percentile value, or {@link Double#NaN} when empty
      */
     double percentile(double p, TimeUnit unit, Window window);
 
@@ -126,8 +127,6 @@ public interface Timer {
      */
     TimerSnapshot snapshot();
 
-    // ── Rolling window constants ───────────────────────────────────────────
-
     /**
      * Rolling time window used for multi-window percentile queries.
      *
@@ -148,8 +147,6 @@ public interface Timer {
         LIFETIME
 
     }
-
-    // ── ViolationEvent record ──────────────────────────────────────────────
 
     /**
      * Carries context about a single SLA violation detected by {@link #onViolation}.

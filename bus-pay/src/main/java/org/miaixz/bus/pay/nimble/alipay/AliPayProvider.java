@@ -26,12 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Fields;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;

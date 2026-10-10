@@ -19,28 +19,15 @@
 */
 package org.miaixz.bus.cortex.magic.watch;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.RejectedExecutionException;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.cortex.Instance;
-import org.miaixz.bus.cortex.Listener;
-import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.Vector;
-import org.miaixz.bus.cortex.Watch;
 import org.miaixz.bus.cortex.builtin.MetadataMatcher;
 import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.identity.Sequence;
@@ -106,19 +93,6 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      * Event type for runtime instance health state changes.
      */
     public static final String REGISTRY_INSTANCE_HEALTH_CHANGE_EVENT = "registry-instance-health-change";
-
-    /**
-     * Backpressure policy applied when one watch subscription is slower than the emitted event rate.
-     *
-     * @author Kimi Liu
-     */
-    public enum OverflowStrategy {
-        /**
-         * Drops the newest event when the per-watch backlog is already full.
-         */
-        DROP_LATEST
-
-    }
 
     /**
      * Watch entries keyed by generated watch identifier.
@@ -964,6 +938,19 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
         if (counter.decrementAndGet() <= 0) {
             spaceCounts.remove(resolvedSpace, counter);
         }
+    }
+
+    /**
+     * Backpressure policy applied when one watch subscription is slower than the emitted event rate.
+     *
+     * @author Kimi Liu
+     */
+    public enum OverflowStrategy {
+        /**
+         * Drops the newest event when the per-watch backlog is already full.
+         */
+        DROP_LATEST
+
     }
 
 }

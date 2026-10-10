@@ -27,10 +27,8 @@ import java.time.Duration;
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -118,12 +116,12 @@ public class DnsDotEndpoint implements AutoCloseable, Lifecycle {
     /**
      * Start guard.
      */
-    private final java.util.concurrent.atomic.AtomicBoolean started;
+    private final AtomicBoolean started;
 
     /**
      * Close guard.
      */
-    private final java.util.concurrent.atomic.AtomicBoolean closed;
+    private final AtomicBoolean closed;
 
     /**
      * AIO channel group owned by this endpoint after startup.
@@ -164,8 +162,62 @@ public class DnsDotEndpoint implements AutoCloseable, Lifecycle {
         this.handler = handler;
         this.rawChannels = ConcurrentHashMap.newKeySet();
         this.tlsChannels = ConcurrentHashMap.newKeySet();
-        this.started = new java.util.concurrent.atomic.AtomicBoolean();
-        this.closed = new java.util.concurrent.atomic.AtomicBoolean();
+        this.started = new AtomicBoolean();
+        this.closed = new AtomicBoolean();
+    }
+
+    /**
+     * Compares a candidate v2 header with the fixed PROXY protocol signature.
+     *
+     * @param header candidate v2 header
+     * @return true when the signature matches
+     */
+    private static boolean proxyV2Signature(final byte[] header) {
+        for (int index = 0; index < PROXY_V2_SIGNATURE.length; index++) {
+            if (header[index] != PROXY_V2_SIGNATURE[index]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Creates a TLS policy whose ALPN list is fixed to DNS-over-TLS.
+     *
+     * @param policy configured TLS policy
+     * @return policy with preserved TLS material and fixed DoT ALPN
+     */
+    private static TlsPolicy dotPolicy(final TlsPolicy policy) {
+        final TlsSettings source = policy.settings();
+        final TlsSettings.Builder builder = TlsSettings.builder().versions(source.versions())
+                .clientAuth(source.clientAuthMode()).verifyHostname(source.verifyHostname())
+                .certificate(source.certificate()).applicationProtocols(List.of(ALPN)).supportsTlsExtensions(true);
+        if (source.ciphers().isEmpty()) {
+            builder.allEnabledCipherSuites();
+        } else {
+            builder.ciphers(source.ciphers());
+        }
+        return TlsPolicy.of(policy.context(), builder.build());
+    }
+
+    /**
+     * Returns the peer address of an accepted channel.
+     *
+     * @param channel accepted AIO channel
+     * @return peer IP address, or {@code null} when unavailable
+     */
+    private static InetAddress remoteAddress(final AioChannel channel) {
+        final SocketAddress remote = channel.remote();
+        return remote instanceof InetSocketAddress address ? address.getAddress() : null;
+    }
+
+    /**
+     * Closes a resource while preserving the caller's primary failure.
+     *
+     * @param closeable resource to close
+     */
+    private static void closeQuietly(final AutoCloseable closeable) {
+        IoKit.closeQuietly(closeable);
     }
 
     /**
@@ -434,21 +486,6 @@ public class DnsDotEndpoint implements AutoCloseable, Lifecycle {
     }
 
     /**
-     * Compares a candidate v2 header with the fixed PROXY protocol signature.
-     *
-     * @param header candidate v2 header
-     * @return true when the signature matches
-     */
-    private static boolean proxyV2Signature(final byte[] header) {
-        for (int index = 0; index < PROXY_V2_SIGNATURE.length; index++) {
-            if (header[index] != PROXY_V2_SIGNATURE[index]) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * Writes a DNS TCP-style response frame over TLS.
      *
      * @param conduit  established TLS channel
@@ -482,7 +519,7 @@ public class DnsDotEndpoint implements AutoCloseable, Lifecycle {
             throw new IOException("DNS-over-TLS operation was interrupted", e);
         } catch (final ExecutionException e) {
             throw new IOException("DNS-over-TLS operation failed", e.getCause());
-        } catch (final java.util.concurrent.TimeoutException e) {
+        } catch (final TimeoutException e) {
             throw new IOException("DNS-over-TLS operation timed out", e);
         }
     }
@@ -539,45 +576,6 @@ public class DnsDotEndpoint implements AutoCloseable, Lifecycle {
                 .readBufferSize(Math.min(options.tcpMaxFrameBytes(), 8192))
                 .writeChunkSize(Math.min(options.tcpMaxFrameBytes(), 8192)).idleTimeout(options.tcpIdleTimeout())
                 .build();
-    }
-
-    /**
-     * Creates a TLS policy whose ALPN list is fixed to DNS-over-TLS.
-     *
-     * @param policy configured TLS policy
-     * @return policy with preserved TLS material and fixed DoT ALPN
-     */
-    private static TlsPolicy dotPolicy(final TlsPolicy policy) {
-        final TlsSettings source = policy.settings();
-        final TlsSettings.Builder builder = TlsSettings.builder().versions(source.versions())
-                .clientAuth(source.clientAuthMode()).verifyHostname(source.verifyHostname())
-                .certificate(source.certificate()).applicationProtocols(List.of(ALPN)).supportsTlsExtensions(true);
-        if (source.ciphers().isEmpty()) {
-            builder.allEnabledCipherSuites();
-        } else {
-            builder.ciphers(source.ciphers());
-        }
-        return TlsPolicy.of(policy.context(), builder.build());
-    }
-
-    /**
-     * Returns the peer address of an accepted channel.
-     *
-     * @param channel accepted AIO channel
-     * @return peer IP address, or {@code null} when unavailable
-     */
-    private static InetAddress remoteAddress(final AioChannel channel) {
-        final SocketAddress remote = channel.remote();
-        return remote instanceof InetSocketAddress address ? address.getAddress() : null;
-    }
-
-    /**
-     * Closes a resource while preserving the caller's primary failure.
-     *
-     * @param closeable resource to close
-     */
-    private static void closeQuietly(final AutoCloseable closeable) {
-        IoKit.closeQuietly(closeable);
     }
 
     /**

@@ -21,7 +21,8 @@ package org.miaixz.bus.metrics.nimble;
 
 /**
  * A timer specialised for AI/LLM calls, recording TTFT (Time To First Token), ITL (Inter-Token Latency), token usage,
- * and estimated cost atomically.
+ * and estimated cost atomically. Implementations accept non-negative token counts, keep only the first first-token
+ * timestamp, and finish a sample exactly once through either {@link LlmSample#stop} or {@link LlmSample#error}.
  * <p>
  * Follows OTel GenAI SIG 2025 semantic conventions (gen_ai.*).
  *

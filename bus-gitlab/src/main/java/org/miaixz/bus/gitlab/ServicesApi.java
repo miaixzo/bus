@@ -71,7 +71,7 @@ public class ServicesApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: PUT /projects/:id/services/hipchat</code>
      * </pre>
-     *
+     * <p>
      * The following properties on the HipChatService instance are utilized in the update of the settings:
      * <p>
      * pushEvents (optional) - Enable notifications for push events issuesEvents (optional) - Enable notifications for
@@ -150,7 +150,7 @@ public class ServicesApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: PUT /projects/:id/services/slack</code>
      * </pre>
-     *
+     * <p>
      * The following properties on the SlackService instance are utilized in the update of the settings:
      * <p>
      * webhook (required) - https://hooks.slack.com/services/... username (optional) - username defaultChannel
@@ -231,7 +231,7 @@ public class ServicesApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: PUT /projects/:id/services/jira</code>
      * </pre>
-     *
+     * <p>
      * The following properties on the JiraService instance are utilized in the update of the settings:
      * <p>
      * mergeRequestsEvents (optional) - Enable notifications for merge request events commitEvents (optional) - Enable
@@ -301,7 +301,7 @@ public class ServicesApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: PUT /projects/:id/services/external-wiki</code>
      * </pre>
-     *
+     * <p>
      * The following properties on the JiraService instance are utilized in the update of the settings:
      * <p>
      * external_wiki_url (required) - The URL to the External Wiki project which is being linked to this GitLab project,
@@ -373,7 +373,7 @@ public class ServicesApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: PUT /projects/:id/services/mattermost</code>
      * </pre>
-     *
+     * <p>
      * The following properties on the MattermostService instance are utilized in the update of the settings:
      * <p>
      * webhook (required) - https://hooks.slack.com/services/... username (optional) - username defaultChannel
@@ -455,7 +455,7 @@ public class ServicesApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: PUT /projects/:id/services/bugzilla</code>
      * </pre>
-     *
+     * <p>
      * The following properties on the BugzillaService instance are utilized in the update of the settings:
      * <p>
      * description (optional), description issuesUrl (required), issue url newIssueUrl (required), new Issue url
@@ -523,7 +523,7 @@ public class ServicesApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: PUT /projects/:id/services/custom_issue_tracker</code>
      * </pre>
-     *
+     * <p>
      * The following properties on the CustomIssueTrackerService instance are utilized in the update of the settings:
      * <p>
      * description (optional), description issuesUrl (required), issue url newIssueUrl (required), new Issue url
@@ -598,7 +598,7 @@ public class ServicesApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: PUT /projects/:id/services/emails-on-push</code>
      * </pre>
-     *
+     * <p>
      * The following properties on the EmailOnPushService instance are utilized in the update of the settings:
      * <p>
      * recipients (required), Emails separated by whitespace disable_diffs (optional), Disable code diffs

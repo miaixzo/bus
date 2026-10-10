@@ -19,20 +19,20 @@
 */
 package org.miaixz.bus.health.unix.shared.hardware;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.Display;
+import org.miaixz.bus.health.builtin.hardware.DisplayMode;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractDisplay;
 import org.miaixz.bus.health.unix.shared.driver.Xrandr;
+import org.miaixz.bus.health.unix.shared.driver.Xrandr.Output;
 
 /**
  * Represents a display on a Unix-like system.
@@ -41,6 +41,13 @@ import org.miaixz.bus.health.unix.shared.driver.Xrandr;
  */
 @ThreadSafe
 public class UnixDisplay extends AbstractDisplay {
+
+    /** Built-in connector name prefixes. */
+    private static final String[] BUILT_IN_CONNECTORS = { "eDP", "LVDS", "DSI" };
+
+    /** External connector name prefixes. */
+    private static final String[] EXTERNAL_CONNECTORS = { "DP", "DisplayPort", "HDMI", "DVI", "VGA", "TV", "Composite",
+            "SVIDEO", "S-video", "Component", "DIN", "USB" };
 
     /**
      * The platform-specific device port name.
@@ -55,7 +62,7 @@ public class UnixDisplay extends AbstractDisplay {
     /**
      * The shared xrandr display data supplier.
      */
-    private final SupplierX<Map<String, Pair<Integer, byte[]>>> xrandrData;
+    private final SupplierX<List<Output>> xrandrData;
 
     /**
      * Constructor for UnixDisplay.
@@ -74,7 +81,7 @@ public class UnixDisplay extends AbstractDisplay {
      * @param connectorId the DRM connector identifier, or {@code -1} when it is unavailable
      */
     public UnixDisplay(byte[] edid, String devicePort, int connectorId) {
-        this(edid, devicePort, connectorId, Memoizer.memoize(Xrandr::getDisplayData));
+        this(edid, devicePort, connectorId, Memoizer.memoize(Xrandr::getOutputs));
     }
 
     /**
@@ -85,8 +92,7 @@ public class UnixDisplay extends AbstractDisplay {
      * @param connector  the DRM connector identifier, or {@code -1} when it is unavailable
      * @param xrandrData the shared xrandr display data supplier
      */
-    private UnixDisplay(byte[] edid, String devicePort, int connector,
-            SupplierX<Map<String, Pair<Integer, byte[]>>> xrandrData) {
+    private UnixDisplay(byte[] edid, String devicePort, int connector, SupplierX<List<Output>> xrandrData) {
         super(edid);
         this.devicePort = devicePort;
         this.connectorId = connector;
@@ -99,15 +105,11 @@ public class UnixDisplay extends AbstractDisplay {
      * @return A list of {@link Display} objects representing monitors and other display devices.
      */
     public static List<Display> getDisplays() {
-        Map<String, Pair<Integer, byte[]>> data = Xrandr.getDisplayData();
-        List<Display> displays = new ArrayList<>(data.size());
-        SupplierX<Map<String, Pair<Integer, byte[]>>> sharedData = () -> data;
-        for (Map.Entry<String, Pair<Integer, byte[]>> entry : data.entrySet()) {
-            displays.add(
-                    new UnixDisplay(entry.getValue().getRight(), entry.getKey(), entry.getValue().getLeft(),
-                            sharedData));
-        }
-        return displays;
+        List<Output> outputs = Xrandr.getOutputs();
+        SupplierX<List<Output>> sharedData = () -> outputs;
+        return outputs.stream()
+                .map(output -> new UnixDisplay(output.getEdid(), output.getName(), output.getConnectorId(), sharedData))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -117,7 +119,7 @@ public class UnixDisplay extends AbstractDisplay {
      * @return A list of {@link Display} objects representing monitors and other display devices.
      */
     public static List<Display> getDisplays(List<Triplet<String, Integer, byte[]>> drmData) {
-        return getDisplays(drmData, Xrandr::getDisplayData);
+        return getDisplays(drmData, Xrandr::getOutputs);
     }
 
     /**
@@ -129,13 +131,10 @@ public class UnixDisplay extends AbstractDisplay {
      */
     static List<Display> getDisplays(
             List<Triplet<String, Integer, byte[]>> drmData,
-            SupplierX<Map<String, Pair<Integer, byte[]>>> xrandrQuery) {
-        List<Display> displays = new ArrayList<>(drmData.size());
-        SupplierX<Map<String, Pair<Integer, byte[]>>> sharedData = Memoizer.memoize(xrandrQuery);
-        for (Triplet<String, Integer, byte[]> drm : drmData) {
-            displays.add(new UnixDisplay(drm.getRight(), drm.getLeft(), drm.getMiddle(), sharedData));
-        }
-        return displays;
+            SupplierX<List<Output>> xrandrQuery) {
+        SupplierX<List<Output>> sharedData = Memoizer.memoize(xrandrQuery);
+        return drmData.stream().map(drm -> new UnixDisplay(drm.getRight(), drm.getLeft(), drm.getMiddle(), sharedData))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -155,7 +154,60 @@ public class UnixDisplay extends AbstractDisplay {
      */
     @Override
     public Optional<String> getOutputName() {
-        return Xrandr.findOutputName(this.xrandrData.get(), this.connectorId, this.getDisplayInfo().getEdid());
+        return findOutput().map(Output::getName);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<DisplayMode> getCurrentMode() {
+        return findOutput().flatMap(Output::getMode);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<Boolean> isBuiltIn() {
+        if (!Normal.UNKNOWN.equals(this.devicePort)) {
+            return isBuiltInConnector(this.devicePort);
+        }
+        return getOutputName().flatMap(UnixDisplay::isBuiltInConnector);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<Boolean> isPrimary() {
+        return findOutput().map(Output::isPrimary);
+    }
+
+    /**
+     * Finds the xrandr output matching this display.
+     *
+     * @return the matching output, or an empty optional
+     */
+    private Optional<Output> findOutput() {
+        return Xrandr.findOutput(this.xrandrData.get(), this.connectorId, this.getDisplayInfo().getEdid());
+    }
+
+    /**
+     * Classifies a connector by its standard DRM or X11 prefix.
+     *
+     * @param connector the connector or output name
+     * @return the built-in status, or an empty optional when the connector type is ambiguous
+     */
+    static Optional<Boolean> isBuiltInConnector(String connector) {
+        for (String prefix : BUILT_IN_CONNECTORS) {
+            if (connector.startsWith(prefix)) {
+                return Optional.of(Boolean.TRUE);
+            }
+        }
+        if (connector.startsWith("DPI")) {
+            return Optional.empty();
+        }
+        for (String prefix : EXTERNAL_CONNECTORS) {
+            if (connector.startsWith(prefix)) {
+                return Optional.of(Boolean.FALSE);
+            }
+        }
+        return Optional.empty();
     }
 
 }

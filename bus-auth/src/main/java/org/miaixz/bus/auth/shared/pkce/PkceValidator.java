@@ -41,6 +41,7 @@ public class PkceValidator {
      * Shared secret comparison primitive.
      */
     private final SecretGuard secretGuard;
+
     /**
      * Explicit immutable compatibility allow-list.
      */

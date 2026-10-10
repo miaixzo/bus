@@ -76,93 +76,6 @@ public class CachePolicy implements Policy {
     }
 
     /**
-     * Adds this policy to an immutable option snapshot.
-     *
-     * @param options option source
-     * @return updated option snapshot
-     */
-    @Override
-    public Options from(final Options options) {
-        return Assert.notNull(options, () -> new ValidateException("Options must not be null")).with(OPTION, this);
-    }
-
-    /**
-     * Returns whether a response may be cached.
-     *
-     * @param request  request associated with the candidate response
-     * @param response response whose method, status, Vary, and directives are evaluated
-     * @return true when cacheable
-     */
-    public boolean cacheable(final HttpRequest request, final HttpResponse response) {
-        require(request, "HTTP request");
-        require(response, "HTTP response");
-        final HttpCacheControl requestControl = request.cacheControl();
-        final HttpCacheControl responseControl = response.cacheControl();
-        if (request.method() != Http.Method.GET && request.method() != Http.Method.HEAD) {
-            return false;
-        }
-        if (!Builder.CACHE_POLICY_CACHEABLE.contains(response.code())
-                && !explicitlyCacheable(response, responseControl)) {
-            return false;
-        }
-        if (HttpCacheKey.varyStar(response.headers().get(Http.Header.VARY))) {
-            return false;
-        }
-        return !requestControl.noStore() && !responseControl.noStore();
-    }
-
-    /**
-     * Returns whether a response is fresh.
-     *
-     * @param response cached response evaluated against its originating request
-     * @param clock    runtime clock supplying the current instant
-     * @return true when fresh
-     */
-    public boolean fresh(final HttpResponse response, final Clock clock) {
-        require(response, "HTTP response");
-        return fresh(response.request(), response, clock);
-    }
-
-    /**
-     * Returns whether a cached response is fresh enough for a request.
-     *
-     * @param request  current request whose cache directives constrain reuse
-     * @param response cached response whose age and freshness lifetime are evaluated
-     * @param clock    runtime clock supplying the current instant
-     * @return true when fresh
-     */
-    public boolean fresh(final HttpRequest request, final HttpResponse response, final Clock clock) {
-        require(request, "HTTP request");
-        require(response, "HTTP response");
-        require(clock, "Runtime clock");
-        try {
-            final HttpCacheControl requestControl = request.cacheControl();
-            final HttpCacheControl responseControl = response.cacheControl();
-            if (requestControl.noCache() || responseControl.noCache() || responseControl.noStore()) {
-                return false;
-            }
-            final Instant now = clock.now();
-            final Instant date = headerInstant(response.headers(), Http.Header.DATE);
-            final Instant expires = headerInstant(response.headers(), Http.Header.EXPIRES);
-            final Instant lastModified = headerInstant(response.headers(), Http.Header.LAST_MODIFIED);
-            final long age = currentAgeSeconds(response.headers(), date, now);
-            long lifetime = freshnessLifetime(responseControl, date, expires, lastModified);
-            if (responseControl.immutable()) {
-                return true;
-            }
-            if (requestControl.maxAgeSeconds() >= 0) {
-                lifetime = Math.min(lifetime, requestControl.maxAgeSeconds());
-            }
-            final long minFresh = Math.max(0L, requestControl.minFreshSeconds());
-            final long maxStale = responseControl.mustRevalidate() || requestControl.maxStaleSeconds() < 0 ? 0L
-                    : requestControl.maxStaleSeconds();
-            return saturatedAdd(age, minFresh) < saturatedAdd(lifetime, maxStale);
-        } catch (final ProtocolException | ArithmeticException e) {
-            return false;
-        }
-    }
-
-    /**
      * Returns whether response headers explicitly allow caching.
      *
      * @param response candidate response containing optional Expires metadata
@@ -206,27 +119,6 @@ public class CachePolicy implements Policy {
         }
         final long apparentLifetime = Math.max(0L, Duration.between(modified, date).getSeconds());
         return Math.min(Duration.ofHours(24L).getSeconds(), apparentLifetime / 10L);
-    }
-
-    /**
-     * Creates a conditional request.
-     *
-     * @param request request to conditionally revalidate
-     * @param cached  cached response
-     * @return request carrying the strongest available validator, or the original request
-     */
-    public HttpRequest conditional(final HttpRequest request, final HttpResponse cached) {
-        require(request, "HTTP request");
-        require(cached, "Cached response");
-        final String etag = cached.headers().get(Http.Header.ETAG);
-        if (etag != null) {
-            return copy(request, request.headers().with(Http.Header.IF_NONE_MATCH, etag));
-        }
-        final String modified = cached.headers().get(Http.Header.LAST_MODIFIED);
-        if (modified != null) {
-            return copy(request, request.headers().with(Http.Header.IF_MODIFIED_SINCE, modified));
-        }
-        return request;
     }
 
     /**
@@ -328,6 +220,114 @@ public class CachePolicy implements Policy {
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Adds this policy to an immutable option snapshot.
+     *
+     * @param options option source
+     * @return updated option snapshot
+     */
+    @Override
+    public Options from(final Options options) {
+        return Assert.notNull(options, () -> new ValidateException("Options must not be null")).with(OPTION, this);
+    }
+
+    /**
+     * Returns whether a response may be cached.
+     *
+     * @param request  request associated with the candidate response
+     * @param response response whose method, status, Vary, and directives are evaluated
+     * @return true when cacheable
+     */
+    public boolean cacheable(final HttpRequest request, final HttpResponse response) {
+        require(request, "HTTP request");
+        require(response, "HTTP response");
+        final HttpCacheControl requestControl = request.cacheControl();
+        final HttpCacheControl responseControl = response.cacheControl();
+        if (request.method() != Http.Method.GET && request.method() != Http.Method.HEAD) {
+            return false;
+        }
+        if (!Builder.CACHE_POLICY_CACHEABLE.contains(response.code())
+                && !explicitlyCacheable(response, responseControl)) {
+            return false;
+        }
+        if (HttpCacheKey.varyStar(response.headers().get(Http.Header.VARY))) {
+            return false;
+        }
+        return !requestControl.noStore() && !responseControl.noStore();
+    }
+
+    /**
+     * Returns whether a response is fresh.
+     *
+     * @param response cached response evaluated against its originating request
+     * @param clock    runtime clock supplying the current instant
+     * @return true when fresh
+     */
+    public boolean fresh(final HttpResponse response, final Clock clock) {
+        require(response, "HTTP response");
+        return fresh(response.request(), response, clock);
+    }
+
+    /**
+     * Returns whether a cached response is fresh enough for a request.
+     *
+     * @param request  current request whose cache directives constrain reuse
+     * @param response cached response whose age and freshness lifetime are evaluated
+     * @param clock    runtime clock supplying the current instant
+     * @return true when fresh
+     */
+    public boolean fresh(final HttpRequest request, final HttpResponse response, final Clock clock) {
+        require(request, "HTTP request");
+        require(response, "HTTP response");
+        require(clock, "Runtime clock");
+        try {
+            final HttpCacheControl requestControl = request.cacheControl();
+            final HttpCacheControl responseControl = response.cacheControl();
+            if (requestControl.noCache() || responseControl.noCache() || responseControl.noStore()) {
+                return false;
+            }
+            final Instant now = clock.now();
+            final Instant date = headerInstant(response.headers(), Http.Header.DATE);
+            final Instant expires = headerInstant(response.headers(), Http.Header.EXPIRES);
+            final Instant lastModified = headerInstant(response.headers(), Http.Header.LAST_MODIFIED);
+            final long age = currentAgeSeconds(response.headers(), date, now);
+            long lifetime = freshnessLifetime(responseControl, date, expires, lastModified);
+            if (responseControl.immutable()) {
+                return true;
+            }
+            if (requestControl.maxAgeSeconds() >= 0) {
+                lifetime = Math.min(lifetime, requestControl.maxAgeSeconds());
+            }
+            final long minFresh = Math.max(0L, requestControl.minFreshSeconds());
+            final long maxStale = responseControl.mustRevalidate() || requestControl.maxStaleSeconds() < 0 ? 0L
+                    : requestControl.maxStaleSeconds();
+            return saturatedAdd(age, minFresh) < saturatedAdd(lifetime, maxStale);
+        } catch (final ProtocolException | ArithmeticException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Creates a conditional request.
+     *
+     * @param request request to conditionally revalidate
+     * @param cached  cached response
+     * @return request carrying the strongest available validator, or the original request
+     */
+    public HttpRequest conditional(final HttpRequest request, final HttpResponse cached) {
+        require(request, "HTTP request");
+        require(cached, "Cached response");
+        final String etag = cached.headers().get(Http.Header.ETAG);
+        if (etag != null) {
+            return copy(request, request.headers().with(Http.Header.IF_NONE_MATCH, etag));
+        }
+        final String modified = cached.headers().get(Http.Header.LAST_MODIFIED);
+        if (modified != null) {
+            return copy(request, request.headers().with(Http.Header.IF_MODIFIED_SINCE, modified));
+        }
+        return request;
     }
 
 }

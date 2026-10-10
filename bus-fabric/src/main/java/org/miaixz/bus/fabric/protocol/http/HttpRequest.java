@@ -86,6 +86,16 @@ public class HttpRequest {
     private final Timeout timeout;
 
     /**
+     * Stable body length used by codecs and retry policy.
+     */
+    private final long bodyLength;
+
+    /**
+     * Stable replay eligibility used by retry policy.
+     */
+    private final boolean replayable;
+
+    /**
      * Lazily parsed cache control snapshot.
      */
     private volatile HttpCacheControl cacheControl;
@@ -99,16 +109,6 @@ public class HttpRequest {
      * Lazily encoded origin-form request target.
      */
     private volatile String requestTarget;
-
-    /**
-     * Stable body length used by codecs and retry policy.
-     */
-    private final long bodyLength;
-
-    /**
-     * Stable replay eligibility used by retry policy.
-     */
-    private final boolean replayable;
 
     /**
      * Creates an HTTP request.
@@ -159,6 +159,53 @@ public class HttpRequest {
      */
     public static Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * Validates method and body constraints.
+     *
+     * @param method HTTP method whose body capability is checked
+     * @param body   request body whose stable length is inspected
+     */
+    private static void validateBodyPolicy(final Http.Method method, final PayloadBody body) {
+        Assert.isFalse(
+                !method.permitsBody() && body.length() > 0,
+                () -> new ValidateException("HTTP method does not support a body"));
+    }
+
+    /**
+     * Copies request tags into an immutable map.
+     *
+     * @param tags source tags
+     * @return immutable tags
+     */
+    private static Map<Class<?>, Object> immutableTags(final Map<Class<?>, Object> tags) {
+        if (tags == null || tags.isEmpty()) {
+            return Map.of();
+        }
+        final LinkedHashMap<Class<?>, Object> copy = new LinkedHashMap<>(tags.size());
+        tags.forEach((type, value) -> {
+            require(type, "Tag type");
+            if (value != null) {
+                copy.put(type, value);
+            }
+        });
+        return copy.isEmpty() ? Map.of() : Collections.unmodifiableMap(copy);
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
     }
 
     /**
@@ -342,53 +389,6 @@ public class HttpRequest {
     }
 
     /**
-     * Validates method and body constraints.
-     *
-     * @param method HTTP method whose body capability is checked
-     * @param body   request body whose stable length is inspected
-     */
-    private static void validateBodyPolicy(final Http.Method method, final PayloadBody body) {
-        Assert.isFalse(
-                !method.permitsBody() && body.length() > 0,
-                () -> new ValidateException("HTTP method does not support a body"));
-    }
-
-    /**
-     * Copies request tags into an immutable map.
-     *
-     * @param tags source tags
-     * @return immutable tags
-     */
-    private static Map<Class<?>, Object> immutableTags(final Map<Class<?>, Object> tags) {
-        if (tags == null || tags.isEmpty()) {
-            return Map.of();
-        }
-        final LinkedHashMap<Class<?>, Object> copy = new LinkedHashMap<>(tags.size());
-        tags.forEach((type, value) -> {
-            require(type, "Tag type");
-            if (value != null) {
-                copy.put(type, value);
-            }
-        });
-        return copy.isEmpty() ? Map.of() : Collections.unmodifiableMap(copy);
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  field name included in the validation failure
-     * @param <T>   reference type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        if (value == null) {
-            throw new ValidateException(name + " must not be null");
-        }
-        return value;
-    }
-
-    /**
      * Builder for HTTP requests.
      *
      * @author Kimi Liu
@@ -456,6 +456,19 @@ public class HttpRequest {
             this.tagsSnapshot = true;
             this.proxy = request.proxy;
             this.timeout = request.timeout;
+        }
+
+        /**
+         * Validates a User-Agent value.
+         *
+         * @param value User-Agent value
+         * @return validated value
+         */
+        private static String validateUserAgent(final String value) {
+            Assert.isFalse(
+                    StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
+                    () -> new ValidateException("User-Agent must be non-blank and single-line"));
+            return StringKit.trim(value);
         }
 
         /**
@@ -659,19 +672,6 @@ public class HttpRequest {
                 tagsSnapshot = false;
             }
             return tags;
-        }
-
-        /**
-         * Validates a User-Agent value.
-         *
-         * @param value User-Agent value
-         * @return validated value
-         */
-        private static String validateUserAgent(final String value) {
-            Assert.isFalse(
-                    StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
-                    () -> new ValidateException("User-Agent must be non-blank and single-line"));
-            return StringKit.trim(value);
         }
 
     }

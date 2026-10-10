@@ -19,12 +19,7 @@
 */
 package org.miaixz.bus.starter.health;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.springframework.boot.availability.ApplicationAvailability;
 import org.springframework.boot.availability.AvailabilityChangeEvent;
@@ -82,6 +77,16 @@ public class HealthService {
         this.collector = collector;
         this.publisher = publisher;
         this.availability = availability;
+    }
+
+    /**
+     * Converts an availability state to its response representation.
+     *
+     * @param state current availability state, possibly {@code null}
+     * @return the state name, or {@code UNKNOWN} when no state is available
+     */
+    private static String state(Object state) {
+        return state == null ? "UNKNOWN" : state.toString();
     }
 
     /**
@@ -219,16 +224,6 @@ public class HealthService {
             }
         }
         return List.copyOf(requested);
-    }
-
-    /**
-     * Converts an availability state to its response representation.
-     *
-     * @param state current availability state, possibly {@code null}
-     * @return the state name, or {@code UNKNOWN} when no state is available
-     */
-    private static String state(Object state) {
-        return state == null ? "UNKNOWN" : state.toString();
     }
 
 }

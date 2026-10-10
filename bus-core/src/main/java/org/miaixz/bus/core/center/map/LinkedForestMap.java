@@ -698,6 +698,11 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
          */
         private final N entryNode;
 
+        /**
+         * Creates a map entry view for the supplied tree entry node.
+         *
+         * @param entryNode the tree entry node to wrap
+         */
         public EntryNodeWrapper(final N entryNode) {
             this.entryNode = entryNode;
         }

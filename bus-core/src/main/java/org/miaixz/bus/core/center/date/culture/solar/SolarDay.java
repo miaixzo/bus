@@ -35,7 +35,7 @@ import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarMonth;
 import org.miaixz.bus.core.center.date.culture.nine.Nine;
 import org.miaixz.bus.core.center.date.culture.nine.NineDay;
-import org.miaixz.bus.core.center.date.culture.parts.DayParts;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractDay;
 import org.miaixz.bus.core.center.date.culture.plumrain.PlumRain;
 import org.miaixz.bus.core.center.date.culture.plumrain.PlumRainDay;
 import org.miaixz.bus.core.center.date.culture.rabjung.RabjungDay;
@@ -49,7 +49,7 @@ import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
  *
  * @author Kimi Liu
  */
-public class SolarDay extends DayParts {
+public class SolarDay extends AbstractDay {
 
     /**
      * Localized day labels for the first through thirty-first day of a month.
@@ -67,10 +67,8 @@ public class SolarDay extends DayParts {
      * @throws IllegalArgumentException if the date is invalid (e.g., February 30)
      */
     public SolarDay(int year, int month, int day) {
+        super(year, month, day);
         this.validate(year, month, day);
-        this.year = year;
-        this.month = month;
-        this.day = day;
     }
 
     /**
@@ -383,7 +381,7 @@ public class SolarDay extends DayParts {
             m = m.next(-1);
             days += m.getDayCount();
         }
-        return LunarDay.fromYmd(m.getYear(), m.getMonthWithLeap(), days + 1);
+        return LunarDay.fromYmd(m.getYear(), m.getMonthValue(), days + 1);
     }
 
     /**
@@ -445,7 +443,7 @@ public class SolarDay extends DayParts {
      */
     public Phase.PhaseDay getPhaseDay() {
         LunarMonth month = getLunarDay().getLunarMonth().next(1);
-        Phase p = Phase.fromIndex(month.getYear(), month.getMonthWithLeap(), 0);
+        Phase p = Phase.fromIndex(month.getYear(), month.getMonthValue(), 0);
         SolarDay d = p.getSolarDay();
         while (d.isAfter(this)) {
             p = p.next(-1);

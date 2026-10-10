@@ -25,7 +25,6 @@ import java.net.URL;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.util.*;
-import java.util.Map.Entry;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.center.function.SupplierX;
@@ -370,13 +369,13 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * Gets all settings under a specific group as a {@link java.util.Properties} object.
+     * Gets all settings under a specific group as a {@link Properties} object.
      *
      * @param group The group name.
      * @return A new {@code Properties} object.
      */
-    public java.util.Properties getProperties(final String group) {
-        final java.util.Properties properties = new java.util.Properties();
+    public Properties getProperties(final String group) {
+        final Properties properties = new Properties();
         properties.putAll(getMap(group));
         return properties;
     }

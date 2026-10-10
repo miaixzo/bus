@@ -32,8 +32,8 @@ import org.miaixz.bus.gitlab.support.ISO8601;
 /**
  * This class provides an entry point to all the GitLab API personal access token calls.
  *
- * @see <a href="https://docs.gitlab.com/ce/api/personal_access_tokens.html">Personal access token API at GitLab</a>
  * @author Kimi Liu
+ * @see <a href="https://docs.gitlab.com/ce/api/personal_access_tokens.html">Personal access token API at GitLab</a>
  */
 public class PersonalAccessTokenApi extends AbstractApi {
 

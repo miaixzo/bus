@@ -8,12 +8,10 @@
 
 ## 📖 项目介绍
 
-**Bus Office**是一个基于Apache POI的企业级办公文档处理框架。它提供
-全面支持**Excel、Word、PDF、CSV和OFD**格式，旨在简化文档操作和
+**Bus Office**是一个基于Apache POI的企业级办公文档处理框架。它提供 全面支持 **Excel、Word、PDF、CSV和OFD**格式，旨在简化文档操作和
 提高开发效率。
 
-该框架封装了 POI 操作的复杂性，同时提供基于 SAX 的流等强大功能
-适用于大文件、基于模板的生成和样式定制。
+该框架封装了 POI 操作的复杂性，同时提供基于 SAX 的流等强大功能 适用于大文件、基于模板的生成和样式定制。
 
 -----
 
@@ -29,13 +27,13 @@
 
 ### 📄 Excel 处理
 
-| 功能 | 描述 |
-|:---------------------|:---------------------------------------------------------------|
-| **读取操作** | 支持读取为列表、映射、Bean 或自定义行处理程序 |
-| **写入操作** | 小文件的标准编写器，大数据集的BigWriter |
-| **SAX 解析** | Excel '03 和 '07 格式的内存高效流 |
-| **Cell 样式** | 具有可自定义字体、颜色、边框的预定义样式集 |
-| **数据验证** | 下拉列表、数字验证、日期约束 |
+| 功能          | 描述                                          |
+|:--------------|:----------------------------------------------|
+| **读取操作**  | 支持读取为列表、映射、Bean 或自定义行处理程序 |
+| **写入操作**  | 小文件的标准编写器，大数据集的BigWriter       |
+| **SAX 解析**  | Excel '03 和 '07 格式的内存高效流             |
+| **Cell 样式** | 具有可自定义字体、颜色、边框的预定义样式集    |
+| **数据验证**  | 下拉列表、数字验证、日期约束                  |
 
 * **公式支持**：读写Excel公式
 * **Merged Cells**：自动处理合并区域
@@ -394,78 +392,78 @@ get("output.ofd"),
 
 #### ExcelKit
 
-| 方法 | 描述 |
-|:------------------------------|:-----------------------------------------|
-| `getReader()` | 获取用于标准操作的 Excel 阅读器 |
-| `getReader(path, sheetIndex)` | 获取特定工作表 | 的阅读器
-| `getWriter()` | 获取标准 Excel 编写器 |
-| `getBigWriter()` | 获取大文件的编写器 |
-| `readBySax()` | 使用 SAX 读取以提高内存效率 |
+| 方法                          | 描述                            |
+|:------------------------------|:--------------------------------|
+| `getReader()`                 | 获取用于标准操作的 Excel 阅读器 |
+| `getReader(path, sheetIndex)` | 获取特定工作表                  | 的阅读器
+| `getWriter()`                 | 获取标准 Excel 编写器           |
+| `getBigWriter()`              | 获取大文件的编写器              |
+| `readBySax()`                 | 使用 SAX 读取以提高内存效率     |
 
 #### ExcelReader
 
-| 方法 | 描述 |
-|:------------------------|:---------------------------------------|
-| `read()` | 将所有数据读取为列表列表 |
-| `readAsMap()` | 读取为地图列表（基于标题） |
-| `readAll(Class)` | 读取为 Bean 列表 |
-| `read(rowCount, Class)` | 读取指定行数作为bean |
+| 方法                    | 描述                       |
+|:------------------------|:---------------------------|
+| `read()`                | 将所有数据读取为列表列表   |
+| `readAsMap()`           | 读取为地图列表（基于标题） |
+| `readAll(Class)`        | 读取为 Bean 列表           |
+| `read(rowCount, Class)` | 读取指定行数作为bean       |
 
 #### ExcelWriter
 
-| 方法 | 说明 |
-|:----------------|:--------------------|
-| `write(rows)` | 写入列表列表 |
-| `write(bean)` | 写单个bean |
-| `writeRow(row)` | 写入单行 |
-| `merge(cells)` | 合并单元格区域 |
+| 方法            | 说明           |
+|:----------------|:---------------|
+| `write(rows)`   | 写入列表列表   |
+| `write(bean)`   | 写单个bean     |
+| `writeRow(row)` | 写入单行       |
+| `merge(cells)`  | 合并单元格区域 |
 | `setStyleSet()` | 设置单元格样式 |
-| `flush(file)` | 写入文件 |
-| `flush(stream)` | 写入流 |
+| `flush(file)`   | 写入文件       |
+| `flush(stream)` | 写入流         |
 
 ### Word API
 
 #### DocxKit
 
-| 方法 | 描述 |
-|:--------------------|:------------------------------|
-| `getWriter()` | 创建新的文字编写器 |
-| `getWriter(file)` | 为目标文件 | 创建 writer
-| `create(file)` | 创建或打开 XWPFDocument |
-| `getType(fileName)` | 从文件名获取图像类型 |
+| 方法                | 描述                    |
+|:--------------------|:------------------------|
+| `getWriter()`       | 创建新的文字编写器      |
+| `getWriter(file)`   | 为目标文件              | 创建 writer
+| `create(file)`      | 创建或打开 XWPFDocument |
+| `getType(fileName)` | 从文件名获取图像类型    |
 
 #### Word07Writer
 
-| 方法 | 描述 |
-|:----------------------------------|:-----------------------------|
-| `addText(text)` | 添加纯文本段落 |
-| `addText(text, style)` | 添加样式文本 |
-| `addTable(widths)` | 添加列宽为 | 的表格
-| `addPicture(file, width, height)` | 插入图片 |
-| `flush(file)` | 写入文件 |
+| 方法                              | 描述           |
+|:----------------------------------|:---------------|
+| `addText(text)`                   | 添加纯文本段落 |
+| `addText(text, style)`            | 添加样式文本   |
+| `addTable(widths)`                | 添加列宽为     | 的表格
+| `addPicture(file, width, height)` | 插入图片       |
+| `flush(file)`                     | 写入文件       |
 
 ### CSV API
 
 #### CsvKit
 
-| 方法 | 描述 |
-|:----------------------------|:------------------------------|
-| `getReader()` | 获取 CSV 阅读器 |
-| `getWriter(path, charset)` | 获取 CSV 写入器 |
+| 方法                        | 描述                       |
+|:----------------------------|:---------------------------|
+| `getReader()`               | 获取 CSV 阅读器            |
+| `getWriter(path, charset)`  | 获取 CSV 写入器            |
 | `getReader(reader, config)` | 获取具有自定义配置的读卡器 |
 
 ### OFD API
 
 #### DocConverter
 
-| 方法 | 描述 |
-|:----------------------------------|:----------------------|
-| `pdfToOfd(src, target)` | 将 PDF 转换为 OFD |
-| `odfToPdf(src, target)` | 将 OFD 转换为 PDF |
-| `odfToImage(src, dir, type, ppm)` | 将 OFD 转换为图像 |
-| `odfToHtml(src, target)` | 将 OFD 转换为 HTML |
-| `odfToText(src, target)` | 将 OFD 转换为文本 |
-| `imgToOfd(target, images)` | 将图像转换为 OFD |
+| 方法                              | 描述               |
+|:----------------------------------|:-------------------|
+| `pdfToOfd(src, target)`           | 将 PDF 转换为 OFD  |
+| `odfToPdf(src, target)`           | 将 OFD 转换为 PDF  |
+| `odfToImage(src, dir, type, ppm)` | 将 OFD 转换为图像  |
+| `odfToHtml(src, target)`          | 将 OFD 转换为 HTML |
+| `odfToText(src, target)`          | 将 OFD 转换为文本  |
+| `imgToOfd(target, images)`        | 将图像转换为 OFD   |
 
 -----
 
@@ -712,9 +710,9 @@ CsvWriteConfig config = CsvWriteConfig.builder()
 ## 🔄 版本兼容性
 
 | 公交办公版本 | POI 版本 | OFDRW 版本 | JDK 版本 |
-|:-------------------|:------------|:--------------|:------------|
-| 8.x | 5.4.1 | 2.3.7 | 17+ |
-| 7.x | 5.2.x | 2.1.x | 11+ |
+|:-------------|:---------|:-----------|:---------|
+| 8.x          | 5.4.1    | 2.3.7      | 17+      |
+| 7.x          | 5.2.x    | 2.1.x      | 11+      |
 
 -----
 

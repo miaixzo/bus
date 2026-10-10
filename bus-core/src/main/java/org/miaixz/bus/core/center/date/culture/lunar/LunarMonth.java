@@ -26,7 +26,8 @@ import org.miaixz.bus.core.center.date.Galaxy;
 import org.miaixz.bus.core.center.date.culture.Direction;
 import org.miaixz.bus.core.center.date.culture.JulianDay;
 import org.miaixz.bus.core.center.date.culture.fetus.FetusMonth;
-import org.miaixz.bus.core.center.date.culture.parts.MonthParts;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractLeapMonth;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractYear;
 import org.miaixz.bus.core.center.date.culture.ren.MinorRen;
 import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
@@ -38,17 +39,12 @@ import org.miaixz.bus.core.lang.Normal;
  *
  * @author Kimi Liu
  */
-public class LunarMonth extends MonthParts {
+public class LunarMonth extends AbstractLeapMonth {
 
     /**
      * Chinese names for lunar months.
      */
     public static final String[] NAMES = { "正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月" };
-
-    /**
-     * Indicates whether this is a leap month.
-     */
-    protected boolean leap;
 
     /**
      * Constructs a LunarMonth instance.
@@ -57,10 +53,8 @@ public class LunarMonth extends MonthParts {
      * @param month the lunar month (negative value indicates a leap month)
      */
     public LunarMonth(int year, int month) {
+        super(year, month);
         validate(year, month);
-        this.year = year;
-        this.month = Math.abs(month);
-        this.leap = month < 0;
     }
 
     /**
@@ -101,12 +95,13 @@ public class LunarMonth extends MonthParts {
     }
 
     /**
-     * Gets the month with leap indicator.
+     * Gets the abstract year for this month.
      *
-     * @return the month number (negative if this is a leap month)
+     * @return the abstract year
      */
-    public int getMonthWithLeap() {
-        return leap ? -month : month;
+    @Override
+    public AbstractYear getAbstractYear() {
+        return getLunarYear();
     }
 
     /**
@@ -148,24 +143,6 @@ public class LunarMonth extends MonthParts {
     }
 
     /**
-     * Gets the index of this month within the year (0-12).
-     *
-     * @return the index
-     */
-    public int getIndexInYear() {
-        int index = month - 1;
-        if (leap) {
-            index += 1;
-        } else {
-            int leapMonth = getLunarYear().getLeapMonth();
-            if (leapMonth > 0 && month > leapMonth) {
-                index += 1;
-            }
-        }
-        return index;
-    }
-
-    /**
      * Gets the lunar quarter for this month.
      *
      * @return the lunar quarter
@@ -184,25 +161,6 @@ public class LunarMonth extends MonthParts {
     }
 
     /**
-     * Checks if this is a leap month.
-     *
-     * @return true if this is a leap month, false otherwise
-     */
-    public boolean isLeap() {
-        return leap;
-    }
-
-    /**
-     * Gets the number of weeks in this month.
-     *
-     * @param start the starting day of week (1-7 for Monday-Sunday, 0 for Sunday)
-     * @return the number of weeks
-     */
-    public int getWeekCount(int start) {
-        return (int) Math.ceil((indexOf(getFirstJulianDay().getWeek().getIndex() - start, 7) + getDayCount()) / 7D);
-    }
-
-    /**
      * Gets the name of this month following the Chinese national standard "Compilation and Promulgation of the Lunar
      * Calendar" GB/T 33661-2017.
      *
@@ -213,51 +171,14 @@ public class LunarMonth extends MonthParts {
     }
 
     /**
-     * Returns the string representation of this object.
-     *
-     * @return the string representation
-     */
-    @Override
-    public String toString() {
-        return getLunarYear() + getName();
-    }
-
-    /**
      * Gets the lunar month that is n months after this month.
      *
      * @param n the number of months to advance (can be negative)
      * @return the lunar month after n months
      */
     public LunarMonth next(int n) {
-        if (n == 0) {
-            return fromYm(year, getMonthWithLeap());
-        }
-        int m = getIndexInYear() + 1 + n;
-        LunarYear y = getLunarYear();
-        if (n > 0) {
-            int monthCount = y.getMonthCount();
-            while (m > monthCount) {
-                m -= monthCount;
-                y = y.next(1);
-                monthCount = y.getMonthCount();
-            }
-        } else {
-            while (m <= 0) {
-                y = y.next(-1);
-                m += y.getMonthCount();
-            }
-        }
-        boolean leap = false;
-        int leapMonth = y.getLeapMonth();
-        if (leapMonth > 0) {
-            if (m == leapMonth + 1) {
-                leap = true;
-            }
-            if (m > leapMonth) {
-                m--;
-            }
-        }
-        return fromYm(y.getYear(), leap ? -m : m);
+        AbstractLeapMonth m = super.next(n);
+        return fromYm(m.getYear(), m.getMonthValue());
     }
 
     /**
@@ -267,7 +188,7 @@ public class LunarMonth extends MonthParts {
      */
     public List<LunarDay> getDays() {
         int size = getDayCount();
-        int m = getMonthWithLeap();
+        int m = getMonthValue();
         List<LunarDay> l = new ArrayList<>(size);
         for (int i = 1; i <= size; i++) {
             l.add(LunarDay.fromYmd(year, m, i));
@@ -281,7 +202,7 @@ public class LunarMonth extends MonthParts {
      * @return the first lunar day
      */
     public LunarDay getFirstDay() {
-        return LunarDay.fromYmd(year, getMonthWithLeap(), 1);
+        return LunarDay.fromYmd(year, getMonthValue(), 1);
     }
 
     /**
@@ -292,7 +213,7 @@ public class LunarMonth extends MonthParts {
      */
     public List<LunarWeek> getWeeks(int start) {
         int size = getWeekCount(start);
-        int m = getMonthWithLeap();
+        int m = getMonthValue();
         List<LunarWeek> l = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             l.add(LunarWeek.fromYm(year, m, i, start));

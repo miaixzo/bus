@@ -19,7 +19,9 @@
 */
 package org.miaixz.bus.storage.nimble;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -68,6 +70,12 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  */
 public class ICloudDriveProvider extends AbstractProvider {
 
+    private static final String API_BASE = "https://api.apple-cloudkit.com";
+
+    private static final String DATABASE_TYPE = "private";
+
+    private static final String RECORD_TYPE = "DriveFile";
+
     /**
      * CloudKit API authentication token.
      */
@@ -82,10 +90,6 @@ public class ICloudDriveProvider extends AbstractProvider {
      * CloudKit environment (production or development).
      */
     private final String environment;
-
-    private static final String API_BASE = "https://api.apple-cloudkit.com";
-    private static final String DATABASE_TYPE = "private";
-    private static final String RECORD_TYPE = "DriveFile";
 
     /**
      * Constructs a new iCloud Drive provider with the specified context.

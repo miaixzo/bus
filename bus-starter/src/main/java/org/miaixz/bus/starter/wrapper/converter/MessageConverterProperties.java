@@ -31,7 +31,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
  * Immutable activation settings for Bus HTTP message converter registration.
- *
+ * <p>
  * Switches for Bus MVC message converter registration.
  *
  * @author Kimi Liu

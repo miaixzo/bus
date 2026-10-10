@@ -31,9 +31,6 @@ import java.util.Objects;
  */
 public class DateRange implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852262327192L;
 

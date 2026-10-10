@@ -306,7 +306,7 @@ public class Pattern {
      *   大                   reason: less than 2 characters
      * ----------
      * </pre>
-     *
+     * <p>
      * Summary for Chinese names: 2-60 characters, can only be Chinese characters and the Uyghur middle dot (·).
      * Broadened range for Chinese characters to include rare characters.
      */

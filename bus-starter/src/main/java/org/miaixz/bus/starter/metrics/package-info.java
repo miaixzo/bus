@@ -18,9 +18,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Activates metrics collection and its management endpoint, binds cardinality and service-level objectives, and bridges
- * Spring Boot startup summaries into the configured Provider. This non-exported package contains Starter assembly
- * rather than public business APIs.
+ * Activates one selected Provider through the sole MetricsConfiguration source. Lazy candidates isolate Micrometer,
+ * OpenTelemetry and Prometheus optional dependencies; the native candidate is always available. JVM and bus-health host
+ * binders have independent lifecycles, while endpoint and Cortex wiring require the selected provider's declared
+ * capabilities. HealthMetrics is the standard host path and SystemMetrics remains explicit compatibility behavior.
  *
  * @author Kimi Liu
  */

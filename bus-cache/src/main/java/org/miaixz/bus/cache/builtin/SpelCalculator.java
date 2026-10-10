@@ -53,6 +53,9 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class SpelCalculator {
 
+    /**
+     * Creates a SpEL expression calculator.
+     */
     public SpelCalculator() {
         // No initialization required.
     }

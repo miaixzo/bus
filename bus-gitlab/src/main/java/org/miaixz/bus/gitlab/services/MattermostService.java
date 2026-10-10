@@ -32,9 +32,6 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
  */
 public class MattermostService extends NotificationService {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852285227357L;
 

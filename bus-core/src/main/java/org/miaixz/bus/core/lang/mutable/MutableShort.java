@@ -26,8 +26,8 @@ import org.miaixz.bus.core.xyz.CompareKit;
 /**
  * A mutable {@code short} wrapper.
  *
- * @see Short
  * @author Kimi Liu
+ * @see Short
  */
 public class MutableShort extends Number implements Comparable<MutableShort>, Mutable<Number> {
 

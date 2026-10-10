@@ -192,6 +192,149 @@ public class Cookie {
     }
 
     /**
+     * Parses an Expires attribute.
+     *
+     * @param value RFC 1123 Expires attribute value
+     * @return parsed expiration instant
+     */
+    private static Instant parseExpires(final String value) {
+        try {
+            return DateTimeFormatter.RFC_1123_DATE_TIME.parse(value, Instant::from);
+        } catch (final DateTimeParseException e) {
+            throw new ProtocolException("Invalid cookie expires attribute", e);
+        }
+    }
+
+    /**
+     * Parses a Max-Age attribute.
+     *
+     * @param value Max-Age attribute value expressed as a signed number of seconds
+     * @return instant obtained by adding the supplied seconds to the current time
+     */
+    private static Instant parseMaxAge(final String value, final Instant now) {
+        try {
+            return now.plusSeconds(Long.parseLong(value));
+        } catch (final NumberFormatException e) {
+            throw new ProtocolException("Invalid cookie max-age attribute", e);
+        }
+    }
+
+    /**
+     * Derives a default cookie path from a URL path.
+     *
+     * @param value request URL path
+     * @return containing directory path, or {@code /} when the path has no containing directory
+     */
+    private static String defaultPath(final String value) {
+        final String normalized = normalizePath(value);
+        final int slash = normalized.lastIndexOf(Symbol.SLASH);
+        if (slash <= 0) {
+            return Symbol.SLASH;
+        }
+        return normalized.substring(0, slash);
+    }
+
+    /**
+     * Normalizes a cookie path.
+     *
+     * @param value non-blank, single-line cookie path
+     * @return path with a leading slash
+     */
+    private static String normalizePath(final String value) {
+        final String checked = Assert
+                .notBlank(value, () -> new ValidateException("Cookie path must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Cookie path must be non-blank and single-line"));
+        return checked.startsWith(Symbol.SLASH) ? checked : Symbol.SLASH + checked;
+    }
+
+    /**
+     * Validates and normalizes a domain.
+     *
+     * @param value non-blank, single-line host or domain text
+     * @return normalized address literal or lowercase domain without a leading dot
+     */
+    private static String validateDomain(final String value) {
+        final String checked = Assert
+                .notBlank(value, () -> new ValidateException("Cookie domain must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Cookie domain must be non-blank and single-line"));
+        final String source = checked.startsWith(Symbol.DOT) ? checked.substring(1) : checked;
+        final String normalized = NetKit.normalizeHost(source, "Cookie domain");
+        if (StringKit.isBlank(normalized)) {
+            throw new ValidateException("Cookie domain must be non-blank");
+        }
+        if (isAddressLiteral(normalized)) {
+            return normalized;
+        }
+        return normalized.toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Validates and normalizes a host-only source host.
+     *
+     * @param value source host text
+     * @return normalized address literal or lowercase host name
+     */
+    private static String validateHost(final String value) {
+        return validateDomain(value);
+    }
+
+    /**
+     * Validates and normalizes a Domain attribute.
+     *
+     * @param value Domain attribute value
+     * @return normalized non-public domain suffix
+     */
+    private static String validateCookieDomain(final String value) {
+        final String normalized = validateDomain(value);
+        if (isAddressLiteral(normalized) || PublicSuffix.isPublic(normalized)) {
+            throw new ValidateException("Cookie domain must not be a public suffix");
+        }
+        return normalized;
+    }
+
+    /**
+     * Returns whether a normalized domain is an address literal.
+     *
+     * @param value normalized domain
+     * @return true when address literal
+     */
+    private static boolean isAddressLiteral(final String value) {
+        return value.indexOf(Symbol.C_COLON) >= 0 || Pattern.IPV4_PATTERN.matcher(value).matches();
+    }
+
+    /**
+     * Returns whether a Domain attribute belongs to a source host.
+     *
+     * @param host   normalized source host
+     * @param domain normalized cookie domain
+     * @return true if the host equals the domain or is one of its subdomains
+     */
+    private static boolean domainMatches(final String host, final String domain) {
+        return host.equals(domain) || host.endsWith(Symbol.C_DOT + domain);
+    }
+
+    /**
+     * Validates a cookie name or value token.
+     *
+     * @param value cookie name or value to validate
+     * @param name  field label used in validation errors
+     * @return validated non-blank, single-line text without semicolons
+     */
+    private static String validateToken(final String value, final String name) {
+        final String checked = Assert.notBlank(
+                value,
+                () -> new ValidateException(name + " must be non-blank, single-line, and semicolon-free"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF) || checked.indexOf(Symbol.C_SEMICOLON) >= 0,
+                () -> new ValidateException(name + " must be non-blank, single-line, and semicolon-free"));
+        return checked;
+    }
+
+    /**
      * Returns the cookie name.
      *
      * @return cookie name
@@ -377,149 +520,6 @@ public class Cookie {
             builder.append("; HttpOnly");
         }
         return builder.toString();
-    }
-
-    /**
-     * Parses an Expires attribute.
-     *
-     * @param value RFC 1123 Expires attribute value
-     * @return parsed expiration instant
-     */
-    private static Instant parseExpires(final String value) {
-        try {
-            return DateTimeFormatter.RFC_1123_DATE_TIME.parse(value, Instant::from);
-        } catch (final DateTimeParseException e) {
-            throw new ProtocolException("Invalid cookie expires attribute", e);
-        }
-    }
-
-    /**
-     * Parses a Max-Age attribute.
-     *
-     * @param value Max-Age attribute value expressed as a signed number of seconds
-     * @return instant obtained by adding the supplied seconds to the current time
-     */
-    private static Instant parseMaxAge(final String value, final Instant now) {
-        try {
-            return now.plusSeconds(Long.parseLong(value));
-        } catch (final NumberFormatException e) {
-            throw new ProtocolException("Invalid cookie max-age attribute", e);
-        }
-    }
-
-    /**
-     * Derives a default cookie path from a URL path.
-     *
-     * @param value request URL path
-     * @return containing directory path, or {@code /} when the path has no containing directory
-     */
-    private static String defaultPath(final String value) {
-        final String normalized = normalizePath(value);
-        final int slash = normalized.lastIndexOf(Symbol.SLASH);
-        if (slash <= 0) {
-            return Symbol.SLASH;
-        }
-        return normalized.substring(0, slash);
-    }
-
-    /**
-     * Normalizes a cookie path.
-     *
-     * @param value non-blank, single-line cookie path
-     * @return path with a leading slash
-     */
-    private static String normalizePath(final String value) {
-        final String checked = Assert
-                .notBlank(value, () -> new ValidateException("Cookie path must be non-blank and single-line"));
-        Assert.isFalse(
-                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
-                () -> new ValidateException("Cookie path must be non-blank and single-line"));
-        return checked.startsWith(Symbol.SLASH) ? checked : Symbol.SLASH + checked;
-    }
-
-    /**
-     * Validates and normalizes a domain.
-     *
-     * @param value non-blank, single-line host or domain text
-     * @return normalized address literal or lowercase domain without a leading dot
-     */
-    private static String validateDomain(final String value) {
-        final String checked = Assert
-                .notBlank(value, () -> new ValidateException("Cookie domain must be non-blank and single-line"));
-        Assert.isFalse(
-                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
-                () -> new ValidateException("Cookie domain must be non-blank and single-line"));
-        final String source = checked.startsWith(Symbol.DOT) ? checked.substring(1) : checked;
-        final String normalized = NetKit.normalizeHost(source, "Cookie domain");
-        if (StringKit.isBlank(normalized)) {
-            throw new ValidateException("Cookie domain must be non-blank");
-        }
-        if (isAddressLiteral(normalized)) {
-            return normalized;
-        }
-        return normalized.toLowerCase(Locale.ROOT);
-    }
-
-    /**
-     * Validates and normalizes a host-only source host.
-     *
-     * @param value source host text
-     * @return normalized address literal or lowercase host name
-     */
-    private static String validateHost(final String value) {
-        return validateDomain(value);
-    }
-
-    /**
-     * Validates and normalizes a Domain attribute.
-     *
-     * @param value Domain attribute value
-     * @return normalized non-public domain suffix
-     */
-    private static String validateCookieDomain(final String value) {
-        final String normalized = validateDomain(value);
-        if (isAddressLiteral(normalized) || PublicSuffix.isPublic(normalized)) {
-            throw new ValidateException("Cookie domain must not be a public suffix");
-        }
-        return normalized;
-    }
-
-    /**
-     * Returns whether a normalized domain is an address literal.
-     *
-     * @param value normalized domain
-     * @return true when address literal
-     */
-    private static boolean isAddressLiteral(final String value) {
-        return value.indexOf(Symbol.C_COLON) >= 0 || Pattern.IPV4_PATTERN.matcher(value).matches();
-    }
-
-    /**
-     * Returns whether a Domain attribute belongs to a source host.
-     *
-     * @param host   normalized source host
-     * @param domain normalized cookie domain
-     * @return true if the host equals the domain or is one of its subdomains
-     */
-    private static boolean domainMatches(final String host, final String domain) {
-        return host.equals(domain) || host.endsWith(Symbol.C_DOT + domain);
-    }
-
-    /**
-     * Validates a cookie name or value token.
-     *
-     * @param value cookie name or value to validate
-     * @param name  field label used in validation errors
-     * @return validated non-blank, single-line text without semicolons
-     */
-    private static String validateToken(final String value, final String name) {
-        final String checked = Assert.notBlank(
-                value,
-                () -> new ValidateException(name + " must be non-blank, single-line, and semicolon-free"));
-        Assert.isFalse(
-                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF) || checked.indexOf(Symbol.C_SEMICOLON) >= 0,
-                () -> new ValidateException(name + " must be non-blank, single-line, and semicolon-free"));
-        return checked;
     }
 
     /**

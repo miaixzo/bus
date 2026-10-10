@@ -32,8 +32,8 @@ import org.miaixz.bus.gitlab.models.GitLabCiTemplateElement;
 /**
  * This class provides an entry point to all the GitLab CI YAML API calls.
  *
- * @see <a href="https://docs.gitlab.com/ee/api/templates/gitlab_ci_ymls.html">GitLab CI YAML API</a>
  * @author Kimi Liu
+ * @see <a href="https://docs.gitlab.com/ee/api/templates/gitlab_ci_ymls.html">GitLab CI YAML API</a>
  */
 public class GitLabCiYamlApi extends AbstractApi {
 

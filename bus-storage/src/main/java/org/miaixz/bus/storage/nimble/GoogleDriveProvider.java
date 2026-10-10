@@ -80,16 +80,6 @@ import org.miaixz.bus.storage.magic.ErrorCode;
 public class GoogleDriveProvider extends AbstractProvider {
 
     /**
-     * OAuth 2.0 access token for authentication.
-     */
-    private String accessToken;
-
-    /**
-     * Token expiration time in milliseconds.
-     */
-    private long tokenExpireTime;
-
-    /**
      * Google Drive API base URL.
      */
     private static final String DRIVE_API_BASE = "https://www.googleapis.com/drive/v3";
@@ -103,6 +93,16 @@ public class GoogleDriveProvider extends AbstractProvider {
      * OAuth 2.0 token endpoint.
      */
     private static final String TOKEN_ENDPOINT = "https://oauth2.googleapis.com/token";
+
+    /**
+     * OAuth 2.0 access token for authentication.
+     */
+    private String accessToken;
+
+    /**
+     * Token expiration time in milliseconds.
+     */
+    private long tokenExpireTime;
 
     /**
      * Constructs a Google Drive storage provider with the given context. Initializes the HTTP client and obtains an

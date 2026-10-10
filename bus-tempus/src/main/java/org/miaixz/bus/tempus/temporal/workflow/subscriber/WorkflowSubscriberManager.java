@@ -41,11 +41,7 @@ import org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory;
 
 import io.temporal.client.WorkflowClient;
 import io.temporal.internal.client.WorkflowClientInternal;
-import io.temporal.worker.Worker;
-import io.temporal.worker.WorkerFactory;
-import io.temporal.worker.WorkerFactoryOptions;
-import io.temporal.worker.WorkerOptions;
-import io.temporal.worker.WorkerPlugin;
+import io.temporal.worker.*;
 import io.temporal.worker.tuning.PollerBehaviorAutoscaling;
 
 /**
@@ -118,6 +114,43 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
         this.transport = transport;
         this.factory = factory;
         this.bindingOptions = completeOptions(bindingOptions, binding);
+    }
+
+    /**
+     * Completes workflow binding options with subscriber binding defaults.
+     *
+     * @param source  source workflow binding options
+     * @param binding workflow subscriber binding
+     * @return completed workflow binding options
+     */
+    private static WorkflowBindingOptions completeOptions(
+            WorkflowBindingOptions source,
+            WorkflowSubscriberBinding binding) {
+        WorkflowBindingOptions target = source == null ? WorkflowBindingOptions.defaults() : source;
+        if (binding != null && !StringKit.hasText(target.getTaskQueue())) {
+            target.setTaskQueue(binding.getTaskQueue());
+        }
+        return target;
+    }
+
+    /**
+     * Checks whether the transport state means shutdown.
+     *
+     * @param transportState transport state name
+     * @return {@code true} when the transport state means shutdown
+     */
+    private static boolean isShutdownTransportState(String transportState) {
+        return WorkflowTransportState.SHUTDOWN.matches(transportState);
+    }
+
+    /**
+     * Checks whether the transport state means transient failure.
+     *
+     * @param transportState transport state name
+     * @return {@code true} when the transport state means transient failure
+     */
+    private static boolean isTransientFailureTransportState(String transportState) {
+        return WorkflowTransportState.TRANSIENT_FAILURE.matches(transportState);
     }
 
     /**
@@ -610,43 +643,6 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
         long max = bindingOptions.resolveWorkerReconnectMaxBackoffSeconds();
         long multiplier = 1L << Math.min(attempt - 1, 30);
         return Math.min(initial * multiplier, max);
-    }
-
-    /**
-     * Completes workflow binding options with subscriber binding defaults.
-     *
-     * @param source  source workflow binding options
-     * @param binding workflow subscriber binding
-     * @return completed workflow binding options
-     */
-    private static WorkflowBindingOptions completeOptions(
-            WorkflowBindingOptions source,
-            WorkflowSubscriberBinding binding) {
-        WorkflowBindingOptions target = source == null ? WorkflowBindingOptions.defaults() : source;
-        if (binding != null && !StringKit.hasText(target.getTaskQueue())) {
-            target.setTaskQueue(binding.getTaskQueue());
-        }
-        return target;
-    }
-
-    /**
-     * Checks whether the transport state means shutdown.
-     *
-     * @param transportState transport state name
-     * @return {@code true} when the transport state means shutdown
-     */
-    private static boolean isShutdownTransportState(String transportState) {
-        return WorkflowTransportState.SHUTDOWN.matches(transportState);
-    }
-
-    /**
-     * Checks whether the transport state means transient failure.
-     *
-     * @param transportState transport state name
-     * @return {@code true} when the transport state means transient failure
-     */
-    private static boolean isTransientFailureTransportState(String transportState) {
-        return WorkflowTransportState.TRANSIENT_FAILURE.matches(transportState);
     }
 
     /**

@@ -25,22 +25,8 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.Year;
-import java.time.YearMonth;
-import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.*;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -177,6 +163,12 @@ public class OGNL {
             .compile("'.*(or|union|--|#|/\\*|;)", Pattern.CASE_INSENSITIVE);
 
     /**
+     * A pattern to remove whitespace and special characters from a string to prevent SQL injection. This includes
+     * common SQL injection blacklist characters and whitespace characters.
+     */
+    public static final Pattern REPLACE_BLANK = Pattern.compile("'|\"|\\<|\\>|&|\\*|\\+|=|#|-|;|\\s*|\t|\r|\n");
+
+    /**
      * Cache for the serialized result of {@link Fn} lambda expressions, avoiding repeated and expensive reflection
      * operations.
      */
@@ -191,12 +183,6 @@ public class OGNL {
      * Cache for the {@code writeReplace} method used for lambda serialization, avoiding repeated method lookups.
      */
     private static final ConcurrentHashMap<Class<?>, Method> WRITE_REPLACE_METHOD_CACHE = new ConcurrentHashMap<>();
-
-    /**
-     * A pattern to remove whitespace and special characters from a string to prevent SQL injection. This includes
-     * common SQL injection blacklist characters and whitespace characters.
-     */
-    public static final Pattern REPLACE_BLANK = Pattern.compile("'|\"|\\<|\\>|&|\\*|\\+|=|#|-|;|\\s*|\t|\r|\n");
 
     /**
      * Initializes the expression evaluator used to inspect mapper parameters and evaluate dynamic conditions.

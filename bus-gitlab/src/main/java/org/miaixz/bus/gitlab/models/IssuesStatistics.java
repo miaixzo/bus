@@ -33,9 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class IssuesStatistics implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852258156052L;
 
@@ -100,9 +97,6 @@ public class IssuesStatistics implements Serializable {
      */
     public static class Statistics implements Serializable {
 
-        /**
-         * The serial version uid value.
-         */
         @Serial
         private static final long serialVersionUID = 2852258198568L;
 
@@ -154,10 +148,12 @@ public class IssuesStatistics implements Serializable {
          * The all value.
          */
         private Integer all;
+
         /**
          * The closed value.
          */
         private Integer closed;
+
         /**
          * The opened value.
          */

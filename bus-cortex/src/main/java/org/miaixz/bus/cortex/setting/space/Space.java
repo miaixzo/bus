@@ -23,34 +23,48 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.cortex.Setting;
-import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.core.basic.entity.Tenant;
 
 /**
- * Space directory entry for the setting domain.
+ * Logical setting space.
  *
  * @author Kimi Liu
  */
 @Getter
 @Setter
 @SuperBuilder
-public class Space extends Setting {
+public class Space extends Tenant {
 
     /**
-     * Legacy space code kept only for compatibility and display. {@code id} remains the authoritative identifier.
+     * User responsible for the space.
+     */
+    private String owner_id;
+    /**
+     * Stable space code.
      */
     private String code;
-
     /**
      * Display name.
      */
     private String name;
+    /**
+     * Space variant code.
+     */
+    private Integer variant;
+    /**
+     * Visibility code.
+     */
+    private Integer visibility;
+    /**
+     * Optional space description.
+     */
+    private String description;
 
     /**
-     * Creates an empty space directory entry.
+     * Creates an empty logical space.
      */
     public Space() {
-        setType(Type.SPACE.key());
+        // No initialization required.
     }
 
 }

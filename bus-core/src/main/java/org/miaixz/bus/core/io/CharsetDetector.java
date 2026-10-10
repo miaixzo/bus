@@ -46,18 +46,18 @@ public class CharsetDetector {
      */
     private static final java.nio.charset.Charset[] DEFAULT_CHARSETS;
 
-    /**
-     * Keeps byte-stream charset detection on the static API.
-     */
-    public CharsetDetector() {
-        // No initialization required.
-    }
-
     static {
         final String[] names = { Charset.DEFAULT_UTF_8, Charset.DEFAULT_GBK, Charset.DEFAULT_GB_2312,
                 Charset.DEFAULT_GB_18030, Charset.DEFAULT_UTF_16_BE, Charset.DEFAULT_UTF_16_LE, Charset.DEFAULT_UTF_16,
                 "BIG5", "UNICODE", Charset.DEFAULT_US_ASCII };
         DEFAULT_CHARSETS = Convert.convert(java.nio.charset.Charset[].class, names);
+    }
+
+    /**
+     * Keeps byte-stream charset detection on the static API.
+     */
+    public CharsetDetector() {
+        // No initialization required.
     }
 
     /**

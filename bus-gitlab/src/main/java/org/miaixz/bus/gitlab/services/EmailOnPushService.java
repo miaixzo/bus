@@ -32,20 +32,20 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
  */
 public class EmailOnPushService extends NotificationService {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852283959961L;
+
     /**
      * The recipient prop value.
      */
 
     public static final String RECIPIENT_PROP = "recipients";
+
     /**
      * The disable diffs prop value.
      */
     public static final String DISABLE_DIFFS_PROP = "disable_diffs";
+
     /**
      * The send from committer email prop value.
      */

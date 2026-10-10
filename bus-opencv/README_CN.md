@@ -44,6 +44,7 @@
 ### Maven 依赖
 
 ```xml
+
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-opencv</artifactId>
@@ -130,11 +131,11 @@ public class FaceDetectionExample {
         // 在人脸周围绘制矩形
         for (Rect rect : faces.toArray()) {
             Imgproc.rectangle(
-                image,
-                new Point(rect.x, rect.y),
-                new Point(rect.x + rect.width, rect.y + rect.height),
-                new Scalar(0, 255, 0),
-                2
+                    image,
+                    new Point(rect.x, rect.y),
+                    new Point(rect.x + rect.width, rect.y + rect.height),
+                    new Scalar(0, 255, 0),
+                    2
             );
         }
 
@@ -184,10 +185,10 @@ public class VideoExample {
 
         // 创建视频写入器
         VideoWriter writer = new VideoWriter(
-            outputPath,
-            Videoio_fourcc('m', 'p', '4', 'v'),
-            fps,
-            new Size(width, height)
+                outputPath,
+                Videoio_fourcc('m', 'p', '4', 'v'),
+                fps,
+                new Size(width, height)
         );
 
         Mat frame = new Mat();
@@ -218,14 +219,14 @@ public class ObjectDetectionExample {
 
         // 使用训练好的模型检测特定对象
         List<DetectedObject> objects = ObjectDetector.detect(
-            image,
-            ObjectDetector.HAAR_CASCADE_FRONTALFACE
+                image,
+                ObjectDetector.HAAR_CASCADE_FRONTALFACE
         );
 
         // 处理检测到的对象
         for (DetectedObject obj : objects) {
             System.out.println("检测到: " + obj.getLabel()
-                + " 位置 " + obj.getBoundingBox());
+                    + " 位置 " + obj.getBoundingBox());
         }
     }
 
@@ -266,16 +267,19 @@ extend:
 ```java
 // 完成后始终释放 Mat 资源
 Mat image = Imgcodecs.imread("image.jpg");
-try {
-    // 处理图像
-} finally {
-    image.release();
+try{
+        // 处理图像
+        }finally{
+        image.
+
+release();
 }
 
 // 或使用 try-with-resources 模式
-try (Mat image = Imgcodecs.imread("image.jpg")) {
-    // 处理图像
-}
+        try(
+Mat image = Imgcodecs.imread("image.jpg")){
+        // 处理图像
+        }
 ```
 
 ### 并行处理
@@ -283,10 +287,16 @@ try (Mat image = Imgcodecs.imread("image.jpg")) {
 ```java
 // 并行处理多个图像
 List<String> imagePaths = Arrays.asList("img1.jpg", "img2.jpg", "img3.jpg");
-imagePaths.parallelStream().forEach(path -> {
-    Mat image = Imgcodecs.imread(path);
-    // 处理图像
-    image.release();
+imagePaths.
+
+parallelStream().
+
+forEach(path ->{
+Mat image = Imgcodecs.imread(path);
+// 处理图像
+    image.
+
+release();
 });
 ```
 
@@ -295,9 +305,9 @@ imagePaths.parallelStream().forEach(path -> {
 ## 🔄 版本兼容性
 
 | Bus OpenCV 版本 | OpenCV 版本 | JDK 版本 |
-|:---|:---|:---|
-| 8.x | 4.x | 17+ |
-| 7.x | 4.x | 11+ |
+|:----------------|:------------|:---------|
+| 8.x             | 4.x         | 17+      |
+| 7.x             | 4.x         | 11+      |
 
 -----
 
@@ -305,32 +315,32 @@ imagePaths.parallelStream().forEach(path -> {
 
 ### 图像操作
 
-| 操作 | 方法 | 描述 |
-|:---|:---|:---|
-| 加载图像 | `Imgcodecs.imread()` | 从文件加载图像 |
+| 操作     | 方法                  | 描述             |
+|:---------|:----------------------|:-----------------|
+| 加载图像 | `Imgcodecs.imread()`  | 从文件加载图像   |
 | 保存图像 | `Imgcodecs.imwrite()` | 将图像保存到文件 |
-| 调整大小 | `Imgproc.resize()` | 调整图像大小 |
-| 旋转 | `Imgproc.rotate()` | 旋转图像 |
-| 裁剪 | `Mat.submat()` | 裁剪图像区域 |
-| 翻转 | `Imgproc.flip()` | 翻转图像 |
+| 调整大小 | `Imgproc.resize()`    | 调整图像大小     |
+| 旋转     | `Imgproc.rotate()`    | 旋转图像         |
+| 裁剪     | `Mat.submat()`        | 裁剪图像区域     |
+| 翻转     | `Imgproc.flip()`      | 翻转图像         |
 
 ### 滤波操作
 
-| 滤波器 | 方法 | 描述 |
-|:---|:---|:---|
-| 高斯模糊 | `GaussianBlur()` | 模糊图像 |
-| 中值模糊 | `medianBlur()` | 中值滤波 |
+| 滤波器   | 方法                | 描述         |
+|:---------|:--------------------|:-------------|
+| 高斯模糊 | `GaussianBlur()`    | 模糊图像     |
+| 中值模糊 | `medianBlur()`      | 中值滤波     |
 | 双边滤波 | `bilateralFilter()` | 边缘保持平滑 |
-| 盒式滤波 | `boxFilter()` | 盒式滤波 |
+| 盒式滤波 | `boxFilter()`       | 盒式滤波     |
 
 ### 特征检测
 
-| 特征 | 方法 | 描述 |
-|:---|:---|:---|
+| 特征 | 方法                    | 描述         |
+|:-----|:------------------------|:-------------|
 | 角点 | `goodFeaturesToTrack()` | 检测角点特征 |
-| 边缘 | `Canny()` | 检测边缘 |
-| 轮廓 | `findContours()` | 查找轮廓 |
-| 直线 | `HoughLines()` | 检测直线 |
+| 边缘 | `Canny()`               | 检测边缘     |
+| 轮廓 | `findContours()`        | 查找轮廓     |
+| 直线 | `HoughLines()`          | 检测直线     |
 
 -----
 
@@ -346,7 +356,7 @@ imagePaths.parallelStream().forEach(path -> {
 
 ### 问: 如何处理不同的图像格式？
 
-答: OpenCV 支持常见格式(JPEG、PNG、BMP、TIFF)。使用适当的文件扩展名。
+答: OpenCV 支持常见格式 (JPEG、PNG、BMP、TIFF)。使用适当的文件扩展名。
 
 ### 问: 如果出现 "UnsatisfiedLinkError" 怎么办？
 

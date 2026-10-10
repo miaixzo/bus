@@ -31,9 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Version implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852283127687L;
 
@@ -41,6 +38,7 @@ public class Version implements Serializable {
      * The version value.
      */
     private String version;
+
     /**
      * The revision value.
      */

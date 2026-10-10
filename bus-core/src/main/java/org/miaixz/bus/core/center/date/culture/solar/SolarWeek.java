@@ -22,7 +22,8 @@ package org.miaixz.bus.core.center.date.culture.solar;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.center.date.culture.Week;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractMonth;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractWeek;
 import org.miaixz.bus.core.center.date.culture.parts.WeekParts;
 
 /**
@@ -34,7 +35,7 @@ import org.miaixz.bus.core.center.date.culture.parts.WeekParts;
  *
  * @author Kimi Liu
  */
-public class SolarWeek extends WeekParts {
+public class SolarWeek extends AbstractWeek {
 
     /**
      * Constructs a SolarWeek instance.
@@ -46,11 +47,8 @@ public class SolarWeek extends WeekParts {
      * @throws IllegalArgumentException if the parameters are invalid
      */
     public SolarWeek(int year, int month, int index, int start) {
+        super(year, month, index, start);
         validate(year, month, index, start);
-        this.year = year;
-        this.month = month;
-        this.index = index;
-        this.start = start;
     }
 
     /**
@@ -93,6 +91,16 @@ public class SolarWeek extends WeekParts {
     }
 
     /**
+     * Gets the abstract month containing this week.
+     *
+     * @return the abstract month
+     */
+    @Override
+    public AbstractMonth getAbstractMonth() {
+        return getSolarMonth();
+    }
+
+    /**
      * Gets the index of this week within the year (0-based). Counts from the first week of the year.
      *
      * @return the week index within the year
@@ -115,17 +123,7 @@ public class SolarWeek extends WeekParts {
      * @return the Chinese week name
      */
     public String getName() {
-        return Week.WHICH[index];
-    }
-
-    /**
-     * Returns the string representation of this object.
-     *
-     * @return the string representation
-     */
-    @Override
-    public String toString() {
-        return getSolarMonth() + getName();
+        return NAMES[index];
     }
 
     /**
@@ -135,28 +133,8 @@ public class SolarWeek extends WeekParts {
      * @return the SolarWeek n weeks from this one
      */
     public SolarWeek next(int n) {
-        int d = index + n;
-        SolarMonth m = getSolarMonth();
-        if (n > 0) {
-            int weekCount = m.getWeekCount(start);
-            while (d >= weekCount) {
-                d -= weekCount;
-                m = m.next(1);
-                if (m.getFirstDay().getWeek().getIndex() != start) {
-                    d += 1;
-                }
-                weekCount = m.getWeekCount(start);
-            }
-        } else if (n < 0) {
-            while (d < 0) {
-                if (m.getFirstDay().getWeek().getIndex() != start) {
-                    d -= 1;
-                }
-                m = m.next(-1);
-                d += m.getWeekCount(start);
-            }
-        }
-        return fromYm(m.getYear(), m.getMonth(), d, start);
+        AbstractWeek w = super.next(n);
+        return fromYm(w.getYear(), w.getMonth(), w.getIndex(), start);
     }
 
     /**

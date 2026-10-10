@@ -34,6 +34,7 @@ public class MergeRequestChanges extends EventChanges {
      * The merge status value.
      */
     private ChangeContainer<String> mergeStatus;
+
     /**
      * The reviewers value.
      */

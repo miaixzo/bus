@@ -33,9 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class SystemHook implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852281631008L;
 
@@ -43,42 +40,52 @@ public class SystemHook implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The description value.
      */
     private String description;
+
     /**
      * The url value.
      */
     private String url;
+
     /**
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The push events value.
      */
     private Boolean pushEvents;
+
     /**
      * The tag push events value.
      */
     private Boolean tagPushEvents;
+
     /**
      * The enable ssl verification value.
      */
     private Boolean enableSslVerification;
+
     /**
      * The repository update events value.
      */
     private Boolean repositoryUpdateEvents;
+
     /**
      * The merge requests events value.
      */
     private Boolean mergeRequestsEvents;
+
     /**
      * The url variables value.
      */
@@ -252,16 +259,6 @@ public class SystemHook implements Serializable {
     }
 
     /**
-     * Sets the repository update events.
-     *
-     * @param repositoryUpdateEvents the repository update events value
-     */
-
-    public void setRepositoryUpdateEvents(Boolean repositoryUpdateEvents) {
-        this.repositoryUpdateEvents = repositoryUpdateEvents;
-    }
-
-    /**
      * Returns the repository update events.
      *
      * @return the result
@@ -272,13 +269,13 @@ public class SystemHook implements Serializable {
     }
 
     /**
-     * Sets the merge requests events.
+     * Sets the repository update events.
      *
-     * @param mergeRequestsEvents the merge requests events value
+     * @param repositoryUpdateEvents the repository update events value
      */
 
-    public void setMergeRequestsEvents(Boolean mergeRequestsEvents) {
-        this.mergeRequestsEvents = mergeRequestsEvents;
+    public void setRepositoryUpdateEvents(Boolean repositoryUpdateEvents) {
+        this.repositoryUpdateEvents = repositoryUpdateEvents;
     }
 
     /**
@@ -289,6 +286,16 @@ public class SystemHook implements Serializable {
 
     public Boolean getMergeRequestsEvents() {
         return mergeRequestsEvents;
+    }
+
+    /**
+     * Sets the merge requests events.
+     *
+     * @param mergeRequestsEvents the merge requests events value
+     */
+
+    public void setMergeRequestsEvents(Boolean mergeRequestsEvents) {
+        this.mergeRequestsEvents = mergeRequestsEvents;
     }
 
     /**
@@ -449,9 +456,6 @@ public class SystemHook implements Serializable {
      */
     public static class UrlVariable implements Serializable {
 
-        /**
-         * The serial version uid value.
-         */
         @Serial
         private static final long serialVersionUID = 2852281710398L;
 

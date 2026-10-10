@@ -49,6 +49,7 @@ public record ByteLut(String name, byte[][] lutTable, ColorMap source) {
      * The channel size value.
      */
     private static final int CHANNEL_SIZE = 256;
+
     /**
      * The default icon width value.
      */

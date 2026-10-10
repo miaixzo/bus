@@ -78,16 +78,6 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * Returns the canonical Gson provider name used for configuration and discovery.
-     *
-     * @return {@code gson}
-     */
-    @Override
-    public String type() {
-        return "gson";
-    }
-
-    /**
      * Creates the standalone default Gson engine used when the application does not provide a configured Gson bean.
      *
      * @return Gson engine with Bus-compatible map and list adapters
@@ -135,6 +125,42 @@ public class GsonProvider extends AbstractJsonProvider {
                             return list;
                         })
                 .create();
+    }
+
+    /**
+     * Filters the direct properties of a Gson JSON object using values read from the original source object. Nested
+     * objects are handled by their own wrapped adapters.
+     *
+     * @param source  original source value
+     * @param tree    serialized JSON tree
+     * @param options serialization options
+     */
+    private static void filterObject(Object source, JsonElement tree, JsonWriteOptions options) {
+        if (source == null || !tree.isJsonObject()) {
+            return;
+        }
+        Iterator<Map.Entry<String, JsonElement>> entries = tree.getAsJsonObject().entrySet().iterator();
+        while (entries.hasNext()) {
+            Map.Entry<String, JsonElement> entry = entries.next();
+            if (!options.writeNulls() && entry.getValue().isJsonNull()) {
+                entries.remove();
+                continue;
+            }
+            Object propertyValue = options.hasPropertyFilter() ? BeanKit.getFieldValue(source, entry.getKey()) : null;
+            if (!options.propertyFilter().accept(source, entry.getKey(), propertyValue)) {
+                entries.remove();
+            }
+        }
+    }
+
+    /**
+     * Returns the canonical Gson provider name used for configuration and discovery.
+     *
+     * @return {@code gson}
+     */
+    @Override
+    public String type() {
+        return "gson";
     }
 
     /**
@@ -504,32 +530,6 @@ public class GsonProvider extends AbstractJsonProvider {
                     return delegate.read(input);
                 }
             };
-        }
-    }
-
-    /**
-     * Filters the direct properties of a Gson JSON object using values read from the original source object. Nested
-     * objects are handled by their own wrapped adapters.
-     *
-     * @param source  original source value
-     * @param tree    serialized JSON tree
-     * @param options serialization options
-     */
-    private static void filterObject(Object source, JsonElement tree, JsonWriteOptions options) {
-        if (source == null || !tree.isJsonObject()) {
-            return;
-        }
-        Iterator<Map.Entry<String, JsonElement>> entries = tree.getAsJsonObject().entrySet().iterator();
-        while (entries.hasNext()) {
-            Map.Entry<String, JsonElement> entry = entries.next();
-            if (!options.writeNulls() && entry.getValue().isJsonNull()) {
-                entries.remove();
-                continue;
-            }
-            Object propertyValue = options.hasPropertyFilter() ? BeanKit.getFieldValue(source, entry.getKey()) : null;
-            if (!options.propertyFilter().accept(source, entry.getKey(), propertyValue)) {
-                entries.remove();
-            }
         }
     }
 

@@ -125,6 +125,34 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
     }
 
     /**
+     * Validates that a duration is present and non-negative.
+     *
+     * @param timeout duration candidate
+     * @param name    field name
+     * @return validated duration
+     */
+    private static Duration validate(final Duration timeout, final String name) {
+        if (timeout == null || timeout.isNegative()) {
+            throw new ValidateException(name + " must be non-null and non-negative");
+        }
+        return timeout;
+    }
+
+    /**
+     * Validates the mandatory positive close deadline.
+     *
+     * @param timeout close deadline candidate
+     * @return validated close deadline
+     */
+    private static Duration validateClose(final Duration timeout) {
+        final Duration checked = validate(timeout, "Close timeout");
+        if (checked.isZero()) {
+            throw new ValidateException("Close timeout must be positive");
+        }
+        return checked;
+    }
+
+    /**
      * Returns the connection establishment timeout.
      * <p>
      * Used by TCP establishment, TLS handshake, and HTTP-family connection or upgrade establishment for HTTP,
@@ -197,34 +225,6 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
     @Override
     public Duration close() {
         return close;
-    }
-
-    /**
-     * Validates that a duration is present and non-negative.
-     *
-     * @param timeout duration candidate
-     * @param name    field name
-     * @return validated duration
-     */
-    private static Duration validate(final Duration timeout, final String name) {
-        if (timeout == null || timeout.isNegative()) {
-            throw new ValidateException(name + " must be non-null and non-negative");
-        }
-        return timeout;
-    }
-
-    /**
-     * Validates the mandatory positive close deadline.
-     *
-     * @param timeout close deadline candidate
-     * @return validated close deadline
-     */
-    private static Duration validateClose(final Duration timeout) {
-        final Duration checked = validate(timeout, "Close timeout");
-        if (checked.isZero()) {
-            throw new ValidateException("Close timeout must be positive");
-        }
-        return checked;
     }
 
     /**

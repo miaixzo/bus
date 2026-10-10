@@ -62,9 +62,6 @@ import org.miaixz.bus.image.galaxy.data.DatePrecision;
  */
 public class Format extends java.text.Format {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852253785600L;
 

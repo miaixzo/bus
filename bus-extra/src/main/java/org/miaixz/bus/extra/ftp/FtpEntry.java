@@ -30,9 +30,6 @@ import java.io.Serializable;
  */
 public class FtpEntry implements Serializable {
 
-    /**
-     * The serialization version identifier for this class.
-     */
     @Serial
     private static final long serialVersionUID = 2852292980088L;
 

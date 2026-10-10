@@ -472,21 +472,21 @@ public class Cortex {
     }
 
     /**
-     * Returns current setting content for the given group and data ID.
+     * Returns current setting content for the given group and code.
      *
-     * @param group   setting group name
-     * @param data_id setting data identifier
+     * @param group setting group name
+     * @param code  setting code
      * @return published setting content, or {@code null} if absent
      */
-    public static String get(String group, String data_id) {
-        Logger.debug(true, "Cortex", "Setting get requested: group={}, dataId={}", group, data_id);
-        String content = curator().get(group, data_id);
+    public static String get(String group, String code) {
+        Logger.debug(true, "Cortex", "Setting get requested: group={}, code={}", group, code);
+        String content = curator().get(group, code);
         Logger.debug(
                 false,
                 "Cortex",
-                "Setting get completed: group={}, dataId={}, contentChars={}",
+                "Setting get completed: group={}, code={}, contentChars={}",
                 group,
-                data_id,
+                code,
                 content == null ? 0 : content.length());
         return content;
     }
@@ -495,19 +495,19 @@ public class Cortex {
      * Publishes setting content through the configured curator.
      *
      * @param group   setting group name
-     * @param data_id setting data identifier
+     * @param code    setting code
      * @param content setting content to publish
      */
-    public static void publish(String group, String data_id, String content) {
+    public static void publish(String group, String code, String content) {
         Logger.info(
                 true,
                 "Cortex",
-                "Setting publish requested: group={}, dataId={}, contentChars={}",
+                "Setting publish requested: group={}, code={}, contentChars={}",
                 group,
-                data_id,
+                code,
                 content == null ? 0 : content.length());
-        curator().publish(group, data_id, content);
-        Logger.info(false, "Cortex", "Setting publish completed: group={}, dataId={}", group, data_id);
+        curator().publish(group, code, content);
+        Logger.info(false, "Cortex", "Setting publish completed: group={}, code={}", group, code);
     }
 
     /**

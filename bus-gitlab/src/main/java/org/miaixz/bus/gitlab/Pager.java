@@ -70,21 +70,35 @@ import tools.jackson.databind.ObjectMapper;
 public class Pager<T> implements Iterator<List<T>>, Constants {
 
     /**
+     * The jackson json value.
+     */
+    private static JacksonJson jacksonJson = new JacksonJson();
+
+    /**
+     * The mapper value.
+     */
+    private static ObjectMapper mapper = jacksonJson.getObjectMapper();
+
+    /**
      * The items per page value.
      */
     private int itemsPerPage;
+
     /**
      * The total pages value.
      */
     private int totalPages;
+
     /**
      * The total items value.
      */
     private int totalItems;
+
     /**
      * The current page value.
      */
     private int currentPage;
+
     /**
      * The kaminari next page value.
      */
@@ -94,10 +108,12 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * The page param value.
      */
     private List<String> pageParam = new ArrayList<>(1);
+
     /**
      * The current items value.
      */
     private List<T> currentItems;
+
     /**
      * The pager stream value.
      */
@@ -107,23 +123,17 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * The api value.
      */
     private AbstractApi api;
+
     /**
      * The query params value.
      */
     private MultivaluedMap<String, String> queryParams;
+
     /**
      * The path args value.
      */
     private Object[] pathArgs;
 
-    /**
-     * The jackson json value.
-     */
-    private static JacksonJson jacksonJson = new JacksonJson();
-    /**
-     * The mapper value.
-     */
-    private static ObjectMapper mapper = jacksonJson.getObjectMapper();
     /**
      * The java type value.
      */

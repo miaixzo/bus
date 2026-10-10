@@ -35,9 +35,9 @@ import org.miaixz.bus.gitlab.models.*;
 /**
  * This class implements the client side API for the GitLab merge request calls.
  *
+ * @author Kimi Liu
  * @see <a href="https://docs.gitlab.com/ce/api/merge_requests.html">Merge requests API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/merge_request_approvals.html">Merge request approvals API at GitLab</a>
- * @author Kimi Liu
  */
 public class MergeRequestApi extends AbstractApi {
 
@@ -1112,7 +1112,7 @@ public class MergeRequestApi extends AbstractApi {
 
     /**
      * Get the merge request with approval information.
-     *
+     * <p>
      * Note: This API endpoint is only available on 8.9 Starter and above.
      *
      * <pre>
@@ -1131,7 +1131,7 @@ public class MergeRequestApi extends AbstractApi {
 
     /**
      * Get the merge request with approval information.
-     *
+     * <p>
      * Note: This API endpoint is only available on 8.9 Starter and above.
      *
      * <pre>
@@ -1365,7 +1365,7 @@ public class MergeRequestApi extends AbstractApi {
 
     /**
      * Approve a merge request.
-     *
+     * <p>
      * Note: This API endpoint is only available on 8.9 EE and above.
      *
      * <pre>
@@ -1399,7 +1399,7 @@ public class MergeRequestApi extends AbstractApi {
 
     /**
      * Unapprove a merge request.
-     *
+     * <p>
      * Note: This API endpoint is only available on 8.9 EE and above.
      *
      * <pre>
@@ -1629,7 +1629,7 @@ public class MergeRequestApi extends AbstractApi {
 
     /**
      * Automatically rebase the source_branch of the merge request against its target_branch.
-     *
+     * <p>
      * This is an asynchronous request. The API will return a 202 Accepted response if the request is enqueued
      * successfully
      *
@@ -1728,7 +1728,7 @@ public class MergeRequestApi extends AbstractApi {
      * Create a new pipeline for a merge request. A pipeline created via this endpoint will not run a regular branch/tag
      * pipeline, it requires .gitlab-ci.yml to be configured with only: [merge_requests] to create jobs.
      * </p>
-     *
+     * <p>
      * The new pipeline can be: A detached merge request pipeline. A pipeline for merged results if the project setting
      * is enabled.
      *

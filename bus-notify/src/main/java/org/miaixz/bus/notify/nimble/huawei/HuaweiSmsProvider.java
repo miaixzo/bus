@@ -22,7 +22,10 @@ package org.miaixz.bus.notify.nimble.huawei;
 import static org.miaixz.bus.notify.FabricX.post;
 
 import java.security.MessageDigest;
-import java.util.*;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.data.id.UUID;

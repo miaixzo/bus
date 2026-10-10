@@ -126,83 +126,6 @@ public class HttpTransport implements HttpStage {
     }
 
     /**
-     * Writes a request and reads the response through the chain connection.
-     *
-     * @param request request to serialize on the selected connection
-     * @param chain   exchange chain containing cancellation state and a network connection
-     * @return response with request-sent and response-received timestamps
-     * @throws StatefulException if request writing or response reading fails
-     * @throws ValidateException if the request, chain, or produced codec is {@code null}
-     */
-    @Override
-    public HttpResponse execute(final HttpRequest request, final HttpChain chain) {
-        final HttpRequest current = require(request, "HTTP request");
-        final HttpChain context = require(chain, "HTTP chain");
-        final Cancellation cancellation = context.cancellation();
-        cancellation.throwIfCancelled();
-        final HttpCodec codec = require(codecs.apply(context), "HTTP codec");
-        final Runnable unregister = cancellation.cancellable() ? cancellation.onCancel(codec::cancel) : NOOP_UNREGISTER;
-        try {
-            try {
-                writeRequest(current, codec);
-            } catch (final RuntimeException e) {
-                if (HttpChain.ExchangeFailure.from(e) == null) {
-                    throw failure(context, cancellation, connectionScope(codec), true, e);
-                }
-                throw e;
-            }
-            final long sentRequestAtMillis = clock.millis();
-            cancellation.throwIfCancelled();
-            final HttpResponse response;
-            try {
-                response = readResponse(current, codec);
-            } catch (final RuntimeException e) {
-                if (HttpChain.ExchangeFailure.from(e) == null) {
-                    throw failure(context, cancellation, connectionScope(codec), codec.beforeResponse(), e);
-                }
-                throw e;
-            }
-            final long receivedResponseAtMillis = clock.millis();
-            return response.withTiming(sentRequestAtMillis, receivedResponseAtMillis);
-        } finally {
-            unregister.run();
-        }
-    }
-
-    /**
-     * Writes a request through a codec.
-     *
-     * @param request request to serialize
-     * @param codec   active protocol codec that writes the request
-     * @throws ValidateException if the request or codec is {@code null}
-     */
-    public void writeRequest(final HttpRequest request, final HttpCodec codec) {
-        require(codec, "HTTP codec").writeRequest(require(request, "HTTP request"));
-    }
-
-    /**
-     * Reads a response through a codec.
-     *
-     * @param request request whose response is expected
-     * @param codec   active protocol codec that reads the response
-     * @return response decoded by the codec
-     * @throws ValidateException if the request or codec is {@code null}
-     */
-    public HttpResponse readResponse(final HttpRequest request, final HttpCodec codec) {
-        return require(codec, "HTTP codec").readResponse(require(request, "HTTP request"));
-    }
-
-    /**
-     * Returns stage name.
-     *
-     * @return normalized transport-stage identifier
-     */
-    @Override
-    public String name() {
-        return name;
-    }
-
-    /**
      * Creates a network codec from the current chain.
      *
      * @param chain chain whose selected physical connection is adapted
@@ -410,6 +333,83 @@ public class HttpTransport implements HttpStage {
             throw new ValidateException(name + " must not be null");
         }
         return value;
+    }
+
+    /**
+     * Writes a request and reads the response through the chain connection.
+     *
+     * @param request request to serialize on the selected connection
+     * @param chain   exchange chain containing cancellation state and a network connection
+     * @return response with request-sent and response-received timestamps
+     * @throws StatefulException if request writing or response reading fails
+     * @throws ValidateException if the request, chain, or produced codec is {@code null}
+     */
+    @Override
+    public HttpResponse execute(final HttpRequest request, final HttpChain chain) {
+        final HttpRequest current = require(request, "HTTP request");
+        final HttpChain context = require(chain, "HTTP chain");
+        final Cancellation cancellation = context.cancellation();
+        cancellation.throwIfCancelled();
+        final HttpCodec codec = require(codecs.apply(context), "HTTP codec");
+        final Runnable unregister = cancellation.cancellable() ? cancellation.onCancel(codec::cancel) : NOOP_UNREGISTER;
+        try {
+            try {
+                writeRequest(current, codec);
+            } catch (final RuntimeException e) {
+                if (HttpChain.ExchangeFailure.from(e) == null) {
+                    throw failure(context, cancellation, connectionScope(codec), true, e);
+                }
+                throw e;
+            }
+            final long sentRequestAtMillis = clock.millis();
+            cancellation.throwIfCancelled();
+            final HttpResponse response;
+            try {
+                response = readResponse(current, codec);
+            } catch (final RuntimeException e) {
+                if (HttpChain.ExchangeFailure.from(e) == null) {
+                    throw failure(context, cancellation, connectionScope(codec), codec.beforeResponse(), e);
+                }
+                throw e;
+            }
+            final long receivedResponseAtMillis = clock.millis();
+            return response.withTiming(sentRequestAtMillis, receivedResponseAtMillis);
+        } finally {
+            unregister.run();
+        }
+    }
+
+    /**
+     * Writes a request through a codec.
+     *
+     * @param request request to serialize
+     * @param codec   active protocol codec that writes the request
+     * @throws ValidateException if the request or codec is {@code null}
+     */
+    public void writeRequest(final HttpRequest request, final HttpCodec codec) {
+        require(codec, "HTTP codec").writeRequest(require(request, "HTTP request"));
+    }
+
+    /**
+     * Reads a response through a codec.
+     *
+     * @param request request whose response is expected
+     * @param codec   active protocol codec that reads the response
+     * @return response decoded by the codec
+     * @throws ValidateException if the request or codec is {@code null}
+     */
+    public HttpResponse readResponse(final HttpRequest request, final HttpCodec codec) {
+        return require(codec, "HTTP codec").readResponse(require(request, "HTTP request"));
+    }
+
+    /**
+     * Returns stage name.
+     *
+     * @return normalized transport-stage identifier
+     */
+    @Override
+    public String name() {
+        return name;
     }
 
 }

@@ -29,7 +29,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
  * Immutable aggregate switch controlling the independently configurable web wrapper features.
- *
+ * <p>
  * Wrapper aggregate activation switch; all feature options use dedicated properties classes.
  *
  * @author Kimi Liu

@@ -19,48 +19,48 @@
 */
 package org.miaixz.bus.cortex.setting.app;
 
-import java.util.List;
-
-import jakarta.persistence.Transient;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.cortex.Setting;
-import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.core.basic.entity.Tenant;
 
 /**
- * Application directory entry for the setting domain.
+ * Application directory entry.
  *
  * @author Kimi Liu
  */
 @Getter
 @Setter
 @SuperBuilder
-public class App extends Setting {
+public class App extends Tenant {
 
     /**
-     * Legacy application code kept only for compatibility and display. {@code id} remains the authoritative identifier.
+     * User responsible for the application.
+     */
+    private String owner_id;
+    /**
+     * Stable application code.
      */
     private String code;
-
     /**
      * Display name.
      */
     private String name;
-
     /**
-     * Optional profile bindings visible to the application. Empty means all profiles are allowed.
+     * Icon resource address or key.
      */
-    @Transient
-    private List<String> profile_ids;
+    private String icon;
+    /**
+     * Optional application description.
+     */
+    private String description;
 
     /**
-     * Creates an empty application directory entry.
+     * Creates an empty application entry.
      */
     public App() {
-        setType(Type.APP.key());
+        // No initialization required.
     }
 
 }

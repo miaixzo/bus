@@ -55,19 +55,23 @@ public class XimalayaManifest implements VendorManifest<XimalayaOptions> {
      * Stable Ximalaya platform routing identifier.
      */
     public static final Vendor.Id ID = new Vendor.Id("ximalaya");
+
     /**
      * Sole Ximalaya browser variant identifier.
      */
     public static final Vendor.Variant DEFAULT = new Vendor.Variant(Normal.DEFAULT);
+
     /**
      * Standard client-secret form authentication used by the token endpoint.
      */
     private static final Endpoint.Authentication CLIENT_SECRET_POST = new Endpoint.Authentication("client_secret_post");
+
     /**
      * Ximalaya profile authentication carried by a signed query.
      */
     private static final Endpoint.Authentication SIGNED_PROFILE_QUERY = new Endpoint.Authentication(
             "ximalaya_signed_query");
+
     /**
      * Exact Source authentication and OAuth authorization capabilities.
      */
@@ -75,6 +79,7 @@ public class XimalayaManifest implements VendorManifest<XimalayaOptions> {
             SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
             SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT)),
             OAuth2ClientScheme.AUTHORIZATION));
+
     /**
      * Exact Ximalaya wire deviations confined to its private adapter.
      */
@@ -143,6 +148,7 @@ public class XimalayaManifest implements VendorManifest<XimalayaOptions> {
                     Optional.of(MediaType.APPLICATION_JSON_TYPE),
                     Http.Method.GET,
                     false));
+
     /**
      * Complete immutable Ximalaya endpoint, client, capability, form, and deviation manifest.
      */

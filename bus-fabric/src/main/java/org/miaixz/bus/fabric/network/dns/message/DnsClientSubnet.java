@@ -125,89 +125,6 @@ public class DnsClientSubnet {
     }
 
     /**
-     * Returns the EDNS Client Subnet address family.
-     *
-     * @return address family code
-     */
-    public int family() {
-        return family;
-    }
-
-    /**
-     * Returns the source prefix length.
-     *
-     * @return source prefix length in bits
-     */
-    public int sourcePrefixLength() {
-        return sourcePrefixLength;
-    }
-
-    /**
-     * Returns the scope prefix length.
-     *
-     * @return scope prefix length in bits
-     */
-    public int scopePrefixLength() {
-        return scopePrefixLength;
-    }
-
-    /**
-     * Returns the normalized subnet address.
-     *
-     * @return normalized subnet address
-     */
-    public InetAddress address() {
-        return address;
-    }
-
-    /**
-     * Returns the address bytes as they must appear in EDNS Client Subnet RDATA.
-     *
-     * @return truncated network address bytes
-     */
-    byte[] wireAddress() {
-        return Arrays.copyOf(address.getAddress(), wireAddressLength(sourcePrefixLength));
-    }
-
-    /**
-     * Returns whether another object has the same subnet fields.
-     *
-     * @param other object being compared
-     * @return true when the object has the same address family, prefixes, and normalized address
-     */
-    @Override
-    public boolean equals(final Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (!(other instanceof DnsClientSubnet subnet)) {
-            return false;
-        }
-        return family == subnet.family && sourcePrefixLength == subnet.sourcePrefixLength
-                && scopePrefixLength == subnet.scopePrefixLength && address.equals(subnet.address);
-    }
-
-    /**
-     * Returns the hash code for this subnet.
-     *
-     * @return stable hash code based on subnet fields
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(family, sourcePrefixLength, scopePrefixLength, address);
-    }
-
-    /**
-     * Returns a stable textual form for cache partitioning and diagnostics.
-     *
-     * @return textual subnet form
-     */
-    @Override
-    public String toString() {
-        return address.getHostAddress() + Symbol.SLASH + sourcePrefixLength + Symbol.SLASH + scopePrefixLength;
-    }
-
-    /**
      * Returns the EDNS family code for an address.
      *
      * @param address internet address
@@ -290,6 +207,89 @@ public class DnsClientSubnet {
         } catch (final UnknownHostException e) {
             throw new ValidateException("DNS client subnet address is invalid", e);
         }
+    }
+
+    /**
+     * Returns the EDNS Client Subnet address family.
+     *
+     * @return address family code
+     */
+    public int family() {
+        return family;
+    }
+
+    /**
+     * Returns the source prefix length.
+     *
+     * @return source prefix length in bits
+     */
+    public int sourcePrefixLength() {
+        return sourcePrefixLength;
+    }
+
+    /**
+     * Returns the scope prefix length.
+     *
+     * @return scope prefix length in bits
+     */
+    public int scopePrefixLength() {
+        return scopePrefixLength;
+    }
+
+    /**
+     * Returns the normalized subnet address.
+     *
+     * @return normalized subnet address
+     */
+    public InetAddress address() {
+        return address;
+    }
+
+    /**
+     * Returns the address bytes as they must appear in EDNS Client Subnet RDATA.
+     *
+     * @return truncated network address bytes
+     */
+    byte[] wireAddress() {
+        return Arrays.copyOf(address.getAddress(), wireAddressLength(sourcePrefixLength));
+    }
+
+    /**
+     * Returns whether another object has the same subnet fields.
+     *
+     * @param other object being compared
+     * @return true when the object has the same address family, prefixes, and normalized address
+     */
+    @Override
+    public boolean equals(final Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof DnsClientSubnet subnet)) {
+            return false;
+        }
+        return family == subnet.family && sourcePrefixLength == subnet.sourcePrefixLength
+                && scopePrefixLength == subnet.scopePrefixLength && address.equals(subnet.address);
+    }
+
+    /**
+     * Returns the hash code for this subnet.
+     *
+     * @return stable hash code based on subnet fields
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(family, sourcePrefixLength, scopePrefixLength, address);
+    }
+
+    /**
+     * Returns a stable textual form for cache partitioning and diagnostics.
+     *
+     * @return textual subnet form
+     */
+    @Override
+    public String toString() {
+        return address.getHostAddress() + Symbol.SLASH + sourcePrefixLength + Symbol.SLASH + scopePrefixLength;
     }
 
 }

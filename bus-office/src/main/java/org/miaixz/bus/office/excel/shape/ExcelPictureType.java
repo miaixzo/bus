@@ -29,13 +29,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 /**
  * Enumeration of picture types supported by Excel.
  *
+ * @author Kimi Liu
  * @see Workbook#PICTURE_TYPE_EMF
  * @see Workbook#PICTURE_TYPE_WMF
  * @see Workbook#PICTURE_TYPE_PICT
  * @see Workbook#PICTURE_TYPE_JPEG
  * @see Workbook#PICTURE_TYPE_PNG
  * @see Workbook#PICTURE_TYPE_DIB
- * @author Kimi Liu
  */
 public enum ExcelPictureType {
 

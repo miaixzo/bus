@@ -58,19 +58,6 @@ public final class JwtParser {
     }
 
     /**
-     * Parses one three-segment compact JWS without validating its signature.
-     *
-     * @param compact exact compact representation
-     * @return immutable explicitly unverified JWT
-     */
-    public UnverifiedJWT parse(final String compact) {
-        Assert.notBlank(compact, "JWT compact value must not be blank");
-        final JwsService.Jws jws = jwsService.parseCompact(compact, Set.of());
-        final JwsService.Signature signature = jws.signatures().get(0);
-        return new UnverifiedJWT(compact, signature.header(), claims(jws.payload()));
-    }
-
-    /**
      * Parses exact UTF-8 JSON payload bytes as an object-backed JWT Claims Set.
      *
      * @param payload parsed or cryptographically verified payload bytes
@@ -82,6 +69,19 @@ public final class JwtParser {
             throw new ValidateException("JWT Claims Set must be a JSON object");
         }
         return new JwtClaims(object);
+    }
+
+    /**
+     * Parses one three-segment compact JWS without validating its signature.
+     *
+     * @param compact exact compact representation
+     * @return immutable explicitly unverified JWT
+     */
+    public UnverifiedJWT parse(final String compact) {
+        Assert.notBlank(compact, "JWT compact value must not be blank");
+        final JwsService.Jws jws = jwsService.parseCompact(compact, Set.of());
+        final JwsService.Signature signature = jws.signatures().get(0);
+        return new UnverifiedJWT(compact, signature.header(), claims(jws.payload()));
     }
 
 }

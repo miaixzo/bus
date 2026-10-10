@@ -146,7 +146,9 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
         private static final long serialVersionUID = 2852277093211L;
 
         private final R rowKey;
+
         private final C columnKey;
+
         private final V value;
 
         /**
@@ -356,7 +358,9 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
     private class CellIterator implements Iterator<Cell<R, C, V>> {
 
         final Iterator<Map.Entry<R, Map<C, V>>> rowIterator = rowMap().entrySet().iterator();
+
         Map.Entry<R, Map<C, V>> rowEntry;
+
         Iterator<Map.Entry<C, V>> columnIterator = IteratorKit.empty();
 
         /**

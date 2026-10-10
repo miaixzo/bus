@@ -90,6 +90,28 @@ public class HttpCall extends MonoCall<HttpResponse> {
     }
 
     /**
+     * Validates a required reference.
+     *
+     * @param value reference to validate
+     * @param name  field label included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Returns the complete timeout policy from a validated request.
+     *
+     * @param request request candidate
+     * @return complete request timeout policy
+     */
+    private static Timeout timeout(final HttpRequest request) {
+        return require(request, "HTTP request").timeout();
+    }
+
+    /**
      * Executes the HTTP protocol operation.
      *
      * @return response produced by the configured protocol operation
@@ -132,28 +154,6 @@ public class HttpCall extends MonoCall<HttpResponse> {
             dispatchKey = current;
         }
         return current;
-    }
-
-    /**
-     * Validates a required reference.
-     *
-     * @param value reference to validate
-     * @param name  field label included in the validation error
-     * @param <T>   reference type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-    }
-
-    /**
-     * Returns the complete timeout policy from a validated request.
-     *
-     * @param request request candidate
-     * @return complete request timeout policy
-     */
-    private static Timeout timeout(final HttpRequest request) {
-        return require(request, "HTTP request").timeout();
     }
 
 }

@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.tempus.temporal.payload;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -83,6 +79,34 @@ public class JsonPayloadConverter implements InvocationHandler {
         this.provider = Objects.requireNonNull(provider, "provider");
         this.payloadType = load("io.temporal.api.common.v1.Payload");
         this.byteStringType = load("com.google.protobuf.ByteString");
+    }
+
+    /**
+     * Loads a required runtime type without introducing a static module dependency.
+     *
+     * @param className fully qualified runtime class name
+     * @return loaded class
+     * @throws IllegalStateException if the required runtime dependency is missing
+     */
+    private static Class<?> load(String className) {
+        try {
+            return Class.forName(className, false, JsonPayloadConverter.class.getClassLoader());
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("Temporal runtime dependency is missing: " + className, e);
+        }
+    }
+
+    /**
+     * Unwraps a reflective invocation failure so Temporal receives the original conversion cause.
+     *
+     * @param throwable caught reflective or runtime failure
+     * @return underlying invocation cause when present; otherwise the supplied failure
+     */
+    private static Throwable unwrap(Throwable throwable) {
+        if (throwable instanceof InvocationTargetException invocation && invocation.getCause() != null) {
+            return invocation.getCause();
+        }
+        return throwable;
     }
 
     /**
@@ -163,34 +187,6 @@ public class JsonPayloadConverter implements InvocationHandler {
             return null;
         }
         return provider.read(bytes, valueType == null ? valueClass : valueType);
-    }
-
-    /**
-     * Loads a required runtime type without introducing a static module dependency.
-     *
-     * @param className fully qualified runtime class name
-     * @return loaded class
-     * @throws IllegalStateException if the required runtime dependency is missing
-     */
-    private static Class<?> load(String className) {
-        try {
-            return Class.forName(className, false, JsonPayloadConverter.class.getClassLoader());
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Temporal runtime dependency is missing: " + className, e);
-        }
-    }
-
-    /**
-     * Unwraps a reflective invocation failure so Temporal receives the original conversion cause.
-     *
-     * @param throwable caught reflective or runtime failure
-     * @return underlying invocation cause when present; otherwise the supplied failure
-     */
-    private static Throwable unwrap(Throwable throwable) {
-        if (throwable instanceof InvocationTargetException invocation && invocation.getCause() != null) {
-            return invocation.getCause();
-        }
-        return throwable;
     }
 
 }

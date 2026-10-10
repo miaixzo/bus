@@ -99,17 +99,20 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             ? Memoizer
                     .memoize(WindowsCentralProcessor::queryProcessorUsageCounters, TimeUnit.MILLISECONDS.toNanos(300L))
             : null;
+
     // Populated by initProcessorCounts called by the parent constructor.
     /**
      * The initialUsageCounters value.
      */
     private final AtomicReference<Map<ProcessorUsageTickCountProperty, List<Long>>> initialUsageCounters = new AtomicReference<>(
             USE_CPU_USAGE_COUNTERS ? processorUsageCounters.get().getRight() : null);
+
     // Store the initial query and start the memoizer expiration
     /**
      * The numaNodeProcToLogicalProcMap value.
      */
     private volatile Map<String, Integer> numaNodeProcToLogicalProcMap;
+
     // Lazily initialized
     /**
      * Multiplier that converts the processor usage counter base to elapsed clock ticks.

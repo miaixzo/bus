@@ -22,41 +22,50 @@ package org.opencv.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opencv.core.CvType;
-import org.opencv.core.DMatch;
-import org.opencv.core.KeyPoint;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
-import org.opencv.core.MatOfDMatch;
-import org.opencv.core.MatOfInt;
-import org.opencv.core.MatOfKeyPoint;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
-import org.opencv.core.MatOfPoint3f;
-import org.opencv.core.Point;
-import org.opencv.core.Point3;
-import org.opencv.core.Rect;
-import org.opencv.core.Rect2d;
-import org.opencv.core.RotatedRect;
-import org.opencv.core.Size;
+import org.opencv.core.*;
 
 /**
- * The converters class.
+ * Provides the {@code Converters} API.
  */
 public class Converters {
 
+    /**
+     * Performs the {@code vector_Point_to_Mat} operation.
+     *
+     * @param pts the {@code pts} value
+     * @return the operation result
+     */
     public static Mat vector_Point_to_Mat(List<Point> pts) {
         return vector_Point_to_Mat(pts, CvType.CV_32S);
     }
 
+    /**
+     * Performs the {@code vector_Point2f_to_Mat} operation.
+     *
+     * @param pts the {@code pts} value
+     * @return the operation result
+     */
     public static Mat vector_Point2f_to_Mat(List<Point> pts) {
         return vector_Point_to_Mat(pts, CvType.CV_32F);
     }
 
+    /**
+     * Performs the {@code vector_Point2d_to_Mat} operation.
+     *
+     * @param pts the {@code pts} value
+     * @return the operation result
+     */
     public static Mat vector_Point2d_to_Mat(List<Point> pts) {
         return vector_Point_to_Mat(pts, CvType.CV_64F);
     }
 
+    /**
+     * Performs the {@code vector_Point_to_Mat} operation.
+     *
+     * @param pts       the {@code pts} value
+     * @param typeDepth the {@code typeDepth} value
+     * @return the operation result
+     */
     public static Mat vector_Point_to_Mat(List<Point> pts, int typeDepth) {
         Mat res;
         int count = (pts != null) ? pts.size() : 0;
@@ -107,18 +116,43 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code vector_Point3i_to_Mat} operation.
+     *
+     * @param pts the {@code pts} value
+     * @return the operation result
+     */
     public static Mat vector_Point3i_to_Mat(List<Point3> pts) {
         return vector_Point3_to_Mat(pts, CvType.CV_32S);
     }
 
+    /**
+     * Performs the {@code vector_Point3f_to_Mat} operation.
+     *
+     * @param pts the {@code pts} value
+     * @return the operation result
+     */
     public static Mat vector_Point3f_to_Mat(List<Point3> pts) {
         return vector_Point3_to_Mat(pts, CvType.CV_32F);
     }
 
+    /**
+     * Performs the {@code vector_Point3d_to_Mat} operation.
+     *
+     * @param pts the {@code pts} value
+     * @return the operation result
+     */
     public static Mat vector_Point3d_to_Mat(List<Point3> pts) {
         return vector_Point3_to_Mat(pts, CvType.CV_64F);
     }
 
+    /**
+     * Performs the {@code vector_Point3_to_Mat} operation.
+     *
+     * @param pts       the {@code pts} value
+     * @param typeDepth the {@code typeDepth} value
+     * @return the operation result
+     */
     public static Mat vector_Point3_to_Mat(List<Point3> pts, int typeDepth) {
         Mat res;
         int count = (pts != null) ? pts.size() : 0;
@@ -172,14 +206,32 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_Point2f} operation.
+     *
+     * @param m   the {@code m} value
+     * @param pts the {@code pts} value
+     */
     public static void Mat_to_vector_Point2f(Mat m, List<Point> pts) {
         Mat_to_vector_Point(m, pts);
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_Point2d} operation.
+     *
+     * @param m   the {@code m} value
+     * @param pts the {@code pts} value
+     */
     public static void Mat_to_vector_Point2d(Mat m, List<Point> pts) {
         Mat_to_vector_Point(m, pts);
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_Point} operation.
+     *
+     * @param m   the {@code m} value
+     * @param pts the {@code pts} value
+     */
     public static void Mat_to_vector_Point(Mat m, List<Point> pts) {
         if (pts == null)
             throw new IllegalArgumentException("Output List can't be null");
@@ -212,18 +264,42 @@ public class Converters {
         }
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_Point3i} operation.
+     *
+     * @param m   the {@code m} value
+     * @param pts the {@code pts} value
+     */
     public static void Mat_to_vector_Point3i(Mat m, List<Point3> pts) {
         Mat_to_vector_Point3(m, pts);
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_Point3f} operation.
+     *
+     * @param m   the {@code m} value
+     * @param pts the {@code pts} value
+     */
     public static void Mat_to_vector_Point3f(Mat m, List<Point3> pts) {
         Mat_to_vector_Point3(m, pts);
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_Point3d} operation.
+     *
+     * @param m   the {@code m} value
+     * @param pts the {@code pts} value
+     */
     public static void Mat_to_vector_Point3d(Mat m, List<Point3> pts) {
         Mat_to_vector_Point3(m, pts);
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_Point3} operation.
+     *
+     * @param m   the {@code m} value
+     * @param pts the {@code pts} value
+     */
     public static void Mat_to_vector_Point3(Mat m, List<Point3> pts) {
         if (pts == null)
             throw new IllegalArgumentException("Output List can't be null");
@@ -256,6 +332,12 @@ public class Converters {
         }
     }
 
+    /**
+     * Performs the {@code vector_Mat_to_Mat} operation.
+     *
+     * @param mats the {@code mats} value
+     * @return the operation result
+     */
     public static Mat vector_Mat_to_Mat(List<Mat> mats) {
         Mat res;
         int count = (mats != null) ? mats.size() : 0;
@@ -274,6 +356,12 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_Mat} operation.
+     *
+     * @param m    the {@code m} value
+     * @param mats the {@code mats} value
+     */
     public static void Mat_to_vector_Mat(Mat m, List<Mat> mats) {
         if (mats == null)
             throw new IllegalArgumentException("mats == null");
@@ -290,6 +378,12 @@ public class Converters {
         }
     }
 
+    /**
+     * Performs the {@code vector_float_to_Mat} operation.
+     *
+     * @param fs the {@code fs} value
+     * @return the operation result
+     */
     public static Mat vector_float_to_Mat(List<Float> fs) {
         Mat res;
         int count = (fs != null) ? fs.size() : 0;
@@ -307,6 +401,12 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_float} operation.
+     *
+     * @param m  the {@code m} value
+     * @param fs the {@code fs} value
+     */
     public static void Mat_to_vector_float(Mat m, List<Float> fs) {
         if (fs == null)
             throw new IllegalArgumentException("fs == null");
@@ -322,6 +422,12 @@ public class Converters {
         }
     }
 
+    /**
+     * Performs the {@code vector_uchar_to_Mat} operation.
+     *
+     * @param bs the {@code bs} value
+     * @return the operation result
+     */
     public static Mat vector_uchar_to_Mat(List<Byte> bs) {
         Mat res;
         int count = (bs != null) ? bs.size() : 0;
@@ -339,6 +445,12 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_uchar} operation.
+     *
+     * @param m  the {@code m} value
+     * @param us the {@code us} value
+     */
     public static void Mat_to_vector_uchar(Mat m, List<Byte> us) {
         if (us == null)
             throw new IllegalArgumentException("Output List can't be null");
@@ -354,6 +466,12 @@ public class Converters {
         }
     }
 
+    /**
+     * Performs the {@code vector_char_to_Mat} operation.
+     *
+     * @param bs the {@code bs} value
+     * @return the operation result
+     */
     public static Mat vector_char_to_Mat(List<Byte> bs) {
         Mat res;
         int count = (bs != null) ? bs.size() : 0;
@@ -371,6 +489,12 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code vector_int_to_Mat} operation.
+     *
+     * @param is the {@code is} value
+     * @return the operation result
+     */
     public static Mat vector_int_to_Mat(List<Integer> is) {
         Mat res;
         int count = (is != null) ? is.size() : 0;
@@ -388,6 +512,12 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_int} operation.
+     *
+     * @param m  the {@code m} value
+     * @param is the {@code is} value
+     */
     public static void Mat_to_vector_int(Mat m, List<Integer> is) {
         if (is == null)
             throw new IllegalArgumentException("is == null");
@@ -403,6 +533,12 @@ public class Converters {
         }
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_char} operation.
+     *
+     * @param m  the {@code m} value
+     * @param bs the {@code bs} value
+     */
     public static void Mat_to_vector_char(Mat m, List<Byte> bs) {
         if (bs == null)
             throw new IllegalArgumentException("Output List can't be null");
@@ -418,6 +554,12 @@ public class Converters {
         }
     }
 
+    /**
+     * Performs the {@code vector_Rect_to_Mat} operation.
+     *
+     * @param rs the {@code rs} value
+     * @return the operation result
+     */
     public static Mat vector_Rect_to_Mat(List<Rect> rs) {
         Mat res;
         int count = (rs != null) ? rs.size() : 0;
@@ -438,6 +580,12 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_Rect} operation.
+     *
+     * @param m  the {@code m} value
+     * @param rs the {@code rs} value
+     */
     public static void Mat_to_vector_Rect(Mat m, List<Rect> rs) {
         if (rs == null)
             throw new IllegalArgumentException("rs == null");
@@ -453,6 +601,12 @@ public class Converters {
         }
     }
 
+    /**
+     * Performs the {@code vector_Rect2d_to_Mat} operation.
+     *
+     * @param rs the {@code rs} value
+     * @return the operation result
+     */
     public static Mat vector_Rect2d_to_Mat(List<Rect2d> rs) {
         Mat res;
         int count = (rs != null) ? rs.size() : 0;
@@ -473,6 +627,12 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_Rect2d} operation.
+     *
+     * @param m  the {@code m} value
+     * @param rs the {@code rs} value
+     */
     public static void Mat_to_vector_Rect2d(Mat m, List<Rect2d> rs) {
         if (rs == null)
             throw new IllegalArgumentException("rs == null");
@@ -488,6 +648,12 @@ public class Converters {
         }
     }
 
+    /**
+     * Performs the {@code vector_KeyPoint_to_Mat} operation.
+     *
+     * @param kps the {@code kps} value
+     * @return the operation result
+     */
     public static Mat vector_KeyPoint_to_Mat(List<KeyPoint> kps) {
         Mat res;
         int count = (kps != null) ? kps.size() : 0;
@@ -511,6 +677,12 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_KeyPoint} operation.
+     *
+     * @param m   the {@code m} value
+     * @param kps the {@code kps} value
+     */
     public static void Mat_to_vector_KeyPoint(Mat m, List<KeyPoint> kps) {
         if (kps == null)
             throw new IllegalArgumentException("Output List can't be null");
@@ -530,6 +702,13 @@ public class Converters {
     }
 
     // vector_vector_Mat
+    /**
+     * Performs the {@code vector_vector_Mat_to_Mat} operation.
+     *
+     * @param vecMats the {@code vecMats} value
+     * @param mats    the {@code mats} value
+     * @return the operation result
+     */
     public static Mat vector_vector_Mat_to_Mat(List<List<Mat>> vecMats, List<Mat> mats) {
         Mat res;
         int lCount = (vecMats != null) ? vecMats.size() : 0;
@@ -545,6 +724,12 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_vector_Mat} operation.
+     *
+     * @param m       the {@code m} value
+     * @param vecMats the {@code vecMats} value
+     */
     public static void Mat_to_vector_vector_Mat(Mat m, List<List<Mat>> vecMats) {
         if (vecMats == null)
             throw new IllegalArgumentException("Output List can't be null");
@@ -565,6 +750,13 @@ public class Converters {
     }
 
     // vector_vector_Point
+    /**
+     * Performs the {@code vector_vector_Point_to_Mat} operation.
+     *
+     * @param pts  the {@code pts} value
+     * @param mats the {@code mats} value
+     * @return the operation result
+     */
     public static Mat vector_vector_Point_to_Mat(List<MatOfPoint> pts, List<Mat> mats) {
         Mat res;
         int lCount = (pts != null) ? pts.size() : 0;
@@ -577,6 +769,12 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_vector_Point} operation.
+     *
+     * @param m   the {@code m} value
+     * @param pts the {@code pts} value
+     */
     public static void Mat_to_vector_vector_Point(Mat m, List<MatOfPoint> pts) {
         if (pts == null)
             throw new IllegalArgumentException("Output List can't be null");
@@ -595,6 +793,12 @@ public class Converters {
     }
 
     // vector_vector_Point2f
+    /**
+     * Performs the {@code Mat_to_vector_vector_Point2f} operation.
+     *
+     * @param m   the {@code m} value
+     * @param pts the {@code pts} value
+     */
     public static void Mat_to_vector_vector_Point2f(Mat m, List<MatOfPoint2f> pts) {
         if (pts == null)
             throw new IllegalArgumentException("Output List can't be null");
@@ -613,6 +817,13 @@ public class Converters {
     }
 
     // vector_vector_Point2f
+    /**
+     * Performs the {@code vector_vector_Point2f_to_Mat} operation.
+     *
+     * @param pts  the {@code pts} value
+     * @param mats the {@code mats} value
+     * @return the operation result
+     */
     public static Mat vector_vector_Point2f_to_Mat(List<MatOfPoint2f> pts, List<Mat> mats) {
         Mat res;
         int lCount = (pts != null) ? pts.size() : 0;
@@ -626,6 +837,12 @@ public class Converters {
     }
 
     // vector_vector_Point3f
+    /**
+     * Performs the {@code Mat_to_vector_vector_Point3f} operation.
+     *
+     * @param m   the {@code m} value
+     * @param pts the {@code pts} value
+     */
     public static void Mat_to_vector_vector_Point3f(Mat m, List<MatOfPoint3f> pts) {
         if (pts == null)
             throw new IllegalArgumentException("Output List can't be null");
@@ -644,6 +861,13 @@ public class Converters {
     }
 
     // vector_vector_Point3f
+    /**
+     * Performs the {@code vector_vector_Point3f_to_Mat} operation.
+     *
+     * @param pts  the {@code pts} value
+     * @param mats the {@code mats} value
+     * @return the operation result
+     */
     public static Mat vector_vector_Point3f_to_Mat(List<MatOfPoint3f> pts, List<Mat> mats) {
         Mat res;
         int lCount = (pts != null) ? pts.size() : 0;
@@ -657,6 +881,13 @@ public class Converters {
     }
 
     // vector_vector_KeyPoint
+    /**
+     * Performs the {@code vector_vector_KeyPoint_to_Mat} operation.
+     *
+     * @param kps  the {@code kps} value
+     * @param mats the {@code mats} value
+     * @return the operation result
+     */
     public static Mat vector_vector_KeyPoint_to_Mat(List<MatOfKeyPoint> kps, List<Mat> mats) {
         Mat res;
         int lCount = (kps != null) ? kps.size() : 0;
@@ -669,6 +900,12 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_vector_KeyPoint} operation.
+     *
+     * @param m   the {@code m} value
+     * @param kps the {@code kps} value
+     */
     public static void Mat_to_vector_vector_KeyPoint(Mat m, List<MatOfKeyPoint> kps) {
         if (kps == null)
             throw new IllegalArgumentException("Output List can't be null");
@@ -686,6 +923,12 @@ public class Converters {
         mats.clear();
     }
 
+    /**
+     * Performs the {@code vector_double_to_Mat} operation.
+     *
+     * @param ds the {@code ds} value
+     * @return the operation result
+     */
     public static Mat vector_double_to_Mat(List<Double> ds) {
         Mat res;
         int count = (ds != null) ? ds.size() : 0;
@@ -703,6 +946,12 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_double} operation.
+     *
+     * @param m  the {@code m} value
+     * @param ds the {@code ds} value
+     */
     public static void Mat_to_vector_double(Mat m, List<Double> ds) {
         if (ds == null)
             throw new IllegalArgumentException("ds == null");
@@ -718,6 +967,12 @@ public class Converters {
         }
     }
 
+    /**
+     * Performs the {@code vector_DMatch_to_Mat} operation.
+     *
+     * @param matches the {@code matches} value
+     * @return the operation result
+     */
     public static Mat vector_DMatch_to_Mat(List<DMatch> matches) {
         Mat res;
         int count = (matches != null) ? matches.size() : 0;
@@ -738,6 +993,12 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_DMatch} operation.
+     *
+     * @param m       the {@code m} value
+     * @param matches the {@code matches} value
+     */
     public static void Mat_to_vector_DMatch(Mat m, List<DMatch> matches) {
         if (matches == null)
             throw new IllegalArgumentException("Output List can't be null");
@@ -756,6 +1017,13 @@ public class Converters {
     }
 
     // vector_vector_DMatch
+    /**
+     * Performs the {@code vector_vector_DMatch_to_Mat} operation.
+     *
+     * @param lvdm the {@code lvdm} value
+     * @param mats the {@code mats} value
+     * @return the operation result
+     */
     public static Mat vector_vector_DMatch_to_Mat(List<MatOfDMatch> lvdm, List<Mat> mats) {
         Mat res;
         int lCount = (lvdm != null) ? lvdm.size() : 0;
@@ -768,6 +1036,12 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_vector_DMatch} operation.
+     *
+     * @param m    the {@code m} value
+     * @param lvdm the {@code lvdm} value
+     */
     public static void Mat_to_vector_vector_DMatch(Mat m, List<MatOfDMatch> lvdm) {
         if (lvdm == null)
             throw new IllegalArgumentException("Output List can't be null");
@@ -787,6 +1061,13 @@ public class Converters {
     }
 
     // vector_vector_char
+    /**
+     * Performs the {@code vector_vector_char_to_Mat} operation.
+     *
+     * @param lvb  the {@code lvb} value
+     * @param mats the {@code mats} value
+     * @return the operation result
+     */
     public static Mat vector_vector_char_to_Mat(List<MatOfByte> lvb, List<Mat> mats) {
         Mat res;
         int lCount = (lvb != null) ? lvb.size() : 0;
@@ -799,6 +1080,12 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_vector_char} operation.
+     *
+     * @param m   the {@code m} value
+     * @param llb the {@code llb} value
+     */
     public static void Mat_to_vector_vector_char(Mat m, List<List<Byte>> llb) {
         if (llb == null)
             throw new IllegalArgumentException("Output List can't be null");
@@ -817,6 +1104,12 @@ public class Converters {
         mats.clear();
     }
 
+    /**
+     * Performs the {@code vector_RotatedRect_to_Mat} operation.
+     *
+     * @param rs the {@code rs} value
+     * @return the operation result
+     */
     public static Mat vector_RotatedRect_to_Mat(List<RotatedRect> rs) {
         Mat res;
         int count = (rs != null) ? rs.size() : 0;
@@ -838,6 +1131,12 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_RotatedRect} operation.
+     *
+     * @param m  the {@code m} value
+     * @param rs the {@code rs} value
+     */
     public static void Mat_to_vector_RotatedRect(Mat m, List<RotatedRect> rs) {
         if (rs == null)
             throw new IllegalArgumentException("rs == null");
@@ -856,6 +1155,12 @@ public class Converters {
     }
 
     // vector_MatShape
+    /**
+     * Performs the {@code vector_MatShape_to_Mat} operation.
+     *
+     * @param matOfInts the {@code matOfInts} value
+     * @return the operation result
+     */
     public static Mat vector_MatShape_to_Mat(List<MatOfInt> matOfInts) {
         Mat res;
         int count = (matOfInts != null) ? matOfInts.size() : 0;
@@ -874,6 +1179,12 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_MatShape} operation.
+     *
+     * @param m         the {@code m} value
+     * @param matOfInts the {@code matOfInts} value
+     */
     public static void Mat_to_vector_MatShape(Mat m, List<MatOfInt> matOfInts) {
         if (matOfInts == null)
             throw new IllegalArgumentException("matOfInts == null");
@@ -891,6 +1202,13 @@ public class Converters {
     }
 
     // vector_vector_MatShape
+    /**
+     * Performs the {@code vector_vector_MatShape_to_Mat} operation.
+     *
+     * @param vecMatOfInts the {@code vecMatOfInts} value
+     * @param mats         the {@code mats} value
+     * @return the operation result
+     */
     public static Mat vector_vector_MatShape_to_Mat(List<List<MatOfInt>> vecMatOfInts, List<Mat> mats) {
         Mat res;
         int lCount = (vecMatOfInts != null) ? vecMatOfInts.size() : 0;
@@ -906,6 +1224,12 @@ public class Converters {
         return res;
     }
 
+    /**
+     * Performs the {@code Mat_to_vector_vector_MatShape} operation.
+     *
+     * @param m            the {@code m} value
+     * @param vecMatOfInts the {@code vecMatOfInts} value
+     */
     public static void Mat_to_vector_vector_MatShape(Mat m, List<List<MatOfInt>> vecMatOfInts) {
         if (vecMatOfInts == null)
             throw new IllegalArgumentException("Output List can't be null");
@@ -924,5 +1248,4 @@ public class Converters {
         }
         mats.clear();
     }
-
 }

@@ -31,7 +31,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-public class Space extends Tracer {
+public class Space extends Tenant {
 
     /**
      * Unique identifier of the logical space that owns the current entity.

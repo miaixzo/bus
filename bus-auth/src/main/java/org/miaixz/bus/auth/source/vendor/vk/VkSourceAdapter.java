@@ -970,7 +970,6 @@ public class VkSourceAdapter implements VendorAdapter {
      *
      * @param state    browser correlation value
      * @param deviceId VK device binding identifier
-     *
      * @author Kimi Liu
      */
     private record TokenBinding(String state, String deviceId) {
@@ -1006,7 +1005,6 @@ public class VkSourceAdapter implements VendorAdapter {
      * @param deviceId         mandatory VK device binding for success
      * @param error            OAuth error for failure
      * @param errorDescription mandatory VK error description for failure
-     *
      * @author Kimi Liu
      */
     private record CallbackWire(String code, String state, String deviceId, String error, String errorDescription) {
@@ -1044,7 +1042,6 @@ public class VkSourceAdapter implements VendorAdapter {
      * @param lastName  optional family name
      * @param avatar    optional avatar URL
      * @param email     optional email address
-     *
      * @author Kimi Liu
      */
     private record ProfileWire(String firstName, String lastName, String avatar, String email) {

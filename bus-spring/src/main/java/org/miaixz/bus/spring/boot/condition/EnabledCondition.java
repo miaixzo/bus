@@ -46,6 +46,24 @@ public class EnabledCondition extends SpringBootCondition {
     }
 
     /**
+     * Returns whether a registered application source directly or transitively declares the enable annotation.
+     *
+     * @param registry       current Bean definition registry
+     * @param annotationName fully qualified enable annotation name
+     * @return {@code true} when the annotation is present
+     */
+    private static boolean hasAnnotation(BeanDefinitionRegistry registry, String annotationName) {
+        for (String beanName : registry.getBeanDefinitionNames()) {
+            if (registry.getBeanDefinition(beanName) instanceof AnnotatedBeanDefinition definition
+                    && (definition.getMetadata().hasAnnotation(annotationName)
+                            || definition.getMetadata().hasMetaAnnotation(annotationName))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Matches when the application declares the feature's enable annotation or the secondary property is true.
      *
      * @param context  current condition context
@@ -83,24 +101,6 @@ public class EnabledCondition extends SpringBootCondition {
         return ConditionOutcome.noMatch(
                 ConditionMessage.forCondition(ConditionalOnEnabled.class)
                         .didNotFind("explicit enable annotation or enabled property").atAll());
-    }
-
-    /**
-     * Returns whether a registered application source directly or transitively declares the enable annotation.
-     *
-     * @param registry       current Bean definition registry
-     * @param annotationName fully qualified enable annotation name
-     * @return {@code true} when the annotation is present
-     */
-    private static boolean hasAnnotation(BeanDefinitionRegistry registry, String annotationName) {
-        for (String beanName : registry.getBeanDefinitionNames()) {
-            if (registry.getBeanDefinition(beanName) instanceof AnnotatedBeanDefinition definition
-                    && (definition.getMetadata().hasAnnotation(annotationName)
-                            || definition.getMetadata().hasMetaAnnotation(annotationName))) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

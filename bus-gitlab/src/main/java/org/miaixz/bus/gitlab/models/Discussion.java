@@ -32,9 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Discussion implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852251836760L;
 
@@ -42,10 +39,12 @@ public class Discussion implements Serializable {
      * The id value.
      */
     private String id;
+
     /**
      * The individual note value.
      */
     private Boolean individualNote;
+
     /**
      * The notes value.
      */
@@ -69,26 +68,6 @@ public class Discussion implements Serializable {
     }
 
     /**
-     * Returns the individual note.
-     *
-     * @return the result
-     */
-
-    public Boolean getIndividualNote() {
-        return individualNote;
-    }
-
-    /**
-     * Returns the notes.
-     *
-     * @return the result
-     */
-
-    public List<Note> getNotes() {
-        return notes;
-    }
-
-    /**
      * Sets the id.
      *
      * @param id the id value
@@ -99,6 +78,16 @@ public class Discussion implements Serializable {
     }
 
     /**
+     * Returns the individual note.
+     *
+     * @return the result
+     */
+
+    public Boolean getIndividualNote() {
+        return individualNote;
+    }
+
+    /**
      * Sets the individual note.
      *
      * @param individualNote the individual note value
@@ -106,6 +95,16 @@ public class Discussion implements Serializable {
 
     public void setIndividualNote(Boolean individualNote) {
         this.individualNote = individualNote;
+    }
+
+    /**
+     * Returns the notes.
+     *
+     * @return the result
+     */
+
+    public List<Note> getNotes() {
+        return notes;
     }
 
     /**

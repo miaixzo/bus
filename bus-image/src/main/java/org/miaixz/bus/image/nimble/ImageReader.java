@@ -93,10 +93,12 @@ public class ImageReader extends javax.imageio.ImageReader {
             default -> false;
         };
     };
+
     /**
      * Mapping from series UID to float image conversion state.
      */
     private static final Map<String, Boolean> series2FloatImages = new ConcurrentHashMap<>();
+
     /**
      * DICOM tags that should be handled as bulk data.
      */
@@ -121,6 +123,7 @@ public class ImageReader extends javax.imageio.ImageReader {
             Tag.FloatPixelData,
             Tag.DoubleFloatPixelData,
             Tag.PixelData);
+
     /**
      * Whether float image conversion is allowed.
      */
@@ -136,10 +139,12 @@ public class ImageReader extends javax.imageio.ImageReader {
      * Fragment position list.
      */
     private final ArrayList<Integer> fragmentsPositions = new ArrayList<>();
+
     /**
      * Byte data with image descriptor.
      */
     private BytesWithImageDescriptor bdis;
+
     /**
      * DICOM image file input stream.
      */

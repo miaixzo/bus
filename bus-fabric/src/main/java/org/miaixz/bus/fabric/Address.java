@@ -94,47 +94,6 @@ public record Address(String scheme, String host, int port, String path) {
     }
 
     /**
-     * Returns the bus-core protocol.
-     *
-     * @return bus-core protocol corresponding to the normalized scheme
-     */
-    public Protocol protocol() {
-        return protocolFor(scheme);
-    }
-
-    /**
-     * Returns whether this address uses a secure protocol.
-     *
-     * @return true for HTTPS, WSS, or TLS schemes
-     */
-    public boolean secure() {
-        return Protocol.HTTPS.name.equals(scheme) || Protocol.WSS.name.equals(scheme)
-                || Protocol.TLS.name.equals(scheme);
-    }
-
-    /**
-     * Creates an unresolved socket address.
-     *
-     * @return unresolved socket address containing this host and effective port
-     */
-    public InetSocketAddress socket() {
-        return InetSocketAddress.createUnresolved(host, port);
-    }
-
-    /**
-     * Converts this address to a URI.
-     *
-     * @return URI containing this scheme, host, port, and path without user info, query, or fragment
-     */
-    public URI toUri() {
-        try {
-            return new URI(scheme, null, host, port, path, null, null);
-        } catch (final URISyntaxException e) {
-            throw new ProtocolException("Unable to create address URI", e);
-        }
-    }
-
-    /**
      * Converts a scheme and optional port into an effective port.
      *
      * @param scheme validated lowercase scheme
@@ -262,6 +221,47 @@ public record Address(String scheme, String host, int port, String path) {
             throw new ValidateException("Port must be between 1 and 65535");
         }
         return port;
+    }
+
+    /**
+     * Returns the bus-core protocol.
+     *
+     * @return bus-core protocol corresponding to the normalized scheme
+     */
+    public Protocol protocol() {
+        return protocolFor(scheme);
+    }
+
+    /**
+     * Returns whether this address uses a secure protocol.
+     *
+     * @return true for HTTPS, WSS, or TLS schemes
+     */
+    public boolean secure() {
+        return Protocol.HTTPS.name.equals(scheme) || Protocol.WSS.name.equals(scheme)
+                || Protocol.TLS.name.equals(scheme);
+    }
+
+    /**
+     * Creates an unresolved socket address.
+     *
+     * @return unresolved socket address containing this host and effective port
+     */
+    public InetSocketAddress socket() {
+        return InetSocketAddress.createUnresolved(host, port);
+    }
+
+    /**
+     * Converts this address to a URI.
+     *
+     * @return URI containing this scheme, host, port, and path without user info, query, or fragment
+     */
+    public URI toUri() {
+        try {
+            return new URI(scheme, null, host, port, path, null, null);
+        } catch (final URISyntaxException e) {
+            throw new ProtocolException("Unable to create address URI", e);
+        }
     }
 
 }

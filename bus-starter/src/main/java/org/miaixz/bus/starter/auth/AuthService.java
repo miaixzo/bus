@@ -19,12 +19,7 @@
 */
 package org.miaixz.bus.starter.auth;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 
@@ -32,24 +27,12 @@ import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.env.Environment;
 
-import org.miaixz.bus.auth.Authorize;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Credential;
-import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Policies;
-import org.miaixz.bus.auth.Scheme;
-import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.runtime.RuntimeBuilder;
 import org.miaixz.bus.auth.runtime.RuntimeServices;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.source.SourceAggregate;
-import org.miaixz.bus.auth.source.vendor.Vendor;
-import org.miaixz.bus.auth.source.vendor.VendorConfigurer;
-import org.miaixz.bus.auth.source.vendor.VendorCredentialWriter;
-import org.miaixz.bus.auth.source.vendor.VendorLocator;
-import org.miaixz.bus.auth.source.vendor.VendorManifest;
-import org.miaixz.bus.auth.source.vendor.VendorModule;
-import org.miaixz.bus.auth.source.vendor.VendorOptions;
+import org.miaixz.bus.auth.source.vendor.*;
 import org.miaixz.bus.auth.worker.WorkerSet;
 import org.miaixz.bus.auth.worker.loader.BlueprintLoader;
 import org.miaixz.bus.cache.CacheX;
@@ -136,6 +119,68 @@ public class AuthService {
         this.locator = this.sources.vendorModule().locator();
         this.clients = bind(configured, locator);
         this.deployment = deployment(configured);
+    }
+
+    /**
+     * Binds enabled direct Vendor property blocks known by the frozen module.
+     *
+     * @param environment protected Spring configuration environment
+     * @param locator     exact frozen Vendor locator
+     * @return immutable enabled client map
+     */
+    private static Map<Vendor.Id, AuthProperties.Client> bind(Environment environment, VendorLocator locator) {
+        Binder binder = Binder.get(environment);
+        Map<Vendor.Id, AuthProperties.Client> configured = new LinkedHashMap<>();
+        for (VendorManifest<?> manifest : locator.manifests()) {
+            Vendor.Id vendor = manifest.vendor();
+            binder.bind(prefix(vendor), Bindable.of(AuthProperties.Client.class)).ifBound(client -> {
+                if (client.enabled()) {
+                    validate(vendor, client);
+                    configured.put(vendor, client);
+                }
+            });
+        }
+        return Collections.unmodifiableMap(configured);
+    }
+
+    /**
+     * Resolves the stable cache deployment identifier from the Spring application name.
+     *
+     * @param environment protected Spring configuration environment
+     * @return non-blank cache deployment identifier
+     */
+    private static String deployment(Environment environment) {
+        String application = environment.getProperty("spring.application.name");
+        return application == null || application.isBlank() ? Normal.DEFAULT : application.trim();
+    }
+
+    /**
+     * Returns the direct property prefix of one Vendor client.
+     *
+     * @param vendor exact Vendor identifier
+     * @return direct {@code bus.auth.<vendor>} prefix
+     */
+    private static String prefix(Vendor.Id vendor) {
+        return GeniusBuilder.AUTH + Symbol.DOT + vendor.value();
+    }
+
+    /**
+     * Validates one enabled standard client without logging secret material.
+     *
+     * @param vendor exact Vendor identifier
+     * @param client bound standard client settings
+     */
+    private static void validate(Vendor.Id vendor, AuthProperties.Client client) {
+        String prefix = prefix(vendor);
+        Assert.notBlank(client.clientId(), prefix + ".client-id must not be blank");
+        Assert.notBlank(client.clientSecret(), prefix + ".client-secret must not be blank");
+        Set<String> scopes = new HashSet<>();
+        for (String scope : client.scopes()) {
+            String checked = Assert.notBlank(scope, prefix + ".scopes must not contain blanks");
+            if (!scopes.add(checked)) {
+                throw new ValidateException(prefix + ".scopes must not contain duplicates");
+            }
+        }
     }
 
     /**
@@ -281,68 +326,6 @@ public class AuthService {
         return Authorize
                 .custom(services, Assert.notNull(blueprintLoader, "Authentication Blueprint loader must not be null"))
                 .modules(sources.modules());
-    }
-
-    /**
-     * Binds enabled direct Vendor property blocks known by the frozen module.
-     *
-     * @param environment protected Spring configuration environment
-     * @param locator     exact frozen Vendor locator
-     * @return immutable enabled client map
-     */
-    private static Map<Vendor.Id, AuthProperties.Client> bind(Environment environment, VendorLocator locator) {
-        Binder binder = Binder.get(environment);
-        Map<Vendor.Id, AuthProperties.Client> configured = new LinkedHashMap<>();
-        for (VendorManifest<?> manifest : locator.manifests()) {
-            Vendor.Id vendor = manifest.vendor();
-            binder.bind(prefix(vendor), Bindable.of(AuthProperties.Client.class)).ifBound(client -> {
-                if (client.enabled()) {
-                    validate(vendor, client);
-                    configured.put(vendor, client);
-                }
-            });
-        }
-        return Collections.unmodifiableMap(configured);
-    }
-
-    /**
-     * Resolves the stable cache deployment identifier from the Spring application name.
-     *
-     * @param environment protected Spring configuration environment
-     * @return non-blank cache deployment identifier
-     */
-    private static String deployment(Environment environment) {
-        String application = environment.getProperty("spring.application.name");
-        return application == null || application.isBlank() ? Normal.DEFAULT : application.trim();
-    }
-
-    /**
-     * Returns the direct property prefix of one Vendor client.
-     *
-     * @param vendor exact Vendor identifier
-     * @return direct {@code bus.auth.<vendor>} prefix
-     */
-    private static String prefix(Vendor.Id vendor) {
-        return GeniusBuilder.AUTH + Symbol.DOT + vendor.value();
-    }
-
-    /**
-     * Validates one enabled standard client without logging secret material.
-     *
-     * @param vendor exact Vendor identifier
-     * @param client bound standard client settings
-     */
-    private static void validate(Vendor.Id vendor, AuthProperties.Client client) {
-        String prefix = prefix(vendor);
-        Assert.notBlank(client.clientId(), prefix + ".client-id must not be blank");
-        Assert.notBlank(client.clientSecret(), prefix + ".client-secret must not be blank");
-        Set<String> scopes = new HashSet<>();
-        for (String scope : client.scopes()) {
-            String checked = Assert.notBlank(scope, prefix + ".scopes must not contain blanks");
-            if (!scopes.add(checked)) {
-                throw new ValidateException(prefix + ".scopes must not contain duplicates");
-            }
-        }
     }
 
     /**

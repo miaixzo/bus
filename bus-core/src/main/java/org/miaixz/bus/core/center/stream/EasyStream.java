@@ -23,14 +23,7 @@ import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -77,8 +70,8 @@ import org.miaixz.bus.core.xyz.*;
  * Different types of streams can be converted to each other using {@link #sequential()} or {@link #parallel()}.
  *
  * @param <T> the type of the elements in the stream
- * @see java.util.stream.Stream
  * @author Kimi Liu
+ * @see java.util.stream.Stream
  */
 public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
 
@@ -101,9 +94,6 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
     public static <T> Builder<T> builder() {
         return new Builder<>() {
 
-            /**
-             * The serial version UID.
-             */
             @Serial
             private static final long serialVersionUID = 2852271123932L;
 

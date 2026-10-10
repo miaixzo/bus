@@ -69,10 +69,14 @@ public class NativeHistogram implements Histogram {
      *
      * @param name metric name
      * @param tags associated tags
+     * @throws IllegalArgumentException if the metric name is blank
      */
     public NativeHistogram(String name, Tag[] tags) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Histogram name must not be blank");
+        }
         this.name = name;
-        this.tags = tags;
+        this.tags = tags == null ? new Tag[0] : tags.clone();
     }
 
     /**
@@ -82,6 +86,9 @@ public class NativeHistogram implements Histogram {
      */
     @Override
     public void record(double value) {
+        if (!Double.isFinite(value)) {
+            throw new IllegalArgumentException("Histogram value must be finite");
+        }
         countTotal.incrementAndGet();
         sumTotal.add(value);
         digest.add(value);
@@ -113,7 +120,7 @@ public class NativeHistogram implements Histogram {
      */
     @Override
     public double max() {
-        return maxValue;
+        return countTotal.get() == 0 ? 0.0 : maxValue;
     }
 
     /**
@@ -124,6 +131,9 @@ public class NativeHistogram implements Histogram {
      */
     @Override
     public double percentile(double p) {
+        if (!Double.isFinite(p) || p < 0 || p > 1) {
+            throw new IllegalArgumentException("Histogram percentile must be between 0 and 1");
+        }
         return digest.quantile(p);
     }
 
@@ -132,7 +142,7 @@ public class NativeHistogram implements Histogram {
      */
     @Override
     public TimerSnapshot snapshot() {
-        return new TimerSnapshot(name, tags, countTotal.get(), sumTotal.sum(), maxValue, Normal.EMPTY_LONG_ARRAY,
+        return new TimerSnapshot(name, tags.clone(), countTotal.get(), sumTotal.sum(), max(), Normal.EMPTY_LONG_ARRAY,
                 Normal.EMPTY_DOUBLE_ARRAY);
     }
 

@@ -44,42 +44,6 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
     }
 
     /**
-     * Returns a preferred adapter supplied by a legacy subclass.
-     *
-     * @return preferred adapter, or {@code null}
-     */
-    protected PayloadAdapter preferredAdapter() {
-        return null;
-    }
-
-    /**
-     * Returns the application-selected provider as the sole default candidate.
-     *
-     * @return provider-backed adapter list
-     */
-    protected List<PayloadAdapter> candidateAdapters() {
-        return List.of(providerAdapter(JsonFactory.get()));
-    }
-
-    /**
-     * Resolves the adapter without performing framework-specific detection.
-     *
-     * @return resolved adapter
-     */
-    protected PayloadAdapter resolveAdapter() {
-        PayloadAdapter preferred = preferredAdapter();
-        if (preferred != null) {
-            Logger.debug(
-                    false,
-                    "Tempus",
-                    "Temporal payload adapter resolved: adapter={}, source=preferred",
-                    preferred.name());
-            return preferred;
-        }
-        return DefaultPayloadAdapterHolder.ADAPTER;
-    }
-
-    /**
      * Adapts the shared JSON provider contract to the legacy Tempus payload adapter contract.
      *
      * @param provider application JSON provider
@@ -123,6 +87,42 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
                 return provider.read(bytes, valueType == null ? valueClass : valueType);
             }
         };
+    }
+
+    /**
+     * Returns a preferred adapter supplied by a legacy subclass.
+     *
+     * @return preferred adapter, or {@code null}
+     */
+    protected PayloadAdapter preferredAdapter() {
+        return null;
+    }
+
+    /**
+     * Returns the application-selected provider as the sole default candidate.
+     *
+     * @return provider-backed adapter list
+     */
+    protected List<PayloadAdapter> candidateAdapters() {
+        return List.of(providerAdapter(JsonFactory.get()));
+    }
+
+    /**
+     * Resolves the adapter without performing framework-specific detection.
+     *
+     * @return resolved adapter
+     */
+    protected PayloadAdapter resolveAdapter() {
+        PayloadAdapter preferred = preferredAdapter();
+        if (preferred != null) {
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Temporal payload adapter resolved: adapter={}, source=preferred",
+                    preferred.name());
+            return preferred;
+        }
+        return DefaultPayloadAdapterHolder.ADAPTER;
     }
 
     /**

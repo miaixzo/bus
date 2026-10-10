@@ -37,10 +37,12 @@ public class SpringStartupCollector {
      * Application name associated with the current startup.
      */
     private final String appName;
+
     /**
      * Application startup timestamp in milliseconds since the epoch.
      */
     private final long applicationBootTime;
+
     /**
      * Stages retained in lifecycle order and keyed to prevent duplicate callbacks.
      */

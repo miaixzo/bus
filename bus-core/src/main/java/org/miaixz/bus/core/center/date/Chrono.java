@@ -76,24 +76,6 @@ public enum Chrono {
     }
 
     /**
-     * Gets the number of milliseconds corresponding to this unit.
-     *
-     * @return The number of milliseconds.
-     */
-    public long getMillis() {
-        return this.millis;
-    }
-
-    /**
-     * Gets the name of the level.
-     *
-     * @return The name of the level.
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    /**
      * Converts {@link ChronoUnit} to the corresponding {@link Chrono}.
      *
      * @param chrono The {@link ChronoUnit} to convert.
@@ -123,15 +105,6 @@ public enum Chrono {
     }
 
     /**
-     * Converts this {@link Chrono} to the corresponding {@link ChronoUnit}.
-     *
-     * @return The corresponding {@link ChronoUnit}.
-     */
-    public ChronoUnit of() {
-        return Chrono.of(this);
-    }
-
-    /**
      * Converts {@link Chrono} to the corresponding {@link ChronoUnit}.
      *
      * @param chrono The {@link Chrono} to convert.
@@ -158,6 +131,33 @@ public enum Chrono {
                 return ChronoUnit.WEEKS;
         }
         return null;
+    }
+
+    /**
+     * Gets the number of milliseconds corresponding to this unit.
+     *
+     * @return The number of milliseconds.
+     */
+    public long getMillis() {
+        return this.millis;
+    }
+
+    /**
+     * Gets the name of the level.
+     *
+     * @return The name of the level.
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Converts this {@link Chrono} to the corresponding {@link ChronoUnit}.
+     *
+     * @return The corresponding {@link ChronoUnit}.
+     */
+    public ChronoUnit of() {
+        return Chrono.of(this);
     }
 
 }

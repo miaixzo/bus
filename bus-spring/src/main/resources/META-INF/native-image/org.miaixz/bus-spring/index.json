@@ -23,10 +23,11 @@
       "8.8.15",
       "8.8.16",
       "8.8.18",
-      "8.8.19"
+      "8.8.19",
+      "8.8.20"
     ],
     "allowed-packages": [
-      "org.miaixz.bus.spring"
+      "org.miaixz"
     ]
   }
 ]

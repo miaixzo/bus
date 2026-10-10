@@ -393,7 +393,7 @@ public class RepositoryApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/repository/tree</code>
      * </pre>
-     *
+     * <p>
      * id (required) - The ID of a project path (optional) - The path inside repository. Used to get content of
      * subdirectories ref_name (optional) - The name of a repository branch or tag or if not given the default branch
      *
@@ -413,7 +413,7 @@ public class RepositoryApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/repository/tree</code>
      * </pre>
-     *
+     * <p>
      * id (required) - The ID of a project path (optional) - The path inside repository. Used to get content of
      * subdirectories ref_name (optional) - The name of a repository branch or tag or if not given the default branch
      *
@@ -435,7 +435,7 @@ public class RepositoryApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/repository/tree</code>
      * </pre>
-     *
+     * <p>
      * id (required) - The ID of a project path (optional) - The path inside repository. Used to get content of
      * subdirectories ref_name (optional) - The name of a repository branch or tag or if not given the default branch
      *
@@ -456,7 +456,7 @@ public class RepositoryApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/repository/tree</code>
      * </pre>
-     *
+     * <p>
      * id (required) - The ID of a project path (optional) - The path inside repository. Used to get contend of
      * subdirectories ref_name (optional) - The name of a repository branch or tag or if not given the default branch
      * recursive (optional) - Boolean value used to get a recursive tree (false by default)
@@ -479,7 +479,7 @@ public class RepositoryApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/repository/tree</code>
      * </pre>
-     *
+     * <p>
      * id (required) - The ID of a project path (optional) - The path inside repository. Used to get contend of
      * subdirectories ref_name (optional) - The name of a repository branch or tag or if not given the default branch
      * recursive (optional) - Boolean value used to get a recursive tree (false by default)
@@ -512,7 +512,7 @@ public class RepositoryApi extends AbstractApi {
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/repository/tree</code>
      * </pre>
-     *
+     * <p>
      * id (required) - The ID of a project path (optional) - The path inside repository. Used to get contend of
      * subdirectories ref_name (optional) - The name of a repository branch or tag or if not given the default branch
      * recursive (optional) - Boolean value used to get a recursive tree (false by default)

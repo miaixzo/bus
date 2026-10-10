@@ -91,55 +91,6 @@ public class Ingestion {
     }
 
     /**
-     * Returns the ingestion path.
-     *
-     * @return normalized ingestion path beginning with {@code /}
-     */
-    public String path() {
-        return path;
-    }
-
-    /**
-     * Returns the external method.
-     *
-     * @return trimmed external operation name, or an empty string when unspecified
-     */
-    public String method() {
-        return method;
-    }
-
-    /**
-     * Returns the header snapshot.
-     *
-     * @return immutable external headers
-     */
-    public Headers headers() {
-        return headers;
-    }
-
-    /**
-     * Returns the payload reference.
-     *
-     * @return external payload associated with the ingestion
-     */
-    public Payload payload() {
-        return payload;
-    }
-
-    /**
-     * Returns decoded immutable attributes.
-     *
-     * @return immutable attribute map with sentinel values decoded back to {@code null}
-     */
-    public Map<String, Object> attributes() {
-        final Map<String, Object> copy = MapKit.newHashMap(attributes.size(), true);
-        for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
-            copy.put(entry.getKey(), entry.getValue() == nullValue() ? null : entry.getValue());
-        }
-        return MapKit.view(copy);
-    }
-
-    /**
      * Creates immutable attributes with null sentinels.
      *
      * @param source source attributes to validate and copy, or {@code null}
@@ -225,11 +176,65 @@ public class Ingestion {
     }
 
     /**
+     * Returns the ingestion path.
+     *
+     * @return normalized ingestion path beginning with {@code /}
+     */
+    public String path() {
+        return path;
+    }
+
+    /**
+     * Returns the external method.
+     *
+     * @return trimmed external operation name, or an empty string when unspecified
+     */
+    public String method() {
+        return method;
+    }
+
+    /**
+     * Returns the header snapshot.
+     *
+     * @return immutable external headers
+     */
+    public Headers headers() {
+        return headers;
+    }
+
+    /**
+     * Returns the payload reference.
+     *
+     * @return external payload associated with the ingestion
+     */
+    public Payload payload() {
+        return payload;
+    }
+
+    /**
+     * Returns decoded immutable attributes.
+     *
+     * @return immutable attribute map with sentinel values decoded back to {@code null}
+     */
+    public Map<String, Object> attributes() {
+        final Map<String, Object> copy = MapKit.newHashMap(attributes.size(), true);
+        for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
+            copy.put(entry.getKey(), entry.getValue() == nullValue() ? null : entry.getValue());
+        }
+        return MapKit.view(copy);
+    }
+
+    /**
      * Builder for bridge ingestions.
      *
      * @author Kimi Liu
      */
     public static class Builder {
+
+        /**
+         * Mutable attributes retained in insertion order until build time.
+         */
+        private final LinkedHashMap<String, Object> attributes = new LinkedHashMap<>();
 
         /**
          * Validated ingestion path, initially the root path.
@@ -250,11 +255,6 @@ public class Ingestion {
          * External payload, initially empty.
          */
         private Payload payload = Payload.empty();
-
-        /**
-         * Mutable attributes retained in insertion order until build time.
-         */
-        private final LinkedHashMap<String, Object> attributes = new LinkedHashMap<>();
 
         /**
          * Creates a builder with default lightweight values.

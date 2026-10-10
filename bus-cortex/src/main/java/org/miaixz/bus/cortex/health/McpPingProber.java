@@ -22,11 +22,7 @@ package org.miaixz.bus.cortex.health;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.cortex.Builder;
-import org.miaixz.bus.cortex.Callout;
-import org.miaixz.bus.cortex.Instance;
-import org.miaixz.bus.cortex.Prober;
-import org.miaixz.bus.cortex.Status;
+import org.miaixz.bus.cortex.*;
 
 /**
  * MCP JSON-RPC ping prober.

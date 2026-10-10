@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.dubbo;
 
+import java.util.Arrays;
+
 import lombok.Getter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -42,10 +44,12 @@ public class DubboProperties {
      * Whether the dubbo integration is enabled.
      */
     private final boolean enabled;
+
     /**
      * Package names scanned for Dubbo service components.
      */
     private final String[] basePackages;
+
     /**
      * Marker classes whose packages are included in Dubbo scanning.
      */
@@ -88,8 +92,8 @@ public class DubboProperties {
      */
     @Override
     public String toString() {
-        return "DubboProperties[enabled=" + enabled + ", basePackages=" + java.util.Arrays.toString(basePackages)
-                + ", basePackageClasses=" + java.util.Arrays.toString(basePackageClasses) + "]";
+        return "DubboProperties[enabled=" + enabled + ", basePackages=" + Arrays.toString(basePackages)
+                + ", basePackageClasses=" + Arrays.toString(basePackageClasses) + "]";
     }
 
 }

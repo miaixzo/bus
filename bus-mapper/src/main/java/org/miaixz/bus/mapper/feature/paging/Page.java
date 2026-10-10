@@ -74,9 +74,6 @@ import java.util.List;
  */
 public class Page<T> extends ArrayList<T> {
 
-    /**
-     * Serialization version for {@link Page}.
-     */
     @Serial
     private static final long serialVersionUID = 2852289758798L;
 

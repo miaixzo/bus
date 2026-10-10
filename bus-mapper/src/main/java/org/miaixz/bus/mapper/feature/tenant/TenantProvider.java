@@ -33,10 +33,10 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * optional, a missing authenticated tenant is represented by an empty result; required-mode enforcement belongs to the
  * Mapper tenant handler.
  *
+ * @author Kimi Liu
  * @see TenantConfig
  * @see TenantHandler
  * @see MapperProvider
- * @author Kimi Liu
  */
 @FunctionalInterface
 public interface TenantProvider extends MapperProvider<TenantConfig> {

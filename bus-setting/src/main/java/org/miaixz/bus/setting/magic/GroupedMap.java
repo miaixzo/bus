@@ -321,7 +321,7 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
     }
 
     @Override
-    public Set<java.util.Map.Entry<String, LinkedHashMap<String, String>>> entrySet() {
+    public Set<Entry<String, LinkedHashMap<String, String>>> entrySet() {
         readLock.lock();
         try {
             return super.entrySet();

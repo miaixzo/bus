@@ -54,7 +54,8 @@ public class MultipartParser {
      * @throws IOException if the operation cannot be completed.
      */
     public void parse(InputStream in, Handler handler) throws IOException {
-        new MultipartInputStream(in, "--" + boundary).skipAll(); // skip preamble
+        byte[] crlf2dashBoundary = ("\r\n--" + boundary).getBytes();
+        skipPreamble(in, crlf2dashBoundary);
         for (int i = 1;; i++) {
             int ch1 = in.read();
             int ch2 = in.read();
@@ -67,10 +68,40 @@ public class MultipartParser {
             if (ch1 != Symbol.C_CR || ch2 != Symbol.C_LF)
                 throw new IOException("missing CR/LF after boundary");
 
-            MultipartInputStream mis = new MultipartInputStream(in, "\r\n--" + boundary);
+            MultipartInputStream mis = new MultipartInputStream(in, crlf2dashBoundary);
             handler.bodyPart(i, mis);
             mis.skipAll();
         }
+    }
+
+    /**
+     * Skips the preamble before the first body part.
+     *
+     * @param in                the in.
+     * @param crlf2dashBoundary the CRLF boundary.
+     * @throws IOException if the operation cannot be completed.
+     */
+    private void skipPreamble(InputStream in, byte[] crlf2dashBoundary) throws IOException {
+        byte[] b = new byte[crlf2dashBoundary.length];
+        MultipartInputStream.readFully(in, b, 0, b.length - 2);
+        if (!is2DashBoundary(b, crlf2dashBoundary)) {
+            MultipartInputStream.readFully(in, b, b.length - 2, 2);
+            new MultipartInputStream(in, crlf2dashBoundary, b).skipAll();
+        }
+    }
+
+    /**
+     * Determines whether the bytes match the boundary without the leading CRLF.
+     *
+     * @param b                 the bytes.
+     * @param crlf2dashBoundary the CRLF boundary.
+     * @return true if the condition is met; otherwise false.
+     */
+    private static boolean is2DashBoundary(byte[] b, byte[] crlf2dashBoundary) {
+        for (int i = 0, j = 2; j < crlf2dashBoundary.length;)
+            if (b[i++] != crlf2dashBoundary[j++])
+                return false;
+        return true;
     }
 
     /**

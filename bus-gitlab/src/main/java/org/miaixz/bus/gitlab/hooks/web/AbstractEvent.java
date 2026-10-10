@@ -30,9 +30,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public abstract class AbstractEvent implements Event {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852230011506L;
 
@@ -40,14 +37,17 @@ public abstract class AbstractEvent implements Event {
      * The event type value.
      */
     private String eventType;
+
     /**
      * The request url value.
      */
     private String requestUrl;
+
     /**
      * The request query string value.
      */
     private String requestQueryString;
+
     /**
      * The secret token value.
      */
@@ -79,17 +79,6 @@ public abstract class AbstractEvent implements Event {
     }
 
     /**
-     * Sets the request url.
-     *
-     * @param requestUrl the request url value
-     */
-
-    @Override
-    public void setRequestUrl(String requestUrl) {
-        this.requestUrl = requestUrl;
-    }
-
-    /**
      * Returns the request url.
      *
      * @return the result
@@ -102,14 +91,14 @@ public abstract class AbstractEvent implements Event {
     }
 
     /**
-     * Sets the request query string.
+     * Sets the request url.
      *
-     * @param requestQueryString the request query string value
+     * @param requestUrl the request url value
      */
 
     @Override
-    public void setRequestQueryString(String requestQueryString) {
-        this.requestQueryString = requestQueryString;
+    public void setRequestUrl(String requestUrl) {
+        this.requestUrl = requestUrl;
     }
 
     /**
@@ -125,14 +114,14 @@ public abstract class AbstractEvent implements Event {
     }
 
     /**
-     * Sets the request secret token.
+     * Sets the request query string.
      *
-     * @param secretToken the secret token value
+     * @param requestQueryString the request query string value
      */
 
     @Override
-    public void setRequestSecretToken(String secretToken) {
-        this.secretToken = secretToken;
+    public void setRequestQueryString(String requestQueryString) {
+        this.requestQueryString = requestQueryString;
     }
 
     /**
@@ -145,6 +134,17 @@ public abstract class AbstractEvent implements Event {
     @JsonIgnore
     public String getRequestSecretToken() {
         return (secretToken);
+    }
+
+    /**
+     * Sets the request secret token.
+     *
+     * @param secretToken the secret token value
+     */
+
+    @Override
+    public void setRequestSecretToken(String secretToken) {
+        this.secretToken = secretToken;
     }
 
 }

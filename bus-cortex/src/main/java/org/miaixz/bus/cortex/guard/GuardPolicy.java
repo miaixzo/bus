@@ -98,6 +98,25 @@ public enum GuardPolicy {
     }
 
     /**
+     * Resolves one policy from the persisted numeric code.
+     *
+     * @param code persisted policy code
+     * @return matching policy
+     * @throws IllegalArgumentException when the code is unknown
+     */
+    public static GuardPolicy fromCode(Integer code) {
+        if (code == null) {
+            throw new IllegalArgumentException("Guard policy code must not be null");
+        }
+        for (GuardPolicy policy : values()) {
+            if (policy.code == code) {
+                return policy;
+            }
+        }
+        throw new IllegalArgumentException("Unsupported guard policy code: " + code);
+    }
+
+    /**
      * Returns the stable numeric code used by assets and gateway policy dispatch.
      *
      * @return policy code
@@ -158,25 +177,6 @@ public enum GuardPolicy {
      */
     public boolean mock() {
         return this == MOCK;
-    }
-
-    /**
-     * Resolves one policy from the persisted numeric code.
-     *
-     * @param code persisted policy code
-     * @return matching policy
-     * @throws IllegalArgumentException when the code is unknown
-     */
-    public static GuardPolicy fromCode(Integer code) {
-        if (code == null) {
-            throw new IllegalArgumentException("Guard policy code must not be null");
-        }
-        for (GuardPolicy policy : values()) {
-            if (policy.code == code) {
-                return policy;
-            }
-        }
-        throw new IllegalArgumentException("Unsupported guard policy code: " + code);
     }
 
 }

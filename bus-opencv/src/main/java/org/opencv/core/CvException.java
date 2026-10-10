@@ -20,12 +20,17 @@
 package org.opencv.core;
 
 /**
- * The cv exception class.
+ * Provides the {@code CvException} API.
  */
 public class CvException extends RuntimeException {
 
-    private static final long serialVersionUID = 2882630598126L;
+    private static final long serialVersionUID = 1L;
 
+    /**
+     * Creates a new {@code CvException} instance.
+     *
+     * @param msg the {@code msg} value
+     */
     public CvException(String msg) {
         super(msg);
     }
@@ -34,5 +39,4 @@ public class CvException extends RuntimeException {
     public String toString() {
         return "CvException [" + super.toString() + "]";
     }
-
 }

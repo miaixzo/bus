@@ -35,66 +35,82 @@ public class Build {
      * The id value.
      */
     private Long id;
+
     /**
      * The stage value.
      */
     private String stage;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The status value.
      */
     private BuildStatus status;
+
     /**
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The started at value.
      */
     private Date startedAt;
+
     /**
      * The finished at value.
      */
     private Date finishedAt;
+
     /**
      * The duration value.
      */
     private Float duration;
+
     /**
      * The queued duration value.
      */
     private Float queuedDuration;
+
     /**
      * The failure reason value.
      */
     private String failureReason;
+
     /**
      * The when value.
      */
     private String when;
+
     /**
      * The manual value.
      */
     private Boolean manual;
+
     /**
      * The allow failure value.
      */
     private Boolean allowFailure;
+
     /**
      * The user value.
      */
     private User user;
+
     /**
      * The runner value.
      */
     private Runner runner;
+
     /**
      * The artifacts file value.
      */
     private ArtifactsFile artifactsFile;
+
     /**
      * The environment value.
      */

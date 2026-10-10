@@ -187,79 +187,6 @@ public class DnsUpdateCommand {
     }
 
     /**
-     * Returns a copy of this command with a different client address.
-     *
-     * @param clientAddress replacement client address, or {@code null} when unavailable
-     * @return command copy using the supplied client address
-     */
-    public DnsUpdateCommand withClientAddress(final InetAddress clientAddress) {
-        return new DnsUpdateCommand(zone, clientAddress, message, prerequisites, updates, additionals);
-    }
-
-    /**
-     * Returns the zone section question.
-     *
-     * @return zone section question
-     */
-    public DnsQuestion zone() {
-        return zone;
-    }
-
-    /**
-     * Returns the update zone name.
-     *
-     * @return canonical zone name
-     */
-    public String zoneName() {
-        return zoneName;
-    }
-
-    /**
-     * Returns the update client address.
-     *
-     * @return client address, or {@code null} when unavailable
-     */
-    public InetAddress clientAddress() {
-        return clientAddress;
-    }
-
-    /**
-     * Returns the original DNS update wire message.
-     *
-     * @return defensive copy of the wire message
-     */
-    public byte[] message() {
-        return Arrays.copyOf(message, message.length);
-    }
-
-    /**
-     * Returns prerequisite section entries.
-     *
-     * @return immutable prerequisite entries
-     */
-    public List<Prerequisite> prerequisites() {
-        return prerequisites;
-    }
-
-    /**
-     * Returns update section entries.
-     *
-     * @return immutable update entries
-     */
-    public List<Update> updates() {
-        return updates;
-    }
-
-    /**
-     * Returns non-EDNS and non-TSIG additional section records.
-     *
-     * @return immutable additional records
-     */
-    public List<DnsRecord> additionals() {
-        return additionals;
-    }
-
-    /**
      * Validates and copies a DNS update wire message.
      *
      * @param message source wire message
@@ -343,6 +270,79 @@ public class DnsUpdateCommand {
         if (record.ttl() != 0L) {
             throw new ProtocolException(name + " TTL must be zero");
         }
+    }
+
+    /**
+     * Returns a copy of this command with a different client address.
+     *
+     * @param clientAddress replacement client address, or {@code null} when unavailable
+     * @return command copy using the supplied client address
+     */
+    public DnsUpdateCommand withClientAddress(final InetAddress clientAddress) {
+        return new DnsUpdateCommand(zone, clientAddress, message, prerequisites, updates, additionals);
+    }
+
+    /**
+     * Returns the zone section question.
+     *
+     * @return zone section question
+     */
+    public DnsQuestion zone() {
+        return zone;
+    }
+
+    /**
+     * Returns the update zone name.
+     *
+     * @return canonical zone name
+     */
+    public String zoneName() {
+        return zoneName;
+    }
+
+    /**
+     * Returns the update client address.
+     *
+     * @return client address, or {@code null} when unavailable
+     */
+    public InetAddress clientAddress() {
+        return clientAddress;
+    }
+
+    /**
+     * Returns the original DNS update wire message.
+     *
+     * @return defensive copy of the wire message
+     */
+    public byte[] message() {
+        return Arrays.copyOf(message, message.length);
+    }
+
+    /**
+     * Returns prerequisite section entries.
+     *
+     * @return immutable prerequisite entries
+     */
+    public List<Prerequisite> prerequisites() {
+        return prerequisites;
+    }
+
+    /**
+     * Returns update section entries.
+     *
+     * @return immutable update entries
+     */
+    public List<Update> updates() {
+        return updates;
+    }
+
+    /**
+     * Returns non-EDNS and non-TSIG additional section records.
+     *
+     * @return immutable additional records
+     */
+    public List<DnsRecord> additionals() {
+        return additionals;
     }
 
     /**

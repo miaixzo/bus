@@ -56,28 +56,6 @@ import org.miaixz.bus.fabric.protocol.http.http2.Http2Stream;
 public class Http2Codec implements HttpCodec {
 
     /**
-     * Per-call codec activity independent from the HTTP/2 connection lifecycle.
-     */
-    private enum CodecState {
-
-        /**
-         * Ready to create or consume a stream.
-         */
-        IDLE,
-
-        /**
-         * Encoding or decoding the current stream.
-         */
-        BUSY,
-
-        /**
-         * Cancelled by the owning call.
-         */
-        CANCELLED
-
-    }
-
-    /**
      * Reusable pseudo field for the dominant idempotent request method.
      */
     private static final Http2Header GET_METHOD = Http2Header.of(Http.Header.PSEUDO_METHOD, Http.Method.GET.value());
@@ -115,166 +93,6 @@ public class Http2Codec implements HttpCodec {
     public Http2Codec(final Http2Connection connection) {
         this.connection = require(connection, "HTTP/2 connection");
         this.state = CodecState.IDLE;
-    }
-
-    /**
-     * Creates a stream and writes request headers.
-     *
-     * @param request immutable request whose pseudo and regular headers are written
-     * @return newly registered HTTP/2 stream for the request
-     */
-    public Http2Stream newStream(final HttpRequest request) {
-        final HttpRequest current = require(request, "HTTP request");
-        final List<Http2Header> headers = requestHeaders(current);
-        final Http2Stream stream = connection
-                .openStream(Headers.empty(), headers, current.body().length() == Normal._0);
-        synchronized (this) {
-            if (active != null) {
-                stream.close();
-                throw new StatefulException("HTTP/2 codec already has an active stream");
-            }
-            active = stream;
-        }
-        activeRequest = current;
-        try {
-            return stream;
-        } catch (final RuntimeException e) {
-            if (active == stream) {
-                active = null;
-            }
-            activeRequest = null;
-            stream.close();
-            throw e;
-        }
-    }
-
-    /**
-     * Writes request headers and data frames.
-     *
-     * @param request request whose headers and body are written to a new stream
-     */
-    @Override
-    public void writeRequest(final HttpRequest request) {
-        final HttpRequest current = require(request, "HTTP request");
-        state = CodecState.BUSY;
-        try {
-            final Http2Stream stream = newStream(current);
-            if (current.body().length() != Normal._0) {
-                writeBody(stream, current);
-            }
-        } finally {
-            if (state == CodecState.BUSY) {
-                state = CodecState.IDLE;
-            }
-        }
-    }
-
-    /**
-     * Reads response headers and data frames for a request stream.
-     *
-     * @param request same request instance previously passed to {@link #writeRequest(HttpRequest)}
-     * @return response
-     */
-    @Override
-    public HttpResponse readResponse(final HttpRequest request) {
-        final HttpRequest current = require(request, "HTTP request");
-        final Http2Stream stream = active;
-        if (stream == null || activeRequest != current) {
-            throw new StatefulException("HTTP/2 stream is missing for request");
-        }
-        state = CodecState.BUSY;
-        try {
-            stream.readTimeout(current.timeout().read());
-            final Headers headers = validateResponseHeaders(
-                    stream.awaitResponseHeaders(current.timeout().read()),
-                    stream.responseStatus());
-            final String status = stream.responseStatus();
-            final int code = parseStatus(status);
-            final Payload payload = new LengthCheckedPayload(stream.payload(), contentLength(headers));
-            return HttpResponse.builder().request(current).code(code).message(Normal.EMPTY).headers(headers)
-                    .body(PayloadBody.of(payload, media(headers))).protocol(Protocol.HTTP_2)
-                    .trailers(() -> validateTrailers(stream.trailers())).build();
-        } finally {
-            state = CodecState.IDLE;
-        }
-    }
-
-    /**
-     * Cancels this codec.
-     */
-    @Override
-    public void cancel() {
-        final CodecState previous;
-        synchronized (this) {
-            previous = state;
-            state = CodecState.CANCELLED;
-        }
-        if (previous == CodecState.CANCELLED) {
-            return;
-        }
-        final Http2Stream stream = active;
-        active = null;
-        activeRequest = null;
-        if (stream != null) {
-            stream.close();
-        }
-    }
-
-    /**
-     * Returns whether the connection can be reused.
-     *
-     * @return true when reusable
-     */
-    @Override
-    public boolean reusable() {
-        return state == CodecState.IDLE;
-    }
-
-    /**
-     * Writes request body DATA frames.
-     *
-     * @param stream  active HTTP/2 stream receiving DATA frames
-     * @param request request supplying body source, declared length, and write timeout
-     */
-    private void writeBody(final Http2Stream stream, final HttpRequest request) {
-        final Buffer buffer = new Buffer();
-        try (Source input = request.body().source()) {
-            final long declared = request.body().length();
-            long remaining = declared;
-            while (true) {
-                final long read = input.read(
-                        buffer,
-                        Math.min(Normal._16384, declared < Normal._0 ? Normal._16384 : Math.max(Normal._1, remaining)));
-                if (read < Normal._0) {
-                    break;
-                }
-                if (read == Normal._0) {
-                    continue;
-                }
-                if (declared >= Normal._0 && read > remaining) {
-                    throw new ProtocolException("HTTP/2 request body exceeds declared length");
-                }
-                if (declared >= Normal._0) {
-                    remaining -= read;
-                }
-                connection.writeData(
-                        stream.id(),
-                        buffer,
-                        declared >= Normal._0 && remaining == Normal._0,
-                        request.timeout().write());
-                if (declared >= Normal._0 && remaining == Normal._0) {
-                    break;
-                }
-            }
-            if (declared >= Normal._0 && remaining != Normal._0) {
-                throw new ProtocolException("HTTP/2 request body is shorter than declared length");
-            }
-            if (declared < Normal._0) {
-                connection.writeData(stream.id(), new Buffer(), true, request.timeout().write());
-            }
-        } catch (final IOException e) {
-            throw new SocketException("Unable to read HTTP/2 request body", e);
-        }
     }
 
     /**
@@ -326,17 +144,6 @@ public class Http2Codec implements HttpCodec {
                 Http2Header.of(Http.Header.PSEUDO_PATH, url.requestTarget()));
         lastTargetHeaders = created;
         return created;
-    }
-
-    /**
-     * Immutable pseudo fields owned by one cached URL identity.
-     *
-     * @param url       URL identity represented by the cached fields
-     * @param scheme    cached {@code :scheme} field
-     * @param authority cached {@code :authority} field
-     * @param path      cached {@code :path} field
-     */
-    private record TargetHeaders(UnoUrl url, Http2Header scheme, Http2Header authority, Http2Header path) {
     }
 
     /**
@@ -511,6 +318,199 @@ public class Http2Codec implements HttpCodec {
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Creates a stream and writes request headers.
+     *
+     * @param request immutable request whose pseudo and regular headers are written
+     * @return newly registered HTTP/2 stream for the request
+     */
+    public Http2Stream newStream(final HttpRequest request) {
+        final HttpRequest current = require(request, "HTTP request");
+        final List<Http2Header> headers = requestHeaders(current);
+        final Http2Stream stream = connection
+                .openStream(Headers.empty(), headers, current.body().length() == Normal._0);
+        synchronized (this) {
+            if (active != null) {
+                stream.close();
+                throw new StatefulException("HTTP/2 codec already has an active stream");
+            }
+            active = stream;
+        }
+        activeRequest = current;
+        try {
+            return stream;
+        } catch (final RuntimeException e) {
+            if (active == stream) {
+                active = null;
+            }
+            activeRequest = null;
+            stream.close();
+            throw e;
+        }
+    }
+
+    /**
+     * Writes request headers and data frames.
+     *
+     * @param request request whose headers and body are written to a new stream
+     */
+    @Override
+    public void writeRequest(final HttpRequest request) {
+        final HttpRequest current = require(request, "HTTP request");
+        state = CodecState.BUSY;
+        try {
+            final Http2Stream stream = newStream(current);
+            if (current.body().length() != Normal._0) {
+                writeBody(stream, current);
+            }
+        } finally {
+            if (state == CodecState.BUSY) {
+                state = CodecState.IDLE;
+            }
+        }
+    }
+
+    /**
+     * Reads response headers and data frames for a request stream.
+     *
+     * @param request same request instance previously passed to {@link #writeRequest(HttpRequest)}
+     * @return response
+     */
+    @Override
+    public HttpResponse readResponse(final HttpRequest request) {
+        final HttpRequest current = require(request, "HTTP request");
+        final Http2Stream stream = active;
+        if (stream == null || activeRequest != current) {
+            throw new StatefulException("HTTP/2 stream is missing for request");
+        }
+        state = CodecState.BUSY;
+        try {
+            stream.readTimeout(current.timeout().read());
+            final Headers headers = validateResponseHeaders(
+                    stream.awaitResponseHeaders(current.timeout().read()),
+                    stream.responseStatus());
+            final String status = stream.responseStatus();
+            final int code = parseStatus(status);
+            final Payload payload = new LengthCheckedPayload(stream.payload(), contentLength(headers));
+            return HttpResponse.builder().request(current).code(code).message(Normal.EMPTY).headers(headers)
+                    .body(PayloadBody.of(payload, media(headers))).protocol(Protocol.HTTP_2)
+                    .trailers(() -> validateTrailers(stream.trailers())).build();
+        } finally {
+            state = CodecState.IDLE;
+        }
+    }
+
+    /**
+     * Cancels this codec.
+     */
+    @Override
+    public void cancel() {
+        final CodecState previous;
+        synchronized (this) {
+            previous = state;
+            state = CodecState.CANCELLED;
+        }
+        if (previous == CodecState.CANCELLED) {
+            return;
+        }
+        final Http2Stream stream = active;
+        active = null;
+        activeRequest = null;
+        if (stream != null) {
+            stream.close();
+        }
+    }
+
+    /**
+     * Returns whether the connection can be reused.
+     *
+     * @return true when reusable
+     */
+    @Override
+    public boolean reusable() {
+        return state == CodecState.IDLE;
+    }
+
+    /**
+     * Writes request body DATA frames.
+     *
+     * @param stream  active HTTP/2 stream receiving DATA frames
+     * @param request request supplying body source, declared length, and write timeout
+     */
+    private void writeBody(final Http2Stream stream, final HttpRequest request) {
+        final Buffer buffer = new Buffer();
+        try (Source input = request.body().source()) {
+            final long declared = request.body().length();
+            long remaining = declared;
+            while (true) {
+                final long read = input.read(
+                        buffer,
+                        Math.min(Normal._16384, declared < Normal._0 ? Normal._16384 : Math.max(Normal._1, remaining)));
+                if (read < Normal._0) {
+                    break;
+                }
+                if (read == Normal._0) {
+                    continue;
+                }
+                if (declared >= Normal._0 && read > remaining) {
+                    throw new ProtocolException("HTTP/2 request body exceeds declared length");
+                }
+                if (declared >= Normal._0) {
+                    remaining -= read;
+                }
+                connection.writeData(
+                        stream.id(),
+                        buffer,
+                        declared >= Normal._0 && remaining == Normal._0,
+                        request.timeout().write());
+                if (declared >= Normal._0 && remaining == Normal._0) {
+                    break;
+                }
+            }
+            if (declared >= Normal._0 && remaining != Normal._0) {
+                throw new ProtocolException("HTTP/2 request body is shorter than declared length");
+            }
+            if (declared < Normal._0) {
+                connection.writeData(stream.id(), new Buffer(), true, request.timeout().write());
+            }
+        } catch (final IOException e) {
+            throw new SocketException("Unable to read HTTP/2 request body", e);
+        }
+    }
+
+    /**
+     * Per-call codec activity independent from the HTTP/2 connection lifecycle.
+     */
+    private enum CodecState {
+
+        /**
+         * Ready to create or consume a stream.
+         */
+        IDLE,
+
+        /**
+         * Encoding or decoding the current stream.
+         */
+        BUSY,
+
+        /**
+         * Cancelled by the owning call.
+         */
+        CANCELLED
+
+    }
+
+    /**
+     * Immutable pseudo fields owned by one cached URL identity.
+     *
+     * @param url       URL identity represented by the cached fields
+     * @param scheme    cached {@code :scheme} field
+     * @param authority cached {@code :authority} field
+     * @param path      cached {@code :path} field
+     */
+    private record TargetHeaders(UnoUrl url, Http2Header scheme, Http2Header authority, Http2Header path) {
     }
 
     /**

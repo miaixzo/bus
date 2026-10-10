@@ -32,9 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class CompareResults implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852250376909L;
 
@@ -42,18 +39,22 @@ public class CompareResults implements Serializable {
      * The commit value.
      */
     private Commit commit;
+
     /**
      * The commits value.
      */
     private List<Commit> commits;;
+
     /**
      * The diffs value.
      */
     private List<Diff> diffs;
+
     /**
      * The compare timeout value.
      */
     private Boolean compareTimeout;
+
     /**
      * The compare same ref value.
      */

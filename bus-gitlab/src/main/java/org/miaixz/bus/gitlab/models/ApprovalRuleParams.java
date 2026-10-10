@@ -20,8 +20,6 @@
 package org.miaixz.bus.gitlab.models;
 
 import java.io.Serial;
-
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -32,9 +30,6 @@ import java.util.List;
  */
 public class ApprovalRuleParams implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852236337509L;
 
@@ -42,34 +37,42 @@ public class ApprovalRuleParams implements Serializable {
      * The approvals required value.
      */
     private Integer approvalsRequired;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The applies to all protected branches value.
      */
     private Boolean appliesToAllProtectedBranches;
+
     /**
      * The group ids value.
      */
     private List<Long> groupIds;
+
     /**
      * The protected branch ids value.
      */
     private List<Long> protectedBranchIds;
+
     /**
      * The report type value.
      */
     private String reportType;
+
     /**
      * The rule type value.
      */
     private String ruleType;
+
     /**
      * The user ids value.
      */
     private List<Long> userIds;
+
     /**
      * The usernames value.
      */

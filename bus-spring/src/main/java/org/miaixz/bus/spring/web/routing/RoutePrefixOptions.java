@@ -36,10 +36,12 @@ public class RoutePrefixOptions {
      * Normalized path prefix prepended to matching controller routes.
      */
     private final String prefix;
+
     /**
      * Ordered controller package roots eligible for route prefixing.
      */
     private final List<String> basePackages;
+
     /**
      * Whether discovered route metadata is retained for later inspection.
      */

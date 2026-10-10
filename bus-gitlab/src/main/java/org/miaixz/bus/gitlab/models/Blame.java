@@ -32,9 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Blame implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852238185017L;
 
@@ -42,6 +39,7 @@ public class Blame implements Serializable {
      * The commit value.
      */
     private Commit commit;
+
     /**
      * The lines value.
      */

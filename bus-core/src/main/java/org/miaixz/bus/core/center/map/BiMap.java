@@ -41,9 +41,6 @@ import org.miaixz.bus.core.xyz.MapKit;
  */
 public class BiMap<K, V> extends MapWrapper<K, V> {
 
-    /**
-     * The serialization version identifier for this class.
-     */
     @Serial
     private static final long serialVersionUID = 2852268325561L;
 

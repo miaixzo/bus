@@ -19,24 +19,12 @@
 */
 package org.miaixz.bus.fabric.network.dns.secure;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PushbackInputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -220,99 +208,6 @@ public class DnsDohServer implements AutoCloseable, Lifecycle {
     }
 
     /**
-     * Starts the accept loop.
-     *
-     * @return this server
-     */
-    public DnsDohServer start() {
-        if (closed.get()) {
-            throw new StatefulException("DNS-over-HTTPS server is closed");
-        }
-        if (!active.compareAndSet(false, true)) {
-            return this;
-        }
-        acceptThread = ThreadKit.newThread(this::acceptLoop, "fabric-dns-doh-" + server.getLocalPort(), true);
-        acceptThread.start();
-        return this;
-    }
-
-    /**
-     * Stops the accept loop and closes all open client sockets.
-     */
-    @Override
-    public void close() {
-        if (!closed.compareAndSet(false, true)) {
-            return;
-        }
-        active.set(false);
-        IoKit.closeQuietly(server);
-        if (acceptThread != null) {
-            acceptThread.interrupt();
-        }
-        for (final AutoCloseable client : clients) {
-            IoKit.closeQuietly(client);
-        }
-        clients.clear();
-    }
-
-    /**
-     * Returns the current server lifecycle state.
-     *
-     * @return server lifecycle state
-     */
-    @Override
-    public State state() {
-        if (closed.get()) {
-            return State.CLOSED;
-        }
-        return active.get() ? State.RUNNING : State.NEW;
-    }
-
-    /**
-     * Runs the accept loop for the bound endpoint.
-     */
-    private void acceptLoop() {
-        while (active.get()) {
-            try {
-                final java.net.Socket socket = server.accept();
-                clients.add(socket);
-                final Thread thread = ThreadKit
-                        .newThread(() -> clientLoop(socket), "fabric-dns-doh-client-" + server.getLocalPort(), true);
-                thread.start();
-            } catch (final IOException e) {
-                if (active.get()) {
-                    throw new SocketException("DNS-over-HTTPS accept failed", e);
-                }
-                return;
-            }
-        }
-    }
-
-    /**
-     * Serves one accepted client socket.
-     *
-     * @param socket accepted client socket
-     */
-    private void clientLoop(final java.net.Socket socket) {
-        try (java.net.Socket current = socket;
-                PushbackInputStream input = new PushbackInputStream(new BufferedInputStream(current.getInputStream()),
-                        HTTP2_PREFACE.length);
-                OutputStream output = new BufferedOutputStream(current.getOutputStream())) {
-            if (http2Preface(input)) {
-                handleHttp2(input, output, current.getInetAddress());
-            } else {
-                handleHttp1(input, output, current.getInetAddress());
-            }
-        } catch (final IOException e) {
-            if (active.get()) {
-                throw new SocketException("DNS-over-HTTPS client failed", e);
-            }
-        } finally {
-            clients.remove(socket);
-        }
-    }
-
-    /**
      * Returns whether the next bytes are an HTTP/2 client preface.
      *
      * @param input client input
@@ -326,77 +221,6 @@ public class DnsDohServer implements AutoCloseable, Lifecycle {
         }
         input.unread(candidate);
         return false;
-    }
-
-    /**
-     * Handles one HTTP/1.1 request and closes the connection.
-     *
-     * @param input         client input
-     * @param output        client output
-     * @param clientAddress client address
-     * @throws IOException if the socket cannot be read or written
-     */
-    private void handleHttp1(final InputStream input, final OutputStream output, final InetAddress clientAddress)
-            throws IOException {
-        try {
-            final Http1RequestLine request = Http1RequestLine.parse(readAsciiLine(input, MAX_REQUEST_LINE_BYTES));
-            final Map<String, String> headers = readHttp1Headers(input);
-            final byte[] dns = switch (request.method) {
-                case GET -> getDnsFromPath(request.target);
-                case POST -> postDnsFromHttp1(input, headers);
-                default -> throw new StatefulException(Http.Status.METHOD_NOT_ALLOWED,
-                        "HTTP " + Http.Status.METHOD_NOT_ALLOWED);
-            };
-            sendHttp1Dns(output, resolve(dns, clientAddress));
-        } catch (final StatefulException e) {
-            sendHttp1Error(output, e.getStatus());
-        } catch (final IllegalArgumentException | ProtocolException e) {
-            sendHttp1Error(output, Http.Status.BAD_REQUEST);
-        }
-    }
-
-    /**
-     * Handles an HTTP/2 prior-knowledge connection.
-     *
-     * @param input         client input after the preface
-     * @param output        client output
-     * @param clientAddress client address
-     * @throws IOException if the socket cannot be read or written
-     */
-    private void handleHttp2(final InputStream input, final OutputStream output, final InetAddress clientAddress)
-            throws IOException {
-        final HpackCodec hpack = new HpackCodec();
-        final ConcurrentHashMap<Integer, Http2RequestState> streams = new ConcurrentHashMap<>();
-        writeFrame(output, H2_SETTINGS, 0, 0, Normal.EMPTY_BYTE_ARRAY);
-        output.flush();
-        while (active.get()) {
-            final Http2FrameHeader header;
-            try {
-                header = Http2FrameHeader.read(input);
-            } catch (final EOFException e) {
-                return;
-            }
-            final byte[] payload = input.readNBytes(header.length);
-            if (payload.length != header.length) {
-                return;
-            }
-            switch (header.type) {
-                case H2_SETTINGS -> handleHttp2Settings(output, header, payload);
-                case H2_HEADERS -> handleHttp2Headers(input, output, hpack, streams, header, payload, clientAddress);
-                case H2_DATA -> handleHttp2Data(output, hpack, streams, header, payload, clientAddress);
-                case H2_PING -> handleHttp2Ping(output, header, payload);
-                case H2_GOAWAY -> {
-                    return;
-                }
-                case H2_WINDOW_UPDATE -> {
-                    continue;
-                }
-                default -> {
-                    continue;
-                }
-            }
-            output.flush();
-        }
     }
 
     /**
@@ -422,78 +246,6 @@ public class DnsDohServer implements AutoCloseable, Lifecycle {
     }
 
     /**
-     * Handles an HTTP/2 HEADERS frame.
-     *
-     * @param input         client input for continuation frames
-     * @param output        client output
-     * @param hpack         connection HPACK state
-     * @param streams       active stream state
-     * @param header        frame header
-     * @param payload       frame payload
-     * @param clientAddress client address
-     * @throws IOException if the socket cannot be read or written
-     */
-    private void handleHttp2Headers(
-            final InputStream input,
-            final OutputStream output,
-            final HpackCodec hpack,
-            final ConcurrentHashMap<Integer, Http2RequestState> streams,
-            final Http2FrameHeader header,
-            final byte[] payload,
-            final InetAddress clientAddress) throws IOException {
-        if (header.streamId <= 0) {
-            writeGoaway(output, H2_PROTOCOL_ERROR);
-            return;
-        }
-        final byte[] block = completeHeaderBlock(input, header, payload);
-        final List<Http2Header> decoded = hpack.decode(new Buffer().write(block));
-        final Http2RequestState state = Http2RequestState.from(decoded);
-        streams.put(header.streamId, state);
-        if ((header.flags & H2_FLAG_END_STREAM) != 0) {
-            processHttp2Request(output, hpack, streams, header.streamId, clientAddress);
-        }
-    }
-
-    /**
-     * Handles an HTTP/2 DATA frame.
-     *
-     * @param output        client output
-     * @param streams       active stream state
-     * @param header        frame header
-     * @param payload       frame payload
-     * @param clientAddress client address
-     * @throws IOException if the socket cannot be written
-     */
-    private void handleHttp2Data(
-            final OutputStream output,
-            final HpackCodec hpack,
-            final ConcurrentHashMap<Integer, Http2RequestState> streams,
-            final Http2FrameHeader header,
-            final byte[] payload,
-            final InetAddress clientAddress) throws IOException {
-        final Http2RequestState state = streams.get(header.streamId);
-        if (state == null || header.streamId <= 0) {
-            writeRstStream(output, header.streamId, H2_PROTOCOL_ERROR);
-            return;
-        }
-        try {
-            state.append(dataPayload(header.flags, payload));
-            if ((header.flags & H2_FLAG_END_STREAM) != 0) {
-                processHttp2Request(output, hpack, streams, header.streamId, clientAddress);
-            }
-        } catch (final StatefulException e) {
-            streams.remove(header.streamId);
-            sendHttp2(
-                    output,
-                    hpack,
-                    header.streamId,
-                    e.getStatus(),
-                    MediaType.TEXT_PLAIN,
-                    httpStatusBody(e.getStatus()));
-        }
-    }
-
-    /**
      * Handles an HTTP/2 PING frame.
      *
      * @param output  client output
@@ -506,67 +258,6 @@ public class DnsDohServer implements AutoCloseable, Lifecycle {
         if (header.streamId == 0 && payload.length == 8 && (header.flags & H2_FLAG_ACK) == 0) {
             writeFrame(output, H2_PING, H2_FLAG_ACK, 0, payload);
         }
-    }
-
-    /**
-     * Processes a completed HTTP/2 request stream.
-     *
-     * @param output        client output
-     * @param hpack         connection HPACK state
-     * @param streams       active stream state
-     * @param streamId      stream identifier
-     * @param clientAddress client address
-     * @throws IOException if the socket cannot be written
-     */
-    private void processHttp2Request(
-            final OutputStream output,
-            final HpackCodec hpack,
-            final ConcurrentHashMap<Integer, Http2RequestState> streams,
-            final int streamId,
-            final InetAddress clientAddress) throws IOException {
-        final Http2RequestState state = streams.remove(streamId);
-        if (state == null) {
-            return;
-        }
-        try {
-            final byte[] dns = switch (state.method()) {
-                case GET -> getDnsFromPath(state.path());
-                case POST -> postDnsFromHttp2(state);
-                default -> throw new StatefulException(Http.Status.METHOD_NOT_ALLOWED,
-                        "HTTP " + Http.Status.METHOD_NOT_ALLOWED);
-            };
-            sendHttp2(
-                    output,
-                    hpack,
-                    streamId,
-                    Http.Status.OK,
-                    MediaType.APPLICATION_DNS_MESSAGE,
-                    resolve(dns, clientAddress));
-        } catch (final StatefulException e) {
-            sendHttp2(output, hpack, streamId, e.getStatus(), MediaType.TEXT_PLAIN, httpStatusBody(e.getStatus()));
-        } catch (final IllegalArgumentException | ProtocolException e) {
-            sendHttp2(
-                    output,
-                    hpack,
-                    streamId,
-                    Http.Status.BAD_REQUEST,
-                    MediaType.TEXT_PLAIN,
-                    httpStatusBody(Http.Status.BAD_REQUEST));
-        }
-    }
-
-    /**
-     * Resolves one DNS message and validates the request size.
-     *
-     * @param request       DNS query wire message
-     * @param clientAddress client address
-     * @return DNS response wire message
-     */
-    private byte[] resolve(final byte[] request, final InetAddress clientAddress) {
-        if (request.length == 0 || request.length > DnsCodec.MAX_MESSAGE_BYTES) {
-            throw new StatefulException(Http.Status.CONTENT_TOO_LARGE, "HTTP " + Http.Status.CONTENT_TOO_LARGE);
-        }
-        return resolver.resolve(request, clientAddress);
     }
 
     /**
@@ -1011,6 +702,303 @@ public class DnsDohServer implements AutoCloseable, Lifecycle {
             }
         }
         return true;
+    }
+
+    /**
+     * Starts the accept loop.
+     *
+     * @return this server
+     */
+    public DnsDohServer start() {
+        if (closed.get()) {
+            throw new StatefulException("DNS-over-HTTPS server is closed");
+        }
+        if (!active.compareAndSet(false, true)) {
+            return this;
+        }
+        acceptThread = ThreadKit.newThread(this::acceptLoop, "fabric-dns-doh-" + server.getLocalPort(), true);
+        acceptThread.start();
+        return this;
+    }
+
+    /**
+     * Stops the accept loop and closes all open client sockets.
+     */
+    @Override
+    public void close() {
+        if (!closed.compareAndSet(false, true)) {
+            return;
+        }
+        active.set(false);
+        IoKit.closeQuietly(server);
+        if (acceptThread != null) {
+            acceptThread.interrupt();
+        }
+        for (final AutoCloseable client : clients) {
+            IoKit.closeQuietly(client);
+        }
+        clients.clear();
+    }
+
+    /**
+     * Returns the current server lifecycle state.
+     *
+     * @return server lifecycle state
+     */
+    @Override
+    public State state() {
+        if (closed.get()) {
+            return State.CLOSED;
+        }
+        return active.get() ? State.RUNNING : State.NEW;
+    }
+
+    /**
+     * Runs the accept loop for the bound endpoint.
+     */
+    private void acceptLoop() {
+        while (active.get()) {
+            try {
+                final java.net.Socket socket = server.accept();
+                clients.add(socket);
+                final Thread thread = ThreadKit
+                        .newThread(() -> clientLoop(socket), "fabric-dns-doh-client-" + server.getLocalPort(), true);
+                thread.start();
+            } catch (final IOException e) {
+                if (active.get()) {
+                    throw new SocketException("DNS-over-HTTPS accept failed", e);
+                }
+                return;
+            }
+        }
+    }
+
+    /**
+     * Serves one accepted client socket.
+     *
+     * @param socket accepted client socket
+     */
+    private void clientLoop(final java.net.Socket socket) {
+        try (java.net.Socket current = socket;
+                PushbackInputStream input = new PushbackInputStream(new BufferedInputStream(current.getInputStream()),
+                        HTTP2_PREFACE.length);
+                OutputStream output = new BufferedOutputStream(current.getOutputStream())) {
+            if (http2Preface(input)) {
+                handleHttp2(input, output, current.getInetAddress());
+            } else {
+                handleHttp1(input, output, current.getInetAddress());
+            }
+        } catch (final IOException e) {
+            if (active.get()) {
+                throw new SocketException("DNS-over-HTTPS client failed", e);
+            }
+        } finally {
+            clients.remove(socket);
+        }
+    }
+
+    /**
+     * Handles one HTTP/1.1 request and closes the connection.
+     *
+     * @param input         client input
+     * @param output        client output
+     * @param clientAddress client address
+     * @throws IOException if the socket cannot be read or written
+     */
+    private void handleHttp1(final InputStream input, final OutputStream output, final InetAddress clientAddress)
+            throws IOException {
+        try {
+            final Http1RequestLine request = Http1RequestLine.parse(readAsciiLine(input, MAX_REQUEST_LINE_BYTES));
+            final Map<String, String> headers = readHttp1Headers(input);
+            final byte[] dns = switch (request.method) {
+                case GET -> getDnsFromPath(request.target);
+                case POST -> postDnsFromHttp1(input, headers);
+                default -> throw new StatefulException(Http.Status.METHOD_NOT_ALLOWED,
+                        "HTTP " + Http.Status.METHOD_NOT_ALLOWED);
+            };
+            sendHttp1Dns(output, resolve(dns, clientAddress));
+        } catch (final StatefulException e) {
+            sendHttp1Error(output, e.getStatus());
+        } catch (final IllegalArgumentException | ProtocolException e) {
+            sendHttp1Error(output, Http.Status.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Handles an HTTP/2 prior-knowledge connection.
+     *
+     * @param input         client input after the preface
+     * @param output        client output
+     * @param clientAddress client address
+     * @throws IOException if the socket cannot be read or written
+     */
+    private void handleHttp2(final InputStream input, final OutputStream output, final InetAddress clientAddress)
+            throws IOException {
+        final HpackCodec hpack = new HpackCodec();
+        final ConcurrentHashMap<Integer, Http2RequestState> streams = new ConcurrentHashMap<>();
+        writeFrame(output, H2_SETTINGS, 0, 0, Normal.EMPTY_BYTE_ARRAY);
+        output.flush();
+        while (active.get()) {
+            final Http2FrameHeader header;
+            try {
+                header = Http2FrameHeader.read(input);
+            } catch (final EOFException e) {
+                return;
+            }
+            final byte[] payload = input.readNBytes(header.length);
+            if (payload.length != header.length) {
+                return;
+            }
+            switch (header.type) {
+                case H2_SETTINGS -> handleHttp2Settings(output, header, payload);
+                case H2_HEADERS -> handleHttp2Headers(input, output, hpack, streams, header, payload, clientAddress);
+                case H2_DATA -> handleHttp2Data(output, hpack, streams, header, payload, clientAddress);
+                case H2_PING -> handleHttp2Ping(output, header, payload);
+                case H2_GOAWAY -> {
+                    return;
+                }
+                case H2_WINDOW_UPDATE -> {
+                    continue;
+                }
+                default -> {
+                    continue;
+                }
+            }
+            output.flush();
+        }
+    }
+
+    /**
+     * Handles an HTTP/2 HEADERS frame.
+     *
+     * @param input         client input for continuation frames
+     * @param output        client output
+     * @param hpack         connection HPACK state
+     * @param streams       active stream state
+     * @param header        frame header
+     * @param payload       frame payload
+     * @param clientAddress client address
+     * @throws IOException if the socket cannot be read or written
+     */
+    private void handleHttp2Headers(
+            final InputStream input,
+            final OutputStream output,
+            final HpackCodec hpack,
+            final ConcurrentHashMap<Integer, Http2RequestState> streams,
+            final Http2FrameHeader header,
+            final byte[] payload,
+            final InetAddress clientAddress) throws IOException {
+        if (header.streamId <= 0) {
+            writeGoaway(output, H2_PROTOCOL_ERROR);
+            return;
+        }
+        final byte[] block = completeHeaderBlock(input, header, payload);
+        final List<Http2Header> decoded = hpack.decode(new Buffer().write(block));
+        final Http2RequestState state = Http2RequestState.from(decoded);
+        streams.put(header.streamId, state);
+        if ((header.flags & H2_FLAG_END_STREAM) != 0) {
+            processHttp2Request(output, hpack, streams, header.streamId, clientAddress);
+        }
+    }
+
+    /**
+     * Handles an HTTP/2 DATA frame.
+     *
+     * @param output        client output
+     * @param streams       active stream state
+     * @param header        frame header
+     * @param payload       frame payload
+     * @param clientAddress client address
+     * @throws IOException if the socket cannot be written
+     */
+    private void handleHttp2Data(
+            final OutputStream output,
+            final HpackCodec hpack,
+            final ConcurrentHashMap<Integer, Http2RequestState> streams,
+            final Http2FrameHeader header,
+            final byte[] payload,
+            final InetAddress clientAddress) throws IOException {
+        final Http2RequestState state = streams.get(header.streamId);
+        if (state == null || header.streamId <= 0) {
+            writeRstStream(output, header.streamId, H2_PROTOCOL_ERROR);
+            return;
+        }
+        try {
+            state.append(dataPayload(header.flags, payload));
+            if ((header.flags & H2_FLAG_END_STREAM) != 0) {
+                processHttp2Request(output, hpack, streams, header.streamId, clientAddress);
+            }
+        } catch (final StatefulException e) {
+            streams.remove(header.streamId);
+            sendHttp2(
+                    output,
+                    hpack,
+                    header.streamId,
+                    e.getStatus(),
+                    MediaType.TEXT_PLAIN,
+                    httpStatusBody(e.getStatus()));
+        }
+    }
+
+    /**
+     * Processes a completed HTTP/2 request stream.
+     *
+     * @param output        client output
+     * @param hpack         connection HPACK state
+     * @param streams       active stream state
+     * @param streamId      stream identifier
+     * @param clientAddress client address
+     * @throws IOException if the socket cannot be written
+     */
+    private void processHttp2Request(
+            final OutputStream output,
+            final HpackCodec hpack,
+            final ConcurrentHashMap<Integer, Http2RequestState> streams,
+            final int streamId,
+            final InetAddress clientAddress) throws IOException {
+        final Http2RequestState state = streams.remove(streamId);
+        if (state == null) {
+            return;
+        }
+        try {
+            final byte[] dns = switch (state.method()) {
+                case GET -> getDnsFromPath(state.path());
+                case POST -> postDnsFromHttp2(state);
+                default -> throw new StatefulException(Http.Status.METHOD_NOT_ALLOWED,
+                        "HTTP " + Http.Status.METHOD_NOT_ALLOWED);
+            };
+            sendHttp2(
+                    output,
+                    hpack,
+                    streamId,
+                    Http.Status.OK,
+                    MediaType.APPLICATION_DNS_MESSAGE,
+                    resolve(dns, clientAddress));
+        } catch (final StatefulException e) {
+            sendHttp2(output, hpack, streamId, e.getStatus(), MediaType.TEXT_PLAIN, httpStatusBody(e.getStatus()));
+        } catch (final IllegalArgumentException | ProtocolException e) {
+            sendHttp2(
+                    output,
+                    hpack,
+                    streamId,
+                    Http.Status.BAD_REQUEST,
+                    MediaType.TEXT_PLAIN,
+                    httpStatusBody(Http.Status.BAD_REQUEST));
+        }
+    }
+
+    /**
+     * Resolves one DNS message and validates the request size.
+     *
+     * @param request       DNS query wire message
+     * @param clientAddress client address
+     * @return DNS response wire message
+     */
+    private byte[] resolve(final byte[] request, final InetAddress clientAddress) {
+        if (request.length == 0 || request.length > DnsCodec.MAX_MESSAGE_BYTES) {
+            throw new StatefulException(Http.Status.CONTENT_TOO_LARGE, "HTTP " + Http.Status.CONTENT_TOO_LARGE);
+        }
+        return resolver.resolve(request, clientAddress);
     }
 
     /**

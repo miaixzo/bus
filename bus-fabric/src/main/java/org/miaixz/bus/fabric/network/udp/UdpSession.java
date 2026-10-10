@@ -219,6 +219,63 @@ public class UdpSession implements Session {
     }
 
     /**
+     * Creates a socket address.
+     *
+     * @param address logical address whose host and port are converted
+     * @return unresolved or resolved socket endpoint created by the network endpoint resolver
+     */
+    static InetSocketAddress socket(final Address address) {
+        return NetKit.createAddress(address.host(), address.port());
+    }
+
+    /**
+     * Revalidates and normalizes the resolver-selected numeric peer before it becomes session state.
+     *
+     * @param logical logical remote endpoint
+     * @param peer    numeric peer candidate
+     * @param policy  immutable address policy
+     * @return normalized numeric peer pinned to the session
+     */
+    private static Address pinPeer(final Address logical, final Address peer, final AddressPolicy policy) {
+        if (logical.protocol() != org.miaixz.bus.core.net.Protocol.UDP
+                || peer.protocol() != org.miaixz.bus.core.net.Protocol.UDP || logical.port() != peer.port()) {
+            throw new ValidateException("UDP validated peer must match the logical protocol and port");
+        }
+        final InetSocketAddress socket = socket(peer);
+        if (socket.isUnresolved() || socket.getAddress() == null) {
+            throw new ValidateException("UDP validated peer must be numeric");
+        }
+        final java.net.InetAddress numeric = new AddressGuard(policy)
+                .checkTarget(logical, List.of(socket.getAddress()));
+        return new Address(peer.scheme(), numeric.getHostAddress(), peer.port(), peer.path());
+    }
+
+    /**
+     * Awaits a private channel operation and preserves runtime failures.
+     *
+     * @param future  non-null private channel operation to join
+     * @param message context used when a missing or checked result must be wrapped
+     * @param <T>     non-null completion type
+     * @return non-null channel operation result
+     */
+    private static <T> T await(final CompletableFuture<T> future, final String message) {
+        try {
+            final T result = Assert.notNull(future, () -> new ValidateException("UDP channel future must not be null"))
+                    .join();
+            return Assert.notNull(result, () -> new InternalException(message + ": missing result"));
+        } catch (final CompletionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof RuntimeException runtime) {
+                throw runtime;
+            }
+            if (cause instanceof Error error) {
+                throw error;
+            }
+            throw new InternalException(message, cause);
+        }
+    }
+
+    /**
      * Returns the session address.
      *
      * @return logical remote endpoint represented by this session
@@ -349,38 +406,6 @@ public class UdpSession implements Session {
     }
 
     /**
-     * Creates a socket address.
-     *
-     * @param address logical address whose host and port are converted
-     * @return unresolved or resolved socket endpoint created by the network endpoint resolver
-     */
-    static InetSocketAddress socket(final Address address) {
-        return NetKit.createAddress(address.host(), address.port());
-    }
-
-    /**
-     * Revalidates and normalizes the resolver-selected numeric peer before it becomes session state.
-     *
-     * @param logical logical remote endpoint
-     * @param peer    numeric peer candidate
-     * @param policy  immutable address policy
-     * @return normalized numeric peer pinned to the session
-     */
-    private static Address pinPeer(final Address logical, final Address peer, final AddressPolicy policy) {
-        if (logical.protocol() != org.miaixz.bus.core.net.Protocol.UDP
-                || peer.protocol() != org.miaixz.bus.core.net.Protocol.UDP || logical.port() != peer.port()) {
-            throw new ValidateException("UDP validated peer must match the logical protocol and port");
-        }
-        final InetSocketAddress socket = socket(peer);
-        if (socket.isUnresolved() || socket.getAddress() == null) {
-            throw new ValidateException("UDP validated peer must be numeric");
-        }
-        final java.net.InetAddress numeric = new AddressGuard(policy)
-                .checkTarget(logical, List.of(socket.getAddress()));
-        return new Address(peer.scheme(), numeric.getHostAddress(), peer.port(), peer.path());
-    }
-
-    /**
      * Ensures this session is open.
      */
     private void ensureOpened() {
@@ -480,31 +505,6 @@ public class UdpSession implements Session {
             }
         }
         return failure;
-    }
-
-    /**
-     * Awaits a private channel operation and preserves runtime failures.
-     *
-     * @param future  non-null private channel operation to join
-     * @param message context used when a missing or checked result must be wrapped
-     * @param <T>     non-null completion type
-     * @return non-null channel operation result
-     */
-    private static <T> T await(final CompletableFuture<T> future, final String message) {
-        try {
-            final T result = Assert.notNull(future, () -> new ValidateException("UDP channel future must not be null"))
-                    .join();
-            return Assert.notNull(result, () -> new InternalException(message + ": missing result"));
-        } catch (final CompletionException e) {
-            final Throwable cause = e.getCause();
-            if (cause instanceof RuntimeException runtime) {
-                throw runtime;
-            }
-            if (cause instanceof Error error) {
-                throw error;
-            }
-            throw new InternalException(message, cause);
-        }
     }
 
 }

@@ -20,18 +20,30 @@
 package org.opencv.img_hash;
 
 // C++: class ColorMomentHash
+
 /**
  * Image hash based on color moments.
- *
+ * <p>
  * See CITE: tang2012perceptual for details.
  */
 public class ColorMomentHash extends ImgHashBase {
 
-    public ColorMomentHash(long addr) {
+    /**
+     * Creates a new {@code ColorMomentHash} instance.
+     *
+     * @param addr the {@code addr} value
+     */
+    protected ColorMomentHash(long addr) {
         super(addr);
     }
 
     // internal usage only
+    /**
+     * Performs the {@code __fromPtr__} operation.
+     *
+     * @param addr the {@code addr} value
+     * @return the operation result
+     */
     public static ColorMomentHash __fromPtr__(long addr) {
         return new ColorMomentHash(addr);
     }
@@ -40,6 +52,11 @@ public class ColorMomentHash extends ImgHashBase {
     // C++: static Ptr_ColorMomentHash cv::img_hash::ColorMomentHash::create()
     //
 
+    /**
+     * Performs the {@code create} operation.
+     *
+     * @return the operation result
+     */
     public static ColorMomentHash create() {
         return ColorMomentHash.__fromPtr__(create_0());
     }

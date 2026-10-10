@@ -58,6 +58,29 @@ public class Registry implements AutoCloseable {
     }
 
     /**
+     * Checks for the presence of POI dependencies. Throws a {@link DependencyException} if the required POI classes are
+     * not found.
+     *
+     * @throws DependencyException if POI dependencies are missing.
+     */
+    public static void check() {
+        Logger.debug(true, "Office", "Office dependency check started: dependency={}", "poi-ooxml");
+        try {
+            Class.forName("org.apache.poi.ss.usermodel.Workbook", false, ClassKit.getClassLoader());
+        } catch (final ClassNotFoundException | NoClassDefFoundError | NoSuchMethodError e) {
+            Logger.error(
+                    false,
+                    "Office",
+                    e,
+                    "Office dependency check failed: dependency={}, exception={}",
+                    "poi-ooxml",
+                    e.getClass().getSimpleName());
+            throw new DependencyException(e, Builder.NO_POI_ERROR_MSG);
+        }
+        Logger.debug(false, "Office", "Office dependency check completed: dependency={}", "poi-ooxml");
+    }
+
+    /**
      * Registers a component with a given name and object. If a component with the same name or simple class name
      * already exists, an {@link InternalException} is thrown.
      *
@@ -95,29 +118,6 @@ public class Registry implements AutoCloseable {
                 name,
                 clazz.getName(),
                 components.size());
-    }
-
-    /**
-     * Checks for the presence of POI dependencies. Throws a {@link DependencyException} if the required POI classes are
-     * not found.
-     *
-     * @throws DependencyException if POI dependencies are missing.
-     */
-    public static void check() {
-        Logger.debug(true, "Office", "Office dependency check started: dependency={}", "poi-ooxml");
-        try {
-            Class.forName("org.apache.poi.ss.usermodel.Workbook", false, ClassKit.getClassLoader());
-        } catch (final ClassNotFoundException | NoClassDefFoundError | NoSuchMethodError e) {
-            Logger.error(
-                    false,
-                    "Office",
-                    e,
-                    "Office dependency check failed: dependency={}, exception={}",
-                    "poi-ooxml",
-                    e.getClass().getSimpleName());
-            throw new DependencyException(e, Builder.NO_POI_ERROR_MSG);
-        }
-        Logger.debug(false, "Office", "Office dependency check completed: dependency={}", "poi-ooxml");
     }
 
     /**

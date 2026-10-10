@@ -39,88 +39,105 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public abstract class NotificationService implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852285332559L;
+
     /**
      * The webhook prop value.
      */
 
     public static final String WEBHOOK_PROP = "webhook";
+
     /**
      * The notify only broken pipelines prop value.
      */
     public static final String NOTIFY_ONLY_BROKEN_PIPELINES_PROP = "notify_only_broken_pipelines";
+
     /**
      * The notify only default branch prop value.
      */
     public static final String NOTIFY_ONLY_DEFAULT_BRANCH_PROP = "notify_only_default_branch";
+
     /**
      * The branches to be notified prop value.
      */
     public static final String BRANCHES_TO_BE_NOTIFIED_PROP = "branches_to_be_notified";
+
     /**
      * The push channel prop value.
      */
     public static final String PUSH_CHANNEL_PROP = "push_channel";
+
     /**
      * The issue channel prop value.
      */
     public static final String ISSUE_CHANNEL_PROP = "issue_channel";
+
     /**
      * The confidential issue channel prop value.
      */
     public static final String CONFIDENTIAL_ISSUE_CHANNEL_PROP = "confidential_issue_channel";
+
     /**
      * The merge request channel prop value.
      */
     public static final String MERGE_REQUEST_CHANNEL_PROP = "merge_request_channel";
+
     /**
      * The note channel prop value.
      */
     public static final String NOTE_CHANNEL_PROP = "note_channel";
+
     /**
      * The confidential note channel prop value.
      */
     public static final String CONFIDENTIAL_NOTE_CHANNEL_PROP = "confidential_note_channel";
+
     /**
      * The tag push channel prop value.
      */
     public static final String TAG_PUSH_CHANNEL_PROP = "tag_push_channel";
+
     /**
      * The pipeline channel prop value.
      */
     public static final String PIPELINE_CHANNEL_PROP = "pipeline_channel";
+
     /**
      * The wiki page channel prop value.
      */
     public static final String WIKI_PAGE_CHANNEL_PROP = "wiki_page_channel";
+
     /**
      * The username prop value.
      */
     public static final String USERNAME_PROP = "username";
+
     /**
      * The description prop value.
      */
     public static final String DESCRIPTION_PROP = "description";
+
     /**
      * The title prop value.
      */
     public static final String TITLE_PROP = "title";
+
     /**
      * The new issue url prop value.
      */
     public static final String NEW_ISSUE_URL_PROP = "new_issue_url";
+
     /**
      * The issues url prop value.
      */
     public static final String ISSUES_URL_PROP = "issues_url";
+
     /**
      * The project url prop value.
      */
     public static final String PROJECT_URL_PROP = "project_url";
+
     /**
      * The push events prop value.
      */
@@ -130,22 +147,27 @@ public abstract class NotificationService implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The title value.
      */
     private String title;
+
     /**
      * The slug value.
      */
     private String slug;
+
     /**
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The updated at value.
      */
     private Date updatedAt;
+
     /**
      * The active value.
      */
@@ -155,42 +177,52 @@ public abstract class NotificationService implements Serializable {
      * The commit events value.
      */
     private Boolean commitEvents;
+
     /**
      * The push events value.
      */
     private Boolean pushEvents;
+
     /**
      * The issues events value.
      */
     private Boolean issuesEvents;
+
     /**
      * The confidential issues events value.
      */
     private Boolean confidentialIssuesEvents;
+
     /**
      * The merge requests events value.
      */
     private Boolean mergeRequestsEvents;
+
     /**
      * The tag push events value.
      */
     private Boolean tagPushEvents;
+
     /**
      * The note events value.
      */
     private Boolean noteEvents;
+
     /**
      * The confidential note events value.
      */
     private Boolean confidentialNoteEvents;
+
     /**
      * The pipeline events value.
      */
     private Boolean pipelineEvents;
+
     /**
      * The wiki page events value.
      */
     private Boolean wikiPageEvents;
+
     /**
      * The job events value.
      */
@@ -339,6 +371,7 @@ public abstract class NotificationService implements Serializable {
     // *******************************************************************************
     // The following methods can be used to configure the notification service
     // *******************************************************************************
+
     /**
      * Returns the commit events.
      *

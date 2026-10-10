@@ -72,6 +72,7 @@ public class SingleSignOnService {
      * Standard SAML protocol error-response mapper.
      */
     private final SamlErrorMapper errorMapper;
+
     /**
      * Framework coordinator for Source-isolated authentication Session transitions.
      */

@@ -53,16 +53,6 @@ public class Http2Frame implements AutoCloseable {
     private final int flags;
 
     /**
-     * Payload.
-     */
-    private volatile ByteString payload;
-
-    /**
-     * Reader-owned unpadded DATA payload.
-     */
-    private Buffer dataPayload;
-
-    /**
      * Optional internal zero-copy payload owner.
      */
     private final PayloadLease payloadLease;
@@ -116,6 +106,16 @@ public class Http2Frame implements AutoCloseable {
      * Last processed stream identifier carried by a GOAWAY frame.
      */
     private final int lastStreamId;
+
+    /**
+     * Payload.
+     */
+    private volatile ByteString payload;
+
+    /**
+     * Reader-owned unpadded DATA payload.
+     */
+    private Buffer dataPayload;
 
     /**
      * Creates a frame.
@@ -457,206 +457,6 @@ public class Http2Frame implements AutoCloseable {
         return new Http2Frame(type, streamId, flags, payload, headers, decodedSettings(type, flags, payload),
                 decodedWindowDelta(type, payload), decodedErrorCode(type, payload),
                 decodedPromisedStreamId(type, payload), decodedPriority, decodedAlternateService);
-    }
-
-    /**
-     * Returns type.
-     *
-     * @return type
-     */
-    public int type() {
-        return type;
-    }
-
-    /**
-     * Returns stream id.
-     *
-     * @return stream id
-     */
-    public int streamId() {
-        return streamId;
-    }
-
-    /**
-     * Returns flags.
-     *
-     * @return flags
-     */
-    public int flags() {
-        return flags;
-    }
-
-    /**
-     * Returns whether ACK flag is set.
-     *
-     * @return true when ACK is set
-     */
-    public boolean ack() {
-        return (flags & Normal._1) != Normal._0;
-    }
-
-    /**
-     * Returns whether END_STREAM is set.
-     *
-     * @return true when set
-     */
-    public boolean endStream() {
-        return endStream;
-    }
-
-    /**
-     * Returns immutable payload bytes.
-     *
-     * @return payload bytes
-     */
-    public ByteString payloadBytes() {
-        if (dataPayload != null)
-            return dataPayload.snapshot();
-        ByteString current = payload;
-        if (current.size() == Normal._0 && payloadLease != null && payloadLease.remaining() != Normal._0) {
-            synchronized (this) {
-                current = payload;
-                if (current.size() == Normal._0) {
-                    current = payloadLease.bytes();
-                    payload = current;
-                    payloadLease.close();
-                }
-            }
-        }
-        return current;
-    }
-
-    /**
-     * Returns the decoded DATA payload size.
-     *
-     * @return payload size in bytes
-     */
-    int payloadSize() {
-        return dataPayload == null ? payloadBytes().size() : (int) dataPayload.size();
-    }
-
-    /**
-     * Transfers ownership of the decoded DATA payload to the caller.
-     *
-     * @return decoded DATA buffer, or {@code null} when no direct payload is retained
-     */
-    Buffer takeDataPayload() {
-        final Buffer direct = dataPayload;
-        dataPayload = null;
-        return direct;
-    }
-
-    /**
-     * Returns headers snapshot.
-     *
-     * @return headers
-     */
-    public List<Http2Header> headers() {
-        return type == Normal._1 || type == Normal._5 ? headers : List.of();
-    }
-
-    /**
-     * Returns settings snapshot.
-     *
-     * @return settings or null
-     */
-    public Http2Settings settings() {
-        return type == Normal._4 && settings != null ? settings.copy() : null;
-    }
-
-    /**
-     * Returns window delta.
-     *
-     * @return delta
-     */
-    public long windowDelta() {
-        return windowDelta;
-    }
-
-    /**
-     * Returns error code.
-     *
-     * @return error code
-     */
-    public int errorCode() {
-        return errorCode;
-    }
-
-    /**
-     * Returns the PING opaque payload.
-     *
-     * @return ping payload
-     */
-    public long pingPayload() {
-        return pingPayload;
-    }
-
-    /**
-     * Returns the GOAWAY last stream id.
-     *
-     * @return last stream id
-     */
-    public int lastStreamId() {
-        return lastStreamId;
-    }
-
-    /**
-     * Returns GOAWAY debug data as immutable bytes.
-     *
-     * @return debug data
-     */
-    public ByteString debugDataBytes() {
-        if (type != Normal._7 || payload.size() <= Normal._4 * Normal._2) {
-            return ByteString.EMPTY;
-        }
-        return payload.substring(Normal._4 * Normal._2);
-    }
-
-    /**
-     * Returns promised stream id.
-     *
-     * @return promised stream id, or 0 when absent
-     */
-    public int promisedStreamId() {
-        return promisedStreamId;
-    }
-
-    /**
-     * Returns priority metadata.
-     *
-     * @return priority metadata, or null when absent
-     */
-    public Http2Priority priority() {
-        return type == Normal._2 || type == Normal._1 ? priority : null;
-    }
-
-    /**
-     * Returns ALTSVC metadata.
-     *
-     * @return alternate service metadata, or null when absent
-     */
-    public Http2AlternateService alternateService() {
-        return type == Normal._10 ? alternateService : null;
-    }
-
-    /**
-     * Releases an internal payload lease at most once.
-     */
-    @Override
-    public void close() {
-        dataPayload = null;
-        if (payloadLease != null) {
-            payloadLease.close();
-        }
-    }
-
-    /**
-     * Returns an internal read-only payload slice without materializing ByteString.
-     *
-     * @return read-only view of the frame payload
-     */
-    ByteBuffer payloadBuffer() {
-        return payloadLease == null ? payload.asByteBuffer() : payloadLease.buffer();
     }
 
     /**
@@ -1032,6 +832,206 @@ public class Http2Frame implements AutoCloseable {
             return null;
         }
         return Http2AlternateService.decode(payload, streamId);
+    }
+
+    /**
+     * Returns type.
+     *
+     * @return type
+     */
+    public int type() {
+        return type;
+    }
+
+    /**
+     * Returns stream id.
+     *
+     * @return stream id
+     */
+    public int streamId() {
+        return streamId;
+    }
+
+    /**
+     * Returns flags.
+     *
+     * @return flags
+     */
+    public int flags() {
+        return flags;
+    }
+
+    /**
+     * Returns whether ACK flag is set.
+     *
+     * @return true when ACK is set
+     */
+    public boolean ack() {
+        return (flags & Normal._1) != Normal._0;
+    }
+
+    /**
+     * Returns whether END_STREAM is set.
+     *
+     * @return true when set
+     */
+    public boolean endStream() {
+        return endStream;
+    }
+
+    /**
+     * Returns immutable payload bytes.
+     *
+     * @return payload bytes
+     */
+    public ByteString payloadBytes() {
+        if (dataPayload != null)
+            return dataPayload.snapshot();
+        ByteString current = payload;
+        if (current.size() == Normal._0 && payloadLease != null && payloadLease.remaining() != Normal._0) {
+            synchronized (this) {
+                current = payload;
+                if (current.size() == Normal._0) {
+                    current = payloadLease.bytes();
+                    payload = current;
+                    payloadLease.close();
+                }
+            }
+        }
+        return current;
+    }
+
+    /**
+     * Returns the decoded DATA payload size.
+     *
+     * @return payload size in bytes
+     */
+    int payloadSize() {
+        return dataPayload == null ? payloadBytes().size() : (int) dataPayload.size();
+    }
+
+    /**
+     * Transfers ownership of the decoded DATA payload to the caller.
+     *
+     * @return decoded DATA buffer, or {@code null} when no direct payload is retained
+     */
+    Buffer takeDataPayload() {
+        final Buffer direct = dataPayload;
+        dataPayload = null;
+        return direct;
+    }
+
+    /**
+     * Returns headers snapshot.
+     *
+     * @return headers
+     */
+    public List<Http2Header> headers() {
+        return type == Normal._1 || type == Normal._5 ? headers : List.of();
+    }
+
+    /**
+     * Returns settings snapshot.
+     *
+     * @return settings or null
+     */
+    public Http2Settings settings() {
+        return type == Normal._4 && settings != null ? settings.copy() : null;
+    }
+
+    /**
+     * Returns window delta.
+     *
+     * @return delta
+     */
+    public long windowDelta() {
+        return windowDelta;
+    }
+
+    /**
+     * Returns error code.
+     *
+     * @return error code
+     */
+    public int errorCode() {
+        return errorCode;
+    }
+
+    /**
+     * Returns the PING opaque payload.
+     *
+     * @return ping payload
+     */
+    public long pingPayload() {
+        return pingPayload;
+    }
+
+    /**
+     * Returns the GOAWAY last stream id.
+     *
+     * @return last stream id
+     */
+    public int lastStreamId() {
+        return lastStreamId;
+    }
+
+    /**
+     * Returns GOAWAY debug data as immutable bytes.
+     *
+     * @return debug data
+     */
+    public ByteString debugDataBytes() {
+        if (type != Normal._7 || payload.size() <= Normal._4 * Normal._2) {
+            return ByteString.EMPTY;
+        }
+        return payload.substring(Normal._4 * Normal._2);
+    }
+
+    /**
+     * Returns promised stream id.
+     *
+     * @return promised stream id, or 0 when absent
+     */
+    public int promisedStreamId() {
+        return promisedStreamId;
+    }
+
+    /**
+     * Returns priority metadata.
+     *
+     * @return priority metadata, or null when absent
+     */
+    public Http2Priority priority() {
+        return type == Normal._2 || type == Normal._1 ? priority : null;
+    }
+
+    /**
+     * Returns ALTSVC metadata.
+     *
+     * @return alternate service metadata, or null when absent
+     */
+    public Http2AlternateService alternateService() {
+        return type == Normal._10 ? alternateService : null;
+    }
+
+    /**
+     * Releases an internal payload lease at most once.
+     */
+    @Override
+    public void close() {
+        dataPayload = null;
+        if (payloadLease != null) {
+            payloadLease.close();
+        }
+    }
+
+    /**
+     * Returns an internal read-only payload slice without materializing ByteString.
+     *
+     * @return read-only view of the frame payload
+     */
+    ByteBuffer payloadBuffer() {
+        return payloadLease == null ? payload.asByteBuffer() : payloadLease.buffer();
     }
 
     /**

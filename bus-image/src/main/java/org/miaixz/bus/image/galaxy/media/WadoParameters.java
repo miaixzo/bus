@@ -255,30 +255,37 @@ public class WadoParameters extends ArchiveParameters {
          * The wado url value.
          */
         private final String wadoURL;
+
         /**
          * The wado rs value.
          */
         private final boolean wadoRS;
+
         /**
          * The archive id value.
          */
         private String archiveID = Normal.EMPTY;
+
         /**
          * The require only sop instance uid value.
          */
         private boolean requireOnlySOPInstanceUID;
+
         /**
          * The additional parameters value.
          */
         private String additionalParameters;
+
         /**
          * The override dicom tags list value.
          */
         private String overrideDicomTagsList;
+
         /**
          * The web login value.
          */
         private String webLogin;
+
         /**
          * The query mode value.
          */

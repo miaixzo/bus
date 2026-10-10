@@ -37,13 +37,6 @@ public class MaskBit {
      */
     private static final BiMap<Integer, String> MASK_BIT_MAP;
 
-    /**
-     * Constructs a new MaskBit instance.
-     */
-    public MaskBit() {
-        // No initialization required.
-    }
-
     static {
         MASK_BIT_MAP = new BiMap<>(new HashMap<>(32));
         MASK_BIT_MAP.put(1, "128.0.0.0");
@@ -78,6 +71,13 @@ public class MaskBit {
         MASK_BIT_MAP.put(30, "255.255.255.252");
         MASK_BIT_MAP.put(31, "255.255.255.254");
         MASK_BIT_MAP.put(32, "255.255.255.255");
+    }
+
+    /**
+     * Constructs a new MaskBit instance.
+     */
+    public MaskBit() {
+        // No initialization required.
     }
 
     /**

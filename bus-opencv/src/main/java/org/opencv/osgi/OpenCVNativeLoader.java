@@ -28,6 +28,9 @@ import org.opencv.core.Core;
  */
 public class OpenCVNativeLoader implements OpenCVInterface {
 
+    /**
+     * Performs the {@code init} operation.
+     */
     public void init() {
         try {
             System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -35,5 +38,4 @@ public class OpenCVNativeLoader implements OpenCVInterface {
             System.err.println("Cannot load OpenCV native library: " + e.getMessage());
         }
     }
-
 }

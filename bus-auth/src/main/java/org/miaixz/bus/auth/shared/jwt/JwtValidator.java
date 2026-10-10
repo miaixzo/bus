@@ -55,14 +55,17 @@ public class JwtValidator {
      * Shared exact issuer comparison primitive.
      */
     private final IssuerValidator issuerValidator;
+
     /**
      * Shared audience allow-list primitive.
      */
     private final AudienceValidator audienceValidator;
+
     /**
      * Shared Fabric-clock temporal primitive.
      */
     private final TimeGuard timeGuard;
+
     /**
      * Shared atomic replay registration primitive.
      */

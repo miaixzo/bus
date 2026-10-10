@@ -137,6 +137,24 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
 public interface VisibleProvider extends MapperProvider<VisibleConfig> {
 
     /**
+     * Builds a column reference using the real SQL table alias only when one exists.
+     * <p>
+     * SQL without an explicit alias must use bare columns (for example {@code user_id}), while SQL with an explicit
+     * alias may use qualified columns (for example {@code u.user_id}). The table name itself is intentionally not used
+     * as a fallback alias.
+     *
+     * @param tableAlias the explicit table alias, or empty when absent
+     * @param column     the column name
+     * @return the column reference
+     */
+    static String column(String tableAlias, String column) {
+        if (StringKit.isEmpty(column) || StringKit.isEmpty(tableAlias)) {
+            return column;
+        }
+        return tableAlias + Symbol.DOT + column;
+    }
+
+    /**
      * Retrieves the visibility SQL condition for the current user.
      *
      * <p>
@@ -172,23 +190,5 @@ public interface VisibleProvider extends MapperProvider<VisibleConfig> {
      * @return the SQL WHERE condition for visibility filtering, or null to skip filtering
      */
     String getVisible(String tableName, String tableAlias);
-
-    /**
-     * Builds a column reference using the real SQL table alias only when one exists.
-     * <p>
-     * SQL without an explicit alias must use bare columns (for example {@code user_id}), while SQL with an explicit
-     * alias may use qualified columns (for example {@code u.user_id}). The table name itself is intentionally not used
-     * as a fallback alias.
-     *
-     * @param tableAlias the explicit table alias, or empty when absent
-     * @param column     the column name
-     * @return the column reference
-     */
-    static String column(String tableAlias, String column) {
-        if (StringKit.isEmpty(column) || StringKit.isEmpty(tableAlias)) {
-            return column;
-        }
-        return tableAlias + Symbol.DOT + column;
-    }
 
 }

@@ -39,7 +39,7 @@ public class Modifier {
      */
     private static final int[] IGNORE_FIELDS = new int[] { java.util.Calendar.HOUR_OF_DAY, // Same as HOUR
             java.util.Calendar.AM_PM, // This field is handled separately and does not participate in start/end
-                                      // calculations
+            // calculations
             java.util.Calendar.DAY_OF_WEEK_IN_MONTH, // Not involved in calculation
             java.util.Calendar.DAY_OF_YEAR, // Represented by DAY_OF_MONTH
             java.util.Calendar.WEEK_OF_MONTH, // Special handling

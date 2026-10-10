@@ -22,14 +22,15 @@ package org.miaixz.bus.core.center.date.culture.solar;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.center.date.culture.parts.MonthParts;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractMonth;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractYear;
 
 /**
  * Represents a month in the Gregorian calendar.
  *
  * @author Kimi Liu
  */
-public class SolarMonth extends MonthParts {
+public class SolarMonth extends AbstractMonth {
 
     /**
      * Localized month labels for January through December.
@@ -49,9 +50,8 @@ public class SolarMonth extends MonthParts {
      * @throws IllegalArgumentException if the month is invalid
      */
     public SolarMonth(int year, int month) {
+        super(year, month);
         validate(year, month);
-        this.year = year;
-        this.month = month;
     }
 
     /**
@@ -84,6 +84,16 @@ public class SolarMonth extends MonthParts {
      */
     public SolarYear getSolarYear() {
         return SolarYear.fromYear(year);
+    }
+
+    /**
+     * Gets the abstract year containing this month.
+     *
+     * @return the abstract year
+     */
+    @Override
+    public AbstractYear getAbstractYear() {
+        return getSolarYear();
     }
 
     /**
@@ -122,33 +132,13 @@ public class SolarMonth extends MonthParts {
     }
 
     /**
-     * Gets the number of weeks in this month.
+     * Gets the name of this month.
      *
-     * @param start the start day of week (1=Monday, 2=Tuesday, ..., 0=Sunday)
-     * @return the number of weeks in this month
-     */
-    public int getWeekCount(int start) {
-        return (int) Math
-                .ceil((indexOf(SolarDay.fromYmd(year, month, 1).getWeek().getIndex() - start, 7) + getDayCount()) / 7D);
-    }
-
-    /**
-     * Gets the localized display name of this month.
-     *
-     * @return the Chinese month name
-     */
-    public String getName() {
-        return NAMES[getIndexInYear()];
-    }
-
-    /**
-     * Returns the string representation of this object.
-     *
-     * @return the string representation
+     * @return the name of this month
      */
     @Override
-    public String toString() {
-        return getSolarYear() + getName();
+    public String getName() {
+        return NAMES[getIndexInYear()];
     }
 
     /**

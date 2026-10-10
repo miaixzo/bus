@@ -20,44 +20,36 @@
 package org.miaixz.bus.cortex.setting.item;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Keying.SettingSpec;
-import org.miaixz.bus.cortex.Suite;
-import org.miaixz.bus.cortex.Trait;
-import org.miaixz.bus.cortex.builtin.MetadataMatcher;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
-import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
-import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.cortex.setting.reference.Reference;
+import org.miaixz.bus.cortex.setting.reference.ReferenceStore;
 
 /**
- * Store-backed current-state setting coordinator.
- *
- * <p>
- * This mirrors {@code StoreBackedRegistry}: a durable {@link ItemStore} is optional, while cache projection is kept
- * inside this coordinator instead of being exposed as another store abstraction.
+ * Durable item store with a read-through cache.
  *
  * @author Kimi Liu
  */
 public class StoreBackedItemStore {
 
     /**
-     * Shared cache used for current-state projection.
+     * Cache used for coordinate-based item reads.
      */
     private final CacheX<String, Object> cacheX;
 
     /**
-     * Optional durable current-state store.
+     * Durable current-state store.
      */
     private final ItemStore store;
+
+    /**
+     * Relationship store used to enforce application visibility.
+     */
+    private final ReferenceStore referenceStore;
 
     /**
      * Setting-domain key strategy.
@@ -65,555 +57,296 @@ public class StoreBackedItemStore {
     private final Keying<SettingSpec> keying;
 
     /**
-     * Creates a StoreBackedItemStore.
+     * Creates a cached store with the default key strategy.
      *
-     * @param cacheX shared cache backend
-     * @param store  durable current-state store, or {@code null} for cache-only fallback
+     * @param cacheX         item cache
+     * @param store          durable item store
+     * @param referenceStore durable relationship store
      */
-    public StoreBackedItemStore(CacheX<String, Object> cacheX, ItemStore store) {
-        this(cacheX, store, SettingGenerator.INSTANCE);
+    public StoreBackedItemStore(CacheX<String, Object> cacheX, ItemStore store, ReferenceStore referenceStore) {
+        this(cacheX, store, referenceStore, SettingGenerator.INSTANCE);
     }
 
     /**
-     * Creates a StoreBackedItemStore.
+     * Creates a cached store with an explicit key strategy.
      *
-     * @param cacheX shared cache backend
-     * @param store  durable current-state store, or {@code null} for cache-only fallback
-     * @param keying setting-domain key strategy
+     * @param cacheX         item cache
+     * @param store          durable item store
+     * @param referenceStore durable relationship store
+     * @param keying         setting-domain key strategy
      */
-    public StoreBackedItemStore(CacheX<String, Object> cacheX, ItemStore store, Keying<SettingSpec> keying) {
+    public StoreBackedItemStore(CacheX<String, Object> cacheX, ItemStore store, ReferenceStore referenceStore,
+            Keying<SettingSpec> keying) {
+        if (cacheX == null || store == null || referenceStore == null) {
+            throw new IllegalArgumentException("Cache, ItemStore and ReferenceStore are required");
+        }
         this.cacheX = cacheX;
         this.store = store;
+        this.referenceStore = referenceStore;
         this.keying = keying == null ? SettingGenerator.INSTANCE : keying;
     }
 
     /**
-     * Saves the entry to durable storage first, then updates the cache projection.
+     * Normalizes, persists, and caches one item.
      *
-     * @param entry entry to store
-     * @return stored entry snapshot
+     * @param entry item to save
+     * @return persisted item
      */
     public Item save(Item entry) {
-        if (entry == null) {
-            return null;
-        }
-        Item prepared = ItemNormalizer.normalize(entry, keying);
-        Item stored = durable() ? store.save(prepared) : prepared;
-        if (store != null && !durable()) {
-            capabilityFallback("save", Trait.DURABLE, "cache write");
-        }
-        return cache(stored == null ? prepared : stored);
+        Item stored = store.save(ItemNormalizer.normalize(entry));
+        cache(stored);
+        return stored;
     }
 
     /**
-     * Saves a batch of entries.
+     * Normalizes, persists, and caches a collection of items.
      *
-     * @param entries entries to store
-     * @return stored entry snapshots
+     * @param entries items to save
+     * @return persisted items
      */
     public List<Item> saveAll(List<Item> entries) {
         if (entries == null || entries.isEmpty()) {
             return List.of();
         }
-        List<Item> result = new ArrayList<>(entries.size());
+        List<Item> normalized = new ArrayList<>(entries.size());
         for (Item entry : entries) {
             if (entry != null) {
-                result.add(save(entry));
+                normalized.add(ItemNormalizer.normalize(entry));
             }
         }
-        return result;
+        List<Item> stored = store.saveAll(normalized);
+        if (stored != null) {
+            stored.forEach(this::cache);
+        }
+        return stored == null ? List.of() : stored;
     }
 
     /**
-     * Deletes from durable storage and evicts the cache projection.
+     * Deletes one item and evicts its coordinate cache entry.
      *
-     * @param space   space
-     * @param group   setting group
-     * @param data_id setting data identifier
-     * @param profile optional profile
-     * @return deleted entry snapshot, or {@code null} when absent
+     * @param tenant_id tenant identifier, when available
+     * @param id        item identifier
+     * @return deleted item, or {@code null} when absent
      */
-    public Item delete(String space, String group, String data_id, String profile) {
-        Item existing = find(space, group, data_id, profile);
-        if (StringKit.isNotEmpty(profile) && !matchesExactProfile(existing, profile)) {
-            existing = null;
+    public Item delete(String tenant_id, String id) {
+        Item deleted = store.delete(tenant_id, id);
+        if (deleted != null) {
+            evict(
+                    deleted.getTenant_id(),
+                    deleted.getSpace_id(),
+                    deleted.getGroup(),
+                    deleted.getCode(),
+                    deleted.getProfile_id());
         }
-        Item deleted = durable() ? store.delete(space, group, data_id, profile) : existing;
-        if (store != null && !durable()) {
-            capabilityFallback("delete", Trait.DURABLE, "cache evict");
-        }
-        evict(space, group, data_id, profile);
-        return deleted == null ? existing : deleted;
+        return deleted;
     }
 
     /**
-     * Finds from cache first and falls back to durable storage.
+     * Finds one item through the read-through cache.
      *
-     * @param space   space
-     * @param group   setting group
-     * @param data_id setting data identifier
-     * @param profile optional profile
-     * @return current entry or {@code null}
+     * @param tenant_id  tenant identifier, when available
+     * @param space_id   space identifier
+     * @param profile_id profile identifier, when applicable
+     * @param group      item group
+     * @param code       item code
+     * @return matching item, or {@code null} when absent
      */
-    public Item find(String space, String group, String data_id, String profile) {
-        Item cached = cached(space, group, data_id, profile);
-        if (cached != null || store == null || !durable()) {
-            if (cached == null && store != null && !durable()) {
-                capabilityFallback("find", Trait.DURABLE, "cache query");
-            }
-            return cached != null ? cached : first(queryByCoordinates(space, group, data_id, profile));
+    public Item find(String tenant_id, String space_id, String profile_id, String group, String code) {
+        String key = entryKey(tenant_id, space_id, group, code, profile_id);
+        Object cached = cacheX.read(key);
+        if (cached instanceof Item item) {
+            return item;
         }
-        Item loaded = store.find(space, group, data_id, profile);
-        if (loaded == null) {
-            return null;
-        }
-        return cache(loaded);
+        Item loaded = store.find(tenant_id, space_id, profile_id, group, code);
+        cache(loaded);
+        return loaded;
     }
 
     /**
-     * Queries durable storage first and warms the cache projection with the result set.
+     * Finds one item without a tenant coordinate.
      *
-     * @param query query filter
-     * @return matching entries
+     * @param space_id   space identifier
+     * @param group      item group
+     * @param code       item code
+     * @param profile_id profile identifier, when applicable
+     * @return matching item, or {@code null} when absent
+     */
+    public Item find(String space_id, String group, String code, String profile_id) {
+        return find(null, space_id, profile_id, group, code);
+    }
+
+    /**
+     * Queries visible items and refreshes their cache entries.
+     *
+     * @param query item query
+     * @return visible matching items
      */
     public List<Item> query(ItemQuery query) {
-        if (store == null || !queryable()) {
-            if (store != null) {
-                capabilityFallback("query", Trait.QUERY, "cache query");
-            }
-            return queryCache(query);
-        }
-        List<Item> entries = store.query(query);
-        if (entries == null || entries.isEmpty()) {
+        if (query == null) {
             return List.of();
         }
-        List<Item> result = new ArrayList<>(entries.size());
-        for (Item entry : entries) {
-            if (entry != null) {
-                result.add(cache(entry));
+        List<Item> loaded = store.query(query);
+        if (loaded == null || loaded.isEmpty()) {
+            return List.of();
+        }
+        List<Item> result = new ArrayList<>(loaded.size());
+        for (Item item : loaded) {
+            if (item != null && visibleToApp(item, query.getApp_id())) {
+                result.add(cache(item));
             }
         }
         return result;
     }
 
     /**
-     * Queries setting entries for one general scope.
+     * Converts a shared item scope to a durable item query.
      *
-     * @param scope scope filter
-     * @return matching entries
+     * @param scope shared item scope
+     * @return visible matching items
      */
     public List<Item> query(ItemScope scope) {
-        return query(toQuery(scope));
+        ItemQuery query = new ItemQuery();
+        if (scope != null) {
+            query.setSpace_id(scope.getSpace_id());
+            query.setProfile_id(scope.getProfile_id());
+            query.setApp_id(scope.getApp_id());
+            query.setGroup(scope.getGroup());
+            query.setLabels(scope.getLabels());
+            query.setSelectors(scope.getSelectors());
+            query.setRequestId(scope.getRequestId());
+            query.setIncludeDeleted(scope.isIncludeDeleted());
+            query.setLimit(scope.getLimit());
+            query.setOffset(scope.getOffset());
+        }
+        return query(query);
     }
 
     /**
-     * Reloads one entry from durable storage into cache.
+     * Evicts and reloads one item by its full coordinates.
      *
-     * @param space   space
-     * @param group   setting group
-     * @param data_id setting data identifier
-     * @param profile optional profile
-     * @return refreshed entry or {@code null}
+     * @param tenant_id  tenant identifier, when available
+     * @param space_id   space identifier
+     * @param profile_id profile identifier, when applicable
+     * @param group      item group
+     * @param code       item code
+     * @return reloaded item, or {@code null} when absent
      */
-    public Item refresh(String space, String group, String data_id, String profile) {
-        if (store == null || !durable()) {
-            if (store != null) {
-                capabilityFallback("refresh", Trait.DURABLE, "cache read");
-            }
-            return cached(space, group, data_id, profile);
-        }
-        Item loaded = store.find(space, group, data_id, profile);
-        if (loaded == null) {
-            evict(space, group, data_id, profile);
-            return null;
-        }
-        return cache(loaded);
+    public Item refresh(String tenant_id, String space_id, String profile_id, String group, String code) {
+        evict(tenant_id, space_id, group, code, profile_id);
+        return find(tenant_id, space_id, profile_id, group, code);
     }
 
     /**
-     * Rebuilds cache projection from durable storage for the provided scope.
+     * Evicts and reloads one item without a tenant coordinate.
      *
-     * @param scope rebuild scope
-     * @return rebuilt entries
+     * @param space_id   space identifier
+     * @param group      item group
+     * @param code       item code
+     * @param profile_id profile identifier, when applicable
+     * @return reloaded item, or {@code null} when absent
+     */
+    public Item refresh(String space_id, String group, String code, String profile_id) {
+        return refresh(null, space_id, profile_id, group, code);
+    }
+
+    /**
+     * Rebuilds cache entries for all items matching one scope.
+     *
+     * @param scope shared item scope
+     * @return cached items
      */
     public List<Item> rebuild(ItemScope scope) {
-        if (store == null || !durable() || !queryable()) {
-            if (store != null) {
-                capabilityFallback("rebuild", Trait.DURABLE, "cache query");
-            }
-            return queryCache(toQuery(scope));
-        }
-        evict(scope);
-        ItemQuery query = toQuery(scope);
-        List<Item> entries = store.query(query);
-        if (entries == null || entries.isEmpty()) {
-            return List.of();
-        }
-        List<Item> result = new ArrayList<>(entries.size());
-        for (Item entry : entries) {
-            if (entry != null) {
-                result.add(cache(entry));
-            }
-        }
-        return result;
+        List<Item> entries = query(scope);
+        entries.forEach(this::cache);
+        return entries;
     }
 
     /**
-     * Evicts one setting entry from cache without touching durable state.
+     * Evicts one full-coordinate cache entry.
      *
-     * @param space   space
-     * @param group   setting group
-     * @param data_id setting data identifier
-     * @param profile optional profile
+     * @param tenant_id  tenant identifier, when available
+     * @param space_id   space identifier
+     * @param group      item group
+     * @param code       item code
+     * @param profile_id profile identifier, when applicable
      */
-    public void evict(String space, String group, String data_id, String profile) {
-        if (StringKit.isNotEmpty(profile)) {
-            cacheX.remove(entryKey(space, group, data_id, profile));
-            return;
-        }
-        List<String> keys = new ArrayList<>();
-        String sharedKey = entryKey(space, group, data_id, null);
-        keys.add(sharedKey);
-        Map<String, Object> profileEntries = cacheX.scan(sharedKey + Symbol.COLON);
-        if (profileEntries != null && !profileEntries.isEmpty()) {
-            keys.addAll(profileEntries.keySet());
-        }
-        cacheX.remove(keys.toArray(String[]::new));
+    public void evict(String tenant_id, String space_id, String group, String code, String profile_id) {
+        cacheX.remove(entryKey(tenant_id, space_id, group, code, profile_id));
     }
 
     /**
-     * Returns effective current-state capability hints.
+     * Evicts one cache entry without a tenant coordinate.
      *
-     * @return capability flags
+     * @param space_id   space identifier
+     * @param group      item group
+     * @param code       item code
+     * @param profile_id profile identifier, when applicable
      */
-    public Suite storeCapabilities() {
-        return Suite.of(Trait.BATCH, Trait.QUERY, Trait.CACHE, Trait.EVICT, Trait.REBUILD)
-                .with(Trait.DURABLE, store != null);
+    public void evict(String space_id, String group, String code, String profile_id) {
+        evict(null, space_id, group, code, profile_id);
     }
 
     /**
-     * Returns effective current-state capability hints using legacy string keys.
+     * Writes one item to its coordinate cache entry.
      *
-     * @return capability flags
+     * @param item item to cache
+     * @return the supplied item
      */
-    public Map<String, Boolean> capabilities() {
-        return storeCapabilities().asMap();
+    private Item cache(Item item) {
+        if (item != null) {
+            cacheX.write(
+                    entryKey(
+                            item.getTenant_id(),
+                            item.getSpace_id(),
+                            item.getGroup(),
+                            item.getCode(),
+                            item.getProfile_id()),
+                    item,
+                    0L);
+        }
+        return item;
     }
 
     /**
-     * Normalizes and writes one current-state setting entry into the cache projection.
+     * Tests whether one item is visible to the requested application.
      *
-     * @param entry setting entry
-     * @return cached normalized entry
+     * @param item   item to inspect
+     * @param app_id application identifier, when filtering is required
+     * @return {@code true} when the item is visible
      */
-    private Item cache(Item entry) {
-        if (entry == null) {
-            return null;
+    private boolean visibleToApp(Item item, String app_id) {
+        if (app_id == null || app_id.isBlank()) {
+            return true;
         }
-        Item prepared = ItemNormalizer.normalize(entry, keying);
-        String json = JsonKit.toJsonString(prepared);
-        for (String key : cacheKeys(prepared)) {
-            cacheX.write(key, json, 0L);
-        }
-        return prepared;
-    }
-
-    /**
-     * Loads one current-state setting entry from the cache projection.
-     *
-     * @param space   space
-     * @param group   setting group
-     * @param data_id setting data identifier
-     * @param profile optional profile
-     * @return cached setting entry or {@code null}
-     */
-    private Item cached(String space, String group, String data_id, String profile) {
-        if (StringKit.isNotEmpty(profile)) {
-            Item scoped = readCached(entryKey(space, group, data_id, profile));
-            if (matchesExactProfile(scoped, profile)) {
-                return scoped;
-            }
-        }
-        Item shared = readCached(entryKey(space, group, data_id, null));
-        return ItemBindingProjection.matchesProfileBinding(shared, profile) ? shared : null;
-    }
-
-    /**
-     * Scans and filters the cache projection using the same selector semantics as the durable store.
-     *
-     * @param query cache query
-     * @return filtered cache snapshot
-     */
-    private List<Item> queryCache(ItemQuery query) {
-        ItemQuery criteria = query != null ? query : new ItemQuery();
-        String space = CortexIdentity.space(criteria.getSpace_id());
-        Map<String, Object> entries = cacheX.scan(entryPrefix(space));
-        Map<String, Item> result = new LinkedHashMap<>();
-        for (Object value : entries.values()) {
-            if (!(value instanceof String json)) {
-                continue;
-            }
-            Item entry = JsonKit.toPojo(json, Item.class);
-            if (entry == null || !matches(entry, criteria)) {
-                continue;
-            }
-            result.putIfAbsent(cacheIdentity(entry), entry);
-        }
-        List<Item> page = new ArrayList<>(result.values());
-        int offset = Math.max(criteria.getOffset(), 0);
-        int limit = criteria.getLimit() > 0 ? criteria.getLimit() : page.size();
-        if (offset >= page.size()) {
-            return List.of();
-        }
-        int toIndex = limit == 0 ? page.size() : Math.min(page.size(), offset + limit);
-        return page.subList(offset, toIndex);
-    }
-
-    /**
-     * Evicts one or more cache entries described by the supplied scope.
-     *
-     * @param scope cache-eviction scope
-     */
-    private void evict(ItemScope scope) {
-        ItemQuery query = toQuery(scope);
-        String space = CortexIdentity.space(query.getSpace_id());
-        if (StringKit.isNotEmpty(query.getData_id())) {
-            evict(space, query.getGroup(), query.getData_id(), query.getProfile_id());
-            return;
-        }
-        List<Item> entries = queryCache(query);
-        if (entries.isEmpty()) {
-            return;
-        }
-        List<String> keys = new ArrayList<>(entries.size());
-        for (Item entry : entries) {
-            keys.addAll(cacheKeys(entry));
-        }
-        cacheX.remove(keys.toArray(String[]::new));
-    }
-
-    /**
-     * Converts one broad setting scope into the query model used by cache and store scans.
-     *
-     * @param scope source scope
-     * @return equivalent query selector
-     */
-    private ItemQuery toQuery(ItemScope scope) {
-        ItemQuery query = new ItemQuery();
-        if (scope == null) {
-            return query;
-        }
-        query.setSpace_id(CortexIdentity.space(scope.getSpace_id()));
-        query.setGroup(scope.getGroup());
-        query.setApp_id(scope.getApp_id());
-        query.setProfile_id(scope.getProfile_id());
-        query.setLabels(scope.getLabels());
-        query.setSelectors(scope.getSelectors());
-        query.setLimit(scope.getLimit());
-        query.setOffset(scope.getOffset());
-        query.setIncludeDeleted(scope.isIncludeDeleted());
-        query.setRequestId(scope.getRequestId());
-        if (scope instanceof ItemQuery itemQuery) {
-            query.setData_id(itemQuery.getData_id());
-            query.setFallbackValue(itemQuery.getFallbackValue());
-            query.setRequestContext(itemQuery.getRequestContext());
-        }
-        return query;
-    }
-
-    /**
-     * Returns whether one setting entry satisfies the supplied query selector.
-     *
-     * @param entry    setting entry
-     * @param criteria query selector
-     * @return {@code true} when the entry matches
-     */
-    private boolean matches(Item entry, ItemQuery criteria) {
-        if (!criteria.isIncludeDeleted() && entry.getStatus() != null && entry.getStatus() < 0) {
+        List<Reference> references = referenceStore
+                .outgoing(item.getTenant_id(), item.getId(), Reference.Type.ITEM_APP.name());
+        if (references == null || references.isEmpty()) {
             return false;
         }
-        if (StringKit.isNotEmpty(criteria.getSpace_id())
-                && !Objects.equals(CortexIdentity.space(criteria.getSpace_id()), entry.getSpace_id())) {
-            return false;
-        }
-        if (StringKit.isNotEmpty(criteria.getGroup()) && !Objects.equals(criteria.getGroup(), entry.getGroup())) {
-            return false;
-        }
-        if (StringKit.isNotEmpty(criteria.getData_id()) && !Objects.equals(criteria.getData_id(), entry.getData_id())) {
-            return false;
-        }
-        if (!ItemBindingProjection.matchesProfileBinding(entry, criteria.getProfile_id())) {
-            return false;
-        }
-        if (StringKit.isNotEmpty(criteria.getApp_id())
-                && !ItemBindingProjection.bindsToApp(entry, criteria.getApp_id())) {
-            return false;
-        }
-        return MetadataMatcher.matches(entry.getLabels(), criteria.getLabels(), criteria.getSelectors());
+        return references.stream().anyMatch(reference -> app_id.equals(reference.getTarget_id()));
     }
 
     /**
-     * Queries setting items by their storage coordinates.
+     * Builds the tenant-qualified cache key for one item coordinate.
      *
-     * @param space   space identifier
-     * @param group   setting group
-     * @param data_id setting data identifier
-     * @param profile profile identifier
-     * @return matching setting items
-     */
-    private List<Item> queryByCoordinates(String space, String group, String data_id, String profile) {
-        ItemQuery query = new ItemQuery();
-        query.setSpace_id(space);
-        query.setGroup(group);
-        query.setData_id(data_id);
-        query.setProfile_id(profile);
-        return store == null || !queryable() ? queryCache(query) : store.query(query);
-    }
-
-    /**
-     * Returns the first setting item from a list.
-     *
-     * @param entries setting items
-     * @return first item or {@code null}
-     */
-    private Item first(List<Item> entries) {
-        return entries == null || entries.isEmpty() ? null : entries.getFirst();
-    }
-
-    /**
-     * Builds all cache keys that should point to one item entry.
-     *
-     * @param entry setting item
-     * @return cache keys
-     */
-    private List<String> cacheKeys(Item entry) {
-        List<String> profiles = ItemBindingProjection.normalizedProfileIds(entry);
-        if (profiles == null || profiles.isEmpty()) {
-            return List.of(entryKey(entry.getSpace_id(), entry.getGroup(), entry.getData_id(), null));
-        }
-        List<String> keys = new ArrayList<>(profiles.size());
-        for (String profile : profiles) {
-            String key = entryKey(entry.getSpace_id(), entry.getGroup(), entry.getData_id(), profile);
-            if (!keys.contains(key)) {
-                keys.add(key);
-            }
-        }
-        return keys;
-    }
-
-    /**
-     * Reads one item from the local cache.
-     *
-     * @param key cache key
-     * @return cached item or {@code null}
-     */
-    private Item readCached(String key) {
-        Object raw = cacheX.read(key);
-        return raw instanceof String json ? JsonKit.toPojo(json, Item.class) : null;
-    }
-
-    /**
-     * Builds a cache identity for diagnostics and change events.
-     *
-     * @param entry setting item
-     * @return cache identity
-     */
-    private String cacheIdentity(Item entry) {
-        List<String> profiles = ItemBindingProjection.normalizedProfileIds(entry);
-        return profileScope(
-                entry.getSpace_id(),
-                entry.getGroup(),
-                entry.getData_id(),
-                profiles == null || profiles.isEmpty() ? null : String.join(Symbol.COMMA, profiles));
-    }
-
-    /**
-     * Builds one current-state entry cache key.
-     *
-     * @param space   space
-     * @param group   setting group
-     * @param dataId  setting data identifier
-     * @param profile optional profile
+     * @param tenant_id  tenant identifier, when available
+     * @param space_id   space identifier
+     * @param group      item group
+     * @param code       item code
+     * @param profile_id profile identifier, when applicable
      * @return cache key
      */
-    private String entryKey(String space, String group, String dataId, String profile) {
-        return keying.key(SettingSpec.entry(space, group, dataId, profile));
+    private String entryKey(String tenant_id, String space_id, String group, String code, String profile_id) {
+        return value(tenant_id) + ':' + keying.key(SettingSpec.entry(space_id, group, code, profile_id));
     }
 
     /**
-     * Builds the current-state entry prefix for one space.
+     * Normalizes a nullable cache-key segment.
      *
-     * @param space space
-     * @return cache prefix
+     * @param value segment value
+     * @return normalized segment
      */
-    private String entryPrefix(String space) {
-        return keying.prefix(SettingSpec.entry(space, null, null, null));
+    private String value(String value) {
+        return value == null ? "_" : value;
     }
-
-    /**
-     * Builds the logical profile scope used for diagnostics and change events.
-     *
-     * @param space   space
-     * @param group   setting group
-     * @param dataId  setting data identifier
-     * @param profile optional profile
-     * @return profile scope key
-     */
-    private String profileScope(String space, String group, String dataId, String profile) {
-        return keying.key(SettingSpec.profileScope(space, group, dataId, profile));
-    }
-
-    /**
-     * Returns whether an item is bound exactly to the supplied profile.
-     *
-     * @param entry   setting item
-     * @param profile profile identifier
-     * @return {@code true} when the item is bound to the supplied profile only
-     */
-    private boolean matchesExactProfile(Item entry, String profile) {
-        if (entry == null) {
-            return false;
-        }
-        List<String> profiles = ItemBindingProjection.normalizedProfileIds(entry);
-        if (StringKit.isEmpty(profile)) {
-            return profiles == null || profiles.isEmpty();
-        }
-        return profiles != null && profiles.contains(profile.trim().toLowerCase());
-    }
-
-    /**
-     * Returns whether the backing store provides durable persistence.
-     *
-     * @return {@code true} when the store supports durable writes
-     */
-    private boolean durable() {
-        return store != null && store.storeCapabilities().supports(Trait.DURABLE);
-    }
-
-    /**
-     * Returns whether the backing store can execute queries.
-     *
-     * @return {@code true} when the store supports query operations
-     */
-    private boolean queryable() {
-        return store != null && store.storeCapabilities().supports(Trait.QUERY);
-    }
-
-    /**
-     * Logs that an operation is falling back because a store trait is missing.
-     *
-     * @param operation  operation name
-     * @param capability missing store trait
-     * @param fallback   fallback behavior description
-     */
-    private void capabilityFallback(String operation, Trait capability, String fallback) {
-        Logger.warn(
-                false,
-                "Cortex",
-                "Setting item store capability missing: operation={}, capability={}, fallback={}",
-                operation,
-                capability == null ? null : capability.key(),
-                fallback);
-    }
-
 }

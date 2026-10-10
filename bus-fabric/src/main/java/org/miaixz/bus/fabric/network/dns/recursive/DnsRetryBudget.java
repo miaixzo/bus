@@ -146,6 +146,58 @@ public class DnsRetryBudget {
     }
 
     /**
+     * Returns the smaller duration.
+     *
+     * @param first  first duration
+     * @param second second duration
+     * @return smaller duration
+     */
+    private static Duration min(final Duration first, final Duration second) {
+        return first.compareTo(second) <= 0 ? first : second;
+    }
+
+    /**
+     * Validates a positive duration.
+     *
+     * @param duration duration to validate
+     * @param name     diagnostic name
+     * @return validated duration
+     */
+    private static Duration validateDuration(final Duration duration, final String name) {
+        if (duration == null || duration.isNegative() || duration.isZero()) {
+            throw new ValidateException(name + " must be positive");
+        }
+        return duration;
+    }
+
+    /**
+     * Validates a retry count.
+     *
+     * @param maxRetries retry count
+     * @return validated retry count
+     */
+    private static int validateRetries(final int maxRetries) {
+        if (maxRetries < 1) {
+            throw new ValidateException("DNS retry max retries must be positive");
+        }
+        return maxRetries;
+    }
+
+    /**
+     * Validates an attempt count.
+     *
+     * @param attempts   attempt count
+     * @param maxRetries maximum retry count
+     * @return validated attempt count
+     */
+    private static int validateAttempts(final int attempts, final int maxRetries) {
+        if (attempts < 0 || attempts > maxRetries) {
+            throw new ValidateException("DNS retry attempts are out of range");
+        }
+        return attempts;
+    }
+
+    /**
      * Reserves one upstream request attempt.
      *
      * @param upstreamTimeout upstream-specific timeout
@@ -235,58 +287,6 @@ public class DnsRetryBudget {
         Duration timeout = min(perQueryTimeout, upstream);
         timeout = min(timeout, remaining());
         return timeout.isZero() ? Duration.ofNanos(1L) : timeout;
-    }
-
-    /**
-     * Returns the smaller duration.
-     *
-     * @param first  first duration
-     * @param second second duration
-     * @return smaller duration
-     */
-    private static Duration min(final Duration first, final Duration second) {
-        return first.compareTo(second) <= 0 ? first : second;
-    }
-
-    /**
-     * Validates a positive duration.
-     *
-     * @param duration duration to validate
-     * @param name     diagnostic name
-     * @return validated duration
-     */
-    private static Duration validateDuration(final Duration duration, final String name) {
-        if (duration == null || duration.isNegative() || duration.isZero()) {
-            throw new ValidateException(name + " must be positive");
-        }
-        return duration;
-    }
-
-    /**
-     * Validates a retry count.
-     *
-     * @param maxRetries retry count
-     * @return validated retry count
-     */
-    private static int validateRetries(final int maxRetries) {
-        if (maxRetries < 1) {
-            throw new ValidateException("DNS retry max retries must be positive");
-        }
-        return maxRetries;
-    }
-
-    /**
-     * Validates an attempt count.
-     *
-     * @param attempts   attempt count
-     * @param maxRetries maximum retry count
-     * @return validated attempt count
-     */
-    private static int validateAttempts(final int attempts, final int maxRetries) {
-        if (attempts < 0 || attempts > maxRetries) {
-            throw new ValidateException("DNS retry attempts are out of range");
-        }
-        return attempts;
     }
 
     /**

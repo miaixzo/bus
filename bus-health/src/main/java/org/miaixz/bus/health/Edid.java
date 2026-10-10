@@ -190,13 +190,10 @@ public class Edid {
                     "Serial number: {}",
                     Arrays.toString(Arrays.copyOfRange(edid, SERIAL_NUMBER_OFFSET, SERIAL_NUMBER_OFFSET + 4)));
         }
-        return String.format(
-                Locale.ROOT,
-                "%s%s%s%s",
-                getAlphaNumericOrHex(edid[SERIAL_NUMBER_OFFSET + 3]),
-                getAlphaNumericOrHex(edid[SERIAL_NUMBER_OFFSET + 2]),
-                getAlphaNumericOrHex(edid[SERIAL_NUMBER_OFFSET + 1]),
-                getAlphaNumericOrHex(edid[SERIAL_NUMBER_OFFSET]));
+        return getAlphaNumericOrHex(edid[SERIAL_NUMBER_OFFSET + Normal._3])
+                + getAlphaNumericOrHex(edid[SERIAL_NUMBER_OFFSET + Normal._2])
+                + getAlphaNumericOrHex(edid[SERIAL_NUMBER_OFFSET + Normal._1])
+                + getAlphaNumericOrHex(edid[SERIAL_NUMBER_OFFSET]);
     }
 
     /**
@@ -206,8 +203,7 @@ public class Edid {
      * @return The corresponding character if the byte is a letter or digit; otherwise, a two-digit hex string.
      */
     private static String getAlphaNumericOrHex(byte b) {
-        return Character.isLetterOrDigit((char) b) ? String.format(Locale.ROOT, "%s", (char) b)
-                : String.format(Locale.ROOT, "%02X", b);
+        return Character.isLetterOrDigit((char) b) ? String.valueOf((char) b) : String.format(Locale.ROOT, "%02X", b);
     }
 
     /**

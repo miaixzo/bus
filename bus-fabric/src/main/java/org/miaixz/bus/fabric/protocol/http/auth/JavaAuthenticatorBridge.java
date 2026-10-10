@@ -64,6 +64,18 @@ public class JavaAuthenticatorBridge implements HttpAuthenticator {
     }
 
     /**
+     * Validates bridge inputs before calling the JDK authentication API.
+     *
+     * @param value reference to validate
+     * @param name  field name used in validation messages
+     * @param <T>   reference type
+     * @return the validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Uses the wrapped JDK authenticator to obtain credentials for the first response challenge and constructs a Basic
      * authentication retry.
      *
@@ -118,18 +130,6 @@ public class JavaAuthenticatorBridge implements HttpAuthenticator {
         } catch (final MalformedURLException e) {
             throw new ProtocolException("Invalid authentication URL", e);
         }
-    }
-
-    /**
-     * Validates bridge inputs before calling the JDK authentication API.
-     *
-     * @param value reference to validate
-     * @param name  field name used in validation messages
-     * @param <T>   reference type
-     * @return the validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

@@ -60,53 +60,6 @@ public class MessageConverterConfiguration {
     }
 
     /**
-     * Creates the text web mvc configurer.
-     *
-     * @return the configurer that registers plain-text conversion
-     */
-    @Bean
-    @ConditionalOnMissingBean(TextWebMvcConfigurer.class)
-    public TextWebMvcConfigurer textWebMvcConfigurer() {
-        return new TextWebMvcConfigurer();
-    }
-
-    /**
-     * Creates the json web mvc configurer.
-     *
-     * @param registrars ordered converter registrars contributed by the application
-     * @return the configurer that registers JSON conversion
-     */
-    @Bean
-    @ConditionalOnMissingBean(JsonWebMvcConfigurer.class)
-    public JsonWebMvcConfigurer jsonWebMvcConfigurer(List<MessageConverterRegistrar> registrars) {
-        return new JsonWebMvcConfigurer(registrars);
-    }
-
-    /**
-     * Creates the json message converter.
-     *
-     * @param provider    application JSON provider managed by JSON configuration
-     * @param properties  message-converter type policy and explicit allow-list
-     * @param beanFactory current Bean factory containing the application base-package registration
-     * @return the HTTP message converter backed by the selected JSON Provider
-     */
-    @Bean
-    @ConditionalOnBean(JsonProvider.class)
-    @ConditionalOnMissingBean(JsonMessageConverter.class)
-    public JsonMessageConverter jsonMessageConverter(
-            JsonProvider provider,
-            MessageConverterProperties properties,
-            BeanFactory beanFactory) {
-        JsonMessageConverter converter = new JsonMessageConverter(provider);
-        if (allowsAll(properties)) {
-            converter.typeFilter(JsonTypeFilter.always());
-            return converter;
-        }
-        converter.autoType(String.join(",", allowedTypeRules(properties, beanFactory)));
-        return converter;
-    }
-
-    /**
      * Resolves the explicit and application-derived type rules while preserving their configured order.
      *
      * @param properties  configured type policy and rules
@@ -155,6 +108,53 @@ public class MessageConverterConfiguration {
         }
         return Arrays.stream(autoType.split("[,\\r\\n]+")).map(String::trim).filter(value -> !value.isEmpty())
                 .distinct().toList();
+    }
+
+    /**
+     * Creates the text web mvc configurer.
+     *
+     * @return the configurer that registers plain-text conversion
+     */
+    @Bean
+    @ConditionalOnMissingBean(TextWebMvcConfigurer.class)
+    public TextWebMvcConfigurer textWebMvcConfigurer() {
+        return new TextWebMvcConfigurer();
+    }
+
+    /**
+     * Creates the json web mvc configurer.
+     *
+     * @param registrars ordered converter registrars contributed by the application
+     * @return the configurer that registers JSON conversion
+     */
+    @Bean
+    @ConditionalOnMissingBean(JsonWebMvcConfigurer.class)
+    public JsonWebMvcConfigurer jsonWebMvcConfigurer(List<MessageConverterRegistrar> registrars) {
+        return new JsonWebMvcConfigurer(registrars);
+    }
+
+    /**
+     * Creates the json message converter.
+     *
+     * @param provider    application JSON provider managed by JSON configuration
+     * @param properties  message-converter type policy and explicit allow-list
+     * @param beanFactory current Bean factory containing the application base-package registration
+     * @return the HTTP message converter backed by the selected JSON Provider
+     */
+    @Bean
+    @ConditionalOnBean(JsonProvider.class)
+    @ConditionalOnMissingBean(JsonMessageConverter.class)
+    public JsonMessageConverter jsonMessageConverter(
+            JsonProvider provider,
+            MessageConverterProperties properties,
+            BeanFactory beanFactory) {
+        JsonMessageConverter converter = new JsonMessageConverter(provider);
+        if (allowsAll(properties)) {
+            converter.typeFilter(JsonTypeFilter.always());
+            return converter;
+        }
+        converter.autoType(String.join(",", allowedTypeRules(properties, beanFactory)));
+        return converter;
     }
 
 }

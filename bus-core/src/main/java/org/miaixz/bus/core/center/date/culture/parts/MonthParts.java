@@ -44,6 +44,17 @@ public abstract class MonthParts extends YearParts {
     }
 
     /**
+     * Constructs month-based date parts.
+     *
+     * @param year  the year value
+     * @param month the month value
+     */
+    public MonthParts(final int year, final int month) {
+        super(year);
+        this.month = month;
+    }
+
+    /**
      * Gets the month of the year.
      *
      * @return the month of the year (1-12, depending on the calendar system)

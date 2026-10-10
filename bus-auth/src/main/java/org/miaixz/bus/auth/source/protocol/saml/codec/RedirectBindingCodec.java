@@ -691,7 +691,6 @@ public class RedirectBindingCodec {
      * @param relayState optional opaque RelayState
      * @param signature  optional exact Redirect Binding signature evidence
      * @param <T>        standard message type
-     *
      * @author Kimi Liu
      */
     public record Decoded<T>(SamlMessageCodec.Document<T> document, Optional<String> relayState,
@@ -716,7 +715,6 @@ public class RedirectBindingCodec {
      * @param algorithm   standard XML Signature algorithm URI
      * @param value       raw decoded signature bytes
      * @param signedInput exact preserved ASCII input bytes
-     *
      * @author Kimi Liu
      */
     public record Signature(String algorithm, byte[] value, byte[] signedInput) {
@@ -774,7 +772,6 @@ public class RedirectBindingCodec {
      * @param rawValue     exact percent-encoded parameter value
      * @param decodedName  strict UTF-8 decoded parameter name
      * @param decodedValue strict UTF-8 decoded parameter value
-     *
      * @author Kimi Liu
      */
     private record RawParameter(String rawName, String rawValue, String decodedName, String decodedValue) {

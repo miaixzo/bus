@@ -39,105 +39,44 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class ExportStatus implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852253553600L;
-
-    /**
-     * Enum representing the status of the export.
-     *
-     * @author Kimi Liu
-     */
-    public enum Status {
-
-        /**
-         * The none status.
-         */
-        NONE,
-        /**
-         * The started status.
-         */
-        STARTED,
-        /**
-         * The finished status.
-         */
-        FINISHED,
-        /**
-         * The after export action status.
-         */
-        AFTER_EXPORT_ACTION;
-
-        /**
-         * The enum codec value.
-         */
-        private static JacksonJsonEnumCodec<Status> enumCodec = new JacksonJsonEnumCodec<>(Status.class);
-
-        /**
-         * Returns the value.
-         *
-         * @param value the value value
-         * @return the result
-         */
-
-        @JsonCreator
-        public static Status forValue(String value) {
-            return enumCodec.forValue(value);
-        }
-
-        /**
-         * Returns the value.
-         *
-         * @return the result
-         */
-
-        @JsonValue
-        public String toValue() {
-            return (enumCodec.toString(this));
-        }
-
-        /**
-         * Returns the string.
-         *
-         * @return the result
-         */
-
-        @Override
-        public String toString() {
-            return (enumCodec.toString(this));
-        }
-
-    }
 
     /**
      * The id value.
      */
     private Long id;
+
     /**
      * The description value.
      */
     private String description;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The name with namespace value.
      */
     private String nameWithNamespace;
+
     /**
      * The path value.
      */
     private String path;
+
     /**
      * The path with namespace value.
      */
     private String pathWithNamespace;
+
     /**
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The export status value.
      */
@@ -361,6 +300,71 @@ public class ExportStatus implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    /**
+     * Enum representing the status of the export.
+     *
+     * @author Kimi Liu
+     */
+    public enum Status {
+
+        /**
+         * The none status.
+         */
+        NONE,
+        /**
+         * The started status.
+         */
+        STARTED,
+        /**
+         * The finished status.
+         */
+        FINISHED,
+        /**
+         * The after export action status.
+         */
+        AFTER_EXPORT_ACTION;
+
+        /**
+         * The enum codec value.
+         */
+        private static JacksonJsonEnumCodec<Status> enumCodec = new JacksonJsonEnumCodec<>(Status.class);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
+
+        @JsonCreator
+        public static Status forValue(String value) {
+            return enumCodec.forValue(value);
+        }
+
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
+        @JsonValue
+        public String toValue() {
+            return (enumCodec.toString(this));
+        }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
+
+        @Override
+        public String toString() {
+            return (enumCodec.toString(this));
+        }
+
     }
 
 }

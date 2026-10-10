@@ -172,7 +172,7 @@ public interface OperatingSystem {
     /**
      * Gets the current process ID (PID).
      *
-     * @return the Process ID of the current process
+     * @return the process ID of the current process if known, or 0 otherwise
      */
     int getProcessId();
 
@@ -180,13 +180,15 @@ public interface OperatingSystem {
      * Gets the current process.
      * <p>
      * The current process exists by definition. If the platform query fails to return it, this method returns a minimal
-     * stand-in reporting the current process ID and a running state.
+     * stand-in reporting the current process ID and a running state. The same stand-in is returned without a query when
+     * {@link #getProcessId()} cannot determine the process ID.
      *
      * @return the current process, never {@code null}
      */
     default OSProcess getCurrentProcess() {
         int pid = getProcessId();
-        OSProcess process = getProcess(pid);
+        // An unknown PID is 0, which can identify a real kernel or idle process on some platforms.
+        OSProcess process = pid > Normal._0 ? getProcess(pid) : null;
         return process == null ? new CurrentProcessStub(pid) : process;
     }
 

@@ -68,6 +68,7 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
      */
     private final SupplierX<CLibrary.BsdUdpstat> udpstat = Memoizer
             .memoize(MacInternetProtocolStats::queryUdpstat, Memoizer.defaultExpiration());
+
     // With elevated permissions use tcpstat only
     // Backup estimate get ipstat and subtract off udp
     /**

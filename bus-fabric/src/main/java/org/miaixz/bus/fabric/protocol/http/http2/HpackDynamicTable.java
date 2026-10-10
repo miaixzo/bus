@@ -99,6 +99,17 @@ final class HpackDynamicTable {
     }
 
     /**
+     * Computes a stable exact header hash.
+     *
+     * @param name  field name
+     * @param value field value
+     * @return combined hash
+     */
+    private static int exactHash(final String name, final String value) {
+        return 31 * name.hashCode() + value.hashCode();
+    }
+
+    /**
      * Updates the effective capacity and evicts only as needed.
      *
      * @param value new effective byte capacity
@@ -264,17 +275,6 @@ final class HpackDynamicTable {
      */
     private int decrement(final int value) {
         return value == 0 ? entries.length - 1 : value - 1;
-    }
-
-    /**
-     * Computes a stable exact header hash.
-     *
-     * @param name  field name
-     * @param value field value
-     * @return combined hash
-     */
-    private static int exactHash(final String name, final String value) {
-        return 31 * name.hashCode() + value.hashCode();
     }
 
 }

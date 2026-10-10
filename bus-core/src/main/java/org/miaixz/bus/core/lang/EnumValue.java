@@ -772,6 +772,22 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
         }
 
         /**
+         * Creates a Sort enum from a string value.
+         *
+         * @param value the string value to convert
+         * @return the Sort enum value
+         */
+        public static Sort fromString(String value) {
+            try {
+                return Sort.valueOf(value.toUpperCase());
+            } catch (Exception e) {
+                throw new IllegalArgumentException(String.format(
+                        "Invalid value '%s' for orders given; Has to be either 'desc' or 'asc' (case insensitive)",
+                        value), e);
+            }
+        }
+
+        /**
          * Checks if this sort order is ascending.
          *
          * @return true if ascending, false otherwise
@@ -787,22 +803,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          */
         public boolean isDescending() {
             return this.equals(DESC);
-        }
-
-        /**
-         * Creates a Sort enum from a string value.
-         *
-         * @param value the string value to convert
-         * @return the Sort enum value
-         */
-        public static Sort fromString(String value) {
-            try {
-                return Sort.valueOf(value.toUpperCase());
-            } catch (Exception e) {
-                throw new IllegalArgumentException(String.format(
-                        "Invalid value '%s' for orders given; Has to be either 'desc' or 'asc' (case insensitive)",
-                        value), e);
-            }
         }
 
     }
@@ -1018,6 +1018,79 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          */
         public static Set<Class<?>> getWrapperSet() {
             return PRIMITIVE_MAP.keySet();
+        }
+
+    }
+
+    /**
+     * Enumeration for logical space variants.
+     *
+     * @author Kimi Liu
+     */
+    @Getter
+    enum Variant {
+
+        /**
+         * Namespace containing configuration and service resources.
+         */
+        NAMESPACE(1),
+
+        /**
+         * Collaborative workspace containing members and workspace-owned resources.
+         */
+        WORKSPACE(2);
+
+        /**
+         * Stable persisted code for the space variant.
+         */
+        private final int code;
+
+        /**
+         * Constructs a logical space variant.
+         *
+         * @param code stable persisted code
+         */
+        Variant(int code) {
+            this.code = code;
+        }
+
+    }
+
+    /**
+     * Enumeration for resource visibility boundaries.
+     *
+     * @author Kimi Liu
+     */
+    @Getter
+    enum Visibility {
+
+        /**
+         * Visible only to the owner and explicitly authorized principals.
+         */
+        PRIVATE(1),
+
+        /**
+         * Visible outside the owning tenant when the resource policy permits it.
+         */
+        PUBLIC(2),
+
+        /**
+         * Visible to authorized principals in the owning tenant.
+         */
+        TENANT(3);
+
+        /**
+         * Stable persisted code for the visibility boundary.
+         */
+        private final int code;
+
+        /**
+         * Constructs a resource visibility boundary.
+         *
+         * @param code stable persisted code
+         */
+        Visibility(int code) {
+            this.code = code;
         }
 
     }

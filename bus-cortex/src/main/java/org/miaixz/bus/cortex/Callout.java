@@ -23,11 +23,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CodingErrorAction;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.center.function.SupplierX;
@@ -37,11 +33,7 @@ import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.DataCodec;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.logger.Logger;
@@ -63,16 +55,33 @@ public class Callout {
      */
     private static final DataCodec<String> TEXT_CODEC = new DataCodec<>() {
 
+        /**
+         * Encodes text as a UTF-8 payload.
+         *
+         * @param value text value
+         * @return encoded payload
+         */
         @Override
         public Payload encode(String value) {
             return Payload.of(value == null ? Normal.EMPTY : value, Charset.UTF_8);
         }
 
+        /**
+         * Decodes a payload using strict UTF-8 validation.
+         *
+         * @param payload encoded payload
+         * @return decoded text
+         */
         @Override
         public String decode(Payload payload) {
             return decodeText(payload);
         }
 
+        /**
+         * Returns the media type produced by this codec.
+         *
+         * @return UTF-8 plain-text media type
+         */
         @Override
         public MediaType media() {
             return MediaType.TEXT_PLAIN_TYPE.withCharset(Charset.UTF_8);
@@ -213,6 +222,30 @@ public class Callout {
     }
 
     /**
+     * Local replacement for the previous HTTP result state categories used by Callout.
+     *
+     * @author Kimi Liu
+     */
+    private enum ResultState {
+
+        /**
+         * A response was received and decoded.
+         */
+        RESPONDED,
+
+        /**
+         * The call timed out before producing a usable response.
+         */
+        TIMEOUT,
+
+        /**
+         * Transport, cancellation, protocol, or decode failure.
+         */
+        FAILED
+
+    }
+
+    /**
      * Shared current-fabric HTTP execution context for one timeout bucket.
      *
      * @author Kimi Liu
@@ -324,34 +357,13 @@ public class Callout {
     }
 
     /**
-     * Local replacement for the previous HTTP result state categories used by Callout.
-     */
-    private enum ResultState {
-
-        /**
-         * A response was received and decoded.
-         */
-        RESPONDED,
-
-        /**
-         * The call timed out before producing a usable response.
-         */
-        TIMEOUT,
-
-        /**
-         * Transport, cancellation, protocol, or decode failure.
-         */
-        FAILED
-
-    }
-
-    /**
      * Cortex-local HTTP execution result.
      *
      * @param state  execution state
      * @param status response status, or 0 when no status was available
      * @param body   decoded response body
      * @param error  failure cause
+     * @author Kimi Liu
      */
     private record Result(ResultState state, int status, String body, Throwable error) {
 

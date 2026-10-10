@@ -25,10 +25,8 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.ArrayDeque;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -92,12 +90,12 @@ public class DnsTcpEndpoint implements AutoCloseable, Lifecycle {
     /**
      * Start guard.
      */
-    private final java.util.concurrent.atomic.AtomicBoolean started;
+    private final AtomicBoolean started;
 
     /**
      * Close guard.
      */
-    private final java.util.concurrent.atomic.AtomicBoolean closed;
+    private final AtomicBoolean closed;
 
     /**
      * AIO channel group owned by this endpoint after startup.
@@ -133,8 +131,43 @@ public class DnsTcpEndpoint implements AutoCloseable, Lifecycle {
         this.options = options;
         this.handler = handler;
         this.channels = ConcurrentHashMap.newKeySet();
-        this.started = new java.util.concurrent.atomic.AtomicBoolean();
-        this.closed = new java.util.concurrent.atomic.AtomicBoolean();
+        this.started = new AtomicBoolean();
+        this.closed = new AtomicBoolean();
+    }
+
+    /**
+     * Returns whether a candidate header contains the PROXY protocol v2 signature.
+     *
+     * @param header candidate v2 header
+     * @return true when the signature matches
+     */
+    private static boolean proxyV2Signature(final byte[] header) {
+        for (int index = 0; index < PROXY_V2_SIGNATURE.length; index++) {
+            if (header[index] != PROXY_V2_SIGNATURE[index]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns the peer address of an accepted channel.
+     *
+     * @param channel accepted AIO channel
+     * @return peer IP address, or {@code null} when unavailable
+     */
+    private static InetAddress remoteAddress(final AioChannel channel) {
+        final SocketAddress remote = channel.remote();
+        return remote instanceof InetSocketAddress address ? address.getAddress() : null;
+    }
+
+    /**
+     * Closes a resource while preserving the caller's primary failure.
+     *
+     * @param closeable resource to close
+     */
+    private static void closeQuietly(final AutoCloseable closeable) {
+        IoKit.closeQuietly(closeable);
     }
 
     /**
@@ -383,21 +416,6 @@ public class DnsTcpEndpoint implements AutoCloseable, Lifecycle {
     }
 
     /**
-     * Returns whether a candidate header contains the PROXY protocol v2 signature.
-     *
-     * @param header candidate v2 header
-     * @return true when the signature matches
-     */
-    private static boolean proxyV2Signature(final byte[] header) {
-        for (int index = 0; index < PROXY_V2_SIGNATURE.length; index++) {
-            if (header[index] != PROXY_V2_SIGNATURE[index]) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * Writes a DNS TCP response frame.
      *
      * @param channel  accepted AIO channel
@@ -430,7 +448,7 @@ public class DnsTcpEndpoint implements AutoCloseable, Lifecycle {
             throw new IOException("DNS TCP operation was interrupted", e);
         } catch (final ExecutionException e) {
             throw new IOException("DNS TCP operation failed", e.getCause());
-        } catch (final java.util.concurrent.TimeoutException e) {
+        } catch (final TimeoutException e) {
             throw new IOException("DNS TCP operation timed out", e);
         }
     }
@@ -463,26 +481,6 @@ public class DnsTcpEndpoint implements AutoCloseable, Lifecycle {
                 .readBufferSize(Math.min(options.tcpMaxFrameBytes(), 8192))
                 .writeChunkSize(Math.min(options.tcpMaxFrameBytes(), 8192)).idleTimeout(options.tcpIdleTimeout())
                 .build();
-    }
-
-    /**
-     * Returns the peer address of an accepted channel.
-     *
-     * @param channel accepted AIO channel
-     * @return peer IP address, or {@code null} when unavailable
-     */
-    private static InetAddress remoteAddress(final AioChannel channel) {
-        final SocketAddress remote = channel.remote();
-        return remote instanceof InetSocketAddress address ? address.getAddress() : null;
-    }
-
-    /**
-     * Closes a resource while preserving the caller's primary failure.
-     *
-     * @param closeable resource to close
-     */
-    private static void closeQuietly(final AutoCloseable closeable) {
-        IoKit.closeQuietly(closeable);
     }
 
     /**

@@ -27,16 +27,13 @@ import org.miaixz.bus.gitlab.TopicsApi;
 /**
  * This class is utilized by the {@link TopicsApi#createTopic(TopicParams)} and
  * {@link TopicsApi#updateTopic(Integer, TopicParams)} methods to set the parameters for the call to the GitLab API.
- *
+ * <p>
  * Avatar Upload has its own Upload in {@link TopicsApi#updateTopicAvatar(Integer, File)}.
  *
  * @author Kimi Liu
  */
 public class TopicParams implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852282251187L;
 
@@ -44,10 +41,12 @@ public class TopicParams implements Serializable {
      * The name value.
      */
     private String name;
+
     /**
      * The title value.
      */
     private String title;
+
     /**
      * The description value.
      */

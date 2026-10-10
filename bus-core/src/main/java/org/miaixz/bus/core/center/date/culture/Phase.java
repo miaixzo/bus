@@ -59,7 +59,7 @@ public class Phase extends Samsara {
         super(NAMES, index);
         LunarMonth m = LunarMonth.fromYm(lunarYear, lunarMonth).next(index / getSize());
         this.lunarYear = m.getYear();
-        this.lunarMonth = m.getMonthWithLeap();
+        this.lunarMonth = m.getMonthValue();
     }
 
     /**
@@ -116,7 +116,7 @@ public class Phase extends Samsara {
         if (i != 0) {
             m = m.next(i);
         }
-        return fromIndex(m.getYear(), m.getMonthWithLeap(), nextIndex(n));
+        return fromIndex(m.getYear(), m.getMonthValue(), nextIndex(n));
     }
 
     /**

@@ -49,8 +49,9 @@ public class VortexMetricsFeed {
      */
     public static void record(String assetId, long durationNs, boolean success) {
         Metrics.timer("vortex.route.duration", "asset", assetId).record(durationNs, TimeUnit.NANOSECONDS);
-        Metrics.ratePair("vortex.route.rate", "asset", assetId).recordSuccess();
-        if (!success) {
+        if (success) {
+            Metrics.ratePair("vortex.route.rate", "asset", assetId).recordSuccess();
+        } else {
             Metrics.ratePair("vortex.route.rate", "asset", assetId).recordError();
         }
     }

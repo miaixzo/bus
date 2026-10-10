@@ -53,10 +53,12 @@ public class ImageIOHandler {
      * The null source image error value.
      */
     public static final String NULL_SOURCE_IMAGE_ERROR = "Source image cannot be null";
+
     /**
      * The png compression level value.
      */
     private static final int PNG_COMPRESSION_LEVEL = 9;
+
     /**
      * The thumbnail jpeg quality value.
      */

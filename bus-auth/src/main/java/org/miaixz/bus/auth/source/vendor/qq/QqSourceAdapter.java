@@ -984,7 +984,6 @@ public class QqSourceAdapter implements VendorAdapter {
      * @param refreshToken optional sensitive refresh token
      * @param errorCode    failed platform error code
      * @param errorMessage failed platform error message
-     *
      * @author Kimi Liu
      */
     private record TextTokenWire(String accessToken, String expiresIn, String refreshToken, String errorCode,
@@ -1077,7 +1076,6 @@ public class QqSourceAdapter implements VendorAdapter {
      * @param year        optional birth year text
      * @param smallAvatar optional small QQ avatar URL
      * @param largeAvatar optional large QQ avatar URL
-     *
      * @author Kimi Liu
      */
     private record ProfileWire(String nickname, String gender, String province, String city, String year,

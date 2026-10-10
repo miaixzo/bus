@@ -40,54 +40,67 @@ public class DisplayInfoImpl implements DisplayInfo {
      * Whether this display information synthesizes its EDID.
      */
     private final boolean synthetic;
+
     /**
      * The manufacturer ID for synthetic EDID instances.
      */
     private final String manufacturerID;
+
     /**
      * The product ID for synthetic EDID instances.
      */
     private final String productID;
+
     /**
      * The serial number for synthetic EDID instances.
      */
     private final String serialNo;
+
     /**
      * The manufacture week for synthetic EDID instances.
      */
     private final byte week;
+
     /**
      * The manufacture year for synthetic EDID instances.
      */
     private final int year;
+
     /**
      * The EDID version for synthetic EDID instances.
      */
     private final String version;
+
     /**
      * Whether the synthetic display is digital.
      */
     private final boolean digital;
+
     /**
      * The horizontal size in centimeters for synthetic EDID instances.
      */
     private final int hcm;
+
     /**
      * The vertical size in centimeters for synthetic EDID instances.
      */
     private final int vcm;
+
     /**
      * The preferred resolution for synthetic EDID instances.
      */
     private final String preferredResolution;
+
     /**
      * The model name for synthetic EDID instances.
      */
     private final String model;
+
     /**
      * The product serial number descriptor for synthetic EDID instances.
      */
     private final String productSerialNumber;
+
     /**
      * The raw or synthesized EDID bytes.
      */

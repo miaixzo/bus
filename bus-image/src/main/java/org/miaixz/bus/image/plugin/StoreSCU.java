@@ -106,42 +106,52 @@ public class StoreSCU implements AutoCloseable {
      * The overall status and progress of the C-STORE operation.
      */
     private final Status state;
+
     /**
      * The temporary directory created by this instance.
      */
     private final File ownedTmpDir;
+
     /**
      * Additional attributes to be merged into each object before sending.
      */
     private Attributes attrs;
+
     /**
      * A suffix to be appended to SOP Instance UIDs if they are modified.
      */
     private String uidSuffix;
+
     /**
      * A flag to enable SOP Class Relationship extended negotiation.
      */
     private boolean relExtNeg;
+
     /**
      * The priority of the C-STORE request.
      */
     private int priority;
+
     /**
      * The prefix for the temporary file name.
      */
     private String tmpPrefix = DEFAULT_TMP_PREFIX;
+
     /**
      * The suffix for the temporary file name.
      */
     private String tmpSuffix;
+
     /**
      * The directory for the temporary file.
      */
     private File tmpDir;
+
     /**
      * The temporary file used to store the list of files to be sent.
      */
     private File tmpFile;
+
     /**
      * Whether the temporary file was created by this instance.
      */

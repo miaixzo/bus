@@ -95,6 +95,100 @@ public class StompX {
     }
 
     /**
+     * Returns the shared no-op STOMP message handler.
+     *
+     * @return no-op message handler
+     */
+    private static Consumer<StompMessage> noopHandler() {
+        return Instances.get(StompX.class.getName() + ".noopHandler", () -> message -> {
+        });
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Parses a target URI.
+     *
+     * @param value raw STOMP transport URL
+     * @return validated WS, WSS, or TCP target URI
+     */
+    private static URI parseTarget(final String value) {
+        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
+            throw new ValidateException("STOMP URL must be non-blank and single-line");
+        }
+        try {
+            final URI parsed = new URI(value.trim());
+            final String scheme = parsed.getScheme();
+            if (!Protocol.WS.name.equalsIgnoreCase(scheme) && !Protocol.WSS.name.equalsIgnoreCase(scheme)
+                    && !Protocol.TCP.name.equalsIgnoreCase(scheme)) {
+                throw new ProtocolException("STOMP URL must use ws, wss, or tcp");
+            }
+            Address.from(parsed);
+            return parsed;
+        } catch (final URISyntaxException e) {
+            throw new ProtocolException("Invalid STOMP URL", e);
+        }
+    }
+
+    /**
+     * Validates a duration.
+     *
+     * @param duration timeout duration to validate
+     * @return validated non-negative duration
+     */
+    private static Duration validateDuration(final Duration duration) {
+        return validateDuration(duration, "Timeout");
+    }
+
+    /**
+     * Validates a duration.
+     *
+     * @param duration candidate timeout or heartbeat duration
+     * @param name     field name
+     * @return validated non-negative duration
+     */
+    private static Duration validateDuration(final Duration duration, final String name) {
+        final Duration checked = Assert
+                .notNull(duration, () -> new ValidateException(name + " must be non-null and non-negative"));
+        Assert.isFalse(checked.isNegative(), () -> new ValidateException(name + " must be non-null and non-negative"));
+        return checked;
+    }
+
+    /**
+     * Creates CONNECT headers from immutable heartbeat request components.
+     *
+     * @param headers caller headers
+     * @param policy  complete STOMP policy
+     * @return CONNECT headers
+     */
+    private static Headers connectHeaders(final Headers headers, final StompPolicy policy) {
+        final StompPolicy current = require(policy, "STOMP policy");
+        return require(headers, "Headers").with(
+                STOMP_HEADER_HEART_BEAT,
+                current.clientSendHeartbeatMillis() + Symbol.COMMA + current.clientReceiveHeartbeatMillis());
+    }
+
+    /**
+     * Validates and retains the immutable timeout policy.
+     *
+     * @param timeout timeout policy
+     * @return validated timeout policy
+     */
+    private static Timeout copyTimeout(final Timeout timeout) {
+        return require(timeout, "Timeout");
+    }
+
+    /**
      * Returns the STOMP transport protocol.
      *
      * @return transport protocol derived from the target address
@@ -217,100 +311,6 @@ public class StompX {
     public String dispatchKey() {
         return "stomp" + Symbol.COLON + Symbol.SLASH + Symbol.SLASH + spec.address().host() + Symbol.C_COLON
                 + spec.address().port();
-    }
-
-    /**
-     * Returns the shared no-op STOMP message handler.
-     *
-     * @return no-op message handler
-     */
-    private static Consumer<StompMessage> noopHandler() {
-        return Instances.get(StompX.class.getName() + ".noopHandler", () -> message -> {
-        });
-    }
-
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  field name included in the validation failure
-     * @param <T>   reference type
-     * @return validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-    }
-
-    /**
-     * Parses a target URI.
-     *
-     * @param value raw STOMP transport URL
-     * @return validated WS, WSS, or TCP target URI
-     */
-    private static URI parseTarget(final String value) {
-        if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
-            throw new ValidateException("STOMP URL must be non-blank and single-line");
-        }
-        try {
-            final URI parsed = new URI(value.trim());
-            final String scheme = parsed.getScheme();
-            if (!Protocol.WS.name.equalsIgnoreCase(scheme) && !Protocol.WSS.name.equalsIgnoreCase(scheme)
-                    && !Protocol.TCP.name.equalsIgnoreCase(scheme)) {
-                throw new ProtocolException("STOMP URL must use ws, wss, or tcp");
-            }
-            Address.from(parsed);
-            return parsed;
-        } catch (final URISyntaxException e) {
-            throw new ProtocolException("Invalid STOMP URL", e);
-        }
-    }
-
-    /**
-     * Validates a duration.
-     *
-     * @param duration timeout duration to validate
-     * @return validated non-negative duration
-     */
-    private static Duration validateDuration(final Duration duration) {
-        return validateDuration(duration, "Timeout");
-    }
-
-    /**
-     * Validates a duration.
-     *
-     * @param duration candidate timeout or heartbeat duration
-     * @param name     field name
-     * @return validated non-negative duration
-     */
-    private static Duration validateDuration(final Duration duration, final String name) {
-        final Duration checked = Assert
-                .notNull(duration, () -> new ValidateException(name + " must be non-null and non-negative"));
-        Assert.isFalse(checked.isNegative(), () -> new ValidateException(name + " must be non-null and non-negative"));
-        return checked;
-    }
-
-    /**
-     * Creates CONNECT headers from immutable heartbeat request components.
-     *
-     * @param headers caller headers
-     * @param policy  complete STOMP policy
-     * @return CONNECT headers
-     */
-    private static Headers connectHeaders(final Headers headers, final StompPolicy policy) {
-        final StompPolicy current = require(policy, "STOMP policy");
-        return require(headers, "Headers").with(
-                STOMP_HEADER_HEART_BEAT,
-                current.clientSendHeartbeatMillis() + Symbol.COMMA + current.clientReceiveHeartbeatMillis());
-    }
-
-    /**
-     * Validates and retains the immutable timeout policy.
-     *
-     * @param timeout timeout policy
-     * @return validated timeout policy
-     */
-    private static Timeout copyTimeout(final Timeout timeout) {
-        return require(timeout, "Timeout");
     }
 
     /**

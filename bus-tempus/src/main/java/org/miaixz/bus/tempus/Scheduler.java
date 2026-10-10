@@ -58,7 +58,7 @@ import org.miaixz.bus.tempus.pattern.CronPattern;
  * <pre>
  * Stop Timer -> Stop all running TaskLaunchers -> Stop all running TaskExecutors
  * </pre>
- *
+ * <p>
  * Where:
  *
  * <pre>
@@ -85,9 +85,9 @@ public class Scheduler implements Serializable {
     public final Configure config;
 
     /**
-     * Timer.
+     * Lock for scheduled tasks, used to synchronize add and delete operations.
      */
-    private CronTimer timer;
+    private final Lock lock;
 
     /**
      * Scheduled task table.
@@ -110,9 +110,9 @@ public class Scheduler implements Serializable {
     public TaskListenerManager listenerManager;
 
     /**
-     * Lock for scheduled tasks, used to synchronize add and delete operations.
+     * Timer.
      */
-    private final Lock lock;
+    private CronTimer timer;
 
     /**
      * Whether it has been started.

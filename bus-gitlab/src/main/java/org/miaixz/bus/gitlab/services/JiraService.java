@@ -33,32 +33,35 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
  */
 public class JiraService extends NotificationService {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852285168011L;
+
     /**
      * The url prop value.
      */
 
     public static final String URL_PROP = "url";
+
     /**
      * The api url prop value.
      */
     public static final String API_URL_PROP = "api_url";
+
     /**
      * The project key prop value.
      */
     public static final String PROJECT_KEY_PROP = "project_key";
+
     /**
      * The jira issue transition id prop value.
      */
     public static final String JIRA_ISSUE_TRANSITION_ID_PROP = "jira_issue_transition_id";
+
     /**
      * The commit events prop value.
      */
     public static final String COMMIT_EVENTS_PROP = "commit_events";
+
     /**
      * The comment on event enabled value.
      */

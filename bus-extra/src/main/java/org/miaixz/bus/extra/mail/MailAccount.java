@@ -41,13 +41,14 @@ import org.miaixz.bus.setting.Setting;
  */
 public class MailAccount implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852285572363L;
+
     /**
      * Default paths for loading mail configuration settings.
      */
     public static final String[] MAIL_SETTING_PATHS = new String[] { "config/mail.setting",
             "config/mailAccount.setting", "mail.setting" };
-    @Serial
-    private static final long serialVersionUID = 2852285572363L;
 
     /**
      * Mail transport protocol property key.
@@ -123,6 +124,11 @@ public class MailAccount implements Serializable {
      * Mail debug property key.
      */
     private static final String MAIL_DEBUG = "mail.debug";
+
+    /**
+     * A map for custom properties that will override default settings.
+     */
+    private final Map<String, Object> customProperty = new HashMap<>();
 
     /**
      * The SMTP server host.
@@ -218,11 +224,6 @@ public class MailAccount implements Serializable {
      * The socket write timeout in milliseconds.
      */
     private long writeTimeout;
-
-    /**
-     * A map for custom properties that will override default settings.
-     */
-    private final Map<String, Object> customProperty = new HashMap<>();
 
     /**
      * Constructs a new {@code MailAccount} with default values.

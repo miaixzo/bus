@@ -46,10 +46,12 @@ public class LdapClientScheme implements ProtocolScheme<LdapClientOptions> {
      * Stable Source type identifier for generic LDAP Sources.
      */
     public static final String ID = "ldap";
+
     /**
      * Complete application-level capability manifest implemented by an LDAP Source runtime.
      */
     private static final Capability.Manifest MANIFEST = new Capability.Manifest(List.of(SourceWorkflow.INITIATE));
+
     /**
      * Formal LDAPv3 specifications implemented by the directory Source.
      */
@@ -59,6 +61,7 @@ public class LdapClientScheme implements ProtocolScheme<LdapClientOptions> {
                     citation("https://www.rfc-editor.org/rfc/rfc4511", "LDAP Protocol"),
                     citation("https://www.rfc-editor.org/rfc/rfc4513", "LDAP Authentication Methods and Security")),
             "LDAPv3 Directory Client Source");
+
     /**
      * External management form containing only LDAP connection, search, credential-reference, and limit options.
      */

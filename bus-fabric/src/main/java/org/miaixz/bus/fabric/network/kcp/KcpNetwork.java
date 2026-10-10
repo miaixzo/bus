@@ -266,6 +266,32 @@ public class KcpNetwork implements AutoCloseable {
     }
 
     /**
+     * Converts a KCP address to a UDP address for transport.
+     *
+     * @param address KCP or UDP address to adapt
+     * @return original UDP address or an equivalent address using the UDP scheme
+     */
+    private static Address toUdp(final Address address) {
+        if (Transport.UDP.scheme().equals(address.scheme())) {
+            return address;
+        }
+        return Address.parse(
+                Transport.UDP.scheme() + Symbol.COLON + Symbol.SLASH + Symbol.SLASH + address.host() + Symbol.COLON
+                        + address.port());
+    }
+
+    /**
+     * Computes unsigned 32-bit sequence distance for wrap-around comparisons.
+     *
+     * @param from base sequence
+     * @param to   target sequence
+     * @return distance in the KCP sequence space
+     */
+    private static long sequenceDistance(final long from, final long to) {
+        return (to - from) & Builder.UNSIGNED_INT_MASK;
+    }
+
+    /**
      * Enqueues a complete logical payload and emits packets currently allowed by the send window.
      *
      * @param payload complete logical message to materialize and queue
@@ -603,21 +629,6 @@ public class KcpNetwork implements AutoCloseable {
     }
 
     /**
-     * Converts a KCP address to a UDP address for transport.
-     *
-     * @param address KCP or UDP address to adapt
-     * @return original UDP address or an equivalent address using the UDP scheme
-     */
-    private static Address toUdp(final Address address) {
-        if (Transport.UDP.scheme().equals(address.scheme())) {
-            return address;
-        }
-        return Address.parse(
-                Transport.UDP.scheme() + Symbol.COLON + Symbol.SLASH + Symbol.SLASH + address.host() + Symbol.COLON
-                        + address.port());
-    }
-
-    /**
      * Emits queued fragments until the current send and congestion windows are full.
      *
      * @return packets ready for UDP send
@@ -882,17 +893,6 @@ public class KcpNetwork implements AutoCloseable {
     }
 
     /**
-     * Computes unsigned 32-bit sequence distance for wrap-around comparisons.
-     *
-     * @param from base sequence
-     * @param to   target sequence
-     * @return distance in the KCP sequence space
-     */
-    private static long sequenceDistance(final long from, final long to) {
-        return (to - from) & Builder.UNSIGNED_INT_MASK;
-    }
-
-    /**
      * Inbound KCP processing result.
      *
      * @param delivered complete logical payloads ready for application delivery
@@ -958,47 +958,6 @@ public class KcpNetwork implements AutoCloseable {
     }
 
     /**
-     * Complete logical message retained until every fragment enters the send window.
-     */
-    private final class OutboundMessage {
-
-        /**
-         * Complete message bytes.
-         */
-        private final ByteString bytes;
-
-        /**
-         * V2 logical message identifier.
-         */
-        private final long messageId;
-
-        /**
-         * Total fragment count.
-         */
-        private final int fragmentCount;
-
-        /**
-         * Next fragment index to emit.
-         */
-        private int nextFragment;
-
-        /**
-         * Creates a queued logical message.
-         *
-         * @param bytes     complete message bytes
-         * @param messageId V2 message identifier
-         */
-        private OutboundMessage(final ByteString bytes, final long messageId) {
-            this.bytes = bytes;
-            this.messageId = messageId;
-            final int maxPayload = policy.wireVersion() == Normal._1 ? Builder.KCP_PACKET_V1_MAX_PAYLOAD
-                    : Builder.KCP_PACKET_V2_MAX_PAYLOAD;
-            this.fragmentCount = Math.max(Normal._1, (bytes.size() + maxPayload - Normal._1) / maxPayload);
-        }
-
-    }
-
-    /**
      * Reassembly identity scoped to one UDP source.
      *
      * @param source    source identity
@@ -1043,6 +1002,47 @@ public class KcpNetwork implements AutoCloseable {
             this.fragmentCount = fragmentCount;
             this.createdAt = createdAt;
             this.fragments = new TreeMap<>();
+        }
+
+    }
+
+    /**
+     * Complete logical message retained until every fragment enters the send window.
+     */
+    private final class OutboundMessage {
+
+        /**
+         * Complete message bytes.
+         */
+        private final ByteString bytes;
+
+        /**
+         * V2 logical message identifier.
+         */
+        private final long messageId;
+
+        /**
+         * Total fragment count.
+         */
+        private final int fragmentCount;
+
+        /**
+         * Next fragment index to emit.
+         */
+        private int nextFragment;
+
+        /**
+         * Creates a queued logical message.
+         *
+         * @param bytes     complete message bytes
+         * @param messageId V2 message identifier
+         */
+        private OutboundMessage(final ByteString bytes, final long messageId) {
+            this.bytes = bytes;
+            this.messageId = messageId;
+            final int maxPayload = policy.wireVersion() == Normal._1 ? Builder.KCP_PACKET_V1_MAX_PAYLOAD
+                    : Builder.KCP_PACKET_V2_MAX_PAYLOAD;
+            this.fragmentCount = Math.max(Normal._1, (bytes.size() + maxPayload - Normal._1) / maxPayload);
         }
 
     }

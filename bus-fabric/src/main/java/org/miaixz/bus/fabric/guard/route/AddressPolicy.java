@@ -96,60 +96,6 @@ public class AddressPolicy {
     }
 
     /**
-     * Returns the immutable allowed scheme snapshot.
-     *
-     * @return allowed schemes
-     */
-    public Set<Protocol> allowedSchemes() {
-        return allowedSchemes;
-    }
-
-    /**
-     * Returns the immutable allowed destination port snapshot.
-     *
-     * @return allowed ports
-     */
-    public Set<Integer> allowedPorts() {
-        return allowedPorts;
-    }
-
-    /**
-     * Returns normalized immutable CIDR notation permitted as client target exceptions.
-     *
-     * @return allowed target CIDRs
-     */
-    public Set<String> allowedTargetCidrs() {
-        return allowedTargetCidrs;
-    }
-
-    /**
-     * Returns normalized immutable CIDR notation permitted as server peer exceptions.
-     *
-     * @return allowed peer CIDRs
-     */
-    public Set<String> allowedPeerCidrs() {
-        return allowedPeerCidrs;
-    }
-
-    /**
-     * Returns parsed target networks to the package guard without exposing mutable state.
-     *
-     * @return immutable parsed target networks
-     */
-    Set<CidrBlock> targetNetworks() {
-        return targetNetworks;
-    }
-
-    /**
-     * Returns parsed peer networks to the package guard without exposing mutable state.
-     *
-     * @return immutable parsed peer networks
-     */
-    Set<CidrBlock> peerNetworks() {
-        return peerNetworks;
-    }
-
-    /**
      * Validates and snapshots the required scheme set.
      *
      * @param values candidate schemes
@@ -306,6 +252,60 @@ public class AddressPolicy {
         } catch (UnknownHostException exception) {
             throw new ValidateException("CIDR IPv4 address is invalid", exception);
         }
+    }
+
+    /**
+     * Returns the immutable allowed scheme snapshot.
+     *
+     * @return allowed schemes
+     */
+    public Set<Protocol> allowedSchemes() {
+        return allowedSchemes;
+    }
+
+    /**
+     * Returns the immutable allowed destination port snapshot.
+     *
+     * @return allowed ports
+     */
+    public Set<Integer> allowedPorts() {
+        return allowedPorts;
+    }
+
+    /**
+     * Returns normalized immutable CIDR notation permitted as client target exceptions.
+     *
+     * @return allowed target CIDRs
+     */
+    public Set<String> allowedTargetCidrs() {
+        return allowedTargetCidrs;
+    }
+
+    /**
+     * Returns normalized immutable CIDR notation permitted as server peer exceptions.
+     *
+     * @return allowed peer CIDRs
+     */
+    public Set<String> allowedPeerCidrs() {
+        return allowedPeerCidrs;
+    }
+
+    /**
+     * Returns parsed target networks to the package guard without exposing mutable state.
+     *
+     * @return immutable parsed target networks
+     */
+    Set<CidrBlock> targetNetworks() {
+        return targetNetworks;
+    }
+
+    /**
+     * Returns parsed peer networks to the package guard without exposing mutable state.
+     *
+     * @return immutable parsed peer networks
+     */
+    Set<CidrBlock> peerNetworks() {
+        return peerNetworks;
     }
 
 }

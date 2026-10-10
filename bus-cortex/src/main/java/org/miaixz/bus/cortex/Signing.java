@@ -65,24 +65,6 @@ public enum Signing {
     }
 
     /**
-     * Returns the stable numeric code persisted by assets.
-     *
-     * @return signing code
-     */
-    public int code() {
-        return code;
-    }
-
-    /**
-     * Returns the stable protocol key for this signing mode.
-     *
-     * @return signing-mode key
-     */
-    public String key() {
-        return key;
-    }
-
-    /**
      * Resolves a request-signing mode from its stable numeric code.
      *
      * @param code persisted signing code
@@ -99,6 +81,24 @@ public enum Signing {
             case 2 -> V1;
             default -> throw new IllegalArgumentException("Unsupported signing code: " + code);
         };
+    }
+
+    /**
+     * Returns the stable numeric code persisted by assets.
+     *
+     * @return signing code
+     */
+    public int code() {
+        return code;
+    }
+
+    /**
+     * Returns the stable protocol key for this signing mode.
+     *
+     * @return signing-mode key
+     */
+    public String key() {
+        return key;
     }
 
     /**

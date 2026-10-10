@@ -949,7 +949,6 @@ public class XimalayaSourceAdapter implements VendorAdapter {
      *
      * @param nickname  optional display name
      * @param avatarUrl optional avatar URL
-     *
      * @author Kimi Liu
      */
     private record ProfileWire(String nickname, String avatarUrl) {

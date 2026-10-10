@@ -32,9 +32,6 @@ import org.miaixz.bus.extra.nlp.NLPWord;
  */
 public class WordWord implements NLPWord {
 
-    /**
-     * The serialization version identifier for this class.
-     */
     @Serial
     private static final long serialVersionUID = 2852286932330L;
 

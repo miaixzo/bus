@@ -36,9 +36,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class AwardEmoji implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852238050300L;
 
@@ -46,26 +43,32 @@ public class AwardEmoji implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The user value.
      */
     private User user;
+
     /**
      * The created at value.
      */
     private Date createdAt;
+
     /**
      * The updated at value.
      */
     private Date updatedAt;
+
     /**
      * The awardable id value.
      */
     private Long awardableId;
+
     /**
      * The awardable type value.
      */

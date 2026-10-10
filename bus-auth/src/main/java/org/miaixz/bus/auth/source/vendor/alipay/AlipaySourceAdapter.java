@@ -66,6 +66,7 @@ public class AlipaySourceAdapter implements VendorAdapter {
      * Trusted Alipay gateway authority.
      */
     private static final String AUTHORITY = "https://openapi.alipay.com";
+
     /**
      * Alipay gateway timestamp formatter.
      */
@@ -76,26 +77,32 @@ public class AlipaySourceAdapter implements VendorAdapter {
      * Source identifier.
      */
     private final String sourceId;
+
     /**
      * Selected Alipay manifest.
      */
     private final VendorManifest.Variant variant;
+
     /**
      * Validated Alipay options.
      */
     private final AlipayOptions options;
+
     /**
      * External runtime dependencies.
      */
     private final SourceServices services;
+
     /**
      * Shared browser security lifecycle.
      */
     private final RedirectManager redirectManager;
+
     /**
      * Strict authorization query codec.
      */
     private final QueryCodec queryCodec = new QueryCodec();
+
     /**
      * Strict gateway form codec.
      */
@@ -656,7 +663,6 @@ public class AlipaySourceAdapter implements VendorAdapter {
      *
      * @param authorizationCode Alipay auth_code value
      * @param state             correlated state value
-     *
      * @author Kimi Liu
      */
     private record CallbackWire(String authorizationCode, String state) {

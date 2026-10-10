@@ -105,7 +105,7 @@ public class IniSetting extends ArrayList<IniElement> {
      * [se1]
      * key1=value1
      * </pre>
-     *
+     * <p>
      * becomes a property with the key {@code "se1.key1"}.
      *
      * @param delimiter The string to use for joining the section name and property key. If null, only the property key

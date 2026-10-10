@@ -144,6 +144,17 @@ public class PrimaryFilter extends AbstractFilter {
     }
 
     /**
+     * Checks if the given URL path contains patterns indicative of a path traversal attack.
+     *
+     * @param path The URL path string to check.
+     * @return {@code true} if a potential traversal attempt is detected, {@code false} otherwise.
+     */
+    private boolean isPathTraversalAttempt(String path) {
+        return path.contains("../") || path.contains("..\\") || path.contains("%2e%2e%2f") || path.contains("%2e%2e\\")
+                || path.contains("..%2f") || path.contains("..%5c");
+    }
+
+    /**
      * The private, inner implementation of {@link Strategy.Chain} used by {@link PrimaryFilter}.
      * <p>
      * This class implements the Chain of Responsibility pattern using a recursive-like delegation model. Each instance
@@ -224,17 +235,6 @@ public class PrimaryFilter extends AbstractFilter {
             return this.chain.filter(exchange);
         }
 
-    }
-
-    /**
-     * Checks if the given URL path contains patterns indicative of a path traversal attack.
-     *
-     * @param path The URL path string to check.
-     * @return {@code true} if a potential traversal attempt is detected, {@code false} otherwise.
-     */
-    private boolean isPathTraversalAttempt(String path) {
-        return path.contains("../") || path.contains("..\\") || path.contains("%2e%2e%2f") || path.contains("%2e%2e\\")
-                || path.contains("..%2f") || path.contains("..%5c");
     }
 
 }

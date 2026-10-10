@@ -103,6 +103,18 @@ public class SessionLifecycle {
     }
 
     /**
+     * Validates required collaborators.
+     *
+     * @param value value
+     * @param name  diagnostic name
+     * @param <T>   value type
+     * @return validated value
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Returns the public lifecycle state.
      *
      * @return current state
@@ -174,18 +186,6 @@ public class SessionLifecycle {
      */
     public void emit(final ObservationMarker marker, final Throwable cause) {
         scope.emit(marker, cause);
-    }
-
-    /**
-     * Validates required collaborators.
-     *
-     * @param value value
-     * @param name  diagnostic name
-     * @param <T>   value type
-     * @return validated value
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

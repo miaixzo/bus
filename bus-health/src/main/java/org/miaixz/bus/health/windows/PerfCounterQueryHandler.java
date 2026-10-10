@@ -42,6 +42,7 @@ public class PerfCounterQueryHandler implements AutoCloseable {
      * The counterHandleMap value.
      */
     private final Map<PerfCounter, ByRef.CloseableHANDLEByReference> counterHandleMap = new HashMap<>();
+
     // The query handle
     /**
      * The queryHandle value.

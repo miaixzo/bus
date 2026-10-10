@@ -19,158 +19,187 @@
 */
 package org.miaixz.bus.cortex.setting.item;
 
-import java.util.List;
-import java.util.Map;
-
-import jakarta.persistence.Transient;
+import jakarta.persistence.Column;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.cortex.Setting;
-import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.core.basic.entity.Space;
 
 /**
- * Full current-state setting item model.
- * <p>
- * This resource owns the durable item coordinates, source metadata, content, gray rule, and runtime application/profile
- * bindings directly. It is no longer a thin runtime patch on top of {@link Setting}; instead it is the primary resource
- * model for current-state setting entries.
- * </p>
+ * Current state of one setting item.
  *
  * @author Kimi Liu
  */
-@Setter
 @Getter
+@Setter
 @SuperBuilder
-public class Item extends Setting {
+public class Item extends Space {
 
     /**
-     * Setting data identifier within the group.
+     * Profile that owns the item.
      */
-    private String data_id;
-
+    private String profile_id;
     /**
-     * Setting group name within the space.
+     * Current stable revision identifier.
      */
+    private String stable_id;
+    /**
+     * Current gray revision identifier.
+     */
+    private String gray_id;
+    /**
+     * Active gray rollout identifier.
+     */
+    private String rollout_id;
+    /**
+     * Persisted item kind.
+     */
+    private String kind;
+    /**
+     * Logical setting group.
+     */
+    @Column(name = "\"group\"")
     private String group;
-
     /**
-     * Source type used to resolve the effective value.
+     * Stable setting code.
      */
-    private String source;
-
+    private String code;
     /**
-     * Source-specific descriptor such as an environment variable name or external resource address.
+     * Digest of immutable item coordinates.
      */
-    private String spec;
-
+    private String fingerprint;
     /**
-     * Optional gray-release rule.
-     */
-    private String rule;
-
-    /**
-     * Logical content format.
-     */
-    private String format;
-
-    /**
-     * Current logical setting value.
+     * Editable source content.
      */
     private String content;
-
+    /**
+     * Content format.
+     */
+    private String format;
+    /**
+     * Editing mode.
+     */
+    private String editor;
+    /**
+     * Content source type.
+     */
+    private String source;
+    /**
+     * External source descriptor.
+     */
+    private String spec;
     /**
      * Delivery exposure policy.
      */
     private String exposure;
-
     /**
-     * Monotonic revision number for the current {@code setting.item} state.
-     * <p>
-     * Kept as {@code version} for source and storage compatibility while new code uses {@link #getRevision()} and
-     * {@link #setRevision(String)}.
-     * </p>
-     */
-    private String version;
-
-    /**
-     * Content checksum used for idempotent publish and diff calculation.
-     */
-    private String checksum;
-
-    /**
-     * Encryption flag of the stored content, where {@code 1} means encrypted and {@code 0} means plain text.
+     * Encrypted-content flag.
      */
     private Integer encrypted;
-
     /**
-     * Optional logical labels.
+     * Structured editor payload stored as text.
      */
-    @Transient
-    private Map<String, String> labels;
-
+    private String payload;
     /**
-     * Aggregated application bindings loaded from {@code setting_item_binding}.
+     * Labels stored as text.
      */
-    @Transient
-    private List<String> app_ids;
-
+    private String labels;
     /**
-     * Aggregated profile bindings loaded from {@code setting_item_binding}.
+     * Source extension stored as text.
      */
-    @Transient
-    private List<String> profile_ids;
-
+    private String extension;
     /**
-     * Structured extension attributes for adapters that need richer integration parameters.
+     * Semantic content checksum.
      */
-    @Transient
-    private Map<String, Object> extension;
+    private String checksum;
+    /**
+     * Optimistic editing edition.
+     */
+    private Long edition;
+    /**
+     * Runtime delivery generation.
+     */
+    private Long generation;
+    /**
+     * Optional item description.
+     */
+    private String description;
 
     /**
-     * Creates an empty current-state setting item.
+     * Creates an empty setting item.
      */
     public Item() {
-        super();
-        setType(Type.ITEM.key());
+        // No initialization required.
     }
 
     /**
-     * Returns the current item revision number.
+     * Supported item purposes.
      *
-     * @return item revision number
+     * @author Kimi Liu
      */
-    public String getRevision() {
-        return version;
+    public enum Kind {
+        /** User-authored source configuration. */
+        SOURCE,
+        /** Materialized effective configuration. */
+        EFFECTIVE
     }
 
     /**
-     * Assigns the current item revision number.
+     * Supported content editing modes.
      *
-     * @param revision item revision number
+     * @author Kimi Liu
      */
-    public void setRevision(String revision) {
-        this.version = revision;
+    public enum Editor {
+        /** Source-text editing mode. */
+        SOURCE,
+        /** Structured key-value editing mode. */
+        KEY_VALUE
     }
 
     /**
-     * Returns the current item revision number using storage-oriented naming.
+     * User-facing item states.
      *
-     * @return item revision number
+     * @author Kimi Liu
      */
-    public String getRevisionNo() {
-        return version;
+    public enum State {
+        /** Item has never been published. */
+        UNPUBLISHED,
+        /** Item matches its stable published revision. */
+        PUBLISHED,
+        /** Item contains unpublished changes. */
+        CHANGED,
+        /** Item has an active gray revision. */
+        GRAY,
+        /** Item is archived. */
+        ARCHIVED
     }
 
     /**
-     * Assigns the current item revision number using storage-oriented naming.
+     * Supported protected-value mutations.
      *
-     * @param revisionNo item revision number
+     * @author Kimi Liu
      */
-    public void setRevisionNo(String revisionNo) {
-        this.version = revisionNo;
+    public enum SecretAction {
+        /** Keeps the existing protected value. */
+        KEEP,
+        /** Replaces the existing protected value. */
+        REPLACE,
+        /** Deletes the existing protected value. */
+        DELETE
+    }
+
+    /**
+     * Supported validation depths.
+     *
+     * @author Kimi Liu
+     */
+    public enum ValidationLevel {
+        /** Performs syntax validation only. */
+        SYNTAX,
+        /** Performs syntax and business validation. */
+        FULL
     }
 
 }

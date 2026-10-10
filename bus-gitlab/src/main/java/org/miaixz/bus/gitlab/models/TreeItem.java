@@ -31,57 +31,24 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class TreeItem implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852282298357L;
-
-    /**
-     * The type enum.
-     *
-     * @author Kimi Liu
-     */
-    public enum Type {
-
-        /**
-         * The tree type.
-         */
-        TREE,
-        /**
-         * The blob type.
-         */
-        BLOB,
-        /**
-         * The commit type.
-         */
-        COMMIT;
-
-        /**
-         * Returns the string.
-         *
-         * @return the result
-         */
-
-        @Override
-        public String toString() {
-            return (name().toLowerCase());
-        }
-
-    }
 
     /**
      * The id value.
      */
     private String id;
+
     /**
      * The mode value.
      */
     private String mode;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The path value.
      */
@@ -208,6 +175,39 @@ public class TreeItem implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    /**
+     * The type enum.
+     *
+     * @author Kimi Liu
+     */
+    public enum Type {
+
+        /**
+         * The tree type.
+         */
+        TREE,
+        /**
+         * The blob type.
+         */
+        BLOB,
+        /**
+         * The commit type.
+         */
+        COMMIT;
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
+
+        @Override
+        public String toString() {
+            return (name().toLowerCase());
+        }
+
     }
 
 }

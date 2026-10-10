@@ -20,8 +20,6 @@
 package org.miaixz.bus.gitlab.models;
 
 import java.io.Serial;
-
-import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -31,9 +29,6 @@ import java.io.Serializable;
  */
 public class AcceptMergeRequestParams implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852235380976L;
 
@@ -41,22 +36,27 @@ public class AcceptMergeRequestParams implements Serializable {
      * The merge commit message value.
      */
     private String mergeCommitMessage;
+
     /**
      * The merge when pipeline succeeds value.
      */
     private Boolean mergeWhenPipelineSucceeds;
+
     /**
      * The sha value.
      */
     private String sha;
+
     /**
      * The should remove source branch value.
      */
     private Boolean shouldRemoveSourceBranch;
+
     /**
      * The squash value.
      */
     private Boolean squash;
+
     /**
      * The squash commit message value.
      */

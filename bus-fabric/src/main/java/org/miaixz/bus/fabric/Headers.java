@@ -140,6 +140,111 @@ public class Headers {
     }
 
     /**
+     * Validates a header name.
+     *
+     * @param name header name
+     * @return valid name
+     */
+    private static String validateName(final String name) {
+        if (name == null || name.isEmpty()) {
+            throw new ValidateException("Header name must be a non-empty RFC token");
+        }
+        for (int i = 0; i < name.length(); i++) {
+            if (!isTokenCharacter(name.charAt(i))) {
+                throw new ValidateException("Header name must contain only RFC token characters");
+            }
+        }
+        return name;
+    }
+
+    /**
+     * Returns whether a character is an ASCII RFC tchar.
+     *
+     * @param value character
+     * @return true for RFC tchar
+     */
+    private static boolean isTokenCharacter(final char value) {
+        if ((value >= Symbol.C_ZERO && value <= Symbol.C_NINE) || (value >= 'A' && value <= 'Z')
+                || (value >= 'a' && value <= 'z')) {
+            return true;
+        }
+        return switch (value) {
+            case Symbol.C_NOT, Symbol.C_HASH, Symbol.C_DOLLAR, Symbol.C_PERCENT, Symbol.C_AND, Symbol.C_SINGLE_QUOTE, Symbol.C_STAR, Symbol.C_PLUS, Symbol.C_MINUS, Symbol.C_DOT, Symbol.C_CARET, Symbol.C_UNDERLINE, Symbol.C_BACKTICK, Symbol.C_OR, Symbol.C_TILDE -> true;
+            default -> false;
+        };
+    }
+
+    /**
+     * Compares validated ASCII header names without Unicode case folding.
+     *
+     * @param left  first validated header name
+     * @param right second validated header name
+     * @return {@code true} when the names match ignoring ASCII case
+     */
+    private static boolean asciiEqualsIgnoreCase(final String left, final String right) {
+        if (left == right) {
+            return true;
+        }
+        final int length = left.length();
+        if (length != right.length()) {
+            return false;
+        }
+        for (int index = 0; index < length; index++) {
+            final char a = left.charAt(index);
+            final char b = right.charAt(index);
+            if (a == b) {
+                continue;
+            }
+            final char foldedA = a >= 'A' && a <= 'Z' ? (char) (a + ('a' - 'A')) : a;
+            final char foldedB = b >= 'A' && b <= 'Z' ? (char) (b + ('a' - 'A')) : b;
+            if (foldedA != foldedB) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Computes a case-insensitive ASCII hash without creating a lowercase string.
+     *
+     * @param value header name to hash, or null
+     * @return lowercase ASCII hash, or zero for null
+     */
+    private static int asciiLowerHash(final String value) {
+        if (value == null) {
+            return 0;
+        }
+        int hash = 0;
+        for (int index = 0; index < value.length(); index++) {
+            char current = value.charAt(index);
+            if (current >= 'A' && current <= 'Z') {
+                current = (char) (current + ('a' - 'A'));
+            }
+            hash = 31 * hash + current;
+        }
+        return hash;
+    }
+
+    /**
+     * Validates a header value.
+     *
+     * @param value header value
+     * @return validated value
+     */
+    private static String validateValue(final String value) {
+        if (value == null) {
+            throw new ValidateException("Header value must be non-blank and single-line");
+        }
+        for (int i = 0; i < value.length(); i++) {
+            final char current = value.charAt(i);
+            if (current == '\0' || current == '\u007f' || (current < Symbol.C_SPACE && current != Symbol.C_TAB)) {
+                throw new ValidateException("Header value contains a prohibited control character");
+            }
+        }
+        return value;
+    }
+
+    /**
      * Returns the last value for a header name.
      *
      * @param name header name
@@ -407,111 +512,6 @@ public class Headers {
             values.put(existingName, List.copyOf(combined));
         }
         return Map.copyOf(values);
-    }
-
-    /**
-     * Validates a header name.
-     *
-     * @param name header name
-     * @return valid name
-     */
-    private static String validateName(final String name) {
-        if (name == null || name.isEmpty()) {
-            throw new ValidateException("Header name must be a non-empty RFC token");
-        }
-        for (int i = 0; i < name.length(); i++) {
-            if (!isTokenCharacter(name.charAt(i))) {
-                throw new ValidateException("Header name must contain only RFC token characters");
-            }
-        }
-        return name;
-    }
-
-    /**
-     * Returns whether a character is an ASCII RFC tchar.
-     *
-     * @param value character
-     * @return true for RFC tchar
-     */
-    private static boolean isTokenCharacter(final char value) {
-        if ((value >= Symbol.C_ZERO && value <= Symbol.C_NINE) || (value >= 'A' && value <= 'Z')
-                || (value >= 'a' && value <= 'z')) {
-            return true;
-        }
-        return switch (value) {
-            case Symbol.C_NOT, Symbol.C_HASH, Symbol.C_DOLLAR, Symbol.C_PERCENT, Symbol.C_AND, Symbol.C_SINGLE_QUOTE, Symbol.C_STAR, Symbol.C_PLUS, Symbol.C_MINUS, Symbol.C_DOT, Symbol.C_CARET, Symbol.C_UNDERLINE, Symbol.C_BACKTICK, Symbol.C_OR, Symbol.C_TILDE -> true;
-            default -> false;
-        };
-    }
-
-    /**
-     * Compares validated ASCII header names without Unicode case folding.
-     *
-     * @param left  first validated header name
-     * @param right second validated header name
-     * @return {@code true} when the names match ignoring ASCII case
-     */
-    private static boolean asciiEqualsIgnoreCase(final String left, final String right) {
-        if (left == right) {
-            return true;
-        }
-        final int length = left.length();
-        if (length != right.length()) {
-            return false;
-        }
-        for (int index = 0; index < length; index++) {
-            final char a = left.charAt(index);
-            final char b = right.charAt(index);
-            if (a == b) {
-                continue;
-            }
-            final char foldedA = a >= 'A' && a <= 'Z' ? (char) (a + ('a' - 'A')) : a;
-            final char foldedB = b >= 'A' && b <= 'Z' ? (char) (b + ('a' - 'A')) : b;
-            if (foldedA != foldedB) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Computes a case-insensitive ASCII hash without creating a lowercase string.
-     *
-     * @param value header name to hash, or null
-     * @return lowercase ASCII hash, or zero for null
-     */
-    private static int asciiLowerHash(final String value) {
-        if (value == null) {
-            return 0;
-        }
-        int hash = 0;
-        for (int index = 0; index < value.length(); index++) {
-            char current = value.charAt(index);
-            if (current >= 'A' && current <= 'Z') {
-                current = (char) (current + ('a' - 'A'));
-            }
-            hash = 31 * hash + current;
-        }
-        return hash;
-    }
-
-    /**
-     * Validates a header value.
-     *
-     * @param value header value
-     * @return validated value
-     */
-    private static String validateValue(final String value) {
-        if (value == null) {
-            throw new ValidateException("Header value must be non-blank and single-line");
-        }
-        for (int i = 0; i < value.length(); i++) {
-            final char current = value.charAt(i);
-            if (current == '\0' || current == '\u007f' || (current < Symbol.C_SPACE && current != Symbol.C_TAB)) {
-                throw new ValidateException("Header value contains a prohibited control character");
-            }
-        }
-        return value;
     }
 
     /**

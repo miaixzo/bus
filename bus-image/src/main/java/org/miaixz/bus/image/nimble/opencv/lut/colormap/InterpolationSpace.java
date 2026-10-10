@@ -40,13 +40,21 @@ public enum InterpolationSpace {
     LAB;
 
     private static final double D65_X = 0.950456;
+
     private static final double D65_Y = 1.0;
+
     private static final double D65_Z = 1.088754;
+
     private static final double LAB_THRESHOLD = 8.85645167903563082e-3;
+
     private static final double LAB_INVERSE_THRESHOLD = 0.206896551724137931;
+
     private static final double LAB_ALPHA = 841.0 / 108.0;
+
     private static final double LAB_BETA = 4.0 / 29.0;
+
     private static final double GAMMA_THRESHOLD = 0.0031306684425005883;
+
     private static final double GAMMA_INVERSE_THRESHOLD = 0.0404482362771076;
 
     private static float lerp(float a, float b, float t) {

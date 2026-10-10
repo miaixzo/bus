@@ -27,11 +27,7 @@ import java.util.Objects;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.network.dns.message.DnsClientSubnet;
-import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
-import org.miaixz.bus.fabric.network.dns.message.DnsName;
-import org.miaixz.bus.fabric.network.dns.message.DnsQuery;
-import org.miaixz.bus.fabric.network.dns.message.DnsQuestion;
+import org.miaixz.bus.fabric.network.dns.message.*;
 
 /**
  * Immutable DNS response-cache key.
@@ -105,6 +101,47 @@ public class DnsCacheKey {
         final DnsQuestion question = query.question();
         return new DnsCacheKey(question.name(), question.typeCode(), question.recordClass(), stream, viewName,
                 query.clientSubnet());
+    }
+
+    /**
+     * Builds the ECS scope partition.
+     *
+     * @param clientSubnet client subnet, or {@code null}
+     * @return scope partition
+     */
+    private static String ecsScope(final DnsClientSubnet clientSubnet) {
+        if (clientSubnet == null) {
+            return Normal.EMPTY;
+        }
+        final byte[] scoped = mask(clientSubnet.address().getAddress(), clientSubnet.scopePrefixLength());
+        try {
+            return InetAddress.getByAddress(scoped).getHostAddress() + Symbol.SLASH + clientSubnet.scopePrefixLength();
+        } catch (final UnknownHostException e) {
+            throw new ValidateException("DNS cache key ECS address is invalid", e);
+        }
+    }
+
+    /**
+     * Masks address bytes to a prefix.
+     *
+     * @param address address bytes
+     * @param prefix  prefix length in bits
+     * @return masked address bytes
+     */
+    private static byte[] mask(final byte[] address, final int prefix) {
+        final byte[] copy = Arrays.copyOf(address, address.length);
+        int remaining = prefix;
+        for (int index = 0; index < copy.length; index++) {
+            if (remaining >= 8) {
+                remaining -= 8;
+            } else if (remaining > 0) {
+                copy[index] = (byte) (copy[index] & (0xff << (8 - remaining)));
+                remaining = 0;
+            } else {
+                copy[index] = 0;
+            }
+        }
+        return copy;
     }
 
     /**
@@ -187,47 +224,6 @@ public class DnsCacheKey {
     @Override
     public int hashCode() {
         return Objects.hash(name, typeCode, recordClass, stream, viewName, ecsScope);
-    }
-
-    /**
-     * Builds the ECS scope partition.
-     *
-     * @param clientSubnet client subnet, or {@code null}
-     * @return scope partition
-     */
-    private static String ecsScope(final DnsClientSubnet clientSubnet) {
-        if (clientSubnet == null) {
-            return Normal.EMPTY;
-        }
-        final byte[] scoped = mask(clientSubnet.address().getAddress(), clientSubnet.scopePrefixLength());
-        try {
-            return InetAddress.getByAddress(scoped).getHostAddress() + Symbol.SLASH + clientSubnet.scopePrefixLength();
-        } catch (final UnknownHostException e) {
-            throw new ValidateException("DNS cache key ECS address is invalid", e);
-        }
-    }
-
-    /**
-     * Masks address bytes to a prefix.
-     *
-     * @param address address bytes
-     * @param prefix  prefix length in bits
-     * @return masked address bytes
-     */
-    private static byte[] mask(final byte[] address, final int prefix) {
-        final byte[] copy = Arrays.copyOf(address, address.length);
-        int remaining = prefix;
-        for (int index = 0; index < copy.length; index++) {
-            if (remaining >= 8) {
-                remaining -= 8;
-            } else if (remaining > 0) {
-                copy[index] = (byte) (copy[index] & (0xff << (8 - remaining)));
-                remaining = 0;
-            } else {
-                copy[index] = 0;
-            }
-        }
-        return copy;
     }
 
 }

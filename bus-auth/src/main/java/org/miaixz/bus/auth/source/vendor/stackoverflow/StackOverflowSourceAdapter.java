@@ -800,7 +800,6 @@ public class StackOverflowSourceAdapter implements VendorAdapter {
      * @param location     optional location text
      * @param link         optional Stack Exchange profile URL
      * @param userType     optional Stack Exchange user classification
-     *
      * @author Kimi Liu
      */
     private record ProfileWire(String displayName, String profileImage, String websiteUrl, String location, String link,

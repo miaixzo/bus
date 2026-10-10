@@ -37,6 +37,11 @@ public class FestivalRegistry {
     public static final String CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTU_VWXYZabcdefghijklmnopqrstuvwxyz";
 
     /**
+     * Regex pattern for matching festival data entries.
+     */
+    public static final String REGEX = "(@[0-9A-Za-z_]{8})(%s)";
+
+    /**
      * Full festival data string. Format: @[1] rule type[1] content[3] day offset(-31 to 31)[1] start year[3] name[n]
      * <p>
      * Content:
@@ -51,11 +56,6 @@ public class FestivalRegistry {
      * </ul>
      */
     public static String DATA = Normal.EMPTY;
-
-    /**
-     * Regex pattern for matching festival data entries.
-     */
-    public static final String REGEX = "(@[0-9A-Za-z_]{8})(%s)";
 
     /**
      * Constructs a new {@code FestivalRegistry} instance.

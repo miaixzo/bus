@@ -31,15 +31,25 @@ import java.util.List;
 public final class ColorMapSampler {
 
     private final ColorMap map;
+
     private final boolean step;
+
     private final boolean cyclic;
+
     private final double first;
+
     private final double last;
+
     private final double[] colorPositions;
+
     private final Rgba[] colors;
+
     private final double[] alphaPositions;
+
     private final float[] alphas;
+
     private final double[] materialPositions;
+
     private final Material[] materials;
 
     ColorMapSampler(ColorMap map) {

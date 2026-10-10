@@ -72,6 +72,29 @@ public class LimiterScanner implements InstantiationAwareBeanPostProcessor {
     }
 
     /**
+     * Normalizes and de-duplicates configured scanner base packages.
+     *
+     * @param basePackages base packages
+     * @return normalized package name, or an empty string for blank input
+     */
+    private static List<String> normalize(Collection<String> basePackages) {
+        if (basePackages == null || basePackages.isEmpty()) {
+            return List.of();
+        }
+        List<String> normalized = new ArrayList<>(basePackages.size());
+        for (String basePackage : basePackages) {
+            if (basePackage == null || basePackage.isBlank()) {
+                throw new IllegalArgumentException("Limiter scan package must not be blank");
+            }
+            String value = basePackage.trim();
+            if (!normalized.contains(value)) {
+                normalized.add(value);
+            }
+        }
+        return List.copyOf(normalized);
+    }
+
+    /**
      * Processes a bean after its initialization.
      * <p>
      * This method scans the bean's class and its methods for limiter-related annotations. If any such annotations are
@@ -184,29 +207,6 @@ public class LimiterScanner implements InstantiationAwareBeanPostProcessor {
         String packageName = type.getPackageName();
         return this.basePackages.stream().anyMatch(
                 basePackage -> packageName.equals(basePackage) || packageName.startsWith(basePackage + Symbol.DOT));
-    }
-
-    /**
-     * Normalizes and de-duplicates configured scanner base packages.
-     *
-     * @param basePackages base packages
-     * @return normalized package name, or an empty string for blank input
-     */
-    private static List<String> normalize(Collection<String> basePackages) {
-        if (basePackages == null || basePackages.isEmpty()) {
-            return List.of();
-        }
-        List<String> normalized = new ArrayList<>(basePackages.size());
-        for (String basePackage : basePackages) {
-            if (basePackage == null || basePackage.isBlank()) {
-                throw new IllegalArgumentException("Limiter scan package must not be blank");
-            }
-            String value = basePackage.trim();
-            if (!normalized.contains(value)) {
-                normalized.add(value);
-            }
-        }
-        return List.copyOf(normalized);
     }
 
 }

@@ -65,22 +65,27 @@ public class JwtService {
      * Trusted JWS algorithm bound to this service instance.
      */
     private final JwaAlgorithm algorithm;
+
     /**
      * Explicit signing or verification key bound by the caller.
      */
     private final Key key;
+
     /**
      * Shared Fabric time source used for issuance and validation.
      */
     private final Clock clock;
+
     /**
      * Profile-scoped JWS execution service.
      */
     private final JwsService jwsService;
+
     /**
      * JWT issuer backed by the shared JWS service and clock.
      */
     private final JwtIssuer issuer;
+
     /**
      * Signed-JWT verifier without an unrelated JWE dependency.
      */

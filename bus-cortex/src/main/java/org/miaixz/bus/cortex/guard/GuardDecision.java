@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex.guard;
 
+import java.util.Map;
+
 import lombok.Getter;
 
 /**
@@ -47,7 +49,7 @@ public class GuardDecision {
     /**
      * Optional structured details.
      */
-    private final java.util.Map<String, Object> details;
+    private final Map<String, Object> details;
 
     /**
      * Creates one decision result.
@@ -57,7 +59,7 @@ public class GuardDecision {
      * @param message human-readable message
      */
     public GuardDecision(boolean allowed, String code, String message) {
-        this(allowed, code, message, java.util.Map.of());
+        this(allowed, code, message, Map.of());
     }
 
     /**
@@ -68,20 +70,11 @@ public class GuardDecision {
      * @param message human-readable message
      * @param details structured details
      */
-    public GuardDecision(boolean allowed, String code, String message, java.util.Map<String, Object> details) {
+    public GuardDecision(boolean allowed, String code, String message, Map<String, Object> details) {
         this.allowed = allowed;
         this.code = code;
         this.message = message;
-        this.details = details == null ? java.util.Map.of() : java.util.Map.copyOf(details);
-    }
-
-    /**
-     * Returns whether the request is allowed.
-     *
-     * @return {@code true} when the request is allowed
-     */
-    public boolean isAllowed() {
-        return allowed;
+        this.details = details == null ? Map.of() : Map.copyOf(details);
     }
 
     /**
@@ -102,6 +95,15 @@ public class GuardDecision {
      */
     public static GuardDecision deny(String code, String message) {
         return new GuardDecision(false, code, message);
+    }
+
+    /**
+     * Returns whether the request is allowed.
+     *
+     * @return {@code true} when the request is allowed
+     */
+    public boolean isAllowed() {
+        return allowed;
     }
 
 }

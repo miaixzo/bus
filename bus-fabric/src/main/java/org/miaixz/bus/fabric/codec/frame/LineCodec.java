@@ -93,6 +93,55 @@ public class LineCodec implements FrameCodec {
     }
 
     /**
+     * Validates delimiter bytes.
+     *
+     * @param delimiter candidate delimiter bytes
+     * @return delimiter copy
+     * @throws ValidateException if the delimiter is {@code null}, empty, or longer than 1024 bytes
+     */
+    private static ByteString validateDelimiter(final ByteString delimiter) {
+        final ByteString checkedDelimiter = Assert
+                .notNull(delimiter, () -> new ValidateException("Frame delimiter must contain 1 to 1024 bytes"));
+        Assert.isTrue(
+                checkedDelimiter.size() > 0 && checkedDelimiter.size() <= Normal._1024,
+                () -> new ValidateException("Frame delimiter must contain 1 to 1024 bytes"));
+        return ByteString.of(checkedDelimiter.internalArray());
+    }
+
+    /**
+     * Validates input buffer.
+     *
+     * @param input candidate buffer for one decode call
+     * @throws ValidateException if the buffer is {@code null} or empty
+     */
+    private static void validateInput(final Buffer input) {
+        Assert.isTrue(
+                Assert.notNull(input, () -> new ValidateException("Frame input must not be empty")).size() > 0,
+                () -> new ValidateException("Frame input must not be empty"));
+    }
+
+    /**
+     * Finds delimiter in buffered data.
+     *
+     * @param buffer    retained encoded data to search
+     * @param delimiter validated delimiter to locate
+     * @return zero-based delimiter offset, or {@code -1} when incomplete
+     * @throws ProtocolException if the offset cannot be represented as an integer
+     * @throws InternalException if the buffer search fails
+     */
+    private static int indexOf(final Buffer buffer, final ByteString delimiter) {
+        try {
+            final long index = delimiter.size() == 1 ? buffer.indexOf(delimiter.getByte(0)) : buffer.indexOf(delimiter);
+            if (index > Integer.MAX_VALUE) {
+                throw new ProtocolException("Line frame delimiter index exceeds integer range");
+            }
+            return (int) index;
+        } catch (final IOException e) {
+            throw new InternalException("Unable to search line frame delimiter", e);
+        }
+    }
+
+    /**
      * Decodes delimiter-separated frames.
      *
      * @param input non-empty encoded bytes consumed into the codec's retained buffer
@@ -218,55 +267,6 @@ public class LineCodec implements FrameCodec {
     @Override
     public void reset() {
         buffer.clear();
-    }
-
-    /**
-     * Validates delimiter bytes.
-     *
-     * @param delimiter candidate delimiter bytes
-     * @return delimiter copy
-     * @throws ValidateException if the delimiter is {@code null}, empty, or longer than 1024 bytes
-     */
-    private static ByteString validateDelimiter(final ByteString delimiter) {
-        final ByteString checkedDelimiter = Assert
-                .notNull(delimiter, () -> new ValidateException("Frame delimiter must contain 1 to 1024 bytes"));
-        Assert.isTrue(
-                checkedDelimiter.size() > 0 && checkedDelimiter.size() <= Normal._1024,
-                () -> new ValidateException("Frame delimiter must contain 1 to 1024 bytes"));
-        return ByteString.of(checkedDelimiter.internalArray());
-    }
-
-    /**
-     * Validates input buffer.
-     *
-     * @param input candidate buffer for one decode call
-     * @throws ValidateException if the buffer is {@code null} or empty
-     */
-    private static void validateInput(final Buffer input) {
-        Assert.isTrue(
-                Assert.notNull(input, () -> new ValidateException("Frame input must not be empty")).size() > 0,
-                () -> new ValidateException("Frame input must not be empty"));
-    }
-
-    /**
-     * Finds delimiter in buffered data.
-     *
-     * @param buffer    retained encoded data to search
-     * @param delimiter validated delimiter to locate
-     * @return zero-based delimiter offset, or {@code -1} when incomplete
-     * @throws ProtocolException if the offset cannot be represented as an integer
-     * @throws InternalException if the buffer search fails
-     */
-    private static int indexOf(final Buffer buffer, final ByteString delimiter) {
-        try {
-            final long index = delimiter.size() == 1 ? buffer.indexOf(delimiter.getByte(0)) : buffer.indexOf(delimiter);
-            if (index > Integer.MAX_VALUE) {
-                throw new ProtocolException("Line frame delimiter index exceeds integer range");
-            }
-            return (int) index;
-        } catch (final IOException e) {
-            throw new InternalException("Unable to search line frame delimiter", e);
-        }
     }
 
 }

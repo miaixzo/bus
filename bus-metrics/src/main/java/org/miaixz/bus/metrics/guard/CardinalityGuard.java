@@ -19,46 +19,39 @@
 */
 package org.miaixz.bus.metrics.guard;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
+import org.miaixz.bus.metrics.observe.tag.AttributeDescriptor;
+import org.miaixz.bus.metrics.observe.tag.AttributeType;
+import org.miaixz.bus.metrics.observe.tag.Attributes;
 import org.miaixz.bus.metrics.observe.tag.Tag;
 
 /**
- * Global cardinality guard that prevents metric tag explosion (and resulting OOM).
+ * Cardinality guard that prevents metric tag explosion (and resulting OOM).
  * <p>
  * Inspired by Netflix Spectator's {@code CardinalityLimiters}. Apply policies by tag key, either programmatically or
  * via Spring configuration ({@code bus.metrics.cardinality}).
  * <p>
- * All policy lookups are thread-safe and zero-allocation in the hot path when no violation occurs.
+ * The original static methods remain a compatibility facade over a global {@link Scope}. New provider instances can
+ * receive an independent scope so policy state does not leak between application contexts.
  *
  * @author Kimi Liu
  */
 public class CardinalityGuard {
 
     /**
-     * Per-tag-key cardinality policies; auto-populated with firstN(defaultMax) on first access.
+     * Process-wide scope retained for the static compatibility facade.
      */
-    private static final ConcurrentHashMap<String, CardinalityPolicy> POLICIES = new ConcurrentHashMap<>();
-
-    /**
-     * Default maximum distinct tag values when no explicit policy is registered.
-     */
-    private static volatile int defaultMax = Builder.CARDINALITY_DEFAULT_MAX;
-
-    /**
-     * Per-tag-key cumulative violation counters for self-monitoring.
-     */
-    private static final ConcurrentHashMap<String, AtomicLong> VIOLATION_COUNTS = new ConcurrentHashMap<>();
-
-    /**
-     * Throttle log output to at most once per 60 seconds per tag key.
-     */
-    private static final ConcurrentHashMap<String, Long> LAST_LOG_TS = new ConcurrentHashMap<>();
+    private static final Scope GLOBAL = new Scope();
 
     /**
      * Keeps metric-cardinality policy enforcement on the static API.
@@ -74,7 +67,7 @@ public class CardinalityGuard {
      * @param policy cardinality policy
      */
     public static void policy(String tagKey, CardinalityPolicy policy) {
-        POLICIES.put(tagKey, policy);
+        GLOBAL.policy(tagKey, policy);
     }
 
     /**
@@ -83,7 +76,7 @@ public class CardinalityGuard {
      * @param max maximum distinct values; defaults to {@link Builder#CARDINALITY_DEFAULT_MAX}
      */
     public static void setDefaultMax(int max) {
-        defaultMax = max;
+        GLOBAL.setDefaultMax(max);
     }
 
     /**
@@ -96,24 +89,7 @@ public class CardinalityGuard {
      * @return filtered tags (may be shorter than input if tags are denied)
      */
     public static Tag[] enforce(String metricName, Tag[] tags) {
-        if (tags == null || tags.length == 0) {
-            return tags;
-        }
-        List<Tag> result = new ArrayList<>(tags.length);
-        for (Tag tag : tags) {
-            CardinalityPolicy pol = POLICIES.computeIfAbsent(tag.key(), k -> CardinalityPolicy.firstN(defaultMax));
-            String allowed = pol.evaluate(tag.value());
-            if (allowed == null) {
-                // deny policy — strip tag entirely
-                recordViolation(metricName, tag.key(), tag.value(), "denied");
-            } else if (!allowed.equals(tag.value())) {
-                recordViolation(metricName, tag.key(), tag.value(), allowed);
-                result.add(Tag.of(tag.key(), allowed));
-            } else {
-                result.add(tag);
-            }
-        }
-        return result.toArray(new Tag[0]);
+        return GLOBAL.enforce(metricName, tags);
     }
 
     /**
@@ -123,32 +99,260 @@ public class CardinalityGuard {
      * @return cumulative violation count, or 0 if no violations have occurred
      */
     public static long violationCount(String tagKey) {
-        AtomicLong c = VIOLATION_COUNTS.get(tagKey);
-        return c == null ? 0 : c.get();
+        return GLOBAL.violationCount(tagKey);
     }
 
     /**
-     * Records a cardinality violation, increments the counter, and logs a throttled warning.
+     * Returns the scope used by the legacy static API.
      *
-     * @param metricName metric name for log context
-     * @param tagKey     the tag key that triggered the violation
-     * @param original   the original tag value
-     * @param replaced   the replacement sentinel value
+     * @return global compatibility scope
      */
-    private static void recordViolation(String metricName, String tagKey, String original, String replaced) {
-        VIOLATION_COUNTS.computeIfAbsent(tagKey, k -> new AtomicLong()).incrementAndGet();
-        long now = System.currentTimeMillis();
-        Long last = LAST_LOG_TS.get(tagKey);
-        if (last == null || now - last > Builder.CARDINALITY_LOG_THROTTLE_MS) {
-            LAST_LOG_TS.put(tagKey, now);
-            Logger.warn(
-                    false,
-                    "Metrics",
-                    "Cardinality violation on metric={} tagKey={} replacedWith={} originalLength={}",
-                    metricName,
-                    tagKey,
-                    replaced,
-                    null == original ? 0 : original.length());
+    public static Scope globalScope() {
+        return GLOBAL;
+    }
+
+    /**
+     * Isolated, thread-safe cardinality policy state for one provider or application context.
+     *
+     * @author Kimi Liu
+     */
+    public static final class Scope {
+
+        /**
+         * Explicit and lazily created policies keyed by attribute name.
+         */
+        private final ConcurrentHashMap<String, CardinalityPolicy> policies = new ConcurrentHashMap<>();
+        /**
+         * Cumulative policy violations keyed by attribute name.
+         */
+        private final ConcurrentHashMap<String, AtomicLong> violationCounts = new ConcurrentHashMap<>();
+        /**
+         * Last warning timestamp keyed by attribute name.
+         */
+        private final ConcurrentHashMap<String, Long> lastLogTimestamps = new ConcurrentHashMap<>();
+        /**
+         * Listeners receiving immutable cardinality violation events.
+         */
+        private final CopyOnWriteArrayList<Consumer<CardinalityViolation>> violationListeners = new CopyOnWriteArrayList<>();
+
+        /**
+         * Default first-N limit for attributes without explicit policy.
+         */
+        private volatile int defaultMax;
+
+        /**
+         * Creates a scope using {@link Builder#CARDINALITY_DEFAULT_MAX}.
+         */
+        public Scope() {
+            this(Builder.CARDINALITY_DEFAULT_MAX);
+        }
+
+        /**
+         * Creates a scope using an explicit default limit.
+         *
+         * @param defaultMax default maximum distinct values per tag key
+         */
+        public Scope(int defaultMax) {
+            setDefaultMax(defaultMax);
+        }
+
+        /**
+         * Writes a validated string replacement through a wildcard descriptor.
+         *
+         * @param builder    destination builder
+         * @param descriptor string descriptor
+         * @param value      replacement value
+         */
+        @SuppressWarnings("unchecked")
+        private static void putString(Attributes.Builder builder, AttributeDescriptor<?> descriptor, String value) {
+            builder.put((AttributeDescriptor<String>) descriptor, value);
+        }
+
+        /**
+         * Copies one typed value into an attribute builder.
+         *
+         * @param builder destination builder
+         * @param value   typed value
+         * @param <T>     attribute value type
+         */
+        private static <T> void putValue(Attributes.Builder builder, Attributes.Value<T> value) {
+            builder.put(value.descriptor(), value.value());
+        }
+
+        /**
+         * Registers a policy for one tag key.
+         *
+         * @param tagKey tag key
+         * @param policy policy instance owned by this scope
+         * @throws IllegalArgumentException if the tag key is blank
+         */
+        public void policy(String tagKey, CardinalityPolicy policy) {
+            if (tagKey == null || tagKey.isBlank()) {
+                throw new IllegalArgumentException("Tag key must not be blank");
+            }
+            policies.put(tagKey, Objects.requireNonNull(policy, "Cardinality policy must not be null"));
+        }
+
+        /**
+         * Sets the implicit first-N limit.
+         *
+         * @param max maximum distinct values; must be positive
+         * @throws IllegalArgumentException if {@code max} is not positive
+         */
+        public void setDefaultMax(int max) {
+            if (max <= 0) {
+                throw new IllegalArgumentException("Default cardinality maximum must be positive");
+            }
+            defaultMax = max;
+        }
+
+        /**
+         * Applies this scope's policies to legacy tags.
+         *
+         * @param metricName metric name used for diagnostics
+         * @param tags       input tags
+         * @return filtered and normalized tags
+         * @throws IllegalArgumentException if a non-empty tag array is supplied with a blank metric name
+         */
+        public Tag[] enforce(String metricName, Tag[] tags) {
+            if (tags == null || tags.length == 0) {
+                return tags;
+            }
+            if (metricName == null || metricName.isBlank()) {
+                throw new IllegalArgumentException("Metric name must not be blank");
+            }
+            List<Tag> result = new ArrayList<>(tags.length);
+            for (Tag tag : tags) {
+                Objects.requireNonNull(tag, "Metric tag must not be null");
+                CardinalityPolicy policy = policies
+                        .computeIfAbsent(tag.key(), key -> CardinalityPolicy.firstN(defaultMax));
+                String allowed = policy.evaluate(tag.value());
+                if (allowed == null) {
+                    recordViolation(metricName, tag.key(), tag.value(), "denied");
+                } else if (!allowed.equals(tag.value())) {
+                    recordViolation(metricName, tag.key(), tag.value(), allowed);
+                    result.add(Tag.of(tag.key(), allowed));
+                } else {
+                    result.add(tag);
+                }
+            }
+            return result.toArray(new Tag[0]);
+        }
+
+        /**
+         * Applies this scope's policies while preserving typed attribute values. A strict identity is rejected rather
+         * than merged, and only string attributes may be replaced with overflow sentinels.
+         *
+         * @param metricName metric name used for diagnostics
+         * @param attributes typed attributes
+         * @return filtered and normalized attributes
+         * @throws IllegalArgumentException if a non-empty collection has a blank metric name, a strict identity is
+         *                                  rejected, or a non-string attribute requires a replacement sentinel
+         */
+        public Attributes enforce(String metricName, Attributes attributes) {
+            Objects.requireNonNull(attributes, "Metric attributes must not be null");
+            if (attributes.isEmpty()) {
+                return attributes;
+            }
+            if (metricName == null || metricName.isBlank()) {
+                throw new IllegalArgumentException("Metric name must not be blank");
+            }
+            Attributes.Builder result = Attributes.builder();
+            for (Attributes.Value<?> entry : attributes.values()) {
+                AttributeDescriptor<?> descriptor = entry.descriptor();
+                String original = String.valueOf(entry.value());
+                CardinalityPolicy policy = policies
+                        .computeIfAbsent(descriptor.key(), key -> CardinalityPolicy.firstN(defaultMax));
+                String allowed = policy.evaluate(original);
+                if (allowed == null || !allowed.equals(original)) {
+                    String replacement = allowed == null ? "denied" : allowed;
+                    recordViolation(metricName, descriptor.key(), original, replacement);
+                    if (descriptor.strictIdentity()) {
+                        throw new IllegalArgumentException(
+                                "Strict metric identity exceeded cardinality policy: " + descriptor.key());
+                    }
+                    if (allowed == null) {
+                        continue;
+                    }
+                    if (descriptor.type() != AttributeType.STRING) {
+                        throw new IllegalArgumentException(
+                                "Non-string metric attribute cannot use cardinality sentinel: " + descriptor.key());
+                    }
+                    putString(result, descriptor, allowed);
+                } else {
+                    putValue(result, entry);
+                }
+            }
+            return result.build();
+        }
+
+        /**
+         * Returns the cumulative violations for one tag key in this scope.
+         *
+         * @param tagKey tag key
+         * @return violation count
+         */
+        public long violationCount(String tagKey) {
+            AtomicLong count = violationCounts.get(tagKey);
+            return count == null ? 0 : count.get();
+        }
+
+        /**
+         * Adds a cardinality violation listener if it is not already registered.
+         *
+         * @param listener listener to add
+         */
+        public void addViolationListener(Consumer<CardinalityViolation> listener) {
+            violationListeners.addIfAbsent(Objects.requireNonNull(listener, "Violation listener must not be null"));
+        }
+
+        /**
+         * Removes a previously registered cardinality violation listener.
+         *
+         * @param listener listener to remove
+         */
+        public void removeViolationListener(Consumer<CardinalityViolation> listener) {
+            violationListeners.remove(Objects.requireNonNull(listener, "Violation listener must not be null"));
+        }
+
+        /**
+         * Counts a policy violation and emits a throttled warning.
+         *
+         * @param metricName  metric family name
+         * @param tagKey      attribute key
+         * @param original    rejected value
+         * @param replacement replacement value or denial reason
+         */
+        private void recordViolation(String metricName, String tagKey, String original, String replacement) {
+            violationCounts.computeIfAbsent(tagKey, key -> new AtomicLong()).incrementAndGet();
+            Instant detectedAt = Instant.now();
+            CardinalityViolation violation = new CardinalityViolation(metricName, tagKey, original, replacement,
+                    detectedAt);
+            for (Consumer<CardinalityViolation> listener : violationListeners) {
+                try {
+                    listener.accept(violation);
+                } catch (RuntimeException exception) {
+                    Logger.warn(
+                            false,
+                            "Metrics",
+                            "Cardinality violation listener failed: listenerClass={}, reason={}",
+                            listener.getClass().getName(),
+                            exception.getMessage());
+                }
+            }
+            long now = detectedAt.toEpochMilli();
+            Long last = lastLogTimestamps.get(tagKey);
+            if (last == null || now - last > Builder.CARDINALITY_LOG_THROTTLE_MS) {
+                lastLogTimestamps.put(tagKey, now);
+                Logger.warn(
+                        false,
+                        "Metrics",
+                        "Cardinality violation on metric={} tagKey={} replacedWith={} originalLength={}",
+                        metricName,
+                        tagKey,
+                        replacement,
+                        original == null ? 0 : original.length());
+            }
         }
     }
 

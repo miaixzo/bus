@@ -187,6 +187,31 @@ public class TlsSocketChannel implements Conduit {
     }
 
     /**
+     * Borrows an exclusive staging array without blocking the I/O operation.
+     *
+     * @return reusable or transient staging array
+     */
+    private static byte[] borrowScratch() {
+        final byte[] scratch = SCRATCH.poll();
+        return scratch == null ? new byte[Normal._8192] : scratch;
+    }
+
+    /**
+     * Returns a staging array to the bounded pool.
+     *
+     * @param scratch staging array no longer used by the caller
+     */
+    private static void releaseScratch(final byte[] scratch) {
+        SCRATCH.offer(scratch);
+    }
+
+    private static int timeoutMillis(final Duration value) {
+        if (value == null || value.isZero())
+            return 0;
+        return (int) Math.min(Integer.MAX_VALUE, Math.max(1L, value.toMillis()));
+    }
+
+    /**
      * Performs the blocking handshake on the calling thread and exposes its outcome as a completed future.
      *
      * @return future completed with negotiated handshake metadata
@@ -384,25 +409,6 @@ public class TlsSocketChannel implements Conduit {
         }
     }
 
-    /**
-     * Borrows an exclusive staging array without blocking the I/O operation.
-     *
-     * @return reusable or transient staging array
-     */
-    private static byte[] borrowScratch() {
-        final byte[] scratch = SCRATCH.poll();
-        return scratch == null ? new byte[Normal._8192] : scratch;
-    }
-
-    /**
-     * Returns a staging array to the bounded pool.
-     *
-     * @param scratch staging array no longer used by the caller
-     */
-    private static void releaseScratch(final byte[] scratch) {
-        SCRATCH.offer(scratch);
-    }
-
     @Override
     public Source source() {
         return source;
@@ -449,12 +455,6 @@ public class TlsSocketChannel implements Conduit {
      */
     private boolean requiresPolicyValidation() {
         return settings.certificate().chainCleaner() != null || !settings.certificate().pins().isEmpty();
-    }
-
-    private static int timeoutMillis(final Duration value) {
-        if (value == null || value.isZero())
-            return 0;
-        return (int) Math.min(Integer.MAX_VALUE, Math.max(1L, value.toMillis()));
     }
 
 }

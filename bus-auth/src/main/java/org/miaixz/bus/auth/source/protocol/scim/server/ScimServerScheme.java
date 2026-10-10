@@ -40,10 +40,12 @@ public class ScimServerScheme implements ProtocolScheme<ScimServerOptions> {
      * Stable Source type identifier for generic SCIM Service Providers.
      */
     public static final String ID = "scim-server";
+
     /**
      * Creates a standard SCIM resource.
      */
     public static final Capability<Resource, Resource> CREATE = capability(Scim.CREATE, Resource.class, Resource.class);
+
     /**
      * Retrieves one standard SCIM resource.
      */
@@ -51,6 +53,7 @@ public class ScimServerScheme implements ProtocolScheme<ScimServerOptions> {
             Scim.RETRIEVE,
             Resource.Reference.class,
             Resource.class);
+
     /**
      * Replaces one standard SCIM resource.
      */
@@ -58,6 +61,7 @@ public class ScimServerScheme implements ProtocolScheme<ScimServerOptions> {
             Scim.REPLACE,
             Resource.class,
             Resource.class);
+
     /**
      * Applies one atomic standard SCIM PatchOp.
      */
@@ -65,6 +69,7 @@ public class ScimServerScheme implements ProtocolScheme<ScimServerOptions> {
             Scim.PATCH,
             PatchRequest.class,
             Resource.class);
+
     /**
      * Deletes one standard SCIM resource.
      */
@@ -72,6 +77,7 @@ public class ScimServerScheme implements ProtocolScheme<ScimServerOptions> {
             Scim.DELETE,
             Resource.Reference.class,
             Void.class);
+
     /**
      * Searches standard SCIM resources.
      */
@@ -79,6 +85,7 @@ public class ScimServerScheme implements ProtocolScheme<ScimServerOptions> {
             Scim.SEARCH_GET,
             SearchQuery.class,
             ListResponse.class);
+
     /**
      * Searches standard SCIM resources through POST {@code /.search}.
      */
@@ -86,6 +93,7 @@ public class ScimServerScheme implements ProtocolScheme<ScimServerOptions> {
             Scim.SEARCH_POST,
             SearchRequest.class,
             ListResponse.class);
+
     /**
      * Executes a standard ordered SCIM Bulk request.
      */
@@ -93,6 +101,7 @@ public class ScimServerScheme implements ProtocolScheme<ScimServerOptions> {
             Scim.BULK,
             BulkRequest.class,
             BulkResponse.class);
+
     /**
      * Publishes the standard ServiceProviderConfig discovery resource.
      */
@@ -100,6 +109,7 @@ public class ScimServerScheme implements ProtocolScheme<ScimServerOptions> {
             Scim.SERVICE_PROVIDER_CONFIG,
             Void.class,
             ServiceProviderConfig.class);
+
     /**
      * Publishes standard ResourceType discovery resources in a ListResponse.
      */
@@ -107,6 +117,7 @@ public class ScimServerScheme implements ProtocolScheme<ScimServerOptions> {
             Scim.RESOURCE_TYPES,
             Void.class,
             ListResponse.class);
+
     /**
      * Publishes standard Schema discovery resources in a ListResponse.
      */
@@ -114,6 +125,7 @@ public class ScimServerScheme implements ProtocolScheme<ScimServerOptions> {
             Scim.SCHEMAS,
             Void.class,
             ListResponse.class);
+
     /**
      * Complete potential profile manifest before options-based compiler narrowing.
      */
@@ -129,6 +141,7 @@ public class ScimServerScheme implements ProtocolScheme<ScimServerOptions> {
             SERVICE_PROVIDER_CONFIG,
             RESOURCE_TYPES,
             SCHEMAS));
+
     /**
      * Formal SCIM specifications implemented by this scheme.
      */
@@ -137,6 +150,7 @@ public class ScimServerScheme implements ProtocolScheme<ScimServerOptions> {
                     new Conformance.Citation("https://www.rfc-editor.org/rfc/rfc7643", "SCIM Core Schema"),
                     new Conformance.Citation("https://www.rfc-editor.org/rfc/rfc7644", "SCIM Protocol")),
             "SCIM 2.0 Service Provider");
+
     /**
      * External management form containing only SCIM deployment options.
      */

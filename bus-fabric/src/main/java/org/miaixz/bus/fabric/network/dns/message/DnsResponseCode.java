@@ -71,15 +71,6 @@ public enum DnsResponseCode {
     }
 
     /**
-     * Returns the numeric RCODE value.
-     *
-     * @return low four-bit DNS RCODE value
-     */
-    public int code() {
-        return code;
-    }
-
-    /**
      * Resolves a response code from an RCODE value.
      *
      * @param code DNS RCODE
@@ -92,6 +83,15 @@ public enum DnsResponseCode {
             }
         }
         return SERVFAIL;
+    }
+
+    /**
+     * Returns the numeric RCODE value.
+     *
+     * @return low four-bit DNS RCODE value
+     */
+    public int code() {
+        return code;
     }
 
 }

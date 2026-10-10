@@ -20,12 +20,13 @@
 package org.miaixz.bus.metrics.nimble.indigenous;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.DoubleAdder;
+import java.util.function.LongSupplier;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.metrics.Builder;
@@ -43,6 +44,21 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  * @author Kimi Liu
  */
 public class NativeTimer implements Timer {
+
+    /**
+     * Number of digest buckets retained for each rolling window.
+     */
+    private static final int WINDOW_BUCKETS = 60;
+
+    /**
+     * Width of one bucket in the one-minute window.
+     */
+    private static final long ONE_MINUTE_BUCKET_NANOS = TimeUnit.SECONDS.toNanos(1);
+
+    /**
+     * Width of one bucket in the five-minute window.
+     */
+    private static final long FIVE_MINUTE_BUCKET_NANOS = TimeUnit.SECONDS.toNanos(5);
 
     /**
      * Standard Prometheus histogram bucket boundaries in seconds; converted to nanos on use.
@@ -70,24 +86,9 @@ public class NativeTimer implements Timer {
     private final DoubleAdder sumNanos = new DoubleAdder();
 
     /**
-     * Maximum recorded duration in nanoseconds.
-     */
-    private volatile double maxNanos = 0;
-
-    /**
      * T-Digest for accurate quantile estimation over the lifetime of this timer.
      */
     private final TDigest lifetimeDigest = new TDigest();
-
-    /**
-     * Rolling 1-minute T-Digest; rotated every 60 seconds by the scheduler.
-     */
-    private volatile TDigest digest1m = new TDigest();
-
-    /**
-     * Rolling 5-minute T-Digest; rotated every 5 minutes by the scheduler.
-     */
-    private volatile TDigest digest5m = new TDigest();
 
     /**
      * Per-bucket cumulative counts aligned to {@link #BUCKET_BOUNDS_SECS}.
@@ -97,12 +98,32 @@ public class NativeTimer implements Timer {
     /**
      * Registered SLA violation callbacks.
      */
-    private final List<ViolationSpec> violations = new ArrayList<>(2);
+    private final CopyOnWriteArrayList<ViolationSpec> violations = new CopyOnWriteArrayList<>();
 
     /**
      * Counter incremented on each recording; used to throttle violation checks.
      */
     private final AtomicInteger recordsSinceLastCheck = new AtomicInteger();
+    /**
+     * One-minute rolling digest ring with one-second resolution.
+     */
+    private final DigestBucket[] oneMinuteBuckets = buckets();
+    /**
+     * Five-minute rolling digest ring with five-second resolution.
+     */
+    private final DigestBucket[] fiveMinuteBuckets = buckets();
+    /**
+     * Monotonic nanosecond source used to assign rolling buckets.
+     */
+    private final LongSupplier nanoClock;
+    /**
+     * Greatest clock value observed, preventing a custom clock rollback from reviving expired buckets.
+     */
+    private final AtomicLong lastObservedNanos = new AtomicLong(Long.MIN_VALUE);
+    /**
+     * Maximum recorded duration in nanoseconds.
+     */
+    private volatile double maxNanos = 0;
 
     /**
      * Create a new NativeTimer.
@@ -111,8 +132,102 @@ public class NativeTimer implements Timer {
      * @param tags associated tags
      */
     public NativeTimer(String name, Tag[] tags) {
+        this(name, tags, System::nanoTime);
+    }
+
+    /**
+     * Creates a timer with an injectable monotonic clock for deterministic tests.
+     *
+     * @param name      metric name
+     * @param tags      associated tags
+     * @param nanoClock monotonic nanosecond source
+     */
+    NativeTimer(String name, Tag[] tags, LongSupplier nanoClock) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Timer name must not be blank");
+        }
         this.name = name;
-        this.tags = tags;
+        this.tags = tags == null ? new Tag[0] : tags.clone();
+        for (Tag tag : this.tags) {
+            Objects.requireNonNull(tag, "Timer tag must not be null");
+        }
+        this.nanoClock = Objects.requireNonNull(nanoClock, "Timer clock must not be null");
+    }
+
+    /**
+     * Creates an initialized digest bucket ring.
+     *
+     * @return fixed-size bucket ring
+     */
+    private static DigestBucket[] buckets() {
+        DigestBucket[] result = new DigestBucket[WINDOW_BUCKETS];
+        for (int index = 0; index < result.length; index++) {
+            result[index] = new DigestBucket();
+        }
+        return result;
+    }
+
+    /**
+     * Validates a percentile argument.
+     *
+     * @param percentile percentile to validate
+     */
+    private static void validatePercentile(double percentile) {
+        if (!Double.isFinite(percentile) || percentile < 0 || percentile > 1) {
+            throw new IllegalArgumentException("Timer percentile must be between 0 and 1");
+        }
+    }
+
+    /**
+     * Adds a value to the current generation in a digest ring.
+     *
+     * @param ring        digest ring
+     * @param bucketNanos bucket width
+     * @param timestamp   observation timestamp
+     * @param value       observed duration
+     */
+    private static void addRolling(DigestBucket[] ring, long bucketNanos, long timestamp, double value) {
+        long generation = Math.floorDiv(timestamp, bucketNanos);
+        int index = Math.floorMod(generation, ring.length);
+        ring[index].add(generation, value);
+    }
+
+    /**
+     * Merges all live bucket generations into a temporary digest.
+     *
+     * @param ring        digest ring
+     * @param bucketNanos bucket width
+     * @param timestamp   read timestamp
+     * @return merged rolling digest
+     */
+    private static TDigest rolling(DigestBucket[] ring, long bucketNanos, long timestamp) {
+        long currentGeneration = Math.floorDiv(timestamp, bucketNanos);
+        long firstGeneration = currentGeneration - ring.length + 1;
+        TDigest merged = new TDigest();
+        for (DigestBucket bucket : ring) {
+            bucket.mergeInto(merged, firstGeneration, currentGeneration);
+        }
+        return merged;
+    }
+
+    /**
+     * Clears every bucket in a digest ring.
+     *
+     * @param ring digest ring
+     */
+    private static void clear(DigestBucket[] ring) {
+        for (DigestBucket bucket : ring) {
+            bucket.clear();
+        }
+    }
+
+    /**
+     * Returns a non-decreasing clock value.
+     *
+     * @return monotonic nanosecond timestamp
+     */
+    private long now() {
+        return lastObservedNanos.accumulateAndGet(nanoClock.getAsLong(), Math::max);
     }
 
     /**
@@ -122,9 +237,9 @@ public class NativeTimer implements Timer {
      */
     @Override
     public Sample start() {
-        long startNs = System.nanoTime();
+        long startNs = now();
         return () -> {
-            long durationNs = System.nanoTime() - startNs;
+            long durationNs = now() - startNs;
             record(durationNs, TimeUnit.NANOSECONDS);
             return durationNs;
         };
@@ -138,7 +253,12 @@ public class NativeTimer implements Timer {
      */
     @Override
     public void record(long amount, TimeUnit unit) {
-        long nanos = unit.toNanos(amount);
+        if (amount < 0) {
+            throw new IllegalArgumentException("Timer duration must be non-negative");
+        }
+        TimeUnit checkedUnit = Objects.requireNonNull(unit, "Timer unit must not be null");
+        long nanos = checkedUnit.toNanos(amount);
+        long timestamp = now();
         countTotal.incrementAndGet();
         sumNanos.add(nanos);
         synchronized (this) {
@@ -147,9 +267,8 @@ public class NativeTimer implements Timer {
             }
         }
         lifetimeDigest.add(nanos);
-        digest1m.add(nanos);
-        digest5m.add(nanos);
-        // Histogram buckets
+        addRolling(oneMinuteBuckets, ONE_MINUTE_BUCKET_NANOS, timestamp, nanos);
+        addRolling(fiveMinuteBuckets, FIVE_MINUTE_BUCKET_NANOS, timestamp, nanos);
         double nanosD = nanos;
         for (int i = 0; i < BUCKET_BOUNDS_SECS.length; i++) {
             if (nanosD <= BUCKET_BOUNDS_SECS[i] * 1_000_000_000.0) {
@@ -158,7 +277,6 @@ public class NativeTimer implements Timer {
                 }
             }
         }
-        // Check violations
         checkViolations();
     }
 
@@ -178,7 +296,8 @@ public class NativeTimer implements Timer {
      */
     @Override
     public double totalTime(TimeUnit unit) {
-        return sumNanos.sum() / unit.toNanos(1);
+        TimeUnit checkedUnit = Objects.requireNonNull(unit, "Timer unit must not be null");
+        return sumNanos.sum() / checkedUnit.toNanos(1);
     }
 
     /**
@@ -189,7 +308,8 @@ public class NativeTimer implements Timer {
      */
     @Override
     public double max(TimeUnit unit) {
-        return maxNanos / unit.toNanos(1);
+        TimeUnit checkedUnit = Objects.requireNonNull(unit, "Timer unit must not be null");
+        return maxNanos / checkedUnit.toNanos(1);
     }
 
     /**
@@ -201,8 +321,10 @@ public class NativeTimer implements Timer {
      */
     @Override
     public double percentile(double p, TimeUnit unit) {
+        validatePercentile(p);
+        TimeUnit checkedUnit = Objects.requireNonNull(unit, "Timer unit must not be null");
         double nanos = lifetimeDigest.quantile(p);
-        return Double.isNaN(nanos) ? 0 : nanos / unit.toNanos(1);
+        return Double.isNaN(nanos) ? Double.NaN : nanos / checkedUnit.toNanos(1);
     }
 
     /**
@@ -215,13 +337,17 @@ public class NativeTimer implements Timer {
      */
     @Override
     public double percentile(double p, TimeUnit unit, Window window) {
-        TDigest digest = switch (window) {
-            case ONE_MINUTE -> digest1m;
-            case FIVE_MINUTES -> digest5m;
+        validatePercentile(p);
+        TimeUnit checkedUnit = Objects.requireNonNull(unit, "Timer unit must not be null");
+        Window checkedWindow = Objects.requireNonNull(window, "Timer window must not be null");
+        long timestamp = now();
+        TDigest digest = switch (checkedWindow) {
+            case ONE_MINUTE -> rolling(oneMinuteBuckets, ONE_MINUTE_BUCKET_NANOS, timestamp);
+            case FIVE_MINUTES -> rolling(fiveMinuteBuckets, FIVE_MINUTE_BUCKET_NANOS, timestamp);
             case LIFETIME -> lifetimeDigest;
         };
         double nanos = digest.quantile(p);
-        return Double.isNaN(nanos) ? 0 : nanos / unit.toNanos(1);
+        return Double.isNaN(nanos) ? Double.NaN : nanos / checkedUnit.toNanos(1);
     }
 
     /**
@@ -241,7 +367,17 @@ public class NativeTimer implements Timer {
             TimeUnit unit,
             int checkEvery,
             ConsumerX<ViolationEvent> callback) {
-        violations.add(new ViolationSpec(percentile, unit.toNanos(threshold), checkEvery, callback));
+        validatePercentile(percentile);
+        if (threshold < 0) {
+            throw new IllegalArgumentException("Timer violation threshold must be non-negative");
+        }
+        if (checkEvery <= 0) {
+            throw new IllegalArgumentException("Timer violation interval must be positive");
+        }
+        TimeUnit checkedUnit = Objects.requireNonNull(unit, "Timer violation unit must not be null");
+        ConsumerX<ViolationEvent> checkedCallback = Objects
+                .requireNonNull(callback, "Timer violation callback must not be null");
+        violations.add(new ViolationSpec(percentile, checkedUnit.toNanos(threshold), checkEvery, checkedCallback));
         return this;
     }
 
@@ -258,21 +394,21 @@ public class NativeTimer implements Timer {
         for (int i = 0; i < bounds.length; i++) {
             bounds[i] = BUCKET_BOUNDS_SECS[i];
         }
-        return new TimerSnapshot(name, tags, countTotal.get(), sumNanos.sum(), maxNanos, bucketsCopy, bounds);
+        return new TimerSnapshot(name, tags.clone(), countTotal.get(), sumNanos.sum(), maxNanos, bucketsCopy, bounds);
     }
 
     /**
-     * Called by NativeProvider's scheduler every 60 seconds to rotate the 1m digest.
+     * Explicitly clears the one-minute compatibility window.
      */
     public void rotate1m() {
-        digest1m = new TDigest();
+        clear(oneMinuteBuckets);
     }
 
     /**
-     * Called every 5 minutes to rotate the 5m digest.
+     * Explicitly clears the five-minute compatibility window.
      */
     public void rotate5m() {
-        digest5m = new TDigest();
+        clear(fiveMinuteBuckets);
     }
 
     /**
@@ -283,7 +419,6 @@ public class NativeTimer implements Timer {
             return;
         }
         int n = recordsSinceLastCheck.incrementAndGet();
-        // Check if any spec's checkEvery threshold is crossed
         for (ViolationSpec spec : violations) {
             if (n % spec.checkEvery == 0) {
                 double actual = lifetimeDigest.quantile(spec.percentile);
@@ -308,6 +443,59 @@ public class NativeTimer implements Timer {
     private record ViolationSpec(double percentile, long thresholdNanos, int checkEvery,
             ConsumerX<ViolationEvent> callback) {
 
+    }
+
+    /**
+     * One generation-stamped rolling digest bucket.
+     *
+     * @author Kimi Liu
+     */
+    private static final class DigestBucket {
+
+        /**
+         * Generation currently stored in this ring slot.
+         */
+        private long generation = Long.MIN_VALUE;
+
+        /**
+         * Digest for the current generation.
+         */
+        private TDigest digest = new TDigest();
+
+        /**
+         * Adds a value, replacing stale slot contents on generation change.
+         *
+         * @param targetGeneration generation receiving the value
+         * @param value            observed value
+         */
+        private synchronized void add(long targetGeneration, double value) {
+            if (generation != targetGeneration) {
+                generation = targetGeneration;
+                digest = new TDigest();
+            }
+            digest.add(value);
+        }
+
+        /**
+         * Merges this bucket when its generation is inside the requested range.
+         *
+         * @param target          destination digest
+         * @param firstGeneration first included generation
+         * @param lastGeneration  last included generation
+         */
+        private synchronized void mergeInto(TDigest target, long firstGeneration, long lastGeneration) {
+            if (generation >= firstGeneration && generation <= lastGeneration && digest.count() > 0) {
+                target.merge(digest);
+            }
+        }
+
+        /**
+         * Clears this ring slot.
+         */
+        private synchronized void clear() {
+            generation = Long.MIN_VALUE;
+            digest = new TDigest();
+        }
     }
 
 }

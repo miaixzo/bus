@@ -20,12 +20,7 @@
 package org.miaixz.bus.vortex.guard;
 
 import java.security.MessageDigest;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -304,6 +299,11 @@ public class SignatureVerifier {
         exchange.getAttributes().put(MCP_CACHED_BODY, body);
         ServerHttpRequest request = new ServerHttpRequestDecorator(exchange.getRequest()) {
 
+            /**
+             * Replays the leased request bytes for downstream MCP handlers.
+             *
+             * @return deferred publisher containing the cached request body
+             */
             @Override
             public Flux<DataBuffer> getBody() {
                 return Flux.defer(() -> Mono.just(exchange.getResponse().bufferFactory().wrap(body.bytes())));

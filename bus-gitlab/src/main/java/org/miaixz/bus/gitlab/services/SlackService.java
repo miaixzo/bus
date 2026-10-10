@@ -32,9 +32,6 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
  */
 public class SlackService extends NotificationService {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852285372238L;
 
@@ -298,6 +295,16 @@ public class SlackService extends NotificationService {
     }
 
     /**
+     * Sets the notify only broken pipelines.
+     *
+     * @param notifyOnlyBrokenPipelines the notify only broken pipelines value
+     */
+
+    public void setNotifyOnlyBrokenPipelines(Boolean notifyOnlyBrokenPipelines) {
+        setProperty(NOTIFY_ONLY_BROKEN_PIPELINES_PROP, notifyOnlyBrokenPipelines);
+    }
+
+    /**
      * Returns the notify only default branch.
      *
      * @return the result
@@ -306,16 +313,6 @@ public class SlackService extends NotificationService {
     @JsonIgnore
     public Boolean getNotifyOnlyDefaultBranch() {
         return getProperty(NOTIFY_ONLY_DEFAULT_BRANCH_PROP, Boolean.FALSE);
-    }
-
-    /**
-     * Sets the notify only broken pipelines.
-     *
-     * @param notifyOnlyBrokenPipelines the notify only broken pipelines value
-     */
-
-    public void setNotifyOnlyBrokenPipelines(Boolean notifyOnlyBrokenPipelines) {
-        setProperty(NOTIFY_ONLY_BROKEN_PIPELINES_PROP, notifyOnlyBrokenPipelines);
     }
 
     /**

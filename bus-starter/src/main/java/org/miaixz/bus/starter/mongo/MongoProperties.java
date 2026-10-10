@@ -47,26 +47,32 @@ public class MongoProperties {
      * Whether the mongo integration is enabled.
      */
     private final boolean enabled;
+
     /**
      * MongoDB client socket timeout and buffer settings.
      */
     private final Socket socket;
+
     /**
      * Socket settings used by the server heartbeat monitor.
      */
     private final Socket heartbeatSocket;
+
     /**
      * Cluster discovery and server-selection settings.
      */
     private final Cluster cluster;
+
     /**
      * Server heartbeat frequency settings.
      */
     private final Server server;
+
     /**
      * Connection pool capacity and lifecycle settings.
      */
     private final Connection connectionPool;
+
     /**
      * TLS activation and hostname validation settings.
      */
@@ -92,6 +98,19 @@ public class MongoProperties {
         this.server = server;
         this.connectionPool = connectionPool;
         this.ssl = ssl;
+    }
+
+    /**
+     * Validates a non-negative or positive duration property.
+     *
+     * @param value       configured duration
+     * @param name        configuration property suffix
+     * @param zeroAllowed whether zero is accepted
+     */
+    private static void positive(Duration value, String name, boolean zeroAllowed) {
+        if (value == null || value.isNegative() || (!zeroAllowed && value.isZero())) {
+            throw new IllegalArgumentException("bus.mongo." + name + " has an invalid duration");
+        }
     }
 
     /**
@@ -375,19 +394,6 @@ public class MongoProperties {
          */
         public boolean isInvalidHostNameAllowed() {
             return invalidHostNameAllowed;
-        }
-    }
-
-    /**
-     * Validates a non-negative or positive duration property.
-     *
-     * @param value       configured duration
-     * @param name        configuration property suffix
-     * @param zeroAllowed whether zero is accepted
-     */
-    private static void positive(Duration value, String name, boolean zeroAllowed) {
-        if (value == null || value.isNegative() || (!zeroAllowed && value.isZero())) {
-            throw new IllegalArgumentException("bus.mongo." + name + " has an invalid duration");
         }
     }
 

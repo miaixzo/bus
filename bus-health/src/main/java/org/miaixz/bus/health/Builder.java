@@ -28,6 +28,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
@@ -648,7 +649,7 @@ public class Builder {
             return Collections.emptySet();
         }
         return Arrays.stream(value.split(Symbol.COMMA)).map(String::trim).filter(entry -> !entry.isEmpty())
-                .collect(java.util.stream.Collectors.toUnmodifiableSet());
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     /**

@@ -37,10 +37,12 @@ public class SpringSmartLifecycle implements SmartLifecycle {
      * Reporter receiving application-context refresh metrics.
      */
     private final SpringStartupCollector startupCollector;
+
     /**
      * Application-context refresh start timestamp in milliseconds.
      */
     private final long refreshStartTime;
+
     /**
      * Tracks whether this lifecycle has recorded its refresh metrics.
      */

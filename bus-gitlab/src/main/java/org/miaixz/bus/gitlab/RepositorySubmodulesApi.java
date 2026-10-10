@@ -30,8 +30,8 @@ import org.miaixz.bus.gitlab.models.Commit;
  * repository APIs see:
  * </p>
  *
- * @see <a href="https://docs.gitlab.com/ee/api/repository_submodules.html">Repository Submodules API</a>
  * @author Kimi Liu
+ * @see <a href="https://docs.gitlab.com/ee/api/repository_submodules.html">Repository Submodules API</a>
  */
 public class RepositorySubmodulesApi extends AbstractApi {
 

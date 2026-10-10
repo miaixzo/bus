@@ -31,16 +31,15 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class ReleaseEvent extends AbstractEvent {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852233091729L;
+
     /**
      * The x gitlab event value.
      */
 
     public static final String X_GITLAB_EVENT = "Release Hook";
+
     /**
      * The object kind value.
      */
@@ -50,42 +49,52 @@ public class ReleaseEvent extends AbstractEvent {
      * The id value.
      */
     private Long id;
+
     /**
      * The created at value.
      */
     private String createdAt;
+
     /**
      * The description value.
      */
     private String description;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The released at value.
      */
     private String releasedAt;
+
     /**
      * The tag value.
      */
     private String tag;
+
     /**
      * The project value.
      */
     private EventProject project;
+
     /**
      * The url value.
      */
     private String url;
+
     /**
      * The action value.
      */
     private String action;
+
     /**
      * The assets value.
      */
     private EventReleaseAssets assets;
+
     /**
      * The commit value.
      */

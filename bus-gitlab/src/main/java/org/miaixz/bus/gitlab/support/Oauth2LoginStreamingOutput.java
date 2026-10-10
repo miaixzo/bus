@@ -40,6 +40,7 @@ public class Oauth2LoginStreamingOutput implements StreamingOutput, AutoCloseabl
      * The username value.
      */
     private final String username;
+
     /**
      * The password value.
      */

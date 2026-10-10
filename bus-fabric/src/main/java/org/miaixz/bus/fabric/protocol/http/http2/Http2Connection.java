@@ -105,16 +105,6 @@ public class Http2Connection implements AutoCloseable {
     private final HpackCodec hpackReader;
 
     /**
-     * Reader-owned canonical response field list for repeated HPACK blocks.
-     */
-    private List<Http2Header> cachedResponseFields;
-
-    /**
-     * Immutable root-header snapshot paired with {@link #cachedResponseFields}.
-     */
-    private Headers cachedResponseHeaders;
-
-    /**
      * Streams.
      */
     private final Http2StreamRegistry streams;
@@ -128,16 +118,6 @@ public class Http2Connection implements AutoCloseable {
      * Pushed stream ids.
      */
     private final Http2PushDispatcher pushDispatcher;
-
-    /**
-     * Connection flow-control window.
-     */
-    private long connectionWriteWindow;
-
-    /**
-     * Connection inbound flow-control window.
-     */
-    private long connectionReceiveWindow;
 
     /**
      * Unacknowledged connection inbound bytes.
@@ -193,11 +173,6 @@ public class Http2Connection implements AutoCloseable {
      * Monitor preserving the RFC 9113 creation order of locally initiated streams.
      */
     private final Object localHeaderOrder;
-
-    /**
-     * Next local stream id whose initial HEADERS may be emitted.
-     */
-    private int nextLocalHeaderStreamId;
 
     /**
      * Allocated local stream ids explicitly terminated before initial HEADERS.
@@ -308,6 +283,31 @@ public class Http2Connection implements AutoCloseable {
      * Hard aggregate inbound DATA retention limit in bytes.
      */
     private final long maxQueuedInboundBytes;
+
+    /**
+     * Reader-owned canonical response field list for repeated HPACK blocks.
+     */
+    private List<Http2Header> cachedResponseFields;
+
+    /**
+     * Immutable root-header snapshot paired with {@link #cachedResponseFields}.
+     */
+    private Headers cachedResponseHeaders;
+
+    /**
+     * Connection flow-control window.
+     */
+    private long connectionWriteWindow;
+
+    /**
+     * Connection inbound flow-control window.
+     */
+    private long connectionReceiveWindow;
+
+    /**
+     * Next local stream id whose initial HEADERS may be emitted.
+     */
+    private int nextLocalHeaderStreamId;
 
     /**
      * Creates a connection.
@@ -533,6 +533,438 @@ public class Http2Connection implements AutoCloseable {
             final long maxQueuedInboundBytes) {
         return new Http2Connection(connection, PushObserver.canceling(), require(dispatcher, "Dispatcher"), false,
                 maxQueuedInboundBytes);
+    }
+
+    /**
+     * Advances an odd local stream id without overflowing into a valid id.
+     *
+     * @param streamId current odd local stream identifier
+     * @return next odd identifier or the terminal maximum sentinel
+     */
+    private static int nextStreamId(final int streamId) {
+        return streamId > Integer.MAX_VALUE - Normal._2 ? Integer.MAX_VALUE : streamId + Normal._2;
+    }
+
+    /**
+     * Discards an exact direct-reader payload after a rejected aggregate reservation.
+     */
+    private static void discard(final Buffer source, final long length) {
+        try {
+            source.skip(length);
+        } catch (final IOException e) {
+            throw new SocketException("HTTP/2 DATA payload is truncated", e);
+        }
+    }
+
+    /**
+     * Adds bytes to a counter and resets it when threshold is crossed.
+     *
+     * @param counter   byte counter updated atomically
+     * @param length    number of bytes to add
+     * @param threshold byte count that triggers a counter reset and update
+     * @return accumulated length after the addition
+     */
+    private static long accumulate(final AtomicLong counter, final long length, final long threshold) {
+        long current;
+        long next;
+        do {
+            current = counter.get();
+            next = current + length;
+            if (next < current || next > Integer.MAX_VALUE) {
+                throw new ProtocolException("HTTP/2 flow-control update overflow");
+            }
+        } while (!counter.compareAndSet(current, next >= threshold ? Normal._0 : next));
+        return next;
+    }
+
+    /**
+     * Atomically allocates one positive stream id and leaves a terminal sentinel after exhaustion.
+     *
+     * @param sequence local or remote stream-id sequence
+     * @return allocated stream id
+     */
+    private static int allocateStreamId(final AtomicInteger sequence) {
+        while (true) {
+            final int current = sequence.get();
+            if (current <= Normal._0) {
+                throw new ProtocolException("HTTP/2 stream id overflow");
+            }
+            final int next = current > Integer.MAX_VALUE - Normal._2 ? Normal._0 : current + Normal._2;
+            if (sequence.compareAndSet(current, next)) {
+                return current;
+            }
+        }
+    }
+
+    /**
+     * Returns whether an id belongs to a locally initiated client stream.
+     *
+     * @param streamId stream identifier to classify
+     * @return {@code true} for an odd locally initiated client stream id
+     */
+    private static boolean localStream(final int streamId) {
+        return (streamId & Normal._1) != Normal._0;
+    }
+
+    /**
+     * Returns a safe monotonic deadline for one duration.
+     *
+     * @param timeout duration measured from the current monotonic time
+     * @return deadline
+     */
+    private static long deadline(final Duration timeout) {
+        try {
+            final long now = System.nanoTime();
+            final long nanos = timeout.toNanos();
+            return nanos >= Long.MAX_VALUE - now ? Long.MAX_VALUE : now + nanos;
+        } catch (final ArithmeticException e) {
+            return Long.MAX_VALUE;
+        }
+    }
+
+    /**
+     * Adds a positive flow-control delta without exceeding the protocol maximum.
+     *
+     * @param current current window
+     * @param delta   positive delta
+     * @return adjusted window
+     */
+    private static long checkedWindowAdd(final long current, final long delta) {
+        return Http2FlowController.add(current, delta);
+    }
+
+    /**
+     * Adjusts a stream window after SETTINGS_INITIAL_WINDOW_SIZE changes.
+     *
+     * @param current current window
+     * @param delta   signed settings delta
+     * @return adjusted window
+     */
+    private static long checkedWindowAdjust(final long current, final long delta) {
+        return Http2FlowController.adjust(current, delta);
+    }
+
+    /**
+     * Validates supported frame metadata.
+     *
+     * @param type     HTTP/2 frame type code
+     * @param streamId stream id
+     * @param flags    frame flags to validate
+     * @param length   payload length
+     */
+    private static void validateFrame(final int type, final int streamId, final int flags, final int length) {
+        validateFrame(type, streamId, flags, length, Normal._16384);
+    }
+
+    /**
+     * Validates supported frame metadata.
+     *
+     * @param type         HTTP/2 frame type code
+     * @param streamId     stream id
+     * @param flags        frame flags to validate
+     * @param length       payload length
+     * @param maxFrameSize max payload length
+     */
+    private static void validateFrame(
+            final int type,
+            final int streamId,
+            final int flags,
+            final int length,
+            final int maxFrameSize) {
+        if (streamId < Normal._0 || streamId > Integer.MAX_VALUE || flags < Normal._0
+                || flags > Builder.UNSIGNED_BYTE_MASK || length < Normal._0 || length > maxFrameSize) {
+            throw new ProtocolException("Invalid HTTP/2 frame metadata");
+        }
+        if (type == Normal._4) {
+            if (streamId != Normal._0 || (flags & ~Normal._1) != Normal._0
+                    || ((flags & Normal._1) != Normal._0 && length != Normal._0) || length % Normal._6 != Normal._0) {
+                throw new ProtocolException("Invalid HTTP/2 SETTINGS frame");
+            }
+            return;
+        }
+        if (type == Normal._6) {
+            if (streamId != Normal._0 || (flags & ~Normal._1) != Normal._0 || length != Normal._8) {
+                throw new ProtocolException("Invalid HTTP/2 PING frame");
+            }
+            return;
+        }
+        if (type == Normal._7) {
+            if (streamId != Normal._0 || flags != Normal._0 || length < Normal._4 * Normal._2) {
+                throw new ProtocolException("Invalid HTTP/2 GOAWAY frame");
+            }
+            return;
+        }
+        if (type == Normal._8) {
+            if (flags != Normal._0 || length != Normal._4) {
+                throw new ProtocolException("Invalid HTTP/2 WINDOW_UPDATE frame");
+            }
+            return;
+        }
+        if (type == Normal._10) {
+            if (flags != Normal._0 || length < Normal._2) {
+                throw new ProtocolException("Invalid HTTP/2 ALTSVC frame");
+            }
+            return;
+        }
+        if (streamId <= Normal._0) {
+            throw new ProtocolException("Invalid HTTP/2 stream frame id");
+        }
+        switch (type) {
+            case Normal._0 -> validateFlags(flags, Normal._1);
+            case Normal._1 -> {
+                validateFlags(flags, Normal._1 | Normal._4 | Normal._32);
+                if ((flags & Normal._32) != Normal._0 && length < Normal._5) {
+                    throw new ProtocolException("Invalid HTTP/2 HEADERS priority payload");
+                }
+            }
+            case Normal._2 -> {
+                validateFlags(flags, Normal._0);
+                if (length != Normal._5) {
+                    throw new ProtocolException("Invalid HTTP/2 PRIORITY length");
+                }
+            }
+            case Normal._5 -> {
+                validateFlags(flags, Normal._4);
+                if (length < Normal._4) {
+                    throw new ProtocolException("Invalid HTTP/2 PUSH_PROMISE frame");
+                }
+            }
+            case Normal._3 -> {
+                validateFlags(flags, Normal._0);
+                if (length != Normal._4) {
+                    throw new ProtocolException("Invalid HTTP/2 RST_STREAM length");
+                }
+            }
+            default -> throw new ProtocolException("Unsupported HTTP/2 frame type");
+        }
+    }
+
+    /**
+     * Decodes optional HEADERS priority metadata.
+     *
+     * @param streamId stream id
+     * @param flags    HEADERS frame flags controlling optional fields
+     * @param payload  original HEADERS payload
+     * @return priority or null
+     */
+    private static Http2Priority decodeHeaderPriority(final int streamId, final int flags, final ByteString payload) {
+        if ((flags & Normal._32) == Normal._0) {
+            return null;
+        }
+        return Http2Priority.decode(payload, streamId);
+    }
+
+    /**
+     * Returns the HPACK fragment from a HEADERS payload.
+     *
+     * @param flags   HEADERS frame flags controlling optional fields
+     * @param payload original HEADERS payload
+     * @return header fragment
+     */
+    private static ByteString headerFragment(final int flags, final ByteString payload) {
+        if ((flags & Normal._32) != Normal._0) {
+            return payload.substring(Normal._5);
+        }
+        return payload;
+    }
+
+    /**
+     * Adds a header block fragment and checks the accumulated size.
+     *
+     * @param fragments accumulated header block fragments
+     * @param fragment  new fragment
+     * @param total     current total
+     * @return updated total
+     */
+    private static int appendHeaderFragment(final Buffer fragments, final ByteString fragment, final int total) {
+        final int next = total + fragment.size();
+        if (next < total || next > Builder.BYTES_64_KIB) {
+            throw new ProtocolException("HTTP/2 header block exceeds max size");
+        }
+        fragments.write(fragment);
+        return next;
+    }
+
+    /**
+     * Validates a CONTINUATION frame while reading a header block.
+     *
+     * @param expectedStreamId expected stream id
+     * @param type             frame type
+     * @param streamId         frame stream id
+     * @param flags            frame flags
+     * @param length           payload length
+     */
+    private static void validateContinuation(
+            final int expectedStreamId,
+            final int type,
+            final int streamId,
+            final int flags,
+            final int length) {
+        if (type != Normal._9 || streamId != expectedStreamId || streamId <= Normal._0 || length < Normal._0
+                || length > Normal._16384) {
+            throw new ProtocolException("Invalid HTTP/2 CONTINUATION frame");
+        }
+        validateFlags(flags, Normal._4);
+    }
+
+    /**
+     * Validates frame flags.
+     *
+     * @param flags   actual frame flags
+     * @param allowed allowed mask
+     */
+    private static void validateFlags(final int flags, final int allowed) {
+        if ((flags & ~allowed) != Normal._0) {
+            throw new ProtocolException("Unsupported HTTP/2 frame flags");
+        }
+    }
+
+    /**
+     * Subtracts from a flow-control window.
+     *
+     * @param window flow-control window to debit
+     * @param length number of bytes to subtract
+     * @return true when the window was available
+     */
+    private static boolean subtractWindow(final AtomicLong window, final long length) {
+        return false;
+    }
+
+    /**
+     * Adds to a flow-control window.
+     *
+     * @param window flow-control window to credit
+     * @param delta  positive increment to add
+     */
+    private static void addWindow(final AtomicLong window, final long delta) {
+        throw new InternalException("Legacy HTTP/2 flow update must not be used");
+    }
+
+    /**
+     * Adjusts a flow-control window by a signed delta.
+     *
+     * @param window flow-control window to adjust
+     * @param delta  signed delta
+     */
+    private static void adjustWindow(final AtomicLong window, final long delta) {
+        throw new InternalException("Legacy HTTP/2 flow adjustment must not be used");
+    }
+
+    /**
+     * Converts HTTP/2 headers to root headers.
+     *
+     * @param headers HTTP/2 headers
+     * @return root headers
+     */
+    private static Headers toHeaders(final List<Http2Header> headers) {
+        final Headers.Builder builder = Headers.builder();
+        for (final Http2Header header : headers) {
+            if (!header.pseudo()) {
+                builder.add(header.name(), header.value());
+            }
+        }
+        return builder.build();
+    }
+
+    /**
+     * Validates and snapshots headers.
+     *
+     * @param headers header collection to validate and copy
+     * @return snapshot
+     */
+    private static List<Http2Header> validateHeaders(final List<Http2Header> headers) {
+        final List<Http2Header> checkedHeaders = Assert
+                .notNull(headers, () -> new ValidateException("HTTP/2 push headers must not contain null values"));
+        for (final Http2Header header : checkedHeaders) {
+            Assert.notNull(header, () -> new ValidateException("HTTP/2 push headers must not contain null values"));
+        }
+        return List.copyOf(checkedHeaders);
+    }
+
+    /**
+     * Returns the HPACK header block from a PUSH_PROMISE payload.
+     *
+     * @param payload PUSH_PROMISE payload containing the header block
+     * @return header block
+     */
+    private static ByteString pushHeaderBlock(final ByteString payload) {
+        return payload.substring(Normal._4);
+    }
+
+    /**
+     * Validates stream id.
+     *
+     * @param streamId stream id
+     */
+    private static void positiveStream(final int streamId) {
+        if (streamId <= Normal._0) {
+            throw new ValidateException("HTTP/2 stream id must be positive");
+        }
+    }
+
+    /**
+     * Classifies close failure.
+     *
+     * @param failure failure raised while closing the connection
+     * @return runtime failure
+     */
+    private static RuntimeException closeFailure(final RuntimeException failure) {
+        if (failure instanceof SocketException || failure instanceof InternalException
+                || failure instanceof StatefulException) {
+            return failure;
+        }
+        return new InternalException("Unable to close HTTP/2", failure);
+    }
+
+    /**
+     * Classifies a reader failure for stream delivery.
+     *
+     * @param cause reader failure to expose to a stream
+     * @return stream-visible failure
+     */
+    private static RuntimeException streamFailure(final RuntimeException cause) {
+        if (cause instanceof SocketException || cause instanceof ProtocolException || cause instanceof TimeoutException
+                || cause instanceof InternalException || cause instanceof StatefulException) {
+            return cause;
+        }
+        return new SocketException("HTTP/2 reader failed", cause);
+    }
+
+    /**
+     * Converts a buffer size to int.
+     *
+     * @param size buffer size to range-check and convert
+     * @return int size
+     */
+    private static int toIntSize(final long size) {
+        if (size > Integer.MAX_VALUE) {
+            throw new ProtocolException("HTTP/2 buffer exceeds integer range");
+        }
+        return (int) size;
+    }
+
+    /**
+     * Reads a 24-bit unsigned integer.
+     *
+     * @param buffer buffer positioned at the three-byte integer
+     * @return decoded unsigned 24-bit value
+     */
+    private static int readMedium(final Buffer buffer) {
+        return ((buffer.readByte() & Builder.UNSIGNED_BYTE_MASK) << Normal._16)
+                | ((buffer.readByte() & Builder.UNSIGNED_BYTE_MASK) << Normal._8)
+                | (buffer.readByte() & Builder.UNSIGNED_BYTE_MASK);
+    }
+
+    /**
+     * Validates required value.
+     *
+     * @param value reference to validate
+     * @param name  diagnostic parameter name
+     * @param <T>   type
+     * @return the validated reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -797,16 +1229,6 @@ public class Http2Connection implements AutoCloseable {
             }
             localHeaderOrder.notifyAll();
         }
-    }
-
-    /**
-     * Advances an odd local stream id without overflowing into a valid id.
-     *
-     * @param streamId current odd local stream identifier
-     * @return next odd identifier or the terminal maximum sentinel
-     */
-    private static int nextStreamId(final int streamId) {
-        return streamId > Integer.MAX_VALUE - Normal._2 ? Integer.MAX_VALUE : streamId + Normal._2;
     }
 
     /**
@@ -1608,17 +2030,6 @@ public class Http2Connection implements AutoCloseable {
     }
 
     /**
-     * Discards an exact direct-reader payload after a rejected aggregate reservation.
-     */
-    private static void discard(final Buffer source, final long length) {
-        try {
-            source.skip(length);
-        } catch (final IOException e) {
-            throw new SocketException("HTTP/2 DATA payload is truncated", e);
-        }
-    }
-
-    /**
      * Consumes connection and stream inbound windows under one lock acquisition.
      *
      * @param streamId stream receiving DATA
@@ -1720,27 +2131,6 @@ public class Http2Connection implements AutoCloseable {
         if (streamDelta >= LOCAL_RECEIVE_WINDOW / Normal._2) {
             writeFrame(Http2Frame.windowUpdate(streamId, streamDelta));
         }
-    }
-
-    /**
-     * Adds bytes to a counter and resets it when threshold is crossed.
-     *
-     * @param counter   byte counter updated atomically
-     * @param length    number of bytes to add
-     * @param threshold byte count that triggers a counter reset and update
-     * @return accumulated length after the addition
-     */
-    private static long accumulate(final AtomicLong counter, final long length, final long threshold) {
-        long current;
-        long next;
-        do {
-            current = counter.get();
-            next = current + length;
-            if (next < current || next > Integer.MAX_VALUE) {
-                throw new ProtocolException("HTTP/2 flow-control update overflow");
-            }
-        } while (!counter.compareAndSet(current, next >= threshold ? Normal._0 : next));
-        return next;
     }
 
     /**
@@ -1918,35 +2308,6 @@ public class Http2Connection implements AutoCloseable {
         if (shutdown.get()) {
             throw new StatefulException("HTTP/2 connection is shutting down");
         }
-    }
-
-    /**
-     * Atomically allocates one positive stream id and leaves a terminal sentinel after exhaustion.
-     *
-     * @param sequence local or remote stream-id sequence
-     * @return allocated stream id
-     */
-    private static int allocateStreamId(final AtomicInteger sequence) {
-        while (true) {
-            final int current = sequence.get();
-            if (current <= Normal._0) {
-                throw new ProtocolException("HTTP/2 stream id overflow");
-            }
-            final int next = current > Integer.MAX_VALUE - Normal._2 ? Normal._0 : current + Normal._2;
-            if (sequence.compareAndSet(current, next)) {
-                return current;
-            }
-        }
-    }
-
-    /**
-     * Returns whether an id belongs to a locally initiated client stream.
-     *
-     * @param streamId stream identifier to classify
-     * @return {@code true} for an odd locally initiated client stream id
-     */
-    private static boolean localStream(final int streamId) {
-        return (streamId & Normal._1) != Normal._0;
     }
 
     /**
@@ -2129,22 +2490,6 @@ public class Http2Connection implements AutoCloseable {
     }
 
     /**
-     * Returns a safe monotonic deadline for one duration.
-     *
-     * @param timeout duration measured from the current monotonic time
-     * @return deadline
-     */
-    private static long deadline(final Duration timeout) {
-        try {
-            final long now = System.nanoTime();
-            final long nanos = timeout.toNanos();
-            return nanos >= Long.MAX_VALUE - now ? Long.MAX_VALUE : now + nanos;
-        } catch (final ArithmeticException e) {
-            return Long.MAX_VALUE;
-        }
-    }
-
-    /**
      * Ensures physical writes are still permitted.
      */
     private void ensureWritable() {
@@ -2166,152 +2511,6 @@ public class Http2Connection implements AutoCloseable {
         if (failure instanceof SocketException) {
             closeAfterReaderFailure(streamFailure(failure));
         }
-    }
-
-    /**
-     * Adds a positive flow-control delta without exceeding the protocol maximum.
-     *
-     * @param current current window
-     * @param delta   positive delta
-     * @return adjusted window
-     */
-    private static long checkedWindowAdd(final long current, final long delta) {
-        return Http2FlowController.add(current, delta);
-    }
-
-    /**
-     * Adjusts a stream window after SETTINGS_INITIAL_WINDOW_SIZE changes.
-     *
-     * @param current current window
-     * @param delta   signed settings delta
-     * @return adjusted window
-     */
-    private static long checkedWindowAdjust(final long current, final long delta) {
-        return Http2FlowController.adjust(current, delta);
-    }
-
-    /**
-     * Validates supported frame metadata.
-     *
-     * @param type     HTTP/2 frame type code
-     * @param streamId stream id
-     * @param flags    frame flags to validate
-     * @param length   payload length
-     */
-    private static void validateFrame(final int type, final int streamId, final int flags, final int length) {
-        validateFrame(type, streamId, flags, length, Normal._16384);
-    }
-
-    /**
-     * Validates supported frame metadata.
-     *
-     * @param type         HTTP/2 frame type code
-     * @param streamId     stream id
-     * @param flags        frame flags to validate
-     * @param length       payload length
-     * @param maxFrameSize max payload length
-     */
-    private static void validateFrame(
-            final int type,
-            final int streamId,
-            final int flags,
-            final int length,
-            final int maxFrameSize) {
-        if (streamId < Normal._0 || streamId > Integer.MAX_VALUE || flags < Normal._0
-                || flags > Builder.UNSIGNED_BYTE_MASK || length < Normal._0 || length > maxFrameSize) {
-            throw new ProtocolException("Invalid HTTP/2 frame metadata");
-        }
-        if (type == Normal._4) {
-            if (streamId != Normal._0 || (flags & ~Normal._1) != Normal._0
-                    || ((flags & Normal._1) != Normal._0 && length != Normal._0) || length % Normal._6 != Normal._0) {
-                throw new ProtocolException("Invalid HTTP/2 SETTINGS frame");
-            }
-            return;
-        }
-        if (type == Normal._6) {
-            if (streamId != Normal._0 || (flags & ~Normal._1) != Normal._0 || length != Normal._8) {
-                throw new ProtocolException("Invalid HTTP/2 PING frame");
-            }
-            return;
-        }
-        if (type == Normal._7) {
-            if (streamId != Normal._0 || flags != Normal._0 || length < Normal._4 * Normal._2) {
-                throw new ProtocolException("Invalid HTTP/2 GOAWAY frame");
-            }
-            return;
-        }
-        if (type == Normal._8) {
-            if (flags != Normal._0 || length != Normal._4) {
-                throw new ProtocolException("Invalid HTTP/2 WINDOW_UPDATE frame");
-            }
-            return;
-        }
-        if (type == Normal._10) {
-            if (flags != Normal._0 || length < Normal._2) {
-                throw new ProtocolException("Invalid HTTP/2 ALTSVC frame");
-            }
-            return;
-        }
-        if (streamId <= Normal._0) {
-            throw new ProtocolException("Invalid HTTP/2 stream frame id");
-        }
-        switch (type) {
-            case Normal._0 -> validateFlags(flags, Normal._1);
-            case Normal._1 -> {
-                validateFlags(flags, Normal._1 | Normal._4 | Normal._32);
-                if ((flags & Normal._32) != Normal._0 && length < Normal._5) {
-                    throw new ProtocolException("Invalid HTTP/2 HEADERS priority payload");
-                }
-            }
-            case Normal._2 -> {
-                validateFlags(flags, Normal._0);
-                if (length != Normal._5) {
-                    throw new ProtocolException("Invalid HTTP/2 PRIORITY length");
-                }
-            }
-            case Normal._5 -> {
-                validateFlags(flags, Normal._4);
-                if (length < Normal._4) {
-                    throw new ProtocolException("Invalid HTTP/2 PUSH_PROMISE frame");
-                }
-            }
-            case Normal._3 -> {
-                validateFlags(flags, Normal._0);
-                if (length != Normal._4) {
-                    throw new ProtocolException("Invalid HTTP/2 RST_STREAM length");
-                }
-            }
-            default -> throw new ProtocolException("Unsupported HTTP/2 frame type");
-        }
-    }
-
-    /**
-     * Decodes optional HEADERS priority metadata.
-     *
-     * @param streamId stream id
-     * @param flags    HEADERS frame flags controlling optional fields
-     * @param payload  original HEADERS payload
-     * @return priority or null
-     */
-    private static Http2Priority decodeHeaderPriority(final int streamId, final int flags, final ByteString payload) {
-        if ((flags & Normal._32) == Normal._0) {
-            return null;
-        }
-        return Http2Priority.decode(payload, streamId);
-    }
-
-    /**
-     * Returns the HPACK fragment from a HEADERS payload.
-     *
-     * @param flags   HEADERS frame flags controlling optional fields
-     * @param payload original HEADERS payload
-     * @return header fragment
-     */
-    private static ByteString headerFragment(final int flags, final ByteString payload) {
-        if ((flags & Normal._32) != Normal._0) {
-            return payload.substring(Normal._5);
-        }
-        return payload;
     }
 
     /**
@@ -2345,57 +2544,6 @@ public class Http2Connection implements AutoCloseable {
     }
 
     /**
-     * Adds a header block fragment and checks the accumulated size.
-     *
-     * @param fragments accumulated header block fragments
-     * @param fragment  new fragment
-     * @param total     current total
-     * @return updated total
-     */
-    private static int appendHeaderFragment(final Buffer fragments, final ByteString fragment, final int total) {
-        final int next = total + fragment.size();
-        if (next < total || next > Builder.BYTES_64_KIB) {
-            throw new ProtocolException("HTTP/2 header block exceeds max size");
-        }
-        fragments.write(fragment);
-        return next;
-    }
-
-    /**
-     * Validates a CONTINUATION frame while reading a header block.
-     *
-     * @param expectedStreamId expected stream id
-     * @param type             frame type
-     * @param streamId         frame stream id
-     * @param flags            frame flags
-     * @param length           payload length
-     */
-    private static void validateContinuation(
-            final int expectedStreamId,
-            final int type,
-            final int streamId,
-            final int flags,
-            final int length) {
-        if (type != Normal._9 || streamId != expectedStreamId || streamId <= Normal._0 || length < Normal._0
-                || length > Normal._16384) {
-            throw new ProtocolException("Invalid HTTP/2 CONTINUATION frame");
-        }
-        validateFlags(flags, Normal._4);
-    }
-
-    /**
-     * Validates frame flags.
-     *
-     * @param flags   actual frame flags
-     * @param allowed allowed mask
-     */
-    private static void validateFlags(final int flags, final int allowed) {
-        if ((flags & ~allowed) != Normal._0) {
-            throw new ProtocolException("Unsupported HTTP/2 frame flags");
-        }
-    }
-
-    /**
      * Consumes flow-control windows for DATA.
      *
      * @param streamId stream id
@@ -2403,37 +2551,6 @@ public class Http2Connection implements AutoCloseable {
      */
     private void consumeWindow(final int streamId, final int length) {
         throw new InternalException("Legacy HTTP/2 flow reservation must not be used");
-    }
-
-    /**
-     * Subtracts from a flow-control window.
-     *
-     * @param window flow-control window to debit
-     * @param length number of bytes to subtract
-     * @return true when the window was available
-     */
-    private static boolean subtractWindow(final AtomicLong window, final long length) {
-        return false;
-    }
-
-    /**
-     * Adds to a flow-control window.
-     *
-     * @param window flow-control window to credit
-     * @param delta  positive increment to add
-     */
-    private static void addWindow(final AtomicLong window, final long delta) {
-        throw new InternalException("Legacy HTTP/2 flow update must not be used");
-    }
-
-    /**
-     * Adjusts a flow-control window by a signed delta.
-     *
-     * @param window flow-control window to adjust
-     * @param delta  signed delta
-     */
-    private static void adjustWindow(final AtomicLong window, final long delta) {
-        throw new InternalException("Legacy HTTP/2 flow adjustment must not be used");
     }
 
     /**
@@ -2445,22 +2562,6 @@ public class Http2Connection implements AutoCloseable {
     private void resetPushedStream(final int streamId, final int errorCode) {
         writeFrame(Http2Frame.rstStream(streamId, errorCode));
         streamTerminated(streamId);
-    }
-
-    /**
-     * Converts HTTP/2 headers to root headers.
-     *
-     * @param headers HTTP/2 headers
-     * @return root headers
-     */
-    private static Headers toHeaders(final List<Http2Header> headers) {
-        final Headers.Builder builder = Headers.builder();
-        for (final Http2Header header : headers) {
-            if (!header.pseudo()) {
-                builder.add(header.name(), header.value());
-            }
-        }
-        return builder.build();
     }
 
     /**
@@ -2483,56 +2584,6 @@ public class Http2Connection implements AutoCloseable {
     }
 
     /**
-     * Validates and snapshots headers.
-     *
-     * @param headers header collection to validate and copy
-     * @return snapshot
-     */
-    private static List<Http2Header> validateHeaders(final List<Http2Header> headers) {
-        final List<Http2Header> checkedHeaders = Assert
-                .notNull(headers, () -> new ValidateException("HTTP/2 push headers must not contain null values"));
-        for (final Http2Header header : checkedHeaders) {
-            Assert.notNull(header, () -> new ValidateException("HTTP/2 push headers must not contain null values"));
-        }
-        return List.copyOf(checkedHeaders);
-    }
-
-    /**
-     * Returns the HPACK header block from a PUSH_PROMISE payload.
-     *
-     * @param payload PUSH_PROMISE payload containing the header block
-     * @return header block
-     */
-    private static ByteString pushHeaderBlock(final ByteString payload) {
-        return payload.substring(Normal._4);
-    }
-
-    /**
-     * Validates stream id.
-     *
-     * @param streamId stream id
-     */
-    private static void positiveStream(final int streamId) {
-        if (streamId <= Normal._0) {
-            throw new ValidateException("HTTP/2 stream id must be positive");
-        }
-    }
-
-    /**
-     * Classifies close failure.
-     *
-     * @param failure failure raised while closing the connection
-     * @return runtime failure
-     */
-    private static RuntimeException closeFailure(final RuntimeException failure) {
-        if (failure instanceof SocketException || failure instanceof InternalException
-                || failure instanceof StatefulException) {
-            return failure;
-        }
-        return new InternalException("Unable to close HTTP/2", failure);
-    }
-
-    /**
      * Returns the connection failure, falling back to a stream state failure.
      *
      * @param fallback fallback message
@@ -2541,20 +2592,6 @@ public class Http2Connection implements AutoCloseable {
     private RuntimeException streamFailure(final String fallback) {
         final RuntimeException failure = connectionFailure.get();
         return failure == null ? new StatefulException(fallback) : failure;
-    }
-
-    /**
-     * Classifies a reader failure for stream delivery.
-     *
-     * @param cause reader failure to expose to a stream
-     * @return stream-visible failure
-     */
-    private static RuntimeException streamFailure(final RuntimeException cause) {
-        if (cause instanceof SocketException || cause instanceof ProtocolException || cause instanceof TimeoutException
-                || cause instanceof InternalException || cause instanceof StatefulException) {
-            return cause;
-        }
-        return new SocketException("HTTP/2 reader failed", cause);
     }
 
     /**
@@ -2572,19 +2609,6 @@ public class Http2Connection implements AutoCloseable {
         } catch (final IOException e) {
             throw new SocketException("HTTP/2 write failed", e);
         }
-    }
-
-    /**
-     * Converts a buffer size to int.
-     *
-     * @param size buffer size to range-check and convert
-     * @return int size
-     */
-    private static int toIntSize(final long size) {
-        if (size > Integer.MAX_VALUE) {
-            throw new ProtocolException("HTTP/2 buffer exceeds integer range");
-        }
-        return (int) size;
     }
 
     /**
@@ -2608,30 +2632,6 @@ public class Http2Connection implements AutoCloseable {
             }
         }
         return buffer;
-    }
-
-    /**
-     * Reads a 24-bit unsigned integer.
-     *
-     * @param buffer buffer positioned at the three-byte integer
-     * @return decoded unsigned 24-bit value
-     */
-    private static int readMedium(final Buffer buffer) {
-        return ((buffer.readByte() & Builder.UNSIGNED_BYTE_MASK) << Normal._16)
-                | ((buffer.readByte() & Builder.UNSIGNED_BYTE_MASK) << Normal._8)
-                | (buffer.readByte() & Builder.UNSIGNED_BYTE_MASK);
-    }
-
-    /**
-     * Validates required value.
-     *
-     * @param value reference to validate
-     * @param name  diagnostic parameter name
-     * @param <T>   type
-     * @return the validated reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

@@ -89,16 +89,6 @@ public class SocketSession implements Session {
     private final Connection connection;
 
     /**
-     * Active stream conduit, replaced atomically after a successful StartTLS handshake.
-     */
-    private volatile Conduit streamConduit;
-
-    /**
-     * TLS channel created by the one permitted upgrade attempt, or {@code null} before that attempt.
-     */
-    private volatile TlsChannel upgradeChannel;
-
-    /**
      * One-shot TLS upgrade state.
      */
     private final AtomicReference<TlsUpgradeState> tlsUpgradeState;
@@ -259,6 +249,21 @@ public class SocketSession implements Session {
     private final AtomicBoolean terminating;
 
     /**
+     * Lifecycle scope.
+     */
+    private final SessionLifecycle scope;
+
+    /**
+     * Active stream conduit, replaced atomically after a successful StartTLS handshake.
+     */
+    private volatile Conduit streamConduit;
+
+    /**
+     * TLS channel created by the one permitted upgrade attempt, or {@code null} before that attempt.
+     */
+    private volatile TlsChannel upgradeChannel;
+
+    /**
      * Last activity time.
      */
     private volatile long lastActivityNanos;
@@ -267,73 +272,6 @@ public class SocketSession implements Session {
      * Active completion-driven stream data plane.
      */
     private volatile DataPlane dataPlane;
-
-    /**
-     * Lifecycle scope.
-     */
-    private final SessionLifecycle scope;
-
-    /**
-     * Creates a current connection-backed socket session for framework integrations.
-     *
-     * @param address             peer address represented by the session
-     * @param connection          connected stream transport backing the session
-     * @param codec               codec used to encode and decode socket frames
-     * @param handler             handler receiving decoded inbound messages
-     * @param attributes          initial session attributes, or {@code null} for none
-     * @param owner               resource closed when the session terminates, or {@code null}
-     * @param listener            lifecycle listener
-     * @param materializeMaxBytes materialize byte threshold
-     * @param socketOptions       socket options
-     * @return socket session
-     */
-    public static SocketSession create(
-            final Address address,
-            final Connection connection,
-            final SocketCodec codec,
-            final Handler handler,
-            final Map<String, Object> attributes,
-            final AutoCloseable owner,
-            final Listener<? super SocketSession> listener,
-            final long materializeMaxBytes,
-            final SocketOptions socketOptions) {
-        return new SocketSession(address, connection, codec, handler, attributes, owner, listener, materializeMaxBytes,
-                socketOptions);
-    }
-
-    /**
-     * Creates a server session whose stream receive path has one framework-owned reader.
-     *
-     * @param address             peer address represented by the session
-     * @param connection          connected stream transport backing the session
-     * @param codec               codec used to encode and decode socket frames
-     * @param handler             handler receiving decoded inbound messages
-     * @param attributes          initial session attributes, or {@code null} for none
-     * @param listener            lifecycle listener
-     * @param materializeMaxBytes materialize byte threshold
-     * @param socketOptions       socket options
-     * @param dispatcher          shared dispatcher
-     * @param clock               shared session clock
-     * @param timeout             timeout policy governing session operations
-     * @param cancellation        shared cancellation scope
-     * @return opened server socket session
-     */
-    static SocketSession createServer(
-            final Address address,
-            final Connection connection,
-            final SocketCodec codec,
-            final Handler handler,
-            final Map<String, Object> attributes,
-            final Listener<? super SocketSession> listener,
-            final long materializeMaxBytes,
-            final SocketOptions socketOptions,
-            final Dispatcher dispatcher,
-            final Clock clock,
-            final Timeout timeout,
-            final Cancellation cancellation) {
-        return new SocketSession(address, connection, null, null, codec, handler, attributes, null, listener,
-                materializeMaxBytes, socketOptions, dispatcher, clock, timeout, cancellation, false, true);
-    }
 
     /**
      * Creates an opened session.
@@ -669,6 +607,123 @@ public class SocketSession implements Session {
         this.scope.open(this);
         scheduleIdle();
         startKcpPump();
+    }
+
+    /**
+     * Creates a current connection-backed socket session for framework integrations.
+     *
+     * @param address             peer address represented by the session
+     * @param connection          connected stream transport backing the session
+     * @param codec               codec used to encode and decode socket frames
+     * @param handler             handler receiving decoded inbound messages
+     * @param attributes          initial session attributes, or {@code null} for none
+     * @param owner               resource closed when the session terminates, or {@code null}
+     * @param listener            lifecycle listener
+     * @param materializeMaxBytes materialize byte threshold
+     * @param socketOptions       socket options
+     * @return socket session
+     */
+    public static SocketSession create(
+            final Address address,
+            final Connection connection,
+            final SocketCodec codec,
+            final Handler handler,
+            final Map<String, Object> attributes,
+            final AutoCloseable owner,
+            final Listener<? super SocketSession> listener,
+            final long materializeMaxBytes,
+            final SocketOptions socketOptions) {
+        return new SocketSession(address, connection, codec, handler, attributes, owner, listener, materializeMaxBytes,
+                socketOptions);
+    }
+
+    /**
+     * Creates a server session whose stream receive path has one framework-owned reader.
+     *
+     * @param address             peer address represented by the session
+     * @param connection          connected stream transport backing the session
+     * @param codec               codec used to encode and decode socket frames
+     * @param handler             handler receiving decoded inbound messages
+     * @param attributes          initial session attributes, or {@code null} for none
+     * @param listener            lifecycle listener
+     * @param materializeMaxBytes materialize byte threshold
+     * @param socketOptions       socket options
+     * @param dispatcher          shared dispatcher
+     * @param clock               shared session clock
+     * @param timeout             timeout policy governing session operations
+     * @param cancellation        shared cancellation scope
+     * @return opened server socket session
+     */
+    static SocketSession createServer(
+            final Address address,
+            final Connection connection,
+            final SocketCodec codec,
+            final Handler handler,
+            final Map<String, Object> attributes,
+            final Listener<? super SocketSession> listener,
+            final long materializeMaxBytes,
+            final SocketOptions socketOptions,
+            final Dispatcher dispatcher,
+            final Clock clock,
+            final Timeout timeout,
+            final Cancellation cancellation) {
+        return new SocketSession(address, connection, null, null, codec, handler, attributes, null, listener,
+                materializeMaxBytes, socketOptions, dispatcher, clock, timeout, cancellation, false, true);
+    }
+
+    /**
+     * Cancels and clears one owned dispatch handle.
+     *
+     * @param reference handle reference
+     */
+    private static void cancelHandle(final AtomicReference<DispatchHandle> reference) {
+        final DispatchHandle handle = reference.getAndSet(null);
+        if (handle != null) {
+            handle.cancel();
+        }
+    }
+
+    /**
+     * Converts a duration to nanoseconds while treating an overflowing positive duration as effectively unbounded.
+     *
+     * @param duration duration to convert
+     * @return duration nanoseconds
+     */
+    private static long durationNanos(final Duration duration) {
+        try {
+            return duration.toNanos();
+        } catch (final ArithmeticException ignored) {
+            return Long.MAX_VALUE;
+        }
+    }
+
+    /**
+     * Appends a cleanup failure without discarding the first failure.
+     *
+     * @param current first recorded failure, or {@code null}
+     * @param next    additional cleanup failure to append
+     * @return aggregate failure
+     */
+    private static RuntimeException append(final RuntimeException current, final RuntimeException next) {
+        if (current == null) {
+            return next;
+        }
+        if (current != next) {
+            current.addSuppressed(next);
+        }
+        return current;
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  field name
+     * @param <T>   value type
+     * @return the validated reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
     /**
@@ -1706,18 +1761,6 @@ public class SocketSession implements Session {
     }
 
     /**
-     * Cancels and clears one owned dispatch handle.
-     *
-     * @param reference handle reference
-     */
-    private static void cancelHandle(final AtomicReference<DispatchHandle> reference) {
-        final DispatchHandle handle = reference.getAndSet(null);
-        if (handle != null) {
-            handle.cancel();
-        }
-    }
-
-    /**
      * Closes owned resources.
      *
      * @param reusable true when a connection lease may be returned to its pool
@@ -1886,46 +1929,57 @@ public class SocketSession implements Session {
     }
 
     /**
-     * Converts a duration to nanoseconds while treating an overflowing positive duration as effectively unbounded.
-     *
-     * @param duration duration to convert
-     * @return duration nanoseconds
+     * One-shot state of the optional in-session TLS transition.
      */
-    private static long durationNanos(final Duration duration) {
-        try {
-            return duration.toNanos();
-        } catch (final ArithmeticException ignored) {
-            return Long.MAX_VALUE;
-        }
+    private enum TlsUpgradeState {
+
+        /**
+         * Plaintext stream is eligible for its one permitted upgrade attempt.
+         */
+        PLAIN,
+
+        /**
+         * TLS handshake exclusively owns the stream conduit.
+         */
+        UPGRADING,
+
+        /**
+         * TLS protects every subsequent stream operation.
+         */
+        SECURE,
+
+        /**
+         * Datagram transport does not support an in-session TLS transition.
+         */
+        UNAVAILABLE,
+
+        /**
+         * The sole upgrade attempt failed and the session is terminal.
+         */
+        FAILED
+
     }
 
     /**
-     * Appends a cleanup failure without discarding the first failure.
-     *
-     * @param current first recorded failure, or {@code null}
-     * @param next    additional cleanup failure to append
-     * @return aggregate failure
+     * Session terminal path selected by the owner of the termination guard.
      */
-    private static RuntimeException append(final RuntimeException current, final RuntimeException next) {
-        if (current == null) {
-            return next;
-        }
-        if (current != next) {
-            current.addSuppressed(next);
-        }
-        return current;
-    }
+    private enum Termination {
 
-    /**
-     * Validates required references.
-     *
-     * @param value reference to validate
-     * @param name  field name
-     * @param <T>   value type
-     * @return the validated reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+        /**
+         * Normal close with reusable connection ownership.
+         */
+        CLOSE,
+
+        /**
+         * Explicit cancellation with non-reusable ownership.
+         */
+        CANCEL,
+
+        /**
+         * Failure with non-reusable ownership.
+         */
+        FAIL
+
     }
 
     /**
@@ -2168,60 +2222,6 @@ public class SocketSession implements Session {
                 // The transport failure remains authoritative.
             }
         }
-
-    }
-
-    /**
-     * One-shot state of the optional in-session TLS transition.
-     */
-    private enum TlsUpgradeState {
-
-        /**
-         * Plaintext stream is eligible for its one permitted upgrade attempt.
-         */
-        PLAIN,
-
-        /**
-         * TLS handshake exclusively owns the stream conduit.
-         */
-        UPGRADING,
-
-        /**
-         * TLS protects every subsequent stream operation.
-         */
-        SECURE,
-
-        /**
-         * Datagram transport does not support an in-session TLS transition.
-         */
-        UNAVAILABLE,
-
-        /**
-         * The sole upgrade attempt failed and the session is terminal.
-         */
-        FAILED
-
-    }
-
-    /**
-     * Session terminal path selected by the owner of the termination guard.
-     */
-    private enum Termination {
-
-        /**
-         * Normal close with reusable connection ownership.
-         */
-        CLOSE,
-
-        /**
-         * Explicit cancellation with non-reusable ownership.
-         */
-        CANCEL,
-
-        /**
-         * Failure with non-reusable ownership.
-         */
-        FAIL
 
     }
 

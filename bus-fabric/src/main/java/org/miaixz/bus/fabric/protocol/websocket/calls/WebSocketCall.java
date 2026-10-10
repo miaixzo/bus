@@ -118,6 +118,18 @@ public class WebSocketCall extends MonoCall<WebSocketSession> {
     }
 
     /**
+     * Validates and returns a required reference.
+     *
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
      * Claims the call's single submission path and opens the WebSocket session synchronously.
      *
      * @return session returned by the configured operation, which may be {@code null}
@@ -169,18 +181,6 @@ public class WebSocketCall extends MonoCall<WebSocketSession> {
     @Override
     protected String dispatchKey() {
         return key;
-    }
-
-    /**
-     * Validates and returns a required reference.
-     *
-     * @param value reference to validate
-     * @param name  logical reference name used in the validation message
-     * @param <T>   reference type
-     * @return the validated non-null reference
-     */
-    private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
     }
 
 }

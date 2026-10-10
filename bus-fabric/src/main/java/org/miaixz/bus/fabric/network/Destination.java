@@ -89,76 +89,6 @@ public class Destination {
     }
 
     /**
-     * Returns the protocol.
-     *
-     * @return application protocol used for pooling
-     */
-    public Protocol protocol() {
-        return protocol;
-    }
-
-    /**
-     * Returns the address.
-     *
-     * @return remote network address
-     */
-    public Address address() {
-        return address;
-    }
-
-    /**
-     * Returns the options.
-     *
-     * @return normalized immutable connection-reuse option subset
-     */
-    public Options options() {
-        return options;
-    }
-
-    /**
-     * Returns whether this destination describes a secure connection.
-     *
-     * @return {@code true} when the address is secure or either retained TLS or secure option is explicitly true
-     */
-    public boolean secure() {
-        return address.secure() || Boolean.TRUE.equals(options.get(Builder.OPTION_TLS))
-                || Boolean.TRUE.equals(options.get(Builder.OPTION_SECURE));
-    }
-
-    /**
-     * Returns whether this destination can share a single physical connection across concurrent logical streams.
-     *
-     * @return explicit multiplex option when present; otherwise {@code true} for HTTP/2 protocol identities
-     */
-    public boolean multiplex() {
-        final Boolean explicit = options.get(Builder.OPTION_MULTIPLEX);
-        if (explicit != null) {
-            return explicit;
-        }
-        if (protocol == Protocol.HTTP_2 || protocol == Protocol.H2_PRIOR_KNOWLEDGE) {
-            return true;
-        }
-        final String selected = options.get(Builder.OPTION_PROTOCOL);
-        return selected != null && (Protocol.HTTP_2.name.equalsIgnoreCase(selected)
-                || "http/2".equalsIgnoreCase(selected) || Protocol.H2_PRIOR_KNOWLEDGE.name.equalsIgnoreCase(selected));
-    }
-
-    /**
-     * Returns maximum concurrent logical streams for a multiplex destination.
-     *
-     * @return configured positive stream limit, or 100 when no limit is retained
-     * @throws ValidateException if the retained stream limit is not positive
-     */
-    public int maxMultiplexStreams() {
-        final Integer value = options.get(Builder.OPTION_MAX_MULTIPLEX_STREAMS);
-        if (value == null) {
-            return Normal._100;
-        }
-        Assert.isTrue(value > Normal._0, () -> new ValidateException("Max multiplex streams must be positive"));
-        return value;
-    }
-
-    /**
      * Builds the stable option subset used as part of a connection reuse key.
      *
      * @param source complete source option snapshot
@@ -237,6 +167,98 @@ public class Destination {
     }
 
     /**
+     * Returns stable wrapped SSL context identity without materializing an option map.
+     *
+     * @param source normalized options containing an optional complete TLS policy
+     * @return wrapped SSL-context identity reference, or {@code null} when no policy is retained
+     */
+    private static Object contextIdentity(final Options source) {
+        final TlsPolicy policy = source.get(TlsPolicy.OPTION);
+        return policy == null ? null : policy.context().identity();
+    }
+
+    /**
+     * Returns stable TLS settings retained by a destination.
+     *
+     * @param source normalized options containing an optional complete TLS policy
+     * @return immutable TLS settings, or {@code null} when no policy is retained
+     */
+    private static Object settings(final Options source) {
+        final TlsPolicy policy = source.get(TlsPolicy.OPTION);
+        return policy == null ? null : policy.settings();
+    }
+
+    /**
+     * Returns the protocol.
+     *
+     * @return application protocol used for pooling
+     */
+    public Protocol protocol() {
+        return protocol;
+    }
+
+    /**
+     * Returns the address.
+     *
+     * @return remote network address
+     */
+    public Address address() {
+        return address;
+    }
+
+    /**
+     * Returns the options.
+     *
+     * @return normalized immutable connection-reuse option subset
+     */
+    public Options options() {
+        return options;
+    }
+
+    /**
+     * Returns whether this destination describes a secure connection.
+     *
+     * @return {@code true} when the address is secure or either retained TLS or secure option is explicitly true
+     */
+    public boolean secure() {
+        return address.secure() || Boolean.TRUE.equals(options.get(Builder.OPTION_TLS))
+                || Boolean.TRUE.equals(options.get(Builder.OPTION_SECURE));
+    }
+
+    /**
+     * Returns whether this destination can share a single physical connection across concurrent logical streams.
+     *
+     * @return explicit multiplex option when present; otherwise {@code true} for HTTP/2 protocol identities
+     */
+    public boolean multiplex() {
+        final Boolean explicit = options.get(Builder.OPTION_MULTIPLEX);
+        if (explicit != null) {
+            return explicit;
+        }
+        if (protocol == Protocol.HTTP_2 || protocol == Protocol.H2_PRIOR_KNOWLEDGE) {
+            return true;
+        }
+        final String selected = options.get(Builder.OPTION_PROTOCOL);
+        return selected != null && (Protocol.HTTP_2.name.equalsIgnoreCase(selected)
+                || "http/2".equalsIgnoreCase(selected) || Protocol.H2_PRIOR_KNOWLEDGE.name.equalsIgnoreCase(selected));
+    }
+
+    /**
+     * Returns maximum concurrent logical streams for a multiplex destination.
+     *
+     * @return configured positive stream limit, or 100 when no limit is retained
+     * @throws ValidateException if the retained stream limit is not positive
+     */
+    public int maxMultiplexStreams() {
+        final Integer value = options.get(Builder.OPTION_MAX_MULTIPLEX_STREAMS);
+        if (value == null) {
+            return Normal._100;
+        }
+        Assert.isTrue(value > Normal._0, () -> new ValidateException("Max multiplex streams must be positive"));
+        return value;
+    }
+
+    /**
      * Compares destinations by value, including option snapshots.
      *
      * @param other object compared with this normalized destination
@@ -301,28 +323,6 @@ public class Destination {
     private boolean sameTlsPolicy(final Destination other) {
         return contextIdentity(options) == contextIdentity(other.options)
                 && Objects.equals(settings(options), settings(other.options));
-    }
-
-    /**
-     * Returns stable wrapped SSL context identity without materializing an option map.
-     *
-     * @param source normalized options containing an optional complete TLS policy
-     * @return wrapped SSL-context identity reference, or {@code null} when no policy is retained
-     */
-    private static Object contextIdentity(final Options source) {
-        final TlsPolicy policy = source.get(TlsPolicy.OPTION);
-        return policy == null ? null : policy.context().identity();
-    }
-
-    /**
-     * Returns stable TLS settings retained by a destination.
-     *
-     * @param source normalized options containing an optional complete TLS policy
-     * @return immutable TLS settings, or {@code null} when no policy is retained
-     */
-    private static Object settings(final Options source) {
-        final TlsPolicy policy = source.get(TlsPolicy.OPTION);
-        return policy == null ? null : policy.settings();
     }
 
 }

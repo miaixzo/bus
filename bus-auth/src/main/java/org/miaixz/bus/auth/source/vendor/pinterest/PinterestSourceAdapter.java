@@ -810,7 +810,6 @@ public class PinterestSourceAdapter implements VendorAdapter {
      * @param lastName  optional family name
      * @param bio       optional public biography
      * @param image     optional validated image projection
-     *
      * @author Kimi Liu
      */
     private record ProfileWire(String id, String username, String firstName, String lastName, String bio,

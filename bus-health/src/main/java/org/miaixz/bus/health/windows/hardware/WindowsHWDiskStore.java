@@ -74,6 +74,7 @@ public class WindowsHWDiskStore extends AbstractHWDiskStore {
      * The GUID_BUFSIZE constant.
      */
     private static final int GUID_BUFSIZE = 100;
+
     // Windows allows up to 32 characters for NTFS volume labels; +1 for null terminator
     /**
      * The LABEL_BUFSIZE constant.
@@ -151,11 +152,8 @@ public class WindowsHWDiskStore extends AbstractHWDiskStore {
             WmiResult<DiskDriveProperty> vals = Win32DiskDrive.queryDiskDrive(h);
             for (int i = 0; i < vals.getResultCount(); i++) {
                 WindowsHWDiskStore ds = new WindowsHWDiskStore(WmiKit.getString(vals, DiskDriveProperty.NAME, i),
-                        String.format(
-                                Locale.ROOT,
-                                "%s %s",
-                                WmiKit.getString(vals, DiskDriveProperty.MODEL, i),
-                                WmiKit.getString(vals, DiskDriveProperty.MANUFACTURER, i)).trim(),
+                        (WmiKit.getString(vals, DiskDriveProperty.MODEL, i) + Symbol.SPACE
+                                + WmiKit.getString(vals, DiskDriveProperty.MANUFACTURER, i)).trim(),
                         // Most vendors store serial # as a hex string; convert
                         Parsing.hexStringToString(WmiKit.getString(vals, DiskDriveProperty.SERIALNUMBER, i)),
                         WmiKit.getUint64(vals, DiskDriveProperty.SIZE, i),

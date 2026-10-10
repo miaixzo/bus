@@ -41,22 +41,27 @@ public class ImageProperties {
      * Whether the image integration is enabled.
      */
     private final boolean enabled;
+
     /**
      * Whether native OpenCV integration is enabled.
      */
     private final boolean opencv;
+
     /**
      * Remote DICOM server connection settings.
      */
     private final boolean server;
+
     /**
      * Local directory used for DICOM input and intermediate files.
      */
     private final String dcmDir;
+
     /**
      * Local directory used for rendered image output.
      */
     private final String imgDir;
+
     /**
      * DICOM peer node definitions keyed by logical name.
      */

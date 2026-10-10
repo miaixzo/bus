@@ -43,74 +43,6 @@ import org.miaixz.bus.fabric.network.dns.zone.CidrBlock;
 public class DnsPolicyRule {
 
     /**
-     * Rule match mode.
-     *
-     * @author Kimi Liu
-     */
-    public enum Mode {
-
-        /**
-         * Exact-name match.
-         */
-        EXACT,
-
-        /**
-         * Domain suffix match.
-         */
-        SUFFIX,
-
-        /**
-         * Wildcard DNS name match where {@code *} matches exactly one label.
-         */
-        WILDCARD,
-
-        /**
-         * Regular expression match against the normalized absolute query name.
-         */
-        REGEX
-
-    }
-
-    /**
-     * Policy action.
-     *
-     * @author Kimi Liu
-     */
-    public enum Action {
-
-        /**
-         * Allow-list action that stops later block rules.
-         */
-        ALLOW,
-
-        /**
-         * Block-list action that returns the configured response code.
-         */
-        BLOCK,
-
-        /**
-         * Fixed address action returning A or AAAA records by query type.
-         */
-        FIXED_ADDRESS,
-
-        /**
-         * Explicit NXDOMAIN action.
-         */
-        NXDOMAIN,
-
-        /**
-         * Explicit NOERROR/NODATA action.
-         */
-        NODATA,
-
-        /**
-         * CNAME cloaking detection action.
-         */
-        CNAME_CLOAKING
-
-    }
-
-    /**
      * Match mode.
      */
     private final Mode mode;
@@ -325,6 +257,161 @@ public class DnsPolicyRule {
     public static DnsPolicyRule fixedAddressWildcard(final String name, final InetAddress address, final long ttl) {
         return new DnsPolicyRule(Mode.WILDCARD, name, Action.FIXED_ADDRESS, DnsResponseCode.NOERROR,
                 List.of(addressRecord(name, address, ttl)), null, null, List.of(), null);
+    }
+
+    /**
+     * Compiles the pattern used by wildcard and regular-expression modes.
+     *
+     * @param mode selected match mode
+     * @param name normalized name or validated expression
+     * @return compiled pattern, or {@code null}
+     */
+    private static Pattern compiledPattern(final Mode mode, final String name) {
+        return switch (mode) {
+            case EXACT, SUFFIX -> null;
+            case WILDCARD -> wildcardPattern(name);
+            case REGEX -> regexPattern(name);
+        };
+    }
+
+    /**
+     * Creates an A or AAAA record from an address literal.
+     *
+     * @param name    owner name
+     * @param address IPv4 or IPv6 address
+     * @param ttl     unsigned 32-bit TTL
+     * @return address record
+     */
+    private static DnsRecord addressRecord(final String name, final InetAddress address, final long ttl) {
+        if (address == null) {
+            throw new ValidateException("DNS policy fixed address must not be null");
+        }
+        return address.getAddress().length == 4 ? DnsRecord.a(name, address, ttl) : DnsRecord.aaaa(name, address, ttl);
+    }
+
+    /**
+     * Validates and copies policy answer records.
+     *
+     * @param action       policy action
+     * @param responseCode response code returned on match
+     * @param answers      source answer records
+     * @return immutable answer records
+     */
+    private static List<DnsRecord> immutableAnswers(
+            final Action action,
+            final DnsResponseCode responseCode,
+            final List<DnsRecord> answers) {
+        if (answers == null) {
+            throw new ValidateException("DNS policy answers must not be null");
+        }
+        if (!answers.isEmpty() && responseCode != DnsResponseCode.NOERROR) {
+            throw new ValidateException("DNS policy answers require NOERROR response code");
+        }
+        for (final DnsRecord answer : answers) {
+            if (answer == null) {
+                throw new ValidateException("DNS policy answers must not contain null");
+            }
+            if (action == Action.FIXED_ADDRESS && answer.typeCode() != DnsRecordType.A.code()
+                    && answer.typeCode() != DnsRecordType.AAAA.code()) {
+                throw new ValidateException("DNS fixed IP policy answers must be A or AAAA");
+            }
+        }
+        return List.copyOf(answers);
+    }
+
+    /**
+     * Validates and copies client CIDR constraints.
+     *
+     * @param clientCidrs source CIDR constraints
+     * @return immutable CIDR constraints
+     */
+    private static List<CidrBlock> immutableCidrs(final List<CidrBlock> clientCidrs) {
+        if (clientCidrs == null) {
+            throw new ValidateException("DNS policy client CIDRs must not be null");
+        }
+        for (final CidrBlock cidr : clientCidrs) {
+            if (cidr == null) {
+                throw new ValidateException("DNS policy client CIDRs must not contain null");
+            }
+        }
+        return List.copyOf(clientCidrs);
+    }
+
+    /**
+     * Compiles a wildcard DNS name where {@code *} matches exactly one label.
+     *
+     * @param name normalized wildcard DNS name
+     * @return compiled wildcard pattern
+     */
+    private static Pattern wildcardPattern(final String name) {
+        final String body = name.substring(0, name.length() - 1);
+        final StringBuilder expression = new StringBuilder(Symbol.CARET);
+        final String[] labels = DnsName.labels(body);
+        for (final String label : labels) {
+            if (label.contains(Symbol.STAR) && !Symbol.STAR.equals(label)) {
+                throw new ValidateException("DNS wildcard policy only allows * as a full label");
+            }
+            expression.append(Symbol.STAR.equals(label) ? "[^.]+" : Pattern.quote(label)).append("\\.");
+        }
+        expression.append(Symbol.C_DOLLAR);
+        return Pattern.compile(expression.toString());
+    }
+
+    /**
+     * Validates a regular-expression policy expression.
+     *
+     * @param expression candidate expression
+     * @return validated expression
+     */
+    private static String validateExpression(final String expression) {
+        if (expression == null || expression.isBlank()) {
+            throw new ValidateException("DNS policy regex must be non-blank");
+        }
+        return expression.trim();
+    }
+
+    /**
+     * Compiles a regular-expression policy matcher.
+     *
+     * @param expression regular expression
+     * @return compiled pattern
+     */
+    private static Pattern regexPattern(final String expression) {
+        try {
+            return Pattern.compile(expression);
+        } catch (final PatternSyntaxException e) {
+            throw new ValidateException("DNS policy regex is invalid", e);
+        }
+    }
+
+    /**
+     * Infers the action used by legacy constructors.
+     *
+     * @param responseCode response code
+     * @param answers      answer records
+     * @return inferred action
+     */
+    private static Action inferredAction(final DnsResponseCode responseCode, final List<DnsRecord> answers) {
+        if (responseCode == DnsResponseCode.NOERROR && answers != null && !answers.isEmpty()) {
+            return Action.FIXED_ADDRESS;
+        }
+        if (responseCode == DnsResponseCode.NOERROR) {
+            return Action.NODATA;
+        }
+        if (responseCode == DnsResponseCode.NXDOMAIN) {
+            return Action.BLOCK;
+        }
+        return Action.BLOCK;
+    }
+
+    /**
+     * Normalizes optional text.
+     *
+     * @param value source value
+     * @return trimmed value, or {@code null}
+     */
+    private static String normalizeOptional(final String value) {
+        return value == null || value.isBlank() ? null : value.trim();
     }
 
     /**
@@ -565,158 +652,71 @@ public class DnsPolicyRule {
     }
 
     /**
-     * Compiles the pattern used by wildcard and regular-expression modes.
+     * Rule match mode.
      *
-     * @param mode selected match mode
-     * @param name normalized name or validated expression
-     * @return compiled pattern, or {@code null}
+     * @author Kimi Liu
      */
-    private static Pattern compiledPattern(final Mode mode, final String name) {
-        return switch (mode) {
-            case EXACT, SUFFIX -> null;
-            case WILDCARD -> wildcardPattern(name);
-            case REGEX -> regexPattern(name);
-        };
+    public enum Mode {
+
+        /**
+         * Exact-name match.
+         */
+        EXACT,
+
+        /**
+         * Domain suffix match.
+         */
+        SUFFIX,
+
+        /**
+         * Wildcard DNS name match where {@code *} matches exactly one label.
+         */
+        WILDCARD,
+
+        /**
+         * Regular expression match against the normalized absolute query name.
+         */
+        REGEX
+
     }
 
     /**
-     * Creates an A or AAAA record from an address literal.
+     * Policy action.
      *
-     * @param name    owner name
-     * @param address IPv4 or IPv6 address
-     * @param ttl     unsigned 32-bit TTL
-     * @return address record
+     * @author Kimi Liu
      */
-    private static DnsRecord addressRecord(final String name, final InetAddress address, final long ttl) {
-        if (address == null) {
-            throw new ValidateException("DNS policy fixed address must not be null");
-        }
-        return address.getAddress().length == 4 ? DnsRecord.a(name, address, ttl) : DnsRecord.aaaa(name, address, ttl);
-    }
+    public enum Action {
 
-    /**
-     * Validates and copies policy answer records.
-     *
-     * @param action       policy action
-     * @param responseCode response code returned on match
-     * @param answers      source answer records
-     * @return immutable answer records
-     */
-    private static List<DnsRecord> immutableAnswers(
-            final Action action,
-            final DnsResponseCode responseCode,
-            final List<DnsRecord> answers) {
-        if (answers == null) {
-            throw new ValidateException("DNS policy answers must not be null");
-        }
-        if (!answers.isEmpty() && responseCode != DnsResponseCode.NOERROR) {
-            throw new ValidateException("DNS policy answers require NOERROR response code");
-        }
-        for (final DnsRecord answer : answers) {
-            if (answer == null) {
-                throw new ValidateException("DNS policy answers must not contain null");
-            }
-            if (action == Action.FIXED_ADDRESS && answer.typeCode() != DnsRecordType.A.code()
-                    && answer.typeCode() != DnsRecordType.AAAA.code()) {
-                throw new ValidateException("DNS fixed IP policy answers must be A or AAAA");
-            }
-        }
-        return List.copyOf(answers);
-    }
+        /**
+         * Allow-list action that stops later block rules.
+         */
+        ALLOW,
 
-    /**
-     * Validates and copies client CIDR constraints.
-     *
-     * @param clientCidrs source CIDR constraints
-     * @return immutable CIDR constraints
-     */
-    private static List<CidrBlock> immutableCidrs(final List<CidrBlock> clientCidrs) {
-        if (clientCidrs == null) {
-            throw new ValidateException("DNS policy client CIDRs must not be null");
-        }
-        for (final CidrBlock cidr : clientCidrs) {
-            if (cidr == null) {
-                throw new ValidateException("DNS policy client CIDRs must not contain null");
-            }
-        }
-        return List.copyOf(clientCidrs);
-    }
+        /**
+         * Block-list action that returns the configured response code.
+         */
+        BLOCK,
 
-    /**
-     * Compiles a wildcard DNS name where {@code *} matches exactly one label.
-     *
-     * @param name normalized wildcard DNS name
-     * @return compiled wildcard pattern
-     */
-    private static Pattern wildcardPattern(final String name) {
-        final String body = name.substring(0, name.length() - 1);
-        final StringBuilder expression = new StringBuilder(Symbol.CARET);
-        final String[] labels = DnsName.labels(body);
-        for (final String label : labels) {
-            if (label.contains(Symbol.STAR) && !Symbol.STAR.equals(label)) {
-                throw new ValidateException("DNS wildcard policy only allows * as a full label");
-            }
-            expression.append(Symbol.STAR.equals(label) ? "[^.]+" : Pattern.quote(label)).append("\\.");
-        }
-        expression.append(Symbol.C_DOLLAR);
-        return Pattern.compile(expression.toString());
-    }
+        /**
+         * Fixed address action returning A or AAAA records by query type.
+         */
+        FIXED_ADDRESS,
 
-    /**
-     * Validates a regular-expression policy expression.
-     *
-     * @param expression candidate expression
-     * @return validated expression
-     */
-    private static String validateExpression(final String expression) {
-        if (expression == null || expression.isBlank()) {
-            throw new ValidateException("DNS policy regex must be non-blank");
-        }
-        return expression.trim();
-    }
+        /**
+         * Explicit NXDOMAIN action.
+         */
+        NXDOMAIN,
 
-    /**
-     * Compiles a regular-expression policy matcher.
-     *
-     * @param expression regular expression
-     * @return compiled pattern
-     */
-    private static Pattern regexPattern(final String expression) {
-        try {
-            return Pattern.compile(expression);
-        } catch (final PatternSyntaxException e) {
-            throw new ValidateException("DNS policy regex is invalid", e);
-        }
-    }
+        /**
+         * Explicit NOERROR/NODATA action.
+         */
+        NODATA,
 
-    /**
-     * Infers the action used by legacy constructors.
-     *
-     * @param responseCode response code
-     * @param answers      answer records
-     * @return inferred action
-     */
-    private static Action inferredAction(final DnsResponseCode responseCode, final List<DnsRecord> answers) {
-        if (responseCode == DnsResponseCode.NOERROR && answers != null && !answers.isEmpty()) {
-            return Action.FIXED_ADDRESS;
-        }
-        if (responseCode == DnsResponseCode.NOERROR) {
-            return Action.NODATA;
-        }
-        if (responseCode == DnsResponseCode.NXDOMAIN) {
-            return Action.BLOCK;
-        }
-        return Action.BLOCK;
-    }
+        /**
+         * CNAME cloaking detection action.
+         */
+        CNAME_CLOAKING
 
-    /**
-     * Normalizes optional text.
-     *
-     * @param value source value
-     * @return trimmed value, or {@code null}
-     */
-    private static String normalizeOptional(final String value) {
-        return value == null || value.isBlank() ? null : value.trim();
     }
 
 }

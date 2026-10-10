@@ -40,6 +40,21 @@ public abstract class AbstractTypeAnnotationScanner<T extends AbstractTypeAnnota
         implements AnnotationScanner {
 
     /**
+     * Excluded types; these types and their tree structures are not scanned.
+     */
+    private final Set<Class<?>> excludeTypes;
+
+    /**
+     * Type converters applied to each class before processing.
+     */
+    private final List<UnaryOperatorX<Class<?>>> converters;
+
+    /**
+     * Reference to the current typed instance (for fluent API support).
+     */
+    private final T typedThis;
+
+    /**
      * Whether to include superclass scanning.
      */
     private boolean includeSuperClass;
@@ -55,24 +70,9 @@ public abstract class AbstractTypeAnnotationScanner<T extends AbstractTypeAnnota
     private PredicateX<Class<?>> filter;
 
     /**
-     * Excluded types; these types and their tree structures are not scanned.
-     */
-    private final Set<Class<?>> excludeTypes;
-
-    /**
-     * Type converters applied to each class before processing.
-     */
-    private final List<UnaryOperatorX<Class<?>>> converters;
-
-    /**
      * Whether any converters have been registered.
      */
     private boolean hasConverters;
-
-    /**
-     * Reference to the current typed instance (for fluent API support).
-     */
-    private final T typedThis;
 
     /**
      * Constructs a new {@code AbstractTypeAnnotationScanner}.
@@ -104,12 +104,34 @@ public abstract class AbstractTypeAnnotationScanner<T extends AbstractTypeAnnota
     }
 
     /**
+     * Sets whether to include superclass scanning.
+     *
+     * @param includeSuperClass {@code true} to scan superclasses
+     * @return This scanner instance
+     */
+    protected T setIncludeSuperClass(final boolean includeSuperClass) {
+        this.includeSuperClass = includeSuperClass;
+        return typedThis;
+    }
+
+    /**
      * Returns whether interface scanning is enabled.
      *
      * @return {@code true} if interface scanning is enabled
      */
     public boolean isIncludeInterfaces() {
         return includeInterfaces;
+    }
+
+    /**
+     * Sets whether to include interface scanning.
+     *
+     * @param includeInterfaces {@code true} to scan interfaces
+     * @return This scanner instance
+     */
+    protected T setIncludeInterfaces(final boolean includeInterfaces) {
+        this.includeInterfaces = includeInterfaces;
+        return typedThis;
     }
 
     /**
@@ -148,28 +170,6 @@ public abstract class AbstractTypeAnnotationScanner<T extends AbstractTypeAnnota
         if (!this.hasConverters) {
             this.hasConverters = CollKit.isNotEmpty(this.converters);
         }
-        return typedThis;
-    }
-
-    /**
-     * Sets whether to include superclass scanning.
-     *
-     * @param includeSuperClass {@code true} to scan superclasses
-     * @return This scanner instance
-     */
-    protected T setIncludeSuperClass(final boolean includeSuperClass) {
-        this.includeSuperClass = includeSuperClass;
-        return typedThis;
-    }
-
-    /**
-     * Sets whether to include interface scanning.
-     *
-     * @param includeInterfaces {@code true} to scan interfaces
-     * @return This scanner instance
-     */
-    protected T setIncludeInterfaces(final boolean includeInterfaces) {
-        this.includeInterfaces = includeInterfaces;
         return typedThis;
     }
 

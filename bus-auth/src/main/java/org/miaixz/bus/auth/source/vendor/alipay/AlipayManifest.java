@@ -49,16 +49,19 @@ public class AlipayManifest implements VendorManifest<AlipayOptions> {
      * Stable routing identifier used to select the Alipay Vendor manifest.
      */
     public static final Vendor.Id ID = new Vendor.Id("alipay");
+
     /**
      * Stable variant identifier for Alipay public-application authorization.
      */
     public static final Vendor.Variant DEFAULT = new Vendor.Variant(Normal.DEFAULT);
+
     /**
      * Browser-only application capability manifest; the proprietary gateway is not published as OAuth 2.0.
      */
     private static final Capability.Manifest CAPABILITIES = new Capability.Manifest(List.of(
             SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
             SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT))));
+
     /**
      * Exact gateway deviations that prevent the Alipay flow from being advertised as standard OAuth 2.0.
      */
@@ -111,6 +114,7 @@ public class AlipayManifest implements VendorManifest<AlipayOptions> {
                     Optional.of(MediaType.APPLICATION_JSON_TYPE),
                     Http.Method.POST,
                     true));
+
     /**
      * Complete immutable manifest for the frozen Alipay public-application flow.
      */

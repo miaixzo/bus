@@ -24,8 +24,8 @@ import org.apache.poi.hssf.usermodel.HSSFShape;
 /**
  * Enumeration of line styles for {@code SimpleShape} in Excel.
  *
- * @see HSSFShape
  * @author Kimi Liu
+ * @see HSSFShape
  */
 public enum LineStyle {
 

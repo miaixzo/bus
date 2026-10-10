@@ -36,7 +36,7 @@ request/converter/wrapper primitives     feature-specific integration
 
 | 封装                    | 责任                                                         |
 |-------------------------|--------------------------------------------------------------|
-| `org.miaixz.bus.spring` | `SpringBuilder` 和其他根级 Spring 集成 API。                |
+| `org.miaixz.bus.spring` | `SpringBuilder` 和其他根级 Spring 集成 API。                 |
 | `context`               | 静态上下文访问、不可变快照、词法作用域和传播策略。           |
 | `context.task`          | 用于受控跨线程上下文传播的 Spring 任务装饰器。               |
 | `context.spi`           | 有序的认证上下文提供者扩展点。                               |
@@ -59,8 +59,8 @@ request/converter/wrapper primitives     feature-specific integration
 | `boot.listener`         | Spring Boot 配置监听器。                                     |
 | `boot.startup`          | 启动阶段、指标、报告器和 Bean 后处理。                       |
 
-根包由 `SpringBuilder` 和共享 Spring 集成契约组成。运行时上下文类型统一放在专用的 `context` 包下，使静态访问、
-传播、SPI 和 Servlet 绑定具有清晰的架构边界。
+根包由 `SpringBuilder` 和共享 Spring 集成契约组成。运行时上下文类型统一放在专用的 `context` 包下，使静态访问、 传播、SPI 和
+Servlet 绑定具有清晰的架构边界。
 
 `boot.condition` 提供 `@ConditionalOnEnabled` 和 `EnabledCondition`。该条件给出了显式启用 注解优先于相应的属性，同时将具体的注解和属性前缀留给
 依赖 Starter 模块。其 `name` 成员默认为 `enabled`，`matchIfMissing` 默认为 `false`， 条件可以保护配置类型或单个 Bean 方法。
@@ -80,15 +80,15 @@ Spring Bean。
 运行时状态保存在类加载器本地、线程隔离的栈中。`ContextBuilder` 是静态只读门面；它不查找 Spring Bean、
 不持有应用上下文、不解析传输对象、不执行身份认证，也不进行 I/O。
 
-| 类型                       | 职责                                                                 |
-|----------------------------|----------------------------------------------------------------------|
-| `ContextState`             | 不可变的分离快照，包含请求 ID、防御性授权副本和已解析凭证。           |
-| `ContextBuilder`           | 静态只读访问请求 ID、授权、租户、凭证、Token 和 API Key。             |
-| `ContextScope`             | 线程所有的 `AutoCloseable` 防护，严格按 LIFO 顺序且仅恢复一次。        |
-| `ContextTransfer`          | 显式执行捕获、模式过滤、安装和任务包装。                               |
-| `ContextTransfer.Mode`     | 决定凭证、身份、请求关联信息或空状态能否跨越执行边界。                 |
-| `ContextTaskDecorator`     | Spring `TaskDecorator`，仅在单次任务执行期间安装捕获的快照。           |
-| `ContextProvider`          | 对已标准化初始上下文进行认证的有序 SPI。                               |
+| 类型                   | 职责                                                            |
+|------------------------|-----------------------------------------------------------------|
+| `ContextState`         | 不可变的分离快照，包含请求 ID、防御性授权副本和已解析凭证。     |
+| `ContextBuilder`       | 静态只读访问请求 ID、授权、租户、凭证、Token 和 API Key。       |
+| `ContextScope`         | 线程所有的 `AutoCloseable` 防护，严格按 LIFO 顺序且仅恢复一次。 |
+| `ContextTransfer`      | 显式执行捕获、模式过滤、安装和任务包装。                        |
+| `ContextTransfer.Mode` | 决定凭证、身份、请求关联信息或空状态能否跨越执行边界。          |
+| `ContextTaskDecorator` | Spring `TaskDecorator`，仅在单次任务执行期间安装捕获的快照。    |
+| `ContextProvider`      | 对已标准化初始上下文进行认证的有序 SPI。                        |
 
 `ContextState` 从不保留 `HttpServletRequest`、缓存主体、多部分数据或线程本地容器。代币和 API 密钥凭证在 Servlet
 边界解析一次，并仅保留为不可变凭证值 编辑诊断。这使得快照适合有界异步传播。
@@ -112,8 +112,8 @@ Runnable decorated = ContextTransfer.wrap(() -> service.process(command));
 executor.execute(decorated);
 ```
 
-`ContextTaskDecorator` 在装饰时捕获、在执行前安装并在执行后恢复。`bus-starter` 由 `GeniusStarter` 注册该装饰器，
-并在 Spring Boot 任务类存在时由 `TaskConfiguration` 将其组合到 Boot 管理的执行器中。可通过
+`ContextTaskDecorator` 在装饰时捕获、在执行前安装并在执行后恢复。`bus-starter` 由 `GeniusStarter` 注册该装饰器， 并在
+Spring Boot 任务类存在时由 `TaskConfiguration` 将其组合到 Boot 管理的执行器中。可通过
 `bus.context.task.enabled=false` 禁用自动执行器集成。
 
 ### 上下文访问

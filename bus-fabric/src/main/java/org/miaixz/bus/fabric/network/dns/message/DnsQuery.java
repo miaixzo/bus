@@ -336,6 +336,19 @@ public class DnsQuery {
     }
 
     /**
+     * Validates a DNS opcode.
+     *
+     * @param value opcode value
+     * @return validated opcode
+     */
+    private static int validateOpcode(final int value) {
+        if (value < 0 || value > 0x0f) {
+            throw new ValidateException("DNS opcode must be a 4-bit value");
+        }
+        return value;
+    }
+
+    /**
      * Returns the transaction identifier.
      *
      * @return unsigned 16-bit query identifier
@@ -450,19 +463,6 @@ public class DnsQuery {
      */
     public DnsUpdateCommand updateCommand() {
         return updateCommand;
-    }
-
-    /**
-     * Validates a DNS opcode.
-     *
-     * @param value opcode value
-     * @return validated opcode
-     */
-    private static int validateOpcode(final int value) {
-        if (value < 0 || value > 0x0f) {
-            throw new ValidateException("DNS opcode must be a 4-bit value");
-        }
-        return value;
     }
 
 }

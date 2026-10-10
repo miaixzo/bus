@@ -35,9 +35,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class ExternalStatusCheckStatus implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852253997632L;
 
@@ -45,14 +42,17 @@ public class ExternalStatusCheckStatus implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The external url value.
      */
     private String externalUrl;
+
     /**
      * The status value.
      */
@@ -63,67 +63,6 @@ public class ExternalStatusCheckStatus implements Serializable {
      */
     public ExternalStatusCheckStatus() {
         // No initialization required.
-    }
-
-    /**
-     * The status enum.
-     *
-     * @author Kimi Liu
-     */
-    public enum Status {
-
-        /**
-         * The passed status.
-         */
-        PASSED,
-        /**
-         * The failed status.
-         */
-        FAILED,
-        /**
-         * The pending status.
-         */
-        PENDING;
-
-        /**
-         * The enum codec value.
-         */
-        private static JacksonJsonEnumCodec<Status> enumCodec = new JacksonJsonEnumCodec<>(Status.class);
-
-        /**
-         * Returns the value.
-         *
-         * @param value the value value
-         * @return the result
-         */
-
-        @JsonCreator
-        public static Status forValue(String value) {
-            return enumCodec.forValue(value);
-        }
-
-        /**
-         * Returns the value.
-         *
-         * @return the result
-         */
-
-        @JsonValue
-        public String toValue() {
-            return (enumCodec.toString(this));
-        }
-
-        /**
-         * Returns the string.
-         *
-         * @return the result
-         */
-
-        @Override
-        public String toString() {
-            return (enumCodec.toString(this));
-        }
-
     }
 
     /**
@@ -215,6 +154,67 @@ public class ExternalStatusCheckStatus implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    /**
+     * The status enum.
+     *
+     * @author Kimi Liu
+     */
+    public enum Status {
+
+        /**
+         * The passed status.
+         */
+        PASSED,
+        /**
+         * The failed status.
+         */
+        FAILED,
+        /**
+         * The pending status.
+         */
+        PENDING;
+
+        /**
+         * The enum codec value.
+         */
+        private static JacksonJsonEnumCodec<Status> enumCodec = new JacksonJsonEnumCodec<>(Status.class);
+
+        /**
+         * Returns the value.
+         *
+         * @param value the value value
+         * @return the result
+         */
+
+        @JsonCreator
+        public static Status forValue(String value) {
+            return enumCodec.forValue(value);
+        }
+
+        /**
+         * Returns the value.
+         *
+         * @return the result
+         */
+
+        @JsonValue
+        public String toValue() {
+            return (enumCodec.toString(this));
+        }
+
+        /**
+         * Returns the string.
+         *
+         * @return the result
+         */
+
+        @Override
+        public String toString() {
+            return (enumCodec.toString(this));
+        }
+
     }
 
 }

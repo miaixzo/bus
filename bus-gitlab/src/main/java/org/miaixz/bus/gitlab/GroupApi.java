@@ -35,14 +35,13 @@ import org.miaixz.bus.logger.Logger;
 /**
  * This class implements the client side API for the GitLab groups calls.
  *
+ * @author Kimi Liu
  * @see <a href="https://docs.gitlab.com/ce/api/groups.html">Groups API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/members.html">Group and project members API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/access_requests.html">Group and project access requests API</a>
  * @see <a href="https://docs.gitlab.com/ce/api/group_badges.html">Group badges API</a>
  * @see <a href="https://docs.gitlab.com/ee/api/audit_events.html#retrieve-all-group-audit-events">Group audit events
  *      API</a>
- *
- * @author Kimi Liu
  */
 public class GroupApi extends AbstractApi {
 
@@ -2611,10 +2610,9 @@ public class GroupApi extends AbstractApi {
      * @param accessLevel   Access level. Valid values are {@link AccessLevel#GUEST}, {@link AccessLevel#REPORTER},
      *                      {@link AccessLevel#DEVELOPER}, {@link AccessLevel#MAINTAINER}, and
      *                      {@link AccessLevel#OWNER}.
+     * @param description   the description value
      * @return the created GroupAccessToken instance
      * @throws RelevantException if any exception occurs
-     *
-     * @param description the description value
      */
     public GroupAccessToken createGroupAccessToken(
             Object groupIdOrPath,
@@ -2708,9 +2706,8 @@ public class GroupApi extends AbstractApi {
      *
      * @param groupIdOrPath   the group in the form of an Long(ID), String(path), or Group instance
      * @param groupHookParams webhook creation options
-     * @throws RelevantException if any exception occurs
-     *
      * @return the result
+     * @throws RelevantException if any exception occurs
      */
     public GroupHook addWebhook(Object groupIdOrPath, GroupHookParams groupHookParams) throws RelevantException {
         Response response = post(

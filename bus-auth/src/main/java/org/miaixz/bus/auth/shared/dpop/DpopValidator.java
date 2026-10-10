@@ -54,10 +54,12 @@ public class DpopValidator {
      * Cryptographic and request-binding verifier.
      */
     private final DpopVerifier verifier;
+
     /**
      * Atomic proof replay guard.
      */
     private final ReplayGuard replayGuard;
+
     /**
      * Constant-time confirmation thumbprint comparator.
      */

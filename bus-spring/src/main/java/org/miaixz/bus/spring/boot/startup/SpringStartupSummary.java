@@ -56,18 +56,22 @@ public record SpringStartupSummary(String appName, long applicationBootElapsedTi
          * JVM startup before Bus startup collection is activated.
          */
         public static final String JVM_STARTING = "JvmStartingStage";
+
         /**
          * Spring environment preparation.
          */
         public static final String ENVIRONMENT_PREPARE = "EnvironmentPrepareStage";
+
         /**
          * Application-context preparation.
          */
         public static final String APPLICATION_CONTEXT_PREPARE = "ApplicationContextPrepareStage";
+
         /**
          * Application-context loading.
          */
         public static final String APPLICATION_CONTEXT_LOAD = "ApplicationContextLoadStage";
+
         /**
          * Application-context refresh.
          */

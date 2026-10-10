@@ -36,9 +36,6 @@ import org.miaixz.bus.logger.Logger;
  */
 public class Duration implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852252100196L;
 
@@ -46,6 +43,7 @@ public class Duration implements Serializable {
      * The time units value.
      */
     private static final String[] TIME_UNITS = { "mo", "w", "d", "h", "m", "s" };
+
     /**
      * The time unit multipliers value.
      */
@@ -55,6 +53,7 @@ public class Duration implements Serializable {
             60 * 60, // 60 minutes = 1 hours
             60, // 60 seconds = 1 minute
             1 };
+
     /**
      * The duration pattern value.
      */
@@ -64,6 +63,7 @@ public class Duration implements Serializable {
      * The seconds value.
      */
     private int seconds;
+
     /**
      * The duration string value.
      */
@@ -87,36 +87,6 @@ public class Duration implements Serializable {
     public Duration(int seconds) {
         this.seconds = seconds;
         durationString = (seconds == 0 ? "0m" : toString(seconds, true));
-    }
-
-    /**
-     * Get the number of seconds this duration represents.
-     *
-     * @return the number of seconds this duration represents
-     */
-    public int getSeconds() {
-        return (seconds);
-    }
-
-    /**
-     * Set the number of seconds this duration represents.
-     *
-     * @param seconds the number of seconds this duration represents
-     */
-    public void setSeconds(int seconds) {
-        this.seconds = seconds;
-    }
-
-    /**
-     * Returns the string.
-     *
-     * @return the result
-     */
-
-    @JsonValue
-    @Override
-    public String toString() {
-        return (durationString);
     }
 
     /**
@@ -282,6 +252,36 @@ public class Duration implements Serializable {
         }
 
         return (-1);
+    }
+
+    /**
+     * Get the number of seconds this duration represents.
+     *
+     * @return the number of seconds this duration represents
+     */
+    public int getSeconds() {
+        return (seconds);
+    }
+
+    /**
+     * Set the number of seconds this duration represents.
+     *
+     * @param seconds the number of seconds this duration represents
+     */
+    public void setSeconds(int seconds) {
+        this.seconds = seconds;
+    }
+
+    /**
+     * Returns the string.
+     *
+     * @return the result
+     */
+
+    @JsonValue
+    @Override
+    public String toString() {
+        return (durationString);
     }
 
 }

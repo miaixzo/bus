@@ -64,16 +64,6 @@ public class NormalLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * Sets the logging level.
-     *
-     * @param level the logging level to set.
-     */
-    public void setLevel(final Level level) {
-        Assert.notNull(level);
-        _level = level;
-    }
-
-    /**
      * Gets the name of this logger.
      *
      * @return the name of this logger
@@ -253,6 +243,16 @@ public class NormalLoggingProvider extends AbstractProvider {
     @Override
     public Level getLevel() {
         return _level != null ? _level : Level.OFF;
+    }
+
+    /**
+     * Sets the logging level.
+     *
+     * @param level the logging level to set.
+     */
+    public void setLevel(final Level level) {
+        Assert.notNull(level);
+        _level = level;
     }
 
 }

@@ -76,6 +76,7 @@ public class HL7Rcv {
      * The network connection configuration.
      */
     private final Connection conn = new Connection();
+
     /**
      * The message listener that processes incoming HL7 messages.
      */
@@ -86,26 +87,32 @@ public class HL7Rcv {
             throw new HL7Exception(new ERRSegment(msg.msh()).setUserMessage(e.getMessage()), e);
         }
     };
+
     /**
      * The directory to store received messages.
      */
     private String storageDir;
+
     /**
      * The default character set to use if not specified in the message.
      */
     private String charset;
+
     /**
      * The compiled XSLT templates for response generation.
      */
     private Templates tpls;
+
     /**
      * Parameters to be passed to the XSLT transformation.
      */
     private String[] xsltParams;
+
     /**
      * A flag to use UUIDs for filenames when storing messages.
      */
     private boolean useUUIDForFilename;
+
     /**
      * A delay in milliseconds before sending a response.
      */

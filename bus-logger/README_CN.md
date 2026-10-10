@@ -1,9 +1,7 @@
 # bus-logger
 
-`bus-logger` 是Bus模块使用的框架中立的日志外观。它通过日志记录后端提供一个 API
-在运行时可用，保持后端本机占位符格式，解析调用者身份，缓存提供程序，以及
-提供小型预输出处理管道。它不拥有应用程序日志记录配置或敏感数据
-政策。
+`bus-logger` 是Bus模块使用的框架中立的日志外观。它通过日志记录后端提供一个 API 在运行时可用，保持后端本机占位符格式，解析调用者身份，缓存提供程序，以及
+提供小型预输出处理管道。它不拥有应用程序日志记录配置或敏感数据 政策。
 
 ## 模块职责
 
@@ -57,36 +55,35 @@ application code
  Registry -> Holder -> Factory -> SPI discovery
 ```
 
-| 类型 | 责任 |
-|------------|--------------------------------------------------------------------------------------------------------|
-| `Logger` | 静态外观、调用者解析、级别检查、对齐诊断输出和通用 `log` 调度。 |
-| `Level` | 常见 `TRACE`、`DEBUG`、`INFO`、`WARN` 和 `ERROR` 级别型号。                                      |
-| `Provider` | 后端中立日志记录操作和级别检查。                                                   |
-| `Factory` | 创建并缓存名称和类的提供程序。                                                    |
-| `Holder` | 选择或显式安装默认工厂。                                                    |
-| `Registry` | 解析名称或类的缓存提供程序。                                                      |
-| `Loggable` | 不可变事件快照及其参数数组的防御副本。                                  |
+| 类型       | 责任                                                            |
+|------------|-----------------------------------------------------------------|
+| `Logger`   | 静态外观、调用者解析、级别检查、对齐诊断输出和通用 `log` 调度。 |
+| `Level`    | 常见 `TRACE`、`DEBUG`、`INFO`、`WARN` 和 `ERROR` 级别型号。     |
+| `Provider` | 后端中立日志记录操作和级别检查。                                |
+| `Factory`  | 创建并缓存名称和类的提供程序。                                  |
+| `Holder`   | 选择或显式安装默认工厂。                                        |
+| `Registry` | 解析名称或类的缓存提供程序。                                    |
+| `Loggable` | 不可变事件快照及其参数数组的防御副本。                          |
 | `Operator` | 转换完整事件或命名诊断值，而不写入输出。                        |
-| `Executor` | 按注册顺序应用运算符，并将日志记录与运算符故障隔离。                   |
+| `Executor` | 按注册顺序应用运算符，并将日志记录与运算符故障隔离。            |
 
 ## 支持的后端
 
 该模块包括用于以下用途的适配器：
 
-| 后端 | 工厂 | 提供商 |
-|------------------------|-------------------------|--------------------------|
-| SLF4J | `Slf4jLoggingFactory` | `Slf4jLoggingProvider` |
-| Log4j 2 | `Log4jLoggingFactory` | `Log4jLoggingProvider` |
+| 后端                    | 工厂                    | 提供商                   |
+|-------------------------|-------------------------|--------------------------|
+| SLF4J                   | `Slf4jLoggingFactory`   | `Slf4jLoggingProvider`   |
+| Log4j 2                 | `Log4jLoggingFactory`   | `Log4jLoggingProvider`   |
 | Apache Commons 日志记录 | `CommonsLoggingFactory` | `CommonsLoggingProvider` |
-| JBoss 日志记录 | `JbossLoggingFactory` | `JbossLoggingProvider` |
-| `java.util.logging` | `JdkLoggingFactory` | `JdkLoggingProvider` |
-| tinylog | `TinyLoggingFactory` | `TinyLoggingProvider` |
-| 彩色控制台 | `ColorLoggingFactory` | `ColorLoggingProvider` |
-| 普通控制台 | `NormalLoggingFactory` | `NormalLoggingProvider` |
+| JBoss 日志记录          | `JbossLoggingFactory`   | `JbossLoggingProvider`   |
+| `java.util.logging`     | `JdkLoggingFactory`     | `JdkLoggingProvider`     |
+| tinylog                 | `TinyLoggingFactory`    | `TinyLoggingProvider`    |
+| 彩色控制台              | `ColorLoggingFactory`   | `ColorLoggingProvider`   |
+| 普通控制台              | `NormalLoggingFactory`  | `NormalLoggingProvider`  |
 
-工厂是通过`META-INF/services/org.miaixz.bus.logger.Factory`发现的。发现选择第一个
-可用的 SPI 实现。如果没有可用的受支持提供程序，则类路径 `logging.properties` 选择 JUL；
-否则使用普通控制台提供程序。
+工厂是通过`META-INF/services/org.miaixz.bus.logger.Factory`发现的。发现选择第一个 可用的 SPI 实现。如果没有可用的受支持提供程序，则类路径
+`logging.properties` 选择 JUL； 否则使用普通控制台提供程序。
 
 使用`Logger.getFactory()`检查所选工厂类。仅当以下情况时才使用 `Holder.setDefaultFactory(...)`
 应用程序必须在第一个提供者解析之前强制后端。
@@ -105,8 +102,7 @@ Logger.warn("Retrying request: attempt={}", attempt);
 Logger.error(failure, "Order processing failed: orderId={}", orderId);
 ```
 
-`{}` 参数在到达提供者之前保持独立。不要通过字符串连接来构建消息
-当占位符格式足够时。
+`{}` 参数在到达提供者之前保持独立。不要通过字符串连接来构建消息 当占位符格式足够时。
 
 ### 可重复使用的提供者
 
@@ -136,8 +132,7 @@ try {
 }
 ```
 
-通过可抛出重载传递异常。不要将异常插入消息并丢失其堆栈
-痕迹。
+通过可抛出重载传递异常。不要将异常插入消息并丢失其堆栈 痕迹。
 
 ### 动态级别
 
@@ -153,13 +148,11 @@ Level previous = Logger.getLevel();
 Logger.setLevel(Level.INFO);
 ```
 
-编程级别的更改会影响支持运行时级别控制的提供程序。正常的后端配置仍然是
-首选应用程序级机制。
+编程级别的更改会影响支持运行时级别控制的提供程序。正常的后端配置仍然是 首选应用程序级机制。
 
 ### 对齐的诊断输出
 
-`Logger` 重载接受 `isEntry`、`tag` 和可选的 `width`，旨在用于结构化启动和
-生命周期诊断：
+`Logger` 重载接受 `isEntry`、`tag` 和可选的 `width`，旨在用于结构化启动和 生命周期诊断：
 
 ```java
 Logger.info(true, "Storage", "Initializing provider: type={}", providerType);
@@ -200,14 +193,12 @@ try {
 - 运算符异常产生 `[LOG PROCESSING FAILED]` 而不暴露被拒绝的参数；
 - 热路径读取不可变的操作员快照，无需注册锁定。
 
-`Executor.processValue(key, value)` 将相同的运算符应用于外观外部生成的命名值。很有用
-对于仍然需要应用程序注册保护策略的结构化诊断。
+`Executor.processValue(key, value)` 将相同的运算符应用于外观外部生成的命名值。很有用 对于仍然需要应用程序注册保护策略的结构化诊断。
 
 ## 敏感日志记录
 
 `bus-logger` 故意不包含敏感字段名称列表。当使用`bus-sensitive`和`bus-starter`时，
-`SensitiveConfiguration` 创建一个 `Sanitizer`，`SensitiveBinding` 将其注册到 `Executor` 的生命周期中
-Spring 应用程序上下文。
+`SensitiveConfiguration` 创建一个 `Sanitizer`，`SensitiveBinding` 将其注册到 `Executor` 的生命周期中 Spring 应用程序上下文。
 
 ```yaml
 bus:
@@ -221,8 +212,7 @@ bus:
 Logger.warn("Login rejected: username={}, password={}", username, password);
 ```
 
-占位符之前的名称为脱敏器提供了足够的上下文来保护 `password`。位置值
-没有有意义的字段名称就无法安全分类。
+占位符之前的名称为脱敏器提供了足够的上下文来保护 `password`。位置值 没有有意义的字段名称就无法安全分类。
 
 ## 自定义后端
 
@@ -255,17 +245,16 @@ public final class AcmeFactory implements Factory {
 META-INF/services/org.miaixz.bus.logger.Factory
 ```
 
-它的内容是完全合格的工厂类名称。适配器应保留占位符参数并实现
-所有级别检查均准确。
+它的内容是完全合格的工厂类名称。适配器应保留占位符参数并实现 所有级别检查均准确。
 
 ## 包结构
 
-| 包装 | 内容 |
-|-------------------------------------|--------------------------------------------------------------------|
-| `org.miaixz.bus.logger` | 公共外观、事件模型、注册表、执行器和 SPI 合约。 |
-| `org.miaixz.bus.logger.magic` | 共享抽象工厂和提供程序实现。              |
-| `org.miaixz.bus.logger.magic.level` | 可重复使用的特定级别合约。                                 |
-| `org.miaixz.bus.logger.nimble.*` | 后端适配器。                                                  |
+| 包装                                | 内容                                            |
+|-------------------------------------|-------------------------------------------------|
+| `org.miaixz.bus.logger`             | 公共外观、事件模型、注册表、执行器和 SPI 合约。 |
+| `org.miaixz.bus.logger.magic`       | 共享抽象工厂和提供程序实现。                    |
+| `org.miaixz.bus.logger.magic.level` | 可重复使用的特定级别合约。                      |
+| `org.miaixz.bus.logger.nimble.*`    | 后端适配器。                                    |
 
 所有这些包均由 JPMS 模块导出。后端模块是可选的静态要求。
 
@@ -281,10 +270,9 @@ META-INF/services/org.miaixz.bus.logger.Factory
 
 ## 原生镜像
 
-可访问性元数据涵盖服务加载工厂和精确的动态访问成员。条目按 A-Z 排序。
-禁止诸如 `allDeclaredConstructors`、`allDeclaredMethods` 和 `allDeclaredFields` 之类的广泛反射补助金。
+可访问性元数据涵盖服务加载工厂和精确的动态访问成员。条目按 A-Z 排序。 禁止诸如 `allDeclaredConstructors`、
+`allDeclaredMethods` 和 `allDeclaredFields` 之类的广泛反射补助金。
 
 ## 验证边界
 
-Bus包含且不运行任何测试。提供程序、管道、生命周期、元数据、AOT 和本机映像测试均维护在
-兄弟 Abarth 存储库。Bus构建必须明确跳过测试。
+Bus包含且不运行任何测试。提供程序、管道、生命周期、元数据、AOT 和本机映像测试均维护在 兄弟 Abarth 存储库。Bus构建必须明确跳过测试。

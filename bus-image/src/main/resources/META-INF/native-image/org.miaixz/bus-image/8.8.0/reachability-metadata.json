@@ -32718,9 +32718,30 @@
       "fields": [
         {
           "name": "boundary"
+        },
+        {
+          "name": "buffers"
+        },
+        {
+          "name": "rbuf"
         }
       ],
       "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "byte[]",
+            "byte[]"
+          ]
+        },
         {
           "name": "<init>",
           "parameterTypes": [
@@ -32779,7 +32800,10 @@
         },
         {
           "name": "remaining",
-          "parameterTypes": []
+          "parameterTypes": [
+            "byte",
+            "int"
+          ]
         },
         {
           "name": "reset",
@@ -32793,6 +32817,10 @@
         },
         {
           "name": "skipAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "switchBufferOnEndOfBuffer",
           "parameterTypes": []
         },
         {
@@ -32850,6 +32878,20 @@
           "parameterTypes": [
             "java.io.InputStream",
             "org.miaixz.bus.image.galaxy.media.MultipartParser$Handler"
+          ]
+        },
+        {
+          "name": "skipPreamble",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "is2DashBoundary",
+          "parameterTypes": [
+            "byte[]",
+            "byte[]"
           ]
         }
       ]

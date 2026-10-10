@@ -21,18 +21,9 @@ package org.miaixz.bus.extra.json.provider;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONException;
-import com.alibaba.fastjson2.JSONObject;
-import com.alibaba.fastjson2.JSONReader;
-import com.alibaba.fastjson2.JSONWriter;
+import com.alibaba.fastjson2.*;
 import com.alibaba.fastjson2.filter.Filter;
 import com.alibaba.fastjson2.filter.PropertyFilter;
 import com.alibaba.fastjson2.filter.ValueFilter;
@@ -65,6 +56,31 @@ public class FastJsonProvider extends AbstractJsonProvider {
      * Writer feature that retains explicit JSON null members in provider-neutral object values.
      */
     private static final JSONWriter.Feature[] VALUE_WRITER_FEATURES = { JSONWriter.Feature.WriteMapNullValue };
+
+    /**
+     * Field-based writer features used when null-valued properties must remain in legacy object output.
+     */
+    private static final JSONWriter.Feature[] WRITER_FEATURES = { JSONWriter.Feature.FieldBased,
+            JSONWriter.Feature.WriteMapNullValue, JSONWriter.Feature.WriteNullListAsEmpty,
+            JSONWriter.Feature.BrowserCompatible, JSONWriter.Feature.WriteNulls };
+
+    /**
+     * Field-based writer features used when null-valued properties must be omitted from legacy object output.
+     */
+    private static final JSONWriter.Feature[] NON_NULL_WRITER_FEATURES = { JSONWriter.Feature.FieldBased,
+            JSONWriter.Feature.WriteNullListAsEmpty, JSONWriter.Feature.BrowserCompatible };
+
+    /**
+     * Identity value filter retained as the base of the legacy per-call filter chain.
+     */
+    private static final Filter[] FILTERS = { (ValueFilter) (object, name, value) -> value };
+
+    /**
+     * Creates a stateless provider backed by Fastjson2's static reader and writer facilities.
+     */
+    public FastJsonProvider() {
+        // No initialization required.
+    }
 
     /**
      * Parses one complete JSON document into Fastjson2 containers and converts them to provider-neutral values.
@@ -164,31 +180,6 @@ public class FastJsonProvider extends AbstractJsonProvider {
             return null;
         }
         throw new InternalException("Unsupported provider-neutral JSON value: " + value.getClass().getName());
-    }
-
-    /**
-     * Field-based writer features used when null-valued properties must remain in legacy object output.
-     */
-    private static final JSONWriter.Feature[] WRITER_FEATURES = { JSONWriter.Feature.FieldBased,
-            JSONWriter.Feature.WriteMapNullValue, JSONWriter.Feature.WriteNullListAsEmpty,
-            JSONWriter.Feature.BrowserCompatible, JSONWriter.Feature.WriteNulls };
-
-    /**
-     * Field-based writer features used when null-valued properties must be omitted from legacy object output.
-     */
-    private static final JSONWriter.Feature[] NON_NULL_WRITER_FEATURES = { JSONWriter.Feature.FieldBased,
-            JSONWriter.Feature.WriteNullListAsEmpty, JSONWriter.Feature.BrowserCompatible };
-
-    /**
-     * Identity value filter retained as the base of the legacy per-call filter chain.
-     */
-    private static final Filter[] FILTERS = { (ValueFilter) (object, name, value) -> value };
-
-    /**
-     * Creates a stateless provider backed by Fastjson2's static reader and writer facilities.
-     */
-    public FastJsonProvider() {
-        // No initialization required.
     }
 
     /**

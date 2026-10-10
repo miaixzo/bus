@@ -33,6 +33,7 @@ module bus.cortex {
 
     requires bus.cache;
     requires bus.core;
+    requires bus.crypto;
     requires bus.extra;
     requires bus.fabric;
     requires bus.logger;
@@ -53,7 +54,6 @@ module bus.cortex {
     exports org.miaixz.bus.cortex.magic.event;
     exports org.miaixz.bus.cortex.magic.identity;
     exports org.miaixz.bus.cortex.magic.runtime;
-    exports org.miaixz.bus.cortex.magic.state;
     exports org.miaixz.bus.cortex.magic.watch;
     exports org.miaixz.bus.cortex.registry;
     exports org.miaixz.bus.cortex.registry.api;
@@ -61,14 +61,20 @@ module bus.cortex {
     exports org.miaixz.bus.cortex.registry.prompt;
     exports org.miaixz.bus.cortex.setting;
     exports org.miaixz.bus.cortex.setting.app;
-    exports org.miaixz.bus.cortex.setting.binding;
+    exports org.miaixz.bus.cortex.setting.approval;
     exports org.miaixz.bus.cortex.setting.curator;
     exports org.miaixz.bus.cortex.setting.delivery;
     exports org.miaixz.bus.cortex.setting.item;
-    exports org.miaixz.bus.cortex.setting.item.revision;
+    exports org.miaixz.bus.cortex.setting.revision;
+    exports org.miaixz.bus.cortex.setting.instance;
     exports org.miaixz.bus.cortex.setting.profile;
+    exports org.miaixz.bus.cortex.setting.reference;
+    exports org.miaixz.bus.cortex.setting.rollout;
     exports org.miaixz.bus.cortex.setting.secret;
     exports org.miaixz.bus.cortex.setting.space;
+    exports org.miaixz.bus.cortex.setting.task;
+    exports org.miaixz.bus.cortex.setting.event;
+    exports org.miaixz.bus.cortex.setting.watch;
     exports org.miaixz.bus.cortex.version;
 
 }

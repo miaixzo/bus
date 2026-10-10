@@ -20,6 +20,7 @@
 package org.miaixz.bus.vortex.strategy;
 
 import java.time.Duration;
+import java.util.concurrent.TimeoutException;
 
 import org.reactivestreams.Publisher;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -32,11 +33,7 @@ import org.springframework.web.server.ServerWebExchange;
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.vortex.Formats;
-import org.miaixz.bus.vortex.Holder;
-import org.miaixz.bus.vortex.Octets;
-import org.miaixz.bus.vortex.Provider;
+import org.miaixz.bus.vortex.*;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -170,7 +167,7 @@ public class ResponseStrategy extends AbstractStrategy {
                             return Holder.transformBufferBudget().acquire(Holder.get().getMaxTransformResponseSize())
                                     .timeout(Duration.ofSeconds(Holder.get().getBufferAcquireTimeoutSeconds()))
                                     .onErrorMap(
-                                            java.util.concurrent.TimeoutException.class,
+                                            TimeoutException.class,
                                             error -> new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
                                                     "Transform output capacity wait timed out", error))
                                     .flatMap(outputLease -> provider.serialize(bodyString).flatMap(xmlBody -> {

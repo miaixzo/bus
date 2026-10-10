@@ -47,14 +47,17 @@ public class FabricProperties {
      * Whether the fabric integration is enabled.
      */
     private final boolean enabled;
+
     /**
      * TCP socket server endpoint settings.
      */
     private final Socket socket;
+
     /**
      * WebSocket server endpoint settings.
      */
     private final WebSocket websocket;
+
     /**
      * DNS server endpoint and runtime settings.
      */
@@ -74,6 +77,27 @@ public class FabricProperties {
         this.socket = socket == null ? new Socket() : socket;
         this.websocket = websocket == null ? new WebSocket() : websocket;
         this.dns = dns == null ? Dns.defaults() : dns;
+    }
+
+    /**
+     * Validates the endpoint.
+     *
+     * @param enabled whether the feature is enabled
+     * @param host    network host
+     * @param port    network port
+     * @param path    configured path
+     * @param name    logical name
+     */
+    private static void validateEndpoint(boolean enabled, String host, int port, String path, String name) {
+        if (port < 1 || port > 65535) {
+            throw new IllegalArgumentException("bus.fabric." + name + ".port must be in 1..65535");
+        }
+        if (enabled && (host == null || host.isBlank())) {
+            throw new IllegalArgumentException("bus.fabric." + name + ".host is required when enabled");
+        }
+        if (enabled && path != null && path.isBlank()) {
+            throw new IllegalArgumentException("bus.fabric." + name + ".path is required when enabled");
+        }
     }
 
     /**
@@ -127,24 +151,6 @@ public class FabricProperties {
         }
 
         /**
-         * Exposes the network interface on which the TCP socket server listens.
-         *
-         * @return listening host
-         */
-        public String getHost() {
-            return this.host;
-        }
-
-        /**
-         * Exposes the TCP socket server listening port.
-         *
-         * @return listening port
-         */
-        public int getPort() {
-            return this.port;
-        }
-
-        /**
          * Enables or disables the TCP socket service.
          *
          * @param enabled whether the service is enabled
@@ -155,6 +161,15 @@ public class FabricProperties {
         }
 
         /**
+         * Exposes the network interface on which the TCP socket server listens.
+         *
+         * @return listening host
+         */
+        public String getHost() {
+            return this.host;
+        }
+
+        /**
          * Changes the TCP socket listening host.
          *
          * @param host listening host
@@ -162,6 +177,15 @@ public class FabricProperties {
         public void setHost(String host) {
             validateEndpoint(this.enabled, host, this.port, null, "socket");
             this.host = host;
+        }
+
+        /**
+         * Exposes the TCP socket server listening port.
+         *
+         * @return listening port
+         */
+        public int getPort() {
+            return this.port;
         }
 
         /**
@@ -234,33 +258,6 @@ public class FabricProperties {
         }
 
         /**
-         * Exposes the network interface on which the WebSocket server listens.
-         *
-         * @return listening host
-         */
-        public String getHost() {
-            return this.host;
-        }
-
-        /**
-         * Exposes the WebSocket server listening port.
-         *
-         * @return listening port
-         */
-        public int getPort() {
-            return this.port;
-        }
-
-        /**
-         * Exposes the HTTP upgrade path accepted by the WebSocket server.
-         *
-         * @return upgrade path
-         */
-        public String getPath() {
-            return this.path;
-        }
-
-        /**
          * Enables or disables the WebSocket service.
          *
          * @param enabled whether the service is enabled
@@ -268,6 +265,15 @@ public class FabricProperties {
         public void setEnabled(boolean enabled) {
             validateEndpoint(enabled, this.host, this.port, this.path, "websocket");
             this.enabled = enabled;
+        }
+
+        /**
+         * Exposes the network interface on which the WebSocket server listens.
+         *
+         * @return listening host
+         */
+        public String getHost() {
+            return this.host;
         }
 
         /**
@@ -281,6 +287,15 @@ public class FabricProperties {
         }
 
         /**
+         * Exposes the WebSocket server listening port.
+         *
+         * @return listening port
+         */
+        public int getPort() {
+            return this.port;
+        }
+
+        /**
          * Changes the WebSocket listening port.
          *
          * @param port listening port
@@ -288,6 +303,15 @@ public class FabricProperties {
         public void setPort(int port) {
             validateEndpoint(this.enabled, this.host, port, this.path, "websocket");
             this.port = port;
+        }
+
+        /**
+         * Exposes the HTTP upgrade path accepted by the WebSocket server.
+         *
+         * @return upgrade path
+         */
+        public String getPath() {
+            return this.path;
         }
 
         /**
@@ -312,14 +336,17 @@ public class FabricProperties {
          * Default network interface used by the DNS listener.
          */
         private static final String DEFAULT_HOST = "0.0.0.0";
+
         /**
          * Default DNS listener port.
          */
         private static final int DEFAULT_PORT = 53;
+
         /**
          * Default DNS-over-HTTPS request path.
          */
         private static final String DEFAULT_DOH_PATH = "/dns-query";
+
         /**
          * Default recursion ACL.
          */
@@ -329,114 +356,142 @@ public class FabricProperties {
          * Whether the DNS server is enabled.
          */
         private final boolean enabled;
+
         /**
          * DNS listener transport.
          */
         private final DnsTransport transport;
+
         /**
          * DNS listener host.
          */
         private final String host;
+
         /**
          * DNS listener port.
          */
         private final int port;
+
         /**
          * DNS server IO worker thread count.
          */
         private final int ioThreads;
+
         /**
          * Whether recursive and forwarding access is enabled.
          */
         private final boolean recursion;
+
         /**
          * Client CIDR blocks allowed to use recursion and forwarding.
          */
         private final List<String> recursionAllowedCidrs;
+
         /**
          * Whether DNS response caching is enabled.
          */
         private final boolean cache;
+
         /**
          * Maximum number of cached DNS responses.
          */
         private final int cacheMaxEntries;
+
         /**
          * DNS response cache lifetime.
          */
         private final Duration cacheTtl;
+
         /**
          * Duration for which expired DNS responses may be served.
          */
         private final Duration cacheServeStaleTtl;
+
         /**
          * Interval before expiry at which a DNS response is prefetched.
          */
         private final Duration cachePrefetchBeforeExpiry;
+
         /**
          * Maximum DNS response payload accepted over UDP.
          */
         private final int maxUdpPayloadBytes;
+
         /**
          * Maximum DNS queries accepted from one client per second.
          */
         private final int rateLimitPerSecond;
+
         /**
          * Whether zone transfer requests are allowed.
          */
         private final boolean zoneTransfer;
+
         /**
          * Client CIDR blocks allowed to request zone transfers.
          */
         private final List<String> zoneTransferAllowedCidrs;
+
         /**
          * Whether RFC 2136 dynamic update is enabled.
          */
         private final boolean dynamicUpdate;
+
         /**
          * Whether DNS-over-TLS settings are enabled.
          */
         private final boolean dot;
+
         /**
          * Whether DNS-over-HTTPS settings are enabled.
          */
         private final boolean doh;
+
         /**
          * DNS-over-HTTPS request path.
          */
         private final String dohPath;
+
         /**
          * Whether DNS-over-QUIC settings are enabled.
          */
         private final boolean doq;
+
         /**
          * Whether DNS policy evaluation is enabled.
          */
         private final boolean policy;
+
         /**
          * Whether DNS Server metrics are enabled.
          */
         private final boolean metrics;
+
         /**
          * Whether DNS query logging is enabled.
          */
         private final boolean queryLog;
+
         /**
          * TCP connection idle timeout.
          */
         private final Duration tcpIdleTimeout;
+
         /**
          * Maximum in-flight TCP DNS requests per connection.
          */
         private final int tcpMaxInFlight;
+
         /**
          * Maximum TCP DNS frame bytes.
          */
         private final int tcpMaxFrameBytes;
+
         /**
          * Maximum concurrent QUIC streams.
          */
         private final int quicMaxStreams;
+
         /**
          * QUIC connection idle timeout.
          */
@@ -623,27 +678,6 @@ public class FabricProperties {
             }
         }
 
-    }
-
-    /**
-     * Validates the endpoint.
-     *
-     * @param enabled whether the feature is enabled
-     * @param host    network host
-     * @param port    network port
-     * @param path    configured path
-     * @param name    logical name
-     */
-    private static void validateEndpoint(boolean enabled, String host, int port, String path, String name) {
-        if (port < 1 || port > 65535) {
-            throw new IllegalArgumentException("bus.fabric." + name + ".port must be in 1..65535");
-        }
-        if (enabled && (host == null || host.isBlank())) {
-            throw new IllegalArgumentException("bus.fabric." + name + ".host is required when enabled");
-        }
-        if (enabled && path != null && path.isBlank()) {
-            throw new IllegalArgumentException("bus.fabric." + name + ".path is required when enabled");
-        }
     }
 
 }

@@ -33,6 +33,9 @@ import lombok.experimental.SuperBuilder;
  */
 public class Bundle {
 
+    /**
+     * Creates a bundle model container.
+     */
     public Bundle() {
         // No initialization required.
     }

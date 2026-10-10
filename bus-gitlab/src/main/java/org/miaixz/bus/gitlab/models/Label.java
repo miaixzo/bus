@@ -33,9 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Label implements Serializable {
 
-    /**
-     * The serial version uid value.
-     */
     @Serial
     private static final long serialVersionUID = 2852260153906L;
 
@@ -43,46 +40,57 @@ public class Label implements Serializable {
      * The id value.
      */
     private Long id;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The color value.
      */
     private String color;
+
     /**
      * The description value.
      */
     private String description;
+
     /**
      * The description html value.
      */
     private String descriptionHtml;
+
     /**
      * The text color value.
      */
     private String textColor;
+
     /**
      * The open issues count value.
      */
     private Integer openIssuesCount;
+
     /**
      * The closed issues count value.
      */
     private Integer closedIssuesCount;
+
     /**
      * The open merge requests count value.
      */
     private Integer openMergeRequestsCount;
+
     /**
      * The subscribed value.
      */
     private Boolean subscribed;
+
     /**
      * The priority value.
      */
     private Integer priority;
+
     /**
      * The is project label value.
      */

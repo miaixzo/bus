@@ -45,6 +45,11 @@ public class NativeRatePair implements RatePair {
     private final NativeMeter successMeter = new NativeMeter();
 
     /**
+     * Shared rate-pair behavior over the native meters.
+     */
+    private final RatePair delegate = RatePair.of(totalMeter, errorMeter, successMeter);
+
+    /**
      * Constructs a new NativeRatePair instance.
      */
     public NativeRatePair() {
@@ -56,8 +61,7 @@ public class NativeRatePair implements RatePair {
      */
     @Override
     public void recordSuccess() {
-        totalMeter.increment();
-        successMeter.increment();
+        delegate.recordSuccess();
     }
 
     /**
@@ -65,8 +69,7 @@ public class NativeRatePair implements RatePair {
      */
     @Override
     public void recordError() {
-        totalMeter.increment();
-        errorMeter.increment();
+        delegate.recordError();
     }
 
     /**
@@ -74,8 +77,7 @@ public class NativeRatePair implements RatePair {
      */
     @Override
     public double errorRate() {
-        double total = totalMeter.oneMinuteRate();
-        return total <= 0 ? 0.0 : errorMeter.oneMinuteRate() / total;
+        return delegate.errorRate();
     }
 
     /**
@@ -83,8 +85,7 @@ public class NativeRatePair implements RatePair {
      */
     @Override
     public double successRate() {
-        double total = totalMeter.oneMinuteRate();
-        return total <= 0 ? 1.0 : successMeter.oneMinuteRate() / total;
+        return delegate.successRate();
     }
 
     /**
@@ -92,7 +93,7 @@ public class NativeRatePair implements RatePair {
      */
     @Override
     public Meter total() {
-        return totalMeter;
+        return delegate.total();
     }
 
     /**
@@ -100,7 +101,7 @@ public class NativeRatePair implements RatePair {
      */
     @Override
     public Meter errors() {
-        return errorMeter;
+        return delegate.errors();
     }
 
     /**
@@ -108,7 +109,7 @@ public class NativeRatePair implements RatePair {
      */
     @Override
     public Meter successes() {
-        return successMeter;
+        return delegate.successes();
     }
 
     /**

@@ -44,16 +44,16 @@ public class KClassImpl {
      */
     private static final Method METHOD_GET_CONSTRUCTORS;
 
+    static {
+        KCLASS_IMPL_CLASS = ClassKit.loadClass("kotlin.reflect.jvm.internal.KClassImpl");
+        METHOD_GET_CONSTRUCTORS = MethodKit.getMethod(KCLASS_IMPL_CLASS, "getConstructors");
+    }
+
     /**
      * Constructs a new KClassImpl instance.
      */
     public KClassImpl() {
         // No initialization required.
-    }
-
-    static {
-        KCLASS_IMPL_CLASS = ClassKit.loadClass("kotlin.reflect.jvm.internal.KClassImpl");
-        METHOD_GET_CONSTRUCTORS = MethodKit.getMethod(KCLASS_IMPL_CLASS, "getConstructors");
     }
 
     /**

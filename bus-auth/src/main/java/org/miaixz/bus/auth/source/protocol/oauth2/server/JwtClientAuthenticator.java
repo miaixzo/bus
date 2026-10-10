@@ -70,30 +70,37 @@ public class JwtClientAuthenticator {
      * Frozen OAuth authorization-server options.
      */
     private final OAuth2ServerOptions options;
+
     /**
      * Source-scoped project loaders and framework services.
      */
     private final SourceServices services;
+
     /**
      * Exact Source identifier used to isolate replay records.
      */
     private final String sourceId;
+
     /**
      * Exact token-endpoint audience required in assertions.
      */
     private final String tokenAudience;
+
     /**
      * OAuth security rule used for bounded parsing and algorithm checks.
      */
     private final Policies.Rule rule;
+
     /**
      * Shared OAuth temporal validation guard.
      */
     private final TimeGuard timeGuard;
+
     /**
      * Shared single-use assertion replay guard.
      */
     private final ReplayGuard replayGuard;
+
     /**
      * Bus JOSE service used to parse and verify compact assertions.
      */
