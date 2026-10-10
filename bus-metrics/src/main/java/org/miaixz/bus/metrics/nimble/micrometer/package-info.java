@@ -18,9 +18,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Micrometer bridge: MicrometerProvider delegates Counter, Gauge, Timer, and Histogram to a
- * {@link io.micrometer.core.instrument.MeterRegistry}. Meter (EWMA rates) and LlmTimer are implemented locally since
- * Micrometer has no equivalent. CardinalityGuard is applied before values reach the registry.
+ * Optional Micrometer adapter. MicrometerProvider registers active and fixed-inventory observable families against a
+ * caller-owned {@link io.micrometer.core.instrument.MeterRegistry}; closing the provider removes only meters created by
+ * that adapter and never closes the registry. Text scrape capability is exposed only when the concrete registry
+ * provides a callable no-argument {@code scrape()} method, so micrometer-core alone remains sufficient.
  *
  * @author Kimi Liu
  */

@@ -22,12 +22,12 @@ package org.miaixz.bus.metrics.guard;
 import java.time.Instant;
 
 /**
- * Fired when a Tag key's cardinality policy is breached.
+ * Fired when a tag key's cardinality policy is breached.
  *
  * @param metricName    name of the metric whose tag triggered the violation
  * @param tagKey        the tag key whose value set exceeded the configured limit
  * @param originalValue the tag value that was rejected by the policy
- * @param replacedWith  the substitute value used in place of the rejected one (e.g. {@code "other"})
+ * @param replacedWith  the substitute value, or {@code "denied"} when the tag is removed
  * @param detectedAt    wall-clock instant at which the violation was detected
  * @author Kimi Liu
  */

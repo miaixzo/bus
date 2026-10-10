@@ -18,6 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
+ * Observation contracts, typed tags, explicit SLO accounting and published compatibility placeholders.
  *
  * @author Kimi Liu
  */

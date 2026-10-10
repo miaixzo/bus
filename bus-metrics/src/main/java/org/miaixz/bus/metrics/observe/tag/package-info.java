@@ -18,9 +18,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Metric dimensionality: Tag is an immutable key-value pair that annotates a metric with contextual dimensions (e.g.
- * {@code method=GET}, {@code status=200}). Tags are passed as varargs throughout the Provider API and are enforced by
- * CardinalityGuard before reaching the underlying registry.
+ * Metric dimensionality. Tag remains the immutable STRING compatibility entry used by the original Provider API.
+ * Enhanced provider descriptors use Attributes and AttributeDescriptor to preserve typed host dimensions; adapters
+ * convert legacy Tag values without treating them as the typed host model.
  *
  * @author Kimi Liu
  */

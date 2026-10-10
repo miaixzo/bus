@@ -471,10 +471,10 @@ public class CortexConfiguration {
     /**
      * Creates the store-backed current-state setting coordinator.
      *
-     * @param cache          shared cache abstraction
-     * @param storeProvider  optional durable current-state store
+     * @param cache                  shared cache abstraction
+     * @param storeProvider          optional durable current-state store
      * @param referenceStoreProvider optional durable relationship store
-     * @param keyingProvider optional setting keying provider
+     * @param keyingProvider         optional setting keying provider
      * @return store-backed current-state setting coordinator
      */
     @Bean

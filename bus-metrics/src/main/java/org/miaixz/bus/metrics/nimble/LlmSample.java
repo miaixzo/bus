@@ -22,29 +22,29 @@ package org.miaixz.bus.metrics.nimble;
 /**
  * Timing handle for a single LLM call, returned by {@link LlmTimer#start}.
  * <p>
- * Calling {@link #stop} records six metrics atomically: llm.call.duration, llm.call.ttft, llm.call.itl, llm.tokens,
- * llm.cost, llm.errors.
+ * Calling {@link #stop} records duration, available streaming latencies, token usage, and known-model cost. Calling
+ * {@link #error} additionally records the error family. Only the first terminal call records metrics.
  *
  * @author Kimi Liu
  */
 public interface LlmSample {
 
     /**
-     * Call this when the first token arrives (streaming responses). Records TTFT (Time To First Token).
+     * Call this when the first token arrives. Repeated calls do not replace the first timestamp.
      */
     void recordFirstToken();
 
     /**
      * Finalise the call and record all metrics.
      *
-     * @param inputTokens  number of prompt tokens consumed
-     * @param outputTokens number of completion tokens generated
+     * @param inputTokens  non-negative number of prompt tokens consumed
+     * @param outputTokens non-negative number of completion tokens generated
      * @param finishReason "stop" / "length" / "tool_calls" / "error"
      */
     void stop(int inputTokens, int outputTokens, String finishReason);
 
     /**
-     * Record a call-level error. Sets finishReason to "error" and increments llm.errors.
+     * Records a call-level error, sets the finish reason to {@code error}, and terminates the sample.
      *
      * @param t the throwable
      */

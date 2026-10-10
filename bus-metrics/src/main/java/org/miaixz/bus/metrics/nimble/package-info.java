@@ -18,8 +18,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Core metric type interfaces: Counter, Gauge, Meter, Timer, Histogram, RatePair, LlmTimer and their associated value
- * types (Sample, LlmSample, TimerSnapshot). All types are provider-agnostic; concrete implementations live in
+ * Provider-agnostic metric contracts. Counter, Gauge, Meter, Timer, Histogram, RatePair and LlmTimer remain the active
+ * instrument API. MetricDescriptor, typed observable callbacks, registration handles, diagnostics and instance
+ * capabilities extend that API for multi-resource system metrics. ProviderSelection supplies the backend-neutral type,
+ * lazy candidate and deterministic selection contracts; concrete backend implementations remain in the existing
  * sub-packages.
  *
  * @author Kimi Liu

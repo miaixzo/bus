@@ -18,9 +18,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Zero-dependency native implementations of all metric types: NativeCounter (LongAdder), NativeGauge (WeakReference),
- * NativeMeter (EWMA), NativeTimer (T-Digest + BucketWindow), NativeHistogram, NativeRatePair, NativeLlmTimer,
- * NativeSloTracker, TDigest, and NativeProvider (the default SPI impl).
+ * Zero-third-party-dependency provider and active instruments. NativeProvider remains the default SPI implementation
+ * and owns typed family validation, observable callbacks, structured snapshots, Prometheus text exposition, cardinality
+ * state and scheduler lifecycle. The other classes remain its low-level counter, gauge, meter, timer, histogram, rate,
+ * SLO and LLM implementations.
  *
  * @author Kimi Liu
  */

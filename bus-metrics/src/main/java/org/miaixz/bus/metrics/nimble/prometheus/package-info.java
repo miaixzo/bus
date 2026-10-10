@@ -18,10 +18,13 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Prometheus exposition: PrometheusExporter renders metrics held by a
- * {@link org.miaixz.bus.metrics.nimble.indigenous.NativeProvider} as Prometheus text format 0.0.4. Counters get the
- * {@code _total} suffix; Timers and Histograms are rendered as histogram families with {@code _bucket}, {@code _sum},
- * and {@code _count} lines.
+ * Prometheus integration based only on {@code prometheus-metrics-core} and its model API.
+ * <p>
+ * {@link org.miaixz.bus.metrics.nimble.prometheus.PrometheusProvider} owns the collector families it creates, while the
+ * registry supplied by an application remains application-owned. The package-local snapshot encoder supplies text
+ * format 0.0.4 without requiring the optional exposition-formats artifact.
+ * {@link org.miaixz.bus.metrics.nimble.prometheus.PrometheusExporter} is the provider-neutral HTTP-facing adapter: it
+ * delegates to a selected provider's scrape capability and does not inspect provider implementations.
  *
  * @author Kimi Liu
  */
