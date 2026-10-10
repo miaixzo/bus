@@ -18,9 +18,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Cardinality guard: prevents tag-value explosion that causes OOM in metric registries. Supports firstN, topN, and deny
- * policies configurable per tag key. Inspired by Netflix Spectator's cardinality limiter; violations are logged
- * (throttled) and optionally forwarded to a callback.
+ * Cardinality and lifecycle guards. CardinalityGuard retains a global Scope for static compatibility calls, while each
+ * provider or application context can own an isolated Scope. Policies emit CardinalityViolation events to removable
+ * listeners. Family registries use reference-counted leases, registration groups provide rollback, and provider leases
+ * provide reversible static-facade ownership.
  *
  * @author Kimi Liu
  */

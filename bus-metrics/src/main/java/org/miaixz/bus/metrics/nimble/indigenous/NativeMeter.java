@@ -25,7 +25,7 @@ import org.miaixz.bus.metrics.nimble.Meter;
 import org.miaixz.bus.metrics.window.EwmaRate;
 
 /**
- * Counter with 1m/5m/15m EWMA rate tracking. Shares a global tick scheduler provided by {@link NativeProvider}.
+ * Counter with 1m/5m/15m EWMA rate tracking. The owning provider advances the meter every five seconds.
  *
  * @author Kimi Liu
  */
@@ -78,6 +78,9 @@ public class NativeMeter implements Meter {
      */
     @Override
     public void increment(long amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Meter increment must be non-negative");
+        }
         adder.add(amount);
         m1.mark(amount);
         m5.mark(amount);
@@ -93,7 +96,7 @@ public class NativeMeter implements Meter {
     }
 
     /**
-     * Called by the global 5-second tick scheduler in NativeProvider.
+     * Advances every EWMA by one five-second interval.
      */
     public void tick() {
         m1.tick();

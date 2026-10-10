@@ -26,15 +26,16 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
 /**
  * Tracks SLO (Service Level Objectives) with error-budget accounting.
  * <p>
- * Bridges technical metrics (SLI) to business commitments (SLA) without requiring external Prometheus recording rules.
- * Exposes {@code compliance()} and {@code errorBudgetRemaining()} for direct application use.
+ * Bridges explicitly recorded observations to business commitments without requiring external recording rules. Metric
+ * names and tags supplied during registration are immutable compatibility metadata; the tracker does not subscribe to
+ * Provider instruments automatically. Callers feed observations through {@link #record}.
  *
  * @author Kimi Liu
  */
 public interface SloTracker {
 
     /**
-     * Register a latency-based SLO: requests below {@code thresholdMs} count as good.
+     * Registers a latency-based SLO. A non-error observation at or below {@code thresholdMs} is good.
      *
      * @param sloName     unique SLO name
      * @param timerName   name of the timer metric to observe
@@ -46,7 +47,8 @@ public interface SloTracker {
     SloTracker trackLatency(String sloName, String timerName, long thresholdMs, double target, Tag... tags);
 
     /**
-     * Register an availability SLO: requests with error ratio below {@code maxErrorRatio} count as good.
+     * Registers an availability SLO. Its effective target is the stricter value of {@code target} and
+     * {@code 1 - maxErrorRatio}.
      *
      * @param sloName       unique SLO name
      * @param meterName     name of the meter/ratePair metric
@@ -94,7 +96,7 @@ public interface SloTracker {
      * Record a single request observation for the SLO named {@code sloName}.
      *
      * @param sloName    SLO name
-     * @param durationMs measured request duration in milliseconds
+     * @param durationMs measured non-negative request duration in milliseconds
      * @param error      true if the request ended in error
      */
     void record(String sloName, long durationMs, boolean error);

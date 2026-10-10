@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.metrics.bridge;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.miaixz.bus.logger.Logger;
@@ -45,8 +46,13 @@ public class TempusMetrics {
      * @param jobName    logical job name (used as tag)
      * @param durationMs measured execution duration in milliseconds
      * @param success    true if job completed normally
+     * @throws IllegalArgumentException if the job name is blank or the duration is negative
      */
     public static void recordExecution(String jobName, long durationMs, boolean success) {
+        requireJobName(jobName);
+        if (durationMs < 0) {
+            throw new IllegalArgumentException("Job duration must be non-negative");
+        }
         Logger.debug(
                 true,
                 "Metrics",
@@ -70,20 +76,34 @@ public class TempusMetrics {
      * @param action  the action to run and measure
      */
     public static void timed(String jobName, Runnable action) {
-        long start = System.currentTimeMillis();
+        requireJobName(jobName);
+        Objects.requireNonNull(action, "Action must not be null");
+        long start = System.nanoTime();
         boolean success = false;
         Logger.debug(true, "Metrics", "Tempus timed metrics block started");
         try {
             action.run();
             success = true;
         } finally {
-            recordExecution(jobName, System.currentTimeMillis() - start, success);
+            long elapsedNanos = System.nanoTime() - start;
+            recordExecution(jobName, TimeUnit.NANOSECONDS.toMillis(elapsedNanos), success);
             Logger.debug(
                     false,
                     "Metrics",
                     "Tempus timed metrics block finished: success={}, elapsedMs={}",
                     success,
-                    System.currentTimeMillis() - start);
+                    TimeUnit.NANOSECONDS.toMillis(elapsedNanos));
+        }
+    }
+
+    /**
+     * Requires a non-blank job name.
+     *
+     * @param jobName job name to validate
+     */
+    private static void requireJobName(String jobName) {
+        if (jobName == null || jobName.isBlank()) {
+            throw new IllegalArgumentException("Job name must not be blank");
         }
     }
 

@@ -29,7 +29,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Metrics;
-import org.miaixz.bus.metrics.nimble.Sample;
 
 /**
  * Servlet Filter that automatically records HTTP request metrics.
@@ -38,15 +37,16 @@ import org.miaixz.bus.metrics.nimble.Sample;
  * programmatically via {@code FilterRegistration}.
  * <p>
  * URI template normalization is not available at the Servlet level; raw request URI is used with truncation +
- * CardinalityGuard to prevent cardinality explosion. For Spring MVC URI template normalization ({@code /user/123} →
- * {@code /user/{id}}), use the {@code HttpMetricsInterceptor} in bus-starter instead.
+ * CardinalityGuard to prevent cardinality explosion. The active provider applies its instance-local
+ * {@code CardinalityGuard.Scope}; calls made through the static compatibility facade use the global compatibility
+ * scope. Integrations that know a route template should normalize the URI before this filter records it.
  *
  * @author Kimi Liu
  */
 public class HttpMetrics implements Filter {
 
     /**
-     * Servlet request attribute key used to pass the in-flight {@link Sample} through the filter chain.
+     * Servlet request attribute key used to pass the monotonic start time through the filter chain.
      */
     private static final String ATTR_SAMPLE = Builder.HTTP_ATTR_SAMPLE;
 
@@ -58,16 +58,16 @@ public class HttpMetrics implements Filter {
     }
 
     /**
-     * Stops the timer sample and records duration, method, URI, status, and exception tags.
+     * Records duration, method, URI, status, and exception tags.
      *
-     * @param sample the in-flight timer sample to stop
-     * @param method HTTP method (e.g. "GET", "POST")
-     * @param uri    request URI, truncated if longer than {@link Builder#HTTP_URI_MAX_LENGTH}
-     * @param status HTTP response status code
-     * @param ex     exception thrown during request handling, or {@code null} if none
+     * @param startNanos monotonic request start time
+     * @param method     HTTP method (e.g. "GET", "POST")
+     * @param uri        request URI, truncated if longer than {@link Builder#HTTP_URI_MAX_LENGTH}
+     * @param status     HTTP response status code
+     * @param ex         exception thrown during request handling, or {@code null} if none
      */
-    private static void record(Sample sample, String method, String uri, int status, Throwable ex) {
-        long durationNs = sample.stop();
+    private static void record(long startNanos, String method, String uri, int status, Throwable ex) {
+        long durationNs = System.nanoTime() - startNanos;
         String exceptionName = ex == null ? "none" : ex.getClass().getSimpleName();
         String uriNormalized = uri == null ? "unknown"
                 : (uri.length() > Builder.HTTP_URI_MAX_LENGTH ? uri.substring(0, Builder.HTTP_URI_MAX_LENGTH) : uri);
@@ -117,8 +117,8 @@ public class HttpMetrics implements Filter {
             chain.doFilter(request, response);
             return;
         }
-        Sample sample = Metrics.timer(Builder.HTTP_SERVER_REQUESTS).start();
-        req.setAttribute(ATTR_SAMPLE, sample);
+        long startNanos = System.nanoTime();
+        req.setAttribute(ATTR_SAMPLE, startNanos);
         Throwable caught = null;
         try {
             Logger.debug(true, "Metrics", "HTTP metrics collection started: method={}", req.getMethod());
@@ -135,7 +135,7 @@ public class HttpMetrics implements Filter {
                     e.getClass().getSimpleName());
             throw e;
         } finally {
-            record(sample, req.getMethod(), req.getRequestURI(), res.getStatus(), caught);
+            record(startNanos, req.getMethod(), req.getRequestURI(), res.getStatus(), caught);
         }
     }
 

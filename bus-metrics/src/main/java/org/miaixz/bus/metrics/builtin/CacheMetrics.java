@@ -21,9 +21,11 @@ package org.miaixz.bus.metrics.builtin;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Metrics;
 
 /**
@@ -49,6 +51,7 @@ public class CacheMetrics {
      * @param <K>       key type
      * @param <V>       value type
      * @return wrapped cache with metrics
+     * @throws IllegalArgumentException if the cache name is blank
      */
     public static <K, V> CacheX<K, V> instrument(CacheX<K, V> cache, String cacheName) {
         Logger.info(
@@ -56,6 +59,10 @@ public class CacheMetrics {
                 "Metrics",
                 "Cache metrics instrumentation started: cacheClass={}",
                 null == cache ? null : cache.getClass().getName());
+        Objects.requireNonNull(cache, "Cache must not be null");
+        if (cacheName == null || cacheName.isBlank()) {
+            throw new IllegalArgumentException("Cache name must not be blank");
+        }
         CacheX<K, V> instrumented = new InstrumentedCache<>(cache, cacheName);
         Logger.info(
                 false,
@@ -103,9 +110,9 @@ public class CacheMetrics {
         public V read(K key) {
             V value = delegate.read(key);
             if (value != null) {
-                Metrics.counter("cache.requests", "cache", cacheName, "result", "hit").increment();
+                Metrics.counter("cache.requests", Builder.TAG_CACHE, cacheName, Builder.TAG_RESULT, "hit").increment();
             } else {
-                Metrics.counter("cache.requests", "cache", cacheName, "result", "miss").increment();
+                Metrics.counter("cache.requests", Builder.TAG_CACHE, cacheName, Builder.TAG_RESULT, "miss").increment();
             }
             return value;
         }
@@ -119,8 +126,9 @@ public class CacheMetrics {
         @Override
         public Map<K, V> read(Collection<K> keys) {
             Map<K, V> result = delegate.read(keys);
-            Metrics.counter("cache.requests", "cache", cacheName, "result", "hit").increment(result.size());
-            Metrics.counter("cache.requests", "cache", cacheName, "result", "miss")
+            Metrics.counter("cache.requests", Builder.TAG_CACHE, cacheName, Builder.TAG_RESULT, "hit")
+                    .increment(result.size());
+            Metrics.counter("cache.requests", Builder.TAG_CACHE, cacheName, Builder.TAG_RESULT, "miss")
                     .increment(keys.size() - result.size());
             return result;
         }
@@ -135,7 +143,7 @@ public class CacheMetrics {
         @Override
         public void write(K key, V value, long expire) {
             delegate.write(key, value, expire);
-            Metrics.counter("cache.writes", "cache", cacheName).increment();
+            Metrics.counter("cache.writes", Builder.TAG_CACHE, cacheName).increment();
         }
 
         /**
@@ -147,7 +155,7 @@ public class CacheMetrics {
         @Override
         public void write(Map<K, V> map, long expire) {
             delegate.write(map, expire);
-            Metrics.counter("cache.writes", "cache", cacheName).increment(map.size());
+            Metrics.counter("cache.writes", Builder.TAG_CACHE, cacheName).increment(map.size());
         }
 
         /**
@@ -156,9 +164,10 @@ public class CacheMetrics {
          * @param keys the keys to remove
          */
         @Override
-        public void remove(K... keys) {
+        @SafeVarargs
+        public final void remove(K... keys) {
             delegate.remove(keys);
-            Metrics.counter("cache.removes", "cache", cacheName).increment(keys.length);
+            Metrics.counter("cache.removes", Builder.TAG_CACHE, cacheName).increment(keys.length);
         }
 
         /**
@@ -167,7 +176,7 @@ public class CacheMetrics {
         @Override
         public void clear() {
             delegate.clear();
-            Metrics.counter("cache.clears", "cache", cacheName).increment();
+            Metrics.counter("cache.clears", Builder.TAG_CACHE, cacheName).increment();
         }
 
     }

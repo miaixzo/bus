@@ -29,8 +29,6 @@ package org.miaixz.bus.metrics;
  */
 public class Builder {
 
-    // ── Scheduler ─────────────────────────────────────────────────────────
-
     /**
      * Background tick interval in seconds (EWMA + window rotation).
      */
@@ -57,13 +55,6 @@ public class Builder {
     public static final String THREAD_NAME_CORTEX = "bus-metrics-cortex-exporter";
 
     /**
-     * Daemon thread name for the HealthMetrics CPU refresh scheduler.
-     */
-    public static final String THREAD_NAME_HEALTH = "bus-metrics-health-refresh";
-
-    // ── EWMA alpha values ─────────────────────────────────────────────────
-
-    /**
      * 1-minute EWMA alpha: {@code 1 - exp(-5/60)}.
      */
     public static final double EWMA_M1_ALPHA = 1 - Math.exp(-5.0 / 60);
@@ -78,16 +69,12 @@ public class Builder {
      */
     public static final double EWMA_M15_ALPHA = 1 - Math.exp(-5.0 / 900);
 
-    // ── Histogram bucket boundaries ───────────────────────────────────────
-
     /**
      * Standard Prometheus-compatible histogram bucket boundaries in seconds. Used by {@code NativeTimer} for
      * bucket-count tracking.
      */
     public static final double[] HISTOGRAM_BUCKET_BOUNDS_SECS = { 0.001, 0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25,
             0.5, 0.75, 1.0, 2.5, 5.0, 10.0 };
-
-    // ── Cardinality defaults ──────────────────────────────────────────────
 
     /**
      * Default maximum distinct tag values per key before cardinality guard kicks in.
@@ -99,8 +86,6 @@ public class Builder {
      */
     public static final long CARDINALITY_LOG_THROTTLE_MS = 60_000L;
 
-    // ── CortexExporter ────────────────────────────────────────────────────
-
     /**
      * CacheX key prefix for metric snapshots pushed by {@code CortexExporter}.
      */
@@ -111,14 +96,50 @@ public class Builder {
      */
     public static final int CORTEX_TTL_MULTIPLIER = 4;
 
-    // ── HealthMetrics ─────────────────────────────────────────────────────
+    /**
+     * Default host snapshot cache TTL in milliseconds.
+     */
+    public static final long HOST_CACHE_TTL_MILLIS = 1_000L;
 
     /**
-     * Default CPU/hardware refresh interval in seconds for {@code HealthMetrics}.
+     * Default process-state enumeration cache TTL in milliseconds.
      */
-    public static final int HEALTH_DEFAULT_REFRESH_SECONDS = 5;
+    public static final long HOST_PROCESS_STATE_CACHE_TTL_MILLIS = 10_000L;
 
-    // ── HttpMetrics ───────────────────────────────────────────────────────
+    /**
+     * Minimum supported host cache TTL in milliseconds.
+     */
+    public static final long HOST_CACHE_TTL_MIN_MILLIS = 100L;
+
+    /**
+     * Maximum supported host cache TTL in milliseconds.
+     */
+    public static final long HOST_CACHE_TTL_MAX_MILLIS = 60_000L;
+
+    /**
+     * Default maximum number of exported logical CPUs.
+     */
+    public static final int HOST_MAX_LOGICAL_CPUS = 1_024;
+
+    /**
+     * Default maximum number of exported disk devices.
+     */
+    public static final int HOST_MAX_DEVICES = 128;
+
+    /**
+     * Default maximum number of exported file systems.
+     */
+    public static final int HOST_MAX_FILE_SYSTEMS = 256;
+
+    /**
+     * Default maximum number of exported network interfaces.
+     */
+    public static final int HOST_MAX_INTERFACES = 128;
+
+    /**
+     * Prometheus text exposition 0.0.4 media type.
+     */
+    public static final String PROMETHEUS_CONTENT_TYPE = "text/plain; version=0.0.4; charset=utf-8";
 
     /**
      * Servlet request attribute key used to store the in-flight timer sample.
@@ -139,8 +160,6 @@ public class Builder {
      * Metric name for HTTP server request rate meters.
      */
     public static final String HTTP_SERVER_REQUESTS_RATE = "http.server.requests.rate";
-
-    // ── Metric name suffixes (LlmTimer) ───────────────────────────────────
 
     /**
      * Suffix for total call duration timer.
@@ -176,8 +195,6 @@ public class Builder {
      * Cost scale factor: USD stored as {@code cost * LLM_COST_SCALE} long.
      */
     public static final long LLM_COST_SCALE = 1_000_000L;
-
-    // ── Tag keys ──────────────────────────────────────────────────────────
 
     /**
      * Tag key for LLM model name.
@@ -244,12 +261,10 @@ public class Builder {
      */
     public static final String TAG_GC = "gc";
 
-    // ── Instrumentation scope ─────────────────────────────────────────────
-
     /**
      * Default OpenTelemetry instrumentation scope name.
      */
-    public static final String OTEL_SCOPE = "bus-metrics";
+    public static final String OTEL_SCOPE = "org.miaixz.bus.metrics";
 
     /**
      * Creates a metrics constant namespace instance with no retained state.

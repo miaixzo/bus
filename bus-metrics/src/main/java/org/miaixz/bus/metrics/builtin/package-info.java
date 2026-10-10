@@ -18,7 +18,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Built-in instrumentation for JVM, system, HTTP, cache, and framework-neutral application startup metrics.
+ * Built-in JVM, host, HTTP, cache and framework-neutral startup instrumentation. HealthMetrics composes the category
+ * host binders in this package and owns their lifecycle independently from JvmMetrics. SystemMetrics remains an
+ * explicit MXBean compatibility entry point; it is not a bus-health source and must not be used as an automatic
+ * fallback for the OpenTelemetry host conventions.
  *
  * @author Kimi Liu
  */

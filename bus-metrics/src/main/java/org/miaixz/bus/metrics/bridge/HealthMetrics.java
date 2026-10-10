@@ -19,283 +19,338 @@
 */
 package org.miaixz.bus.metrics.bridge;
 
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
+import java.time.Duration;
+import java.util.*;
 
 import org.miaixz.bus.health.Collector;
-import org.miaixz.bus.health.builtin.Disk;
-import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
-import org.miaixz.bus.health.builtin.hardware.GlobalMemory;
-import org.miaixz.bus.health.builtin.hardware.NetworkIF;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Metrics;
-import org.miaixz.bus.metrics.builtin.JvmMetrics;
-import org.miaixz.bus.metrics.builtin.SystemMetrics;
+import org.miaixz.bus.metrics.Provider;
+import org.miaixz.bus.metrics.builtin.*;
+import org.miaixz.bus.metrics.nimble.MetricBinder;
 
 /**
- * Bridges bus-health's rich hardware/OS metrics into bus-metrics gauges.
+ * Composes independently cached, bus-health-backed host metric binders.
  * <p>
- * Provides significantly more accurate and detailed metrics than the JVM-only {@link JvmMetrics} and
- * {@link SystemMetrics}, including:
- * <ul>
- * <li>Physical CPU usage (sys/user/iowait/total) via JNA, not JVM estimation</li>
- * <li>Physical RAM (total/used/free/usage%) via OS memory map</li>
- * <li>Per-disk mount point usage and I/O stats</li>
- * <li>Network interface Tx/Rx bytes and packets per second</li>
- * <li>JVM heap + runtime metrics aligned with bus-health's Jvm model</li>
- * <li>Hardware load average (1m/5m/15m) from the OS kernel</li>
- * </ul>
- * <p>
- * Conditional on {@code bus-health} being on the classpath. When absent, the fallback {@link JvmMetrics} and
- * {@link SystemMetrics} are used instead.
- * <p>
- * CPU ticks require a sampling interval; metrics are refreshed every {@code refreshIntervalSeconds} seconds by a
- * background daemon thread.
+ * This compatibility class no longer registers JVM metrics, computes percentages, or owns a background scheduler.
+ * Collection occurs lazily through observable callbacks and stale-while-refresh caches.
  *
  * @author Kimi Liu
  */
-public class HealthMetrics {
+public class HealthMetrics implements MetricBinder {
 
     /**
-     * Default interval in seconds between CPU tick refreshes.
+     * Dependency-neutral source of immutable host snapshots.
      */
-    private static final int DEFAULT_REFRESH_SECONDS = Builder.HEALTH_DEFAULT_REFRESH_SECONDS;
-
+    private final HostMetricSource source;
     /**
-     * Bus Health {@link Collector} used to access hardware and operating-system data.
+     * Host categories, limits, and cache settings.
      */
-    private final Collector collector;
-
+    private final HostMetricsOptions options;
     /**
-     * Interval in seconds between background CPU tick refreshes.
+     * Successfully bound category binders in creation order.
      */
-    private final int refreshSeconds;
+    private final List<MetricBinder> bound = new ArrayList<>();
 
     /**
-     * Background daemon scheduler for CPU tick-based metric refresh.
+     * Guards reentrant binding while categories are being installed.
      */
-    private final ScheduledExecutorService scheduler;
-
+    private boolean binding;
     /**
-     * Previous CPU tick snapshot; used to compute delta-based usage percentages.
+     * Prevents rebinding even after an optional initialization failure.
      */
-    private final AtomicReference<long[]> prevTicks = new AtomicReference<>(null);
+    private boolean boundAttempted;
 
     /**
-     * Latest computed CPU usage snapshot; updated on each refresh cycle.
-     */
-    private final AtomicReference<CpuSnapshot> cpuSnapshot = new AtomicReference<>(new CpuSnapshot(0, 0, 0, 0));
-
-    /**
-     * Creates a HealthMetrics instance using the default Bus Health {@link Collector} and refresh interval.
+     * Creates a host binder using the default collector and options.
      */
     public HealthMetrics() {
-        this(new Collector(), DEFAULT_REFRESH_SECONDS);
+        this(new Collector(), HostMetricsOptions.defaults());
     }
 
     /**
-     * Creates a HealthMetrics instance with a custom collector and refresh interval.
+     * Creates a host binder using an explicit collector and Bus-owned options.
      *
-     * @param collector      Bus Health collector used to access hardware and operating-system data
-     * @param refreshSeconds how often (in seconds) to refresh CPU tick-based metrics
+     * @param collector bus-health collector
+     * @param options   host metric options
      */
-    public HealthMetrics(Collector collector, int refreshSeconds) {
-        this.collector = collector;
-        this.refreshSeconds = refreshSeconds;
-        this.scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
-            Thread t = new Thread(r, Builder.THREAD_NAME_HEALTH);
-            t.setDaemon(true);
-            return t;
-        });
+    public HealthMetrics(Collector collector, HostMetricsOptions options) {
+        this(new HealthMetricSource(collector, options), options);
     }
 
     /**
-     * Returns the delta between current and previous tick counts for the given tick type.
+     * Creates a host binder using a dependency-neutral source, primarily for deterministic integration tests.
      *
-     * @param curr current tick array
-     * @param prev previous tick array
-     * @param type the CPU tick type to compute delta for
-     * @return tick delta
+     * @param source  host snapshot source
+     * @param options host metric options
      */
-    private static long delta(long[] curr, long[] prev, CentralProcessor.TickType type) {
-        return curr[type.getIndex()] - prev[type.getIndex()];
+    public HealthMetrics(HostMetricSource source, HostMetricsOptions options) {
+        this.source = Objects.requireNonNull(source, "Host metric source must not be null");
+        this.options = Objects.requireNonNull(options, "Host metric options must not be null");
     }
 
     /**
-     * Rounds a double value to 2 decimal places.
+     * Creates an inert lifecycle-compatible binder for an optional host integration that could not initialize.
      *
-     * @param v the value to round
-     * @return value rounded to 2 decimal places
+     * @return disabled host binder
      */
-    private static double round2(double v) {
-        return Math.round(v * 100.0) / 100.0;
-    }
-
-    // ── Internals ─────────────────────────────────────────────────────────
-
-    /**
-     * Sums a network statistic (bytes or packets, sent or received) across all network interfaces.
-     *
-     * @param p       Bus Health collector
-     * @param sent    true for sent, false for received
-     * @param packets true for packet count, false for byte count
-     * @return total value across all interfaces
-     */
-    private static double networkStat(Collector p, boolean sent, boolean packets) {
-        List<NetworkIF> nets = p.getHardware().getNetworkIFs();
-        long sum = 0;
-        for (NetworkIF n : nets) {
-            if (packets) {
-                sum += sent ? n.getPacketsSent() : n.getPacketsRecv();
-            } else {
-                sum += sent ? n.getBytesSent() : n.getBytesRecv();
-            }
-        }
-        return (double) sum;
+    public static HealthMetrics disabled() {
+        HostMetricsOptions defaults = HostMetricsOptions.defaults();
+        HostMetricsOptions.Categories disabled = new HostMetricsOptions.Categories(false, false, false, false, false,
+                false, false, false, false);
+        HostMetricsOptions options = new HostMetricsOptions(false, defaults.convention(), defaults.cacheTtl(),
+                defaults.processStateCacheTtl(), disabled, defaults.cpu(), defaults.process(), defaults.disk(),
+                defaults.fileSystem(), defaults.network());
+        return new HealthMetrics(DisabledSource.INSTANCE, options);
     }
 
     /**
-     * Register all health-backed gauges and start the background refresh scheduler.
+     * Registers against the globally selected compatibility provider.
      */
     public void register() {
-        Logger.info(true, "Metrics", "Health metrics registration started: refreshSeconds={}", refreshSeconds);
-        // ── JVM ────────────────────────────────────────────────────────────
-        Runtime rt = Runtime.getRuntime();
-        Metrics.gauge("jvm.memory.used", rt, r -> (double) (r.totalMemory() - r.freeMemory()));
-        Metrics.gauge("jvm.memory.free", rt, r -> (double) r.freeMemory());
-        Metrics.gauge("jvm.memory.total", rt, r -> (double) r.totalMemory());
-        Metrics.gauge("jvm.memory.max", rt, r -> (double) r.maxMemory());
-        Metrics.gauge("jvm.memory.usage", rt, r -> (r.totalMemory() - r.freeMemory()) * 100.0 / r.totalMemory());
-
-        // ── Physical Memory (bus-health GlobalMemory) ─────────────────────
-        GlobalMemory mem = collector.getHardware().getMemory();
-        Metrics.gauge("system.memory.total.bytes", mem, m -> (double) m.getTotal());
-        Metrics.gauge("system.memory.available.bytes", mem, m -> (double) m.getAvailable());
-        Metrics.gauge("system.memory.used.bytes", mem, m -> (double) (m.getTotal() - m.getAvailable()));
-        Metrics.gauge(
-                "system.memory.usage",
-                mem,
-                m -> m.getTotal() <= 0 ? 0.0 : (m.getTotal() - m.getAvailable()) * 100.0 / m.getTotal());
-
-        // ── CPU (sampling via background refresh) ─────────────────────────
-        // Initial tick snapshot
-        prevTicks.set(collector.getProcessor().getSystemCpuLoadTicks());
-
-        Metrics.gauge("system.cpu.usage.total", cpuSnapshot, ref -> ref.get().totalUsage());
-        Metrics.gauge("system.cpu.usage.user", cpuSnapshot, ref -> ref.get().userUsage());
-        Metrics.gauge("system.cpu.usage.sys", cpuSnapshot, ref -> ref.get().sysUsage());
-        Metrics.gauge("system.cpu.usage.iowait", cpuSnapshot, ref -> ref.get().ioWait());
-
-        CentralProcessor proc = collector.getProcessor();
-        Metrics.gauge("system.cpu.load.average.1m", proc, p -> p.getSystemLoadAverage(1)[0]);
-        Metrics.gauge("system.cpu.physical.cores", proc, p -> (double) p.getPhysicalProcessorCount());
-        Metrics.gauge("system.cpu.logical.cores", proc, p -> (double) p.getLogicalProcessorCount());
-
-        // ── Disk usage (Gauge per mount point) ─────────────────────────────
-        // Disk stores change dynamically; register a summary gauge
-        Metrics.gauge(
-                "system.disk.total.bytes",
-                collector,
-                p -> p.getDisk().stream().mapToLong(Disk::getTotalSpace).sum());
-        Metrics.gauge(
-                "system.disk.used.bytes",
-                collector,
-                p -> p.getDisk().stream().mapToLong(Disk::getUsedSpace).sum());
-        Metrics.gauge(
-                "system.disk.free.bytes",
-                collector,
-                p -> p.getDisk().stream().mapToLong(Disk::getFreeSpace).sum());
-
-        // ── Network (summary across all interfaces) ───────────────────────
-        Metrics.gauge("system.network.bytes.recv", collector, p -> networkStat(p, false, false));
-        Metrics.gauge("system.network.bytes.sent", collector, p -> networkStat(p, true, false));
-        Metrics.gauge("system.network.packets.recv", collector, p -> networkStat(p, false, true));
-        Metrics.gauge("system.network.packets.sent", collector, p -> networkStat(p, true, true));
-
-        // ── Thread counts ─────────────────────────────────────────────────
-        java.lang.management.ThreadMXBean threads = java.lang.management.ManagementFactory.getThreadMXBean();
-        Metrics.gauge("jvm.threads.live", threads, t -> (double) t.getThreadCount());
-        Metrics.gauge("jvm.threads.peak", threads, t -> (double) t.getPeakThreadCount());
-        Metrics.gauge("jvm.threads.daemon", threads, t -> (double) t.getDaemonThreadCount());
-
-        // ── Process uptime ────────────────────────────────────────────────
-        Metrics.gauge("process.uptime.seconds", collector, p -> (double) p.getJvm().getUptime() / 1000.0);
-
-        // Start background refresh for CPU tick-based metrics
-        scheduler.scheduleAtFixedRate(this::refreshCpu, refreshSeconds, refreshSeconds, TimeUnit.SECONDS);
-        Logger.info(false, "Metrics", "Health metrics registration finished: refreshSeconds={}", refreshSeconds);
+        bind(Metrics.getProvider());
     }
 
-    /**
-     * Stops the background CPU refresh scheduler.
-     */
-    public void stop() {
-        Logger.info(
-                true,
-                "Metrics",
-                "Health metrics refresh scheduler stop started: refreshSeconds={}",
-                refreshSeconds);
-        scheduler.shutdown();
-        Logger.info(
-                false,
-                "Metrics",
-                "Health metrics refresh scheduler stop finished: refreshSeconds={}",
-                refreshSeconds);
-    }
-
-    /**
-     * Refreshes CPU tick-based usage metrics by computing deltas from the previous tick snapshot.
-     */
-    private void refreshCpu() {
-        try {
-            CentralProcessor proc = collector.getProcessor();
-            long[] prev = prevTicks.get();
-            long[] curr = proc.getSystemCpuLoadTicks();
-            prevTicks.set(curr);
-
-            long user = delta(curr, prev, CentralProcessor.TickType.USER);
-            long nice = delta(curr, prev, CentralProcessor.TickType.NICE);
-            long sys = delta(curr, prev, CentralProcessor.TickType.SYSTEM);
-            long idle = delta(curr, prev, CentralProcessor.TickType.IDLE);
-            long iowait = delta(curr, prev, CentralProcessor.TickType.IOWAIT);
-            long irq = delta(curr, prev, CentralProcessor.TickType.IRQ);
-            long softirq = delta(curr, prev, CentralProcessor.TickType.SOFTIRQ);
-            long steal = delta(curr, prev, CentralProcessor.TickType.STEAL);
-            long total = user + nice + sys + idle + iowait + irq + softirq + steal;
-            if (total <= 0) {
-                Logger.debug(false, "Metrics", "Health CPU metrics refresh skipped: reason=non-positive-total");
-                return;
+    @Override
+    public synchronized void bind(Provider provider) {
+        Objects.requireNonNull(provider, "Metrics provider must not be null");
+        if (binding || boundAttempted) {
+            throw new IllegalStateException("Host metrics are already bound");
+        }
+        boundAttempted = true;
+        if (!provider.capabilities().observable()) {
+            String message = "Host metrics require observable metric support from the selected provider";
+            if (options.required()) {
+                throw new IllegalStateException(message);
             }
-
-            cpuSnapshot.set(
-                    new CpuSnapshot(round2((user + nice) * 100.0 / total), round2(sys * 100.0 / total),
-                            round2(iowait * 100.0 / total), round2((total - idle) * 100.0 / total)));
-            Logger.debug(false, "Metrics", "Health CPU metrics refresh finished: totalTicks={}", total);
-        } catch (Exception e) {
+            Logger.warn(false, "Metrics", message + "; optional host metrics are disabled");
+            return;
+        }
+        binding = true;
+        try {
+            bindEnabled(provider);
+        } catch (RuntimeException exception) {
+            closeBound();
+            if (options.required()) {
+                throw exception;
+            }
             Logger.warn(
                     false,
                     "Metrics",
-                    e,
-                    "Health CPU metrics refresh failed: exception={}",
-                    e.getClass().getSimpleName());
+                    exception,
+                    "Optional host metrics disabled after initialization failure: {}",
+                    exception.getMessage());
+        } finally {
+            binding = false;
         }
     }
 
     /**
-     * Holds a computed CPU tick snapshot between refresh cycles.
+     * Creates binders for every enabled and platform-supported host category.
      *
-     * @param userUsage  user+nice CPU usage percentage
-     * @param sysUsage   system CPU usage percentage
-     * @param ioWait     I/O wait CPU usage percentage
-     * @param totalUsage total CPU usage percentage
-     * @author Kimi Liu
+     * @param provider target provider
      */
-    private record CpuSnapshot(double userUsage, double sysUsage, double ioWait, double totalUsage) {
+    private void bindEnabled(Provider provider) {
+        HostMetricsOptions.Categories categories = options.categories();
+        if (categories.general()) {
+            bindCategory(
+                    provider,
+                    "general",
+                    () -> new GeneralHostMetrics(cache(
+                            options.process().stateCounts() ? options.processStateCacheTtl() : options.cacheTtl(),
+                            source::general), options.process().stateCounts()));
+        }
+        if (categories.cpu()) {
+            bindCategory(provider, "cpu", () -> new CpuHostMetrics(cache(options.cacheTtl(), source::cpu)));
+        }
+        if (categories.memory()) {
+            bindCategory(provider, "memory", () -> new MemoryHostMetrics(cache(options.cacheTtl(), source::memory)));
+        }
+        if (categories.paging()) {
+            bindCategory(provider, "paging", () -> new PagingHostMetrics(cache(options.cacheTtl(), source::paging)));
+        }
+        if (categories.disk()) {
+            bindCategory(provider, "disk", () -> new DiskHostMetrics(cache(options.cacheTtl(), source::disks)));
+        }
+        if (categories.filesystem()) {
+            bindCategory(
+                    provider,
+                    "filesystem",
+                    () -> new FileSystemHostMetrics(cache(options.cacheTtl(), source::fileSystems),
+                            options.fileSystem().mountpointMode()));
+        }
+        if (categories.network()) {
+            bindCategory(
+                    provider,
+                    "network",
+                    () -> new NetworkHostMetrics(cache(options.cacheTtl(), source::network),
+                            options.network().connections() && source.capabilities().networkConnections()));
+        }
+        if (categories.process()) {
+            bindCategory(
+                    provider,
+                    "process",
+                    () -> new ProcessHostMetrics(cache(options.cacheTtl(), source::currentProcess),
+                            source.capabilities()));
+        }
+        if (categories.container() && source.capabilities().container()) {
+            bindCategory(
+                    provider,
+                    "container",
+                    () -> new ContainerHostMetrics(cache(options.cacheTtl(), source::container)));
+        }
+    }
 
+    /**
+     * Creates and primes a snapshot cache so initialization failures are deterministic.
+     *
+     * @param ttl      cache interval
+     * @param supplier snapshot supplier
+     * @param <T>      snapshot type
+     * @return primed cache
+     */
+    private <T> SnapshotCache<T> cache(Duration ttl, java.util.function.Supplier<T> supplier) {
+        SnapshotCache<T> cache = new SnapshotCache<>(ttl, supplier);
+        if (cache.get().isEmpty()) {
+            RuntimeException cause = cache.lastFailure()
+                    .orElse(new IllegalStateException("Host inventory unavailable"));
+            throw new IllegalStateException("Host inventory could not be initialized", cause);
+        }
+        return cache;
+    }
+
+    /**
+     * Creates one category binder and applies required versus optional failure policy.
+     *
+     * @param provider target provider
+     * @param category fixed category name
+     * @param supplier category binder supplier
+     */
+    private void bindCategory(Provider provider, String category, java.util.function.Supplier<MetricBinder> supplier) {
+        try {
+            add(provider, supplier.get());
+        } catch (RuntimeException exception) {
+            if (options.required()) {
+                throw new IllegalStateException("Required host metric category failed: " + category, exception);
+            }
+            Logger.warn(
+                    false,
+                    "Metrics",
+                    exception,
+                    "Optional host metric category disabled: category={}, reason={}",
+                    category,
+                    exception.getMessage());
+        }
+    }
+
+    /**
+     * Binds and retains one category transactionally.
+     *
+     * @param provider target provider
+     * @param binder   category binder
+     */
+    private void add(Provider provider, MetricBinder binder) {
+        try {
+            binder.bind(provider);
+            bound.add(binder);
+        } catch (RuntimeException exception) {
+            binder.close();
+            throw exception;
+        }
+    }
+
+    /**
+     * Stops compatibility usage by delegating to {@link #close()}.
+     */
+    public void stop() {
+        close();
+    }
+
+    @Override
+    public synchronized void close() {
+        closeBound();
+    }
+
+    /**
+     * Releases successfully bound categories in reverse order.
+     */
+    private void closeBound() {
+        Collections.reverse(bound);
+        for (MetricBinder binder : bound) {
+            try {
+                binder.close();
+            } catch (RuntimeException exception) {
+                Logger.warn(
+                        false,
+                        "Metrics",
+                        exception,
+                        "Host metric binder close failed: {}",
+                        exception.getClass().getSimpleName());
+            }
+        }
+        bound.clear();
+    }
+
+    /**
+     * Inert source used when optional host integration is unavailable.
+     */
+    private enum DisabledSource implements HostMetricSource {
+
+        /**
+         * Shared inert source instance.
+         */
+        INSTANCE;
+
+        @Override
+        public HostMetricCapabilities capabilities() {
+            return new HostMetricCapabilities(HostMetricCapabilities.PagingFaultShape.NONE, false, false, false, false,
+                    false);
+        }
+
+        @Override
+        public GeneralSnapshot general() {
+            return new GeneralSnapshot(0, Map.of());
+        }
+
+        @Override
+        public CpuSnapshot cpu() {
+            return new CpuSnapshot(0, 0, List.of(), List.of());
+        }
+
+        @Override
+        public MemorySnapshot memory() {
+            return new MemorySnapshot(0, 0, 0);
+        }
+
+        @Override
+        public PagingSnapshot paging() {
+            return new PagingSnapshot(0, 0, 0, java.util.OptionalLong.empty(), java.util.OptionalLong.empty());
+        }
+
+        @Override
+        public List<DiskSnapshot> disks() {
+            return List.of();
+        }
+
+        @Override
+        public List<FileSystemSnapshot> fileSystems() {
+            return List.of();
+        }
+
+        @Override
+        public NetworkSnapshot network() {
+            return new NetworkSnapshot(List.of(), List.of());
+        }
+
+        @Override
+        public Optional<ProcessSnapshot> currentProcess() {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<ContainerSnapshot> container() {
+            return Optional.empty();
+        }
     }
 
 }

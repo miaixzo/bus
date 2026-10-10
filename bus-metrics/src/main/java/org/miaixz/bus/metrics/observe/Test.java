@@ -20,7 +20,8 @@
 package org.miaixz.bus.metrics.observe;
 
 /**
- * Placeholder class reserved for future observe-layer integration tests.
+ * Compatibility placeholder retained for consumers compiled against the original observe package surface. It has no
+ * runtime behavior and is not an integration-test entry point.
  *
  * @author Kimi Liu
  */

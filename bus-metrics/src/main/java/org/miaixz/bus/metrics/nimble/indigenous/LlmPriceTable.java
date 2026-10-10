@@ -19,8 +19,8 @@
 */
 package org.miaixz.bus.metrics.nimble.indigenous;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Built-in price table for estimating LLM call costs (USD per token). Values sourced from public provider pricing pages
@@ -33,7 +33,7 @@ public class LlmPriceTable {
     /**
      * Per-million-token prices in USD keyed by model ID; value is {inputUsdPerM, outputUsdPerM}.
      */
-    private static final Map<String, double[]> PRICES = new HashMap<>();
+    private static final Map<String, double[]> PRICES = new ConcurrentHashMap<>();
 
     static {
         PRICES.put("claude-opus-4-6", new double[] { 15.0, 75.0 });
@@ -59,8 +59,16 @@ public class LlmPriceTable {
      * @param model               model identifier, e.g. "gpt-4o"
      * @param inputUsdPerMillion  input token price in USD per million tokens
      * @param outputUsdPerMillion output token price in USD per million tokens
+     * @throws IllegalArgumentException if the model is blank or either price is negative or non-finite
      */
     public static void register(String model, double inputUsdPerMillion, double outputUsdPerMillion) {
+        if (model == null || model.isBlank()) {
+            throw new IllegalArgumentException("LLM model must not be blank");
+        }
+        if (!Double.isFinite(inputUsdPerMillion) || inputUsdPerMillion < 0 || !Double.isFinite(outputUsdPerMillion)
+                || outputUsdPerMillion < 0) {
+            throw new IllegalArgumentException("LLM prices must be finite and non-negative");
+        }
         PRICES.put(model, new double[] { inputUsdPerMillion, outputUsdPerMillion });
     }
 
@@ -71,8 +79,15 @@ public class LlmPriceTable {
      * @param inputTokens  input token count
      * @param outputTokens output token count
      * @return estimated cost in USD
+     * @throws IllegalArgumentException if the model is blank or either token count is negative
      */
     public static double estimateCost(String model, int inputTokens, int outputTokens) {
+        if (model == null || model.isBlank()) {
+            throw new IllegalArgumentException("LLM model must not be blank");
+        }
+        if (inputTokens < 0 || outputTokens < 0) {
+            throw new IllegalArgumentException("LLM token counts must be non-negative");
+        }
         double[] p = PRICES.get(model);
         if (p == null) {
             return 0.0;

@@ -26,7 +26,10 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Metrics;
 
 /**
- * Registers OS-level system metrics: CPU load, process uptime.
+ * Registers the legacy MXBean system metric names as an explicit compatibility entry point.
+ * <p>
+ * This class intentionally does not publish the OpenTelemetry 1.44 host families. Standard host metrics are supplied
+ * only by the bus-health-backed {@code HealthMetrics} path and Spring does not install this fallback automatically.
  *
  * @author Kimi Liu
  */

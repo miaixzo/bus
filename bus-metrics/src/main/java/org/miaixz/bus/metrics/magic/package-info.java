@@ -18,9 +18,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Shared value-object types used across the metrics API: TimerSnapshot is an immutable point-in-time capture of a timer
- * or histogram (count, total, max, bucket bounds/counts, tags) used by exporters and the Cortex integration to
- * serialise metric state without holding locks.
+ * Cross-provider immutable snapshot value objects. {@code MetricSnapshot} retains typed long, double, and distribution
+ * points for capability-based exporters, while the existing {@code TimerSnapshot} remains the compatibility capture of
+ * timer and histogram state used by current integrations.
  *
  * @author Kimi Liu
  */

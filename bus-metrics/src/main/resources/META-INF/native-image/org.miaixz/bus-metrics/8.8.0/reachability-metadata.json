@@ -6,21 +6,20 @@
         {
           "name": "<init>",
           "parameterTypes": [
+            "org.miaixz.bus.metrics.Provider",
             "org.miaixz.bus.cache.CacheX",
             "java.lang.String",
             "java.lang.String",
-            "int"
+            "java.time.Duration"
           ]
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
         },
         {
           "name": "push",
           "parameterTypes": []
-        },
-        {
-          "name": "serializeSnapshot",
-          "parameterTypes": [
-            "org.miaixz.bus.metrics.magic.TimerSnapshot"
-          ]
         },
         {
           "name": "start",
@@ -33,45 +32,29 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.metrics.bridge.HealthMetrics$CpuSnapshot",
+      "type": "org.miaixz.bus.metrics.bridge.HealthMetrics",
       "methods": [
         {
           "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
           "parameterTypes": [
-            "double",
-            "double",
-            "double",
-            "double"
+            "org.miaixz.bus.health.Collector",
+            "org.miaixz.bus.metrics.builtin.HostMetricsOptions"
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "hashCode",
+          "name": "register",
           "parameterTypes": []
         },
         {
-          "name": "ioWait",
+          "name": "stop",
           "parameterTypes": []
         },
         {
-          "name": "sysUsage",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "totalUsage",
-          "parameterTypes": []
-        },
-        {
-          "name": "userUsage",
+          "name": "close",
           "parameterTypes": []
         }
       ]
@@ -1414,30 +1397,8 @@
           ]
         },
         {
-          "name": "exportHistogram",
-          "parameterTypes": [
-            "java.lang.StringBuilder",
-            "org.miaixz.bus.metrics.magic.TimerSnapshot"
-          ]
-        },
-        {
-          "name": "exportTimer",
-          "parameterTypes": [
-            "java.lang.StringBuilder",
-            "org.miaixz.bus.metrics.magic.TimerSnapshot"
-          ]
-        },
-        {
-          "name": "labelsStr",
-          "parameterTypes": [
-            "org.miaixz.bus.metrics.observe.tag.Tag[]"
-          ]
-        },
-        {
-          "name": "prometheusName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
+          "name": "contentType",
+          "parameterTypes": []
         },
         {
           "name": "scrape",

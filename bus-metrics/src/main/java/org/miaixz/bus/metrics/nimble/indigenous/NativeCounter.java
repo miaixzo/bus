@@ -57,6 +57,9 @@ public class NativeCounter implements Counter {
      */
     @Override
     public void increment(long amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Counter increment must be non-negative");
+        }
         adder.add(amount);
     }
 

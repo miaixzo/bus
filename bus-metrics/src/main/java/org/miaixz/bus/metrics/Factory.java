@@ -64,7 +64,8 @@ public class Factory {
                     "Metrics provider SPI lookup failed: serviceClass={}, reason=not-found",
                     Provider.class.getName());
             throw new InternalException(
-                    "No metrics Provider found! Add bus-metrics native provider or configure micrometer.");
+                    "No metrics Provider found. Verify META-INF/services/org.miaixz.bus.metrics.Provider "
+                            + "is present in the bus-metrics JAR.");
         }
         Logger.debug(
                 false,

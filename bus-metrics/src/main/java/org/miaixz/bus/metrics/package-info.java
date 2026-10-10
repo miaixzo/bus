@@ -18,6 +18,11 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
+ * Core metrics SPI and compatibility facade. Factory retains the ServiceLoader chain whose default is NativeProvider;
+ * Metrics lazily exposes that default and preserves setProvider as an explicit compatibility override. Managed
+ * integrations install one provider with a guard.ProviderLease so closing one context cannot clear a newer owner.
+ * Enhanced descriptors and capabilities extend Provider through default methods, so existing implementations remain
+ * valid. No additional top-level SPI replaces Provider or Factory.
  *
  * @author Kimi Liu
  */

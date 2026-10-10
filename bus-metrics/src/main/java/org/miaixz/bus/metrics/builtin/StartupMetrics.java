@@ -19,13 +19,19 @@
 */
 package org.miaixz.bus.metrics.builtin;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.miaixz.bus.metrics.Metrics;
 import org.miaixz.bus.metrics.Provider;
-import org.miaixz.bus.metrics.observe.tag.Tag;
+import org.miaixz.bus.metrics.nimble.InstrumentKind;
+import org.miaixz.bus.metrics.nimble.MetricDescriptor;
+import org.miaixz.bus.metrics.nimble.NumberKind;
+import org.miaixz.bus.metrics.observe.tag.AttributeDescriptor;
+import org.miaixz.bus.metrics.observe.tag.Attributes;
 
 /**
  * Records framework-neutral application startup metrics through a Bus metrics provider.
@@ -38,16 +44,18 @@ public class StartupMetrics {
      * Total application startup duration metric.
      */
     public static final String STARTUP_DURATION = "application.startup.duration";
-
     /**
      * Application startup count metric.
      */
     public static final String STARTUP_COUNT = "application.startup.count";
-
     /**
      * Application startup-stage duration metric.
      */
     public static final String STARTUP_STAGE_DURATION = "application.startup.stage.duration";
+    /**
+     * Startup stage name attribute.
+     */
+    private static final AttributeDescriptor<String> STAGE = AttributeDescriptor.string("stage");
 
     /**
      * Constructs a new StartupMetrics instance.
@@ -72,6 +80,7 @@ public class StartupMetrics {
      * @param provider       metrics provider
      * @param durationMillis total startup duration in milliseconds
      * @param stages         completed startup stages
+     * @throws IllegalArgumentException if the total startup duration is negative
      */
     public static void record(Provider provider, long durationMillis, List<StartupStage> stages) {
         Objects.requireNonNull(provider, "provider");
@@ -79,12 +88,39 @@ public class StartupMetrics {
             throw new IllegalArgumentException("durationMillis must not be negative");
         }
         List<StartupStage> startupStages = List.copyOf(stages == null ? List.of() : stages);
-        provider.counter(STARTUP_COUNT).increment();
-        provider.timer(STARTUP_DURATION).record(durationMillis, TimeUnit.MILLISECONDS);
-        for (StartupStage stage : startupStages) {
-            provider.timer(STARTUP_STAGE_DURATION, Tag.of("stage", stage.name()))
-                    .record(stage.durationMillis(), TimeUnit.MILLISECONDS);
+        Map<String, StartupStage> uniqueStages = new LinkedHashMap<>();
+        startupStages.forEach(stage -> uniqueStages.putIfAbsent(stage.name(), stage));
+        Attributes empty = Attributes.empty();
+        provider.counter(
+                descriptor(STARTUP_COUNT, InstrumentKind.COUNTER, NumberKind.LONG, "{startup}", List.of()),
+                empty).increment();
+        provider.timer(descriptor(STARTUP_DURATION, InstrumentKind.TIMER, NumberKind.DOUBLE, "s", List.of()), empty)
+                .record(durationMillis, TimeUnit.MILLISECONDS);
+        for (StartupStage stage : uniqueStages.values()) {
+            Attributes attributes = Attributes.of(STAGE, stage.name());
+            provider.timer(
+                    descriptor(STARTUP_STAGE_DURATION, InstrumentKind.TIMER, NumberKind.DOUBLE, "s", List.of(STAGE)),
+                    attributes).record(stage.durationMillis(), TimeUnit.MILLISECONDS);
         }
+    }
+
+    /**
+     * Creates an application startup metric descriptor.
+     *
+     * @param name       metric name
+     * @param kind       instrument kind
+     * @param number     numeric kind
+     * @param unit       metric unit
+     * @param attributes ordered attribute schema
+     * @return metric descriptor
+     */
+    private static MetricDescriptor descriptor(
+            String name,
+            InstrumentKind kind,
+            NumberKind number,
+            String unit,
+            List<AttributeDescriptor<?>> attributes) {
+        return MetricDescriptor.of(name, kind, number, unit, "", attributes);
     }
 
 }

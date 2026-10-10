@@ -31,7 +31,8 @@ public interface Histogram {
     /**
      * Record a single observed value.
      *
-     * @param value the observed value (e.g. response size in bytes)
+     * @param value finite observed value, such as a response size in bytes
+     * @throws IllegalArgumentException when the value is not finite
      */
     void record(double value);
 
@@ -52,7 +53,7 @@ public interface Histogram {
     /**
      * Returns the maximum recorded value.
      *
-     * @return maximum recorded value
+     * @return maximum recorded value, or {@code 0} when empty
      */
     double max();
 
@@ -60,7 +61,8 @@ public interface Histogram {
      * Returns the estimated percentile value over the lifetime of this histogram.
      *
      * @param p percentile 0.0–1.0 (e.g. 0.99 for P99)
-     * @return estimated percentile value
+     * @return estimated percentile value, or {@link Double#NaN} when empty
+     * @throws IllegalArgumentException when {@code p} is outside {@code [0, 1]}
      */
     double percentile(double p);
 

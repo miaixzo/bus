@@ -18,9 +18,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * OpenTelemetry bridge: OpenTelemetryProvider maps bus-metrics types to the OTel Metrics API (Counter → LongCounter,
- * Gauge → ObservableDoubleGauge, Timer → Histogram, LlmTimer follows the GenAI SIG 2025 semantic conventions). Requires
- * {@code opentelemetry-api} on the classpath.
+ * Optional OpenTelemetry API-only adapter for active and typed observable Bus metric families. An SDK implementation
+ * may be supplied through the OpenTelemetry API interface, but this package does not import SDK types and never closes
+ * the caller-owned OpenTelemetry instance. The adapter owns only its callback registrations and does not promise a Bus
+ * text scrape or structured snapshot capability.
  *
  * @author Kimi Liu
  */

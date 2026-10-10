@@ -728,6 +728,78 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.starter.metrics.MetricsConfiguration$NativeBackendConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsConfiguration$MicrometerBackendConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsConfiguration$OpenTelemetryBackendConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsConfiguration$PrometheusBackendConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsConfiguration$JvmBinderConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsConfiguration$HostBinderConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsConfiguration$EndpointConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsConfiguration$CortexConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.starter.metrics.MetricsProperties",
       "methods": [
         {
@@ -737,15 +809,13 @@
             "java.lang.String",
             "boolean",
             "boolean",
-            "boolean",
-            "boolean",
-            "java.lang.String",
             "org.miaixz.bus.starter.metrics.MetricsProperties$Endpoint",
             "org.miaixz.bus.starter.metrics.MetricsProperties$Startup",
             "org.miaixz.bus.starter.metrics.MetricsProperties$Cardinality",
             "java.util.List",
             "org.miaixz.bus.starter.metrics.MetricsProperties$RateWindow",
-            "org.miaixz.bus.starter.metrics.MetricsProperties$Cortex"
+            "org.miaixz.bus.starter.metrics.MetricsProperties$Cortex",
+            "org.miaixz.bus.starter.metrics.MetricsProperties$Host"
           ]
         }
       ]
@@ -761,6 +831,136 @@
           "name": "<init>",
           "parameterTypes": [
             "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$Host",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "boolean",
+            "java.lang.String",
+            "java.time.Duration",
+            "org.miaixz.bus.starter.metrics.MetricsProperties$Categories",
+            "org.miaixz.bus.starter.metrics.MetricsProperties$Cpu",
+            "org.miaixz.bus.starter.metrics.MetricsProperties$Process",
+            "org.miaixz.bus.starter.metrics.MetricsProperties$Disk",
+            "org.miaixz.bus.starter.metrics.MetricsProperties$FileSystem",
+            "org.miaixz.bus.starter.metrics.MetricsProperties$Network"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$Categories",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "boolean",
+            "boolean",
+            "boolean",
+            "boolean",
+            "boolean",
+            "boolean",
+            "boolean",
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$Cpu",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$Process",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "boolean",
+            "java.time.Duration"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$Disk",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$FileSystem",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$Network",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "boolean",
+            "boolean",
+            "int"
           ]
         }
       ]
@@ -808,7 +1008,6 @@
             "boolean",
             "java.time.Duration",
             "java.lang.String",
-            "java.lang.String",
             "java.lang.String"
           ]
         }
@@ -825,6 +1024,13 @@
           "name": "<init>",
           "parameterTypes": [
             "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String"
           ]
         }
       ]

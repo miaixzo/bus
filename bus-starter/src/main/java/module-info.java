@@ -70,7 +70,6 @@ module bus.starter {
     requires static jakarta.persistence;
     requires static jakarta.servlet;
     requires static lombok;
-    requires static micrometer.core;
     requires static org.aspectj.weaver;
     requires static org.apache.httpcomponents.client5.httpclient5;
     requires static org.mongodb.driver.core;

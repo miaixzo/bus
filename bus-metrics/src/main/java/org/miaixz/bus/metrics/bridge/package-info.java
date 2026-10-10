@@ -18,9 +18,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Integration bridges to other bus modules: TempusMetrics instruments bus-tempus workflow execution (schedule latency,
- * fire count, miss count); VortexMetricsFeed pushes a live metrics snapshot to bus-vortex so the gateway can expose a
- * {@code /metricz} feed without a direct dependency on bus-metrics.
+ * Integration bridges to other bus modules. TempusMetrics instruments workflow execution and VortexMetricsFeed supplies
+ * gateway snapshots. HealthMetrics composes host-only binders over immutable Bus snapshots; bus-health is the sole
+ * production source for standard host data and no background percentage sampler is used. CortexExporter consumes only a
+ * selected provider's structured snapshot capability.
  *
  * @author Kimi Liu
  */

@@ -20,7 +20,9 @@
 package org.miaixz.bus.metrics.nimble.indigenous;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.DoubleAdder;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -72,6 +74,9 @@ class TDigest {
      * @param value the observed value (e.g. latency in nanoseconds)
      */
     void add(double value) {
+        if (!Double.isFinite(value)) {
+            throw new IllegalArgumentException("T-Digest value must be finite");
+        }
         lock.writeLock().lock();
         try {
             sumTotal.add(value);
@@ -79,11 +84,9 @@ class TDigest {
             if (value > maxValue) {
                 maxValue = value;
             }
-            // Find nearest centroid
             int nearest = findNearest(value);
             if (nearest >= 0) {
                 Centroid c = centroids.get(nearest);
-                // Check if this centroid can absorb the new value
                 double q = cumulativeCountBefore(nearest) / (double) n;
                 double limit = 4.0 * n * q * (1 - q) / COMPRESSION;
                 if (c.count < limit) {
@@ -95,7 +98,6 @@ class TDigest {
                     return;
                 }
             }
-            // Insert as new centroid in sorted order
             int idx = insertionPoint(value);
             centroids.add(idx, new Centroid(value, 1));
             if (centroids.size() > COMPRESSION * 2) {
@@ -113,6 +115,9 @@ class TDigest {
      * @return estimated value, or {@link Double#NaN} if no data has been added
      */
     double quantile(double q) {
+        if (!Double.isFinite(q) || q < 0 || q > 1) {
+            throw new IllegalArgumentException("Quantile must be between 0 and 1");
+        }
         lock.readLock().lock();
         try {
             if (centroids.isEmpty()) {
@@ -165,6 +170,47 @@ class TDigest {
     }
 
     /**
+     * Merges a snapshot of another digest without holding both digest locks concurrently.
+     *
+     * @param other source digest
+     */
+    void merge(TDigest other) {
+        TDigest source = Objects.requireNonNull(other, "Source digest must not be null");
+        if (source == this) {
+            throw new IllegalArgumentException("A T-Digest cannot merge itself");
+        }
+        List<Centroid> copied;
+        long copiedCount;
+        double copiedSum;
+        double copiedMax;
+        source.lock.readLock().lock();
+        try {
+            copied = source.centroids.stream().map(value -> new Centroid(value.mean, value.count)).toList();
+            copiedCount = source.countTotal.get();
+            copiedSum = source.sumTotal.sum();
+            copiedMax = source.maxValue;
+        } finally {
+            source.lock.readLock().unlock();
+        }
+        if (copiedCount == 0) {
+            return;
+        }
+        lock.writeLock().lock();
+        try {
+            centroids.addAll(copied);
+            centroids.sort(Comparator.comparingDouble(value -> value.mean));
+            countTotal.addAndGet(copiedCount);
+            sumTotal.add(copiedSum);
+            if (copiedMax > maxValue) {
+                maxValue = copiedMax;
+            }
+            compress();
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    /**
      * Returns the index of the centroid whose mean is nearest to {@code value}, or -1 if empty.
      *
      * @param value the value to search for
@@ -183,7 +229,6 @@ class TDigest {
                 hi = mid;
             }
         }
-        // Check lo and lo-1
         if (lo > 0 && Math.abs(centroids.get(lo - 1).mean - value) < Math.abs(centroids.get(lo).mean - value)) {
             return lo - 1;
         }

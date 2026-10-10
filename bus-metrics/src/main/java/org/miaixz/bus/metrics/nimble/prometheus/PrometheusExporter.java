@@ -19,175 +19,60 @@
 */
 package org.miaixz.bus.metrics.nimble.prometheus;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.logger.Logger;
+import java.util.Objects;
+
 import org.miaixz.bus.metrics.Provider;
-import org.miaixz.bus.metrics.magic.TimerSnapshot;
-import org.miaixz.bus.metrics.nimble.Counter;
-import org.miaixz.bus.metrics.nimble.Gauge;
-import org.miaixz.bus.metrics.nimble.Histogram;
-import org.miaixz.bus.metrics.nimble.Timer;
-import org.miaixz.bus.metrics.nimble.indigenous.NativeProvider;
-import org.miaixz.bus.metrics.observe.tag.Tag;
+import org.miaixz.bus.metrics.nimble.ScrapeSupport;
 
 /**
- * Renders metrics in Prometheus text format 0.0.4.
- * <p>
- * Supported types: Counter (_total suffix), Timer (histogram), Histogram (histogram), Gauge. SLO metrics exported as
- * gauge type.
+ * Exposes the scrape capability of a metrics provider using Prometheus text format 0.0.4.
  *
  * @author Kimi Liu
  */
 public class PrometheusExporter {
 
     /**
-     * The metrics provider to scrape; must be a {@link NativeProvider} for full export support.
+     * Content type returned by this exporter.
      */
-    private final Provider provider;
+    public static final String CONTENT_TYPE = ScrapeSupport.PROMETHEUS_TEXT_CONTENT_TYPE;
 
     /**
-     * Create an exporter backed by the given provider.
+     * Provider capability used to produce Prometheus text.
+     */
+    private final ScrapeSupport scrapeSupport;
+
+    /**
+     * Creates an exporter backed by the selected provider.
      *
-     * @param provider the metrics provider to scrape; must be a {@link NativeProvider}
+     * @param provider the provider selected by the application
+     * @throws IllegalStateException if the provider has no text scrape capability
      */
     public PrometheusExporter(Provider provider) {
-        this.provider = provider;
-    }
-
-    /**
-     * Converts a metric name to a valid Prometheus metric name by replacing dots and hyphens with underscores.
-     *
-     * @param name the original metric name
-     * @return Prometheus-compatible metric name
-     */
-    private static String prometheusName(String name) {
-        return name.replace(Symbol.C_DOT, Symbol.C_UNDERLINE).replace(Symbol.C_MINUS, Symbol.C_UNDERLINE);
-    }
-
-    /**
-     * Renders a tag array as a Prometheus label string, e.g. {@code key1="v1",key2="v2"}.
-     *
-     * @param tags the tags to render
-     * @return label string, or empty string if no tags
-     */
-    private static String labelsStr(Tag[] tags) {
-        if (tags == null || tags.length == 0) {
-            return Normal.EMPTY;
+        Provider resolved = Objects.requireNonNull(provider, "Metrics provider must not be null");
+        this.scrapeSupport = resolved.capabilities().scrape().orElseThrow(
+                () -> new IllegalStateException("Metrics provider " + resolved.getClass().getName()
+                        + " does not support Prometheus text scraping"));
+        if (!CONTENT_TYPE.equals(scrapeSupport.contentType())) {
+            throw new IllegalStateException("Unsupported metrics scrape content type: " + scrapeSupport.contentType());
         }
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < tags.length; i++) {
-            if (i > 0)
-                sb.append(Symbol.C_COMMA);
-            sb.append(tags[i].key()).append("=\"").append(tags[i].value()).append(Symbol.C_DOUBLE_QUOTES);
-        }
-        return sb.toString();
     }
 
     /**
-     * Produce a full Prometheus text-format 0.0.4 scrape payload.
+     * Returns the response content type.
      *
-     * @return the scrape body as a UTF-8 string
+     * @return Prometheus text 0.0.4 content type
+     */
+    public String contentType() {
+        return CONTENT_TYPE;
+    }
+
+    /**
+     * Produces a complete scrape from the provider's current state.
+     *
+     * @return text exposition
      */
     public String scrape() {
-        long start = System.currentTimeMillis();
-        Logger.info(
-                true,
-                "Metrics",
-                "Prometheus metrics scrape started: providerClass={}",
-                null == provider ? null : provider.getClass().getName());
-        StringBuilder sb = new StringBuilder(4096);
-        if (!(provider instanceof NativeProvider np)) {
-            Logger.warn(
-                    false,
-                    "Metrics",
-                    "Prometheus metrics scrape skipped: providerClass={}, reason=native-required",
-                    null == provider ? null : provider.getClass().getName());
-            return "# NativeProvider required for Prometheus scrape\n";
-        }
-        int counterCount = 0;
-        int timerCount = 0;
-        int histogramCount = 0;
-        int gaugeCount = 0;
-        // Counters
-        for (Counter c : np.counters()) {
-            // name is not exposed from Counter interface; use registry iteration
-            counterCount++;
-        }
-        // Export via timer snapshots
-        for (Timer t : np.timers()) {
-            TimerSnapshot snap = t.snapshot();
-            exportTimer(sb, snap);
-            timerCount++;
-        }
-        // Histograms
-        for (Histogram h : np.histograms()) {
-            TimerSnapshot snap = h.snapshot();
-            exportHistogram(sb, snap);
-            histogramCount++;
-        }
-        // Gauges
-        for (Gauge g : np.gauges()) {
-            // Gauge name not exposed directly; skip for now
-            gaugeCount++;
-        }
-        Logger.info(
-                false,
-                "Metrics",
-                "Prometheus metrics scrape finished: counters={}, timers={}, histograms={}, gauges={}, payloadChars={}, elapsedMs={}",
-                counterCount,
-                timerCount,
-                histogramCount,
-                gaugeCount,
-                sb.length(),
-                System.currentTimeMillis() - start);
-        return sb.toString();
-    }
-
-    /**
-     * Append Prometheus histogram lines for a timer snapshot (values in seconds).
-     *
-     * @param sb   output buffer
-     * @param snap timer snapshot to render
-     */
-    private void exportTimer(StringBuilder sb, TimerSnapshot snap) {
-        String baseName = prometheusName(snap.name()) + "_seconds";
-        String labels = labelsStr(snap.tags());
-
-        sb.append("# TYPE ").append(baseName).append(" histogram\n");
-        double[] bounds = snap.bucketBounds();
-        long[] counts = snap.bucketCounts();
-        for (int i = 0; i < bounds.length; i++) {
-            sb.append(baseName).append("_bucket{").append(labels.isEmpty() ? Normal.EMPTY : labels + Symbol.COMMA)
-                    .append("le=\"").append(bounds[i]).append("\"} ").append(counts[i]).append(Symbol.C_LF);
-        }
-        sb.append(baseName).append("_bucket{").append(labels.isEmpty() ? Normal.EMPTY : labels + Symbol.COMMA)
-                .append("le=\"+Inf\"} ").append(snap.count()).append(Symbol.C_LF);
-        sb.append(baseName).append("_sum")
-                .append(labels.isEmpty() ? Normal.EMPTY : Symbol.BRACE_LEFT + labels + Symbol.BRACE_RIGHT)
-                .append(Symbol.C_SPACE).append(snap.totalNanos() / 1_000_000_000.0).append(Symbol.C_LF);
-        sb.append(baseName).append("_count")
-                .append(labels.isEmpty() ? Normal.EMPTY : Symbol.BRACE_LEFT + labels + Symbol.BRACE_RIGHT)
-                .append(Symbol.C_SPACE).append(snap.count()).append(Symbol.C_LF);
-    }
-
-    /**
-     * Append Prometheus histogram lines for a distribution summary snapshot.
-     *
-     * @param sb   output buffer
-     * @param snap histogram snapshot to render
-     */
-    private void exportHistogram(StringBuilder sb, TimerSnapshot snap) {
-        String baseName = prometheusName(snap.name());
-        String labels = labelsStr(snap.tags());
-
-        sb.append("# TYPE ").append(baseName).append(" histogram\n");
-        sb.append(baseName).append("_sum")
-                .append(labels.isEmpty() ? Normal.EMPTY : Symbol.BRACE_LEFT + labels + Symbol.BRACE_RIGHT)
-                .append(Symbol.C_SPACE).append(snap.totalNanos()).append(Symbol.C_LF);
-        sb.append(baseName).append("_count")
-                .append(labels.isEmpty() ? Normal.EMPTY : Symbol.BRACE_LEFT + labels + Symbol.BRACE_RIGHT)
-                .append(Symbol.C_SPACE).append(snap.count()).append(Symbol.C_LF);
+        return scrapeSupport.scrape();
     }
 
 }
