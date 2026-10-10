@@ -25,8 +25,8 @@ import java.util.List;
 import org.miaixz.bus.core.center.date.culture.parts.AbstractTraditionalYear;
 
 /**
- * Represents a Sixty-Year Cycle year, a traditional Chinese calendar unit. This class extends {@link Loops} for
- * cyclical operations.
+ * Represents a Sixty-Year Cycle year, a traditional Chinese calendar unit. This class extends
+ * {@link AbstractTraditionalYear} for cyclical year operations.
  *
  * @author Kimi Liu
  */
