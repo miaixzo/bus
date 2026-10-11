@@ -72864,27 +72864,6 @@
   ],
   "resources": [
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.image.nimble.ICCProfile$Option"
-      },
-      "glob": "org/miaixz/bus/image/nimble/adobeRGB.icc"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.image.nimble.ICCProfile$Option"
-      },
-      "glob": "org/miaixz/bus/image/nimble/rommRGB.icc"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.image.nimble.ICCProfile$Option"
-      },
-      "glob": "org/miaixz/bus/image/nimble/sRGB.icc"
-    },
-    {
-      "glob": "ldap.properties"
-    },
-    {
       "glob": "META-INF/services/java.nio.file.spi.FileTypeDetector"
     },
     {
