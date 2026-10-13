@@ -21,6 +21,7 @@ package org.miaixz.bus.cortex;
 
 import java.util.List;
 
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -59,19 +60,19 @@ public class Watch<T> implements Change<T> {
     /**
      * Values newly observed by the subscription.
      */
-    @lombok.Builder.Default
+    @Default
     private List<T> added = List.of();
 
     /**
      * Values removed from the subscription result set.
      */
-    @lombok.Builder.Default
+    @Default
     private List<T> removed = List.of();
 
     /**
      * Values whose content changed while remaining in the result set.
      */
-    @lombok.Builder.Default
+    @Default
     private List<T> updated = List.of();
 
     /**

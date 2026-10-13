@@ -22,6 +22,7 @@ package org.miaixz.bus.cortex.setting.item;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -75,7 +76,7 @@ public class ItemScope extends Tenant {
     /**
      * Maximum number of entries to return.
      */
-    @lombok.Builder.Default
+    @Default
     private int limit = 100;
 
     /**

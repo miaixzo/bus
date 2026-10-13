@@ -105,5 +105,4 @@ public interface WatchStore {
         return Suite.of(Trait.BATCH, Trait.QUERY, Trait.DURABLE, Trait.DELETE);
     }
 
-
 }

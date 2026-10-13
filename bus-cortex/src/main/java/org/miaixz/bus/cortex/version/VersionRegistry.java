@@ -173,7 +173,7 @@ public class VersionRegistry implements Registry<VersionAssets> {
      * Deletes a version asset by version or identifier.
      *
      * @param tenantId version tenantId
-     * @param id    version identifier
+     * @param id       version identifier
      */
     @Override
     public void deregister(String tenantId, String id) {
@@ -304,7 +304,7 @@ public class VersionRegistry implements Registry<VersionAssets> {
      * Finds a release by stable-track version first, then by any matching version or asset identifier.
      *
      * @param tenantId release tenantId
-     * @param id    release version or asset identifier
+     * @param id       release version or asset identifier
      * @return matching release record or {@code null}
      */
     private VersionRecord findByVersionOrId(String tenantId, String id) {

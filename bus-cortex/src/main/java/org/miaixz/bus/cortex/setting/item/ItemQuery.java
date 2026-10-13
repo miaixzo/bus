@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex.setting.item;
 
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -46,7 +47,7 @@ public class ItemQuery extends ItemScope {
     /**
      * Explicitly opts into runtime overlays; governed delivery uses durable revisions by default.
      */
-    @lombok.Builder.Default
+    @Default
     private boolean preferOverlay = false;
 
     /**
@@ -68,7 +69,7 @@ public class ItemQuery extends ItemScope {
      */
     public Item coordinates() {
         return Item.builder().tenant_id(getTenant_id()).scope(getScope())
-                .app_id(Item.Scope.SHARED.name().equals(getScope()) ? null : getApp_id())
-                .code(code).kind(getKind()).build();
+                .app_id(Item.Scope.SHARED.name().equals(getScope()) ? null : getApp_id()).code(code).kind(getKind())
+                .build();
     }
 }

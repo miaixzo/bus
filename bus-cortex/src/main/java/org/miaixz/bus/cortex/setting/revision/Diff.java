@@ -19,27 +19,22 @@
 */
 package org.miaixz.bus.cortex.setting.revision;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.function.Function;
 
 import org.miaixz.bus.cortex.setting.item.ItemExposure;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 
 /**
- * Key-level release difference calculated from immutable revisions. Host parsers normalize JSON, YAML,
- * properties, or text into a value map before comparison; parse failures must never become empty maps.
- * JSON Pointer paths preserve dotted keys, nested arrays, null values, and structural boundaries.
+ * Key-level release difference calculated from immutable revisions. Host parsers normalize JSON, YAML, properties, or
+ * text into a value map before comparison; parse failures must never become empty maps. JSON Pointer paths preserve
+ * dotted keys, nested arrays, null values, and structural boundaries.
  */
 public final class Diff {
 
-    public enum Type { ADD, MODIFY, DELETE }
+    public enum Type {
+        ADD, MODIFY, DELETE
+    }
 
     private final String key;
     private final Type type;
@@ -53,17 +48,31 @@ public final class Diff {
         this.after = after;
     }
 
-    public String getKey() { return key; }
-    public Type getType() { return type; }
-    public Object getBefore() { return before; }
-    public Object getAfter() { return after; }
+    public String getKey() {
+        return key;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public Object getBefore() {
+        return before;
+    }
+
+    public Object getAfter() {
+        return after;
+    }
 
     /**
-     * Compares one item's revisions. Protected contents are never passed to a decoder or exposed in the result.
-     * Their immutable stored checksums determine whether a masked change exists.
+     * Compares one item's revisions. Protected contents are never passed to a decoder or exposed in the result. Their
+     * immutable stored checksums determine whether a masked change exists.
      */
-    public static List<Diff> compare(Revision before, Revision after,
-            Function<Revision, Map<String, ?>> decoder, Set<String> secretPaths) {
+    public static List<Diff> compare(
+            Revision before,
+            Revision after,
+            Function<Revision, Map<String, ?>> decoder,
+            Set<String> secretPaths) {
         if (before == null && after == null) {
             return List.of();
         }
@@ -72,8 +81,7 @@ public final class Diff {
         if (coordinate.getItem_id() == null || coordinate.getItem_id().isBlank()) {
             throw new IllegalArgumentException("Item identifier is required");
         }
-        if (before != null && after != null
-                && (!Objects.equals(before.getTenant_id(), after.getTenant_id())
+        if (before != null && after != null && (!Objects.equals(before.getTenant_id(), after.getTenant_id())
                 || !Objects.equals(before.getItem_id(), after.getItem_id()))) {
             throw new IllegalArgumentException("Difference revisions must belong to the same tenant and item");
         }
@@ -87,12 +95,15 @@ public final class Diff {
             if (!left && !right || left && right && Objects.equals(before.getChecksum(), after.getChecksum())) {
                 return List.of();
             }
-            return List.of(new Diff("/", !left ? Type.ADD : !right ? Type.DELETE : Type.MODIFY,
-                    left ? "****" : null, right ? "****" : null));
+            return List.of(
+                    new Diff("/", !left ? Type.ADD : !right ? Type.DELETE : Type.MODIFY, left ? "****" : null,
+                            right ? "****" : null));
         }
         Objects.requireNonNull(decoder, "Revision decoder is required");
-        return compare(left ? decoded(decoder.apply(before)) : Map.of(),
-                right ? decoded(decoder.apply(after)) : Map.of(), secretPaths);
+        return compare(
+                left ? decoded(decoder.apply(before)) : Map.of(),
+                right ? decoded(decoder.apply(after)) : Map.of(),
+                secretPaths);
     }
 
     private static Map<String, ?> decoded(Map<String, ?> values) {
@@ -128,13 +139,14 @@ public final class Diff {
             if (hasLeft && hasRight && Objects.equals(left.get(key), right.get(key))) {
                 continue;
             }
-            boolean secret = key.toLowerCase(java.util.Locale.ROOT).matches(
-                    ".*(password|passwd|secret|token|credential|private[_-]?key).*")
-                    || secretPaths != null && secretPaths.stream().anyMatch(path ->
-                            key.equals(path) || key.startsWith(path + "/"));
-            result.add(new Diff(key, !hasLeft ? Type.ADD : !hasRight ? Type.DELETE : Type.MODIFY,
-                    hasLeft ? secret ? "****" : left.get(key) : null,
-                    hasRight ? secret ? "****" : right.get(key) : null));
+            boolean secret = key.toLowerCase(Locale.ROOT)
+                    .matches(".*(password|passwd|secret|token|credential|private[_-]?key).*")
+                    || secretPaths != null
+                            && secretPaths.stream().anyMatch(path -> key.equals(path) || key.startsWith(path + "/"));
+            result.add(
+                    new Diff(key, !hasLeft ? Type.ADD : !hasRight ? Type.DELETE : Type.MODIFY,
+                            hasLeft ? secret ? "****" : left.get(key) : null,
+                            hasRight ? secret ? "****" : right.get(key) : null));
         }
         return Collections.unmodifiableList(result);
     }

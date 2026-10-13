@@ -45,7 +45,7 @@ public interface RegistryBatchOperations extends RegistryOperations {
      * Deletes one entry using the snapshot already resolved for the current batch.
      *
      * @param type     registry type
-     * @param tenantId    tenantId
+     * @param tenantId tenantId
      * @param id       asset identifier
      * @param existing existing snapshot
      */

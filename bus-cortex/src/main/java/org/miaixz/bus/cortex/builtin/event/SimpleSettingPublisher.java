@@ -28,8 +28,8 @@ import org.miaixz.bus.cortex.setting.delivery.RuntimeItemOverlayPublisher;
 import org.miaixz.bus.cortex.setting.item.Item;
 
 /**
- * Cache-backed runtime publisher without revision history.
- * Use {@link SettingPublisher} for revision-tracked publication.
+ * Cache-backed runtime publisher without revision history. Use {@link SettingPublisher} for revision-tracked
+ * publication.
  *
  * @author Kimi Liu
  */

@@ -24,13 +24,14 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.basic.entity.Tenant;
+import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 
 /**
  * Directed relationship between service-center resources within one tenant.
  * <p>
  * Shared configuration references use {@link Type#ITEM_APP}; application-owned items use their own application
- * identifier instead of an additional relationship. Rollout application selection uses {@link Type#ROLLOUT_APP},
- * while configuration membership uses {@link Type#ROLLOUT_ITEM}.
+ * identifier instead of an additional relationship. Rollout application selection uses {@link Type#ROLLOUT_APP}, while
+ * configuration membership uses {@link Type#ROLLOUT_ITEM}.
  *
  * @author Kimi Liu
  */
@@ -71,7 +72,7 @@ public class Reference extends Tenant {
 
     /** Validates coordinates and prevents release membership from carrying reference-only options. */
     public Reference validate() {
-        org.miaixz.bus.cortex.setting.item.ItemNormalizer.requireTenant(getTenant_id());
+        ItemNormalizer.requireTenant(getTenant_id());
         if (source_id == null || source_id.isBlank() || target_id == null || target_id.isBlank()) {
             throw new IllegalArgumentException("Relationship endpoints are required");
         }

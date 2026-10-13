@@ -147,8 +147,9 @@ public final class ItemNormalizer {
             throw new IllegalArgumentException("A configuration code is required");
         }
         if (item.getScope() == null || item.getScope().isBlank()) {
-            item.setScope(item.getApp_id() == null || item.getApp_id().isBlank()
-                    ? Item.Scope.SHARED.name() : Item.Scope.APPLICATION.name());
+            item.setScope(
+                    item.getApp_id() == null || item.getApp_id().isBlank() ? Item.Scope.SHARED.name()
+                            : Item.Scope.APPLICATION.name());
         }
         Item.Scope scope = Item.Scope.valueOf(item.getScope());
         if (scope == Item.Scope.APPLICATION && (item.getApp_id() == null || item.getApp_id().isBlank())) {

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex.version;
 
+import java.time.Clock;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -29,6 +30,9 @@ import org.miaixz.bus.cortex.guard.GuardContext;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
 import org.miaixz.bus.cortex.magic.event.CortexChangeRecord;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
+import org.miaixz.bus.cortex.setting.rollout.Plan;
+import org.miaixz.bus.cortex.setting.rollout.Rollout;
+import org.miaixz.bus.cortex.setting.rollout.Rollout.State;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -147,15 +151,15 @@ public class VersionPublisher {
     }
 
     /**
-     * Creates a server-versioned release draft. The supplied creator must be the authenticated operator,
-     * and the host must not expose caller-controlled creator or version fields.
+     * Creates a server-versioned release draft. The supplied creator must be the authenticated operator, and the host
+     * must not expose caller-controlled creator or version fields.
      */
     public VersionRecord create(VersionRecord record) {
         if (record == null || record.getVersion() != null) {
             throw new IllegalArgumentException("A new draft cannot supply its own version");
         }
         VersionRecord draft = JsonKit.toPojo(JsonKit.toJsonString(record), VersionRecord.class);
-        draft.setVersion(VersionRecord.generate(java.time.Clock.systemDefaultZone()));
+        draft.setVersion(VersionRecord.generate(Clock.systemDefaultZone()));
         draft = prepare(draft, VersionStatus.DRAFT, false);
         enforce("draft", draft);
         VersionRecord saved = store.create(draft);
@@ -178,13 +182,12 @@ public class VersionPublisher {
     }
 
     /**
-     * Prepares the platform version for a frozen approved batch, without changing the active version.
-     * The host must atomically persist it with selected application pointers and its durable notification outbox.
+     * Prepares the platform version for a frozen approved batch, without changing the active version. The host must
+     * atomically persist it with selected application pointers and its durable notification outbox.
      */
-    public VersionRecord preparePublication(org.miaixz.bus.cortex.setting.rollout.Rollout rollout) {
-        org.miaixz.bus.cortex.setting.rollout.Plan plan =
-                org.miaixz.bus.cortex.setting.rollout.Plan.restore(rollout);
-        if (!org.miaixz.bus.cortex.setting.rollout.Rollout.State.PUBLISHING.name().equals(rollout.getState())) {
+    public VersionRecord preparePublication(Rollout rollout) {
+        Plan plan = Plan.restore(rollout);
+        if (!State.PUBLISHING.name().equals(rollout.getState())) {
             throw new IllegalArgumentException("Publication requires an approved execution intent");
         }
         VersionRecord active = store.current(plan.getTenant_id(), ReleaseTrack.normalize(null));
@@ -218,8 +221,8 @@ public class VersionPublisher {
     }
 
     /**
-     * Publishes a release and makes it current for its track.
-     * Compatibility workflow only; governed application batches use preparePublication and atomic host activation.
+     * Publishes a release and makes it current for its track. Compatibility workflow only; governed application batches
+     * use preparePublication and atomic host activation.
      *
      * @param record release record
      * @return persisted active release record
@@ -240,9 +243,9 @@ public class VersionPublisher {
     /**
      * Publishes a new version containing historical artifacts without rewriting the historical target.
      *
-     * @param tenantId   release tenantId
-     * @param track   release track
-     * @param version target release version
+     * @param tenantId release tenantId
+     * @param track    release track
+     * @param version  target release version
      * @return persisted rollback target or {@code null}
      */
     @Deprecated(since = "8.8.0")
@@ -259,7 +262,7 @@ public class VersionPublisher {
         restored.setPublished(null);
         restored.setCreated(System.currentTimeMillis());
         attachRollbackMetadata(restored, previous);
-        restored.setVersion(VersionRecord.generate(java.time.Clock.systemDefaultZone()));
+        restored.setVersion(VersionRecord.generate(Clock.systemDefaultZone()));
         restored.setVersionStatus(VersionStatus.DRAFT);
         store.create(restored);
         VersionRecord saved = store.setCurrent(tenantId, normalizedTrack, restored.getVersion());
@@ -271,9 +274,9 @@ public class VersionPublisher {
     /**
      * Deletes a release record.
      *
-     * @param tenantId   release tenantId
-     * @param track   release track
-     * @param version release version
+     * @param tenantId release tenantId
+     * @param track    release track
+     * @param version  release version
      * @return deleted release record or {@code null}
      */
     public VersionRecord delete(String tenantId, String track, String version) {
@@ -287,7 +290,7 @@ public class VersionPublisher {
      * Resolves the current release for a tenantId and track.
      *
      * @param tenantId release tenantId
-     * @param track release track
+     * @param track    release track
      * @return current release record or {@code null}
      */
     public VersionRecord resolveCurrent(String tenantId, String track) {
@@ -506,11 +509,11 @@ public class VersionPublisher {
     /**
      * Applies guard policy to one version-domain action.
      *
-     * @param action  guarded action
-     * @param tenantId   release tenantId
-     * @param track   release track
-     * @param version release version
-     * @param status  release status
+     * @param action   guarded action
+     * @param tenantId release tenantId
+     * @param track    release track
+     * @param version  release version
+     * @param status   release status
      */
     private void enforce(String action, String tenantId, String track, String version, VersionStatus status) {
         if (cortexGuard == null) {

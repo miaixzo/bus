@@ -27,9 +27,9 @@ import lombok.experimental.SuperBuilder;
  * Shared base class for objects in the setting domain.
  * <p>
  * Service-center resources such as {@code setting.item.Item}, {@code setting.revision.Revision}, and
- * {@code setting.app.App} own their fields and inherit tenant scope directly. This base keeps the shared identity
- * and audit skeleton inherited from {@link Nature}, plus a small descriptive field
- * reused across setting-domain resources. The inherited {@code type} field is the single resource-type source of truth.
+ * {@code setting.app.App} own their fields and inherit tenant scope directly. This base keeps the shared identity and
+ * audit skeleton inherited from {@link Nature}, plus a small descriptive field reused across setting-domain resources.
+ * The inherited {@code type} field is the single resource-type source of truth.
  * </p>
  *
  * @author Kimi Liu

@@ -125,6 +125,7 @@ public class Rollout extends Tenant {
 
     /** Supported rollout workflow states. */
     public enum State {
+
         /** Editable publication plan. */
         DRAFT,
         /** Frozen plan awaiting approval decisions. */

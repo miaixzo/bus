@@ -42,7 +42,9 @@ public interface Curator {
         if (queries != null) {
             for (ItemQuery query : queries) {
                 if (query != null) {
-                    result.put(SettingGenerator.INSTANCE.key(Keying.SettingSpec.export(query.coordinates())), get(query));
+                    result.put(
+                            SettingGenerator.INSTANCE.key(Keying.SettingSpec.export(query.coordinates())),
+                            get(query));
                 }
             }
         }

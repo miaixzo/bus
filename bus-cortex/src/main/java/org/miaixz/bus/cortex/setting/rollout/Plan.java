@@ -19,23 +19,20 @@
 */
 package org.miaixz.bus.cortex.setting.rollout;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import org.miaixz.bus.cortex.setting.item.GrayRule;
+import org.miaixz.bus.cortex.setting.item.GrayType;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 import org.miaixz.bus.cortex.setting.reference.Reference;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**
- * Immutable application release manifest. Selected applications replace their complete baseline manifests;
- * unselected applications retain their baseline revisions. Deletions use exact tombstone revision identifiers.
- * Relationship and approval inputs are frozen by value.
- * The host commits this manifest, approvals, version activation, and notification outbox in one transaction.
+ * Immutable application release manifest. Selected applications replace their complete baseline manifests; unselected
+ * applications retain their baseline revisions. Deletions use exact tombstone revision identifiers. Relationship and
+ * approval inputs are frozen by value. The host commits this manifest, approvals, version activation, and notification
+ * outbox in one transaction.
  */
 public final class Plan {
 
@@ -51,8 +48,8 @@ public final class Plan {
     private final String checksum;
 
     /**
-     * Freezes exact revision identifiers, never dynamic LATEST lookups. A deletion must freeze its tombstone
-     * revision rather than silently omit an item. Shared-source changes alone never activate consumers.
+     * Freezes exact revision identifiers, never dynamic LATEST lookups. A deletion must freeze its tombstone revision
+     * rather than silently omit an item. Shared-source changes alone never activate consumers.
      */
     public Plan(String tenant, String baseline, String version, String mode, String policy, GrayRule rule,
             Map<String, Map<String, String>> previous, Map<String, Map<String, String>> selected,
@@ -75,8 +72,7 @@ public final class Plan {
         }
         if (rule != null) {
             rule.validate();
-            if (rule.getType() == org.miaixz.bus.cortex.setting.item.GrayType.TENANT
-                    && !tenant.equals(rule.getTenant())) {
+            if (rule.getType() == GrayType.TENANT && !tenant.equals(rule.getTenant())) {
                 throw new IllegalArgumentException("Gray selector cannot target a different tenant");
             }
         }
@@ -110,8 +106,9 @@ public final class Plan {
             value.put("source_id", reference.getSource_id());
             value.put("target_id", reference.getTarget_id());
             value.put("alias", reference.getAlias());
-            value.put("strategy", reference.getStrategy() == null ? Reference.Strategy.LATEST.name()
-                    : reference.getStrategy());
+            value.put(
+                    "strategy",
+                    reference.getStrategy() == null ? Reference.Strategy.LATEST.name() : reference.getStrategy());
             if (reference.getRevision_id() != null) {
                 value.put("revision_id", reference.getRevision_id());
             }
@@ -169,12 +166,29 @@ public final class Plan {
         return JsonKit.toJsonString(value);
     }
 
-    public String getTenant_id() { return tenant; }
-    public String getBaseline() { return baseline; }
-    public String getVersion() { return version; }
-    public String getChecksum() { return checksum; }
-    public Map<String, Map<String, String>> getApplications() { return applications; }
-    public Map<String, Map<String, String>> getSelected() { return selected; }
+    public String getTenant_id() {
+        return tenant;
+    }
+
+    public String getBaseline() {
+        return baseline;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public String getChecksum() {
+        return checksum;
+    }
+
+    public Map<String, Map<String, String>> getApplications() {
+        return applications;
+    }
+
+    public Map<String, Map<String, String>> getSelected() {
+        return selected;
+    }
 
     /** Rebuilds a frozen plan after restart and rejects corrupted or re-serialized approval inputs. */
     @SuppressWarnings("unchecked")
@@ -184,13 +198,15 @@ public final class Plan {
             throw new IllegalArgumentException("Persisted publication manifest is missing or corrupted");
         }
         Map<String, Object> root = JsonKit.toPojo(rollout.getManifest(), Map.class);
-        List<Reference> references = new java.util.ArrayList<>();
+        List<Reference> references = new ArrayList<>();
         Map<String, Map<String, String>> stored = JsonKit.toPojo((String) root.get("references"), Map.class);
         for (Map<String, String> value : stored.values()) {
-            references.add(Reference.builder().tenant_id(rollout.getTenant_id()).source_id(value.get("source_id"))
-                    .target_id(value.get("target_id")).type(Reference.Type.ITEM_APP.name()).alias(value.get("alias"))
-                    .strategy(value.get("strategy")).revision_id(value.get("revision_id"))
-                    .edition(value.get("edition") == null ? null : Long.valueOf(value.get("edition"))).build());
+            references.add(
+                    Reference.builder().tenant_id(rollout.getTenant_id()).source_id(value.get("source_id"))
+                            .target_id(value.get("target_id")).type(Reference.Type.ITEM_APP.name())
+                            .alias(value.get("alias")).strategy(value.get("strategy"))
+                            .revision_id(value.get("revision_id"))
+                            .edition(value.get("edition") == null ? null : Long.valueOf(value.get("edition"))).build());
         }
         String rule = (String) root.get("rule");
         Plan plan = new Plan((String) root.get("tenant_id"), (String) root.get("baseline"),
@@ -204,10 +220,9 @@ public final class Plan {
 
     /** Rejects mutation, stale approval, or a publication under another tenant. */
     public void verify(Rollout rollout) {
-        if (rollout == null || !tenant.equals(rollout.getTenant_id())
-                || !checksum.equals(rollout.getChecksum()) || !toJson().equals(rollout.getManifest())
-                || !mode.equals(rollout.getMode()) || !policy.equals(rollout.getPolicy())
-                || !java.util.Objects.equals(rule, rollout.getRule())) {
+        if (rollout == null || !tenant.equals(rollout.getTenant_id()) || !checksum.equals(rollout.getChecksum())
+                || !toJson().equals(rollout.getManifest()) || !mode.equals(rollout.getMode())
+                || !policy.equals(rollout.getPolicy()) || !Objects.equals(rule, rollout.getRule())) {
             throw new IllegalArgumentException("Publication no longer matches its frozen plan");
         }
     }

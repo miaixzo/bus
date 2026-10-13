@@ -34,6 +34,12 @@ import org.miaixz.bus.cortex.setting.item.*;
 import org.miaixz.bus.cortex.setting.reference.ReferenceStore;
 import org.miaixz.bus.cortex.setting.revision.Revision;
 import org.miaixz.bus.cortex.setting.revision.RevisionStore;
+import org.miaixz.bus.cortex.setting.rollout.Plan;
+import org.miaixz.bus.cortex.setting.rollout.Rollout;
+import org.miaixz.bus.cortex.setting.rollout.Rollout.Mode;
+import org.miaixz.bus.cortex.setting.rollout.Rollout.State;
+import org.miaixz.bus.cortex.setting.rollout.RolloutStore;
+import org.miaixz.bus.extra.json.JsonKit;
 
 /** Provides tenant-scoped configuration reads, publication, and revision history. */
 public class ItemCuratorService {
@@ -45,7 +51,7 @@ public class ItemCuratorService {
     private final SettingEnforcer enforcer;
     private final CortexGuard cortexGuard;
     private final Keying<SettingSpec> keying;
-    private final org.miaixz.bus.cortex.setting.rollout.RolloutStore rolloutStore;
+    private final RolloutStore rolloutStore;
 
     @Deprecated(since = "8.8.0", forRemoval = true)
     public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore,
@@ -60,17 +66,15 @@ public class ItemCuratorService {
         this(entryStore, revisionStore, resolver, publisher, null, enforcer, cortexGuard, keying);
     }
 
-    public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore,
-            ItemValueResolver resolver, SettingPublisher publisher) {
+    public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore, ItemValueResolver resolver,
+            SettingPublisher publisher) {
         this(entryStore, revisionStore, resolver, publisher, null, null, null, SettingGenerator.INSTANCE);
     }
 
-    public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore,
-            ItemValueResolver resolver, SettingPublisher publisher,
-            org.miaixz.bus.cortex.setting.rollout.RolloutStore rolloutStore,
-            SettingEnforcer enforcer, CortexGuard cortexGuard, Keying<SettingSpec> keying) {
-        if (entryStore == null || revisionStore == null || resolver == null
-                || publisher == null) {
+    public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore, ItemValueResolver resolver,
+            SettingPublisher publisher, RolloutStore rolloutStore, SettingEnforcer enforcer, CortexGuard cortexGuard,
+            Keying<SettingSpec> keying) {
+        if (entryStore == null || revisionStore == null || resolver == null || publisher == null) {
             throw new IllegalArgumentException("Item curator dependencies are required");
         }
         this.rolloutStore = rolloutStore;
@@ -113,7 +117,11 @@ public class ItemCuratorService {
         if (prepared == null || !allows(prepared)) {
             return null;
         }
-        requireAllowed("read", prepared.getTenant_id(), prepared.getApp_id(), prepared.getScope(),
+        requireAllowed(
+                "read",
+                prepared.getTenant_id(),
+                prepared.getApp_id(),
+                prepared.getScope(),
                 keying.key(SettingSpec.scope(prepared.coordinates())));
         Item item = entryStore.find(prepared.coordinates());
         return item != null && entryStore.visibleToApp(item, prepared.getApp_id()) ? item : null;
@@ -267,24 +275,20 @@ public class ItemCuratorService {
             if (rolloutStore == null || item.getRollout_id() == null) {
                 throw new IllegalStateException("Gray delivery requires a tenant-scoped rollout store");
             }
-            org.miaixz.bus.cortex.setting.rollout.Rollout rollout = rolloutStore.find(
-                    org.miaixz.bus.cortex.setting.rollout.Rollout.builder()
-                            .tenant_id(item.getTenant_id()).id(item.getRollout_id()).build());
+            Rollout rollout = rolloutStore
+                    .find(Rollout.builder().tenant_id(item.getTenant_id()).id(item.getRollout_id()).build());
             if (rollout == null || !item.getTenant_id().equals(rollout.getTenant_id())
-                    || !org.miaixz.bus.cortex.setting.rollout.Rollout.State.PUBLISHED.name().equals(rollout.getState())
-                    || !org.miaixz.bus.cortex.setting.rollout.Rollout.Mode.GRAY.name().equals(rollout.getMode())
+                    || !State.PUBLISHED.name().equals(rollout.getState()) || !Mode.GRAY.name().equals(rollout.getMode())
                     || rollout.getRule() == null) {
                 throw new IllegalStateException("No active frozen gray publication exists");
             }
-            org.miaixz.bus.cortex.setting.rollout.Plan frozen =
-                    org.miaixz.bus.cortex.setting.rollout.Plan.restore(rollout);
+            Plan frozen = Plan.restore(rollout);
             if (!frozen.includes(item.getApp_id(), item.getId(), item.getGray_id())) {
                 throw new IllegalStateException("Gray revision is outside the frozen application scope");
             }
-            GrayRequestContext trusted = org.miaixz.bus.extra.json.JsonKit.toPojo(
-                    org.miaixz.bus.extra.json.JsonKit.toJsonString(context), GrayRequestContext.class);
+            GrayRequestContext trusted = JsonKit.toPojo(JsonKit.toJsonString(context), GrayRequestContext.class);
             trusted.setTenant(item.getTenant_id());
-            GrayRule rule = org.miaixz.bus.extra.json.JsonKit.toPojo(rollout.getRule(), GrayRule.class);
+            GrayRule rule = JsonKit.toPojo(rollout.getRule(), GrayRule.class);
             if (new GrayRuleMatcher().matches(rule, trusted)) {
                 id = item.getGray_id();
             }
@@ -300,17 +304,21 @@ public class ItemCuratorService {
             return null;
         }
         Item active = Item.builder().id(item.getId()).tenant_id(item.getTenant_id()).scope(item.getScope())
-                .app_id(item.getApp_id()).kind(item.getKind()).code(item.getCode())
-                .content(snapshot.getContent()).format(snapshot.getFormat()).editor(snapshot.getEditor())
-                .payload(snapshot.getPayload()).source(snapshot.getSource()).spec(snapshot.getSpec())
-                .exposure(snapshot.getExposure()).encrypted(snapshot.getEncrypted()).labels(snapshot.getLabels())
-                .extension(snapshot.getExtension()).checksum(snapshot.getChecksum()).build();
+                .app_id(item.getApp_id()).kind(item.getKind()).code(item.getCode()).content(snapshot.getContent())
+                .format(snapshot.getFormat()).editor(snapshot.getEditor()).payload(snapshot.getPayload())
+                .source(snapshot.getSource()).spec(snapshot.getSpec()).exposure(snapshot.getExposure())
+                .encrypted(snapshot.getEncrypted()).labels(snapshot.getLabels()).extension(snapshot.getExtension())
+                .checksum(snapshot.getChecksum()).build();
         return active;
     }
 
     private void requireAllowed(String action, Item coordinates) {
         ItemNormalizer.coordinates(coordinates);
-        requireAllowed(action, coordinates.getTenant_id(), coordinates.getApp_id(), coordinates.getScope(),
+        requireAllowed(
+                action,
+                coordinates.getTenant_id(),
+                coordinates.getApp_id(),
+                coordinates.getScope(),
                 keying.key(SettingSpec.scope(coordinates)));
     }
 

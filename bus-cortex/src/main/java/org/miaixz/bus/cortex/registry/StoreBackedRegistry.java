@@ -29,6 +29,7 @@ import org.miaixz.bus.cortex.Vector;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
 import org.miaixz.bus.cortex.magic.event.CortexChangeRecord;
+import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.identity.Sequence;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -137,14 +138,14 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      * Finds a single entry by tenantId and ID.
      *
      * @param tenantId tenantId
-     * @param id    identifier
+     * @param id       identifier
      * @return matching entry or {@code null}
      */
     public T find(String tenantId, String id) {
         String resolvedTenant = normalizeTenant(tenantId);
         T cached = deserialize(cacheX.read(keying.key(Keying.RegistrySpec.entry(resolvedTenant, registryType, id))));
         if (cached != null) {
-            org.miaixz.bus.cortex.magic.identity.CortexIdentity.requireTenant(resolvedTenant, cached.getTenant_id());
+            CortexIdentity.requireTenant(resolvedTenant, cached.getTenant_id());
             if (cached.getType() == null) {
                 cached.setType(registryType.key());
             }
@@ -157,7 +158,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         if (loaded == null) {
             return null;
         }
-        org.miaixz.bus.cortex.magic.identity.CortexIdentity.requireTenant(resolvedTenant, loaded.getTenant_id());
+        CortexIdentity.requireTenant(resolvedTenant, loaded.getTenant_id());
         T prepared = normalizeEntry(loaded);
         cacheEntry(prepared);
         return prepared;
@@ -167,7 +168,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      * Reloads a single entry from the durable store into cache without emitting a mutation event.
      *
      * @param tenantId entry tenantId
-     * @param id    entry identifier
+     * @param id       entry identifier
      * @return refreshed entry, or {@code null} when the entry no longer exists in the durable store
      */
     public T refresh(String tenantId, String id) {
@@ -183,7 +184,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
             cacheX.remove(keying.key(Keying.RegistrySpec.entry(resolvedTenant, registryType, id)));
             return null;
         }
-        org.miaixz.bus.cortex.magic.identity.CortexIdentity.requireTenant(resolvedTenant, loaded.getTenant_id());
+        CortexIdentity.requireTenant(resolvedTenant, loaded.getTenant_id());
         T prepared = normalizeEntry(loaded);
         cacheEntry(prepared);
         return prepared;
@@ -192,10 +193,10 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     /**
      * Reloads a single entry by method and version when the durable store supports that lookup mode.
      *
-     * @param tenantId   tenantId containing the entry
-     * @param app_id  application identifier
-     * @param method  route method
-     * @param version route version
+     * @param tenantId tenantId containing the entry
+     * @param app_id   application identifier
+     * @param method   route method
+     * @param version  route version
      * @return refreshed entry, or {@code null} when not found
      */
     public T refreshByMethodVersion(String tenantId, String app_id, String method, String version) {
@@ -212,7 +213,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         if (loaded == null) {
             return null;
         }
-        org.miaixz.bus.cortex.magic.identity.CortexIdentity.requireTenant(resolvedTenant, loaded.getTenant_id());
+        CortexIdentity.requireTenant(resolvedTenant, loaded.getTenant_id());
         T prepared = normalizeEntry(loaded);
         cacheEntry(prepared);
         return prepared;
@@ -222,7 +223,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      * Removes a cached entry without mutating the durable store.
      *
      * @param tenantId entry tenantId
-     * @param id    entry identifier
+     * @param id       entry identifier
      */
     public void evict(String tenantId, String id) {
         if (id == null) {
@@ -256,7 +257,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         }
         List<T> result = new ArrayList<>(entries.size());
         for (T entry : entries) {
-            org.miaixz.bus.cortex.magic.identity.CortexIdentity.requireTenant(criteria.getTenant_id(), entry.getTenant_id());
+            CortexIdentity.requireTenant(criteria.getTenant_id(), entry.getTenant_id());
             T prepared = normalizeEntry(entry);
             cacheEntry(prepared);
             result.add(prepared);
@@ -333,7 +334,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         }
         T prepared = normalizeEntry(entry);
         if (existing != null) {
-            org.miaixz.bus.cortex.magic.identity.CortexIdentity.requireTenant(prepared.getTenant_id(), existing.getTenant_id());
+            CortexIdentity.requireTenant(prepared.getTenant_id(), existing.getTenant_id());
         }
         T previous = existing == null ? null : normalizeEntry(existing);
         persistEntry(prepared, null, previous);
@@ -349,7 +350,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      * Removes an entry from the durable store and cache, then emits a deregistration event.
      *
      * @param tenantId entry tenantId
-     * @param id    entry identifier
+     * @param id       entry identifier
      */
     @Override
     public void deregister(String tenantId, String id) {
@@ -369,7 +370,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     /**
      * Removes an entry using the existing snapshot already resolved by a batch operation.
      *
-     * @param tenantId    entry tenantId
+     * @param tenantId entry tenantId
      * @param id       entry identifier
      * @param existing existing snapshot
      */
@@ -379,7 +380,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
             cacheX.remove(keying.key(Keying.RegistrySpec.entry(resolvedTenant, registryType, id)));
             return;
         }
-        org.miaixz.bus.cortex.magic.identity.CortexIdentity.requireTenant(resolvedTenant, existing.getTenant_id());
+        CortexIdentity.requireTenant(resolvedTenant, existing.getTenant_id());
         T previous = normalizeEntry(existing);
         long tombstoneTime = System.currentTimeMillis();
         deleteEntry(resolvedTenant, id, previous);
@@ -410,7 +411,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         }
         List<T> result = new ArrayList<>(entries.size());
         for (T entry : entries) {
-            org.miaixz.bus.cortex.magic.identity.CortexIdentity.requireTenant(criteria.getTenant_id(), entry.getTenant_id());
+            CortexIdentity.requireTenant(criteria.getTenant_id(), entry.getTenant_id());
             T prepared = normalizeEntry(entry);
             cacheEntry(prepared);
             result.add(prepared);
@@ -654,7 +655,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      * Deletes one entry through the compatibility path used by registry subclasses.
      *
      * @param tenantId tenantId
-     * @param id    entry identifier
+     * @param id       entry identifier
      */
     protected void deleteEntry(String tenantId, String id) {
         T existing = store == null ? null : store.find(registryType, tenantId, id);
@@ -664,7 +665,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     /**
      * Deletes the entry from durable state and local cache.
      *
-     * @param tenantId    tenantId
+     * @param tenantId tenantId
      * @param id       entry identifier
      * @param existing existing snapshot
      */
@@ -779,10 +780,10 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     /**
      * Finds one cached entry by route identity.
      *
-     * @param tenantId   tenantId
-     * @param app_id  application identifier
-     * @param method  method or route name
-     * @param version route version
+     * @param tenantId tenantId
+     * @param app_id   application identifier
+     * @param method   method or route name
+     * @param version  route version
      * @return cached entry or {@code null}
      */
     private T findCachedByRoute(String tenantId, String app_id, String method, String version) {
@@ -793,7 +794,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         for (Object value : raw.values()) {
             T entry = deserialize(value);
             if (entry != null) {
-                org.miaixz.bus.cortex.magic.identity.CortexIdentity.requireTenant(tenantId, entry.getTenant_id());
+                CortexIdentity.requireTenant(tenantId, entry.getTenant_id());
             }
             if (entry != null && Objects.equals(app_id, entry.getApp_id()) && Objects.equals(method, entry.getMethod())
                     && Objects.equals(version, entry.getVersion())) {

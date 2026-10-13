@@ -22,6 +22,8 @@ package org.miaixz.bus.cortex.setting.item;
 import java.util.Map;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.cortex.setting.instance.Instance;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -55,8 +57,9 @@ public class GrayRuleMatcher {
         return switch (rule.getType()) {
             case IP_LIST -> rule.getIpList() != null && rule.getIpList().contains(context.getClientIp());
             case IP_RANGE -> matchesRange(rule.getIpRange(), context.getClientIp());
-            case PERCENTAGE -> matchesPercentage(rule.getPercentage(), context.getFingerprint() == null
-                    ? context.getClientIp() : context.getFingerprint());
+            case PERCENTAGE -> matchesPercentage(
+                    rule.getPercentage(),
+                    context.getFingerprint() == null ? context.getClientIp() : context.getFingerprint());
             case HEADER -> matchesHeader(rule, context.headerView());
             case TENANT -> rule.getTenant() != null && rule.getTenant().equals(context.getTenant());
             case USER -> rule.getUserId() != null && rule.getUserId().equals(context.getUserId());
@@ -65,17 +68,21 @@ public class GrayRuleMatcher {
         };
     }
 
-    /** Matches only trusted instance identity; request headers and user identity cannot select client configurations. */
+    /**
+     * Matches only trusted instance identity; request headers and user identity cannot select client configurations.
+     */
     @SuppressWarnings("unchecked")
-    public boolean matchesInstance(GrayRule rule, org.miaixz.bus.cortex.setting.instance.Instance instance) {
+    public boolean matchesInstance(GrayRule rule, Instance instance) {
         if (rule == null || instance == null || instance.getTenant_id() == null || instance.getFingerprint() == null) {
             return false;
         }
         rule.validate();
         Map<String, String> labels = instance.getLabels() == null ? Map.of()
-                : org.miaixz.bus.extra.json.JsonKit.toPojo(instance.getLabels(), Map.class);
-        return matches(rule, GrayRequestContext.builder().clientIp(instance.getHost())
-                .tenant(instance.getTenant_id()).fingerprint(instance.getFingerprint()).labels(labels).build());
+                : JsonKit.toPojo(instance.getLabels(), Map.class);
+        return matches(
+                rule,
+                GrayRequestContext.builder().clientIp(instance.getHost()).tenant(instance.getTenant_id())
+                        .fingerprint(instance.getFingerprint()).labels(labels).build());
     }
 
     /** Validates an ordered IPv4 selector without normalizing invalid ranges. */

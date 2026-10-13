@@ -140,16 +140,16 @@ public interface VersionStore {
     VersionRecord save(VersionRecord record);
 
     /**
-     * Atomically inserts a release without replacing an existing tenant/track/version.
-     * Implementations must provide a uniqueness constraint; a read-then-save default would be unsafe.
+     * Atomically inserts a release without replacing an existing tenant/track/version. Implementations must provide a
+     * uniqueness constraint; a read-then-save default would be unsafe.
      */
     default VersionRecord create(VersionRecord record) {
         throw new UnsupportedOperationException("Atomic version insertion is not implemented");
     }
 
     /**
-     * Atomically inserts and activates a frozen platform version only if the active version equals the baseline.
-     * The host transaction must also commit all selected application pointers, rollout completion, and outbox events.
+     * Atomically inserts and activates a frozen platform version only if the active version equals the baseline. The
+     * host transaction must also commit all selected application pointers, rollout completion, and outbox events.
      * Retrying the same version and identical frozen manifest is idempotent; a changed manifest is a conflict.
      * Cache-backed fallbacks deliberately do not emulate a multi-resource database transaction.
      */
@@ -160,9 +160,9 @@ public interface VersionStore {
     /**
      * Finds a release record by tenantId, version, and release track.
      *
-     * @param tenantId   release tenantId
-     * @param version release version
-     * @param track   release track
+     * @param tenantId release tenantId
+     * @param version  release version
+     * @param track    release track
      * @return matching release record or {@code null}
      */
     VersionRecord find(String tenantId, String version, String track);
@@ -171,7 +171,7 @@ public interface VersionStore {
      * Lists release records within a tenantId and optional release track.
      *
      * @param tenantId release tenantId
-     * @param track release track, or {@code null} to list every track
+     * @param track    release track, or {@code null} to list every track
      * @return matching release records
      */
     List<VersionRecord> list(String tenantId, String track);
@@ -179,9 +179,9 @@ public interface VersionStore {
     /**
      * Deletes a release record by tenantId, version, and release track.
      *
-     * @param tenantId   release tenantId
-     * @param version release version
-     * @param track   release track
+     * @param tenantId release tenantId
+     * @param version  release version
+     * @param track    release track
      * @return deleted release record or {@code null}
      */
     VersionRecord delete(String tenantId, String version, String track);
@@ -190,7 +190,7 @@ public interface VersionStore {
      * Returns the current active release for a tenantId and track.
      *
      * @param tenantId release tenantId
-     * @param track release track
+     * @param track    release track
      * @return active release record or {@code null}
      */
     default VersionRecord current(String tenantId, String track) {
@@ -202,9 +202,9 @@ public interface VersionStore {
     /**
      * Marks one release version as current and deprecates the previous active version.
      *
-     * @param tenantId   release tenantId
-     * @param track   release track
-     * @param version release version
+     * @param tenantId release tenantId
+     * @param track    release track
+     * @param version  release version
      * @return persisted current release or {@code null}
      */
     default VersionRecord setCurrent(String tenantId, String track, String version) {
@@ -231,7 +231,7 @@ public interface VersionStore {
     /**
      * Promotes a release from one track to another and makes it current on the target track.
      *
-     * @param tenantId       release tenantId
+     * @param tenantId    release tenantId
      * @param version     release version
      * @param sourceTrack source release track
      * @param targetTrack target release track
@@ -252,9 +252,9 @@ public interface VersionStore {
     /**
      * Marks one release as deprecated.
      *
-     * @param tenantId   release tenantId
-     * @param version release version
-     * @param track   release track
+     * @param tenantId release tenantId
+     * @param version  release version
+     * @param track    release track
      * @return persisted deprecated release or {@code null}
      */
     default VersionRecord deprecate(String tenantId, String version, String track) {

@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**
@@ -128,7 +129,7 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
         }
         CortexChangeRecord retained = read(prepared.getId());
         if (retained != null) {
-            org.miaixz.bus.cortex.magic.identity.CortexIdentity.requireTenant(prepared.getTenant_id(), retained.getTenant_id());
+            CortexIdentity.requireTenant(prepared.getTenant_id(), retained.getTenant_id());
         }
         write(prepared);
         cacheX.write(idempotencyKey(prepared.getTenant_id(), prepared.getIdempotencyKey()), prepared.getId(), 0L);
@@ -286,7 +287,7 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
      */
     private CortexChangeRecord prepare(CortexChangeRecord record) {
         CortexChangeRecord prepared = record == null ? new CortexChangeRecord() : record;
-        prepared.setTenant_id(org.miaixz.bus.cortex.magic.identity.CortexIdentity.tenantId(prepared.getTenant_id()));
+        prepared.setTenant_id(CortexIdentity.tenantId(prepared.getTenant_id()));
         long now = System.currentTimeMillis();
         if (prepared.getId() == null || prepared.getId().isBlank()) {
             prepared.setId(ID.fastSimpleUUID());
@@ -400,7 +401,7 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
      * @return idempotency cache key
      */
     private String idempotencyKey(String tenantId, String idempotencyKey) {
-        return IDEMPOTENCY_PREFIX + org.miaixz.bus.cortex.magic.identity.CortexIdentity.tenantKey(tenantId) + ":" + idempotencyKey;
+        return IDEMPOTENCY_PREFIX + CortexIdentity.tenantKey(tenantId) + ":" + idempotencyKey;
     }
 
 }

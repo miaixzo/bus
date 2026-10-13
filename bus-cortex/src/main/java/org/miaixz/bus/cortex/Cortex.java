@@ -31,9 +31,9 @@ import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
 import org.miaixz.bus.cortex.registry.api.ApiAssets;
 import org.miaixz.bus.cortex.registry.mcp.McpAssets;
 import org.miaixz.bus.cortex.registry.prompt.PromptAssets;
-import org.miaixz.bus.cortex.version.VersionAssets;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemQuery;
+import org.miaixz.bus.cortex.version.VersionAssets;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -422,7 +422,7 @@ public class Cortex {
      * Deregisters the same entry identifier from all built-in registries.
      *
      * @param tenantId tenantId containing the entry
-     * @param id    entry identifier
+     * @param id       entry identifier
      */
     public static void deregister(String tenantId, String id) {
         Logger.info(true, "Cortex", "Facade deregister requested across registries: tenantId={}, id={}", tenantId, id);
@@ -435,9 +435,9 @@ public class Cortex {
     /**
      * Deregisters one entry from the registry matching the requested asset type.
      *
-     * @param type  registry type
+     * @param type     registry type
      * @param tenantId tenantId containing the entry
-     * @param id    entry identifier
+     * @param id       entry identifier
      */
     public static void deregister(Type type, String tenantId, String id) {
         Logger.info(true, "Cortex", "Facade deregister requested: type={}, tenantId={}, id={}", type, tenantId, id);
@@ -498,8 +498,12 @@ public class Cortex {
      */
     public static void publish(Item item) {
         curator().publish(item);
-        Logger.info(false, "Cortex", "Setting publish completed: tenant={}, code={}",
-                item.getTenant_id(), item.getCode());
+        Logger.info(
+                false,
+                "Cortex",
+                "Setting publish completed: tenant={}, code={}",
+                item.getTenant_id(),
+                item.getCode());
     }
 
     /**

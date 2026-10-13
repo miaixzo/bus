@@ -61,8 +61,8 @@ public class CacheRevisionStore implements RevisionStore {
     }
 
     /**
-     * Creates a store with an authoritative reference, release, gray, and watch reachability check.
-     * The host must serialize reachability changes with pruning. This cache adapter is not a distributed transaction.
+     * Creates a store with an authoritative reference, release, gray, and watch reachability check. The host must
+     * serialize reachability changes with pruning. This cache adapter is not a distributed transaction.
      */
     public CacheRevisionStore(CacheX<String, Object> cacheX, Predicate<Revision> protectedRevision) {
         if (protectedRevision == null) {

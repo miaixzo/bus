@@ -82,9 +82,9 @@ public interface RegistryStore<T extends Assets> {
     /**
      * Deletes an entry by type, tenantId and ID.
      *
-     * @param type  asset type
+     * @param type     asset type
      * @param tenantId tenantId
-     * @param id    entry identifier
+     * @param id       entry identifier
      */
     void delete(Type type, String tenantId, String id);
 
@@ -92,7 +92,7 @@ public interface RegistryStore<T extends Assets> {
      * Deletes one entry using an existing snapshot supplied by the mutation coordinator.
      *
      * @param type     asset type
-     * @param tenantId    tenantId
+     * @param tenantId tenantId
      * @param id       entry identifier
      * @param existing existing snapshot
      */
@@ -104,7 +104,7 @@ public interface RegistryStore<T extends Assets> {
      * Deletes a runtime instance by method/version/fingerprint.
      *
      * @param type        asset type
-     * @param tenantId       tenantId
+     * @param tenantId    tenantId
      * @param app_id      application identifier
      * @param method      method
      * @param version     version
@@ -123,9 +123,9 @@ public interface RegistryStore<T extends Assets> {
     /**
      * Finds an entry by type, tenantId and ID.
      *
-     * @param type  asset type
+     * @param type     asset type
      * @param tenantId tenantId
-     * @param id    entry identifier
+     * @param id       entry identifier
      * @return persisted entry or {@code null}
      */
     T find(Type type, String tenantId, String id);
@@ -133,11 +133,11 @@ public interface RegistryStore<T extends Assets> {
     /**
      * Finds an entry by method and version.
      *
-     * @param type    asset type
-     * @param tenantId   tenantId
-     * @param app_id  application identifier
-     * @param method  method
-     * @param version version
+     * @param type     asset type
+     * @param tenantId tenantId
+     * @param app_id   application identifier
+     * @param method   method
+     * @param version  version
      * @return persisted entry or {@code null}
      */
     default T findByMethodVersion(Type type, String tenantId, String app_id, String method, String version) {
@@ -178,11 +178,11 @@ public interface RegistryStore<T extends Assets> {
     /**
      * Queries entries by exact route identity.
      *
-     * @param type    asset type
-     * @param tenantId   tenantId
-     * @param app_id  application identifier
-     * @param method  method
-     * @param version version
+     * @param type     asset type
+     * @param tenantId tenantId
+     * @param app_id   application identifier
+     * @param method   method
+     * @param version  version
      * @return matching entries
      */
     default List<T> queryByRoute(Type type, String tenantId, String app_id, String method, String version) {
@@ -198,11 +198,11 @@ public interface RegistryStore<T extends Assets> {
     /**
      * Queries runtime instances for the given service identity.
      *
-     * @param type    asset type
-     * @param tenantId   tenantId
-     * @param app_id  application identifier
-     * @param method  method
-     * @param version version
+     * @param type     asset type
+     * @param tenantId tenantId
+     * @param app_id   application identifier
+     * @param method   method
+     * @param version  version
      * @return matching runtime instances
      */
     default List<Instance> queryInstances(Type type, String tenantId, String app_id, String method, String version) {

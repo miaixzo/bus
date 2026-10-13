@@ -1,7 +1,7 @@
 # 🧠 Bus Cortex: Unified Registry & Configuration Center
 
 <p align="center">
-<strong>Service Registry · Config Center · Health Probing · Space Isolation · bus Ecosystem Integration</strong>
+<strong>Service Registry · Config Center · Health Probing · Tenant-Scoped Storage · bus Ecosystem Integration</strong>
 </p>
 
 -----
@@ -9,14 +9,14 @@
 ## 📖 Project Introduction
 
 **Bus Cortex** is the registry and configuration center for the bus framework. It provides unified service registration,
-configuration management, health probing, and space-based multi-tenant isolation — all backed by a single `CacheX`
+configuration management, health probing, and tenant-scoped business storage — all backed by a single `CacheX`
 storage abstraction (Memory / Redis / JDBC) with zero extra infrastructure.
 
 - **Unified Registry**: API / MCP / Prompt / Version — four registries behind one `Registry<T>` interface
 - **Service + Instance Model**: `ApiAssets` (definition) + `Instance` (runtime), following Nacos-style separation
 - **Configuration Center**: Versioned publish, gray release routing, `@ConfigChange` callback annotations
 - **Health Probing**: Pluggable `Prober` (HTTP / TCP / MCP Ping / Process PID), server-side active probing
-- **Space Isolation**: Dynamic space resolution (Token / Header / context), `SpaceGuard` enforced write isolation
+- **Tenant Boundary**: Existing tenant-scoped registry entries and runtime instances; API route lookup does not use tenants
 - **Security**: HMAC-SHA256 Token + RBAC (ADMIN / PROVIDER / CONSUMER), rate limiting, circuit breaking
 - **bus Ecosystem**: VortexBridge auto-syncs to bus-vortex; bus-metrics instrumentation built-in; bus-cache as the sole
   storage dependency
@@ -49,36 +49,35 @@ mcpRegistry().
 register(mcpAssets);
 
 List<ApiAssets> services = Cortex.query(
-        Vector.newBuilder().space_id("production").method("vortex.user.get").build(), ApiAssets.class);
+        Vector.newBuilder().tenant_id(tenantId).method("vortex.user.get").build(), ApiAssets.class);
 ```
 
 ### ⚡ Service + Instance Separation
 
 ```
-ApiAssets (definition, canonical identity = space + type + method + version[:verb])
-    └── Instance (runtime, unique by space + app_id + method + version + fingerprint)
+ApiAssets (definition, route identity = type + app_id + method + version + verb)
+    └── Instance (runtime, unique by tenant_id + app_id + method + version + fingerprint)
 ```
 
 **Instance Identity**: Multiple runtime instances may coexist for the same API definition. Runtime uniqueness is scoped
-by `space + app_id + method + version + fingerprint`.
+by `tenant_id + app_id + method + version + fingerprint`.
 
 Same-fingerprint re-registration is treated as an **idempotent TTL refresh**, not a conflict.
 
-**Gateway Route Semantics**: When synchronized to bus-vortex, `ApiAssets.key` remains the lightweight public alias
-`method:version:verbCode`, for example `dp.license.get:1.0:1`. Runtime lookup candidates are generated separately by
-`Keying` in this order:
+**Gateway Route Semantics**: `ApiAssets.normalizeMeta()` keeps its existing type-less, application-aware alias
+selection and writes that encoded ROUTE key from `RegistryGenerator` into metadata `key`. Registration and lookup
+use the same generator, in this order:
 
-1. `space:type:app_id:method:version:verb`
-2. `space:type:method:version:verb`
-3. `space:app_id:method:version:verb`
-4. `space:method:version:verb`
-5. `type:app_id:method:version:verb`
-6. `type:method:version:verb`
-7. `app_id:method:version:verb`
-8. `method:version:verb`
+1. `type:app_id:method:version:verb`
+2. `type:method:version:verb`
+3. `app_id:method:version:verb`
+4. `method:version:verb`
 
-`method` / `version` / `verb` are required runtime dimensions; `space`, `type`, and `app_id` participate only when
-present.
+`method` / `version` / `verb` are required runtime dimensions. Only `type` and `app_id` are optional;
+neither space nor tenant is encoded or validated for ROUTE keys. ENTRY (`tenant_id + type + id`) and INSTANCE
+keys retain their existing tenant validation and isolation. Tenant fields are not cleared.
+
+ROUTE: `route:v2:type=<type|*>:app=<length:appId|*>:method=<length:method>:version=<length:version>:verb=<verb>`.
 
 `Keying` is now a generic key-strategy interface. Registry/runtime routing uses `Keying<Keying.RegistrySpec>` with the
 built-in `RegistryGenerator`, while the setting domain uses `Keying<Keying.SettingSpec>` with the built-in
@@ -132,8 +131,7 @@ registered instances. Healthy instances get TTL refreshed; unhealthy instances e
 | `AccessTokenStore`    | HMAC-SHA256 token issuance with CacheX-backed revocation                              |
 | `AccessTokenResolver` | Two-step validation: HMAC verify (anti-forgery) + CacheX blacklist check (revocation) |
 | `AccessGuard`         | RBAC enforcement (ADMIN / PROVIDER / CONSUMER)                                        |
-| `SpaceGuard`          | Cross-space write prevention                                                          |
-| `RateLimiter`         | Token bucket rate limiting per space/method (CacheX counters)                         |
+| `RateLimiter`         | Token bucket rate limiting (CacheX counters)                         |
 | `CircuitBreaker`      | State machine: CLOSED → OPEN → HALF_OPEN                                              |
 | `ParamValidator`      | Input validation (regex `^[a-zA-Z0-9._-]{1,128}$`) preventing CacheX key injection    |
 
@@ -191,8 +189,8 @@ bus:
     server-addr: 127.0.0.1:8766   # The only required field
 ```
 
-> **Space**: Not a fixed YAML config. Resolved dynamically at runtime from Token / request Header (`X-Space`) /
-> management context. Falls back to `public` if unspecified.
+> **Tenant context**: Registry business operations use the existing trusted tenant context. In the snippets below,
+> `tenantId` is supplied by that context; no default tenant is introduced. Gateway API routes do not consume it.
 
 ### Step 3: Enable
 
@@ -225,7 +223,7 @@ import org.miaixz.bus.cortex.registry.api.Instance;
 ApiAssets service = new ApiAssets();
 service.
 
-        setSpace_id("production");
+        setTenant_id(tenantId);
 service.
 
         setApp_id("order-service");
@@ -248,7 +246,7 @@ service.
         Instance instance = new Instance();
 instance.
 
-        setSpace_id("production");
+        setTenant_id(tenantId);
 instance.
 
         setApp_id("order-service");
@@ -276,14 +274,14 @@ Cortex.
 
         // Query API definitions
         List<ApiAssets> results = Cortex.query(
-                Vector.newBuilder().space_id("production").method("vortex.user.get").build(),
+                Vector.newBuilder().tenant_id(tenantId).method("vortex.user.get").build(),
                 ApiAssets.class
         );
 
 // Deregister
 Cortex.
 
-        deregister("production","vortex.user.get:v1.0.0");
+        deregister(tenantId,"vortex.user.get:v1.0.0");
 ```
 
 ### 2. Configuration Management
@@ -328,7 +326,7 @@ public class OrderService {
 ```java
 // Watch for instance changes
 String watchId = Cortex.apiRegistry().watch(
-                Vector.newBuilder().space_id("production").method("vortex.user.get").build(),
+                Vector.newBuilder().tenant_id(tenantId).method("vortex.user.get").build(),
                 (added, removed, updated) -> {
                     log.info("Instances changed: +{} -{} ~{}", added.size(), removed.size(), updated.size());
                 }
@@ -347,14 +345,14 @@ unwatch(watchId);
 ```java
 // Register MCP tool
 McpAssets mcp = new McpAssets();
-mcp.setSpace_id("ai");
+mcp.setTenant_id(tenantId);
 mcp.setToolName("code-search");
 mcp.setTransport("stdio");
 Cortex.mcpRegistry().register(mcp);
 
 // Register prompt template
 PromptAssets prompt = new PromptAssets();
-prompt.setSpace_id("ai");
+prompt.setTenant_id(tenantId);
 prompt.setTemplate("Summarize the following: {{content}}");
 Cortex.promptRegistry().register(prompt);
 ```
@@ -459,7 +457,7 @@ org.miaixz.bus.cortex
 │   └── depend/    DependencyGraph + ImpactAnalysis
 ├── config/        Configuration center (ConfigPublisher, ConfigWatcher, GrayRouter, DefaultConfig)
 ├── bridge/        bus-vortex sync (VortexBridge, SyncEvent, ApiAssetsConverter)
-├── guard/         Security & protection (RateLimiter, CircuitBreaker, AccessTokenStore, AccessGuard, SpaceGuard)
+├── guard/         Security & protection (RateLimiter, CircuitBreaker, AccessTokenStore, AccessGuard)
 ├── builtin/       Default implementations (CompositeProber, DefaultPublisher, DefaultNotifier)
 └── magic/         Utilities (IdGenerator, Sequence, Fingerprint, AuditLogger)
 ```

@@ -26,11 +26,11 @@ import org.miaixz.bus.cortex.Type;
  * Route identity used by registry batch lookup strategies.
  *
  * @param tenant_id tenantId identifier
- * @param app_id   application identifier
- * @param type     registry type key
- * @param method   route method
- * @param version  route version
- * @param verb     HTTP verb code
+ * @param app_id    application identifier
+ * @param type      registry type key
+ * @param method    route method
+ * @param version   route version
+ * @param verb      HTTP verb code
  * @author Kimi Liu
  */
 public record RegistryRouteKey(String tenant_id, String app_id, Integer type, String method, String version,
