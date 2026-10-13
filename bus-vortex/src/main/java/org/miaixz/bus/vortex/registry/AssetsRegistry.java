@@ -254,15 +254,14 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
      * Resolves one route asset using all supported runtime dimensions.
      *
      * @param type    route type, optional
-     * @param space   route space, optional
      * @param appId   application identifier, optional
      * @param method  route method
      * @param version route version
      * @param verb    numeric verb code
      * @return matching asset or {@code null}
      */
-    public Assets get(String space, Type type, String appId, String method, String version, Integer verb) {
-        RouteMatch match = get(Keying.RegistrySpec.route(space, type, appId, method, version, verb));
+    public Assets get(Type type, String appId, String method, String version, Integer verb) {
+        RouteMatch match = get(Keying.RegistrySpec.route(null, type, appId, method, version, verb));
         return match == null ? null : match.assets();
     }
 
@@ -270,48 +269,32 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
      * Resolves one route asset without application scope.
      *
      * @param type    route type, optional
-     * @param space   route space, optional
      * @param method  route method
      * @param version route version
      * @param verb    numeric verb code
      * @return matching asset or {@code null}
      */
-    public Assets get(String space, Type type, String method, String version, Integer verb) {
-        RouteMatch match = get(Keying.RegistrySpec.route(space, type, null, method, version, verb));
+    public Assets get(Type type, String method, String version, Integer verb) {
+        RouteMatch match = get(Keying.RegistrySpec.route(null, type, null, method, version, verb));
         return match == null ? null : match.assets();
     }
 
     /**
-     * Resolves one route asset using space and application scope only.
+     * Resolves one route asset using application scope only.
      *
-     * @param space   route space, optional
      * @param appId   application identifier, optional
      * @param method  route method
      * @param version route version
      * @param verb    numeric verb code
      * @return matching asset or {@code null}
      */
-    public Assets get(String space, String appId, String method, String version, Integer verb) {
-        RouteMatch match = get(Keying.RegistrySpec.route(space, null, appId, method, version, verb));
+    public Assets get(String appId, String method, String version, Integer verb) {
+        RouteMatch match = get(Keying.RegistrySpec.route(null, null, appId, method, version, verb));
         return match == null ? null : match.assets();
     }
 
     /**
-     * Resolves one route asset without application or type scope.
-     *
-     * @param space   route space, optional
-     * @param method  route method
-     * @param version route version
-     * @param verb    numeric verb code
-     * @return matching asset or {@code null}
-     */
-    public Assets get(String space, String method, String version, Integer verb) {
-        RouteMatch match = get(Keying.RegistrySpec.route(space, null, null, method, version, verb));
-        return match == null ? null : match.assets();
-    }
-
-    /**
-     * Resolves one route asset from method, version, and verb without requiring callers to know space or type.
+     * Resolves one route asset from method, version, and verb without requiring application or type scope.
      *
      * @param method  route method
      * @param version route version
@@ -421,9 +404,8 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
                 Logger.warn(
                         false,
                         "Vortex",
-                        "Route prefix '{}' is ambiguous for space={}, type={}, appId={}, method={}, version={}, verb={}",
+                        "Route prefix '{}' is ambiguous for type={}, appId={}, method={}, version={}, verb={}",
                         routePrefix,
-                        spec.spacePart(),
                         spec.typeKeyPart(),
                         spec.appIdPart(),
                         spec.methodPart(),
@@ -503,7 +485,7 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
      */
     private Integer routeMatchLevel(Keying.RegistrySpec request, Assets candidate) {
         Keying.RegistrySpec requested = Keying.RegistrySpec.route(
-                request.spacePart(),
+                null,
                 request.typePart(),
                 request.appIdPart(),
                 candidate.getMethod(),

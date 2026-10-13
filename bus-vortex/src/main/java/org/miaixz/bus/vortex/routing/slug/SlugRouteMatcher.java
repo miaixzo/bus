@@ -113,17 +113,11 @@ public class SlugRouteMatcher {
         if (exchange == null) {
             return null;
         }
-        String space = exchange.getRequest().getQueryParams().getFirst(Args.SPACE);
-        if (StringKit.isBlank(space)) {
-            space = exchange.getRequest().getHeaders().getFirst(Args.SPACE);
-        }
         String appId = exchange.getRequest().getQueryParams().getFirst(Args.APP_ID);
         if (StringKit.isBlank(appId)) {
             appId = exchange.getRequest().getHeaders().getFirst(Args.APP_ID);
         }
-        return match(
-                exchange.getRequest().getPath().value(),
-                spec(space, appId, exchange.getRequest().getMethod().name()));
+        return match(exchange.getRequest().getPath().value(), spec(appId, exchange.getRequest().getMethod().name()));
     }
 
     /**
@@ -136,15 +130,11 @@ public class SlugRouteMatcher {
         if (request == null) {
             return null;
         }
-        String space = request.queryParam(Args.SPACE).orElse(null);
-        if (StringKit.isBlank(space)) {
-            space = request.headers().firstHeader(Args.SPACE);
-        }
         String appId = request.queryParam(Args.APP_ID).orElse(null);
         if (StringKit.isBlank(appId)) {
             appId = request.headers().firstHeader(Args.APP_ID);
         }
-        return match(request.path(), spec(space, appId, request.method().name()));
+        return match(request.path(), spec(appId, request.method().name()));
     }
 
     /**
@@ -162,19 +152,18 @@ public class SlugRouteMatcher {
     /**
      * Builds the registry lookup key for one slug request.
      *
-     * @param space  space id from query or header
      * @param appId  application id from query or header
      * @param method HTTP method name
      * @return registry lookup key
      */
-    private Keying.RegistrySpec spec(String space, String appId, String method) {
+    private Keying.RegistrySpec spec(String appId, String method) {
         Integer verb = null;
         try {
             verb = Http.Method.of(method).verb();
         } catch (IllegalArgumentException e) {
             Logger.warn(false, "Vortex", e, "HTTP method mapping failed: method={}", method);
         }
-        return Keying.RegistrySpec.route(space, Type.API, appId, this.slugMethod, Args.DEFAULT_VERSION, verb);
+        return Keying.RegistrySpec.route(null, Type.API, appId, this.slugMethod, Args.DEFAULT_VERSION, verb);
     }
 
     /**

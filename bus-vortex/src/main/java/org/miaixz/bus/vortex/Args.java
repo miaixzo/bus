@@ -74,11 +74,6 @@ public class Args {
     public static final String TIMESTAMP = Http.Param.TIMESTAMP;
 
     /**
-     * The parameter name for selecting the logical space used to resolve registry assets.
-     */
-    public static final String SPACE = "x_space_id";
-
-    /**
      * The parameter name for selecting the application-specific route scope.
      */
     public static final String APP_ID = "x_app_id";

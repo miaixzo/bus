@@ -84,6 +84,7 @@ import org.miaixz.bus.vortex.strategy.vetting.RestVettingStrategy;
 import org.miaixz.bus.vortex.strategy.vetting.SlugVettingStrategy;
 
 import io.netty.channel.ChannelOption;
+import io.netty.channel.WriteBufferWaterMark;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServer;
 
@@ -236,7 +237,7 @@ public class VortexConfiguration {
         }).exceptionHandlers(list -> list.add(new ErrorsHandler())).codecConfigurer(configurer).build();
 
         ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
-        io.netty.channel.WriteBufferWaterMark writeWaterMark = new io.netty.channel.WriteBufferWaterMark(
+        WriteBufferWaterMark writeWaterMark = new WriteBufferWaterMark(
                 this.properties.getPerformance().getWriteBufferLowWatermarkBytes(),
                 this.properties.getPerformance().getWriteBufferHighWatermarkBytes());
         HttpServer server = HttpServer.create().option(ChannelOption.ALLOCATOR, Holder.allocator())
