@@ -29,6 +29,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
+import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.identity.Fingerprint;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.cortex.registry.RegistryChange;
@@ -180,7 +181,7 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
     /**
      * Removes a specific runtime instance from the registry.
      *
-     * @param tenantId       service tenantId
+     * @param tenantId    service tenantId
      * @param app_id      application identifier
      * @param method      service method identifier
      * @param version     service version
@@ -209,10 +210,10 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
     /**
      * Queries runtime instances matching the given criteria.
      *
-     * @param tenantId   required target tenant identifier
-     * @param app_id  application identifier filter (null matches all)
-     * @param method  service method filter (null matches all)
-     * @param version service version filter (null matches all)
+     * @param tenantId required target tenant identifier
+     * @param app_id   application identifier filter (null matches all)
+     * @param method   service method filter (null matches all)
+     * @param version  service version filter (null matches all)
      * @return list of matching instances
      */
     @Override
@@ -221,7 +222,7 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
         if (store != null && storeSupports(Trait.INSTANCES)) {
             List<Instance> persisted = store.queryInstances(registryType, resolvedTenant, app_id, method, version);
             for (Instance instance : persisted) {
-                org.miaixz.bus.cortex.magic.identity.CortexIdentity.requireTenant(resolvedTenant, instance.getTenant_id());
+                CortexIdentity.requireTenant(resolvedTenant, instance.getTenant_id());
             }
             if (!persisted.isEmpty()) {
                 warmInstanceCache(resolvedTenant, app_id, method, version, persisted);
@@ -246,7 +247,8 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
             Object value = item.getValue();
             if (value instanceof String s) {
                 Instance inst = JsonKit.toPojo(s, Instance.class);
-                if (inst != null && resolvedTenant.equals(inst.getTenant_id()) && (app_id == null || app_id.equals(inst.getApp_id()))
+                if (inst != null && resolvedTenant.equals(inst.getTenant_id())
+                        && (app_id == null || app_id.equals(inst.getApp_id()))
                         && (method == null || method.equals(inst.getMethod()))
                         && (version == null || version.equals(inst.getVersion()))) {
                     result.add(inst);
@@ -316,7 +318,7 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
         if (instance.getTenant_id() == null) {
             instance.setTenant_id(service.getTenant_id());
         }
-        org.miaixz.bus.cortex.magic.identity.CortexIdentity.requireTenant(service.getTenant_id(), instance.getTenant_id());
+        CortexIdentity.requireTenant(service.getTenant_id(), instance.getTenant_id());
         if (StringKit.isEmpty(instance.getApp_id())) {
             instance.setApp_id(service.getApp_id());
         }
@@ -334,7 +336,7 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
     /**
      * Finds a runtime instance by route identity and fingerprint.
      *
-     * @param tenantId       tenantId
+     * @param tenantId    tenantId
      * @param app_id      application identifier
      * @param method      method name
      * @param version     service version
@@ -352,10 +354,10 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
     /**
      * Finds a service definition by route identity.
      *
-     * @param tenantId   tenantId
-     * @param app_id  application identifier
-     * @param method  method name
-     * @param version service version
+     * @param tenantId tenantId
+     * @param app_id   application identifier
+     * @param method   method name
+     * @param version  service version
      * @return matching service definition or {@code null}
      */
     private ApiAssets findServiceByRoute(String tenantId, String app_id, String method, String version) {
@@ -384,14 +386,19 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
     /**
      * Builds a synthetic service definition from a runtime instance.
      *
-     * @param tenantId    tenantId
+     * @param tenantId tenantId
      * @param app_id   application identifier
      * @param method   method name
      * @param version  service version
      * @param instance runtime instance
      * @return synthetic service definition
      */
-    private ApiAssets synthesizeService(String tenantId, String app_id, String method, String version, Instance instance) {
+    private ApiAssets synthesizeService(
+            String tenantId,
+            String app_id,
+            String method,
+            String version,
+            Instance instance) {
         ApiAssets service = new ApiAssets();
         service.setTenant_id(tenantId);
         service.setApp_id(app_id);
@@ -418,7 +425,7 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
     /**
      * Warms the runtime-instance cache projection after durable reads.
      *
-     * @param tenantId     tenantId override
+     * @param tenantId  tenantId override
      * @param app_id    application identifier override
      * @param method    method override
      * @param version   version override

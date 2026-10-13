@@ -31,7 +31,7 @@ public interface RuntimeItemOverlayPublisher {
     /**
      * Publishes a runtime-only overlay using the item's coordinates and content.
      *
-     * @param item item coordinates and overlay content
+     * @param item  item coordinates and overlay content
      * @param ttlMs time-to-live in milliseconds
      */
     void publish(Item item, long ttlMs);

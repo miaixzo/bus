@@ -27,6 +27,7 @@ import java.util.Objects;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
+import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -127,7 +128,7 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
      * Removes an entry from the cache by tenantId and ID.
      *
      * @param tenantId entry tenantId
-     * @param id    entry identifier
+     * @param id       entry identifier
      */
     @Override
     public void deregister(String tenantId, String id) {
@@ -177,7 +178,7 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
             if (entry == null) {
                 continue;
             }
-            org.miaixz.bus.cortex.magic.identity.CortexIdentity.requireTenant(resolvedTenant, entry.getTenant_id());
+            CortexIdentity.requireTenant(resolvedTenant, entry.getTenant_id());
             if (criteria.getId() != null && !criteria.getId().equals(entry.getId())) {
                 continue;
             }

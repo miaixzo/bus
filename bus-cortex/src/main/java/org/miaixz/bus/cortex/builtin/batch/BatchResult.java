@@ -217,7 +217,7 @@ public class BatchResult {
          * Creates one failure item.
          *
          * @param type         target registry type
-         * @param tenantId        target tenantId
+         * @param tenantId     target tenantId
          * @param id           entry ID
          * @param method       route method
          * @param version      route version

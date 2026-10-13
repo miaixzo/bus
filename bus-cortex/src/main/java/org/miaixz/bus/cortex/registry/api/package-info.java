@@ -27,10 +27,10 @@
  * present, instance queries read from that store first and warm the cache projection from the returned snapshots.
  * <p>
  * {@code register(service, instance)} upserts the logical service definition and one live instance snapshot.
- * {@code deregisterInstance(tenantId, method, version, fingerprint)} removes one runtime instance while leaving the shared
- * route definition intact. {@code queryInstances(tenantId, method, version)} always scopes reads to the resolved tenantId,
- * rejecting missing or blank tenant identifiers; omitting method and version broadens the scan only within that
- * tenantId.
+ * {@code deregisterInstance(tenantId, method, version, fingerprint)} removes one runtime instance while leaving the
+ * shared route definition intact. {@code queryInstances(tenantId, method, version)} always scopes reads to the resolved
+ * tenantId, rejecting missing or blank tenant identifiers; omitting method and version broadens the scan only within
+ * that tenantId.
  *
  * @author Kimi Liu
  */

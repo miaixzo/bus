@@ -54,7 +54,7 @@ public class AuditLogger {
     /**
      * Records an audit event for the given operation.
      *
-     * @param tenantId     logical tenantId
+     * @param tenantId  logical tenantId
      * @param operation operation name
      * @param id        resource identifier
      * @param operator  actor performing the operation
@@ -66,7 +66,7 @@ public class AuditLogger {
     /**
      * Records an audit event with optional structured details.
      *
-     * @param tenantId     logical tenantId
+     * @param tenantId  logical tenantId
      * @param operation operation name
      * @param id        resource identifier
      * @param operator  actor performing the operation
@@ -90,7 +90,7 @@ public class AuditLogger {
     /**
      * Loads one audit entry from the backing cache.
      *
-     * @param tenantId     tenantId
+     * @param tenantId  tenantId
      * @param operation operation
      * @param id        resource identifier
      * @return serialized audit payload or {@code null}
@@ -108,7 +108,7 @@ public class AuditLogger {
     /**
      * Builds the common audit-key prefix shared by all records of the same resource.
      *
-     * @param tenantId     tenantId
+     * @param tenantId  tenantId
      * @param operation operation
      * @param id        resource identifier
      * @return audit-key prefix

@@ -105,5 +105,4 @@ public interface InstanceStore {
         return Suite.of(Trait.BATCH, Trait.QUERY, Trait.DURABLE, Trait.DELETE);
     }
 
-
 }

@@ -70,8 +70,8 @@ public class SettingGenerator implements Keying<SettingSpec> {
         Item item = Item.builder().tenant_id(spec.tenant_id()).scope(spec.scope()).app_id(spec.app_id())
                 .code(spec.code()).kind(spec.kind()).build();
         ItemNormalizer.coordinates(item);
-        return segment(item.getTenant_id()) + ':' + segment(item.getScope()) + ':'
-                + segment(item.getApp_id()) + ':' + segment(item.getCode()) + ':' + segment(item.getKind());
+        return segment(item.getTenant_id()) + ':' + segment(item.getScope()) + ':' + segment(item.getApp_id()) + ':'
+                + segment(item.getCode()) + ':' + segment(item.getKind());
     }
 
     private String segment(String value) {

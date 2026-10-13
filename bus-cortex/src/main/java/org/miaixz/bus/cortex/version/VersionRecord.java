@@ -19,7 +19,12 @@
 */
 package org.miaixz.bus.cortex.version;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -37,14 +42,14 @@ import org.miaixz.bus.cortex.Type;
 public class VersionRecord extends Nature {
 
     /** Process-local monotonic clock; persistent stores must additionally enforce tenant/track/version uniqueness. */
-    private static final java.util.concurrent.atomic.AtomicLong CLOCK = new java.util.concurrent.atomic.AtomicLong();
+    private static final AtomicLong CLOCK = new AtomicLong();
 
     /** Generates a version from the server clock; callers cannot choose a version through this operation. */
-    public static String generate(java.time.Clock clock) {
-        java.util.Objects.requireNonNull(clock, "Server clock");
+    public static String generate(Clock clock) {
+        Objects.requireNonNull(clock, "Server clock");
         long instant = CLOCK.updateAndGet(previous -> Math.max(clock.millis(), previous + 1));
-        return java.time.format.DateTimeFormatter.ofPattern("'v'uuuu.MM.dd.HHmmss.SSS")
-                .withZone(clock.getZone()).format(java.time.Instant.ofEpochMilli(instant));
+        return DateTimeFormatter.ofPattern("'v'uuuu.MM.dd.HHmmss.SSS").withZone(clock.getZone())
+                .format(Instant.ofEpochMilli(instant));
     }
 
     /**

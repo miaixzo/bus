@@ -28,6 +28,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.setting.item.GrayRequestContext;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
+import org.miaixz.bus.cortex.setting.secret.NoOpSecretCodec;
 import org.miaixz.bus.cortex.setting.secret.SecretCodec;
 
 /**
@@ -91,7 +92,7 @@ public class ItemValueResolver {
         }
         String resolved = adapter.resolve(entry);
         if (ItemNormalizer.isEncryptedFlagEnabled(entry.getEncrypted()) && resolved != null) {
-            if (secretCodec == null || secretCodec instanceof org.miaixz.bus.cortex.setting.secret.NoOpSecretCodec) {
+            if (secretCodec == null || secretCodec instanceof NoOpSecretCodec) {
                 throw new IllegalStateException("A protecting secret codec is required");
             }
             return secretCodec.decrypt(resolved);

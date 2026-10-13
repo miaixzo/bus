@@ -50,14 +50,14 @@ public interface Registry<T extends Assets> {
      * Deregisters a single entry.
      *
      * @param tenantId entry tenantId
-     * @param id    entry identifier
+     * @param id       entry identifier
      */
     void deregister(String tenantId, String id);
 
     /**
      * Deregisters a single runtime instance by fingerprint.
      *
-     * @param tenantId       tenantId containing the instance
+     * @param tenantId    tenantId containing the instance
      * @param app_id      application identifier
      * @param method      service method name
      * @param version     service version
@@ -98,10 +98,10 @@ public interface Registry<T extends Assets> {
     /**
      * Queries runtime instances for the given service identity.
      *
-     * @param tenantId   tenantId containing the service
-     * @param app_id  application identifier
-     * @param method  service method name
-     * @param version service version
+     * @param tenantId tenantId containing the service
+     * @param app_id   application identifier
+     * @param method   service method name
+     * @param version  service version
      * @return matching runtime instances
      */
     default List<Instance> queryInstances(String tenantId, String app_id, String method, String version) {

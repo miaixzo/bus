@@ -316,9 +316,9 @@ public class RegistryControlService {
     /**
      * Deletes one registry entry by type and ID.
      *
-     * @param type  target type
+     * @param type     target type
      * @param tenantId target tenantId
-     * @param id    entry identifier
+     * @param id       entry identifier
      */
     public void delete(Type type, String tenantId, String id) {
         delete(type, tenantId, id, null, false);
@@ -328,13 +328,19 @@ public class RegistryControlService {
      * Deletes one registry entry using an optional pre-resolved snapshot.
      *
      * @param type        target type
-     * @param tenantId       target tenantId
+     * @param tenantId    target tenantId
      * @param id          entry identifier
      * @param existing    existing snapshot or {@code null}
      * @param preResolved whether the snapshot was resolved by the batch resolver
      */
     private void delete(Type type, String tenantId, String id, Assets existing, boolean preResolved) {
-        Logger.info(true, "Cortex", "Registry control delete requested: type={}, tenantId={}, id={}", type, tenantId, id);
+        Logger.info(
+                true,
+                "Cortex",
+                "Registry control delete requested: type={}, tenantId={}, id={}",
+                type,
+                tenantId,
+                id);
         enforceRegistry("delete", type, tenantId, id, null, null, null);
         if (!preResolved) {
             registry(type).deregister(tenantId, id);
@@ -346,7 +352,13 @@ public class RegistryControlService {
                 default -> throw new IllegalArgumentException("Unsupported admin registry type: " + type);
             }
         }
-        Logger.info(false, "Cortex", "Registry control delete completed: type={}, tenantId={}, id={}", type, tenantId, id);
+        Logger.info(
+                false,
+                "Cortex",
+                "Registry control delete completed: type={}, tenantId={}, id={}",
+                type,
+                tenantId,
+                id);
     }
 
     /**
@@ -509,11 +521,11 @@ public class RegistryControlService {
     /**
      * Loads an existing registry entry by route identity so admin upserts can preserve deterministic IDs.
      *
-     * @param type    registry type
-     * @param tenantId   tenantId
-     * @param app_id  application identifier
-     * @param method  route method
-     * @param version route version
+     * @param type     registry type
+     * @param tenantId tenantId
+     * @param app_id   application identifier
+     * @param method   route method
+     * @param version  route version
      * @return existing entry or {@code null}
      */
     private Assets getByRoute(Type type, String tenantId, String app_id, String method, String version) {
@@ -547,13 +559,13 @@ public class RegistryControlService {
     /**
      * Applies registry guard policy using explicit asset coordinates.
      *
-     * @param action  guarded action
-     * @param type    registry type
-     * @param tenantId   tenantId identifier
-     * @param id      asset identifier
-     * @param app_id  application identifier
-     * @param method  protocol method
-     * @param version protocol version
+     * @param action   guarded action
+     * @param type     registry type
+     * @param tenantId tenantId identifier
+     * @param id       asset identifier
+     * @param app_id   application identifier
+     * @param method   protocol method
+     * @param version  protocol version
      */
     private void enforceRegistry(
             String action,
@@ -900,8 +912,13 @@ public class RegistryControlService {
         }
         if (asset != null && asset.getMethod() != null && asset.getVersion() != null) {
             String legacyPublic = keying.key(
-                    Keying.RegistrySpec
-                            .route(asset.getTenant_id(), null, null, asset.getMethod(), asset.getVersion(), asset.getVerb()));
+                    Keying.RegistrySpec.route(
+                            asset.getTenant_id(),
+                            null,
+                            null,
+                            asset.getMethod(),
+                            asset.getVersion(),
+                            asset.getVerb()));
             if (legacyPublic != null) {
                 aliases.putIfAbsent(legacyPublic, canonical);
             }
@@ -953,8 +970,13 @@ public class RegistryControlService {
             return null;
         }
         return keying.key(
-                Keying.RegistrySpec
-                        .route(asset.getTenant_id(), null, asset.getApp_id(), asset.getMethod(), asset.getVersion(), asset.getVerb()));
+                Keying.RegistrySpec.route(
+                        asset.getTenant_id(),
+                        null,
+                        asset.getApp_id(),
+                        asset.getMethod(),
+                        asset.getVersion(),
+                        asset.getVerb()));
     }
 
     /**
@@ -976,7 +998,8 @@ public class RegistryControlService {
         if (segments.length == 3) {
             Integer verb = parseVerbToken(segments[2]);
             if (verb != null) {
-                return keying.key(Keying.RegistrySpec.route(asset.getTenant_id(), null, null, segments[0], segments[1], verb));
+                return keying.key(
+                        Keying.RegistrySpec.route(asset.getTenant_id(), null, null, segments[0], segments[1], verb));
             }
             return trimmed;
         }
@@ -988,7 +1011,9 @@ public class RegistryControlService {
             if (verb != null) {
                 Type type = parseTypeToken(segments[0]);
                 if (type != null) {
-                    return keying.key(Keying.RegistrySpec.route(asset.getTenant_id(), type, null, segments[1], segments[2], verb));
+                    return keying.key(
+                            Keying.RegistrySpec
+                                    .route(asset.getTenant_id(), type, null, segments[1], segments[2], verb));
                 }
             }
             return trimmed;
@@ -1000,11 +1025,20 @@ public class RegistryControlService {
             }
             Type type = parseTypeToken(segments[0]);
             if (type != null) {
-                return keying.key(Keying.RegistrySpec.route(asset.getTenant_id(), type, segments[1], segments[2], segments[3], verb));
+                return keying.key(
+                        Keying.RegistrySpec
+                                .route(asset.getTenant_id(), type, segments[1], segments[2], segments[3], verb));
             }
             type = parseTypeToken(segments[1]);
             if (type != null) {
-                return keying.key(Keying.RegistrySpec.route(requireDependencyTenant(asset, segments[0]), type, null, segments[2], segments[3], verb));
+                return keying.key(
+                        Keying.RegistrySpec.route(
+                                requireDependencyTenant(asset, segments[0]),
+                                type,
+                                null,
+                                segments[2],
+                                segments[3],
+                                verb));
             }
             return trimmed;
         }
@@ -1012,8 +1046,14 @@ public class RegistryControlService {
             Integer verb = parseVerbToken(segments[5]);
             Type type = parseTypeToken(segments[1]);
             if (verb != null && type != null) {
-                return keying
-                        .key(Keying.RegistrySpec.route(requireDependencyTenant(asset, segments[0]), type, segments[2], segments[3], segments[4], verb));
+                return keying.key(
+                        Keying.RegistrySpec.route(
+                                requireDependencyTenant(asset, segments[0]),
+                                type,
+                                segments[2],
+                                segments[3],
+                                segments[4],
+                                verb));
             }
         }
         return trimmed;
@@ -1312,9 +1352,9 @@ public class RegistryControlService {
         /**
          * Deletes one registry asset by identity.
          *
-         * @param type  registry type
+         * @param type     registry type
          * @param tenantId tenantId identifier
-         * @param id    asset identifier
+         * @param id       asset identifier
          */
         @Override
         public void delete(Type type, String tenantId, String id) {
@@ -1325,7 +1365,7 @@ public class RegistryControlService {
          * Deletes one registry asset with a resolved current value.
          *
          * @param type     registry type
-         * @param tenantId    tenantId identifier
+         * @param tenantId tenantId identifier
          * @param id       asset identifier
          * @param existing existing asset
          */

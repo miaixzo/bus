@@ -47,7 +47,7 @@ public class RuntimeItemOverlayService {
     /**
      * Creates a runtime overlay service with the default key strategy.
      *
-     * @param publisher cache-backed overlay publisher
+     * @param publisher    cache-backed overlay publisher
      * @param watchManager watch notification manager
      */
     public RuntimeItemOverlayService(RuntimeItemOverlayPublisher publisher, WatchManager watchManager) {
@@ -57,9 +57,9 @@ public class RuntimeItemOverlayService {
     /**
      * Creates a runtime overlay service.
      *
-     * @param publisher cache-backed overlay publisher
+     * @param publisher    cache-backed overlay publisher
      * @param watchManager watch notification manager
-     * @param keying setting key strategy
+     * @param keying       setting key strategy
      */
     public RuntimeItemOverlayService(RuntimeItemOverlayPublisher publisher, WatchManager watchManager,
             Keying<SettingSpec> keying) {
@@ -80,14 +80,19 @@ public class RuntimeItemOverlayService {
     /**
      * Publishes an overlay and notifies watchers of the same item coordinates.
      *
-     * @param item tenant-qualified item and overlay content
+     * @param item  tenant-qualified item and overlay content
      * @param ttlMs time-to-live in milliseconds; zero uses the publisher default
      */
     public void publishRuntimeOverlay(Item item, long ttlMs) {
         ItemNormalizer.coordinates(item);
         publisher.publish(item, ttlMs);
-        watchManager.notifySetting(item.getTenant_id(), keying.key(SettingSpec.watch(item)), item.getContent(),
-                OVERLAY_SOURCE, OVERLAY_PUBLISH_EVENT, "Runtime overlay updated");
+        watchManager.notifySetting(
+                item.getTenant_id(),
+                keying.key(SettingSpec.watch(item)),
+                item.getContent(),
+                OVERLAY_SOURCE,
+                OVERLAY_PUBLISH_EVENT,
+                "Runtime overlay updated");
     }
 
     /**
@@ -138,7 +143,12 @@ public class RuntimeItemOverlayService {
     public void clearRuntimeOverlay(Item coordinates) {
         ItemNormalizer.coordinates(coordinates);
         publisher.delete(coordinates);
-        watchManager.notifySetting(coordinates.getTenant_id(), keying.key(SettingSpec.watch(coordinates)), null,
-                OVERLAY_SOURCE, OVERLAY_CLEAR_EVENT, "Runtime overlay cleared");
+        watchManager.notifySetting(
+                coordinates.getTenant_id(),
+                keying.key(SettingSpec.watch(coordinates)),
+                null,
+                OVERLAY_SOURCE,
+                OVERLAY_CLEAR_EVENT,
+                "Runtime overlay cleared");
     }
 }

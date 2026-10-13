@@ -38,10 +38,11 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
  * <ul>
  * <li>{@link RegistrySpec#ENTRY}: durable registry entry keys and scan prefixes</li>
  * <li>{@link RegistrySpec#INSTANCE}: runtime instance keys and scan prefixes</li>
- * <li>{@link RegistrySpec#ROUTE}: strongest runtime route key plus the ordered tenant-scoped fallback chain</li>
+ * <li>{@link RegistrySpec#ROUTE}: strongest runtime route key plus the ordered type/application fallback chain</li>
  * </ul>
  * <p>
- * Every route requires an explicit tenant. Only {@code type} and {@code appId} may be omitted by fallback candidates.
+ * Entry and instance keys require an explicit tenant. Route keys do not use tenant identity; only {@code type} and
+ * {@code appId} may be omitted by route fallback candidates.
  * </p>
  *
  * @author Kimi Liu
@@ -104,7 +105,6 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
         if (spec.mode() != RegistrySpec.ROUTE) {
             return Keying.super.keys(spec);
         }
-        String tenantId = spec.tenantIdPart();
         if (!spec.routable()) {
             return List.of();
         }
@@ -114,10 +114,10 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
         String method = spec.methodPart();
         String version = spec.versionPart();
         Integer verb = spec.verbPart();
-        this.appendKey(keys, tenantId, type, appId, method, version, verb, true, true);
-        this.appendKey(keys, tenantId, type, appId, method, version, verb, true, false);
-        this.appendKey(keys, tenantId, type, appId, method, version, verb, false, true);
-        this.appendKey(keys, tenantId, type, appId, method, version, verb, false, false);
+        this.appendKey(keys, type, appId, method, version, verb, true, true);
+        this.appendKey(keys, type, appId, method, version, verb, true, false);
+        this.appendKey(keys, type, appId, method, version, verb, false, true);
+        this.appendKey(keys, type, appId, method, version, verb, false, false);
         return ListKit.of(keys);
     }
 
@@ -136,12 +136,13 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
             case RegistrySpec.ENTRY -> {
                 String tenantId = CortexIdentity.tenantKey(spec.tenantId());
                 Type type = spec.typePart();
-                yield type == null ? null : Builder.REG_PREFIX + tenantId + Symbol.COLON + type.segment() + Symbol.COLON;
+                yield type == null ? null
+                        : Builder.REG_PREFIX + tenantId + Symbol.COLON + type.segment() + Symbol.COLON;
             }
             case RegistrySpec.INSTANCE -> {
                 StringBuilder builder = new StringBuilder();
-                builder.append(Builder.REG_PREFIX).append(CortexIdentity.tenantKey(spec.tenantId())).append(Symbol.COLON)
-                        .append("instance").append(Symbol.COLON);
+                builder.append(Builder.REG_PREFIX).append(CortexIdentity.tenantKey(spec.tenantId()))
+                        .append(Symbol.COLON).append("instance").append(Symbol.COLON);
                 String appId = spec.appIdPart();
                 if (appId != null) {
                     builder.append(segment(appId)).append(Symbol.COLON);
@@ -164,7 +165,6 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
      * Appends one route-key candidate for a specific inclusion level.
      *
      * @param keys         route-key accumulator
-     * @param tenantId        normalized tenantId part
      * @param type         normalized numeric type part
      * @param appId        normalized application identifier part
      * @param method       route method part
@@ -175,7 +175,6 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
      */
     private void appendKey(
             LinkedHashSet<String> keys,
-            String tenantId,
             String type,
             String appId,
             String method,
@@ -193,11 +192,9 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
             return;
         }
         StringBuilder builder = new StringBuilder("route:v2:");
-        builder.append(CortexIdentity.tenantKey(tenantId)).append(":type=")
-                .append(includeType ? type : "*").append(":app=")
-                .append(includeAppId ? segment(appId) : "*").append(":method=")
-                .append(segment(method)).append(":version=").append(segment(version))
-                .append(":verb=").append(verb);
+        builder.append("type=").append(includeType ? type : "*").append(":app=")
+                .append(includeAppId ? segment(appId) : "*").append(":method=").append(segment(method))
+                .append(":version=").append(segment(version)).append(":verb=").append(verb);
         keys.add(builder.toString());
     }
 

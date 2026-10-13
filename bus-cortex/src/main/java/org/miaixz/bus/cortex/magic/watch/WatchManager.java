@@ -24,6 +24,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.entity.Tenant;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.*;
@@ -156,9 +157,9 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     /**
      * Creates a WatchManager with explicit limits.
      *
-     * @param cacheX             shared cache used by the backing sequence generator
+     * @param cacheX              shared cache used by the backing sequence generator
      * @param maxWatchesPerTenant maximum concurrent watches per tenantId
-     * @param watchExpireMs      milliseconds of inactivity after which a watch is removed
+     * @param watchExpireMs       milliseconds of inactivity after which a watch is removed
      */
     public WatchManager(CacheX<String, Object> cacheX, int maxWatchesPerTenant, long watchExpireMs) {
         this(cacheX, maxWatchesPerTenant, watchExpireMs, 1024, OverflowStrategy.DROP_LATEST);
@@ -167,10 +168,10 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     /**
      * Creates a WatchManager with explicit limits and backlog capacity.
      *
-     * @param cacheX             shared cache used by the backing sequence generator
+     * @param cacheX              shared cache used by the backing sequence generator
      * @param maxWatchesPerTenant maximum concurrent watches per tenantId
-     * @param watchExpireMs      milliseconds of inactivity after which a watch is removed
-     * @param maxPendingPerWatch maximum queued-but-not-delivered events per watch
+     * @param watchExpireMs       milliseconds of inactivity after which a watch is removed
+     * @param maxPendingPerWatch  maximum queued-but-not-delivered events per watch
      */
     public WatchManager(CacheX<String, Object> cacheX, int maxWatchesPerTenant, long watchExpireMs,
             int maxPendingPerWatch) {
@@ -180,11 +181,11 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     /**
      * Creates a WatchManager with explicit limits, backlog capacity and overflow strategy.
      *
-     * @param cacheX             shared cache used by the backing sequence generator
+     * @param cacheX              shared cache used by the backing sequence generator
      * @param maxWatchesPerTenant maximum concurrent watches per tenantId
-     * @param watchExpireMs      milliseconds of inactivity after which a watch is removed
-     * @param maxPendingPerWatch maximum queued-but-not-delivered events per watch
-     * @param overflowStrategy   overflow strategy when the backlog is full
+     * @param watchExpireMs       milliseconds of inactivity after which a watch is removed
+     * @param maxPendingPerWatch  maximum queued-but-not-delivered events per watch
+     * @param overflowStrategy    overflow strategy when the backlog is full
      */
     public WatchManager(CacheX<String, Object> cacheX, int maxWatchesPerTenant, long watchExpireMs,
             int maxPendingPerWatch, OverflowStrategy overflowStrategy) {
@@ -293,7 +294,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             return;
         }
         String tenantId;
-        if (newValue instanceof org.miaixz.bus.core.basic.entity.Tenant value) {
+        if (newValue instanceof Tenant value) {
             tenantId = CortexIdentity.tenantId(value.getTenant_id());
         } else if (newValue instanceof Instance value) {
             tenantId = CortexIdentity.tenantId(value.getTenant_id());
@@ -353,7 +354,13 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      * @param eventType logical event type
      * @param summary   human-readable event summary
      */
-    public void notifySetting(String tenantId, String key, String content, String source, String eventType, String summary) {
+    public void notifySetting(
+            String tenantId,
+            String key,
+            String content,
+            String source,
+            String eventType,
+            String summary) {
         String tenant = CortexIdentity.tenantId(tenantId);
         if (closed) {
             return;

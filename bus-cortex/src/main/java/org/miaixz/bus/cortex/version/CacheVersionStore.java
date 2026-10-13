@@ -86,9 +86,9 @@ public class CacheVersionStore implements VersionStore {
     /**
      * Finds a release record in the cache.
      *
-     * @param tenantId   release tenantId
-     * @param version release version
-     * @param track   release track
+     * @param tenantId release tenantId
+     * @param version  release version
+     * @param track    release track
      * @return matching release record or {@code null}
      */
     @Override
@@ -105,13 +105,14 @@ public class CacheVersionStore implements VersionStore {
      * Lists release records from the cache.
      *
      * @param tenantId release tenantId
-     * @param track release track, or {@code null} to list every track
+     * @param track    release track, or {@code null} to list every track
      * @return matching release records
      */
     @Override
     public List<VersionRecord> list(String tenantId, String track) {
         String prefix = track == null || track.isBlank() ? PREFIX + CortexIdentity.tenantKey(tenantId) + Symbol.COLON
-                : PREFIX + CortexIdentity.tenantKey(tenantId) + Symbol.COLON + segment(ReleaseTrack.normalize(track)) + Symbol.COLON;
+                : PREFIX + CortexIdentity.tenantKey(tenantId) + Symbol.COLON + segment(ReleaseTrack.normalize(track))
+                        + Symbol.COLON;
         Map<String, Object> entries = cacheX.scan(prefix);
         if (entries == null || entries.isEmpty()) {
             return List.of();
@@ -133,9 +134,9 @@ public class CacheVersionStore implements VersionStore {
     /**
      * Deletes a release record from the cache.
      *
-     * @param tenantId   release tenantId
-     * @param version release version
-     * @param track   release track
+     * @param tenantId release tenantId
+     * @param version  release version
+     * @param track    release track
      * @return deleted release record or {@code null}
      */
     @Override
@@ -153,7 +154,7 @@ public class CacheVersionStore implements VersionStore {
      * Returns the current release from the explicit cache pointer when present.
      *
      * @param tenantId release tenantId
-     * @param track release track
+     * @param track    release track
      * @return current release record or {@code null}
      */
     @Override
@@ -171,9 +172,9 @@ public class CacheVersionStore implements VersionStore {
     /**
      * Updates the current release pointer in the cache.
      *
-     * @param tenantId   release tenantId
-     * @param track   release track
-     * @param version release version
+     * @param tenantId release tenantId
+     * @param track    release track
+     * @param version  release version
      * @return persisted current release or {@code null}
      */
     @Override
@@ -223,25 +224,26 @@ public class CacheVersionStore implements VersionStore {
     /**
      * Builds the cache key for one release record.
      *
-     * @param tenantId   release tenantId
-     * @param track   release track
-     * @param version release version
+     * @param tenantId release tenantId
+     * @param track    release track
+     * @param version  release version
      * @return release cache key
      */
     private String key(String tenantId, String track, String version) {
-        return PREFIX + CortexIdentity.tenantKey(tenantId) + Symbol.COLON + segment(ReleaseTrack.normalize(track)) + Symbol.COLON
-                + segment(version);
+        return PREFIX + CortexIdentity.tenantKey(tenantId) + Symbol.COLON + segment(ReleaseTrack.normalize(track))
+                + Symbol.COLON + segment(version);
     }
 
     /**
      * Builds the cache key that stores the current version pointer.
      *
      * @param tenantId release tenantId
-     * @param track release track
+     * @param track    release track
      * @return current pointer cache key
      */
     private String currentKey(String tenantId, String track) {
-        return PREFIX + "current:" + CortexIdentity.tenantKey(tenantId) + Symbol.COLON + segment(ReleaseTrack.normalize(track));
+        return PREFIX + "current:" + CortexIdentity.tenantKey(tenantId) + Symbol.COLON
+                + segment(ReleaseTrack.normalize(track));
     }
 
     /** Encodes one required coordinate without delimiter collisions. */

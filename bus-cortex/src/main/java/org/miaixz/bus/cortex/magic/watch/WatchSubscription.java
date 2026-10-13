@@ -129,10 +129,10 @@ public class WatchSubscription<T> {
     /**
      * Creates one watch subscription with common lifecycle timestamps initialized.
      *
-     * @param vector   watch vector
+     * @param vector    watch vector
      * @param tenant_id canonical tenantId identifier for quota accounting
-     * @param listener listener to invoke
-     * @param now      current timestamp
+     * @param listener  listener to invoke
+     * @param now       current timestamp
      */
     public WatchSubscription(Vector vector, String tenant_id, Listener<Watch<T>> listener, long now) {
         this.vector = vector;

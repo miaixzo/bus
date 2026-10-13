@@ -20,8 +20,8 @@
 /**
  * Version-domain records, immutable release artifacts, and publication contracts.
  * <p>
- * {@code VersionRegistry} is a compatibility adapter delegating to {@code VersionStore} and
- * {@code VersionPublisher}; it is not backed by registry assets.
+ * {@code VersionRegistry} is a compatibility adapter delegating to {@code VersionStore} and {@code VersionPublisher};
+ * it is not backed by registry assets.
  *
  * @author Kimi Liu
  */

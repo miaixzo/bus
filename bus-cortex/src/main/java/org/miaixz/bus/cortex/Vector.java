@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -105,13 +106,13 @@ public class Vector extends Nature {
     /**
      * Maximum number of results to return.
      */
-    @lombok.Builder.Default
+    @Default
     private int limit = 100;
 
     /**
      * Number of results to skip.
      */
-    @lombok.Builder.Default
+    @Default
     private int offset = 0;
 
     /**

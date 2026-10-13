@@ -32,6 +32,7 @@ import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
 import org.miaixz.bus.cortex.magic.event.CortexChangeRecord;
 import org.miaixz.bus.cortex.magic.event.CortexChangeStatus;
+import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.runtime.CortexDiagnostics;
 import org.miaixz.bus.cortex.magic.runtime.CortexLifecycle;
 import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
@@ -208,9 +209,9 @@ public class VortexBridge
                 event.getId(),
                 event.getMethod(),
                 event.getVersion());
-        org.miaixz.bus.cortex.magic.identity.CortexIdentity.requireTenant(event.getTenant_id(), event.getAsset().getTenant_id());
+        CortexIdentity.requireTenant(event.getTenant_id(), event.getAsset().getTenant_id());
         if (event.getInstance() != null) {
-            org.miaixz.bus.cortex.magic.identity.CortexIdentity.requireTenant(event.getTenant_id(), event.getInstance().getTenant_id());
+            CortexIdentity.requireTenant(event.getTenant_id(), event.getInstance().getTenant_id());
         }
         RegistryChange<Assets> transportEvent = new RegistryChange<>();
         transportEvent.setAction(event.getAction());

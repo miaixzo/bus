@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.Objects;
 
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Keying.SettingSpec;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.setting.reference.Reference;
 import org.miaixz.bus.cortex.setting.reference.ReferenceStore;
+import org.miaixz.bus.extra.json.JsonKit;
 
 /** Persistent read-through cache isolated by tenant and item coordinates. */
 public class StoreBackedItemStore {
@@ -62,7 +62,8 @@ public class StoreBackedItemStore {
         if (entries == null || entries.isEmpty()) {
             return List.of();
         }
-        List<Item> normalized = entries.stream().filter(Objects::nonNull).map(this::copy).map(ItemNormalizer::normalize).toList();
+        List<Item> normalized = entries.stream().filter(Objects::nonNull).map(this::copy).map(ItemNormalizer::normalize)
+                .toList();
         List<Item> stored = store.saveAll(normalized);
         if (stored == null) {
             return List.of();
@@ -100,8 +101,8 @@ public class StoreBackedItemStore {
     }
 
     /**
-     * Queries application-owned items and referenced shared items.
-     * Persistent implementations must filter by tenant and retain shared candidates when filtering by application.
+     * Queries application-owned items and referenced shared items. Persistent implementations must filter by tenant and
+     * retain shared candidates when filtering by application.
      */
     public List<Item> query(ItemQuery query) {
         if (query == null) {
@@ -120,8 +121,7 @@ public class StoreBackedItemStore {
         }
         List<Item> result = new ArrayList<>();
         for (Item item : loaded) {
-            if (item == null || !query.getTenant_id().equals(item.getTenant_id())
-                    || !kind.equals(item.getKind())
+            if (item == null || !query.getTenant_id().equals(item.getTenant_id()) || !kind.equals(item.getKind())
                     || query.getScope() != null && !query.getScope().equals(item.getScope())
                     || query.getCode() != null && !query.getCode().equals(item.getCode())
                     || !query.isIncludeDeleted() && Integer.valueOf(-1).equals(item.getStatus())) {
@@ -188,11 +188,11 @@ public class StoreBackedItemStore {
         if (item.getId() == null || item.getId().isBlank()) {
             return false;
         }
-        Reference query = Reference.builder().tenant_id(item.getTenant_id()).source_id(item.getId())
-                .target_id(app_id).type(Reference.Type.ITEM_APP.name()).build();
+        Reference query = Reference.builder().tenant_id(item.getTenant_id()).source_id(item.getId()).target_id(app_id)
+                .type(Reference.Type.ITEM_APP.name()).build();
         List<Reference> references = referenceStore.outgoing(query);
-        return references != null && references.stream().anyMatch(reference ->
-                reference != null && item.getTenant_id().equals(reference.getTenant_id())
+        return references != null && references.stream().anyMatch(
+                reference -> reference != null && item.getTenant_id().equals(reference.getTenant_id())
                         && item.getId().equals(reference.getSource_id())
                         && Reference.Type.ITEM_APP.name().equals(reference.getType())
                         && !Integer.valueOf(-1).equals(reference.getStatus())

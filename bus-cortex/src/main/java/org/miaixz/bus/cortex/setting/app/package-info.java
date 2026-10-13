@@ -20,7 +20,7 @@
 /**
  * Application directory abstractions for the setting domain.
  * <p>
- * App contains tenant-scoped application directory attributes. Application-owned items use {@code Item.app_id};
- * shared configuration references and rollout application selection use {@code Reference} records.
+ * App contains tenant-scoped application directory attributes. Application-owned items use {@code Item.app_id}; shared
+ * configuration references and rollout application selection use {@code Reference} records.
  */
 package org.miaixz.bus.cortex.setting.app;

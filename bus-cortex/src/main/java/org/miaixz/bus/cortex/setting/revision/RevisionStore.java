@@ -22,10 +22,12 @@ package org.miaixz.bus.cortex.setting.revision;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
+
 /**
- * Append-only store contract for immutable setting revisions within a mandatory tenant.
- * A saved snapshot must never be overwritten, including editor payload, reference manifests, or protection metadata.
- * Rollbacks append new snapshots instead of modifying historical snapshots.
+ * Append-only store contract for immutable setting revisions within a mandatory tenant. A saved snapshot must never be
+ * overwritten, including editor payload, reference manifests, or protection metadata. Rollbacks append new snapshots
+ * instead of modifying historical snapshots.
  *
  * @author Kimi Liu
  */
@@ -79,13 +81,15 @@ public interface RevisionStore {
 
     /** Finds an immutable snapshot by identifier without crossing the tenant or item boundary. */
     default Revision identity(String tenant_id, String item_id, String id) {
-        org.miaixz.bus.cortex.setting.item.ItemNormalizer.requireTenant(tenant_id);
+        ItemNormalizer.requireTenant(tenant_id);
         if (item_id == null || item_id.isBlank() || id == null || id.isBlank()) {
             throw new IllegalArgumentException("Revision identity coordinates are required");
         }
-        return query(tenant_id, item_id).stream().filter(revision ->
-                tenant_id.equals(revision.getTenant_id()) && item_id.equals(revision.getItem_id())
-                        && id.equals(revision.getId())).findFirst().orElse(null);
+        return query(tenant_id, item_id).stream()
+                .filter(
+                        revision -> tenant_id.equals(revision.getTenant_id()) && item_id.equals(revision.getItem_id())
+                                && id.equals(revision.getId()))
+                .findFirst().orElse(null);
     }
 
     /**
@@ -101,8 +105,8 @@ public interface RevisionStore {
     }
 
     /**
-     * Retains the newest revisions and every revision reachable from a stable/gray pointer, fixed reference,
-     * frozen release, retained platform version, or watch. Unknown reachability must retain history.
+     * Retains the newest revisions and every revision reachable from a stable/gray pointer, fixed reference, frozen
+     * release, retained platform version, or watch. Unknown reachability must retain history.
      *
      * @param tenant_id    mandatory tenant identifier
      * @param item_id      item identifier

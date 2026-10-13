@@ -343,7 +343,8 @@ public enum Type {
     /**
      * Returns whether this value is a setting-domain resource type.
      *
-     * @return {@code true} for setting directory, item, revision, reference, instance, watch, and rollout resource types
+     * @return {@code true} for setting directory, item, revision, reference, instance, watch, and rollout resource
+     *         types
      */
     public boolean isSetting() {
         return domain == Domain.SETTING;

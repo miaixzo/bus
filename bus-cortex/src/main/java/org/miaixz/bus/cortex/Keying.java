@@ -21,7 +21,10 @@ package org.miaixz.bus.cortex;
 
 import java.util.List;
 
+import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.registry.RegistryIdentity;
+import org.miaixz.bus.cortex.setting.item.Item;
+import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 
 /**
  * Generic key-strategy abstraction shared by the registry and setting domains.
@@ -83,12 +86,12 @@ public interface Keying<S> {
      * <li>{@link #ROUTE}: runtime route lookup keys and their ordered fallback chain</li>
      * </ul>
      * <p>
-     * Tenant identity is mandatory. Optional {@code type} and {@code appId} dimensions are preserved as supplied;
-     * fallback candidates never omit the tenant.
+     * Tenant identity is mandatory for entry and instance keys, but is not used for route keys. Optional {@code type}
+     * and {@code appId} route dimensions are preserved as supplied and may be omitted by fallback candidates.
      * </p>
      *
      * @param mode        registry key mode
-     * @param tenantId       tenantId
+     * @param tenantId    tenantId
      * @param type        registry type
      * @param appId       application identifier
      * @param id          logical entry identifier
@@ -119,8 +122,8 @@ public interface Keying<S> {
          * Creates one registry-entry specification.
          *
          * @param tenantId tenantId
-         * @param type  registry type
-         * @param id    logical entry identifier
+         * @param type     registry type
+         * @param id       logical entry identifier
          * @return registry-entry specification
          */
         public static RegistrySpec entry(String tenantId, Type type, String id) {
@@ -130,7 +133,7 @@ public interface Keying<S> {
         /**
          * Creates one runtime-instance specification.
          *
-         * @param tenantId       tenantId
+         * @param tenantId    tenantId
          * @param appId       application identifier
          * @param method      route method
          * @param version     route version
@@ -149,12 +152,12 @@ public interface Keying<S> {
         /**
          * Creates one runtime-route specification.
          *
-         * @param tenantId   tenant identifier, required
-         * @param type    registry type, optional
-         * @param appId   application identifier, optional
-         * @param method  route method
-         * @param version route version
-         * @param verb    numeric verb code
+         * @param tenantId tenant metadata, not used for route-key encoding or lookup
+         * @param type     registry type, optional
+         * @param appId    application identifier, optional
+         * @param method   route method
+         * @param version  route version
+         * @param verb     numeric verb code
          * @return runtime-route specification
          */
         public static RegistrySpec route(
@@ -194,7 +197,7 @@ public interface Keying<S> {
          * @return nonblank tenant identifier
          */
         public String tenantIdPart() {
-            return org.miaixz.bus.cortex.magic.identity.CortexIdentity.tenantId(tenantId);
+            return CortexIdentity.tenantId(tenantId);
         }
 
         /**
@@ -284,16 +287,17 @@ public interface Keying<S> {
     /**
      * Configuration key specification qualified by tenant, ownership scope, application, code, and kind.
      *
-     * @param mode key purpose
+     * @param mode      key purpose
      * @param tenant_id tenant identifier
-     * @param scope configuration ownership scope
-     * @param app_id application identifier
-     * @param code configuration code
-     * @param kind configuration content kind
-     * @param revision historical revision
+     * @param scope     configuration ownership scope
+     * @param app_id    application identifier
+     * @param code      configuration code
+     * @param kind      configuration content kind
+     * @param revision  historical revision
      */
-    record SettingSpec(int mode, String tenant_id, String scope, String app_id, String code,
-            String kind, String revision) {
+    record SettingSpec(int mode, String tenant_id, String scope, String app_id, String code, String kind,
+            String revision) {
+
         public static final int ITEM_ID = 11;
         public static final int SCOPE = 12;
         public static final int WATCH = 13;
@@ -303,42 +307,44 @@ public interface Keying<S> {
         public static final int REVISION = 17;
         public static final int SEQUENCE = 18;
 
-        /** Creates a key specification for the supplied item and purpose. */
-        private static SettingSpec of(int mode, org.miaixz.bus.cortex.setting.item.Item item, String revision) {
-            org.miaixz.bus.cortex.setting.item.ItemNormalizer.coordinates(item);
-            return new SettingSpec(mode, item.getTenant_id(), item.getScope(), item.getApp_id(),
-                    item.getCode(), item.getKind(), revision);
+        /**
+         * Creates a key specification for the supplied item and purpose.
+         */
+        private static SettingSpec of(int mode, Item item, String revision) {
+            ItemNormalizer.coordinates(item);
+            return new SettingSpec(mode, item.getTenant_id(), item.getScope(), item.getApp_id(), item.getCode(),
+                    item.getKind(), revision);
         }
 
-        public static SettingSpec itemId(org.miaixz.bus.cortex.setting.item.Item item) {
+        public static SettingSpec itemId(Item item) {
             return of(ITEM_ID, item, null);
         }
 
-        public static SettingSpec scope(org.miaixz.bus.cortex.setting.item.Item item) {
+        public static SettingSpec scope(Item item) {
             return of(SCOPE, item, null);
         }
 
-        public static SettingSpec watch(org.miaixz.bus.cortex.setting.item.Item item) {
+        public static SettingSpec watch(Item item) {
             return of(WATCH, item, null);
         }
 
-        public static SettingSpec overlay(org.miaixz.bus.cortex.setting.item.Item item) {
+        public static SettingSpec overlay(Item item) {
             return of(OVERLAY, item, null);
         }
 
-        public static SettingSpec export(org.miaixz.bus.cortex.setting.item.Item item) {
+        public static SettingSpec export(Item item) {
             return of(EXPORT, item, null);
         }
 
-        public static SettingSpec entry(org.miaixz.bus.cortex.setting.item.Item item) {
+        public static SettingSpec entry(Item item) {
             return of(ENTRY, item, null);
         }
 
-        public static SettingSpec revision(org.miaixz.bus.cortex.setting.item.Item item, String revision) {
+        public static SettingSpec revision(Item item, String revision) {
             return of(REVISION, item, revision);
         }
 
-        public static SettingSpec sequence(org.miaixz.bus.cortex.setting.item.Item item) {
+        public static SettingSpec sequence(Item item) {
             return of(SEQUENCE, item, null);
         }
     }

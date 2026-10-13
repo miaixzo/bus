@@ -167,10 +167,7 @@ public class ItemQueryService {
         result.put("effectiveSource", effectiveSource);
         result.put("effectiveValue", resolve(query));
         result.put("resolvedFrom", effectiveSource);
-        result.put(
-                "watchKey",
-                query == null ? null
-                        : settingCuratorService.watchKey(query.coordinates()));
+        result.put("watchKey", query == null ? null : settingCuratorService.watchKey(query.coordinates()));
         result.put("previewSource", durablePresent ? "durable-setting" : "none");
         return result;
     }
@@ -193,8 +190,7 @@ public class ItemQueryService {
         if (item == null || respectPreference && !ItemExposure.PUBLIC.name().equals(item.getExposure())) {
             return null;
         }
-        return runtimeSettingOverlayService
-                .resolveRuntimeOverlay(query.coordinates());
+        return runtimeSettingOverlayService.resolveRuntimeOverlay(query.coordinates());
     }
 
 }
