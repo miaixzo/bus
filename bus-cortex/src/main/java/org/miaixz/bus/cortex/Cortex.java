@@ -32,6 +32,8 @@ import org.miaixz.bus.cortex.registry.api.ApiAssets;
 import org.miaixz.bus.cortex.registry.mcp.McpAssets;
 import org.miaixz.bus.cortex.registry.prompt.PromptAssets;
 import org.miaixz.bus.cortex.version.VersionAssets;
+import org.miaixz.bus.cortex.setting.item.Item;
+import org.miaixz.bus.cortex.setting.item.ItemQuery;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -401,46 +403,46 @@ public class Cortex {
         Logger.info(
                 true,
                 "Cortex",
-                "Facade register requested: type={}, space={}, id={}",
+                "Facade register requested: type={}, tenantId={}, id={}",
                 assets == null ? null : assets.getClass().getSimpleName(),
-                assets == null ? null : assets.getSpace_id(),
+                assets == null ? null : assets.getTenant_id(),
                 assets == null ? null : assets.getId());
         Registry<Assets> registry = (Registry<Assets>) registry((Class<? extends Assets>) assets.getClass());
         registry.register(assets);
         Logger.info(
                 false,
                 "Cortex",
-                "Facade register completed: type={}, space={}, id={}",
+                "Facade register completed: type={}, tenantId={}, id={}",
                 assets.getClass().getSimpleName(),
-                assets.getSpace_id(),
+                assets.getTenant_id(),
                 assets.getId());
     }
 
     /**
      * Deregisters the same entry identifier from all built-in registries.
      *
-     * @param space space containing the entry
+     * @param tenantId tenantId containing the entry
      * @param id    entry identifier
      */
-    public static void deregister(String space, String id) {
-        Logger.info(true, "Cortex", "Facade deregister requested across registries: space={}, id={}", space, id);
-        api().deregister(space, id);
-        mcp().deregister(space, id);
-        prompt().deregister(space, id);
-        Logger.info(false, "Cortex", "Facade deregister completed across registries: space={}, id={}", space, id);
+    public static void deregister(String tenantId, String id) {
+        Logger.info(true, "Cortex", "Facade deregister requested across registries: tenantId={}, id={}", tenantId, id);
+        api().deregister(tenantId, id);
+        mcp().deregister(tenantId, id);
+        prompt().deregister(tenantId, id);
+        Logger.info(false, "Cortex", "Facade deregister completed across registries: tenantId={}, id={}", tenantId, id);
     }
 
     /**
      * Deregisters one entry from the registry matching the requested asset type.
      *
      * @param type  registry type
-     * @param space space containing the entry
+     * @param tenantId tenantId containing the entry
      * @param id    entry identifier
      */
-    public static void deregister(Type type, String space, String id) {
-        Logger.info(true, "Cortex", "Facade deregister requested: type={}, space={}, id={}", type, space, id);
-        registry(type).deregister(space, id);
-        Logger.info(false, "Cortex", "Facade deregister completed: type={}, space={}, id={}", type, space, id);
+    public static void deregister(Type type, String tenantId, String id) {
+        Logger.info(true, "Cortex", "Facade deregister requested: type={}, tenantId={}, id={}", type, tenantId, id);
+        registry(type).deregister(tenantId, id);
+        Logger.info(false, "Cortex", "Facade deregister completed: type={}, tenantId={}, id={}", type, tenantId, id);
     }
 
     /**
@@ -455,38 +457,36 @@ public class Cortex {
         Logger.debug(
                 true,
                 "Cortex",
-                "Facade query requested: type={}, space={}, id={}",
+                "Facade query requested: type={}, tenantId={}, id={}",
                 type == null ? null : type.getSimpleName(),
-                vector == null ? null : vector.getSpace_id(),
+                vector == null ? null : vector.getTenant_id(),
                 vector == null ? null : vector.getId());
         List<T> result = registry(type).query(vector);
         Logger.debug(
                 false,
                 "Cortex",
-                "Facade query completed: type={}, space={}, id={}, resultSize={}",
+                "Facade query completed: type={}, tenantId={}, id={}, resultSize={}",
                 type == null ? null : type.getSimpleName(),
-                vector == null ? null : vector.getSpace_id(),
+                vector == null ? null : vector.getTenant_id(),
                 vector == null ? null : vector.getId(),
                 result.size());
         return result;
     }
 
     /**
-     * Returns current setting content for the given group and code.
+     * Returns current setting content for tenant-qualified item coordinates.
      *
-     * @param group setting group name
-     * @param code  setting code
+     * @param query tenant-qualified item query
      * @return published setting content, or {@code null} if absent
      */
-    public static String get(String group, String code) {
-        Logger.debug(true, "Cortex", "Setting get requested: group={}, code={}", group, code);
-        String content = curator().get(group, code);
+    public static String get(ItemQuery query) {
+        String content = curator().get(query);
         Logger.debug(
                 false,
                 "Cortex",
-                "Setting get completed: group={}, code={}, contentChars={}",
-                group,
-                code,
+                "Setting get completed: tenant={}, code={}, contentChars={}",
+                query == null ? null : query.getTenant_id(),
+                query == null ? null : query.getCode(),
                 content == null ? 0 : content.length());
         return content;
     }
@@ -494,20 +494,12 @@ public class Cortex {
     /**
      * Publishes setting content through the configured curator.
      *
-     * @param group   setting group name
-     * @param code    setting code
-     * @param content setting content to publish
+     * @param item tenant-qualified item and content to publish
      */
-    public static void publish(String group, String code, String content) {
-        Logger.info(
-                true,
-                "Cortex",
-                "Setting publish requested: group={}, code={}, contentChars={}",
-                group,
-                code,
-                content == null ? 0 : content.length());
-        curator().publish(group, code, content);
-        Logger.info(false, "Cortex", "Setting publish completed: group={}, code={}", group, code);
+    public static void publish(Item item) {
+        curator().publish(item);
+        Logger.info(false, "Cortex", "Setting publish completed: tenant={}, code={}",
+                item.getTenant_id(), item.getCode());
     }
 
     /**

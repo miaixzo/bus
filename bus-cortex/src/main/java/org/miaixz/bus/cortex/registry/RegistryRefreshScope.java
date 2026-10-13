@@ -34,9 +34,9 @@ import org.miaixz.bus.cortex.Type;
 public class RegistryRefreshScope {
 
     /**
-     * Registry space identifier.
+     * Registry tenantId identifier.
      */
-    private String space_id;
+    private String tenant_id;
 
     /**
      * Registry asset type.

@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.cortex.magic.identity;
 
-import org.miaixz.bus.core.lang.Normal;
-
 /**
  * Common Cortex identity normalization shared by registry, setting, watch, and guard code.
  *
@@ -36,13 +34,34 @@ public class CortexIdentity {
     }
 
     /**
-     * Returns the canonical space, defaulting blank values to the shared default space.
+     * Requires an explicit tenant identifier. There is no default tenant.
      *
-     * @param space raw space value
-     * @return canonical space value
+     * @param tenantId raw tenantId value
+     * @return canonical tenantId value
      */
-    public static String space(String space) {
-        return space == null || space.isBlank() ? Normal.DEFAULT : space;
+    public static String tenantId(String tenantId) {
+        if (tenantId == null || tenantId.isBlank()) {
+            throw new IllegalArgumentException("tenant_id is required");
+        }
+        return tenantId.trim();
+    }
+
+    /**
+     * Encodes a tenant identifier as an unambiguous cache and route key segment.
+     *
+     * @param tenantId explicit tenant identifier
+     * @return length-prefixed tenant segment
+     */
+    public static String tenantKey(String tenantId) {
+        String value = tenantId(tenantId);
+        return value.length() + ":" + value;
+    }
+
+    /** Rejects a payload outside the explicitly selected tenant. */
+    public static void requireTenant(String expected, String actual) {
+        if (!tenantId(expected).equals(tenantId(actual))) {
+            throw new IllegalArgumentException("Tenant identity mismatch");
+        }
     }
 
     /**

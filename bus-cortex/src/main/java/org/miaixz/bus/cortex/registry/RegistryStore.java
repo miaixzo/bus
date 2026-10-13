@@ -80,31 +80,31 @@ public interface RegistryStore<T extends Assets> {
     }
 
     /**
-     * Deletes an entry by type, space and ID.
+     * Deletes an entry by type, tenantId and ID.
      *
      * @param type  asset type
-     * @param space space
+     * @param tenantId tenantId
      * @param id    entry identifier
      */
-    void delete(Type type, String space, String id);
+    void delete(Type type, String tenantId, String id);
 
     /**
      * Deletes one entry using an existing snapshot supplied by the mutation coordinator.
      *
      * @param type     asset type
-     * @param space    space
+     * @param tenantId    tenantId
      * @param id       entry identifier
      * @param existing existing snapshot
      */
-    default void delete(Type type, String space, String id, T existing) {
-        delete(type, space, id);
+    default void delete(Type type, String tenantId, String id, T existing) {
+        delete(type, tenantId, id);
     }
 
     /**
      * Deletes a runtime instance by method/version/fingerprint.
      *
      * @param type        asset type
-     * @param space       space
+     * @param tenantId       tenantId
      * @param app_id      application identifier
      * @param method      method
      * @param version     version
@@ -112,7 +112,7 @@ public interface RegistryStore<T extends Assets> {
      */
     default void deleteInstance(
             Type type,
-            String space,
+            String tenantId,
             String app_id,
             String method,
             String version,
@@ -121,26 +121,26 @@ public interface RegistryStore<T extends Assets> {
     }
 
     /**
-     * Finds an entry by type, space and ID.
+     * Finds an entry by type, tenantId and ID.
      *
      * @param type  asset type
-     * @param space space
+     * @param tenantId tenantId
      * @param id    entry identifier
      * @return persisted entry or {@code null}
      */
-    T find(Type type, String space, String id);
+    T find(Type type, String tenantId, String id);
 
     /**
      * Finds an entry by method and version.
      *
      * @param type    asset type
-     * @param space   space
+     * @param tenantId   tenantId
      * @param app_id  application identifier
      * @param method  method
      * @param version version
      * @return persisted entry or {@code null}
      */
-    default T findByMethodVersion(Type type, String space, String app_id, String method, String version) {
+    default T findByMethodVersion(Type type, String tenantId, String app_id, String method, String version) {
         return null;
     }
 
@@ -179,15 +179,15 @@ public interface RegistryStore<T extends Assets> {
      * Queries entries by exact route identity.
      *
      * @param type    asset type
-     * @param space   space
+     * @param tenantId   tenantId
      * @param app_id  application identifier
      * @param method  method
      * @param version version
      * @return matching entries
      */
-    default List<T> queryByRoute(Type type, String space, String app_id, String method, String version) {
+    default List<T> queryByRoute(Type type, String tenantId, String app_id, String method, String version) {
         Vector vector = new Vector();
-        vector.setSpace_id(space);
+        vector.setTenant_id(tenantId);
         vector.setApp_id(app_id);
         vector.setType(type == null ? null : type.key());
         vector.setMethod(method);
@@ -199,13 +199,13 @@ public interface RegistryStore<T extends Assets> {
      * Queries runtime instances for the given service identity.
      *
      * @param type    asset type
-     * @param space   space
+     * @param tenantId   tenantId
      * @param app_id  application identifier
      * @param method  method
      * @param version version
      * @return matching runtime instances
      */
-    default List<Instance> queryInstances(Type type, String space, String app_id, String method, String version) {
+    default List<Instance> queryInstances(Type type, String tenantId, String app_id, String method, String version) {
         return List.of();
     }
 
@@ -224,6 +224,7 @@ public interface RegistryStore<T extends Assets> {
      *
      * @return capability flags
      */
+    @Deprecated(since = "8.8.0", forRemoval = true)
     default Map<String, Boolean> capabilities() {
         return storeCapabilities().asMap();
     }

@@ -23,53 +23,23 @@ import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemQuery;
 import org.miaixz.bus.cortex.setting.item.ItemScope;
 
-/**
- * Centralized enforcer for space/app/profile relationship validation within the setting domain.
- *
- * @author Kimi Liu
- */
+/** Business validation contract for configuration tenants, applications, and ownership scopes. */
 public interface SettingEnforcer {
 
-    /**
-     * Validates a setting item before mutation.
-     *
-     * @param entry setting item
-     * @return validated setting item
-     */
     default Item validateItem(Item entry) {
         return entry;
     }
 
-    /**
-     * Validates a setting query before resolution.
-     *
-     * @param query setting query
-     * @return validated setting query
-     */
     default ItemQuery validateQuery(ItemQuery query) {
         return query;
     }
 
-    /**
-     * Validates a setting scope before export or maintenance operations.
-     *
-     * @param scope setting scope
-     * @return validated setting scope
-     */
     default ItemScope validateScope(ItemScope scope) {
         return scope;
     }
 
-    /**
-     * Returns whether a space, application, and profile relation is allowed.
-     *
-     * @param space_id   space identifier
-     * @param app_id     application identifier
-     * @param profile_id profile identifier
-     * @return {@code true} when the relation is allowed
-     */
-    default boolean allows(String space_id, String app_id, String profile_id) {
+    /** Checks access to an application and ownership scope within the specified tenant. */
+    default boolean allows(String tenant_id, String app_id, String scope) {
         return true;
     }
-
 }

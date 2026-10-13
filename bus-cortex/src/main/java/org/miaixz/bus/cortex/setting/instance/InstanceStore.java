@@ -21,31 +21,30 @@ package org.miaixz.bus.cortex.setting.instance;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.miaixz.bus.cortex.Suite;
 import org.miaixz.bus.cortex.Trait;
 
 /**
- * Durable store contract for runtime-instance entities.
+ * Persistence contract for configuration client instances.
  *
  * @author Kimi Liu
  */
 public interface InstanceStore {
 
     /**
-     * Saves one runtime instance.
+     * Saves a configuration client instance.
      *
-     * @param instance runtime instance
-     * @return saved runtime instance
+     * @param instance configuration client instance
+     * @return the saved instance
      */
     Instance save(Instance instance);
 
     /**
-     * Saves a batch of runtime instances.
+     * Saves a batch of configuration client instances.
      *
-     * @param instances runtime instances
-     * @return saved non-null runtime instances
+     * @param instances configuration client instances
+     * @return non-null saved instances
      */
     default List<Instance> saveAll(List<Instance> instances) {
         if (instances == null || instances.isEmpty()) {
@@ -61,58 +60,50 @@ public interface InstanceStore {
     }
 
     /**
-     * Finds one runtime instance by identifier.
+     * Finds an instance by tenant and instance identifier.
      *
      * @param tenant_id   tenant identifier
-     * @param instance_id runtime instance identifier
-     * @return matched runtime instance, or {@code null}
+     * @param instance_id instance identifier
+     * @return the matching instance, or {@code null} when absent
      */
     Instance find(String tenant_id, String instance_id);
 
     /**
-     * Finds one runtime instance by asset and fingerprint.
+     * Finds a unique instance by tenant, application, and fingerprint.
      *
      * @param tenant_id   tenant identifier
-     * @param asset_id    registered asset identifier
-     * @param fingerprint endpoint fingerprint
-     * @return matched runtime instance, or {@code null}
+     * @param app_id      application identifier
+     * @param fingerprint instance fingerprint
+     * @return the matching instance, or {@code null} when absent
      */
-    Instance find(String tenant_id, String asset_id, String fingerprint);
+    Instance find(String tenant_id, String app_id, String fingerprint);
 
     /**
-     * Queries runtime instances belonging to an asset.
+     * Queries instances owned by an application within the specified tenant.
      *
      * @param tenant_id tenant identifier
-     * @param asset_id  registered asset identifier
-     * @return matching runtime instances
+     * @param app_id    application identifier
+     * @return matching instances
      */
-    List<Instance> query(String tenant_id, String asset_id);
+    List<Instance> query(String tenant_id, String app_id);
 
     /**
-     * Deletes one runtime instance.
+     * Deletes an instance by tenant and instance identifier.
      *
      * @param tenant_id   tenant identifier
-     * @param instance_id runtime instance identifier
-     * @return deleted runtime instance, or {@code null}
+     * @param instance_id instance identifier
+     * @return the deleted instance, or {@code null} when absent
      */
     Instance delete(String tenant_id, String instance_id);
 
     /**
-     * Returns strongly typed durable-store capabilities.
+     * Returns strongly typed persistence capabilities.
      *
-     * @return fixed runtime-instance store capabilities
+     * @return capabilities supported by the instance store
      */
     default Suite storeCapabilities() {
         return Suite.of(Trait.BATCH, Trait.QUERY, Trait.DURABLE, Trait.DELETE);
     }
 
-    /**
-     * Returns legacy string-keyed durable-store capabilities.
-     *
-     * @return fixed runtime-instance store capabilities
-     */
-    default Map<String, Boolean> capabilities() {
-        return storeCapabilities().asMap();
-    }
 
 }

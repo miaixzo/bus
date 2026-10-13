@@ -19,44 +19,35 @@
 */
 package org.miaixz.bus.cortex.setting.delivery;
 
+import org.miaixz.bus.cortex.setting.item.Item;
+
 /**
- * Minimal publisher contract used by runtime setting overlays.
+ * Minimal publisher contract for tenant-qualified runtime configuration overlays.
  *
  * @author Kimi Liu
  */
 public interface RuntimeItemOverlayPublisher {
 
     /**
-     * Publishes a runtime-only setting overlay.
+     * Publishes a runtime-only overlay using the item's coordinates and content.
      *
-     * @param space   space identifier
-     * @param group   setting group
-     * @param code    setting code
-     * @param profile profile identifier
-     * @param content overlay content
-     * @param ttlMs   time-to-live in milliseconds
+     * @param item item coordinates and overlay content
+     * @param ttlMs time-to-live in milliseconds
      */
-    void publish(String space, String group, String code, String profile, String content, long ttlMs);
+    void publish(Item item, long ttlMs);
 
     /**
-     * Reads a runtime-only setting overlay.
+     * Reads a runtime-only overlay.
      *
-     * @param space   space identifier
-     * @param group   setting group
-     * @param code    setting code
-     * @param profile profile identifier
-     * @return overlay content or {@code null}
+     * @param coordinates tenant-qualified item coordinates
+     * @return overlay content, or {@code null} when absent
      */
-    String get(String space, String group, String code, String profile);
+    String get(Item coordinates);
 
     /**
-     * Deletes a runtime-only setting overlay.
+     * Deletes a runtime-only overlay.
      *
-     * @param space   space identifier
-     * @param group   setting group
-     * @param code    setting code
-     * @param profile profile identifier
+     * @param coordinates tenant-qualified item coordinates
      */
-    void delete(String space, String group, String code, String profile);
-
+    void delete(Item coordinates);
 }

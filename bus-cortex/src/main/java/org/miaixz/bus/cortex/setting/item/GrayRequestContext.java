@@ -41,6 +41,9 @@ public class GrayRequestContext {
      */
     private String clientIp;
 
+    /** Trusted instance fingerprint used as the stable percentage bucket key. */
+    private String fingerprint;
+
     /**
      * Optional caller user identifier.
      */

@@ -26,7 +26,7 @@ import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.basic.entity.Tenant;
 
 /**
- * Immutable published snapshot of a setting item.
+ * Immutable configuration snapshot; publication is represented by item pointers and a frozen rollout.
  *
  * @author Kimi Liu
  */
@@ -58,7 +58,7 @@ public class Revision extends Tenant {
     /**
      * Item generation captured by the snapshot.
      */
-    private Long baseline;
+    private Long generation;
     /**
      * Immutable content.
      */
@@ -67,6 +67,14 @@ public class Revision extends Tenant {
      * Immutable content format.
      */
     private String format;
+    /**
+     * Immutable editing mode, matching Item.Editor.
+     */
+    private String editor;
+    /**
+     * Immutable structured editor payload.
+     */
+    private String payload;
     /**
      * Immutable content source.
      */
@@ -100,21 +108,9 @@ public class Revision extends Tenant {
      */
     private String operation;
     /**
-     * Binding snapshot stored as text.
-     */
-    private String bindings;
-    /**
-     * Reference snapshot stored as text.
+     * Frozen reference manifest with exact revision identifiers, never resolved from live relationships on rollback.
      */
     private String reference;
-    /**
-     * Gray rule snapshot stored as text.
-     */
-    private String rule;
-    /**
-     * Editing snapshot stored as text.
-     */
-    private String editing;
     /**
      * Protected-value snapshot stored as text.
      */
@@ -137,21 +133,14 @@ public class Revision extends Tenant {
      * @author Kimi Liu
      */
     public enum Operation {
-        /** Creates or replaces the current item state. */
+        /**
+         * Creates or replaces the current item state.
+         */
         UPSERT,
-        /** Archives the current item state. */
+        /**
+         * Archives the current item state.
+         */
         DELETE
     }
 
-    /**
-     * Supported runtime pointer roles.
-     *
-     * @author Kimi Liu
-     */
-    public enum Role {
-        /** Stable revision pointer used by ordinary runtime reads. */
-        STABLE,
-        /** Gray revision pointer used by matched runtime reads. */
-        GRAY
-    }
 }

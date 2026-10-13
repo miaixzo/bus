@@ -49,21 +49,21 @@ public interface Registry<T extends Assets> {
     /**
      * Deregisters a single entry.
      *
-     * @param space entry space
+     * @param tenantId entry tenantId
      * @param id    entry identifier
      */
-    void deregister(String space, String id);
+    void deregister(String tenantId, String id);
 
     /**
      * Deregisters a single runtime instance by fingerprint.
      *
-     * @param space       space containing the instance
+     * @param tenantId       tenantId containing the instance
      * @param app_id      application identifier
      * @param method      service method name
      * @param version     service version
      * @param fingerprint unique runtime instance fingerprint
      */
-    default void deregisterInstance(String space, String app_id, String method, String version, String fingerprint) {
+    default void deregisterInstance(String tenantId, String app_id, String method, String version, String fingerprint) {
         throw new UnsupportedOperationException("Runtime deregistration not supported");
     }
 
@@ -98,13 +98,13 @@ public interface Registry<T extends Assets> {
     /**
      * Queries runtime instances for the given service identity.
      *
-     * @param space   space containing the service
+     * @param tenantId   tenantId containing the service
      * @param app_id  application identifier
      * @param method  service method name
      * @param version service version
      * @return matching runtime instances
      */
-    default List<Instance> queryInstances(String space, String app_id, String method, String version) {
+    default List<Instance> queryInstances(String tenantId, String app_id, String method, String version) {
         return List.of();
     }
 

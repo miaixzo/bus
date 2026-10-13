@@ -18,12 +18,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Version-domain models used by Cortex to describe released artifacts and logical version lines.
+ * Version-domain records, immutable release artifacts, and publication contracts.
  * <p>
- * {@code VersionAssets} carries semantic version identifiers, artifact metadata, compatibility ranges, release
- * timestamps, and lifecycle state. {@code VersionStatus} classifies the lifecycle of one version record. The current
- * {@code VersionRegistry} reuses store-backed registry infrastructure internally, but the domain remains top-level so
- * it can evolve into release-publishing workflows.
+ * {@code VersionRegistry} is a compatibility adapter delegating to {@code VersionStore} and
+ * {@code VersionPublisher}; it is not backed by registry assets.
  *
  * @author Kimi Liu
  */

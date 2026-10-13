@@ -60,6 +60,9 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
      */
     private final WatchManager watchManager;
 
+    /** Explicit tenant monitored by this scheduler. */
+    private final String tenantId;
+
     /**
      * Interval in milliseconds between probe cycles.
      */
@@ -125,11 +128,13 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
      *
      * @param apiRegistry  registry used to look up instances to probe
      * @param watchManager watch manager to notify on health state changes
+     * @param tenantId     explicit tenant monitored by this scheduler
      * @param intervalMs   milliseconds between probe cycles
      * @param timeoutMs    milliseconds before a probe attempt times out
      */
-    public HealthProbeScheduler(ApiRegistry apiRegistry, WatchManager watchManager, long intervalMs, long timeoutMs) {
+    public HealthProbeScheduler(ApiRegistry apiRegistry, WatchManager watchManager, String tenantId, long intervalMs, long timeoutMs) {
         this.apiRegistry = apiRegistry;
+        this.tenantId = org.miaixz.bus.cortex.magic.identity.CortexIdentity.tenantId(tenantId);
         this.watchManager = watchManager;
         this.intervalMs = intervalMs;
         this.timeoutMs = timeoutMs;
@@ -220,7 +225,7 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
         }
         lastProbeAt = System.currentTimeMillis();
         probeCount.incrementAndGet();
-        List<Instance> instances = apiRegistry.queryInstances(null, null, null, null);
+        List<Instance> instances = apiRegistry.queryInstances(tenantId, null, null, null);
         if (instances == null || instances.isEmpty()) {
             return;
         }
@@ -252,7 +257,7 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
             instance.setHealthy(newHealthy);
             instance.setStateChangedAt(System.currentTimeMillis());
             ApiAssets service = apiRegistry.refreshByMethodVersion(
-                    instance.getSpace_id(),
+                    instance.getTenant_id(),
                     instance.getApp_id(),
                     instance.getMethod(),
                     instance.getVersion());

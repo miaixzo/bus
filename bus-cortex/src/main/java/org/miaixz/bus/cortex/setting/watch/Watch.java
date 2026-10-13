@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex.setting.watch;
 
+import org.miaixz.bus.cortex.setting.instance.Instance;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -84,6 +86,25 @@ public class Watch extends Tenant {
      * Latest redacted application error.
      */
     private String error;
+
+    /** Configuration application state, independent from process health. */
+    public enum Synchronization { UNKNOWN, PENDING, APPLIED, FAILED }
+
+    /** Derives application evidence for exactly one watch; transport delivery is not application success. */
+    public Synchronization synchronization(Instance instance) {
+        if (instance == null || getTenant_id() == null || !getTenant_id().equals(instance.getTenant_id())
+                || instance_id == null || !instance_id.equals(instance.getId()) || session == null
+                || !session.equals(instance.getSession()) || generation == null || generation < 1
+                || target_id == null || target_id.isBlank()) {
+            return Synchronization.UNKNOWN;
+        }
+        if (error != null && !error.isBlank()) {
+            return Synchronization.FAILED;
+        }
+        return generation.equals(applied) && generation.equals(fetched)
+                && target_id.equals(applied_id) && acknowledged != null && acknowledged > 0
+                        ? Synchronization.APPLIED : Synchronization.PENDING;
+    }
 
     /**
      * Creates an empty runtime-watch entity.

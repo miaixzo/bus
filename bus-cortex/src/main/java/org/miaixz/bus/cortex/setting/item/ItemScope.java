@@ -26,41 +26,26 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.cortex.Vector;
+import org.miaixz.bus.core.basic.entity.Tenant;
 import org.miaixz.bus.cortex.builtin.Label;
 import org.miaixz.bus.cortex.builtin.LabelMapper;
 import org.miaixz.bus.cortex.builtin.Selector;
 
 /**
- * Shared scope object for setting queries, exports, and maintenance operations.
- *
- * <p>
- * Scope flags that only make sense for setting export, rebuild, or admin scan flows should stay here instead of being
- * generalized back into {@link Vector}. The durable item identity remains {@code space_id + profile_id + group + code};
- * {@code app_id} is a delivery filter evaluated through {@code ITEM_APP} records in the shared reference store.
- * </p>
+ * Filters items by tenant, ownership scope, and application.
  *
  * @author Kimi Liu
  */
 @Getter
 @Setter
 @SuperBuilder
-public class ItemScope {
+public class ItemScope extends Tenant {
 
-    /**
-     * Space containing the target setting entries.
-     */
-    private String space_id;
+    /** Ownership scope; null permits both shared and application items. */
+    private String scope;
 
-    /**
-     * Setting group filter.
-     */
-    private String group;
-
-    /**
-     * Optional profile filter representing the target environment.
-     */
-    private String profile_id;
+    /** Item kind; defaults to SOURCE when unspecified. */
+    private String kind;
 
     /**
      * Optional application identifier used to match application-bound settings.
@@ -102,7 +87,7 @@ public class ItemScope {
      * Creates an empty setting scope.
      */
     public ItemScope() {
-        // No initialization required.
+        this.limit = 100;
     }
 
     /**

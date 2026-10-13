@@ -37,9 +37,9 @@ import org.miaixz.bus.cortex.Type;
 public class RegistrySnapshot {
 
     /**
-     * Space included in this snapshot.
+     * Tenant included in this snapshot.
      */
-    private String space_id;
+    private String tenant_id;
 
     /**
      * Type scopes included in this snapshot.

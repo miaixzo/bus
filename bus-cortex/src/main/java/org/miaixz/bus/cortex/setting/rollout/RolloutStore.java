@@ -21,28 +21,48 @@ package org.miaixz.bus.cortex.setting.rollout;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.miaixz.bus.cortex.Suite;
 import org.miaixz.bus.cortex.Trait;
 
 /**
- * Durable store contract for rollout entities.
+ * Durable store contract for tenant-scoped rollout entities.
+ * Tenant identifiers are mandatory and must match the authenticated tenant.
+ * Application and configuration membership belongs to Reference relationships, not rollout fields.
+ * Publication intent is persisted on the rollout itself; no separate task entity or in-memory queue is required.
+ * Recovery resumes PUBLISHING rollouts using the frozen plan and an atomic tenant-scoped activation transaction.
+ * Client fetch/application evidence belongs to Watch, and audit history belongs to Event.
  *
  * @author Kimi Liu
  */
 public interface RolloutStore {
 
     /**
-     * Saves one rollout.
+     * Inserts a new draft rollout without overwriting any existing identifier or idempotency key.
      *
-     * @param rollout rollout entity
+     * @param rollout new rollout with tenant, identifier, mode, DRAFT state, and initial edition 1
      * @return saved rollout
      */
     Rollout save(Rollout rollout);
 
     /**
-     * Saves a batch of rollouts.
+     * Applies a selective update using an atomic tenant, identifier, edition, and state comparison.
+     * Implementations increment the edition by one and reject stale or mismatched coordinates.
+     * Workflow changes must satisfy State.canTransitionTo and cannot bypass approval.
+     * Approval policy, mode, rule, and frozen plan must not change after draft submission.
+     * Creator identity and original request identity must never be replaced.
+     * Starting publication requires a new publication idempotency key and an authenticated publisher.
+     * The publication identity must remain unchanged throughout execution and completion.
+     *
+     * @param rollout changes with matching tenant and identifier; null fields remain unchanged
+     * @param expected tenant, identifier, positive previous edition, and previous workflow state
+     * @return updated rollout
+     * @throws IllegalStateException if the expected state or edition no longer matches
+     */
+    Rollout update(Rollout rollout, Rollout expected);
+
+    /**
+     * Inserts a batch of new rollouts.
      *
      * @param rollouts rollout entities
      * @return saved non-null rollouts
@@ -63,21 +83,18 @@ public interface RolloutStore {
     /**
      * Finds one rollout by identifier.
      *
-     * @param tenant_id  tenant identifier
-     * @param rollout_id rollout identifier
+     * @param rollout mandatory tenant and rollout identifiers
      * @return matched rollout, or {@code null}
      */
-    Rollout find(String tenant_id, String rollout_id);
+    Rollout find(Rollout rollout);
 
     /**
-     * Queries rollouts by environment and optional state.
+     * Queries rollouts within one tenant, optionally narrowed by workflow state and publication mode.
      *
-     * @param tenant_id  tenant identifier
-     * @param profile_id environment identifier
-     * @param state      optional rollout state
+     * @param rollout mandatory tenant identifier with optional supported state and mode
      * @return matching rollouts
      */
-    List<Rollout> query(String tenant_id, String profile_id, String state);
+    List<Rollout> query(Rollout rollout);
 
     /**
      * Returns strongly typed durable-store capabilities.
@@ -88,13 +105,5 @@ public interface RolloutStore {
         return Suite.of(Trait.BATCH, Trait.QUERY, Trait.DURABLE);
     }
 
-    /**
-     * Returns legacy string-keyed durable-store capabilities.
-     *
-     * @return fixed rollout store capabilities
-     */
-    default Map<String, Boolean> capabilities() {
-        return storeCapabilities().asMap();
-    }
 
 }

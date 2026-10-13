@@ -28,7 +28,7 @@ import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Keying.RegistrySpec;
 import org.miaixz.bus.cortex.Type;
-import org.miaixz.bus.cortex.registry.RegistryIdentity;
+import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 
 /**
  * Built-in registry-side {@link Keying} implementation.
@@ -38,11 +38,10 @@ import org.miaixz.bus.cortex.registry.RegistryIdentity;
  * <ul>
  * <li>{@link RegistrySpec#ENTRY}: durable registry entry keys and scan prefixes</li>
  * <li>{@link RegistrySpec#INSTANCE}: runtime instance keys and scan prefixes</li>
- * <li>{@link RegistrySpec#ROUTE}: strongest runtime route key plus the ordered 8-level fallback chain</li>
+ * <li>{@link RegistrySpec#ROUTE}: strongest runtime route key plus the ordered tenant-scoped fallback chain</li>
  * </ul>
  * <p>
- * Route generation keeps {@code space}, {@code type}, and {@code appId} optional and never auto-fills them from
- * persistence defaults.
+ * Every route requires an explicit tenant. Only {@code type} and {@code appId} may be omitted by fallback candidates.
  * </p>
  *
  * @author Kimi Liu
@@ -105,24 +104,20 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
         if (spec.mode() != RegistrySpec.ROUTE) {
             return Keying.super.keys(spec);
         }
+        String tenantId = spec.tenantIdPart();
         if (!spec.routable()) {
             return List.of();
         }
         LinkedHashSet<String> keys = new LinkedHashSet<>();
-        String space = spec.spacePart();
         String type = spec.typeKeyPart();
         String appId = spec.appIdPart();
         String method = spec.methodPart();
         String version = spec.versionPart();
         Integer verb = spec.verbPart();
-        this.appendKey(keys, space, type, appId, method, version, verb, true, true, true);
-        this.appendKey(keys, space, type, appId, method, version, verb, true, true, false);
-        this.appendKey(keys, space, type, appId, method, version, verb, true, false, true);
-        this.appendKey(keys, space, type, appId, method, version, verb, true, false, false);
-        this.appendKey(keys, space, type, appId, method, version, verb, false, true, true);
-        this.appendKey(keys, space, type, appId, method, version, verb, false, true, false);
-        this.appendKey(keys, space, type, appId, method, version, verb, false, false, true);
-        this.appendKey(keys, space, type, appId, method, version, verb, false, false, false);
+        this.appendKey(keys, tenantId, type, appId, method, version, verb, true, true);
+        this.appendKey(keys, tenantId, type, appId, method, version, verb, true, false);
+        this.appendKey(keys, tenantId, type, appId, method, version, verb, false, true);
+        this.appendKey(keys, tenantId, type, appId, method, version, verb, false, false);
         return ListKit.of(keys);
     }
 
@@ -139,23 +134,23 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
         }
         return switch (spec.mode()) {
             case RegistrySpec.ENTRY -> {
-                String space = RegistryIdentity.space(spec.space());
+                String tenantId = CortexIdentity.tenantKey(spec.tenantId());
                 Type type = spec.typePart();
-                yield type == null ? null : Builder.REG_PREFIX + space + Symbol.COLON + type.segment() + Symbol.COLON;
+                yield type == null ? null : Builder.REG_PREFIX + tenantId + Symbol.COLON + type.segment() + Symbol.COLON;
             }
             case RegistrySpec.INSTANCE -> {
                 StringBuilder builder = new StringBuilder();
-                builder.append(Builder.REG_PREFIX).append(RegistryIdentity.space(spec.space())).append(Symbol.COLON)
+                builder.append(Builder.REG_PREFIX).append(CortexIdentity.tenantKey(spec.tenantId())).append(Symbol.COLON)
                         .append("instance").append(Symbol.COLON);
                 String appId = spec.appIdPart();
                 if (appId != null) {
-                    builder.append(appId).append(Symbol.COLON);
+                    builder.append(segment(appId)).append(Symbol.COLON);
                     String method = spec.methodPart();
                     if (method != null) {
-                        builder.append(method).append(Symbol.COLON);
+                        builder.append(segment(method)).append(Symbol.COLON);
                         String version = spec.versionPart();
                         if (version != null) {
-                            builder.append(version).append(Symbol.COLON);
+                            builder.append(segment(version)).append(Symbol.COLON);
                         }
                     }
                 }
@@ -169,31 +164,26 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
      * Appends one route-key candidate for a specific inclusion level.
      *
      * @param keys         route-key accumulator
-     * @param space        normalized space part
+     * @param tenantId        normalized tenantId part
      * @param type         normalized numeric type part
      * @param appId        normalized application identifier part
      * @param method       route method part
      * @param version      route version part
      * @param verb         numeric verb code
-     * @param includeSpace whether the space segment should be emitted
      * @param includeType  whether the type segment should be emitted
      * @param includeAppId whether the application segment should be emitted
      */
     private void appendKey(
             LinkedHashSet<String> keys,
-            String space,
+            String tenantId,
             String type,
             String appId,
             String method,
             String version,
             Integer verb,
-            boolean includeSpace,
             boolean includeType,
             boolean includeAppId) {
         if (method == null || version == null || verb == null) {
-            return;
-        }
-        if (includeSpace && space == null) {
             return;
         }
         if (includeType && type == null) {
@@ -202,18 +192,18 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
         if (includeAppId && appId == null) {
             return;
         }
-        StringBuilder builder = new StringBuilder();
-        if (includeSpace) {
-            builder.append(space).append(Symbol.COLON);
-        }
-        if (includeType) {
-            builder.append(type).append(Symbol.COLON);
-        }
-        if (includeAppId) {
-            builder.append(appId).append(Symbol.COLON);
-        }
-        builder.append(method).append(Symbol.COLON).append(version).append(Symbol.COLON).append(verb);
+        StringBuilder builder = new StringBuilder("route:v2:");
+        builder.append(CortexIdentity.tenantKey(tenantId)).append(":type=")
+                .append(includeType ? type : "*").append(":app=")
+                .append(includeAppId ? segment(appId) : "*").append(":method=")
+                .append(segment(method)).append(":version=").append(segment(version))
+                .append(":verb=").append(verb);
         keys.add(builder.toString());
+    }
+
+    /** Encodes a non-null route coordinate without delimiter ambiguity. */
+    private String segment(String value) {
+        return value.length() + ":" + value;
     }
 
 }

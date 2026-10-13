@@ -54,9 +54,9 @@ public class CortexProperties {
     private final String serverAddr;
 
     /**
-     * Logical space that isolates Cortex data and watches.
+     * Logical tenantId that isolates Cortex data and watches.
      */
-    private final String space;
+    private final String tenantId;
 
     /**
      * Whether this application registers itself with Cortex during startup.
@@ -89,9 +89,9 @@ public class CortexProperties {
     private final int maxSettingVersions;
 
     /**
-     * Maximum active watches permitted within one space.
+     * Maximum active watches permitted within one tenantId.
      */
-    private final int maxWatchesPerSpace;
+    private final int maxWatchesPerTenant;
 
     /**
      * Inactivity duration after which a watch is expired.
@@ -138,14 +138,14 @@ public class CortexProperties {
      *
      * @param enabled            whether Cortex integration is enabled
      * @param serverAddr         remote server address
-     * @param space              client space
+     * @param tenantId              client tenantId
      * @param autoRegister       whether local APIs are registered automatically
      * @param settingEnabled     whether setting integration is enabled
      * @param serverEnabled      whether this application hosts Cortex server components
      * @param settingGroup       default setting group
      * @param settingDataId      default setting identifier
      * @param maxSettingVersions retained setting revision count
-     * @param maxWatchesPerSpace watch registration limit per space
+     * @param maxWatchesPerTenant watch registration limit per tenantId
      * @param watchExpire        watch registration expiry
      * @param cacheExpire        default Cortex cache expiry
      * @param cache              optional cache backend options
@@ -156,14 +156,14 @@ public class CortexProperties {
      * @param version            version-registry options
      */
     public CortexProperties(@DefaultValue(Normal.FALSE) boolean enabled, @DefaultValue(Normal.EMPTY) String serverAddr,
-            @DefaultValue(Normal.DEFAULT) String space, @DefaultValue("true") boolean autoRegister,
+            @DefaultValue(Normal.EMPTY) String tenantId, @DefaultValue("true") boolean autoRegister,
             @DefaultValue("true") boolean settingEnabled, @DefaultValue("false") boolean serverEnabled,
             @DefaultValue("DEFAULT") String settingGroup, @DefaultValue(Normal.EMPTY) String settingDataId,
-            @DefaultValue("10") int maxSettingVersions, @DefaultValue("1000") int maxWatchesPerSpace,
+            @DefaultValue("10") int maxSettingVersions, @DefaultValue("1000") int maxWatchesPerTenant,
             @DefaultValue("24h") Duration watchExpire, @DefaultValue("1h") Duration cacheExpire, Options cache,
             @DefaultValue Watch watch, @DefaultValue Bridge bridge, @DefaultValue Guard guard,
             @DefaultValue Audit audit, @DefaultValue Version version) {
-        if (maxSettingVersions <= 0 || maxWatchesPerSpace <= 0) {
+        if (maxSettingVersions <= 0 || maxWatchesPerTenant <= 0) {
             throw new IllegalArgumentException("Cortex version and watch limits must be greater than zero");
         }
         if (watchExpire == null || watchExpire.isZero() || watchExpire.isNegative() || cacheExpire == null
@@ -172,14 +172,14 @@ public class CortexProperties {
         }
         this.enabled = enabled;
         this.serverAddr = serverAddr;
-        this.space = space;
+        this.tenantId = tenantId;
         this.autoRegister = autoRegister;
         this.settingEnabled = settingEnabled;
         this.serverEnabled = serverEnabled;
         this.settingGroup = settingGroup;
         this.settingDataId = settingDataId;
         this.maxSettingVersions = maxSettingVersions;
-        this.maxWatchesPerSpace = maxWatchesPerSpace;
+        this.maxWatchesPerTenant = maxWatchesPerTenant;
         this.watchExpire = watchExpire;
         this.cacheExpire = cacheExpire;
         this.cache = cache;
@@ -203,15 +203,15 @@ public class CortexProperties {
     }
 
     /**
-     * Validates the space.
+     * Validates the tenantId.
      *
-     * @return configured nonblank space
+     * @return configured nonblank tenantId
      */
-    public String requireSpace() {
-        if (StringKit.isBlank(space)) {
-            throw new IllegalStateException("bus.cortex.space is required");
+    public String requireTenant() {
+        if (StringKit.isBlank(tenantId)) {
+            throw new IllegalStateException("bus.cortex.tenant-id is required");
         }
-        return space.trim();
+        return tenantId.trim();
     }
 
     /**
@@ -224,12 +224,12 @@ public class CortexProperties {
     }
 
     /**
-     * Validates the max watches per space.
+     * Validates the max watches per tenantId.
      *
      * @return watch registration limit
      */
-    public int requireMaxWatchesPerSpace() {
-        return maxWatchesPerSpace;
+    public int requireMaxWatchesPerTenant() {
+        return maxWatchesPerTenant;
     }
 
     /**
@@ -255,8 +255,8 @@ public class CortexProperties {
      */
     @Override
     public String toString() {
-        return "CortexProperties[enabled=" + enabled + ", space=" + space + ", serverEnabled=" + serverEnabled
-                + ", maxSettingVersions=" + maxSettingVersions + ", maxWatchesPerSpace=" + maxWatchesPerSpace
+        return "CortexProperties[enabled=" + enabled + ", tenantId=" + tenantId + ", serverEnabled=" + serverEnabled
+                + ", maxSettingVersions=" + maxSettingVersions + ", maxWatchesPerTenant=" + maxWatchesPerTenant
                 + ", watchExpire=" + watchExpire + ", cacheExpire=" + cacheExpire + ", guard=***]";
     }
 

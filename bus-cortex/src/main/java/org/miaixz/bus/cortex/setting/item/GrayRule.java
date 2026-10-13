@@ -85,10 +85,25 @@ public class GrayRule {
      */
     private String labelValue;
 
-    /**
-     * Setting content returned when the rule matches.
-     */
-    private String grayContent;
+    /** Validates selectors supported by configuration-instance delivery, not end-user HTTP routing. */
+    public GrayRule validate() {
+        if (type == null) {
+            throw new IllegalArgumentException("Gray selector type is required");
+        }
+        boolean valid = switch (type) {
+            case IP_LIST -> ipList != null && !ipList.isEmpty()
+                    && ipList.stream().allMatch(ip -> ip != null && !ip.isBlank());
+            case IP_RANGE -> ipRange != null && new GrayRuleMatcher().validRange(ipRange);
+            case PERCENTAGE -> percentage >= 0 && percentage <= 100;
+            case TENANT -> tenant != null && !tenant.isBlank();
+            case LABEL -> labelKey != null && !labelKey.isBlank() && labelValue != null;
+            case HEADER, USER -> false;
+        };
+        if (!valid) {
+            throw new IllegalArgumentException("Invalid configuration-instance gray selector");
+        }
+        return this;
+    }
 
     /**
      * Creates an empty gray-release rule.

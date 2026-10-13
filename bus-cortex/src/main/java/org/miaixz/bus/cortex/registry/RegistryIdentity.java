@@ -26,7 +26,7 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 /**
  * Canonical identity rules shared by cortex persistence, cache, and runtime sync.
  * <p>
- * The primary asset identity is {@code space + app_id + type + method + version}. Overloads that omit {@code app_id}
+ * The primary asset identity is {@code tenantId + app_id + type + method + version}. Overloads that omit {@code app_id}
  * only describe partial route fragments for broad scans or compatibility paths and are not the preferred identity path.
  * </p>
  *
@@ -42,13 +42,13 @@ public class RegistryIdentity {
     }
 
     /**
-     * Returns the canonical space, defaulting blank values to the shared default space.
+     * Requires and returns the canonical tenant identifier; blank values are rejected.
      *
-     * @param space raw space value
-     * @return canonical space value
+     * @param tenantId raw tenantId value
+     * @return canonical tenantId value
      */
-    public static String space(String space) {
-        return CortexIdentity.space(space);
+    public static String tenantId(String tenantId) {
+        return CortexIdentity.tenantId(tenantId);
     }
 
     /**
@@ -82,7 +82,7 @@ public class RegistryIdentity {
     }
 
     /**
-     * Normalizes space and type in place before the asset enters cache, persistence, or runtime state.
+     * Normalizes tenantId and type in place before the asset enters cache, persistence, or runtime state.
      *
      * @param asset        asset to normalize
      * @param fallbackType type used when the asset does not define one
@@ -93,7 +93,7 @@ public class RegistryIdentity {
         if (asset == null) {
             return null;
         }
-        asset.setSpace_id(space(asset.getSpace_id()));
+        asset.setTenant_id(tenantId(asset.getTenant_id()));
         asset.setApp_id(applicationId(asset.getApp_id()));
         Integer rawType = asset.getType() == null ? fallbackType == null ? null : fallbackType.key() : asset.getType();
         asset.setType(type(rawType).key());

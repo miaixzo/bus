@@ -38,7 +38,7 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
     /**
      * Root cache-key prefix for Cortex outbox data.
      */
-    private static final String PREFIX = "outbox:cortex:";
+    private static final String PREFIX = "outbox:cortex:v2:";
 
     /**
      * Cache-key prefix for serialized outbox records.
@@ -111,7 +111,7 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
     @Override
     public synchronized CortexChangeRecord append(CortexChangeRecord record) {
         CortexChangeRecord prepared = prepare(record);
-        CortexChangeRecord existing = findByIdempotencyKey(prepared.getIdempotencyKey());
+        CortexChangeRecord existing = findByIdempotencyKey(prepared.getTenant_id(), prepared.getIdempotencyKey());
         if (existing != null) {
             prepared.setId(existing.getId());
             prepared.setCreated(existing.getCreated());
@@ -126,8 +126,12 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
             prepared.setClaimedBy(null);
             prepared.setClaimedUntil(0L);
         }
+        CortexChangeRecord retained = read(prepared.getId());
+        if (retained != null) {
+            org.miaixz.bus.cortex.magic.identity.CortexIdentity.requireTenant(prepared.getTenant_id(), retained.getTenant_id());
+        }
         write(prepared);
-        cacheX.write(idempotencyKey(prepared.getIdempotencyKey()), prepared.getId(), 0L);
+        cacheX.write(idempotencyKey(prepared.getTenant_id(), prepared.getIdempotencyKey()), prepared.getId(), 0L);
         return prepared;
     }
 
@@ -282,6 +286,7 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
      */
     private CortexChangeRecord prepare(CortexChangeRecord record) {
         CortexChangeRecord prepared = record == null ? new CortexChangeRecord() : record;
+        prepared.setTenant_id(org.miaixz.bus.cortex.magic.identity.CortexIdentity.tenantId(prepared.getTenant_id()));
         long now = System.currentTimeMillis();
         if (prepared.getId() == null || prepared.getId().isBlank()) {
             prepared.setId(ID.fastSimpleUUID());
@@ -305,11 +310,11 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
      * @param idempotencyKey idempotency key
      * @return existing record or {@code null}
      */
-    private CortexChangeRecord findByIdempotencyKey(String idempotencyKey) {
+    private CortexChangeRecord findByIdempotencyKey(String tenantId, String idempotencyKey) {
         if (idempotencyKey == null || idempotencyKey.isBlank()) {
             return null;
         }
-        Object rawId = cacheX.read(idempotencyKey(idempotencyKey));
+        Object rawId = cacheX.read(idempotencyKey(tenantId, idempotencyKey));
         return rawId instanceof String id ? read(id) : null;
     }
 
@@ -394,8 +399,8 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
      * @param idempotencyKey idempotency key
      * @return idempotency cache key
      */
-    private String idempotencyKey(String idempotencyKey) {
-        return IDEMPOTENCY_PREFIX + idempotencyKey;
+    private String idempotencyKey(String tenantId, String idempotencyKey) {
+        return IDEMPOTENCY_PREFIX + org.miaixz.bus.cortex.magic.identity.CortexIdentity.tenantKey(tenantId) + ":" + idempotencyKey;
     }
 
 }

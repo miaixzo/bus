@@ -54,27 +54,27 @@ public class AuditLogger {
     /**
      * Records an audit event for the given operation.
      *
-     * @param space     logical space
+     * @param tenantId     logical tenantId
      * @param operation operation name
      * @param id        resource identifier
      * @param operator  actor performing the operation
      */
-    public void log(String space, String operation, String id, String operator) {
-        log(space, operation, id, operator, Map.of());
+    public void log(String tenantId, String operation, String id, String operator) {
+        log(tenantId, operation, id, operator, Map.of());
     }
 
     /**
      * Records an audit event with optional structured details.
      *
-     * @param space     logical space
+     * @param tenantId     logical tenantId
      * @param operation operation name
      * @param id        resource identifier
      * @param operator  actor performing the operation
      * @param details   optional detail payload
      */
-    public void log(String space, String operation, String id, String operator, Map<String, Object> details) {
+    public void log(String tenantId, String operation, String id, String operator, Map<String, Object> details) {
         long now = DateKit.current();
-        String key = auditPrefix(space, operation, id) + Symbol.COLON + now + Symbol.COLON
+        String key = auditPrefix(tenantId, operation, id) + Symbol.COLON + now + Symbol.COLON
                 + Long.toHexString(System.nanoTime());
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("op", operation);
@@ -90,13 +90,13 @@ public class AuditLogger {
     /**
      * Loads one audit entry from the backing cache.
      *
-     * @param space     space
+     * @param tenantId     tenantId
      * @param operation operation
      * @param id        resource identifier
      * @return serialized audit payload or {@code null}
      */
-    public String get(String space, String operation, String id) {
-        Map<String, Object> entries = cacheX.scan(auditPrefix(space, operation, id) + Symbol.COLON);
+    public String get(String tenantId, String operation, String id) {
+        Map<String, Object> entries = cacheX.scan(auditPrefix(tenantId, operation, id) + Symbol.COLON);
         if (entries == null || entries.isEmpty()) {
             return null;
         }
@@ -108,13 +108,13 @@ public class AuditLogger {
     /**
      * Builds the common audit-key prefix shared by all records of the same resource.
      *
-     * @param space     space
+     * @param tenantId     tenantId
      * @param operation operation
      * @param id        resource identifier
      * @return audit-key prefix
      */
-    private String auditPrefix(String space, String operation, String id) {
-        return Builder.AUDIT_PREFIX + CortexIdentity.space(space) + Symbol.COLON + operation + Symbol.COLON + id;
+    private String auditPrefix(String tenantId, String operation, String id) {
+        return Builder.AUDIT_PREFIX + CortexIdentity.tenantKey(tenantId) + Symbol.COLON + operation + Symbol.COLON + id;
     }
 
 }

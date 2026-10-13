@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.cortex.setting.event;
 
-import jakarta.persistence.Lob;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -58,10 +56,6 @@ public class Event extends Tenant {
      * Related rollout.
      */
     private String rollout_id;
-    /**
-     * Related asynchronous task.
-     */
-    private String task_id;
     /**
      * Related setting item.
      */
@@ -125,7 +119,6 @@ public class Event extends Tenant {
     /**
      * Structured event detail stored as text.
      */
-    @Lob
     private String detail;
 
     /**

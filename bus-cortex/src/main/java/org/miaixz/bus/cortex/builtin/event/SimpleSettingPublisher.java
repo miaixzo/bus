@@ -25,41 +25,33 @@ import org.miaixz.bus.cortex.Keying.SettingSpec;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.setting.SettingPublisher;
 import org.miaixz.bus.cortex.setting.delivery.RuntimeItemOverlayPublisher;
+import org.miaixz.bus.cortex.setting.item.Item;
 
 /**
- * Lightweight setting publisher that writes directly to the shared cache without revision history.
- * <p>
- * Use {@link SettingPublisher} when revision history is required.
- * </p>
+ * Cache-backed runtime publisher without revision history.
+ * Use {@link SettingPublisher} for revision-tracked publication.
  *
  * @author Kimi Liu
  */
 public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
 
-    /**
-     * Shared cache used to store published setting content.
-     */
     private final CacheX<String, Object> cacheX;
-
-    /**
-     * Setting-domain key strategy.
-     */
     private final Keying<SettingSpec> keying;
 
     /**
-     * Creates a SimpleSettingPublisher backed by the given CacheX.
+     * Creates a publisher with the default key strategy.
      *
-     * @param cacheX shared cache used to store setting content
+     * @param cacheX shared overlay cache
      */
     public SimpleSettingPublisher(CacheX<String, Object> cacheX) {
         this(cacheX, SettingGenerator.INSTANCE);
     }
 
     /**
-     * Creates a SimpleSettingPublisher backed by the given CacheX.
+     * Creates a publisher with a configurable key strategy.
      *
-     * @param cacheX shared cache used to store setting content
-     * @param keying setting-domain key strategy
+     * @param cacheX shared overlay cache
+     * @param keying setting key strategy
      */
     public SimpleSettingPublisher(CacheX<String, Object> cacheX, Keying<SettingSpec> keying) {
         this.cacheX = cacheX;
@@ -67,84 +59,27 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
     }
 
     /**
-     * Publishes setting content to the given key.
+     * Publishes an overlay using the cache's default lifetime.
      *
-     * @param space   logical space identifier
-     * @param group   setting group
-     * @param code    setting code
-     * @param content setting content
+     * @param item tenant-qualified item and content
      */
-    public void publish(String space, String group, String code, String content) {
-        publish(space, group, code, null, content);
+    public void publish(Item item) {
+        publish(item, 0L);
     }
 
-    /**
-     * Publishes setting content to the given key with an optional profile segment.
-     *
-     * @param space   logical space identifier
-     * @param group   setting group
-     * @param code    setting code
-     * @param profile optional setting profile
-     * @param content setting content
-     */
-    public void publish(String space, String group, String code, String profile, String content) {
-        publish(space, group, code, profile, content, 0L);
-    }
-
-    /**
-     * Publishes setting content with an explicit TTL.
-     *
-     * @param space   logical space identifier
-     * @param group   setting group
-     * @param code    setting code
-     * @param profile optional profile
-     * @param content setting content
-     * @param ttlMs   explicit ttl in milliseconds
-     */
     @Override
-    public void publish(String space, String group, String code, String profile, String content, long ttlMs) {
-        cacheX.write(overlayKey(space, group, code, profile), content, ttlMs);
+    public void publish(Item item, long ttlMs) {
+        cacheX.write(keying.key(SettingSpec.overlay(item)), item.getContent(), ttlMs);
     }
 
-    /**
-     * Resolves one lightweight setting value from the shared cache.
-     *
-     * @param space   logical space identifier
-     * @param group   setting group
-     * @param code    setting code
-     * @param profile optional setting profile
-     * @return cached setting content, or {@code null} when absent
-     */
     @Override
-    public String get(String space, String group, String code, String profile) {
-        Object value = cacheX.read(overlayKey(space, group, code, profile));
+    public String get(Item coordinates) {
+        Object value = cacheX.read(keying.key(SettingSpec.overlay(coordinates)));
         return value == null ? null : value.toString();
     }
 
-    /**
-     * Deletes one lightweight setting value.
-     *
-     * @param space   logical space identifier
-     * @param group   setting group
-     * @param code    setting code
-     * @param profile optional profile
-     */
     @Override
-    public void delete(String space, String group, String code, String profile) {
-        cacheX.remove(overlayKey(space, group, code, profile));
+    public void delete(Item coordinates) {
+        cacheX.remove(keying.key(SettingSpec.overlay(coordinates)));
     }
-
-    /**
-     * Builds one overlay key.
-     *
-     * @param space   space
-     * @param group   setting group
-     * @param dataId  setting data identifier
-     * @param profile optional profile
-     * @return overlay key
-     */
-    private String overlayKey(String space, String group, String dataId, String profile) {
-        return keying.key(SettingSpec.overlay(space, group, dataId, profile));
-    }
-
 }

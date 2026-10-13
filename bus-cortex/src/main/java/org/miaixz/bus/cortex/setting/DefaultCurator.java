@@ -19,298 +19,87 @@
 */
 package org.miaixz.bus.cortex.setting;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.miaixz.bus.core.center.function.ConsumerX;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.cortex.*;
-import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
+import org.miaixz.bus.cortex.Curator;
+import org.miaixz.bus.cortex.Listener;
+import org.miaixz.bus.cortex.Vector;
+import org.miaixz.bus.cortex.Watch;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.cortex.setting.curator.ItemCuratorService;
 import org.miaixz.bus.cortex.setting.delivery.RuntimeItemOverlayService;
-import org.miaixz.bus.cortex.setting.item.GrayRequestContext;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemQuery;
 
-/**
- * Default consumer-facing curator implementation.
- *
- * @author Kimi Liu
- */
+/** Resolves configuration using tenant-qualified objects supplied by the caller. */
 public class DefaultCurator implements Curator {
 
-    /**
-     * Application service that backs setting reads, writes, and history operations.
-     */
     private final ItemCuratorService settingCuratorService;
-
-    /**
-     * Watch manager used to register and remove setting subscriptions.
-     */
     private final WatchManager watchManager;
-
-    /**
-     * Space identifier served by this curator instance.
-     */
-    private final String space_id;
-
-    /**
-     * Optional runtime overlay service consulted before durable setting resolution.
-     */
     private final RuntimeItemOverlayService runtimeSettingOverlayService;
 
-    /**
-     * Creates a DefaultCurator using the default space.
-     *
-     * @param settingCuratorService curator application service
-     * @param watchManager          watch manager for subscription support
-     */
     public DefaultCurator(ItemCuratorService settingCuratorService, WatchManager watchManager) {
-        this(settingCuratorService, watchManager, Builder.DEFAULT_SPACE, null);
+        this(settingCuratorService, watchManager, null);
     }
 
-    /**
-     * Creates a DefaultCurator for a specific space.
-     *
-     * @param settingCuratorService curator application service
-     * @param watchManager          watch manager for subscription support
-     * @param space_id              logical space identifier
-     */
-    public DefaultCurator(ItemCuratorService settingCuratorService, WatchManager watchManager, String space_id) {
-        this(settingCuratorService, watchManager, space_id, null);
-    }
-
-    /**
-     * Creates a DefaultCurator for a specific space with runtime overlay support.
-     *
-     * @param settingCuratorService        curator application service
-     * @param watchManager                 watch manager for subscription support
-     * @param space_id                     logical space identifier
-     * @param runtimeSettingOverlayService runtime overlay service
-     */
-    public DefaultCurator(ItemCuratorService settingCuratorService, WatchManager watchManager, String space_id,
+    public DefaultCurator(ItemCuratorService settingCuratorService, WatchManager watchManager,
             RuntimeItemOverlayService runtimeSettingOverlayService) {
         this.settingCuratorService = settingCuratorService;
         this.watchManager = watchManager;
-        this.space_id = CortexIdentity.space(space_id);
         this.runtimeSettingOverlayService = runtimeSettingOverlayService;
     }
 
-    /**
-     * Returns the current setting value for the given group and code.
-     *
-     * @param group setting group
-     * @param code  setting data identifier
-     * @return current setting content, or null if not found
-     */
     @Override
-    public String get(String group, String code) {
-        String overlay = runtimeOverlay(group, code, null);
-        if (overlay != null) {
-            return overlay;
+    public String get(ItemQuery query) {
+        ItemQuery prepared = settingCuratorService.prepare(query);
+        if (prepared == null || !settingCuratorService.allows(prepared)) {
+            return prepared == null ? null : prepared.getFallbackValue();
         }
-        ItemQuery query = new ItemQuery();
-        query.setSpace_id(space_id);
-        query.setGroup(group);
-        query.setCode(code);
-        return settingCuratorService.resolve(query);
-    }
-
-    /**
-     * Returns setting content with optional gray-release routing.
-     *
-     * @param group    setting group
-     * @param code     setting data identifier
-     * @param clientIp IP address of the requesting client (used for gray routing)
-     * @return gray content if applicable, otherwise the main setting value
-     */
-    @Override
-    public String get(String group, String code, String clientIp) {
-        return get(group, code, null, clientIp);
-    }
-
-    /**
-     * Returns one setting value for the given group, code, and profile without gray-routing context.
-     *
-     * @param group   setting group
-     * @param code    setting data identifier
-     * @param profile optional profile
-     * @return resolved setting value
-     */
-    @Override
-    public String getProfile(String group, String code, String profile) {
-        String overlay = runtimeOverlay(group, code, profile);
-        if (overlay != null) {
-            return overlay;
+        // Authorize the exact coordinate before consulting a runtime overlay.
+        if (settingCuratorService.find(prepared) == null) {
+            return prepared.getFallbackValue();
         }
-        ItemQuery query = new ItemQuery();
-        query.setSpace_id(space_id);
-        query.setGroup(group);
-        query.setCode(code);
-        query.setProfile_id(profile);
-        return settingCuratorService.resolve(query);
-    }
-
-    /**
-     * Returns one setting value for the given group, code, profile, and client IP.
-     *
-     * @param group    setting group
-     * @param code     setting data identifier
-     * @param profile  optional profile
-     * @param clientIp IP address of the requesting client
-     * @return resolved setting value
-     */
-    @Override
-    public String get(String group, String code, String profile, String clientIp) {
-        String overlay = runtimeOverlay(group, code, profile);
-        if (overlay != null) {
-            return overlay;
-        }
-        ItemQuery query = new ItemQuery();
-        query.setSpace_id(space_id);
-        query.setGroup(group);
-        query.setCode(code);
-        query.setProfile_id(profile);
-        GrayRequestContext context = new GrayRequestContext();
-        context.setClientIp(clientIp);
-        query.setRequestContext(context);
-        return settingCuratorService.resolve(query);
-    }
-
-    /**
-     * Publishes new setting content.
-     *
-     * @param group   setting group
-     * @param code    setting data identifier
-     * @param content new setting content
-     */
-    @Override
-    public void publish(String group, String code, String content) {
-        publish(group, code, null, content);
-    }
-
-    /**
-     * Publishes one setting value for the given group and code with an optional profile binding.
-     *
-     * @param group   setting group
-     * @param code    setting data identifier
-     * @param profile optional profile
-     * @param content new setting content
-     */
-    @Override
-    public void publish(String group, String code, String profile, String content) {
-        Item entry = new Item();
-        entry.setSpace_id(space_id);
-        entry.setGroup(group);
-        entry.setCode(code);
-        entry.setProfile_id(profile);
-        entry.setContent(content);
-        settingCuratorService.publish(entry);
-    }
-
-    /**
-     * Returns multiple setting values keyed by `group:code[:profile]`.
-     *
-     * @param groupAndCodes logical setting keys
-     * @return resolved setting values
-     */
-    @Override
-    public Map<String, String> batchGet(List<String> groupAndCodes) {
-        Map<String, String> result = new LinkedHashMap<>();
-        if (groupAndCodes == null) {
-            return result;
-        }
-        for (String key : groupAndCodes) {
-            if (key == null || key.isBlank()) {
-                continue;
+        if (prepared.isPreferOverlay() && runtimeSettingOverlayService != null) {
+            String overlay = runtimeSettingOverlayService.resolveRuntimeOverlay(prepared.coordinates());
+            if (overlay != null) {
+                return overlay;
             }
-            String[] parts = key.split(Symbol.COLON, 3);
-            if (parts.length < 2) {
-                continue;
-            }
-            String profile = parts.length > 2 ? parts[2] : null;
-            result.put(key, getProfile(parts[0], parts[1], profile));
         }
-        return result;
+        return settingCuratorService.resolve(prepared);
     }
 
-    /**
-     * Rolls back one setting value without an explicit profile.
-     *
-     * @param group    setting group
-     * @param code     setting data identifier
-     * @param revision historical revision number
-     */
     @Override
-    public void rollback(String group, String code, String revision) {
-        rollback(group, code, null, revision);
+    public void publish(Item item) {
+        settingCuratorService.publish(item);
     }
 
-    /**
-     * Rolls back one setting value for the given profile to a historical revision.
-     *
-     * @param group    setting group
-     * @param code     setting data identifier
-     * @param profile  optional profile
-     * @param revision historical revision number
-     */
     @Override
-    public void rollback(String group, String code, String profile, String revision) {
-        settingCuratorService.rollback(space_id, group, code, profile, revision);
+    public void rollback(Item coordinates, String revision) {
+        settingCuratorService.rollback(coordinates, revision);
     }
 
-    /**
-     * Subscribes to changes on a setting key and returns the watch ID.
-     *
-     * @param group    setting group
-     * @param code     setting data identifier
-     * @param listener callback invoked whenever the setting value changes
-     * @return watch identifier used to cancel the subscription
-     */
     @Override
-    public String watch(String group, String code, ConsumerX<String> listener) {
+    public String watch(Item coordinates, ConsumerX<String> listener) {
+        settingCuratorService.find(coordinates);
         Vector vector = new Vector();
-        vector.setSpace_id(space_id);
-        vector.setId(settingCuratorService.watchKey(space_id, group, code, null));
-        Listener<Watch<String>> wl = event -> {
-            for (String item : event.getAdded()) {
-                listener.accept(item);
+        vector.setTenant_id(coordinates.getTenant_id());
+        vector.setApp_id(coordinates.getApp_id());
+        vector.setId(settingCuratorService.watchKey(coordinates));
+        Listener<Watch<String>> callback = event -> {
+            for (String value : event.getAdded()) {
+                listener.accept(value);
             }
-            for (String item : event.getUpdated()) {
-                listener.accept(item);
+            for (String value : event.getUpdated()) {
+                listener.accept(value);
             }
             if (!event.getRemoved().isEmpty()) {
                 listener.accept(null);
             }
         };
-        return watchManager.add(vector, wl);
+        return watchManager.add(vector, callback);
     }
 
-    /**
-     * Cancels a setting watch subscription.
-     *
-     * @param watch_id watch identifier previously returned by {@link #watch}
-     */
     @Override
     public void unwatch(String watch_id) {
         watchManager.remove(watch_id);
     }
-
-    /**
-     * Resolves one runtime overlay when configured.
-     *
-     * @param group   setting group
-     * @param code    setting data identifier
-     * @param profile optional profile
-     * @return runtime overlay, or {@code null} when absent
-     */
-    private String runtimeOverlay(String group, String code, String profile) {
-        if (runtimeSettingOverlayService == null) {
-            return null;
-        }
-        return runtimeSettingOverlayService.resolveRuntimeOverlay(space_id, group, code, profile);
-    }
-
 }

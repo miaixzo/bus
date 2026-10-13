@@ -21,7 +21,6 @@ package org.miaixz.bus.cortex.setting.watch;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.miaixz.bus.cortex.Suite;
 import org.miaixz.bus.cortex.Trait;
@@ -106,13 +105,5 @@ public interface WatchStore {
         return Suite.of(Trait.BATCH, Trait.QUERY, Trait.DURABLE, Trait.DELETE);
     }
 
-    /**
-     * Returns legacy string-keyed durable-store capabilities.
-     *
-     * @return fixed runtime-watch store capabilities
-     */
-    default Map<String, Boolean> capabilities() {
-        return storeCapabilities().asMap();
-    }
 
 }
