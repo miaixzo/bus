@@ -23,10 +23,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.cortex.Keying.SettingSpec;
+import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.setting.curator.ItemCuratorService;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemExposure;
+import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 import org.miaixz.bus.cortex.setting.item.ItemQuery;
 import org.miaixz.bus.cortex.setting.secret.SecretMasker;
 
@@ -112,11 +114,7 @@ public class ItemQueryService {
             if (query == null) {
                 continue;
             }
-            String key = query.getGroup() + Symbol.COLON + query.getCode();
-            if (query.getProfile_id() != null && !query.getProfile_id().isBlank()) {
-                key += Symbol.COLON + query.getProfile_id();
-            }
-            result.put(key, resolve(query));
+            result.put(SettingGenerator.INSTANCE.key(SettingSpec.export(query.coordinates())), resolve(query));
         }
         return result;
     }
@@ -135,8 +133,7 @@ public class ItemQueryService {
         if (settingCuratorService != null && !settingCuratorService.allows(query)) {
             return null;
         }
-        List<Item> entries = settingCuratorService.query(query);
-        return entries.isEmpty() ? null : secretMasker.mask(entries.getFirst());
+        return secretMasker.mask(settingCuratorService.find(query));
     }
 
     /**
@@ -148,14 +145,23 @@ public class ItemQueryService {
     public Map<String, Object> overlayView(ItemQuery query) {
         Map<String, Object> result = new LinkedHashMap<>();
         Item entry = inspect(query);
-        String overlay = runtimeOverlay(query, false);
+        String overlay = entry == null ? null : runtimeOverlay(query, false);
+        if (entry != null && (ItemNormalizer.isEncryptedFlagEnabled(entry.getEncrypted())
+                || ItemExposure.SECRET.name().equals(entry.getExposure()))) {
+            overlay = secretMasker.mask(overlay);
+        }
         boolean overlayPresent = overlay != null;
         boolean durablePresent = entry != null;
         String effectiveSource = overlayPresent && (query == null || query.isPreferOverlay()) ? "runtime-overlay"
                 : durablePresent ? "durable-setting" : "none";
         result.put("entry", entry);
         result.put("overlay", overlay);
-        result.put("preview", settingCuratorService.preview(query));
+        String preview = entry == null ? null : settingCuratorService.preview(query);
+        if (entry != null && (ItemNormalizer.isEncryptedFlagEnabled(entry.getEncrypted())
+                || ItemExposure.SECRET.name().equals(entry.getExposure()))) {
+            preview = secretMasker.mask(preview);
+        }
+        result.put("preview", preview);
         result.put("overlayPresent", overlayPresent);
         result.put("durablePresent", durablePresent);
         result.put("effectiveSource", effectiveSource);
@@ -164,11 +170,7 @@ public class ItemQueryService {
         result.put(
                 "watchKey",
                 query == null ? null
-                        : settingCuratorService.watchKey(
-                                query.getSpace_id(),
-                                query.getGroup(),
-                                query.getCode(),
-                                query.getProfile_id()));
+                        : settingCuratorService.watchKey(query.coordinates()));
         result.put("previewSource", durablePresent ? "durable-setting" : "none");
         return result;
     }
@@ -181,14 +183,18 @@ public class ItemQueryService {
      * @return runtime overlay, or {@code null} when absent
      */
     private String runtimeOverlay(ItemQuery query, boolean respectPreference) {
-        if (query == null || runtimeSettingOverlayService == null) {
+        if (query == null || runtimeSettingOverlayService == null || settingCuratorService == null) {
             return null;
         }
         if (respectPreference && !query.isPreferOverlay()) {
             return null;
         }
+        Item item = settingCuratorService.find(query);
+        if (item == null || respectPreference && !ItemExposure.PUBLIC.name().equals(item.getExposure())) {
+            return null;
+        }
         return runtimeSettingOverlayService
-                .resolveRuntimeOverlay(query.getSpace_id(), query.getGroup(), query.getCode(), query.getProfile_id());
+                .resolveRuntimeOverlay(query.coordinates());
     }
 
 }

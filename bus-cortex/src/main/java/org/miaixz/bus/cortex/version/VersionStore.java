@@ -140,43 +140,61 @@ public interface VersionStore {
     VersionRecord save(VersionRecord record);
 
     /**
-     * Finds a release record by space, version, and release track.
+     * Atomically inserts a release without replacing an existing tenant/track/version.
+     * Implementations must provide a uniqueness constraint; a read-then-save default would be unsafe.
+     */
+    default VersionRecord create(VersionRecord record) {
+        throw new UnsupportedOperationException("Atomic version insertion is not implemented");
+    }
+
+    /**
+     * Atomically inserts and activates a frozen platform version only if the active version equals the baseline.
+     * The host transaction must also commit all selected application pointers, rollout completion, and outbox events.
+     * Retrying the same version and identical frozen manifest is idempotent; a changed manifest is a conflict.
+     * Cache-backed fallbacks deliberately do not emulate a multi-resource database transaction.
+     */
+    default VersionRecord activate(VersionRecord record, String baseline) {
+        throw new UnsupportedOperationException("Transactional platform activation is not implemented");
+    }
+
+    /**
+     * Finds a release record by tenantId, version, and release track.
      *
-     * @param space   release space
+     * @param tenantId   release tenantId
      * @param version release version
      * @param track   release track
      * @return matching release record or {@code null}
      */
-    VersionRecord find(String space, String version, String track);
+    VersionRecord find(String tenantId, String version, String track);
 
     /**
-     * Lists release records within a space and optional release track.
+     * Lists release records within a tenantId and optional release track.
      *
-     * @param space release space
+     * @param tenantId release tenantId
      * @param track release track, or {@code null} to list every track
      * @return matching release records
      */
-    List<VersionRecord> list(String space, String track);
+    List<VersionRecord> list(String tenantId, String track);
 
     /**
-     * Deletes a release record by space, version, and release track.
+     * Deletes a release record by tenantId, version, and release track.
      *
-     * @param space   release space
+     * @param tenantId   release tenantId
      * @param version release version
      * @param track   release track
      * @return deleted release record or {@code null}
      */
-    VersionRecord delete(String space, String version, String track);
+    VersionRecord delete(String tenantId, String version, String track);
 
     /**
-     * Returns the current active release for a space and track.
+     * Returns the current active release for a tenantId and track.
      *
-     * @param space release space
+     * @param tenantId release tenantId
      * @param track release track
      * @return active release record or {@code null}
      */
-    default VersionRecord current(String space, String track) {
-        return list(space, ReleaseTrack.normalize(track)).stream()
+    default VersionRecord current(String tenantId, String track) {
+        return list(tenantId, ReleaseTrack.normalize(track)).stream()
                 .filter(record -> record.getVersionStatus() == VersionStatus.ACTIVE)
                 .max(VersionStore.currentComparator()).orElse(null);
     }
@@ -184,18 +202,18 @@ public interface VersionStore {
     /**
      * Marks one release version as current and deprecates the previous active version.
      *
-     * @param space   release space
+     * @param tenantId   release tenantId
      * @param track   release track
      * @param version release version
      * @return persisted current release or {@code null}
      */
-    default VersionRecord setCurrent(String space, String track, String version) {
+    default VersionRecord setCurrent(String tenantId, String track, String version) {
         String normalizedTrack = ReleaseTrack.normalize(track);
-        VersionRecord target = find(space, version, normalizedTrack);
+        VersionRecord target = find(tenantId, version, normalizedTrack);
         if (target == null) {
             return null;
         }
-        for (VersionRecord candidate : list(space, normalizedTrack)) {
+        for (VersionRecord candidate : list(tenantId, normalizedTrack)) {
             if (candidate != null && !sameRelease(candidate, target)
                     && candidate.getVersionStatus() == VersionStatus.ACTIVE) {
                 candidate.setVersionStatus(VersionStatus.DEPRECATED);
@@ -213,14 +231,14 @@ public interface VersionStore {
     /**
      * Promotes a release from one track to another and makes it current on the target track.
      *
-     * @param space       release space
+     * @param tenantId       release tenantId
      * @param version     release version
      * @param sourceTrack source release track
      * @param targetTrack target release track
      * @return promoted release record or {@code null}
      */
-    default VersionRecord promote(String space, String version, String sourceTrack, String targetTrack) {
-        VersionRecord record = find(space, version, sourceTrack);
+    default VersionRecord promote(String tenantId, String version, String sourceTrack, String targetTrack) {
+        VersionRecord record = find(tenantId, version, sourceTrack);
         if (record == null) {
             return null;
         }
@@ -228,19 +246,19 @@ public interface VersionStore {
         record.setVersionStatus(VersionStatus.ACTIVE);
         record.setPublished(System.currentTimeMillis());
         save(record);
-        return setCurrent(space, record.getTrack(), record.getVersion());
+        return setCurrent(tenantId, record.getTrack(), record.getVersion());
     }
 
     /**
      * Marks one release as deprecated.
      *
-     * @param space   release space
+     * @param tenantId   release tenantId
      * @param version release version
      * @param track   release track
      * @return persisted deprecated release or {@code null}
      */
-    default VersionRecord deprecate(String space, String version, String track) {
-        VersionRecord record = find(space, version, track);
+    default VersionRecord deprecate(String tenantId, String version, String track) {
+        VersionRecord record = find(tenantId, version, track);
         if (record == null) {
             return null;
         }

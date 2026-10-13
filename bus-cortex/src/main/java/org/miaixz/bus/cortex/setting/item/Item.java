@@ -19,13 +19,11 @@
 */
 package org.miaixz.bus.cortex.setting.item;
 
-import jakarta.persistence.Column;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.core.basic.entity.Space;
+import org.miaixz.bus.core.basic.entity.Tenant;
 
 /**
  * Current state of one setting item.
@@ -35,16 +33,22 @@ import org.miaixz.bus.core.basic.entity.Space;
 @Getter
 @Setter
 @SuperBuilder
-public class Item extends Space {
+public class Item extends Tenant {
 
     /**
-     * Profile that owns the item.
+     * Owning application identifier; required for application items and absent for shared items.
      */
-    private String profile_id;
+    private String app_id;
     /**
      * Current stable revision identifier.
      */
     private String stable_id;
+
+    /** Latest pending revision, including staged deletion; never a runtime-delivery pointer. */
+    private String draft_id;
+
+    /** Configuration lifecycle from State, independent from the inherited persistence status. */
+    private String state;
     /**
      * Current gray revision identifier.
      */
@@ -54,14 +58,13 @@ public class Item extends Space {
      */
     private String rollout_id;
     /**
+     * Ownership scope: SHARED for tenant-wide items or APPLICATION for application-owned items.
+     */
+    private String scope;
+    /**
      * Persisted item kind.
      */
     private String kind;
-    /**
-     * Logical setting group.
-     */
-    @Column(name = "\"group\"")
-    private String group;
     /**
      * Stable setting code.
      */
@@ -135,14 +138,32 @@ public class Item extends Space {
     }
 
     /**
-     * Supported item purposes.
+     * Supported configuration ownership scopes.
      *
      * @author Kimi Liu
      */
+    public enum Scope {
+        /**
+         * Configuration shared within a tenant.
+         */
+        SHARED,
+        /**
+         * Configuration maintained by one application.
+         */
+        APPLICATION
+    }
+
+    /**
+     * Configuration content kind.
+     */
     public enum Kind {
-        /** User-authored source configuration. */
+        /**
+         * User-authored source configuration.
+         */
         SOURCE,
-        /** Materialized effective configuration. */
+        /**
+         * Materialized effective configuration.
+         */
         EFFECTIVE
     }
 
@@ -152,9 +173,13 @@ public class Item extends Space {
      * @author Kimi Liu
      */
     public enum Editor {
-        /** Source-text editing mode. */
+        /**
+         * Source-text editing mode.
+         */
         SOURCE,
-        /** Structured key-value editing mode. */
+        /**
+         * Structured key-value editing mode.
+         */
         KEY_VALUE
     }
 
@@ -164,15 +189,25 @@ public class Item extends Space {
      * @author Kimi Liu
      */
     public enum State {
-        /** Item has never been published. */
+        /**
+         * Item has never been published.
+         */
         UNPUBLISHED,
-        /** Item matches its stable published revision. */
+        /**
+         * Item matches its stable published revision.
+         */
         PUBLISHED,
-        /** Item contains unpublished changes. */
+        /**
+         * Item contains unpublished changes.
+         */
         CHANGED,
-        /** Item has an active gray revision. */
+        /**
+         * Item has an active gray revision.
+         */
         GRAY,
-        /** Item is archived. */
+        /**
+         * Item is archived.
+         */
         ARCHIVED
     }
 
@@ -182,11 +217,17 @@ public class Item extends Space {
      * @author Kimi Liu
      */
     public enum SecretAction {
-        /** Keeps the existing protected value. */
+        /**
+         * Keeps the existing protected value.
+         */
         KEEP,
-        /** Replaces the existing protected value. */
+        /**
+         * Replaces the existing protected value.
+         */
         REPLACE,
-        /** Deletes the existing protected value. */
+        /**
+         * Deletes the existing protected value.
+         */
         DELETE
     }
 
@@ -196,9 +237,13 @@ public class Item extends Space {
      * @author Kimi Liu
      */
     public enum ValidationLevel {
-        /** Performs syntax validation only. */
+        /**
+         * Performs syntax validation only.
+         */
         SYNTAX,
-        /** Performs syntax and business validation. */
+        /**
+         * Performs syntax and business validation.
+         */
         FULL
     }
 

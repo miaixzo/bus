@@ -202,15 +202,19 @@ public class VortexBridge
         Logger.debug(
                 true,
                 "Cortex",
-                "Bridge event received: action={}, space={}, id={}, method={}, version={}",
+                "Bridge event received: action={}, tenantId={}, id={}, method={}, version={}",
                 event.getAction(),
-                event.getSpace_id(),
+                event.getTenant_id(),
                 event.getId(),
                 event.getMethod(),
                 event.getVersion());
+        org.miaixz.bus.cortex.magic.identity.CortexIdentity.requireTenant(event.getTenant_id(), event.getAsset().getTenant_id());
+        if (event.getInstance() != null) {
+            org.miaixz.bus.cortex.magic.identity.CortexIdentity.requireTenant(event.getTenant_id(), event.getInstance().getTenant_id());
+        }
         RegistryChange<Assets> transportEvent = new RegistryChange<>();
         transportEvent.setAction(event.getAction());
-        transportEvent.setSpace_id(event.getSpace_id());
+        transportEvent.setTenant_id(event.getTenant_id());
         transportEvent.setType(event.getType());
         transportEvent.setId(event.getId());
         transportEvent.setMethod(event.getMethod());
@@ -227,9 +231,9 @@ public class VortexBridge
                 Logger.debug(
                         false,
                         "Cortex",
-                        "Bridge event appended to outbox: action={}, space={}, id={}",
+                        "Bridge event appended to outbox: action={}, tenantId={}, id={}",
                         event.getAction(),
-                        event.getSpace_id(),
+                        event.getTenant_id(),
                         event.getId());
                 return;
             } catch (Exception e) {
@@ -256,9 +260,9 @@ public class VortexBridge
             Logger.debug(
                     false,
                     "Cortex",
-                    "Bridge event queued: action={}, space={}, id={}, queueSize={}",
+                    "Bridge event queued: action={}, tenantId={}, id={}, queueSize={}",
                     event.getAction(),
-                    event.getSpace_id(),
+                    event.getTenant_id(),
                     event.getId(),
                     queue.size());
         }
@@ -380,9 +384,9 @@ public class VortexBridge
                 Logger.debug(
                         false,
                         "Cortex",
-                        "Bridge queued delivery completed: action={}, space={}, id={}",
+                        "Bridge queued delivery completed: action={}, tenantId={}, id={}",
                         event.getAction(),
-                        event.getSpace_id(),
+                        event.getTenant_id(),
                         event.getId());
                 return;
             }
@@ -405,9 +409,9 @@ public class VortexBridge
                 Logger.debug(
                         true,
                         "Cortex",
-                        "Bridge queued delivery retry scheduled: action={}, space={}, id={}, attempt={}, error={}",
+                        "Bridge queued delivery retry scheduled: action={}, tenantId={}, id={}, attempt={}, error={}",
                         event.getAction(),
-                        event.getSpace_id(),
+                        event.getTenant_id(),
                         event.getId(),
                         attempt,
                         result.error());
@@ -657,11 +661,11 @@ public class VortexBridge
         record.setAction(event.getAction() == null ? "sync" : event.getAction().name().toLowerCase());
         record.setResourceType(OUTBOX_RESOURCE_TYPE);
         record.setResourceId(resourceId(event));
-        record.setSpace_id(event.getSpace_id());
+        record.setTenant_id(event.getTenant_id());
         record.setPayload(JsonKit.toJsonString(event));
         record.setSequence(event.getSequence());
         record.setIdempotencyKey(
-                "vortex:" + event.getSpace_id() + Symbol.COLON + record.getAction() + Symbol.COLON
+                "vortex:" + event.getTenant_id() + Symbol.COLON + record.getAction() + Symbol.COLON
                         + record.getResourceId());
         return record;
     }
@@ -698,8 +702,8 @@ public class VortexBridge
             Logger.trace(
                     true,
                     "Cortex",
-                    "Bridge worker signaled: space={}, id={}, queueSize={}",
-                    event.getSpace_id(),
+                    "Bridge worker signaled: tenantId={}, id={}, queueSize={}",
+                    event.getTenant_id(),
                     event.getId(),
                     queue.size());
         }

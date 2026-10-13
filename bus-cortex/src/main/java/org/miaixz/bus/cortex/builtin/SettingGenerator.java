@@ -19,112 +19,62 @@
 */
 package org.miaixz.bus.cortex.builtin;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Keying.SettingSpec;
-import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
+import org.miaixz.bus.cortex.setting.item.Item;
+import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 
-/**
- * Built-in setting-side {@link Keying} implementation.
- * <p>
- * This implementation centralizes all default setting key semantics, including:
- * </p>
- * <ul>
- * <li>logical item identifiers</li>
- * <li>profile scopes</li>
- * <li>watch and overlay cache keys</li>
- * <li>current-state entry keys and entry scan prefixes</li>
- * <li>revision keys, revision prefixes, and revision-sequence keys</li>
- * </ul>
- *
- * @author Kimi Liu
- */
+/** Generates tenant-qualified cache, subscription, and revision keys. */
 public class SettingGenerator implements Keying<SettingSpec> {
 
-    /**
-     * Shared default instance.
-     */
     public static final SettingGenerator INSTANCE = new SettingGenerator();
-
-    /**
-     * Sequence stream segment used for setting item revisions.
-     */
     public static final String SETTING_REVISION_SEQUENCE_SEGMENT = "setting:item:";
 
-    /**
-     * Creates the default setting key generator.
-     */
-    public SettingGenerator() {
-        // No initialization required.
-    }
-
-    /**
-     * Builds the strongest key represented by the supplied setting specification.
-     *
-     * @param spec setting key specification
-     * @return primary setting key or {@code null}
-     */
     @Override
     public String key(SettingSpec spec) {
         if (spec == null) {
             return null;
         }
+        String identity = identity(spec);
         return switch (spec.mode()) {
-            case SettingSpec.ITEM_ID -> itemId(spec);
-            case SettingSpec.PROFILE_SCOPE -> buildScope(spec);
-            case SettingSpec.WATCH -> Builder.SETTING_PREFIX + buildScope(spec);
-            case SettingSpec.OVERLAY -> Builder.SETTING_PREFIX + "overlay:" + buildScope(spec);
-            case SettingSpec.EXPORT -> buildScope(spec);
-            case SettingSpec.ENTRY -> Builder.SETTING_PREFIX + "entry:" + buildScope(spec);
-            case SettingSpec.REVISION -> prefix(spec) + spec.revisionPart();
-            case SettingSpec.SEQUENCE -> Builder.SEQUENCE_PREFIX + SETTING_REVISION_SEQUENCE_SEGMENT + itemId(spec);
-            default -> null;
+            case SettingSpec.ITEM_ID, SettingSpec.SCOPE, SettingSpec.EXPORT -> identity;
+            case SettingSpec.WATCH -> Builder.SETTING_PREFIX + identity;
+            case SettingSpec.OVERLAY -> Builder.SETTING_PREFIX + "overlay:" + identity;
+            case SettingSpec.ENTRY -> Builder.SETTING_PREFIX + "entry:" + identity;
+            case SettingSpec.REVISION -> {
+                if (spec.revision() == null || spec.revision().isBlank()) {
+                    throw new IllegalArgumentException("A historical revision is required");
+                }
+                yield prefix(spec) + segment(spec.revision());
+            }
+            case SettingSpec.SEQUENCE -> Builder.SEQUENCE_PREFIX + SETTING_REVISION_SEQUENCE_SEGMENT + identity;
+            default -> throw new IllegalArgumentException("Unknown configuration key purpose");
         };
     }
 
-    /**
-     * Builds the scan prefix for setting modes that support range-style lookup.
-     *
-     * @param spec setting key specification
-     * @return setting scan prefix or {@code null} when the mode has no prefix form
-     */
     @Override
     public String prefix(SettingSpec spec) {
         if (spec == null) {
             return null;
         }
         return switch (spec.mode()) {
-            case SettingSpec.ENTRY -> spec.groupPart() == null && spec.dataIdPart() == null
-                    ? Builder.SETTING_PREFIX + "entry:" + CortexIdentity.space(spec.space()) + Symbol.COLON
-                    : Builder.SETTING_PREFIX + "entry:" + itemId(spec);
-            case SettingSpec.REVISION -> Builder.SETTING_PREFIX + "revision:" + buildScope(spec) + Symbol.COLON;
+            case SettingSpec.ENTRY -> Builder.SETTING_PREFIX + "entry:" + identity(spec);
+            case SettingSpec.REVISION -> Builder.SETTING_PREFIX + "revision:" + identity(spec) + ':';
             default -> null;
         };
     }
 
-    /**
-     * Builds the logical item identifier portion shared by multiple setting keys.
-     *
-     * @param spec setting key specification
-     * @return item identifier
-     */
-    private String itemId(SettingSpec spec) {
-        return CortexIdentity.space(spec.space()) + Symbol.COLON + StringKit.emptyIfNull(spec.groupPart())
-                + Symbol.COLON + StringKit.emptyIfNull(spec.dataIdPart());
+    /** Length-prefixes segments to prevent collisions when values contain delimiters. */
+    private String identity(SettingSpec spec) {
+        Item item = Item.builder().tenant_id(spec.tenant_id()).scope(spec.scope()).app_id(spec.app_id())
+                .code(spec.code()).kind(spec.kind()).build();
+        ItemNormalizer.coordinates(item);
+        return segment(item.getTenant_id()) + ':' + segment(item.getScope()) + ':'
+                + segment(item.getApp_id()) + ':' + segment(item.getCode()) + ':' + segment(item.getKind());
     }
 
-    /**
-     * Builds the logical profile scope used by watch, overlay, entry, export, and revision keys.
-     *
-     * @param spec setting key specification
-     * @return profile scope identifier
-     */
-    private String buildScope(SettingSpec spec) {
-        String itemId = itemId(spec);
-        String profile = spec.profilePart();
-        return profile == null ? itemId : itemId + Symbol.COLON + profile;
+    private String segment(String value) {
+        return value == null ? "-" : value.length() + "#" + value;
     }
-
 }

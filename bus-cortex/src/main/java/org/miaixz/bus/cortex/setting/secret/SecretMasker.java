@@ -39,7 +39,7 @@ public class SecretMasker {
     }
 
     /**
-     * Masks one scalar value while retaining a small identifying prefix and suffix.
+     * Masks a scalar without revealing its prefix, suffix, or length.
      *
      * @param value value to mask
      * @return masked value, or the original null or empty value
@@ -48,7 +48,7 @@ public class SecretMasker {
         if (value == null || value.isEmpty()) {
             return value;
         }
-        return value.length() <= 4 ? "****" : value.substring(0, 2) + "****" + value.substring(value.length() - 2);
+        return "****";
     }
 
     /**
@@ -61,9 +61,10 @@ public class SecretMasker {
         if (entry == null) {
             return null;
         }
-        Item copy = Item.builder().id(entry.getId()).tenant_id(entry.getTenant_id()).space_id(entry.getSpace_id())
-                .profile_id(entry.getProfile_id()).stable_id(entry.getStable_id()).gray_id(entry.getGray_id())
-                .rollout_id(entry.getRollout_id()).kind(entry.getKind()).group(entry.getGroup()).code(entry.getCode())
+        Item copy = Item.builder().id(entry.getId()).tenant_id(entry.getTenant_id()).scope(entry.getScope())
+                .app_id(entry.getApp_id()).stable_id(entry.getStable_id()).gray_id(entry.getGray_id())
+                .draft_id(entry.getDraft_id()).state(entry.getState())
+                .rollout_id(entry.getRollout_id()).kind(entry.getKind()).code(entry.getCode())
                 .fingerprint(entry.getFingerprint()).content(entry.getContent()).format(entry.getFormat())
                 .editor(entry.getEditor()).source(entry.getSource()).spec(entry.getSpec()).exposure(entry.getExposure())
                 .encrypted(entry.getEncrypted()).payload(entry.getPayload()).labels(entry.getLabels())
@@ -92,20 +93,22 @@ public class SecretMasker {
         }
         Revision copy = Revision.builder().id(revision.getId()).tenant_id(revision.getTenant_id())
                 .item_id(revision.getItem_id()).rollout_id(revision.getRollout_id()).source_id(revision.getSource_id())
-                .revision(revision.getRevision()).edition(revision.getEdition()).baseline(revision.getBaseline())
-                .content(revision.getContent()).format(revision.getFormat()).source(revision.getSource())
+                .revision(revision.getRevision()).edition(revision.getEdition()).generation(revision.getGeneration())
+                .content(revision.getContent()).format(revision.getFormat()).editor(revision.getEditor())
+                .payload(revision.getPayload()).source(revision.getSource())
                 .spec(revision.getSpec()).exposure(revision.getExposure()).encrypted(revision.getEncrypted())
                 .labels(revision.getLabels()).extension(revision.getExtension()).checksum(revision.getChecksum())
-                .operation(revision.getOperation()).bindings(revision.getBindings()).reference(revision.getReference())
-                .rule(revision.getRule()).editing(revision.getEditing()).secrets(revision.getSecrets())
+                .operation(revision.getOperation()).reference(revision.getReference()).secrets(revision.getSecrets())
                 .description(revision.getDescription()).status(revision.getStatus()).creator(revision.getCreator())
                 .created(revision.getCreated()).modifier(revision.getModifier()).modified(revision.getModified())
                 .build();
         if (protectedContent(revision.getEncrypted(), revision.getExposure())) {
             copy.setContent(mask(revision.getContent()));
+            copy.setPayload(mask(revision.getPayload()));
             copy.setSpec(mask(revision.getSpec()));
             copy.setExtension(mask(revision.getExtension()));
             copy.setSecrets(mask(revision.getSecrets()));
+            copy.setReference(mask(revision.getReference()));
         }
         return copy;
     }

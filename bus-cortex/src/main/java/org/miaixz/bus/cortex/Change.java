@@ -25,7 +25,7 @@ import org.miaixz.bus.cortex.registry.RegistryChange;
  * Common metadata contract shared by Cortex change notifications.
  * <p>
  * Implementations such as {@link Watch} and {@link RegistryChange} expose their concrete payload shape separately while
- * sharing the same space, type, ordering and timestamp metadata.
+ * sharing the same tenantId, type, ordering and timestamp metadata.
  *
  * @param <T> domain value type described by the concrete change implementation
  * @author Kimi Liu
@@ -33,11 +33,11 @@ import org.miaixz.bus.cortex.registry.RegistryChange;
 public interface Change<T> {
 
     /**
-     * Returns the space affected by this change notification.
+     * Returns the tenantId affected by this change notification.
      *
-     * @return affected space
+     * @return affected tenantId
      */
-    String getSpace_id();
+    String getTenant_id();
 
     /**
      * Returns the asset type affected by this change notification when known.

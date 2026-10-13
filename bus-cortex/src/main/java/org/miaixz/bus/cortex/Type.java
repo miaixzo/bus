@@ -48,19 +48,9 @@ public enum Type {
     PROMPT(Normal._3, "Prompt entry"),
 
     /**
-     * Shared logical-space resource.
-     */
-    SPACE(4, "Logical space", Domain.SPACE),
-
-    /**
      * Setting application directory resource.
      */
     APP(5, "Setting application", Domain.SETTING),
-
-    /**
-     * Setting profile directory resource.
-     */
-    PROFILE(6, "Setting profile", Domain.SETTING),
 
     /**
      * Current-state setting item resource.
@@ -73,9 +63,9 @@ public enum Type {
     ITEM_REVISION(8, "Setting item revision", Domain.SETTING),
 
     /**
-     * Setting resource binding row.
+     * Setting resource reference relationship.
      */
-    BINDING(9, "Setting binding", Domain.SETTING),
+    REFERENCE(9, "Setting reference", Domain.SETTING),
 
     /**
      * Version snapshot definition.
@@ -196,9 +186,6 @@ public enum Type {
         if (value == null || value.isBlank()) {
             return Optional.empty();
         }
-        if ("ITEM_BINDING".equalsIgnoreCase(value)) {
-            return Optional.of(BINDING);
-        }
         try {
             return tryFromKey(Integer.valueOf(value));
         } catch (NumberFormatException ignore) {
@@ -255,7 +242,7 @@ public enum Type {
      * @return setting-domain resource types
      */
     public static List<Type> settingTypes() {
-        return List.of(APP, PROFILE, ITEM, ITEM_REVISION, BINDING);
+        return List.of(APP, ITEM, ITEM_REVISION, REFERENCE, INSTANCE, WATCH, ROLLOUT);
     }
 
     /**
@@ -340,7 +327,7 @@ public enum Type {
             case MCP -> "mcp";
             case PROMPT -> "prompt";
             case VERSION -> "version";
-            default -> throw new IllegalStateException("Space and setting types do not have cache key segments");
+            default -> throw new IllegalStateException("Setting types do not have cache key segments");
         };
     }
 
@@ -356,19 +343,10 @@ public enum Type {
     /**
      * Returns whether this value is a setting-domain resource type.
      *
-     * @return {@code true} for setting directory, item, revision, binding, instance, watch, and rollout resource types
+     * @return {@code true} for setting directory, item, revision, reference, instance, watch, and rollout resource types
      */
     public boolean isSetting() {
         return domain == Domain.SETTING;
-    }
-
-    /**
-     * Returns whether this value identifies the shared logical-space resource.
-     *
-     * @return {@code true} for SPACE
-     */
-    public boolean isSpace() {
-        return domain == Domain.SPACE;
     }
 
     /**
@@ -391,7 +369,7 @@ public enum Type {
     }
 
     /**
-     * Internal type-domain classifier used to keep registry, setting, space and version boundaries explicit.
+     * Internal type-domain classifier used to keep registry, setting and version boundaries explicit.
      *
      * @author Kimi Liu
      */
@@ -404,10 +382,6 @@ public enum Type {
          * Setting resource domain.
          */
         SETTING,
-        /**
-         * Shared logical-space domain.
-         */
-        SPACE,
         /**
          * Version release domain.
          */

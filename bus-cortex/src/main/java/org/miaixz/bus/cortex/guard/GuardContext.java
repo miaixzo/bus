@@ -37,9 +37,9 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 public class GuardContext {
 
     /**
-     * Space identifier of the protected asset.
+     * Tenant identifier of the protected asset.
      */
-    private String space_id;
+    private String tenant_id;
 
     /**
      * Protected domain such as registry, setting, or version.
@@ -72,11 +72,6 @@ public class GuardContext {
     private String app_id;
 
     /**
-     * Profile identifier when available.
-     */
-    private String profile_id;
-
-    /**
      * Resolved access-control policy.
      */
     private GuardPolicy policy;
@@ -97,11 +92,6 @@ public class GuardContext {
     private String userId;
 
     /**
-     * Caller tenant identifier when already resolved upstream.
-     */
-    private String tenantId;
-
-    /**
      * Caller-supplied labels or request attributes used by policy evaluators.
      */
     private Map<String, Object> attributes;
@@ -114,12 +104,12 @@ public class GuardContext {
     }
 
     /**
-     * Sets the space identifier of the protected asset.
+     * Sets the tenantId identifier of the protected asset.
      *
-     * @param space_id space identifier
+     * @param tenant_id tenantId identifier
      */
-    public void space_id(String space_id) {
-        this.space_id = CortexIdentity.space(space_id);
+    public void tenant_id(String tenant_id) {
+        this.tenant_id = CortexIdentity.tenantId(tenant_id);
     }
 
     /**

@@ -62,9 +62,9 @@ public class CortexChangeRecord {
     private String resourceId;
 
     /**
-     * Space affected by the change.
+     * Tenant affected by the change.
      */
-    private String space_id;
+    private String tenant_id;
 
     /**
      * Serialized payload for downstream delivery.

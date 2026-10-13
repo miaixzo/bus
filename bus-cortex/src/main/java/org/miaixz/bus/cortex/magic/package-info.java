@@ -25,7 +25,7 @@
  * and retains them for seven days. The {@code magic.identity} subpackage provides {@code CortexIdentity},
  * {@code IdGenerator}, {@code Sequence}, and {@code Fingerprint} for shared identity normalization, IDs, ordered
  * counters, and stable instance fingerprints. The {@code magic.watch} subpackage owns watch subscription lifecycle,
- * dispatch ordering, async fan-out, space limits, and per-watch backlog handling. The {@code magic.event} subpackage
+ * dispatch ordering, async fan-out, tenantId limits, and per-watch backlog handling. The {@code magic.event} subpackage
  * owns the first-stage Cortex outbox abstractions and cache fallback store.
  *
  * @author Kimi Liu

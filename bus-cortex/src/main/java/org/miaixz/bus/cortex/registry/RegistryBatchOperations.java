@@ -45,12 +45,12 @@ public interface RegistryBatchOperations extends RegistryOperations {
      * Deletes one entry using the snapshot already resolved for the current batch.
      *
      * @param type     registry type
-     * @param space    space
+     * @param tenantId    tenantId
      * @param id       asset identifier
      * @param existing existing snapshot
      */
-    default void delete(Type type, String space, String id, Assets existing) {
-        delete(type, space, id);
+    default void delete(Type type, String tenantId, String id, Assets existing) {
+        delete(type, tenantId, id);
     }
 
     /**

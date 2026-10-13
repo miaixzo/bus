@@ -46,11 +46,6 @@ public class MetadataCodec {
     public static final String TYPE = "type";
 
     /**
-     * Legacy metadata key storing the effective asset type.
-     */
-    public static final String LEGACY_SPECIES = "species";
-
-    /**
      * Keeps registry metadata encoding and decoding on the static API.
      */
     public MetadataCodec() {

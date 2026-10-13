@@ -45,6 +45,18 @@ public interface SecretCodec {
         return true;
     }
 
+    /** Rejects unavailable or identity encryption before accepting a protected write. */
+    default String protect(String plaintext) {
+        if (this instanceof NoOpSecretCodec || !supports("encrypted")) {
+            throw new IllegalStateException("A protecting secret codec is required");
+        }
+        String ciphertext = plaintext == null ? null : encrypt(plaintext);
+        if (plaintext != null && (ciphertext == null || ciphertext.isBlank() || plaintext.equals(ciphertext))) {
+            throw new IllegalStateException("Secret codec did not protect the value");
+        }
+        return ciphertext;
+    }
+
     /**
      * Encrypts plaintext for storage.
      *

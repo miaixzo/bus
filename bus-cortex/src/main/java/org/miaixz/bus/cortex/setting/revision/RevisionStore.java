@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Append-only store contract for immutable setting revisions.
+ * Append-only store contract for immutable setting revisions within a mandatory tenant.
+ * A saved snapshot must never be overwritten, including editor payload, reference manifests, or protection metadata.
+ * Rollbacks append new snapshots instead of modifying historical snapshots.
  *
  * @author Kimi Liu
  */
@@ -59,7 +61,7 @@ public interface RevisionStore {
     /**
      * Finds one immutable revision.
      *
-     * @param tenant_id tenant identifier, when available
+     * @param tenant_id mandatory tenant identifier
      * @param item_id   item identifier
      * @param revision  item-scoped revision number
      * @return matching revision, or {@code null} when absent
@@ -69,16 +71,27 @@ public interface RevisionStore {
     /**
      * Lists revisions for one item in newest-first order.
      *
-     * @param tenant_id tenant identifier, when available
+     * @param tenant_id mandatory tenant identifier
      * @param item_id   item identifier
      * @return item revisions
      */
     List<Revision> query(String tenant_id, String item_id);
 
+    /** Finds an immutable snapshot by identifier without crossing the tenant or item boundary. */
+    default Revision identity(String tenant_id, String item_id, String id) {
+        org.miaixz.bus.cortex.setting.item.ItemNormalizer.requireTenant(tenant_id);
+        if (item_id == null || item_id.isBlank() || id == null || id.isBlank()) {
+            throw new IllegalArgumentException("Revision identity coordinates are required");
+        }
+        return query(tenant_id, item_id).stream().filter(revision ->
+                tenant_id.equals(revision.getTenant_id()) && item_id.equals(revision.getItem_id())
+                        && id.equals(revision.getId())).findFirst().orElse(null);
+    }
+
     /**
      * Returns the latest revision for one item.
      *
-     * @param tenant_id tenant identifier, when available
+     * @param tenant_id mandatory tenant identifier
      * @param item_id   item identifier
      * @return latest revision, or {@code null} when absent
      */
@@ -88,11 +101,13 @@ public interface RevisionStore {
     }
 
     /**
-     * Retains at most the requested number of newest revisions.
+     * Retains the newest revisions and every revision reachable from a stable/gray pointer, fixed reference,
+     * frozen release, retained platform version, or watch. Unknown reachability must retain history.
      *
-     * @param tenant_id    tenant identifier, when available
+     * @param tenant_id    mandatory tenant identifier
      * @param item_id      item identifier
      * @param maxRevisions maximum number of revisions to retain
      */
     void retainLatest(String tenant_id, String item_id, int maxRevisions);
+
 }

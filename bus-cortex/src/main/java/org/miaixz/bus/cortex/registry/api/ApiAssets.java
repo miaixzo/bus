@@ -204,7 +204,7 @@ public class ApiAssets extends Assets {
      * @return default key or {@code null}
      */
     private String defaultKey(Keying<Keying.RegistrySpec> keying) {
-        return keying.key(Keying.RegistrySpec.route(null, null, null, getMethod(), getVersion(), getVerb()));
+        return keying.key(Keying.RegistrySpec.route(getTenant_id(), null, getApp_id(), getMethod(), getVersion(), getVerb()));
     }
 
     /**

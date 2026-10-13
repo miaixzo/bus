@@ -26,7 +26,7 @@ import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.basic.entity.Tenant;
 
 /**
- * Persistent runtime-instance attributes shared by configuration-center implementations.
+ * Configuration client instance owned directly by an application within a tenant.
  *
  * @author Kimi Liu
  */
@@ -36,67 +36,72 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 public class Instance extends Tenant {
 
     /**
-     * Registered asset that owns the runtime endpoint.
+     * Identifier of the application that owns this instance.
      */
-    private String asset_id;
+    private String app_id;
 
     /**
-     * Stable endpoint fingerprint within the owning asset.
+     * Human-readable instance name.
+     */
+    private String name;
+
+    /**
+     * Stable instance fingerprint, unique together with the tenant and application identifiers.
      */
     private String fingerprint;
 
     /**
-     * Trusted process identity used for endpoint aggregation.
+     * Trusted process identity used to aggregate instances.
      */
     private String process;
 
     /**
-     * Runtime host.
+     * Instance hostname or IP address.
      */
     private String host;
 
     /**
-     * Runtime port.
+     * Instance port.
      */
     private Integer port;
 
     /**
-     * Runtime transport scheme.
+     * Instance communication protocol.
      */
     private String scheme;
 
     /**
-     * Operating-system process identifier when available.
+     * Optional operating-system process identifier.
      */
     private Long pid;
 
     /**
-     * Relative health-probe endpoint when available.
+     * Optional relative health-probe path.
      */
     private String endpoint;
 
     /**
-     * Persisted health state.
+     * Instance health status.
      */
     private String health;
 
     /**
-     * Database timestamp of the latest accepted heartbeat.
+     * Database timestamp of the most recent valid heartbeat.
      */
     private Long heartbeat;
 
     /**
-     * Database timestamp of the latest health probe.
+     * Database timestamp of the most recent health probe.
      */
     private Long probed;
 
     /**
-     * Runtime version when supplied.
+     * Configuration release version successfully applied by the instance.
      */
     private String version;
 
     /**
-     * Approved session duration in seconds.
+     * Server-approved session lifetime in seconds.
      */
     private Integer duration;
 
@@ -106,12 +111,12 @@ public class Instance extends Tenant {
     private String session;
 
     /**
-     * Persisted normalized labels JSON.
+     * Normalized labels in JSON format.
      */
     private String labels;
 
     /**
-     * Creates an empty runtime-instance entity.
+     * Creates an empty configuration client instance.
      */
     public Instance() {
         // No initialization required.

@@ -38,9 +38,9 @@ import org.miaixz.bus.cortex.builtin.Selector;
 public class RegistryQuery {
 
     /**
-     * Registry space identifier.
+     * Registry tenantId identifier.
      */
-    private String space_id;
+    private String tenant_id;
 
     /**
      * Registry asset type.

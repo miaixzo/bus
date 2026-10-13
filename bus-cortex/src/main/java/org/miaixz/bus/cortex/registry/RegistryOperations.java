@@ -91,10 +91,10 @@ public interface RegistryOperations {
      * Deletes one entry.
      *
      * @param type  registry type
-     * @param space space
+     * @param tenantId tenantId
      * @param id    asset id
      */
-    void delete(Type type, String space, String id);
+    void delete(Type type, String tenantId, String id);
 
     /**
      * Returns the concrete registry for a type.

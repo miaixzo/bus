@@ -37,9 +37,9 @@ import lombok.experimental.SuperBuilder;
 public class Watch<T> implements Change<T> {
 
     /**
-     * Space of the subscription that produced this event.
+     * Tenant of the subscription that produced this event.
      */
-    private String space_id;
+    private String tenant_id;
 
     /**
      * Asset type scope of the subscription that produced this event, when restricted to one type.

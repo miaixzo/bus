@@ -37,9 +37,9 @@ import lombok.experimental.SuperBuilder;
 public class Instance {
 
     /**
-     * Space containing the runtime instance.
+     * Tenant containing the runtime instance.
      */
-    private String space_id;
+    private String tenant_id;
 
     /**
      * Application identifier to which the runtime instance belongs.

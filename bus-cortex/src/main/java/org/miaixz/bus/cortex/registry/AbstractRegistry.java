@@ -103,71 +103,71 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
     @Override
     public void register(T entry) {
         long ttl = entry.getTtl() > 0 ? entry.getTtl() : 3600_000L;
-        String key = keying.key(Keying.RegistrySpec.entry(entry.getSpace_id(), registryType, entry.getId()));
+        String key = keying.key(Keying.RegistrySpec.entry(entry.getTenant_id(), registryType, entry.getId()));
         Logger.debug(
                 true,
                 "Cortex",
-                "Registry entry write requested: type={}, space={}, id={}, ttlMs={}",
+                "Registry entry write requested: type={}, tenantId={}, id={}, ttlMs={}",
                 registryType,
-                entry.getSpace_id(),
+                entry.getTenant_id(),
                 entry.getId(),
                 ttl);
         cacheX.write(key, JsonKit.toJsonString(entry), ttl);
         Logger.debug(
                 false,
                 "Cortex",
-                "Registry entry write completed: type={}, space={}, id={}, key={}",
+                "Registry entry write completed: type={}, tenantId={}, id={}, key={}",
                 registryType,
-                entry.getSpace_id(),
+                entry.getTenant_id(),
                 entry.getId(),
                 key);
     }
 
     /**
-     * Removes an entry from the cache by space and ID.
+     * Removes an entry from the cache by tenantId and ID.
      *
-     * @param space entry space
+     * @param tenantId entry tenantId
      * @param id    entry identifier
      */
     @Override
-    public void deregister(String space, String id) {
-        String key = keying.key(Keying.RegistrySpec.entry(space, registryType, id));
+    public void deregister(String tenantId, String id) {
+        String key = keying.key(Keying.RegistrySpec.entry(tenantId, registryType, id));
         Logger.debug(
                 true,
                 "Cortex",
-                "Registry entry removal requested: type={}, space={}, id={}, key={}",
+                "Registry entry removal requested: type={}, tenantId={}, id={}, key={}",
                 registryType,
-                space,
+                tenantId,
                 id,
                 key);
         cacheX.remove(key);
         Logger.debug(
                 false,
                 "Cortex",
-                "Registry entry removal completed: type={}, space={}, id={}",
+                "Registry entry removal completed: type={}, tenantId={}, id={}",
                 registryType,
-                space,
+                tenantId,
                 id);
     }
 
     /**
      * Queries entries matching the given criteria with offset/limit pagination.
      *
-     * @param vector vector parameters including space, id filter, offset and limit
+     * @param vector vector parameters including tenantId, id filter, offset and limit
      * @return paginated list of matching entries
      */
     @Override
     public List<T> query(Vector vector) {
         RegistryQuery query = RegistryScopeMapping.query(vector, registryType);
         Vector criteria = RegistryScopeMapping.toVector(query);
-        String resolvedSpace = query.getSpace_id();
-        String prefix = keying.prefix(Keying.RegistrySpec.entry(resolvedSpace, registryType, null));
+        String resolvedTenant = query.getTenant_id();
+        String prefix = keying.prefix(Keying.RegistrySpec.entry(resolvedTenant, registryType, null));
         Logger.debug(
                 true,
                 "Cortex",
-                "Registry query started: type={}, space={}, id={}, prefix={}",
+                "Registry query started: type={}, tenantId={}, id={}, prefix={}",
                 registryType,
-                resolvedSpace,
+                resolvedTenant,
                 criteria.getId(),
                 prefix);
         Map<String, Object> raw = cacheX.scan(prefix);
@@ -177,6 +177,7 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
             if (entry == null) {
                 continue;
             }
+            org.miaixz.bus.cortex.magic.identity.CortexIdentity.requireTenant(resolvedTenant, entry.getTenant_id());
             if (criteria.getId() != null && !criteria.getId().equals(entry.getId())) {
                 continue;
             }
@@ -190,9 +191,9 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
         Logger.debug(
                 false,
                 "Cortex",
-                "Registry query completed: type={}, space={}, rawCount={}, matchedCount={}, returnedCount={}, offset={}, limit={}",
+                "Registry query completed: type={}, tenantId={}, rawCount={}, matchedCount={}, returnedCount={}, offset={}, limit={}",
                 registryType,
-                resolvedSpace,
+                resolvedTenant,
                 raw.size(),
                 result.size(),
                 page.size(),
@@ -214,17 +215,17 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
         Logger.info(
                 true,
                 "Cortex",
-                "Registry watch requested: type={}, space={}, id={}",
+                "Registry watch requested: type={}, tenantId={}, id={}",
                 registryType,
-                scope.getQuery() == null ? null : scope.getQuery().getSpace_id(),
+                scope.getQuery() == null ? null : scope.getQuery().getTenant_id(),
                 scope.getQuery() == null ? null : scope.getQuery().getId());
         String watchId = watchManager.add(RegistryScopeMapping.toVector(scope), listener);
         Logger.info(
                 false,
                 "Cortex",
-                "Registry watch registered: type={}, space={}, id={}, watchId={}",
+                "Registry watch registered: type={}, tenantId={}, id={}, watchId={}",
                 registryType,
-                scope.getQuery() == null ? null : scope.getQuery().getSpace_id(),
+                scope.getQuery() == null ? null : scope.getQuery().getTenant_id(),
                 scope.getQuery() == null ? null : scope.getQuery().getId(),
                 watchId);
         return watchId;

@@ -59,23 +59,19 @@ public interface ItemStore {
     /**
      * Deletes one item by its tenant and identifier.
      *
-     * @param tenant_id tenant identifier, when available
+     * @param tenant_id tenant identifier, required
      * @param id        item identifier
      * @return deleted item, or {@code null} when absent
      */
     Item delete(String tenant_id, String id);
 
     /**
-     * Finds one item by its immutable business coordinates.
+     * Finds a unique item by tenant, ownership scope, application, code, and kind.
      *
-     * @param tenant_id  tenant identifier, when available
-     * @param space_id   space identifier
-     * @param profile_id profile identifier, when applicable
-     * @param group      item group
-     * @param code       item code
-     * @return matching item, or {@code null} when absent
+     * @param coordinates item business coordinates; the tenant identifier is required
+     * @return the matching item, or {@code null} when absent
      */
-    Item find(String tenant_id, String space_id, String profile_id, String group, String code);
+    Item find(Item coordinates);
 
     /**
      * Queries items using the supplied business criteria.

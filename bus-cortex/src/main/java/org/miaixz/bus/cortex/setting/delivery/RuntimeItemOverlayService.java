@@ -26,63 +26,40 @@ import java.util.Map;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Keying.SettingSpec;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
-import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.cortex.setting.item.Item;
+import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 
 /**
- * Lightweight runtime overlay publisher outside the revision-tracked curator write path.
+ * Runtime overlay publication outside the revision-tracked configuration write path.
  *
  * @author Kimi Liu
  */
 public class RuntimeItemOverlayService {
 
-    /**
-     * Watch-event source name used for runtime overlays.
-     */
     private static final String OVERLAY_SOURCE = "runtime-overlay";
-
-    /**
-     * Watch-event type emitted after one runtime overlay publish.
-     */
     private static final String OVERLAY_PUBLISH_EVENT = "runtime-overlay-publish";
-
-    /**
-     * Watch-event type emitted after one runtime overlay clear operation.
-     */
     private static final String OVERLAY_CLEAR_EVENT = "runtime-overlay-clear";
-
-    /**
-     * Lightweight cache-backed publisher used for runtime overlays and warmup snapshots.
-     */
     private final RuntimeItemOverlayPublisher publisher;
-
-    /**
-     * Watch manager notified when one overlay is refreshed.
-     */
     private final WatchManager watchManager;
-
-    /**
-     * Setting-domain key strategy.
-     */
     private final Keying<SettingSpec> keying;
 
     /**
-     * Creates one runtime overlay service.
+     * Creates a runtime overlay service with the default key strategy.
      *
-     * @param publisher    lightweight overlay publisher
-     * @param watchManager watch manager
+     * @param publisher cache-backed overlay publisher
+     * @param watchManager watch notification manager
      */
     public RuntimeItemOverlayService(RuntimeItemOverlayPublisher publisher, WatchManager watchManager) {
         this(publisher, watchManager, SettingGenerator.INSTANCE);
     }
 
     /**
-     * Creates one runtime overlay service.
+     * Creates a runtime overlay service.
      *
-     * @param publisher    lightweight overlay publisher
-     * @param watchManager watch manager
-     * @param keying       setting-domain key strategy
+     * @param publisher cache-backed overlay publisher
+     * @param watchManager watch notification manager
+     * @param keying setting key strategy
      */
     public RuntimeItemOverlayService(RuntimeItemOverlayPublisher publisher, WatchManager watchManager,
             Keying<SettingSpec> keying) {
@@ -92,141 +69,76 @@ public class RuntimeItemOverlayService {
     }
 
     /**
-     * Publishes one runtime overlay without creating {@code setting.revision} snapshots.
+     * Publishes an overlay using the publisher's default lifetime.
      *
-     * @param space   space
-     * @param group   setting group
-     * @param code    setting data identifier
-     * @param profile optional {@code setting.profile}
-     * @param content overlay content
+     * @param item tenant-qualified item and overlay content
      */
-    public void publishRuntimeOverlay(String space, String group, String code, String profile, String content) {
-        publishRuntimeOverlay(space, group, code, profile, content, 0L);
+    public void publishRuntimeOverlay(Item item) {
+        publishRuntimeOverlay(item, 0L);
     }
 
     /**
-     * Publishes one runtime overlay with an optional explicit TTL.
+     * Publishes an overlay and notifies watchers of the same item coordinates.
      *
-     * @param space   space
-     * @param group   setting group
-     * @param code    setting data identifier
-     * @param profile optional profile
-     * @param content overlay content
-     * @param ttlMs   explicit ttl in milliseconds, {@code 0} keeps the publisher default
+     * @param item tenant-qualified item and overlay content
+     * @param ttlMs time-to-live in milliseconds; zero uses the publisher default
      */
-    public void publishRuntimeOverlay(
-            String space,
-            String group,
-            String code,
-            String profile,
-            String content,
-            long ttlMs) {
-        String resolvedSpace = CortexIdentity.space(space);
-        publisher.publish(resolvedSpace, group, code, profile, content, ttlMs);
-        watchManager.notifySetting(
-                watchKey(resolvedSpace, group, code, profile),
-                content,
-                OVERLAY_SOURCE,
-                OVERLAY_PUBLISH_EVENT,
-                "Runtime overlay updated");
+    public void publishRuntimeOverlay(Item item, long ttlMs) {
+        ItemNormalizer.coordinates(item);
+        publisher.publish(item, ttlMs);
+        watchManager.notifySetting(item.getTenant_id(), keying.key(SettingSpec.watch(item)), item.getContent(),
+                OVERLAY_SOURCE, OVERLAY_PUBLISH_EVENT, "Runtime overlay updated");
     }
 
     /**
-     * Warms one runtime overlay snapshot without creating {@code setting.revision} snapshots.
+     * Warms runtime overlays without creating revision snapshots.
      *
-     * @param entries snapshot entries
+     * @param entries snapshot items
      */
     public void warmupSnapshot(List<Item> entries) {
-        if (entries == null) {
-            return;
-        }
-        for (Item entry : entries) {
-            if (entry == null || entry.getGroup() == null || entry.getCode() == null) {
-                continue;
+        if (entries != null) {
+            for (Item entry : entries) {
+                if (entry != null) {
+                    publishRuntimeOverlay(entry);
+                }
             }
-            publishRuntimeOverlay(
-                    entry.getSpace_id(),
-                    entry.getGroup(),
-                    entry.getCode(),
-                    entry.getProfile_id(),
-                    entry.getContent());
         }
     }
 
     /**
-     * Resolves one runtime overlay when present.
+     * Resolves an overlay for exact item coordinates.
      *
-     * @param space   space
-     * @param group   setting group
-     * @param code    setting data identifier
-     * @param profile optional {@code setting.profile}
-     * @return runtime overlay, or {@code null} when absent
+     * @param coordinates tenant-qualified item coordinates
+     * @return overlay content, or {@code null} when absent
      */
-    public String resolveRuntimeOverlay(String space, String group, String code, String profile) {
-        return publisher.get(CortexIdentity.space(space), group, code, profile);
+    public String resolveRuntimeOverlay(Item coordinates) {
+        return publisher.get(ItemNormalizer.coordinates(coordinates));
     }
 
     /**
-     * Returns overlay presence for one scope.
+     * Describes overlay presence and content.
      *
-     * @param space   space
-     * @param group   group
-     * @param code    data identifier
-     * @param profile profile
-     * @return overlay view
+     * @param coordinates tenant-qualified item coordinates
+     * @return overlay description
      */
-    public Map<String, Object> describe(String space, String group, String code, String profile) {
+    public Map<String, Object> describe(Item coordinates) {
         Map<String, Object> result = new LinkedHashMap<>();
-        String content = resolveRuntimeOverlay(space, group, code, profile);
-        result.put("key", overlayKey(space, group, code, profile));
+        String content = resolveRuntimeOverlay(coordinates);
+        result.put("key", keying.key(SettingSpec.overlay(coordinates)));
         result.put("present", content != null);
         result.put("content", content);
         return result;
     }
 
     /**
-     * Deletes one runtime overlay and notifies watchers.
+     * Clears an overlay and notifies watchers of the same item coordinates.
      *
-     * @param space   space
-     * @param group   group
-     * @param code    data identifier
-     * @param profile profile
+     * @param coordinates tenant-qualified item coordinates
      */
-    public void clearRuntimeOverlay(String space, String group, String code, String profile) {
-        String resolvedSpace = CortexIdentity.space(space);
-        publisher.delete(resolvedSpace, group, code, profile);
-        watchManager.notifySetting(
-                watchKey(resolvedSpace, group, code, profile),
-                null,
-                OVERLAY_SOURCE,
-                OVERLAY_CLEAR_EVENT,
-                "Runtime overlay cleared");
+    public void clearRuntimeOverlay(Item coordinates) {
+        ItemNormalizer.coordinates(coordinates);
+        publisher.delete(coordinates);
+        watchManager.notifySetting(coordinates.getTenant_id(), keying.key(SettingSpec.watch(coordinates)), null,
+                OVERLAY_SOURCE, OVERLAY_CLEAR_EVENT, "Runtime overlay cleared");
     }
-
-    /**
-     * Builds one watch key.
-     *
-     * @param space   space
-     * @param group   setting group
-     * @param dataId  setting data identifier
-     * @param profile optional profile
-     * @return watch key
-     */
-    private String watchKey(String space, String group, String dataId, String profile) {
-        return keying.key(SettingSpec.watch(space, group, dataId, profile));
-    }
-
-    /**
-     * Builds one overlay key.
-     *
-     * @param space   space
-     * @param group   setting group
-     * @param dataId  setting data identifier
-     * @param profile optional profile
-     * @return overlay key
-     */
-    private String overlayKey(String space, String group, String dataId, String profile) {
-        return keying.key(SettingSpec.overlay(space, group, dataId, profile));
-    }
-
 }

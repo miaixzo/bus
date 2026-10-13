@@ -24,153 +24,37 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
-import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.cortex.builtin.SettingGenerator;
+import org.miaixz.bus.cortex.setting.item.Item;
+import org.miaixz.bus.cortex.setting.item.ItemQuery;
 
-/**
- * Curator contract.
- *
- * @author Kimi Liu
- */
+/** Consumer contract for tenant-scoped configuration content and subscriptions. */
 public interface Curator {
 
-    /**
-     * Returns the latest published content for the given group and code.
-     *
-     * @param group setting group name
-     * @param code  setting code
-     * @return current setting content, or {@code null} if absent
-     */
-    String get(String group, String code);
+    String get(ItemQuery query);
 
-    /**
-     * Returns setting content after applying client-specific gray routing rules.
-     *
-     * @param group    setting group name
-     * @param code     setting code
-     * @param clientIp client IP used for gray-rule selection
-     * @return resolved setting content, or {@code null} if absent
-     */
-    String get(String group, String code, String clientIp);
+    void publish(Item item);
 
-    /**
-     * Returns the latest published content for one profile.
-     *
-     * @param group   setting group name
-     * @param code    setting code
-     * @param profile {@code setting.profile}
-     * @return current setting content, or {@code null} if absent
-     */
-    default String getProfile(String group, String code, String profile) {
-        return get(group, code);
-    }
+    void rollback(Item coordinates, String revision);
 
-    /**
-     * Returns setting content after applying client-specific gray routing rules and profile matching.
-     *
-     * @param group    setting group name
-     * @param code     setting code
-     * @param profile  {@code setting.profile}
-     * @param clientIp client IP used for gray-rule selection
-     * @return resolved setting content, or {@code null} if absent
-     */
-    default String get(String group, String code, String profile, String clientIp) {
-        return getProfile(group, code, profile);
-    }
-
-    /**
-     * Publishes new content for the given group and code.
-     *
-     * @param group   setting group name
-     * @param code    setting code
-     * @param content setting content to publish
-     */
-    void publish(String group, String code, String content);
-
-    /**
-     * Publishes new content for one profile.
-     *
-     * @param group   setting group name
-     * @param code    setting code
-     * @param profile {@code setting.profile}
-     * @param content setting content to publish
-     */
-    default void publish(String group, String code, String profile, String content) {
-        publish(group, code, content);
-    }
-
-    /**
-     * Rolls back the setting entry to a historical item revision.
-     *
-     * @param group    setting group name
-     * @param code     setting code
-     * @param revision historical revision to restore
-     */
-    void rollback(String group, String code, String revision);
-
-    /**
-     * Rolls back one profile-specific setting entry to a historical item revision.
-     *
-     * @param group    setting group name
-     * @param code     setting code
-     * @param profile  {@code setting.profile}
-     * @param revision historical revision to restore
-     */
-    default void rollback(String group, String code, String profile, String revision) {
-        rollback(group, code, revision);
-    }
-
-    /**
-     * Resolves a batch of setting values keyed by logical identifier.
-     *
-     * @param groupAndCodes logical identifiers in {@code group:code} form
-     * @return resolved values
-     */
-    default Map<String, String> batchGet(List<String> groupAndCodes) {
+    default Map<String, String> batchGet(List<ItemQuery> queries) {
         Map<String, String> result = new LinkedHashMap<>();
-        if (groupAndCodes == null) {
-            return result;
-        }
-        for (String item : groupAndCodes) {
-            if (item == null || item.isBlank()) {
-                continue;
+        if (queries != null) {
+            for (ItemQuery query : queries) {
+                if (query != null) {
+                    result.put(SettingGenerator.INSTANCE.key(Keying.SettingSpec.export(query.coordinates())), get(query));
+                }
             }
-            String[] parts = item.split(Symbol.COLON, 2);
-            if (parts.length != 2) {
-                continue;
-            }
-            result.put(item, get(parts[0], parts[1]));
         }
         return result;
     }
 
-    /**
-     * Resolves one setting value with fallback content.
-     *
-     * @param group    setting group name
-     * @param code     setting code
-     * @param fallback fallback content
-     * @return resolved setting content or fallback
-     */
-    default String getOrDefault(String group, String code, String fallback) {
-        String value = get(group, code);
+    default String getOrDefault(ItemQuery query, String fallback) {
+        String value = get(query);
         return value == null ? fallback : value;
     }
 
-    /**
-     * Subscribes to setting changes and returns a watch identifier.
-     *
-     * @param group    setting group name
-     * @param code     setting code
-     * @param listener listener invoked with updated content
-     * @return watch identifier used to cancel the subscription
-     */
-    String watch(String group, String code, ConsumerX<String> listener);
+    String watch(Item coordinates, ConsumerX<String> listener);
 
-    /**
-     * Cancels a previously registered setting watch.
-     *
-     * @param watch_id watch identifier returned by {@link #watch(String, String, ConsumerX)}
-     */
     void unwatch(String watch_id);
-
 }

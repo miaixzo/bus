@@ -28,6 +28,7 @@ import org.miaixz.bus.cortex.setting.item.Item;
  *
  * @author Kimi Liu
  */
+@Deprecated(since = "8.8.0", forRemoval = true)
 public class StoredContentSourceAdapter implements ItemSourceAdapter {
 
     /**
@@ -55,18 +56,18 @@ public class StoredContentSourceAdapter implements ItemSourceAdapter {
     }
 
     /**
-     * Validates that the entry carries inline content. External source specifications require a concrete adapter.
+     * Never claims support for an external source without its concrete implementation.
      *
      * @param entry setting entry to validate
      * @return {@code true} when the entry can be resolved without external storage access
      */
     @Override
     public boolean validate(Item entry) {
-        return ItemSourceAdapter.super.validate(entry) && entry != null && entry.getContent() != null;
+        return false;
     }
 
     /**
-     * Resolves inline fallback content or fails fast when external storage access would be required.
+     * Fails fast rather than presenting inline fallback content as a live external source.
      *
      * @param entry setting entry to resolve
      * @return inline content
@@ -75,9 +76,6 @@ public class StoredContentSourceAdapter implements ItemSourceAdapter {
     public String resolve(Item entry) {
         if (entry == null) {
             return null;
-        }
-        if (entry.getContent() != null) {
-            return entry.getContent();
         }
         throw new UnsupportedOperationException("External setting source is not implemented for source: " + source);
     }
@@ -95,7 +93,7 @@ public class StoredContentSourceAdapter implements ItemSourceAdapter {
                 "externalRead",
                 Boolean.FALSE,
                 "inlineFallback",
-                Boolean.TRUE,
+                Boolean.FALSE,
                 "failFast",
                 Boolean.TRUE);
     }

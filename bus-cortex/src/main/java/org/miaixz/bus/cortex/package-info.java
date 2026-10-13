@@ -22,12 +22,12 @@
  * delivery, health probing, watch dispatch, identity normalization, and bridge synchronization.
  * <p>
  * Core runtime models include {@code Nature}, {@code Assets}, {@code Instance}, {@code Vector}, and {@code Status}.
- * {@code Type} classifies both registry content (API, MCP, PROMPT, VERSION) and setting resources (space, app, profile,
- * item, revision, binding) while keeping registry and setting categories distinguishable. Registry and curator
+ * {@code Type} classifies both registry content (API, MCP, PROMPT, VERSION) and setting resources (app,
+ * item, revision, reference) while keeping registry and setting categories distinguishable. Registry and curator
  * implementations can coordinate optional durable stores with CacheX projections, while {@code Watch} and
  * {@code RegistryChange} carry ordered change notifications across watchers and bridge listeners.
  * <p>
- * Shared space/application defaults live in {@code magic.identity}, and shared subscription dispatch lives in
+ * Shared tenant/application identity rules live in {@code magic.identity}, and shared subscription dispatch lives in
  * {@code magic.watch}. Registry-specific type and route identity remain under {@code registry}; setting resources
  * consume the common magic layer without treating registry as their infrastructure owner.
  * <p>

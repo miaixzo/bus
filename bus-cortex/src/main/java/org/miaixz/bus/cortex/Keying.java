@@ -83,12 +83,12 @@ public interface Keying<S> {
      * <li>{@link #ROUTE}: runtime route lookup keys and their ordered fallback chain</li>
      * </ul>
      * <p>
-     * Optional dimensions such as {@code space}, {@code type}, and {@code appId} are preserved as supplied. Route-side
-     * generation intentionally does not auto-fill these dimensions with persistence defaults.
+     * Tenant identity is mandatory. Optional {@code type} and {@code appId} dimensions are preserved as supplied;
+     * fallback candidates never omit the tenant.
      * </p>
      *
      * @param mode        registry key mode
-     * @param space       space
+     * @param tenantId       tenantId
      * @param type        registry type
      * @param appId       application identifier
      * @param id          logical entry identifier
@@ -97,7 +97,7 @@ public interface Keying<S> {
      * @param verb        numeric verb code
      * @param fingerprint runtime instance fingerprint
      */
-    record RegistrySpec(int mode, String space, Type type, String appId, String id, String method, String version,
+    record RegistrySpec(int mode, String tenantId, Type type, String appId, String id, String method, String version,
             Integer verb, String fingerprint) {
 
         /**
@@ -118,19 +118,19 @@ public interface Keying<S> {
         /**
          * Creates one registry-entry specification.
          *
-         * @param space space
+         * @param tenantId tenantId
          * @param type  registry type
          * @param id    logical entry identifier
          * @return registry-entry specification
          */
-        public static RegistrySpec entry(String space, Type type, String id) {
-            return new RegistrySpec(ENTRY, space, type, null, id, null, null, null, null);
+        public static RegistrySpec entry(String tenantId, Type type, String id) {
+            return new RegistrySpec(ENTRY, tenantId, type, null, id, null, null, null, null);
         }
 
         /**
          * Creates one runtime-instance specification.
          *
-         * @param space       space
+         * @param tenantId       tenantId
          * @param appId       application identifier
          * @param method      route method
          * @param version     route version
@@ -138,18 +138,18 @@ public interface Keying<S> {
          * @return runtime-instance specification
          */
         public static RegistrySpec instance(
-                String space,
+                String tenantId,
                 String appId,
                 String method,
                 String version,
                 String fingerprint) {
-            return new RegistrySpec(INSTANCE, space, null, appId, null, method, version, null, fingerprint);
+            return new RegistrySpec(INSTANCE, tenantId, null, appId, null, method, version, null, fingerprint);
         }
 
         /**
          * Creates one runtime-route specification.
          *
-         * @param space   space, optional
+         * @param tenantId   tenant identifier, required
          * @param type    registry type, optional
          * @param appId   application identifier, optional
          * @param method  route method
@@ -158,13 +158,13 @@ public interface Keying<S> {
          * @return runtime-route specification
          */
         public static RegistrySpec route(
-                String space,
+                String tenantId,
                 Type type,
                 String appId,
                 String method,
                 String version,
                 Integer verb) {
-            return new RegistrySpec(ROUTE, space, type, appId, null, method, version, verb, null);
+            return new RegistrySpec(ROUTE, tenantId, type, appId, null, method, version, verb, null);
         }
 
         /**
@@ -180,7 +180,7 @@ public interface Keying<S> {
             Type resolvedType = asset.getType() == null ? null
                     : Type.tryFromKey(asset.getType()).filter(Type::isRegistry).orElse(null);
             return route(
-                    asset.getSpace_id(),
+                    asset.getTenant_id(),
                     resolvedType,
                     asset.getApp_id(),
                     asset.getMethod(),
@@ -189,12 +189,12 @@ public interface Keying<S> {
         }
 
         /**
-         * Returns the optional space part without introducing route-side defaults.
+         * Requires and returns the tenant identifier without introducing a default.
          *
-         * @return space part or {@code null}
+         * @return nonblank tenant identifier
          */
-        public String spacePart() {
-            return space == null || space.isBlank() ? null : space.trim();
+        public String tenantIdPart() {
+            return org.miaixz.bus.cortex.magic.identity.CortexIdentity.tenantId(tenantId);
         }
 
         /**
@@ -282,206 +282,64 @@ public interface Keying<S> {
     }
 
     /**
-     * Setting-domain key specification.
-     * <p>
-     * One {@code SettingSpec} covers the logical identifiers and cache/storage keys used by the setting subsystem,
-     * including item identity, profile scopes, runtime watch/overlay keys, current-state entry keys, and revision
-     * history keys.
-     * </p>
+     * Configuration key specification qualified by tenant, ownership scope, application, code, and kind.
      *
-     * @param mode     setting key mode
-     * @param space    space
-     * @param group    group name
-     * @param dataId   data identifier
-     * @param profile  runtime profile
-     * @param revision revision number
-     * @author Kimi Liu
+     * @param mode key purpose
+     * @param tenant_id tenant identifier
+     * @param scope configuration ownership scope
+     * @param app_id application identifier
+     * @param code configuration code
+     * @param kind configuration content kind
+     * @param revision historical revision
      */
-    record SettingSpec(int mode, String space, String group, String dataId, String profile, String revision) {
-
-        /**
-         * Mode flag for the logical item identifier.
-         */
+    record SettingSpec(int mode, String tenant_id, String scope, String app_id, String code,
+            String kind, String revision) {
         public static final int ITEM_ID = 11;
-
-        /**
-         * Mode flag for the logical profile scope.
-         */
-        public static final int PROFILE_SCOPE = 12;
-
-        /**
-         * Mode flag for runtime watch keys.
-         */
+        public static final int SCOPE = 12;
         public static final int WATCH = 13;
-
-        /**
-         * Mode flag for runtime overlay keys.
-         */
         public static final int OVERLAY = 14;
-
-        /**
-         * Mode flag for exported logical setting identifiers.
-         */
         public static final int EXPORT = 15;
-
-        /**
-         * Mode flag for current-state entry keys.
-         */
         public static final int ENTRY = 16;
-
-        /**
-         * Mode flag for revision keys.
-         */
         public static final int REVISION = 17;
-
-        /**
-         * Mode flag for revision-sequence keys.
-         */
         public static final int SEQUENCE = 18;
 
-        /**
-         * Creates one logical-item specification.
-         *
-         * @param space  space
-         * @param group  group
-         * @param dataId data identifier
-         * @return item-id specification
-         */
-        public static SettingSpec itemId(String space, String group, String dataId) {
-            return new SettingSpec(ITEM_ID, space, group, dataId, null, null);
+        /** Creates a key specification for the supplied item and purpose. */
+        private static SettingSpec of(int mode, org.miaixz.bus.cortex.setting.item.Item item, String revision) {
+            org.miaixz.bus.cortex.setting.item.ItemNormalizer.coordinates(item);
+            return new SettingSpec(mode, item.getTenant_id(), item.getScope(), item.getApp_id(),
+                    item.getCode(), item.getKind(), revision);
         }
 
-        /**
-         * Creates one profile-scope specification.
-         *
-         * @param space   space
-         * @param group   group
-         * @param dataId  data identifier
-         * @param profile optional profile
-         * @return profile-scope specification
-         */
-        public static SettingSpec profileScope(String space, String group, String dataId, String profile) {
-            return new SettingSpec(PROFILE_SCOPE, space, group, dataId, profile, null);
+        public static SettingSpec itemId(org.miaixz.bus.cortex.setting.item.Item item) {
+            return of(ITEM_ID, item, null);
         }
 
-        /**
-         * Creates one watch-key specification.
-         *
-         * @param space   space
-         * @param group   group
-         * @param dataId  data identifier
-         * @param profile optional profile
-         * @return watch-key specification
-         */
-        public static SettingSpec watch(String space, String group, String dataId, String profile) {
-            return new SettingSpec(WATCH, space, group, dataId, profile, null);
+        public static SettingSpec scope(org.miaixz.bus.cortex.setting.item.Item item) {
+            return of(SCOPE, item, null);
         }
 
-        /**
-         * Creates one overlay-key specification.
-         *
-         * @param space   space
-         * @param group   group
-         * @param dataId  data identifier
-         * @param profile optional profile
-         * @return overlay-key specification
-         */
-        public static SettingSpec overlay(String space, String group, String dataId, String profile) {
-            return new SettingSpec(OVERLAY, space, group, dataId, profile, null);
+        public static SettingSpec watch(org.miaixz.bus.cortex.setting.item.Item item) {
+            return of(WATCH, item, null);
         }
 
-        /**
-         * Creates one export-key specification.
-         *
-         * @param space   space
-         * @param group   group
-         * @param dataId  data identifier
-         * @param profile optional profile
-         * @return export-key specification
-         */
-        public static SettingSpec export(String space, String group, String dataId, String profile) {
-            return new SettingSpec(EXPORT, space, group, dataId, profile, null);
+        public static SettingSpec overlay(org.miaixz.bus.cortex.setting.item.Item item) {
+            return of(OVERLAY, item, null);
         }
 
-        /**
-         * Creates one current-state entry specification.
-         *
-         * @param space   space
-         * @param group   group
-         * @param dataId  data identifier
-         * @param profile optional profile
-         * @return current-state entry specification
-         */
-        public static SettingSpec entry(String space, String group, String dataId, String profile) {
-            return new SettingSpec(ENTRY, space, group, dataId, profile, null);
+        public static SettingSpec export(org.miaixz.bus.cortex.setting.item.Item item) {
+            return of(EXPORT, item, null);
         }
 
-        /**
-         * Creates one revision specification.
-         *
-         * @param space    space
-         * @param group    group
-         * @param dataId   data identifier
-         * @param profile  optional profile
-         * @param revision revision number
-         * @return revision specification
-         */
-        public static SettingSpec revision(String space, String group, String dataId, String profile, String revision) {
-            return new SettingSpec(REVISION, space, group, dataId, profile, revision);
+        public static SettingSpec entry(org.miaixz.bus.cortex.setting.item.Item item) {
+            return of(ENTRY, item, null);
         }
 
-        /**
-         * Creates one revision-sequence specification.
-         *
-         * @param space  space
-         * @param group  group
-         * @param dataId data identifier
-         * @return revision-sequence specification
-         */
-        public static SettingSpec sequence(String space, String group, String dataId) {
-            return new SettingSpec(SEQUENCE, space, group, dataId, null, null);
+        public static SettingSpec revision(org.miaixz.bus.cortex.setting.item.Item item, String revision) {
+            return of(REVISION, item, revision);
         }
 
-        /**
-         * Returns the optional group part.
-         *
-         * @return group part or {@code null}
-         */
-        public String groupPart() {
-            return group == null || group.isBlank() ? null : group.trim();
+        public static SettingSpec sequence(org.miaixz.bus.cortex.setting.item.Item item) {
+            return of(SEQUENCE, item, null);
         }
-
-        /**
-         * Returns the optional data identifier part.
-         *
-         * @return data identifier part or {@code null}
-         */
-        public String dataIdPart() {
-            return dataId == null || dataId.isBlank() ? null : dataId.trim();
-        }
-
-        /**
-         * Returns the optional normalized profile part.
-         * <p>
-         * Profiles are normalized to lower case so runtime watch, overlay, entry, and revision keys share the same
-         * canonical profile segment.
-         * </p>
-         *
-         * @return profile part or {@code null}
-         */
-        public String profilePart() {
-            return profile == null || profile.isBlank() ? null : profile.trim().toLowerCase();
-        }
-
-        /**
-         * Returns the optional revision part.
-         *
-         * @return revision part or {@code null}
-         */
-        public String revisionPart() {
-            return revision == null || revision.isBlank() ? null : revision.trim();
-        }
-
     }
-
 }

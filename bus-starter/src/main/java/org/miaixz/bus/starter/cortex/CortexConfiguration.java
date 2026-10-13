@@ -185,7 +185,7 @@ public class CortexConfiguration {
     @Bean
     @ConditionalOnMissingBean(WatchManager.class)
     public WatchManager watchManager(@Qualifier("cortexCache") CacheX cache) {
-        return new WatchManager(cache(cache), properties.requireMaxWatchesPerSpace(),
+        return new WatchManager(cache(cache), properties.requireMaxWatchesPerTenant(),
                 properties.requireWatchExpireMs());
     }
 
@@ -581,8 +581,7 @@ public class CortexConfiguration {
             ItemCuratorService settingCuratorService,
             WatchManager watchManager,
             RuntimeItemOverlayService runtimeSettingOverlayService) {
-        return new DefaultCurator(settingCuratorService, watchManager, properties.requireSpace(),
-                runtimeSettingOverlayService);
+        return new DefaultCurator(settingCuratorService, watchManager, runtimeSettingOverlayService);
     }
 
     /**
@@ -781,19 +780,19 @@ public class CortexConfiguration {
          * Deletes one registry entry from the shared durable store.
          *
          * @param type  asset type
-         * @param space logical registry space
+         * @param tenantId logical registry tenantId
          * @param id    durable entry identifier
          */
         @Override
-        public void delete(Type type, String space, String id) {
-            delegate.delete(type, space, id);
+        public void delete(Type type, String tenantId, String id) {
+            delegate.delete(type, tenantId, id);
         }
 
         /**
          * Deletes one runtime instance snapshot from the shared durable store.
          *
          * @param type        asset type
-         * @param space       logical registry space
+         * @param tenantId       logical registry tenantId
          * @param method      method name
          * @param version     version identifier
          * @param fingerprint instance fingerprint
@@ -801,39 +800,39 @@ public class CortexConfiguration {
         @Override
         public void deleteInstance(
                 Type type,
-                String space,
+                String tenantId,
                 String app_id,
                 String method,
                 String version,
                 String fingerprint) {
-            delegate.deleteInstance(type, space, app_id, method, version, fingerprint);
+            delegate.deleteInstance(type, tenantId, app_id, method, version, fingerprint);
         }
 
         /**
          * Finds one registry entry and converts it to the expected typed view.
          *
          * @param type  asset type
-         * @param space logical registry space
+         * @param tenantId logical registry tenantId
          * @param id    durable entry identifier
          * @return typed asset, or {@code null} when absent or incompatible
          */
         @Override
-        public T find(Type type, String space, String id) {
-            return typed(delegate.find(type, space, id));
+        public T find(Type type, String tenantId, String id) {
+            return typed(delegate.find(type, tenantId, id));
         }
 
         /**
          * Finds one registry entry by method and version and converts it to the expected typed view.
          *
          * @param type    asset type
-         * @param space   logical registry space
+         * @param tenantId   logical registry tenantId
          * @param method  method name
          * @param version version identifier
          * @return typed asset, or {@code null} when absent or incompatible
          */
         @Override
-        public T findByMethodVersion(Type type, String space, String app_id, String method, String version) {
-            return typed(delegate.findByMethodVersion(type, space, app_id, method, version));
+        public T findByMethodVersion(Type type, String tenantId, String app_id, String method, String version) {
+            return typed(delegate.findByMethodVersion(type, tenantId, app_id, method, version));
         }
 
         /**
@@ -863,14 +862,14 @@ public class CortexConfiguration {
          * Queries runtime instance snapshots for the given service identity.
          *
          * @param type    asset type
-         * @param space   logical registry space
+         * @param tenantId   logical registry tenantId
          * @param method  method name
          * @param version version identifier
          * @return matching runtime instances
          */
         @Override
-        public List<Instance> queryInstances(Type type, String space, String app_id, String method, String version) {
-            return delegate.queryInstances(type, space, app_id, method, version);
+        public List<Instance> queryInstances(Type type, String tenantId, String app_id, String method, String version) {
+            return delegate.queryInstances(type, tenantId, app_id, method, version);
         }
 
         /**

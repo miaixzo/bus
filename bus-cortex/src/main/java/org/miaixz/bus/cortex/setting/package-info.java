@@ -21,8 +21,9 @@
  * Umbrella package for the Cortex setting domain.
  * <p>
  * The package defines the public setting models and the runtime composition built on {@code ItemStore},
- * {@code RevisionStore}, and {@code ReferenceStore}. Space variants are expressed by {@code Space.variant}; there is no
- * separate namespace model. All extensible resource relationships are directed {@code Reference} records.
+ * {@code RevisionStore}, and {@code ReferenceStore}. Service-center models are scoped by a mandatory tenant identifier.
+ * Application-owned items use {@code Item.app_id}; shared-item references and rollout membership use directed
+ * {@code Reference} records.
  *
  * @author Kimi Liu
  */

@@ -36,6 +36,17 @@ import org.miaixz.bus.cortex.Type;
 @Setter
 public class VersionRecord extends Nature {
 
+    /** Process-local monotonic clock; persistent stores must additionally enforce tenant/track/version uniqueness. */
+    private static final java.util.concurrent.atomic.AtomicLong CLOCK = new java.util.concurrent.atomic.AtomicLong();
+
+    /** Generates a version from the server clock; callers cannot choose a version through this operation. */
+    public static String generate(java.time.Clock clock) {
+        java.util.Objects.requireNonNull(clock, "Server clock");
+        long instant = CLOCK.updateAndGet(previous -> Math.max(clock.millis(), previous + 1));
+        return java.time.format.DateTimeFormatter.ofPattern("'v'uuuu.MM.dd.HHmmss.SSS")
+                .withZone(clock.getZone()).format(java.time.Instant.ofEpochMilli(instant));
+    }
+
     /**
      * Release version identifier.
      */
@@ -70,11 +81,6 @@ public class VersionRecord extends Nature {
      * JSON metadata for release-specific details.
      */
     private String metadata;
-
-    /**
-     * Creation timestamp in epoch milliseconds.
-     */
-    private Long created;
 
     /**
      * Publication timestamp in epoch milliseconds.

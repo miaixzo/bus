@@ -182,9 +182,9 @@ public class BatchResult {
         private Type type;
 
         /**
-         * Target space.
+         * Target tenantId.
          */
-        private String space_id;
+        private String tenant_id;
 
         /**
          * Entry ID when available.
@@ -217,7 +217,7 @@ public class BatchResult {
          * Creates one failure item.
          *
          * @param type         target registry type
-         * @param space        target space
+         * @param tenantId        target tenantId
          * @param id           entry ID
          * @param method       route method
          * @param version      route version
@@ -226,14 +226,14 @@ public class BatchResult {
          */
         public static Failure of(
                 Type type,
-                String space,
+                String tenantId,
                 String id,
                 String method,
                 String version,
                 String errorMessage) {
             Failure failure = new Failure();
             failure.setType(type);
-            failure.setSpace_id(space);
+            failure.setTenant_id(tenantId);
             failure.setId(id);
             failure.setMethod(method);
             failure.setVersion(version);

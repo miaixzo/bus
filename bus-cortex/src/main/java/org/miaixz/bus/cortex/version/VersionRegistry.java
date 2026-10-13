@@ -172,30 +172,30 @@ public class VersionRegistry implements Registry<VersionAssets> {
     /**
      * Deletes a version asset by version or identifier.
      *
-     * @param space version space
+     * @param tenantId version tenantId
      * @param id    version identifier
      */
     @Override
-    public void deregister(String space, String id) {
-        VersionRecord target = findByVersionOrId(CortexIdentity.space(space), id);
+    public void deregister(String tenantId, String id) {
+        VersionRecord target = findByVersionOrId(CortexIdentity.tenantId(tenantId), id);
         if (target == null) {
-            publisher.delete(space, ReleaseTrack.STABLE.key(), id);
+            publisher.delete(tenantId, ReleaseTrack.STABLE.key(), id);
             return;
         }
-        publisher.delete(target.getSpace_id(), target.getTrack(), target.getVersion());
+        publisher.delete(target.getTenant_id(), target.getTrack(), target.getVersion());
     }
 
     /**
-     * Queries version assets for a space and optional track.
+     * Queries version assets for a tenantId and optional track.
      *
      * @param vector compatibility query vector
      * @return matching version assets
      */
     @Override
     public List<VersionAssets> query(Vector vector) {
-        String space = CortexIdentity.space(vector == null ? null : vector.getSpace_id());
+        String tenantId = CortexIdentity.tenantId(vector == null ? null : vector.getTenant_id());
         String track = vector == null ? null : vector.getMethod();
-        return store.list(space, track).stream().map(this::toAssets).toList();
+        return store.list(tenantId, track).stream().map(this::toAssets).toList();
     }
 
     /**
@@ -265,7 +265,7 @@ public class VersionRegistry implements Registry<VersionAssets> {
         VersionAssets source = asset == null ? new VersionAssets() : asset;
         VersionRecord record = new VersionRecord();
         record.setId(source.getId());
-        record.setSpace_id(CortexIdentity.space(source.getSpace_id()));
+        record.setTenant_id(CortexIdentity.tenantId(source.getTenant_id()));
         record.setVersion(source.semver() != null ? source.semver() : source.getVersion());
         record.setTrack(
                 source.getMethod() == null || source.getMethod().isBlank() ? ReleaseTrack.STABLE.key()
@@ -287,7 +287,7 @@ public class VersionRegistry implements Registry<VersionAssets> {
     private VersionAssets toAssets(VersionRecord record) {
         VersionAssets asset = new VersionAssets();
         asset.setId(record.getId() == null || record.getId().isBlank() ? record.getVersion() : record.getId());
-        asset.setSpace_id(record.getSpace_id());
+        asset.setTenant_id(record.getTenant_id());
         asset.setType(Type.VERSION.key());
         asset.setVersion(record.getVersion());
         asset.setMethod(ReleaseTrack.normalize(record.getTrack()));
@@ -303,19 +303,19 @@ public class VersionRegistry implements Registry<VersionAssets> {
     /**
      * Finds a release by stable-track version first, then by any matching version or asset identifier.
      *
-     * @param space release space
+     * @param tenantId release tenantId
      * @param id    release version or asset identifier
      * @return matching release record or {@code null}
      */
-    private VersionRecord findByVersionOrId(String space, String id) {
+    private VersionRecord findByVersionOrId(String tenantId, String id) {
         if (id == null || id.isBlank()) {
             return null;
         }
-        VersionRecord stable = store.find(space, id, ReleaseTrack.STABLE.key());
+        VersionRecord stable = store.find(tenantId, id, ReleaseTrack.STABLE.key());
         if (stable != null) {
             return stable;
         }
-        return store.list(space, null).stream()
+        return store.list(tenantId, null).stream()
                 .filter(record -> id.equals(record.getVersion()) || id.equals(record.getId())).findFirst().orElse(null);
     }
 

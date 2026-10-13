@@ -43,6 +43,12 @@ public class NoOpSecretCodec implements SecretCodec {
         return "noop";
     }
 
+    /** Never advertises protected-storage capability. */
+    @Override
+    public boolean supports(String mode) {
+        return !"encrypted".equalsIgnoreCase(mode);
+    }
+
     /**
      * Returns the plaintext unchanged.
      *

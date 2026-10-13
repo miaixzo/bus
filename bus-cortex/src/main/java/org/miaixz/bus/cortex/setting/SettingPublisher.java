@@ -19,11 +19,12 @@
 */
 package org.miaixz.bus.cortex.setting;
 
+import java.util.Objects;
+
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Keying.SettingSpec;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
-import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
@@ -32,202 +33,148 @@ import org.miaixz.bus.cortex.setting.revision.Revision;
 import org.miaixz.bus.cortex.setting.revision.RevisionNumbers;
 import org.miaixz.bus.cortex.setting.revision.RevisionStore;
 import org.miaixz.bus.cortex.setting.secret.SecretCodec;
+import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.cortex.setting.rollout.Plan;
+import org.miaixz.bus.cortex.setting.rollout.Rollout;
 
-/**
- * Coordinates current-state changes, immutable revisions and notifications.
- *
- * @author Kimi Liu
- */
+/** Stages configuration revisions; application release activation is committed by the host transaction. */
 public class SettingPublisher {
 
-    /**
-     * Store used for durable current item state.
-     */
     private final StoreBackedItemStore entryStore;
-
-    /**
-     * Append-only revision store.
-     */
     private final RevisionStore revisionStore;
-
-    /**
-     * Manager notified after successful state changes.
-     */
-    private final WatchManager watchManager;
-
-    /**
-     * Codec used to protect encrypted content.
-     */
     private final SecretCodec secretCodec;
-
-    /**
-     * Maximum retained revisions per item.
-     */
     private final int maxRevisions;
 
-    /**
-     * Key strategy used for setting watch notifications.
-     */
-    private final Keying<SettingSpec> keying;
-
-    /**
-     * Creates a publisher with default revision retention and key strategy.
-     *
-     * @param entryStore    current item store
-     * @param revisionStore immutable revision store
-     * @param watchManager  watch notification manager
-     * @param secretCodec   protected-content codec
-     */
     public SettingPublisher(StoreBackedItemStore entryStore, RevisionStore revisionStore, WatchManager watchManager,
             SecretCodec secretCodec) {
         this(entryStore, revisionStore, watchManager, secretCodec, 10, SettingGenerator.INSTANCE);
     }
 
-    /**
-     * Creates a publisher with explicit revision retention.
-     *
-     * @param entryStore    current item store
-     * @param revisionStore immutable revision store
-     * @param watchManager  watch notification manager
-     * @param secretCodec   protected-content codec
-     * @param maxRevisions  maximum retained revisions per item
-     */
     public SettingPublisher(StoreBackedItemStore entryStore, RevisionStore revisionStore, WatchManager watchManager,
             SecretCodec secretCodec, int maxRevisions) {
         this(entryStore, revisionStore, watchManager, secretCodec, maxRevisions, SettingGenerator.INSTANCE);
     }
 
-    /**
-     * Creates a publisher with explicit retention and key strategy.
-     *
-     * @param entryStore    current item store
-     * @param revisionStore immutable revision store
-     * @param watchManager  watch notification manager
-     * @param secretCodec   protected-content codec
-     * @param maxRevisions  maximum retained revisions per item
-     * @param keying        setting key strategy
-     */
     public SettingPublisher(StoreBackedItemStore entryStore, RevisionStore revisionStore, WatchManager watchManager,
             SecretCodec secretCodec, int maxRevisions, Keying<SettingSpec> keying) {
-        if (entryStore == null || revisionStore == null || watchManager == null || secretCodec == null) {
+        if (entryStore == null || revisionStore == null || secretCodec == null) {
             throw new IllegalArgumentException("Setting publisher dependencies are required");
         }
         this.entryStore = entryStore;
         this.revisionStore = revisionStore;
-        this.watchManager = watchManager;
         this.secretCodec = secretCodec;
         this.maxRevisions = Math.max(maxRevisions, 1);
-        this.keying = keying == null ? SettingGenerator.INSTANCE : keying;
     }
 
-    /**
-     * Publishes inline content for one setting coordinate.
-     *
-     * @param space   space identifier
-     * @param group   item group
-     * @param code    item code
-     * @param content source content
-     * @return persisted current item
-     */
-    public Item publish(String space, String group, String code, String content) {
-        Item entry = new Item();
-        entry.setSpace_id(CortexIdentity.space(space));
-        entry.setGroup(group);
-        entry.setCode(code);
-        entry.setContent(content);
-        return publish(entry);
+    /** Stages inline content using complete tenant-qualified item coordinates. */
+    public Item publishInline(Item entry, String content) {
+        Item copy = copy(entry);
+        copy.setContent(content);
+        return publish(copy);
     }
 
-    /**
-     * Publishes one fully described item.
-     *
-     * @param entry item to publish
-     * @return persisted current item
-     */
+    /** Saves a draft only; this compatibility method never changes live pointers or notifies clients. */
     public Item publish(Item entry) {
         return publish(entry, null);
     }
 
-    /**
-     * Publishes one item derived from an optional source revision.
-     *
-     * @param entry     item to publish
-     * @param source_id source revision identifier, when applicable
-     * @return persisted current item
-     */
-    private Item publish(Item entry, String source_id) {
-        Item prepared = ItemNormalizer.normalize(entry);
-        requireCoordinates(prepared);
-        Item current = entryStore.find(
-                prepared.getTenant_id(),
-                prepared.getSpace_id(),
-                prepared.getProfile_id(),
-                prepared.getGroup(),
-                prepared.getCode());
-        if (current != null && current.getChecksum() != null && current.getChecksum().equals(prepared.getChecksum())) {
+    private Item publish(Item entry, Revision source) {
+        synchronized (entryStore) {
+            return stage(entry, source);
+        }
+    }
+
+    private Item stage(Item entry, Revision source) {
+        Item prepared = ItemNormalizer.normalize(copy(entry));
+        prepared.setChecksum(ItemNormalizer.checksum(prepared));
+        Item current = entryStore.find(prepared);
+        Revision latest = current == null ? null : revisionStore.latest(current.getTenant_id(), current.getId());
+        Revision draft = current == null || current.getDraft_id() == null ? null
+                : revisionStore.identity(current.getTenant_id(), current.getId(), current.getDraft_id());
+        if (source == null && current != null && draft != null
+                && Revision.Operation.UPSERT.name().equals(draft.getOperation())
+                && current.getChecksum() != null
+                && current.getChecksum().equals(prepared.getChecksum())
+                && Objects.equals(current.getEditor(), prepared.getEditor())
+                && Objects.equals(current.getPayload(), prepared.getPayload())) {
             return current;
         }
-        Revision latest = current == null ? null : revisionStore.latest(current.getTenant_id(), current.getId());
+        if (current != null) {
+            prepared.setId(current.getId());
+            prepared.setStable_id(current.getStable_id());
+            prepared.setGray_id(current.getGray_id());
+            prepared.setRollout_id(current.getRollout_id());
+        } else {
+            prepared.setStable_id(null);
+            prepared.setGray_id(null);
+            prepared.setRollout_id(null);
+        }
         String revisionNo = RevisionNumbers.next(latest == null ? null : latest.getRevision());
         prepared.setEdition(next(current == null ? null : current.getEdition()));
-        prepared.setGeneration(next(current == null ? null : current.getGeneration()));
-        if (prepared.getId() == null) {
-            prepared.setId(ID.objectId());
-        }
-        String plainContent = prepared.getContent();
-        if (ItemNormalizer.isEncryptedFlagEnabled(prepared.getEncrypted()) && plainContent != null) {
-            prepared.setContent(secretCodec.encrypt(plainContent));
+        prepared.setGeneration(current == null || current.getGeneration() == null ? 0L : current.getGeneration());
+        prepared.setState(current == null || current.getStable_id() == null
+                ? Item.State.UNPUBLISHED.name() : Item.State.CHANGED.name());
+        prepared.setStatus(current == null ? 1 : current.getStatus());
+        if (ItemNormalizer.isEncryptedFlagEnabled(prepared.getEncrypted())) {
+            if (!ItemNormalizer.INLINE_SOURCE.equals(prepared.getSource())) {
+                throw new IllegalArgumentException("Protected drafts require an inline materialized snapshot");
+            }
+            prepared.setContent(secretCodec.protect(prepared.getContent()));
+            prepared.setPayload(secretCodec.protect(prepared.getPayload()));
+            prepared.setSpec(secretCodec.protect(prepared.getSpec()));
+            prepared.setExtension(secretCodec.protect(prepared.getExtension()));
             prepared.setChecksum(ItemNormalizer.checksum(prepared));
         }
-        Revision revision = snapshot(prepared, revisionNo, source_id, Revision.Operation.UPSERT);
-        prepared.setStable_id(revision.getId());
+        Revision revision = snapshot(prepared, revisionNo, source == null ? null : source.getId(),
+                Revision.Operation.UPSERT);
+        if (source != null) {
+            // Preserve the frozen manifest and protection metadata without consulting live relationships.
+            revision.setReference(source.getReference());
+            revision.setSecrets(source.getSecrets());
+        }
+        prepared.setDraft_id(revision.getId());
         revisionStore.save(revision);
         Item stored = entryStore.save(prepared);
         revisionStore.retainLatest(stored.getTenant_id(), stored.getId(), maxRevisions);
-        notify(stored, plainContent, "durable-publish", "Setting published");
         return stored;
     }
 
-    /**
-     * Deletes one current item after appending a tombstone revision.
-     *
-     * @param space   space identifier
-     * @param group   item group
-     * @param code    item code
-     * @param profile optional profile identifier
-     * @return deleted item, or {@code null} when absent
-     */
-    public Item delete(String space, String group, String code, String profile) {
-        Item current = entryStore.find(null, CortexIdentity.space(space), profile, group, code);
+    /** Stages a deletion tombstone. Published content remains available until the selected release commits. */
+    public Item delete(Item coordinates) {
+        synchronized (entryStore) {
+            return stageDeletion(coordinates);
+        }
+    }
+
+    private Item stageDeletion(Item coordinates) {
+        Item current = entryStore.find(coordinates);
         if (current == null) {
             return null;
         }
+        Item staged = copy(current);
+        staged.setEdition(next(current.getEdition()));
+        staged.setState(current.getStable_id() == null ? Item.State.UNPUBLISHED.name() : Item.State.CHANGED.name());
         Revision latest = revisionStore.latest(current.getTenant_id(), current.getId());
-        Revision tombstone = snapshot(
-                current,
-                RevisionNumbers.next(latest == null ? null : latest.getRevision()),
-                null,
-                Revision.Operation.DELETE);
+        Revision tombstone = snapshot(staged,
+                RevisionNumbers.next(latest == null ? null : latest.getRevision()), null, Revision.Operation.DELETE);
         tombstone.setContent(null);
+        tombstone.setPayload(null);
+        staged.setDraft_id(tombstone.getId());
         revisionStore.save(tombstone);
-        Item deleted = entryStore.delete(current.getTenant_id(), current.getId());
+        Item deleted = entryStore.save(staged);
         revisionStore.retainLatest(current.getTenant_id(), current.getId(), maxRevisions);
-        notify(current, null, "durable-delete", "Setting deleted");
         return deleted;
     }
 
-    /**
-     * Republishes content from one historical revision.
-     *
-     * @param space    space identifier
-     * @param group    item group
-     * @param code     item code
-     * @param profile  optional profile identifier
-     * @param revision item-scoped revision number
-     * @return republished item, or {@code null} when the item or revision is absent
-     */
-    public Item rollback(String space, String group, String code, String profile, String revision) {
-        Item current = entryStore.find(null, CortexIdentity.space(space), profile, group, code);
+    /** Stages a new revision from immutable history without activating it or modifying the source. */
+    public Item rollback(Item coordinates, String revision) {
+        synchronized (entryStore) {
+            return restore(coordinates, revision);
+        }
+    }
+
+    private Item restore(Item coordinates, String revision) {
+        Item current = entryStore.find(coordinates);
         if (current == null) {
             return null;
         }
@@ -235,32 +182,34 @@ public class SettingPublisher {
         if (source == null) {
             return null;
         }
-        current.setContent(source.getContent());
-        current.setFormat(source.getFormat());
-        current.setSource(source.getSource());
-        current.setSpec(source.getSpec());
-        current.setExposure(source.getExposure());
-        current.setEncrypted(source.getEncrypted());
-        current.setLabels(source.getLabels());
-        current.setExtension(source.getExtension());
-        current.setDescription(source.getDescription());
-        current.setChecksum(null);
-        return publish(current, source.getId());
+        if (Revision.Operation.DELETE.name().equals(source.getOperation())) {
+            throw new IllegalArgumentException("A deletion revision cannot be restored as item content");
+        }
+        // Use a fresh item so failed publication cannot mutate a cached current state.
+        Item restored = Item.builder().id(current.getId()).tenant_id(current.getTenant_id())
+                .scope(current.getScope()).app_id(current.getApp_id()).kind(current.getKind()).code(current.getCode())
+                .rollout_id(current.getRollout_id()).editor(source.getEditor()).payload(source.getPayload())
+                .status(current.getStatus()).creator(current.getCreator()).created(current.getCreated())
+                .modifier(current.getModifier()).modified(current.getModified()).build();
+        restored.setContent(ItemNormalizer.isEncryptedFlagEnabled(source.getEncrypted()) && source.getContent() != null
+                ? secretCodec.decrypt(source.getContent()) : source.getContent());
+        restored.setPayload(decode(source.getPayload(), source.getEncrypted()));
+        restored.setFormat(source.getFormat());
+        restored.setSource(source.getSource());
+        restored.setSpec(decode(source.getSpec(), source.getEncrypted()));
+        restored.setExposure(source.getExposure());
+        restored.setEncrypted(source.getEncrypted());
+        restored.setLabels(source.getLabels());
+        restored.setExtension(decode(source.getExtension(), source.getEncrypted()));
+        restored.setDescription(source.getDescription());
+        return publish(restored, source);
     }
 
-    /**
-     * Creates an immutable snapshot from the supplied current item state.
-     *
-     * @param item       current item
-     * @param revisionNo item-scoped revision number
-     * @param source_id  source revision identifier, when applicable
-     * @param operation  snapshot operation
-     * @return immutable revision snapshot
-     */
     private Revision snapshot(Item item, String revisionNo, String source_id, Revision.Operation operation) {
         return Revision.builder().id(ID.objectId()).tenant_id(item.getTenant_id()).item_id(item.getId())
                 .rollout_id(item.getRollout_id()).source_id(source_id).revision(revisionNo).edition(item.getEdition())
-                .baseline(item.getGeneration()).content(item.getContent()).format(item.getFormat())
+                .generation(item.getGeneration()).content(item.getContent()).format(item.getFormat())
+                .editor(item.getEditor()).payload(item.getPayload())
                 .source(item.getSource()).spec(item.getSpec()).exposure(item.getExposure())
                 .encrypted(item.getEncrypted()).labels(item.getLabels()).extension(item.getExtension())
                 .checksum(item.getChecksum()).operation(operation.name()).description(item.getDescription())
@@ -269,53 +218,54 @@ public class SettingPublisher {
     }
 
     /**
-     * Notifies subscribers after a committed item change.
-     *
-     * @param item      changed item
-     * @param content   delivered plain content
-     * @param eventType notification event type
-     * @param summary   notification summary
+     * Prepares one application-owned pointer change from an approved frozen plan, without persistence or notification.
+     * The host must atomically commit all selected pointers, version, rollout state, and outbox; never loop-save them.
+     * Source snapshots and the current item must be loaded in that same transaction and protected by edition checks.
      */
-    private void notify(Item item, String content, String eventType, String summary) {
-        watchManager.notifySetting(
-                watchKey(item.getSpace_id(), item.getGroup(), item.getCode(), item.getProfile_id()),
-                content,
-                "setting-center",
-                eventType,
-                summary);
+    public Item prepareActivation(Item current, Revision revision, Rollout rollout, Plan plan) {
+        if (plan == null) {
+            throw new IllegalArgumentException("Frozen publication plan is required");
+        }
+        plan.verify(rollout);
+        if (!Rollout.State.PUBLISHING.name().equals(rollout.getState()) || revision == null
+                || current == null || !plan.getTenant_id().equals(current.getTenant_id())
+                || !current.getTenant_id().equals(revision.getTenant_id())
+                || !current.getId().equals(revision.getItem_id())
+                || !Item.Scope.APPLICATION.name().equals(current.getScope())
+                || !plan.includes(current.getApp_id(), current.getId(), revision.getId())) {
+            throw new IllegalArgumentException("Activation must match the frozen selected application revision");
+        }
+        Revision.Operation.valueOf(revision.getOperation());
+        Item activated = copy(current);
+        activated.setGeneration(next(current.getGeneration()));
+        activated.setEdition(next(current.getEdition()));
+        activated.setRollout_id(rollout.getId());
+        if (Rollout.Mode.GRAY.name().equals(rollout.getMode())) {
+            activated.setGray_id(revision.getId());
+            activated.setState(Item.State.GRAY.name());
+        } else {
+            activated.setStable_id(revision.getId());
+            activated.setGray_id(null);
+            boolean pending = current.getDraft_id() != null && !current.getDraft_id().equals(revision.getId());
+            activated.setState(pending ? Item.State.CHANGED.name()
+                    : Revision.Operation.DELETE.name().equals(revision.getOperation())
+                            ? Item.State.ARCHIVED.name() : Item.State.PUBLISHED.name());
+        }
+        return activated;
     }
 
-    /**
-     * Builds the watch key for one item coordinate.
-     *
-     * @param space   space identifier
-     * @param group   item group
-     * @param code    item code
-     * @param profile optional profile identifier
-     * @return watch key
-     */
-    private String watchKey(String space, String group, String code, String profile) {
-        return keying.key(SettingSpec.watch(space, group, code, profile));
+    private String decode(String value, Integer encrypted) {
+        return value != null && ItemNormalizer.isEncryptedFlagEnabled(encrypted) ? secretCodec.decrypt(value) : value;
     }
 
-    /**
-     * Advances a nullable counter.
-     *
-     * @param value current value
-     * @return {@code 1} for {@code null}, otherwise the incremented value
-     */
+    private Item copy(Item item) {
+        if (item == null) {
+            throw new IllegalArgumentException("Item is required");
+        }
+        return JsonKit.toPojo(JsonKit.toJsonString(item), Item.class);
+    }
+
     private long next(Long value) {
         return value == null ? 1L : value + 1L;
-    }
-
-    /**
-     * Verifies that the required item coordinates are present.
-     *
-     * @param item item to validate
-     */
-    private void requireCoordinates(Item item) {
-        if (item.getSpace_id() == null || item.getGroup() == null || item.getCode() == null) {
-            throw new IllegalArgumentException("Item space_id, group and code are required");
-        }
     }
 }

@@ -48,6 +48,11 @@ import org.miaixz.bus.cortex.builtin.LabelMapper;
 public class Assets extends Nature {
 
     /**
+     * Application identifier bound to the asset within the current tenantId.
+     */
+    private String app_id;
+
+    /**
      * Human-readable name of the asset. Used for display in dashboards and logs.
      */
     private String name;
@@ -78,12 +83,7 @@ public class Assets extends Nature {
     private String url;
 
     /**
-     * Application identifier bound to the asset within the current space.
-     */
-    private String app_id;
-
-    /**
-     * Logical asset method identifier used for lookup within one space and application.
+     * Logical asset method identifier used for lookup within one tenantId and application.
      */
     private String method;
 

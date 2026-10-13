@@ -43,9 +43,9 @@ public class BatchOperation {
     private Type type;
 
     /**
-     * Target space applied when entries do not specify one explicitly.
+     * Target tenantId applied when entries do not specify one explicitly.
      */
-    private String space_id;
+    private String tenant_id;
 
     /**
      * Optional operator or caller label attached to the batch request.

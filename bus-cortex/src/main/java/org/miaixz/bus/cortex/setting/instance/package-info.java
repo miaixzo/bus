@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Persistent runtime-instance entities and durable store contracts for configuration-center implementations.
+ * Configuration client instances and persistence contracts organized by tenant and application.
  *
  * @author Kimi Liu
  */
