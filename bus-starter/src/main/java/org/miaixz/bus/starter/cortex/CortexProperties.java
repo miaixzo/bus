@@ -136,24 +136,24 @@ public class CortexProperties {
     /**
      * Creates Cortex properties after validating limits for caching, watches, bridging, security, and history.
      *
-     * @param enabled            whether Cortex integration is enabled
-     * @param serverAddr         remote server address
-     * @param tenantId              client tenantId
-     * @param autoRegister       whether local APIs are registered automatically
-     * @param settingEnabled     whether setting integration is enabled
-     * @param serverEnabled      whether this application hosts Cortex server components
-     * @param settingGroup       default setting group
-     * @param settingDataId      default setting identifier
-     * @param maxSettingVersions retained setting revision count
+     * @param enabled             whether Cortex integration is enabled
+     * @param serverAddr          remote server address
+     * @param tenantId            client tenantId
+     * @param autoRegister        whether local APIs are registered automatically
+     * @param settingEnabled      whether setting integration is enabled
+     * @param serverEnabled       whether this application hosts Cortex server components
+     * @param settingGroup        default setting group
+     * @param settingDataId       default setting identifier
+     * @param maxSettingVersions  retained setting revision count
      * @param maxWatchesPerTenant watch registration limit per tenantId
-     * @param watchExpire        watch registration expiry
-     * @param cacheExpire        default Cortex cache expiry
-     * @param cache              optional cache backend options
-     * @param watch              watch options
-     * @param bridge             bridge options
-     * @param guard              guard options
-     * @param audit              audit options
-     * @param version            version-registry options
+     * @param watchExpire         watch registration expiry
+     * @param cacheExpire         default Cortex cache expiry
+     * @param cache               optional cache backend options
+     * @param watch               watch options
+     * @param bridge              bridge options
+     * @param guard               guard options
+     * @param audit               audit options
+     * @param version             version-registry options
      */
     public CortexProperties(@DefaultValue(Normal.FALSE) boolean enabled, @DefaultValue(Normal.EMPTY) String serverAddr,
             @DefaultValue(Normal.EMPTY) String tenantId, @DefaultValue("true") boolean autoRegister,

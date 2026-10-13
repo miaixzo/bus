@@ -84,7 +84,6 @@ public class McpQualifierStrategy extends QualifierStrategy {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
             Keying.RegistrySpec requestRoute = route(exchange, context);
-            String space = requestRoute.spacePart();
             String type = requestRoute.typeKeyPart();
             String appId = requestRoute.appIdPart();
             String method = requestRoute.methodPart();
@@ -95,9 +94,8 @@ public class McpQualifierStrategy extends QualifierStrategy {
                 Logger.warn(
                         false,
                         "Vortex",
-                        "MCP route asset not found: strategy=mcp-qualifier, clientIp={}, space={}, type={}, appId={}, method={}, version={}, verb={}",
+                        "MCP route asset not found: strategy=mcp-qualifier, clientIp={}, type={}, appId={}, method={}, version={}, verb={}",
                         context.getX_request_ip(),
-                        space,
                         type,
                         appId,
                         method,
@@ -111,9 +109,8 @@ public class McpQualifierStrategy extends QualifierStrategy {
                 Logger.info(
                         true,
                         "Vortex",
-                        "MCP route asset resolved: strategy=mcp-qualifier, clientIp={}, space={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, signing={}, remainingPath={}",
+                        "MCP route asset resolved: strategy=mcp-qualifier, clientIp={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, signing={}, remainingPath={}",
                         context.getX_request_ip(),
-                        assets.getSpace_id(),
                         assets.getType(),
                         assets.getApp_id(),
                         assets.getMethod(),
@@ -134,9 +131,8 @@ public class McpQualifierStrategy extends QualifierStrategy {
                                                 () -> Logger.info(
                                                         true,
                                                         "Vortex",
-                                                        "MCP qualifier completed: strategy=mcp-qualifier, clientIp={}, space={}, type={}, appId={}, method={}, version={}",
+                                                        "MCP qualifier completed: strategy=mcp-qualifier, clientIp={}, type={}, appId={}, method={}, version={}",
                                                         context.getX_request_ip(),
-                                                        space,
                                                         type,
                                                         appId,
                                                         method,

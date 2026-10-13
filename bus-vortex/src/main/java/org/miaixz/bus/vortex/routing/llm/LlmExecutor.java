@@ -25,8 +25,10 @@ import java.util.Map;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferLimitException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ResponseStatusException;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -207,12 +209,12 @@ public class LlmExecutor extends Coordinator {
                                 if (lease != null) {
                                     lease.close();
                                 }
-                                throw new org.springframework.web.server.ResponseStatusException(
-                                        HttpStatus.SERVICE_UNAVAILABLE, "Realtime streaming capacity exhausted");
+                                throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
+                                        "Realtime streaming capacity exhausted");
                             }
                             return lease;
                         }, lease -> provider.stream(request), AdmissionGate.Lease::close);
-                        return ServerResponse.ok().contentType(org.springframework.http.MediaType.TEXT_EVENT_STREAM)
+                        return ServerResponse.ok().contentType(MediaType.TEXT_EVENT_STREAM)
                                 .body(streamBody, String.class).doFinally(signal -> bufferedBody.close());
                     } else {
                         Logger.debug(
@@ -223,8 +225,7 @@ public class LlmExecutor extends Coordinator {
                                 modelName);
                         return provider.chat(request)
                                 .flatMap(
-                                        response -> ServerResponse.ok()
-                                                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                                        response -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                                                 .bodyValue(response))
                                 .onErrorResume(e -> {
                                     Logger.error(

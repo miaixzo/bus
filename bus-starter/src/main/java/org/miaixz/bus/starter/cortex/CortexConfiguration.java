@@ -779,9 +779,9 @@ public class CortexConfiguration {
         /**
          * Deletes one registry entry from the shared durable store.
          *
-         * @param type  asset type
+         * @param type     asset type
          * @param tenantId logical registry tenantId
-         * @param id    durable entry identifier
+         * @param id       durable entry identifier
          */
         @Override
         public void delete(Type type, String tenantId, String id) {
@@ -792,7 +792,7 @@ public class CortexConfiguration {
          * Deletes one runtime instance snapshot from the shared durable store.
          *
          * @param type        asset type
-         * @param tenantId       logical registry tenantId
+         * @param tenantId    logical registry tenantId
          * @param method      method name
          * @param version     version identifier
          * @param fingerprint instance fingerprint
@@ -811,9 +811,9 @@ public class CortexConfiguration {
         /**
          * Finds one registry entry and converts it to the expected typed view.
          *
-         * @param type  asset type
+         * @param type     asset type
          * @param tenantId logical registry tenantId
-         * @param id    durable entry identifier
+         * @param id       durable entry identifier
          * @return typed asset, or {@code null} when absent or incompatible
          */
         @Override
@@ -824,10 +824,10 @@ public class CortexConfiguration {
         /**
          * Finds one registry entry by method and version and converts it to the expected typed view.
          *
-         * @param type    asset type
-         * @param tenantId   logical registry tenantId
-         * @param method  method name
-         * @param version version identifier
+         * @param type     asset type
+         * @param tenantId logical registry tenantId
+         * @param method   method name
+         * @param version  version identifier
          * @return typed asset, or {@code null} when absent or incompatible
          */
         @Override
@@ -861,10 +861,10 @@ public class CortexConfiguration {
         /**
          * Queries runtime instance snapshots for the given service identity.
          *
-         * @param type    asset type
-         * @param tenantId   logical registry tenantId
-         * @param method  method name
-         * @param version version identifier
+         * @param type     asset type
+         * @param tenantId logical registry tenantId
+         * @param method   method name
+         * @param version  version identifier
          * @return matching runtime instances
          */
         @Override
