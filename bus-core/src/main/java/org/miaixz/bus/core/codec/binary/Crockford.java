@@ -47,8 +47,14 @@ public class Crockford {
      */
     protected static final int MASK_8BITS = 0xff;
 
+    /**
+     * Charset used to convert text to bytes for Base32 operations.
+     */
     private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
 
+    /**
+     * Factor used when a codec output buffer must grow.
+     */
     private static final int DEFAULT_BUFFER_RESIZE_FACTOR = 2;
 
     /**
@@ -62,8 +68,14 @@ public class Crockford {
      */
     private static final int BITS_PER_ENCODED_BYTE = 5;
 
+    /**
+     * Number of Base32 characters produced for one complete input block.
+     */
     private static final int BYTES_PER_ENCODED_BLOCK = 8;
 
+    /**
+     * Number of binary bytes consumed by one complete Base32 block.
+     */
     private static final int BYTES_PER_UNENCODED_BLOCK = 5;
 
     /**
@@ -249,6 +261,12 @@ public class Crockford {
         return result;
     }
 
+    /**
+     * Maps one Crockford Base32 character to its five-bit value.
+     *
+     * @param octet encoded ASCII character
+     * @return decoded value, or {@code -1} for an invalid character
+     */
     private static byte decode(final byte octet) {
         return switch (octet) {
             case Symbol.C_ZERO, 'O', 'o' -> 0;

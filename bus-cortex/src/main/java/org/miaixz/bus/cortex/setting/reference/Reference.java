@@ -53,24 +53,43 @@ public class Reference extends Tenant {
      */
     private String type;
 
-    /** Application-local name of the referenced shared configuration. */
+    /**
+     * Application-local name of the referenced shared configuration.
+     */
     private String alias;
 
-    /** Follow policy for ITEM_APP; absent values mean LATEST. */
+    /**
+     * Follow policy for ITEM_APP; absent values mean LATEST.
+     */
     private String strategy;
 
-    /** Immutable revision identifier required for FIXED references. */
+    /**
+     * Immutable revision identifier required for FIXED references.
+     */
     private String revision_id;
 
-    /** Monotonic relationship edition used for compare-and-set updates. */
+    /**
+     * Monotonic relationship edition used for compare-and-set updates.
+     */
     private Long edition;
 
-    /** Supported shared-reference follow policies. */
+    /**
+     * Supported shared-reference follow policies.
+     */
     public enum Strategy {
-        LATEST, FIXED
+        /**
+         * Follow the latest published revision of the shared item.
+         */
+        LATEST,
+        /**
+         * Remain pinned to an explicit immutable revision.
+         */
+        FIXED
     }
 
-    /** Validates coordinates and prevents release membership from carrying reference-only options. */
+    /**
+     * Validates coordinates and prevents release membership from carrying reference-only options.
+     */
     public Reference validate() {
         ItemNormalizer.requireTenant(getTenant_id());
         if (source_id == null || source_id.isBlank() || target_id == null || target_id.isBlank()) {

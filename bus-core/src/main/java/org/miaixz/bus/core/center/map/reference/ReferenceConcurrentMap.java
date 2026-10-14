@@ -678,6 +678,9 @@ public abstract class ReferenceConcurrentMap<K, V>
      */
     private static class NullRef implements Ref {
 
+        /**
+         * Shared sentinel representing an explicitly mapped {@code null}.
+         */
         public static final Object NULL = new NullRef();
 
         /**

@@ -71,7 +71,9 @@ public class CacheVersionStore implements VersionStore {
         return prepared;
     }
 
-    /** Atomically inserts within this shared cache object; distributed hosts must supply a transactional store. */
+    /**
+     * Atomically inserts within this shared cache object; distributed hosts must supply a transactional store.
+     */
     @Override
     public VersionRecord create(VersionRecord record) {
         synchronized (cacheX) {
@@ -246,7 +248,9 @@ public class CacheVersionStore implements VersionStore {
                 + segment(ReleaseTrack.normalize(track));
     }
 
-    /** Encodes one required coordinate without delimiter collisions. */
+    /**
+     * Encodes one required coordinate without delimiter collisions.
+     */
     private String segment(String value) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("Version coordinate is required");
@@ -254,7 +258,9 @@ public class CacheVersionStore implements VersionStore {
         return value.length() + ":" + value;
     }
 
-    /** Reads the tenant-scoped current version pointer. */
+    /**
+     * Reads the tenant-scoped current version pointer.
+     */
     private String currentVersion(String tenantId, String track) {
         Object value = cacheX.read(currentKey(tenantId, track));
         return value == null ? null : value.toString();

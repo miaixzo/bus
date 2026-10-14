@@ -116,6 +116,13 @@ public class SpelCalculator {
 
     // ---- internal evaluation ------------------------------------------------
 
+    /**
+     * Evaluates an expression using the supplied variable bindings.
+     *
+     * @param expr expression to evaluate
+     * @param vars named variables available to the expression
+     * @return evaluated value
+     */
     private static Object evaluate(String expr, Map<String, Object> vars) {
         List<String> parts = splitOnPlus(expr);
         if (parts.size() > 1) {
@@ -129,6 +136,13 @@ public class SpelCalculator {
         return evalSingle(expr, vars);
     }
 
+    /**
+     * Evaluates one expression term, including equality operators.
+     *
+     * @param expr expression term
+     * @param vars named variables available to the term
+     * @return evaluated value or comparison result
+     */
     private static Object evalSingle(String expr, Map<String, Object> vars) {
         int neqIdx = indexOfOperator(expr, Symbol.NE);
         if (neqIdx >= 0) {
@@ -145,6 +159,13 @@ public class SpelCalculator {
         return evalToken(expr, vars);
     }
 
+    /**
+     * Resolves a literal or variable-reference token.
+     *
+     * @param token token to resolve
+     * @param vars  named variables available to the token
+     * @return resolved token value
+     */
     private static Object evalToken(String token, Map<String, Object> vars) {
         if ("null".equals(token)) {
             return null;
@@ -176,6 +197,13 @@ public class SpelCalculator {
         return token;
     }
 
+    /**
+     * Traverses a dot-separated property path from a root object.
+     *
+     * @param obj  current object
+     * @param path remaining property path
+     * @return resolved property value, or {@code null} when traversal reaches {@code null}
+     */
     private static Object navigatePath(Object obj, String path) {
         if (obj == null || path.isEmpty()) {
             return obj;
@@ -187,6 +215,13 @@ public class SpelCalculator {
         return remainder.isEmpty() ? next : navigatePath(next, remainder);
     }
 
+    /**
+     * Resolves one property or no-argument method segment.
+     *
+     * @param obj     object that owns the segment
+     * @param segment field, bean property, or method segment
+     * @return resolved segment value
+     */
     private static Object accessSegment(Object obj, String segment) {
         if (obj == null) {
             return null;
@@ -202,6 +237,14 @@ public class SpelCalculator {
         return invokeMethod(obj, getter);
     }
 
+    /**
+     * Reads a declared field from an object or one of its superclasses.
+     *
+     * @param obj  object to inspect
+     * @param name field name
+     * @return field value, or {@code null} when no field exists
+     * @throws RuntimeException if an existing field cannot be accessed
+     */
     private static Object getField(Object obj, String name) {
         Class<?> cls = obj.getClass();
         while (cls != null && cls != Object.class) {
@@ -219,6 +262,14 @@ public class SpelCalculator {
         return null;
     }
 
+    /**
+     * Invokes a no-argument method declared by an object or one of its superclasses.
+     *
+     * @param obj        invocation target
+     * @param methodName method name
+     * @return invocation result, or {@code null} when no method exists
+     * @throws RuntimeException if the method exists but cannot be invoked
+     */
     private static Object invokeMethod(Object obj, String methodName) {
         Class<?> cls = obj.getClass();
         while (cls != null && cls != Object.class) {

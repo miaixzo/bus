@@ -44,10 +44,19 @@ public class MetroHash64 extends AbstractMetroHash<MetroHash64> implements Hash6
      */
     private static final long K0 = 0xD6D018F5L;
 
+    /**
+     * Second MetroHash64 mixing constant.
+     */
     private static final long K1 = 0xA2AA033BL;
 
+    /**
+     * Third MetroHash64 mixing constant.
+     */
     private static final long K2 = 0x62992FC1L;
 
+    /**
+     * Fourth MetroHash64 mixing constant.
+     */
     private static final long K3 = 0x30BC5B29L;
 
     /**

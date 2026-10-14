@@ -88,6 +88,12 @@ public enum ProfitSharingApi implements Matcher {
      */
     private final String desc;
 
+    /**
+     * Defines a profit-sharing endpoint.
+     *
+     * @param method endpoint path template
+     * @param desc   endpoint description
+     */
     ProfitSharingApi(String method, String desc) {
         this.method = method;
         this.desc = desc;

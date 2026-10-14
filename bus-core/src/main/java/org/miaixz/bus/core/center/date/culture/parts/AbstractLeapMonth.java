@@ -51,17 +51,6 @@ public abstract class AbstractLeapMonth extends AbstractMonth {
         return leap;
     }
 
-    /**
-     * Gets the month value.
-     *
-     * @return the month, negative when this is a leap month
-     * @deprecated use {@link #getMonthValue()}
-     */
-    @Deprecated
-    public int getMonthWithLeap() {
-        return getMonthValue();
-    }
-
     @Override
     public int getMonthValue() {
         return leap ? -month : month;

@@ -42,10 +42,14 @@ import org.miaixz.bus.cortex.builtin.Selector;
 @SuperBuilder
 public class ItemScope extends Tenant {
 
-    /** Ownership scope; null permits both shared and application items. */
+    /**
+     * Ownership scope; null permits both shared and application items.
+     */
     private String scope;
 
-    /** Item kind; defaults to SOURCE when unspecified. */
+    /**
+     * Item kind; defaults to SOURCE when unspecified.
+     */
     private String kind;
 
     /**

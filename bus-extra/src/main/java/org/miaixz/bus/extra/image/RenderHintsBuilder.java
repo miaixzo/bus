@@ -265,6 +265,11 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
          */
         private final Object value;
 
+        /**
+         * Defines an anti-aliasing option.
+         *
+         * @param value corresponding AWT rendering-hint value
+         */
         Antialias(final Object value) {
             this.value = value;
         }
@@ -328,6 +333,11 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
          */
         private final Object value;
 
+        /**
+         * Defines a text anti-aliasing option.
+         *
+         * @param value corresponding AWT rendering-hint value
+         */
         TextAntialias(final Object value) {
             this.value = value;
         }
@@ -371,6 +381,11 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
          */
         private final Object value;
 
+        /**
+         * Defines a color-rendering option.
+         *
+         * @param value corresponding AWT rendering-hint value
+         */
         ColorRender(final Object value) {
             this.value = value;
         }
@@ -414,6 +429,11 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
          */
         private final Object value;
 
+        /**
+         * Defines a general rendering option.
+         *
+         * @param value corresponding AWT rendering-hint value
+         */
         Render(final Object value) {
             this.value = value;
         }
@@ -458,6 +478,11 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
          */
         private final Object value;
 
+        /**
+         * Defines a dithering option.
+         *
+         * @param value corresponding AWT rendering-hint value
+         */
         Dither(final Object value) {
             this.value = value;
         }
@@ -501,6 +526,11 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
          */
         private final Object value;
 
+        /**
+         * Defines a fractional-metrics option.
+         *
+         * @param value corresponding AWT rendering-hint value
+         */
         FractionalMetrics(final Object value) {
             this.value = value;
         }
@@ -546,6 +576,11 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
          */
         private final Object value;
 
+        /**
+         * Defines an image-interpolation option.
+         *
+         * @param value corresponding AWT rendering-hint value
+         */
         Interpolation(final Object value) {
             this.value = value;
         }
@@ -589,6 +624,11 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
          */
         private final Object value;
 
+        /**
+         * Defines an alpha-interpolation option.
+         *
+         * @param value corresponding AWT rendering-hint value
+         */
         AlphaInterpolation(final Object value) {
             this.value = value;
         }
@@ -632,6 +672,11 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
          */
         private final Object value;
 
+        /**
+         * Defines a stroke-control option.
+         *
+         * @param value corresponding AWT rendering-hint value
+         */
         StrokeControl(final Object value) {
             this.value = value;
         }

@@ -84,10 +84,18 @@ public class PreventObjects {
          */
         private static final NullMarker INSTANCE = new NullMarker();
 
+        /**
+         * Creates the canonical marker instance.
+         */
         private NullMarker() {
             // No initialization required.
         }
 
+        /**
+         * Restores the canonical singleton after deserialization.
+         *
+         * @return the singleton null marker
+         */
         @Serial
         private Object readResolve() {
             return INSTANCE;

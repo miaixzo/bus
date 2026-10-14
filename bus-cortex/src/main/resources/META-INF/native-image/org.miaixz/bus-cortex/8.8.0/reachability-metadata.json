@@ -861,12 +861,6 @@
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.curator.StoredContentSourceAdapter",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
       "type": "org.miaixz.bus.cortex.setting.DefaultCurator",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,

@@ -43,16 +43,29 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
      */
     public static final CityHash INSTANCE = new CityHash();
 
-    // Some primes between 2^63 and 2^64 for various uses.
+    /**
+     * First 64-bit CityHash prime.
+     */
     private static final long k0 = 0xc3a5c85c97cb3127L;
 
+    /**
+     * Second 64-bit CityHash prime.
+     */
     private static final long k1 = 0xb492b66fbe98f273L;
 
+    /**
+     * Third 64-bit CityHash prime.
+     */
     private static final long k2 = 0x9ae16a3b2f90404fL;
 
-    // Magic numbers for 32-bit hashing. Copied from Murmur3.
+    /**
+     * First 32-bit CityHash mixing constant.
+     */
     private static final int c1 = 0xcc9e2d51;
 
+    /**
+     * Second 32-bit CityHash mixing constant.
+     */
     private static final int c2 = 0x1b873593;
 
     /**

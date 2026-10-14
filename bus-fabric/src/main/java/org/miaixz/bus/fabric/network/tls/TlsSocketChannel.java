@@ -205,6 +205,12 @@ public class TlsSocketChannel implements Conduit {
         SCRATCH.offer(scratch);
     }
 
+    /**
+     * Converts a duration to a positive socket timeout bounded by the integer range.
+     *
+     * @param value timeout duration; {@code null} and zero disable the timeout
+     * @return timeout in milliseconds, or zero when disabled
+     */
     private static int timeoutMillis(final Duration value) {
         if (value == null || value.isZero())
             return 0;

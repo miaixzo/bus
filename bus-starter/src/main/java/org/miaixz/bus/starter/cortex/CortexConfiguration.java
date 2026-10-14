@@ -21,7 +21,6 @@ package org.miaixz.bus.starter.cortex;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -122,12 +121,7 @@ public class CortexConfiguration {
      * @return ordered setting source adapters
      */
     private static List<ItemSourceAdapter> settingSourceAdapters() {
-        return List.of(
-                new InlineSourceAdapter(),
-                new EnvSourceAdapter(),
-                new StoredContentSourceAdapter("JDBC"),
-                new StoredContentSourceAdapter("REDIS"),
-                new StoredContentSourceAdapter("S3"));
+        return List.of(new InlineSourceAdapter(), new EnvSourceAdapter());
     }
 
     /**
@@ -516,7 +510,6 @@ public class CortexConfiguration {
      *
      * @param settingStore    current-state setting store
      * @param revisionStore   revision history store
-     * @param referenceStore  resource relationship store
      * @param watchManager    watch manager
      * @param secretCodec     secret codec
      * @param settingEnforcer optional setting relation enforcer provider
@@ -529,7 +522,6 @@ public class CortexConfiguration {
     public ItemCuratorService settingCuratorService(
             StoreBackedItemStore settingStore,
             RevisionStore revisionStore,
-            ReferenceStore referenceStore,
             WatchManager watchManager,
             SecretCodec secretCodec,
             ObjectProvider<SettingEnforcer> settingEnforcer,
@@ -544,7 +536,7 @@ public class CortexConfiguration {
         Keying<Keying.SettingSpec> settingKeying = keyingProvider.getIfAvailable(() -> SettingGenerator.INSTANCE);
         SettingPublisher settingPublisher = new SettingPublisher(settingStore, revisionStore, watchManager, secretCodec,
                 properties.requireMaxSettingVersions(), settingKeying);
-        return new ItemCuratorService(settingStore, revisionStore, referenceStore, resolver, settingPublisher,
+        return new ItemCuratorService(settingStore, revisionStore, resolver, settingPublisher, null,
                 settingEnforcer.getIfAvailable(), cortexGuard.getIfAvailable(), settingKeying);
     }
 
@@ -880,16 +872,6 @@ public class CortexConfiguration {
         @Override
         public Suite storeCapabilities() {
             return delegate.storeCapabilities();
-        }
-
-        /**
-         * Returns legacy string-key trait flags for compatibility with older integrations.
-         *
-         * @return compatibility trait flags
-         */
-        @Override
-        public Map<String, Boolean> capabilities() {
-            return storeCapabilities().asMap();
         }
 
         /**

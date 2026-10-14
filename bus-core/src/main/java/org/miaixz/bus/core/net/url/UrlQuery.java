@@ -51,6 +51,9 @@ public class UrlQuery {
     public static final PercentCodec ALL = PercentCodec.Builder.of(RFC3986.UNRESERVED).removeSafe(Symbol.C_TILDE)
             .addSafe(Symbol.C_STAR).setEncodeSpaceAsPlus(true).build();
 
+    /**
+     * Ordered query-parameter entries, including repeated keys.
+     */
     private final TableMap<CharSequence, CharSequence> query;
 
     /**

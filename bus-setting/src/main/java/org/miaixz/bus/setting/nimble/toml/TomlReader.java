@@ -232,14 +232,30 @@ public class TomlReader {
         return map;
     }
 
+    /**
+     * Tests whether unread source characters remain.
+     *
+     * @return {@code true} when another character is available
+     */
     private boolean hasNext() {
         return pos < data.length();
     }
 
+    /**
+     * Consumes the next source character.
+     *
+     * @return consumed character
+     */
     private char next() {
         return data.charAt(pos++);
     }
 
+    /**
+     * Consumes whitespace and optionally comments, then returns the next significant character.
+     *
+     * @param skipComments whether hash-prefixed comments should be skipped
+     * @return next significant character
+     */
     private char nextUseful(final boolean skipComments) {
         char c = Symbol.C_SPACE;
         while (hasNext() && (Character.isWhitespace(c) || (c == Symbol.C_HASH && skipComments))) {
@@ -259,6 +275,11 @@ public class TomlReader {
         return c;
     }
 
+    /**
+     * Consumes horizontal whitespace while preserving a line-break boundary.
+     *
+     * @return next non-horizontal-whitespace character, or a line feed at end of input
+     */
     private char nextUsefulOrLinebreak() {
         char c = Symbol.C_SPACE;
         while (c == Symbol.C_SPACE || c == Symbol.C_TAB || c == Symbol.C_CR) {
@@ -271,6 +292,12 @@ public class TomlReader {
         return c;
     }
 
+    /**
+     * Parses a TOML value beginning with the supplied character.
+     *
+     * @param firstChar first value character
+     * @return parsed value
+     */
     private Object nextValue(final char firstChar) {
         return switch (firstChar) {
             case Symbol.C_PLUS, Symbol.C_MINUS, Symbol.C_ZERO, Symbol.C_ONE, Symbol.C_TWO, Symbol.C_THREE, Symbol.C_FOUR, Symbol.C_FIVE, Symbol.C_SIX, Symbol.C_SEVEN, Symbol.C_EIGHT, Symbol.C_NINE -> nextNumberOrDate(
@@ -315,6 +342,11 @@ public class TomlReader {
         };
     }
 
+    /**
+     * Parses an array after its opening bracket.
+     *
+     * @return parsed homogeneous value list
+     */
     private List<Object> nextArray() {
         final ArrayList<Object> list = new ArrayList<>();
         while (true) {
@@ -343,6 +375,11 @@ public class TomlReader {
         return list;
     }
 
+    /**
+     * Parses an inline table after its opening brace.
+     *
+     * @return parsed key-value map
+     */
     private Map<String, Object> nextInlineTable() {
         final Map<String, Object> map = new LinkedHashMap<>();
         while (true) {
@@ -387,6 +424,11 @@ public class TomlReader {
         }
     }
 
+    /**
+     * Parses key-value entries belonging to the current table.
+     *
+     * @return parsed table content
+     */
     private Map<String, Object> nextTableContent() {
         final Map<String, Object> map = new LinkedHashMap<>();
         while (true) {
@@ -448,6 +490,12 @@ public class TomlReader {
         }
     }
 
+    /**
+     * Parses a numeric or temporal value.
+     *
+     * @param first first character of the value
+     * @return integer, floating-point, date, or date-time value
+     */
     private Object nextNumberOrDate(final char first) {
         boolean maybeDouble = true, maybeInteger = true, maybeDate = true;
         final StringBuilder sb = new StringBuilder();
@@ -504,6 +552,12 @@ public class TomlReader {
         throw new InternalException("Invalid value: \"" + valueStr + "\" at line " + line);
     }
 
+    /**
+     * Reads an unquoted key until one of the allowed delimiters is reached.
+     *
+     * @param allowedEnds delimiter characters that terminate the key
+     * @return parsed bare key
+     */
     private String nextBareKey(final char... allowedEnds) {
         final String keyName;
         for (int i = pos; i < data.length(); i++) {
@@ -530,6 +584,11 @@ public class TomlReader {
         throw new InternalException("Invalid key-value pair at line " + line + ": unexpected end of data");
     }
 
+    /**
+     * Parses a single-line literal string.
+     *
+     * @return literal string content
+     */
     private String nextLiteralString() {
         final int index = data.indexOf(Symbol.C_SINGLE_QUOTE, pos);
         if (index == -1)
@@ -542,6 +601,11 @@ public class TomlReader {
         return text;
     }
 
+    /**
+     * Parses a triple-quoted literal string and updates the source line counter.
+     *
+     * @return multiline literal content
+     */
     private String nextLiteralMultilineString() {
         final int index = data.indexOf("'''", pos);
         if (index == -1) {
@@ -567,6 +631,11 @@ public class TomlReader {
         return text;
     }
 
+    /**
+     * Parses a quoted basic string with escape processing.
+     *
+     * @return decoded string content
+     */
     private String nextBasicString() {
         final StringBuilder sb = new StringBuilder();
         boolean escape = false;
@@ -589,6 +658,11 @@ public class TomlReader {
         throw new InternalException("Invalid basic String at line " + line + ": it never ends");
     }
 
+    /**
+     * Parses a triple-quoted basic string with escape and continuation processing.
+     *
+     * @return decoded multiline string content
+     */
     private String nextBasicMultilineString() {
         final StringBuilder sb = new StringBuilder();
         boolean first = true, escape = false;
@@ -632,6 +706,12 @@ public class TomlReader {
         throw new InternalException("Invalid multiline basic String at line " + line + ": it never ends");
     }
 
+    /**
+     * Decodes one TOML escape sequence, consuming Unicode digits when required.
+     *
+     * @param c escape discriminator following the backslash
+     * @return decoded character
+     */
     private char unescape(final char c) {
         switch (c) {
             case 'b':

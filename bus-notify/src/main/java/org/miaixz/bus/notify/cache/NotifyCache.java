@@ -37,6 +37,9 @@ public enum NotifyCache implements CacheX<String, Object> {
      */
     INSTANCE;
 
+    /**
+     * Cache implementation that stores notification entries.
+     */
     private CacheX<String, Object> cache;
 
     /**

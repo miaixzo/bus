@@ -20,32 +20,75 @@
 package org.miaixz.bus.image.nimble.opencv.lut.colormap;
 
 /**
- * Named Blinn-Phong settings so a user picks a look instead of three coefficients. *
+ * Named Blinn-Phong settings that let callers select a visual treatment instead of individual coefficients.
  *
  * @author Kimi Liu
  */
 public enum MaterialPreset {
 
-    MATTE(new Material(0.25f, 0.95f, 0.0f), 10f), SOFT_TISSUE(new Material(0.2f, 0.9f, 0.1f), 10f),
-    SKIN(new Material(0.2f, 0.85f, 0.25f), 15f), VESSEL(new Material(0.15f, 0.8f, 0.6f), 30f),
-    BONE(new Material(0.3f, 0.9f, 0.5f), 20f), GLASS(new Material(0.1f, 0.3f, 0.9f), 60f),
+    /**
+     * Non-reflective matte surface.
+     */
+    MATTE(new Material(0.25f, 0.95f, 0.0f), 10f),
+    /**
+     * Soft-tissue rendering surface.
+     */
+    SOFT_TISSUE(new Material(0.2f, 0.9f, 0.1f), 10f),
+    /**
+     * Skin-like surface with a moderate highlight.
+     */
+    SKIN(new Material(0.2f, 0.85f, 0.25f), 15f),
+    /**
+     * Vascular surface with a stronger highlight.
+     */
+    VESSEL(new Material(0.15f, 0.8f, 0.6f), 30f),
+    /**
+     * Bone-like reflective surface.
+     */
+    BONE(new Material(0.3f, 0.9f, 0.5f), 20f),
+    /**
+     * Highly reflective glass-like surface.
+     */
+    GLASS(new Material(0.1f, 0.3f, 0.9f), 60f),
+    /**
+     * Highly reflective metallic surface.
+     */
     METAL(new Material(0.35f, 0.6f, 0.95f), 80f);
 
+    /**
+     * Blinn-Phong coefficients for the preset.
+     */
     private final Material material;
 
+    /**
+     * Exponent controlling the tightness of specular highlights.
+     */
     private final float specularPower;
 
+    /**
+     * Creates a named material preset.
+     *
+     * @param material      shading coefficients
+     * @param specularPower specular-highlight exponent
+     */
     MaterialPreset(Material material, float specularPower) {
         this.material = material;
         this.specularPower = specularPower;
     }
 
+    /**
+     * Returns the preset's shading coefficients.
+     *
+     * @return shading coefficients
+     */
     public Material material() {
         return material;
     }
 
     /**
      * Highlight tightness that goes with the material; a map-wide setting in {@link Lighting}.
+     *
+     * @return specular-highlight exponent
      */
     public float specularPower() {
         return specularPower;

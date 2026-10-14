@@ -334,6 +334,15 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         sb.append(Symbol.C_LF);
     }
 
+    /**
+     * Reads and logs a bounded response prefix while resetting the stream for its consumer.
+     *
+     * @param sb      destination for the formatted log
+     * @param stream  response entity stream
+     * @param charset response charset
+     * @return resettable stream positioned at its original start
+     * @throws IOException if the entity cannot be read or reset
+     */
     private InputStream logResponseEntity(final StringBuilder sb, InputStream stream, final Charset charset)
             throws IOException {
 
@@ -469,6 +478,12 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
             this.sb = sb;
         }
 
+        /**
+         * Appends captured entity bytes to the log buffer.
+         *
+         * @param charset entity charset
+         * @return populated log buffer
+         */
         StringBuilder getStringBuilder(Charset charset) {
             final byte[] entity = outputStream.toByteArray();
             buildEntityLogString(sb, entity, entity.length, charset);

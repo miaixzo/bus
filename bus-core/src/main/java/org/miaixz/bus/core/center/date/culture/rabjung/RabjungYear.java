@@ -57,6 +57,14 @@ public class RabjungYear extends AbstractTraditionalYear {
         validate(year);
     }
 
+    /**
+     * Resolves a Gregorian year from Rabjung cycle coordinates.
+     *
+     * @param rabByungIndex Rabjung cycle index
+     * @param elementIndex  element index
+     * @param zodiacIndex   zodiac index
+     * @return Gregorian year
+     */
     private static int resolveYear(int rabByungIndex, int elementIndex, int zodiacIndex) {
         if (rabByungIndex < 0 || rabByungIndex > 150) {
             throw new IllegalArgumentException("illegal rab-byung index: " + rabByungIndex);

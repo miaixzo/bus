@@ -39,6 +39,12 @@ public record GradientOpacity(List<Point> points) {
      */
     public static final double EDGE_MAGNITUDE = 0.3;
 
+    /**
+     * Validates, sorts, and defensively copies the control points.
+     *
+     * @throws NullPointerException     if the point list is null
+     * @throws IllegalArgumentException if the point list is empty
+     */
     public GradientOpacity {
         Objects.requireNonNull(points, "Points cannot be null");
         if (points.isEmpty()) {
@@ -65,6 +71,12 @@ public record GradientOpacity(List<Point> points) {
         return 1f - points.get(0).factor();
     }
 
+    /**
+     * Evaluates the opacity factor at a normalized gradient magnitude.
+     *
+     * @param magnitude normalized gradient magnitude
+     * @return interpolated opacity factor
+     */
     public float factorAt(double magnitude) {
         Point first = points.get(0);
         if (magnitude <= first.magnitude()) {
@@ -105,6 +117,11 @@ public record GradientOpacity(List<Point> points) {
      */
     public record Point(double magnitude, float factor) {
 
+        /**
+         * Validates the normalized magnitude and opacity factor.
+         *
+         * @throws IllegalArgumentException if either component is outside {@code [0, 1]} or the factor is NaN
+         */
         public Point {
             if (!(magnitude >= 0.0 && magnitude <= 1.0)) {
                 throw new IllegalArgumentException("Magnitude must be in [0, 1]: " + magnitude);

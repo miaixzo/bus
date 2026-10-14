@@ -65,7 +65,9 @@ public class Rollout extends Tenant {
      */
     private String checksum;
 
-    /** Canonical immutable manifest containing selected scope, baseline, exact revisions, and reference policies. */
+    /**
+     * Canonical immutable manifest containing selected scope, baseline, exact revisions, and reference policies.
+     */
     private String manifest;
 
     /**
@@ -115,30 +117,52 @@ public class Rollout extends Tenant {
         // No initialization required.
     }
 
-    /** Supported publication modes. */
+    /**
+     * Supported publication modes.
+     */
     public enum Mode {
-        /** Publishes to all instances within the selected application scope. */
+        /**
+         * Publishes to all instances within the selected application scope.
+         */
         FORMAL,
-        /** Publishes to instances matching the frozen gray selector. */
+        /**
+         * Publishes to instances matching the frozen gray selector.
+         */
         GRAY
     }
 
-    /** Supported rollout workflow states. */
+    /**
+     * Supported rollout workflow states.
+     */
     public enum State {
 
-        /** Editable publication plan. */
+        /**
+         * Editable publication plan.
+         */
         DRAFT,
-        /** Frozen plan awaiting approval decisions. */
+        /**
+         * Frozen plan awaiting approval decisions.
+         */
         REVIEWING,
-        /** Approved plan awaiting execution. */
+        /**
+         * Approved plan awaiting execution.
+         */
         APPROVED,
-        /** Plan rejected during approval. */
+        /**
+         * Plan rejected during approval.
+         */
         REJECTED,
-        /** Frozen publication awaits or is undergoing atomic activation; recoverable after restart. */
+        /**
+         * Frozen publication awaits or is undergoing atomic activation; recoverable after restart.
+         */
         PUBLISHING,
-        /** Publication failed. */
+        /**
+         * Publication failed.
+         */
         FAILED,
-        /** Publication completed and the version is active. */
+        /**
+         * Publication completed and the version is active.
+         */
         PUBLISHED;
 
         /**

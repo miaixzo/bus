@@ -33,10 +33,19 @@ import org.miaixz.bus.image.nimble.opencv.lut.ByteLut;
  */
 public final class ColorMapCompiler {
 
+    /**
+     * Number of entries in an eight-bit lookup table.
+     */
     public static final int BYTE_LUT_ENTRIES = 256;
 
+    /**
+     * Maximum number of entries supported by a stored-value lookup table.
+     */
     public static final int MAX_LOOKUP_ENTRIES = 1 << ColorMap.MAX_BITS;
 
+    /**
+     * Prevents utility class instantiation.
+     */
     private ColorMapCompiler() {
     }
 
@@ -132,6 +141,14 @@ public final class ColorMapCompiler {
         return new LookupTableCV(bands, minInput);
     }
 
+    /**
+     * Computes and validates the inclusive size of an input range.
+     *
+     * @param minInput lowest stored input value
+     * @param maxInput highest stored input value
+     * @return number of lookup entries
+     * @throws IllegalArgumentException if the range is empty or exceeds {@link #MAX_LOOKUP_ENTRIES}
+     */
     private static int lookupEntries(int minInput, int maxInput) {
         long entries = (long) maxInput - minInput + 1;
         if (entries < 1 || entries > MAX_LOOKUP_ENTRIES) {
@@ -141,13 +158,25 @@ public final class ColorMapCompiler {
         return (int) entries;
     }
 
+    /**
+     * Ensures an evenly sampled table contains both domain endpoints.
+     *
+     * @param entries requested entry count
+     * @throws IllegalArgumentException if fewer than two entries are requested
+     */
     private static void requireEntries(int entries) {
         if (entries < 2) {
             throw new IllegalArgumentException("At least 2 entries are needed: " + entries);
         }
     }
 
-    // Planes in A, B, G, R order when withAlpha, else B, G, R.
+    /**
+     * Packs samples into planar byte channels in A-B-G-R order when alpha is requested, or B-G-R otherwise.
+     *
+     * @param samples   colors to pack
+     * @param withAlpha whether to include an alpha plane
+     * @return planar channel data
+     */
     private static byte[][] pack(Rgba[] samples, boolean withAlpha) {
         int n = samples.length;
         var planes = new byte[withAlpha ? 4 : 3][n];
@@ -164,6 +193,12 @@ public final class ColorMapCompiler {
         return planes;
     }
 
+    /**
+     * Packs samples into interleaved RGBA8 bytes.
+     *
+     * @param samples colors to pack
+     * @return interleaved channel data
+     */
     private static byte[] interleave(Rgba[] samples) {
         var data = new byte[samples.length * 4];
         for (int i = 0; i < samples.length; i++) {

@@ -38,18 +38,39 @@ import org.miaixz.bus.tempus.pattern.matcher.PatternMatcher;
  */
 public class PatternParser {
 
+    /**
+     * Parser for second values.
+     */
     private static final PartParser SECOND_VALUE_PARSER = PartParser.of(Part.SECOND);
 
+    /**
+     * Parser for minute values.
+     */
     private static final PartParser MINUTE_VALUE_PARSER = PartParser.of(Part.MINUTE);
 
+    /**
+     * Parser for hour values.
+     */
     private static final PartParser HOUR_VALUE_PARSER = PartParser.of(Part.HOUR);
 
+    /**
+     * Parser for day-of-month values.
+     */
     private static final PartParser DAY_OF_MONTH_VALUE_PARSER = PartParser.of(Part.DAY_OF_MONTH);
 
+    /**
+     * Parser for month values.
+     */
     private static final PartParser MONTH_VALUE_PARSER = PartParser.of(Part.MONTH);
 
+    /**
+     * Parser for day-of-week values.
+     */
     private static final PartParser DAY_OF_WEEK_VALUE_PARSER = PartParser.of(Part.DAY_OF_WEEK);
 
+    /**
+     * Parser for year values.
+     */
     private static final PartParser YEAR_VALUE_PARSER = PartParser.of(Part.YEAR);
 
     /**

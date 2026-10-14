@@ -705,13 +705,17 @@ final class MacDisplay extends AbstractDisplay {
         return this.devicePort;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<DisplayMode> getCurrentMode() {
         return findCoreGraphicsDisplay().flatMap(CoreGraphicsDisplay::getMode);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Boolean> isBuiltIn() {
         if (this.builtIn != null) {
@@ -720,7 +724,9 @@ final class MacDisplay extends AbstractDisplay {
         return findCoreGraphicsDisplay().map(CoreGraphicsDisplay::isBuiltIn);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Boolean> isPrimary() {
         return findCoreGraphicsDisplay().map(CoreGraphicsDisplay::isMain);

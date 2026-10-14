@@ -29,7 +29,7 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 
 /**
- * Compatibility adapter exposing version records through the legacy registry-shaped facade.
+ * Read-only compatibility adapter exposing version records through the legacy registry-shaped facade.
  *
  * @author Kimi Liu
  */
@@ -149,13 +149,17 @@ public class VersionRegistry implements Registry<VersionAssets> {
     }
 
     /**
-     * Registers a version asset by publishing its release record.
+     * Rejects direct version publication through the compatibility registry.
+     * <p>
+     * Platform versions must be published through an approved rollout and atomically activated by the durable host.
+     * </p>
      *
-     * @param entry version asset
+     * @param entry ignored version asset
      */
     @Override
     public void register(VersionAssets entry) {
-        publisher.publish(toRecord(entry));
+        throw new UnsupportedOperationException(
+                "Direct version registration is not supported; publish an approved rollout instead");
     }
 
     /**
@@ -253,29 +257,6 @@ public class VersionRegistry implements Registry<VersionAssets> {
     @Override
     public boolean supportsRefresh() {
         return false;
-    }
-
-    /**
-     * Converts a registry-shaped version asset into a release record.
-     *
-     * @param asset version asset
-     * @return release record
-     */
-    private VersionRecord toRecord(VersionAssets asset) {
-        VersionAssets source = asset == null ? new VersionAssets() : asset;
-        VersionRecord record = new VersionRecord();
-        record.setId(source.getId());
-        record.setTenant_id(CortexIdentity.tenantId(source.getTenant_id()));
-        record.setVersion(source.semver() != null ? source.semver() : source.getVersion());
-        record.setTrack(
-                source.getMethod() == null || source.getMethod().isBlank() ? ReleaseTrack.STABLE.key()
-                        : source.getMethod());
-        record.setVersionStatus(source.versionStatus() == null ? VersionStatus.ACTIVE : source.versionStatus());
-        record.setTitle(source.getName());
-        record.setDescription(source.getDescription());
-        record.setMetadata(source.getMetadata());
-        record.setPublished(source.releasedAt());
-        return record;
     }
 
     /**

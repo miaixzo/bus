@@ -145,10 +145,19 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
         @Serial
         private static final long serialVersionUID = 2852277093211L;
 
+        /**
+         * Row key represented by this cell.
+         */
         private final R rowKey;
 
+        /**
+         * Column key represented by this cell.
+         */
         private final C columnKey;
 
+        /**
+         * Value stored at the row and column intersection.
+         */
         private final V value;
 
         /**
@@ -357,10 +366,19 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
      */
     private class CellIterator implements Iterator<Cell<R, C, V>> {
 
+        /**
+         * Iterator over table rows.
+         */
         final Iterator<Map.Entry<R, Map<C, V>>> rowIterator = rowMap().entrySet().iterator();
 
+        /**
+         * Row currently being traversed.
+         */
         Map.Entry<R, Map<C, V>> rowEntry;
 
+        /**
+         * Iterator over columns in the current row.
+         */
         Iterator<Map.Entry<C, V>> columnIterator = IteratorKit.empty();
 
         /**

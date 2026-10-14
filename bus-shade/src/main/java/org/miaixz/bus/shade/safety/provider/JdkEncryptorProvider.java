@@ -37,6 +37,9 @@ import org.miaixz.bus.shade.safety.algorithm.Key;
  */
 public class JdkEncryptorProvider implements EncryptorProvider {
 
+    /**
+     * Cryptographic transformation used to create encrypting ciphers.
+     */
     private final String algorithm;
 
     /**

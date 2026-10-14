@@ -262,6 +262,9 @@ public abstract class SegmentLock<L> {
      */
     private static final class WeakSafeReadWriteLock implements ReadWriteLock {
 
+        /**
+         * Underlying read-write lock that performs the actual synchronization.
+         */
         private final ReadWriteLock delegate;
 
         /**
@@ -301,8 +304,14 @@ public abstract class SegmentLock<L> {
      */
     private static final class WeakSafeLock implements Lock {
 
+        /**
+         * Underlying lock that performs the actual synchronization.
+         */
         private final Lock delegate;
 
+        /**
+         * Strong reference that keeps the owning read-write lock reachable while this lock is in use.
+         */
         private final WeakSafeReadWriteLock strongReference;
 
         /**
@@ -387,6 +396,9 @@ public abstract class SegmentLock<L> {
      */
     private static final class WeakSafeCondition implements Condition {
 
+        /**
+         * Underlying condition that performs the actual wait and notification operations.
+         */
         private final Condition delegate;
 
         /**
@@ -542,6 +554,9 @@ public abstract class SegmentLock<L> {
      */
     private static class CompactSegmentLock<L> extends PowerOfTwoSegmentLock<L> {
 
+        /**
+         * Eagerly created lock instances indexed by segment.
+         */
         private final Object[] array;
 
         /**
@@ -595,12 +610,24 @@ public abstract class SegmentLock<L> {
      */
     private static class SmallLazySegmentLock<L> extends PowerOfTwoSegmentLock<L> {
 
+        /**
+         * Weak references to lazily created lock instances, indexed by segment.
+         */
         final AtomicReferenceArray<ArrayReference<? extends L>> locks;
 
+        /**
+         * Factory used to create a lock when its segment is first accessed.
+         */
         final SupplierX<L> supplier;
 
+        /**
+         * Number of lock segments maintained by this instance.
+         */
         final int size;
 
+        /**
+         * Queue containing collected lock references that must be removed from the array.
+         */
         final ReferenceQueue<L> queue = new ReferenceQueue<>();
 
         /**
@@ -677,6 +704,9 @@ public abstract class SegmentLock<L> {
          */
         private static final class ArrayReference<L> extends WeakReference<L> {
 
+            /**
+             * Segment index occupied by this reference.
+             */
             final int index;
 
             /**
@@ -704,10 +734,19 @@ public abstract class SegmentLock<L> {
      */
     private static class LargeLazySegmentLock<L> extends PowerOfTwoSegmentLock<L> {
 
+        /**
+         * Lazily created lock instances keyed by segment index.
+         */
         final ConcurrentMap<Integer, L> locks;
 
+        /**
+         * Factory used to create a lock when its segment is first accessed.
+         */
         final SupplierX<L> supplier;
 
+        /**
+         * Number of lock segments maintained by this instance.
+         */
         final int size;
 
         /**
@@ -767,10 +806,19 @@ public abstract class SegmentLock<L> {
         @Serial
         private static final long serialVersionUID = 2852280575965L;
 
+        /**
+         * Padding slot used to reduce cache-line sharing with adjacent objects.
+         */
         long unused1;
 
+        /**
+         * Padding slot used to reduce cache-line sharing with adjacent objects.
+         */
         long unused2;
 
+        /**
+         * Padding slot used to reduce cache-line sharing with adjacent objects.
+         */
         long unused3;
 
         /**

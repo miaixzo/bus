@@ -23,22 +23,44 @@ import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemQuery;
 import org.miaixz.bus.cortex.setting.item.ItemScope;
 
-/** Business validation contract for configuration tenants, applications, and ownership scopes. */
+/**
+ * Business validation contract for configuration tenants, applications, and ownership scopes.
+ */
 public interface SettingEnforcer {
 
+    /**
+     * Validates or normalizes an item before it is staged.
+     *
+     * @param entry item supplied by the caller
+     * @return validated item
+     */
     default Item validateItem(Item entry) {
         return entry;
     }
 
+    /**
+     * Validates or normalizes a configuration query.
+     *
+     * @param query query supplied by the caller
+     * @return validated query
+     */
     default ItemQuery validateQuery(ItemQuery query) {
         return query;
     }
 
+    /**
+     * Validates or normalizes a configuration scope.
+     *
+     * @param scope scope supplied by the caller
+     * @return validated scope
+     */
     default ItemScope validateScope(ItemScope scope) {
         return scope;
     }
 
-    /** Checks access to an application and ownership scope within the specified tenant. */
+    /**
+     * Checks access to an application and ownership scope within the specified tenant.
+     */
     default boolean allows(String tenant_id, String app_id, String scope) {
         return true;
     }

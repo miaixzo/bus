@@ -298,13 +298,37 @@ public interface Keying<S> {
     record SettingSpec(int mode, String tenant_id, String scope, String app_id, String code, String kind,
             String revision) {
 
+        /**
+         * Mode for the stable item identifier key.
+         */
         public static final int ITEM_ID = 11;
+        /**
+         * Mode for the item-scope authorization key.
+         */
         public static final int SCOPE = 12;
+        /**
+         * Mode for the item watch channel key.
+         */
         public static final int WATCH = 13;
+        /**
+         * Mode for the runtime overlay key.
+         */
         public static final int OVERLAY = 14;
+        /**
+         * Mode for the exported item key.
+         */
         public static final int EXPORT = 15;
+        /**
+         * Mode for the durable item-entry key.
+         */
         public static final int ENTRY = 16;
+        /**
+         * Mode for an immutable revision key.
+         */
         public static final int REVISION = 17;
+        /**
+         * Mode for the revision-sequence key.
+         */
         public static final int SEQUENCE = 18;
 
         /**
@@ -316,34 +340,83 @@ public interface Keying<S> {
                     item.getKind(), revision);
         }
 
+        /**
+         * Creates a stable item-identifier specification.
+         *
+         * @param item setting item
+         * @return item-identifier specification
+         */
         public static SettingSpec itemId(Item item) {
             return of(ITEM_ID, item, null);
         }
 
+        /**
+         * Creates an authorization-scope specification.
+         *
+         * @param item setting item
+         * @return scope specification
+         */
         public static SettingSpec scope(Item item) {
             return of(SCOPE, item, null);
         }
 
+        /**
+         * Creates a watch-channel specification.
+         *
+         * @param item setting item
+         * @return watch specification
+         */
         public static SettingSpec watch(Item item) {
             return of(WATCH, item, null);
         }
 
+        /**
+         * Creates a runtime-overlay specification.
+         *
+         * @param item setting item
+         * @return overlay specification
+         */
         public static SettingSpec overlay(Item item) {
             return of(OVERLAY, item, null);
         }
 
+        /**
+         * Creates an exported-key specification.
+         *
+         * @param item setting item
+         * @return export specification
+         */
         public static SettingSpec export(Item item) {
             return of(EXPORT, item, null);
         }
 
+        /**
+         * Creates a durable entry-key specification.
+         *
+         * @param item setting item
+         * @return entry specification
+         */
         public static SettingSpec entry(Item item) {
             return of(ENTRY, item, null);
         }
 
+        /**
+         * Creates an immutable revision-key specification.
+         *
+         * @param item     setting item
+         * @param revision revision identifier
+         * @return revision specification
+         */
         public static SettingSpec revision(Item item, String revision) {
             return of(REVISION, item, revision);
         }
 
+        /**
+         * Creates a revision-sequence specification.
+         *
+         * @param item setting item
+         * @return sequence specification
+         */
         public static SettingSpec sequence(Item item) {
             return of(SEQUENCE, item, null);
         }

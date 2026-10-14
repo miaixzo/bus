@@ -40,6 +40,9 @@ import org.miaixz.bus.tempus.pattern.Part;
  */
 public class PatternMatcher {
 
+    /**
+     * Matchers ordered by cron field position.
+     */
     private final PartMatcher[] matchers;
 
     /**

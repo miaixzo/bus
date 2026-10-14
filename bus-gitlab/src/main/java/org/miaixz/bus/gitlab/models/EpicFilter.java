@@ -338,6 +338,12 @@ public class EpicFilter implements Serializable {
         return (this);
     }
 
+    /**
+     * Converts enum-keyed filter entries to their GitLab query names.
+     *
+     * @param map enum-keyed filter entries
+     * @return string-keyed entries, or {@code null} when the input is {@code null}
+     */
     private Map<String, Object> toStringMap(Map<EpicField, Object> map) {
         if (map == null) {
             return null;

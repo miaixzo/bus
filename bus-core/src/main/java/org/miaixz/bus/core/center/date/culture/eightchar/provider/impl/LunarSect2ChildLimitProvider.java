@@ -38,6 +38,13 @@ public class LunarSect2ChildLimitProvider extends AbstractChildLimitProvider {
         // No initialization required.
     }
 
+    /**
+     * Converts the birth-time distance from a solar term using sect-two ratios.
+     *
+     * @param birthTime birth time
+     * @param term      governing solar term
+     * @return computed child-limit interval
+     */
     protected SecondParts compute(SolarTime birthTime, SolarTerms term) {
         // Minutes difference between birth time and solar term time
         int minutes = Math.abs(term.getJulianDay().getSolarTime().subtract(birthTime)) / 60;

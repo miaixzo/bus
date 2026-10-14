@@ -485,6 +485,13 @@ public class GitLabApiClient implements AutoCloseable {
         return (new URL(url));
     }
 
+    /**
+     * Appends non-null path segments to a base URL.
+     *
+     * @param url      base URL
+     * @param pathArgs path segments
+     * @return URL containing the appended segments
+     */
     private String appendPathArgs(String url, Object... pathArgs) {
         StringBuilder urlBuilder = new StringBuilder(url);
         for (Object pathArg : pathArgs) {
@@ -1330,6 +1337,11 @@ public class GitLabApiClient implements AutoCloseable {
         return (builder);
     }
 
+    /**
+     * Builds the authentication header value for the configured token type.
+     *
+     * @return authentication header value
+     */
     private String getAuthValue() {
         switch (tokenType) {
             case OAUTH2_ACCESS:
@@ -1340,6 +1352,11 @@ public class GitLabApiClient implements AutoCloseable {
         }
     }
 
+    /**
+     * Selects the HTTP header used by the configured token type.
+     *
+     * @return authentication header name
+     */
     private String getAuthHeader() {
         switch (tokenType) {
             case OAUTH2_ACCESS:

@@ -22,12 +22,21 @@ package org.miaixz.bus.image.nimble.opencv.lut.colormap;
 /**
  * Colors for values outside the stops. A null entry clamps to the nearest stop; a null {@code nan} is transparent.
  *
+ * @param low  color below the first stop, or null to clamp
+ * @param high color above the last stop, or null to clamp
+ * @param nan  color for NaN values, or null for transparent
  * @author Kimi Liu
  */
 public record OutsideColors(Rgba low, Rgba high, Rgba nan) {
 
+    /**
+     * Policy that clamps finite values to the nearest stop and renders NaN transparently.
+     */
     public static final OutsideColors CLAMP = new OutsideColors(null, null, null);
 
+    /**
+     * Policy that renders every out-of-range or NaN value transparently.
+     */
     public static final OutsideColors TRANSPARENT = new OutsideColors(Rgba.TRANSPARENT, Rgba.TRANSPARENT,
             Rgba.TRANSPARENT);
 }

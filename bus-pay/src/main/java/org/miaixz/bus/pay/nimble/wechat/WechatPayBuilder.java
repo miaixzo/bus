@@ -54,12 +54,24 @@ import org.miaixz.bus.pay.magic.Message;
  */
 public class WechatPayBuilder {
 
+    /**
+     * Operating-system identifier sent in the WeChat Pay user agent.
+     */
     private static final String OS = Keys.get(Keys.OS_NAME) + Symbol.SLASH + Keys.get(Keys.OS_VERSION);
 
+    /**
+     * Java runtime version sent in the WeChat Pay user agent.
+     */
     private static final String VERSION = Keys.get(Keys.JAVA_VERSION);
 
+    /**
+     * Request field that carries a signature.
+     */
     private static final String FIELD_SIGN = "sign";
 
+    /**
+     * Request field that identifies the signature algorithm.
+     */
     private static final String FIELD_SIGN_TYPE = "sign_type";
 
     /**

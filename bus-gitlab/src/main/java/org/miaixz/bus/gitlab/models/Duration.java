@@ -244,6 +244,12 @@ public class Duration implements Serializable {
         return (seconds);
     }
 
+    /**
+     * Locates a duration unit in the supported-unit table.
+     *
+     * @param unit duration unit text
+     * @return zero-based unit index, or {@code -1} when unsupported
+     */
     private static int getUnitIndex(String unit) {
 
         for (int i = 0; i < TIME_UNITS.length; i++) {

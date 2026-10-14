@@ -1065,6 +1065,12 @@ public class MergeRequestFilter implements Serializable {
         return params;
     }
 
+    /**
+     * Converts enum-keyed negated filters to their GitLab query names.
+     *
+     * @param map enum-keyed filter entries
+     * @return string-keyed entries, or {@code null} when the input is {@code null}
+     */
     private Map<String, Object> toStringMap(Map<MergeRequestField, Object> map) {
         if (map == null) {
             return null;

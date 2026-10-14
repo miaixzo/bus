@@ -279,13 +279,106 @@ public class LinuxPowerSource extends AbstractPowerSource {
      * @author Kimi Liu
      */
     enum Prop {
-        POWER_SUPPLY_NAME, POWER_SUPPLY_STATUS, POWER_SUPPLY_CAPACITY, POWER_SUPPLY_PRESENT, POWER_SUPPLY_ONLINE,
-        POWER_SUPPLY_ENERGY_NOW, POWER_SUPPLY_CHARGE_NOW, POWER_SUPPLY_ENERGY_FULL, POWER_SUPPLY_CHARGE_FULL,
-        POWER_SUPPLY_ENERGY_FULL_DESIGN, POWER_SUPPLY_CHARGE_FULL_DESIGN, POWER_SUPPLY_VOLTAGE_NOW,
-        POWER_SUPPLY_POWER_NOW, POWER_SUPPLY_CURRENT_NOW, POWER_SUPPLY_CYCLE_COUNT, POWER_SUPPLY_TECHNOLOGY,
-        POWER_SUPPLY_MODEL_NAME, POWER_SUPPLY_MANUFACTURER, POWER_SUPPLY_SERIAL_NUMBER, POWER_SUPPLY_TEMP,
-        POWER_SUPPLY_TIME_TO_EMPTY_NOW, POWER_SUPPLY_TIME_TO_FULL_NOW, POWER_SUPPLY_MANUFACTURE_YEAR,
-        POWER_SUPPLY_MANUFACTURE_MONTH, POWER_SUPPLY_MANUFACTURE_DAY
+        /**
+         * Human-readable power-source name.
+         */
+        POWER_SUPPLY_NAME,
+        /**
+         * Current charging status.
+         */
+        POWER_SUPPLY_STATUS,
+        /**
+         * Remaining capacity percentage.
+         */
+        POWER_SUPPLY_CAPACITY,
+        /**
+         * Whether the power source is physically present.
+         */
+        POWER_SUPPLY_PRESENT,
+        /**
+         * Whether the power source is connected online.
+         */
+        POWER_SUPPLY_ONLINE,
+        /**
+         * Currently stored energy.
+         */
+        POWER_SUPPLY_ENERGY_NOW,
+        /**
+         * Current electric charge.
+         */
+        POWER_SUPPLY_CHARGE_NOW,
+        /**
+         * Full-charge energy capacity.
+         */
+        POWER_SUPPLY_ENERGY_FULL,
+        /**
+         * Full-charge electric capacity.
+         */
+        POWER_SUPPLY_CHARGE_FULL,
+        /**
+         * Designed full energy capacity.
+         */
+        POWER_SUPPLY_ENERGY_FULL_DESIGN,
+        /**
+         * Designed full electric capacity.
+         */
+        POWER_SUPPLY_CHARGE_FULL_DESIGN,
+        /**
+         * Current voltage.
+         */
+        POWER_SUPPLY_VOLTAGE_NOW,
+        /**
+         * Current power rate.
+         */
+        POWER_SUPPLY_POWER_NOW,
+        /**
+         * Current amperage.
+         */
+        POWER_SUPPLY_CURRENT_NOW,
+        /**
+         * Completed charge-cycle count.
+         */
+        POWER_SUPPLY_CYCLE_COUNT,
+        /**
+         * Battery chemistry or technology.
+         */
+        POWER_SUPPLY_TECHNOLOGY,
+        /**
+         * Device model name.
+         */
+        POWER_SUPPLY_MODEL_NAME,
+        /**
+         * Device manufacturer.
+         */
+        POWER_SUPPLY_MANUFACTURER,
+        /**
+         * Device serial number.
+         */
+        POWER_SUPPLY_SERIAL_NUMBER,
+        /**
+         * Current temperature.
+         */
+        POWER_SUPPLY_TEMP,
+        /**
+         * Estimated seconds until empty.
+         */
+        POWER_SUPPLY_TIME_TO_EMPTY_NOW,
+        /**
+         * Estimated seconds until fully charged.
+         */
+        POWER_SUPPLY_TIME_TO_FULL_NOW,
+        /**
+         * Manufacturing year.
+         */
+        POWER_SUPPLY_MANUFACTURE_YEAR,
+        /**
+         * Manufacturing month.
+         */
+        POWER_SUPPLY_MANUFACTURE_MONTH,
+        /**
+         * Manufacturing day of month.
+         */
+        POWER_SUPPLY_MANUFACTURE_DAY
 
     }
 

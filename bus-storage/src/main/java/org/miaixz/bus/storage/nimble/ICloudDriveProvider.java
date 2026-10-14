@@ -70,10 +70,19 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  */
 public class ICloudDriveProvider extends AbstractProvider {
 
+    /**
+     * Default base URL for the Apple CloudKit web service.
+     */
     private static final String API_BASE = "https://api.apple-cloudkit.com";
 
+    /**
+     * CloudKit database scope used for private iCloud Drive data.
+     */
     private static final String DATABASE_TYPE = "private";
 
+    /**
+     * CloudKit record type used to persist drive files.
+     */
     private static final String RECORD_TYPE = "DriveFile";
 
     /**
@@ -533,6 +542,12 @@ public class ICloudDriveProvider extends AbstractProvider {
                 .errmsg("Remove by Path not supported for iCloud Drive").build();
     }
 
+    /**
+     * Queries the CloudKit record for one absolute drive path.
+     *
+     * @param path absolute drive path
+     * @return matching record, or {@code null} when absent or unavailable
+     */
     private Map<String, Object> queryFileRecord(String path) {
         try {
             String url = buildApiUrl("/records/query");
@@ -576,6 +591,12 @@ public class ICloudDriveProvider extends AbstractProvider {
         return null;
     }
 
+    /**
+     * Queries all CloudKit file records below a folder path.
+     *
+     * @param folder folder path prefix
+     * @return matching records, or an empty list when none are available
+     */
     private List<Map<String, Object>> queryFolderRecords(String folder) {
         try {
             String url = buildApiUrl("/records/query");
@@ -620,6 +641,12 @@ public class ICloudDriveProvider extends AbstractProvider {
         return new ArrayList<>();
     }
 
+    /**
+     * Extracts the asset download URL from a CloudKit file record.
+     *
+     * @param record CloudKit file record
+     * @return download URL, or {@code null} when the asset is malformed
+     */
     private String getAssetDownloadUrl(Map<String, Object> record) {
         try {
             Map<String, Object> fields = (Map<String, Object>) record.get("fields");
@@ -639,6 +666,12 @@ public class ICloudDriveProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Requests a temporary CloudKit asset-upload endpoint.
+     *
+     * @param fileSize asset size in bytes
+     * @return upload URL, or {@code null} when the request fails
+     */
     private String requestAssetUpload(long fileSize) {
         try {
             String url = buildApiUrl("/assets/upload");
@@ -680,6 +713,13 @@ public class ICloudDriveProvider extends AbstractProvider {
         return null;
     }
 
+    /**
+     * Uploads file bytes to a temporary CloudKit asset endpoint.
+     *
+     * @param uploadUrl temporary asset-upload URL
+     * @param content   file content
+     * @return {@code true} when CloudKit accepts the upload
+     */
     private boolean uploadAsset(String uploadUrl, byte[] content) {
         try {
             try (Response response = post(uploadUrl, content, MediaType.APPLICATION_OCTET_STREAM)) {
@@ -698,6 +738,14 @@ public class ICloudDriveProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Creates a CloudKit file record for an uploaded asset.
+     *
+     * @param path     absolute drive path
+     * @param assetUrl uploaded asset URL
+     * @param fileSize file size in bytes
+     * @return {@code true} when the record is created
+     */
     private boolean createFileRecord(String path, String assetUrl, long fileSize) {
         try {
             String url = buildApiUrl("/records/modify");
@@ -759,6 +807,13 @@ public class ICloudDriveProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Updates the path stored in an existing CloudKit file record.
+     *
+     * @param record  existing CloudKit record
+     * @param newPath replacement absolute path
+     * @return {@code true} when the record is updated
+     */
     private boolean updateFileRecord(Map<String, Object> record, String newPath) {
         try {
             String url = buildApiUrl("/records/modify");
@@ -802,6 +857,12 @@ public class ICloudDriveProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Deletes an existing CloudKit file record.
+     *
+     * @param record record to delete
+     * @return {@code true} when the record is deleted
+     */
     private boolean deleteFileRecord(Map<String, Object> record) {
         try {
             String url = buildApiUrl("/records/modify");
@@ -837,6 +898,12 @@ public class ICloudDriveProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Converts basic CloudKit record fields to storage metadata.
+     *
+     * @param record CloudKit file record
+     * @return storage metadata, or {@code null} when the record is malformed
+     */
     private Blob recordToBlob(Map<String, Object> record) {
         try {
             Map<String, Object> fields = (Map<String, Object>) record.get("fields");
@@ -858,6 +925,12 @@ public class ICloudDriveProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Builds a CloudKit database endpoint for the configured container and environment.
+     *
+     * @param endpoint endpoint path beginning with a slash
+     * @return fully qualified API URL
+     */
     private String buildApiUrl(String endpoint) {
         return String.format(
                 "%s/database/1/%s/%s/%s%s",
@@ -868,6 +941,13 @@ public class ICloudDriveProvider extends AbstractProvider {
                 endpoint);
     }
 
+    /**
+     * Joins a drive folder and file name into an absolute path.
+     *
+     * @param bucket   drive folder
+     * @param fileName file name
+     * @return absolute drive path
+     */
     private String buildPath(String bucket, String fileName) {
         if (StringKit.isBlank(bucket) || Symbol.SLASH.equals(bucket)) {
             return Symbol.SLASH + fileName;

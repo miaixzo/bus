@@ -53,6 +53,9 @@ import org.miaixz.bus.tempus.pattern.matcher.*;
  */
 public class PartParser {
 
+    /**
+     * Cron field definition parsed by this instance.
+     */
     private final Part part;
 
     /**

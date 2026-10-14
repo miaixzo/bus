@@ -20,7 +20,7 @@
 package org.miaixz.bus.image.nimble.opencv.lut.colormap;
 
 /**
- * How values between two stops are produced. *
+ * Defines how values between adjacent stops are produced.
  *
  * @author Kimi Liu
  */
@@ -39,6 +39,11 @@ public enum Interpolation {
      */
     SAMPLED;
 
+    /**
+     * Tests whether this mode holds each stop value until the next stop.
+     *
+     * @return {@code true} for {@link #STEP}
+     */
     public boolean isStep() {
         return this == STEP;
     }

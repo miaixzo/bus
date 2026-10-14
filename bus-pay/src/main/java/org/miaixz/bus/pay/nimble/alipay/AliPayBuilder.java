@@ -44,6 +44,9 @@ import org.miaixz.bus.logger.Logger;
  */
 public class AliPayBuilder {
 
+    /**
+     * UTF-8 charset name required by Alipay request encoding.
+     */
     private static final String CHARSET_UTF8 = Charset.DEFAULT_UTF_8;
 
     /**

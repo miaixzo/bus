@@ -248,6 +248,16 @@ public class EpicsApi extends AbstractApi {
                 "groups", getGroupIdOrPath(groupIdOrPath), "epics"));
     }
 
+    /**
+     * Builds an epic filter from the common list-query arguments.
+     *
+     * @param authorId  author identifier
+     * @param labels    comma-separated labels
+     * @param orderBy   ordering field
+     * @param sortOrder sort direction
+     * @param search    search expression
+     * @return configured epic filter
+     */
     private EpicFilter createEpicFilter(
             Long authorId,
             String labels,

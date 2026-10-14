@@ -192,6 +192,12 @@ final class DefaultDispatcher implements Dispatcher {
         }
     }
 
+    /**
+     * Summarizes the leading stack frames of a running dispatch thread.
+     *
+     * @param runner dispatch thread, or {@code null} when no task is running
+     * @return compact stack summary or thread-state marker
+     */
     private static String topFrame(final Thread runner) {
         if (runner == null)
             return "not-running";

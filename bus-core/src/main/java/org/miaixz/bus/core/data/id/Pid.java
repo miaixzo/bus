@@ -38,8 +38,14 @@ public enum Pid {
      */
     INSTANCE;
 
+    /**
+     * Cached process identifier.
+     */
     private final int pid;
 
+    /**
+     * Resolves and caches the current process identifier.
+     */
     Pid() {
         this.pid = getPid();
     }

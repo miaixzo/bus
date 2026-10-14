@@ -159,6 +159,11 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
         return (first == null);
     }
 
+    /**
+     * Requires this deque to contain at least one element.
+     *
+     * @throws NoSuchElementException if the deque is empty
+     */
     void checkNotEmpty() {
         if (isEmpty()) {
             throw new NoSuchElementException();
@@ -209,6 +214,12 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     // A fast-path containment check
+    /**
+     * Tests membership using the element's links and the deque head.
+     *
+     * @param e linked element
+     * @return {@code true} when the element belongs to this deque
+     */
     boolean contains(final Linked<?> e) {
         return (e.getPrevious() != null) || (e.getNext() != null) || (e == first);
     }
@@ -472,6 +483,12 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     // A fast-path removal
+    /**
+     * Removes a linked element when it belongs to this deque.
+     *
+     * @param e linked element
+     * @return {@code true} when the element was removed
+     */
     boolean remove(final E e) {
         if (contains(e)) {
             unlink(e);
@@ -633,6 +650,9 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
      */
     abstract class AbstractLinkedIterator implements Iterator<E> {
 
+        /**
+         * Next linked element returned by this iterator.
+         */
         E cursor;
 
         /**

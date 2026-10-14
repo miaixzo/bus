@@ -24,12 +24,15 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Whole-map edits an editor offers as single actions; every method returns a new map. *
+ * Whole-map edits an editor offers as single actions; every method returns a new map.
  *
  * @author Kimi Liu
  */
 public final class ColorMapEdits {
 
+    /**
+     * Prevents utility class instantiation.
+     */
     private ColorMapEdits() {
     }
 
@@ -142,6 +145,13 @@ public final class ColorMapEdits {
         return map.toBuilder().space(palette.space()).interpolation(palette.interpolation()).stops(stops).build();
     }
 
+    /**
+     * Appends a stop and returns a map with its stop list sorted by the builder.
+     *
+     * @param map  source map
+     * @param stop stop to add
+     * @return map containing the additional stop
+     */
     public static ColorMap withStop(ColorMap map, ColorStop stop) {
         var stops = new ArrayList<>(map.stops());
         stops.add(Objects.requireNonNull(stop, "Stop cannot be null"));

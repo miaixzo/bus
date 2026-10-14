@@ -42,10 +42,14 @@ import org.miaixz.bus.health.unix.shared.driver.Xrandr.Output;
 @ThreadSafe
 public class UnixDisplay extends AbstractDisplay {
 
-    /** Built-in connector name prefixes. */
+    /**
+     * Built-in connector name prefixes.
+     */
     private static final String[] BUILT_IN_CONNECTORS = { "eDP", "LVDS", "DSI" };
 
-    /** External connector name prefixes. */
+    /**
+     * External connector name prefixes.
+     */
     private static final String[] EXTERNAL_CONNECTORS = { "DP", "DisplayPort", "HDMI", "DVI", "VGA", "TV", "Composite",
             "SVIDEO", "S-video", "Component", "DIN", "USB" };
 
@@ -157,13 +161,17 @@ public class UnixDisplay extends AbstractDisplay {
         return findOutput().map(Output::getName);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<DisplayMode> getCurrentMode() {
         return findOutput().flatMap(Output::getMode);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Boolean> isBuiltIn() {
         if (!Normal.UNKNOWN.equals(this.devicePort)) {
@@ -172,7 +180,9 @@ public class UnixDisplay extends AbstractDisplay {
         return getOutputName().flatMap(UnixDisplay::isBuiltInConnector);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Boolean> isPrimary() {
         return findOutput().map(Output::isPrimary);

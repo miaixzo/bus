@@ -197,6 +197,12 @@ public enum CouponApi implements Matcher {
      */
     private final String desc;
 
+    /**
+     * Defines a coupon endpoint.
+     *
+     * @param method endpoint path template
+     * @param desc   endpoint description
+     */
     CouponApi(String method, String desc) {
         this.method = method;
         this.desc = desc;

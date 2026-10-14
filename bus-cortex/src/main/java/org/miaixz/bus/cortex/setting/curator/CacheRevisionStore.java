@@ -48,7 +48,9 @@ public class CacheRevisionStore implements RevisionStore {
      */
     private final CacheX<String, Object> cacheX;
 
-    /** Complete host-supplied reachability check; unknown reachability retains every revision. */
+    /**
+     * Complete host-supplied reachability check; unknown reachability retains every revision.
+     */
     private final Predicate<Revision> protectedRevision;
 
     /**

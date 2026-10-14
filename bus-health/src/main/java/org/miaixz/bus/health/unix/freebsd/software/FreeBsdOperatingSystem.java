@@ -373,8 +373,86 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
      * @author Kimi Liu
      */
     enum PsKeywords {
-        STATE, PID, PPID, USER, UID, GROUP, GID, NLWP, PRI, VSZ, RSS, ETIMES, SYSTIME, TIME, COMM, MAJFLT, MINFLT,
-        NVCSW, NIVCSW, ARGS // ARGS must always be last
+        /**
+         * Process state.
+         */
+        STATE,
+        /**
+         * Process identifier.
+         */
+        PID,
+        /**
+         * Parent process identifier.
+         */
+        PPID,
+        /**
+         * User name.
+         */
+        USER,
+        /**
+         * Numeric user identifier.
+         */
+        UID,
+        /**
+         * Group name.
+         */
+        GROUP,
+        /**
+         * Numeric group identifier.
+         */
+        GID,
+        /**
+         * Number of lightweight processes.
+         */
+        NLWP,
+        /**
+         * Scheduling priority.
+         */
+        PRI,
+        /**
+         * Virtual memory size.
+         */
+        VSZ,
+        /**
+         * Resident set size.
+         */
+        RSS,
+        /**
+         * Elapsed time in seconds.
+         */
+        ETIMES,
+        /**
+         * Accumulated system CPU time.
+         */
+        SYSTIME,
+        /**
+         * Accumulated total CPU time.
+         */
+        TIME,
+        /**
+         * Executable command name.
+         */
+        COMM,
+        /**
+         * Major page-fault count.
+         */
+        MAJFLT,
+        /**
+         * Minor page-fault count.
+         */
+        MINFLT,
+        /**
+         * Voluntary context-switch count.
+         */
+        NVCSW,
+        /**
+         * Involuntary context-switch count.
+         */
+        NIVCSW,
+        /**
+         * Full command and arguments; this column must remain last.
+         */
+        ARGS
 
     }
 

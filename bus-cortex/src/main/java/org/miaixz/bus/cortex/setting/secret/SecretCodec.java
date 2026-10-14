@@ -45,7 +45,9 @@ public interface SecretCodec {
         return true;
     }
 
-    /** Rejects unavailable or identity encryption before accepting a protected write. */
+    /**
+     * Rejects unavailable or identity encryption before accepting a protected write.
+     */
     default String protect(String plaintext) {
         if (this instanceof NoOpSecretCodec || !supports("encrypted")) {
             throw new IllegalStateException("A protecting secret codec is required");

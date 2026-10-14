@@ -217,13 +217,19 @@ public final class DisplayConnector {
     @Immutable
     public static final class Connector {
 
-        /** The human-readable connector name. */
+        /**
+         * The human-readable connector name.
+         */
         private final String name;
 
-        /** Whether the connector belongs to a built-in display. */
+        /**
+         * Whether the connector belongs to a built-in display.
+         */
         private final boolean builtIn;
 
-        /** The current mode, or {@code null}. */
+        /**
+         * The current mode, or {@code null}.
+         */
         private final DisplayMode mode;
 
         /**

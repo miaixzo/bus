@@ -39,6 +39,9 @@ import org.miaixz.bus.core.lang.reflect.method.MethodInvoker;
  */
 public class LambdaKit {
 
+    /**
+     * Weak cache of resolved serialized-lambda metadata.
+     */
     private static final WeakConcurrentMap<Object, LambdaX> CACHE = new WeakConcurrentMap<>();
 
     /**

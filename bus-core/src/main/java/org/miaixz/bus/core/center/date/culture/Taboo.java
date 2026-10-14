@@ -161,6 +161,15 @@ public class Taboo extends Samsara {
         return getTaboos(hourTaboo, hour.getEarthBranch().getIndex(), day.getIndex(), 1);
     }
 
+    /**
+     * Decodes one recommendation or avoidance list from the compact taboo table.
+     *
+     * @param data     encoded lookup table
+     * @param supIndex outer table index
+     * @param subIndex inner table index
+     * @param index    recommendation or avoidance column
+     * @return decoded taboo list
+     */
     private static List<Taboo> getTaboos(String[] data, int supIndex, int subIndex, int index) {
         List<Taboo> l = new ArrayList<>();
         String d = data[supIndex].split(Symbol.SEMICOLON, -1)[subIndex].split(Symbol.COMMA, -1)[index];
@@ -170,6 +179,12 @@ public class Taboo extends Samsara {
         return l;
     }
 
+    /**
+     * Returns the taboo entry at a relative circular offset.
+     *
+     * @param n relative offset
+     * @return shifted taboo entry
+     */
     public Taboo next(int n) {
         return fromIndex(nextIndex(n));
     }

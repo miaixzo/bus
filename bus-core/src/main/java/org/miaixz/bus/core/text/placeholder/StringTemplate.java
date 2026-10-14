@@ -732,6 +732,13 @@ public abstract class StringTemplate {
          */
         private final int clearMask;
 
+        /**
+         * Defines a parser feature bit and the mutually exclusive group it belongs to.
+         *
+         * @param bitPos   feature bit position
+         * @param bitStart first bit in the feature group
+         * @param bitLen   number of bits in the feature group
+         */
         Feature(final int bitPos, final int bitStart, final int bitLen) {
             this.mask = 1 << bitPos;
             this.clearMask = (-1 << (bitStart + bitLen)) | ((1 << bitStart) - 1);

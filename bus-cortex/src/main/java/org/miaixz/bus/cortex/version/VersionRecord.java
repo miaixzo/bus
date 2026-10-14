@@ -41,10 +41,14 @@ import org.miaixz.bus.cortex.Type;
 @Setter
 public class VersionRecord extends Nature {
 
-    /** Process-local monotonic clock; persistent stores must additionally enforce tenant/track/version uniqueness. */
+    /**
+     * Process-local monotonic clock; persistent stores must additionally enforce tenant/track/version uniqueness.
+     */
     private static final AtomicLong CLOCK = new AtomicLong();
 
-    /** Generates a version from the server clock; callers cannot choose a version through this operation. */
+    /**
+     * Generates a version from the server clock; callers cannot choose a version through this operation.
+     */
     public static String generate(Clock clock) {
         Objects.requireNonNull(clock, "Server clock");
         long instant = CLOCK.updateAndGet(previous -> Math.max(clock.millis(), previous + 1));

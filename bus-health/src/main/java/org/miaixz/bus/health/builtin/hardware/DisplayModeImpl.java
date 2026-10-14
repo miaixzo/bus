@@ -33,28 +33,44 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
 @Immutable
 public final class DisplayModeImpl implements DisplayMode {
 
-    /** The logical width. */
+    /**
+     * The logical width.
+     */
     private final int width;
 
-    /** The logical height. */
+    /**
+     * The logical height.
+     */
     private final int height;
 
-    /** The native pixel width. */
+    /**
+     * The native pixel width.
+     */
     private final int pixelWidth;
 
-    /** The native pixel height. */
+    /**
+     * The native pixel height.
+     */
     private final int pixelHeight;
 
-    /** The refresh rate in hertz. */
+    /**
+     * The refresh rate in hertz.
+     */
     private final double refreshRate;
 
-    /** The clockwise rotation in degrees. */
+    /**
+     * The clockwise rotation in degrees.
+     */
     private final int rotation;
 
-    /** The desktop x coordinate. */
+    /**
+     * The desktop x coordinate.
+     */
     private final int x;
 
-    /** The desktop y coordinate. */
+    /**
+     * The desktop y coordinate.
+     */
     private final int y;
 
     /**
@@ -92,55 +108,73 @@ public final class DisplayModeImpl implements DisplayMode {
         return (quarterTurns < Normal._0 ? quarterTurns + Normal._4 : quarterTurns) * Normal._90;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getWidth() {
         return this.width;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getHeight() {
         return this.height;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getPixelWidth() {
         return this.pixelWidth;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getPixelHeight() {
         return this.pixelHeight;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double getRefreshRate() {
         return this.refreshRate;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getRotation() {
         return this.rotation;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getX() {
         return this.x;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getY() {
         return this.y;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object object) {
         if (this == object) {
@@ -155,7 +189,9 @@ public final class DisplayModeImpl implements DisplayMode {
                 && this.rotation == other.rotation && this.x == other.x && this.y == other.y;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         return Objects.hash(
@@ -169,7 +205,9 @@ public final class DisplayModeImpl implements DisplayMode {
                 this.y);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

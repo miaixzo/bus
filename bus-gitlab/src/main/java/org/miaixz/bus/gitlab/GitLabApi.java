@@ -753,6 +753,11 @@ public class GitLabApi implements AutoCloseable {
          */
         class Oauth2Api extends AbstractApi {
 
+            /**
+             * Creates the temporary API used for an OAuth token exchange.
+             *
+             * @param gitlabApi owning GitLab API client
+             */
             Oauth2Api(GitLabApi gitlabApi) {
                 super(gitlabApi);
             }
@@ -1217,6 +1222,11 @@ public class GitLabApi implements AutoCloseable {
          */
         class VersionApi extends AbstractApi {
 
+            /**
+             * Creates an API wrapper for the server version endpoint.
+             *
+             * @param gitlabApi owning GitLab API client
+             */
             VersionApi(GitLabApi gitlabApi) {
                 super(gitlabApi);
             }

@@ -36,15 +36,45 @@ import org.miaixz.bus.extra.json.JsonKit;
  */
 public final class Plan {
 
+    /**
+     * Tenant that owns the publication plan.
+     */
     private final String tenant;
+    /**
+     * Baseline version from which the plan was assembled.
+     */
     private final String baseline;
+    /**
+     * Server-generated target version.
+     */
     private final String version;
+    /**
+     * Formal or gray publication mode.
+     */
     private final String mode;
+    /**
+     * Approval policy frozen with the plan.
+     */
     private final String policy;
+    /**
+     * Serialized gray-selection rule, when applicable.
+     */
     private final String rule;
+    /**
+     * Serialized application-local references frozen with the plan.
+     */
     private final String references;
+    /**
+     * Explicit revisions selected for replacement by application.
+     */
     private final Map<String, Map<String, String>> selected;
+    /**
+     * Complete merged application manifest executed by the host.
+     */
     private final Map<String, Map<String, String>> applications;
+    /**
+     * SHA-256 checksum of the canonical serialized plan.
+     */
     private final String checksum;
 
     /**
@@ -123,6 +153,12 @@ public final class Plan {
         this.checksum = Builder.sha256(toJson());
     }
 
+    /**
+     * Validates and deeply freezes an application revision manifest.
+     *
+     * @param input mutable application manifest
+     * @return immutable, deterministically ordered manifest
+     */
     private static Map<String, Map<String, String>> freeze(Map<String, Map<String, String>> input) {
         Map<String, Map<String, String>> result = new TreeMap<>();
         input.forEach((app, items) -> {
@@ -141,17 +177,31 @@ public final class Plan {
         return Collections.unmodifiableMap(result);
     }
 
+    /**
+     * Requires a nonblank manifest value.
+     *
+     * @param value value to validate
+     * @param name  semantic name used in the failure message
+     */
     private static void require(String value, String name) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException(name + " is required");
         }
     }
 
+    /**
+     * Encodes a length-prefixed value for an unambiguous composite key.
+     *
+     * @param value value to encode
+     * @return length-prefixed segment
+     */
     private static String segment(String value) {
         return value.length() + ":" + value;
     }
 
-    /** Serializes the canonical frozen input used for approval and execution checksums. */
+    /**
+     * Serializes the canonical frozen input used for approval and execution checksums.
+     */
     public String toJson() {
         Map<String, Object> value = new LinkedHashMap<>();
         value.put("tenant_id", tenant);
@@ -166,31 +216,51 @@ public final class Plan {
         return JsonKit.toJsonString(value);
     }
 
+    /**
+     * @return tenant identifier
+     */
     public String getTenant_id() {
         return tenant;
     }
 
+    /**
+     * @return baseline version
+     */
     public String getBaseline() {
         return baseline;
     }
 
+    /**
+     * @return target version
+     */
     public String getVersion() {
         return version;
     }
 
+    /**
+     * @return canonical plan checksum
+     */
     public String getChecksum() {
         return checksum;
     }
 
+    /**
+     * @return complete immutable application manifest
+     */
     public Map<String, Map<String, String>> getApplications() {
         return applications;
     }
 
+    /**
+     * @return immutable selected-application manifest
+     */
     public Map<String, Map<String, String>> getSelected() {
         return selected;
     }
 
-    /** Rebuilds a frozen plan after restart and rejects corrupted or re-serialized approval inputs. */
+    /**
+     * Rebuilds a frozen plan after restart and rejects corrupted or re-serialized approval inputs.
+     */
     @SuppressWarnings("unchecked")
     public static Plan restore(Rollout rollout) {
         if (rollout == null || rollout.getManifest() == null || rollout.getChecksum() == null
@@ -218,7 +288,9 @@ public final class Plan {
         return plan;
     }
 
-    /** Rejects mutation, stale approval, or a publication under another tenant. */
+    /**
+     * Rejects mutation, stale approval, or a publication under another tenant.
+     */
     public void verify(Rollout rollout) {
         if (rollout == null || !tenant.equals(rollout.getTenant_id()) || !checksum.equals(rollout.getChecksum())
                 || !toJson().equals(rollout.getManifest()) || !mode.equals(rollout.getMode())
@@ -227,7 +299,9 @@ public final class Plan {
         }
     }
 
-    /** Freezes only an editable draft; the host persists this result with an edition compare-and-set. */
+    /**
+     * Freezes only an editable draft; the host persists this result with an edition compare-and-set.
+     */
     public void submit(Rollout rollout) {
         if (rollout == null || !tenant.equals(rollout.getTenant_id())
                 || !Rollout.State.DRAFT.name().equals(rollout.getState())) {
@@ -241,7 +315,9 @@ public final class Plan {
         rollout.setState(Rollout.State.REVIEWING.name());
     }
 
-    /** Tests membership in the selected scope rather than the merged baseline. */
+    /**
+     * Tests membership in the selected scope rather than the merged baseline.
+     */
     public boolean includes(String app, String item, String revision) {
         return app != null && revision != null && revision.equals(selected.getOrDefault(app, Map.of()).get(item));
     }

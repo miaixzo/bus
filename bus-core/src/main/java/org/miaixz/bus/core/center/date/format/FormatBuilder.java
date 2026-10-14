@@ -51,6 +51,9 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     @Serial
     private static final long serialVersionUID = 2852255307380L;
 
+    /**
+     * Cache of formatters keyed by pattern, time zone, and locale.
+     */
     private static final FormatCache<FormatBuilder> CACHE = new FormatCache<>() {
 
         /**

@@ -400,8 +400,16 @@ public class DatePattern {
      */
     private static class CharacterLiteral implements Rule {
 
+        /**
+         * Literal character appended by this rule.
+         */
         private final char mValue;
 
+        /**
+         * Creates a character-literal rule.
+         *
+         * @param value literal character
+         */
         CharacterLiteral(final char value) {
             mValue = value;
         }
@@ -440,8 +448,16 @@ public class DatePattern {
      */
     private static class StringLiteral implements Rule {
 
+        /**
+         * Literal text appended by this rule.
+         */
         private final String mValue;
 
+        /**
+         * Creates a string-literal rule.
+         *
+         * @param value literal text
+         */
         StringLiteral(final String value) {
             mValue = value;
         }
@@ -480,10 +496,22 @@ public class DatePattern {
      */
     private static class TextField implements Rule {
 
+        /**
+         * Calendar field read by this rule.
+         */
         private final int mField;
 
+        /**
+         * Display values indexed by the calendar field value.
+         */
         private final String[] mValues;
 
+        /**
+         * Creates a textual calendar-field rule.
+         *
+         * @param field  calendar field
+         * @param values display values indexed by field value
+         */
         TextField(final int field, final String[] values) {
             mField = field;
             mValues = values;
@@ -530,8 +558,16 @@ public class DatePattern {
      */
     private static class UnpaddedNumberField implements NumberRule {
 
+        /**
+         * Calendar field read by this rule.
+         */
         private final int mField;
 
+        /**
+         * Creates an unpadded numeric calendar-field rule.
+         *
+         * @param field calendar field
+         */
         UnpaddedNumberField(final int field) {
             mField = field;
         }
@@ -589,8 +625,14 @@ public class DatePattern {
      */
     private static class UnpaddedMonthField implements NumberRule {
 
+        /**
+         * Shared stateless unpadded-month rule.
+         */
         static final UnpaddedMonthField INSTANCE = new UnpaddedMonthField();
 
+        /**
+         * Creates the shared unpadded-month rule.
+         */
         UnpaddedMonthField() {
             // No initialization required.
         }
@@ -646,10 +688,22 @@ public class DatePattern {
      */
     private static class PaddedNumberField implements NumberRule {
 
+        /**
+         * Calendar field read by this rule.
+         */
         private final int mField;
 
+        /**
+         * Minimum formatted width.
+         */
         private final int mSize;
 
+        /**
+         * Creates a padded numeric calendar-field rule.
+         *
+         * @param field calendar field
+         * @param size  minimum formatted width
+         */
         PaddedNumberField(final int field, final int size) {
             if (size < 3) {
                 throw new IllegalArgumentException();
@@ -705,8 +759,16 @@ public class DatePattern {
      */
     private static class TwoDigitNumberField implements NumberRule {
 
+        /**
+         * Calendar field read by this rule.
+         */
         private final int mField;
 
+        /**
+         * Creates a two-digit numeric calendar-field rule.
+         *
+         * @param field calendar field
+         */
         TwoDigitNumberField(final int field) {
             mField = field;
         }
@@ -762,8 +824,14 @@ public class DatePattern {
      */
     private static class TwoDigitYearField implements NumberRule {
 
+        /**
+         * Shared stateless two-digit-year rule.
+         */
         static final TwoDigitYearField INSTANCE = new TwoDigitYearField();
 
+        /**
+         * Creates the shared two-digit-year rule.
+         */
         TwoDigitYearField() {
             // No initialization required.
         }
@@ -815,8 +883,14 @@ public class DatePattern {
      */
     private static class TwoDigitMonthField implements NumberRule {
 
+        /**
+         * Shared stateless two-digit-month rule.
+         */
         static final TwoDigitMonthField INSTANCE = new TwoDigitMonthField();
 
+        /**
+         * Creates the shared two-digit-month rule.
+         */
         TwoDigitMonthField() {
             // No initialization required.
         }
@@ -868,8 +942,16 @@ public class DatePattern {
      */
     private static class TwelveHourField implements NumberRule {
 
+        /**
+         * Numeric rule that renders the normalized hour value.
+         */
         private final NumberRule mRule;
 
+        /**
+         * Creates a 12-hour normalization rule.
+         *
+         * @param rule numeric output rule
+         */
         TwelveHourField(final NumberRule rule) {
             mRule = rule;
         }
@@ -925,8 +1007,16 @@ public class DatePattern {
      */
     private static class TwentyFourHourField implements NumberRule {
 
+        /**
+         * Numeric rule that renders the normalized hour value.
+         */
         private final NumberRule mRule;
 
+        /**
+         * Creates a 24-hour normalization rule.
+         *
+         * @param rule numeric output rule
+         */
         TwentyFourHourField(final NumberRule rule) {
             mRule = rule;
         }
@@ -982,8 +1072,16 @@ public class DatePattern {
      */
     private static class DayInWeekField implements NumberRule {
 
+        /**
+         * Numeric rule that renders the ISO weekday value.
+         */
         private final NumberRule mRule;
 
+        /**
+         * Creates an ISO weekday-number rule.
+         *
+         * @param rule numeric output rule
+         */
         DayInWeekField(final NumberRule rule) {
             mRule = rule;
         }
@@ -1036,8 +1134,16 @@ public class DatePattern {
      */
     private static class WeekYear implements NumberRule {
 
+        /**
+         * Numeric rule that renders the week-based year.
+         */
         private final NumberRule mRule;
 
+        /**
+         * Creates a week-based-year rule.
+         *
+         * @param rule numeric output rule
+         */
         WeekYear(final NumberRule rule) {
             mRule = rule;
         }
@@ -1093,14 +1199,33 @@ public class DatePattern {
      */
     private static class TimeZoneNameRule implements Rule {
 
+        /**
+         * Locale used to resolve time-zone display names.
+         */
         private final Locale mLocale;
 
+        /**
+         * Long or short display-name style.
+         */
         private final int mStyle;
 
+        /**
+         * Cached standard-time display name.
+         */
         private final String mStandard;
 
+        /**
+         * Cached daylight-saving display name.
+         */
         private final String mDaylight;
 
+        /**
+         * Creates a localized time-zone-name rule.
+         *
+         * @param timeZone time zone
+         * @param locale   display locale
+         * @param style    time-zone display style
+         */
         TimeZoneNameRule(final TimeZone timeZone, final Locale locale, final int style) {
             mLocale = locale;
             mStyle = style;
@@ -1147,12 +1272,26 @@ public class DatePattern {
      */
     private static class TimeZoneNumberRule implements Rule {
 
+        /**
+         * Shared numeric-offset rule that includes an hour-minute colon.
+         */
         static final TimeZoneNumberRule INSTANCE_COLON = new TimeZoneNumberRule(true);
 
+        /**
+         * Shared compact numeric-offset rule without a colon.
+         */
         static final TimeZoneNumberRule INSTANCE_NO_COLON = new TimeZoneNumberRule(false);
 
+        /**
+         * Whether the formatted offset separates hours and minutes with a colon.
+         */
         final boolean mColon;
 
+        /**
+         * Creates a numeric time-zone-offset rule.
+         *
+         * @param colon whether to include an hour-minute colon
+         */
         TimeZoneNumberRule(final boolean colon) {
             mColon = colon;
         }
@@ -1204,18 +1343,41 @@ public class DatePattern {
      */
     private static class Iso8601_Rule implements Rule {
 
+        /**
+         * ISO 8601 rule that emits hour-only offsets.
+         */
         static final Iso8601_Rule ISO8601_HOURS = new Iso8601_Rule(3);
 
+        /**
+         * ISO 8601 rule that emits compact hour-minute offsets.
+         */
         static final Iso8601_Rule ISO8601_HOURS_MINUTES = new Iso8601_Rule(5);
 
+        /**
+         * ISO 8601 rule that emits colon-separated hour-minute offsets.
+         */
         static final Iso8601_Rule ISO8601_HOURS_COLON_MINUTES = new Iso8601_Rule(6);
 
+        /**
+         * Formatted offset length.
+         */
         final int length;
 
+        /**
+         * Creates an ISO 8601 offset rule.
+         *
+         * @param length formatted offset length
+         */
         Iso8601_Rule(final int length) {
             this.length = length;
         }
 
+        /**
+         * Selects an ISO 8601 offset rule for a pattern-token length.
+         *
+         * @param tokenLen number of consecutive {@code X} pattern letters
+         * @return matching offset rule
+         */
         static Iso8601_Rule getRule(final int tokenLen) {
             return switch (tokenLen) {
                 case 1 -> Iso8601_Rule.ISO8601_HOURS;
@@ -1279,12 +1441,29 @@ public class DatePattern {
      */
     private static class TimeZoneDisplayKey {
 
+        /**
+         * Time zone represented by this cache key.
+         */
         private final TimeZone mTimeZone;
 
+        /**
+         * Display style with the daylight flag encoded in its high bit.
+         */
         private final int mStyle;
 
+        /**
+         * Display locale represented by this cache key.
+         */
         private final Locale mLocale;
 
+        /**
+         * Creates a time-zone display-name cache key.
+         *
+         * @param timeZone time zone
+         * @param daylight whether the daylight-saving name is requested
+         * @param style    display style
+         * @param locale   display locale
+         */
         TimeZoneDisplayKey(final TimeZone timeZone, final boolean daylight, final int style, final Locale locale) {
             mTimeZone = timeZone;
             mStyle = daylight ? style | 0x80000000 : style;

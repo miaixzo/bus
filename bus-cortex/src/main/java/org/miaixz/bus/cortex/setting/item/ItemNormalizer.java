@@ -199,7 +199,9 @@ public final class ItemNormalizer {
         return value == null ? "" : String.valueOf(value);
     }
 
-    /** Encodes an identity segment without delimiter ambiguity. */
+    /**
+     * Encodes an identity segment without delimiter ambiguity.
+     */
     private static String segment(String value) {
         return value == null ? "-" : value.length() + "#" + value;
     }

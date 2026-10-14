@@ -709,7 +709,30 @@ public class LinuxHWDiskStore extends AbstractHWDiskStore {
 
         // The parsing implementation in Parsing requires these to be declared
         // in increasing order. Use 0-ordered index here
-        READS(0), READ_BYTES(2), WRITES(4), WRITE_BYTES(6), QUEUE_LENGTH(8), ACTIVE_MS(9);
+        /**
+         * Completed read operations.
+         */
+        READS(0),
+        /**
+         * Bytes read from the device.
+         */
+        READ_BYTES(2),
+        /**
+         * Completed write operations.
+         */
+        WRITES(4),
+        /**
+         * Bytes written to the device.
+         */
+        WRITE_BYTES(6),
+        /**
+         * Current I/O queue length.
+         */
+        QUEUE_LENGTH(8),
+        /**
+         * Milliseconds spent servicing I/O.
+         */
+        ACTIVE_MS(9);
 
         /**
          * The order value.

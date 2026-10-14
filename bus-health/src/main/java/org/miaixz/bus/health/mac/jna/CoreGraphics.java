@@ -345,10 +345,14 @@ public interface CoreGraphics extends Library {
     @FieldOrder({ "origin", "size" })
     class CGRectByValue extends Structure implements Structure.ByValue {
 
-        /** The rectangle origin. */
+        /**
+         * The rectangle origin.
+         */
         public CGPoint origin = new CGPoint();
 
-        /** The rectangle size. */
+        /**
+         * The rectangle size.
+         */
         public CGSize size = new CGSize();
 
         /**

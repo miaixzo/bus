@@ -289,6 +289,11 @@ public enum Registry implements Complex {
              */
             private final String url;
 
+            /**
+             * Defines a WeChat service-domain entry.
+             *
+             * @param url service base URL
+             */
             R(String url) {
                 this.url = url;
             }

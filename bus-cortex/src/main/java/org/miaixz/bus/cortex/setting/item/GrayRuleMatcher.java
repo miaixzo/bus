@@ -85,7 +85,9 @@ public class GrayRuleMatcher {
                         .fingerprint(instance.getFingerprint()).labels(labels).build());
     }
 
-    /** Validates an ordered IPv4 selector without normalizing invalid ranges. */
+    /**
+     * Validates an ordered IPv4 selector without normalizing invalid ranges.
+     */
     public boolean validRange(String range) {
         if (range == null) {
             return false;

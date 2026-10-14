@@ -824,7 +824,46 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
      * @author Kimi Liu
      */
     enum PsThreadColumns {
-        TID, STATE, ETIME, CPUTIME, NIVCSW, NVCSW, MAJFLT, MINFLT, PRI, ARGS
+        /**
+         * Thread identifier.
+         */
+        TID,
+        /**
+         * Thread state.
+         */
+        STATE,
+        /**
+         * Elapsed thread time.
+         */
+        ETIME,
+        /**
+         * Accumulated CPU time.
+         */
+        CPUTIME,
+        /**
+         * Involuntary context-switch count.
+         */
+        NIVCSW,
+        /**
+         * Voluntary context-switch count.
+         */
+        NVCSW,
+        /**
+         * Major page-fault count.
+         */
+        MAJFLT,
+        /**
+         * Minor page-fault count.
+         */
+        MINFLT,
+        /**
+         * Scheduling priority.
+         */
+        PRI,
+        /**
+         * Full thread command and arguments.
+         */
+        ARGS
 
     }
 
