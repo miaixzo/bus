@@ -219,14 +219,4 @@ public interface RegistryStore<T extends Assets> {
                 .with(Trait.INSTANCES, false);
     }
 
-    /**
-     * Returns store capability hints using legacy string keys.
-     *
-     * @return capability flags
-     */
-    @Deprecated(since = "8.8.0", forRemoval = true)
-    default Map<String, Boolean> capabilities() {
-        return storeCapabilities().asMap();
-    }
-
 }

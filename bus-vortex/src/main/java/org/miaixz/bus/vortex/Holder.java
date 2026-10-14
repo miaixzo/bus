@@ -384,24 +384,54 @@ public class Holder {
         return outboundEvictSeconds(get());
     }
 
+    /**
+     * Resolves the initial outbound retry delay.
+     *
+     * @param performance performance settings
+     * @return retry delay in milliseconds
+     */
     private static int outboundRetryBackoffMillis(Performance performance) {
         return performance.getOutboundRetryBackoffMillis() > 0 ? performance.getOutboundRetryBackoffMillis() : 100;
     }
 
+    /**
+     * Resolves the maximum outbound retry delay without allowing it below the initial delay.
+     *
+     * @param performance performance settings
+     * @return maximum retry delay in milliseconds
+     */
     private static int outboundRetryMaxBackoffMillis(Performance performance) {
         int maxBackoff = performance.getOutboundRetryMaxBackoffMillis();
         int backoff = outboundRetryBackoffMillis(performance);
         return maxBackoff >= backoff ? maxBackoff : 5000;
     }
 
+    /**
+     * Resolves the outbound connection idle limit.
+     *
+     * @param performance performance settings
+     * @return idle limit in seconds
+     */
     private static int outboundMaxIdleSeconds(Performance performance) {
         return performance.getOutboundMaxIdleSeconds() > 0 ? performance.getOutboundMaxIdleSeconds() : 20;
     }
 
+    /**
+     * Resolves the outbound connection lifetime limit.
+     *
+     * @param performance performance settings
+     * @return lifetime limit in minutes
+     */
     private static int outboundMaxLifeMinutes(Performance performance) {
         return performance.getOutboundMaxLifeMinutes() > 0 ? performance.getOutboundMaxLifeMinutes() : 5;
     }
 
+    /**
+     * Resolves the background connection-eviction interval.
+     *
+     * @param performance performance settings
+     * @return eviction interval in seconds
+     */
     private static int outboundEvictSeconds(Performance performance) {
         return performance.getOutboundEvictSeconds() > 0 ? performance.getOutboundEvictSeconds() : 30;
     }

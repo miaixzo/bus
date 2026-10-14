@@ -392,8 +392,16 @@ public class Weighers {
         @Serial
         private static final long serialVersionUID = 2852276671792L;
 
+        /**
+         * Value weigher adapted to the entry-weigher contract.
+         */
         final Weigher<? super V> weigher;
 
+        /**
+         * Creates an entry-weigher view of a value weigher.
+         *
+         * @param weigher value-weighing strategy
+         */
         EntryWeigherView(final Weigher<? super V> weigher) {
             Assert.notNull(weigher, "Weigher must not be null");
             this.weigher = weigher;

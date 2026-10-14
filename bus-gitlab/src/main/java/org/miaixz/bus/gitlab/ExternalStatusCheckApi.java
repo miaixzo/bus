@@ -247,6 +247,12 @@ public class ExternalStatusCheckApi extends AbstractApi {
         return (response.readEntity(ExternalStatusCheck.class));
     }
 
+    /**
+     * Extracts protected-branch identifiers from an external status check.
+     *
+     * @param externalStatusCheck status-check configuration
+     * @return branch identifiers, or {@code null} when no branches are configured
+     */
     private List<Long> getProtectedBranchIds(ExternalStatusCheck externalStatusCheck) {
         if (externalStatusCheck.getProtectedBranches() == null) {
             return null;

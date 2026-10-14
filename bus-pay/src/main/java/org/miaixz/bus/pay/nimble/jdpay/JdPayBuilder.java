@@ -53,18 +53,39 @@ import org.miaixz.bus.pay.nimble.wechat.WechatPayBuilder;
  */
 public class JdPayBuilder {
 
+    /**
+     * XML declaration prepended to JD Pay documents.
+     */
     private static final String XML_HEAD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 
+    /**
+     * Opening element for a JD Pay payload.
+     */
     private static final String XML_JDPAY_START = "<jdpay>";
 
+    /**
+     * Closing element for a JD Pay payload.
+     */
     private static final String XML_JDPAY_END = "</jdpay>";
 
+    /**
+     * Pattern used to remove formatting whitespace from XML text.
+     */
     private static final Pattern PATTERN = Pattern.compile("\t|\r|\n");
 
+    /**
+     * Opening element for the JD Pay signature value.
+     */
     private static final String XML_SIGN_START = "<sign>";
 
+    /**
+     * Closing element for the JD Pay signature value.
+     */
     private static final String XML_SIGN_END = "</sign>";
 
+    /**
+     * Parameter name that carries a JD Pay signature.
+     */
     private static final String SIGN = "sign";
 
     /**

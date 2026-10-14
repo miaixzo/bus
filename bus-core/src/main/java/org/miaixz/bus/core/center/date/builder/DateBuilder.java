@@ -40,6 +40,9 @@ import org.miaixz.bus.core.xyz.ZoneKit;
  */
 public class DateBuilder {
 
+    /**
+     * System offset captured for builders that do not specify an explicit zone.
+     */
     private static final ZoneOffset DEFAULT_OFFSET = OffsetDateTime.now().getOffset();
 
     /**

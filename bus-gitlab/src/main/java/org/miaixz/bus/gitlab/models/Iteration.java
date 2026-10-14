@@ -385,6 +385,11 @@ public class Iteration implements Serializable {
          */
         private int value;
 
+        /**
+         * Defines an iteration state with its GitLab numeric value.
+         *
+         * @param value numeric state value
+         */
         IterationState(int value) {
             this.value = value;
         }

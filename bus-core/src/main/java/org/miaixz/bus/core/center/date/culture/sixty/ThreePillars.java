@@ -147,6 +147,11 @@ public class ThreePillars extends Tradition {
         return l;
     }
 
+    /**
+     * Returns the year, month, and day pillars as display text.
+     *
+     * @return formatted three-pillar name
+     */
     public String getName() {
         return String.format("%s %s %s", year, month, day);
     }

@@ -85,7 +85,9 @@ public class GrayRule {
      */
     private String labelValue;
 
-    /** Validates selectors supported by configuration-instance delivery, not end-user HTTP routing. */
+    /**
+     * Validates selectors supported by configuration-instance delivery, not end-user HTTP routing.
+     */
     public GrayRule validate() {
         if (type == null) {
             throw new IllegalArgumentException("Gray selector type is required");

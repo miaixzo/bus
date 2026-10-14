@@ -206,6 +206,12 @@ public enum EcommerceApi implements Matcher {
      */
     private final String desc;
 
+    /**
+     * Defines an e-commerce endpoint.
+     *
+     * @param method endpoint path template
+     * @param desc   endpoint description
+     */
     EcommerceApi(String method, String desc) {
         this.method = method;
         this.desc = desc;

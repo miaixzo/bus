@@ -86,12 +86,31 @@ public class Watch extends Tenant {
      */
     private String error;
 
-    /** Configuration application state, independent from process health. */
+    /**
+     * Configuration application state, independent from process health.
+     */
     public enum Synchronization {
-        UNKNOWN, PENDING, APPLIED, FAILED
+        /**
+         * Application evidence is incomplete or does not match this watch.
+         */
+        UNKNOWN,
+        /**
+         * The target revision has not yet been fully fetched and applied.
+         */
+        PENDING,
+        /**
+         * The target revision was fetched and applied successfully.
+         */
+        APPLIED,
+        /**
+         * The application reported an error for the target revision.
+         */
+        FAILED
     }
 
-    /** Derives application evidence for exactly one watch; transport delivery is not application success. */
+    /**
+     * Derives application evidence for exactly one watch; transport delivery is not application success.
+     */
     public Synchronization synchronization(Instance instance) {
         if (instance == null || getTenant_id() == null || !getTenant_id().equals(instance.getTenant_id())
                 || instance_id == null || !instance_id.equals(instance.getId()) || session == null

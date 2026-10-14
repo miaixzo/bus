@@ -39,10 +39,19 @@ import org.opencv.core.MatOfInt;
  */
 public class ImageConversion {
 
+    /**
+     * Band offsets for interleaved RGB data.
+     */
     private static final int[] RGB_OFFSETS = { 0, 1, 2 };
 
+    /**
+     * Band offsets for interleaved BGR data.
+     */
     private static final int[] BGR_OFFSETS = { 2, 1, 0 };
 
+    /**
+     * Band offsets used by three-bank planar RGB data.
+     */
     private static final int[] BANDED_RGB_OFFSETS = { 0, 0, 0 };
 
     /**
@@ -276,6 +285,15 @@ public class ImageConversion {
         return result;
     }
 
+    /**
+     * Creates a Java2D color model compatible with a grayscale or RGB OpenCV matrix.
+     *
+     * @param channels number of matrix channels
+     * @param bpp      bits per channel
+     * @param dataType Java2D data-buffer type
+     * @return compatible color model
+     * @throws UnsupportedOperationException if the channel count is unsupported
+     */
     private static ColorModel createColorModel(int channels, int bpp, int dataType) {
         return switch (channels) {
             case 1 -> new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_GRAY), new int[] { bpp }, false,
@@ -286,6 +304,16 @@ public class ImageConversion {
         };
     }
 
+    /**
+     * Creates a writable raster whose memory layout matches the source matrix.
+     *
+     * @param colorModel compatible color model
+     * @param channels   number of channels
+     * @param cols       raster width
+     * @param rows       raster height
+     * @param dataType   Java2D data-buffer type
+     * @return writable raster
+     */
     private static WritableRaster createRaster(ColorModel colorModel, int channels, int cols, int rows, int dataType) {
         if (channels == 1) {
             return colorModel.createCompatibleWritableRaster(cols, rows);
@@ -295,6 +323,13 @@ public class ImageConversion {
         return Raster.createWritableRaster(sampleModel, null);
     }
 
+    /**
+     * Copies matrix samples into the primitive array backing a raster.
+     *
+     * @param matrix source matrix
+     * @param raster destination raster
+     * @throws UnsupportedOperationException if the raster uses an unsupported buffer type
+     */
     private static void populateRasterFromMat(Mat matrix, WritableRaster raster) {
         DataBuffer buf = raster.getDataBuffer();
         if (buf instanceof DataBufferByte buffer) {
@@ -314,7 +349,13 @@ public class ImageConversion {
         }
     }
 
-    // A BufferedImage exposes its raster directly, other images copy their data
+    /**
+     * Obtains raster data for an optional region, avoiding a copy for a complete buffered image.
+     *
+     * @param img    source image
+     * @param region requested region, or null for the complete image
+     * @return source raster or copied raster data
+     */
     private static Raster getRaster(RenderedImage img, Rectangle region) {
         if (region != null) {
             return img.getData(region);
@@ -322,7 +363,13 @@ public class ImageConversion {
         return img instanceof BufferedImage bufferedImage ? bufferedImage.getRaster() : img.getData();
     }
 
-    // True when the data buffer holds the raster pixels row after row, without padding or offset
+    /**
+     * Tests whether raster samples are stored consecutively without origin offsets or row padding.
+     *
+     * @param raster raster to inspect
+     * @param model  component sample model
+     * @return {@code true} when the backing buffer can be copied directly
+     */
     private static boolean isTightlyPacked(Raster raster, ComponentSampleModel model) {
         DataBuffer buffer = raster.getDataBuffer();
         int bands = model.getNumBands();
@@ -341,6 +388,15 @@ public class ImageConversion {
                 && model.getScanlineStride() == width * bands;
     }
 
+    /**
+     * Converts a tightly packed component raster by copying its primitive backing buffer.
+     *
+     * @param raster         source raster
+     * @param model          source component layout
+     * @param toBGR          whether three-channel output should use BGR order
+     * @param forceShortType whether unsigned-short input should be interpreted as signed short
+     * @return converted OpenCV image
+     */
     private static ImageCV fromPackedBuffer(
             Raster raster,
             ComponentSampleModel model,
@@ -380,7 +436,14 @@ public class ImageConversion {
         return applyColorConversion(mat, model.getBandOffsets(), toBGR);
     }
 
-    // Reads the samples in band order (R, G, B) through the Raster API: valid for any layout
+    /**
+     * Converts an arbitrary raster through the Raster sample API in band order.
+     *
+     * @param raster         source raster
+     * @param toBGR          whether three-channel output should use BGR order
+     * @param forceShortType whether 16-bit integer input should use signed depth
+     * @return converted OpenCV image
+     */
     private static ImageCV fromSamples(Raster raster, boolean toBGR, boolean forceShortType) {
         int rows = raster.getHeight();
         int cols = raster.getWidth();
@@ -414,6 +477,12 @@ public class ImageConversion {
         return toBGR && bands == 3 ? swapRedBlue(mat) : mat;
     }
 
+    /**
+     * Narrows integer samples while preserving their low 16 bits.
+     *
+     * @param pixels integer samples
+     * @return short samples
+     */
     private static short[] toShorts(int[] pixels) {
         var shorts = new short[pixels.length];
         for (int i = 0; i < pixels.length; i++) {
@@ -422,6 +491,13 @@ public class ImageConversion {
         return shorts;
     }
 
+    /**
+     * Chooses an OpenCV integer depth from raster sample sizes and signedness.
+     *
+     * @param raster         source raster
+     * @param forceShortType whether 16-bit input should be treated as signed
+     * @return OpenCV depth constant
+     */
     private static int integerDepth(Raster raster, boolean forceShortType) {
         int maxBits = Arrays.stream(raster.getSampleModel().getSampleSize()).max().orElse(8);
         if (maxBits <= 8) {
@@ -434,12 +510,27 @@ public class ImageConversion {
         return CvType.CV_32S;
     }
 
+    /**
+     * Expands a one-bit raster into an eight-bit single-channel matrix.
+     *
+     * @param raster binary raster
+     * @return unpacked matrix
+     */
     private static ImageCV createBinaryMat(Raster raster) {
         var mat = new ImageCV(raster.getHeight(), raster.getWidth(), CvType.CV_8UC1);
         mat.put(0, 0, getUnpackedBinaryData(raster, raster.getBounds()));
         return mat;
     }
 
+    /**
+     * Merges three byte banks from a planar RGB raster into an interleaved matrix.
+     *
+     * @param bufferByte planar byte buffer
+     * @param rows       image height
+     * @param cols       image width
+     * @param toBGR      whether output channels should be ordered BGR
+     * @return interleaved three-channel matrix
+     */
     private static ImageCV createBandedRGBMat(DataBufferByte bufferByte, int rows, int cols, boolean toBGR) {
         var b = new Mat(rows, cols, CvType.CV_8UC1);
         var g = new Mat(rows, cols, CvType.CV_8UC1);
@@ -458,12 +549,25 @@ public class ImageConversion {
         }
     }
 
+    /**
+     * Swaps red and blue when the source band offsets differ from the requested channel order.
+     *
+     * @param mat     source matrix
+     * @param offsets source band offsets
+     * @param toBGR   whether BGR output is requested
+     * @return original or channel-swapped matrix
+     */
     private static ImageCV applyColorConversion(ImageCV mat, int[] offsets, boolean toBGR) {
         boolean swap = Arrays.equals(offsets, toBGR ? RGB_OFFSETS : BGR_OFFSETS);
         return swap ? swapRedBlue(mat) : mat;
     }
 
-    // Single native pass for every depth; the source is released
+    /**
+     * Swaps red and blue in one native pass and releases the source matrix.
+     *
+     * @param mat source three-channel matrix
+     * @return matrix with red and blue exchanged
+     */
     private static ImageCV swapRedBlue(ImageCV mat) {
         var swapped = new ImageCV(mat.size(), mat.type());
         var fromTo = new MatOfInt(0, 2, 1, 1, 2, 0);
@@ -476,6 +580,12 @@ public class ImageConversion {
         return swapped;
     }
 
+    /**
+     * Copies defined image properties into the legacy table expected by {@link BufferedImage}.
+     *
+     * @param img source image
+     * @return copied properties, or null when none are defined
+     */
     @SuppressWarnings("java:S1874") // BufferedImage constructor requires Hashtable
     private static Hashtable<String, Object> createImageProperties(RenderedImage img) {
         String[] keys = img.getPropertyNames();
@@ -489,6 +599,16 @@ public class ImageConversion {
         return properties;
     }
 
+    /**
+     * Unpacks a region from a byte-backed one-bit raster.
+     *
+     * @param data       packed source words
+     * @param rect       region dimensions
+     * @param eltOffset  first source element
+     * @param bitOffset  first bit within the source element
+     * @param lineStride source elements per scan line
+     * @param result     destination bytes
+     */
     private static void unpackBits(
             byte[] data,
             Rectangle rect,
@@ -506,6 +626,16 @@ public class ImageConversion {
         }
     }
 
+    /**
+     * Unpacks a region from a short-backed one-bit raster.
+     *
+     * @param data       packed source words
+     * @param rect       region dimensions
+     * @param eltOffset  first source element
+     * @param bitOffset  first bit within the source element
+     * @param lineStride source elements per scan line
+     * @param result     destination bytes
+     */
     private static void unpackBits(
             short[] data,
             Rectangle rect,
@@ -523,6 +653,16 @@ public class ImageConversion {
         }
     }
 
+    /**
+     * Unpacks a region from an integer-backed one-bit raster.
+     *
+     * @param data       packed source words
+     * @param rect       region dimensions
+     * @param eltOffset  first source element
+     * @param bitOffset  first bit within the source element
+     * @param lineStride source elements per scan line
+     * @param result     destination bytes
+     */
     private static void unpackBits(
             int[] data,
             Rectangle rect,

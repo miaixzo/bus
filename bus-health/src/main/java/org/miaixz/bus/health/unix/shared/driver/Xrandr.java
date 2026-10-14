@@ -46,13 +46,19 @@ import org.miaixz.bus.health.builtin.hardware.DisplayModeImpl;
 @ThreadSafe
 public class Xrandr {
 
-    /** The command used to request verbose display information. */
+    /**
+     * The command used to request verbose display information.
+     */
     private static final String[] XRANDR_VERBOSE = { "xrandr", "--verbose" };
 
-    /** Property names under which an X server can publish EDID data. */
+    /**
+     * Property names under which an X server can publish EDID data.
+     */
     private static final String[] EDID_PROPERTIES = { "EDID:", "RANDR_EDID:", "EDID_DATA:" };
 
-    /** A display geometry token such as {@code 1920x1080+1920+0}. */
+    /**
+     * A display geometry token such as {@code 1920x1080+1920+0}.
+     */
     private static final java.util.regex.Pattern GEOMETRY = java.util.regex.Pattern
             .compile("(\\d+)x(\\d+)\\+(-?\\d+)\\+(-?\\d+)");
 
@@ -213,19 +219,29 @@ public class Xrandr {
     @Immutable
     public static final class Output {
 
-        /** The xrandr output name. */
+        /**
+         * The xrandr output name.
+         */
         private final String name;
 
-        /** The DRM connector identifier, or {@code -1}. */
+        /**
+         * The DRM connector identifier, or {@code -1}.
+         */
         private final int connectorId;
 
-        /** The output EDID. */
+        /**
+         * The output EDID.
+         */
         private final byte[] edid;
 
-        /** The current mode, or {@code null} when disabled. */
+        /**
+         * The current mode, or {@code null} when disabled.
+         */
         private final DisplayMode mode;
 
-        /** Whether xrandr marks this output as primary. */
+        /**
+         * Whether xrandr marks this output as primary.
+         */
         private final boolean primary;
 
         /**
@@ -298,43 +314,69 @@ public class Xrandr {
     @NotThreadSafe
     private static final class OutputBuilder {
 
-        /** The output name. */
+        /**
+         * The output name.
+         */
         private final String name;
 
-        /** The DRM connector identifier, or {@code -1}. */
+        /**
+         * The DRM connector identifier, or {@code -1}.
+         */
         private int connectorId = Normal.__1;
 
-        /** The parsed EDID, or {@code null}. */
+        /**
+         * The parsed EDID, or {@code null}.
+         */
         private byte[] edid;
 
-        /** Whether the output is primary. */
+        /**
+         * Whether the output is primary.
+         */
         private boolean primary;
 
-        /** The logical width from the header geometry. */
+        /**
+         * The logical width from the header geometry.
+         */
         private int width;
 
-        /** The logical height from the header geometry. */
+        /**
+         * The logical height from the header geometry.
+         */
         private int height;
 
-        /** The desktop x coordinate. */
+        /**
+         * The desktop x coordinate.
+         */
         private int x;
 
-        /** The desktop y coordinate. */
+        /**
+         * The desktop y coordinate.
+         */
         private int y;
 
-        /** The output rotation. */
+        /**
+         * The output rotation.
+         */
         private int rotation;
 
-        /** Whether the parser is inside the current mode block. */
+        /**
+         * Whether the parser is inside the current mode block.
+         */
         private boolean inCurrentMode;
 
-        /** The unrotated current-mode width. */
+        /**
+         * The unrotated current-mode width.
+         */
         private int modeWidth;
 
-        /** The unrotated current-mode height. */
+        /**
+         * The unrotated current-mode height.
+         */
         private int modeHeight;
 
-        /** The current-mode refresh rate. */
+        /**
+         * The current-mode refresh rate.
+         */
         private double refreshRate;
 
         /**

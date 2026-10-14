@@ -61,7 +61,9 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
      */
     private final WatchManager watchManager;
 
-    /** Explicit tenant monitored by this scheduler. */
+    /**
+     * Explicit tenant monitored by this scheduler.
+     */
     private final String tenantId;
 
     /**

@@ -250,6 +250,13 @@ public class ApplicationSettings implements Serializable {
         settings.clear();
     }
 
+    /**
+     * Converts a JSON setting node to the Java type declared by its setting metadata.
+     *
+     * @param node    JSON value
+     * @param setting setting metadata
+     * @return converted Java value
+     */
     private Object jsonNodeToValue(JsonNode node, Setting setting) {
 
         Object value = node;

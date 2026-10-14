@@ -20,7 +20,7 @@
 package org.miaixz.bus.image.nimble.opencv.lut.colormap;
 
 /**
- * How stop positions relate to pixel values. *
+ * Defines how stop positions relate to pixel values.
  *
  * @author Kimi Liu
  */

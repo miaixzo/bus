@@ -20,8 +20,6 @@
 package org.miaixz.bus.cortex.version;
 
 import java.time.Clock;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -34,7 +32,6 @@ import org.miaixz.bus.cortex.setting.rollout.Plan;
 import org.miaixz.bus.cortex.setting.rollout.Rollout;
 import org.miaixz.bus.cortex.setting.rollout.Rollout.State;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * Version-domain publishing workflow.
@@ -221,57 +218,6 @@ public class VersionPublisher {
     }
 
     /**
-     * Publishes a release and makes it current for its track. Compatibility workflow only; governed application batches
-     * use preparePublication and atomic host activation.
-     *
-     * @param record release record
-     * @return persisted active release record
-     */
-    @Deprecated(since = "8.8.0")
-    public VersionRecord publish(VersionRecord record) {
-        VersionRecord prepared = prepare(record, VersionStatus.ACTIVE, true);
-        enforce("publish", prepared);
-        VersionRecord previous = store.current(prepared.getTenant_id(), prepared.getTrack());
-        store.save(prepared);
-        VersionRecord current = store.setCurrent(prepared.getTenant_id(), prepared.getTrack(), prepared.getVersion());
-        VersionRecord saved = current == null ? prepared : current;
-        emitDeprecated(previous, saved);
-        emit(VERSION_PUBLISH_EVENT, saved);
-        return saved;
-    }
-
-    /**
-     * Publishes a new version containing historical artifacts without rewriting the historical target.
-     *
-     * @param tenantId release tenantId
-     * @param track    release track
-     * @param version  target release version
-     * @return persisted rollback target or {@code null}
-     */
-    @Deprecated(since = "8.8.0")
-    public VersionRecord rollback(String tenantId, String track, String version) {
-        String normalizedTrack = ReleaseTrack.normalize(track);
-        VersionRecord target = store.find(tenantId, version, normalizedTrack);
-        enforce("rollback", tenantId, normalizedTrack, version, target == null ? null : target.getVersionStatus());
-        if (target == null) {
-            return null;
-        }
-        VersionRecord previous = store.current(tenantId, normalizedTrack);
-        VersionRecord restored = JsonKit.toPojo(JsonKit.toJsonString(target), VersionRecord.class);
-        restored.setId(null);
-        restored.setPublished(null);
-        restored.setCreated(System.currentTimeMillis());
-        attachRollbackMetadata(restored, previous);
-        restored.setVersion(VersionRecord.generate(Clock.systemDefaultZone()));
-        restored.setVersionStatus(VersionStatus.DRAFT);
-        store.create(restored);
-        VersionRecord saved = store.setCurrent(tenantId, normalizedTrack, restored.getVersion());
-        emitDeprecated(previous, saved);
-        emit(VERSION_ROLLBACK_EVENT, saved);
-        return saved;
-    }
-
-    /**
      * Deletes a release record.
      *
      * @param tenantId release tenantId
@@ -372,66 +318,6 @@ public class VersionPublisher {
     }
 
     /**
-     * Emits a deprecation event for the previous current release when publication changed the current pointer.
-     *
-     * @param previous previous current release
-     * @param current  new current release
-     */
-    private void emitDeprecated(VersionRecord previous, VersionRecord current) {
-        if (previous == null || current == null || sameRelease(previous, current)) {
-            return;
-        }
-        VersionRecord deprecated = store
-                .find(previous.getTenant_id(), previous.getVersion(), ReleaseTrack.normalize(previous.getTrack()));
-        if (deprecated != null && deprecated.getVersionStatus() == VersionStatus.DEPRECATED) {
-            emit(VERSION_DEPRECATE_EVENT, deprecated);
-        }
-    }
-
-    /**
-     * Adds rollback provenance to a new release copied from the historical target.
-     *
-     * @param target   rollback target release
-     * @param previous previous current release
-     */
-    private void attachRollbackMetadata(VersionRecord target, VersionRecord previous) {
-        Map<String, Object> root = metadata(target.getMetadata());
-        Map<String, Object> rollback = new LinkedHashMap<>();
-        rollback.put("rollbackFrom", previous == null ? null : previous.getVersion());
-        rollback.put("rollbackTo", target.getVersion());
-        rollback.put("track", ReleaseTrack.normalize(target.getTrack()));
-        rollback.put("rollbackAt", System.currentTimeMillis());
-        root.put("rollback", rollback);
-        target.setMetadata(JsonKit.toJsonString(root));
-    }
-
-    /**
-     * Parses a metadata JSON object, falling back to an empty mutable map.
-     *
-     * @param metadata raw metadata JSON
-     * @return mutable metadata map
-     */
-    private Map<String, Object> metadata(String metadata) {
-        if (metadata == null || metadata.isBlank()) {
-            return new LinkedHashMap<>();
-        }
-        try {
-            Map<String, Object> root = JsonKit.toPojo(metadata, Map.class);
-            return root == null ? new LinkedHashMap<>() : new LinkedHashMap<>(root);
-        } catch (Exception e) {
-            Logger.warn(
-                    false,
-                    "Cortex",
-                    e,
-                    "Cortex operation failed: provider={}, recoverable={}, exception={}",
-                    "VersionPublisher",
-                    false,
-                    e.getClass().getSimpleName());
-            return new LinkedHashMap<>();
-        }
-    }
-
-    /**
      * Converts a release record to a version asset for watch notifications.
      *
      * @param record release record
@@ -477,19 +363,6 @@ public class VersionPublisher {
             case VERSION_DELETE_EVENT -> "Version deleted";
             default -> "Version changed";
         };
-    }
-
-    /**
-     * Returns whether two release records describe the same track and version.
-     *
-     * @param left  first release record
-     * @param right second release record
-     * @return {@code true} when both records describe the same release
-     */
-    private boolean sameRelease(VersionRecord left, VersionRecord right) {
-        return left != null && right != null
-                && Objects.equals(ReleaseTrack.normalize(left.getTrack()), ReleaseTrack.normalize(right.getTrack()))
-                && Objects.equals(left.getVersion(), right.getVersion());
     }
 
     /**

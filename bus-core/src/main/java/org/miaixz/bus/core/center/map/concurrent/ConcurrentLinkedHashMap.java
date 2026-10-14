@@ -953,6 +953,13 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         return orderedKeySet(false, limit);
     }
 
+    /**
+     * Builds an immutable key snapshot in eviction-policy order.
+     *
+     * @param ascending whether to iterate from least to most retainable
+     * @param limit     maximum number of keys
+     * @return ordered key snapshot
+     */
     Set<K> orderedKeySet(final boolean ascending, final int limit) {
         Assert.isTrue(limit >= 0);
         evictionLock.lock();
@@ -1061,6 +1068,13 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         return orderedMap(false, limit);
     }
 
+    /**
+     * Builds an immutable entry snapshot in eviction-policy order.
+     *
+     * @param ascending whether to iterate from least to most retainable
+     * @param limit     maximum number of entries
+     * @return ordered map snapshot
+     */
     Map<K, V> orderedMap(final boolean ascending, final int limit) {
         Assert.isTrue(limit >= 0);
         evictionLock.lock();
@@ -1182,6 +1196,9 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     enum DiscardingListener implements BiConsumerX<Object, Object> {
 
+        /**
+         * Shared listener that intentionally discards eviction notifications.
+         */
         INSTANCE;
 
         /**
@@ -1206,15 +1223,33 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     static final class WeightedValue<V> {
 
+        /**
+         * Signed weight encoding the entry lifecycle state.
+         */
         final int weight;
 
+        /**
+         * Value associated with the map entry.
+         */
         final V value;
 
+        /**
+         * Creates a weighted value.
+         *
+         * @param value  entry value
+         * @param weight positive live, negative retired, or zero dead weight
+         */
         WeightedValue(final V value, final int weight) {
             this.weight = weight;
             this.value = value;
         }
 
+        /**
+         * Tests the wrapped value using identity and equality.
+         *
+         * @param o candidate value
+         * @return {@code true} when the wrapped value matches
+         */
         boolean contains(final Object o) {
             return (o == value) || value.equals(o);
         }
@@ -1251,10 +1286,19 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     static final class Node<K, V> extends AtomicReference<WeightedValue<V>> implements Linked<Node<K, V>> {
 
+        /**
+         * Immutable map key.
+         */
         final K key;
 
+        /**
+         * Previous node in eviction order.
+         */
         Node<K, V> prev;
 
+        /**
+         * Next node in eviction order.
+         */
         Node<K, V> next;
 
         /**
@@ -1334,8 +1378,16 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         @Serial
         private static final long serialVersionUID = 2853159653136L;;
 
+        /**
+         * Delegate entry weigher whose result is range-checked.
+         */
         final EntryWeigher<? super K, ? super V> weigher;
 
+        /**
+         * Creates a range-checking entry weigher.
+         *
+         * @param weigher delegate weigher
+         */
         BoundedEntryWeigher(final EntryWeigher<? super K, ? super V> weigher) {
             Assert.notNull(weigher);
             this.weigher = weigher;
@@ -1357,6 +1409,11 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
             return weight;
         }
 
+        /**
+         * Serializes the underlying weigher instead of its validation wrapper.
+         *
+         * @return delegate weigher
+         */
         Object writeReplace() {
             return weigher;
         }
@@ -1377,16 +1434,36 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         @Serial
         private static final long serialVersionUID = 2853159653136L;;
 
+        /**
+         * Entry-weighing strategy restored with the map.
+         */
         final EntryWeigher<? super K, ? super V> weigher;
 
+        /**
+         * Eviction listener restored with the map.
+         */
         final BiConsumerX<K, V> listener;
 
+        /**
+         * Concurrency sizing hint restored with the map.
+         */
         final int concurrencyLevel;
 
+        /**
+         * Entry snapshot serialized by the proxy.
+         */
         final Map<K, V> data;
 
+        /**
+         * Maximum weighted capacity restored with the map.
+         */
         final long capacity;
 
+        /**
+         * Captures serializable map configuration and entries.
+         *
+         * @param map map to serialize
+         */
         SerializationProxy(final ConcurrentLinkedHashMap<K, V> map) {
             concurrencyLevel = map.concurrencyLevel;
             data = new HashMap<>(map);
@@ -1395,6 +1472,11 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
             weigher = map.weigher;
         }
 
+        /**
+         * Reconstructs a map from the serialized configuration and entries.
+         *
+         * @return reconstructed concurrent map
+         */
         Object readResolve() {
             final ConcurrentLinkedHashMap<K, V> map = new Builder<K, V>().concurrencyLevel(concurrencyLevel)
                     .maximumWeightedCapacity(capacity).listener(listener).weigher(weigher).build();
@@ -1419,14 +1501,29 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     public static class Builder<K, V> {
 
+        /**
+         * Listener notified for evicted entries.
+         */
         BiConsumerX<K, V> listener;
 
+        /**
+         * Strategy used to weigh entries.
+         */
         EntryWeigher<? super K, ? super V> weigher;
 
+        /**
+         * Expected concurrent update level.
+         */
         int concurrencyLevel;
 
+        /**
+         * Initial hash-table capacity.
+         */
         int initialCapacity;
 
+        /**
+         * Maximum weighted capacity.
+         */
         long capacity;
 
         /**
@@ -1542,10 +1639,22 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     final class AddTask implements Runnable {
 
+        /**
+         * Node being added to the eviction policy.
+         */
         final Node<K, V> node;
 
+        /**
+         * Weight contributed by the node.
+         */
         final int weight;
 
+        /**
+         * Creates an eviction-policy add task.
+         *
+         * @param node   node to add
+         * @param weight node weight
+         */
         AddTask(final Node<K, V> node, final int weight) {
             this.weight = weight;
             this.node = node;
@@ -1577,8 +1686,16 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     final class RemovalTask implements Runnable {
 
+        /**
+         * Node being removed from the eviction policy.
+         */
         final Node<K, V> node;
 
+        /**
+         * Creates an eviction-policy removal task.
+         *
+         * @param node node to remove
+         */
         RemovalTask(final Node<K, V> node) {
             this.node = node;
         }
@@ -1605,10 +1722,22 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     final class UpdateTask implements Runnable {
 
+        /**
+         * Change applied to the total weighted size.
+         */
         final int weightDifference;
 
+        /**
+         * Node whose weight and recency changed.
+         */
         final Node<K, V> node;
 
+        /**
+         * Creates an eviction-policy update task.
+         *
+         * @param node             node to update
+         * @param weightDifference signed weight change
+         */
         public UpdateTask(final Node<K, V> node, final int weightDifference) {
             this.weightDifference = weightDifference;
             this.node = node;
@@ -1636,6 +1765,9 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     final class KeySet extends AbstractSet<K> {
 
+        /**
+         * Owning map exposed through this view.
+         */
         final ConcurrentLinkedHashMap<K, V> map = ConcurrentLinkedHashMap.this;
 
         /**
@@ -1734,8 +1866,14 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     final class KeyIterator implements Iterator<K> {
 
+        /**
+         * Iterator over keys in the backing hash table.
+         */
         final Iterator<K> iterator = data.keySet().iterator();
 
+        /**
+         * Key most recently returned by this iterator.
+         */
         K current;
 
         /**
@@ -1841,8 +1979,14 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     final class ValueIterator implements Iterator<V> {
 
+        /**
+         * Iterator over nodes in the backing hash table.
+         */
         final Iterator<Node<K, V>> iterator = data.values().iterator();
 
+        /**
+         * Node most recently returned by this iterator.
+         */
         Node<K, V> current;
 
         /**
@@ -1891,6 +2035,9 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     final class EntrySet extends AbstractSet<Entry<K, V>> {
 
+        /**
+         * Owning map exposed through this view.
+         */
         final ConcurrentLinkedHashMap<K, V> map = ConcurrentLinkedHashMap.this;
 
         /**
@@ -1984,8 +2131,14 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     final class EntryIterator implements Iterator<Entry<K, V>> {
 
+        /**
+         * Iterator over nodes in the backing hash table.
+         */
         final Iterator<Node<K, V>> iterator = data.values().iterator();
 
+        /**
+         * Node most recently returned by this iterator.
+         */
         Node<K, V> current;
 
         /**
@@ -2037,6 +2190,11 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         @Serial
         private static final long serialVersionUID = 2852276319333L;
 
+        /**
+         * Creates an entry view backed by a map node.
+         *
+         * @param node backing node
+         */
         WriteThroughEntry(final Node<K, V> node) {
             super(node.key, node.getValue());
         }
@@ -2055,6 +2213,11 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
             return super.setValue(value);
         }
 
+        /**
+         * Replaces the live entry view with a detached entry for serialization.
+         *
+         * @return detached entry snapshot
+         */
         Object writeReplace() {
             return new SimpleEntry<>(this);
         }

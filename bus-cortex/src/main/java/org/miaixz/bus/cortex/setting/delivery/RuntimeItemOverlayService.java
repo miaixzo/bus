@@ -37,11 +37,29 @@ import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
  */
 public class RuntimeItemOverlayService {
 
+    /**
+     * Event source recorded for runtime-overlay notifications.
+     */
     private static final String OVERLAY_SOURCE = "runtime-overlay";
+    /**
+     * Event type emitted after an overlay is published.
+     */
     private static final String OVERLAY_PUBLISH_EVENT = "runtime-overlay-publish";
+    /**
+     * Event type emitted after an overlay is cleared.
+     */
     private static final String OVERLAY_CLEAR_EVENT = "runtime-overlay-clear";
+    /**
+     * Cache-backed overlay publisher.
+     */
     private final RuntimeItemOverlayPublisher publisher;
+    /**
+     * Manager used to notify item watchers.
+     */
     private final WatchManager watchManager;
+    /**
+     * Strategy for overlay and watch keys.
+     */
     private final Keying<SettingSpec> keying;
 
     /**

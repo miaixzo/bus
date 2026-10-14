@@ -979,8 +979,17 @@ public class SmbFileProvider extends AbstractProvider {
      */
     private static class SmbFileInputStream extends FilterInputStream {
 
+        /**
+         * SMB file handle closed together with the stream.
+         */
         private final com.hierynomus.smbj.share.File file;
 
+        /**
+         * Creates a stream that owns an SMB file handle.
+         *
+         * @param inputStream file-content stream
+         * @param file        SMB file handle to close
+         */
         private SmbFileInputStream(InputStream inputStream, com.hierynomus.smbj.share.File file) {
             super(inputStream);
             this.file = file;

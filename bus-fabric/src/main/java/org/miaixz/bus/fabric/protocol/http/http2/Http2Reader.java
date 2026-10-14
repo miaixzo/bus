@@ -548,6 +548,15 @@ public class Http2Reader implements AutoCloseable {
     @FunctionalInterface
     private interface DataHandler {
 
+        /**
+         * Consumes one decoded DATA-frame payload.
+         *
+         * @param streamId target stream identifier
+         * @param flags    frame flags
+         * @param source   payload source
+         * @param length   payload length in bytes
+         * @return {@code true} when the payload was accepted
+         */
         boolean accept(int streamId, int flags, Buffer source, int length);
     }
 

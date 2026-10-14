@@ -198,7 +198,9 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
         keys.add(builder.toString());
     }
 
-    /** Encodes a non-null route coordinate without delimiter ambiguity. */
+    /**
+     * Encodes a non-null route coordinate without delimiter ambiguity.
+     */
     private String segment(String value) {
         return value.length() + ":" + value;
     }

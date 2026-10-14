@@ -1060,10 +1060,11 @@ public class RegistryControlService {
     }
 
     /**
-     * Parses one dependency verb segment.
+     * Requires a dependency asset to belong to the expected tenant.
      *
-     * @param token raw dependency token
-     * @return parsed verb code or {@code null} when invalid
+     * @param asset    dependency asset
+     * @param tenantId expected tenant identifier
+     * @return normalized tenant identifier
      */
     private String requireDependencyTenant(Assets asset, String tenantId) {
         String tenant = RegistryIdentity.tenantId(tenantId);
@@ -1073,6 +1074,12 @@ public class RegistryControlService {
         return tenant;
     }
 
+    /**
+     * Parses one dependency verb segment.
+     *
+     * @param token raw dependency token
+     * @return parsed verb code or {@code null} when invalid
+     */
     private Integer parseVerbToken(String token) {
         try {
             return token == null || token.isBlank() ? null : Integer.valueOf(token);

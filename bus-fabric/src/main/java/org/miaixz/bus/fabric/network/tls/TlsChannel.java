@@ -1203,6 +1203,13 @@ public class TlsChannel implements Conduit, Lifecycle {
         }
     }
 
+    /**
+     * Wraps plaintext while serializing HTTP/2 access to the TLS provider.
+     *
+     * @param source plaintext source buffer
+     * @param target encrypted destination buffer
+     * @return provider wrap result
+     */
     private SSLEngineResult wrapProvider(final ByteBuffer source, final ByteBuffer target) {
         if (!Protocol.HTTP_2.name.equals(engine.applicationProtocol()))
             return engine.wrap(source, target);
@@ -1214,6 +1221,13 @@ public class TlsChannel implements Conduit, Lifecycle {
         }
     }
 
+    /**
+     * Unwraps ciphertext while serializing HTTP/2 access to the TLS provider.
+     *
+     * @param source encrypted source buffer
+     * @param target plaintext destination buffer
+     * @return provider unwrap result
+     */
     private SSLEngineResult unwrapProvider(final ByteBuffer source, final ByteBuffer target) {
         if (!Protocol.HTTP_2.name.equals(engine.applicationProtocol()))
             return engine.unwrap(source, target);
@@ -1225,6 +1239,11 @@ public class TlsChannel implements Conduit, Lifecycle {
         }
     }
 
+    /**
+     * Acquires the bounded HTTP/2 TLS-engine lock.
+     *
+     * @throws SocketException if the lock times out or the thread is interrupted
+     */
     private void lockHttp2Engine() {
         try {
             if (!http2EngineLock.tryLock(1L, TimeUnit.SECONDS)) {

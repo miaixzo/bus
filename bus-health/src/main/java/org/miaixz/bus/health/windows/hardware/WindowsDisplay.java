@@ -335,19 +335,25 @@ final class WindowsDisplay extends AbstractDisplay {
         return this.connector == null ? Normal.UNKNOWN : this.connector.getName();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<DisplayMode> getCurrentMode() {
         return this.connector == null ? Optional.empty() : this.connector.getMode();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Boolean> isBuiltIn() {
         return this.connector == null ? Optional.empty() : Optional.of(this.connector.isBuiltIn());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Boolean> isPrimary() {
         return getCurrentMode().map(mode -> mode.getX() == Normal._0 && mode.getY() == Normal._0);

@@ -30,17 +30,41 @@ import org.miaixz.bus.cortex.setting.delivery.RuntimeItemOverlayService;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemQuery;
 
-/** Resolves configuration using tenant-qualified objects supplied by the caller. */
+/**
+ * Resolves configuration using tenant-qualified objects supplied by the caller.
+ */
 public class DefaultCurator implements Curator {
 
+    /**
+     * Service that validates, stores, and resolves setting items.
+     */
     private final ItemCuratorService settingCuratorService;
+    /**
+     * Manager for configuration change subscriptions.
+     */
     private final WatchManager watchManager;
+    /**
+     * Optional runtime overlay service consulted before durable content.
+     */
     private final RuntimeItemOverlayService runtimeSettingOverlayService;
 
+    /**
+     * Creates a curator without runtime overlay support.
+     *
+     * @param settingCuratorService item curation service
+     * @param watchManager          subscription manager
+     */
     public DefaultCurator(ItemCuratorService settingCuratorService, WatchManager watchManager) {
         this(settingCuratorService, watchManager, null);
     }
 
+    /**
+     * Creates a curator with optional runtime overlay support.
+     *
+     * @param settingCuratorService        item curation service
+     * @param watchManager                 subscription manager
+     * @param runtimeSettingOverlayService runtime overlay service, or {@code null}
+     */
     public DefaultCurator(ItemCuratorService settingCuratorService, WatchManager watchManager,
             RuntimeItemOverlayService runtimeSettingOverlayService) {
         this.settingCuratorService = settingCuratorService;

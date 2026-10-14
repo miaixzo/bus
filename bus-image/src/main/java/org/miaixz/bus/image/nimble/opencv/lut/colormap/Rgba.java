@@ -22,18 +22,34 @@ package org.miaixz.bus.image.nimble.opencv.lut.colormap;
 import java.awt.*;
 
 /**
- * A color with straight (non-premultiplied) alpha, each component in {@code [0, 1]}. *
+ * A color with straight (non-premultiplied) alpha, each component in {@code [0, 1]}.
  *
+ * @param red   red component
+ * @param green green component
+ * @param blue  blue component
+ * @param alpha opacity component
  * @author Kimi Liu
  */
 public record Rgba(float red, float green, float blue, float alpha) {
 
+    /**
+     * Fully transparent black.
+     */
     public static final Rgba TRANSPARENT = new Rgba(0f, 0f, 0f, 0f);
 
+    /**
+     * Fully opaque black.
+     */
     public static final Rgba BLACK = new Rgba(0f, 0f, 0f, 1f);
 
+    /**
+     * Fully opaque white.
+     */
     public static final Rgba WHITE = new Rgba(1f, 1f, 1f, 1f);
 
+    /**
+     * Clamps every component to the normalized range, treating NaN as zero.
+     */
     public Rgba {
         red = clamp(red);
         green = clamp(green);
@@ -41,38 +57,87 @@ public record Rgba(float red, float green, float blue, float alpha) {
         alpha = clamp(alpha);
     }
 
+    /**
+     * Converts an AWT color to opaque normalized components.
+     *
+     * @param color source color
+     * @return normalized opaque color
+     */
     public static Rgba of(Color color) {
         return new Rgba(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1f);
     }
 
+    /**
+     * Quantizes a normalized component to an unsigned eight-bit value.
+     *
+     * @param component normalized component
+     * @return value in {@code [0, 255]}
+     */
     static int to8(float component) {
         return Math.round(clamp(component) * 255f);
     }
 
+    /**
+     * Clamps a component to {@code [0, 1]}, treating NaN as zero.
+     *
+     * @param value component value
+     * @return normalized component
+     */
     static float clamp(float value) {
         return Float.isNaN(value) ? 0f : Math.max(0f, Math.min(1f, value));
     }
 
+    /**
+     * Returns a copy with a different opacity component.
+     *
+     * @param newAlpha replacement opacity
+     * @return updated color
+     */
     public Rgba withAlpha(float newAlpha) {
         return new Rgba(red, green, blue, newAlpha);
     }
 
+    /**
+     * Converts this value to an AWT color.
+     *
+     * @return AWT color
+     */
     public Color toColor() {
         return new Color(red, green, blue, alpha);
     }
 
+    /**
+     * Returns the red component as an unsigned eight-bit value.
+     *
+     * @return red value in {@code [0, 255]}
+     */
     public int red8() {
         return to8(red);
     }
 
+    /**
+     * Returns the green component as an unsigned eight-bit value.
+     *
+     * @return green value in {@code [0, 255]}
+     */
     public int green8() {
         return to8(green);
     }
 
+    /**
+     * Returns the blue component as an unsigned eight-bit value.
+     *
+     * @return blue value in {@code [0, 255]}
+     */
     public int blue8() {
         return to8(blue);
     }
 
+    /**
+     * Returns the opacity component as an unsigned eight-bit value.
+     *
+     * @return alpha value in {@code [0, 255]}
+     */
     public int alpha8() {
         return to8(alpha);
     }

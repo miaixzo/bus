@@ -25,7 +25,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.cortex.setting.item.GrayRequestContext;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 import org.miaixz.bus.cortex.setting.secret.NoOpSecretCodec;
@@ -70,18 +69,8 @@ public class ItemValueResolver {
     }
 
     /**
-     * Resolves the effective value for the entry.
-     *
-     * @param entry          setting entry
-     * @param requestContext compatibility argument; active revision selection is owned by ItemCuratorService
-     * @return resolved value
+     * Resolves a previously selected immutable snapshot; this method never performs gray routing.
      */
-    @Deprecated(since = "8.8.0", forRemoval = true)
-    public String resolve(Item entry, GrayRequestContext requestContext) {
-        return resolve(entry);
-    }
-
-    /** Resolves a previously selected immutable snapshot; this method never performs gray routing. */
     public String resolve(Item entry) {
         if (entry == null) {
             return null;

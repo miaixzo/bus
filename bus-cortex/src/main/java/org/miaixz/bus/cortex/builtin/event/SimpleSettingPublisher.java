@@ -35,7 +35,13 @@ import org.miaixz.bus.cortex.setting.item.Item;
  */
 public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
 
+    /**
+     * Cache that stores runtime overlay content.
+     */
     private final CacheX<String, Object> cacheX;
+    /**
+     * Strategy used to derive overlay keys.
+     */
     private final Keying<SettingSpec> keying;
 
     /**

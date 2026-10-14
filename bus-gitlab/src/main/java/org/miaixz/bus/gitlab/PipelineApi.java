@@ -461,6 +461,12 @@ public class PipelineApi extends AbstractApi implements Constants {
              */
             public List<Variable> variables;
 
+            /**
+             * Creates the payload used to start a pipeline.
+             *
+             * @param ref       branch or tag reference
+             * @param variables pipeline variables
+             */
             CreatePipelineForm(String ref, List<Variable> variables) {
                 this.ref = ref;
                 this.variables = variables;

@@ -271,8 +271,66 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
      * @author Kimi Liu
      */
     private enum TcpStat {
-        RtoAlgorithm, RtoMin, RtoMax, MaxConn, ActiveOpens, PassiveOpens, AttemptFails, EstabResets, CurrEstab, InSegs,
-        OutSegs, RetransSegs, InErrs, OutRsts, InCsumErrors;
+        /**
+         * Retransmission timeout algorithm.
+         */
+        RtoAlgorithm,
+        /**
+         * Minimum retransmission timeout.
+         */
+        RtoMin,
+        /**
+         * Maximum retransmission timeout.
+         */
+        RtoMax,
+        /**
+         * Maximum supported connection count.
+         */
+        MaxConn,
+        /**
+         * Active connection openings.
+         */
+        ActiveOpens,
+        /**
+         * Passive connection openings.
+         */
+        PassiveOpens,
+        /**
+         * Failed connection attempts.
+         */
+        AttemptFails,
+        /**
+         * Established connection resets.
+         */
+        EstabResets,
+        /**
+         * Currently established connections.
+         */
+        CurrEstab,
+        /**
+         * Received TCP segments.
+         */
+        InSegs,
+        /**
+         * Sent TCP segments.
+         */
+        OutSegs,
+        /**
+         * Retransmitted TCP segments.
+         */
+        RetransSegs,
+        /**
+         * TCP input errors.
+         */
+        InErrs,
+        /**
+         * Sent TCP reset segments.
+         */
+        OutRsts,
+        /**
+         * TCP input checksum errors.
+         */
+        InCsumErrors;
 
     }
 
@@ -282,7 +340,42 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
      * @author Kimi Liu
      */
     private enum UdpStat {
-        OutDatagrams, InDatagrams, NoPorts, InErrors, RcvbufErrors, SndbufErrors, InCsumErrors, IgnoredMulti, MemErrors;
+        /**
+         * Sent UDP datagrams.
+         */
+        OutDatagrams,
+        /**
+         * Received UDP datagrams.
+         */
+        InDatagrams,
+        /**
+         * Datagrams received for unavailable ports.
+         */
+        NoPorts,
+        /**
+         * UDP input errors.
+         */
+        InErrors,
+        /**
+         * Receive-buffer allocation errors.
+         */
+        RcvbufErrors,
+        /**
+         * Send-buffer allocation errors.
+         */
+        SndbufErrors,
+        /**
+         * UDP input checksum errors.
+         */
+        InCsumErrors,
+        /**
+         * Ignored multicast datagrams.
+         */
+        IgnoredMulti,
+        /**
+         * UDP memory allocation errors.
+         */
+        MemErrors;
 
     }
 

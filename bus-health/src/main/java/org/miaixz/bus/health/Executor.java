@@ -282,6 +282,12 @@ public class Executor {
         return Normal.EMPTY_BYTE_ARRAY;
     }
 
+    /**
+     * Parses a comma-separated command allowlist into normalized, immutable entries.
+     *
+     * @param value configured allowlist value
+     * @return immutable set of non-blank allowlist entries
+     */
     private static Set<String> parseAllowlist(String value) {
         if (value == null || value.isBlank()) {
             return Collections.emptySet();

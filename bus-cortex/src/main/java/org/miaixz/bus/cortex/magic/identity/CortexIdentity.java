@@ -57,7 +57,9 @@ public class CortexIdentity {
         return value.length() + ":" + value;
     }
 
-    /** Rejects a payload outside the explicitly selected tenant. */
+    /**
+     * Rejects a payload outside the explicitly selected tenant.
+     */
     public static void requireTenant(String expected, String actual) {
         if (!tenantId(expected).equals(tenantId(actual))) {
             throw new IllegalArgumentException("Tenant identity mismatch");

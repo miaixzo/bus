@@ -626,6 +626,14 @@ public class Expression implements Serializable, Cloneable {
         return i;
     }
 
+    /**
+     * Verifies that an increment is valid for the selected cron field.
+     *
+     * @param incr   increment value
+     * @param type   cron field type
+     * @param idxPos source position used when reporting an invalid increment
+     * @throws ParseException if the increment is outside the field range
+     */
     private void checkIncrementRange(int incr, int type, int idxPos) throws ParseException {
         if (incr > 59 && (type == SECOND || type == MINUTE)) {
             throw new ParseException("Increment > 60 : " + incr, idxPos);
@@ -1086,6 +1094,12 @@ public class Expression implements Serializable, Cloneable {
         }
     }
 
+    /**
+     * Returns the value set associated with a cron field type.
+     *
+     * @param type cron field type
+     * @return mutable set that stores values for the field
+     */
     TreeSet<Integer> getSet(int type) {
         switch (type) {
             case SECOND:

@@ -894,6 +894,12 @@ public class Galaxy {
         return qiShuoHigh(false, w);
     }
 
+    /**
+     * Computes the low-precision Delta-T correction for a Julian-century offset.
+     *
+     * @param t Julian-century offset
+     * @return correction expressed in Julian centuries
+     */
     private static double low(double t) {
         double n = t + 1.8;
         return (32 * n * n - 20) / SECOND_PER_DAY / 36525;

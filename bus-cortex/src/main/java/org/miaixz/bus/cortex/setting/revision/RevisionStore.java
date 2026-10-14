@@ -79,7 +79,9 @@ public interface RevisionStore {
      */
     List<Revision> query(String tenant_id, String item_id);
 
-    /** Finds an immutable snapshot by identifier without crossing the tenant or item boundary. */
+    /**
+     * Finds an immutable snapshot by identifier without crossing the tenant or item boundary.
+     */
     default Revision identity(String tenant_id, String item_id, String id) {
         ItemNormalizer.requireTenant(tenant_id);
         if (item_id == null || item_id.isBlank() || id == null || id.isBlank()) {

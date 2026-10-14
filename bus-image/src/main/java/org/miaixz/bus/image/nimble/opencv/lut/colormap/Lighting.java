@@ -22,23 +22,45 @@ package org.miaixz.bus.image.nimble.opencv.lut.colormap;
 /**
  * Volume rendering shading settings of a map; absent on 2D-only maps.
  *
+ * @param shade           whether lighting-based shading is enabled
+ * @param specularPower   exponent controlling specular-highlight tightness
  * @param gradientOpacity opacity factor by gradient magnitude, or null for none
  * @author Kimi Liu
  */
 public record Lighting(boolean shade, float specularPower, GradientOpacity gradientOpacity) {
 
+    /**
+     * Default enabled lighting with a broad specular highlight.
+     */
     public static final Lighting DEFAULT = new Lighting(true, 10f);
 
+    /**
+     * Validates the specular exponent.
+     *
+     * @throws IllegalArgumentException if the exponent is not positive
+     */
     public Lighting {
         if (Float.isNaN(specularPower) || specularPower <= 0f) {
             throw new IllegalArgumentException("Specular power must be positive: " + specularPower);
         }
     }
 
+    /**
+     * Creates lighting without gradient-opacity modulation.
+     *
+     * @param shade         whether shading is enabled
+     * @param specularPower specular-highlight exponent
+     */
     public Lighting(boolean shade, float specularPower) {
         this(shade, specularPower, null);
     }
 
+    /**
+     * Returns a copy with the supplied gradient-opacity curve.
+     *
+     * @param value replacement curve, or null to disable gradient opacity
+     * @return updated lighting settings
+     */
     public Lighting withGradientOpacity(GradientOpacity value) {
         return new Lighting(shade, specularPower, value);
     }

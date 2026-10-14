@@ -31,18 +31,47 @@ import org.miaixz.bus.cortex.setting.reference.Reference;
 import org.miaixz.bus.cortex.setting.reference.ReferenceStore;
 import org.miaixz.bus.extra.json.JsonKit;
 
-/** Persistent read-through cache isolated by tenant and item coordinates. */
+/**
+ * Persistent read-through cache isolated by tenant and item coordinates.
+ */
 public class StoreBackedItemStore {
 
+    /**
+     * Cache for detached item snapshots.
+     */
     private final CacheX<String, Object> cacheX;
+    /**
+     * Durable item store.
+     */
     private final ItemStore store;
+    /**
+     * Store used to evaluate shared-item visibility.
+     */
     private final ReferenceStore referenceStore;
+    /**
+     * Strategy for deriving tenant-qualified cache keys.
+     */
     private final Keying<SettingSpec> keying;
 
+    /**
+     * Creates a read-through item store using the default setting key strategy.
+     *
+     * @param cacheX         item cache
+     * @param store          durable item store
+     * @param referenceStore relationship store
+     */
     public StoreBackedItemStore(CacheX<String, Object> cacheX, ItemStore store, ReferenceStore referenceStore) {
         this(cacheX, store, referenceStore, SettingGenerator.INSTANCE);
     }
 
+    /**
+     * Creates a read-through item store with an explicit key strategy.
+     *
+     * @param cacheX         item cache
+     * @param store          durable item store
+     * @param referenceStore relationship store
+     * @param keying         setting-domain key strategy
+     */
     public StoreBackedItemStore(CacheX<String, Object> cacheX, ItemStore store, ReferenceStore referenceStore,
             Keying<SettingSpec> keying) {
         if (cacheX == null || store == null || referenceStore == null) {
@@ -54,10 +83,22 @@ public class StoreBackedItemStore {
         this.keying = keying == null ? SettingGenerator.INSTANCE : keying;
     }
 
+    /**
+     * Normalizes, persists, and caches one item.
+     *
+     * @param entry item to save
+     * @return stored detached item
+     */
     public Item save(Item entry) {
         return cache(store.save(ItemNormalizer.normalize(copy(entry))));
     }
 
+    /**
+     * Normalizes, persists, and caches a collection of items.
+     *
+     * @param entries items to save
+     * @return stored items
+     */
     public List<Item> saveAll(List<Item> entries) {
         if (entries == null || entries.isEmpty()) {
             return List.of();
@@ -72,6 +113,13 @@ public class StoreBackedItemStore {
         return stored;
     }
 
+    /**
+     * Deletes and evicts one tenant-owned item by identifier.
+     *
+     * @param tenant_id tenant identifier
+     * @param id        item identifier
+     * @return deleted item, or {@code null} when absent
+     */
     public Item delete(String tenant_id, String id) {
         ItemNormalizer.requireTenant(tenant_id);
         Item deleted = store.delete(tenant_id, id);
@@ -84,7 +132,9 @@ public class StoreBackedItemStore {
         return deleted;
     }
 
-    /** Reads complete business coordinates, caching source and effective items separately. */
+    /**
+     * Reads complete business coordinates, caching source and effective items separately.
+     */
     public Item find(Item coordinates) {
         String key = entryKey(coordinates);
         Object cached = cacheX.read(key);
@@ -134,6 +184,12 @@ public class StoreBackedItemStore {
         return result;
     }
 
+    /**
+     * Adapts a scope request to an item query.
+     *
+     * @param scope item scope
+     * @return matching visible items
+     */
     public List<Item> query(ItemScope scope) {
         if (scope == null) {
             return List.of();
@@ -152,19 +208,42 @@ public class StoreBackedItemStore {
         return query(query);
     }
 
+    /**
+     * Evicts and reloads one item.
+     *
+     * @param coordinates item coordinates
+     * @return reloaded item, or {@code null} when absent
+     */
     public Item refresh(Item coordinates) {
         evict(coordinates);
         return find(coordinates);
     }
 
+    /**
+     * Reloads all visible items for a scope.
+     *
+     * @param scope item scope
+     * @return rebuilt items
+     */
     public List<Item> rebuild(ItemScope scope) {
         return query(scope);
     }
 
+    /**
+     * Removes one item snapshot from the cache.
+     *
+     * @param coordinates item coordinates
+     */
     public void evict(Item coordinates) {
         cacheX.remove(entryKey(coordinates));
     }
 
+    /**
+     * Caches an item as JSON and returns a detached copy.
+     *
+     * @param item item to cache
+     * @return detached item copy
+     */
     private Item cache(Item item) {
         if (item != null) {
             cacheX.write(entryKey(item), JsonKit.toJsonString(item), 0L);
@@ -172,11 +251,19 @@ public class StoreBackedItemStore {
         return copy(item);
     }
 
+    /**
+     * Creates a detached item copy through its JSON representation.
+     *
+     * @param item item to copy
+     * @return detached copy, or {@code null}
+     */
     private Item copy(Item item) {
         return item == null ? null : JsonKit.toPojo(JsonKit.toJsonString(item), Item.class);
     }
 
-    /** Checks ownership for application items and reference-based visibility for shared items. */
+    /**
+     * Checks ownership for application items and reference-based visibility for shared items.
+     */
     public boolean visibleToApp(Item item, String app_id) {
         ItemNormalizer.coordinates(item);
         if (app_id == null || app_id.isBlank()) {
@@ -199,6 +286,12 @@ public class StoreBackedItemStore {
                         && app_id.equals(reference.getTarget_id()));
     }
 
+    /**
+     * Builds the tenant-qualified cache key for an item.
+     *
+     * @param item setting item
+     * @return cache key
+     */
     private String entryKey(Item item) {
         return keying.key(SettingSpec.entry(item));
     }

@@ -1971,6 +1971,9 @@ public interface Constants {
          */
         private final String value;
 
+        /**
+         * Creates an archive format using the normalized enum name.
+         */
         ArchiveFormat() {
             this.value = name().toLowerCase().replace(Symbol.C_UNDERLINE, Symbol.C_DOT);
         }
@@ -3160,9 +3163,17 @@ public interface Constants {
          */
         FULL_PROTECTION_AFTER_INITIAL_PUSH(4);
 
+        /**
+         * Numeric GitLab protection-level value.
+         */
         @JsonValue
         private final int value;
 
+        /**
+         * Defines a default-branch protection level.
+         *
+         * @param value numeric GitLab protection value
+         */
         private DefaultBranchProtectionLevel(int value) {
             this.value = value;
         }
@@ -3241,6 +3252,9 @@ public interface Constants {
 
         /**
          * The json lookup value.
+         */
+        /**
+         * Lookup of JSON scope names to group-search scopes.
          */
         private static final Map jsonLookup = Arrays
                 .stream(
@@ -3382,14 +3396,23 @@ public interface Constants {
          */
         public static final GroupSearchScope<User> USERS = new GroupSearchScope<>("users", User.class);
 
+        /**
+         * Lookup of JSON scope names to group-search scopes.
+         */
         private static final Map jsonLookup = Arrays
                 .stream(
                         new GroupSearchScope[] { PROJECTS, ISSUES, MERGE_REQUESTS, MILESTONES, WIKI_BLOBS, COMMITS,
                                 BLOBS, NOTES, USERS, })
                 .collect(Collectors.toMap(searchScope -> searchScope.jsonName, FunctionX.identity()));
 
+        /**
+         * JSON query value for this scope.
+         */
         private final String jsonName;
 
+        /**
+         * Model type returned for this scope.
+         */
         private final Class<T> resultType;
 
         /**
@@ -3512,14 +3535,23 @@ public interface Constants {
          */
         public static final ProjectSearchScope<User> USERS = new ProjectSearchScope<>("users", User.class);
 
+        /**
+         * Lookup of JSON scope names to project-search scopes.
+         */
         private static final Map jsonLookup = Arrays
                 .stream(
                         new ProjectSearchScope[] { BLOBS, COMMITS, ISSUES, MERGE_REQUESTS, MILESTONES, NOTES,
                                 WIKI_BLOBS, USERS })
                 .collect(Collectors.toMap(searchScope -> searchScope.jsonName, FunctionX.identity()));
 
+        /**
+         * JSON query value for this scope.
+         */
         private final String jsonName;
 
+        /**
+         * Model type returned for this scope.
+         */
         private final Class<T> resultType;
 
         /**

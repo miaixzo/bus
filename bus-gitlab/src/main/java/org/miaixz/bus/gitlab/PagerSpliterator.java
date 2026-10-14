@@ -42,6 +42,11 @@ class PagerSpliterator<T> implements Spliterator<T> {
      */
     private Iterator<T> elements;
 
+    /**
+     * Creates a spliterator backed by the supplied paginated result.
+     *
+     * @param pager pager that supplies successive result pages
+     */
     PagerSpliterator(Pager<T> pager) {
         this.pager = pager;
         if (pager.hasNext()) {

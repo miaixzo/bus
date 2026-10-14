@@ -28,15 +28,40 @@ import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemQuery;
 
-/** Consumer contract for tenant-scoped configuration content and subscriptions. */
+/**
+ * Consumer contract for tenant-scoped configuration content and subscriptions.
+ */
 public interface Curator {
 
+    /**
+     * Resolves configuration for a tenant-qualified query.
+     *
+     * @param query configuration query
+     * @return resolved value or the query fallback
+     */
     String get(ItemQuery query);
 
+    /**
+     * Stages a configuration item for publication.
+     *
+     * @param item item to stage
+     */
     void publish(Item item);
 
+    /**
+     * Stages a historical revision as the next item revision.
+     *
+     * @param coordinates item coordinates
+     * @param revision    historical revision identifier
+     */
     void rollback(Item coordinates, String revision);
 
+    /**
+     * Resolves multiple queries while preserving their input order.
+     *
+     * @param queries configuration queries
+     * @return map keyed by canonical exported item key
+     */
     default Map<String, String> batchGet(List<ItemQuery> queries) {
         Map<String, String> result = new LinkedHashMap<>();
         if (queries != null) {
@@ -51,12 +76,31 @@ public interface Curator {
         return result;
     }
 
+    /**
+     * Resolves a query and substitutes a caller-provided fallback when no value exists.
+     *
+     * @param query    configuration query
+     * @param fallback fallback returned for a missing value
+     * @return resolved value or {@code fallback}
+     */
     default String getOrDefault(ItemQuery query, String fallback) {
         String value = get(query);
         return value == null ? fallback : value;
     }
 
+    /**
+     * Subscribes to changes for one configuration coordinate.
+     *
+     * @param coordinates item coordinates
+     * @param listener    value-change listener
+     * @return watch identifier used to cancel the subscription
+     */
     String watch(Item coordinates, ConsumerX<String> listener);
 
+    /**
+     * Cancels a configuration subscription.
+     *
+     * @param watch_id watch identifier returned by {@link #watch(Item, ConsumerX)}
+     */
     void unwatch(String watch_id);
 }

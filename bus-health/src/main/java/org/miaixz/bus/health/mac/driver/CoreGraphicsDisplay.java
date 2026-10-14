@@ -35,22 +35,34 @@ import org.miaixz.bus.health.builtin.hardware.DisplayModeImpl;
 @Immutable
 public final class CoreGraphicsDisplay {
 
-    /** The EDID manufacturer identifier. */
+    /**
+     * The EDID manufacturer identifier.
+     */
     private final int vendor;
 
-    /** The EDID product identifier. */
+    /**
+     * The EDID product identifier.
+     */
     private final int model;
 
-    /** The EDID serial number. */
+    /**
+     * The EDID serial number.
+     */
     private final int serial;
 
-    /** Whether CoreGraphics marks the display as built in. */
+    /**
+     * Whether CoreGraphics marks the display as built in.
+     */
     private final boolean builtIn;
 
-    /** Whether CoreGraphics marks the display as the main display. */
+    /**
+     * Whether CoreGraphics marks the display as the main display.
+     */
     private final boolean main;
 
-    /** The current mode, or {@code null}. */
+    /**
+     * The current mode, or {@code null}.
+     */
     private final DisplayMode mode;
 
     /**

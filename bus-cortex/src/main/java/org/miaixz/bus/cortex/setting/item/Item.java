@@ -44,10 +44,14 @@ public class Item extends Tenant {
      */
     private String stable_id;
 
-    /** Latest pending revision, including staged deletion; never a runtime-delivery pointer. */
+    /**
+     * Latest pending revision, including staged deletion; never a runtime-delivery pointer.
+     */
     private String draft_id;
 
-    /** Configuration lifecycle from State, independent from the inherited persistence status. */
+    /**
+     * Configuration lifecycle from State, independent from the inherited persistence status.
+     */
     private String state;
     /**
      * Current gray revision identifier.

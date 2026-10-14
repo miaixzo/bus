@@ -25,10 +25,18 @@ import org.miaixz.bus.cortex.Keying.SettingSpec;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 
-/** Generates tenant-qualified cache, subscription, and revision keys. */
+/**
+ * Generates tenant-qualified cache, subscription, and revision keys.
+ */
 public class SettingGenerator implements Keying<SettingSpec> {
 
+    /**
+     * Shared stateless setting-key generator.
+     */
     public static final SettingGenerator INSTANCE = new SettingGenerator();
+    /**
+     * Namespace segment used for item revision sequences.
+     */
     public static final String SETTING_REVISION_SEQUENCE_SEGMENT = "setting:item:";
 
     @Override
@@ -65,7 +73,9 @@ public class SettingGenerator implements Keying<SettingSpec> {
         };
     }
 
-    /** Length-prefixes segments to prevent collisions when values contain delimiters. */
+    /**
+     * Length-prefixes segments to prevent collisions when values contain delimiters.
+     */
     private String identity(SettingSpec spec) {
         Item item = Item.builder().tenant_id(spec.tenant_id()).scope(spec.scope()).app_id(spec.app_id())
                 .code(spec.code()).kind(spec.kind()).build();
@@ -74,6 +84,12 @@ public class SettingGenerator implements Keying<SettingSpec> {
                 + segment(item.getCode()) + ':' + segment(item.getKind());
     }
 
+    /**
+     * Encodes a nullable value as a collision-resistant length-prefixed segment.
+     *
+     * @param value segment value
+     * @return encoded segment
+     */
     private String segment(String value) {
         return value == null ? "-" : value.length() + "#" + value;
     }

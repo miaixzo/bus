@@ -20,7 +20,7 @@
 package org.miaixz.bus.image.nimble.opencv.lut.colormap;
 
 /**
- * Taxonomy of a color map (matplotlib, ColorBrewer); drives editor behaviour and menu grouping. *
+ * Taxonomy of a color map (matplotlib, ColorBrewer); drives editor behaviour and menu grouping.
  *
  * @author Kimi Liu
  */

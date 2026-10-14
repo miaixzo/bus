@@ -267,6 +267,12 @@ public class ISO8601 {
         private static final ThreadLocal<Map<String, SimpleDateFormat>> safeFormats = ThreadLocal
                 .withInitial(() -> (new ConcurrentHashMap<>()));
 
+        /**
+         * Returns the current thread's formatter for a format specification.
+         *
+         * @param formatSpec date-time pattern
+         * @return cached thread-confined formatter
+         */
         private static SimpleDateFormat getDateFormat(String formatSpec) {
 
             Map<String, SimpleDateFormat> formatMap = safeFormats.get();

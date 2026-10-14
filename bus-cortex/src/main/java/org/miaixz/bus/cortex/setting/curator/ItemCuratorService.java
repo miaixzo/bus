@@ -31,7 +31,6 @@ import org.miaixz.bus.cortex.guard.GuardContext;
 import org.miaixz.bus.cortex.setting.SettingEnforcer;
 import org.miaixz.bus.cortex.setting.SettingPublisher;
 import org.miaixz.bus.cortex.setting.item.*;
-import org.miaixz.bus.cortex.setting.reference.ReferenceStore;
 import org.miaixz.bus.cortex.setting.revision.Revision;
 import org.miaixz.bus.cortex.setting.revision.RevisionStore;
 import org.miaixz.bus.cortex.setting.rollout.Plan;
@@ -41,36 +40,71 @@ import org.miaixz.bus.cortex.setting.rollout.Rollout.State;
 import org.miaixz.bus.cortex.setting.rollout.RolloutStore;
 import org.miaixz.bus.extra.json.JsonKit;
 
-/** Provides tenant-scoped configuration reads, publication, and revision history. */
+/**
+ * Provides tenant-scoped configuration reads, publication, and revision history.
+ *
+ * @author Kimi Liu
+ */
 public class ItemCuratorService {
 
+    /**
+     * Store for current item state and cache coordination.
+     */
     private final StoreBackedItemStore entryStore;
+    /**
+     * Store for immutable item revisions.
+     */
     private final RevisionStore revisionStore;
+    /**
+     * Resolver for materializing published item content.
+     */
     private final ItemValueResolver resolver;
+    /**
+     * Publisher that stages item revisions.
+     */
     private final SettingPublisher publisher;
+    /**
+     * Optional business-rule enforcer.
+     */
     private final SettingEnforcer enforcer;
+    /**
+     * Optional authorization guard.
+     */
     private final CortexGuard cortexGuard;
+    /**
+     * Strategy for deriving setting-domain keys.
+     */
     private final Keying<SettingSpec> keying;
+    /**
+     * Optional store used to validate frozen gray rollouts.
+     */
     private final RolloutStore rolloutStore;
 
-    @Deprecated(since = "8.8.0", forRemoval = true)
-    public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore,
-            ReferenceStore referenceStore, ItemValueResolver resolver, SettingPublisher publisher) {
-        this(entryStore, revisionStore, referenceStore, resolver, publisher, null, null, SettingGenerator.INSTANCE);
-    }
-
-    @Deprecated(since = "8.8.0", forRemoval = true)
-    public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore,
-            ReferenceStore referenceStore, ItemValueResolver resolver, SettingPublisher publisher,
-            SettingEnforcer enforcer, CortexGuard cortexGuard, Keying<SettingSpec> keying) {
-        this(entryStore, revisionStore, resolver, publisher, null, enforcer, cortexGuard, keying);
-    }
-
+    /**
+     * Creates an item curator with default keying and no optional enforcement services.
+     *
+     * @param entryStore    current-state item store
+     * @param revisionStore immutable revision store
+     * @param resolver      published-value resolver
+     * @param publisher     revision publisher
+     */
     public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore, ItemValueResolver resolver,
             SettingPublisher publisher) {
         this(entryStore, revisionStore, resolver, publisher, null, null, null, SettingGenerator.INSTANCE);
     }
 
+    /**
+     * Creates an item curator with rollout, business, authorization, and keying integrations.
+     *
+     * @param entryStore    current-state item store
+     * @param revisionStore immutable revision store
+     * @param resolver      published-value resolver
+     * @param publisher     revision publisher
+     * @param rolloutStore  rollout store, or {@code null} when gray delivery is disabled
+     * @param enforcer      business-rule enforcer, or {@code null}
+     * @param cortexGuard   authorization guard, or {@code null}
+     * @param keying        key strategy, or {@code null} for the default strategy
+     */
     public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore, ItemValueResolver resolver,
             SettingPublisher publisher, RolloutStore rolloutStore, SettingEnforcer enforcer, CortexGuard cortexGuard,
             Keying<SettingSpec> keying) {
@@ -87,31 +121,61 @@ public class ItemCuratorService {
         this.keying = keying == null ? SettingGenerator.INSTANCE : keying;
     }
 
+    /**
+     * Validates and stages an item revision.
+     *
+     * @param entry item to stage
+     * @return stored current-state item
+     */
     public Item publish(Item entry) {
         return publisher.publish(validateItem(entry));
     }
 
+    /**
+     * Validates an item and stages supplied inline content.
+     *
+     * @param entry   item metadata
+     * @param content inline content
+     * @return stored current-state item
+     */
     public Item publishInline(Item entry, String content) {
         return publisher.publishInline(validateItem(entry), content);
     }
 
+    /**
+     * Authorizes and stages an item deletion tombstone.
+     *
+     * @param coordinates item coordinates
+     * @return updated current-state item, or {@code null} when absent
+     */
     public Item delete(Item coordinates) {
         requireAllowed("delete", coordinates);
         return publisher.delete(coordinates);
     }
 
+    /**
+     * Authorizes and stages content copied from an immutable historical revision.
+     *
+     * @param coordinates item coordinates
+     * @param revision    historical revision identifier
+     * @return restored current-state item, or {@code null} when unavailable
+     */
     public Item rollback(Item coordinates, String revision) {
         requireAllowed("rollback", coordinates);
         return publisher.rollback(coordinates, revision);
     }
 
-    /** Applies read authorization before looking up exact business coordinates. */
+    /**
+     * Applies read authorization before looking up exact business coordinates.
+     */
     public Item find(Item coordinates) {
         requireAllowed("read", coordinates);
         return entryStore.find(coordinates);
     }
 
-    /** Resolves exact coordinates and enforces application-reference visibility before returning an item. */
+    /**
+     * Resolves exact coordinates and enforces application-reference visibility before returning an item.
+     */
     public Item find(ItemQuery query) {
         ItemQuery prepared = prepare(query);
         if (prepared == null || !allows(prepared)) {
@@ -127,6 +191,12 @@ public class ItemCuratorService {
         return item != null && entryStore.visibleToApp(item, prepared.getApp_id()) ? item : null;
     }
 
+    /**
+     * Queries visible items after scope validation and authorization.
+     *
+     * @param query item query
+     * @return matching items, or an empty list when the scope is unavailable
+     */
     public List<Item> query(ItemQuery query) {
         ItemQuery prepared = prepare(query);
         if (prepared == null || !allows(prepared)) {
@@ -136,10 +206,23 @@ public class ItemCuratorService {
         return entryStore.query(prepared);
     }
 
+    /**
+     * Resolves a published item without restricting its exposure class.
+     *
+     * @param query item query
+     * @return resolved value or query fallback
+     */
     public String resolve(ItemQuery query) {
         return resolve(query, null);
     }
 
+    /**
+     * Resolves a published item only when its exposure matches the requested class.
+     *
+     * @param query    item query
+     * @param exposure required exposure, or {@code null} for any exposure
+     * @return resolved value, query fallback, or {@code null} for an exposure mismatch
+     */
     public String resolve(ItemQuery query, ItemExposure exposure) {
         ItemQuery prepared = prepare(query);
         if (prepared == null || !allows(prepared)) {
@@ -163,10 +246,23 @@ public class ItemCuratorService {
         return value == null ? prepared.getFallbackValue() : value;
     }
 
+    /**
+     * Exports all published values visible in a scope.
+     *
+     * @param scope export scope
+     * @return canonical keys mapped to resolved values
+     */
     public Map<String, String> export(ItemScope scope) {
         return export(scope, null);
     }
 
+    /**
+     * Exports published values whose exposure matches the requested class.
+     *
+     * @param scope    export scope
+     * @param exposure required exposure, or {@code null} for any exposure
+     * @return canonical keys mapped to resolved values
+     */
     public Map<String, String> export(ItemScope scope, ItemExposure exposure) {
         ItemScope prepared = prepare(scope);
         if (prepared == null || !allows(prepared.getTenant_id(), prepared.getApp_id(), prepared.getScope())) {
@@ -186,18 +282,35 @@ public class ItemCuratorService {
         return result;
     }
 
+    /**
+     * Applies business validation and validates a query scope.
+     *
+     * @param query query to prepare
+     * @return prepared query
+     */
     public ItemQuery prepare(ItemQuery query) {
         ItemQuery prepared = enforcer == null ? query : enforcer.validateQuery(query);
         validateScope(prepared);
         return prepared;
     }
 
+    /**
+     * Applies business validation and validates an export scope.
+     *
+     * @param scope scope to prepare
+     * @return prepared scope
+     */
     public ItemScope prepare(ItemScope scope) {
         ItemScope prepared = enforcer == null ? scope : enforcer.validateScope(scope);
         validateScope(prepared);
         return prepared;
     }
 
+    /**
+     * Validates tenant identity and the optional ownership-scope value.
+     *
+     * @param scope scope to validate
+     */
     private void validateScope(ItemScope scope) {
         if (scope != null) {
             ItemNormalizer.requireTenant(scope.getTenant_id());
@@ -207,6 +320,12 @@ public class ItemCuratorService {
         }
     }
 
+    /**
+     * Applies business validation, validates coordinates, and authorizes publication.
+     *
+     * @param item item to validate
+     * @return validated item
+     */
     public Item validateItem(Item item) {
         Item validated = enforcer == null ? item : enforcer.validateItem(item);
         ItemNormalizer.coordinates(validated);
@@ -214,30 +333,69 @@ public class ItemCuratorService {
         return validated;
     }
 
+    /**
+     * Tests whether a prepared query is allowed by the business enforcer.
+     *
+     * @param query query to test
+     * @return {@code true} when the scope is allowed
+     */
     public boolean allows(ItemQuery query) {
         return query != null && allows(query.getTenant_id(), query.getApp_id(), query.getScope());
     }
 
+    /**
+     * Tests access to an application and ownership scope within a tenant.
+     *
+     * @param tenant_id tenant identifier
+     * @param app_id    application identifier
+     * @param scope     ownership scope
+     * @return {@code true} when access is allowed
+     */
     public boolean allows(String tenant_id, String app_id, String scope) {
         ItemNormalizer.requireTenant(tenant_id);
         return enforcer == null || enforcer.allows(tenant_id, app_id, scope);
     }
 
+    /**
+     * Loads one immutable revision after item-read authorization.
+     *
+     * @param coordinates item coordinates
+     * @param revision    revision identifier
+     * @return revision, or {@code null} when unavailable
+     */
     public Revision revision(Item coordinates, String revision) {
         Item item = find(coordinates);
         return item == null ? null : revisionStore.find(item.getTenant_id(), item.getId(), revision);
     }
 
+    /**
+     * Lists immutable revisions for an authorized item.
+     *
+     * @param coordinates item coordinates
+     * @return item revision history
+     */
     public List<Revision> revisions(Item coordinates) {
         Item item = find(coordinates);
         return item == null ? List.of() : revisionStore.query(item.getTenant_id(), item.getId());
     }
 
+    /**
+     * Reloads an authorized item from durable storage into the cache.
+     *
+     * @param coordinates item coordinates
+     * @return refreshed item, or {@code null} when absent
+     */
     public Item refresh(Item coordinates) {
         requireAllowed("read", coordinates);
         return entryStore.refresh(coordinates);
     }
 
+    /**
+     * Rebuilds cached item state for an authorized scope.
+     *
+     * @param scope scope to rebuild
+     * @return rebuilt items
+     */
     public List<Item> rebuild(ItemScope scope) {
         ItemScope prepared = prepare(scope);
         if (prepared == null || !allows(prepared.getTenant_id(), prepared.getApp_id(), prepared.getScope())) {
@@ -247,6 +405,12 @@ public class ItemCuratorService {
         return entryStore.rebuild(prepared);
     }
 
+    /**
+     * Returns a safe preview of the current item content.
+     *
+     * @param query item query
+     * @return preview text, or {@code null} when unavailable
+     */
     public String preview(ItemQuery query) {
         ItemQuery prepared = prepare(query);
         if (prepared == null || !allows(prepared)) {
@@ -256,16 +420,29 @@ public class ItemCuratorService {
         return item == null ? null : resolver.preview(item);
     }
 
+    /**
+     * Authorizes and evicts one item from the cache.
+     *
+     * @param coordinates item coordinates
+     */
     public void evict(Item coordinates) {
         requireAllowed("evict", coordinates);
         entryStore.evict(coordinates);
     }
 
+    /**
+     * Builds the subscription key for one item coordinate.
+     *
+     * @param coordinates item coordinates
+     * @return canonical watch key
+     */
     public String watchKey(Item coordinates) {
         return keying.key(SettingSpec.watch(coordinates));
     }
 
-    /** Resolves only immutable active snapshots; draft content never reaches runtime reads. */
+    /**
+     * Resolves only immutable active snapshots; draft content never reaches runtime reads.
+     */
     private Item published(Item item, GrayRequestContext context) {
         String id = item.getStable_id();
         if (item.getGray_id() != null && context != null) {
@@ -312,6 +489,12 @@ public class ItemCuratorService {
         return active;
     }
 
+    /**
+     * Validates coordinates and enforces an action for one item.
+     *
+     * @param action      action name
+     * @param coordinates item coordinates
+     */
     private void requireAllowed(String action, Item coordinates) {
         ItemNormalizer.coordinates(coordinates);
         requireAllowed(
@@ -322,6 +505,15 @@ public class ItemCuratorService {
                 keying.key(SettingSpec.scope(coordinates)));
     }
 
+    /**
+     * Enforces business-scope and guard authorization for an action.
+     *
+     * @param action     action name
+     * @param tenant_id  tenant identifier
+     * @param app_id     application identifier
+     * @param scope      ownership scope
+     * @param resourceId canonical resource identifier
+     */
     private void requireAllowed(String action, String tenant_id, String app_id, String scope, String resourceId) {
         if (!allows(tenant_id, app_id, scope)) {
             throw new IllegalArgumentException("Setting scope is not allowed");

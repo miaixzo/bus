@@ -37,24 +37,65 @@ import org.miaixz.bus.cortex.setting.rollout.Rollout;
 import org.miaixz.bus.cortex.setting.secret.SecretCodec;
 import org.miaixz.bus.extra.json.JsonKit;
 
-/** Stages configuration revisions; application release activation is committed by the host transaction. */
+/**
+ * Stages configuration revisions; application release activation is committed by the host transaction.
+ */
 public class SettingPublisher {
 
+    /**
+     * Store for current item state.
+     */
     private final StoreBackedItemStore entryStore;
+    /**
+     * Store for immutable revision history.
+     */
     private final RevisionStore revisionStore;
+    /**
+     * Codec used to protect and reveal sensitive content.
+     */
     private final SecretCodec secretCodec;
+    /**
+     * Maximum number of revisions retained per item.
+     */
     private final int maxRevisions;
 
+    /**
+     * Creates a publisher retaining ten revisions per item.
+     *
+     * @param entryStore    current-state item store
+     * @param revisionStore immutable revision store
+     * @param watchManager  retained compatibility dependency; activation notifications are host-owned
+     * @param secretCodec   sensitive-content codec
+     */
     public SettingPublisher(StoreBackedItemStore entryStore, RevisionStore revisionStore, WatchManager watchManager,
             SecretCodec secretCodec) {
         this(entryStore, revisionStore, watchManager, secretCodec, 10, SettingGenerator.INSTANCE);
     }
 
+    /**
+     * Creates a publisher with a configured revision-retention limit.
+     *
+     * @param entryStore    current-state item store
+     * @param revisionStore immutable revision store
+     * @param watchManager  retained compatibility dependency; activation notifications are host-owned
+     * @param secretCodec   sensitive-content codec
+     * @param maxRevisions  maximum revisions retained per item
+     */
     public SettingPublisher(StoreBackedItemStore entryStore, RevisionStore revisionStore, WatchManager watchManager,
             SecretCodec secretCodec, int maxRevisions) {
         this(entryStore, revisionStore, watchManager, secretCodec, maxRevisions, SettingGenerator.INSTANCE);
     }
 
+    /**
+     * Creates a publisher with explicit retention and keying strategies.
+     *
+     * @param entryStore    current-state item store
+     * @param revisionStore immutable revision store
+     * @param watchManager  retained compatibility dependency; activation notifications are host-owned
+     * @param secretCodec   sensitive-content codec
+     * @param maxRevisions  maximum revisions retained per item
+     * @param keying        retained compatibility key strategy
+     */
     public SettingPublisher(StoreBackedItemStore entryStore, RevisionStore revisionStore, WatchManager watchManager,
             SecretCodec secretCodec, int maxRevisions, Keying<SettingSpec> keying) {
         if (entryStore == null || revisionStore == null || secretCodec == null) {
@@ -66,24 +107,42 @@ public class SettingPublisher {
         this.maxRevisions = Math.max(maxRevisions, 1);
     }
 
-    /** Stages inline content using complete tenant-qualified item coordinates. */
+    /**
+     * Stages inline content using complete tenant-qualified item coordinates.
+     */
     public Item publishInline(Item entry, String content) {
         Item copy = copy(entry);
         copy.setContent(content);
         return publish(copy);
     }
 
-    /** Saves a draft only; this compatibility method never changes live pointers or notifies clients. */
+    /**
+     * Saves a draft only; this compatibility method never changes live pointers or notifies clients.
+     */
     public Item publish(Item entry) {
         return publish(entry, null);
     }
 
+    /**
+     * Serializes draft publication against the current-state store.
+     *
+     * @param entry  item to stage
+     * @param source historical source revision for a rollback, or {@code null}
+     * @return stored current-state item
+     */
     private Item publish(Item entry, Revision source) {
         synchronized (entryStore) {
             return stage(entry, source);
         }
     }
 
+    /**
+     * Builds, protects, persists, and retains one immutable draft revision.
+     *
+     * @param entry  item to stage
+     * @param source historical source revision, or {@code null}
+     * @return stored current-state item
+     */
     private Item stage(Item entry, Revision source) {
         Item prepared = ItemNormalizer.normalize(copy(entry));
         prepared.setChecksum(ItemNormalizer.checksum(prepared));
@@ -142,13 +201,21 @@ public class SettingPublisher {
         return stored;
     }
 
-    /** Stages a deletion tombstone. Published content remains available until the selected release commits. */
+    /**
+     * Stages a deletion tombstone. Published content remains available until the selected release commits.
+     */
     public Item delete(Item coordinates) {
         synchronized (entryStore) {
             return stageDeletion(coordinates);
         }
     }
 
+    /**
+     * Builds and persists a deletion tombstone for an existing item.
+     *
+     * @param coordinates item coordinates
+     * @return updated current-state item, or {@code null} when absent
+     */
     private Item stageDeletion(Item coordinates) {
         Item current = entryStore.find(coordinates);
         if (current == null) {
@@ -172,13 +239,22 @@ public class SettingPublisher {
         return deleted;
     }
 
-    /** Stages a new revision from immutable history without activating it or modifying the source. */
+    /**
+     * Stages a new revision from immutable history without activating it or modifying the source.
+     */
     public Item rollback(Item coordinates, String revision) {
         synchronized (entryStore) {
             return restore(coordinates, revision);
         }
     }
 
+    /**
+     * Copies immutable historical content into a new draft revision.
+     *
+     * @param coordinates item coordinates
+     * @param revision    historical revision identifier
+     * @return restored current-state item, or {@code null} when unavailable
+     */
     private Item restore(Item coordinates, String revision) {
         Item current = entryStore.find(coordinates);
         if (current == null) {
@@ -213,6 +289,15 @@ public class SettingPublisher {
         return publish(restored, source);
     }
 
+    /**
+     * Captures all immutable item fields in a revision snapshot.
+     *
+     * @param item       normalized item
+     * @param revisionNo monotonic revision number
+     * @param source_id  historical source identifier, or {@code null}
+     * @param operation  revision operation
+     * @return immutable revision snapshot
+     */
     private Revision snapshot(Item item, String revisionNo, String source_id, Revision.Operation operation) {
         return Revision.builder().id(ID.objectId()).tenant_id(item.getTenant_id()).item_id(item.getId())
                 .rollout_id(item.getRollout_id()).source_id(source_id).revision(revisionNo).edition(item.getEdition())
@@ -263,10 +348,23 @@ public class SettingPublisher {
         return activated;
     }
 
+    /**
+     * Reveals a protected value when its encrypted flag is enabled.
+     *
+     * @param value     stored value
+     * @param encrypted encrypted flag
+     * @return decoded value
+     */
     private String decode(String value, Integer encrypted) {
         return value != null && ItemNormalizer.isEncryptedFlagEnabled(encrypted) ? secretCodec.decrypt(value) : value;
     }
 
+    /**
+     * Creates a detached item copy through the configured JSON representation.
+     *
+     * @param item item to copy
+     * @return detached copy
+     */
     private Item copy(Item item) {
         if (item == null) {
             throw new IllegalArgumentException("Item is required");
@@ -274,6 +372,12 @@ public class SettingPublisher {
         return JsonKit.toPojo(JsonKit.toJsonString(item), Item.class);
     }
 
+    /**
+     * Advances a nullable monotonic counter.
+     *
+     * @param value current counter value
+     * @return one for a missing counter, otherwise the next value
+     */
     private long next(Long value) {
         return value == null ? 1L : value + 1L;
     }

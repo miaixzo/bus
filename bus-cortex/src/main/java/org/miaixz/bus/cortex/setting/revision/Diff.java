@@ -32,15 +32,49 @@ import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
  */
 public final class Diff {
 
+    /**
+     * Describes how one normalized configuration path changed.
+     */
     public enum Type {
-        ADD, MODIFY, DELETE
+        /**
+         * Path exists only in the target revision.
+         */
+        ADD,
+        /**
+         * Path exists in both revisions with different values.
+         */
+        MODIFY,
+        /**
+         * Path exists only in the baseline revision.
+         */
+        DELETE
     }
 
+    /**
+     * Escaped JSON Pointer path of the changed value.
+     */
     private final String key;
+    /**
+     * Kind of change at the path.
+     */
     private final Type type;
+    /**
+     * Baseline value, possibly redacted.
+     */
     private final Object before;
+    /**
+     * Target value, possibly redacted.
+     */
     private final Object after;
 
+    /**
+     * Creates one immutable path-level difference.
+     *
+     * @param key    JSON Pointer path
+     * @param type   change type
+     * @param before baseline value
+     * @param after  target value
+     */
     private Diff(String key, Type type, Object before, Object after) {
         this.key = key;
         this.type = type;
@@ -48,18 +82,30 @@ public final class Diff {
         this.after = after;
     }
 
+    /**
+     * @return escaped JSON Pointer path
+     */
     public String getKey() {
         return key;
     }
 
+    /**
+     * @return change type
+     */
     public Type getType() {
         return type;
     }
 
+    /**
+     * @return baseline value, possibly redacted
+     */
     public Object getBefore() {
         return before;
     }
 
+    /**
+     * @return target value, possibly redacted
+     */
     public Object getAfter() {
         return after;
     }
@@ -106,6 +152,12 @@ public final class Diff {
                 secretPaths);
     }
 
+    /**
+     * Requires a decoder to return an explicit normalized value map.
+     *
+     * @param values decoded values
+     * @return non-null decoded map
+     */
     private static Map<String, ?> decoded(Map<String, ?> values) {
         if (values == null) {
             throw new IllegalArgumentException("Revision parser did not return a value map");
@@ -113,16 +165,30 @@ public final class Diff {
         return values;
     }
 
+    /**
+     * Tests whether a revision represents materialized content rather than a tombstone.
+     *
+     * @param revision revision to inspect
+     * @return {@code true} when content exists
+     */
     private static boolean exists(Revision revision) {
         return revision != null && Revision.Operation.valueOf(revision.getOperation()) != Revision.Operation.DELETE;
     }
 
+    /**
+     * Tests whether revision content must be compared without decoding its values.
+     *
+     * @param revision revision to inspect
+     * @return {@code true} for encrypted or secret content
+     */
     private static boolean protectedContent(Revision revision) {
         return revision != null && (ItemNormalizer.isEncryptedFlagEnabled(revision.getEncrypted())
                 || ItemExposure.SECRET.name().equals(revision.getExposure()));
     }
 
-    /** Compares normalized value maps and redacts explicit paths and commonly sensitive key names. */
+    /**
+     * Compares normalized value maps and redacts explicit paths and commonly sensitive key names.
+     */
     public static List<Diff> compare(Map<String, ?> before, Map<String, ?> after, Set<String> secretPaths) {
         Objects.requireNonNull(before, "Baseline values are required");
         Objects.requireNonNull(after, "Target values are required");
@@ -151,10 +217,23 @@ public final class Diff {
         return Collections.unmodifiableList(result);
     }
 
+    /**
+     * Escapes one JSON Pointer path segment.
+     *
+     * @param key unescaped segment
+     * @return escaped segment
+     */
     private static String escape(String key) {
         return Objects.requireNonNull(key, "Configuration key").replace("~", "~0").replace("/", "~1");
     }
 
+    /**
+     * Flattens nested maps and lists into JSON Pointer paths while preserving empty containers.
+     *
+     * @param path   current JSON Pointer path
+     * @param value  value at the path
+     * @param result flattened destination map
+     */
     private static void flatten(String path, Object value, Map<String, Object> result) {
         if (value instanceof Map<?, ?> map && !map.isEmpty()) {
             map.forEach((key, child) -> flatten(path + "/" + escape(String.valueOf(key)), child, result));

@@ -41,40 +41,89 @@ public class MurmurHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[
      */
     public static final MurmurHash INSTANCE = new MurmurHash();
 
-    // Constants for 32-bit variant
+    /**
+     * First 32-bit block-mixing constant.
+     */
     private static final int C1_32 = 0xcc9e2d51;
 
+    /**
+     * Second 32-bit block-mixing constant.
+     */
     private static final int C2_32 = 0x1b873593;
 
+    /**
+     * First 32-bit rotation distance.
+     */
     private static final int R1_32 = 15;
 
+    /**
+     * Second 32-bit rotation distance.
+     */
     private static final int R2_32 = 13;
 
+    /**
+     * 32-bit round multiplier.
+     */
     private static final int M_32 = 5;
 
+    /**
+     * 32-bit round additive constant.
+     */
     private static final int N_32 = 0xe6546b64;
 
-    // Constants for 128-bit variant
+    /**
+     * First 128-bit block-mixing constant.
+     */
     private static final long C1 = 0x87c37b91114253d5L;
 
+    /**
+     * Second 128-bit block-mixing constant.
+     */
     private static final long C2 = 0x4cf5ad432745937fL;
 
+    /**
+     * First 128-bit rotation distance.
+     */
     private static final int R1 = 31;
 
+    /**
+     * Second 128-bit rotation distance.
+     */
     private static final int R2 = 27;
 
+    /**
+     * Final 128-bit rotation distance.
+     */
     private static final int R3 = 33;
 
+    /**
+     * 128-bit round multiplier.
+     */
     private static final int M = 5;
 
+    /**
+     * First 128-bit round additive constant.
+     */
     private static final int N1 = 0x52dce729;
 
+    /**
+     * Second 128-bit round additive constant.
+     */
     private static final int N2 = 0x38495ab5;
 
+    /**
+     * Default seed used by convenience hash methods.
+     */
     private static final int DEFAULT_SEED = 0;
 
+    /**
+     * Default charset used to convert text inputs to bytes.
+     */
     private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
 
+    /**
+     * Byte order required by the MurmurHash3 reference algorithm.
+     */
     private static final ByteOrder DEFAULT_ORDER = ByteOrder.LITTLE_ENDIAN;
 
     /**
@@ -84,6 +133,13 @@ public class MurmurHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[
         // No initialization required.
     }
 
+    /**
+     * Mixes one 32-bit input block into the running hash.
+     *
+     * @param k    input block
+     * @param hash running hash
+     * @return updated hash
+     */
     private static int mix32(int k, int hash) {
         k *= C1_32;
         k = Integer.rotateLeft(k, R1_32);
@@ -92,6 +148,12 @@ public class MurmurHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[
         return Integer.rotateLeft(hash, R2_32) * M_32 + N_32;
     }
 
+    /**
+     * Applies the 32-bit avalanche finalizer.
+     *
+     * @param hash accumulated hash
+     * @return finalized 32-bit hash
+     */
     private static int fmix32(int hash) {
         hash ^= (hash >>> 16);
         hash *= 0x85ebca6b;
@@ -101,6 +163,12 @@ public class MurmurHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[
         return hash;
     }
 
+    /**
+     * Applies the 64-bit avalanche finalizer.
+     *
+     * @param h accumulated hash word
+     * @return finalized 64-bit word
+     */
     private static long fmix64(long h) {
         h ^= (h >>> 33);
         h *= 0xff51afd7ed558ccdL;

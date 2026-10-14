@@ -20,7 +20,7 @@
 package org.miaixz.bus.image.nimble.opencv.lut.colormap;
 
 /**
- * Color space in which two stops are blended; alpha is never blended here. *
+ * Color space in which two stops are blended; alpha is never blended here.
  *
  * @author Kimi Liu
  */
@@ -39,28 +39,71 @@ public enum InterpolationSpace {
      */
     LAB;
 
+    /**
+     * X coordinate of the normalized D65 reference white.
+     */
     private static final double D65_X = 0.950456;
 
+    /**
+     * Y coordinate of the normalized D65 reference white.
+     */
     private static final double D65_Y = 1.0;
 
+    /**
+     * Z coordinate of the normalized D65 reference white.
+     */
     private static final double D65_Z = 1.088754;
 
+    /**
+     * CIE Lab transition threshold used by the forward transform.
+     */
     private static final double LAB_THRESHOLD = 8.85645167903563082e-3;
 
+    /**
+     * CIE Lab transition threshold used by the inverse transform.
+     */
     private static final double LAB_INVERSE_THRESHOLD = 0.206896551724137931;
 
+    /**
+     * Linear slope used below the CIE Lab transition threshold.
+     */
     private static final double LAB_ALPHA = 841.0 / 108.0;
 
+    /**
+     * Linear offset used below the CIE Lab transition threshold.
+     */
     private static final double LAB_BETA = 4.0 / 29.0;
 
+    /**
+     * Linear-to-sRGB gamma transition threshold.
+     */
     private static final double GAMMA_THRESHOLD = 0.0031306684425005883;
 
+    /**
+     * sRGB-to-linear gamma transition threshold.
+     */
     private static final double GAMMA_INVERSE_THRESHOLD = 0.0404482362771076;
 
+    /**
+     * Linearly interpolates two floating-point values.
+     *
+     * @param a start value
+     * @param b end value
+     * @param t interpolation fraction
+     * @return interpolated value
+     */
     private static float lerp(float a, float b, float t) {
         return a + (b - a) * t;
     }
 
+    /**
+     * Blends two colors in hue, saturation, and brightness space using the shortest hue arc.
+     *
+     * @param from start color
+     * @param to   end color
+     * @param t    interpolation fraction
+     * @return blended opaque color
+     */
     private static Rgba mixHsb(Rgba from, Rgba to, float t) {
         float[] a = toHsb(from);
         float[] b = toHsb(to);
@@ -81,6 +124,12 @@ public enum InterpolationSpace {
         return fromHsb(h, lerp(a[1], b[1], t), lerp(a[2], b[2], t));
     }
 
+    /**
+     * Converts an RGB color to hue, saturation, and brightness components.
+     *
+     * @param c source color
+     * @return HSB components in the order hue, saturation, brightness
+     */
     private static float[] toHsb(Rgba c) {
         float max = Math.max(c.red(), Math.max(c.green(), c.blue()));
         float min = Math.min(c.red(), Math.min(c.green(), c.blue()));
@@ -103,6 +152,14 @@ public enum InterpolationSpace {
         return new float[] { h, s, max };
     }
 
+    /**
+     * Converts hue, saturation, and brightness components to an opaque RGB color.
+     *
+     * @param h hue fraction
+     * @param s saturation
+     * @param v brightness value
+     * @return converted color
+     */
     private static Rgba fromHsb(float h, float s, float v) {
         float sector = (h - (float) Math.floor(h)) * 6f;
         int i = (int) sector;
@@ -131,6 +188,14 @@ public enum InterpolationSpace {
         }
     }
 
+    /**
+     * Blends two colors in CIE L*a*b* space.
+     *
+     * @param from start color
+     * @param to   end color
+     * @param t    interpolation fraction
+     * @return blended opaque color
+     */
     private static Rgba mixLab(Rgba from, Rgba to, float t) {
         double[] a = rgbToLab(from.red(), from.green(), from.blue());
         double[] b = rgbToLab(to.red(), to.green(), to.blue());
@@ -138,6 +203,14 @@ public enum InterpolationSpace {
         return new Rgba((float) rgb[0], (float) rgb[1], (float) rgb[2], 1f);
     }
 
+    /**
+     * Linearly interpolates two double-precision values.
+     *
+     * @param a start value
+     * @param b end value
+     * @param t interpolation fraction
+     * @return interpolated value
+     */
     private static double lerp(double a, double b, float t) {
         return a + (b - a) * t;
     }
@@ -182,22 +255,52 @@ public enum InterpolationSpace {
         return new double[] { clamp01(gamma(r)), clamp01(gamma(g)), clamp01(gamma(bl)) };
     }
 
+    /**
+     * Applies the piecewise CIE Lab forward transfer function.
+     *
+     * @param t normalized tristimulus component
+     * @return transformed component
+     */
     private static double labF(double t) {
         return t > LAB_THRESHOLD ? Math.cbrt(t) : LAB_ALPHA * t + LAB_BETA;
     }
 
+    /**
+     * Applies the inverse CIE Lab transfer function.
+     *
+     * @param t transformed component
+     * @return normalized tristimulus component
+     */
     private static double labInverse(double t) {
         return t > LAB_INVERSE_THRESHOLD ? t * t * t : (t - LAB_BETA) / LAB_ALPHA;
     }
 
+    /**
+     * Encodes a linear RGB component with the sRGB transfer function.
+     *
+     * @param value linear component
+     * @return gamma-encoded component
+     */
     private static double gamma(double value) {
         return value <= GAMMA_THRESHOLD ? 12.92 * value : 1.055 * Math.pow(value, 1.0 / 2.4) - 0.055;
     }
 
+    /**
+     * Decodes an sRGB component to linear light.
+     *
+     * @param value gamma-encoded component
+     * @return linear component
+     */
     private static double inverseGamma(double value) {
         return value <= GAMMA_INVERSE_THRESHOLD ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
     }
 
+    /**
+     * Clamps a component to the normalized range.
+     *
+     * @param value component value
+     * @return value constrained to {@code [0, 1]}
+     */
     private static double clamp01(double value) {
         return Math.max(0.0, Math.min(1.0, value));
     }
