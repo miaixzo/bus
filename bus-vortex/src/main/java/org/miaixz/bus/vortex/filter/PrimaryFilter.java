@@ -92,13 +92,13 @@ public class PrimaryFilter extends AbstractFilter {
         Logger.debug(
                 true,
                 "Vortex",
-                "Request headers: clientIp=N/A, headers={}",
-                exchange.getRequest().getHeaders().toSingleValueMap());
+                "Request header names: clientIp=N/A, headerNames={}",
+                exchange.getRequest().getHeaders().headerNames());
         Logger.debug(
                 true,
                 "Vortex",
-                "Request parameters: clientIp=N/A, parameters={}",
-                exchange.getRequest().getQueryParams().toSingleValueMap());
+                "Request query field names: clientIp=N/A, fieldNames={}",
+                exchange.getRequest().getQueryParams().keySet());
 
         if (isPathTraversalAttempt(path)) {
             Logger.warn(false, "Vortex", "Path traversal attempt detected: clientIp=N/A, path={}", path);
