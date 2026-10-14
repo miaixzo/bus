@@ -82,15 +82,15 @@ public class AccessHandler extends AbstractHandler {
             Logger.debug(
                     true,
                     "Vortex",
-                    "Request headers: clientIp={}, headers={}",
+                    "Request header names: clientIp={}, headerNames={}",
                     ip,
-                    request.getHeaders().toSingleValueMap());
+                    request.getHeaders().headerNames());
             Logger.debug(
                     true,
                     "Vortex",
-                    "Request parameters: clientIp={}, parameters={}",
+                    "Request query field names: clientIp={}, fieldNames={}",
                     ip,
-                    request.getQueryParams().toSingleValueMap());
+                    request.getQueryParams().keySet());
 
             return true;
         });

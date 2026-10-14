@@ -22,16 +22,20 @@ package org.miaixz.bus.vortex.strategy;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.springframework.core.ResolvableType;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferLimitException;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.FormHttpMessageReader;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.FormFieldPart;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.ServerWebExchangeDecorator;
 
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.lang.Charset;
@@ -113,9 +117,9 @@ public class RequestStrategy extends AbstractStrategy {
         Logger.debug(
                 true,
                 "Vortex",
-                "Request headers: strategy=request, clientIp={}, headers={}",
+                "Request header names: strategy=request, clientIp={}, headerNames={}",
                 context.getX_request_ip(),
-                request.getHeaders().toSingleValueMap());
+                request.getHeaders().headerNames());
         return mutate;
     }
 
@@ -360,9 +364,11 @@ public class RequestStrategy extends AbstractStrategy {
     /**
      * Performs the actual parsing of a form-data request body.
      * <p>
-     * This method decorates the consumed request with its exact buffered bytes, then uses
-     * {@link ServerWebExchange#getFormData()} to parse parameters into the {@link Context}. The logical-byte lease is
-     * retained through the complete downstream lifecycle.
+     * This method decorates the consumed request with its exact buffered bytes, applies a dedicated
+     * {@link FormHttpMessageReader} directly to that request, and exposes both the replayable body and cached form data
+     * to downstream components. Reading the initial form through {@link ServerWebExchange#getFormData()} is
+     * deliberately avoided because a normally mutated exchange can delegate parsing to the original exchange, whose
+     * body has already been consumed.
      *
      * @param exchange The current server exchange.
      * @param chain    The next strategy in the chain.
@@ -376,7 +382,7 @@ public class RequestStrategy extends AbstractStrategy {
             Context context,
             Octets.BufferedBody body) {
 
-        return Mono.fromCallable(() -> {
+        return Mono.defer(() -> {
             /**
              * Decorator that exposes the already buffered request body to the form reader.
              * <p>
@@ -394,34 +400,49 @@ public class RequestStrategy extends AbstractStrategy {
                  */
                 @Override
                 public Flux<DataBuffer> getBody() {
-                    return Flux.defer(() -> Mono.just(exchange.getResponse().bufferFactory().wrap(body.bytes())))
-                            .doFinally(signal -> body.discardBytes());
+                    return Flux.defer(() -> Mono.just(exchange.getResponse().bufferFactory().wrap(body.bytes())));
                 }
             };
-            return exchange.mutate().request(newRequest).build();
-        }).flatMap(newExchange -> newExchange.getFormData().flatMap(params -> {
-            context.getParameters().putAll(params.toSingleValueMap());
-            Logger.debug(
-                    true,
-                    "Vortex",
-                    "Form request parameter snapshot: strategy=request, clientIp={}, path={}",
-                    getClientIp(newExchange.getRequest()),
-                    newExchange.getRequest().getURI().getPath());
-            Logger.debug(
-                    true,
-                    "Vortex",
-                    "Request parameters: strategy=request, clientIp={}, parameters={}",
-                    context.getX_request_ip(),
-                    context.getParameters());
-            Logger.info(
-                    true,
-                    "Vortex",
-                    "Form request processed: strategy=request, clientIp={}, path={}, parameterCount={}",
-                    getClientIp(newExchange.getRequest()),
-                    newExchange.getRequest().getURI().getPath(),
-                    context.getParameters().size());
-            return chain.apply(newExchange);
-        })).doFinally(
+
+            FormHttpMessageReader reader = new FormHttpMessageReader();
+            reader.setMaxInMemorySize(Math.toIntExact(Holder.get().getMaxBufferedRequestSize()));
+            Mono<MultiValueMap<String, String>> formData = reader.readMono(
+                    ResolvableType.forClassWithGenerics(MultiValueMap.class, String.class, String.class),
+                    newRequest,
+                    Map.of()).defaultIfEmpty(new LinkedMultiValueMap<>()).cache();
+            ServerWebExchange newExchange = new ServerWebExchangeDecorator(exchange) {
+
+                @Override
+                public ServerHttpRequest getRequest() {
+                    return newRequest;
+                }
+
+                @Override
+                public Mono<MultiValueMap<String, String>> getFormData() {
+                    return formData;
+                }
+            };
+
+            return formData.flatMap(params -> {
+                context.getParameters().putAll(params.toSingleValueMap());
+                Logger.debug(
+                        true,
+                        "Vortex",
+                        "Form request fields: strategy=request, clientIp={}, path={}, bodyBytes={}, fieldNames={}",
+                        getClientIp(exchange.getRequest()),
+                        exchange.getRequest().getURI().getPath(),
+                        body.length(),
+                        params.keySet());
+                Logger.info(
+                        true,
+                        "Vortex",
+                        "Form request processed: strategy=request, clientIp={}, path={}, parameterCount={}",
+                        getClientIp(exchange.getRequest()),
+                        exchange.getRequest().getURI().getPath(),
+                        params.size());
+                return chain.apply(newExchange);
+            });
+        }).doFinally(
                 signalType -> Logger.info(
                         false,
                         "Vortex",

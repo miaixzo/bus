@@ -137,10 +137,15 @@ public class VortexHandler {
             Logger.debug(
                     true,
                     "Vortex",
-                    "Request headers: clientIp={}, headers={}",
+                    "Request header names: clientIp={}, headerNames={}",
                     ip,
-                    request.headers().asHttpHeaders().toSingleValueMap());
-            Logger.debug(true, "Vortex", "Request parameters: clientIp={}, parameters={}", ip, context.getParameters());
+                    request.headers().asHttpHeaders().headerNames());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request parameter names: clientIp={}, parameterNames={}",
+                    ip,
+                    context.getParameters().keySet());
 
             Assets assets = context.getAssets();
             if (assets == null) {
