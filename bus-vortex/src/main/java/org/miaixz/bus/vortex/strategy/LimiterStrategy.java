@@ -26,6 +26,9 @@ import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.cortex.Keying;
+import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.magic.Limiter;
@@ -38,7 +41,7 @@ import reactor.core.publisher.Mono;
  * <p>
  * This strategy collaborates with a {@link LimiterRegistry} to find and apply one or more {@link Limiter} instances
  * (which typically use a token bucket algorithm) to the current request. It supports layered rate limiting by checking
- * for both global API limits and more specific per-IP limits.
+ * for the exact registered route, global API limits and more specific per-IP limits.
  * <p>
  * It is ordered to run late in the chain, after authentication and authorization, to ensure that system resources are
  * spent on validating legitimate, authenticated traffic.
@@ -101,7 +104,7 @@ public class LimiterStrategy extends AbstractStrategy {
                     clientIp,
                     methodVersion);
 
-            Set<Limiter> limiters = getLimiters(methodVersion, clientIp);
+            Set<Limiter> limiters = getLimiters(context.getAssets(), clientIp);
             if (limiters.isEmpty()) {
                 Logger.debug(
                         true,
@@ -143,18 +146,20 @@ public class LimiterStrategy extends AbstractStrategy {
     /**
      * Finds all applicable limiters for a given request.
      * <p>
-     * This method implements a two-layer lookup:
+     * This method preserves legacy global and per-IP rules alongside an exact registered-route lookup:
      * <ol>
+     * <li><b>Asset Limit:</b> the existing canonical registry route key, including application, type and verb</li>
      * <li><b>Global API Limit:</b> "api.user.get:1.0"</li>
      * <li><b>Per-IP API Limit:</b> "192.168.1.100:api.user.get:1.0"</li>
      * </ol>
-     * Both lookups are in-memory registry reads and run in the current reactive chain.
+     * All lookups are in-memory registry reads and run in the current reactive chain.
      *
-     * @param methodVersion The combined method and version string for the API.
-     * @param ip            The client's IP address.
+     * @param asset The server-resolved route whose registered quota is applied.
+     * @param ip    The client's IP address.
      * @return the set of all found {@link Limiter} instances
      */
-    private Set<Limiter> getLimiters(String methodVersion, String ip) {
+    private Set<Limiter> getLimiters(Assets asset, String ip) {
+        String methodVersion = asset.getMethod() + asset.getVersion();
         Logger.debug(
                 true,
                 "Vortex",
@@ -163,6 +168,10 @@ public class LimiterStrategy extends AbstractStrategy {
                 methodVersion);
 
         Set<Limiter> limiters = new LinkedHashSet<>();
+        String routeKey = RegistryGenerator.INSTANCE.key(Keying.RegistrySpec.route(asset));
+        if (routeKey != null) {
+            addLimiter(limiters, registry.get(routeKey));
+        }
         addLimiter(limiters, registry.get(methodVersion));
         addLimiter(limiters, registry.get(ip + methodVersion));
         return limiters;

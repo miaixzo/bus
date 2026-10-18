@@ -27,6 +27,14 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.LoaderOptions;
+import org.yaml.snakeyaml.composer.Composer;
+import org.yaml.snakeyaml.constructor.SafeConstructor;
+import org.yaml.snakeyaml.events.*;
+import org.yaml.snakeyaml.parser.Parser;
+import org.yaml.snakeyaml.parser.ParserImpl;
+import org.yaml.snakeyaml.reader.StreamReader;
+import org.yaml.snakeyaml.resolver.Resolver;
 
 import org.miaixz.bus.core.center.map.Dictionary;
 import org.miaixz.bus.core.lang.Assert;
@@ -170,6 +178,109 @@ public class Yaml {
                 Logger.debug(true, "Setting", "YAML reader close requested: targetType={}", type.getName());
                 IoKit.closeQuietly(reader);
                 Logger.debug(false, "Setting", "YAML reader closed: targetType={}", type.getName());
+            }
+        }
+    }
+
+    /**
+     * Loads one bounded YAML document as standard YAML values without constructing application classes. Aliases and
+     * duplicate mapping keys are rejected. Node and collection-depth limits are enforced while the existing parser
+     * supplies events to its composer, before the corresponding object graph is materialized. Source text, parser
+     * diagnostics and nested causes are never logged or included in the reported failure. Existing typed load methods
+     * retain their original behavior.
+     *
+     * @param reader            the YAML source reader
+     * @param maximumDepth      maximum collection nesting depth, including the root collection
+     * @param maximumNodes      maximum scalar and collection nodes, including mapping keys
+     * @param maximumCodePoints maximum input document size in Unicode code points
+     * @param isCloseReader     whether to close the supplied reader on success or failure
+     * @return standard YAML values, or null for an empty document
+     * @throws IllegalArgumentException when limits are invalid or input is malformed, unsupported or exceeds a limit
+     */
+    public static Object load(
+            final Reader reader,
+            final int maximumDepth,
+            final int maximumNodes,
+            final int maximumCodePoints,
+            final boolean isCloseReader) {
+        Assert.notNull(reader, "Reader must be not null!");
+        try {
+            if (maximumDepth < 1 || maximumNodes < 1 || maximumCodePoints < 1) {
+                throw new IllegalArgumentException("YAML limits must be positive");
+            }
+            final LoaderOptions options = new LoaderOptions();
+            options.setAllowDuplicateKeys(false);
+            options.setWarnOnDuplicateKeys(false);
+            options.setAllowRecursiveKeys(false);
+            options.setMaxAliasesForCollections(0);
+            options.setNestingDepthLimit(maximumDepth);
+            options.setCodePointLimit(maximumCodePoints);
+            final Parser delegate = new ParserImpl(new StreamReader(reader), options);
+            final Parser bounded = new Parser() {
+
+                /**
+                 * Number of scalar and collection nodes consumed for the current document.
+                 */
+                private long nodes;
+                /**
+                 * Collection nesting depth at the current parser position.
+                 */
+                private int depth;
+
+                /**
+                 * Checks the next event without consuming or counting it.
+                 *
+                 * @param choice requested event type
+                 * @return whether the next event has that type
+                 */
+                @Override
+                public boolean checkEvent(final Event.ID choice) {
+                    return delegate.checkEvent(choice);
+                }
+
+                /**
+                 * Peeks at the existing parser event without consuming or counting it.
+                 *
+                 * @return the next parser event, or null
+                 */
+                @Override
+                public Event peekEvent() {
+                    return delegate.peekEvent();
+                }
+
+                /**
+                 * Enforces graph limits before the composer consumes a node, including scalar aliases.
+                 *
+                 * @return the next allowed parser event, or null
+                 */
+                @Override
+                public Event getEvent() {
+                    final Event event = delegate.getEvent();
+                    if (event instanceof AliasEvent) {
+                        throw new IllegalArgumentException("YAML aliases are not supported");
+                    }
+                    if (event instanceof NodeEvent && ++nodes > maximumNodes) {
+                        throw new IllegalArgumentException("YAML node limit exceeded");
+                    }
+                    if (event instanceof CollectionStartEvent && ++depth > maximumDepth) {
+                        throw new IllegalArgumentException("YAML depth limit exceeded");
+                    }
+                    if (event instanceof CollectionEndEvent) {
+                        depth--;
+                    }
+                    return event;
+                }
+            };
+            final SafeConstructor constructor = new SafeConstructor(options);
+            constructor.setAllowDuplicateKeys(false);
+            constructor.setWarnOnDuplicateKeys(false);
+            constructor.setComposer(new Composer(bounded, new Resolver(), options));
+            return constructor.getSingleData(Object.class);
+        } catch (final RuntimeException failure) {
+            throw new IllegalArgumentException("Invalid, unsupported or oversized YAML input");
+        } finally {
+            if (isCloseReader) {
+                IoKit.closeQuietly(reader);
             }
         }
     }

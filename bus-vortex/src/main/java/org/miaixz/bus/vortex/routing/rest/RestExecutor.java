@@ -409,6 +409,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      *
      * @param assets  The configured assets for the target executor.
      * @param context The request context.
+     * @param baseUrl The already resolved downstream base URL for a relative route.
      * @return The constructed target URI string, including query parameters.
      */
     private URI buildTargetUri(Assets assets, Context context, String baseUrl) {
