@@ -661,6 +661,7 @@ public class MapperPluginBuilder {
             return copy;
         }
         return copy.enabled(source.enabled()).mode(source.mode()).dryRun(source.dryRun()).printSql(source.printSql())
+                .auditColumnsLast(source.auditColumnsLast())
                 .failFast(source.failFast()).continueOnError(source.continueOnError())
                 .includeTables(copySet(source.includeTables())).excludeTables(copySet(source.excludeTables()))
                 .includeEntities(copySet(source.includeEntities())).excludeEntities(copySet(source.excludeEntities()))
@@ -694,6 +695,7 @@ public class MapperPluginBuilder {
         }
         return new SchemaConfig().enabled(schemaProperties.isEnabled()).mode(schemaProperties.getMode())
                 .dryRun(schemaProperties.isDryRun()).printSql(schemaProperties.isPrintSql())
+                .auditColumnsLast(schemaProperties.isAuditColumnsLast())
                 .failFast(schemaProperties.isFailFast()).continueOnError(schemaProperties.isContinueOnError())
                 .includeTables(copySet(schemaProperties.getIncludeTables()))
                 .excludeTables(copySet(schemaProperties.getExcludeTables()))

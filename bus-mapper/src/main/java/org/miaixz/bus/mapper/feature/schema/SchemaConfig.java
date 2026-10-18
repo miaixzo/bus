@@ -62,6 +62,12 @@ public class SchemaConfig {
     private boolean printSql = true;
 
     /**
+     * Whether status, creator, created, modifier and modified default to the end of newly created tables. Explicit
+     * ColumnOrder rules take precedence.
+     */
+    private boolean auditColumnsLast = true;
+
+    /**
      * Whether execution should stop after the first failure.
      */
     private boolean failFast = true;
