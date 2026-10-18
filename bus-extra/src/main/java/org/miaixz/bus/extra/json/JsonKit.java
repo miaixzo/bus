@@ -19,13 +19,15 @@
 */
 package org.miaixz.bus.extra.json;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+
 import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * Serializes and deserializes JSON values, which automatically identifies the underlying JSON provider via SPI. This
@@ -158,7 +160,37 @@ public class JsonKit {
         if (json == null) {
             throw new ValidateException("JSON provider returned no serialized value");
         }
-        return readValue(json.getBytes(StandardCharsets.UTF_8));
+        return readValue(json.getBytes(Charset.UTF_8));
+    }
+
+    /**
+     * Converts an already bounded neutral JSON tree to detached ordinary Java values without provider coercion. Numbers
+     * retain their exact BigDecimal value, JSON null becomes Java null, and containers preserve member order. This
+     * entry point does not parse text or change the legacy provider-specific Map conversion behavior.
+     *
+     * @param value non-null immutable tree whose structural bounds were checked by its caller
+     * @return detached maps and lists, exact scalar values, or null for JSON null
+     * @throws IllegalArgumentException if the tree reference is null or uses an unsupported implementation
+     */
+    public static Object toJavaValue(final JsonValue value) {
+        Assert.notNull(value, "JSON value must not be null");
+        return switch (value) {
+            case JsonValue.ObjectValue object -> {
+                Map<String, Object> members = new LinkedHashMap<>();
+                object.values().forEach((name, child) -> members.put(name, toJavaValue(child)));
+                yield members;
+            }
+            case JsonValue.ArrayValue array -> {
+                List<Object> elements = new ArrayList<>(array.values().size());
+                array.values().forEach(child -> elements.add(toJavaValue(child)));
+                yield elements;
+            }
+            case JsonValue.StringValue string -> string.value();
+            case JsonValue.NumberValue number -> number.value();
+            case JsonValue.BooleanValue flag -> flag.value();
+            case JsonValue.NullValue ignored -> null;
+            default -> throw new IllegalArgumentException("Unsupported JSON value implementation");
+        };
     }
 
     /**
