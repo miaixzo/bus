@@ -119,7 +119,12 @@ public class EntitySchemaInitializer {
                         if (excluded(table, config)) {
                             continue;
                         }
-                        table = affixedTable(table, affixRuleConfig);
+                        TableMeta source = table;
+                        table = affixedTable(source, affixRuleConfig);
+                        if (table == source) {
+                            table = copyTable(source);
+                        }
+                        table.columns(new ColumnOrderResolver().resolve(table, config.auditColumnsLast()));
                         locks.add(SchemaInitializationLock.acquire(dataSource, table));
                         locks.add(operations.acquireSchemaInitializationLock(connection, table));
                         TableSnapshot snapshot = operations.readTable(connection, table);
@@ -172,6 +177,10 @@ public class EntitySchemaInitializer {
         }
         TableMeta copy = copyTable(source);
         copy.table(affixQualifiedTable(tableName, ignorePrefix ? null : prefix, ignoreSuffix ? null : suffix));
+        PrimaryKeyMeta primaryKey = copy.primaryKey();
+        if (primaryKey != null && (tableName + "_pk").equals(primaryKey.name())) {
+            primaryKey.name(copy.table() + "_pk");
+        }
         for (ForeignKeyMeta foreignKey : copy.foreignKeys()) {
             String referencedTable = foreignKey.referencedTable();
             if (referencedTable != null && !referencedTable.isBlank()) {
@@ -185,7 +194,7 @@ public class EntitySchemaInitializer {
     }
 
     /**
-     * Copies table metadata before schema-only table name changes.
+     * Copies table metadata before schema-only table name or column order changes.
      *
      * @param source cached table metadata
      * @return copied table metadata
@@ -194,8 +203,10 @@ public class EntitySchemaInitializer {
         TableMeta copy = TableMeta.of(source.entityClass()).table(source.table()).catalog(source.catalog())
                 .schema(source.schema()).comment(source.comment()).style(source.style())
                 .columns(new ArrayList<>(source.columns())).indexes(copyIndexes(source.indexes()))
-                .foreignKeys(copyForeignKeys(source.foreignKeys())).ready(source.ready());
-        copy.primaryKey(null);
+                .foreignKeys(copyForeignKeys(source.foreignKeys())).ready(source.ready()).excludeSuperClasses(
+                        source.excludeSuperClasses() == null ? null : source.excludeSuperClasses().clone());
+        PrimaryKeyMeta primaryKey = source.primaryKey();
+        copy.primaryKey(primaryKey == null ? null : PrimaryKeyMeta.of(primaryKey.name(), primaryKey.columns()));
         return copy;
     }
 

@@ -1194,6 +1194,79 @@ public class SchemaBootstrap {
 }
 ```
 
+
+### 新建表的列顺序（ColumnOrder）
+
+自动初始化新表时，默认将最终映射中存在的 Java 属性按
+`status → creator → created → modifier → modified` 后置。其他列保持原映射相对顺序；
+不要求实体继承 `Audit`，缺少部分审计属性时直接跳过。匹配属性名而非数据库列名，区分大小写，
+例如 `created` 映射为 `created_at` 时仍参与默认后置。此默认行为会改变旧版本中新建表的列排列。
+
+可通过 `new SchemaConfig().auditColumnsLast(false)` 恢复原映射顺序。
+Spring 全局配置为 `bus.mapper.schema.audit-columns-last: false`；namespace 配置支持
+`configurationProperties.shared.schema.audit-columns-last` 和
+`configurationProperties.<namespace>.schema.audit-columns-last`，具体 namespace 优先。
+开关仅关闭默认规则，显式注解仍然生效。
+
+```java
+import org.miaixz.bus.mapper.annotation.ColumnOrder;
+
+@ColumnOrder(
+    first = {"id"},
+    last = {"status", "creator", "created", "modifier", "modified"}
+)
+public class UserEntity extends Audit {
+    private String username;
+}
+```
+
+支持两种模式：
+
+- `first` / `last`：前置列表 → 未指定字段 → 后置列表，各列表按填写顺序排列。
+  允许单个列表或两个列表合计覆盖全部属性；以后新增属性仍按分组语义处理。
+- `value`：完整列顺序，必须覆盖最终所有映射属性，每个属性一次。
+  新增映射属性后必须同步更新完整列表。
+
+```java
+@ColumnOrder({"id", "username", "status", "creator", "created", "modifier", "modified"})
+public class UserEntity extends Audit {
+    private String username;
+}
+```
+
+规则从默认审计后置开始，再从父类到子类处理显式声明的注解：
+
+1. 非空 `value` 替换之前的所有规则，包括默认规则；较近子类的完整列表再次替换。
+2. 局部配置先将本层提到的属性从累计 `first` 移除，再追加本层 `first`。
+   非空 `last` **整体替换**默认或父类的后置列表；被替换列表中不再指定的属性回到未指定字段区域，保持基础相对顺序。
+   空 `last`（包含显式 `last = {}`）保留已有后置规则，但移除本层明确前置的属性。
+3. `last = {"status"}` 表示只有 `status` 被明确后置，其余四个审计属性不再自动后置。
+   仅配置 `first` 时保留默认后置规则；子类非空 `last` 同样整体替换父类后置列表。
+4. 完整列表之后仍可通过子类 `first/last` 移动属性；完整列表仍须覆盖最终所有映射属性。
+5. 空注解不清除默认或继承规则。不同继承层重复指定属性属于合法覆盖。
+6. 被映射配置明确排除的父类不贡献排序规则。属性引用在合并后按最终生效规则校验：
+   子类替换父类 `last` 或使用完整 `value` 后，旧规则不再约束已被排除的属性。
+   没有被替换的父类规则仍然严格校验，错误保留父类来源；重复名称、空白和模式冲突始终报错。
+
+配置非空 `value` 时禁止同时配置非空 `first/last`。空白、重复、同层前后冲突、
+最终生效规则中的未知或未映射属性，以及完整列表遗漏属性，都会在执行任何计划 DDL 前报错，
+错误包含实体和配置来源类。默认列表中不存在的属性不报错。
+
+注解位于 `bus-mapper`，不要在 `bus-core.Audit` 中引用；可以在应用公共基类统一声明。
+排序仅作用于 schema 初始化的新建表元数据副本，不修改缓存中的 CRUD 映射，
+不改变联合主键、索引或外键内部顺序。直接调用方言 `createTable` 时使用调用方传入的列顺序。
+已有表不会因列顺序差异触发迁移，后续新增列也不保证插到审计字段之前。
+`dryRun`、脚本和实际执行使用相同排序规则。
+
+运行相关单元测试和 H2 内存数据库测试（无需外部数据库）。测试覆盖 5,040 种原始列排列、
+默认开关、后置列表整体替换、多层继承、并发解析、内置方言 SQL 列顺序，
+以及实际建表、已有表不重排、联合主键和索引顺序、脚本与表名前缀组合：
+
+```bash
+mvn -f bus-mapper/pom.xml -Dmaven.compiler.source=17 -Dmaven.compiler.target=17 \
+  '-Dtest=ColumnOrder*Test' test
+```
+
 ### PostgreSQL 集成测试示例
 
 `bus-mapper` 已包含 PostgreSQL 集成测试，该测试会保留可见测试表和测试数据：
