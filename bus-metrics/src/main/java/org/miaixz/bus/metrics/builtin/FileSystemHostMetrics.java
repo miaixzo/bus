@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.metrics.builtin;
 
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -27,6 +26,8 @@ import java.util.HexFormat;
 import java.util.List;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.bridge.FileSystemSnapshot;
 import org.miaixz.bus.metrics.bridge.SnapshotCache;
@@ -99,7 +100,7 @@ public final class FileSystemHostMetrics implements MetricBinder {
      */
     private static String hashMountpoint(String mountpoint) {
         try {
-            byte[] digest = MessageDigest.getInstance("SHA-256").digest(mountpoint.getBytes(StandardCharsets.UTF_8));
+            byte[] digest = MessageDigest.getInstance("SHA-256").digest(mountpoint.getBytes(Charset.UTF_8));
             return HexFormat.of().formatHex(digest, 0, 12);
         } catch (NoSuchAlgorithmException exception) {
             throw new IllegalStateException("SHA-256 is not available", exception);
@@ -111,7 +112,7 @@ public final class FileSystemHostMetrics implements MetricBinder {
      *
      * @param name       metric name
      * @param kind       instrument kind
-     * @param numberKind numeric representation
+     * @param number     numeric representation
      * @param unit       metric unit
      * @param attributes ordered attribute schema
      * @return metric descriptor
@@ -122,7 +123,7 @@ public final class FileSystemHostMetrics implements MetricBinder {
             NumberKind number,
             String unit,
             List<AttributeDescriptor<?>> attributes) {
-        return MetricDescriptor.of(name, kind, number, unit, "", attributes);
+        return MetricDescriptor.of(name, kind, number, unit, Normal.EMPTY, attributes);
     }
 
     @Override

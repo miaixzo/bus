@@ -114,7 +114,7 @@ SocketSession session = Fabric.socket(context)
         .onText(System.out::println)
         .connect();
 
-session.send(Payload.of("ping", StandardCharsets.UTF_8)).execute();
+session.send(Payload.of("ping", Charset.UTF_8)).execute();
 session.close();
 ```
 
@@ -161,7 +161,7 @@ StompSession session = Fabric.stomp(context)
         .login("user", "secret")
         .connect();
 
-session.topic("jobs", message -> handle(message.destination(), message.text(StandardCharsets.UTF_8)));
+session.topic("jobs", message -> handle(message.destination(), message.text(Charset.UTF_8)));
 session.sendTo("/queue/jobs", "{\"id\":1001}").execute();
 session.close();
 ```

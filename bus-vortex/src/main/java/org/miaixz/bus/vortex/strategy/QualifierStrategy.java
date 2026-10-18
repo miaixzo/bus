@@ -348,7 +348,8 @@ public class QualifierStrategy extends AbstractStrategy {
         }
         boolean token = EnumValue.Credential.TOKEN.equals(credential.type());
         context.setBearer(credential.value());
-        String name = token && "Bearer".equalsIgnoreCase(credential.scheme()) ? "Bearer" : token ? "Token" : "API key";
+        String name = token && Http.Auth.BEARER.equalsIgnoreCase(credential.scheme()) ? Http.Auth.BEARER
+                : token ? "Token" : "API key";
         return this.selectedCredential(context, policy, token ? Consts.ONE : Consts.TWO, credential, name);
     }
 
@@ -415,6 +416,7 @@ public class QualifierStrategy extends AbstractStrategy {
      * @param type  credential type
      * @param value credential value
      * @param name  credential display name
+     * @author Kimi Liu
      */
     protected record Credential(Integer type, String value, String name) {
 

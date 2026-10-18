@@ -19,22 +19,22 @@
 */
 package org.miaixz.bus.auth.shared.jwt;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.extra.json.JsonValue;
+
 import java.lang.reflect.Modifier;
 import java.lang.reflect.RecordComponent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
-
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.extra.json.JsonValue;
 
 /**
  * Represents an RFC 7519 JWT Claims Set through explicit registered claims and isolated extension values.
@@ -402,7 +402,7 @@ public class JwtClaims {
             if (type.isInstance(value)) {
                 return type.cast(value);
             }
-            final String json = new String(JsonKit.writeValue(value), StandardCharsets.UTF_8);
+            final String json = new String(JsonKit.writeValue(value), Charset.UTF_8);
             return JsonKit.toPojo(json, type);
         });
     }

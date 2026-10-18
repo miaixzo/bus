@@ -356,6 +356,7 @@ public class SlugRouteMatcher {
      * @param prefix   matched public prefix
      * @param slug     matched slug value
      * @param template target template from the asset
+     * @author Kimi Liu
      */
     public record Match(Assets assets, String prefix, String slug, String template) {
 
@@ -366,6 +367,7 @@ public class SlugRouteMatcher {
      *
      * @param prefix   public prefix to match
      * @param template target template to render
+     * @author Kimi Liu
      */
     private record Route(String prefix, String template) {
 
