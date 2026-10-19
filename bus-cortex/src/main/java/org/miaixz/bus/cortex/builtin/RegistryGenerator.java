@@ -22,6 +22,7 @@ package org.miaixz.bus.cortex.builtin;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.cortex.Builder;
@@ -41,8 +42,8 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
  * <li>{@link RegistrySpec#ROUTE}: strongest runtime route key plus the ordered type/application fallback chain</li>
  * </ul>
  * <p>
- * Entry and instance keys require an explicit tenant. Route keys do not use tenant identity; only {@code type} and
- * {@code appId} may be omitted by route fallback candidates.
+ * API entry and runtime-instance keys are global. MCP and Prompt entries retain their original length-prefixed tenant
+ * segment. Route keys retain their existing tenant-independent type/application fallback coordinates.
  * </p>
  *
  * @author Kimi Liu
@@ -134,15 +135,16 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
         }
         return switch (spec.mode()) {
             case RegistrySpec.ENTRY -> {
-                String tenantId = CortexIdentity.tenantKey(spec.tenantId());
                 Type type = spec.typePart();
                 yield type == null ? null
-                        : Builder.REG_PREFIX + tenantId + Symbol.COLON + type.segment() + Symbol.COLON;
+                        : Builder.REG_PREFIX
+                                + (type == Type.API ? Normal.EMPTY
+                                        : CortexIdentity.tenantKey(spec.tenantIdPart()) + Symbol.COLON)
+                                + type.segment() + Symbol.COLON;
             }
             case RegistrySpec.INSTANCE -> {
                 StringBuilder builder = new StringBuilder();
-                builder.append(Builder.REG_PREFIX).append(CortexIdentity.tenantKey(spec.tenantId()))
-                        .append(Symbol.COLON).append("instance").append(Symbol.COLON);
+                builder.append(Builder.REG_PREFIX).append("instance").append(Symbol.COLON);
                 String appId = spec.appIdPart();
                 if (appId != null) {
                     builder.append(segment(appId)).append(Symbol.COLON);
@@ -192,17 +194,20 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
             return;
         }
         StringBuilder builder = new StringBuilder("route:v2:");
-        builder.append("type=").append(includeType ? type : "*").append(":app=")
-                .append(includeAppId ? segment(appId) : "*").append(":method=").append(segment(method))
+        builder.append("type=").append(includeType ? type : Symbol.STAR).append(":app=")
+                .append(includeAppId ? segment(appId) : Symbol.STAR).append(":method=").append(segment(method))
                 .append(":version=").append(segment(version)).append(":verb=").append(verb);
         keys.add(builder.toString());
     }
 
     /**
      * Encodes a non-null route coordinate without delimiter ambiguity.
+     *
+     * @param value the existing route coordinate
+     * @return the length-prefixed coordinate
      */
     private String segment(String value) {
-        return value.length() + ":" + value;
+        return value.length() + Symbol.COLON + value;
     }
 
 }

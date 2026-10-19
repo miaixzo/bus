@@ -20,6 +20,7 @@
 package org.miaixz.bus.cortex.bridge;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -28,15 +29,17 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
 import org.miaixz.bus.cortex.magic.event.CortexChangeRecord;
 import org.miaixz.bus.cortex.magic.event.CortexChangeStatus;
-import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.runtime.CortexDiagnostics;
 import org.miaixz.bus.cortex.magic.runtime.CortexLifecycle;
 import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
 import org.miaixz.bus.cortex.registry.RegistryChange;
+import org.miaixz.bus.cortex.registry.RegistryIdentity;
 import org.miaixz.bus.cortex.registry.api.ApiAssets;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -209,9 +212,10 @@ public class VortexBridge
                 event.getId(),
                 event.getMethod(),
                 event.getVersion());
-        CortexIdentity.requireTenant(event.getTenant_id(), event.getAsset().getTenant_id());
+        event.setTenant_id(RegistryIdentity.tenantId(Type.API, event.getTenant_id()));
+        RegistryIdentity.normalize(event.getAsset(), RegistryIdentity.type(event.getAsset()));
         if (event.getInstance() != null) {
-            CortexIdentity.requireTenant(event.getTenant_id(), event.getInstance().getTenant_id());
+            event.getInstance().setTenant_id(RegistryIdentity.tenantId(Type.API, event.getInstance().getTenant_id()));
         }
         RegistryChange<Assets> transportEvent = new RegistryChange<>();
         transportEvent.setAction(event.getAction());
@@ -619,7 +623,7 @@ public class VortexBridge
                         "outbox",
                         changeLogStore != null));
         snapshot.setLastError(lastError);
-        snapshot.setUpdatedAt(System.currentTimeMillis());
+        snapshot.setUpdatedAt(DateKit.current());
         return snapshot;
     }
 
@@ -647,7 +651,8 @@ public class VortexBridge
      * @return {@code true} when delivery should be retried
      */
     private boolean shouldRetry(int status) {
-        return status == 408 || status == 429 || status >= 500;
+        return status == Http.Status.REQUEST_TIMEOUT || status == Http.Status.TOO_MANY_REQUESTS
+                || status >= Http.Status.INTERNAL_SERVER_ERROR;
     }
 
     /**
@@ -659,7 +664,8 @@ public class VortexBridge
     private CortexChangeRecord toOutboxRecord(RegistryChange<Assets> event) {
         CortexChangeRecord record = new CortexChangeRecord();
         record.setDomain(OUTBOX_DOMAIN);
-        record.setAction(event.getAction() == null ? "sync" : event.getAction().name().toLowerCase());
+        record.setAction(
+                event.getAction() == null ? "sync" : StringKit.toLowerCase(event.getAction().name(), Locale.ROOT));
         record.setResourceType(OUTBOX_RESOURCE_TYPE);
         record.setResourceId(resourceId(event));
         record.setTenant_id(event.getTenant_id());

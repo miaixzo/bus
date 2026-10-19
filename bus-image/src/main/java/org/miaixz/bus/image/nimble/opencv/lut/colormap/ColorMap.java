@@ -716,4 +716,5 @@ public record ColorMap(String id, String name, ColorMapType type, Set<String> mo
                     interpolation, stops, outside, lighting, metadata, category, tags, hidden);
         }
     }
+
 }

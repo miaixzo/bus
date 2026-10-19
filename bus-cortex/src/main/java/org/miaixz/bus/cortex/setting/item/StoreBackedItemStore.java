@@ -295,4 +295,5 @@ public class StoreBackedItemStore {
     private String entryKey(Item item) {
         return keying.key(SettingSpec.entry(item));
     }
+
 }

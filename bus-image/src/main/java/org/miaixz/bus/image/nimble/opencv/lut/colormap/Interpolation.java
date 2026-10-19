@@ -47,4 +47,5 @@ public enum Interpolation {
     public boolean isStep() {
         return this == STEP;
     }
+
 }

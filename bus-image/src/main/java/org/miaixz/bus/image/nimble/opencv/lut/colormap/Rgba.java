@@ -141,4 +141,5 @@ public record Rgba(float red, float green, float blue, float alpha) {
     public int alpha8() {
         return to8(alpha);
     }
+
 }

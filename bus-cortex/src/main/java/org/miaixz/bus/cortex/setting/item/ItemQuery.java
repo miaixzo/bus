@@ -72,4 +72,5 @@ public class ItemQuery extends ItemScope {
                 .app_id(Item.Scope.SHARED.name().equals(getScope()) ? null : getApp_id()).code(code).kind(getKind())
                 .build();
     }
+
 }

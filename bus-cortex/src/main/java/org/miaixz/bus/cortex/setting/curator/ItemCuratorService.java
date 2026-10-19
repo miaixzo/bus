@@ -31,6 +31,7 @@ import org.miaixz.bus.cortex.guard.GuardContext;
 import org.miaixz.bus.cortex.setting.SettingEnforcer;
 import org.miaixz.bus.cortex.setting.SettingPublisher;
 import org.miaixz.bus.cortex.setting.item.*;
+import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 import org.miaixz.bus.cortex.setting.revision.Revision;
 import org.miaixz.bus.cortex.setting.revision.RevisionStore;
 import org.miaixz.bus.cortex.setting.rollout.Plan;
@@ -38,6 +39,7 @@ import org.miaixz.bus.cortex.setting.rollout.Rollout;
 import org.miaixz.bus.cortex.setting.rollout.Rollout.Mode;
 import org.miaixz.bus.cortex.setting.rollout.Rollout.State;
 import org.miaixz.bus.cortex.setting.rollout.RolloutStore;
+import org.miaixz.bus.cortex.setting.secret.SecretContext;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**
@@ -224,6 +226,24 @@ public class ItemCuratorService {
      * @return resolved value, query fallback, or {@code null} for an exposure mismatch
      */
     public String resolve(ItemQuery query, ItemExposure exposure) {
+        return resolve(query, exposure, null);
+    }
+
+    /**
+     * Resolves a published item under existing configuration access/exposure rules, passing trusted context to SECRET
+     * resolution. Missing or inaccessible query results retain existing fallback behavior.
+     *
+     * @param query    setting query evaluated against the existing access and publication rules
+     * @param exposure optional required exposure; null accepts any exposure allowed by the existing query rules
+     * @param context  authenticated caller identity and absolute request deadline; never populated from an untrusted
+     *                 reference
+     * @return resolved string, configured fallback where applicable, or null when no value is available
+     * @throws org.miaixz.bus.core.lang.exception.ForbiddenException if access is denied or the supplied credential
+     *                                                               representation is not permitted
+     * @throws org.miaixz.bus.core.lang.exception.CryptoException    if the deadline, lifecycle, backend or payload
+     *                                                               checks fail; inspect the stable error code
+     */
+    public String resolve(ItemQuery query, ItemExposure exposure, SecretContext context) {
         ItemQuery prepared = prepare(query);
         if (prepared == null || !allows(prepared)) {
             return prepared == null ? null : prepared.getFallbackValue();
@@ -242,7 +262,7 @@ public class ItemCuratorService {
         if (exposure != null && !exposure.name().equals(item.getExposure())) {
             return null;
         }
-        String value = resolver.resolve(item);
+        String value = resolver.resolve(item, context);
         return value == null ? prepared.getFallbackValue() : value;
     }
 
@@ -275,7 +295,8 @@ public class ItemCuratorService {
                 continue;
             }
             Item active = published(item, null);
-            if (active != null && (exposure == null || exposure.name().equals(active.getExposure()))) {
+            if (active != null && !ItemNormalizer.isSecret(active)
+                    && (exposure == null || exposure.name().equals(active.getExposure()))) {
                 result.put(keying.key(SettingSpec.export(item)), resolver.resolve(active));
             }
         }
@@ -530,4 +551,5 @@ public class ItemCuratorService {
             cortexGuard.enforce(context);
         }
     }
+
 }

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex.setting.rollout;
 
+import jakarta.persistence.Lob;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -68,6 +70,7 @@ public class Rollout extends Tenant {
     /**
      * Canonical immutable manifest containing selected scope, baseline, exact revisions, and reference policies.
      */
+    @Lob
     private String manifest;
 
     /**
@@ -83,6 +86,7 @@ public class Rollout extends Tenant {
     /**
      * Active gray selector JSON when present.
      */
+    @Lob
     private String rule;
 
     /**
@@ -119,6 +123,8 @@ public class Rollout extends Tenant {
 
     /**
      * Supported publication modes.
+     *
+     * @author Kimi Liu
      */
     public enum Mode {
         /**
@@ -133,6 +139,8 @@ public class Rollout extends Tenant {
 
     /**
      * Supported rollout workflow states.
+     *
+     * @author Kimi Liu
      */
     public enum State {
 

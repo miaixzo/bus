@@ -21,6 +21,7 @@ package org.miaixz.bus.cortex.setting.rollout;
 
 import java.util.*;
 
+import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.cortex.setting.item.GrayRule;
 import org.miaixz.bus.cortex.setting.item.GrayType;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
@@ -33,6 +34,8 @@ import org.miaixz.bus.extra.json.JsonKit;
  * applications retain their baseline revisions. Deletions use exact tombstone revision identifiers. Relationship and
  * approval inputs are frozen by value. The host commits this manifest, approvals, version activation, and notification
  * outbox in one transaction.
+ *
+ * @author Kimi Liu
  */
 public final class Plan {
 
@@ -86,8 +89,9 @@ public final class Plan {
             List<Reference> references) {
         ItemNormalizer.requireTenant(tenant);
         require(version, "Server-generated version");
-        if (!version.matches("v\\d{4}\\.\\d{2}\\.\\d{2}\\.\\d{6}\\.\\d{3}(?:\\.\\d+)?")) {
-            throw new IllegalArgumentException("Release version must be generated from server date and time");
+        // Naming belongs to the host allocator; historical date versions remain valid identifiers.
+        if (!PatternKit.isMatch("v[0-9]+(?:\\.[0-9]+)+", version)) {
+            throw new IllegalArgumentException("Release version must be a server-generated numeric identifier");
         }
         Rollout.Mode parsed = Rollout.Mode.valueOf(mode);
         require(policy, "Approval policy");
@@ -321,4 +325,5 @@ public final class Plan {
     public boolean includes(String app, String item, String revision) {
         return app != null && revision != null && revision.equals(selected.getOrDefault(app, Map.of()).get(item));
     }
+
 }

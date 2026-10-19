@@ -21,7 +21,7 @@ package org.miaixz.bus.core.basic.normal;
 
 import org.miaixz.bus.core.lang.I18n;
 import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
+import org.miaixz.bus.core.lang.exception.DuplicateException;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -85,7 +85,7 @@ public class ErrorRegistry implements Errors {
      * @param value default error message used when no localized message is available
      * @return registered error descriptor containing the supplied code and default message
      * @throws IllegalArgumentException if {@code key} or {@code value} is blank
-     * @throws AlreadyExistsException   if the same {@code key} has already been registered
+     * @throws DuplicateException       if the same {@code key} has already been registered
      */
     public static Errors register(String key, String value) {
         if (StringKit.isBlank(key)) {

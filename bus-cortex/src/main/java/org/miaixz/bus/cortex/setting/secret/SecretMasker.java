@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex.setting.secret;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemExposure;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
@@ -32,7 +33,13 @@ import org.miaixz.bus.cortex.setting.revision.Revision;
 public class SecretMasker {
 
     /**
-     * Creates a secret masker.
+     * Compile-time compatibility placeholder composed exclusively from existing bus symbols. Whole-source and per-key
+     * safe projections share the unchanged four-character value.
+     */
+    public static final String MASK = Symbol.STAR + Symbol.STAR + Symbol.STAR + Symbol.STAR;
+
+    /**
+     * Creates SecretMasker with explicitly bound collaborators. Dependencies are not discovered implicitly.
      */
     public SecretMasker() {
         // No initialization required.
@@ -48,7 +55,7 @@ public class SecretMasker {
         if (value == null || value.isEmpty()) {
             return value;
         }
-        return "****";
+        return MASK;
     }
 
     /**
@@ -72,7 +79,7 @@ public class SecretMasker {
                 .generation(entry.getGeneration()).description(entry.getDescription()).status(entry.getStatus())
                 .creator(entry.getCreator()).created(entry.getCreated()).modifier(entry.getModifier())
                 .modified(entry.getModified()).build();
-        if (protectedContent(entry.getEncrypted(), entry.getExposure())) {
+        if (ItemNormalizer.isSecret(entry) || protectedContent(entry.getEncrypted(), entry.getExposure())) {
             copy.setContent(mask(entry.getContent()));
             copy.setPayload(mask(entry.getPayload()));
             copy.setSpec(mask(entry.getSpec()));
@@ -102,7 +109,8 @@ public class SecretMasker {
                 .description(revision.getDescription()).status(revision.getStatus()).creator(revision.getCreator())
                 .created(revision.getCreated()).modifier(revision.getModifier()).modified(revision.getModified())
                 .build();
-        if (protectedContent(revision.getEncrypted(), revision.getExposure())) {
+        if ("SECRET".equalsIgnoreCase(revision.getSource() == null ? "" : revision.getSource().trim())
+                || protectedContent(revision.getEncrypted(), revision.getExposure())) {
             copy.setContent(mask(revision.getContent()));
             copy.setPayload(mask(revision.getPayload()));
             copy.setSpec(mask(revision.getSpec()));

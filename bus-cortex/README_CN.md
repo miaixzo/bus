@@ -15,7 +15,7 @@
 - **服务+实例分离模型**：`ApiAssets`（服务定义）+ `Instance`（运行时实例），参考 Nacos 设计
 - **配置中心**：带版本号的发布、灰度路由、`@ConfigChange` 回调注解
 - **健康探测**：可插拔 `Prober`（HTTP / TCP / MCP Ping / 进程 PID），服务端主动探测
-- **租户边界**：注册条目和运行时实例保留现有租户隔离；API 路由查找不使用租户条件
+- **租户边界**：API 定义及 API 运行实例全局；MCP、Prompt 条目保留显式租户存储隔离；路由查找坐标保持不变
 - **安全防护**：HMAC-SHA256 Token + RBAC（ADMIN / PROVIDER / CONSUMER），限流，熔断
 - **bus 生态联动**：VortexBridge 自动同步到 bus-vortex；内置 bus-metrics 埋点；bus-cache 是唯一存储依赖
 - **三步接入**：一个依赖 + 一行配置 + 一个注解
@@ -54,11 +54,11 @@ List<ApiAssets> services = Cortex.query(
 
 ```
 ApiAssets（服务定义，路由坐标 = type + app_id + method + version + verb）
-    └── Instance（运行时实例，唯一性由 tenant_id + app_id + method + version + fingerprint 决定）
+    └── Instance（运行时实例，唯一性由 app_id + method + version + fingerprint 决定）
 ```
 
 **实例标识规则**：同一 API 定义下允许存在多个运行时实例。运行时唯一性按
-`tenant_id + app_id + method + version + fingerprint` 约束。
+`app_id + method + version + fingerprint` 约束。
 
 相同 fingerprint 重复注册视为 **幂等刷新 TTL**，不视为冲突。
 
@@ -71,8 +71,7 @@ ApiAssets（服务定义，路由坐标 = type + app_id + method + version + ver
 4. `method:version:verb`
 
 其中 `method` / `version` / `verb` 为运行时必填维度，仅 `type`、`app_id` 可选。
-ROUTE 键不编码或校验 space/tenant；ENTRY（tenant_id + type + id）和 INSTANCE 保留原有租户校验及隔离。
-资产 tenant 字段不清空。
+ROUTE 键不编码或校验 space/tenant。API ENTRY 与 API INSTANCE 保持全局并将租户元数据规范为 null；MCP、Prompt ENTRY 保留原 tenant_id + type + id 空间，要求显式租户且不清空归属。
 
 ROUTE: `route:v2:type=<type|*>:app=<length:appId|*>:method=<length:method>:version=<length:version>:verb=<verb>`.
 
@@ -185,7 +184,7 @@ bus:
     server-addr: 127.0.0.1:8766   # 唯一必填项
 ```
 
-> **租户上下文**：注册业务操作继续使用原有可信租户上下文。以下片段中的 `tenantId` 由该上下文提供，
+> **租户上下文**：MCP、Prompt 业务操作继续使用原有可信租户上下文，API 注册保持全局。以下片段中的 `tenantId` 由该上下文提供，
 > 不引入默认租户；网关 API 路由不消费该坐标。
 
 ### 第三步：启用注解
@@ -539,3 +538,28 @@ terminationGracePeriodSeconds: 30
 ## 📄 许可证
 
 [Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+## 凭据管理
+
+现有 `setting.secret` 支持直接调用阿里云 KMS、AWS Secrets Manager、Azure Key Vault、Vault KV v2、腾讯云 SSM 与华为云 CSMS，提供显式授权、版本读取、有界内存缓存与刷新，无需厂商 SDK。
+
+运行时入口为具体类 `SecretManager`，连接通过 `register(connection, provider)` 注册。
+授权策略使用 `SecretManager.AccessPolicy`，能力使用 `SecretProvider.Capability`，
+凭据来源使用 `CloudCredentials.Source`。`SecretReference.version()` 为 null 表示当前版本；
+原配置 JSON 中的 `selector.mode/version` 与 `expectedType` 字段保持不变。
+`SecretMaterial` 直接提供实际版本、获取时间、过期时间及连接 generation；
+`describe()` 返回不可变能力集合。payload 类型仅作为配置标签，不再拆分完整值缓存。
+
+缓存直接使用 Bus `MemoryCache`，不再提供 `setting.secret.cache`。注入的缓存必须为空、仅供此管理器使用，由管理器关闭；移除监听在替换、淘汰、过期和关闭时擦除缓存值。容量由 `MemoryCache` 配置，超过 8192 字符的值正常返回但不入缓存。
+
+读取的生命周期保护覆盖缓存和非缓存模式；关闭会等待已进入的读取完成并阻止其继续返回密钥。读取失败后的缓存清理为尽力执行，不等待忙碌资源，也不覆盖原始异常。每次 HTTP 尝试将最多十秒的 deadline 同时传给凭据来源和 HTTP 执行，包装后的原生超时同样立即失败。
+
+```java
+var cache = new org.miaixz.bus.cache.nimble.MemoryCache<String, SecretMaterial>(256, 60_000);
+try (var manager = new SecretManager(accessPolicy, cache)) {
+    manager.register(connection, provider);
+    // Resolve using an authenticated SecretContext.
+}
+```
+
+Secret 直接使用 Bus `ForbiddenException` 表示访问被拒绝，其他失败使用 `CryptoException`。对外异常仅包含固定的脱敏文本，不携带云端错误消息、凭据、原始 cause 或自定义错误码；调用方不要解析异常消息。云适配层根据 HTTP 状态和平台原生错误字段判断重试：限流或临时服务故障（HTTP 429/500/502/503，以及阿里云、AWS、腾讯云已识别的瞬态错误）最多尝试三次。可识别的传输 I/O 故障允许重试；超时、权限拒绝、资源不存在、成功响应格式错误和凭据来源失败立即返回。每次尝试重新获取并关闭凭据。

@@ -30,12 +30,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.Prober;
 import org.miaixz.bus.cortex.Status;
 import org.miaixz.bus.cortex.health.HttpProber;
 import org.miaixz.bus.cortex.health.TcpProber;
-import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.runtime.CortexDiagnostics;
 import org.miaixz.bus.cortex.magic.runtime.CortexLifecycle;
 import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
@@ -131,14 +131,14 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
      *
      * @param apiRegistry  registry used to look up instances to probe
      * @param watchManager watch manager to notify on health state changes
-     * @param tenantId     explicit tenant monitored by this scheduler
+     * @param tenantId     legacy tenant metadata ignored by global API probing
      * @param intervalMs   milliseconds between probe cycles
      * @param timeoutMs    milliseconds before a probe attempt times out
      */
     public HealthProbeScheduler(ApiRegistry apiRegistry, WatchManager watchManager, String tenantId, long intervalMs,
             long timeoutMs) {
         this.apiRegistry = apiRegistry;
-        this.tenantId = CortexIdentity.tenantId(tenantId);
+        this.tenantId = RegistryIdentity.tenantId(org.miaixz.bus.cortex.Type.API, tenantId);
         this.watchManager = watchManager;
         this.intervalMs = intervalMs;
         this.timeoutMs = timeoutMs;
@@ -216,7 +216,7 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
                         "timeoutMs",
                         timeoutMs));
         snapshot.setLastError(lastError);
-        snapshot.setUpdatedAt(System.currentTimeMillis());
+        snapshot.setUpdatedAt(DateKit.current());
         return snapshot;
     }
 
@@ -227,7 +227,7 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
         if (!started.get()) {
             return;
         }
-        lastProbeAt = System.currentTimeMillis();
+        lastProbeAt = DateKit.current();
         probeCount.incrementAndGet();
         List<Instance> instances = apiRegistry.queryInstances(tenantId, null, null, null);
         if (instances == null || instances.isEmpty()) {
@@ -251,7 +251,7 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
             Status result = prober.check(instance);
             String newState = result.isHealthy() ? "UP" : "DOWN";
             Integer newHealthy = result.isHealthy() ? 1 : 0;
-            instance.setLastProbeAt(System.currentTimeMillis());
+            instance.setLastProbeAt(DateKit.current());
             instance.setLastStatus(result);
             instance.setHealthSource(result.getSource());
             if (Objects.equals(instance.getState(), newState) && Objects.equals(instance.getHealthy(), newHealthy)) {
@@ -259,7 +259,7 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
             }
             instance.setState(newState);
             instance.setHealthy(newHealthy);
-            instance.setStateChangedAt(System.currentTimeMillis());
+            instance.setStateChangedAt(DateKit.current());
             ApiAssets service = apiRegistry.refreshByMethodVersion(
                     instance.getTenant_id(),
                     instance.getApp_id(),

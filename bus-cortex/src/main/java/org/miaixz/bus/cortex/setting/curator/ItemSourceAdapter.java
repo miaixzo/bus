@@ -22,6 +22,8 @@ package org.miaixz.bus.cortex.setting.curator;
 import java.util.Map;
 
 import org.miaixz.bus.cortex.setting.item.Item;
+import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
+import org.miaixz.bus.cortex.setting.secret.SecretContext;
 
 /**
  * Strategy interface used to resolve setting values from different sources.
@@ -64,6 +66,23 @@ public interface ItemSourceAdapter {
      * @return resolved value
      */
     String resolve(Item entry);
+
+    /**
+     * Resolves with trusted context. Ordinary sources delegate to the existing overload; SECRET sources must override
+     * this method explicitly and are rejected by default.
+     *
+     * @param entry   setting entry or already selected snapshot; null is handled as documented
+     * @param context authenticated caller identity and absolute request deadline; never populated from an untrusted
+     *                reference
+     * @return resolved string, configured fallback where applicable, or null when no value is available
+     * @throws IllegalStateException if a SECRET source has not explicitly implemented protected resolution
+     */
+    default String resolve(Item entry, SecretContext context) {
+        if (ItemNormalizer.isSecret(entry)) {
+            throw new IllegalStateException("SECRET requires the protected source adapter");
+        }
+        return resolve(entry);
+    }
 
     /**
      * Returns a preview value without mutating external state.

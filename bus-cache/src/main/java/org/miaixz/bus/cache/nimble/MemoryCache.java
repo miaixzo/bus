@@ -54,6 +54,43 @@ import org.miaixz.bus.logger.Logger;
 public class MemoryCache<K, V> implements CacheX<K, V> {
 
     /**
+     * Optional ordinary-cache removal callback. It is configured before use and must not throw or reenter this cache.
+     * Atomic mode deliberately excludes callbacks because take operations transfer value ownership to the caller.
+     */
+    private org.miaixz.bus.core.cache.CacheListener<K, V> removalListener;
+
+    /**
+     * Installs one synchronous removal listener before the cache is shared with readers or writers. The listener
+     * observes replacement, expiration, explicit removal, capacity eviction, and close. Attaching a listener also makes
+     * ordinary close discard entries; ordinary caches without listeners retain their existing close behavior.
+     *
+     * @param listener non-null callback; it must not throw, block indefinitely, or modify this cache
+     * @return this cache for configuration chaining
+     * @throws IllegalStateException if atomic mode is active or a listener has already been installed
+     * @throws NullPointerException if listener is null
+     */
+    public MemoryCache<K, V> setRemovalListener(org.miaixz.bus.core.cache.CacheListener<K, V> listener) {
+        if (atomicMode || removalListener != null) {
+            throw new IllegalStateException("A removal listener requires an unconfigured ordinary cache");
+        }
+        removalListener = Objects.requireNonNull(listener, "listener");
+        return this;
+    }
+
+    /**
+     * Delivers a removed entry to its optional listener. Callers invoke this only after winning physical removal or
+     * replacement, so a racing expiration or capacity sweep cannot notify for the same entry twice.
+     *
+     * @param key removed entry key
+     * @param entry removed entry, or null when no mapping existed
+     */
+    private void removed(K key, Entry<V> entry) {
+        if (entry != null && removalListener != null) {
+            removalListener.onRemove(key, entry.value);
+        }
+    }
+
+    /**
      * Maximum live entry count.
      */
     private final long maximumSize;
@@ -471,7 +508,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
         });
         if (expire == CacheExpire.NO) {
             keyValueMap.keySet().forEach(key -> {
-                cache.remove(key);
+                removed(key, cache.remove(key));
                 counters.remove(key);
             });
             return;
@@ -505,7 +542,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
         V checkedValue = Objects.requireNonNull(value, "value");
         validateEntryExpire(expire);
         if (expire == CacheExpire.NO) {
-            cache.remove(checkedKey);
+            removed(checkedKey, cache.remove(checkedKey));
             counters.remove(checkedKey);
             return;
         }
@@ -563,7 +600,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
         Objects.requireNonNull(keys, "keys");
         for (K key : keys) {
             K checkedKey = Objects.requireNonNull(key, "key");
-            cache.remove(checkedKey);
+            removed(checkedKey, cache.remove(checkedKey));
             counters.remove(checkedKey);
         }
     }
@@ -817,8 +854,9 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * Cancels this instance's periodic maintenance task. For an ordinary cache, existing values remain available and
-     * later reads and writes are still permitted. For an atomic cache, this method additionally waits for admitted
+     * Cancels this instance's periodic maintenance task. For an ordinary cache without a removal listener, existing
+     * values remain available. With a removal listener, current entries are removed and delivered to the listener;
+     * ordinary reads and writes remain permitted, so owners must exclude concurrent mutation during close. For an atomic cache, this method additionally waits for admitted
      * atomic operations, marks the instance terminally closed, clears entries and counters, and causes later atomic
      * operations to return failed stages. Repeated calls are safe.
      */
@@ -826,6 +864,20 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     public void close() {
         cancelPrune();
         if (!atomicMode) {
+            if (removalListener != null) {
+                mutationLock.lock();
+                try {
+                    cache.forEach((key, entry) -> {
+                        if (cache.remove(key, entry)) {
+                            removed(key, entry);
+                        }
+                    });
+                    writeOrder.clear();
+                    writeTokenCount = 0L;
+                } finally {
+                    mutationLock.unlock();
+                }
+            }
             return;
         }
         lifecycleLock.writeLock().lock();
@@ -863,6 +915,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
         if (expireAfterAccess > 0L && !atomicBoundary) {
             return cache.computeIfPresent(key, (ignored, current) -> {
                 if (current.isStandardExpired(now, expireAfterWrite, expireAfterAccess)) {
+                    removed(key, current);
                     return null;
                 }
                 if (touch) {
@@ -878,7 +931,9 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
         boolean expired = atomicBoundary ? entry.isAtomicExpired(now)
                 : entry.isStandardExpired(now, expireAfterWrite, expireAfterAccess);
         if (expired) {
-            cache.remove(key, entry);
+            if (cache.remove(key, entry)) {
+                removed(key, entry);
+            }
             return null;
         }
         if (touch) {
@@ -898,7 +953,10 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
      */
     private void writeLocked(K key, V value, long expire, long now) {
         Entry<V> entry = newEntry(value, expire, now);
-        cache.put(key, entry);
+        Entry<V> previous = cache.put(key, entry);
+        if (previous != null && previous.value != value) {
+            removed(key, previous);
+        }
         writeOrder.offer(new WriteToken<>(key, entry));
         writeTokenCount++;
     }
@@ -938,6 +996,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
         while ((token = writeOrder.poll()) != null) {
             writeTokenCount--;
             if (cache.remove(token.key, token.entry)) {
+                removed(token.key, token.entry);
                 return true;
             }
         }

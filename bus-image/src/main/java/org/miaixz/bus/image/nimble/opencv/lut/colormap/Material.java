@@ -70,4 +70,5 @@ public record Material(float ambient, float diffuse, float specular) {
         return new Material(ambient + (other.ambient - ambient) * f, diffuse + (other.diffuse - diffuse) * f,
                 specular + (other.specular - specular) * f);
     }
+
 }

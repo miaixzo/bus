@@ -64,4 +64,5 @@ public interface SettingEnforcer {
     default boolean allows(String tenant_id, String app_id, String scope) {
         return true;
     }
+
 }

@@ -194,4 +194,5 @@ public final class ColorMapEdits {
         }
         return map.toBuilder().stops(spread).build();
     }
+
 }

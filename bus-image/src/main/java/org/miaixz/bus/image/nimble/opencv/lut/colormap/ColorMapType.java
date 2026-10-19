@@ -45,4 +45,5 @@ public enum ColorMapType {
      * Color plus opacity, for overlays and volume rendering.
      */
     TRANSFER
+
 }

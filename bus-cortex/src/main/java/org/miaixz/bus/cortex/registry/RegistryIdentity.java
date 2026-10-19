@@ -26,8 +26,8 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 /**
  * Canonical identity rules shared by cortex persistence, cache, and runtime sync.
  * <p>
- * The primary asset identity is {@code tenantId + app_id + type + method + version}. Overloads that omit {@code app_id}
- * only describe partial route fragments for broad scans or compatibility paths and are not the preferred identity path.
+ * API registry identity is global. MCP and Prompt entries retain explicit tenant identity for storage and lookup. Route
+ * coordinates and the separate setting-domain tenant rules remain unchanged.
  * </p>
  *
  * @author Kimi Liu
@@ -42,13 +42,38 @@ public class RegistryIdentity {
     }
 
     /**
-     * Requires and returns the canonical tenant identifier; blank values are rejected.
+     * Validates the existing explicit-tenant compatibility contract.
      *
-     * @param tenantId raw tenantId value
-     * @return canonical tenantId value
+     * @param tenantId explicit tenant identifier
+     * @return canonical nonblank tenant identifier
      */
     public static String tenantId(String tenantId) {
         return CortexIdentity.tenantId(tenantId);
+    }
+
+    /**
+     * Resolves storage identity by registry type without changing global route lookup coordinates.
+     *
+     * @param type     registry type; null retains the existing API default
+     * @param tenantId explicit tenant for MCP or Prompt, ignored for API
+     * @return null for API, otherwise the validated tenant
+     */
+    public static String tenantId(Type type, String tenantId) {
+        Type effective = type == null ? Type.API : Type.requireRegistry(type);
+        return effective == Type.API ? null : CortexIdentity.tenantId(tenantId);
+    }
+
+    /**
+     * Rejects a stored registry value outside its selected non-API tenant.
+     *
+     * @param type     existing registry type
+     * @param expected requested tenant
+     * @param actual   stored tenant
+     */
+    public static void requireTenant(Type type, String expected, String actual) {
+        if (Type.requireRegistry(type) != Type.API) {
+            CortexIdentity.requireTenant(expected, actual);
+        }
     }
 
     /**
@@ -82,7 +107,7 @@ public class RegistryIdentity {
     }
 
     /**
-     * Normalizes tenantId and type in place before the asset enters cache, persistence, or runtime state.
+     * Normalizes API to global identity while retaining explicit MCP and Prompt storage tenants.
      *
      * @param asset        asset to normalize
      * @param fallbackType type used when the asset does not define one
@@ -93,10 +118,11 @@ public class RegistryIdentity {
         if (asset == null) {
             return null;
         }
-        asset.setTenant_id(tenantId(asset.getTenant_id()));
-        asset.setApp_id(applicationId(asset.getApp_id()));
         Integer rawType = asset.getType() == null ? fallbackType == null ? null : fallbackType.key() : asset.getType();
-        asset.setType(type(rawType).key());
+        Type effective = type(rawType);
+        asset.setTenant_id(tenantId(effective, asset.getTenant_id()));
+        asset.setApp_id(applicationId(asset.getApp_id()));
+        asset.setType(effective.key());
         return asset;
     }
 

@@ -39,4 +39,5 @@ public record OutsideColors(Rgba low, Rgba high, Rgba nan) {
      */
     public static final OutsideColors TRANSPARENT = new OutsideColors(Rgba.TRANSPARENT, Rgba.TRANSPARENT,
             Rgba.TRANSPARENT);
+
 }

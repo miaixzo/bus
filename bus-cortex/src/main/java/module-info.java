@@ -31,11 +31,11 @@
  */
 module bus.cortex {
 
-    requires bus.cache;
+    requires transitive bus.cache;
     requires bus.core;
     requires bus.crypto;
     requires bus.extra;
-    requires bus.fabric;
+    requires transitive bus.fabric;
     requires bus.logger;
 
     requires static jakarta.persistence;
@@ -70,6 +70,7 @@ module bus.cortex {
     exports org.miaixz.bus.cortex.setting.reference;
     exports org.miaixz.bus.cortex.setting.rollout;
     exports org.miaixz.bus.cortex.setting.secret;
+    exports org.miaixz.bus.cortex.setting.secret.provider;
     exports org.miaixz.bus.cortex.setting.event;
     exports org.miaixz.bus.cortex.setting.watch;
     exports org.miaixz.bus.cortex.version;

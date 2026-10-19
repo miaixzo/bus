@@ -31,7 +31,7 @@ import javax.naming.directory.*;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
+import org.miaixz.bus.core.lang.exception.DuplicateException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.image.Builder;
@@ -787,7 +787,7 @@ public class LdapDicomConfiguration implements DicomConfiguration {
         try {
             registerAET(aet);
             return true;
-        } catch (AlreadyExistsException e) {
+        } catch (DuplicateException e) {
             Logger.debug(
                     false,
                     "Image",
@@ -815,7 +815,7 @@ public class LdapDicomConfiguration implements DicomConfiguration {
         try {
             registerWebApp(webAppName);
             return true;
-        } catch (AlreadyExistsException e) {
+        } catch (DuplicateException e) {
             Logger.debug(
                     false,
                     "Image",
@@ -853,7 +853,7 @@ public class LdapDicomConfiguration implements DicomConfiguration {
                     true,
                     e.getClass().getSimpleName());
 
-            throw new AlreadyExistsException("AE Title '" + aet + "' already exists");
+            throw new DuplicateException("AE Title '" + aet + "' already exists");
         } catch (NamingException e) {
             Logger.warn(
                     false,
@@ -893,7 +893,7 @@ public class LdapDicomConfiguration implements DicomConfiguration {
                     true,
                     e.getClass().getSimpleName());
 
-            throw new AlreadyExistsException("Web Application '" + webAppName + "' already exists");
+            throw new DuplicateException("Web Application '" + webAppName + "' already exists");
         } catch (NamingException e) {
             Logger.warn(
                     false,
@@ -1426,7 +1426,7 @@ public class LdapDicomConfiguration implements DicomConfiguration {
                     true,
                     e.getClass().getSimpleName());
 
-            throw new AlreadyExistsException(deviceName);
+            throw new DuplicateException(deviceName);
         } catch (NamingException e) {
             Logger.warn(
                     false,

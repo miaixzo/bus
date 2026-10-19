@@ -23,6 +23,7 @@ import java.util.*;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
@@ -368,7 +369,7 @@ public class RegistryControlService {
      * @return aggregate batch result
      */
     public BatchResult batch(BatchOperation operation) {
-        long start = System.currentTimeMillis();
+        long start = DateKit.current();
         BatchResult result = new BatchResult();
         if (operation == null || operation.getEntries() == null || operation.getEntries().isEmpty()) {
             Logger.debug(false, "Cortex", "Registry batch skipped: reason=empty");
@@ -385,7 +386,7 @@ public class RegistryControlService {
         if (result == null) {
             result = new BatchResult();
         }
-        result.setElapsedMs(System.currentTimeMillis() - start);
+        result.setElapsedMs(DateKit.current() - start);
         Logger.info(
                 false,
                 "Cortex",
@@ -585,7 +586,7 @@ public class RegistryControlService {
         context.setResourceType(effective.name());
         context.setResourceId(id);
         context.setAssetId(id);
-        context.tenant_id(tenantId);
+        context.setTenant_id(RegistryIdentity.tenantId(effective, tenantId));
         context.setApp_id(app_id);
         context.putAttribute("type", effective.name());
         context.putAttribute("typeKey", effective.key());
@@ -597,7 +598,9 @@ public class RegistryControlService {
     /**
      * Persists an API definition through the API registry.
      *
-     * @param asset API definition
+     * @param asset       API definition
+     * @param existing    the original definition already resolved by the batch lookup, or null
+     * @param preResolved whether the batch lookup has already resolved this definition
      * @return stored API definition
      */
     private ApiAssets upsertApi(ApiAssets asset, ApiAssets existing, boolean preResolved) {
@@ -612,7 +615,9 @@ public class RegistryControlService {
     /**
      * Persists an MCP definition through the MCP registry.
      *
-     * @param asset MCP definition
+     * @param asset       MCP definition
+     * @param existing    the original definition already resolved by the batch lookup, or null
+     * @param preResolved whether the batch lookup has already resolved this definition
      * @return stored MCP definition
      */
     private McpAssets upsertMcp(McpAssets asset, McpAssets existing, boolean preResolved) {
@@ -627,7 +632,9 @@ public class RegistryControlService {
     /**
      * Persists a prompt definition through the prompt registry.
      *
-     * @param asset prompt definition
+     * @param asset       prompt definition
+     * @param existing    the original definition already resolved by the batch lookup, or null
+     * @param preResolved whether the batch lookup has already resolved this definition
      * @return stored prompt definition
      */
     private PromptAssets upsertPrompt(PromptAssets asset, PromptAssets existing, boolean preResolved) {
@@ -1060,18 +1067,16 @@ public class RegistryControlService {
     }
 
     /**
-     * Requires a dependency asset to belong to the expected tenant.
+     * Checks the dependency tenant for MCP/Prompt while retaining global API identity.
      *
      * @param asset    dependency asset
-     * @param tenantId expected tenant identifier
-     * @return normalized tenant identifier
+     * @param tenantId explicit MCP/Prompt tenant, ignored for API dependencies
+     * @return explicit MCP/Prompt tenant, or null for API
      */
     private String requireDependencyTenant(Assets asset, String tenantId) {
-        String tenant = RegistryIdentity.tenantId(tenantId);
-        if (!Objects.equals(tenant, RegistryIdentity.tenantId(asset.getTenant_id()))) {
-            throw new IllegalArgumentException("Cross-tenant asset dependency is not allowed");
-        }
-        return tenant;
+        Type type = RegistryIdentity.type(asset);
+        RegistryIdentity.requireTenant(type, tenantId, asset.getTenant_id());
+        return RegistryIdentity.tenantId(type, tenantId);
     }
 
     /**
