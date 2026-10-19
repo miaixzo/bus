@@ -36,17 +36,21 @@ public interface SecretCodec {
     }
 
     /**
-     * Returns whether the codec supports the supplied logical mode.
+     * Tests whether the supplied source or protection mode is supported without performing any remote resolution.
      *
-     * @param mode logical mode
-     * @return {@code true} when supported
+     * @param mode non-null version selection mode
+     * @return true when the input is supported
      */
     default boolean supports(String mode) {
         return true;
     }
 
     /**
-     * Rejects unavailable or identity encryption before accepting a protected write.
+     * Rejects no-op or unsupported encryption before accepting protected storage. Non-null plaintext must produce
+     * non-empty ciphertext different from the input.
+     *
+     * @param plaintext plaintext to protect; null remains null when protection is supported
+     * @return protected representation, or null for a null input
      */
     default String protect(String plaintext) {
         if (this instanceof NoOpSecretCodec || !supports("encrypted")) {

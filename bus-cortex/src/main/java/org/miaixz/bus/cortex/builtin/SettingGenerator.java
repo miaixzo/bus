@@ -93,4 +93,5 @@ public class SettingGenerator implements Keying<SettingSpec> {
     private String segment(String value) {
         return value == null ? "-" : value.length() + "#" + value;
     }
+
 }

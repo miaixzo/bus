@@ -24,12 +24,13 @@ import java.util.*;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.Vector;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
 import org.miaixz.bus.cortex.magic.event.CortexChangeRecord;
-import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.identity.Sequence;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -145,7 +146,8 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         String resolvedTenant = normalizeTenant(tenantId);
         T cached = deserialize(cacheX.read(keying.key(Keying.RegistrySpec.entry(resolvedTenant, registryType, id))));
         if (cached != null) {
-            CortexIdentity.requireTenant(resolvedTenant, cached.getTenant_id());
+            RegistryIdentity.requireTenant(registryType, resolvedTenant, cached.getTenant_id());
+            RegistryIdentity.normalize(cached, registryType);
             if (cached.getType() == null) {
                 cached.setType(registryType.key());
             }
@@ -158,7 +160,8 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         if (loaded == null) {
             return null;
         }
-        CortexIdentity.requireTenant(resolvedTenant, loaded.getTenant_id());
+        RegistryIdentity.requireTenant(registryType, resolvedTenant, loaded.getTenant_id());
+        RegistryIdentity.normalize(loaded, registryType);
         T prepared = normalizeEntry(loaded);
         cacheEntry(prepared);
         return prepared;
@@ -181,10 +184,11 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         }
         T loaded = store.find(registryType, resolvedTenant, id);
         if (loaded == null) {
-            cacheX.remove(keying.key(Keying.RegistrySpec.entry(resolvedTenant, registryType, id)));
+            afterCommit(() -> cacheX.remove(keying.key(Keying.RegistrySpec.entry(resolvedTenant, registryType, id))));
             return null;
         }
-        CortexIdentity.requireTenant(resolvedTenant, loaded.getTenant_id());
+        RegistryIdentity.requireTenant(registryType, resolvedTenant, loaded.getTenant_id());
+        RegistryIdentity.normalize(loaded, registryType);
         T prepared = normalizeEntry(loaded);
         cacheEntry(prepared);
         return prepared;
@@ -213,7 +217,8 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         if (loaded == null) {
             return null;
         }
-        CortexIdentity.requireTenant(resolvedTenant, loaded.getTenant_id());
+        RegistryIdentity.requireTenant(registryType, resolvedTenant, loaded.getTenant_id());
+        RegistryIdentity.normalize(loaded, registryType);
         T prepared = normalizeEntry(loaded);
         cacheEntry(prepared);
         return prepared;
@@ -229,7 +234,9 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         if (id == null) {
             return;
         }
-        cacheX.remove(keying.key(Keying.RegistrySpec.entry(normalizeTenant(tenantId), registryType, id)));
+        afterCommit(
+                () -> cacheX
+                        .remove(keying.key(Keying.RegistrySpec.entry(normalizeTenant(tenantId), registryType, id))));
     }
 
     /**
@@ -257,7 +264,8 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         }
         List<T> result = new ArrayList<>(entries.size());
         for (T entry : entries) {
-            CortexIdentity.requireTenant(criteria.getTenant_id(), entry.getTenant_id());
+            RegistryIdentity.requireTenant(registryType, criteria.getTenant_id(), entry.getTenant_id());
+            RegistryIdentity.normalize(entry, registryType);
             T prepared = normalizeEntry(entry);
             cacheEntry(prepared);
             result.add(prepared);
@@ -287,7 +295,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         String prefix = keying.prefix(Keying.RegistrySpec.entry(criteria.getTenant_id(), registryType, null));
         Map<String, Object> current = cacheX.scan(prefix);
         if (current != null && !current.isEmpty()) {
-            cacheX.remove(current.keySet().toArray(String[]::new));
+            afterCommit(() -> cacheX.remove(current.keySet().toArray(String[]::new)));
         }
         return refresh(criteria);
     }
@@ -334,7 +342,8 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         }
         T prepared = normalizeEntry(entry);
         if (existing != null) {
-            CortexIdentity.requireTenant(prepared.getTenant_id(), existing.getTenant_id());
+            RegistryIdentity.requireTenant(registryType, prepared.getTenant_id(), existing.getTenant_id());
+            RegistryIdentity.normalize(existing, registryType);
         }
         T previous = existing == null ? null : normalizeEntry(existing);
         persistEntry(prepared, null, previous);
@@ -357,10 +366,10 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         String resolvedTenant = normalizeTenant(tenantId);
         T existing = find(resolvedTenant, id);
         if (existing == null) {
-            cacheX.remove(keying.key(Keying.RegistrySpec.entry(resolvedTenant, registryType, id)));
+            afterCommit(() -> cacheX.remove(keying.key(Keying.RegistrySpec.entry(resolvedTenant, registryType, id))));
             return;
         }
-        long tombstoneTime = System.currentTimeMillis();
+        long tombstoneTime = DateKit.current();
         deleteEntry(resolvedTenant, id, existing);
         existing.setStatus(-1);
         existing.setModified(tombstoneTime);
@@ -377,12 +386,13 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     public void deregisterResolved(String tenantId, String id, T existing) {
         String resolvedTenant = normalizeTenant(tenantId);
         if (existing == null) {
-            cacheX.remove(keying.key(Keying.RegistrySpec.entry(resolvedTenant, registryType, id)));
+            afterCommit(() -> cacheX.remove(keying.key(Keying.RegistrySpec.entry(resolvedTenant, registryType, id))));
             return;
         }
-        CortexIdentity.requireTenant(resolvedTenant, existing.getTenant_id());
+        RegistryIdentity.requireTenant(registryType, resolvedTenant, existing.getTenant_id());
+        RegistryIdentity.normalize(existing, registryType);
         T previous = normalizeEntry(existing);
-        long tombstoneTime = System.currentTimeMillis();
+        long tombstoneTime = DateKit.current();
         deleteEntry(resolvedTenant, id, previous);
         previous.setStatus(-1);
         previous.setModified(tombstoneTime);
@@ -411,7 +421,8 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         }
         List<T> result = new ArrayList<>(entries.size());
         for (T entry : entries) {
-            CortexIdentity.requireTenant(criteria.getTenant_id(), entry.getTenant_id());
+            RegistryIdentity.requireTenant(registryType, criteria.getTenant_id(), entry.getTenant_id());
+            RegistryIdentity.normalize(entry, registryType);
             T prepared = normalizeEntry(entry);
             cacheEntry(prepared);
             result.add(prepared);
@@ -447,7 +458,21 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      * @param entry entry to cache
      */
     protected void cacheEntry(T entry) {
-        super.register(normalizeEntry(entry));
+        T prepared = normalizeEntry(entry);
+        afterCommit(() -> super.register(prepared));
+    }
+
+    /**
+     * Defers cache and event effects to the existing host transaction when supported by its store.
+     *
+     * @param action the cache or event effect
+     */
+    protected void afterCommit(Runnable action) {
+        if (store == null) {
+            action.run();
+        } else {
+            store.afterCommit(action);
+        }
     }
 
     /**
@@ -461,13 +486,13 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     }
 
     /**
-     * Requires an explicit tenant identifier and rejects blank values.
+     * Resolves global API storage or the required MCP/Prompt tenant identifier.
      *
      * @param tenantId raw tenantId
      * @return canonical tenantId
      */
     protected String normalizeTenant(String tenantId) {
-        return RegistryIdentity.tenantId(tenantId);
+        return RegistryIdentity.tenantId(registryType, tenantId);
     }
 
     /**
@@ -488,52 +513,54 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         if (entry == null) {
             return;
         }
-        RegistryChange<T> event = new RegistryChange<>();
-        event.setAction(action);
-        event.setType(registryType);
-        event.setTenant_id(entry.getTenant_id());
-        event.setApp_id(entry.getApp_id());
-        event.setId(entry.getId());
-        event.setMethod(entry.getMethod());
-        event.setVersion(entry.getVersion());
-        event.setAsset(entry);
-        event.setPreviousAsset(previousEntry);
-        event.setInstance(instance);
-        event.setPreviousInstance(previousInstance);
-        event.setFingerprint(
-                instance != null ? instance.getFingerprint()
-                        : previousInstance != null ? previousInstance.getFingerprint() : null);
-        event.setEventType(registryEventType(action, instance, previousInstance));
-        event.setChangeSet(changeSet(entry, previousEntry, instance, previousInstance));
-        long now = System.currentTimeMillis();
-        event.setSequence(sequence.next("registry:" + registryType.name().toLowerCase()));
-        event.setTimestamp(now);
-        appendChangeLog(event);
-        for (Listener<RegistryChange<T>> listener : listeners) {
-            try {
-                listener.onEvent(event);
-            } catch (Exception e) {
+        afterCommit(() -> {
+            RegistryChange<T> event = new RegistryChange<>();
+            event.setAction(action);
+            event.setType(registryType);
+            event.setTenant_id(entry.getTenant_id());
+            event.setApp_id(entry.getApp_id());
+            event.setId(entry.getId());
+            event.setMethod(entry.getMethod());
+            event.setVersion(entry.getVersion());
+            event.setAsset(entry);
+            event.setPreviousAsset(previousEntry);
+            event.setInstance(instance);
+            event.setPreviousInstance(previousInstance);
+            event.setFingerprint(
+                    instance != null ? instance.getFingerprint()
+                            : previousInstance != null ? previousInstance.getFingerprint() : null);
+            event.setEventType(registryEventType(action, instance, previousInstance));
+            event.setChangeSet(changeSet(entry, previousEntry, instance, previousInstance));
+            long now = DateKit.current();
+            event.setSequence(sequence.next("registry:" + StringKit.toLowerCase(registryType.name(), Locale.ROOT)));
+            event.setTimestamp(now);
+            appendChangeLog(event);
+            for (Listener<RegistryChange<T>> listener : listeners) {
                 try {
-                    listener.onError(event, e);
-                } catch (Exception errorHandlerFailure) {
+                    listener.onEvent(event);
+                } catch (Exception e) {
+                    try {
+                        listener.onError(event, e);
+                    } catch (Exception errorHandlerFailure) {
+                        Logger.warn(
+                                false,
+                                "Cortex",
+                                "Registry listener error handler failed: type={}, listenerId={}, error={}",
+                                registryType,
+                                entry.getId(),
+                                errorHandlerFailure.getMessage());
+                    }
                     Logger.warn(
                             false,
                             "Cortex",
-                            "Registry listener error handler failed: type={}, listenerId={}, error={}",
+                            "Registry listener execution failed: type={}, listenerId={}, error={}",
                             registryType,
                             entry.getId(),
-                            errorHandlerFailure.getMessage());
+                            e.getMessage());
                 }
-                Logger.warn(
-                        false,
-                        "Cortex",
-                        "Registry listener execution failed: type={}, listenerId={}, error={}",
-                        registryType,
-                        entry.getId(),
-                        e.getMessage());
             }
-        }
-        publishWatchChange(event);
+            publishWatchChange(event);
+        });
     }
 
     /**
@@ -569,7 +596,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         if (event.getEventType() != null && event.getEventType().startsWith("registry-instance-")) {
             return event.getEventType().substring("registry-".length());
         }
-        return event.getAction() == null ? null : event.getAction().name().toLowerCase();
+        return event.getAction() == null ? null : StringKit.toLowerCase(event.getAction().name(), Locale.ROOT);
     }
 
     /**
@@ -675,7 +702,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         } else if (store != null) {
             capabilityFallback("delete", Trait.DURABLE, "cache remove");
         }
-        cacheX.remove(keying.key(Keying.RegistrySpec.entry(tenantId, registryType, id)));
+        afterCommit(() -> cacheX.remove(keying.key(Keying.RegistrySpec.entry(tenantId, registryType, id))));
     }
 
     /**
@@ -794,7 +821,8 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         for (Object value : raw.values()) {
             T entry = deserialize(value);
             if (entry != null) {
-                CortexIdentity.requireTenant(tenantId, entry.getTenant_id());
+                RegistryIdentity.requireTenant(registryType, tenantId, entry.getTenant_id());
+                RegistryIdentity.normalize(entry, registryType);
             }
             if (entry != null && Objects.equals(app_id, entry.getApp_id()) && Objects.equals(method, entry.getMethod())
                     && Objects.equals(version, entry.getVersion())) {

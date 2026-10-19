@@ -19,14 +19,18 @@
 */
 package org.miaixz.bus.cortex.setting;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 
 import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Keying.SettingSpec;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.cortex.setting.item.Item;
+import org.miaixz.bus.cortex.setting.item.ItemMetadata;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 import org.miaixz.bus.cortex.setting.item.StoreBackedItemStore;
 import org.miaixz.bus.cortex.setting.revision.Revision;
@@ -36,9 +40,12 @@ import org.miaixz.bus.cortex.setting.rollout.Plan;
 import org.miaixz.bus.cortex.setting.rollout.Rollout;
 import org.miaixz.bus.cortex.setting.secret.SecretCodec;
 import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.extra.json.JsonValue;
 
 /**
  * Stages configuration revisions; application release activation is committed by the host transaction.
+ *
+ * @author Kimi Liu
  */
 public class SettingPublisher {
 
@@ -109,6 +116,10 @@ public class SettingPublisher {
 
     /**
      * Stages inline content using complete tenant-qualified item coordinates.
+     *
+     * @param entry   item coordinates and metadata
+     * @param content plaintext inline content
+     * @return staged current-state item
      */
     public Item publishInline(Item entry, String content) {
         Item copy = copy(entry);
@@ -118,6 +129,9 @@ public class SettingPublisher {
 
     /**
      * Saves a draft only; this compatibility method never changes live pointers or notifies clients.
+     *
+     * @param entry plaintext item to stage
+     * @return staged current-state item
      */
     public Item publish(Item entry) {
         return publish(entry, null);
@@ -152,9 +166,7 @@ public class SettingPublisher {
                 : revisionStore.identity(current.getTenant_id(), current.getId(), current.getDraft_id());
         if (source == null && current != null && draft != null
                 && Revision.Operation.UPSERT.name().equals(draft.getOperation()) && current.getChecksum() != null
-                && current.getChecksum().equals(prepared.getChecksum())
-                && Objects.equals(current.getEditor(), prepared.getEditor())
-                && Objects.equals(current.getPayload(), prepared.getPayload())) {
+                && sameDraft(current, prepared)) {
             return current;
         }
         if (current != null) {
@@ -174,6 +186,9 @@ public class SettingPublisher {
                 current == null || current.getStable_id() == null ? Item.State.UNPUBLISHED.name()
                         : Item.State.CHANGED.name());
         prepared.setStatus(current == null ? 1 : current.getStatus());
+        Map<String, JsonValue> metadata = source == null ? metadata(prepared.getExtension()) : Map.of();
+        String reference = source == null ? freeze(metadata, "sources", "references") : source.getReference();
+        String secrets = source == null ? freeze(metadata, "protection", "keys") : source.getSecrets();
         if (ItemNormalizer.isEncryptedFlagEnabled(prepared.getEncrypted())) {
             if (!ItemNormalizer.INLINE_SOURCE.equals(prepared.getSource())) {
                 throw new IllegalArgumentException("Protected drafts require an inline materialized snapshot");
@@ -182,6 +197,10 @@ public class SettingPublisher {
             prepared.setPayload(secretCodec.protect(prepared.getPayload()));
             prepared.setSpec(secretCodec.protect(prepared.getSpec()));
             prepared.setExtension(secretCodec.protect(prepared.getExtension()));
+            if (source == null) {
+                reference = reference == null ? null : secretCodec.protect(reference);
+                secrets = secrets == null ? null : secretCodec.protect(secrets);
+            }
             prepared.setChecksum(ItemNormalizer.checksum(prepared));
         }
         Revision revision = snapshot(
@@ -189,11 +208,8 @@ public class SettingPublisher {
                 revisionNo,
                 source == null ? null : source.getId(),
                 Revision.Operation.UPSERT);
-        if (source != null) {
-            // Preserve the frozen manifest and protection metadata without consulting live relationships.
-            revision.setReference(source.getReference());
-            revision.setSecrets(source.getSecrets());
-        }
+        revision.setReference(reference);
+        revision.setSecrets(secrets);
         prepared.setDraft_id(revision.getId());
         revisionStore.save(revision);
         Item stored = entryStore.save(prepared);
@@ -203,6 +219,9 @@ public class SettingPublisher {
 
     /**
      * Stages a deletion tombstone. Published content remains available until the selected release commits.
+     *
+     * @param coordinates exact item coordinates
+     * @return staged item, or null when absent
      */
     public Item delete(Item coordinates) {
         synchronized (entryStore) {
@@ -232,6 +251,12 @@ public class SettingPublisher {
                 Revision.Operation.DELETE);
         tombstone.setContent(null);
         tombstone.setPayload(null);
+        Revision previous = current.getDraft_id() == null ? null
+                : revisionStore.identity(current.getTenant_id(), current.getId(), current.getDraft_id());
+        if (previous != null) {
+            tombstone.setReference(previous.getReference());
+            tombstone.setSecrets(previous.getSecrets());
+        }
         staged.setDraft_id(tombstone.getId());
         revisionStore.save(tombstone);
         Item deleted = entryStore.save(staged);
@@ -241,6 +266,10 @@ public class SettingPublisher {
 
     /**
      * Stages a new revision from immutable history without activating it or modifying the source.
+     *
+     * @param coordinates exact item coordinates
+     * @param revision    historical revision identifier
+     * @return staged item, or null when unavailable
      */
     public Item rollback(Item coordinates, String revision) {
         synchronized (entryStore) {
@@ -313,21 +342,18 @@ public class SettingPublisher {
      * Prepares one application-owned pointer change from an approved frozen plan, without persistence or notification.
      * The host must atomically commit all selected pointers, version, rollout state, and outbox; never loop-save them.
      * Source snapshots and the current item must be loaded in that same transaction and protected by edition checks.
+     *
+     * @param current  transaction-reserved effective item
+     * @param revision exact effective revision
+     * @param rollout  approved publishing rollout
+     * @param plan     frozen approval plan
+     * @return detached pointer update for the host to commit atomically
      */
     public Item prepareActivation(Item current, Revision revision, Rollout rollout, Plan plan) {
-        if (plan == null) {
-            throw new IllegalArgumentException("Frozen publication plan is required");
+        requireSelected(current, revision, rollout, plan);
+        if (!Rollout.State.PUBLISHING.name().equals(rollout.getState())) {
+            throw new IllegalArgumentException("Activation requires a publishing approved plan");
         }
-        plan.verify(rollout);
-        if (!Rollout.State.PUBLISHING.name().equals(rollout.getState()) || revision == null || current == null
-                || !plan.getTenant_id().equals(current.getTenant_id())
-                || !current.getTenant_id().equals(revision.getTenant_id())
-                || !current.getId().equals(revision.getItem_id())
-                || !Item.Scope.APPLICATION.name().equals(current.getScope())
-                || !plan.includes(current.getApp_id(), current.getId(), revision.getId())) {
-            throw new IllegalArgumentException("Activation must match the frozen selected application revision");
-        }
-        Revision.Operation.valueOf(revision.getOperation());
         Item activated = copy(current);
         activated.setGeneration(next(current.getGeneration()));
         activated.setEdition(next(current.getEdition()));
@@ -346,6 +372,191 @@ public class SettingPublisher {
                                     : Item.State.PUBLISHED.name());
         }
         return activated;
+    }
+
+    /**
+     * Prepares a source stable pointer only when an approved effective snapshot freezes that exact source revision.
+     * Gray publication never approves source pointers. The host reserves source rows and persists all updates in the
+     * same transaction as effective activation; this method neither saves rows nor resolves live relationships.
+     *
+     * @param current   reserved source item
+     * @param revision  exact immutable source revision
+     * @param effective selected effective item
+     * @param snapshot  exact approved effective revision
+     * @param rollout   approved publishing rollout
+     * @param plan      immutable approval plan
+     * @return detached source pointer update, unchanged when an equal or newer source revision is already approved
+     */
+    public Item prepareSourceActivation(
+            Item current,
+            Revision revision,
+            Item effective,
+            Revision snapshot,
+            Rollout rollout,
+            Plan plan) {
+        requireSelected(effective, snapshot, rollout, plan);
+        if (!Rollout.State.PUBLISHING.name().equals(rollout.getState())
+                || !Rollout.Mode.FORMAL.name().equals(rollout.getMode())) {
+            throw new IllegalArgumentException("Source activation requires formal publication");
+        }
+        return sourceActivation(current, revision, effective, snapshot, rollout);
+    }
+
+    /**
+     * Prepares the same source approval when the host promotes an already approved gray release to stable. No new plan
+     * or approval is introduced; the host must atomically commit the original promote operation.
+     *
+     * @param current   reserved source item
+     * @param revision  exact immutable source revision
+     * @param effective current effective item still owned by the original gray release
+     * @param snapshot  approved effective revision
+     * @param rollout   original published gray rollout
+     * @param plan      original immutable gray approval plan
+     * @return detached monotonic source pointer update
+     */
+    public Item prepareSourcePromotion(
+            Item current,
+            Revision revision,
+            Item effective,
+            Revision snapshot,
+            Rollout rollout,
+            Plan plan) {
+        requireSelected(effective, snapshot, rollout, plan);
+        if (!Rollout.State.PUBLISHED.name().equals(rollout.getState())
+                || !Rollout.Mode.GRAY.name().equals(rollout.getMode())
+                || !Objects.equals(effective.getGray_id(), snapshot.getId())
+                || !Objects.equals(effective.getRollout_id(), rollout.getId())) {
+            throw new IllegalArgumentException("Source promotion requires the original active approved gray target");
+        }
+        return sourceActivation(current, revision, effective, snapshot, rollout);
+    }
+
+    /**
+     * Checks selected effective identity through the same frozen plan for ordinary activation and gray promotion.
+     *
+     * @param current  selected effective item
+     * @param revision exact effective revision
+     * @param rollout  original approved rollout
+     * @param plan     original immutable plan
+     */
+    private void requireSelected(Item current, Revision revision, Rollout rollout, Plan plan) {
+        if (plan == null)
+            throw new IllegalArgumentException("Frozen publication plan is required");
+        plan.verify(rollout);
+        if (revision == null || current == null || !plan.getTenant_id().equals(current.getTenant_id())
+                || !current.getTenant_id().equals(revision.getTenant_id())
+                || !current.getId().equals(revision.getItem_id())
+                || !Item.Scope.APPLICATION.name().equals(current.getScope())
+                || !Item.Kind.EFFECTIVE.name().equals(current.getKind())
+                || !plan.includes(current.getApp_id(), current.getId(), revision.getId())) {
+            throw new IllegalArgumentException("Activation must match the frozen selected application revision");
+        }
+        Revision.Operation.valueOf(revision.getOperation());
+    }
+
+    /**
+     * Applies the unique monotonic source-pointer algorithm after the caller's frozen effective approval check.
+     *
+     * @param current   reserved source item
+     * @param revision  exact approved source revision
+     * @param effective selected effective owner
+     * @param snapshot  exact approved effective snapshot
+     * @param rollout   original approved release
+     * @return detached source pointer update
+     */
+    private Item sourceActivation(Item current, Revision revision, Item effective, Revision snapshot, Rollout rollout) {
+        if (current == null || revision == null || !Item.Kind.SOURCE.name().equals(current.getKind())
+                || !Objects.equals(current.getTenant_id(), effective.getTenant_id())
+                || !Objects.equals(current.getTenant_id(), revision.getTenant_id())
+                || !Objects.equals(current.getId(), revision.getItem_id())
+                || !Revision.Operation.UPSERT.name().equals(revision.getOperation())
+                || !Revision.Operation.UPSERT.name().equals(snapshot.getOperation())
+                || Item.Scope.APPLICATION.name().equals(current.getScope())
+                        && !Objects.equals(current.getApp_id(), effective.getApp_id())
+                || !Item.Scope.APPLICATION.name().equals(current.getScope())
+                        && !Item.Scope.SHARED.name().equals(current.getScope())) {
+            throw new IllegalArgumentException("Source activation requires a frozen formal effective revision");
+        }
+        JsonValue manifest = snapshot.getReference() == null ? null
+                : parse(decode(snapshot.getReference(), snapshot.getEncrypted()));
+        JsonValue frozen = manifest instanceof JsonValue.ObjectValue root ? root.values().get("sources") : null;
+        JsonValue selected = frozen instanceof JsonValue.ObjectValue sources ? sources.values().get("revisions") : null;
+        JsonValue expected = selected instanceof JsonValue.ObjectValue revisions
+                ? revisions.values().get(current.getId())
+                : null;
+        if (!(expected instanceof JsonValue.StringValue identity) || !identity.value().equals(revision.getId())) {
+            throw new IllegalArgumentException("Source revision is absent from the approved effective snapshot");
+        }
+        if (current.getStable_id() != null) {
+            Revision stable = revisionStore.identity(current.getTenant_id(), current.getId(), current.getStable_id());
+            if (stable == null)
+                throw new IllegalArgumentException("Approved source baseline is unavailable");
+            if (RevisionNumbers.sortKey(stable.getRevision()) >= RevisionNumbers.sortKey(revision.getRevision())) {
+                return copy(current);
+            }
+        }
+        Item activated = copy(current);
+        activated.setStable_id(revision.getId());
+        activated.setRollout_id(rollout.getId());
+        activated.setGeneration(next(current.getGeneration()));
+        activated.setEdition(next(current.getEdition()));
+        activated.setState(
+                Objects.equals(current.getDraft_id(), revision.getId()) ? Item.State.PUBLISHED.name()
+                        : Item.State.CHANGED.name());
+        return activated;
+    }
+
+    /**
+     * Compares semantic plaintext snapshots so randomized encryption does not create duplicate drafts.
+     *
+     * @param current  stored current item
+     * @param prepared normalized incoming plaintext
+     * @return whether all checksum-owned values and the editor agree
+     */
+    private boolean sameDraft(Item current, Item prepared) {
+        Item plaintext = copy(current);
+        plaintext.setContent(decode(current.getContent(), current.getEncrypted()));
+        plaintext.setPayload(decode(current.getPayload(), current.getEncrypted()));
+        plaintext.setSpec(decode(current.getSpec(), current.getEncrypted()));
+        plaintext.setExtension(decode(current.getExtension(), current.getEncrypted()));
+        return Objects.equals(ItemNormalizer.checksum(plaintext), prepared.getChecksum());
+    }
+
+    /**
+     * Reads the existing envelope before encryption; no client-controlled provenance is created here.
+     *
+     * @param extension trusted host-validated plaintext extension
+     * @return immutable service metadata, empty for absent metadata
+     */
+    private Map<String, JsonValue> metadata(String extension) {
+        return ItemMetadata.services(extension == null || extension.isBlank() ? null : parse(extension));
+    }
+
+    /**
+     * Freezes only the requested metadata members without embedding source values into the public manifest.
+     *
+     * @param metadata validated service metadata
+     * @param names    fixed member names owned by the snapshot
+     * @return canonical metadata text, or null when absent
+     */
+    private String freeze(Map<String, JsonValue> metadata, String... names) {
+        Map<String, JsonValue> frozen = new TreeMap<>();
+        for (String name : names) {
+            if (metadata.containsKey(name))
+                frozen.put(name, metadata.get(name));
+        }
+        return frozen.isEmpty() ? null
+                : new String(JsonKit.writeValue(new JsonValue.ObjectValue(frozen)), Charset.UTF_8);
+    }
+
+    /**
+     * Parses an already host-bounded immutable envelope with duplicate-name rejection.
+     *
+     * @param value immutable metadata text
+     * @return exact provider-neutral JSON tree
+     */
+    private JsonValue parse(String value) {
+        return JsonKit.readValue(value.getBytes(Charset.UTF_8), 256, true);
     }
 
     /**
@@ -379,6 +590,7 @@ public class SettingPublisher {
      * @return one for a missing counter, otherwise the next value
      */
     private long next(Long value) {
-        return value == null ? 1L : value + 1L;
+        return value == null ? 1L : Math.incrementExact(value);
     }
+
 }

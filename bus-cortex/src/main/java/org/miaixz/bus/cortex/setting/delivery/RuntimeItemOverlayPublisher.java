@@ -50,4 +50,5 @@ public interface RuntimeItemOverlayPublisher {
      * @param coordinates tenant-qualified item coordinates
      */
     void delete(Item coordinates);
+
 }

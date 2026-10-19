@@ -34,6 +34,16 @@ import org.miaixz.bus.cortex.*;
 public interface RegistryStore<T extends Assets> {
 
     /**
+     * Executes cache and event effects after the owning host transaction commits. Stores without host transactions
+     * retain immediate execution.
+     *
+     * @param action cache or event effect to run after successful commit
+     */
+    default void afterCommit(Runnable action) {
+        action.run();
+    }
+
+    /**
      * Saves a single registry entry.
      *
      * @param entry registry entry

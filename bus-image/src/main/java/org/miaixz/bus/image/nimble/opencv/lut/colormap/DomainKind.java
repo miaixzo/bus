@@ -41,4 +41,5 @@ public enum DomainKind {
      * * Positions in percent of a reference supplied at compile time (image maximum, prescribed dose).
      */
     PERCENT
+
 }

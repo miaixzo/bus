@@ -21,7 +21,7 @@ package org.miaixz.bus.cortex;
 
 import java.util.List;
 
-import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.cortex.registry.RegistryIdentity;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
@@ -86,12 +86,12 @@ public interface Keying<S> {
      * <li>{@link #ROUTE}: runtime route lookup keys and their ordered fallback chain</li>
      * </ul>
      * <p>
-     * Tenant identity is mandatory for entry and instance keys, but is not used for route keys. Optional {@code type}
-     * and {@code appId} route dimensions are preserved as supplied and may be omitted by fallback candidates.
+     * API entry and instance keys are global. MCP and Prompt entry keys require their explicit tenant. Route keys
+     * retain the existing tenant-independent coordinates and optional type/application fallback dimensions.
      * </p>
      *
      * @param mode        registry key mode
-     * @param tenantId    tenantId
+     * @param tenantId    explicit tenant for MCP or Prompt entries; ignored for API and route keys
      * @param type        registry type
      * @param appId       application identifier
      * @param id          logical entry identifier
@@ -99,6 +99,7 @@ public interface Keying<S> {
      * @param version     route version
      * @param verb        numeric verb code
      * @param fingerprint runtime instance fingerprint
+     * @author Kimi Liu
      */
     record RegistrySpec(int mode, String tenantId, Type type, String appId, String id, String method, String version,
             Integer verb, String fingerprint) {
@@ -106,22 +107,22 @@ public interface Keying<S> {
         /**
          * Mode flag for durable registry-entry keys.
          */
-        public static final int ENTRY = 1;
+        public static final int ENTRY = Normal._1;
 
         /**
          * Mode flag for runtime-instance keys.
          */
-        public static final int INSTANCE = 2;
+        public static final int INSTANCE = Normal._2;
 
         /**
          * Mode flag for runtime route keys and route candidate chains.
          */
-        public static final int ROUTE = 3;
+        public static final int ROUTE = Normal._3;
 
         /**
          * Creates one registry-entry specification.
          *
-         * @param tenantId tenantId
+         * @param tenantId explicit tenant for MCP or Prompt entries; ignored for API and route keys
          * @param type     registry type
          * @param id       logical entry identifier
          * @return registry-entry specification
@@ -133,7 +134,7 @@ public interface Keying<S> {
         /**
          * Creates one runtime-instance specification.
          *
-         * @param tenantId    tenantId
+         * @param tenantId    explicit tenant for MCP or Prompt entries; ignored for API and route keys
          * @param appId       application identifier
          * @param method      route method
          * @param version     route version
@@ -192,12 +193,12 @@ public interface Keying<S> {
         }
 
         /**
-         * Requires and returns the tenant identifier without introducing a default.
+         * Returns the type-qualified storage tenant; API instances and route coordinates remain global.
          *
-         * @return nonblank tenant identifier
+         * @return explicit MCP/Prompt entry tenant, otherwise null
          */
         public String tenantIdPart() {
-            return CortexIdentity.tenantId(tenantId);
+            return mode == ENTRY ? RegistryIdentity.tenantId(typePart(), tenantId) : null;
         }
 
         /**
@@ -294,6 +295,7 @@ public interface Keying<S> {
      * @param code      configuration code
      * @param kind      configuration content kind
      * @param revision  historical revision
+     * @author Kimi Liu
      */
     record SettingSpec(int mode, String tenant_id, String scope, String app_id, String code, String kind,
             String revision) {
@@ -301,38 +303,43 @@ public interface Keying<S> {
         /**
          * Mode for the stable item identifier key.
          */
-        public static final int ITEM_ID = 11;
+        public static final int ITEM_ID = Normal._11;
         /**
          * Mode for the item-scope authorization key.
          */
-        public static final int SCOPE = 12;
+        public static final int SCOPE = Normal._12;
         /**
          * Mode for the item watch channel key.
          */
-        public static final int WATCH = 13;
+        public static final int WATCH = Normal._13;
         /**
          * Mode for the runtime overlay key.
          */
-        public static final int OVERLAY = 14;
+        public static final int OVERLAY = Normal._14;
         /**
          * Mode for the exported item key.
          */
-        public static final int EXPORT = 15;
+        public static final int EXPORT = Normal._15;
         /**
          * Mode for the durable item-entry key.
          */
-        public static final int ENTRY = 16;
+        public static final int ENTRY = Normal._16;
         /**
          * Mode for an immutable revision key.
          */
-        public static final int REVISION = 17;
+        public static final int REVISION = Normal._17;
         /**
          * Mode for the revision-sequence key.
          */
-        public static final int SEQUENCE = 18;
+        public static final int SEQUENCE = Normal._18;
 
         /**
          * Creates a key specification for the supplied item and purpose.
+         *
+         * @param mode     the existing configuration key purpose
+         * @param item     the item whose canonical tenant and ownership coordinates define the key
+         * @param revision the selected historical revision, or null for a nonhistorical key
+         * @return the specification using the original normalized configuration coordinates
          */
         private static SettingSpec of(int mode, Item item, String revision) {
             ItemNormalizer.coordinates(item);
@@ -421,4 +428,5 @@ public interface Keying<S> {
             return of(SEQUENCE, item, null);
         }
     }
+
 }

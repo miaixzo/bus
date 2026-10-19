@@ -163,4 +163,5 @@ public record ColorStop(double position, Color color, Float alpha, Material mate
     public ColorStop withGroup(String newGroup) {
         return new ColorStop(position, color, alpha, material, newGroup);
     }
+
 }

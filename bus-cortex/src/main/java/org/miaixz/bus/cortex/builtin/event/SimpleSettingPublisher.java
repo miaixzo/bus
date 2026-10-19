@@ -88,4 +88,5 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
     public void delete(Item coordinates) {
         cacheX.remove(keying.key(SettingSpec.overlay(coordinates)));
     }
+
 }

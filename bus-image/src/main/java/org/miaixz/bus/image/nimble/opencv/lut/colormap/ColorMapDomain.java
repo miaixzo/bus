@@ -142,4 +142,5 @@ public record ColorMapDomain(DomainKind kind, String unit, double min, double ma
     public boolean isRelative() {
         return kind == DomainKind.RELATIVE;
     }
+
 }

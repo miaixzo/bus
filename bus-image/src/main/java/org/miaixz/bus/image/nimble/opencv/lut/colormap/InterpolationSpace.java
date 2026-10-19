@@ -322,4 +322,5 @@ public enum InterpolationSpace {
                         lerp(from.blue(), to.blue(), f), 1f);
         }
     }
+
 }

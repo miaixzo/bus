@@ -23,10 +23,15 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.center.date.Chrono;
 import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
+import org.miaixz.bus.cortex.registry.RegistryIdentity;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**
@@ -54,17 +59,17 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
     /**
      * Default number of failed delivery attempts before dead lettering.
      */
-    private static final int DEFAULT_MAX_RETRIES = 3;
+    private static final int DEFAULT_MAX_RETRIES = Normal._3;
 
     /**
      * Default retry backoff in milliseconds.
      */
-    private static final long DEFAULT_RETRY_BACKOFF_MS = 1000L;
+    private static final long DEFAULT_RETRY_BACKOFF_MS = Chrono.SECOND.getMillis();
 
     /**
      * Maximum retry backoff in milliseconds.
      */
-    private static final long MAX_RETRY_BACKOFF_MS = 60000L;
+    private static final long MAX_RETRY_BACKOFF_MS = Chrono.MINUTE.getMillis();
 
     /**
      * Cache facade used to persist outbox records.
@@ -128,8 +133,9 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
             prepared.setClaimedUntil(0L);
         }
         CortexChangeRecord retained = read(prepared.getId());
-        if (retained != null) {
-            CortexIdentity.requireTenant(prepared.getTenant_id(), retained.getTenant_id());
+        if (retained != null && (!Objects.equals(prepared.getTenant_id(), retained.getTenant_id())
+                || !Objects.equals(prepared.getDomain(), retained.getDomain()))) {
+            throw new IllegalArgumentException("Outbox record scope or domain mismatch");
         }
         write(prepared);
         cacheX.write(idempotencyKey(prepared.getTenant_id(), prepared.getIdempotencyKey()), prepared.getId(), 0L);
@@ -189,7 +195,7 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
             long leaseMillis,
             String domain,
             String resourceType) {
-        long now = System.currentTimeMillis();
+        long now = DateKit.current();
         Map<String, Object> entries = cacheX.scan(RECORD_PREFIX);
         if (entries == null || entries.isEmpty()) {
             return List.of();
@@ -253,7 +259,7 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
         if (record == null) {
             return null;
         }
-        long now = System.currentTimeMillis();
+        long now = DateKit.current();
         if (incrementRetry) {
             record.setRetryCount(record.getRetryCount() + 1);
         }
@@ -287,8 +293,13 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
      */
     private CortexChangeRecord prepare(CortexChangeRecord record) {
         CortexChangeRecord prepared = record == null ? new CortexChangeRecord() : record;
-        prepared.setTenant_id(CortexIdentity.tenantId(prepared.getTenant_id()));
-        long now = System.currentTimeMillis();
+        prepared.setTenant_id(
+                "registry".equals(prepared.getDomain()) ? RegistryIdentity
+                        .tenantId(org.miaixz.bus.cortex.Type.from(prepared.getResourceType()), prepared.getTenant_id())
+                        : "bridge".equals(prepared.getDomain())
+                                ? RegistryIdentity.tenantId(org.miaixz.bus.cortex.Type.API, prepared.getTenant_id())
+                                : CortexIdentity.tenantId(prepared.getTenant_id()));
+        long now = DateKit.current();
         if (prepared.getId() == null || prepared.getId().isBlank()) {
             prepared.setId(ID.fastSimpleUUID());
         }
@@ -308,6 +319,7 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
     /**
      * Finds a record by idempotency key.
      *
+     * @param tenantId       the actual tenant scope, or null for the global registry partition
      * @param idempotencyKey idempotency key
      * @return existing record or {@code null}
      */
@@ -397,11 +409,13 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
     /**
      * Builds the idempotency cache key.
      *
+     * @param tenantId       the actual tenant scope, or null for the global registry partition
      * @param idempotencyKey idempotency key
      * @return idempotency cache key
      */
     private String idempotencyKey(String tenantId, String idempotencyKey) {
-        return IDEMPOTENCY_PREFIX + CortexIdentity.tenantKey(tenantId) + ":" + idempotencyKey;
+        return IDEMPOTENCY_PREFIX + (tenantId == null ? "registry" : CortexIdentity.tenantKey(tenantId)) + ":"
+                + idempotencyKey;
     }
 
 }

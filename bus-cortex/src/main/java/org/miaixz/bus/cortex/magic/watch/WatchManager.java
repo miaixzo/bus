@@ -27,6 +27,8 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Tenant;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.Vector;
 import org.miaixz.bus.cortex.builtin.MetadataMatcher;
@@ -36,6 +38,7 @@ import org.miaixz.bus.cortex.magic.runtime.CortexDiagnostics;
 import org.miaixz.bus.cortex.magic.runtime.CortexLifecycle;
 import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
 import org.miaixz.bus.cortex.registry.RegistryChange;
+import org.miaixz.bus.cortex.registry.RegistryIdentity;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -101,7 +104,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     private final Map<String, WatchSubscription<?>> entries = new ConcurrentHashMap<>();
 
     /**
-     * Maximum number of watch subscriptions allowed per tenantId.
+     * Maximum number of watch subscriptions per setting tenant or global API partition.
      */
     private final int maxWatchesPerTenant;
 
@@ -126,7 +129,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     private final Sequence sequence;
 
     /**
-     * Tenant watch counters used to enforce per-tenantId subscription limits without full scans.
+     * Partition watch counters enforcing setting-tenant and global-registry limits without full scans.
      */
     private final Map<String, AtomicInteger> tenantIdCounts = new ConcurrentHashMap<>();
 
@@ -211,13 +214,14 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
         Objects.requireNonNull(listener, "watch listener must not be null");
         Vector normalized = normalizeVector(vector);
         String resolvedTenant = tenantIdOf(normalized);
-        AtomicInteger counter = tenantIdCounts.computeIfAbsent(resolvedTenant, key -> new AtomicInteger());
+        AtomicInteger counter = tenantIdCounts
+                .computeIfAbsent(partitionKey(resolvedTenant), key -> new AtomicInteger());
         if (counter.incrementAndGet() > maxWatchesPerTenant) {
             counter.decrementAndGet();
             throw new IllegalStateException("Max watches per tenantId exceeded: " + resolvedTenant);
         }
         String watchId = ID.fastSimpleUUID();
-        long now = System.currentTimeMillis();
+        long now = DateKit.current();
         WatchSubscription<T> entry = new WatchSubscription<>(normalized, resolvedTenant, listener, now);
         entry.touch(now, watchExpireMs);
         entries.put(watchId, entry);
@@ -294,9 +298,13 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             return;
         }
         String tenantId;
-        if (newValue instanceof Tenant value) {
-            tenantId = CortexIdentity.tenantId(value.getTenant_id());
+        if (newValue instanceof Assets value) {
+            RegistryIdentity.normalize(value, RegistryIdentity.type(value));
+            tenantId = value.getTenant_id();
         } else if (newValue instanceof Instance value) {
+            value.setTenant_id(RegistryIdentity.tenantId(Type.API, value.getTenant_id()));
+            tenantId = null;
+        } else if (newValue instanceof Tenant value) {
             tenantId = CortexIdentity.tenantId(value.getTenant_id());
         } else {
             throw new IllegalArgumentException("Watch payload must carry tenant_id");
@@ -309,7 +317,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             if (!matches(vector, key, newValue)) {
                 continue;
             }
-            long now = System.currentTimeMillis();
+            long now = DateKit.current();
             item.getValue().touch(now, watchExpireMs);
             WatchSubscription<T> typed = (WatchSubscription<T>) item.getValue();
             Watch<T> event = createEvent(
@@ -332,8 +340,9 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     /**
      * Notifies setting-specific watch listeners.
      *
-     * @param key     setting key that changed
-     * @param content new setting content
+     * @param tenantId the explicit tenant owning the configuration watch
+     * @param key      setting key that changed
+     * @param content  new setting content
      */
     public void notifySetting(String tenantId, String key, String content) {
         notifySetting(
@@ -346,8 +355,9 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     }
 
     /**
-     * Notifies setting-specific watch listeners with explicit source and event typing metadata.
+     * Notifies setting-content listeners without delivering strings to explicitly typed runtime-watch subscriptions.
      *
+     * @param tenantId  strict setting tenant identifier
      * @param key       setting key that changed
      * @param content   new setting content
      * @param source    logical source component
@@ -370,11 +380,14 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
                 continue;
             }
             Vector vector = item.getValue().getVector();
+            if (vector != null && vector.getType() != null && !Objects.equals(vector.getType(), Type.ITEM.getKey())) {
+                continue;
+            }
             String watchKey = vector != null ? vector.getId() : null;
             if (!matchesSettingKey(key, watchKey)) {
                 continue;
             }
-            long now = System.currentTimeMillis();
+            long now = DateKit.current();
             item.getValue().touch(now, watchExpireMs);
             WatchSubscription<String> typed = (WatchSubscription<String>) item.getValue();
             Watch<String> event = createEvent(
@@ -435,9 +448,11 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
         if (closed || action == null || asset == null) {
             return;
         }
-        String tenant = CortexIdentity.tenantId(asset.getTenant_id());
+        RegistryIdentity.normalize(asset, RegistryIdentity.type(asset));
         if (previousAsset != null) {
-            CortexIdentity.requireTenant(tenant, previousAsset.getTenant_id());
+            RegistryIdentity
+                    .requireTenant(RegistryIdentity.type(asset), asset.getTenant_id(), previousAsset.getTenant_id());
+            RegistryIdentity.normalize(previousAsset, RegistryIdentity.type(previousAsset));
         }
         Instance currentRuntime = runtimeSnapshot(asset, instance);
         Instance previousRuntime = runtimeSnapshot(asset, previousInstance);
@@ -445,14 +460,16 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
                 ? registryEventType(action, currentRuntime, previousRuntime)
                 : eventType;
         Type assetType = Type.tryFromKey(asset.getType()).orElse(null);
-        String sequenceKey = "watch:registry:" + (assetType == null ? "unknown" : assetType.name().toLowerCase());
+        String sequenceKey = "watch:registry:"
+                + (assetType == null ? "unknown" : StringKit.toLowerCase(assetType.name(), Locale.ROOT));
         String matchKey = registryWatchKey(asset, currentRuntime, previousRuntime);
         for (Map.Entry<String, WatchSubscription<?>> item : entries.entrySet()) {
             Vector vector = item.getValue().getVector();
-            if (!matchesRegistry(vector, matchKey, asset, previousAsset, currentRuntime, previousRuntime)) {
+            if (!Objects.equals(item.getValue().getTenant_id(), asset.getTenant_id())
+                    || !matchesRegistry(vector, matchKey, asset, previousAsset, currentRuntime, previousRuntime)) {
                 continue;
             }
-            long now = System.currentTimeMillis();
+            long now = DateKit.current();
             item.getValue().touch(now, watchExpireMs);
             WatchSubscription<T> typed = (WatchSubscription<T>) item.getValue();
             Watch<T> event = createEvent(item.getKey(), typed, effectiveEventType, sequenceKey, REGISTRY_SOURCE, now);
@@ -468,7 +485,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      * Removes stale watch entries that have not been accessed recently.
      */
     public void cleanExpired() {
-        long now = System.currentTimeMillis();
+        long now = DateKit.current();
         entries.entrySet().removeIf(e -> {
             boolean expired = e.getValue().getExpiresAt() > 0L && now > e.getValue().getExpiresAt();
             if (expired) {
@@ -532,7 +549,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
                         entries.values().stream().mapToLong(WatchSubscription::getDroppedCount).sum(),
                         "failed",
                         entries.values().stream().mapToLong(WatchSubscription::getFailureCount).sum()));
-        snapshot.setUpdatedAt(System.currentTimeMillis());
+        snapshot.setUpdatedAt(DateKit.current());
         return snapshot;
     }
 
@@ -581,7 +598,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      */
     private boolean matches(Vector vector, String key, Object value) {
         if (vector == null) {
-            return true;
+            return !(value instanceof org.miaixz.bus.cortex.setting.watch.Watch);
         }
         if (value instanceof Assets asset) {
             if (vector.getTenant_id() != null && !Objects.equals(vector.getTenant_id(), asset.getTenant_id())) {
@@ -623,6 +640,16 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             }
             return true;
         }
+        if (value instanceof org.miaixz.bus.cortex.setting.watch.Watch watch) {
+            if (!Objects.equals(vector.getType(), Type.WATCH.getKey())
+                    || vector.getTenant_id() != null && !Objects.equals(vector.getTenant_id(), watch.getTenant_id())
+                    || vector.getApp_id() != null || vector.getMethod() != null || vector.getVersion() != null
+                    || vector.getState() != null || vector.getLabels() != null && !vector.getLabels().isEmpty()
+                    || vector.getSelectors() != null && !vector.getSelectors().isEmpty()) {
+                return false;
+            }
+            return vector.getId() == null || matchesSettingKey(key, vector.getId());
+        }
         if (vector.getId() == null) {
             return true;
         }
@@ -659,7 +686,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             String source,
             long now) {
         Watch<T> event = new Watch<>();
-        long sequence = nextSequence(CortexIdentity.tenantKey(subscription.getTenant_id()) + ":" + sequenceKey);
+        long sequence = nextSequence(partitionKey(subscription.getTenant_id()) + ":" + sequenceKey);
         long previousSequence = subscription.getLastSequence();
         subscription.setLastSequence(sequence);
         event.setWatchId(watchId);
@@ -705,7 +732,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      * @param <T>          watched payload type
      */
     private <T> void dispatch(String watchId, WatchSubscription<T> subscription, Watch<T> event) {
-        long now = System.currentTimeMillis();
+        long now = DateKit.current();
         if (!subscription.reservePending(maxPendingPerWatch)) {
             handleOverflow(watchId, subscription, event, now);
             return;
@@ -714,7 +741,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             subscription.enqueueDispatch(() -> {
                 try {
                     subscription.setDispatchCount(subscription.getDispatchCount() + 1);
-                    long deliveredAt = System.currentTimeMillis();
+                    long deliveredAt = DateKit.current();
                     subscription.setLastEventAt(deliveredAt);
                     subscription.getListener().onEvent(event);
                 } catch (Exception e) {
@@ -733,7 +760,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
                     }
                     Logger.warn(false, "Cortex", "Watch listener execution failed {}: {}", watchId, e.getMessage());
                 } finally {
-                    subscription.completeDelivery(System.currentTimeMillis());
+                    subscription.completeDelivery(DateKit.current());
                 }
                 dispatchGlobal(event);
             }, dispatcher);
@@ -767,12 +794,12 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      * Copies and normalizes the selector vector used by one subscription.
      *
      * @param vector incoming watch vector
-     * @return copied vector with canonical tenantId
+     * @return copied vector with a strict non-API tenant or global API scope
      */
     private Vector normalizeVector(Vector vector) {
         Vector copy = new Vector();
         if (vector == null) {
-            copy.setTenant_id(CortexIdentity.tenantId(null));
+            copy.setTenant_id(RegistryIdentity.tenantId(Type.API, null));
             return copy;
         }
         copy.setId(vector.getId());
@@ -795,13 +822,20 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     }
 
     /**
-     * Resolves the canonical tenantId of one vector.
+     * Resolves a strict non-API tenant or the global API scope of one vector.
      *
      * @param vector watch vector
-     * @return tenantId key
+     * @return explicit MCP, Prompt or setting tenant, or null for global API
      */
     private String tenantIdOf(Vector vector) {
-        return CortexIdentity.tenantId(vector == null ? null : vector.getTenant_id());
+        Type type = vector == null || vector.getType() == null ? null : Type.tryFromKey(vector.getType()).orElse(null);
+        if (type != null && type.isRegistry()) {
+            return RegistryIdentity.tenantId(type, vector.getTenant_id());
+        }
+        if (vector == null || type == null && vector.getTenant_id() == null) {
+            return RegistryIdentity.tenantId(Type.API, null);
+        }
+        return CortexIdentity.tenantId(vector.getTenant_id());
     }
 
     /**
@@ -908,8 +942,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             return null;
         }
         Instance copy = new Instance();
-        copy.setTenant_id(instance.getTenant_id() != null ? instance.getTenant_id() : asset.getTenant_id());
-        CortexIdentity.requireTenant(asset.getTenant_id(), copy.getTenant_id());
+        copy.setTenant_id(RegistryIdentity.tenantId(Type.API, instance.getTenant_id()));
         copy.setApp_id(instance.getApp_id() != null ? instance.getApp_id() : asset.getApp_id());
         copy.setServiceId(instance.getServiceId() != null ? instance.getServiceId() : asset.getId());
         copy.setMethod(instance.getMethod() != null ? instance.getMethod() : asset.getMethod());
@@ -953,18 +986,28 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     }
 
     /**
+     * Separates global registry counters and sequences from setting-domain tenant partitions.
+     *
+     * @param tenantId null for global registry subscriptions, otherwise an explicit setting tenant
+     * @return an internal cache/counter partition key, never a business tenant identifier
+     */
+    private String partitionKey(String tenantId) {
+        return tenantId == null ? "registry" : CortexIdentity.tenantKey(tenantId);
+    }
+
+    /**
      * Decrements the tenantId watch counter and clears empty counters.
      *
      * @param tenantId tenantId key
      */
     private void decrementTenantCount(String tenantId) {
-        String resolvedTenant = CortexIdentity.tenantId(tenantId);
-        AtomicInteger counter = tenantIdCounts.get(resolvedTenant);
+        String counterKey = partitionKey(tenantId);
+        AtomicInteger counter = tenantIdCounts.get(counterKey);
         if (counter == null) {
             return;
         }
         if (counter.decrementAndGet() <= 0) {
-            tenantIdCounts.remove(resolvedTenant, counter);
+            tenantIdCounts.remove(counterKey, counter);
         }
     }
 

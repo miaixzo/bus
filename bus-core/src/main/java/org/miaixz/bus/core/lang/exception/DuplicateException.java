@@ -28,110 +28,110 @@ import org.miaixz.bus.core.basic.normal.Errors;
  *
  * @author Kimi Liu
  */
-public class AlreadyExistsException extends UncheckedException {
+public class DuplicateException extends UncheckedException {
 
     @Serial
     private static final long serialVersionUID = 2852251888013L;
 
     /**
-     * Constructs a new AlreadyExistsException with no detail message.
+     * Constructs a new DuplicateException with no detail message.
      */
-    public AlreadyExistsException() {
+    public DuplicateException() {
         super();
     }
 
     /**
-     * Constructs a new AlreadyExistsException with the specified cause.
+     * Constructs a new DuplicateException with the specified cause.
      *
      * @param e The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public AlreadyExistsException(final Throwable e) {
+    public DuplicateException(final Throwable e) {
         super(e);
     }
 
     /**
-     * Constructs a new AlreadyExistsException with the specified detail message.
+     * Constructs a new DuplicateException with the specified detail message.
      *
      * @param errmsg The detail message.
      */
-    public AlreadyExistsException(final String errmsg) {
+    public DuplicateException(final String errmsg) {
         super(errmsg);
     }
 
     /**
-     * Constructs a new AlreadyExistsException with the specified error object.
+     * Constructs a new DuplicateException with the specified error object.
      *
      * @param errors The error object containing error code and message.
      */
-    public AlreadyExistsException(final Errors errors) {
+    public DuplicateException(final Errors errors) {
         super(errors);
     }
 
     /**
-     * Constructs a new AlreadyExistsException with the specified error object and detail message.
+     * Constructs a new DuplicateException with the specified error object and detail message.
      *
      * @param errors The error object containing error code.
      * @param errmsg The detail message.
      */
-    public AlreadyExistsException(final Errors errors, final String errmsg) {
+    public DuplicateException(final Errors errors, final String errmsg) {
         super(errors, errmsg);
     }
 
     /**
-     * Constructs a new AlreadyExistsException with the specified detail message and arguments for formatting.
+     * Constructs a new DuplicateException with the specified detail message and arguments for formatting.
      *
      * @param format The format string for the detail message.
      * @param args   The arguments referenced by the format specifiers in the format string.
      */
-    public AlreadyExistsException(final String format, final Object... args) {
+    public DuplicateException(final String format, final Object... args) {
         super(format, args);
     }
 
     /**
-     * Constructs a new AlreadyExistsException with the specified error code and detail message.
+     * Constructs a new DuplicateException with the specified error code and detail message.
      *
      * @param errcode The error code.
      * @param errmsg  The detail message.
      */
-    public AlreadyExistsException(final String errcode, final String errmsg) {
+    public DuplicateException(final String errcode, final String errmsg) {
         super(errcode, errmsg);
     }
 
     /**
-     * Constructs a new AlreadyExistsException with the specified detail message and cause.
+     * Constructs a new DuplicateException with the specified detail message and cause.
      *
      * @param errmsg The detail message.
      * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public AlreadyExistsException(final String errmsg, final Throwable cause) {
+    public DuplicateException(final String errmsg, final Throwable cause) {
         super(errmsg, cause);
     }
 
     /**
-     * Constructs a new AlreadyExistsException with the specified cause, detail message, and arguments for formatting.
+     * Constructs a new DuplicateException with the specified cause, detail message, and arguments for formatting.
      *
      * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      * @param format The format string for the detail message.
      * @param args   The arguments referenced by the format specifiers in the format string.
      */
-    public AlreadyExistsException(final Throwable cause, final String format, final Object... args) {
+    public DuplicateException(final Throwable cause, final String format, final Object... args) {
         super(cause, format, args);
     }
 
     /**
-     * Constructs a new AlreadyExistsException with the specified error code, detail message, and cause.
+     * Constructs a new DuplicateException with the specified error code, detail message, and cause.
      *
      * @param errcode The error code.
      * @param errmsg  The detail message.
      * @param cause   The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public AlreadyExistsException(final String errcode, final String errmsg, final Throwable cause) {
+    public DuplicateException(final String errcode, final String errmsg, final Throwable cause) {
         super(errcode, errmsg, cause);
     }
 
     /**
-     * Constructs a new AlreadyExistsException with the specified detail message, cause, suppression enabled or
-     * disabled, and writable stack trace enabled or disabled.
+     * Constructs a new DuplicateException with the specified detail message, cause, suppression enabled or disabled,
+     * and writable stack trace enabled or disabled.
      *
      * @param errmsg             The detail message.
      * @param cause              The cause (which is saved for later retrieval by the {@link Throwable#getCause()}
@@ -139,7 +139,7 @@ public class AlreadyExistsException extends UncheckedException {
      * @param enableSuppression  Whether or not suppression is enabled or disabled.
      * @param writableStackTrace Whether or not the stack trace should be writable.
      */
-    public AlreadyExistsException(final String errmsg, final Throwable cause, final boolean enableSuppression,
+    public DuplicateException(final String errmsg, final Throwable cause, final boolean enableSuppression,
             final boolean writableStackTrace) {
         super(errmsg, cause, enableSuppression, writableStackTrace);
     }

@@ -29,10 +29,10 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
-import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.identity.Fingerprint;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.cortex.registry.RegistryChange;
+import org.miaixz.bus.cortex.registry.RegistryIdentity;
 import org.miaixz.bus.cortex.registry.RegistryStore;
 import org.miaixz.bus.cortex.registry.StoreBackedRegistry;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -167,7 +167,7 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
 
         long ttl = prepared.getTtl() > 0 ? prepared.getTtl() : 3600_000L;
         String instKey = keying.key(Keying.RegistrySpec.instance(resolvedTenant, appId, method, version, fingerprint));
-        cacheX.write(instKey, JsonKit.toJsonString(instance), ttl);
+        afterCommit(() -> cacheX.write(instKey, JsonKit.toJsonString(instance), ttl));
         ApiAssets existing = loadExisting(prepared);
         persistEntry(prepared, instance, existing);
         publishChange(
@@ -198,7 +198,7 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
         } else if (store != null) {
             capabilityFallback("deleteInstance", Trait.INSTANCES, "cache remove");
         }
-        cacheX.remove(instKey);
+        afterCommit(() -> cacheX.remove(instKey));
         if (current != null) {
             ApiAssets prepared = normalizeService(
                     service == null ? synthesizeService(resolvedTenant, app_id, method, version, current) : service,
@@ -222,7 +222,7 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
         if (store != null && storeSupports(Trait.INSTANCES)) {
             List<Instance> persisted = store.queryInstances(registryType, resolvedTenant, app_id, method, version);
             for (Instance instance : persisted) {
-                CortexIdentity.requireTenant(resolvedTenant, instance.getTenant_id());
+                instance.setTenant_id(RegistryIdentity.tenantId(Type.API, instance.getTenant_id()));
             }
             if (!persisted.isEmpty()) {
                 warmInstanceCache(resolvedTenant, app_id, method, version, persisted);
@@ -315,10 +315,7 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
      * @param instance runtime instance
      */
     private void fillInstanceIdentity(ApiAssets service, Instance instance) {
-        if (instance.getTenant_id() == null) {
-            instance.setTenant_id(service.getTenant_id());
-        }
-        CortexIdentity.requireTenant(service.getTenant_id(), instance.getTenant_id());
+        instance.setTenant_id(RegistryIdentity.tenantId(Type.API, instance.getTenant_id()));
         if (StringKit.isEmpty(instance.getApp_id())) {
             instance.setApp_id(service.getApp_id());
         }
@@ -448,7 +445,9 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
             String instKey = keying.key(
                     Keying.RegistrySpec
                             .instance(instTenant, instAppId, instMethod, instVersion, instance.getFingerprint()));
-            cacheX.write(instKey, JsonKit.toJsonString(instance), Builder.DEFAULT_HEALTH_INTERVAL_MS * 120);
+            afterCommit(
+                    () -> cacheX
+                            .write(instKey, JsonKit.toJsonString(instance), Builder.DEFAULT_HEALTH_INTERVAL_MS * 120));
         }
     }
 

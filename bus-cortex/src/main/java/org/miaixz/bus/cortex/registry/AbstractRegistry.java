@@ -27,7 +27,6 @@ import java.util.Objects;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
-import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -103,6 +102,7 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
      */
     @Override
     public void register(T entry) {
+        RegistryIdentity.normalize(entry, registryType);
         long ttl = entry.getTtl() > 0 ? entry.getTtl() : 3600_000L;
         String key = keying.key(Keying.RegistrySpec.entry(entry.getTenant_id(), registryType, entry.getId()));
         Logger.debug(
@@ -125,9 +125,9 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
     }
 
     /**
-     * Removes an entry from the cache by tenantId and ID.
+     * Removes an API entry globally or an MCP/Prompt entry within its explicit tenant.
      *
-     * @param tenantId entry tenantId
+     * @param tenantId explicit MCP/Prompt storage tenant, ignored for API
      * @param id       entry identifier
      */
     @Override
@@ -178,7 +178,8 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
             if (entry == null) {
                 continue;
             }
-            CortexIdentity.requireTenant(resolvedTenant, entry.getTenant_id());
+            RegistryIdentity.requireTenant(registryType, resolvedTenant, entry.getTenant_id());
+            RegistryIdentity.normalize(entry, registryType);
             if (criteria.getId() != null && !criteria.getId().equals(entry.getId())) {
                 continue;
             }

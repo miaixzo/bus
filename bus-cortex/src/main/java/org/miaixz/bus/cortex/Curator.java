@@ -103,4 +103,5 @@ public interface Curator {
      * @param watch_id watch identifier returned by {@link #watch(Item, ConsumerX)}
      */
     void unwatch(String watch_id);
+
 }

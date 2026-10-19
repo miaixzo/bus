@@ -211,4 +211,5 @@ public final class ColorMapCompiler {
         }
         return data;
     }
+
 }

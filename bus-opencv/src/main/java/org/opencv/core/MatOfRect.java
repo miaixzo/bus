@@ -150,4 +150,5 @@ public class MatOfRect extends Mat {
         Rect[] ar = toArray();
         return Arrays.asList(ar);
     }
+
 }

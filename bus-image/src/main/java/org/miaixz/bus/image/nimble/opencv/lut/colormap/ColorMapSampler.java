@@ -315,4 +315,5 @@ public final class ColorMapSampler {
         double offset = v >= lastPosition ? v - lastPosition : v + span - lastPosition;
         return gap > 0 ? offset / gap : 0.0;
     }
+
 }

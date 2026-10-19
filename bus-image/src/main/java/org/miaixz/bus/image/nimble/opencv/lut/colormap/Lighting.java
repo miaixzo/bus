@@ -64,4 +64,5 @@ public record Lighting(boolean shade, float specularPower, GradientOpacity gradi
     public Lighting withGradientOpacity(GradientOpacity value) {
         return new Lighting(shade, specularPower, value);
     }
+
 }

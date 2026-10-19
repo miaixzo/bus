@@ -32,7 +32,7 @@ import javax.naming.directory.*;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
+import org.miaixz.bus.core.lang.exception.DuplicateException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.builtin.ldap.LdapBuilder;
@@ -116,7 +116,7 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         try {
             registerHL7App(name);
             return true;
-        } catch (AlreadyExistsException e) {
+        } catch (DuplicateException e) {
             Logger.debug(
                     false,
                     "Image",
@@ -155,7 +155,7 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
                     true,
                     e.getClass().getSimpleName());
 
-            throw new AlreadyExistsException("HL7 Application '" + name + "' already exists");
+            throw new DuplicateException("HL7 Application '" + name + "' already exists");
         } catch (NamingException e) {
             Logger.warn(
                     false,

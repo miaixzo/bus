@@ -24,16 +24,22 @@ import java.util.function.Function;
 
 import org.miaixz.bus.cortex.setting.item.ItemExposure;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
+import org.miaixz.bus.cortex.setting.secret.SecretMasker;
+import org.miaixz.bus.extra.json.JsonSchema;
 
 /**
  * Key-level release difference calculated from immutable revisions. Host parsers normalize JSON, YAML, properties, or
  * text into a value map before comparison; parse failures must never become empty maps. JSON Pointer paths preserve
  * dotted keys, nested arrays, null values, and structural boundaries.
+ *
+ * @author Kimi Liu
  */
 public final class Diff {
 
     /**
      * Describes how one normalized configuration path changed.
+     *
+     * @author Kimi Liu
      */
     public enum Type {
         /**
@@ -83,6 +89,8 @@ public final class Diff {
     }
 
     /**
+     * Returns the escaped JSON Pointer path.
+     *
      * @return escaped JSON Pointer path
      */
     public String getKey() {
@@ -90,6 +98,8 @@ public final class Diff {
     }
 
     /**
+     * Returns the change type.
+     *
      * @return change type
      */
     public Type getType() {
@@ -97,6 +107,8 @@ public final class Diff {
     }
 
     /**
+     * Returns the baseline value, possibly redacted.
+     *
      * @return baseline value, possibly redacted
      */
     public Object getBefore() {
@@ -104,6 +116,8 @@ public final class Diff {
     }
 
     /**
+     * Returns the target value, possibly redacted.
+     *
      * @return target value, possibly redacted
      */
     public Object getAfter() {
@@ -113,6 +127,12 @@ public final class Diff {
     /**
      * Compares one item's revisions. Protected contents are never passed to a decoder or exposed in the result. Their
      * immutable stored checksums determine whether a masked change exists.
+     *
+     * @param before      optional baseline immutable revision
+     * @param after       optional target immutable revision
+     * @param decoder     host decoder for unprotected immutable contents
+     * @param secretPaths exact protected paths that must remain masked
+     * @return immutable path differences using the shared scalar placeholder
      */
     public static List<Diff> compare(
             Revision before,
@@ -142,8 +162,8 @@ public final class Diff {
                 return List.of();
             }
             return List.of(
-                    new Diff("/", !left ? Type.ADD : !right ? Type.DELETE : Type.MODIFY, left ? "****" : null,
-                            right ? "****" : null));
+                    new Diff("/", !left ? Type.ADD : !right ? Type.DELETE : Type.MODIFY,
+                            left ? SecretMasker.MASK : null, right ? SecretMasker.MASK : null));
         }
         Objects.requireNonNull(decoder, "Revision decoder is required");
         return compare(
@@ -188,14 +208,27 @@ public final class Diff {
 
     /**
      * Compares normalized value maps and redacts explicit paths and commonly sensitive key names.
+     *
+     * @param before      normalized baseline values
+     * @param after       normalized target values
+     * @param secretPaths exact protected paths whose descendants remain masked
+     * @return immutable path differences using the shared scalar placeholder
      */
     public static List<Diff> compare(Map<String, ?> before, Map<String, ?> after, Set<String> secretPaths) {
         Objects.requireNonNull(before, "Baseline values are required");
         Objects.requireNonNull(after, "Target values are required");
         Map<String, Object> left = new TreeMap<>();
         Map<String, Object> right = new TreeMap<>();
-        before.forEach((key, value) -> flatten("/" + escape(key), value, left));
-        after.forEach((key, value) -> flatten("/" + escape(key), value, right));
+        before.forEach(
+                (key, value) -> flatten(
+                        JsonSchema.pointer("", Objects.requireNonNull(key, "Configuration key")),
+                        value,
+                        left));
+        after.forEach(
+                (key, value) -> flatten(
+                        JsonSchema.pointer("", Objects.requireNonNull(key, "Configuration key")),
+                        value,
+                        right));
         Set<String> keys = new TreeSet<>(left.keySet());
         keys.addAll(right.keySet());
         List<Diff> result = new ArrayList<>();
@@ -211,20 +244,10 @@ public final class Diff {
                             && secretPaths.stream().anyMatch(path -> key.equals(path) || key.startsWith(path + "/"));
             result.add(
                     new Diff(key, !hasLeft ? Type.ADD : !hasRight ? Type.DELETE : Type.MODIFY,
-                            hasLeft ? secret ? "****" : left.get(key) : null,
-                            hasRight ? secret ? "****" : right.get(key) : null));
+                            hasLeft ? secret ? SecretMasker.MASK : left.get(key) : null,
+                            hasRight ? secret ? SecretMasker.MASK : right.get(key) : null));
         }
         return Collections.unmodifiableList(result);
-    }
-
-    /**
-     * Escapes one JSON Pointer path segment.
-     *
-     * @param key unescaped segment
-     * @return escaped segment
-     */
-    private static String escape(String key) {
-        return Objects.requireNonNull(key, "Configuration key").replace("~", "~0").replace("/", "~1");
     }
 
     /**
@@ -236,13 +259,14 @@ public final class Diff {
      */
     private static void flatten(String path, Object value, Map<String, Object> result) {
         if (value instanceof Map<?, ?> map && !map.isEmpty()) {
-            map.forEach((key, child) -> flatten(path + "/" + escape(String.valueOf(key)), child, result));
+            map.forEach((key, child) -> flatten(JsonSchema.pointer(path, String.valueOf(key)), child, result));
         } else if (value instanceof List<?> list && !list.isEmpty()) {
             for (int index = 0; index < list.size(); index++) {
-                flatten(path + "/" + index, list.get(index), result);
+                flatten(JsonSchema.pointer(path, Integer.toString(index)), list.get(index), result);
             }
         } else {
             result.put(path, value instanceof Map<?, ?> ? Map.of() : value instanceof List<?> ? List.of() : value);
         }
     }
+
 }

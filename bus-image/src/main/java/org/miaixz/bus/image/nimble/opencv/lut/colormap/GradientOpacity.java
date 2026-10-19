@@ -131,4 +131,5 @@ public record GradientOpacity(List<Point> points) {
             }
         }
     }
+
 }

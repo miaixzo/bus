@@ -93,4 +93,5 @@ public enum MaterialPreset {
     public float specularPower() {
         return specularPower;
     }
+
 }

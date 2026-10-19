@@ -80,4 +80,5 @@ public interface ItemStore {
      * @return matching items
      */
     List<Item> query(ItemQuery query);
+
 }

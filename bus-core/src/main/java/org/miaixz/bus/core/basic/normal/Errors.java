@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.lang.I18n;
 import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
+import org.miaixz.bus.core.lang.exception.DuplicateException;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -132,11 +132,11 @@ public interface Errors {
      * Registers the error code into the global cache. If the error code already exists in the cache, this method will
      * throw an exception to prevent duplicates.
      *
-     * @throws AlreadyExistsException if attempting to register a duplicate error code.
+     * @throws DuplicateException if attempting to register a duplicate error code.
      */
     default void register() {
         if (ERRORS_CACHE.containsKey(getKey())) {
-            throw new AlreadyExistsException("Key already exists for : " + getKey());
+            throw new DuplicateException("Key already exists for : " + getKey());
         }
         ERRORS_CACHE.putIfAbsent(getKey(), new Entry(getKey(), getValue()));
     }

@@ -20,7 +20,9 @@
 package org.miaixz.bus.cortex.setting.item;
 
 import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.cortex.setting.secret.SecretReference;
 import org.miaixz.bus.crypto.Builder;
 
 /**
@@ -34,6 +36,36 @@ public final class ItemNormalizer {
      * Source name used for content stored directly on an item.
      */
     public static final String INLINE_SOURCE = "INLINE";
+
+    /** Source discriminator for reference-only backend Secret settings. */
+    public static final String SECRET_SOURCE = "SECRET";
+
+    /**
+     * Recognizes a reference-only SECRET item without resolving its backend.
+     *
+     * @param item item to inspect, or null
+     * @return true for a trimmed, case-insensitive SECRET source
+     */
+    public static boolean isSecret(Item item) {
+        return item != null && SECRET_SOURCE.equalsIgnoreCase(item.getSource() == null ? "" : item.getSource().trim());
+    }
+
+    /**
+     * Validates persisted setting restrictions and parses its backend reference. SECRET items cannot contain inline
+     * plaintext, encrypted payloads or a non-secret exposure. This method performs no backend access.
+     *
+     * @param item reference-only SECRET item
+     * @return validated backend reference retaining the existing JSON descriptor format
+     * @throws org.miaixz.bus.core.lang.exception.CryptoException if item restrictions or descriptor validation fail
+     */
+    public static SecretReference secretReference(Item item) {
+        if (!isSecret(item) || !"SECRET".equals(item.getExposure())
+                || item.getEncrypted() != null && item.getEncrypted() != 0 || item.getContent() != null
+                || item.getPayload() != null || item.getSpec() == null) {
+            throw new CryptoException("Invalid secret reference");
+        }
+        return SecretReference.parse(item.getSpec());
+    }
 
     /**
      * Prevents utility-class instantiation.
@@ -73,6 +105,9 @@ public final class ItemNormalizer {
         }
         if (prepared.getEncrypted() == null) {
             prepared.setEncrypted(0);
+        }
+        if (ItemNormalizer.isSecret(prepared)) {
+            ItemNormalizer.secretReference(prepared);
         }
         if (prepared.getEdition() == null) {
             prepared.setEdition(0L);
@@ -205,4 +240,5 @@ public final class ItemNormalizer {
     private static String segment(String value) {
         return value == null ? "-" : value.length() + "#" + value;
     }
+
 }

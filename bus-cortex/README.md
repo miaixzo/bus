@@ -16,7 +16,7 @@ storage abstraction (Memory / Redis / JDBC) with zero extra infrastructure.
 - **Service + Instance Model**: `ApiAssets` (definition) + `Instance` (runtime), following Nacos-style separation
 - **Configuration Center**: Versioned publish, gray release routing, `@ConfigChange` callback annotations
 - **Health Probing**: Pluggable `Prober` (HTTP / TCP / MCP Ping / Process PID), server-side active probing
-- **Tenant Boundary**: Existing tenant-scoped registry entries and runtime instances; API route lookup does not use tenants
+- **Tenant Boundary**: API definitions and API runtime instances are global; MCP and Prompt entries retain explicit tenant-scoped storage; route lookup coordinates are unchanged
 - **Security**: HMAC-SHA256 Token + RBAC (ADMIN / PROVIDER / CONSUMER), rate limiting, circuit breaking
 - **bus Ecosystem**: VortexBridge auto-syncs to bus-vortex; bus-metrics instrumentation built-in; bus-cache as the sole
   storage dependency
@@ -56,11 +56,11 @@ List<ApiAssets> services = Cortex.query(
 
 ```
 ApiAssets (definition, route identity = type + app_id + method + version + verb)
-    └── Instance (runtime, unique by tenant_id + app_id + method + version + fingerprint)
+    └── Instance (runtime, unique by app_id + method + version + fingerprint)
 ```
 
 **Instance Identity**: Multiple runtime instances may coexist for the same API definition. Runtime uniqueness is scoped
-by `tenant_id + app_id + method + version + fingerprint`.
+by `app_id + method + version + fingerprint`.
 
 Same-fingerprint re-registration is treated as an **idempotent TTL refresh**, not a conflict.
 
@@ -74,8 +74,7 @@ use the same generator, in this order:
 4. `method:version:verb`
 
 `method` / `version` / `verb` are required runtime dimensions. Only `type` and `app_id` are optional;
-neither space nor tenant is encoded or validated for ROUTE keys. ENTRY (`tenant_id + type + id`) and INSTANCE
-keys retain their existing tenant validation and isolation. Tenant fields are not cleared.
+neither space nor tenant is encoded or validated for ROUTE keys. API ENTRY and API INSTANCE keys are global and normalize tenant metadata to null. MCP and Prompt ENTRY keys retain `tenant_id + type + id` and require an explicit tenant; their tenant fields are preserved.
 
 ROUTE: `route:v2:type=<type|*>:app=<length:appId|*>:method=<length:method>:version=<length:version>:verb=<verb>`.
 
@@ -189,7 +188,7 @@ bus:
     server-addr: 127.0.0.1:8766   # The only required field
 ```
 
-> **Tenant context**: Registry business operations use the existing trusted tenant context. In the snippets below,
+> **Tenant context**: MCP and Prompt operations use the existing trusted tenant context; API registration is global. In the snippets below,
 > `tenantId` is supplied by that context; no default tenant is introduced. Gateway API routes do not consume it.
 
 ### Step 3: Enable
@@ -544,3 +543,29 @@ The three cleanup safeguards are the PreStop hook, TTL expiration, and active pr
 ## 📄 License
 
 [Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+## Secret management
+
+`setting.secret` supports direct Alibaba Cloud KMS, AWS Secrets Manager, Azure Key Vault, Vault KV v2, Tencent Cloud SSM, and Huawei Cloud CSMS reads, explicit authorization, version selection, and bounded in-memory caching with refresh. No vendor SDK is required.
+
+The concrete `SecretManager` owns connection registration via `register(connection, provider)`.
+Its authorization contract is `SecretManager.AccessPolicy`; read capabilities are
+`SecretProvider.Capability`, and fresh credentials come from `CloudCredentials.Source`.
+A null `SecretReference.version()` selects the current backend version. Persisted JSON keeps its existing
+`selector.mode/version` and `expectedType` fields. `SecretMaterial` exposes version, fetch time, expiration
+and connection generation directly; `describe()` returns an immutable capability set.
+Payload types remain configuration labels and do not split the complete-value cache.
+
+Caching uses Bus `MemoryCache` directly. Inject an empty cache dedicated to this manager; the manager owns its close lifecycle and erases values through removal callbacks. Capacity belongs to MemoryCache; values exceeding 8192 characters are returned without being cached.
+
+Lifecycle guards cover cached and uncached reads; close drains admitted reads and prevents them from returning secrets. Cache cleanup after a failed read is best effort, never waits for a busy resource, and cannot replace the original denial. Each HTTP attempt passes its capped ten-second deadline to both credential acquisition and transport; wrapped native timeouts fail immediately.
+
+```java
+var cache = new org.miaixz.bus.cache.nimble.MemoryCache<String, SecretMaterial>(256, 60_000);
+try (var manager = new SecretManager(accessPolicy, cache)) {
+    manager.register(connection, provider);
+    // Resolve using an authenticated SecretContext.
+}
+```
+
+Secret failures directly throw Bus `ForbiddenException` for denied access or `CryptoException` for other failures. Public exceptions contain fixed, sanitized text without backend messages, credentials, causes or custom error codes; callers must not parse exception messages. Cloud adapters decide response retries from HTTP status and native platform error fields. At most three attempts are made for throttling and temporary service failures (HTTP 429/500/502/503, or recognized Alibaba/AWS/Tencent transient codes). Recognized transport I/O failures can retry; timeouts, denied access, missing values, malformed successful responses, and credential-source failures fail immediately. Each attempt reacquires and closes its credentials.
