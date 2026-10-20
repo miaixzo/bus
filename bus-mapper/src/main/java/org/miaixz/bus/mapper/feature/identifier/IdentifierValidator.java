@@ -758,24 +758,46 @@ public class IdentifierValidator {
 
     /**
      * JDBC policy cache key.
+     *
+     * @param url     JDBC connection URL
+     * @param product database product name
+     * @param version database product version
      */
     private record DatabaseKey(String url, String product, String version) {
     }
 
     /**
      * Immutable database reserved-word and identifier-quote rules.
+     *
+     * @param database      normalized database product name
+     * @param reservedWords normalized reserved words
+     * @param quotes        supported identifier quote pairs
      */
     private record Policy(String database, Set<String> reservedWords, List<Quote> quotes) {
     }
 
     /**
      * One legal identifier quote pair and its escaped closing representation.
+     *
+     * @param start      opening quote sequence
+     * @param end        closing quote sequence
+     * @param escapedEnd escaped closing sequence inside a quoted identifier
      */
     private record Quote(String start, String end, String escapedEnd) {
     }
 
     /**
      * Physical identifier and diagnostic context.
+     *
+     * @param type       identifier category
+     * @param entity     entity class name
+     * @param property   mapped property name
+     * @param table      physical table name
+     * @param column     physical column name
+     * @param identifier identifier being validated
+     * @param candidate  unquoted candidate used to build a suggestion
+     * @param suffix     suffix used to disambiguate a generated suggestion
+     * @param qualified  whether the identifier may contain qualified segments
      */
     private record Entry(String type, String entity, String property, String table, String column, String identifier,
             String candidate, String suffix, boolean qualified) {

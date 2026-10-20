@@ -21,7 +21,10 @@ package org.miaixz.bus.cortex;
 
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.cortex.registry.RegistryIdentity;
+import org.miaixz.bus.cortex.setting.item.Item;
+import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 
 /**
  * Generic key-strategy abstraction shared by the registry and setting domains.
@@ -83,12 +86,12 @@ public interface Keying<S> {
      * <li>{@link #ROUTE}: runtime route lookup keys and their ordered fallback chain</li>
      * </ul>
      * <p>
-     * Optional dimensions such as {@code space}, {@code type}, and {@code appId} are preserved as supplied. Route-side
-     * generation intentionally does not auto-fill these dimensions with persistence defaults.
+     * API entry and instance keys are global. MCP and Prompt entry keys require their explicit tenant. Route keys
+     * retain the existing tenant-independent coordinates and optional type/application fallback dimensions.
      * </p>
      *
      * @param mode        registry key mode
-     * @param space       space
+     * @param tenantId    explicit tenant for MCP or Prompt entries; ignored for API and route keys
      * @param type        registry type
      * @param appId       application identifier
      * @param id          logical entry identifier
@@ -96,41 +99,42 @@ public interface Keying<S> {
      * @param version     route version
      * @param verb        numeric verb code
      * @param fingerprint runtime instance fingerprint
+     * @author Kimi Liu
      */
-    record RegistrySpec(int mode, String space, Type type, String appId, String id, String method, String version,
+    record RegistrySpec(int mode, String tenantId, Type type, String appId, String id, String method, String version,
             Integer verb, String fingerprint) {
 
         /**
          * Mode flag for durable registry-entry keys.
          */
-        public static final int ENTRY = 1;
+        public static final int ENTRY = Normal._1;
 
         /**
          * Mode flag for runtime-instance keys.
          */
-        public static final int INSTANCE = 2;
+        public static final int INSTANCE = Normal._2;
 
         /**
          * Mode flag for runtime route keys and route candidate chains.
          */
-        public static final int ROUTE = 3;
+        public static final int ROUTE = Normal._3;
 
         /**
          * Creates one registry-entry specification.
          *
-         * @param space space
-         * @param type  registry type
-         * @param id    logical entry identifier
+         * @param tenantId explicit tenant for MCP or Prompt entries; ignored for API and route keys
+         * @param type     registry type
+         * @param id       logical entry identifier
          * @return registry-entry specification
          */
-        public static RegistrySpec entry(String space, Type type, String id) {
-            return new RegistrySpec(ENTRY, space, type, null, id, null, null, null, null);
+        public static RegistrySpec entry(String tenantId, Type type, String id) {
+            return new RegistrySpec(ENTRY, tenantId, type, null, id, null, null, null, null);
         }
 
         /**
          * Creates one runtime-instance specification.
          *
-         * @param space       space
+         * @param tenantId    explicit tenant for MCP or Prompt entries; ignored for API and route keys
          * @param appId       application identifier
          * @param method      route method
          * @param version     route version
@@ -138,33 +142,33 @@ public interface Keying<S> {
          * @return runtime-instance specification
          */
         public static RegistrySpec instance(
-                String space,
+                String tenantId,
                 String appId,
                 String method,
                 String version,
                 String fingerprint) {
-            return new RegistrySpec(INSTANCE, space, null, appId, null, method, version, null, fingerprint);
+            return new RegistrySpec(INSTANCE, tenantId, null, appId, null, method, version, null, fingerprint);
         }
 
         /**
          * Creates one runtime-route specification.
          *
-         * @param space   space, optional
-         * @param type    registry type, optional
-         * @param appId   application identifier, optional
-         * @param method  route method
-         * @param version route version
-         * @param verb    numeric verb code
+         * @param tenantId tenant metadata, not used for route-key encoding or lookup
+         * @param type     registry type, optional
+         * @param appId    application identifier, optional
+         * @param method   route method
+         * @param version  route version
+         * @param verb     numeric verb code
          * @return runtime-route specification
          */
         public static RegistrySpec route(
-                String space,
+                String tenantId,
                 Type type,
                 String appId,
                 String method,
                 String version,
                 Integer verb) {
-            return new RegistrySpec(ROUTE, space, type, appId, null, method, version, verb, null);
+            return new RegistrySpec(ROUTE, tenantId, type, appId, null, method, version, verb, null);
         }
 
         /**
@@ -180,7 +184,7 @@ public interface Keying<S> {
             Type resolvedType = asset.getType() == null ? null
                     : Type.tryFromKey(asset.getType()).filter(Type::isRegistry).orElse(null);
             return route(
-                    asset.getSpace_id(),
+                    asset.getTenant_id(),
                     resolvedType,
                     asset.getApp_id(),
                     asset.getMethod(),
@@ -189,12 +193,12 @@ public interface Keying<S> {
         }
 
         /**
-         * Returns the optional space part without introducing route-side defaults.
+         * Returns the type-qualified storage tenant; API instances and route coordinates remain global.
          *
-         * @return space part or {@code null}
+         * @return explicit MCP/Prompt entry tenant, otherwise null
          */
-        public String spacePart() {
-            return space == null || space.isBlank() ? null : space.trim();
+        public String tenantIdPart() {
+            return mode == ENTRY ? RegistryIdentity.tenantId(typePart(), tenantId) : null;
         }
 
         /**
@@ -282,206 +286,147 @@ public interface Keying<S> {
     }
 
     /**
-     * Setting-domain key specification.
-     * <p>
-     * One {@code SettingSpec} covers the logical identifiers and cache/storage keys used by the setting subsystem,
-     * including item identity, profile scopes, runtime watch/overlay keys, current-state entry keys, and revision
-     * history keys.
-     * </p>
+     * Configuration key specification qualified by tenant, ownership scope, application, code, and kind.
      *
-     * @param mode     setting key mode
-     * @param space    space
-     * @param group    group name
-     * @param dataId   data identifier
-     * @param profile  runtime profile
-     * @param revision revision number
+     * @param mode      key purpose
+     * @param tenant_id tenant identifier
+     * @param scope     configuration ownership scope
+     * @param app_id    application identifier
+     * @param code      configuration code
+     * @param kind      configuration content kind
+     * @param revision  historical revision
      * @author Kimi Liu
      */
-    record SettingSpec(int mode, String space, String group, String dataId, String profile, String revision) {
+    record SettingSpec(int mode, String tenant_id, String scope, String app_id, String code, String kind,
+            String revision) {
 
         /**
-         * Mode flag for the logical item identifier.
+         * Mode for the stable item identifier key.
          */
-        public static final int ITEM_ID = 11;
-
+        public static final int ITEM_ID = Normal._11;
         /**
-         * Mode flag for the logical profile scope.
+         * Mode for the item-scope authorization key.
          */
-        public static final int PROFILE_SCOPE = 12;
-
+        public static final int SCOPE = Normal._12;
         /**
-         * Mode flag for runtime watch keys.
+         * Mode for the item watch channel key.
          */
-        public static final int WATCH = 13;
-
+        public static final int WATCH = Normal._13;
         /**
-         * Mode flag for runtime overlay keys.
+         * Mode for the runtime overlay key.
          */
-        public static final int OVERLAY = 14;
-
+        public static final int OVERLAY = Normal._14;
         /**
-         * Mode flag for exported logical setting identifiers.
+         * Mode for the exported item key.
          */
-        public static final int EXPORT = 15;
-
+        public static final int EXPORT = Normal._15;
         /**
-         * Mode flag for current-state entry keys.
+         * Mode for the durable item-entry key.
          */
-        public static final int ENTRY = 16;
-
+        public static final int ENTRY = Normal._16;
         /**
-         * Mode flag for revision keys.
+         * Mode for an immutable revision key.
          */
-        public static final int REVISION = 17;
-
+        public static final int REVISION = Normal._17;
         /**
-         * Mode flag for revision-sequence keys.
+         * Mode for the revision-sequence key.
          */
-        public static final int SEQUENCE = 18;
+        public static final int SEQUENCE = Normal._18;
 
         /**
-         * Creates one logical-item specification.
+         * Creates a key specification for the supplied item and purpose.
          *
-         * @param space  space
-         * @param group  group
-         * @param dataId data identifier
-         * @return item-id specification
+         * @param mode     the existing configuration key purpose
+         * @param item     the item whose canonical tenant and ownership coordinates define the key
+         * @param revision the selected historical revision, or null for a nonhistorical key
+         * @return the specification using the original normalized configuration coordinates
          */
-        public static SettingSpec itemId(String space, String group, String dataId) {
-            return new SettingSpec(ITEM_ID, space, group, dataId, null, null);
+        private static SettingSpec of(int mode, Item item, String revision) {
+            ItemNormalizer.coordinates(item);
+            return new SettingSpec(mode, item.getTenant_id(), item.getScope(), item.getApp_id(), item.getCode(),
+                    item.getKind(), revision);
         }
 
         /**
-         * Creates one profile-scope specification.
+         * Creates a stable item-identifier specification.
          *
-         * @param space   space
-         * @param group   group
-         * @param dataId  data identifier
-         * @param profile optional profile
-         * @return profile-scope specification
+         * @param item setting item
+         * @return item-identifier specification
          */
-        public static SettingSpec profileScope(String space, String group, String dataId, String profile) {
-            return new SettingSpec(PROFILE_SCOPE, space, group, dataId, profile, null);
+        public static SettingSpec itemId(Item item) {
+            return of(ITEM_ID, item, null);
         }
 
         /**
-         * Creates one watch-key specification.
+         * Creates an authorization-scope specification.
          *
-         * @param space   space
-         * @param group   group
-         * @param dataId  data identifier
-         * @param profile optional profile
-         * @return watch-key specification
+         * @param item setting item
+         * @return scope specification
          */
-        public static SettingSpec watch(String space, String group, String dataId, String profile) {
-            return new SettingSpec(WATCH, space, group, dataId, profile, null);
+        public static SettingSpec scope(Item item) {
+            return of(SCOPE, item, null);
         }
 
         /**
-         * Creates one overlay-key specification.
+         * Creates a watch-channel specification.
          *
-         * @param space   space
-         * @param group   group
-         * @param dataId  data identifier
-         * @param profile optional profile
-         * @return overlay-key specification
+         * @param item setting item
+         * @return watch specification
          */
-        public static SettingSpec overlay(String space, String group, String dataId, String profile) {
-            return new SettingSpec(OVERLAY, space, group, dataId, profile, null);
+        public static SettingSpec watch(Item item) {
+            return of(WATCH, item, null);
         }
 
         /**
-         * Creates one export-key specification.
+         * Creates a runtime-overlay specification.
          *
-         * @param space   space
-         * @param group   group
-         * @param dataId  data identifier
-         * @param profile optional profile
-         * @return export-key specification
+         * @param item setting item
+         * @return overlay specification
          */
-        public static SettingSpec export(String space, String group, String dataId, String profile) {
-            return new SettingSpec(EXPORT, space, group, dataId, profile, null);
+        public static SettingSpec overlay(Item item) {
+            return of(OVERLAY, item, null);
         }
 
         /**
-         * Creates one current-state entry specification.
+         * Creates an exported-key specification.
          *
-         * @param space   space
-         * @param group   group
-         * @param dataId  data identifier
-         * @param profile optional profile
-         * @return current-state entry specification
+         * @param item setting item
+         * @return export specification
          */
-        public static SettingSpec entry(String space, String group, String dataId, String profile) {
-            return new SettingSpec(ENTRY, space, group, dataId, profile, null);
+        public static SettingSpec export(Item item) {
+            return of(EXPORT, item, null);
         }
 
         /**
-         * Creates one revision specification.
+         * Creates a durable entry-key specification.
          *
-         * @param space    space
-         * @param group    group
-         * @param dataId   data identifier
-         * @param profile  optional profile
-         * @param revision revision number
+         * @param item setting item
+         * @return entry specification
+         */
+        public static SettingSpec entry(Item item) {
+            return of(ENTRY, item, null);
+        }
+
+        /**
+         * Creates an immutable revision-key specification.
+         *
+         * @param item     setting item
+         * @param revision revision identifier
          * @return revision specification
          */
-        public static SettingSpec revision(String space, String group, String dataId, String profile, String revision) {
-            return new SettingSpec(REVISION, space, group, dataId, profile, revision);
+        public static SettingSpec revision(Item item, String revision) {
+            return of(REVISION, item, revision);
         }
 
         /**
-         * Creates one revision-sequence specification.
+         * Creates a revision-sequence specification.
          *
-         * @param space  space
-         * @param group  group
-         * @param dataId data identifier
-         * @return revision-sequence specification
+         * @param item setting item
+         * @return sequence specification
          */
-        public static SettingSpec sequence(String space, String group, String dataId) {
-            return new SettingSpec(SEQUENCE, space, group, dataId, null, null);
+        public static SettingSpec sequence(Item item) {
+            return of(SEQUENCE, item, null);
         }
-
-        /**
-         * Returns the optional group part.
-         *
-         * @return group part or {@code null}
-         */
-        public String groupPart() {
-            return group == null || group.isBlank() ? null : group.trim();
-        }
-
-        /**
-         * Returns the optional data identifier part.
-         *
-         * @return data identifier part or {@code null}
-         */
-        public String dataIdPart() {
-            return dataId == null || dataId.isBlank() ? null : dataId.trim();
-        }
-
-        /**
-         * Returns the optional normalized profile part.
-         * <p>
-         * Profiles are normalized to lower case so runtime watch, overlay, entry, and revision keys share the same
-         * canonical profile segment.
-         * </p>
-         *
-         * @return profile part or {@code null}
-         */
-        public String profilePart() {
-            return profile == null || profile.isBlank() ? null : profile.trim().toLowerCase();
-        }
-
-        /**
-         * Returns the optional revision part.
-         *
-         * @return revision part or {@code null}
-         */
-        public String revisionPart() {
-            return revision == null || revision.isBlank() ? null : revision.trim();
-        }
-
     }
 
 }

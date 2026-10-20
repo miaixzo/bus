@@ -20,6 +20,7 @@
 package org.miaixz.bus.cortex.bridge;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +29,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
 import org.miaixz.bus.cortex.magic.event.CortexChangeRecord;
@@ -36,6 +39,7 @@ import org.miaixz.bus.cortex.magic.runtime.CortexDiagnostics;
 import org.miaixz.bus.cortex.magic.runtime.CortexLifecycle;
 import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
 import org.miaixz.bus.cortex.registry.RegistryChange;
+import org.miaixz.bus.cortex.registry.RegistryIdentity;
 import org.miaixz.bus.cortex.registry.api.ApiAssets;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -202,15 +206,20 @@ public class VortexBridge
         Logger.debug(
                 true,
                 "Cortex",
-                "Bridge event received: action={}, space={}, id={}, method={}, version={}",
+                "Bridge event received: action={}, tenantId={}, id={}, method={}, version={}",
                 event.getAction(),
-                event.getSpace_id(),
+                event.getTenant_id(),
                 event.getId(),
                 event.getMethod(),
                 event.getVersion());
+        event.setTenant_id(RegistryIdentity.tenantId(Type.API, event.getTenant_id()));
+        RegistryIdentity.normalize(event.getAsset(), RegistryIdentity.type(event.getAsset()));
+        if (event.getInstance() != null) {
+            event.getInstance().setTenant_id(RegistryIdentity.tenantId(Type.API, event.getInstance().getTenant_id()));
+        }
         RegistryChange<Assets> transportEvent = new RegistryChange<>();
         transportEvent.setAction(event.getAction());
-        transportEvent.setSpace_id(event.getSpace_id());
+        transportEvent.setTenant_id(event.getTenant_id());
         transportEvent.setType(event.getType());
         transportEvent.setId(event.getId());
         transportEvent.setMethod(event.getMethod());
@@ -227,9 +236,9 @@ public class VortexBridge
                 Logger.debug(
                         false,
                         "Cortex",
-                        "Bridge event appended to outbox: action={}, space={}, id={}",
+                        "Bridge event appended to outbox: action={}, tenantId={}, id={}",
                         event.getAction(),
-                        event.getSpace_id(),
+                        event.getTenant_id(),
                         event.getId());
                 return;
             } catch (Exception e) {
@@ -256,9 +265,9 @@ public class VortexBridge
             Logger.debug(
                     false,
                     "Cortex",
-                    "Bridge event queued: action={}, space={}, id={}, queueSize={}",
+                    "Bridge event queued: action={}, tenantId={}, id={}, queueSize={}",
                     event.getAction(),
-                    event.getSpace_id(),
+                    event.getTenant_id(),
                     event.getId(),
                     queue.size());
         }
@@ -380,9 +389,9 @@ public class VortexBridge
                 Logger.debug(
                         false,
                         "Cortex",
-                        "Bridge queued delivery completed: action={}, space={}, id={}",
+                        "Bridge queued delivery completed: action={}, tenantId={}, id={}",
                         event.getAction(),
-                        event.getSpace_id(),
+                        event.getTenant_id(),
                         event.getId());
                 return;
             }
@@ -405,9 +414,9 @@ public class VortexBridge
                 Logger.debug(
                         true,
                         "Cortex",
-                        "Bridge queued delivery retry scheduled: action={}, space={}, id={}, attempt={}, error={}",
+                        "Bridge queued delivery retry scheduled: action={}, tenantId={}, id={}, attempt={}, error={}",
                         event.getAction(),
-                        event.getSpace_id(),
+                        event.getTenant_id(),
                         event.getId(),
                         attempt,
                         result.error());
@@ -614,7 +623,7 @@ public class VortexBridge
                         "outbox",
                         changeLogStore != null));
         snapshot.setLastError(lastError);
-        snapshot.setUpdatedAt(System.currentTimeMillis());
+        snapshot.setUpdatedAt(DateKit.current());
         return snapshot;
     }
 
@@ -642,7 +651,8 @@ public class VortexBridge
      * @return {@code true} when delivery should be retried
      */
     private boolean shouldRetry(int status) {
-        return status == 408 || status == 429 || status >= 500;
+        return status == Http.Status.REQUEST_TIMEOUT || status == Http.Status.TOO_MANY_REQUESTS
+                || status >= Http.Status.INTERNAL_SERVER_ERROR;
     }
 
     /**
@@ -654,14 +664,15 @@ public class VortexBridge
     private CortexChangeRecord toOutboxRecord(RegistryChange<Assets> event) {
         CortexChangeRecord record = new CortexChangeRecord();
         record.setDomain(OUTBOX_DOMAIN);
-        record.setAction(event.getAction() == null ? "sync" : event.getAction().name().toLowerCase());
+        record.setAction(
+                event.getAction() == null ? "sync" : StringKit.toLowerCase(event.getAction().name(), Locale.ROOT));
         record.setResourceType(OUTBOX_RESOURCE_TYPE);
         record.setResourceId(resourceId(event));
-        record.setSpace_id(event.getSpace_id());
+        record.setTenant_id(event.getTenant_id());
         record.setPayload(JsonKit.toJsonString(event));
         record.setSequence(event.getSequence());
         record.setIdempotencyKey(
-                "vortex:" + event.getSpace_id() + Symbol.COLON + record.getAction() + Symbol.COLON
+                "vortex:" + event.getTenant_id() + Symbol.COLON + record.getAction() + Symbol.COLON
                         + record.getResourceId());
         return record;
     }
@@ -698,8 +709,8 @@ public class VortexBridge
             Logger.trace(
                     true,
                     "Cortex",
-                    "Bridge worker signaled: space={}, id={}, queueSize={}",
-                    event.getSpace_id(),
+                    "Bridge worker signaled: tenantId={}, id={}, queueSize={}",
+                    event.getTenant_id(),
                     event.getId(),
                     queue.size());
         }

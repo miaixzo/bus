@@ -177,6 +177,9 @@ public class BootClassLoader extends LaunchedClassLoader {
      */
     private class XBootEnumeration implements Enumeration<URL> {
 
+        /**
+         * Wrapped URL enumeration.
+         */
         private final Enumeration<URL> enumeration;
 
         /**

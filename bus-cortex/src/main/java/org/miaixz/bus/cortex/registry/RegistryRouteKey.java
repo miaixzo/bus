@@ -25,15 +25,15 @@ import org.miaixz.bus.cortex.Type;
 /**
  * Route identity used by registry batch lookup strategies.
  *
- * @param space_id space identifier
- * @param app_id   application identifier
- * @param type     registry type key
- * @param method   route method
- * @param version  route version
- * @param verb     HTTP verb code
+ * @param tenant_id explicit MCP/Prompt storage tenant, null for global API definitions
+ * @param app_id    application identifier
+ * @param type      registry type key
+ * @param method    route method
+ * @param version   route version
+ * @param verb      HTTP verb code
  * @author Kimi Liu
  */
-public record RegistryRouteKey(String space_id, String app_id, Integer type, String method, String version,
+public record RegistryRouteKey(String tenant_id, String app_id, Integer type, String method, String version,
         Integer verb) {
 
     /**
@@ -47,8 +47,8 @@ public record RegistryRouteKey(String space_id, String app_id, Integer type, Str
             return null;
         }
         Type type = RegistryIdentity.type(asset);
-        return new RegistryRouteKey(RegistryIdentity.space(asset.getSpace_id()), asset.getApp_id(), type.key(),
-                asset.getMethod(), asset.getVersion(), asset.getVerb());
+        return new RegistryRouteKey(RegistryIdentity.tenantId(type, asset.getTenant_id()), asset.getApp_id(),
+                type.key(), asset.getMethod(), asset.getVersion(), asset.getVerb());
     }
 
 }

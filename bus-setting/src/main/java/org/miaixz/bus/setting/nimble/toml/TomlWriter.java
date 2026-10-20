@@ -125,11 +125,23 @@ public class TomlWriter {
         this.lineSeparator = lineSeparator;
     }
 
+    /**
+     * Tests whether a character is valid in an unquoted TOML key.
+     *
+     * @param c character to test
+     * @return {@code true} when the character can appear in a bare key
+     */
     private static boolean isValidCharOfKey(final char c) {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= Symbol.C_ZERO && c <= Symbol.C_NINE)
                 || c == Symbol.C_MINUS || c == Symbol.C_UNDERLINE;
     }
 
+    /**
+     * Appends a character using TOML basic-string escaping when necessary.
+     *
+     * @param c  character to append
+     * @param sb destination buffer
+     */
     static void addEscaped(final char c, final StringBuilder sb) {
         switch (c) {
             case '\b':
@@ -233,6 +245,11 @@ public class TomlWriter {
                 (System.nanoTime() - startedAt) / 1_000_000L);
     }
 
+    /**
+     * Writes the current dotted table path.
+     *
+     * @throws InternalException if the destination cannot be written
+     */
     private void writeTableName() throws InternalException {
         final Iterator<String> it = tablesNames.iterator();
         while (it.hasNext()) {
@@ -244,6 +261,12 @@ public class TomlWriter {
         }
     }
 
+    /**
+     * Writes simple values first and nested tables in a second pass.
+     *
+     * @param table table content to write
+     * @throws InternalException if the destination cannot be written
+     */
     private void writeTableContent(final Map<String, Object> table) throws InternalException {
         writeTableContent(table, true); // First pass: write simple key-value pairs and simple arrays.
         writeTableContent(table, false); // Second pass: write tables and arrays of tables.
@@ -335,6 +358,12 @@ public class TomlWriter {
         newLine();
     }
 
+    /**
+     * Writes a bare key or a quoted key when special characters are present.
+     *
+     * @param key key to write
+     * @throws InternalException if the destination cannot be written
+     */
     private void writeKey(final String key) throws InternalException {
         for (int i = 0; i < key.length(); i++) {
             final char c = key.charAt(i);
@@ -347,6 +376,12 @@ public class TomlWriter {
         write(key);
     }
 
+    /**
+     * Writes text as an escaped TOML basic string.
+     *
+     * @param text text to write
+     * @throws InternalException if the destination cannot be written
+     */
     private void writeString(final String text) throws InternalException {
         final StringBuilder sb = new StringBuilder();
         sb.append(Symbol.C_DOUBLE_QUOTES);
@@ -358,6 +393,12 @@ public class TomlWriter {
         write(sb.toString());
     }
 
+    /**
+     * Writes a collection as a TOML array.
+     *
+     * @param c values to write
+     * @throws InternalException if the destination cannot be written
+     */
     private void writeArray(final Collection<?> c) throws InternalException {
         write(Symbol.C_BRACKET_LEFT);
         Iterator<?> it = c.iterator();
@@ -370,6 +411,12 @@ public class TomlWriter {
         write(Symbol.C_BRACKET_RIGHT);
     }
 
+    /**
+     * Writes one supported scalar, temporal, or array value.
+     *
+     * @param value value to write
+     * @throws InternalException if the value type is unsupported or the destination cannot be written
+     */
     private void writeValue(final Object value) throws InternalException {
         if (value instanceof String) {
             writeString((String) value);
@@ -393,6 +440,11 @@ public class TomlWriter {
         }
     }
 
+    /**
+     * Writes a line separator unless sufficient blank lines already exist.
+     *
+     * @throws InternalException if the destination cannot be written
+     */
     private void newLine() throws InternalException {
         if (lineBreaks <= 1) {
             try {
@@ -404,6 +456,12 @@ public class TomlWriter {
         }
     }
 
+    /**
+     * Writes one character and resets the line-break counter.
+     *
+     * @param c character to write
+     * @throws InternalException if the destination cannot be written
+     */
     private void write(final char c) throws InternalException {
         try {
             writer.write(c);
@@ -413,6 +471,12 @@ public class TomlWriter {
         lineBreaks = 0;
     }
 
+    /**
+     * Writes text and resets the line-break counter.
+     *
+     * @param text text to write
+     * @throws InternalException if the destination cannot be written
+     */
     private void write(final String text) throws InternalException {
         try {
             writer.write(text);
@@ -422,6 +486,11 @@ public class TomlWriter {
         lineBreaks = 0;
     }
 
+    /**
+     * Writes indentation for the current table depth.
+     *
+     * @throws InternalException if the destination cannot be written
+     */
     private void indent() throws InternalException {
         for (int i = 0; i < indentationLevel; i++) {
             for (int j = 0; j < indentSize; j++) {

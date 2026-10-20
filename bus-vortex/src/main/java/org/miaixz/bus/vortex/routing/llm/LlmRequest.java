@@ -21,6 +21,7 @@ package org.miaixz.bus.vortex.routing.llm;
 
 import java.util.List;
 
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -51,7 +52,7 @@ public class LlmRequest {
     /**
      * Whether to stream the response (default: false).
      */
-    @lombok.Builder.Default
+    @Default
     private boolean stream = false;
 
     /**

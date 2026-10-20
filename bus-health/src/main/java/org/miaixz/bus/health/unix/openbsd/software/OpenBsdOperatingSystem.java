@@ -366,8 +366,78 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
      * @author Kimi Liu
      */
     enum PsKeywords {
-        STATE, PID, PPID, USER, UID, GROUP, GID, PRI, VSZ, RSS, ETIME, CPUTIME, COMM, MAJFLT, MINFLT, NVCSW, NIVCSW,
-        ARGS // ARGS must always be last
+        /**
+         * Process state.
+         */
+        STATE,
+        /**
+         * Process identifier.
+         */
+        PID,
+        /**
+         * Parent process identifier.
+         */
+        PPID,
+        /**
+         * User name.
+         */
+        USER,
+        /**
+         * Numeric user identifier.
+         */
+        UID,
+        /**
+         * Group name.
+         */
+        GROUP,
+        /**
+         * Numeric group identifier.
+         */
+        GID,
+        /**
+         * Scheduling priority.
+         */
+        PRI,
+        /**
+         * Virtual memory size.
+         */
+        VSZ,
+        /**
+         * Resident set size.
+         */
+        RSS,
+        /**
+         * Elapsed process time.
+         */
+        ETIME,
+        /**
+         * Accumulated CPU time.
+         */
+        CPUTIME,
+        /**
+         * Executable command name.
+         */
+        COMM,
+        /**
+         * Major page-fault count.
+         */
+        MAJFLT,
+        /**
+         * Minor page-fault count.
+         */
+        MINFLT,
+        /**
+         * Voluntary context-switch count.
+         */
+        NVCSW,
+        /**
+         * Involuntary context-switch count.
+         */
+        NIVCSW,
+        /**
+         * Full command and arguments; this column must remain last.
+         */
+        ARGS
 
     }
 

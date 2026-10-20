@@ -22,6 +22,8 @@ package org.miaixz.bus.cortex.setting.item;
 import java.util.Map;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.cortex.setting.instance.Instance;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -46,7 +48,7 @@ public class GrayRuleMatcher {
      * @return {@code true} if the rule matches the request context
      */
     public boolean matches(GrayRule rule, GrayRequestContext context) {
-        if (rule == null) {
+        if (rule == null || rule.getType() == null) {
             return false;
         }
         if (context == null) {
@@ -55,13 +57,48 @@ public class GrayRuleMatcher {
         return switch (rule.getType()) {
             case IP_LIST -> rule.getIpList() != null && rule.getIpList().contains(context.getClientIp());
             case IP_RANGE -> matchesRange(rule.getIpRange(), context.getClientIp());
-            case PERCENTAGE -> matchesPercentage(rule.getPercentage(), context.getClientIp());
+            case PERCENTAGE -> matchesPercentage(
+                    rule.getPercentage(),
+                    context.getFingerprint() == null ? context.getClientIp() : context.getFingerprint());
             case HEADER -> matchesHeader(rule, context.headerView());
             case TENANT -> rule.getTenant() != null && rule.getTenant().equals(context.getTenant());
             case USER -> rule.getUserId() != null && rule.getUserId().equals(context.getUserId());
             case LABEL -> rule.getLabelKey() != null && rule.getLabelValue() != null
                     && rule.getLabelValue().equals(context.labelView().get(rule.getLabelKey()));
         };
+    }
+
+    /**
+     * Matches only trusted instance identity; request headers and user identity cannot select client configurations.
+     */
+    @SuppressWarnings("unchecked")
+    public boolean matchesInstance(GrayRule rule, Instance instance) {
+        if (rule == null || instance == null || instance.getTenant_id() == null || instance.getFingerprint() == null) {
+            return false;
+        }
+        rule.validate();
+        Map<String, String> labels = instance.getLabels() == null ? Map.of()
+                : JsonKit.toPojo(instance.getLabels(), Map.class);
+        return matches(
+                rule,
+                GrayRequestContext.builder().clientIp(instance.getHost()).tenant(instance.getTenant_id())
+                        .fingerprint(instance.getFingerprint()).labels(labels).build());
+    }
+
+    /**
+     * Validates an ordered IPv4 selector without normalizing invalid ranges.
+     */
+    public boolean validRange(String range) {
+        if (range == null) {
+            return false;
+        }
+        String[] segments = range.split(Symbol.MINUS, -1);
+        if (segments.length != 2) {
+            return false;
+        }
+        long start = toIpv4Long(segments[0].trim());
+        long end = toIpv4Long(segments[1].trim());
+        return start >= 0 && end >= start;
     }
 
     /**
@@ -89,8 +126,8 @@ public class GrayRuleMatcher {
         if (percentage <= 0) {
             return false;
         }
-        if (percentage >= 100) {
-            return true;
+        if (percentage > 100) {
+            return false;
         }
         if (clientIp == null) {
             return false;
@@ -122,7 +159,7 @@ public class GrayRuleMatcher {
         if (start < 0 || end < 0) {
             return false;
         }
-        return target >= Math.min(start, end) && target <= Math.max(start, end);
+        return start <= end && target >= start && target <= end;
     }
 
     /**
@@ -132,12 +169,15 @@ public class GrayRuleMatcher {
      * @return numeric IPv4 value, or {@code -1} if the input is invalid
      */
     private long toIpv4Long(String ip) {
-        String[] parts = ip.split("\\.");
+        String[] parts = ip.split("\\.", -1);
         if (parts.length != 4) {
             return -1L;
         }
         long value = 0L;
         for (String part : parts) {
+            if (!part.matches("[0-9]{1,3}")) {
+                return -1L;
+            }
             int segment;
             try {
                 segment = Integer.parseInt(part);

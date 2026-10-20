@@ -21,8 +21,8 @@
  * Setting item resource model package.
  * <p>
  * This package contains current item state, query coordinates, normalization, and durable-store composition. Labels and
- * extension values cross the store boundary as text. Application and item-reference relationships are resolved through
- * {@code ReferenceStore}; no relationship projection is stored on {@code Item}.
+ * extension values cross the store boundary as text. Shared-item references to applications are resolved through
+ * {@code ReferenceStore}; application-owned items use {@code Item.app_id} directly.
  *
  * @author Kimi Liu
  */

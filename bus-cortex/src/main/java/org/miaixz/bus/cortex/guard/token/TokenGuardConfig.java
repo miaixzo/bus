@@ -31,7 +31,7 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.cortex.Builder;
 
 /**
- * Token guard configuration shared by asset or space-level security policy.
+ * Token guard configuration shared by asset or tenantId-level security policy.
  *
  * @author Kimi Liu
  */

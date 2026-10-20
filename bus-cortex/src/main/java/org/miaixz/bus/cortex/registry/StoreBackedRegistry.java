@@ -24,6 +24,8 @@ import java.util.*;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.Vector;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
@@ -134,17 +136,18 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     }
 
     /**
-     * Finds a single entry by space and ID.
+     * Finds a single entry by tenantId and ID.
      *
-     * @param space space
-     * @param id    identifier
+     * @param tenantId tenantId
+     * @param id       identifier
      * @return matching entry or {@code null}
      */
-    public T find(String space, String id) {
-        String resolvedSpace = normalizeSpace(space);
-        T cached = deserialize(cacheX.read(keying.key(Keying.RegistrySpec.entry(resolvedSpace, registryType, id))));
+    public T find(String tenantId, String id) {
+        String resolvedTenant = normalizeTenant(tenantId);
+        T cached = deserialize(cacheX.read(keying.key(Keying.RegistrySpec.entry(resolvedTenant, registryType, id))));
         if (cached != null) {
-            cached.setSpace_id(resolvedSpace);
+            RegistryIdentity.requireTenant(registryType, resolvedTenant, cached.getTenant_id());
+            RegistryIdentity.normalize(cached, registryType);
             if (cached.getType() == null) {
                 cached.setType(registryType.key());
             }
@@ -153,10 +156,12 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         if (store == null) {
             return null;
         }
-        T loaded = store.find(registryType, resolvedSpace, id);
+        T loaded = store.find(registryType, resolvedTenant, id);
         if (loaded == null) {
             return null;
         }
+        RegistryIdentity.requireTenant(registryType, resolvedTenant, loaded.getTenant_id());
+        RegistryIdentity.normalize(loaded, registryType);
         T prepared = normalizeEntry(loaded);
         cacheEntry(prepared);
         return prepared;
@@ -165,23 +170,25 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     /**
      * Reloads a single entry from the durable store into cache without emitting a mutation event.
      *
-     * @param space entry space
-     * @param id    entry identifier
+     * @param tenantId entry tenantId
+     * @param id       entry identifier
      * @return refreshed entry, or {@code null} when the entry no longer exists in the durable store
      */
-    public T refresh(String space, String id) {
-        String resolvedSpace = normalizeSpace(space);
+    public T refresh(String tenantId, String id) {
+        String resolvedTenant = normalizeTenant(tenantId);
         if (id == null) {
             return null;
         }
         if (store == null) {
-            return deserialize(cacheX.read(keying.key(Keying.RegistrySpec.entry(resolvedSpace, registryType, id))));
+            return find(resolvedTenant, id);
         }
-        T loaded = store.find(registryType, resolvedSpace, id);
+        T loaded = store.find(registryType, resolvedTenant, id);
         if (loaded == null) {
-            cacheX.remove(keying.key(Keying.RegistrySpec.entry(resolvedSpace, registryType, id)));
+            afterCommit(() -> cacheX.remove(keying.key(Keying.RegistrySpec.entry(resolvedTenant, registryType, id))));
             return null;
         }
+        RegistryIdentity.requireTenant(registryType, resolvedTenant, loaded.getTenant_id());
+        RegistryIdentity.normalize(loaded, registryType);
         T prepared = normalizeEntry(loaded);
         cacheEntry(prepared);
         return prepared;
@@ -190,26 +197,28 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     /**
      * Reloads a single entry by method and version when the durable store supports that lookup mode.
      *
-     * @param space   space containing the entry
-     * @param app_id  application identifier
-     * @param method  route method
-     * @param version route version
+     * @param tenantId tenantId containing the entry
+     * @param app_id   application identifier
+     * @param method   route method
+     * @param version  route version
      * @return refreshed entry, or {@code null} when not found
      */
-    public T refreshByMethodVersion(String space, String app_id, String method, String version) {
-        String resolvedSpace = normalizeSpace(space);
+    public T refreshByMethodVersion(String tenantId, String app_id, String method, String version) {
+        String resolvedTenant = normalizeTenant(tenantId);
         if (method == null || version == null || store == null) {
             return null;
         }
         if (!storeSupports(Trait.ROUTE_QUERY)) {
             capabilityFallback("refreshByMethodVersion", Trait.ROUTE_QUERY, "cache route scan");
-            T cached = findCachedByRoute(resolvedSpace, app_id, method, version);
+            T cached = findCachedByRoute(resolvedTenant, app_id, method, version);
             return cached == null ? null : normalizeEntry(cached);
         }
-        T loaded = store.findByMethodVersion(registryType, resolvedSpace, app_id, method, version);
+        T loaded = store.findByMethodVersion(registryType, resolvedTenant, app_id, method, version);
         if (loaded == null) {
             return null;
         }
+        RegistryIdentity.requireTenant(registryType, resolvedTenant, loaded.getTenant_id());
+        RegistryIdentity.normalize(loaded, registryType);
         T prepared = normalizeEntry(loaded);
         cacheEntry(prepared);
         return prepared;
@@ -218,14 +227,16 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     /**
      * Removes a cached entry without mutating the durable store.
      *
-     * @param space entry space
-     * @param id    entry identifier
+     * @param tenantId entry tenantId
+     * @param id       entry identifier
      */
-    public void evict(String space, String id) {
+    public void evict(String tenantId, String id) {
         if (id == null) {
             return;
         }
-        cacheX.remove(keying.key(Keying.RegistrySpec.entry(normalizeSpace(space), registryType, id)));
+        afterCommit(
+                () -> cacheX
+                        .remove(keying.key(Keying.RegistrySpec.entry(normalizeTenant(tenantId), registryType, id))));
     }
 
     /**
@@ -238,7 +249,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         RegistryRefreshScope scope = RegistryScopeMapping.refresh(vector, registryType, "refresh");
         Vector criteria = RegistryScopeMapping.toVector(scope);
         if (criteria.getId() != null) {
-            T single = refresh(criteria.getSpace_id(), criteria.getId());
+            T single = refresh(criteria.getTenant_id(), criteria.getId());
             return single == null ? List.of() : List.of(single);
         }
         if (store == null || !storeSupports(Trait.QUERY)) {
@@ -253,6 +264,8 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         }
         List<T> result = new ArrayList<>(entries.size());
         for (T entry : entries) {
+            RegistryIdentity.requireTenant(registryType, criteria.getTenant_id(), entry.getTenant_id());
+            RegistryIdentity.normalize(entry, registryType);
             T prepared = normalizeEntry(entry);
             cacheEntry(prepared);
             result.add(prepared);
@@ -276,13 +289,13 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
             return super.query(criteria);
         }
         if (criteria.getId() != null) {
-            evict(criteria.getSpace_id(), criteria.getId());
+            evict(criteria.getTenant_id(), criteria.getId());
             return refresh(criteria);
         }
-        String prefix = keying.prefix(Keying.RegistrySpec.entry(criteria.getSpace_id(), registryType, null));
+        String prefix = keying.prefix(Keying.RegistrySpec.entry(criteria.getTenant_id(), registryType, null));
         Map<String, Object> current = cacheX.scan(prefix);
         if (current != null && !current.isEmpty()) {
-            cacheX.remove(current.keySet().toArray(String[]::new));
+            afterCommit(() -> cacheX.remove(current.keySet().toArray(String[]::new)));
         }
         return refresh(criteria);
     }
@@ -328,6 +341,10 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
             return;
         }
         T prepared = normalizeEntry(entry);
+        if (existing != null) {
+            RegistryIdentity.requireTenant(registryType, prepared.getTenant_id(), existing.getTenant_id());
+            RegistryIdentity.normalize(existing, registryType);
+        }
         T previous = existing == null ? null : normalizeEntry(existing);
         persistEntry(prepared, null, previous);
         publishChange(
@@ -341,19 +358,19 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     /**
      * Removes an entry from the durable store and cache, then emits a deregistration event.
      *
-     * @param space entry space
-     * @param id    entry identifier
+     * @param tenantId entry tenantId
+     * @param id       entry identifier
      */
     @Override
-    public void deregister(String space, String id) {
-        String resolvedSpace = normalizeSpace(space);
-        T existing = find(resolvedSpace, id);
+    public void deregister(String tenantId, String id) {
+        String resolvedTenant = normalizeTenant(tenantId);
+        T existing = find(resolvedTenant, id);
         if (existing == null) {
-            cacheX.remove(keying.key(Keying.RegistrySpec.entry(resolvedSpace, registryType, id)));
+            afterCommit(() -> cacheX.remove(keying.key(Keying.RegistrySpec.entry(resolvedTenant, registryType, id))));
             return;
         }
-        long tombstoneTime = System.currentTimeMillis();
-        deleteEntry(resolvedSpace, id, existing);
+        long tombstoneTime = DateKit.current();
+        deleteEntry(resolvedTenant, id, existing);
         existing.setStatus(-1);
         existing.setModified(tombstoneTime);
         publishChange(RegistryChange.Action.DEREGISTER, existing, existing, null, null);
@@ -362,19 +379,21 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     /**
      * Removes an entry using the existing snapshot already resolved by a batch operation.
      *
-     * @param space    entry space
+     * @param tenantId entry tenantId
      * @param id       entry identifier
      * @param existing existing snapshot
      */
-    public void deregisterResolved(String space, String id, T existing) {
-        String resolvedSpace = normalizeSpace(space);
+    public void deregisterResolved(String tenantId, String id, T existing) {
+        String resolvedTenant = normalizeTenant(tenantId);
         if (existing == null) {
-            cacheX.remove(keying.key(Keying.RegistrySpec.entry(resolvedSpace, registryType, id)));
+            afterCommit(() -> cacheX.remove(keying.key(Keying.RegistrySpec.entry(resolvedTenant, registryType, id))));
             return;
         }
+        RegistryIdentity.requireTenant(registryType, resolvedTenant, existing.getTenant_id());
+        RegistryIdentity.normalize(existing, registryType);
         T previous = normalizeEntry(existing);
-        long tombstoneTime = System.currentTimeMillis();
-        deleteEntry(resolvedSpace, id, previous);
+        long tombstoneTime = DateKit.current();
+        deleteEntry(resolvedTenant, id, previous);
         previous.setStatus(-1);
         previous.setModified(tombstoneTime);
         publishChange(RegistryChange.Action.DEREGISTER, previous, previous, null, null);
@@ -402,6 +421,8 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         }
         List<T> result = new ArrayList<>(entries.size());
         for (T entry : entries) {
+            RegistryIdentity.requireTenant(registryType, criteria.getTenant_id(), entry.getTenant_id());
+            RegistryIdentity.normalize(entry, registryType);
             T prepared = normalizeEntry(entry);
             cacheEntry(prepared);
             result.add(prepared);
@@ -437,11 +458,25 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      * @param entry entry to cache
      */
     protected void cacheEntry(T entry) {
-        super.register(normalizeEntry(entry));
+        T prepared = normalizeEntry(entry);
+        afterCommit(() -> super.register(prepared));
     }
 
     /**
-     * Normalizes space and type before durable-store or cache writes.
+     * Defers cache and event effects to the existing host transaction when supported by its store.
+     *
+     * @param action the cache or event effect
+     */
+    protected void afterCommit(Runnable action) {
+        if (store == null) {
+            action.run();
+        } else {
+            store.afterCommit(action);
+        }
+    }
+
+    /**
+     * Normalizes tenantId and type before durable-store or cache writes.
      *
      * @param entry incoming entry
      * @return normalized entry
@@ -451,13 +486,13 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     }
 
     /**
-     * Normalizes space values to the default space when absent.
+     * Resolves global API storage or the required MCP/Prompt tenant identifier.
      *
-     * @param space raw space
-     * @return canonical space
+     * @param tenantId raw tenantId
+     * @return canonical tenantId
      */
-    protected String normalizeSpace(String space) {
-        return RegistryIdentity.space(space);
+    protected String normalizeTenant(String tenantId) {
+        return RegistryIdentity.tenantId(registryType, tenantId);
     }
 
     /**
@@ -478,52 +513,54 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         if (entry == null) {
             return;
         }
-        RegistryChange<T> event = new RegistryChange<>();
-        event.setAction(action);
-        event.setType(registryType);
-        event.setSpace_id(entry.getSpace_id());
-        event.setApp_id(entry.getApp_id());
-        event.setId(entry.getId());
-        event.setMethod(entry.getMethod());
-        event.setVersion(entry.getVersion());
-        event.setAsset(entry);
-        event.setPreviousAsset(previousEntry);
-        event.setInstance(instance);
-        event.setPreviousInstance(previousInstance);
-        event.setFingerprint(
-                instance != null ? instance.getFingerprint()
-                        : previousInstance != null ? previousInstance.getFingerprint() : null);
-        event.setEventType(registryEventType(action, instance, previousInstance));
-        event.setChangeSet(changeSet(entry, previousEntry, instance, previousInstance));
-        long now = System.currentTimeMillis();
-        event.setSequence(sequence.next("registry:" + registryType.name().toLowerCase()));
-        event.setTimestamp(now);
-        appendChangeLog(event);
-        for (Listener<RegistryChange<T>> listener : listeners) {
-            try {
-                listener.onEvent(event);
-            } catch (Exception e) {
+        afterCommit(() -> {
+            RegistryChange<T> event = new RegistryChange<>();
+            event.setAction(action);
+            event.setType(registryType);
+            event.setTenant_id(entry.getTenant_id());
+            event.setApp_id(entry.getApp_id());
+            event.setId(entry.getId());
+            event.setMethod(entry.getMethod());
+            event.setVersion(entry.getVersion());
+            event.setAsset(entry);
+            event.setPreviousAsset(previousEntry);
+            event.setInstance(instance);
+            event.setPreviousInstance(previousInstance);
+            event.setFingerprint(
+                    instance != null ? instance.getFingerprint()
+                            : previousInstance != null ? previousInstance.getFingerprint() : null);
+            event.setEventType(registryEventType(action, instance, previousInstance));
+            event.setChangeSet(changeSet(entry, previousEntry, instance, previousInstance));
+            long now = DateKit.current();
+            event.setSequence(sequence.next("registry:" + StringKit.toLowerCase(registryType.name(), Locale.ROOT)));
+            event.setTimestamp(now);
+            appendChangeLog(event);
+            for (Listener<RegistryChange<T>> listener : listeners) {
                 try {
-                    listener.onError(event, e);
-                } catch (Exception errorHandlerFailure) {
+                    listener.onEvent(event);
+                } catch (Exception e) {
+                    try {
+                        listener.onError(event, e);
+                    } catch (Exception errorHandlerFailure) {
+                        Logger.warn(
+                                false,
+                                "Cortex",
+                                "Registry listener error handler failed: type={}, listenerId={}, error={}",
+                                registryType,
+                                entry.getId(),
+                                errorHandlerFailure.getMessage());
+                    }
                     Logger.warn(
                             false,
                             "Cortex",
-                            "Registry listener error handler failed: type={}, listenerId={}, error={}",
+                            "Registry listener execution failed: type={}, listenerId={}, error={}",
                             registryType,
                             entry.getId(),
-                            errorHandlerFailure.getMessage());
+                            e.getMessage());
                 }
-                Logger.warn(
-                        false,
-                        "Cortex",
-                        "Registry listener execution failed: type={}, listenerId={}, error={}",
-                        registryType,
-                        entry.getId(),
-                        e.getMessage());
             }
-        }
-        publishWatchChange(event);
+            publishWatchChange(event);
+        });
     }
 
     /**
@@ -540,11 +577,11 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         record.setAction(registryOutboxAction(event));
         record.setResourceType(event.getType() == null ? null : event.getType().name());
         record.setResourceId(event.getId());
-        record.setSpace_id(event.getSpace_id());
+        record.setTenant_id(event.getTenant_id());
         record.setPayload(JsonKit.toJsonString(event));
         record.setSequence(event.getSequence());
         record.setIdempotencyKey(
-                "registry:" + event.getType() + Symbol.COLON + event.getSpace_id() + Symbol.COLON + event.getId()
+                "registry:" + event.getType() + Symbol.COLON + event.getTenant_id() + Symbol.COLON + event.getId()
                         + Symbol.COLON + record.getAction() + Symbol.COLON + registryOutboxResource(event));
         changeLogStore.append(record);
     }
@@ -559,7 +596,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         if (event.getEventType() != null && event.getEventType().startsWith("registry-instance-")) {
             return event.getEventType().substring("registry-".length());
         }
-        return event.getAction() == null ? null : event.getAction().name().toLowerCase();
+        return event.getAction() == null ? null : StringKit.toLowerCase(event.getAction().name(), Locale.ROOT);
     }
 
     /**
@@ -608,7 +645,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      * @return current durable snapshot or {@code null}
      */
     protected T loadExisting(T prepared) {
-        return store != null ? store.find(registryType, prepared.getSpace_id(), prepared.getId()) : null;
+        return store != null ? store.find(registryType, prepared.getTenant_id(), prepared.getId()) : null;
     }
 
     /**
@@ -644,28 +681,28 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     /**
      * Deletes one entry through the compatibility path used by registry subclasses.
      *
-     * @param space space
-     * @param id    entry identifier
+     * @param tenantId tenantId
+     * @param id       entry identifier
      */
-    protected void deleteEntry(String space, String id) {
-        T existing = store == null ? null : store.find(registryType, space, id);
-        deleteEntry(space, id, existing);
+    protected void deleteEntry(String tenantId, String id) {
+        T existing = store == null ? null : store.find(registryType, tenantId, id);
+        deleteEntry(tenantId, id, existing);
     }
 
     /**
      * Deletes the entry from durable state and local cache.
      *
-     * @param space    space
+     * @param tenantId tenantId
      * @param id       entry identifier
      * @param existing existing snapshot
      */
-    protected void deleteEntry(String space, String id, T existing) {
+    protected void deleteEntry(String tenantId, String id, T existing) {
         if (store != null && storeSupports(Trait.DURABLE)) {
-            store.delete(registryType, space, id, existing);
+            store.delete(registryType, tenantId, id, existing);
         } else if (store != null) {
             capabilityFallback("delete", Trait.DURABLE, "cache remove");
         }
-        cacheX.remove(keying.key(Keying.RegistrySpec.entry(space, registryType, id)));
+        afterCommit(() -> cacheX.remove(keying.key(Keying.RegistrySpec.entry(tenantId, registryType, id))));
     }
 
     /**
@@ -770,19 +807,23 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     /**
      * Finds one cached entry by route identity.
      *
-     * @param space   space
-     * @param app_id  application identifier
-     * @param method  method or route name
-     * @param version route version
+     * @param tenantId tenantId
+     * @param app_id   application identifier
+     * @param method   method or route name
+     * @param version  route version
      * @return cached entry or {@code null}
      */
-    private T findCachedByRoute(String space, String app_id, String method, String version) {
-        Map<String, Object> raw = cacheX.scan(keying.prefix(Keying.RegistrySpec.entry(space, registryType, null)));
+    private T findCachedByRoute(String tenantId, String app_id, String method, String version) {
+        Map<String, Object> raw = cacheX.scan(keying.prefix(Keying.RegistrySpec.entry(tenantId, registryType, null)));
         if (raw == null || raw.isEmpty()) {
             return null;
         }
         for (Object value : raw.values()) {
             T entry = deserialize(value);
+            if (entry != null) {
+                RegistryIdentity.requireTenant(registryType, tenantId, entry.getTenant_id());
+                RegistryIdentity.normalize(entry, registryType);
+            }
             if (entry != null && Objects.equals(app_id, entry.getApp_id()) && Objects.equals(method, entry.getMethod())
                     && Objects.equals(version, entry.getVersion())) {
                 return entry;

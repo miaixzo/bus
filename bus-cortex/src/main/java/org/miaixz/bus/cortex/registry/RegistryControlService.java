@@ -23,6 +23,7 @@ import java.util.*;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
@@ -197,9 +198,9 @@ public class RegistryControlService {
         Logger.debug(
                 true,
                 "Cortex",
-                "Registry control list requested: type={}, space={}, id={}",
+                "Registry control list requested: type={}, tenantId={}, id={}",
                 criteria.getType(),
-                criteria.getSpace_id(),
+                criteria.getTenant_id(),
                 criteria.getId());
         List<Assets> result;
         if (criteria.getType() == null) {
@@ -210,9 +211,9 @@ public class RegistryControlService {
         Logger.debug(
                 false,
                 "Cortex",
-                "Registry control list completed: type={}, space={}, resultSize={}",
+                "Registry control list completed: type={}, tenantId={}, resultSize={}",
                 criteria.getType(),
-                criteria.getSpace_id(),
+                criteria.getTenant_id(),
                 result.size());
         return result;
     }
@@ -228,9 +229,9 @@ public class RegistryControlService {
         Logger.debug(
                 true,
                 "Cortex",
-                "Registry control get requested: type={}, space={}, id={}, method={}, version={}",
+                "Registry control get requested: type={}, tenantId={}, id={}, method={}, version={}",
                 criteria.getType(),
-                criteria.getSpace_id(),
+                criteria.getTenant_id(),
                 criteria.getId(),
                 criteria.getMethod(),
                 criteria.getVersion());
@@ -243,9 +244,9 @@ public class RegistryControlService {
         Logger.debug(
                 false,
                 "Cortex",
-                "Registry control get completed: type={}, space={}, id={}, found={}",
+                "Registry control get completed: type={}, tenantId={}, id={}, found={}",
                 criteria.getType(),
-                criteria.getSpace_id(),
+                criteria.getTenant_id(),
                 criteria.getId(),
                 result != null);
         return result;
@@ -278,9 +279,9 @@ public class RegistryControlService {
         Logger.info(
                 true,
                 "Cortex",
-                "Registry control upsert requested: type={}, space={}, id={}, method={}, version={}",
+                "Registry control upsert requested: type={}, tenantId={}, id={}, method={}, version={}",
                 type,
-                prepared.getSpace_id(),
+                prepared.getTenant_id(),
                 prepared.getId(),
                 prepared.getMethod(),
                 prepared.getVersion());
@@ -288,7 +289,7 @@ public class RegistryControlService {
         if (!preResolved && prepared.getId() == null && prepared.getMethod() != null && prepared.getVersion() != null) {
             Assets routeExisting = getByRoute(
                     type,
-                    prepared.getSpace_id(),
+                    prepared.getTenant_id(),
                     prepared.getApp_id(),
                     prepared.getMethod(),
                     prepared.getVersion());
@@ -306,9 +307,9 @@ public class RegistryControlService {
         Logger.info(
                 false,
                 "Cortex",
-                "Registry control upsert completed: type={}, space={}, id={}",
+                "Registry control upsert completed: type={}, tenantId={}, id={}",
                 type,
-                stored == null ? prepared.getSpace_id() : stored.getSpace_id(),
+                stored == null ? prepared.getTenant_id() : stored.getTenant_id(),
                 stored == null ? prepared.getId() : stored.getId());
         return stored;
     }
@@ -316,37 +317,49 @@ public class RegistryControlService {
     /**
      * Deletes one registry entry by type and ID.
      *
-     * @param type  target type
-     * @param space target space
-     * @param id    entry identifier
+     * @param type     target type
+     * @param tenantId target tenantId
+     * @param id       entry identifier
      */
-    public void delete(Type type, String space, String id) {
-        delete(type, space, id, null, false);
+    public void delete(Type type, String tenantId, String id) {
+        delete(type, tenantId, id, null, false);
     }
 
     /**
      * Deletes one registry entry using an optional pre-resolved snapshot.
      *
      * @param type        target type
-     * @param space       target space
+     * @param tenantId    target tenantId
      * @param id          entry identifier
      * @param existing    existing snapshot or {@code null}
      * @param preResolved whether the snapshot was resolved by the batch resolver
      */
-    private void delete(Type type, String space, String id, Assets existing, boolean preResolved) {
-        Logger.info(true, "Cortex", "Registry control delete requested: type={}, space={}, id={}", type, space, id);
-        enforceRegistry("delete", type, space, id, null, null, null);
+    private void delete(Type type, String tenantId, String id, Assets existing, boolean preResolved) {
+        Logger.info(
+                true,
+                "Cortex",
+                "Registry control delete requested: type={}, tenantId={}, id={}",
+                type,
+                tenantId,
+                id);
+        enforceRegistry("delete", type, tenantId, id, null, null, null);
         if (!preResolved) {
-            registry(type).deregister(space, id);
+            registry(type).deregister(tenantId, id);
         } else {
             switch (Type.requireRegistry(type)) {
-                case API -> apiRegistry.deregisterResolved(space, id, (ApiAssets) existing);
-                case MCP -> mcpRegistry.deregisterResolved(space, id, (McpAssets) existing);
-                case PROMPT -> promptRegistry.deregisterResolved(space, id, (PromptAssets) existing);
+                case API -> apiRegistry.deregisterResolved(tenantId, id, (ApiAssets) existing);
+                case MCP -> mcpRegistry.deregisterResolved(tenantId, id, (McpAssets) existing);
+                case PROMPT -> promptRegistry.deregisterResolved(tenantId, id, (PromptAssets) existing);
                 default -> throw new IllegalArgumentException("Unsupported admin registry type: " + type);
             }
         }
-        Logger.info(false, "Cortex", "Registry control delete completed: type={}, space={}, id={}", type, space, id);
+        Logger.info(
+                false,
+                "Cortex",
+                "Registry control delete completed: type={}, tenantId={}, id={}",
+                type,
+                tenantId,
+                id);
     }
 
     /**
@@ -356,7 +369,7 @@ public class RegistryControlService {
      * @return aggregate batch result
      */
     public BatchResult batch(BatchOperation operation) {
-        long start = System.currentTimeMillis();
+        long start = DateKit.current();
         BatchResult result = new BatchResult();
         if (operation == null || operation.getEntries() == null || operation.getEntries().isEmpty()) {
             Logger.debug(false, "Cortex", "Registry batch skipped: reason=empty");
@@ -365,15 +378,15 @@ public class RegistryControlService {
         Logger.info(
                 true,
                 "Cortex",
-                "Registry batch requested: operation={}, space={}, entries={}",
+                "Registry batch requested: operation={}, tenantId={}, entries={}",
                 operation.getOperationType(),
-                operation.getSpace_id(),
+                operation.getTenant_id(),
                 operation.getEntries().size());
         result = executeBatch(operation, new ControlRegistryBatchOperations());
         if (result == null) {
             result = new BatchResult();
         }
-        result.setElapsedMs(System.currentTimeMillis() - start);
+        result.setElapsedMs(DateKit.current() - start);
         Logger.info(
                 false,
                 "Cortex",
@@ -433,9 +446,9 @@ public class RegistryControlService {
         Logger.debug(
                 true,
                 "Cortex",
-                "Registry impact requested: type={}, space={}, id={}, method={}, version={}",
+                "Registry impact requested: type={}, tenantId={}, id={}, method={}, version={}",
                 criteria.getType(),
-                criteria.getSpace_id(),
+                criteria.getTenant_id(),
                 criteria.getId(),
                 criteria.getMethod(),
                 criteria.getVersion());
@@ -509,17 +522,17 @@ public class RegistryControlService {
     /**
      * Loads an existing registry entry by route identity so admin upserts can preserve deterministic IDs.
      *
-     * @param type    registry type
-     * @param space   space
-     * @param app_id  application identifier
-     * @param method  route method
-     * @param version route version
+     * @param type     registry type
+     * @param tenantId tenantId
+     * @param app_id   application identifier
+     * @param method   route method
+     * @param version  route version
      * @return existing entry or {@code null}
      */
-    private Assets getByRoute(Type type, String space, String app_id, String method, String version) {
+    private Assets getByRoute(Type type, String tenantId, String app_id, String method, String version) {
         Vector query = new Vector();
         query.setType(type == null ? null : type.key());
-        query.setSpace_id(space);
+        query.setTenant_id(tenantId);
         query.setApp_id(app_id);
         query.setMethod(method);
         query.setVersion(version);
@@ -537,7 +550,7 @@ public class RegistryControlService {
         enforceRegistry(
                 action,
                 type,
-                asset == null ? null : asset.getSpace_id(),
+                asset == null ? null : asset.getTenant_id(),
                 asset == null ? null : asset.getId(),
                 asset == null ? null : asset.getApp_id(),
                 asset == null ? null : asset.getMethod(),
@@ -547,18 +560,18 @@ public class RegistryControlService {
     /**
      * Applies registry guard policy using explicit asset coordinates.
      *
-     * @param action  guarded action
-     * @param type    registry type
-     * @param space   space identifier
-     * @param id      asset identifier
-     * @param app_id  application identifier
-     * @param method  protocol method
-     * @param version protocol version
+     * @param action   guarded action
+     * @param type     registry type
+     * @param tenantId tenantId identifier
+     * @param id       asset identifier
+     * @param app_id   application identifier
+     * @param method   protocol method
+     * @param version  protocol version
      */
     private void enforceRegistry(
             String action,
             Type type,
-            String space,
+            String tenantId,
             String id,
             String app_id,
             String method,
@@ -573,7 +586,7 @@ public class RegistryControlService {
         context.setResourceType(effective.name());
         context.setResourceId(id);
         context.setAssetId(id);
-        context.space_id(space);
+        context.setTenant_id(RegistryIdentity.tenantId(effective, tenantId));
         context.setApp_id(app_id);
         context.putAttribute("type", effective.name());
         context.putAttribute("typeKey", effective.key());
@@ -585,7 +598,9 @@ public class RegistryControlService {
     /**
      * Persists an API definition through the API registry.
      *
-     * @param asset API definition
+     * @param asset       API definition
+     * @param existing    the original definition already resolved by the batch lookup, or null
+     * @param preResolved whether the batch lookup has already resolved this definition
      * @return stored API definition
      */
     private ApiAssets upsertApi(ApiAssets asset, ApiAssets existing, boolean preResolved) {
@@ -594,13 +609,15 @@ public class RegistryControlService {
         } else {
             apiRegistry.register(asset);
         }
-        return apiRegistry.find(asset.getSpace_id(), asset.getId());
+        return apiRegistry.find(asset.getTenant_id(), asset.getId());
     }
 
     /**
      * Persists an MCP definition through the MCP registry.
      *
-     * @param asset MCP definition
+     * @param asset       MCP definition
+     * @param existing    the original definition already resolved by the batch lookup, or null
+     * @param preResolved whether the batch lookup has already resolved this definition
      * @return stored MCP definition
      */
     private McpAssets upsertMcp(McpAssets asset, McpAssets existing, boolean preResolved) {
@@ -609,13 +626,15 @@ public class RegistryControlService {
         } else {
             mcpRegistry.register(asset);
         }
-        return mcpRegistry.find(asset.getSpace_id(), asset.getId());
+        return mcpRegistry.find(asset.getTenant_id(), asset.getId());
     }
 
     /**
      * Persists a prompt definition through the prompt registry.
      *
-     * @param asset prompt definition
+     * @param asset       prompt definition
+     * @param existing    the original definition already resolved by the batch lookup, or null
+     * @param preResolved whether the batch lookup has already resolved this definition
      * @return stored prompt definition
      */
     private PromptAssets upsertPrompt(PromptAssets asset, PromptAssets existing, boolean preResolved) {
@@ -624,7 +643,7 @@ public class RegistryControlService {
         } else {
             promptRegistry.register(asset);
         }
-        return promptRegistry.find(asset.getSpace_id(), asset.getId());
+        return promptRegistry.find(asset.getTenant_id(), asset.getId());
     }
 
     /**
@@ -636,7 +655,7 @@ public class RegistryControlService {
     private Vector vector(Vector query) {
         Vector vector = new Vector();
         if (query != null) {
-            vector.setSpace_id(query.getSpace_id());
+            vector.setTenant_id(query.getTenant_id());
             vector.setApp_id(query.getApp_id());
             vector.setType(query.getType());
             vector.setId(query.getId());
@@ -659,11 +678,11 @@ public class RegistryControlService {
     private Assets getSingle(Vector criteria) {
         StoreBackedRegistry<? extends Assets> registry = registry(RegistryIdentity.type(criteria.getType()));
         if (criteria.getId() != null) {
-            return registry.refresh(criteria.getSpace_id(), criteria.getId());
+            return registry.refresh(criteria.getTenant_id(), criteria.getId());
         }
         if (criteria.getMethod() != null && criteria.getVersion() != null) {
             return registry.refreshByMethodVersion(
-                    criteria.getSpace_id(),
+                    criteria.getTenant_id(),
                     criteria.getApp_id(),
                     criteria.getMethod(),
                     criteria.getVersion());
@@ -681,8 +700,8 @@ public class RegistryControlService {
      */
     private Assets prepareBatchEntry(BatchOperation operation, Assets source) {
         Assets entry = RegistryAssets.copy(source);
-        if (operation.getSpace_id() != null && (entry.getSpace_id() == null || entry.getSpace_id().isBlank())) {
-            entry.setSpace_id(operation.getSpace_id());
+        if (operation.getTenant_id() != null && (entry.getTenant_id() == null || entry.getTenant_id().isBlank())) {
+            entry.setTenant_id(operation.getTenant_id());
         }
         if (operation.getType() != null) {
             entry.setType(operation.getType().key());
@@ -714,7 +733,7 @@ public class RegistryControlService {
                     result.recordSkip();
                     return;
                 }
-                delete(RegistryIdentity.type(existing), existing.getSpace_id(), existing.getId());
+                delete(RegistryIdentity.type(existing), existing.getTenant_id(), existing.getId());
                 result.recordDelete();
             }
             case REGISTER, UPDATE, UPSERT -> {
@@ -746,13 +765,13 @@ public class RegistryControlService {
     private Assets resolveExisting(Assets entry) {
         Type type = RegistryIdentity.type(entry);
         if (entry.getId() != null) {
-            Assets byId = registry(type).refresh(entry.getSpace_id(), entry.getId());
+            Assets byId = registry(type).refresh(entry.getTenant_id(), entry.getId());
             if (byId != null) {
                 return byId;
             }
         }
         if (entry.getMethod() != null && entry.getVersion() != null) {
-            return getByRoute(type, entry.getSpace_id(), entry.getApp_id(), entry.getMethod(), entry.getVersion());
+            return getByRoute(type, entry.getTenant_id(), entry.getApp_id(), entry.getMethod(), entry.getVersion());
         }
         return null;
     }
@@ -900,8 +919,13 @@ public class RegistryControlService {
         }
         if (asset != null && asset.getMethod() != null && asset.getVersion() != null) {
             String legacyPublic = keying.key(
-                    Keying.RegistrySpec
-                            .route(null, null, null, asset.getMethod(), asset.getVersion(), asset.getVerb()));
+                    Keying.RegistrySpec.route(
+                            asset.getTenant_id(),
+                            null,
+                            null,
+                            asset.getMethod(),
+                            asset.getVersion(),
+                            asset.getVerb()));
             if (legacyPublic != null) {
                 aliases.putIfAbsent(legacyPublic, canonical);
             }
@@ -934,7 +958,7 @@ public class RegistryControlService {
         }
         return keying.key(
                 Keying.RegistrySpec.route(
-                        null,
+                        asset.getTenant_id(),
                         RegistryIdentity.type(asset),
                         asset.getApp_id(),
                         asset.getMethod(),
@@ -953,12 +977,17 @@ public class RegistryControlService {
             return null;
         }
         return keying.key(
-                Keying.RegistrySpec
-                        .route(null, null, asset.getApp_id(), asset.getMethod(), asset.getVersion(), asset.getVerb()));
+                Keying.RegistrySpec.route(
+                        asset.getTenant_id(),
+                        null,
+                        asset.getApp_id(),
+                        asset.getMethod(),
+                        asset.getVersion(),
+                        asset.getVerb()));
     }
 
     /**
-     * Normalizes one declared dependency reference into the canonical application-aware alias space.
+     * Normalizes one declared dependency reference into the canonical application-aware alias tenantId.
      *
      * @param asset      dependent asset
      * @param dependency raw declared dependency
@@ -976,7 +1005,8 @@ public class RegistryControlService {
         if (segments.length == 3) {
             Integer verb = parseVerbToken(segments[2]);
             if (verb != null) {
-                return keying.key(Keying.RegistrySpec.route(null, null, null, segments[0], segments[1], verb));
+                return keying.key(
+                        Keying.RegistrySpec.route(asset.getTenant_id(), null, null, segments[0], segments[1], verb));
             }
             return trimmed;
         }
@@ -988,7 +1018,9 @@ public class RegistryControlService {
             if (verb != null) {
                 Type type = parseTypeToken(segments[0]);
                 if (type != null) {
-                    return keying.key(Keying.RegistrySpec.route(null, type, null, segments[1], segments[2], verb));
+                    return keying.key(
+                            Keying.RegistrySpec
+                                    .route(asset.getTenant_id(), type, null, segments[1], segments[2], verb));
                 }
             }
             return trimmed;
@@ -1000,11 +1032,20 @@ public class RegistryControlService {
             }
             Type type = parseTypeToken(segments[0]);
             if (type != null) {
-                return keying.key(Keying.RegistrySpec.route(null, type, segments[1], segments[2], segments[3], verb));
+                return keying.key(
+                        Keying.RegistrySpec
+                                .route(asset.getTenant_id(), type, segments[1], segments[2], segments[3], verb));
             }
             type = parseTypeToken(segments[1]);
             if (type != null) {
-                return keying.key(Keying.RegistrySpec.route(segments[0], type, null, segments[2], segments[3], verb));
+                return keying.key(
+                        Keying.RegistrySpec.route(
+                                requireDependencyTenant(asset, segments[0]),
+                                type,
+                                null,
+                                segments[2],
+                                segments[3],
+                                verb));
             }
             return trimmed;
         }
@@ -1012,11 +1053,30 @@ public class RegistryControlService {
             Integer verb = parseVerbToken(segments[5]);
             Type type = parseTypeToken(segments[1]);
             if (verb != null && type != null) {
-                return keying
-                        .key(Keying.RegistrySpec.route(segments[0], type, segments[2], segments[3], segments[4], verb));
+                return keying.key(
+                        Keying.RegistrySpec.route(
+                                requireDependencyTenant(asset, segments[0]),
+                                type,
+                                segments[2],
+                                segments[3],
+                                segments[4],
+                                verb));
             }
         }
         return trimmed;
+    }
+
+    /**
+     * Checks the dependency tenant for MCP/Prompt while retaining global API identity.
+     *
+     * @param asset    dependency asset
+     * @param tenantId explicit MCP/Prompt tenant, ignored for API dependencies
+     * @return explicit MCP/Prompt tenant, or null for API
+     */
+    private String requireDependencyTenant(Assets asset, String tenantId) {
+        Type type = RegistryIdentity.type(asset);
+        RegistryIdentity.requireTenant(type, tenantId, asset.getTenant_id());
+        return RegistryIdentity.tenantId(type, tenantId);
     }
 
     /**
@@ -1304,26 +1364,26 @@ public class RegistryControlService {
         /**
          * Deletes one registry asset by identity.
          *
-         * @param type  registry type
-         * @param space space identifier
-         * @param id    asset identifier
+         * @param type     registry type
+         * @param tenantId tenantId identifier
+         * @param id       asset identifier
          */
         @Override
-        public void delete(Type type, String space, String id) {
-            RegistryControlService.this.delete(type, space, id);
+        public void delete(Type type, String tenantId, String id) {
+            RegistryControlService.this.delete(type, tenantId, id);
         }
 
         /**
          * Deletes one registry asset with a resolved current value.
          *
          * @param type     registry type
-         * @param space    space identifier
+         * @param tenantId tenantId identifier
          * @param id       asset identifier
          * @param existing existing asset
          */
         @Override
-        public void delete(Type type, String space, String id, Assets existing) {
-            RegistryControlService.this.delete(type, space, id, existing, true);
+        public void delete(Type type, String tenantId, String id, Assets existing) {
+            RegistryControlService.this.delete(type, tenantId, id, existing, true);
         }
 
         /**

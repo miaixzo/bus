@@ -20,6 +20,7 @@
 package org.miaixz.bus.vortex.filter;
 
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ServerWebExchange;
@@ -39,7 +40,7 @@ import reactor.core.publisher.Mono;
  *
  * @author Kimi Liu
  */
-@org.springframework.core.annotation.Order(Ordered.HIGHEST_PRECEDENCE)
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class AdmissionFilter extends AbstractFilter {
 
     /**

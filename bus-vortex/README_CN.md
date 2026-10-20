@@ -55,7 +55,6 @@ Spring 生态系统的肩膀上,提供企业级 API 路由和管理能力。
 ```java
 public class Assets {
     private String id;             // 唯一路由资产 ID
-    private String space_id;       // 所属 space
     private Integer type;          // 可选类型过滤条件，使用 Type.key()
     private String app_id;         // 应用标识
     private String method;         // 逻辑 API 方法名
@@ -77,7 +76,6 @@ public class Assets {
 |:-------|:---------------------------------------------------------|
 | method | API 方法名称(例如 xxx.xxx.xxx)                           |
 | v      | API 版本号,与 method 一起使用(例如 1.1, 1.2)             |
-| space  | 可选的 space 路由范围                                    |
 | app_id | 可选的应用级路由范围                                     |
 | type   | 可选的注册表类型范围；支持数字 `Type.key()` 和历史枚举名 |
 | format | 返回格式(支持 json、xml)                                 |
@@ -86,21 +84,24 @@ public class Assets {
 ### 公开路由解析规则
 
 - 运行时候选链：
-    - `space:type:app_id:method:version:verb`
-    - `space:type:method:version:verb`
-    - `space:app_id:method:version:verb`
-    - `space:method:version:verb`
     - `type:app_id:method:version:verb`
     - `type:method:version:verb`
     - `app_id:method:version:verb`
     - `method:version:verb`
 - `method`、`version`、`verb` 是运行时必填维度
-- `space`、`type`、`app_id` 是可选路由范围；缺失时只跳过对应层级
+- 仅 `type`、`app_id` 是可选路由范围；缺失时跳过对应层级
+- space 和 tenant 不参与路由；资产 tenant 字段保留原有业务用途
 - `type` 在 route key 中统一使用数字 `Type.key()`
 - `verb` 在 route key 中统一使用数字 verb code，而不是 `GET` / `POST` 文本
-- `ApiAssets.key` 继续保留为轻量公开别名 `method:version:verbCode`
+- `ApiAssets.normalizeMeta()` 保留原有不含 type、带可选 appId 的别名选择，将 `RegistryGenerator` 生成的对应编码 ROUTE
+  键写入元数据 `key`
 - 注册和查询共用同一条候选链
 - 查询命中首个“有候选结果”的层级后，如果该层有多个资产，则直接返回 `null`
+
+REST 保留原有版本必填校验；MCP、CST 和短链保留原有 DEFAULT_VERSION 回退。缺失最终 version/verb 不会成为通配条件。
+
+接口不兼容说明：既有 get 重载删除 space 参数；原四参数 space 入口合并至三参数入口，四参数字符串入口现在表示
+appId/method/version/verb，旧调用者必须同步去参。
 
 `verbCode` 映射：
 

@@ -57,6 +57,9 @@ public class Snowflake implements Serializable {
      */
     public static final long DEFAULT_TWEPOCH = 1288834974657L;
 
+    /**
+     * Number of bits reserved for the worker identifier.
+     */
     private static final long WORKER_ID_BITS = 5L;
 
     /**
@@ -64,6 +67,9 @@ public class Snowflake implements Serializable {
      */
     private static final long MAX_WORKER_ID = ~(-1L << WORKER_ID_BITS);
 
+    /**
+     * Number of bits reserved for the data-center identifier.
+     */
     private static final long DATA_CENTER_ID_BITS = 5L;
 
     /**

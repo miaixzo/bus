@@ -1059,6 +1059,18 @@ public class UserApi extends AbstractApi {
 
     // as per https://docs.gitlab.com/ee/api/README.html#impersonation-tokens, impersonation tokens are a type of
     // personal access token
+    /**
+     * Creates a personal access token or an impersonation token using their shared request format.
+     *
+     * @param userIdOrUsername target user identifier for impersonation tokens
+     * @param name             token name
+     * @param description      token description
+     * @param expiresAt        expiration date
+     * @param scopes           requested token scopes
+     * @param impersonation    whether to create an impersonation token
+     * @return created token
+     * @throws RelevantException if the GitLab request fails
+     */
     private ImpersonationToken createPersonalAccessTokenOrImpersonationToken(
             Object userIdOrUsername,
             String name,

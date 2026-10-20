@@ -57,7 +57,6 @@ enterprise-grade API routing and management capabilities.
 public class Assets {
 
     private String id;             // Unique route asset ID
-    private String space_id;       // Owning space
     private Integer type;          // Optional asset type filter, uses Type.key()
     private String app_id;         // Application identifier
     private String method;         // Logical API method name
@@ -79,7 +78,6 @@ public class Assets {
 |:----------|:---------------------------------------------------------------------------------|
 | method    | API method name (e.g., xxx.xxx.xxx)                                              |
 | v         | API version number, used with method (e.g., 1.1, 1.2)                            |
-| space     | Optional space route scope                                                       |
 | app_id    | Optional application-specific route scope                                        |
 | type      | Optional registry type scope. Accepts numeric `Type.key()` and legacy type names |
 | format    | Return format (supports json, xml)                                               |
@@ -88,22 +86,27 @@ public class Assets {
 ### Public Route Resolution
 
 - Runtime candidate chain:
-    - `space:type:app_id:method:version:verb`
-    - `space:type:method:version:verb`
-    - `space:app_id:method:version:verb`
-    - `space:method:version:verb`
     - `type:app_id:method:version:verb`
     - `type:method:version:verb`
     - `app_id:method:version:verb`
     - `method:version:verb`
 - `method`, `version`, and `verb` are required runtime dimensions
-- `space`, `type`, and `app_id` are optional route scopes; when absent the corresponding levels are skipped
+- Only `type` and `app_id` are optional route scopes; absent dimensions skip their corresponding levels
+- Space and tenant are not route conditions. Asset tenant fields retain their existing business meaning
 - `type` always uses numeric `Type.key()` inside route keys
 - `verb` always uses the numeric verb code rather than `GET` / `POST` text
-- `ApiAssets.key` remains the lightweight public alias `method:version:verbCode`
+- `ApiAssets.normalizeMeta()` retains its type-less, application-aware alias selection and writes the corresponding
+  encoded ROUTE key from `RegistryGenerator` into metadata `key`
 - Registration and lookup share the same candidate chain
 - Lookup stops at the first level that has candidates; if that level resolves to multiple assets, the gateway returns
   `null`
+
+REST retains its required-version validation; MCP, CST and slug routing retain their existing DEFAULT_VERSION fallback.
+Missing final version/verb values are not wildcards.
+
+Breaking interface change: existing get overloads drop the space argument. The former four-argument space overload
+merges into the three-argument overload; the four-argument string overload now means appId/method/version/verb. Old
+callers must remove their space argument.
 
 `verbCode` mapping:
 

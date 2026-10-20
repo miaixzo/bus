@@ -59,6 +59,7 @@ perform computer vision tasks, image processing, and video analysis in your Java
 import org.miaixz.bus.opengl.OpenCVKit;
 
 public class Application {
+    
     static {
         // Load OpenCV native library
         OpenCVKit.loadLib();
@@ -67,6 +68,7 @@ public class Application {
     public static void main(String[] args) {
         // Your code here
     }
+    
 }
 ```
 

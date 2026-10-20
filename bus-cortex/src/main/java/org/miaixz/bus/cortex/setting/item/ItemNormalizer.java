@@ -20,8 +20,9 @@
 package org.miaixz.bus.cortex.setting.item;
 
 import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
+import org.miaixz.bus.cortex.setting.secret.SecretReference;
 import org.miaixz.bus.crypto.Builder;
 
 /**
@@ -36,6 +37,36 @@ public final class ItemNormalizer {
      */
     public static final String INLINE_SOURCE = "INLINE";
 
+    /** Source discriminator for reference-only backend Secret settings. */
+    public static final String SECRET_SOURCE = "SECRET";
+
+    /**
+     * Recognizes a reference-only SECRET item without resolving its backend.
+     *
+     * @param item item to inspect, or null
+     * @return true for a trimmed, case-insensitive SECRET source
+     */
+    public static boolean isSecret(Item item) {
+        return item != null && SECRET_SOURCE.equalsIgnoreCase(item.getSource() == null ? "" : item.getSource().trim());
+    }
+
+    /**
+     * Validates persisted setting restrictions and parses its backend reference. SECRET items cannot contain inline
+     * plaintext, encrypted payloads or a non-secret exposure. This method performs no backend access.
+     *
+     * @param item reference-only SECRET item
+     * @return validated backend reference retaining the existing JSON descriptor format
+     * @throws org.miaixz.bus.core.lang.exception.CryptoException if item restrictions or descriptor validation fail
+     */
+    public static SecretReference secretReference(Item item) {
+        if (!isSecret(item) || !"SECRET".equals(item.getExposure())
+                || item.getEncrypted() != null && item.getEncrypted() != 0 || item.getContent() != null
+                || item.getPayload() != null || item.getSpec() == null) {
+            throw new CryptoException("Invalid secret reference");
+        }
+        return SecretReference.parse(item.getSpec());
+    }
+
     /**
      * Prevents utility-class instantiation.
      */
@@ -46,12 +77,11 @@ public final class ItemNormalizer {
     /**
      * Applies canonical identifiers and default values to one item.
      *
-     * @param entry item to normalize, or {@code null} to create one
+     * @param entry item with valid tenant-qualified coordinates
      * @return normalized item
      */
     public static Item normalize(Item entry) {
-        Item prepared = entry == null ? new Item() : entry;
-        prepared.setSpace_id(CortexIdentity.space(prepared.getSpace_id()));
+        Item prepared = coordinates(entry);
         if (StringKit.isEmpty(prepared.getId())) {
             prepared.setId(ID.objectId());
         }
@@ -70,8 +100,14 @@ public final class ItemNormalizer {
         if (StringKit.isEmpty(prepared.getExposure())) {
             prepared.setExposure(ItemExposure.INTERNAL.name());
         }
+        if (prepared.getState() != null) {
+            Item.State.valueOf(prepared.getState());
+        }
         if (prepared.getEncrypted() == null) {
             prepared.setEncrypted(0);
+        }
+        if (ItemNormalizer.isSecret(prepared)) {
+            ItemNormalizer.secretReference(prepared);
         }
         if (prepared.getEdition() == null) {
             prepared.setEdition(0L);
@@ -95,15 +131,15 @@ public final class ItemNormalizer {
      * @return SHA-256 fingerprint
      */
     public static String fingerprint(Item entry) {
+        coordinates(entry);
         return Builder.sha256(
                 String.join(
-                        "\u001f",
-                        value(entry.getTenant_id()),
-                        value(entry.getSpace_id()),
-                        value(entry.getProfile_id()),
-                        value(entry.getGroup()),
-                        value(entry.getCode()),
-                        value(entry.getKind())));
+                        ":",
+                        segment(entry.getTenant_id()),
+                        segment(entry.getScope()),
+                        segment(entry.getApp_id()),
+                        segment(entry.getCode()),
+                        segment(entry.getKind())));
     }
 
     /**
@@ -132,6 +168,53 @@ public final class ItemNormalizer {
     }
 
     /**
+     * Validates and normalizes item coordinates, requiring a tenant identifier.
+     *
+     * @param item item coordinates
+     * @return normalized item coordinates
+     */
+    public static Item coordinates(Item item) {
+        if (item == null) {
+            throw new IllegalArgumentException("Item coordinates are required");
+        }
+        requireTenant(item.getTenant_id());
+        if (item.getCode() == null || item.getCode().isBlank()) {
+            throw new IllegalArgumentException("A configuration code is required");
+        }
+        if (item.getScope() == null || item.getScope().isBlank()) {
+            item.setScope(
+                    item.getApp_id() == null || item.getApp_id().isBlank() ? Item.Scope.SHARED.name()
+                            : Item.Scope.APPLICATION.name());
+        }
+        Item.Scope scope = Item.Scope.valueOf(item.getScope());
+        if (scope == Item.Scope.APPLICATION && (item.getApp_id() == null || item.getApp_id().isBlank())) {
+            throw new IllegalArgumentException("Application items require an application identifier");
+        }
+        if (scope == Item.Scope.SHARED && item.getApp_id() != null && !item.getApp_id().isBlank()) {
+            throw new IllegalArgumentException("Shared items cannot belong to an application");
+        }
+        if (scope == Item.Scope.SHARED) {
+            item.setApp_id(null);
+        }
+        if (item.getKind() == null || item.getKind().isBlank()) {
+            item.setKind(Item.Kind.SOURCE.name());
+        }
+        Item.Kind.valueOf(item.getKind());
+        return item;
+    }
+
+    /**
+     * Validates the global tenant identifier.
+     *
+     * @param tenant_id tenant identifier
+     */
+    public static void requireTenant(String tenant_id) {
+        if (tenant_id == null || tenant_id.isBlank()) {
+            throw new IllegalArgumentException("A tenant identifier is required");
+        }
+    }
+
+    /**
      * Tests whether the persisted encryption flag is enabled.
      *
      * @param encrypted persisted encryption flag
@@ -150,4 +233,12 @@ public final class ItemNormalizer {
     private static String value(Object value) {
         return value == null ? "" : String.valueOf(value);
     }
+
+    /**
+     * Encodes an identity segment without delimiter ambiguity.
+     */
+    private static String segment(String value) {
+        return value == null ? "-" : value.length() + "#" + value;
+    }
+
 }

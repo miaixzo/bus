@@ -421,16 +421,35 @@ public class Octets {
      */
     private static final class SegmentedReservation implements AutoCloseable {
 
+        /**
+         * Byte-budget leases owned by this reservation.
+         */
         private final List<AsyncByteBudget.Lease> leases = new ArrayList<>();
 
+        /**
+         * Total number of reserved bytes.
+         */
         private long bytes;
 
+        /**
+         * Whether the reservation has released its leases.
+         */
         private boolean closed;
 
+        /**
+         * Returns the current reserved-byte count.
+         *
+         * @return reserved bytes
+         */
         private synchronized long bytes() {
             return this.bytes;
         }
 
+        /**
+         * Adds a lease to this reservation, or releases it immediately after closure.
+         *
+         * @param lease byte-budget lease to own
+         */
         private synchronized void add(AsyncByteBudget.Lease lease) {
             if (this.closed) {
                 lease.close();
@@ -440,6 +459,12 @@ public class Octets {
             this.bytes += lease.bytes();
         }
 
+        /**
+         * Shrinks the latest lease so the reservation retains the requested byte count.
+         *
+         * @param retainedBytes number of bytes to retain
+         * @throws IllegalStateException if the reservation is closed or the requested size is invalid
+         */
         private synchronized void shrinkTo(long retainedBytes) {
             if (this.closed || retainedBytes < 0 || retainedBytes > this.bytes) {
                 throw new IllegalStateException("incremental byte reservation cannot be resized");
@@ -553,10 +578,22 @@ public class Octets {
      */
     private static final class OwnedServerResponse implements ServerResponse, AutoCloseable {
 
+        /**
+         * Response delegated to the server runtime.
+         */
         private final ServerResponse delegate;
 
+        /**
+         * Buffered body whose lifetime follows the response write.
+         */
         private final BufferedBody body;
 
+        /**
+         * Creates a response that owns the supplied buffered body.
+         *
+         * @param delegate response to delegate
+         * @param body     buffered body to release with the response
+         */
         private OwnedServerResponse(ServerResponse delegate, BufferedBody body) {
             this.delegate = delegate;
             this.body = body;

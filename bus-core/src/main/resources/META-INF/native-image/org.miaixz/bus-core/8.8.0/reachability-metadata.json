@@ -932,6 +932,388 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.core.basic.entity.Query",
+      "fields": [
+        {
+          "name": "keyword"
+        },
+        {
+          "name": "nonce"
+        },
+        {
+          "name": "orderBy"
+        },
+        {
+          "name": "pageNo"
+        },
+        {
+          "name": "pageSize"
+        },
+        {
+          "name": "serialVersionUID"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.basic.entity.Query$QueryBuilder"
+          ]
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreated",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreator",
+          "parameterTypes": []
+        },
+        {
+          "name": "getId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKeyword",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModified",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModifier",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNonce",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOrderBy",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPageNo",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPageSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStatus",
+          "parameterTypes": []
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isPKNotNull",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCreated",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "setCreator",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setId",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setKeyword",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setModified",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "setModifier",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setNonce",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setOrderBy",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPageNo",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setPageSize",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setStatus",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String[]",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.basic.entity.Query$QueryBuilder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.basic.entity.Query$QueryBuilderImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.basic.entity.Result",
+      "fields": [
+        {
+          "name": "pageNo"
+        },
+        {
+          "name": "pageSize"
+        },
+        {
+          "name": "rows"
+        },
+        {
+          "name": "serialVersionUID"
+        },
+        {
+          "name": "total"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.basic.entity.Result$ResultBuilder"
+          ]
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPageNo",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPageSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRows",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTotal",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.util.List",
+            "long"
+          ]
+        },
+        {
+          "name": "setPageNo",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setPageSize",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setRows",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "setTotal",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.basic.entity.Result$ResultBuilder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.basic.entity.Result$ResultBuilderImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.core.basic.entity.Space",
       "fields": [
         {
@@ -1417,388 +1799,6 @@
     },
     {
       "type": "org.miaixz.bus.core.basic.entity.Space$SpaceBuilderImpl",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.basic.entity.Query",
-      "fields": [
-        {
-          "name": "keyword"
-        },
-        {
-          "name": "nonce"
-        },
-        {
-          "name": "orderBy"
-        },
-        {
-          "name": "pageNo"
-        },
-        {
-          "name": "pageSize"
-        },
-        {
-          "name": "serialVersionUID"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.basic.entity.Query$QueryBuilder"
-          ]
-        },
-        {
-          "name": "builder",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCreated",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCreator",
-          "parameterTypes": []
-        },
-        {
-          "name": "getId",
-          "parameterTypes": []
-        },
-        {
-          "name": "getKeyword",
-          "parameterTypes": []
-        },
-        {
-          "name": "getModified",
-          "parameterTypes": []
-        },
-        {
-          "name": "getModifier",
-          "parameterTypes": []
-        },
-        {
-          "name": "getNonce",
-          "parameterTypes": []
-        },
-        {
-          "name": "getOrderBy",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPageNo",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPageSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getStatus",
-          "parameterTypes": []
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isPKNotNull",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCreated",
-          "parameterTypes": [
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "setCreator",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setId",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setKeyword",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setModified",
-          "parameterTypes": [
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "setModifier",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setNonce",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setOrderBy",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setPageNo",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setPageSize",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setStatus",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setValue",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String[]",
-            "java.lang.Object[]"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.basic.entity.Query$QueryBuilder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.basic.entity.Query$QueryBuilderImpl",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.basic.entity.Result",
-      "fields": [
-        {
-          "name": "pageNo"
-        },
-        {
-          "name": "pageSize"
-        },
-        {
-          "name": "rows"
-        },
-        {
-          "name": "serialVersionUID"
-        },
-        {
-          "name": "total"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.basic.entity.Result$ResultBuilder"
-          ]
-        },
-        {
-          "name": "builder",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPageNo",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPageSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRows",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTotal",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "of",
-          "parameterTypes": [
-            "java.util.List",
-            "long"
-          ]
-        },
-        {
-          "name": "setPageNo",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setPageSize",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setRows",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "setTotal",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.basic.entity.Result$ResultBuilder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.basic.entity.Result$ResultBuilderImpl",
       "methods": [
         {
           "name": "<init>",
@@ -12295,86 +12295,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.lang.exception.AlreadyExistsException",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.Throwable"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Throwable"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Throwable",
-            "boolean",
-            "boolean"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Throwable"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Throwable",
-            "java.lang.String",
-            "java.lang.Object[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.basic.normal.Errors"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.basic.normal.Errors",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.lang.exception.AuthorizedException",
       "methods": [
         {
@@ -13032,6 +12952,86 @@
     },
     {
       "type": "org.miaixz.bus.core.lang.exception.DisableException",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.basic.normal.Errors"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.basic.normal.Errors",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.exception.DuplicateException",
       "methods": [
         {
           "name": "<init>",

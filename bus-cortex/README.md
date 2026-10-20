@@ -1,7 +1,7 @@
 # 🧠 Bus Cortex: Unified Registry & Configuration Center
 
 <p align="center">
-<strong>Service Registry · Config Center · Health Probing · Space Isolation · bus Ecosystem Integration</strong>
+<strong>Service Registry · Config Center · Health Probing · Tenant-Scoped Storage · bus Ecosystem Integration</strong>
 </p>
 
 -----
@@ -9,14 +9,14 @@
 ## 📖 Project Introduction
 
 **Bus Cortex** is the registry and configuration center for the bus framework. It provides unified service registration,
-configuration management, health probing, and space-based multi-tenant isolation — all backed by a single `CacheX`
+configuration management, health probing, and tenant-scoped business storage — all backed by a single `CacheX`
 storage abstraction (Memory / Redis / JDBC) with zero extra infrastructure.
 
 - **Unified Registry**: API / MCP / Prompt / Version — four registries behind one `Registry<T>` interface
 - **Service + Instance Model**: `ApiAssets` (definition) + `Instance` (runtime), following Nacos-style separation
 - **Configuration Center**: Versioned publish, gray release routing, `@ConfigChange` callback annotations
 - **Health Probing**: Pluggable `Prober` (HTTP / TCP / MCP Ping / Process PID), server-side active probing
-- **Space Isolation**: Dynamic space resolution (Token / Header / context), `SpaceGuard` enforced write isolation
+- **Tenant Boundary**: API definitions and API runtime instances are global; MCP and Prompt entries retain explicit tenant-scoped storage; route lookup coordinates are unchanged
 - **Security**: HMAC-SHA256 Token + RBAC (ADMIN / PROVIDER / CONSUMER), rate limiting, circuit breaking
 - **bus Ecosystem**: VortexBridge auto-syncs to bus-vortex; bus-metrics instrumentation built-in; bus-cache as the sole
   storage dependency
@@ -49,36 +49,34 @@ mcpRegistry().
 register(mcpAssets);
 
 List<ApiAssets> services = Cortex.query(
-        Vector.newBuilder().space_id("production").method("vortex.user.get").build(), ApiAssets.class);
+        Vector.newBuilder().tenant_id(tenantId).method("vortex.user.get").build(), ApiAssets.class);
 ```
 
 ### ⚡ Service + Instance Separation
 
 ```
-ApiAssets (definition, canonical identity = space + type + method + version[:verb])
-    └── Instance (runtime, unique by space + app_id + method + version + fingerprint)
+ApiAssets (definition, route identity = type + app_id + method + version + verb)
+    └── Instance (runtime, unique by app_id + method + version + fingerprint)
 ```
 
 **Instance Identity**: Multiple runtime instances may coexist for the same API definition. Runtime uniqueness is scoped
-by `space + app_id + method + version + fingerprint`.
+by `app_id + method + version + fingerprint`.
 
 Same-fingerprint re-registration is treated as an **idempotent TTL refresh**, not a conflict.
 
-**Gateway Route Semantics**: When synchronized to bus-vortex, `ApiAssets.key` remains the lightweight public alias
-`method:version:verbCode`, for example `dp.license.get:1.0:1`. Runtime lookup candidates are generated separately by
-`Keying` in this order:
+**Gateway Route Semantics**: `ApiAssets.normalizeMeta()` keeps its existing type-less, application-aware alias
+selection and writes that encoded ROUTE key from `RegistryGenerator` into metadata `key`. Registration and lookup
+use the same generator, in this order:
 
-1. `space:type:app_id:method:version:verb`
-2. `space:type:method:version:verb`
-3. `space:app_id:method:version:verb`
-4. `space:method:version:verb`
-5. `type:app_id:method:version:verb`
-6. `type:method:version:verb`
-7. `app_id:method:version:verb`
-8. `method:version:verb`
+1. `type:app_id:method:version:verb`
+2. `type:method:version:verb`
+3. `app_id:method:version:verb`
+4. `method:version:verb`
 
-`method` / `version` / `verb` are required runtime dimensions; `space`, `type`, and `app_id` participate only when
-present.
+`method` / `version` / `verb` are required runtime dimensions. Only `type` and `app_id` are optional;
+neither space nor tenant is encoded or validated for ROUTE keys. API ENTRY and API INSTANCE keys are global and normalize tenant metadata to null. MCP and Prompt ENTRY keys retain `tenant_id + type + id` and require an explicit tenant; their tenant fields are preserved.
+
+ROUTE: `route:v2:type=<type|*>:app=<length:appId|*>:method=<length:method>:version=<length:version>:verb=<verb>`.
 
 `Keying` is now a generic key-strategy interface. Registry/runtime routing uses `Keying<Keying.RegistrySpec>` with the
 built-in `RegistryGenerator`, while the setting domain uses `Keying<Keying.SettingSpec>` with the built-in
@@ -132,8 +130,7 @@ registered instances. Healthy instances get TTL refreshed; unhealthy instances e
 | `AccessTokenStore`    | HMAC-SHA256 token issuance with CacheX-backed revocation                              |
 | `AccessTokenResolver` | Two-step validation: HMAC verify (anti-forgery) + CacheX blacklist check (revocation) |
 | `AccessGuard`         | RBAC enforcement (ADMIN / PROVIDER / CONSUMER)                                        |
-| `SpaceGuard`          | Cross-space write prevention                                                          |
-| `RateLimiter`         | Token bucket rate limiting per space/method (CacheX counters)                         |
+| `RateLimiter`         | Token bucket rate limiting (CacheX counters)                         |
 | `CircuitBreaker`      | State machine: CLOSED → OPEN → HALF_OPEN                                              |
 | `ParamValidator`      | Input validation (regex `^[a-zA-Z0-9._-]{1,128}$`) preventing CacheX key injection    |
 
@@ -191,8 +188,8 @@ bus:
     server-addr: 127.0.0.1:8766   # The only required field
 ```
 
-> **Space**: Not a fixed YAML config. Resolved dynamically at runtime from Token / request Header (`X-Space`) /
-> management context. Falls back to `public` if unspecified.
+> **Tenant context**: MCP and Prompt operations use the existing trusted tenant context; API registration is global. In the snippets below,
+> `tenantId` is supplied by that context; no default tenant is introduced. Gateway API routes do not consume it.
 
 ### Step 3: Enable
 
@@ -225,7 +222,7 @@ import org.miaixz.bus.cortex.registry.api.Instance;
 ApiAssets service = new ApiAssets();
 service.
 
-        setSpace_id("production");
+        setTenant_id(tenantId);
 service.
 
         setApp_id("order-service");
@@ -248,7 +245,7 @@ service.
         Instance instance = new Instance();
 instance.
 
-        setSpace_id("production");
+        setTenant_id(tenantId);
 instance.
 
         setApp_id("order-service");
@@ -276,14 +273,14 @@ Cortex.
 
         // Query API definitions
         List<ApiAssets> results = Cortex.query(
-                Vector.newBuilder().space_id("production").method("vortex.user.get").build(),
+                Vector.newBuilder().tenant_id(tenantId).method("vortex.user.get").build(),
                 ApiAssets.class
         );
 
 // Deregister
 Cortex.
 
-        deregister("production","vortex.user.get:v1.0.0");
+        deregister(tenantId,"vortex.user.get:v1.0.0");
 ```
 
 ### 2. Configuration Management
@@ -328,7 +325,7 @@ public class OrderService {
 ```java
 // Watch for instance changes
 String watchId = Cortex.apiRegistry().watch(
-                Vector.newBuilder().space_id("production").method("vortex.user.get").build(),
+                Vector.newBuilder().tenant_id(tenantId).method("vortex.user.get").build(),
                 (added, removed, updated) -> {
                     log.info("Instances changed: +{} -{} ~{}", added.size(), removed.size(), updated.size());
                 }
@@ -347,14 +344,14 @@ unwatch(watchId);
 ```java
 // Register MCP tool
 McpAssets mcp = new McpAssets();
-mcp.setSpace_id("ai");
+mcp.setTenant_id(tenantId);
 mcp.setToolName("code-search");
 mcp.setTransport("stdio");
 Cortex.mcpRegistry().register(mcp);
 
 // Register prompt template
 PromptAssets prompt = new PromptAssets();
-prompt.setSpace_id("ai");
+prompt.setTenant_id(tenantId);
 prompt.setTemplate("Summarize the following: {{content}}");
 Cortex.promptRegistry().register(prompt);
 ```
@@ -459,7 +456,7 @@ org.miaixz.bus.cortex
 │   └── depend/    DependencyGraph + ImpactAnalysis
 ├── config/        Configuration center (ConfigPublisher, ConfigWatcher, GrayRouter, DefaultConfig)
 ├── bridge/        bus-vortex sync (VortexBridge, SyncEvent, ApiAssetsConverter)
-├── guard/         Security & protection (RateLimiter, CircuitBreaker, AccessTokenStore, AccessGuard, SpaceGuard)
+├── guard/         Security & protection (RateLimiter, CircuitBreaker, AccessTokenStore, AccessGuard)
 ├── builtin/       Default implementations (CompositeProber, DefaultPublisher, DefaultNotifier)
 └── magic/         Utilities (IdGenerator, Sequence, Fingerprint, AuditLogger)
 ```
@@ -546,3 +543,29 @@ The three cleanup safeguards are the PreStop hook, TTL expiration, and active pr
 ## 📄 License
 
 [Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+## Secret management
+
+`setting.secret` supports direct Alibaba Cloud KMS, AWS Secrets Manager, Azure Key Vault, Vault KV v2, Tencent Cloud SSM, and Huawei Cloud CSMS reads, explicit authorization, version selection, and bounded in-memory caching with refresh. No vendor SDK is required.
+
+The concrete `SecretManager` owns connection registration via `register(connection, provider)`.
+Its authorization contract is `SecretManager.AccessPolicy`; read capabilities are
+`SecretProvider.Capability`, and fresh credentials come from `CloudCredentials.Source`.
+A null `SecretReference.version()` selects the current backend version. Persisted JSON keeps its existing
+`selector.mode/version` and `expectedType` fields. `SecretMaterial` exposes version, fetch time, expiration
+and connection generation directly; `describe()` returns an immutable capability set.
+Payload types remain configuration labels and do not split the complete-value cache.
+
+Caching uses Bus `MemoryCache` directly. Inject an empty cache dedicated to this manager; the manager owns its close lifecycle and erases values through removal callbacks. Capacity belongs to MemoryCache; values exceeding 8192 characters are returned without being cached.
+
+Lifecycle guards cover cached and uncached reads; close drains admitted reads and prevents them from returning secrets. Cache cleanup after a failed read is best effort, never waits for a busy resource, and cannot replace the original denial. Each HTTP attempt passes its capped ten-second deadline to both credential acquisition and transport; wrapped native timeouts fail immediately.
+
+```java
+var cache = new org.miaixz.bus.cache.nimble.MemoryCache<String, SecretMaterial>(256, 60_000);
+try (var manager = new SecretManager(accessPolicy, cache)) {
+    manager.register(connection, provider);
+    // Resolve using an authenticated SecretContext.
+}
+```
+
+Secret failures directly throw Bus `ForbiddenException` for denied access or `CryptoException` for other failures. Public exceptions contain fixed, sanitized text without backend messages, credentials, causes or custom error codes; callers must not parse exception messages. Cloud adapters decide response retries from HTTP status and native platform error fields. At most three attempts are made for throttling and temporary service failures (HTTP 429/500/502/503, or recognized Alibaba/AWS/Tencent transient codes). Recognized transport I/O failures can retry; timeouts, denied access, missing values, malformed successful responses, and credential-source failures fail immediately. Each attempt reacquires and closes its credentials.

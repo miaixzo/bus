@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -35,7 +36,7 @@ import org.miaixz.bus.cortex.builtin.Selector;
  * Shared cross-domain selector used by registry and setting scans.
  *
  * <p>
- * {@code Vector} is intentionally limited to common filtering concerns such as space, type, id, method/version,
+ * {@code Vector} is intentionally limited to common filtering concerns such as tenantId, type, id, method/version,
  * labels/selectors, instance state, and pagination. Setting-only, admin-only, delivery-only, or debug semantics should
  * live in domain-specific scope types instead of expanding this model further.
  * </p>
@@ -105,13 +106,13 @@ public class Vector extends Nature {
     /**
      * Maximum number of results to return.
      */
-    @lombok.Builder.Default
+    @Default
     private int limit = 100;
 
     /**
      * Number of results to skip.
      */
-    @lombok.Builder.Default
+    @Default
     private int offset = 0;
 
     /**
@@ -186,13 +187,13 @@ public class Vector extends Nature {
         }
 
         /**
-         * Sets space.
+         * Sets tenantId.
          *
-         * @param space_id query space
+         * @param tenant_id query tenantId
          * @return current builder
          */
-        public Builder space_id(String space_id) {
-            vector.setSpace_id(space_id);
+        public Builder tenant_id(String tenant_id) {
+            vector.setTenant_id(tenant_id);
             return this;
         }
 

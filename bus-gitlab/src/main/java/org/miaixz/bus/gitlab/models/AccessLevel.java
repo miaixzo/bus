@@ -86,6 +86,11 @@ public enum AccessLevel {
      */
     public final Integer value;
 
+    /**
+     * Defines an access level with its GitLab numeric value.
+     *
+     * @param value numeric access level
+     */
     AccessLevel(int value) {
         this.value = value;
     }

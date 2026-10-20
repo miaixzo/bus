@@ -677,8 +677,16 @@ public class AnnotatedElements {
      */
     private static class ConstantElement implements AnnotatedElement {
 
+        /**
+         * Immutable annotation array exposed through this element.
+         */
         private final Annotation[] annotations;
 
+        /**
+         * Creates an annotated element backed by a non-null annotation array.
+         *
+         * @param annotations annotations exposed by the element
+         */
         ConstantElement(final Annotation[] annotations) {
             this.annotations = Objects.requireNonNull(annotations);
         }
@@ -722,6 +730,9 @@ public class AnnotatedElements {
      */
     private static class EmptyElement implements AnnotatedElement {
 
+        /**
+         * Shared annotation-free element.
+         */
         static final EmptyElement INSTANCE = new EmptyElement();
 
         /**

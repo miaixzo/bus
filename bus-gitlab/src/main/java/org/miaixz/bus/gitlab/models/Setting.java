@@ -2066,10 +2066,20 @@ public enum Setting {
      */
     private Class<?>[] types;
 
+    /**
+     * Defines a setting that accepts one Java type.
+     *
+     * @param type accepted type
+     */
     private Setting(Class<?> type) {
         this.type = type;
     }
 
+    /**
+     * Defines a setting that accepts any of several Java types.
+     *
+     * @param types accepted types
+     */
     private Setting(Class<?>[] types) {
         this.types = types;
     }

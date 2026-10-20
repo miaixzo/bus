@@ -17,6 +17,23 @@
       }
     },
     {
+      "type": "org.miaixz.bus.mapper.annotation.ColumnOrder",
+      "methods": [
+        {
+          "name": "first",
+          "parameterTypes": []
+        },
+        {
+          "name": "last",
+          "parameterTypes": []
+        },
+        {
+          "name": "value",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.mapper.binding.basic.ClassMapper$CachingEntityClass",
       "methods": [
         {
@@ -5790,6 +5807,48 @@
       }
     },
     {
+      "type": "org.miaixz.bus.mapper.feature.schema.ColumnOrderResolver",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "invalid",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "java.lang.Class",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "resolve",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "boolean"
+          ]
+        },
+        {
+          "name": "validateDeclaration",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "java.lang.Class",
+            "java.lang.String[]",
+            "java.util.Set"
+          ]
+        },
+        {
+          "name": "validateMapped",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "java.lang.Class",
+            "java.lang.String",
+            "java.util.Map"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.mapper.feature.schema.ColumnSnapshot",
       "methods": [
         {
@@ -6262,6 +6321,16 @@
         },
         {
           "name": "allowShrinkLength",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "auditColumnsLast",
+          "parameterTypes": []
+        },
+        {
+          "name": "auditColumnsLast",
           "parameterTypes": [
             "boolean"
           ]
@@ -10204,6 +10273,9 @@
           "name": "allowShrinkLength"
         },
         {
+          "name": "auditColumnsLast"
+        },
+        {
           "name": "continueOnError"
         },
         {
@@ -10364,6 +10436,10 @@
           "parameterTypes": []
         },
         {
+          "name": "isAuditColumnsLast",
+          "parameterTypes": []
+        },
+        {
           "name": "isContinueOnError",
           "parameterTypes": []
         },
@@ -10493,6 +10569,12 @@
         },
         {
           "name": "setAllowShrinkLength",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setAuditColumnsLast",
           "parameterTypes": [
             "boolean"
           ]

@@ -196,6 +196,11 @@ public class FPE implements Serializable {
          */
         private final String value;
 
+        /**
+         * Defines an FPE mode using its provider transformation name.
+         *
+         * @param name provider transformation name
+         */
         FPEMode(final String name) {
             this.value = name;
         }

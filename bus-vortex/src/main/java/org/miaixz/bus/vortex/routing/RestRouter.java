@@ -83,15 +83,15 @@ public class RestRouter implements Router<ServerRequest, ServerResponse> {
             Logger.debug(
                     true,
                     "Vortex",
-                    "Request headers: protocol=http, clientIp={}, headers={}",
+                    "Request header names: protocol=http, clientIp={}, headerNames={}",
                     context.getX_request_ip(),
-                    request.headers().asHttpHeaders().toSingleValueMap());
+                    request.headers().asHttpHeaders().headerNames());
             Logger.debug(
                     true,
                     "Vortex",
-                    "Request parameters: protocol=http, clientIp={}, parameters={}",
+                    "Request parameter names: protocol=http, clientIp={}, parameterNames={}",
                     context.getX_request_ip(),
-                    context.getParameters());
+                    context.getParameters().keySet());
             return this.executor.execute(context, request);
         });
     }

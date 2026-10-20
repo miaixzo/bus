@@ -24,18 +24,18 @@
  * Provides a unified registry and configuration center for service governance metadata.
  *
  * <p>
- * Includes API, MCP, and prompt registries; application settings; spaces and profiles; secret and revision management;
+ * Includes API, MCP, and prompt registries; tenant-scoped application settings; secret and revision management;
  * delivery and watch mechanisms; health information; and cache-backed storage bridges.
  *
  * @author Kimi Liu
  */
 module bus.cortex {
 
-    requires bus.cache;
+    requires transitive bus.cache;
     requires bus.core;
     requires bus.crypto;
     requires bus.extra;
-    requires bus.fabric;
+    requires transitive bus.fabric;
     requires bus.logger;
 
     requires static jakarta.persistence;
@@ -67,12 +67,10 @@ module bus.cortex {
     exports org.miaixz.bus.cortex.setting.item;
     exports org.miaixz.bus.cortex.setting.revision;
     exports org.miaixz.bus.cortex.setting.instance;
-    exports org.miaixz.bus.cortex.setting.profile;
     exports org.miaixz.bus.cortex.setting.reference;
     exports org.miaixz.bus.cortex.setting.rollout;
     exports org.miaixz.bus.cortex.setting.secret;
-    exports org.miaixz.bus.cortex.setting.space;
-    exports org.miaixz.bus.cortex.setting.task;
+    exports org.miaixz.bus.cortex.setting.secret.provider;
     exports org.miaixz.bus.cortex.setting.event;
     exports org.miaixz.bus.cortex.setting.watch;
     exports org.miaixz.bus.cortex.version;

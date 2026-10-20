@@ -47,12 +47,24 @@ import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
  */
 public class BootURLConnection extends JarURLConnection {
 
+    /**
+     * Delegate connection for the encrypted archive entry.
+     */
     private final JarURLConnection jarURLConnection;
 
+    /**
+     * Provider used to decrypt archive content.
+     */
     private final DecryptorProvider decryptorProvider;
 
+    /**
+     * Provider used to encrypt archive content.
+     */
     private final EncryptorProvider encryptorProvider;
 
+    /**
+     * Cryptographic key associated with the archive.
+     */
     private final Key key;
 
     /**

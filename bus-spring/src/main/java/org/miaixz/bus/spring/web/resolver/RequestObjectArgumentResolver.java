@@ -27,10 +27,12 @@ import java.util.Objects;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.AbstractNestablePropertyAccessor;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.validation.AbstractPropertyBindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
@@ -102,6 +104,12 @@ public class RequestObjectArgumentResolver implements HandlerMethodArgumentResol
 
     /**
      * Applies Bean Validation to an object created directly from a JSON body.
+     *
+     * @param parameter     the controller parameter carrying the existing validation annotations
+     * @param target        the object decoded from the original JSON body
+     * @param webRequest    the current native request
+     * @param binderFactory the existing Spring binder factory used for validation
+     * @throws Exception when binder creation or annotated validation fails
      */
     private static void validate(
             MethodParameter parameter,
@@ -197,7 +205,13 @@ public class RequestObjectArgumentResolver implements HandlerMethodArgumentResol
         Object target = BeanKit.createBean(type);
         String name = parameter.getParameterName() == null ? type.getSimpleName() : parameter.getParameterName();
         WebDataBinder binder = binderFactory.createBinder(webRequest, target, name);
-        binder.setAutoGrowCollectionLimit(this.options.getAutoGrowCollectionLimit());
+        // Controller editors may already initialize the binder; retain them and bound its actual property accessor.
+        if (binder.getBindingResult() instanceof AbstractPropertyBindingResult bindingResult
+                && bindingResult.getPropertyAccessor() instanceof AbstractNestablePropertyAccessor accessor) {
+            accessor.setAutoGrowCollectionLimit(this.options.getAutoGrowCollectionLimit());
+        } else {
+            throw new IllegalStateException("Unsupported request object property accessor");
+        }
         binder.setIgnoreUnknownFields(this.options.isIgnoreUnknownFields());
         binder.setBindEmptyMultipartFiles(this.options.isBindEmptyMultipartFiles());
 

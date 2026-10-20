@@ -1205,6 +1205,83 @@ public class SchemaBootstrap {
 }
 ```
 
+
+### Column order for new tables (ColumnOrder)
+
+Schema initialization places mapped Java properties `status`, `creator`, `created`, `modifier`,
+and `modified` last, in that order, by default. Missing properties are skipped and other columns
+retain their original mapping order. No `Audit` inheritance is required. Matching uses exact Java
+property names, not database column names: `created` mapped to `created_at` still matches.
+This changes the column layout of newly created tables compared with previous versions.
+
+Set `new SchemaConfig().auditColumnsLast(false)` to retain the original mapping order.
+Spring configuration supports `bus.mapper.schema.audit-columns-last: false`, plus
+`configurationProperties.shared.schema.audit-columns-last` and
+`configurationProperties.<namespace>.schema.audit-columns-last` (namespace overrides shared).
+Explicit annotations remain active when the default rule is disabled.
+
+```java
+import org.miaixz.bus.mapper.annotation.ColumnOrder;
+
+@ColumnOrder(first = {"id"}, last = {"status", "creator", "created", "modifier", "modified"})
+public class UserEntity extends Audit {
+    private String username;
+}
+```
+
+Two mutually exclusive modes are supported:
+
+- `first` / `last`: leading properties, unspecified properties in original relative order,
+  then trailing properties. Each group follows its listed order. Groups may cover all properties;
+  newly added properties still follow the grouping semantics.
+- `value`: a complete list of every final mapped property, exactly once. Adding a mapped property
+  requires updating the list.
+
+```java
+@ColumnOrder({"id", "username", "status", "creator", "created", "modifier", "modified"})
+public class UserEntity extends Audit {
+    private String username;
+}
+```
+
+Rules start with the audit defaults and are merged from ancestors to descendants:
+
+1. Nonempty `value` replaces all preceding rules, including defaults. A descendant complete list replaces it again.
+2. Partial rules remove properties mentioned at that level from accumulated `first`, then append the current `first`.
+   A nonempty `last` **replaces the entire default or inherited trailing list**. Released properties return to the
+   unspecified group in their base relative order. An empty `last` (including explicit `last = {}`) preserves preceding
+   trailing rules, except for properties explicitly moved to the front at this level.
+3. `last = {"status"}` explicitly trails only status; the other four audit properties are no longer automatically
+   placed last. Specifying only `first` preserves audit defaults. Descendant nonempty `last` also replaces parent trailing lists.
+4. Descendant partial rules can move properties within an inherited complete order, but that complete list
+   must still cover all final mapped properties.
+5. Empty annotations preserve preceding rules. Repeating a property at different hierarchy levels is a valid override.
+6. Explicitly excluded superclasses contribute no ordering rules. Property references are validated after merging:
+   replacing an ancestor's `last` or supplying a complete `value` releases the superseded property references,
+   including properties excluded by the child. Surviving inherited rules remain strict and errors identify their source.
+   Duplicate names, blanks and conflicting modes are always rejected, even in superseded declarations.
+
+Nonempty `value` cannot coexist with nonempty `first` or `last`. Blank, duplicate, overlapping,
+unknown or unmapped names in effective rules, and incomplete full lists fail before any planned DDL executes.
+Errors identify the entity and declaring class. Missing default audit properties are allowed.
+
+The annotation belongs to `bus-mapper`; use an application base class instead of introducing
+an inverse dependency from `bus-core.Audit`. Sorting uses schema-local metadata copies and does
+not change cached CRUD mappings or the order within composite keys, indexes, and foreign keys.
+Direct dialect `createTable` calls retain the supplied metadata order. Existing tables are never
+reordered, and later added columns are not guaranteed to precede audit columns.
+Dry runs, scripts and execution share the same ordering.
+
+Run the unit and H2 in-memory database tests without an external database. Coverage includes all 5,040 original
+column permutations, the default switch, complete trailing-list replacement, multilevel inheritance, concurrent
+resolution, built-in dialect SQL ordering, actual table creation, unchanged existing tables, composite key and index
+ordering, and scripts combined with table-name prefixes:
+
+```bash
+mvn -f bus-mapper/pom.xml -Dmaven.compiler.source=17 -Dmaven.compiler.target=17 \
+  '-Dtest=ColumnOrder*Test' test
+```
+
 ### PostgreSQL Integration Test Example
 
 `bus-mapper` includes a PostgreSQL integration test that keeps visible test tables and data:

@@ -32,6 +32,9 @@ import org.miaixz.bus.core.xyz.CharKit;
  */
 public class UrlEncoder {
 
+    /**
+     * Default charset used for URL percent encoding.
+     */
     private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
 
     /**

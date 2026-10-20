@@ -75,9 +75,6 @@ public class RegistryAssets {
         }
         String type = MetadataCodec.string(cortex.get(MetadataCodec.TYPE));
         if (StringKit.isEmpty(type)) {
-            type = MetadataCodec.string(cortex.get(MetadataCodec.LEGACY_SPECIES));
-        }
-        if (StringKit.isEmpty(type)) {
             return Type.API;
         }
         return Type.requireKnown(type);
@@ -194,7 +191,7 @@ public class RegistryAssets {
      */
     private static void copyBase(Assets target, Assets source) {
         target.setId(source.getId());
-        target.setSpace_id(source.getSpace_id());
+        target.setTenant_id(source.getTenant_id());
         target.setApp_id(source.getApp_id());
         target.setType(source.getType());
         target.setStatus(source.getStatus());

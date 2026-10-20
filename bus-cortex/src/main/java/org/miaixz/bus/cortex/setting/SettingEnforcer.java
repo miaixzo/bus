@@ -24,51 +24,44 @@ import org.miaixz.bus.cortex.setting.item.ItemQuery;
 import org.miaixz.bus.cortex.setting.item.ItemScope;
 
 /**
- * Centralized enforcer for space/app/profile relationship validation within the setting domain.
- *
- * @author Kimi Liu
+ * Business validation contract for configuration tenants, applications, and ownership scopes.
  */
 public interface SettingEnforcer {
 
     /**
-     * Validates a setting item before mutation.
+     * Validates or normalizes an item before it is staged.
      *
-     * @param entry setting item
-     * @return validated setting item
+     * @param entry item supplied by the caller
+     * @return validated item
      */
     default Item validateItem(Item entry) {
         return entry;
     }
 
     /**
-     * Validates a setting query before resolution.
+     * Validates or normalizes a configuration query.
      *
-     * @param query setting query
-     * @return validated setting query
+     * @param query query supplied by the caller
+     * @return validated query
      */
     default ItemQuery validateQuery(ItemQuery query) {
         return query;
     }
 
     /**
-     * Validates a setting scope before export or maintenance operations.
+     * Validates or normalizes a configuration scope.
      *
-     * @param scope setting scope
-     * @return validated setting scope
+     * @param scope scope supplied by the caller
+     * @return validated scope
      */
     default ItemScope validateScope(ItemScope scope) {
         return scope;
     }
 
     /**
-     * Returns whether a space, application, and profile relation is allowed.
-     *
-     * @param space_id   space identifier
-     * @param app_id     application identifier
-     * @param profile_id profile identifier
-     * @return {@code true} when the relation is allowed
+     * Checks access to an application and ownership scope within the specified tenant.
      */
-    default boolean allows(String space_id, String app_id, String profile_id) {
+    default boolean allows(String tenant_id, String app_id, String scope) {
         return true;
     }
 

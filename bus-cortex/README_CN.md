@@ -1,21 +1,21 @@
 # 🧠 Bus Cortex：统一注册与配置中心
 
 <p align="center">
-<strong>服务注册 · 配置中心 · 健康探测 · 空间隔离 · bus 生态联动</strong>
+<strong>服务注册 · 配置中心 · 健康探测 · 租户存储隔离 · bus 生态联动</strong>
 </p>
 
 -----
 
 ## 📖 项目介绍
 
-**Bus Cortex** 是 bus 框架的注册与配置中心模块。它提供统一的服务注册、配置管理、健康探测和基于空间的多租户隔离——所有数据通过单一
+**Bus Cortex** 是 bus 框架的注册与配置中心模块。它提供统一的服务注册、配置管理、健康探测和业务存储的多租户隔离——所有数据通过单一
 `CacheX` 存储抽象（Memory / Redis / JDBC）读写，无需额外基础设施。
 
 - **统一注册表**：API / MCP / Prompt / Version 四类注册表，统一 `Registry<T>` 接口
 - **服务+实例分离模型**：`ApiAssets`（服务定义）+ `Instance`（运行时实例），参考 Nacos 设计
 - **配置中心**：带版本号的发布、灰度路由、`@ConfigChange` 回调注解
 - **健康探测**：可插拔 `Prober`（HTTP / TCP / MCP Ping / 进程 PID），服务端主动探测
-- **命名空间隔离**：运行时动态解析空间（Token / Header / 上下文），`SpaceGuard` 强制写隔离
+- **租户边界**：API 定义及 API 运行实例全局；MCP、Prompt 条目保留显式租户存储隔离；路由查找坐标保持不变
 - **安全防护**：HMAC-SHA256 Token + RBAC（ADMIN / PROVIDER / CONSUMER），限流，熔断
 - **bus 生态联动**：VortexBridge 自动同步到 bus-vortex；内置 bus-metrics 埋点；bus-cache 是唯一存储依赖
 - **三步接入**：一个依赖 + 一行配置 + 一个注解
@@ -47,34 +47,33 @@ mcpRegistry().
 register(mcpAssets);
 
 List<ApiAssets> services = Cortex.query(
-        Vector.newBuilder().space_id("production").method("vortex.user.get").build(), ApiAssets.class);
+        Vector.newBuilder().tenant_id(tenantId).method("vortex.user.get").build(), ApiAssets.class);
 ```
 
 ### ⚡ 服务与实例分离
 
 ```
-ApiAssets（服务定义，canonical identity = space + type + method + version[:verb]）
-    └── Instance（运行时实例，唯一性由 space + app_id + method + version + fingerprint 决定）
+ApiAssets（服务定义，路由坐标 = type + app_id + method + version + verb）
+    └── Instance（运行时实例，唯一性由 app_id + method + version + fingerprint 决定）
 ```
 
 **实例标识规则**：同一 API 定义下允许存在多个运行时实例。运行时唯一性按
-`space + app_id + method + version + fingerprint` 约束。
+`app_id + method + version + fingerprint` 约束。
 
 相同 fingerprint 重复注册视为 **幂等刷新 TTL**，不视为冲突。
 
-**网关路由语义**：同步到 bus-vortex 时，`ApiAssets.key` 继续保留为轻量公开别名
-`method:version:verbCode`，例如 `dp.license.get:1.0:1`。真正的运行时候选链由 `Keying` 单独生成，顺序为：
+**网关路由语义**：`ApiAssets.normalizeMeta()` 保留原有不含 type、带可选 appId 的别名选择，
+将 `RegistryGenerator` 生成的对应编码 ROUTE 键写入元数据 `key`。注册和查询使用同一生成器，候选顺序为：
 
-1. `space:type:app_id:method:version:verb`
-2. `space:type:method:version:verb`
-3. `space:app_id:method:version:verb`
-4. `space:method:version:verb`
-5. `type:app_id:method:version:verb`
-6. `type:method:version:verb`
-7. `app_id:method:version:verb`
-8. `method:version:verb`
+1. `type:app_id:method:version:verb`
+2. `type:method:version:verb`
+3. `app_id:method:version:verb`
+4. `method:version:verb`
 
-其中 `method` / `version` / `verb` 为运行时必填维度；`space`、`type`、`app_id` 仅在有值时参与。
+其中 `method` / `version` / `verb` 为运行时必填维度，仅 `type`、`app_id` 可选。
+ROUTE 键不编码或校验 space/tenant。API ENTRY 与 API INSTANCE 保持全局并将租户元数据规范为 null；MCP、Prompt ENTRY 保留原 tenant_id + type + id 空间，要求显式租户且不清空归属。
+
+ROUTE: `route:v2:type=<type|*>:app=<length:appId|*>:method=<length:method>:version=<length:version>:verb=<verb>`.
 
 `Keying` 现在是泛型键策略接口。注册表与运行时路由使用 `Keying<Keying.RegistrySpec>`，内置实现为
 `RegistryGenerator`；setting 领域使用 `Keying<Keying.SettingSpec>`，内置实现为 `SettingGenerator`。
@@ -127,8 +126,7 @@ TTL；不健康实例不续期，TTL 到期后由 CacheX 自动清理。
 | `AccessTokenStore`    | HMAC-SHA256 签发 Token，CacheX 支持主动吊销                      |
 | `AccessTokenResolver` | 两步校验：HMAC 重新验签（防伪造）+ CacheX 黑名单检查（支持吊销） |
 | `AccessGuard`         | RBAC 权限校验（ADMIN / PROVIDER / CONSUMER）                     |
-| `SpaceGuard`          | 阻止跨 space 写操作                                              |
-| `RateLimiter`         | 令牌桶限流，按 space/method 维度（CacheX 计数）                  |
+| `RateLimiter`         | 令牌桶限流（CacheX 计数）                  |
 | `CircuitBreaker`      | 状态机：CLOSED → OPEN → HALF_OPEN                                |
 | `ParamValidator`      | 入参校验（正则 `^[a-zA-Z0-9._-]{1,128}$`），防 CacheX key 注入   |
 
@@ -186,8 +184,8 @@ bus:
     server-addr: 127.0.0.1:8766   # 唯一必填项
 ```
 
-> **空间说明**：`space` 不作为应用侧固定 YAML 配置项。运行时由上层系统动态决定（Token 中的 space 声明 / 请求
-> Header `X-Space` / 管理后台上下文），未提供时回落到 `public`。
+> **租户上下文**：MCP、Prompt 业务操作继续使用原有可信租户上下文，API 注册保持全局。以下片段中的 `tenantId` 由该上下文提供，
+> 不引入默认租户；网关 API 路由不消费该坐标。
 
 ### 第三步：启用注解
 
@@ -219,7 +217,7 @@ import org.miaixz.bus.cortex.registry.api.Instance;
 ApiAssets service = new ApiAssets();
 service.
 
-        setSpace_id("production");
+        setTenant_id(tenantId);
 service.
 
         setApp_id("order-service");
@@ -242,7 +240,7 @@ service.
         Instance instance = new Instance();
 instance.
 
-        setSpace_id("production");
+        setTenant_id(tenantId);
 instance.
 
         setApp_id("order-service");
@@ -270,14 +268,14 @@ Cortex.
 
         // 查询 API 定义
         List<ApiAssets> results = Cortex.query(
-                Vector.newBuilder().space_id("production").method("vortex.user.get").build(),
+                Vector.newBuilder().tenant_id(tenantId).method("vortex.user.get").build(),
                 ApiAssets.class
         );
 
 // 注销
 Cortex.
 
-        deregister("production","vortex.user.get:v1.0.0");
+        deregister(tenantId,"vortex.user.get:v1.0.0");
 ```
 
 ### 2. 配置管理
@@ -322,7 +320,7 @@ public class OrderService {
 ```java
 // 订阅实例变化
 String watchId = Cortex.apiRegistry().watch(
-                Vector.newBuilder().space_id("production").method("vortex.user.get").build(),
+                Vector.newBuilder().tenant_id(tenantId).method("vortex.user.get").build(),
                 (added, removed, updated) -> {
                     log.info("实例变更: 新增 {} 下线 {} 更新 {}",
                             added.size(), removed.size(), updated.size());
@@ -342,14 +340,14 @@ unwatch(watchId);
 ```java
 // 注册 MCP 工具
 McpAssets mcp = new McpAssets();
-mcp.setSpace_id("ai");
+mcp.setTenant_id(tenantId);
 mcp.setToolName("code-search");
 mcp.setTransport("stdio");
 Cortex.mcpRegistry().register(mcp);
 
 // 注册 Prompt 模板
 PromptAssets prompt = new PromptAssets();
-prompt.setSpace_id("ai");
+prompt.setTenant_id(tenantId);
 prompt.setTemplate("请总结以下内容：{{content}}");
 Cortex.promptRegistry().register(prompt);
 ```
@@ -454,7 +452,7 @@ org.miaixz.bus.cortex
 │   └── depend/    DependencyGraph + ImpactAnalysis（依赖拓扑）
 ├── config/        配置中心（ConfigPublisher, ConfigWatcher, GrayRouter, DefaultConfig）
 ├── bridge/        bus-vortex 同步（VortexBridge, SyncEvent, ApiAssetsConverter）
-├── guard/         安全防护（RateLimiter, CircuitBreaker, AccessTokenStore, AccessGuard, SpaceGuard）
+├── guard/         安全防护（RateLimiter, CircuitBreaker, AccessTokenStore, AccessGuard）
 ├── builtin/       默认实现（CompositeProber, DefaultPublisher, DefaultNotifier）
 └── magic/         工具类（IdGenerator, Sequence, Fingerprint, AuditLogger）
 ```
@@ -540,3 +538,28 @@ terminationGracePeriodSeconds: 30
 ## 📄 许可证
 
 [Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+## 凭据管理
+
+现有 `setting.secret` 支持直接调用阿里云 KMS、AWS Secrets Manager、Azure Key Vault、Vault KV v2、腾讯云 SSM 与华为云 CSMS，提供显式授权、版本读取、有界内存缓存与刷新，无需厂商 SDK。
+
+运行时入口为具体类 `SecretManager`，连接通过 `register(connection, provider)` 注册。
+授权策略使用 `SecretManager.AccessPolicy`，能力使用 `SecretProvider.Capability`，
+凭据来源使用 `CloudCredentials.Source`。`SecretReference.version()` 为 null 表示当前版本；
+原配置 JSON 中的 `selector.mode/version` 与 `expectedType` 字段保持不变。
+`SecretMaterial` 直接提供实际版本、获取时间、过期时间及连接 generation；
+`describe()` 返回不可变能力集合。payload 类型仅作为配置标签，不再拆分完整值缓存。
+
+缓存直接使用 Bus `MemoryCache`，不再提供 `setting.secret.cache`。注入的缓存必须为空、仅供此管理器使用，由管理器关闭；移除监听在替换、淘汰、过期和关闭时擦除缓存值。容量由 `MemoryCache` 配置，超过 8192 字符的值正常返回但不入缓存。
+
+读取的生命周期保护覆盖缓存和非缓存模式；关闭会等待已进入的读取完成并阻止其继续返回密钥。读取失败后的缓存清理为尽力执行，不等待忙碌资源，也不覆盖原始异常。每次 HTTP 尝试将最多十秒的 deadline 同时传给凭据来源和 HTTP 执行，包装后的原生超时同样立即失败。
+
+```java
+var cache = new org.miaixz.bus.cache.nimble.MemoryCache<String, SecretMaterial>(256, 60_000);
+try (var manager = new SecretManager(accessPolicy, cache)) {
+    manager.register(connection, provider);
+    // Resolve using an authenticated SecretContext.
+}
+```
+
+Secret 直接使用 Bus `ForbiddenException` 表示访问被拒绝，其他失败使用 `CryptoException`。对外异常仅包含固定的脱敏文本，不携带云端错误消息、凭据、原始 cause 或自定义错误码；调用方不要解析异常消息。云适配层根据 HTTP 状态和平台原生错误字段判断重试：限流或临时服务故障（HTTP 429/500/502/503，以及阿里云、AWS、腾讯云已识别的瞬态错误）最多尝试三次。可识别的传输 I/O 故障允许重试；超时、权限拒绝、资源不存在、成功响应格式错误和凭据来源失败立即返回。每次尝试重新获取并关闭凭据。

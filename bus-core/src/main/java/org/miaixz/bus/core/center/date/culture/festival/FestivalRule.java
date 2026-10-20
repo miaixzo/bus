@@ -66,6 +66,12 @@ public enum FestivalRule {
      */
     private final String name;
 
+    /**
+     * Defines a festival rule.
+     *
+     * @param code numeric rule code
+     * @param name display name
+     */
     FestivalRule(int code, String name) {
         this.code = code;
         this.name = name;

@@ -176,6 +176,9 @@ public class JarClassLoader extends URLClassLoader {
      */
     private class XJarEnumeration implements Enumeration<URL> {
 
+        /**
+         * Wrapped URL enumeration.
+         */
         private final Enumeration<URL> enumeration;
 
         /**

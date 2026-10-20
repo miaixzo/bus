@@ -21,7 +21,9 @@ package org.miaixz.bus.mapper.parsing;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.xyz.FieldKit;
@@ -87,6 +89,7 @@ public abstract class MapperFactory {
                     // Get fields for unprocessed entities.
                     Class<?> declaredClass = entityClass;
                     boolean isSuperclass = false;
+                    Set<String> declaredNames = new HashSet<>();
                     while (declaredClass != null && declaredClass != Object.class) {
                         // Use declared fields for the current hierarchy level so subclass column definitions are
                         // evaluated before inherited definitions and can override them deterministically.
@@ -95,7 +98,12 @@ public abstract class MapperFactory {
                             reverse(declaredFields);
                         }
                         for (Field field : declaredFields) {
-                            if (!ModifierKit.isStatic(field) && !ModifierKit.isTransient(field)) {
+                            // The nearest instance field owns the property even when it excludes persistence.
+                            // Otherwise an inherited field would silently undo a child @Transient declaration.
+                            if (ModifierKit.isStatic(field) || !declaredNames.add(field.getName())) {
+                                continue;
+                            }
+                            if (!ModifierKit.isTransient(field)) {
                                 FieldMeta fieldMeta = new FieldMeta(entityClass, field);
                                 // Check if the field needs to be excluded.
                                 if (tableMeta.isExcludeField(fieldMeta)) {

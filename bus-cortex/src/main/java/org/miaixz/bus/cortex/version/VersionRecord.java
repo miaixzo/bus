@@ -19,7 +19,15 @@
 */
 package org.miaixz.bus.cortex.version;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
+
+import jakarta.persistence.Lob;
+import jakarta.persistence.Transient;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +43,24 @@ import org.miaixz.bus.cortex.Type;
 @Getter
 @Setter
 public class VersionRecord extends Nature {
+
+    /**
+     * Process-local monotonic clock; persistent stores must additionally enforce tenant/track/version uniqueness.
+     */
+    private static final AtomicLong CLOCK = new AtomicLong();
+
+    /**
+     * Generates a version from the server clock; callers cannot choose a version through this operation.
+     *
+     * @param clock server-owned clock
+     * @return monotonically generated release version
+     */
+    public static String generate(Clock clock) {
+        Objects.requireNonNull(clock, "Server clock");
+        long instant = CLOCK.updateAndGet(previous -> Math.max(clock.millis(), previous + 1));
+        return DateTimeFormatter.ofPattern("'v'uuuu.MM.dd.HHmmss.SSS").withZone(clock.getZone())
+                .format(Instant.ofEpochMilli(instant));
+    }
 
     /**
      * Release version identifier.
@@ -59,22 +85,20 @@ public class VersionRecord extends Nature {
     /**
      * Human-readable release description.
      */
+    @Lob
     private String description;
 
     /**
      * Artifacts attached to this release.
      */
+    @Transient
     private List<ReleaseArtifact> artifacts;
 
     /**
      * JSON metadata for release-specific details.
      */
+    @Lob
     private String metadata;
-
-    /**
-     * Creation timestamp in epoch milliseconds.
-     */
-    private Long created;
 
     /**
      * Publication timestamp in epoch milliseconds.

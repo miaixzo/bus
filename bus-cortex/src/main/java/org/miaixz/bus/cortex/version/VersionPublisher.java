@@ -19,8 +19,7 @@
 */
 package org.miaixz.bus.cortex.version;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.time.Clock;
 import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -29,8 +28,10 @@ import org.miaixz.bus.cortex.guard.GuardContext;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
 import org.miaixz.bus.cortex.magic.event.CortexChangeRecord;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
+import org.miaixz.bus.cortex.setting.rollout.Plan;
+import org.miaixz.bus.cortex.setting.rollout.Rollout;
+import org.miaixz.bus.cortex.setting.rollout.Rollout.State;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * Version-domain publishing workflow.
@@ -147,6 +148,23 @@ public class VersionPublisher {
     }
 
     /**
+     * Creates a server-versioned release draft. The supplied creator must be the authenticated operator, and the host
+     * must not expose caller-controlled creator or version fields.
+     */
+    public VersionRecord create(VersionRecord record) {
+        if (record == null || record.getVersion() != null) {
+            throw new IllegalArgumentException("A new draft cannot supply its own version");
+        }
+        VersionRecord draft = JsonKit.toPojo(JsonKit.toJsonString(record), VersionRecord.class);
+        draft.setVersion(VersionRecord.generate(Clock.systemDefaultZone()));
+        draft = prepare(draft, VersionStatus.DRAFT, false);
+        enforce("draft", draft);
+        VersionRecord saved = store.create(draft);
+        emit(VERSION_DRAFT_EVENT, saved);
+        return saved;
+    }
+
+    /**
      * Saves a release draft without making it current.
      *
      * @param record release record
@@ -161,71 +179,68 @@ public class VersionPublisher {
     }
 
     /**
-     * Publishes a release and makes it current for its track.
-     *
-     * @param record release record
-     * @return persisted active release record
+     * Prepares the platform version for a frozen approved batch, without changing the active version. The host must
+     * atomically persist it with selected application pointers and its durable notification outbox.
      */
-    public VersionRecord publish(VersionRecord record) {
-        VersionRecord prepared = prepare(record, VersionStatus.ACTIVE, true);
-        enforce("publish", prepared);
-        VersionRecord previous = store.current(prepared.getSpace_id(), prepared.getTrack());
-        store.save(prepared);
-        VersionRecord current = store.setCurrent(prepared.getSpace_id(), prepared.getTrack(), prepared.getVersion());
-        VersionRecord saved = current == null ? prepared : current;
-        emitDeprecated(previous, saved);
-        emit(VERSION_PUBLISH_EVENT, saved);
-        return saved;
-    }
-
-    /**
-     * Rolls the current release pointer back to a prior version on the same track.
-     *
-     * @param space   release space
-     * @param track   release track
-     * @param version target release version
-     * @return persisted rollback target or {@code null}
-     */
-    public VersionRecord rollback(String space, String track, String version) {
-        String normalizedTrack = ReleaseTrack.normalize(track);
-        VersionRecord target = store.find(space, version, normalizedTrack);
-        enforce("rollback", space, normalizedTrack, version, target == null ? null : target.getVersionStatus());
-        if (target == null) {
-            return null;
+    public VersionRecord preparePublication(Rollout rollout) {
+        Plan plan = Plan.restore(rollout);
+        if (!State.PUBLISHING.name().equals(rollout.getState())) {
+            throw new IllegalArgumentException("Publication requires an approved execution intent");
         }
-        VersionRecord previous = store.current(space, normalizedTrack);
-        attachRollbackMetadata(target, previous);
-        store.save(target);
-        VersionRecord saved = store.setCurrent(space, normalizedTrack, version);
-        emitDeprecated(previous, saved);
-        emit(VERSION_ROLLBACK_EVENT, saved);
-        return saved;
+        VersionRecord active = store.current(plan.getTenant_id(), ReleaseTrack.normalize(null));
+        if (!Objects.equals(plan.getBaseline(), active == null ? null : active.getVersion())) {
+            throw new IllegalStateException("Publication baseline changed; review a newly frozen plan");
+        }
+        if (rollout.getCreator() == null || rollout.getCreator().isBlank()) {
+            throw new IllegalArgumentException("Authenticated rollout creator is required");
+        }
+        VersionRecord existing = store.find(plan.getTenant_id(), plan.getVersion(), ReleaseTrack.normalize(null));
+        if (existing != null && (existing.getVersionStatus() != VersionStatus.DRAFT
+                || !Objects.equals(existing.getCreator(), rollout.getCreator())
+                || existing.getMetadata() != null && !existing.getMetadata().equals(plan.toJson()))) {
+            throw new IllegalStateException("Publication version conflicts with the existing draft");
+        }
+        VersionRecord record = existing == null ? new VersionRecord()
+                : JsonKit.toPojo(JsonKit.toJsonString(existing), VersionRecord.class);
+        record.setTenant_id(plan.getTenant_id());
+        record.setVersion(plan.getVersion());
+        record.setTrack(ReleaseTrack.normalize(null));
+        record.setVersionStatus(VersionStatus.DRAFT);
+        record.setTitle(rollout.getTitle());
+        record.setDescription(rollout.getDescription());
+        record.setCreator(rollout.getCreator());
+        if (existing == null) {
+            record.setCreated(rollout.getCreated());
+        }
+        record.setMetadata(plan.toJson());
+        enforce("publish", record);
+        return record;
     }
 
     /**
      * Deletes a release record.
      *
-     * @param space   release space
-     * @param track   release track
-     * @param version release version
+     * @param tenantId release tenantId
+     * @param track    release track
+     * @param version  release version
      * @return deleted release record or {@code null}
      */
-    public VersionRecord delete(String space, String track, String version) {
-        enforce("delete", space, track, version, null);
-        VersionRecord deleted = store.delete(space, version, track);
+    public VersionRecord delete(String tenantId, String track, String version) {
+        enforce("delete", tenantId, track, version, null);
+        VersionRecord deleted = store.delete(tenantId, version, track);
         emit(VERSION_DELETE_EVENT, deleted);
         return deleted;
     }
 
     /**
-     * Resolves the current release for a space and track.
+     * Resolves the current release for a tenantId and track.
      *
-     * @param space release space
-     * @param track release track
+     * @param tenantId release tenantId
+     * @param track    release track
      * @return current release record or {@code null}
      */
-    public VersionRecord resolveCurrent(String space, String track) {
-        return store.current(space, track);
+    public VersionRecord resolveCurrent(String tenantId, String track) {
+        return store.current(tenantId, track);
     }
 
     /**
@@ -237,7 +252,8 @@ public class VersionPublisher {
      * @return prepared release record
      */
     private VersionRecord prepare(VersionRecord record, VersionStatus status, boolean published) {
-        VersionRecord prepared = record == null ? new VersionRecord() : record;
+        VersionRecord prepared = record == null ? new VersionRecord()
+                : JsonKit.toPojo(JsonKit.toJsonString(record), VersionRecord.class);
         prepared.setTrack(ReleaseTrack.normalize(prepared.getTrack()));
         prepared.setVersionStatus(status);
         if (published) {
@@ -272,13 +288,13 @@ public class VersionPublisher {
         change.setAction(action);
         change.setResourceType("VERSION");
         change.setResourceId(ReleaseTrack.normalize(record.getTrack()) + Symbol.COLON + record.getVersion());
-        change.setSpace_id(record.getSpace_id());
+        change.setTenant_id(record.getTenant_id());
         change.setPayload(JsonKit.toJsonString(record));
         change.setSequence(
                 record.getPublished() == null ? record.getCreated() == null ? 0L : record.getCreated()
                         : record.getPublished());
         change.setIdempotencyKey(
-                "version:" + action + Symbol.COLON + change.getSpace_id() + Symbol.COLON + change.getResourceId());
+                "version:" + action + Symbol.COLON + change.getTenant_id() + Symbol.COLON + change.getResourceId());
         changeLogStore.append(change);
     }
 
@@ -302,66 +318,6 @@ public class VersionPublisher {
     }
 
     /**
-     * Emits a deprecation event for the previous current release when publication changed the current pointer.
-     *
-     * @param previous previous current release
-     * @param current  new current release
-     */
-    private void emitDeprecated(VersionRecord previous, VersionRecord current) {
-        if (previous == null || current == null || sameRelease(previous, current)) {
-            return;
-        }
-        VersionRecord deprecated = store
-                .find(previous.getSpace_id(), previous.getVersion(), ReleaseTrack.normalize(previous.getTrack()));
-        if (deprecated != null && deprecated.getVersionStatus() == VersionStatus.DEPRECATED) {
-            emit(VERSION_DEPRECATE_EVENT, deprecated);
-        }
-    }
-
-    /**
-     * Adds rollback metadata to the target release.
-     *
-     * @param target   rollback target release
-     * @param previous previous current release
-     */
-    private void attachRollbackMetadata(VersionRecord target, VersionRecord previous) {
-        Map<String, Object> root = metadata(target.getMetadata());
-        Map<String, Object> rollback = new LinkedHashMap<>();
-        rollback.put("rollbackFrom", previous == null ? null : previous.getVersion());
-        rollback.put("rollbackTo", target.getVersion());
-        rollback.put("track", ReleaseTrack.normalize(target.getTrack()));
-        rollback.put("rollbackAt", System.currentTimeMillis());
-        root.put("rollback", rollback);
-        target.setMetadata(JsonKit.toJsonString(root));
-    }
-
-    /**
-     * Parses a metadata JSON object, falling back to an empty mutable map.
-     *
-     * @param metadata raw metadata JSON
-     * @return mutable metadata map
-     */
-    private Map<String, Object> metadata(String metadata) {
-        if (metadata == null || metadata.isBlank()) {
-            return new LinkedHashMap<>();
-        }
-        try {
-            Map<String, Object> root = JsonKit.toMap(metadata);
-            return root == null ? new LinkedHashMap<>() : new LinkedHashMap<>(root);
-        } catch (Exception e) {
-            Logger.warn(
-                    false,
-                    "Cortex",
-                    e,
-                    "Cortex operation failed: provider={}, recoverable={}, exception={}",
-                    "VersionPublisher",
-                    false,
-                    e.getClass().getSimpleName());
-            return new LinkedHashMap<>();
-        }
-    }
-
-    /**
      * Converts a release record to a version asset for watch notifications.
      *
      * @param record release record
@@ -370,7 +326,7 @@ public class VersionPublisher {
     private VersionAssets toAssets(VersionRecord record) {
         VersionAssets asset = new VersionAssets();
         asset.setId(record.getId() == null || record.getId().isBlank() ? record.getVersion() : record.getId());
-        asset.setSpace_id(record.getSpace_id());
+        asset.setTenant_id(record.getTenant_id());
         asset.setVersion(record.getVersion());
         asset.setName(record.getTitle());
         asset.setDescription(record.getDescription());
@@ -388,7 +344,7 @@ public class VersionPublisher {
      * @return watch key
      */
     private String watchKey(VersionRecord record) {
-        return "version:" + record.getSpace_id() + Symbol.COLON + ReleaseTrack.normalize(record.getTrack())
+        return "version:" + record.getTenant_id() + Symbol.COLON + ReleaseTrack.normalize(record.getTrack())
                 + Symbol.COLON + record.getVersion();
     }
 
@@ -410,19 +366,6 @@ public class VersionPublisher {
     }
 
     /**
-     * Returns whether two release records describe the same track and version.
-     *
-     * @param left  first release record
-     * @param right second release record
-     * @return {@code true} when both records describe the same release
-     */
-    private boolean sameRelease(VersionRecord left, VersionRecord right) {
-        return left != null && right != null
-                && Objects.equals(ReleaseTrack.normalize(left.getTrack()), ReleaseTrack.normalize(right.getTrack()))
-                && Objects.equals(left.getVersion(), right.getVersion());
-    }
-
-    /**
      * Applies guard policy to one release record.
      *
      * @param action guarded action
@@ -433,19 +376,19 @@ public class VersionPublisher {
             enforce(action, null, null, null, null);
             return;
         }
-        enforce(action, record.getSpace_id(), record.getTrack(), record.getVersion(), record.getVersionStatus());
+        enforce(action, record.getTenant_id(), record.getTrack(), record.getVersion(), record.getVersionStatus());
     }
 
     /**
      * Applies guard policy to one version-domain action.
      *
-     * @param action  guarded action
-     * @param space   release space
-     * @param track   release track
-     * @param version release version
-     * @param status  release status
+     * @param action   guarded action
+     * @param tenantId release tenantId
+     * @param track    release track
+     * @param version  release version
+     * @param status   release status
      */
-    private void enforce(String action, String space, String track, String version, VersionStatus status) {
+    private void enforce(String action, String tenantId, String track, String version, VersionStatus status) {
         if (cortexGuard == null) {
             return;
         }
@@ -454,7 +397,7 @@ public class VersionPublisher {
         context.setAction(action);
         context.setResourceType("VERSION");
         context.setResourceId(ReleaseTrack.normalize(track) + Symbol.COLON + version);
-        context.space_id(space);
+        context.tenant_id(tenantId);
         context.putAttribute("track", ReleaseTrack.normalize(track));
         context.putAttribute("version", version);
         context.putAttribute("status", status == null ? null : status.name());

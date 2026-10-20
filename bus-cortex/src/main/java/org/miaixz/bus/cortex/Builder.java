@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.cortex;
 
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.health.TcpProber;
 import org.miaixz.bus.cortex.registry.HealthProbeScheduler;
@@ -30,11 +29,6 @@ import org.miaixz.bus.cortex.registry.HealthProbeScheduler;
  * @author Kimi Liu
  */
 public class Builder {
-
-    /**
-     * Default space used when no explicit space is specified.
-     */
-    public static final String DEFAULT_SPACE = Normal.DEFAULT;
 
     /**
      * Default health probe interval in milliseconds (30 s). Recommended value for {@link HealthProbeScheduler}.
@@ -53,19 +47,14 @@ public class Builder {
     public static final long DEFAULT_TOKEN_EXPIRE_SECONDS = 86400L;
 
     /**
-     * CacheX key prefix for registry entries ({@code reg:}).
+     * CacheX key prefix for registry entries ({@code reg:v2:}).
      */
-    public static final String REG_PREFIX = "reg" + Symbol.COLON;
-
-    /**
-     * CacheX key prefix for setting entries ({@code cfg:}).
-     */
-    public static final String CFG_PREFIX = "cfg" + Symbol.COLON;
+    public static final String REG_PREFIX = "reg:v2" + Symbol.COLON;
 
     /**
      * CacheX key prefix for setting-domain entries. Uses the historical {@code cfg:} prefix for key compatibility.
      */
-    public static final String SETTING_PREFIX = CFG_PREFIX;
+    public static final String SETTING_PREFIX = "cfg" + Symbol.COLON;
 
     /**
      * CacheX key prefix for security and token entries ({@code sec:}).
@@ -80,7 +69,7 @@ public class Builder {
     /**
      * CacheX key prefix for audit log entries ({@code audit:}).
      */
-    public static final String AUDIT_PREFIX = "audit" + Symbol.COLON;
+    public static final String AUDIT_PREFIX = "audit:v2" + Symbol.COLON;
 
     /**
      * Creates a new Builder.

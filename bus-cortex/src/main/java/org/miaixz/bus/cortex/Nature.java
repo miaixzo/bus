@@ -25,12 +25,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.core.basic.entity.Space;
+import org.miaixz.bus.core.basic.entity.Tenant;
 
 /**
  * Minimal common base for all Cortex domain objects.
  * <p>
- * Extends {@link Space} for the shared identifier, request context and space scope, then adds the Cortex-level
+ * Extends {@link Tenant} for the shared identifier, request context and tenantId scope, then adds the Cortex-level
  * {@code type}. The type stores the stable numeric key of {@link Type} for persistence and business routing.
  * </p>
  *
@@ -39,7 +39,7 @@ import org.miaixz.bus.core.basic.entity.Space;
 @Getter
 @Setter
 @SuperBuilder
-public class Nature extends Space {
+public class Nature extends Tenant {
 
     @Serial
     private static final long serialVersionUID = 2852290719700L;

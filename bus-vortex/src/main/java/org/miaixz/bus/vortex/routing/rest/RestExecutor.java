@@ -151,19 +151,19 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         Logger.debug(
                 true,
                 "Vortex",
-                "Request headers: protocol=http, clientIp={}, method={}, path={}, headers={}",
+                "Request header names: protocol=http, clientIp={}, method={}, path={}, headerNames={}",
                 ip,
                 method,
                 path,
-                context.getHeaders());
+                context.getHeaders().keySet());
         Logger.debug(
                 true,
                 "Vortex",
-                "Request parameters: protocol=http, clientIp={}, method={}, path={}, parameters={}",
+                "Request parameter names: protocol=http, clientIp={}, method={}, path={}, parameterNames={}",
                 ip,
                 method,
                 path,
-                context.getParameters());
+                context.getParameters().keySet());
         Logger.info(
                 true,
                 "Vortex",
@@ -353,11 +353,12 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Logger.info(
                     true,
                     "Vortex",
-                    "Form content configured: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_FORM, parameterCount={}",
+                    "Form content configured: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_FORM, parameterCount={}, fieldNames={}",
                     ip,
                     method,
                     path,
-                    params.size());
+                    params.size(),
+                    params.keySet());
         } else {
             Logger.info(
                     true,
@@ -408,6 +409,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      *
      * @param assets  The configured assets for the target executor.
      * @param context The request context.
+     * @param baseUrl The already resolved downstream base URL for a relative route.
      * @return The constructed target URI string, including query parameters.
      */
     private URI buildTargetUri(Assets assets, Context context, String baseUrl) {

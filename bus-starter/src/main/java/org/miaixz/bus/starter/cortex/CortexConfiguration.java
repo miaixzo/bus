@@ -21,7 +21,6 @@ package org.miaixz.bus.starter.cortex;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -122,12 +121,7 @@ public class CortexConfiguration {
      * @return ordered setting source adapters
      */
     private static List<ItemSourceAdapter> settingSourceAdapters() {
-        return List.of(
-                new InlineSourceAdapter(),
-                new EnvSourceAdapter(),
-                new StoredContentSourceAdapter("JDBC"),
-                new StoredContentSourceAdapter("REDIS"),
-                new StoredContentSourceAdapter("S3"));
+        return List.of(new InlineSourceAdapter(), new EnvSourceAdapter());
     }
 
     /**
@@ -185,7 +179,7 @@ public class CortexConfiguration {
     @Bean
     @ConditionalOnMissingBean(WatchManager.class)
     public WatchManager watchManager(@Qualifier("cortexCache") CacheX cache) {
-        return new WatchManager(cache(cache), properties.requireMaxWatchesPerSpace(),
+        return new WatchManager(cache(cache), properties.requireMaxWatchesPerTenant(),
                 properties.requireWatchExpireMs());
     }
 
@@ -516,7 +510,6 @@ public class CortexConfiguration {
      *
      * @param settingStore    current-state setting store
      * @param revisionStore   revision history store
-     * @param referenceStore  resource relationship store
      * @param watchManager    watch manager
      * @param secretCodec     secret codec
      * @param settingEnforcer optional setting relation enforcer provider
@@ -529,7 +522,6 @@ public class CortexConfiguration {
     public ItemCuratorService settingCuratorService(
             StoreBackedItemStore settingStore,
             RevisionStore revisionStore,
-            ReferenceStore referenceStore,
             WatchManager watchManager,
             SecretCodec secretCodec,
             ObjectProvider<SettingEnforcer> settingEnforcer,
@@ -544,7 +536,7 @@ public class CortexConfiguration {
         Keying<Keying.SettingSpec> settingKeying = keyingProvider.getIfAvailable(() -> SettingGenerator.INSTANCE);
         SettingPublisher settingPublisher = new SettingPublisher(settingStore, revisionStore, watchManager, secretCodec,
                 properties.requireMaxSettingVersions(), settingKeying);
-        return new ItemCuratorService(settingStore, revisionStore, referenceStore, resolver, settingPublisher,
+        return new ItemCuratorService(settingStore, revisionStore, resolver, settingPublisher, null,
                 settingEnforcer.getIfAvailable(), cortexGuard.getIfAvailable(), settingKeying);
     }
 
@@ -581,8 +573,7 @@ public class CortexConfiguration {
             ItemCuratorService settingCuratorService,
             WatchManager watchManager,
             RuntimeItemOverlayService runtimeSettingOverlayService) {
-        return new DefaultCurator(settingCuratorService, watchManager, properties.requireSpace(),
-                runtimeSettingOverlayService);
+        return new DefaultCurator(settingCuratorService, watchManager, runtimeSettingOverlayService);
     }
 
     /**
@@ -780,20 +771,20 @@ public class CortexConfiguration {
         /**
          * Deletes one registry entry from the shared durable store.
          *
-         * @param type  asset type
-         * @param space logical registry space
-         * @param id    durable entry identifier
+         * @param type     asset type
+         * @param tenantId logical registry tenantId
+         * @param id       durable entry identifier
          */
         @Override
-        public void delete(Type type, String space, String id) {
-            delegate.delete(type, space, id);
+        public void delete(Type type, String tenantId, String id) {
+            delegate.delete(type, tenantId, id);
         }
 
         /**
          * Deletes one runtime instance snapshot from the shared durable store.
          *
          * @param type        asset type
-         * @param space       logical registry space
+         * @param tenantId    logical registry tenantId
          * @param method      method name
          * @param version     version identifier
          * @param fingerprint instance fingerprint
@@ -801,39 +792,39 @@ public class CortexConfiguration {
         @Override
         public void deleteInstance(
                 Type type,
-                String space,
+                String tenantId,
                 String app_id,
                 String method,
                 String version,
                 String fingerprint) {
-            delegate.deleteInstance(type, space, app_id, method, version, fingerprint);
+            delegate.deleteInstance(type, tenantId, app_id, method, version, fingerprint);
         }
 
         /**
          * Finds one registry entry and converts it to the expected typed view.
          *
-         * @param type  asset type
-         * @param space logical registry space
-         * @param id    durable entry identifier
+         * @param type     asset type
+         * @param tenantId logical registry tenantId
+         * @param id       durable entry identifier
          * @return typed asset, or {@code null} when absent or incompatible
          */
         @Override
-        public T find(Type type, String space, String id) {
-            return typed(delegate.find(type, space, id));
+        public T find(Type type, String tenantId, String id) {
+            return typed(delegate.find(type, tenantId, id));
         }
 
         /**
          * Finds one registry entry by method and version and converts it to the expected typed view.
          *
-         * @param type    asset type
-         * @param space   logical registry space
-         * @param method  method name
-         * @param version version identifier
+         * @param type     asset type
+         * @param tenantId logical registry tenantId
+         * @param method   method name
+         * @param version  version identifier
          * @return typed asset, or {@code null} when absent or incompatible
          */
         @Override
-        public T findByMethodVersion(Type type, String space, String app_id, String method, String version) {
-            return typed(delegate.findByMethodVersion(type, space, app_id, method, version));
+        public T findByMethodVersion(Type type, String tenantId, String app_id, String method, String version) {
+            return typed(delegate.findByMethodVersion(type, tenantId, app_id, method, version));
         }
 
         /**
@@ -862,15 +853,15 @@ public class CortexConfiguration {
         /**
          * Queries runtime instance snapshots for the given service identity.
          *
-         * @param type    asset type
-         * @param space   logical registry space
-         * @param method  method name
-         * @param version version identifier
+         * @param type     asset type
+         * @param tenantId logical registry tenantId
+         * @param method   method name
+         * @param version  version identifier
          * @return matching runtime instances
          */
         @Override
-        public List<Instance> queryInstances(Type type, String space, String app_id, String method, String version) {
-            return delegate.queryInstances(type, space, app_id, method, version);
+        public List<Instance> queryInstances(Type type, String tenantId, String app_id, String method, String version) {
+            return delegate.queryInstances(type, tenantId, app_id, method, version);
         }
 
         /**
@@ -881,16 +872,6 @@ public class CortexConfiguration {
         @Override
         public Suite storeCapabilities() {
             return delegate.storeCapabilities();
-        }
-
-        /**
-         * Returns legacy string-key trait flags for compatibility with older integrations.
-         *
-         * @return compatibility trait flags
-         */
-        @Override
-        public Map<String, Boolean> capabilities() {
-            return storeCapabilities().asMap();
         }
 
         /**

@@ -21,11 +21,12 @@ package org.miaixz.bus.image.builtin.ldap;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Properties;
 import java.util.WeakHashMap;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.ResourceKit;
 
 /**
  * Represents the ResourceManager type.
@@ -54,17 +55,6 @@ final class ResourceManager {
     }
 
     /**
-     * Gets the resource as stream.
-     *
-     * @param cl   the cl.
-     * @param name the name.
-     * @return the resource as stream.
-     */
-    private static InputStream getResourceAsStream(final ClassLoader cl, final String name) {
-        return cl.getResourceAsStream(name);
-    }
-
-    /**
      * Gets the initial environment.
      *
      * @return the initial environment.
@@ -78,16 +68,14 @@ final class ResourceManager {
                 return props;
 
             props = new Properties();
-            InputStream is = getResourceAsStream(cl, APP_RESOURCE_FILE_NAME);
-            if (is == null) {
+            URL url = ResourceKit.getResourceUrl(APP_RESOURCE_FILE_NAME, ResourceManager.class);
+            if (url == null) {
                 throw new InternalException("Failed to access resource: " + APP_RESOURCE_FILE_NAME);
             }
-            try {
+            try (InputStream is = url.openStream()) {
                 props.load(is);
             } catch (IOException e) {
                 throw new InternalException("Failed to parse resource: " + APP_RESOURCE_FILE_NAME);
-            } finally {
-                IoKit.close(is);
             }
             propertiesCache.put(cl, props);
             return props;

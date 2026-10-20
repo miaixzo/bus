@@ -147,6 +147,7 @@ public class Parameter extends AbstractMap<String, Object> {
      *
      * @param key   The parameter key.
      * @param value The parameter value.
+     * @return the previously stored value associated with this key
      */
     @Override
     public Object put(String key, Object value) {
@@ -277,21 +278,42 @@ public class Parameter extends AbstractMap<String, Object> {
     public Set<Entry<String, Object>> entrySet() {
         return new AbstractSet<>() {
 
+            /**
+             * Iterates over the backing store's current keys without copying the parameter map.
+             *
+             * @return the iterator delegating mutation to the original sanitized store
+             */
             @Override
             public Iterator<Entry<String, Object>> iterator() {
                 Iterator<String> iterator = values.keySet().iterator();
                 return new Iterator<>() {
 
+                    /**
+                     * Checks whether another backing key is available.
+                     *
+                     * @return whether the underlying key iterator has another entry
+                     */
                     @Override
                     public boolean hasNext() {
                         return iterator.hasNext();
                     }
 
+                    /**
+                     * Reads the next key and its current sanitized value.
+                     *
+                     * @return the entry whose replacement delegates to the owning parameter store
+                     */
                     @Override
                     public Entry<String, Object> next() {
                         String key = iterator.next();
                         return new SimpleEntry<>(key, values.get(key)) {
 
+                            /**
+                             * Replaces the backing value using the original parameter sanitization rules.
+                             *
+                             * @param value the proposed replacement value
+                             * @return the value previously stored for this key
+                             */
                             @Override
                             public Object setValue(Object value) {
                                 return Parameter.this.put(key, value);
@@ -299,6 +321,9 @@ public class Parameter extends AbstractMap<String, Object> {
                         };
                     }
 
+                    /**
+                     * Removes the last returned key through the original backing iterator.
+                     */
                     @Override
                     public void remove() {
                         iterator.remove();
@@ -306,6 +331,11 @@ public class Parameter extends AbstractMap<String, Object> {
                 };
             }
 
+            /**
+             * Reads the current number of backing parameters.
+             *
+             * @return the actual size of the original sanitized store
+             */
             @Override
             public int size() {
                 return values.size();

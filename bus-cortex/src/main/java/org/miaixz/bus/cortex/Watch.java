@@ -21,6 +21,7 @@ package org.miaixz.bus.cortex;
 
 import java.util.List;
 
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -37,9 +38,9 @@ import lombok.experimental.SuperBuilder;
 public class Watch<T> implements Change<T> {
 
     /**
-     * Space of the subscription that produced this event.
+     * Tenant of the subscription that produced this event.
      */
-    private String space_id;
+    private String tenant_id;
 
     /**
      * Asset type scope of the subscription that produced this event, when restricted to one type.
@@ -59,19 +60,19 @@ public class Watch<T> implements Change<T> {
     /**
      * Values newly observed by the subscription.
      */
-    @lombok.Builder.Default
+    @Default
     private List<T> added = List.of();
 
     /**
      * Values removed from the subscription result set.
      */
-    @lombok.Builder.Default
+    @Default
     private List<T> removed = List.of();
 
     /**
      * Values whose content changed while remaining in the result set.
      */
-    @lombok.Builder.Default
+    @Default
     private List<T> updated = List.of();
 
     /**

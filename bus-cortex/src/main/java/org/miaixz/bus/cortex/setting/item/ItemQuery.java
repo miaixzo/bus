@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex.setting.item;
 
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -44,10 +45,10 @@ public class ItemQuery extends ItemScope {
     private String fallbackValue;
 
     /**
-     * Whether runtime overlays take precedence over durable content.
+     * Explicitly opts into runtime overlays; governed delivery uses durable revisions by default.
      */
-    @lombok.Builder.Default
-    private boolean preferOverlay = true;
+    @Default
+    private boolean preferOverlay = false;
 
     /**
      * Runtime request attributes used by delivery policies.
@@ -58,6 +59,18 @@ public class ItemQuery extends ItemScope {
      * Creates an empty item query.
      */
     public ItemQuery() {
-        // No initialization required.
+        this.preferOverlay = false;
     }
+
+    /**
+     * Returns exact lookup coordinates; application filtering for shared items uses references.
+     *
+     * @return item coordinates containing tenant, ownership scope, application, code, and kind
+     */
+    public Item coordinates() {
+        return Item.builder().tenant_id(getTenant_id()).scope(getScope())
+                .app_id(Item.Scope.SHARED.name().equals(getScope()) ? null : getApp_id()).code(code).kind(getKind())
+                .build();
+    }
+
 }

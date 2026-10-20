@@ -25,7 +25,7 @@ import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.Source;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
+import org.miaixz.bus.core.lang.exception.DuplicateException;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.logger.Logger;
 
@@ -66,7 +66,7 @@ public class SourceLookup {
      *
      * @param modules modules in deterministic assembly order
      * @throws IllegalArgumentException if a module or one of its members is invalid
-     * @throws AlreadyExistsException   if driver or descriptor identifiers collide
+     * @throws DuplicateException       if driver or descriptor identifiers collide
      */
     public SourceLookup(final Collection<? extends SourceModule> modules) {
         Assert.notNull(modules, "Source module collection must not be null");
@@ -88,7 +88,7 @@ public class SourceLookup {
                         Assert.notNull(checked.scheme(), "Source module driver scheme must not be null").id(),
                         "Source module driver type must not be blank");
                 if (owned.putIfAbsent(type, checked) != null) {
-                    throw new AlreadyExistsException("Duplicate Source module driver type: " + type);
+                    throw new DuplicateException("Duplicate Source module driver type: " + type);
                 }
                 moduleDrivers.add(checked);
             }
@@ -142,7 +142,7 @@ public class SourceLookup {
             final Scheme<?> scheme = Assert.notNull(checked.scheme(), "Source driver scheme must not be null");
             final String id = Assert.notBlank(scheme.id(), "Source driver scheme id must not be blank");
             if (indexed.putIfAbsent(id, checked) != null) {
-                throw new AlreadyExistsException("Duplicate Source driver scheme: " + id);
+                throw new DuplicateException("Duplicate Source driver scheme: " + id);
             }
             ordered.add(checked);
         }
@@ -166,7 +166,7 @@ public class SourceLookup {
             Assert.notNull(descriptor.conformance(), "Source descriptor conformance must not be null");
             Assert.notNull(descriptor.form(), "Source descriptor form must not be null");
             if (descriptorsById.putIfAbsent(id, descriptor) != null) {
-                throw new AlreadyExistsException("Duplicate Source descriptor id: " + id);
+                throw new DuplicateException("Duplicate Source descriptor id: " + id);
             }
             orderedDescriptors.add(descriptor);
         }
@@ -219,7 +219,7 @@ public class SourceLookup {
      *
      * @param source persisted Source
      * @return matching descriptor or empty when no assembled selection matches
-     * @throws AlreadyExistsException if more than one descriptor matches the Source
+     * @throws DuplicateException if more than one descriptor matches the Source
      */
     public Optional<SourceDescriptor> descriptor(final Source source) {
         final Source checked = Assert.notNull(source, "Source descriptor lookup value must not be null");
@@ -227,7 +227,7 @@ public class SourceLookup {
         for (SourceDescriptor descriptor : descriptors) {
             if (descriptor.matches(checked)) {
                 if (matched != null) {
-                    throw new AlreadyExistsException("Ambiguous Source descriptor route: " + checked.getId());
+                    throw new DuplicateException("Ambiguous Source descriptor route: " + checked.getId());
                 }
                 matched = descriptor;
             }

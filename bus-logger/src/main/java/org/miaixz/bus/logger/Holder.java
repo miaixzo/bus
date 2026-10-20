@@ -39,6 +39,9 @@ import org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingFactory;
  */
 public class Holder {
 
+    /**
+     * Lazily selected logging factory shared by the facade.
+     */
     private static volatile Factory DEFAULT_FACTORY;
 
     /**

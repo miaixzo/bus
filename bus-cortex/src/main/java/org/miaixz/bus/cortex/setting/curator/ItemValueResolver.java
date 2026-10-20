@@ -24,11 +24,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.exception.ForbiddenException;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.cortex.setting.item.GrayRequestContext;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
+import org.miaixz.bus.cortex.setting.secret.NoOpSecretCodec;
 import org.miaixz.bus.cortex.setting.secret.SecretCodec;
+import org.miaixz.bus.cortex.setting.secret.SecretContext;
+import org.miaixz.bus.cortex.setting.secret.SecretMasker;
 
 /**
  * Resolves effective setting values using source adapters, rules and secret handling.
@@ -69,15 +72,38 @@ public class ItemValueResolver {
     }
 
     /**
-     * Resolves the effective value for the entry.
-     *
-     * @param entry          setting entry
-     * @param requestContext optional request context used for gray routing
-     * @return resolved value
+     * Resolves a previously selected immutable snapshot; this method never performs gray routing.
      */
-    public String resolve(Item entry, GrayRequestContext requestContext) {
+    public String resolve(Item entry) {
+        return resolve(entry, null);
+    }
+
+    /**
+     * Resolves an already selected snapshot. SECRET sources require an authenticated context and strict descriptor
+     * validation; ordinary sources retain existing adapter and decryption behavior. This method does not perform gray
+     * routing.
+     *
+     * @param entry   setting entry or already selected snapshot; null is handled as documented
+     * @param context authenticated caller identity and absolute request deadline; never populated from an untrusted
+     *                reference
+     * @return resolved string, configured fallback where applicable, or null when no value is available
+     * @throws org.miaixz.bus.core.lang.exception.ForbiddenException if access is denied or the supplied credential
+     *                                                               representation is not permitted
+     * @throws org.miaixz.bus.core.lang.exception.CryptoException    if the deadline, lifecycle, backend or payload
+     *                                                               checks fail; inspect the exception type;
+     *                                                               diagnostics are deliberately sanitized
+     */
+    public String resolve(Item entry, SecretContext context) {
         if (entry == null) {
             return null;
+        }
+        if (ItemNormalizer.isSecret(entry)) {
+            if (context == null) {
+                throw new ForbiddenException("Secret access denied");
+            }
+            ItemNormalizer.secretReference(entry);
+            ItemSourceAdapter secretAdapter = adapter(entry);
+            return secretAdapter.resolve(entry, context);
         }
         ItemSourceAdapter adapter = adapter(entry);
         if (!adapter.validate(entry)) {
@@ -85,6 +111,9 @@ public class ItemValueResolver {
         }
         String resolved = adapter.resolve(entry);
         if (ItemNormalizer.isEncryptedFlagEnabled(entry.getEncrypted()) && resolved != null) {
+            if (secretCodec == null || secretCodec instanceof NoOpSecretCodec) {
+                throw new IllegalStateException("A protecting secret codec is required");
+            }
             return secretCodec.decrypt(resolved);
         }
         return resolved;
@@ -117,6 +146,9 @@ public class ItemValueResolver {
     public String preview(Item entry) {
         if (entry == null) {
             return null;
+        }
+        if (ItemNormalizer.isSecret(entry)) {
+            return SecretMasker.MASK;
         }
         ItemSourceAdapter adapter = adapter(entry);
         return adapter.preview(entry);

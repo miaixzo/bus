@@ -19,6 +19,10 @@
 */
 package org.miaixz.bus.cortex.version;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+
 import jakarta.persistence.Transient;
 
 import lombok.Getter;
@@ -27,6 +31,7 @@ import lombok.Setter;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.cortex.registry.MetadataCodec;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -57,7 +62,17 @@ public class VersionAssets extends Assets {
      */
     @Override
     public void metadata(String metadata) {
-        super.metadata(metadata);
+        setMetadata(metadata);
+    }
+
+    /**
+     * Stores raw metadata through the standard bean path and invalidates the parsed version metadata cache.
+     *
+     * @param metadata raw metadata JSON, or {@code null} to clear it
+     */
+    @Override
+    public void setMetadata(String metadata) {
+        super.setMetadata(metadata);
         this.meta = null;
     }
 
@@ -79,8 +94,8 @@ public class VersionAssets extends Assets {
      * @param meta version metadata
      */
     public void meta(Meta meta) {
-        this.meta = meta == null ? new Meta() : meta;
-        super.metadata(this.meta.merge());
+        Meta value = meta == null ? new Meta() : meta;
+        setMetadata(value.merge(getMetadata()));
     }
 
     /**
@@ -243,6 +258,18 @@ public class VersionAssets extends Assets {
     public static class Meta {
 
         /**
+         * Fixed metadata members owned by the version subtype, independent of incoming payloads.
+         */
+        private static final Set<String> FIELDS = Set.of(
+                "semver",
+                "changelog",
+                "artifact",
+                "compatibleRange",
+                "releasedAt",
+                "supportUntil",
+                "versionStatus");
+
+        /**
          * Semantic version string.
          */
         private String semver;
@@ -315,7 +342,26 @@ public class VersionAssets extends Assets {
          * @return metadata JSON
          */
         public String merge() {
-            return JsonKit.toJsonString(this);
+            return merge(null);
+        }
+
+        /**
+         * Writes the complete version projection while preserving metadata fields owned by other extensions.
+         *
+         * @param metadata existing raw metadata JSON
+         * @return merged metadata JSON
+         * @throws IllegalArgumentException if existing nonblank metadata is not a valid JSON object
+         */
+        public String merge(String metadata) {
+            Map<String, Object> values = new LinkedHashMap<>();
+            values.put("semver", semver);
+            values.put("changelog", changelog);
+            values.put("artifact", artifact);
+            values.put("compatibleRange", compatibleRange);
+            values.put("releasedAt", releasedAt);
+            values.put("supportUntil", supportUntil);
+            values.put("versionStatus", versionStatus);
+            return MetadataCodec.merge(metadata, FIELDS, values);
         }
 
     }

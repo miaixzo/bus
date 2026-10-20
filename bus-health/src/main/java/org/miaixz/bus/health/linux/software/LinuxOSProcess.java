@@ -896,8 +896,46 @@ public class LinuxOSProcess extends AbstractOSProcess {
 
         // The parsing implementation in Parsing requires these to be declared
         // in increasing order
-        PPID(4), MINOR_FAULTS(10), MAJOR_FAULTS(12), USER_TIME(14), KERNEL_TIME(15), PRIORITY(18), THREAD_COUNT(20),
-        START_TIME(22), VSZ(23), RSS(24);
+        /**
+         * Parent process identifier field.
+         */
+        PPID(4),
+        /**
+         * Minor page-fault count field.
+         */
+        MINOR_FAULTS(10),
+        /**
+         * Major page-fault count field.
+         */
+        MAJOR_FAULTS(12),
+        /**
+         * User-mode CPU time field.
+         */
+        USER_TIME(14),
+        /**
+         * Kernel-mode CPU time field.
+         */
+        KERNEL_TIME(15),
+        /**
+         * Scheduling priority field.
+         */
+        PRIORITY(18),
+        /**
+         * Thread count field.
+         */
+        THREAD_COUNT(20),
+        /**
+         * Process start time field.
+         */
+        START_TIME(22),
+        /**
+         * Virtual memory size field.
+         */
+        VSZ(23),
+        /**
+         * Resident set size field.
+         */
+        RSS(24);
 
         /**
          * The order value.

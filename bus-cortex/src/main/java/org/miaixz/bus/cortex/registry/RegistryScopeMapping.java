@@ -49,8 +49,8 @@ public class RegistryScopeMapping {
     public static RegistryQuery query(Vector vector, Type fallbackType) {
         Vector source = vector == null ? new Vector() : vector;
         RegistryQuery query = new RegistryQuery();
-        query.setSpace_id(RegistryIdentity.space(source.getSpace_id()));
         query.setType(resolveRegistryType(source.getType(), fallbackType));
+        query.setTenant_id(RegistryIdentity.tenantId(query.getType(), source.getTenant_id()));
         query.setId(source.getId());
         query.setApp_id(source.getApp_id());
         query.setMethod(source.getMethod());
@@ -89,8 +89,8 @@ public class RegistryScopeMapping {
     public static RegistryRefreshScope refresh(Vector vector, Type fallbackType, String refreshMode) {
         Vector source = vector == null ? new Vector() : vector;
         RegistryRefreshScope scope = new RegistryRefreshScope();
-        scope.setSpace_id(RegistryIdentity.space(source.getSpace_id()));
         scope.setType(resolveRegistryType(source.getType(), fallbackType));
+        scope.setTenant_id(RegistryIdentity.tenantId(scope.getType(), source.getTenant_id()));
         scope.setId(source.getId());
         scope.setRefreshMode(refreshMode);
         scope.setRequestId(source.getRequestId());
@@ -107,10 +107,10 @@ public class RegistryScopeMapping {
     public static Vector toVector(RegistryQuery query) {
         Vector vector = new Vector();
         if (query == null) {
-            vector.setSpace_id(RegistryIdentity.space(null));
+            vector.setTenant_id(RegistryIdentity.tenantId(Type.API, null));
             return vector;
         }
-        vector.setSpace_id(RegistryIdentity.space(query.getSpace_id()));
+        vector.setTenant_id(RegistryIdentity.tenantId(query.getType(), query.getTenant_id()));
         vector.setType(query.getType() == null ? null : query.getType().key());
         vector.setId(query.getId());
         vector.setApp_id(query.getApp_id());
@@ -134,10 +134,10 @@ public class RegistryScopeMapping {
     public static Vector toVector(RegistryRefreshScope scope) {
         Vector vector = new Vector();
         if (scope == null) {
-            vector.setSpace_id(RegistryIdentity.space(null));
+            vector.setTenant_id(RegistryIdentity.tenantId(Type.API, null));
             return vector;
         }
-        vector.setSpace_id(RegistryIdentity.space(scope.getSpace_id()));
+        vector.setTenant_id(RegistryIdentity.tenantId(scope.getType(), scope.getTenant_id()));
         vector.setType(scope.getType() == null ? null : scope.getType().key());
         vector.setId(scope.getId());
         vector.setPurpose(scope.getRefreshMode());

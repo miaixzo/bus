@@ -812,7 +812,54 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
      * @author Kimi Liu
      */
     enum PsThreadColumns {
-        TDNAME, LWP, STATE, ETIMES, SYSTIME, TIME, TDADDR, NIVCSW, NVCSW, MAJFLT, MINFLT, PRI
+        /**
+         * Thread name.
+         */
+        TDNAME,
+        /**
+         * Lightweight process identifier.
+         */
+        LWP,
+        /**
+         * Thread state.
+         */
+        STATE,
+        /**
+         * Elapsed time in seconds.
+         */
+        ETIMES,
+        /**
+         * Accumulated system CPU time.
+         */
+        SYSTIME,
+        /**
+         * Accumulated total CPU time.
+         */
+        TIME,
+        /**
+         * Kernel thread address.
+         */
+        TDADDR,
+        /**
+         * Involuntary context-switch count.
+         */
+        NIVCSW,
+        /**
+         * Voluntary context-switch count.
+         */
+        NVCSW,
+        /**
+         * Major page-fault count.
+         */
+        MAJFLT,
+        /**
+         * Minor page-fault count.
+         */
+        MINFLT,
+        /**
+         * Scheduling priority.
+         */
+        PRI
 
     }
 
