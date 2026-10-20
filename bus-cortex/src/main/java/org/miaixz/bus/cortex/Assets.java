@@ -150,7 +150,7 @@ public class Assets extends Nature {
     private Integer retries = 3;
 
     /**
-     * Request timeout in milliseconds. Default: {@code 60}.
+     * Request timeout in seconds. Default: {@code 60}.
      */
     @Builder.Default
     private Integer timeout = 60;
@@ -249,12 +249,23 @@ public class Assets extends Nature {
     }
 
     /**
-     * Returns the effective timeout in milliseconds.
+     * Returns the effective timeout in seconds.
      *
-     * @return positive timeout value
+     * @return positive timeout value in seconds
      */
-    public int timeoutMs() {
+    public int timeoutSeconds() {
         return timeout == null || timeout <= 0 ? 60 : timeout;
+    }
+
+    /**
+     * Preserves the historical numeric timeout, which has always represented seconds despite the method name.
+     *
+     * @return positive timeout in seconds without converting the stored value
+     * @deprecated use {@link #timeoutSeconds()} to make the existing unit explicit
+     */
+    @Deprecated
+    public int timeoutMs() {
+        return timeoutSeconds();
     }
 
     /**
@@ -269,11 +280,21 @@ public class Assets extends Nature {
     }
 
     /**
-     * Replaces the raw metadata payload.
+     * Replaces the raw metadata payload through the standard setter so subtype caches are invalidated.
      *
      * @param metadata raw metadata JSON
      */
     public void metadata(String metadata) {
+        setMetadata(metadata);
+    }
+
+    /**
+     * Stores the raw metadata payload without invoking convenience methods. Subtypes override this setter to invalidate
+     * their parsed metadata views, then delegate here to store the value without recursive dispatch.
+     *
+     * @param metadata raw metadata JSON, or {@code null} to clear it
+     */
+    public void setMetadata(String metadata) {
         this.metadata = metadata;
     }
 

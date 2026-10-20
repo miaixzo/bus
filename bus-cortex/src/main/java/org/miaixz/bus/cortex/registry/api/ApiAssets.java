@@ -19,7 +19,9 @@
 */
 package org.miaixz.bus.cortex.registry.api;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import jakarta.persistence.Transient;
 
@@ -73,7 +75,17 @@ public class ApiAssets extends Assets {
      */
     @Override
     public void metadata(String metadata) {
-        super.metadata(metadata);
+        setMetadata(metadata);
+    }
+
+    /**
+     * Stores raw metadata through the standard bean path and invalidates the parsed API metadata cache.
+     *
+     * @param metadata raw metadata JSON, or {@code null} to clear it
+     */
+    @Override
+    public void setMetadata(String metadata) {
+        super.setMetadata(metadata);
         this.meta = null;
     }
 
@@ -95,8 +107,8 @@ public class ApiAssets extends Assets {
      * @param meta API metadata
      */
     public void meta(Meta meta) {
-        this.meta = meta == null ? new Meta() : meta;
-        super.metadata(this.meta.merge(getMetadata()));
+        Meta value = meta == null ? new Meta() : meta;
+        setMetadata(value.merge(getMetadata()));
     }
 
     /**
@@ -201,6 +213,7 @@ public class ApiAssets extends Assets {
      * generated independently by the registry-side {@link Keying#keys(Object)} candidate chain.
      * </p>
      *
+     * @param keying route-key strategy
      * @return default key or {@code null}
      */
     private String defaultKey(Keying<Keying.RegistrySpec> keying) {
@@ -231,6 +244,11 @@ public class ApiAssets extends Assets {
          * Metadata key storing the service lease duration.
          */
         private static final String LEASE = "lease";
+
+        /**
+         * Fixed metadata members owned by the API subtype, independent of incoming payloads.
+         */
+        private static final Set<String> FIELDS = Set.of(KEY, BEAT, LEASE);
 
         /**
          * Stable public key used by admin and bridge paths, for example {@code dp.license.get:1.0:1}.
@@ -295,26 +313,11 @@ public class ApiAssets extends Assets {
          * @return merged metadata JSON
          */
         public String merge(String metadata) {
-            Map<String, Object> root = MetadataCodec.root(metadata);
-            if (key == null) {
-                root.remove(KEY);
-            } else {
-                root.put(KEY, key);
-            }
-
-            if (beat == null) {
-                root.remove(BEAT);
-            } else {
-                root.put(BEAT, beat);
-            }
-
-            if (lease == null) {
-                root.remove(LEASE);
-            } else {
-                root.put(LEASE, lease);
-            }
-
-            return MetadataCodec.json(root);
+            Map<String, Object> values = new LinkedHashMap<>();
+            values.put(KEY, key);
+            values.put(BEAT, beat);
+            values.put(LEASE, lease);
+            return MetadataCodec.merge(metadata, FIELDS, values);
         }
 
     }

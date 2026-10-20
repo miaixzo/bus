@@ -20,7 +20,10 @@
 package org.miaixz.bus.cortex.registry.prompt;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import jakarta.persistence.Transient;
 
@@ -31,6 +34,7 @@ import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.cortex.registry.MetadataCodec;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -62,7 +66,17 @@ public class PromptAssets extends Assets {
      */
     @Override
     public void metadata(String metadata) {
-        super.metadata(metadata);
+        setMetadata(metadata);
+    }
+
+    /**
+     * Stores raw metadata through the standard bean path and invalidates the parsed prompt metadata cache.
+     *
+     * @param metadata raw metadata JSON, or {@code null} to clear it
+     */
+    @Override
+    public void setMetadata(String metadata) {
+        super.setMetadata(metadata);
         this.meta = null;
     }
 
@@ -84,8 +98,8 @@ public class PromptAssets extends Assets {
      * @param meta prompt metadata
      */
     public void meta(Meta meta) {
-        this.meta = meta == null ? new Meta() : meta;
-        super.metadata(this.meta.merge());
+        Meta value = meta == null ? new Meta() : meta;
+        setMetadata(value.merge(getMetadata()));
     }
 
     /**
@@ -168,6 +182,11 @@ public class PromptAssets extends Assets {
     public static class Meta {
 
         /**
+         * Fixed metadata members owned by the prompt subtype, independent of incoming payloads.
+         */
+        private static final Set<String> FIELDS = Set.of("template", "variables", "tags");
+
+        /**
          * Prompt template content.
          */
         private String template;
@@ -220,7 +239,22 @@ public class PromptAssets extends Assets {
          * @return metadata JSON
          */
         public String merge() {
-            return JsonKit.toJsonString(this);
+            return merge(null);
+        }
+
+        /**
+         * Writes the complete prompt projection while preserving metadata fields owned by other extensions.
+         *
+         * @param metadata existing raw metadata JSON
+         * @return merged metadata JSON
+         * @throws IllegalArgumentException if existing nonblank metadata is not a valid JSON object
+         */
+        public String merge(String metadata) {
+            Map<String, Object> values = new LinkedHashMap<>();
+            values.put("template", template);
+            values.put("variables", variables);
+            values.put("tags", tags);
+            return MetadataCodec.merge(metadata, FIELDS, values);
         }
 
     }

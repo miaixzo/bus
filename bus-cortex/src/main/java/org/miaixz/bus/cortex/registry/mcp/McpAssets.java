@@ -20,7 +20,10 @@
 package org.miaixz.bus.cortex.registry.mcp;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import jakarta.persistence.Transient;
 
@@ -31,6 +34,7 @@ import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.cortex.registry.MetadataCodec;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -62,7 +66,17 @@ public class McpAssets extends Assets {
      */
     @Override
     public void metadata(String metadata) {
-        super.metadata(metadata);
+        setMetadata(metadata);
+    }
+
+    /**
+     * Stores raw metadata through the standard bean path and invalidates the parsed MCP metadata cache.
+     *
+     * @param metadata raw metadata JSON, or {@code null} to clear it
+     */
+    @Override
+    public void setMetadata(String metadata) {
+        super.setMetadata(metadata);
         this.meta = null;
     }
 
@@ -84,8 +98,8 @@ public class McpAssets extends Assets {
      * @param meta MCP metadata
      */
     public void meta(Meta meta) {
-        this.meta = meta == null ? new Meta() : meta;
-        super.metadata(this.meta.merge());
+        Meta value = meta == null ? new Meta() : meta;
+        setMetadata(value.merge(getMetadata()));
     }
 
     /**
@@ -188,6 +202,11 @@ public class McpAssets extends Assets {
     public static class Meta {
 
         /**
+         * Fixed metadata members owned by the MCP subtype, independent of incoming payloads.
+         */
+        private static final Set<String> FIELDS = Set.of("toolName", "transport", "schema", "tags");
+
+        /**
          * Public tool name exposed by the MCP entry.
          */
         private String toolName;
@@ -245,7 +264,23 @@ public class McpAssets extends Assets {
          * @return metadata JSON
          */
         public String merge() {
-            return JsonKit.toJsonString(this);
+            return merge(null);
+        }
+
+        /**
+         * Writes the complete MCP projection while preserving all metadata fields owned by other extensions.
+         *
+         * @param metadata existing raw metadata JSON
+         * @return merged metadata JSON
+         * @throws IllegalArgumentException if existing nonblank metadata is not a valid JSON object
+         */
+        public String merge(String metadata) {
+            Map<String, Object> values = new LinkedHashMap<>();
+            values.put("toolName", toolName);
+            values.put("transport", transport);
+            values.put("schema", schema);
+            values.put("tags", tags);
+            return MetadataCodec.merge(metadata, FIELDS, values);
         }
 
     }
