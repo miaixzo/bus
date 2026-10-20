@@ -35,7 +35,7 @@ Four registry types, one consistent API:
 | **ApiRegistry**     | `ApiAssets` + `Instance` | HTTP / gRPC / MCP / WebSocket / LLM API services           |
 | **McpRegistry**     | `McpAssets`              | MCP tool/server definitions                                |
 | **PromptRegistry**  | `PromptAssets`           | Prompt template management                                 |
-| **VersionRegistry** | `VersionAssets`          | Service version lifecycle (ACTIVE / DEPRECATED / DISABLED) |
+| **ReleaseRegistry** | `ReleaseAssets`          | Service version lifecycle (ACTIVE / DEPRECATED / DISABLED) |
 
 ```java
 // Type-safe static facade (same pattern as bus-metrics Metrics)
@@ -423,7 +423,7 @@ bus:
                             ▼
 ┌──────────────────────────────────────────────────────────────┐
 │                   bus-cortex (Registry + Config)              │
-│  ApiRegistry / McpRegistry / PromptRegistry / VersionRegistry │
+│  ApiRegistry / McpRegistry / PromptRegistry / ReleaseRegistry │
 │  ConfigPublisher / ConfigWatcher / GrayRouter                 │
 │         │ CacheX                    │ VortexBridge            │
 │         ▼                           ▼                         │
@@ -450,7 +450,7 @@ org.miaixz.bus.cortex
 │   ├── api/       ApiAssets + Instance + ApiRegistry + probers
 │   ├── mcp/       McpAssets + McpRegistry + ProcessManager
 │   ├── prompt/    PromptAssets + PromptRegistry
-│   ├── version/   VersionAssets + VersionRegistry + VersionStatus
+│   ├── release/   Release + ReleaseAssets + ReleaseRegistry (EnumValue.Phase / EnumValue.Track)
 │   ├── label/     Label + Selector + MetadataRouter
 │   ├── batch/     BatchOperation + BatchResult
 │   └── depend/    DependencyGraph + ImpactAnalysis

@@ -31,9 +31,9 @@ import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
 import org.miaixz.bus.cortex.registry.api.ApiAssets;
 import org.miaixz.bus.cortex.registry.mcp.McpAssets;
 import org.miaixz.bus.cortex.registry.prompt.PromptAssets;
+import org.miaixz.bus.cortex.release.ReleaseAssets;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemQuery;
-import org.miaixz.bus.cortex.version.VersionAssets;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -71,7 +71,7 @@ public class Cortex {
      * @param api     API registry implementation
      * @param mcp     MCP registry implementation
      * @param prompt  prompt registry implementation
-     * @param version version registry implementation
+     * @param release release registry implementation
      * @param curator curator implementation
      * @return immutable runtime bundle
      */
@@ -79,10 +79,10 @@ public class Cortex {
             Registry<ApiAssets> api,
             Registry<McpAssets> mcp,
             Registry<PromptAssets> prompt,
-            Registry<VersionAssets> version,
+            Registry<ReleaseAssets> release,
             Curator curator) {
         return new Runtime(Objects.requireNonNull(api, "api"), Objects.requireNonNull(mcp, "mcp"),
-                Objects.requireNonNull(prompt, "prompt"), Objects.requireNonNull(version, "version"),
+                Objects.requireNonNull(prompt, "prompt"), Objects.requireNonNull(release, "release"),
                 Objects.requireNonNull(curator, "curator"), List.of());
     }
 
@@ -92,7 +92,7 @@ public class Cortex {
      * @param api        API registry implementation
      * @param mcp        MCP registry implementation
      * @param prompt     prompt registry implementation
-     * @param version    version registry implementation
+     * @param release    release registry implementation
      * @param curator    curator implementation
      * @param components extra lifecycle or diagnostics components bound to the runtime
      * @return immutable runtime bundle
@@ -101,16 +101,16 @@ public class Cortex {
             Registry<ApiAssets> api,
             Registry<McpAssets> mcp,
             Registry<PromptAssets> prompt,
-            Registry<VersionAssets> version,
+            Registry<ReleaseAssets> release,
             Curator curator,
             Object... components) {
         return new Runtime(Objects.requireNonNull(api, "api"), Objects.requireNonNull(mcp, "mcp"),
-                Objects.requireNonNull(prompt, "prompt"), Objects.requireNonNull(version, "version"),
+                Objects.requireNonNull(prompt, "prompt"), Objects.requireNonNull(release, "release"),
                 Objects.requireNonNull(curator, "curator"), components(components));
     }
 
     /**
-     * Creates one runtime bundle without the optional version registry.
+     * Creates one runtime bundle without the optional release registry.
      *
      * @param api     API registry implementation
      * @param mcp     MCP registry implementation
@@ -128,7 +128,7 @@ public class Cortex {
     }
 
     /**
-     * Creates one runtime bundle without version registry and with additional managed components.
+     * Creates one runtime bundle without release registry and with additional managed components.
      *
      * @param api        API registry implementation
      * @param mcp        MCP registry implementation
@@ -173,20 +173,20 @@ public class Cortex {
      * @param api     API registry implementation
      * @param mcp     MCP registry implementation
      * @param prompt  prompt registry implementation
-     * @param version version registry implementation
+     * @param release release registry implementation
      * @param curator curator implementation
      */
     public static void init(
             Registry<ApiAssets> api,
             Registry<McpAssets> mcp,
             Registry<PromptAssets> prompt,
-            Registry<VersionAssets> version,
+            Registry<ReleaseAssets> release,
             Curator curator) {
-        init(runtime(api, mcp, prompt, version, curator));
+        init(runtime(api, mcp, prompt, release, curator));
     }
 
     /**
-     * Initializes the facade without binding the optional version registry.
+     * Initializes the facade without binding the optional release registry.
      *
      * @param api     API registry implementation
      * @param mcp     MCP registry implementation
@@ -221,7 +221,7 @@ public class Cortex {
      * @param api     API registry implementation
      * @param mcp     MCP registry implementation
      * @param prompt  prompt registry implementation
-     * @param version version registry implementation
+     * @param release release registry implementation
      * @param curator curator implementation
      * @return lifecycle handle for the installed runtime
      */
@@ -229,13 +229,13 @@ public class Cortex {
             Registry<ApiAssets> api,
             Registry<McpAssets> mcp,
             Registry<PromptAssets> prompt,
-            Registry<VersionAssets> version,
+            Registry<ReleaseAssets> release,
             Curator curator) {
-        return bind(runtime(api, mcp, prompt, version, curator));
+        return bind(runtime(api, mcp, prompt, release, curator));
     }
 
     /**
-     * Binds the facade without the optional version registry.
+     * Binds the facade without the optional release registry.
      *
      * @param api     API registry implementation
      * @param mcp     MCP registry implementation
@@ -322,12 +322,12 @@ public class Cortex {
     }
 
     /**
-     * Returns the initialized version registry.
+     * Returns the initialized release registry.
      *
-     * @return version registry component
+     * @return release registry component
      */
-    public static Registry<VersionAssets> version() {
-        return Objects.requireNonNull(requireRuntime().version(), "Version registry is not initialized");
+    public static Registry<ReleaseAssets> release() {
+        return Objects.requireNonNull(requireRuntime().release(), "Version registry is not initialized");
     }
 
     /**
@@ -518,11 +518,11 @@ public class Cortex {
                 Logger.debug(
                         false,
                         "Cortex",
-                        "Runtime installed: api={}, mcp={}, prompt={}, version={}, components={}",
+                        "Runtime installed: api={}, mcp={}, prompt={}, release={}, components={}",
                         next.api().getClass().getSimpleName(),
                         next.mcp().getClass().getSimpleName(),
                         next.prompt().getClass().getSimpleName(),
-                        next.version() == null ? null : next.version().getClass().getSimpleName(),
+                        next.release() == null ? null : next.release().getClass().getSimpleName(),
                         next.components().size());
                 return;
             }
@@ -630,9 +630,9 @@ public class Cortex {
         private final Registry<PromptAssets> prompt;
 
         /**
-         * Optional version registry bound into the facade.
+         * Optional release registry bound into the facade.
          */
-        private final Registry<VersionAssets> version;
+        private final Registry<ReleaseAssets> release;
 
         /**
          * Curator facade bound into the facade.
@@ -655,16 +655,16 @@ public class Cortex {
          * @param api        API registry
          * @param mcp        MCP registry
          * @param prompt     prompt registry
-         * @param version    version registry
+         * @param release    release registry
          * @param curator    curator facade
          * @param components additional runtime-managed lifecycle components
          */
         public Runtime(Registry<ApiAssets> api, Registry<McpAssets> mcp, Registry<PromptAssets> prompt,
-                Registry<VersionAssets> version, Curator curator, List<Object> components) {
+                Registry<ReleaseAssets> release, Curator curator, List<Object> components) {
             this.api = api;
             this.mcp = mcp;
             this.prompt = prompt;
-            this.version = version;
+            this.release = release;
             this.curator = curator;
             this.components = components == null ? List.of() : List.copyOf(components);
         }
@@ -697,21 +697,21 @@ public class Cortex {
         }
 
         /**
-         * Returns whether a version registry was bound into this runtime snapshot.
+         * Returns whether a release registry was bound into this runtime snapshot.
          *
-         * @return {@code true} when the version registry is available
+         * @return {@code true} when the release registry is available
          */
-        public boolean hasVersion() {
-            return version != null;
+        public boolean hasRelease() {
+            return release != null;
         }
 
         /**
-         * Returns the version registry from this runtime snapshot.
+         * Returns the release registry from this runtime snapshot.
          *
-         * @return version registry
+         * @return release registry
          */
-        public Registry<VersionAssets> version() {
-            return version;
+        public Registry<ReleaseAssets> release() {
+            return release;
         }
 
         /**
@@ -739,7 +739,7 @@ public class Cortex {
          * @return {@code true} when every component instance is identical
          */
         private boolean sameAs(Runtime other) {
-            return api == other.api && mcp == other.mcp && prompt == other.prompt && version == other.version
+            return api == other.api && mcp == other.mcp && prompt == other.prompt && release == other.release
                     && curator == other.curator && sameComponents(other);
         }
 
@@ -779,7 +779,7 @@ public class Cortex {
             candidates.add(api);
             candidates.add(mcp);
             candidates.add(prompt);
-            candidates.add(version);
+            candidates.add(release);
             candidates.add(curator);
             candidates.addAll(components);
             IdentityHashMap<Object, Boolean> seen = new IdentityHashMap<>();

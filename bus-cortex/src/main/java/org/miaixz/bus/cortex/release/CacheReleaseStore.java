@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.version;
+package org.miaixz.bus.cortex.release;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -34,7 +35,7 @@ import org.miaixz.bus.extra.json.JsonKit;
  *
  * @author Kimi Liu
  */
-public class CacheVersionStore implements VersionStore {
+public class CacheReleaseStore implements ReleaseStore {
 
     /**
      * Cache-key prefix for version release records.
@@ -51,7 +52,7 @@ public class CacheVersionStore implements VersionStore {
      *
      * @param cacheX cache facade
      */
-    public CacheVersionStore(CacheX<String, Object> cacheX) {
+    public CacheReleaseStore(CacheX<String, Object> cacheX) {
         this.cacheX = cacheX;
     }
 
@@ -62,8 +63,8 @@ public class CacheVersionStore implements VersionStore {
      * @return persisted release record
      */
     @Override
-    public VersionRecord save(VersionRecord record) {
-        VersionRecord prepared = normalize(record);
+    public Release save(Release record) {
+        Release prepared = normalize(record);
         cacheX.write(
                 key(prepared.getTenant_id(), prepared.getTrack(), prepared.getVersion()),
                 JsonKit.toJsonString(prepared),
@@ -75,9 +76,9 @@ public class CacheVersionStore implements VersionStore {
      * Atomically inserts within this shared cache object; distributed hosts must supply a transactional store.
      */
     @Override
-    public VersionRecord create(VersionRecord record) {
+    public Release create(Release record) {
         synchronized (cacheX) {
-            VersionRecord prepared = normalize(record);
+            Release prepared = normalize(record);
             if (find(prepared.getTenant_id(), prepared.getVersion(), prepared.getTrack()) != null) {
                 throw new IllegalStateException("Release version already exists");
             }
@@ -94,9 +95,9 @@ public class CacheVersionStore implements VersionStore {
      * @return matching release record or {@code null}
      */
     @Override
-    public VersionRecord find(String tenantId, String version, String track) {
+    public Release find(String tenantId, String version, String track) {
         Object raw = cacheX.read(key(tenantId, track, version));
-        VersionRecord record = raw instanceof String json ? JsonKit.toPojo(json, VersionRecord.class) : null;
+        Release record = raw instanceof String json ? JsonKit.toPojo(json, Release.class) : null;
         if (record != null) {
             CortexIdentity.requireTenant(tenantId, record.getTenant_id());
         }
@@ -111,25 +112,25 @@ public class CacheVersionStore implements VersionStore {
      * @return matching release records
      */
     @Override
-    public List<VersionRecord> list(String tenantId, String track) {
+    public List<Release> list(String tenantId, String track) {
         String prefix = track == null || track.isBlank() ? PREFIX + CortexIdentity.tenantKey(tenantId) + Symbol.COLON
-                : PREFIX + CortexIdentity.tenantKey(tenantId) + Symbol.COLON + segment(ReleaseTrack.normalize(track))
+                : PREFIX + CortexIdentity.tenantKey(tenantId) + Symbol.COLON + segment(EnumValue.Track.normalize(track))
                         + Symbol.COLON;
         Map<String, Object> entries = cacheX.scan(prefix);
         if (entries == null || entries.isEmpty()) {
             return List.of();
         }
-        List<VersionRecord> result = new ArrayList<>();
+        List<Release> result = new ArrayList<>();
         for (Object value : entries.values()) {
             if (value instanceof String json) {
-                VersionRecord record = JsonKit.toPojo(json, VersionRecord.class);
+                Release record = JsonKit.toPojo(json, Release.class);
                 if (record != null) {
                     CortexIdentity.requireTenant(tenantId, record.getTenant_id());
                     result.add(record);
                 }
             }
         }
-        result.sort(VersionStore.currentComparator().reversed());
+        result.sort(ReleaseStore.currentComparator().reversed());
         return result;
     }
 
@@ -142,9 +143,9 @@ public class CacheVersionStore implements VersionStore {
      * @return deleted release record or {@code null}
      */
     @Override
-    public VersionRecord delete(String tenantId, String version, String track) {
+    public Release delete(String tenantId, String version, String track) {
         String currentVersion = currentVersion(tenantId, track);
-        VersionRecord existing = find(tenantId, version, track);
+        Release existing = find(tenantId, version, track);
         cacheX.remove(key(tenantId, track, version));
         if (Objects.equals(currentVersion, version)) {
             cacheX.remove(currentKey(tenantId, track));
@@ -160,15 +161,15 @@ public class CacheVersionStore implements VersionStore {
      * @return current release record or {@code null}
      */
     @Override
-    public VersionRecord current(String tenantId, String track) {
+    public Release current(String tenantId, String track) {
         String version = currentVersion(tenantId, track);
         if (version != null && !version.isBlank()) {
-            VersionRecord record = find(tenantId, version, track);
+            Release record = find(tenantId, version, track);
             if (record != null) {
                 return record;
             }
         }
-        return VersionStore.super.current(tenantId, track);
+        return ReleaseStore.super.current(tenantId, track);
     }
 
     /**
@@ -180,24 +181,24 @@ public class CacheVersionStore implements VersionStore {
      * @return persisted current release or {@code null}
      */
     @Override
-    public VersionRecord setCurrent(String tenantId, String track, String version) {
-        String normalizedTrack = ReleaseTrack.normalize(track);
-        VersionRecord target = find(tenantId, version, normalizedTrack);
+    public Release setCurrent(String tenantId, String track, String version) {
+        String normalizedTrack = EnumValue.Track.normalize(track);
+        Release target = find(tenantId, version, normalizedTrack);
         if (target == null) {
             return null;
         }
-        VersionRecord previous = current(tenantId, normalizedTrack);
+        Release previous = current(tenantId, normalizedTrack);
         if (previous != null && !Objects.equals(previous.getVersion(), target.getVersion())
-                && previous.getVersionStatus() == VersionStatus.ACTIVE) {
-            previous.setVersionStatus(VersionStatus.DEPRECATED);
+                && EnumValue.Phase.ACTIVE.matches(previous.getStatus())) {
+            previous.setStatus(EnumValue.Phase.DEPRECATED.key());
             save(previous);
         }
         target.setTrack(normalizedTrack);
-        target.setVersionStatus(VersionStatus.ACTIVE);
+        target.setStatus(EnumValue.Phase.ACTIVE.key());
         if (target.getPublished() == null) {
             target.setPublished(System.currentTimeMillis());
         }
-        VersionRecord saved = save(target);
+        Release saved = save(target);
         cacheX.write(currentKey(tenantId, normalizedTrack), saved.getVersion(), 0L);
         return saved;
     }
@@ -208,14 +209,15 @@ public class CacheVersionStore implements VersionStore {
      * @param record raw release record
      * @return normalized release record
      */
-    private VersionRecord normalize(VersionRecord record) {
-        VersionRecord prepared = record == null ? new VersionRecord() : record;
+    private Release normalize(Release record) {
+        Release prepared = record == null ? new Release() : record;
         prepared.setTenant_id(CortexIdentity.tenantId(prepared.getTenant_id()));
-        prepared.setTrack(ReleaseTrack.normalize(prepared.getTrack()));
+        prepared.setTrack(EnumValue.Track.normalize(prepared.getTrack()));
         segment(prepared.getVersion());
-        if (prepared.getVersionStatus() == null) {
-            prepared.setVersionStatus(VersionStatus.DRAFT);
+        if (prepared.getStatus() == null) {
+            prepared.setStatus(EnumValue.Phase.DRAFT.key());
         }
+        EnumValue.Phase.fromKey(prepared.getStatus());
         long now = System.currentTimeMillis();
         if (prepared.getCreated() == null) {
             prepared.setCreated(now);
@@ -232,7 +234,7 @@ public class CacheVersionStore implements VersionStore {
      * @return release cache key
      */
     private String key(String tenantId, String track, String version) {
-        return PREFIX + CortexIdentity.tenantKey(tenantId) + Symbol.COLON + segment(ReleaseTrack.normalize(track))
+        return PREFIX + CortexIdentity.tenantKey(tenantId) + Symbol.COLON + segment(EnumValue.Track.normalize(track))
                 + Symbol.COLON + segment(version);
     }
 
@@ -245,7 +247,7 @@ public class CacheVersionStore implements VersionStore {
      */
     private String currentKey(String tenantId, String track) {
         return PREFIX + "current:" + CortexIdentity.tenantKey(tenantId) + Symbol.COLON
-                + segment(ReleaseTrack.normalize(track));
+                + segment(EnumValue.Track.normalize(track));
     }
 
     /**

@@ -24,6 +24,7 @@ import java.time.Duration;
 import lombok.Getter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.validation.annotation.Validated;
 
@@ -129,9 +130,9 @@ public class CortexProperties {
     private final Audit audit;
 
     /**
-     * Version-history limits and retention settings.
+     * Release-history limits and retention settings.
      */
-    private final Version version;
+    private final Release release;
 
     /**
      * Creates Cortex properties after validating limits for caching, watches, bridging, security, and history.
@@ -153,7 +154,7 @@ public class CortexProperties {
      * @param bridge              bridge options
      * @param guard               guard options
      * @param audit               audit options
-     * @param version             version-registry options
+     * @param release             release-registry options
      */
     public CortexProperties(@DefaultValue(Normal.FALSE) boolean enabled, @DefaultValue(Normal.EMPTY) String serverAddr,
             @DefaultValue(Normal.EMPTY) String tenantId, @DefaultValue("true") boolean autoRegister,
@@ -162,9 +163,9 @@ public class CortexProperties {
             @DefaultValue("10") int maxSettingVersions, @DefaultValue("1000") int maxWatchesPerTenant,
             @DefaultValue("24h") Duration watchExpire, @DefaultValue("1h") Duration cacheExpire, Options cache,
             @DefaultValue Watch watch, @DefaultValue Bridge bridge, @DefaultValue Guard guard,
-            @DefaultValue Audit audit, @DefaultValue Version version) {
+            @DefaultValue Audit audit, @DefaultValue Release release) {
         if (maxSettingVersions <= 0 || maxWatchesPerTenant <= 0) {
-            throw new IllegalArgumentException("Cortex version and watch limits must be greater than zero");
+            throw new IllegalArgumentException("Cortex release and watch limits must be greater than zero");
         }
         if (watchExpire == null || watchExpire.isZero() || watchExpire.isNegative() || cacheExpire == null
                 || cacheExpire.isZero() || cacheExpire.isNegative()) {
@@ -187,7 +188,7 @@ public class CortexProperties {
         this.bridge = bridge == null ? new Bridge("pull-only", Normal.EMPTY, 3, Normal.EMPTY) : bridge;
         this.guard = guard == null ? new Guard(true, new Token()) : guard;
         this.audit = audit == null ? new Audit(false) : audit;
-        this.version = version == null ? new Version(false) : version;
+        this.release = release == null ? new Release(false) : release;
     }
 
     /**
@@ -391,16 +392,26 @@ public class CortexProperties {
     }
 
     /**
-     * Version registry options.
+     * Release registry options.
      *
      * @param enabled whether the feature is enabled
      */
-    public record Version(boolean enabled) {
+    public record Release(boolean enabled) {
 
         /**
-         * Creates version defaults.
+         * Binds the release registry switch through the canonical record constructor.
+         *
+         * @param enabled whether release registry integration is enabled
          */
-        public Version() {
+        @ConstructorBinding
+        public Release(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        /**
+         * Creates release defaults.
+         */
+        public Release() {
             this(false);
         }
     }

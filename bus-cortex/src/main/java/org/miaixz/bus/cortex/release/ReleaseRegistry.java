@@ -17,11 +17,12 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.version;
+package org.miaixz.bus.cortex.release;
 
 import java.util.List;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.guard.CortexGuard;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
@@ -33,17 +34,17 @@ import org.miaixz.bus.cortex.magic.watch.WatchManager;
  *
  * @author Kimi Liu
  */
-public class VersionRegistry implements Registry<VersionAssets> {
+public class ReleaseRegistry implements Registry<ReleaseAssets> {
 
     /**
      * Durable version store.
      */
-    private final VersionStore store;
+    private final ReleaseStore store;
 
     /**
      * Version publishing workflow facade.
      */
-    private final VersionPublisher publisher;
+    private final ReleasePublisher publisher;
 
     /**
      * Optional shared watch manager.
@@ -55,7 +56,7 @@ public class VersionRegistry implements Registry<VersionAssets> {
      *
      * @param store durable version store
      */
-    public VersionRegistry(VersionStore store) {
+    public ReleaseRegistry(ReleaseStore store) {
         this(store, null);
     }
 
@@ -65,7 +66,7 @@ public class VersionRegistry implements Registry<VersionAssets> {
      * @param store        durable version store
      * @param watchManager optional watch manager
      */
-    public VersionRegistry(VersionStore store, WatchManager watchManager) {
+    public ReleaseRegistry(ReleaseStore store, WatchManager watchManager) {
         this(store, watchManager, null, null);
     }
 
@@ -76,7 +77,7 @@ public class VersionRegistry implements Registry<VersionAssets> {
      * @param watchManager   optional watch manager
      * @param changeLogStore optional change-log store
      */
-    public VersionRegistry(VersionStore store, WatchManager watchManager, CortexChangeLogStore changeLogStore) {
+    public ReleaseRegistry(ReleaseStore store, WatchManager watchManager, CortexChangeLogStore changeLogStore) {
         this(store, watchManager, changeLogStore, null);
     }
 
@@ -87,7 +88,7 @@ public class VersionRegistry implements Registry<VersionAssets> {
      * @param watchManager optional watch manager
      * @param cortexGuard  optional Cortex guard
      */
-    public VersionRegistry(VersionStore store, WatchManager watchManager, CortexGuard cortexGuard) {
+    public ReleaseRegistry(ReleaseStore store, WatchManager watchManager, CortexGuard cortexGuard) {
         this(store, watchManager, null, cortexGuard);
     }
 
@@ -99,10 +100,10 @@ public class VersionRegistry implements Registry<VersionAssets> {
      * @param changeLogStore optional change-log store
      * @param cortexGuard    optional Cortex guard
      */
-    public VersionRegistry(VersionStore store, WatchManager watchManager, CortexChangeLogStore changeLogStore,
+    public ReleaseRegistry(ReleaseStore store, WatchManager watchManager, CortexChangeLogStore changeLogStore,
             CortexGuard cortexGuard) {
         this.store = store;
-        this.publisher = new VersionPublisher(store, changeLogStore, cortexGuard, watchManager);
+        this.publisher = new ReleasePublisher(store, changeLogStore, cortexGuard, watchManager);
         this.watchManager = watchManager;
     }
 
@@ -113,7 +114,7 @@ public class VersionRegistry implements Registry<VersionAssets> {
      * @param watchManager optional watch manager
      * @param store        optional dedicated version store
      */
-    public VersionRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, VersionStore store) {
+    public ReleaseRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, ReleaseStore store) {
         this(cacheX, watchManager, store, null);
     }
 
@@ -125,9 +126,9 @@ public class VersionRegistry implements Registry<VersionAssets> {
      * @param store        optional dedicated version store
      * @param cortexGuard  optional Cortex guard
      */
-    public VersionRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, VersionStore store,
+    public ReleaseRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, ReleaseStore store,
             CortexGuard cortexGuard) {
-        this(store == null ? new CacheVersionStore(cacheX) : store, watchManager, cortexGuard);
+        this(store == null ? new CacheReleaseStore(cacheX) : store, watchManager, cortexGuard);
     }
 
     /**
@@ -135,7 +136,7 @@ public class VersionRegistry implements Registry<VersionAssets> {
      *
      * @return version publisher
      */
-    public VersionPublisher publisher() {
+    public ReleasePublisher publisher() {
         return publisher;
     }
 
@@ -144,7 +145,7 @@ public class VersionRegistry implements Registry<VersionAssets> {
      *
      * @return version store
      */
-    public VersionStore store() {
+    public ReleaseStore store() {
         return store;
     }
 
@@ -157,7 +158,7 @@ public class VersionRegistry implements Registry<VersionAssets> {
      * @param entry ignored version asset
      */
     @Override
-    public void register(VersionAssets entry) {
+    public void register(ReleaseAssets entry) {
         throw new UnsupportedOperationException(
                 "Direct version registration is not supported; publish an approved rollout instead");
     }
@@ -169,7 +170,7 @@ public class VersionRegistry implements Registry<VersionAssets> {
      * @param instance ignored runtime instance
      */
     @Override
-    public void register(VersionAssets service, Instance instance) {
+    public void register(ReleaseAssets service, Instance instance) {
         register(service);
     }
 
@@ -181,9 +182,9 @@ public class VersionRegistry implements Registry<VersionAssets> {
      */
     @Override
     public void deregister(String tenantId, String id) {
-        VersionRecord target = findByVersionOrId(CortexIdentity.tenantId(tenantId), id);
+        Release target = findByVersionOrId(CortexIdentity.tenantId(tenantId), id);
         if (target == null) {
-            publisher.delete(tenantId, ReleaseTrack.STABLE.key(), id);
+            publisher.delete(tenantId, EnumValue.Track.STABLE.key(), id);
             return;
         }
         publisher.delete(target.getTenant_id(), target.getTrack(), target.getVersion());
@@ -196,7 +197,7 @@ public class VersionRegistry implements Registry<VersionAssets> {
      * @return matching version assets
      */
     @Override
-    public List<VersionAssets> query(Vector vector) {
+    public List<ReleaseAssets> query(Vector vector) {
         String tenantId = CortexIdentity.tenantId(vector == null ? null : vector.getTenant_id());
         String track = vector == null ? null : vector.getMethod();
         return store.list(tenantId, track).stream().map(this::toAssets).toList();
@@ -210,7 +211,7 @@ public class VersionRegistry implements Registry<VersionAssets> {
      * @return watch identifier
      */
     @Override
-    public String watch(Vector vector, Listener<Watch<VersionAssets>> listener) {
+    public String watch(Vector vector, Listener<Watch<ReleaseAssets>> listener) {
         if (watchManager == null) {
             throw new UnsupportedOperationException("Version watch is not configured");
         }
@@ -265,18 +266,18 @@ public class VersionRegistry implements Registry<VersionAssets> {
      * @param record release record
      * @return version asset
      */
-    private VersionAssets toAssets(VersionRecord record) {
-        VersionAssets asset = new VersionAssets();
+    private ReleaseAssets toAssets(Release record) {
+        ReleaseAssets asset = new ReleaseAssets();
         asset.setId(record.getId() == null || record.getId().isBlank() ? record.getVersion() : record.getId());
         asset.setTenant_id(record.getTenant_id());
         asset.setType(Type.VERSION.key());
         asset.setVersion(record.getVersion());
-        asset.setMethod(ReleaseTrack.normalize(record.getTrack()));
+        asset.setMethod(EnumValue.Track.normalize(record.getTrack()));
         asset.setName(record.getTitle());
         asset.setDescription(record.getDescription());
         asset.metadata(record.getMetadata());
         asset.semver(record.getVersion());
-        asset.versionStatus(record.getVersionStatus());
+        asset.setStatus(record.getStatus());
         asset.releasedAt(record.getPublished());
         return asset;
     }
@@ -288,11 +289,11 @@ public class VersionRegistry implements Registry<VersionAssets> {
      * @param id       release version or asset identifier
      * @return matching release record or {@code null}
      */
-    private VersionRecord findByVersionOrId(String tenantId, String id) {
+    private Release findByVersionOrId(String tenantId, String id) {
         if (id == null || id.isBlank()) {
             return null;
         }
-        VersionRecord stable = store.find(tenantId, id, ReleaseTrack.STABLE.key());
+        Release stable = store.find(tenantId, id, EnumValue.Track.STABLE.key());
         if (stable != null) {
             return stable;
         }

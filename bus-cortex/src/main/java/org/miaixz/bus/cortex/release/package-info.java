@@ -17,39 +17,12 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.version;
-
 /**
- * Version lifecycle status.
+ * Release records and publication contracts.
+ * <p>
+ * {@code ReleaseRegistry} delegates to {@code ReleaseStore} and {@code ReleasePublisher}; publication state is defined
+ * by {@code org.miaixz.bus.core.lang.EnumValue.Phase}.
  *
  * @author Kimi Liu
  */
-public enum VersionStatus {
-
-    /**
-     * Version is recorded but not published yet.
-     */
-    DRAFT,
-    /**
-     * Version is current and in active use.
-     */
-    ACTIVE,
-    /**
-     * Version is still supported but discouraged; clients should upgrade.
-     */
-    DEPRECATED,
-    /**
-     * Version has been removed from service and must not be used.
-     */
-    DISABLED;
-
-    /**
-     * Returns whether the version may still serve traffic.
-     *
-     * @return {@code true} when traffic is allowed
-     */
-    public boolean isServable() {
-        return this == ACTIVE || this == DEPRECATED;
-    }
-
-}
+package org.miaixz.bus.cortex.release;

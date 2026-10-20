@@ -17,12 +17,13 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.version;
+package org.miaixz.bus.cortex.release;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 
@@ -31,16 +32,26 @@ import org.miaixz.bus.core.lang.Symbol;
  *
  * @author Kimi Liu
  */
-public interface VersionStore {
+public interface ReleaseStore {
+
+    /**
+     * Applies the release-domain policy for serving active and deprecated resources.
+     *
+     * @param status persisted lifecycle phase key
+     * @return true when this release domain permits continued service
+     */
+    static boolean isServable(Integer status) {
+        return EnumValue.Phase.ACTIVE.matches(status) || EnumValue.Phase.DEPRECATED.matches(status);
+    }
 
     /**
      * Returns the comparator used to select the current release.
      *
      * @return current release comparator
      */
-    static Comparator<VersionRecord> currentComparator() {
-        return Comparator.comparing(VersionRecord::getPublished, Comparator.nullsFirst(Long::compareTo))
-                .thenComparing(VersionRecord::getVersion, Comparator.nullsFirst(VersionStore::compareVersion));
+    static Comparator<Release> currentComparator() {
+        return Comparator.comparing(Release::getPublished, Comparator.nullsFirst(Long::compareTo))
+                .thenComparing(Release::getVersion, Comparator.nullsFirst(ReleaseStore::compareVersion));
     }
 
     /**
@@ -81,9 +92,10 @@ public interface VersionStore {
      * @param right second release record
      * @return {@code true} when both records describe the same release
      */
-    private static boolean sameRelease(VersionRecord left, VersionRecord right) {
+    private static boolean sameRelease(Release left, Release right) {
         return left != null && right != null
-                && Objects.equals(ReleaseTrack.normalize(left.getTrack()), ReleaseTrack.normalize(right.getTrack()))
+                && Objects
+                        .equals(EnumValue.Track.normalize(left.getTrack()), EnumValue.Track.normalize(right.getTrack()))
                 && Objects.equals(left.getVersion(), right.getVersion());
     }
 
@@ -137,13 +149,13 @@ public interface VersionStore {
      * @param record release record to persist
      * @return persisted release record
      */
-    VersionRecord save(VersionRecord record);
+    Release save(Release record);
 
     /**
      * Atomically inserts a release without replacing an existing tenant/track/version. Implementations must provide a
      * uniqueness constraint; a read-then-save default would be unsafe.
      */
-    default VersionRecord create(VersionRecord record) {
+    default Release create(Release record) {
         throw new UnsupportedOperationException("Atomic version insertion is not implemented");
     }
 
@@ -153,7 +165,7 @@ public interface VersionStore {
      * Retrying the same version and identical frozen manifest is idempotent; a changed manifest is a conflict.
      * Cache-backed fallbacks deliberately do not emulate a multi-resource database transaction.
      */
-    default VersionRecord activate(VersionRecord record, String baseline) {
+    default Release activate(Release record, String baseline) {
         throw new UnsupportedOperationException("Transactional platform activation is not implemented");
     }
 
@@ -165,7 +177,7 @@ public interface VersionStore {
      * @param track    release track
      * @return matching release record or {@code null}
      */
-    VersionRecord find(String tenantId, String version, String track);
+    Release find(String tenantId, String version, String track);
 
     /**
      * Lists release records within a tenantId and optional release track.
@@ -174,7 +186,7 @@ public interface VersionStore {
      * @param track    release track, or {@code null} to list every track
      * @return matching release records
      */
-    List<VersionRecord> list(String tenantId, String track);
+    List<Release> list(String tenantId, String track);
 
     /**
      * Deletes a release record by tenantId, version, and release track.
@@ -184,7 +196,7 @@ public interface VersionStore {
      * @param track    release track
      * @return deleted release record or {@code null}
      */
-    VersionRecord delete(String tenantId, String version, String track);
+    Release delete(String tenantId, String version, String track);
 
     /**
      * Returns the current active release for a tenantId and track.
@@ -193,10 +205,10 @@ public interface VersionStore {
      * @param track    release track
      * @return active release record or {@code null}
      */
-    default VersionRecord current(String tenantId, String track) {
-        return list(tenantId, ReleaseTrack.normalize(track)).stream()
-                .filter(record -> record.getVersionStatus() == VersionStatus.ACTIVE)
-                .max(VersionStore.currentComparator()).orElse(null);
+    default Release current(String tenantId, String track) {
+        return list(tenantId, EnumValue.Track.normalize(track)).stream()
+                .filter(record -> EnumValue.Phase.ACTIVE.matches(record.getStatus()))
+                .max(ReleaseStore.currentComparator()).orElse(null);
     }
 
     /**
@@ -207,21 +219,21 @@ public interface VersionStore {
      * @param version  release version
      * @return persisted current release or {@code null}
      */
-    default VersionRecord setCurrent(String tenantId, String track, String version) {
-        String normalizedTrack = ReleaseTrack.normalize(track);
-        VersionRecord target = find(tenantId, version, normalizedTrack);
+    default Release setCurrent(String tenantId, String track, String version) {
+        String normalizedTrack = EnumValue.Track.normalize(track);
+        Release target = find(tenantId, version, normalizedTrack);
         if (target == null) {
             return null;
         }
-        for (VersionRecord candidate : list(tenantId, normalizedTrack)) {
+        for (Release candidate : list(tenantId, normalizedTrack)) {
             if (candidate != null && !sameRelease(candidate, target)
-                    && candidate.getVersionStatus() == VersionStatus.ACTIVE) {
-                candidate.setVersionStatus(VersionStatus.DEPRECATED);
+                    && EnumValue.Phase.ACTIVE.matches(candidate.getStatus())) {
+                candidate.setStatus(EnumValue.Phase.DEPRECATED.key());
                 save(candidate);
             }
         }
         target.setTrack(normalizedTrack);
-        target.setVersionStatus(VersionStatus.ACTIVE);
+        target.setStatus(EnumValue.Phase.ACTIVE.key());
         if (target.getPublished() == null) {
             target.setPublished(System.currentTimeMillis());
         }
@@ -237,13 +249,13 @@ public interface VersionStore {
      * @param targetTrack target release track
      * @return promoted release record or {@code null}
      */
-    default VersionRecord promote(String tenantId, String version, String sourceTrack, String targetTrack) {
-        VersionRecord record = find(tenantId, version, sourceTrack);
+    default Release promote(String tenantId, String version, String sourceTrack, String targetTrack) {
+        Release record = find(tenantId, version, sourceTrack);
         if (record == null) {
             return null;
         }
-        record.setTrack(ReleaseTrack.normalize(targetTrack));
-        record.setVersionStatus(VersionStatus.ACTIVE);
+        record.setTrack(EnumValue.Track.normalize(targetTrack));
+        record.setStatus(EnumValue.Phase.ACTIVE.key());
         record.setPublished(System.currentTimeMillis());
         save(record);
         return setCurrent(tenantId, record.getTrack(), record.getVersion());
@@ -257,12 +269,12 @@ public interface VersionStore {
      * @param track    release track
      * @return persisted deprecated release or {@code null}
      */
-    default VersionRecord deprecate(String tenantId, String version, String track) {
-        VersionRecord record = find(tenantId, version, track);
+    default Release deprecate(String tenantId, String version, String track) {
+        Release record = find(tenantId, version, track);
         if (record == null) {
             return null;
         }
-        record.setVersionStatus(VersionStatus.DEPRECATED);
+        record.setStatus(EnumValue.Phase.DEPRECATED.key());
         return save(record);
     }
 
