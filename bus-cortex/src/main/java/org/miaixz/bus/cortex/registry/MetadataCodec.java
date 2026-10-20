@@ -21,8 +21,10 @@ package org.miaixz.bus.cortex.registry;
 
 import java.util.*;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.extra.json.JsonValue;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -46,6 +48,11 @@ public class MetadataCodec {
     public static final String TYPE = "type";
 
     /**
+     * Maximum supported nesting depth when accepting raw metadata JSON.
+     */
+    private static final int MAXIMUM_DEPTH = 64;
+
+    /**
      * Keeps registry metadata encoding and decoding on the static API.
      */
     public MetadataCodec() {
@@ -53,28 +60,47 @@ public class MetadataCodec {
     }
 
     /**
-     * Parses one metadata JSON string into a mutable root map.
+     * Parses one complete metadata JSON object into a detached mutable root map. Java {@code null} and blank text
+     * initialize an empty object; JSON null, arrays, scalars, duplicate names and malformed documents are rejected.
      *
      * @param metadata raw metadata JSON
      * @return mutable metadata root
+     * @throws IllegalArgumentException if the nonblank payload is not a valid bounded JSON object
      */
     public static Map<String, Object> root(String metadata) {
-        if (StringKit.isEmpty(metadata)) {
+        if (StringKit.isBlank(metadata)) {
             return new LinkedHashMap<>();
         }
-        try {
-            Map<String, Object> root = JsonKit.toMap(metadata);
-            return root == null ? new LinkedHashMap<>() : new LinkedHashMap<>(root);
-        } catch (Exception ignore) {
-            Logger.debug(
-                    false,
-                    "Cortex",
-                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
-                    "MetadataCodec",
-                    true,
-                    ignore.getClass().getSimpleName());
-            return new LinkedHashMap<>();
+        JsonValue parsed = JsonKit.readValue(metadata.getBytes(Charset.UTF_8), MAXIMUM_DEPTH, true);
+        if (!(parsed instanceof JsonValue.ObjectValue object)) {
+            throw new IllegalArgumentException("Asset metadata must be a JSON object");
         }
+        Map<String, Object> root = new LinkedHashMap<>();
+        object.values().forEach((key, value) -> root.put(key, JsonKit.toJavaValue(value)));
+        return root;
+    }
+
+    /**
+     * Merges a subtype-owned field projection into the existing metadata object. Only the fixed field set supplied by
+     * subtype code may change; null or absent owned values remove those fields. Unknown members, including nested
+     * objects and arrays, retain their JSON values. The ownership set must never come from a request payload.
+     *
+     * @param metadata    existing raw metadata, or blank text to initialize an object
+     * @param ownedFields immutable field vocabulary declared by the subtype
+     * @param values      complete projection of the subtype-owned fields
+     * @return merged metadata JSON
+     * @throws IllegalArgumentException if the raw object or the ownership projection is invalid
+     */
+    public static String merge(String metadata, Set<String> ownedFields, Map<String, Object> values) {
+        if (ownedFields == null || values == null || ownedFields.stream().anyMatch(Objects::isNull)
+                || !ownedFields.containsAll(values.keySet())) {
+            throw new IllegalArgumentException("Metadata projection must contain only subtype-owned fields");
+        }
+        Map<String, Object> root = root(metadata);
+        for (String field : ownedFields) {
+            put(root, field, values.get(field));
+        }
+        return json(root);
     }
 
     /**
