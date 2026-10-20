@@ -12184,6 +12184,12 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Phase",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
       "type": "org.miaixz.bus.core.lang.EnumValue$Sort",
       "methods": [
         {
@@ -12220,6 +12226,12 @@
           ]
         }
       ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Track",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
     },
     {
       "type": "org.miaixz.bus.core.lang.EnumValue$Type",

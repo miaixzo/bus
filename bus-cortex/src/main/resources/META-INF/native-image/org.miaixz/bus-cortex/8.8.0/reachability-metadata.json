@@ -1083,61 +1083,55 @@
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.version.CacheVersionStore",
+      "type": "org.miaixz.bus.cortex.release.CacheReleaseStore",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.version.ReleaseArtifact",
+      "type": "org.miaixz.bus.core.lang.EnumValue$Track",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.version.ReleaseTrack",
+      "type": "org.miaixz.bus.cortex.release.ReleaseAssets",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.version.VersionAssets",
+      "type": "org.miaixz.bus.cortex.release.ReleaseAssets$Meta",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.version.VersionAssets$Meta",
+      "type": "org.miaixz.bus.cortex.release.ReleasePublisher",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.version.VersionPublisher",
+      "type": "org.miaixz.bus.cortex.release.Release",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.version.VersionRecord",
+      "type": "org.miaixz.bus.cortex.release.ReleaseRegistry",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.version.VersionRegistry",
+      "type": "org.miaixz.bus.core.lang.EnumValue$Phase",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.version.VersionStatus",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.version.VersionStore",
+      "type": "org.miaixz.bus.cortex.release.ReleaseStore",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true

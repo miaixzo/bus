@@ -63,6 +63,8 @@ import org.miaixz.bus.cortex.registry.mcp.McpRegistryStore;
 import org.miaixz.bus.cortex.registry.prompt.PromptAssets;
 import org.miaixz.bus.cortex.registry.prompt.PromptRegistry;
 import org.miaixz.bus.cortex.registry.prompt.PromptRegistryStore;
+import org.miaixz.bus.cortex.release.ReleaseRegistry;
+import org.miaixz.bus.cortex.release.ReleaseStore;
 import org.miaixz.bus.cortex.setting.DefaultCurator;
 import org.miaixz.bus.cortex.setting.SettingEnforcer;
 import org.miaixz.bus.cortex.setting.SettingEnforcerGuardStrategy;
@@ -78,8 +80,6 @@ import org.miaixz.bus.cortex.setting.revision.RevisionStore;
 import org.miaixz.bus.cortex.setting.secret.NoOpSecretCodec;
 import org.miaixz.bus.cortex.setting.secret.SecretCodec;
 import org.miaixz.bus.cortex.setting.secret.SecretMasker;
-import org.miaixz.bus.cortex.version.VersionRegistry;
-import org.miaixz.bus.cortex.version.VersionStore;
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableCortex;
@@ -386,23 +386,23 @@ public class CortexConfiguration {
     }
 
     /**
-     * Creates the version registry backed by cache and, when available, a dedicated durable version store.
+     * Creates the release registry backed by cache and, when available, a dedicated durable release store.
      *
      * @param cache                shared cache abstraction
      * @param watchManager         watch manager
-     * @param versionStoreProvider optional version store provider
+     * @param releaseStoreProvider optional release store provider
      * @param cortexGuard          optional Cortex guard provider
-     * @return version registry
+     * @return release registry
      */
-    @Bean("versionRegistry")
-    @ConditionalOnMissingBean(VersionRegistry.class)
-    @ConditionalOnProperty(prefix = "bus.cortex.version", name = "enabled", havingValue = "true")
-    public VersionRegistry versionRegistry(
+    @Bean("releaseRegistry")
+    @ConditionalOnMissingBean(ReleaseRegistry.class)
+    @ConditionalOnProperty(prefix = "bus.cortex.release", name = "enabled", havingValue = "true")
+    public ReleaseRegistry releaseRegistry(
             @Qualifier("cortexCache") CacheX cache,
             WatchManager watchManager,
-            ObjectProvider<VersionStore> versionStoreProvider,
+            ObjectProvider<ReleaseStore> releaseStoreProvider,
             ObjectProvider<CortexGuard> cortexGuard) {
-        return new VersionRegistry(cache(cache), watchManager, versionStoreProvider.getIfAvailable(),
+        return new ReleaseRegistry(cache(cache), watchManager, releaseStoreProvider.getIfAvailable(),
                 cortexGuard.getIfAvailable());
     }
 
@@ -611,7 +611,7 @@ public class CortexConfiguration {
      * @param apiRegistry     API registry
      * @param mcpRegistry     MCP registry
      * @param promptRegistry  prompt registry
-     * @param versionRegistry optional version registry
+     * @param releaseRegistry optional release registry
      * @param curator         curator facade
      * @return Cortex runtime bundle
      */
@@ -621,11 +621,11 @@ public class CortexConfiguration {
             ApiRegistry apiRegistry,
             McpRegistry mcpRegistry,
             PromptRegistry promptRegistry,
-            ObjectProvider<VersionRegistry> versionRegistry,
+            ObjectProvider<ReleaseRegistry> releaseRegistry,
             Curator curator) {
-        VersionRegistry optionalVersionRegistry = versionRegistry.getIfAvailable();
-        if (optionalVersionRegistry != null) {
-            return Cortex.runtime(apiRegistry, mcpRegistry, promptRegistry, optionalVersionRegistry, curator);
+        ReleaseRegistry optionalReleaseRegistry = releaseRegistry.getIfAvailable();
+        if (optionalReleaseRegistry != null) {
+            return Cortex.runtime(apiRegistry, mcpRegistry, promptRegistry, optionalReleaseRegistry, curator);
         }
         return Cortex.runtime(apiRegistry, mcpRegistry, promptRegistry, curator);
     }

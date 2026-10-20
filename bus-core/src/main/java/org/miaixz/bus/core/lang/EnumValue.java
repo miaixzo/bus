@@ -741,6 +741,81 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
+     * Shared lifecycle phases for resources managed by independent components.
+     *
+     * @author Kimi Liu
+     */
+    enum Phase {
+
+        /**
+         * The resource is a draft and is not yet active.
+         */
+        DRAFT(0),
+        /**
+         * The resource is active and in use.
+         */
+        ACTIVE(1),
+        /**
+         * The resource is deprecated but has not been removed.
+         */
+        DEPRECATED(2),
+        /**
+         * The resource is disabled.
+         */
+        DISABLED(3);
+
+        /**
+         * Stable integer lifecycle key independent from enum declaration order.
+         */
+        private final int key;
+
+        /**
+         * Creates a lifecycle state with its permanent numeric key.
+         *
+         * @param key stable numeric key
+         */
+        Phase(int key) {
+            this.key = key;
+        }
+
+        /**
+         * Returns the permanent lifecycle key for persistence and API transport.
+         *
+         * @return stable numeric key
+         */
+        public int key() {
+            return key;
+        }
+
+        /**
+         * Tests a nullable persisted key without relying on enum ordinals.
+         *
+         * @param key persisted lifecycle key
+         * @return whether the key identifies this state
+         */
+        public boolean matches(Integer key) {
+            return key != null && this.key == key;
+        }
+
+        /**
+         * Resolves one lifecycle state from its stable key.
+         *
+         * @param key persisted lifecycle key
+         * @return matching lifecycle state
+         * @throws IllegalArgumentException when the key is null or unknown
+         */
+        public static Phase fromKey(Integer key) {
+            for (Phase state : values()) {
+                if (state.matches(key)) {
+                    return state;
+                }
+            }
+            throw new IllegalArgumentException("Unknown lifecycle phase key: " + key);
+        }
+
+    }
+
+    /**
      * Enumeration for sorting orders.
      *
      * @author Kimi Liu
@@ -866,6 +941,61 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          */
         Thumb(int code) {
             this.code = code;
+        }
+
+    }
+
+    /**
+     * Built-in publication tracks with normalized string keys and custom-track support.
+     *
+     * @author Kimi Liu
+     */
+    enum Track {
+
+        /**
+         * Stable release track intended for normal production traffic.
+         */
+        STABLE("stable"),
+        /**
+         * Beta release track intended for preview validation.
+         */
+        BETA("beta"),
+        /**
+         * Canary release track intended for limited rollout validation.
+         */
+        CANARY("canary");
+
+        /**
+         * Normalized storage key for the release track.
+         */
+        private final String key;
+
+        /**
+         * Creates a release track with its normalized storage key.
+         *
+         * @param key normalized track key
+         */
+        Track(String key) {
+            this.key = key;
+        }
+
+        /**
+         * Normalizes a raw release track, using the stable track when no value is supplied.
+         *
+         * @param track raw release track
+         * @return normalized release track key
+         */
+        public static String normalize(String track) {
+            return track == null || track.isBlank() ? STABLE.key : track.trim().toLowerCase(java.util.Locale.ROOT);
+        }
+
+        /**
+         * Returns the normalized storage key.
+         *
+         * @return normalized track key
+         */
+        public String key() {
+            return key;
         }
 
     }

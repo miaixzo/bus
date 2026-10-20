@@ -17,12 +17,62 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.cortex.release;
+
+import jakarta.persistence.Lob;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import org.miaixz.bus.cortex.Nature;
+import org.miaixz.bus.cortex.Type;
+
 /**
- * Version-domain records, immutable release artifacts, and publication contracts.
- * <p>
- * {@code VersionRegistry} is a compatibility adapter delegating to {@code VersionStore} and {@code VersionPublisher};
- * it is not backed by registry assets.
+ * Publication record independent from registry assets.
  *
  * @author Kimi Liu
  */
-package org.miaixz.bus.cortex.version;
+@Getter
+@Setter
+public class Release extends Nature {
+
+    /**
+     * Human-readable release title.
+     */
+    private String title;
+
+    /**
+     * Release track key.
+     */
+    private String track;
+
+    /**
+     * Release version identifier.
+     */
+    private String version;
+
+    /**
+     * JSON metadata for release-specific details.
+     */
+    @Lob
+    private String metadata;
+
+    /**
+     * Human-readable release description.
+     */
+    @Lob
+    private String description;
+
+    /**
+     * Publication timestamp in epoch milliseconds.
+     */
+    private Long published;
+
+    /**
+     * Creates a version record with the Cortex VERSION type.
+     */
+    public Release() {
+        setType(Type.VERSION.key());
+    }
+
+}

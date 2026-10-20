@@ -73,6 +73,6 @@ module bus.cortex {
     exports org.miaixz.bus.cortex.setting.secret.provider;
     exports org.miaixz.bus.cortex.setting.event;
     exports org.miaixz.bus.cortex.setting.watch;
-    exports org.miaixz.bus.cortex.version;
+    exports org.miaixz.bus.cortex.release;
 
 }

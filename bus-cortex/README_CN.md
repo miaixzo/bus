@@ -33,7 +33,7 @@
 | **ApiRegistry**     | `ApiAssets` + `Instance` | HTTP / gRPC / MCP / WebSocket / LLM API 服务       |
 | **McpRegistry**     | `McpAssets`              | MCP 工具/服务器定义                                |
 | **PromptRegistry**  | `PromptAssets`           | Prompt 模板管理                                    |
-| **VersionRegistry** | `VersionAssets`          | 服务版本生命周期（ACTIVE / DEPRECATED / DISABLED） |
+| **ReleaseRegistry** | `ReleaseAssets`          | 服务版本生命周期（ACTIVE / DEPRECATED / DISABLED） |
 
 ```java
 // 类型安全的静态 Facade（与 bus-metrics Metrics 模式一致）
@@ -419,7 +419,7 @@ bus:
                             ▼
 ┌──────────────────────────────────────────────────────────────┐
 │                   bus-cortex（注册表+配置中心）                   │
-│  ApiRegistry / McpRegistry / PromptRegistry / VersionRegistry │
+│  ApiRegistry / McpRegistry / PromptRegistry / ReleaseRegistry │
 │  ConfigPublisher / ConfigWatcher / GrayRouter                 │
 │         │ CacheX                    │ VortexBridge            │
 │         ▼                           ▼                         │
@@ -446,7 +446,7 @@ org.miaixz.bus.cortex
 │   ├── api/       ApiAssets + Instance + ApiRegistry + 探测器
 │   ├── mcp/       McpAssets + McpRegistry + ProcessManager
 │   ├── prompt/    PromptAssets + PromptRegistry
-│   ├── version/   VersionAssets + VersionRegistry + VersionStatus
+│   ├── release/   Release + ReleaseAssets + ReleaseRegistry (EnumValue.Phase / EnumValue.Track)
 │   ├── label/     Label + Selector + MetadataRouter（标签路由）
 │   ├── batch/     BatchOperation + BatchResult（批量操作）
 │   └── depend/    DependencyGraph + ImpactAnalysis（依赖拓扑）

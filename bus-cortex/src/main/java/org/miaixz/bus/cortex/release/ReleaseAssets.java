@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.version;
+package org.miaixz.bus.cortex.release;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -40,7 +40,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public class VersionAssets extends Assets {
+public class ReleaseAssets extends Assets {
 
     /**
      * Version-specific metadata view.
@@ -49,9 +49,9 @@ public class VersionAssets extends Assets {
     private Meta meta;
 
     /**
-     * Creates a VersionAssets with the default type set to VERSION.
+     * Creates a ReleaseAssets with the default type set to VERSION.
      */
-    public VersionAssets() {
+    public ReleaseAssets() {
         setType(Type.VERSION.key());
     }
 
@@ -103,7 +103,7 @@ public class VersionAssets extends Assets {
      *
      * @return this asset
      */
-    public VersionAssets normalizeMeta() {
+    public ReleaseAssets normalizeMeta() {
         meta(meta());
         return this;
     }
@@ -229,26 +229,6 @@ public class VersionAssets extends Assets {
     }
 
     /**
-     * Returns the current release state of this version.
-     *
-     * @return version status
-     */
-    public VersionStatus versionStatus() {
-        return meta().getVersionStatus();
-    }
-
-    /**
-     * Stores the current release state into version metadata.
-     *
-     * @param versionStatus version status
-     */
-    public void versionStatus(VersionStatus versionStatus) {
-        Meta meta = meta();
-        meta.setVersionStatus(versionStatus);
-        meta(meta);
-    }
-
-    /**
      * Version-specific metadata payload stored directly in the raw asset metadata JSON payload.
      *
      * @author Kimi Liu
@@ -260,14 +240,8 @@ public class VersionAssets extends Assets {
         /**
          * Fixed metadata members owned by the version subtype, independent of incoming payloads.
          */
-        private static final Set<String> FIELDS = Set.of(
-                "semver",
-                "changelog",
-                "artifact",
-                "compatibleRange",
-                "releasedAt",
-                "supportUntil",
-                "versionStatus");
+        private static final Set<String> FIELDS = Set
+                .of("semver", "changelog", "artifact", "compatibleRange", "releasedAt", "supportUntil");
 
         /**
          * Semantic version string.
@@ -300,11 +274,6 @@ public class VersionAssets extends Assets {
         private Long supportUntil;
 
         /**
-         * Current release state of this version.
-         */
-        private VersionStatus versionStatus;
-
-        /**
          * Creates an empty version metadata view.
          */
         public Meta() {
@@ -329,7 +298,7 @@ public class VersionAssets extends Assets {
                         false,
                         "Cortex",
                         "Cortex operation skipped: provider={}, recoverable={}, exception={}",
-                        "VersionAssets",
+                        "ReleaseAssets",
                         true,
                         ignore.getClass().getSimpleName());
                 return new Meta();
@@ -360,7 +329,6 @@ public class VersionAssets extends Assets {
             values.put("compatibleRange", compatibleRange);
             values.put("releasedAt", releasedAt);
             values.put("supportUntil", supportUntil);
-            values.put("versionStatus", versionStatus);
             return MetadataCodec.merge(metadata, FIELDS, values);
         }
 
