@@ -136,7 +136,18 @@ public class QualifierStrategy extends AbstractStrategy {
                         assets.getPath(),
                         assets.getUrl());
                 Mono<Void> validationMono = this.method(context, assets);
-                Mono<Void> authMono = !Consts.ZERO.equals(assets.getPolicy()) ? this.authorize(context) : Mono.empty();
+                Mono<Void> authMono = !Consts.ZERO.equals(assets.getPolicy()) ? Mono.defer(() -> {
+                    if (Boolean.TRUE.equals(exchange.getAttribute(Context.JSON_ARRAY_BODY_ATTRIBUTE))) {
+                        // The array body is preserved. Query identity claims must never survive verification as
+                        // fallback values for absent principal attributes; routing coordinates stay unchanged.
+                        context.getParameters().keySet().removeIf(name -> {
+                            String key = name.toLowerCase(java.util.Locale.ROOT);
+                            return key.startsWith("x_user_") || key.startsWith("x_tenant_") || key.startsWith("x_space_")
+                                    || key.startsWith("x_role_") || key.startsWith("x_duty_") || key.equals("x_raw_data");
+                        });
+                    }
+                    return this.authorize(context);
+                }) : Mono.empty();
                 return validationMono.then(authMono).then(finalizeParameters(exchange, context));
             }).then(
                     Mono.fromRunnable(
