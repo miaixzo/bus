@@ -4002,6 +4002,15 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.vortex.routing.rest.RestExecutor",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.vortex.routing.ws.WsExecutor$SessionMetadata",
       "fields": [
         {
@@ -4042,6 +4051,18 @@
         {
           "name": "getUpstreamTarget",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.vortex.strategy.QualifierStrategy",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.vortex.provider.AuthorizeProvider",
+            "org.miaixz.bus.vortex.registry.AssetsRegistry"
+          ]
         }
       ]
     },

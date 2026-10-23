@@ -19,11 +19,19 @@
 */
 package org.miaixz.bus.vortex.routing.rest;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.NonNull;
+import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.UrlKit;
+import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.vortex.*;
+import org.miaixz.bus.vortex.routing.Coordinator;
+import org.miaixz.bus.vortex.routing.StreamingRelay;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferLimitException;
 import org.springframework.core.io.buffer.PooledDataBuffer;
@@ -38,23 +46,13 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.annotation.NonNull;
-import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.core.xyz.UrlKit;
-import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.*;
-import org.miaixz.bus.vortex.routing.Coordinator;
-import org.miaixz.bus.vortex.routing.StreamingRelay;
-
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The core executor for executing RESTful HTTP requests to downstream services.
@@ -109,7 +107,10 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 baseUrl);
 
         Assets assets = context.getAssets();
-        URI targetUri = buildTargetUri(assets, context, baseUrl,
+        URI targetUri = buildTargetUri(
+                assets,
+                context,
+                baseUrl,
                 Boolean.TRUE.equals(request.exchange().getAttribute(Context.JSON_ARRAY_BODY_ATTRIBUTE)));
         Logger.info(
                 true,
@@ -411,7 +412,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * @param assets  The configured assets for the target executor.
      * @param context The request context.
      * @param baseUrl The already resolved downstream base URL for a relative route.
-     * @param array whether the original body is a JSON array whose verified context belongs in the query
+     * @param array   whether the original body is a JSON array whose verified context belongs in the query
      * @return The constructed target URI string, including query parameters.
      */
     private URI buildTargetUri(Assets assets, Context context, String baseUrl, boolean array) {
@@ -428,7 +429,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      *
      * @param context       request context
      * @param assetRawQuery query configured on the route URL, if any
-     * @param array whether to forward verified parameters instead of the untrusted original array query
+     * @param array         whether to forward verified parameters instead of the untrusted original array query
      * @return raw query string
      */
     private String buildForwardQuery(Context context, String assetRawQuery, boolean array) {
@@ -828,7 +829,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                                 path,
                                 delivery,
                                 dataBuffer.readableByteCount()))
-                        .doOnDiscard(PooledDataBuffer.class, Octets::release);
+                .doOnDiscard(PooledDataBuffer.class, Octets::release);
 
         bodyFlux = StreamingRelay.relay(bodyFlux, delivery);
 
