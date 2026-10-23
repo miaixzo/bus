@@ -109,7 +109,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 baseUrl);
 
         Assets assets = context.getAssets();
-        URI targetUri = buildTargetUri(assets, context, baseUrl);
+        URI targetUri = buildTargetUri(assets, context, baseUrl,
+                Boolean.TRUE.equals(request.exchange().getAttribute(Context.JSON_ARRAY_BODY_ATTRIBUTE)));
         Logger.info(
                 true,
                 "Vortex",
@@ -410,13 +411,14 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * @param assets  The configured assets for the target executor.
      * @param context The request context.
      * @param baseUrl The already resolved downstream base URL for a relative route.
+     * @param array whether the original body is a JSON array whose verified context belongs in the query
      * @return The constructed target URI string, including query parameters.
      */
-    private URI buildTargetUri(Assets assets, Context context, String baseUrl) {
+    private URI buildTargetUri(Assets assets, Context context, String baseUrl, boolean array) {
         URI routeUri = UrlKit.toURI(assets.getUrl());
         String routeUrl = stripQueryAndFragment(assets.getUrl());
         String routeBaseUrl = routeUri.isAbsolute() ? routeUrl : joinPath(baseUrl, routeUrl);
-        String rawQuery = buildForwardQuery(context, routeUri.getRawQuery());
+        String rawQuery = buildForwardQuery(context, routeUri.getRawQuery(), array);
         return UrlKit
                 .toURI(StringKit.isBlank(rawQuery) ? routeBaseUrl : routeBaseUrl + Symbol.QUESTION_MARK + rawQuery);
     }
@@ -426,19 +428,20 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      *
      * @param context       request context
      * @param assetRawQuery query configured on the route URL, if any
+     * @param array whether to forward verified parameters instead of the untrusted original array query
      * @return raw query string
      */
-    private String buildForwardQuery(Context context, String assetRawQuery) {
+    private String buildForwardQuery(Context context, String assetRawQuery, boolean array) {
         List<String> parts = new ArrayList<>();
         if (StringKit.isNotBlank(assetRawQuery)) {
             parts.add(assetRawQuery);
         }
         Map<String, String> query = context.getQuery();
-        if (!query.isEmpty()) {
+        if (!array && !query.isEmpty()) {
             query.forEach((key, value) -> addQueryPair(parts, key, value));
         }
 
-        if (context.getHttpMethod() == Http.Method.GET) {
+        if (context.getHttpMethod() == Http.Method.GET || array) {
             Map<String, Object> parameters = context.getParameters();
             if (!parameters.isEmpty()) {
                 parameters.forEach((key, value) -> {
@@ -459,7 +462,10 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * @param value parameter value
      */
     private void addQueryPair(List<String> parts, String key, String value) {
-        if (Args.isForwardingControlParameter(key)) {
+        // The raw authorization projection is gateway-internal evidence. Forwarding it in a GET URI both exposes
+        // internal claims to downstream applications and can exceed the request-line limit for broad administrator
+        // roles. Downstream services receive the bounded, verified identity fields separately.
+        if (Args.isForwardingControlParameter(key) || "x_raw_data".equalsIgnoreCase(key)) {
             return;
         }
         parts.add(UrlKit.toQuery(Map.of(key, StringKit.toStringOrEmpty(value)), Charset.UTF_8));
