@@ -142,8 +142,9 @@ public class QualifierStrategy extends AbstractStrategy {
                         // fallback values for absent principal attributes; routing coordinates stay unchanged.
                         context.getParameters().keySet().removeIf(name -> {
                             String key = name.toLowerCase(java.util.Locale.ROOT);
-                            return key.startsWith("x_user_") || key.startsWith("x_tenant_") || key.startsWith("x_space_")
-                                    || key.startsWith("x_role_") || key.startsWith("x_duty_") || key.equals("x_raw_data");
+                            return key.startsWith("x_user_") || key.startsWith("x_tenant_")
+                                    || key.startsWith("x_space_") || key.startsWith("x_role_")
+                                    || key.startsWith("x_duty_") || key.equals("x_raw_data");
                         });
                     }
                     return this.authorize(context);
