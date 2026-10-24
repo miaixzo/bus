@@ -85,11 +85,6 @@ public class CortexProperties {
     private final String settingDataId;
 
     /**
-     * Maximum number of remote setting versions retained locally.
-     */
-    private final int maxSettingVersions;
-
-    /**
      * Maximum active watches permitted within one tenantId.
      */
     private final int maxWatchesPerTenant;
@@ -130,7 +125,7 @@ public class CortexProperties {
     private final Audit audit;
 
     /**
-     * Release-history limits and retention settings.
+     * Read-only formal release registry settings.
      */
     private final Release release;
 
@@ -145,7 +140,6 @@ public class CortexProperties {
      * @param serverEnabled       whether this application hosts Cortex server components
      * @param settingGroup        default setting group
      * @param settingDataId       default setting identifier
-     * @param maxSettingVersions  retained setting revision count
      * @param maxWatchesPerTenant watch registration limit per tenantId
      * @param watchExpire         watch registration expiry
      * @param cacheExpire         default Cortex cache expiry
@@ -160,12 +154,12 @@ public class CortexProperties {
             @DefaultValue(Normal.EMPTY) String tenantId, @DefaultValue("true") boolean autoRegister,
             @DefaultValue("true") boolean settingEnabled, @DefaultValue("false") boolean serverEnabled,
             @DefaultValue("DEFAULT") String settingGroup, @DefaultValue(Normal.EMPTY) String settingDataId,
-            @DefaultValue("10") int maxSettingVersions, @DefaultValue("1000") int maxWatchesPerTenant,
-            @DefaultValue("24h") Duration watchExpire, @DefaultValue("1h") Duration cacheExpire, Options cache,
-            @DefaultValue Watch watch, @DefaultValue Bridge bridge, @DefaultValue Guard guard,
-            @DefaultValue Audit audit, @DefaultValue Release release) {
-        if (maxSettingVersions <= 0 || maxWatchesPerTenant <= 0) {
-            throw new IllegalArgumentException("Cortex release and watch limits must be greater than zero");
+            @DefaultValue("1000") int maxWatchesPerTenant, @DefaultValue("24h") Duration watchExpire,
+            @DefaultValue("1h") Duration cacheExpire, Options cache, @DefaultValue Watch watch,
+            @DefaultValue Bridge bridge, @DefaultValue Guard guard, @DefaultValue Audit audit,
+            @DefaultValue Release release) {
+        if (maxWatchesPerTenant <= 0) {
+            throw new IllegalArgumentException("Cortex watch limits must be greater than zero");
         }
         if (watchExpire == null || watchExpire.isZero() || watchExpire.isNegative() || cacheExpire == null
                 || cacheExpire.isZero() || cacheExpire.isNegative()) {
@@ -179,7 +173,6 @@ public class CortexProperties {
         this.serverEnabled = serverEnabled;
         this.settingGroup = settingGroup;
         this.settingDataId = settingDataId;
-        this.maxSettingVersions = maxSettingVersions;
         this.maxWatchesPerTenant = maxWatchesPerTenant;
         this.watchExpire = watchExpire;
         this.cacheExpire = cacheExpire;
@@ -216,15 +209,6 @@ public class CortexProperties {
     }
 
     /**
-     * Validates the max setting versions.
-     *
-     * @return retained setting revision count
-     */
-    public int requireMaxSettingVersions() {
-        return maxSettingVersions;
-    }
-
-    /**
      * Validates the max watches per tenantId.
      *
      * @return watch registration limit
@@ -257,14 +241,15 @@ public class CortexProperties {
     @Override
     public String toString() {
         return "CortexProperties[enabled=" + enabled + ", tenantId=" + tenantId + ", serverEnabled=" + serverEnabled
-                + ", maxSettingVersions=" + maxSettingVersions + ", maxWatchesPerTenant=" + maxWatchesPerTenant
-                + ", watchExpire=" + watchExpire + ", cacheExpire=" + cacheExpire + ", guard=***]";
+                + ", maxWatchesPerTenant=" + maxWatchesPerTenant + ", watchExpire=" + watchExpire + ", cacheExpire="
+                + cacheExpire + ", guard=***]";
     }
 
     /**
      * Watch integration options.
      *
      * @param loggingEnabled logging enabled
+     * @author Kimi Liu
      */
     public record Watch(boolean loggingEnabled) {
 
@@ -274,6 +259,7 @@ public class CortexProperties {
         public Watch() {
             this(false);
         }
+
     }
 
     /**
@@ -283,8 +269,10 @@ public class CortexProperties {
      * @param url        service endpoint URL
      * @param maxRetries max retries
      * @param source     source schema settings
+     * @author Kimi Liu
      */
-    public record Bridge(String mode, String url, int maxRetries, String source) {
+    public record Bridge(@DefaultValue("pull-only") String mode, @DefaultValue(Normal.EMPTY) String url,
+            @DefaultValue("3") int maxRetries, @DefaultValue(Normal.EMPTY) String source) {
 
         /**
          * Creates and validates bridge options.
@@ -336,6 +324,7 @@ public class CortexProperties {
         public String resolveSource() {
             return source;
         }
+
     }
 
     /**
@@ -343,8 +332,9 @@ public class CortexProperties {
      *
      * @param enabled whether the feature is enabled
      * @param token   guard token
+     * @author Kimi Liu
      */
-    public record Guard(boolean enabled, Token token) {
+    public record Guard(@DefaultValue("true") boolean enabled, @DefaultValue Token token) {
 
         /**
          * Creates guard defaults.
@@ -361,10 +351,13 @@ public class CortexProperties {
         public Token getToken() {
             return token;
         }
+
     }
 
     /**
      * Token guard binding type retained for the Cortex guard contract.
+     *
+     * @author Kimi Liu
      */
     public static class Token extends TokenGuardConfig {
 
@@ -374,12 +367,14 @@ public class CortexProperties {
         public Token() {
             super();
         }
+
     }
 
     /**
      * Audit integration options.
      *
      * @param enabled whether the feature is enabled
+     * @author Kimi Liu
      */
     public record Audit(boolean enabled) {
 
@@ -389,12 +384,14 @@ public class CortexProperties {
         public Audit() {
             this(false);
         }
+
     }
 
     /**
      * Release registry options.
      *
      * @param enabled whether the feature is enabled
+     * @author Kimi Liu
      */
     public record Release(boolean enabled) {
 
@@ -414,6 +411,7 @@ public class CortexProperties {
         public Release() {
             this(false);
         }
+
     }
 
 }

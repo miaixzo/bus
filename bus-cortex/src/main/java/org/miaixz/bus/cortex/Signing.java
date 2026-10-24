@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex;
 
+import org.miaixz.bus.core.xyz.EnumKit;
+
 /**
  * Request-signing modes persisted by Cortex assets.
  * <p>
@@ -75,12 +77,11 @@ public enum Signing {
         if (code == null) {
             throw new IllegalArgumentException("Signing must be configured");
         }
-        return switch (code) {
-            case 0 -> NONE;
-            case 1 -> LEGACY;
-            case 2 -> V1;
-            default -> throw new IllegalArgumentException("Unsupported signing code: " + code);
-        };
+        Signing signing = EnumKit.getBy(Signing.class, candidate -> candidate.code == code);
+        if (signing == null) {
+            throw new IllegalArgumentException("Unsupported signing code: " + code);
+        }
+        return signing;
     }
 
     /**
@@ -112,6 +113,8 @@ public enum Signing {
 
     /**
      * Credential domains supported by credential-bound signing modes.
+     *
+     * @author Kimi Liu
      */
     public enum Credential {
 

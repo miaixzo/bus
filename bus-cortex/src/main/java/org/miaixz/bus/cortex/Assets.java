@@ -30,6 +30,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import org.miaixz.bus.core.center.date.Chrono;
 import org.miaixz.bus.cortex.builtin.Label;
 import org.miaixz.bus.cortex.builtin.LabelMapper;
 
@@ -215,7 +216,7 @@ public class Assets extends Nature {
      */
     @Transient
     @Builder.Default
-    private long ttl = 3600_000L;
+    private long ttl = Chrono.HOUR.getMillis();
 
     /**
      * Structured key-value labels attached to the entry, used for routing, filtering and discovery.

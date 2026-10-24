@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.EnumKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -58,9 +59,9 @@ public enum Type {
     ITEM(7, "Setting item", Domain.SETTING),
 
     /**
-     * Historical setting item snapshot.
+     * Immutable configuration definition snapshot created by a successful publication.
      */
-    ITEM_REVISION(8, "Setting item revision", Domain.SETTING),
+    REVISION(8, "Setting revision", Domain.SETTING),
 
     /**
      * Setting resource reference relationship.
@@ -73,9 +74,9 @@ public enum Type {
     VERSION(Normal._10, "Version snapshot", Domain.VERSION),
 
     /**
-     * Registered runtime instance resource.
+     * Shared application process resource.
      */
-    INSTANCE(11, "Setting runtime instance", Domain.SETTING),
+    INSTANCE(11, "Application runtime instance", Domain.SETTING),
 
     /**
      * Runtime configuration watch resource.
@@ -157,12 +158,7 @@ public enum Type {
         if (key == null) {
             return Optional.empty();
         }
-        for (Type type : values()) {
-            if (type.key == key) {
-                return Optional.of(type);
-            }
-        }
-        return Optional.empty();
+        return Optional.ofNullable(EnumKit.getBy(Type.class, type -> type.key == key));
     }
 
     /**
@@ -197,12 +193,10 @@ public enum Type {
                     true,
                     ignore.getClass().getSimpleName());
         }
-        for (Type type : values()) {
-            if (type.name().equalsIgnoreCase(value) || type.desc.equalsIgnoreCase(value)) {
-                return Optional.of(type);
-            }
-        }
-        return Optional.empty();
+        return Optional.ofNullable(
+                EnumKit.getBy(
+                        Type.class,
+                        type -> type.name().equalsIgnoreCase(value) || type.desc.equalsIgnoreCase(value)));
     }
 
     /**
@@ -232,7 +226,7 @@ public enum Type {
      *
      * @return registry asset types
      */
-    public static List<Type> registryTypes() {
+    public static List<Type> registry() {
         return List.of(API, MCP, PROMPT);
     }
 
@@ -241,8 +235,8 @@ public enum Type {
      *
      * @return setting-domain resource types
      */
-    public static List<Type> settingTypes() {
-        return List.of(APP, ITEM, ITEM_REVISION, REFERENCE, INSTANCE, WATCH, ROLLOUT);
+    public static List<Type> setting() {
+        return List.of(APP, ITEM, REVISION, REFERENCE, INSTANCE, WATCH, ROLLOUT);
     }
 
     /**

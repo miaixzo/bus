@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.cortex.magic.runtime.CortexDiagnostics;
 import org.miaixz.bus.cortex.magic.runtime.CortexLifecycle;
 import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
@@ -32,7 +33,6 @@ import org.miaixz.bus.cortex.registry.api.ApiAssets;
 import org.miaixz.bus.cortex.registry.mcp.McpAssets;
 import org.miaixz.bus.cortex.registry.prompt.PromptAssets;
 import org.miaixz.bus.cortex.release.ReleaseAssets;
-import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemQuery;
 import org.miaixz.bus.logger.Logger;
 
@@ -210,9 +210,12 @@ public class Cortex {
     public static RuntimeHandle bind(Runtime runtime) {
         Runtime next = Objects.requireNonNull(runtime, "runtime");
         Logger.info(true, "Cortex", "Runtime binding requested: runtimeType={}", next.getClass().getName());
-        install(next);
+        RuntimeHandle handle;
+        synchronized (MONITOR) {
+            handle = new RuntimeHandle(install(next));
+        }
         Logger.info(false, "Cortex", "Runtime binding completed: initialized={}", isInitialized());
-        return new RuntimeHandle(next);
+        return handle;
     }
 
     /**
@@ -480,7 +483,8 @@ public class Cortex {
      * Returns current setting content for tenant-qualified item coordinates.
      *
      * @param query tenant-qualified item query
-     * @return content resolved by the curator, including an opted-in runtime overlay or query fallback when applicable
+     * @return content resolved by the curator, from an authorized frozen release, or the query fallback for authorized
+     *         absence
      */
     public static String get(ItemQuery query) {
         String content = curator().get(query);
@@ -495,27 +499,13 @@ public class Cortex {
     }
 
     /**
-     * Stages setting content through the configured curator; activation belongs to the approved publication workflow.
-     *
-     * @param item tenant-qualified item and content to stage
-     */
-    public static void publish(Item item) {
-        curator().publish(item);
-        Logger.info(
-                false,
-                "Cortex",
-                "Setting publish completed: tenant={}, code={}",
-                item.getTenant_id(),
-                item.getCode());
-    }
-
-    /**
-     * Installs the given runtime snapshot into the static facade.
+     * Installs the given runtime snapshot or returns the already installed owner for the same component assembly.
      *
      * @param next runtime bundle to expose through {@code Cortex}
+     * @return canonical installed runtime owning the component lifecycle
      * @throws IllegalStateException if different components are already bound
      */
-    private static void install(Runtime next) {
+    private static Runtime install(Runtime next) {
         synchronized (MONITOR) {
             if (current == null) {
                 current = next;
@@ -528,11 +518,12 @@ public class Cortex {
                         next.prompt().getClass().getSimpleName(),
                         next.release() == null ? null : next.release().getClass().getSimpleName(),
                         next.components().size());
-                return;
+                return next;
             }
             if (!current.sameAs(next)) {
                 throw new IllegalStateException("Cortex is already initialized with different components");
             }
+            return current;
         }
     }
 
@@ -555,13 +546,7 @@ public class Cortex {
         if (components == null || components.length == 0) {
             return List.of();
         }
-        List<Object> result = new ArrayList<>(components.length);
-        for (Object component : components) {
-            if (component != null) {
-                result.add(component);
-            }
-        }
-        return List.copyOf(result);
+        return List.of(ArrayKit.removeNull(components));
     }
 
     /**
@@ -572,7 +557,7 @@ public class Cortex {
     public static class RuntimeHandle implements AutoCloseable {
 
         /**
-         * Runtime snapshot owned by this lifecycle handle.
+         * Canonical runtime owner captured by this lifecycle handle.
          */
         private final Runtime runtime;
 
@@ -582,12 +567,16 @@ public class Cortex {
         private boolean closed;
 
         /**
-         * Creates a lifecycle handle for the given runtime snapshot.
+         * Captures the installed owner for the same active component assembly, or the supplied standalone runtime. A
+         * stopped runtime retains its original ownership and cannot attach this handle to a later installation.
          *
-         * @param runtime runtime bundle installed into the facade
+         * @param runtime runtime bundle whose lifecycle is owned by this handle
          */
         public RuntimeHandle(Runtime runtime) {
-            this.runtime = runtime;
+            Objects.requireNonNull(runtime, "runtime");
+            synchronized (MONITOR) {
+                this.runtime = !runtime.stopped.get() && current != null && current.sameAs(runtime) ? current : runtime;
+            }
         }
 
         /**
@@ -600,7 +589,7 @@ public class Cortex {
                 if (closed) {
                     return;
                 }
-                if (Cortex.current != null && Cortex.current.sameAs(runtime)) {
+                if (Cortex.current == runtime) {
                     Cortex.current = null;
                 }
                 closed = true;

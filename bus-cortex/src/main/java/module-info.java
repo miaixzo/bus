@@ -66,7 +66,6 @@ module bus.cortex {
     exports org.miaixz.bus.cortex.setting.delivery;
     exports org.miaixz.bus.cortex.setting.item;
     exports org.miaixz.bus.cortex.setting.revision;
-    exports org.miaixz.bus.cortex.setting.instance;
     exports org.miaixz.bus.cortex.setting.reference;
     exports org.miaixz.bus.cortex.setting.rollout;
     exports org.miaixz.bus.cortex.setting.secret;

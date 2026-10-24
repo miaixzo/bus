@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.setting.item;
+package org.miaixz.bus.cortex.setting.rollout;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class GrayRule {
     /**
      * Gray-routing strategy type.
      */
-    private GrayType type;
+    private Type type;
 
     /**
      * Explicit client IP addresses matched by the rule.
@@ -56,24 +56,9 @@ public class GrayRule {
     private int percentage;
 
     /**
-     * Request header name used for header-based matching.
-     */
-    private String headerKey;
-
-    /**
-     * Required request header value for header-based matching.
-     */
-    private String headerValue;
-
-    /**
      * Tenant identifier matched by tenant-based rules.
      */
     private String tenant;
-
-    /**
-     * User identifier matched by user-based rules.
-     */
-    private String userId;
 
     /**
      * Label key used by label-based rules.
@@ -109,7 +94,6 @@ public class GrayRule {
             case PERCENTAGE -> percentage >= 0 && percentage <= 100;
             case TENANT -> tenant != null && !tenant.isBlank();
             case LABEL -> labelKey != null && !labelKey.isBlank() && labelValue != null;
-            case HEADER, USER -> false;
         };
         if (!valid) {
             throw new IllegalArgumentException("Invalid configuration-instance gray selector");
@@ -118,16 +102,42 @@ public class GrayRule {
     }
 
     /**
-     * Returns a concise textual representation of the configured gray-release rule.
+     * Creates an independent rule copy.
      *
-     * @return rule description
+     * @return detached selector
      */
-    @Override
-    public String toString() {
-        return "GrayRule{" + "type=" + type + ", ipList=" + ipList + ", ipRange='" + ipRange + '\'' + ", percentage="
-                + percentage + ", headerKey='" + headerKey + '\'' + ", headerValue='" + headerValue + '\''
-                + ", tenant='" + tenant + '\'' + ", userId='" + userId + '\'' + ", labelKey='" + labelKey + '\''
-                + ", labelValue='" + labelValue + '\'' + '}';
+    public GrayRule copy() {
+        return GrayRule.builder().type(type).ipList(ipList == null ? null : List.copyOf(ipList)).ipRange(ipRange)
+                .percentage(percentage).tenant(tenant).labelKey(labelKey).labelValue(labelValue).build();
+    }
+
+    /**
+     * Supported configuration-instance selectors.
+     *
+     * @author Kimi Liu
+     */
+    public enum Type {
+        /**
+         * Explicit instance addresses.
+         */
+        IP_LIST,
+        /**
+         * Inclusive IPv4 range.
+         */
+        IP_RANGE,
+        /**
+         * Stable instance percentage.
+         */
+        PERCENTAGE,
+        /**
+         * Authenticated tenant.
+         */
+        TENANT,
+        /**
+         * Trusted instance label.
+         */
+        LABEL
+
     }
 
 }

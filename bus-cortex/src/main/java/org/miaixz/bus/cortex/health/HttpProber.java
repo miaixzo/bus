@@ -22,6 +22,7 @@ package org.miaixz.bus.cortex.health;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.logger.Logger;
 
@@ -82,7 +83,7 @@ public class HttpProber implements Prober {
         int port = instance.getPort() != null ? instance.getPort() : Port._80.getPort();
         String path = instance.getHealthPath() != null ? instance.getHealthPath() : Symbol.SLASH + "health";
         String url = scheme + Symbol.COLON + Symbol.FORWARDSLASH + host + Symbol.COLON + port + path;
-        long start = System.currentTimeMillis();
+        long start = DateKit.current();
         Logger.debug(
                 true,
                 "Cortex",
@@ -92,7 +93,7 @@ public class HttpProber implements Prober {
                 path,
                 timeoutMs);
         Callout.Response response = Callout.get(url, timeoutMs);
-        long latency = System.currentTimeMillis() - start;
+        long latency = DateKit.current() - start;
         if (response.errorMessage() != null) {
             Logger.warn(
                     false,

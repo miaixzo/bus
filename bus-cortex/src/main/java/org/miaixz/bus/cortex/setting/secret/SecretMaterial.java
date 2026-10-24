@@ -23,12 +23,15 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 
 /**
  * Owns one private character array and immutable backend metadata. Copy and close are synchronized; each returned copy
  * belongs to the caller and must be erased separately. Closing is idempotent and does not wipe input arrays or
  * immutable strings held elsewhere.
+ *
+ * @author Kimi Liu
  */
 public final class SecretMaterial implements AutoCloseable {
 
@@ -137,7 +140,7 @@ public final class SecretMaterial implements AutoCloseable {
     @Override
     public synchronized void close() {
         if (material != null) {
-            Arrays.fill(material, '\0');
+            Arrays.fill(material, Symbol.C_NUL);
             material = null;
         }
     }

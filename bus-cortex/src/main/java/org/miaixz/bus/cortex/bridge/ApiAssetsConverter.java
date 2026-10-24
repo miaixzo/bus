@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex.bridge;
 
+import java.util.Objects;
+
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.registry.RegistryAssets;
@@ -42,12 +44,15 @@ public class ApiAssetsConverter {
      * Converts a service definition and runtime instance into a gateway Assets object.
      *
      * @param service  API service definition
-     * @param instance runtime instance associated with the service
+     * @param instance shared runtime process associated with the service
      * @return populated Assets ready for gateway registration
      */
     public static Assets convert(ApiAssets service, Instance instance) {
+        if (service == null || instance == null || !Objects.equals(service.getApp_id(), instance.getApp_id())) {
+            throw new IllegalArgumentException("Instance application does not match the API definition");
+        }
         Assets asset = RegistryAssets.copy(service);
-        asset.setId(instance.getFingerprint());
+        asset.setId(instance.getChecksum());
         asset.setHost(instance.getHost());
         asset.setPort(instance.getPort());
         asset.setWeight(instance.getWeight());

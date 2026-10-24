@@ -24,6 +24,7 @@ import java.util.*;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
@@ -1125,121 +1126,15 @@ public class RegistryControlService {
             return List.of();
         }
         Map<String, Object> root = JsonKit.toMap(asset.getMetadata());
-        List<String> dependencies = strings(root.get("dependsOn"));
+        List<String> dependencies = ObjectKit.defaultIfNull(MetadataCodec.strings(root.get("dependsOn")), List.of());
         if (!dependencies.isEmpty()) {
             return dependencies;
         }
-        Map<String, Object> cortex = objectMap(root.get("_cortex"));
+        Map<String, Object> cortex = MetadataCodec.object(root.get(MetadataCodec.ROOT));
         if (cortex != null) {
-            return strings(cortex.get("dependsOn"));
+            return ObjectKit.defaultIfNull(MetadataCodec.strings(cortex.get("dependsOn")), List.of());
         }
         return List.of();
-    }
-
-    /**
-     * Converts one metadata value into a list of dependency strings.
-     *
-     * @param value metadata value
-     * @return dependency strings
-     */
-    private List<String> strings(Object value) {
-        if (value == null) {
-            return List.of();
-        }
-        if (value instanceof Iterable<?> iterable) {
-            List<String> result = new ArrayList<>();
-            for (Object item : iterable) {
-                String text = scalarString(item);
-                if (text != null) {
-                    result.add(text);
-                }
-            }
-            return result;
-        }
-        try {
-            List<Object> parsed = JsonKit.toList(JsonKit.toJsonString(value), Object.class);
-            if (parsed == null) {
-                return List.of();
-            }
-            List<String> result = new ArrayList<>(parsed.size());
-            for (Object item : parsed) {
-                String text = scalarString(item);
-                if (text != null) {
-                    result.add(text);
-                }
-            }
-            return result;
-        } catch (Exception ignore) {
-            Logger.debug(
-                    false,
-                    "Cortex",
-                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
-                    "RegistryControlService",
-                    true,
-                    ignore.getClass().getSimpleName());
-            return List.of();
-        }
-    }
-
-    /**
-     * Converts one scalar dependency payload into a string.
-     *
-     * @param value dependency payload
-     * @return string value or {@code null}
-     */
-    private String scalarString(Object value) {
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof CharSequence || value instanceof Number || value instanceof Boolean) {
-            return value.toString();
-        }
-        try {
-            return JsonKit.toPojo(JsonKit.toJsonString(value), String.class);
-        } catch (Exception ignore) {
-            Logger.debug(
-                    false,
-                    "Cortex",
-                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
-                    "RegistryControlService",
-                    true,
-                    ignore.getClass().getSimpleName());
-            return value.toString();
-        }
-    }
-
-    /**
-     * Converts one metadata payload into a mutable string-keyed map.
-     *
-     * @param value metadata payload
-     * @return mutable metadata map or {@code null}
-     */
-    private Map<String, Object> objectMap(Object value) {
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof Map<?, ?> map) {
-            Map<String, Object> result = new LinkedHashMap<>();
-            for (Map.Entry<?, ?> entry : map.entrySet()) {
-                if (entry.getKey() != null) {
-                    result.put(entry.getKey().toString(), entry.getValue());
-                }
-            }
-            return result;
-        }
-        try {
-            Map<String, Object> result = JsonKit.toMap(JsonKit.toJsonString(value));
-            return result == null ? null : new LinkedHashMap<>(result);
-        } catch (Exception ignore) {
-            Logger.debug(
-                    false,
-                    "Cortex",
-                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
-                    "RegistryControlService",
-                    true,
-                    ignore.getClass().getSimpleName());
-            return null;
-        }
     }
 
     /**
@@ -1270,7 +1165,7 @@ public class RegistryControlService {
          * Creates batch operations bound to the enclosing control service.
          */
         private ControlRegistryBatchOperations() {
-            // The enclosing instance supplies all registry collaborators.
+            // No initialization required.
         }
 
         /**

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex.health;
 
+import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.Prober;
 import org.miaixz.bus.cortex.Status;
@@ -63,9 +64,9 @@ public class ProcessProber implements Prober {
         if (pid == null) {
             return Status.fail("No PID available for process check", name());
         }
-        long start = System.currentTimeMillis();
+        long start = DateKit.current();
         boolean alive = ProcessHandle.of(pid).isPresent();
-        long latency = System.currentTimeMillis() - start;
+        long latency = DateKit.current() - start;
         if (alive) {
             return Status.ok(latency, name()).detail("pid", pid.toString());
         }

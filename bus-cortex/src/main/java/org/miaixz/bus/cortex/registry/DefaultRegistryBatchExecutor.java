@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.builtin.batch.BatchOperation;
@@ -115,7 +116,7 @@ public class DefaultRegistryBatchExecutor implements RegistryBatchExecutor {
             try {
                 operations.enforce(
                         operation.getOperationType() == null ? "batch"
-                                : operation.getOperationType().name().toLowerCase(),
+                                : StringKit.toLowerCase(operation.getOperationType().name()),
                         RegistryIdentity.type(entry),
                         entry);
                 applyBatchEntry(operation, entry, result, operations, lookup);

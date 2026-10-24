@@ -26,7 +26,13 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CryptoException;
+import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.cortex.setting.secret.SecretContext;
 import org.miaixz.bus.cortex.setting.secret.SecretMaterial;
 import org.miaixz.bus.cortex.setting.secret.SecretProvider;
@@ -37,6 +43,8 @@ import org.miaixz.bus.fabric.protocol.http.HttpX;
 
 /**
  * Direct Vault KV v2 reads. Mount and namespace are connection-bound, not request-controlled.
+ *
+ * @author Kimi Liu
  */
 public final class VaultKvSecretProvider implements SecretProvider {
 
@@ -139,7 +147,7 @@ public final class VaultKvSecretProvider implements SecretProvider {
         }
         this.endpoint = CloudProtocol.endpoint(endpoint);
         this.mount = path(mount);
-        if (namespace != null && !namespace.matches("[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*")) {
+        if (namespace != null && !PatternKit.isMatch(Pattern.get("[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*", 0), namespace)) {
             throw new IllegalArgumentException("Invalid fixed Vault namespace");
         }
         this.namespace = namespace;
@@ -161,16 +169,17 @@ public final class VaultKvSecretProvider implements SecretProvider {
         if (value == null || value.isEmpty() || value.length() > 4096) {
             throw new CryptoException("Invalid secret reference");
         }
-        String[] parts = value.split("/", -1);
+        String[] parts = value.split(Symbol.SLASH, -1);
         for (int index = 0; index < parts.length; index++) {
             String part = parts[index];
-            if (part.isEmpty() || part.equals(".") || part.equals("..") || part.indexOf('%') >= 0
-                    || part.indexOf('\\') >= 0 || part.chars().anyMatch(c -> Character.isISOControl(c))) {
+            if (part.isEmpty() || part.equals(Symbol.DOT) || part.equals(Symbol.DOUBLE_DOT)
+                    || part.indexOf(Symbol.C_PERCENT) >= 0 || part.indexOf(Symbol.C_BACKSLASH) >= 0
+                    || part.chars().anyMatch(c -> Character.isISOControl(c))) {
                 throw new CryptoException("Invalid secret reference");
             }
             parts[index] = CloudProtocol.encode(part);
         }
-        return String.join("/", parts);
+        return String.join(Symbol.SLASH, parts);
     }
 
     /**
@@ -183,7 +192,7 @@ public final class VaultKvSecretProvider implements SecretProvider {
      */
     private static String version(String value) {
         try {
-            if (!value.matches("[1-9][0-9]{0,18}") || Long.parseLong(value) <= 0) {
+            if (!PatternKit.isMatch(Pattern.get("[1-9][0-9]{0,18}", 0), value) || Long.parseLong(value) <= 0) {
                 throw new IllegalArgumentException();
             }
             return value;
@@ -231,7 +240,8 @@ public final class VaultKvSecretProvider implements SecretProvider {
         String encoded = path(reference.resource());
         String selected = reference.version() != null ? version(reference.version()) : null;
         URI uri = URI.create(
-                endpoint + "v1/" + mount + "/data/" + encoded + (selected == null ? "" : "?version=" + selected));
+                endpoint + "v1/" + mount + "/data/" + encoded
+                        + (selected == null ? Normal.EMPTY : "?version=" + selected));
         Map<?, ?> response = CloudProtocol.exchange(
                 attempt -> request(uri, attempt),
                 context,
@@ -289,7 +299,7 @@ public final class VaultKvSecretProvider implements SecretProvider {
     private HttpX.Builder request(URI uri, SecretContext context) {
         try (CloudCredentials token = tokens.acquire(context)) {
             HttpX.Builder request = http.get().to(uri.toString()).header("X-Vault-Token", token.header())
-                    .header("Accept", "application/json").get();
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).get();
             if (namespace != null) {
                 request.header("X-Vault-Namespace", namespace);
             }

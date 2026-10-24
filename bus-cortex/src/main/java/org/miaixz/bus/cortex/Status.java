@@ -27,6 +27,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import org.miaixz.bus.core.xyz.DateKit;
+
 /**
  * Result of a health check probe.
  *
@@ -104,7 +106,7 @@ public class Status {
         r.message = "OK";
         r.source = source;
         r.state = Health.UP.name();
-        r.timestamp = System.currentTimeMillis();
+        r.timestamp = DateKit.current();
         return r;
     }
 
@@ -132,7 +134,7 @@ public class Status {
         r.message = message;
         r.source = source;
         r.state = Health.DOWN.name();
-        r.timestamp = System.currentTimeMillis();
+        r.timestamp = DateKit.current();
         return r;
     }
 
@@ -155,6 +157,8 @@ public class Status {
 
     /**
      * Health lifecycle reported by trusted probes.
+     *
+     * @author Kimi Liu
      */
     public enum Health {
         /**
@@ -177,10 +181,13 @@ public class Status {
          * The service instance has intentionally been removed from normal traffic for maintenance.
          */
         MAINTENANCE
+
     }
 
     /**
      * Lifecycle state exposed by managed resources.
+     *
+     * @author Kimi Liu
      */
     public enum Resource {
         /**
@@ -195,10 +202,13 @@ public class Status {
          * The resource has been archived and is no longer active.
          */
         ARCHIVED
+
     }
 
     /**
      * Result of applying a revision to a target.
+     *
+     * @author Kimi Liu
      */
     public enum Apply {
         /**
@@ -217,10 +227,13 @@ public class Status {
          * No reliable target evidence is available for the active revision.
          */
         UNKNOWN
+
     }
 
     /**
      * Availability of a projected capability or target.
+     *
+     * @author Kimi Liu
      */
     public enum Availability {
         /**
@@ -235,6 +248,7 @@ public class Status {
          * Availability cannot be established from reliable evidence.
          */
         UNKNOWN
+
     }
 
 }

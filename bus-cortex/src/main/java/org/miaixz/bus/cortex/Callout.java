@@ -31,7 +31,10 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.ExceptionKit;
 import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.DataCodec;
@@ -141,7 +144,7 @@ public class Callout {
         snapshot.setComponent("callout");
         snapshot.setStatus("running");
         snapshot.setMetrics(Map.of("clientCount", CLIENTS.size(), "timeoutBuckets", List.copyOf(timeoutBuckets)));
-        snapshot.setUpdatedAt(System.currentTimeMillis());
+        snapshot.setUpdatedAt(DateKit.current());
         return snapshot;
     }
 
@@ -164,7 +167,7 @@ public class Callout {
      */
     private static Response adapt(Result result) {
         if (result == null) {
-            return new Response(0, null, "unknown", false);
+            return new Response(0, null, Normal.UNKNOWN, false);
         }
         if (result.state() != ResultState.RESPONDED) {
             return new Response(result.status(), null, failureMessage(result), result.state() == ResultState.TIMEOUT);
@@ -212,14 +215,7 @@ public class Callout {
      * @return true when timeout-related
      */
     private static boolean isTimeout(Throwable error) {
-        Throwable current = error;
-        while (current != null) {
-            if (current instanceof TimeoutException || current instanceof java.util.concurrent.TimeoutException) {
-                return true;
-            }
-            current = current.getCause();
-        }
-        return false;
+        return ExceptionKit.isCausedBy(error, TimeoutException.class, java.util.concurrent.TimeoutException.class);
     }
 
     /**
@@ -387,7 +383,7 @@ public class Callout {
          * @return {@code true} when the response is in the 2xx range
          */
         public boolean successful() {
-            return statusCode >= 200 && statusCode < 300;
+            return statusCode >= Http.Status.OK && statusCode < Http.Status.MULTIPLE_CHOICES;
         }
 
     }

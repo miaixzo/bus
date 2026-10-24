@@ -26,20 +26,17 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import org.miaixz.bus.core.basic.entity.Tenant;
+
 /**
- * Runtime API instance information.
+ * Shared application process identity, session and health information used by registry and configuration services.
  *
  * @author Kimi Liu
  */
 @Getter
 @Setter
 @SuperBuilder
-public class Instance {
-
-    /**
-     * Tenant containing the runtime instance.
-     */
-    private String tenant_id;
+public class Instance extends Tenant {
 
     /**
      * Application identifier to which the runtime instance belongs.
@@ -47,17 +44,22 @@ public class Instance {
     private String app_id;
 
     /**
-     * Service identifier to which the instance belongs.
+     * Human-readable process name.
      */
-    private String serviceId;
+    private String name;
 
     /**
-     * Service method name exposed by the instance.
+     * Trusted process identity used to aggregate observations of the same process.
      */
-    private String method;
+    private String process;
 
     /**
-     * Service version exposed by the instance.
+     * Server-generated authenticated runtime session identifier.
+     */
+    private String session;
+
+    /**
+     * Program version reported by this process; service versions belong to ApiAssets.
      */
     private String version;
 
@@ -72,7 +74,7 @@ public class Instance {
     private Integer port;
 
     /**
-     * Load-balancing weight assigned to the instance.
+     * Load-balancing weight reported for this runtime registration.
      */
     @Builder.Default
     private Integer weight = 100;
@@ -89,9 +91,9 @@ public class Instance {
     private String state;
 
     /**
-     * Unique fingerprint identifying the runtime instance.
+     * Stable process checksum, unique within its tenant and owning application.
      */
-    private String fingerprint;
+    private String checksum;
 
     /**
      * Operating-system process identifier when available.
@@ -109,7 +111,7 @@ public class Instance {
     private String healthPath;
 
     /**
-     * Lease duration in seconds used by active registries and self-registration heartbeats.
+     * Server-approved session and heartbeat lease duration in seconds.
      */
     @Builder.Default
     private Integer lease = 30;

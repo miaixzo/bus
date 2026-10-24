@@ -80,14 +80,15 @@ public interface RegistryStore<T extends Assets> {
     }
 
     /**
-     * Saves a registry entry together with a runtime instance snapshot.
+     * Atomically saves a service and its instance to the shared process store. The host must preserve the existing
+     * process identity and authenticated session; registry writes must not replace them with service coordinates. The
+     * host owns authoritative process persistence and session maintenance. Assign or reuse its exact process identifier
+     * in the supplied snapshot before returning so committed projections expose that same identity.
      *
      * @param entry    registry entry
-     * @param instance runtime instance
+     * @param instance shared process snapshot associated with the supplied service
      */
-    default void save(T entry, Instance instance) {
-        save(entry);
-    }
+    void save(T entry, Instance instance);
 
     /**
      * Deletes an entry by type, tenantId and ID.
@@ -111,14 +112,14 @@ public interface RegistryStore<T extends Assets> {
     }
 
     /**
-     * Deletes a runtime instance by method/version/fingerprint.
+     * Deletes one service relationship by route and process checksum; never deletes the shared process.
      *
-     * @param type        asset type
-     * @param tenantId    tenantId
-     * @param app_id      application identifier
-     * @param method      method
-     * @param version     version
-     * @param fingerprint instance fingerprint
+     * @param type     asset type
+     * @param tenantId tenantId
+     * @param app_id   application identifier
+     * @param method   method
+     * @param version  version
+     * @param checksum instance checksum
      */
     default void deleteInstance(
             Type type,
@@ -126,7 +127,7 @@ public interface RegistryStore<T extends Assets> {
             String app_id,
             String method,
             String version,
-            String fingerprint) {
+            String checksum) {
 
     }
 
@@ -206,14 +207,14 @@ public interface RegistryStore<T extends Assets> {
     }
 
     /**
-     * Queries runtime instances for the given service identity.
+     * Queries shared processes using service associations maintained by this store.
      *
      * @param type     asset type
      * @param tenantId tenantId
      * @param app_id   application identifier
      * @param method   method
      * @param version  version
-     * @return matching runtime instances
+     * @return matching shared runtime instances
      */
     default List<Instance> queryInstances(Type type, String tenantId, String app_id, String method, String version) {
         return List.of();

@@ -19,107 +19,52 @@
 */
 package org.miaixz.bus.cortex.setting.revision;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
+import java.util.Set;
 
 /**
- * Append-only store contract for immutable setting revisions within a mandatory tenant. A saved snapshot must never be
- * overwritten, including editor payload, reference manifests, or protection metadata. Rollbacks append new snapshots
- * instead of modifying historical snapshots.
+ * Read-only access to immutable successfully published definitions.
  *
  * @author Kimi Liu
  */
 public interface RevisionStore {
 
     /**
-     * Appends one immutable revision.
+     * Reads one exact published snapshot; absence is not latest fallback.
      *
-     * @param revision revision to append
-     * @return persisted revision
+     * @param tenant   exact tenant identifier
+     * @param revision exact published snapshot identifier
+     * @return requested published snapshot, or null if absent
      */
-    Revision save(Revision revision);
+    Revision find(String tenant, String revision);
 
     /**
-     * Appends each non-null revision in encounter order.
+     * Reads an exact published snapshot batch.
      *
-     * @param revisions revisions to append
-     * @return persisted revisions
+     * @param tenant    exact tenant identifier
+     * @param revisions exact published snapshot identifiers
+     * @return available snapshots from the requested batch
      */
-    default List<Revision> saveAll(List<Revision> revisions) {
-        if (revisions == null || revisions.isEmpty()) {
-            return List.of();
-        }
-        List<Revision> result = new ArrayList<>(revisions.size());
-        for (Revision revision : revisions) {
-            if (revision != null) {
-                result.add(save(revision));
-            }
-        }
-        return result;
-    }
+    List<Revision> findAll(String tenant, Set<String> revisions);
 
     /**
-     * Finds one immutable revision.
+     * Lists only successful publication history, never saved edits.
      *
-     * @param tenant_id mandatory tenant identifier
-     * @param item_id   item identifier
-     * @param revision  item-scoped revision number
-     * @return matching revision, or {@code null} when absent
+     * @param tenant exact tenant identifier
+     * @param item   source item identifier
+     * @param offset zero-based page offset
+     * @param limit  maximum number of snapshots to return
+     * @return page of snapshots created by successful publications
      */
-    Revision find(String tenant_id, String item_id, String revision);
+    List<Revision> byItem(String tenant, String item, int offset, int limit);
 
     /**
-     * Lists revisions for one item in newest-first order.
+     * Reads snapshots belonging to one formal release.
      *
-     * @param tenant_id mandatory tenant identifier
-     * @param item_id   item identifier
-     * @return item revisions
+     * @param tenant  exact tenant identifier
+     * @param release formal release identifier
+     * @return snapshots first persisted by the requested release
      */
-    List<Revision> query(String tenant_id, String item_id);
-
-    /**
-     * Finds an immutable snapshot by identifier without crossing the tenant or item boundary.
-     *
-     * @param tenant_id mandatory tenant identifier
-     * @param item_id   required item identifier
-     * @param id        required immutable snapshot identifier
-     * @return matching snapshot, or null when absent
-     * @throws IllegalArgumentException if tenant, item, or revision identity is missing
-     */
-    default Revision identity(String tenant_id, String item_id, String id) {
-        ItemNormalizer.requireTenant(tenant_id);
-        if (item_id == null || item_id.isBlank() || id == null || id.isBlank()) {
-            throw new IllegalArgumentException("Revision identity coordinates are required");
-        }
-        return query(tenant_id, item_id).stream()
-                .filter(
-                        revision -> tenant_id.equals(revision.getTenant_id()) && item_id.equals(revision.getItem_id())
-                                && id.equals(revision.getId()))
-                .findFirst().orElse(null);
-    }
-
-    /**
-     * Returns the latest revision for one item.
-     *
-     * @param tenant_id mandatory tenant identifier
-     * @param item_id   item identifier
-     * @return latest revision, or {@code null} when absent
-     */
-    default Revision latest(String tenant_id, String item_id) {
-        List<Revision> revisions = query(tenant_id, item_id);
-        return revisions == null || revisions.isEmpty() ? null : revisions.getFirst();
-    }
-
-    /**
-     * Retains the newest revisions and every revision reachable from a stable/gray pointer, fixed reference, frozen
-     * release, retained platform version, or watch. Unknown reachability must retain history.
-     *
-     * @param tenant_id    mandatory tenant identifier
-     * @param item_id      item identifier
-     * @param maxRevisions maximum number of revisions to retain
-     */
-    void retainLatest(String tenant_id, String item_id, int maxRevisions);
+    List<Revision> byRelease(String tenant, String release);
 
 }

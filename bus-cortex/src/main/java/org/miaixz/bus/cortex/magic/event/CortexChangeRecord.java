@@ -37,7 +37,7 @@ public class CortexChangeRecord {
     private String id;
 
     /**
-     * Idempotency key used to collapse duplicate change-log appends.
+     * Immutable event key used to collapse retries of the same event, never separate resource mutations.
      */
     private String idempotencyKey;
 
@@ -72,7 +72,7 @@ public class CortexChangeRecord {
     private String payload;
 
     /**
-     * Monotonic or timestamp sequence used for delivery ordering.
+     * Producer sequence identifying the event within its domain and resource stream.
      */
     private long sequence;
 
@@ -97,7 +97,7 @@ public class CortexChangeRecord {
     private String claimedBy;
 
     /**
-     * Lease expiration timestamp in epoch milliseconds.
+     * Lease expiration timestamp in epoch milliseconds, returned with the owner as the delivery claim identity.
      */
     private long claimedUntil;
 

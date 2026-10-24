@@ -19,40 +19,46 @@
 */
 package org.miaixz.bus.cortex.builtin;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Keying.SettingSpec;
-import org.miaixz.bus.cortex.setting.item.Item;
-import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 
 /**
- * Generates tenant-qualified cache, subscription, and revision keys.
+ * Length-prefixed exact current-state, published-snapshot and application-delivery identities.
+ *
+ * @author Kimi Liu
  */
 public class SettingGenerator implements Keying<SettingSpec> {
 
     /**
-     * Shared stateless setting-key generator.
+     * Reusable stateless default generator.
      */
     public static final SettingGenerator INSTANCE = new SettingGenerator();
-    /**
-     * Namespace segment used for item revision sequences.
-     */
-    public static final String SETTING_REVISION_SEQUENCE_SEGMENT = "setting:item:";
 
     /**
-     * Creates a stateless generator using the standard configuration key layout.
+     * Creates an empty SettingGenerator for construction or deserialization.
      */
     public SettingGenerator() {
         // No initialization required.
     }
 
     /**
-     * Builds a purpose-specific key from normalized, length-prefixed setting coordinates.
+     * Rejects a missing required identity component.
      *
-     * @param spec key specification, or {@code null}
-     * @return generated key, or {@code null} when the specification is {@code null}
-     * @throws IllegalArgumentException if the purpose is unsupported, coordinates are invalid, or a historical revision
-     *                                  is required but absent
+     * @param value identity coordinate
+     */
+    private static void require(String value) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException("Key coordinate is required");
+        }
+    }
+
+    /**
+     * Builds or returns the exact identity component for the current domain purpose.
+     *
+     * @param spec purpose-specific identity coordinates
+     * @return generated identity key, or null for a null specification
      */
     @Override
     public String key(SettingSpec spec) {
@@ -62,26 +68,21 @@ public class SettingGenerator implements Keying<SettingSpec> {
         String identity = identity(spec);
         return switch (spec.mode()) {
             case SettingSpec.ITEM_ID, SettingSpec.SCOPE, SettingSpec.EXPORT -> identity;
-            case SettingSpec.WATCH -> Builder.SETTING_PREFIX + identity;
-            case SettingSpec.OVERLAY -> Builder.SETTING_PREFIX + "overlay:" + identity;
-            case SettingSpec.ENTRY -> Builder.SETTING_PREFIX + "entry:" + identity;
+            case SettingSpec.WATCH -> Builder.SETTING_PREFIX + "v2:watch:" + identity;
+            case SettingSpec.ENTRY -> Builder.SETTING_PREFIX + "v2:entry:" + identity;
             case SettingSpec.REVISION -> {
-                if (spec.revision() == null || spec.revision().isBlank()) {
-                    throw new IllegalArgumentException("A historical revision is required");
-                }
-                yield prefix(spec) + segment(spec.revision());
+                require(spec.revision_id());
+                yield prefix(spec) + segment(spec.revision_id());
             }
-            case SettingSpec.SEQUENCE -> Builder.SEQUENCE_PREFIX + SETTING_REVISION_SEQUENCE_SEGMENT + identity;
-            default -> throw new IllegalArgumentException("Unknown configuration key purpose");
+            default -> throw new IllegalArgumentException("Unknown setting key purpose");
         };
     }
 
     /**
-     * Builds the entry key prefix or historical revision prefix for normalized setting coordinates.
+     * Returns the cache-scan prefix for the selected key purpose, when supported.
      *
-     * @param spec prefix specification, or {@code null}; a revision value is not required
-     * @return entry or revision prefix, or {@code null} for a null specification or any other purpose
-     * @throws IllegalArgumentException if an entry or revision specification contains invalid coordinates
+     * @param spec purpose-specific identity coordinates
+     * @return cache prefix, or null when the specification or purpose has no prefix
      */
     @Override
     public String prefix(SettingSpec spec) {
@@ -89,34 +90,40 @@ public class SettingGenerator implements Keying<SettingSpec> {
             return null;
         }
         return switch (spec.mode()) {
-            case SettingSpec.ENTRY -> Builder.SETTING_PREFIX + "entry:" + identity(spec);
-            case SettingSpec.REVISION -> Builder.SETTING_PREFIX + "revision:" + identity(spec) + ':';
+            case SettingSpec.ENTRY -> Builder.SETTING_PREFIX + "v2:entry:" + identity(spec);
+            case SettingSpec.REVISION -> Builder.SETTING_PREFIX + "v2:revision:" + identity(spec) + Symbol.C_COLON;
             default -> null;
         };
     }
 
     /**
-     * Length-prefixes segments to prevent collisions when values contain delimiters.
+     * Builds or reads exact tenant-qualified identity without mutable ownership coordinates.
      *
-     * @param spec configuration key specification with tenant and ownership coordinates
-     * @return length-prefixed canonical business identity
+     * @param spec purpose-specific identity coordinates
+     * @return length-prefixed tenant and source or application coordinates
      */
     private String identity(SettingSpec spec) {
-        Item item = Item.builder().tenant_id(spec.tenant_id()).scope(spec.scope()).app_id(spec.app_id())
-                .code(spec.code()).kind(spec.kind()).build();
-        ItemNormalizer.coordinates(item);
-        return segment(item.getTenant_id()) + ':' + segment(item.getScope()) + ':' + segment(item.getApp_id()) + ':'
-                + segment(item.getCode()) + ':' + segment(item.getKind());
+        require(spec.tenant_id());
+        if (spec.mode() == SettingSpec.WATCH || spec.mode() == SettingSpec.EXPORT) {
+            require(spec.app_id());
+            boolean exact = spec.item_id() != null && !spec.item_id().isBlank();
+            String coordinate = exact ? spec.item_id() : spec.code();
+            require(coordinate);
+            return segment(spec.tenant_id()) + segment(spec.app_id()) + (exact ? "id:" : "alias:")
+                    + segment(coordinate);
+        }
+        require(spec.item_id());
+        return segment(spec.tenant_id()) + segment(spec.item_id());
     }
 
     /**
-     * Encodes a nullable value as a collision-resistant length-prefixed segment.
+     * Encodes an unambiguous length-prefixed identity component.
      *
-     * @param value segment value
-     * @return encoded segment
+     * @param value identity coordinate
+     * @return coordinate preceded by its character count and a hash separator
      */
     private String segment(String value) {
-        return value == null ? "-" : value.length() + "#" + value;
+        return value.length() + Symbol.HASH + value;
     }
 
 }

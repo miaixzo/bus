@@ -22,6 +22,7 @@ package org.miaixz.bus.cortex.health;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.*;
 
 /**
@@ -32,9 +33,8 @@ import org.miaixz.bus.cortex.*;
 public class McpPingProber implements Prober {
 
     /**
-     * Ping payload.
+     * Fixed MCP ping request body.
      */
-
     private static final String PING_PAYLOAD = "{\"jsonrpc\":\"2.0\",\"method\":\"ping\",\"id\":1}";
 
     /**
@@ -83,9 +83,9 @@ public class McpPingProber implements Prober {
         String host = instance.getHost();
         int port = instance.getPort() != null ? instance.getPort() : Port._80.getPort();
         String url = Protocol.HTTP_PREFIX + host + Symbol.COLON + port + Symbol.SLASH + "mcp";
-        long start = System.currentTimeMillis();
+        long start = DateKit.current();
         Callout.Response response = Callout.postJson(url, PING_PAYLOAD, timeoutMs);
-        long latency = System.currentTimeMillis() - start;
+        long latency = DateKit.current() - start;
         if (response.errorMessage() != null) {
             return Status.fail("MCP ping failed: " + response.errorMessage(), name()).detail("url", url);
         }

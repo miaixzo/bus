@@ -22,6 +22,8 @@ package org.miaixz.bus.cortex.health;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import org.miaixz.bus.core.net.Port;
+import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.Prober;
@@ -79,12 +81,12 @@ public class TcpProber implements Prober {
     @Override
     public Status check(Instance instance) {
         String host = instance.getHost();
-        int port = instance.getPort() != null ? instance.getPort() : 80;
-        long start = System.currentTimeMillis();
+        int port = instance.getPort() != null ? instance.getPort() : Port._80.getPort();
+        long start = DateKit.current();
         Logger.debug(true, "Cortex", "TCP health probe started: host={}, port={}, timeoutMs={}", host, port, timeoutMs);
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress(host, port), timeoutMs);
-            long latency = System.currentTimeMillis() - start;
+            long latency = DateKit.current() - start;
             Logger.debug(
                     false,
                     "Cortex",

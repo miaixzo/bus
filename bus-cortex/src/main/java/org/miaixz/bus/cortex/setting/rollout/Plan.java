@@ -21,352 +21,477 @@ package org.miaixz.bus.cortex.setting.rollout;
 
 import java.util.*;
 
-import org.miaixz.bus.core.xyz.PatternKit;
-import org.miaixz.bus.cortex.setting.item.GrayRule;
-import org.miaixz.bus.cortex.setting.item.GrayType;
-import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
+import org.miaixz.bus.core.lang.EnumValue.Format;
+import org.miaixz.bus.cortex.setting.item.Item;
+import org.miaixz.bus.cortex.setting.item.ItemCodec;
 import org.miaixz.bus.cortex.setting.reference.Reference;
+import org.miaixz.bus.cortex.setting.reference.ReferenceCodec;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Immutable application release manifest. Selected applications replace their complete baseline manifests; unselected
- * applications retain their baseline revisions. Deletions use exact tombstone revision identifiers. Relationship and
- * approval inputs are frozen by value. The host commits this manifest, approvals, version activation, and notification
- * outbox in one transaction.
+ * Immutable candidate protocol: workflow input without any formal version.
  *
  * @author Kimi Liu
  */
 public final class Plan {
 
     /**
-     * Tenant that owns the publication plan.
+     * Only accepted candidate protocol.
      */
-    private final String tenant;
-    /**
-     * Baseline version from which the plan was assembled.
-     */
-    private final String baseline;
-    /**
-     * Server-generated target version.
-     */
-    private final String version;
-    /**
-     * Formal or gray publication mode.
-     */
-    private final String mode;
-    /**
-     * Approval policy frozen with the plan.
-     */
-    private final String policy;
-    /**
-     * Serialized gray-selection rule, when applicable.
-     */
-    private final String rule;
-    /**
-     * Serialized application-local references frozen with the plan.
-     */
-    private final String references;
-    /**
-     * Explicit revisions selected for replacement by application.
-     */
-    private final Map<String, Map<String, String>> selected;
-    /**
-     * Complete merged application manifest executed by the host.
-     */
-    private final Map<String, Map<String, String>> applications;
-    /**
-     * SHA-256 checksum of the canonical serialized plan.
-     */
-    private final String checksum;
+    public static final String FORMAT = "services-rollout-v3";
 
     /**
-     * Freezes exact revision identifiers, never dynamic LATEST lookups. A deletion must freeze its tombstone revision
-     * rather than silently omit an item. Shared-source changes alone never activate consumers.
-     *
-     * @param tenant     tenant owning the publication
-     * @param baseline   expected previously active version, or null
-     * @param version    required server-generated numeric target version
-     * @param mode       FORMAL or GRAY publication mode
-     * @param policy     required approval policy identifier
-     * @param rule       gray selector required only for GRAY publication
-     * @param previous   previous application manifests, or null for an empty baseline
-     * @param selected   complete replacement manifests for selected applications
-     * @param references shared-reference policies to freeze into the plan
-     * @throws IllegalArgumentException if version, publication mode, selector, selected manifests, or reference
-     *                                  policies are invalid
+     * Prevents construction.
      */
-    public Plan(String tenant, String baseline, String version, String mode, String policy, GrayRule rule,
-            Map<String, Map<String, String>> previous, Map<String, Map<String, String>> selected,
-            List<Reference> references) {
-        ItemNormalizer.requireTenant(tenant);
-        require(version, "Server-generated version");
-        // Naming belongs to the host allocator; historical date versions remain valid identifiers.
-        if (!PatternKit.isMatch("v[0-9]+(?:\\.[0-9]+)+", version)) {
-            throw new IllegalArgumentException("Release version must be a server-generated numeric identifier");
-        }
-        Rollout.Mode parsed = Rollout.Mode.valueOf(mode);
-        require(policy, "Approval policy");
-        if (parsed == Rollout.Mode.GRAY && (rule == null || rule.getType() == null)) {
-            throw new IllegalArgumentException("Gray publication requires a selector");
-        }
-        if (parsed == Rollout.Mode.FORMAL && rule != null) {
-            throw new IllegalArgumentException("Formal publication cannot contain a gray selector");
-        }
-        if (selected == null || selected.isEmpty()) {
-            throw new IllegalArgumentException("At least one application must be selected");
-        }
-        if (rule != null) {
-            rule.validate();
-            if (rule.getType() == GrayType.TENANT && !tenant.equals(rule.getTenant())) {
-                throw new IllegalArgumentException("Gray selector cannot target a different tenant");
+    private Plan() {
+        // No initialization required.
+    }
+
+    /**
+     * Encodes draft selection.
+     *
+     * @param selection explicit draft input
+     * @return current protocol JSON
+     */
+    public static String selection(Selection selection) {
+        return ItemCodec.encode(envelope("selection", selectionTree(selection)));
+    }
+
+    /**
+     * Decodes only current draft protocol.
+     *
+     * @param encoded draft JSON
+     * @return selection
+     */
+    public static Selection selection(String encoded) {
+        return readSelection(payload(encoded, "selection"));
+    }
+
+    /**
+     * Encodes complete immutable review material.
+     *
+     * @param frozen candidate
+     * @return protected protocol JSON
+     */
+    public static String frozen(Frozen frozen) {
+        return ItemCodec.encode(envelope("frozen", frozenTree(frozen)));
+    }
+
+    /**
+     * Decodes complete immutable review material.
+     *
+     * @param encoded protected JSON
+     * @return frozen candidate
+     */
+    public static Frozen frozen(String encoded) {
+        JsonValue.ObjectValue raw = object(
+                payload(encoded, "frozen"),
+                Set.of("baseline", "selection", "definitions", "applications"));
+        Map<String, Definition> definitions = new TreeMap<>();
+        object(raw.values().get("definitions"), null).values().forEach(
+                (key, value) -> definitions.put(key, JsonKit.toPojo(ItemCodec.encode(value), Definition.class)));
+        Map<String, List<Binding>> apps = new TreeMap<>();
+        object(raw.values().get("applications"), null).values().forEach((app, value) -> {
+            List<Binding> bindings = new ArrayList<>();
+            for (JsonValue node : ((JsonValue.ArrayValue) value).values()) {
+                JsonValue.ObjectValue b = object(node, Set.of("source", "options", "pinnedRevision"));
+                bindings.add(
+                        new Binding(text(b, "source"), ReferenceCodec.options(b.values().get("options")),
+                                text(b, "pinnedRevision")));
             }
-        }
-        this.tenant = tenant;
-        this.baseline = baseline;
-        this.version = version;
-        this.mode = mode;
-        this.policy = policy;
-        this.rule = rule == null ? null : JsonKit.toJsonString(rule);
-        this.selected = freeze(selected);
-        if (this.selected.values().stream().anyMatch(Map::isEmpty)) {
-            throw new IllegalArgumentException("Selected applications must contain explicit revisions or tombstones");
-        }
-        Map<String, Map<String, String>> merged = new TreeMap<>(freeze(previous == null ? Map.of() : previous));
-        this.selected.forEach((app, items) -> {
-            if (!items.keySet().containsAll(merged.getOrDefault(app, Map.of()).keySet())) {
-                throw new IllegalArgumentException("Baseline items require explicit revisions or tombstones");
-            }
+            apps.put(app, bindings);
         });
-        merged.putAll(this.selected);
-        this.applications = Collections.unmodifiableMap(merged);
-        Map<String, Map<String, String>> frozenReferences = new TreeMap<>();
-        for (Reference reference : references == null ? List.<Reference>of() : references) {
-            reference.validate();
-            if (!tenant.equals(reference.getTenant_id()) || !Reference.Type.ITEM_APP.name().equals(reference.getType())
-                    || !this.selected.containsKey(reference.getTarget_id())) {
-                throw new IllegalArgumentException("Reference must belong to a selected application and tenant");
-            }
-            String key = segment(reference.getTarget_id()) + segment(reference.getAlias());
-            Map<String, String> value = new TreeMap<>();
-            value.put("source_id", reference.getSource_id());
-            value.put("target_id", reference.getTarget_id());
-            value.put("alias", reference.getAlias());
-            value.put(
-                    "strategy",
-                    reference.getStrategy() == null ? Reference.Strategy.LATEST.name() : reference.getStrategy());
-            if (reference.getRevision_id() != null) {
-                value.put("revision_id", reference.getRevision_id());
-            }
-            if (reference.getEdition() != null) {
-                value.put("edition", reference.getEdition().toString());
-            }
-            if (frozenReferences.putIfAbsent(key, value) != null) {
-                throw new IllegalArgumentException("Duplicate application-local reference alias");
-            }
-        }
-        this.references = JsonKit.toJsonString(frozenReferences);
-        this.checksum = Builder.sha256(toJson());
+        return new Frozen(text(raw, "baseline"), readSelection(raw.values().get("selection")), definitions, apps);
     }
 
     /**
-     * Validates and deeply freezes an application revision manifest.
+     * Computes the exact approved input digest without future server version/time.
      *
-     * @param input mutable application manifest
-     * @return immutable, deterministically ordered manifest
-     * @throws IllegalArgumentException if an application manifest is null or has invalid coordinates
+     * @param frozen approved input
+     * @return checksum
      */
-    private static Map<String, Map<String, String>> freeze(Map<String, Map<String, String>> input) {
-        Map<String, Map<String, String>> result = new TreeMap<>();
-        input.forEach((app, items) -> {
-            require(app, "Application identifier");
-            if (items == null) {
-                throw new IllegalArgumentException("Application manifest is required");
+    public static String checksum(Frozen frozen) {
+        return Builder.sha256(frozen(frozen));
+    }
+
+    /**
+     * Encodes a strict protocol wrapper.
+     *
+     * @param stage   selection/frozen
+     * @param payload exact content
+     * @return envelope
+     */
+    private static JsonValue.ObjectValue envelope(String stage, JsonValue payload) {
+        return new JsonValue.ObjectValue(Map.of(
+                "format",
+                new JsonValue.StringValue(FORMAT),
+                "stage",
+                new JsonValue.StringValue(stage),
+                "payload",
+                payload));
+    }
+
+    /**
+     * Validates wrapper and stage.
+     *
+     * @param encoded JSON
+     * @param stage   required stage
+     * @return payload
+     */
+    private static JsonValue payload(String encoded, String stage) {
+        JsonValue.ObjectValue raw = object(ItemCodec.tree(encoded), Set.of("format", "stage", "payload"));
+        if (!FORMAT.equals(text(raw, "format")) || !stage.equals(text(raw, "stage")))
+            throw new IllegalArgumentException("Unsupported candidate protocol");
+        return Objects.requireNonNull(raw.values().get("payload"));
+    }
+
+    /**
+     * Serializes selection using exact JSON trees.
+     *
+     * @param selection draft input
+     * @return tree
+     */
+    private static JsonValue selectionTree(Selection selection) {
+        Map<String, JsonValue> fields = new TreeMap<>();
+        fields.put("applications", JsonKit.toValue(selection.applications()));
+        fields.put("mode", new JsonValue.StringValue(selection.mode().name()));
+        fields.put("policy", new JsonValue.StringValue(selection.policy()));
+        fields.put("notifyOwners", new JsonValue.BooleanValue(selection.notifyOwners()));
+        if (selection.rule() != null)
+            fields.put("rule", JsonKit.toValue(selection.rule()));
+        return new JsonValue.ObjectValue(fields);
+    }
+
+    /**
+     * Deserializes exact selection members.
+     *
+     * @param value tree
+     * @return selection
+     */
+    private static Selection readSelection(JsonValue value) {
+        JsonValue.ObjectValue raw = object(value, Set.of("applications", "mode", "policy", "rule", "notifyOwners"));
+        Set<String> apps = new TreeSet<>();
+        for (JsonValue app : ((JsonValue.ArrayValue) raw.values().get("applications")).values())
+            apps.add(((JsonValue.StringValue) app).value());
+        return new Selection(apps, Mode.valueOf(text(raw, "mode")), text(raw, "policy"),
+                raw.values().get("rule") == null ? null
+                        : JsonKit.toPojo(ItemCodec.encode(raw.values().get("rule")), GrayRule.class),
+                ((JsonValue.BooleanValue) raw.values().get("notifyOwners")).value());
+    }
+
+    /**
+     * Builds canonical candidate content.
+     *
+     * @param frozen candidate
+     * @return protected tree
+     */
+    private static JsonValue frozenTree(Frozen frozen) {
+        Map<String, JsonValue> fields = new TreeMap<>(), definitions = new TreeMap<>(), apps = new TreeMap<>();
+        if (frozen.baseline() != null)
+            fields.put("baseline", new JsonValue.StringValue(frozen.baseline()));
+        fields.put("selection", selectionTree(frozen.selection()));
+        frozen.definitions().forEach((key, value) -> definitions.put(key, JsonKit.toValue(value)));
+        frozen.applications().forEach((app, bindings) -> {
+            List<JsonValue> values = new ArrayList<>();
+            for (Binding binding : bindings) {
+                Map<String, JsonValue> b = new TreeMap<>();
+                b.put("source", new JsonValue.StringValue(binding.source()));
+                b.put("options", ReferenceCodec.tree(binding.options()));
+                if (binding.pinnedRevision() != null)
+                    b.put("pinnedRevision", new JsonValue.StringValue(binding.pinnedRevision()));
+                values.add(new JsonValue.ObjectValue(b));
             }
-            Map<String, String> copy = new TreeMap<>();
-            items.forEach((item, revision) -> {
-                require(item, "Item identifier");
-                require(revision, "Exact revision identifier");
-                copy.put(item, revision);
-            });
-            result.put(app, Collections.unmodifiableMap(copy));
+            apps.put(app, new JsonValue.ArrayValue(values));
         });
-        return Collections.unmodifiableMap(result);
+        fields.put("definitions", new JsonValue.ObjectValue(definitions));
+        fields.put("applications", new JsonValue.ObjectValue(apps));
+        return new JsonValue.ObjectValue(fields);
     }
 
     /**
-     * Requires a nonblank manifest value.
+     * Requires an object and rejects unrecognized protocol members.
      *
-     * @param value value to validate
-     * @param name  semantic name used in the failure message
-     * @throws IllegalArgumentException if a required coordinate is null or blank
+     * @param value   tree
+     * @param allowed allowed members or unrestricted map
+     * @return object
      */
-    private static void require(String value, String name) {
-        if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException(name + " is required");
+    private static JsonValue.ObjectValue object(JsonValue value, Set<String> allowed) {
+        if (!(value instanceof JsonValue.ObjectValue object)
+                || allowed != null && !allowed.containsAll(object.values().keySet()))
+            throw new IllegalArgumentException("Invalid candidate members");
+        return object;
+    }
+
+    /**
+     * Reads an optional text member.
+     *
+     * @param object object
+     * @param name   member
+     * @return text or absent
+     */
+    private static String text(JsonValue.ObjectValue object, String name) {
+        JsonValue value = object.values().get(name);
+        return value == null ? null : ((JsonValue.StringValue) value).value();
+    }
+
+    /**
+     * Publication track choice.
+     *
+     * @author Kimi Liu
+     */
+    public enum Mode {
+        /**
+         * Stable publication.
+         */
+        FORMAL,
+        /**
+         * Frozen instance-selected gray publication.
+         */
+        GRAY
+
+    }
+
+    /**
+     * Editable draft input.
+     *
+     * @param applications explicitly selected apps
+     * @param mode         publication track
+     * @param policy       registered approval policy
+     * @param rule         gray selector
+     * @param notifyOwners owner notification option
+     * @author Kimi Liu
+     */
+    public record Selection(Set<String> applications, Mode mode, String policy, GrayRule rule, boolean notifyOwners) {
+
+        /**
+         * Requires explicit nonempty selection and registered policy identity.
+         *
+         * @param applications selected apps
+         * @param mode         track
+         * @param policy       approval policy
+         * @param rule         gray selector
+         * @param notifyOwners notification option
+         */
+        public Selection {
+            applications = Collections.unmodifiableSet(new TreeSet<>(applications));
+            Objects.requireNonNull(mode);
+            if (applications.isEmpty() || applications.stream().anyMatch(a -> a == null || a.isBlank())
+                    || policy == null || policy.isBlank())
+                throw new IllegalArgumentException("Explicit apps and policy required");
+            if (mode == Mode.GRAY) {
+                Objects.requireNonNull(rule).validate();
+            } else if (rule != null)
+                throw new IllegalArgumentException("Formal publication cannot carry gray routing");
+            rule = rule == null ? null : rule.copy();
         }
-    }
 
-    /**
-     * Encodes a length-prefixed value for an unambiguous composite key.
-     *
-     * @param value value to encode
-     * @return length-prefixed segment
-     */
-    private static String segment(String value) {
-        return value.length() + ":" + value;
-    }
-
-    /**
-     * Rebuilds a frozen plan after restart and rejects corrupted or re-serialized approval inputs.
-     *
-     * @param rollout persisted rollout carrying the canonical manifest and checksum
-     * @return reconstructed plan verified against the rollout
-     * @throws IllegalArgumentException if the stored manifest, checksum, or reconstructed plan is invalid
-     */
-    @SuppressWarnings("unchecked")
-    public static Plan restore(Rollout rollout) {
-        if (rollout == null || rollout.getManifest() == null || rollout.getChecksum() == null
-                || !Builder.sha256(rollout.getManifest()).equals(rollout.getChecksum())) {
-            throw new IllegalArgumentException("Persisted publication manifest is missing or corrupted");
+        /**
+         * Returns a defensive rule copy.
+         *
+         * @return frozen rule
+         */
+        @Override
+        public GrayRule rule() {
+            return rule == null ? null : rule.copy();
         }
-        Map<String, Object> root = JsonKit.toPojo(rollout.getManifest(), Map.class);
-        List<Reference> references = new ArrayList<>();
-        Map<String, Map<String, String>> stored = JsonKit.toPojo((String) root.get("references"), Map.class);
-        for (Map<String, String> value : stored.values()) {
-            references.add(
-                    Reference.builder().tenant_id(rollout.getTenant_id()).source_id(value.get("source_id"))
-                            .target_id(value.get("target_id")).type(Reference.Type.ITEM_APP.name())
-                            .alias(value.get("alias")).strategy(value.get("strategy"))
-                            .revision_id(value.get("revision_id"))
-                            .edition(value.get("edition") == null ? null : Long.valueOf(value.get("edition"))).build());
+
+    }
+
+    /**
+     * Exact protected definition frozen for review.
+     *
+     * @param item_id     source identity
+     * @param type        category
+     * @param code        source code
+     * @param content     protected definition
+     * @param format      delivery format
+     * @param schema      protected Schema
+     * @param encrypted   protection flag
+     * @param extension   protected metadata
+     * @param checksum    definition digest
+     * @param description source description
+     * @author Kimi Liu
+     */
+    public record Definition(String item_id, Integer type, String code, String content, String format, String schema,
+            Integer encrypted, String extension, String checksum, String description) {
+
+        /**
+         * Requires complete protected source identity and checksum.
+         *
+         * @param item_id     source
+         * @param type        category
+         * @param code        code
+         * @param content     definition
+         * @param format      delivery format
+         * @param schema      Schema
+         * @param encrypted   protection flag
+         * @param extension   metadata
+         * @param checksum    digest
+         * @param description description
+         */
+        public Definition {
+            if (item_id == null || item_id.isBlank() || code == null || code.isBlank() || content == null
+                    || checksum == null)
+                throw new IllegalArgumentException("Incomplete frozen definition");
+            Item.Type.of(type);
+            Format.valueOf(format);
+            if (!Integer.valueOf(0).equals(encrypted) && !Integer.valueOf(1).equals(encrypted))
+                throw new IllegalArgumentException("Invalid frozen protection");
+            Item test = Item.builder().type(type).code(code).content(content).format(format).schema(schema)
+                    .encrypted(encrypted).extension(extension).description(description).build();
+            if (!checksum.equals(new ItemCodec(64, 100000).checksum(test)))
+                throw new IllegalStateException("Frozen definition checksum mismatch");
         }
-        String rule = (String) root.get("rule");
-        Plan plan = new Plan((String) root.get("tenant_id"), (String) root.get("baseline"),
-                (String) root.get("version"), (String) root.get("mode"), (String) root.get("policy"),
-                rule == null ? null : JsonKit.toPojo(rule, GrayRule.class),
-                (Map<String, Map<String, String>>) root.get("applications"),
-                (Map<String, Map<String, String>>) root.get("selected"), references);
-        plan.verify(rollout);
-        return plan;
-    }
 
-    /**
-     * Serializes the canonical frozen input used for approval and execution checksums.
-     *
-     * @return canonical JSON representation of all frozen plan inputs
-     */
-    public String toJson() {
-        Map<String, Object> value = new LinkedHashMap<>();
-        value.put("tenant_id", tenant);
-        value.put("baseline", baseline);
-        value.put("version", version);
-        value.put("mode", mode);
-        value.put("policy", policy);
-        value.put("rule", rule);
-        value.put("references", references);
-        value.put("selected", selected);
-        value.put("applications", applications);
-        return JsonKit.toJsonString(value);
-    }
-
-    /**
-     * Returns the tenant that owns this plan.
-     *
-     * @return tenant identifier
-     */
-    public String getTenant_id() {
-        return tenant;
-    }
-
-    /**
-     * Returns the expected baseline version.
-     *
-     * @return baseline version
-     */
-    public String getBaseline() {
-        return baseline;
-    }
-
-    /**
-     * Returns the target version allocated for this plan.
-     *
-     * @return target version
-     */
-    public String getVersion() {
-        return version;
-    }
-
-    /**
-     * Returns the checksum of the canonical frozen plan.
-     *
-     * @return canonical plan checksum
-     */
-    public String getChecksum() {
-        return checksum;
-    }
-
-    /**
-     * Returns the complete immutable application manifest.
-     *
-     * @return complete immutable application manifest
-     */
-    public Map<String, Map<String, String>> getApplications() {
-        return applications;
-    }
-
-    /**
-     * Returns the immutable manifests of explicitly selected applications.
-     *
-     * @return immutable selected-application manifest
-     */
-    public Map<String, Map<String, String>> getSelected() {
-        return selected;
-    }
-
-    /**
-     * Rejects mutation, stale approval, or a publication under another tenant.
-     *
-     * @param rollout rollout whose tenant, manifest, policy and checksum must match this plan
-     * @throws IllegalArgumentException if the rollout no longer matches this frozen plan
-     */
-    public void verify(Rollout rollout) {
-        if (rollout == null || !tenant.equals(rollout.getTenant_id()) || !checksum.equals(rollout.getChecksum())
-                || !toJson().equals(rollout.getManifest()) || !mode.equals(rollout.getMode())
-                || !policy.equals(rollout.getPolicy()) || !Objects.equals(rule, rollout.getRule())) {
-            throw new IllegalArgumentException("Publication no longer matches its frozen plan");
+        /**
+         * Captures current protected content without editing metadata.
+         *
+         * @param item source
+         * @return frozen definition
+         */
+        public static Definition of(Item item) {
+            return new Definition(item.getId(), item.getType(), item.getCode(), item.getContent(), item.getFormat(),
+                    item.getSchema(), item.getEncrypted(), item.getExtension(), item.getChecksum(),
+                    item.getDescription());
         }
-    }
 
-    /**
-     * Freezes only an editable draft; the host persists this result with an edition compare-and-set.
-     *
-     * @param rollout tenant-owned draft to populate with the frozen plan and mark REVIEWING
-     * @throws IllegalArgumentException if the rollout is not a draft owned by this tenant
-     */
-    public void submit(Rollout rollout) {
-        if (rollout == null || !tenant.equals(rollout.getTenant_id())
-                || !Rollout.State.DRAFT.name().equals(rollout.getState())) {
-            throw new IllegalArgumentException("Only a tenant-owned draft can be submitted");
+        /**
+         * Creates detached source coordinates for verified authorized materialization.
+         *
+         * @param tenant owning tenant
+         * @return protected definition
+         */
+        public Item item(String tenant) {
+            return Item.builder().tenant_id(tenant).id(item_id).type(type).code(code).content(content).format(format)
+                    .schema(schema).encrypted(encrypted).extension(extension).checksum(checksum)
+                    .description(description).build();
         }
-        rollout.setMode(mode);
-        rollout.setPolicy(policy);
-        rollout.setRule(rule);
-        rollout.setManifest(toJson());
-        rollout.setChecksum(checksum);
-        rollout.setState(Rollout.State.REVIEWING.name());
+
+        /**
+         * Distinguishes simultaneous fixed/current content for the same source.
+         *
+         * @return opaque candidate source key
+         */
+        public String key() {
+            return Builder.sha256(ItemCodec.encode(JsonKit.toValue(List.of(item_id, checksum))));
+        }
+
     }
 
     /**
-     * Tests membership in the selected scope rather than the merged baseline.
+     * Frozen application usage.
      *
-     * @param app      selected application identifier
-     * @param item     item identifier within that application
-     * @param revision exact immutable revision identifier
-     * @return true when the selected application explicitly contains that item revision
+     * @param source         opaque definition key
+     * @param options        typed usage options
+     * @param pinnedRevision original fixed published pin, if any
+     * @author Kimi Liu
      */
-    public boolean includes(String app, String item, String revision) {
-        return app != null && revision != null && revision.equals(selected.getOrDefault(app, Map.of()).get(item));
+    public record Binding(String source, ReferenceCodec.Options options, String pinnedRevision) {
+
+        /**
+         * Requires complete source usage.
+         *
+         * @param source         source key
+         * @param options        options
+         * @param pinnedRevision original pin
+         */
+        public Binding {
+            Objects.requireNonNull(source);
+            Objects.requireNonNull(options);
+        }
+
+    }
+
+    /**
+     * Approved full resulting graph; no formal version.
+     *
+     * @param baseline     expected stable Release ID
+     * @param selection    selected app input
+     * @param definitions  exact protected content
+     * @param applications full post-publication graph
+     * @author Kimi Liu
+     */
+    public record Frozen(String baseline, Selection selection, Map<String, Definition> definitions,
+            Map<String, List<Binding>> applications) {
+
+        /**
+         * Freezes membership and verifies all source bindings.
+         *
+         * @param baseline     stable baseline
+         * @param selection    draft input
+         * @param definitions  source definitions
+         * @param applications complete graph
+         */
+        public Frozen {
+            Objects.requireNonNull(selection);
+            definitions = Collections.unmodifiableMap(new TreeMap<>(definitions));
+            Map<String, List<Binding>> graph = new TreeMap<>();
+            Map<String, String> owners = new TreeMap<>();
+            Set<String> shared = new HashSet<>();
+            Set<String> used = new HashSet<>();
+            for (var app : applications.entrySet()) {
+                if (app.getKey() == null || app.getKey().isBlank())
+                    throw new IllegalArgumentException("Invalid application identity");
+                Set<String> aliases = new HashSet<>();
+                for (Binding binding : app.getValue()) {
+                    Definition definition = definitions.get(binding.source());
+                    if (definition == null || !definition.key().equals(binding.source()))
+                        throw new IllegalStateException("Frozen source missing or changed");
+                    String alias = binding.options().alias().isEmpty() ? definition.code() : binding.options().alias();
+                    if (!aliases.add(alias))
+                        throw new IllegalArgumentException("Duplicate application alias");
+                    if (binding.options().type() == Reference.Type.ITEM_OWNER) {
+                        String owner = owners.putIfAbsent(definition.item_id(), app.getKey());
+                        if (owner != null && !owner.equals(app.getKey()))
+                            throw new IllegalArgumentException("Multiple source owners");
+                    } else
+                        shared.add(definition.item_id());
+                    used.add(binding.source());
+                }
+                List<Binding> sorted = new ArrayList<>(app.getValue());
+                sorted.sort(Comparator.comparing((Binding b) -> b.options().alias()).thenComparing(Binding::source));
+                graph.put(app.getKey(), List.copyOf(sorted));
+            }
+            if (!graph.keySet().containsAll(selection.applications()) || !used.equals(definitions.keySet()))
+                throw new IllegalArgumentException("Incomplete or unused frozen graph");
+            if (owners.keySet().stream().anyMatch(shared::contains))
+                throw new IllegalArgumentException("Owned source cannot also be shared");
+            applications = Collections.unmodifiableMap(graph);
+        }
+
+    }
+
+    /**
+     * Submission concurrency evidence, not persisted editing history.
+     *
+     * @param items       source editions
+     * @param references  relation editions
+     * @param apps        application state digests
+     * @param memberships complete relation membership digests
+     * @param baseline    stable Release ID
+     * @author Kimi Liu
+     */
+    public record ReadSet(Map<String, Long> items, Map<String, Long> references, Map<String, String> apps,
+            Map<String, String> memberships, String baseline) {
+
+        /**
+         * Freezes full read membership.
+         *
+         * @param items       editions
+         * @param references  editions
+         * @param apps        application states
+         * @param memberships relation memberships
+         * @param baseline    expected stable release
+         */
+        public ReadSet {
+            items = Map.copyOf(items);
+            references = Map.copyOf(references);
+            apps = Map.copyOf(apps);
+            memberships = Map.copyOf(memberships);
+        }
+
     }
 
 }

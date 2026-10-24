@@ -19,66 +19,50 @@
 */
 package org.miaixz.bus.cortex.setting.item;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
- * Durable store contract for current setting state.
+ * Current Item persistence only; CAS never creates a publication snapshot.
  *
  * @author Kimi Liu
  */
 public interface ItemStore {
 
     /**
-     * Persists the current state of one item.
+     * Reads an exact tenant-qualified current definition.
      *
-     * @param entry item state to persist
-     * @return persisted item state
+     * @param tenant exact tenant identifier
+     * @param item   exact current item identifier
+     * @return current definition, or null if absent
      */
-    Item save(Item entry);
+    Item find(String tenant, String item);
 
     /**
-     * Persists each non-null item in encounter order.
+     * Loads requested definitions in one bounded batch.
      *
-     * @param entries item states to persist
-     * @return persisted item states
+     * @param tenant exact tenant identifier
+     * @param items  exact current item identifiers
+     * @return available definitions from the requested batch
      */
-    default List<Item> saveAll(List<Item> entries) {
-        if (entries == null || entries.isEmpty()) {
-            return List.of();
-        }
-        List<Item> result = new ArrayList<>(entries.size());
-        for (Item entry : entries) {
-            if (entry != null) {
-                result.add(save(entry));
-            }
-        }
-        return result;
-    }
+    List<Item> findAll(String tenant, Set<String> items);
 
     /**
-     * Deletes one item by its tenant and identifier.
+     * Queries current management state within explicit paging bounds.
      *
-     * @param tenant_id tenant identifier, required
-     * @param id        item identifier
-     * @return deleted item, or {@code null} when absent
+     * @param scope tenant-qualified management filters and paging bounds
+     * @return current definitions matching the requested page
      */
-    Item delete(String tenant_id, String id);
+    List<Item> query(ItemScope scope);
 
     /**
-     * Finds a unique item by tenant, ownership scope, application, code, and kind.
+     * Atomically creates or updates current state; null expectation means insert only. Advances edition once; no
+     * Revision writes.
      *
-     * @param coordinates item business coordinates; the tenant identifier is required
-     * @return the matching item, or {@code null} when absent
+     * @param next            protected current definition to create or update
+     * @param expectedEdition expected current edition, or null for insert only
+     * @return committed current definition with its resulting edition
      */
-    Item find(Item coordinates);
-
-    /**
-     * Queries items using the supplied business criteria.
-     *
-     * @param query item query
-     * @return matching items
-     */
-    List<Item> query(ItemQuery query);
+    Item compareAndSet(Item next, Long expectedEdition);
 
 }

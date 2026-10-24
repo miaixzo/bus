@@ -58,15 +58,15 @@ public class Release extends Nature {
     private String metadata;
 
     /**
+     * Publication timestamp in epoch milliseconds.
+     */
+    private Long published;
+
+    /**
      * Human-readable release description.
      */
     @Lob
     private String description;
-
-    /**
-     * Publication timestamp in epoch milliseconds.
-     */
-    private Long published;
 
     /**
      * Creates a version record with the Cortex VERSION type.

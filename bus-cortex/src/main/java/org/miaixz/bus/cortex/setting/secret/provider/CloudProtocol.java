@@ -25,38 +25,42 @@ import java.io.UncheckedIOException;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.security.GeneralSecurityException;
-import java.security.MessageDigest;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeoutException;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.AssignSource;
 import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.exception.ForbiddenException;
 import org.miaixz.bus.core.lang.exception.UncheckedException;
+import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.Port;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.ExceptionKit;
-import org.miaixz.bus.core.xyz.HexKit;
+import org.miaixz.bus.core.xyz.RandomKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.cortex.setting.secret.SecretContext;
 import org.miaixz.bus.cortex.setting.secret.SecretMaterial;
+import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Fabric;
 import org.miaixz.bus.fabric.Payload;
+import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.protocol.CookieJar;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.fabric.protocol.http.HttpX;
@@ -68,6 +72,8 @@ import org.miaixz.bus.fabric.protocol.http.retry.HttpRetryPolicy;
  * Package-local cloud protocol primitives shared by all Secret providers. Uses native Bus Fabric HTTP with bounded
  * materialization, absolute deadlines and bounded retries. No SDK identity discovery, redirect following, remote
  * diagnostics or secret-bearing cache persistence is introduced.
+ *
+ * @author Kimi Liu
  */
 final class CloudProtocol {
 
@@ -75,6 +81,7 @@ final class CloudProtocol {
      * Prevents instantiation of this static utility.
      */
     private CloudProtocol() {
+        // No initialization required.
     }
 
     /**
@@ -114,8 +121,7 @@ final class CloudProtocol {
         requestUri(builder.request().url().uri());
         Duration remaining = timeout(context);
         Duration connect = remaining.compareTo(Duration.ofSeconds(5)) < 0 ? remaining : Duration.ofSeconds(5);
-        builder.timeout(
-                new org.miaixz.bus.fabric.Timeout(connect, remaining, remaining, remaining, Duration.ZERO, remaining));
+        builder.timeout(new Timeout(connect, remaining, remaining, remaining, Duration.ZERO, remaining));
         return builder.call().execute();
     }
 
@@ -136,7 +142,7 @@ final class CloudProtocol {
     private static byte[] read(HttpResponse response, SecretContext context) {
         context.checkDeadline();
         try (Source source = response.body().payload().source()) {
-            org.miaixz.bus.core.io.timout.Timeout timeout = source.timeout();
+            var timeout = source.timeout();
             boolean hadDeadline = timeout.hasDeadline();
             long previous = hadDeadline ? timeout.deadlineNanoTime() : 0;
             long deadline = System.nanoTime() + timeout(context).toNanos();
@@ -170,7 +176,7 @@ final class CloudProtocol {
                     }
                 };
                 byte[] bytes = Payload.source(borrowed, response.body().length())
-                        .bytes(Math.min(1024 * 1024, response.body().materializeMaxBytes()));
+                        .bytes(Math.min(Normal.BYTES_PER_MB, response.body().materializeMaxBytes()));
                 try {
                     context.checkDeadline();
                     return bytes;
@@ -200,14 +206,14 @@ final class CloudProtocol {
      *                                  identity
      */
     static URI endpoint(URI uri) {
-        if (uri == null || !"https".equalsIgnoreCase(uri.getScheme()) || uri.getHost() == null
+        if (uri == null || !Protocol.HTTPS.name.equalsIgnoreCase(uri.getScheme()) || uri.getHost() == null
                 || uri.getUserInfo() != null || uri.getRawQuery() != null || uri.getFragment() != null
-                || !(uri.getRawPath().isEmpty() || "/".equals(uri.getRawPath()))) {
+                || !(uri.getRawPath().isEmpty() || Symbol.SLASH.equals(uri.getRawPath()))) {
             throw new IllegalArgumentException("A fixed HTTPS root endpoint is required");
         }
         try {
-            return new URI("https", null, uri.getHost().toLowerCase(Locale.ROOT),
-                    uri.getPort() == 443 ? -1 : uri.getPort(), "/", null, null);
+            return new URI(Protocol.HTTPS.name, null, StringKit.toLowerCase(uri.getHost(), Locale.ROOT),
+                    uri.getPort() == Port._443.getPort() ? -1 : uri.getPort(), Symbol.SLASH, null, null);
         } catch (URISyntaxException failure) {
             throw new IllegalArgumentException("Invalid HTTPS endpoint");
         }
@@ -220,11 +226,12 @@ final class CloudProtocol {
      * @throws IllegalArgumentException if the URI is not a safe absolute HTTPS request URI
      */
     static void requestUri(URI uri) {
-        if (uri == null || !"https".equalsIgnoreCase(uri.getScheme()) || uri.getHost() == null
-                || uri.getUserInfo() != null || uri.getFragment() != null || !uri.getRawPath().startsWith("/")
+        if (uri == null || !Protocol.HTTPS.name.equalsIgnoreCase(uri.getScheme()) || uri.getHost() == null
+                || uri.getUserInfo() != null || uri.getFragment() != null || !uri.getRawPath().startsWith(Symbol.SLASH)
                 || !uri.normalize().getRawPath().equals(uri.getRawPath())
-                || Arrays.stream(uri.getPath().split("/", -1)).anyMatch(part -> part.equals(".") || part.equals(".."))
-                || uri.getPath().chars().anyMatch(c -> Character.isISOControl(c) || c == '\\')) {
+                || Arrays.stream(uri.getPath().split(Symbol.SLASH, -1))
+                        .anyMatch(part -> part.equals(Symbol.DOT) || part.equals(Symbol.DOUBLE_DOT))
+                || uri.getPath().chars().anyMatch(c -> Character.isISOControl(c) || c == Symbol.C_BACKSLASH)) {
             throw new IllegalArgumentException("A safe HTTPS request URI is required");
         }
     }
@@ -278,7 +285,7 @@ final class CloudProtocol {
      * @return sanitized status classification
      */
     static UncheckedException restError(int status, Map<?, ?> body) {
-        if (status == 401 || status == 403) {
+        if (status == Http.Status.UNAUTHORIZED || status == Http.Status.FORBIDDEN) {
             return new ForbiddenException("Secret access denied");
         }
         return new CryptoException("Secret backend rejected the request");
@@ -291,7 +298,7 @@ final class CloudProtocol {
      * @return canonical Host header value
      */
     static String host(URI uri) {
-        return uri.getRawAuthority().toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(uri.getRawAuthority(), Locale.ROOT);
     }
 
     /**
@@ -301,7 +308,7 @@ final class CloudProtocol {
      * @return percent-encoded component
      */
     static String encode(String text) {
-        return UrlEncoder.encodeAll(text, StandardCharsets.UTF_8);
+        return UrlEncoder.encodeAll(text, Charset.UTF_8);
     }
 
     /**
@@ -311,32 +318,31 @@ final class CloudProtocol {
      * @return canonical query string without a leading question mark
      */
     static String query(Map<String, String> values) {
-        return new TreeMap<>(values).entrySet().stream().map(e -> encode(e.getKey()) + "=" + encode(e.getValue()))
-                .collect(Collectors.joining("&"));
+        return new TreeMap<>(values).entrySet().stream()
+                .map(e -> encode(e.getKey()) + Symbol.EQUAL + encode(e.getValue()))
+                .collect(Collectors.joining(Symbol.AND));
     }
 
     /**
-     * Computes one standard JCA HMAC over UTF-8 input. This helper does not erase caller-owned key bytes; cryptographic
+     * Computes a Bus Crypto HMAC over UTF-8 input. This helper does not erase caller-owned key bytes; cryptographic
      * failures are replaced with a safe category.
      *
-     * @param algorithm JCA HMAC algorithm name selected by the cloud signing protocol
-     * @param key       field name or cache key to look up
+     * @param algorithm shared HMAC algorithm selected by the cloud signing protocol
+     * @param key       caller-owned signing key bytes
      * @param input     string encoded as UTF-8 before authentication
      * @return new HMAC result bytes owned by the caller
      * @throws CryptoException if the requested HMAC cannot be initialized or computed
      */
-    static byte[] hmac(String algorithm, byte[] key, String input) {
+    static byte[] hmac(Algorithm algorithm, byte[] key, String input) {
         try {
-            Mac mac = Mac.getInstance(algorithm);
-            mac.init(new SecretKeySpec(key, algorithm));
-            return mac.doFinal(input.getBytes(StandardCharsets.UTF_8));
-        } catch (GeneralSecurityException failure) {
+            return Builder.hmac(algorithm, key).digest(input, Charset.UTF_8);
+        } catch (CryptoException failure) {
             throw new CryptoException("Secret backend is unavailable");
         }
     }
 
     /**
-     * Computes a lowercase hexadecimal SHA-256 digest using JCA and the existing Bus hexadecimal encoder.
+     * Computes a lowercase hexadecimal SHA-256 digest through Bus Crypto.
      *
      * @param bytes input bytes; the caller retains ownership
      * @return lowercase SHA-256 digest
@@ -344,8 +350,8 @@ final class CloudProtocol {
      */
     static String hash(byte[] bytes) {
         try {
-            return HexKit.encodeString(MessageDigest.getInstance("SHA-256").digest(bytes));
-        } catch (GeneralSecurityException failure) {
+            return Builder.sha256Hex(bytes);
+        } catch (CryptoException failure) {
             throw new CryptoException("Secret backend is unavailable");
         }
     }
@@ -438,7 +444,7 @@ final class CloudProtocol {
         try {
             return new SecretMaterial(chars, version, Instant.now(), expiresAt, generation);
         } finally {
-            Arrays.fill(chars, '\0');
+            Arrays.fill(chars, Symbol.C_NUL);
         }
     }
 
@@ -452,20 +458,20 @@ final class CloudProtocol {
      */
     static UncheckedException error(int status, Map<?, ?> body) {
         Object raw = body.containsKey("Code") ? body.get("Code") : body.get("__type");
-        String code = raw instanceof String text ? text : "";
-        if (code.contains("#")) {
-            code = code.substring(code.lastIndexOf('#') + 1);
+        String code = raw instanceof String text ? text : Normal.EMPTY;
+        if (code.contains(Symbol.HASH)) {
+            code = StringKit.subAfter(code, Symbol.C_HASH, true);
         }
-        if (status == 401 || status == 403 || code.contains("AccessDenied") || code.contains("Forbidden")
-                || code.contains("InvalidAccessKey") || code.contains("InvalidClientToken")
-                || code.contains("DecryptionFailure") || code.contains("Signature") || code.contains("ExpiredToken")
-                || code.contains("UnrecognizedClient")) {
+        if (status == Http.Status.UNAUTHORIZED || status == Http.Status.FORBIDDEN || code.contains("AccessDenied")
+                || code.contains("Forbidden") || code.contains("InvalidAccessKey")
+                || code.contains("InvalidClientToken") || code.contains("DecryptionFailure")
+                || code.contains("Signature") || code.contains("ExpiredToken") || code.contains("UnrecognizedClient")) {
             return new ForbiddenException("Secret access denied");
         }
-        if (status == 429 || code.contains("Throttl") || code.contains("LimitExceeded")) {
+        if (status == Http.Status.TOO_MANY_REQUESTS || code.contains("Throttl") || code.contains("LimitExceeded")) {
             return new CryptoException("Secret backend is rate limited");
         }
-        if (status == 404 || code.contains("NotFound")) {
+        if (status == Http.Status.NOT_FOUND || code.contains("NotFound")) {
             return new CryptoException("Secret not found");
         }
         if (code.contains("InvalidParameter") || code.contains("InvalidArgument")) {
@@ -482,7 +488,8 @@ final class CloudProtocol {
      * @return true for HTTP throttling or temporary internal/service/gateway failures
      */
     static boolean retryableStatus(int status) {
-        return status == 429 || status == 500 || status == 502 || status == 503;
+        return status == Http.Status.TOO_MANY_REQUESTS || status == Http.Status.INTERNAL_SERVER_ERROR
+                || status == Http.Status.BAD_GATEWAY || status == Http.Status.SERVICE_UNAVAILABLE;
     }
 
     /**
@@ -549,10 +556,11 @@ final class CloudProtocol {
                     body = object(bytes);
                 } catch (RuntimeException failure) {
                     var causes = ExceptionKit.getThrowableList(failure);
-                    if (response.code() >= 200 && response.code() < 300 || causes.stream().anyMatch(
-                            cause -> cause instanceof IOException || cause instanceof ForbiddenException
-                                    || cause instanceof java.util.concurrent.TimeoutException
-                                    || cause instanceof org.miaixz.bus.core.lang.exception.TimeoutException)) {
+                    if (response.code() >= Http.Status.OK && response.code() < Http.Status.MULTIPLE_CHOICES
+                            || causes.stream().anyMatch(
+                                    cause -> cause instanceof IOException || cause instanceof ForbiddenException
+                                            || cause instanceof TimeoutException
+                                            || cause instanceof org.miaixz.bus.core.lang.exception.TimeoutException)) {
                         throw failure;
                     }
                     body = Map.of();
@@ -561,7 +569,7 @@ final class CloudProtocol {
                         Arrays.fill(bytes, (byte) 0);
                     }
                 }
-                if (response.code() < 200 || response.code() >= 300) {
+                if (response.code() < Http.Status.OK || response.code() >= Http.Status.MULTIPLE_CHOICES) {
                     UncheckedException failure = errors.apply(response.code(), body);
                     if (failure instanceof ForbiddenException || attempt >= 2
                             || !retryable.test(response.code(), body)) {
@@ -583,7 +591,7 @@ final class CloudProtocol {
                     throw sanitize(failure);
                 }
             }
-            long delay = ThreadLocalRandom.current().nextLong(25L << attempt, 50L << attempt);
+            long delay = RandomKit.randomLong(25L << attempt, 50L << attempt);
             if (Duration.between(Instant.now(), context.deadline()).toMillis() <= delay || !ThreadKit.sleep(delay)) {
                 throw new CryptoException("Secret operation timed out");
             }
@@ -615,7 +623,7 @@ final class CloudProtocol {
         var causes = ExceptionKit.getThrowableList(failure);
         if (causes.stream().anyMatch(
                 cause -> cause instanceof ForbiddenException || cause instanceof InterruptedIOException
-                        || cause instanceof java.util.concurrent.TimeoutException
+                        || cause instanceof TimeoutException
                         || cause instanceof org.miaixz.bus.core.lang.exception.TimeoutException)) {
             return false;
         }

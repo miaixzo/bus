@@ -27,6 +27,7 @@ import java.util.Objects;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.extra.json.JsonKit;
 
@@ -69,25 +70,12 @@ public class CacheReleaseStore implements ReleaseStore {
                 key(prepared.getTenant_id(), prepared.getTrack(), prepared.getVersion()),
                 JsonKit.toJsonString(prepared),
                 0L);
+        if (prepared.getId() != null)
+            cacheX.write(
+                    PREFIX + "identity:" + segment(prepared.getTenant_id()) + segment(prepared.getId()),
+                    JsonKit.toJsonString(prepared),
+                    0L);
         return prepared;
-    }
-
-    /**
-     * Atomically inserts within this shared cache object; distributed hosts must supply a transactional store.
-     *
-     * @param record tenant-qualified release record to insert
-     * @return newly persisted release record
-     * @throws IllegalStateException if the tenant, track, and version already identify a stored release
-     */
-    @Override
-    public Release create(Release record) {
-        synchronized (cacheX) {
-            Release prepared = normalize(record);
-            if (find(prepared.getTenant_id(), prepared.getVersion(), prepared.getTrack()) != null) {
-                throw new IllegalStateException("Release version already exists");
-            }
-            return save(prepared);
-        }
     }
 
     /**
@@ -169,7 +157,7 @@ public class CacheReleaseStore implements ReleaseStore {
         String version = currentVersion(tenantId, track);
         if (version != null && !version.isBlank()) {
             Release record = find(tenantId, version, track);
-            if (record != null) {
+            if (record != null && EnumValue.Phase.ACTIVE.matches(record.getStatus())) {
                 return record;
             }
         }
@@ -200,7 +188,7 @@ public class CacheReleaseStore implements ReleaseStore {
         target.setTrack(normalizedTrack);
         target.setStatus(EnumValue.Phase.ACTIVE.key());
         if (target.getPublished() == null) {
-            target.setPublished(System.currentTimeMillis());
+            target.setPublished(DateKit.current());
         }
         Release saved = save(target);
         cacheX.write(currentKey(tenantId, normalizedTrack), saved.getVersion(), 0L);
@@ -222,7 +210,7 @@ public class CacheReleaseStore implements ReleaseStore {
             prepared.setStatus(EnumValue.Phase.DRAFT.key());
         }
         EnumValue.Phase.fromKey(prepared.getStatus());
-        long now = System.currentTimeMillis();
+        long now = DateKit.current();
         if (prepared.getCreated() == null) {
             prepared.setCreated(now);
         }
@@ -265,7 +253,7 @@ public class CacheReleaseStore implements ReleaseStore {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("Version coordinate is required");
         }
-        return value.length() + ":" + value;
+        return value.length() + Symbol.COLON + value;
     }
 
     /**
@@ -278,6 +266,22 @@ public class CacheReleaseStore implements ReleaseStore {
     private String currentVersion(String tenantId, String track) {
         Object value = cacheX.read(currentKey(tenantId, track));
         return value == null ? null : value.toString();
+    }
+
+    /**
+     * Reads an exact release cache identity without a version scan.
+     *
+     * @param tenant  owning tenant
+     * @param release exact identity
+     * @return detached cached record or absent
+     */
+    @Override
+    public Release byId(String tenant, String release) {
+        Object raw = cacheX.read(PREFIX + "identity:" + segment(CortexIdentity.tenantId(tenant)) + segment(release));
+        Release record = raw instanceof String json ? JsonKit.toPojo(json, Release.class) : null;
+        if (record != null && (!tenant.equals(record.getTenant_id()) || !release.equals(record.getId())))
+            throw new IllegalStateException("Release cache identity mismatch");
+        return record;
     }
 
 }

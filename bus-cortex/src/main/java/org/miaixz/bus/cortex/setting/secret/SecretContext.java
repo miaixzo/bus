@@ -35,6 +35,7 @@ import org.miaixz.bus.core.lang.exception.CryptoException;
  * @param requestId non-blank tracing identifier, never used as an authorization decision
  * @param purpose   non-blank trusted purpose of the operation
  * @param deadline  non-null absolute deadline; past instants are accepted here and rejected by checkDeadline
+ * @author Kimi Liu
  */
 public record SecretContext(String tenantId, String appId, String principal, String requestId, String purpose,
         Instant deadline) {

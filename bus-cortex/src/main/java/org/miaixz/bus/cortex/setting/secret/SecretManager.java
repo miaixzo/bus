@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.cortex.setting.secret;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
@@ -34,6 +33,9 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.miaixz.bus.cache.nimble.MemoryCache;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.exception.ForbiddenException;
 import org.miaixz.bus.core.lang.exception.UncheckedException;
@@ -45,6 +47,8 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Authorizes read-only Secret access and binds backend reads to connection generations. Cache storage, capacity and TTL
  * belong to Bus MemoryCache; fixed resource guards coordinate reads and invalidation. An injected cache must be empty
  * and exclusively owned by this manager. Closing drains admitted guarded reads and erases cached materials.
+ *
+ * @author Kimi Liu
  */
 public final class SecretManager implements AutoCloseable {
 
@@ -153,7 +157,7 @@ public final class SecretManager implements AutoCloseable {
      */
     private static String scope(SecretReference ref, SecretContext context) {
         return Stream.of(context.tenantId(), context.appId(), context.principal(), ref.connectionId(), ref.resource())
-                .map(UrlEncoder::encodeAll).collect(Collectors.joining("/", "", "/"));
+                .map(UrlEncoder::encodeAll).collect(Collectors.joining(Symbol.SLASH, Normal.EMPTY, Symbol.SLASH));
     }
 
     /**
@@ -265,7 +269,7 @@ public final class SecretManager implements AutoCloseable {
                     return new SecretMaterial(copy, value.resolvedVersion(), value.fetchedAt(), value.expiresAt(),
                             value.connectionGeneration());
                 }
-                byte[] json = new String(copy).getBytes(StandardCharsets.UTF_8);
+                byte[] json = new String(copy).getBytes(Charset.UTF_8);
                 Object parsed;
                 try {
                     parsed = JsonKit.toJavaValue(JsonKit.readValue(json, 32, true));
@@ -286,10 +290,10 @@ public final class SecretManager implements AutoCloseable {
                     return new SecretMaterial(extracted, value.resolvedVersion(), value.fetchedAt(), value.expiresAt(),
                             value.connectionGeneration());
                 } finally {
-                    Arrays.fill(extracted, '\0');
+                    Arrays.fill(extracted, Symbol.C_NUL);
                 }
             } finally {
-                Arrays.fill(copy, '\0');
+                Arrays.fill(copy, Symbol.C_NUL);
             }
         } catch (UncheckedException failure) {
             discardAfterFailure(ref, context);
@@ -353,7 +357,7 @@ public final class SecretManager implements AutoCloseable {
                 return new SecretMaterial(chars, value.resolvedVersion(), value.fetchedAt(), value.expiresAt(),
                         value.connectionGeneration());
             } finally {
-                Arrays.fill(chars, '\0');
+                Arrays.fill(chars, Symbol.C_NUL);
             }
         } catch (UncheckedException failure) {
             throw (ExceptionKit.getThrowableList(failure).stream().anyMatch(ForbiddenException.class::isInstance)
@@ -472,8 +476,8 @@ public final class SecretManager implements AutoCloseable {
      */
     private SecretMaterial cached(Binding binding, SecretReference ref, SecretContext context) {
         String scope = scope(ref, context);
-        String key = scope + binding.connection().generation() + "/"
-                + UrlEncoder.encodeAll(ref.version() == null ? "" : ref.version());
+        String key = scope + binding.connection().generation() + Symbol.SLASH
+                + UrlEncoder.encodeAll(ref.version() == null ? Normal.EMPTY : ref.version());
         SecretMaterial hit = cache.read(key);
         if (hit != null) {
             Instant refreshAt = hit.fetchedAt().plus(ttl).minus(refreshBefore);
@@ -492,7 +496,7 @@ public final class SecretManager implements AutoCloseable {
                         return new SecretMaterial(chars, hit.resolvedVersion(), hit.fetchedAt(), hit.expiresAt(),
                                 hit.connectionGeneration());
                     } finally {
-                        Arrays.fill(chars, '\0');
+                        Arrays.fill(chars, Symbol.C_NUL);
                     }
                 } catch (UncheckedException ignored) {
                     // Expiration or concurrent capacity eviction requires a fresh backend read.
@@ -532,7 +536,7 @@ public final class SecretManager implements AutoCloseable {
                 }
                 return result;
             } finally {
-                Arrays.fill(chars, '\0');
+                Arrays.fill(chars, Symbol.C_NUL);
             }
         }
     }
@@ -656,6 +660,8 @@ public final class SecretManager implements AutoCloseable {
     /**
      * Mandatory authorization boundary for Secret operations. The trusted identity context is independent of persisted
      * references. Policy evaluation precedes connection lookup and occurs even when a backend value is already cached.
+     *
+     * @author Kimi Liu
      */
     @FunctionalInterface
     public interface AccessPolicy {
@@ -675,6 +681,7 @@ public final class SecretManager implements AutoCloseable {
          *                                                               diagnostics are deliberately sanitized
          */
         void requireAllowed(String action, SecretReference reference, SecretContext context);
+
     }
 
     /**
@@ -682,8 +689,10 @@ public final class SecretManager implements AutoCloseable {
      *
      * @param tenantId authenticated tenant identifier
      * @param id       connection identifier scoped to the tenant
+     * @author Kimi Liu
      */
     private record ConnectionKey(String tenantId, String id) {
+
     }
 
     /**
@@ -691,6 +700,7 @@ public final class SecretManager implements AutoCloseable {
      *
      * @param connection immutable routing configuration and prefix restrictions
      * @param provider   provider instance whose type must match the connection
+     * @author Kimi Liu
      */
     private record Binding(SecretConnection connection, SecretProvider provider) {
 
@@ -709,6 +719,7 @@ public final class SecretManager implements AutoCloseable {
                 throw new IllegalArgumentException("Secret provider type mismatch");
             }
         }
+
     }
 
 }
