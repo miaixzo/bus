@@ -127,8 +127,8 @@ public class TokenGuardConfig {
     }
 
     /**
-     * Uses a strictly positive per-scope override when present; otherwise returns expireSeconds unchanged.
-     * The default lifetime is not validated or clamped by this method.
+     * Uses a strictly positive per-scope override when present; otherwise returns expireSeconds unchanged. The default
+     * lifetime is not validated or clamped by this method.
      *
      * @param scope scope, role, or scene key; null bypasses per-scope lookup
      * @return positive scope override, or the configured default, which may be non-positive if configured that way

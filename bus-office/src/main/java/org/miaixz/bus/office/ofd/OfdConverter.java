@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import org.ofdrw.converter.export.*;
+import org.ofdrw.converter.ofdconverter.DocConverter;
 import org.ofdrw.converter.ofdconverter.ImageConverter;
 import org.ofdrw.converter.ofdconverter.PDFConverter;
 import org.ofdrw.converter.ofdconverter.TextConverter;
@@ -70,7 +71,7 @@ public class OfdConverter {
                 src == null ? null : src.getFileName(),
                 target == null ? null : target.getFileName(),
                 pages == null ? 0 : pages.length);
-        try (final org.ofdrw.converter.ofdconverter.DocConverter converter = new PDFConverter(target)) {
+        try (final DocConverter converter = new PDFConverter(target)) {
             converter.convert(src, pages);
         } catch (final IOException e) {
             Logger.error(
@@ -147,7 +148,7 @@ public class OfdConverter {
                 "Image to OFD conversion started: targetFile={}, imageCount={}",
                 target == null ? null : target.getFileName(),
                 images == null ? 0 : images.length);
-        try (final org.ofdrw.converter.ofdconverter.DocConverter converter = new ImageConverter(target)) {
+        try (final DocConverter converter = new ImageConverter(target)) {
             for (final Path image : images) {
                 converter.convert(image);
             }

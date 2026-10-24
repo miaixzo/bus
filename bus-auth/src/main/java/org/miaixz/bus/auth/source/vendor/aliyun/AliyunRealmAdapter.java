@@ -30,6 +30,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.shared.SecretLease;
@@ -181,7 +182,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
                 || this.variant.protocol() != Protocol.HTTPS || !AliyunManifest.ID.equals(this.options.vendor())
                 || !AliyunManifest.RAM.equals(this.options.variant()) || this.options.redirectUri().isPresent()
                 || !this.options.scopes().isEmpty()
-                || this.options.credential().type() != org.miaixz.bus.auth.Credential.Type.SHARED_SECRET) {
+                || this.options.credential().type() != Credential.Type.SHARED_SECRET) {
             throw new ValidateException("Alibaba Cloud realm adapter requires the frozen management Variant");
         }
         this.services.policies().require(this.variant.protocol());

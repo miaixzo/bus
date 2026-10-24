@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.logger.nimble.jboss;
 
+import org.jboss.logging.Logger;
+
 import org.miaixz.bus.logger.Provider;
 import org.miaixz.bus.logger.magic.AbstractFactory;
 
@@ -35,7 +37,7 @@ public class JbossLoggingFactory extends AbstractFactory {
      */
     public JbossLoggingFactory() {
         super("org.jboss.logging.Logger");
-        exists(org.jboss.logging.Logger.class);
+        exists(Logger.class);
     }
 
     /**

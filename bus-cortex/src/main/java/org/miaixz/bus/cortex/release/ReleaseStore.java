@@ -169,7 +169,7 @@ public interface ReleaseStore {
      * Retrying the same version and identical frozen manifest is idempotent; a changed manifest is a conflict.
      * Cache-backed fallbacks deliberately do not emulate a multi-resource database transaction.
      *
-     * @param record frozen release to insert and activate
+     * @param record   frozen release to insert and activate
      * @param baseline expected current version identifier for the compare-and-set
      * @return activated release record
      * @throws UnsupportedOperationException by default; the store must implement transactional activation

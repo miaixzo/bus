@@ -29,9 +29,11 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.FabricX.UrlBuilder;
+import org.miaixz.bus.auth.guard.AlgorithmGuard;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
 import org.miaixz.bus.auth.shared.jose.JoseHeader;
 import org.miaixz.bus.auth.shared.jose.JwaAlgorithm;
@@ -179,7 +181,7 @@ public class GoogleRealmAdapter implements VendorAdapter {
                 || !GoogleManifest.ID.equals(this.variant.platform()) || this.variant.protocol() != Protocol.HTTPS
                 || !GoogleManifest.ID.equals(this.options.vendor())
                 || !GoogleManifest.WORKSPACE.equals(this.options.variant()) || this.options.redirectUri().isPresent()
-                || this.options.credential().type() != org.miaixz.bus.auth.Credential.Type.PRIVATE_KEY
+                || this.options.credential().type() != Credential.Type.PRIVATE_KEY
                 || !this.variant.defaultScopes().equals(this.options.scopes())) {
             throw new ValidateException("Google realm adapter requires the frozen Workspace HTTPS Variant");
         }
@@ -190,8 +192,7 @@ public class GoogleRealmAdapter implements VendorAdapter {
             throw new ValidateException("Google Workspace manifest has an invalid management target set");
         }
         this.accessCache = new MemoryCache<>(FabricX.clock()::millis);
-        this.jwsService = new JwsService(new org.miaixz.bus.auth.guard.AlgorithmGuard(),
-                Set.of(JwaAlgorithm.RS256.name()));
+        this.jwsService = new JwsService(new AlgorithmGuard(), Set.of(JwaAlgorithm.RS256.name()));
     }
 
     /**

@@ -33,6 +33,7 @@ import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
+import org.miaixz.bus.auth.guard.AlgorithmGuard;
 import org.miaixz.bus.auth.guard.IssuerValidator;
 import org.miaixz.bus.auth.guard.TimeGuard;
 import org.miaixz.bus.auth.shared.SecretLease;
@@ -238,11 +239,9 @@ public class LinkedInSourceAdapter implements VendorAdapter {
         this.jwkSetCodec = new JwkSetCodec();
         this.jwkSelector = new JwkSelector();
         this.issuerValidator = new IssuerValidator();
-        this.timeGuard = new org.miaixz.bus.auth.guard.TimeGuard(FabricX.clock(),
-                services.policies().require(Protocol.OIDC).maximumClockSkew());
-        this.jwsService = new JwsService(new org.miaixz.bus.auth.guard.AlgorithmGuard(),
-                Set.of(JwaAlgorithm.RS256.name()));
-        final JweService dormantJweService = new JweService(new org.miaixz.bus.auth.guard.AlgorithmGuard(),
+        this.timeGuard = new TimeGuard(FabricX.clock(), services.policies().require(Protocol.OIDC).maximumClockSkew());
+        this.jwsService = new JwsService(new AlgorithmGuard(), Set.of(JwaAlgorithm.RS256.name()));
+        final JweService dormantJweService = new JweService(new AlgorithmGuard(),
                 Set.of(JwaAlgorithm.RSA_OAEP_256.name()), Set.of(JwaAlgorithm.A256GCM.name()));
         this.idTokenCodec = new IdTokenCodec(new JwtVerifier(jwsService, dormantJweService));
     }

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric.network.udp;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.route.AddressGuard;
@@ -237,16 +239,14 @@ public class UdpSession implements Session {
      * @return normalized numeric peer pinned to the session
      */
     private static Address pinPeer(final Address logical, final Address peer, final AddressPolicy policy) {
-        if (logical.protocol() != org.miaixz.bus.core.net.Protocol.UDP
-                || peer.protocol() != org.miaixz.bus.core.net.Protocol.UDP || logical.port() != peer.port()) {
+        if (logical.protocol() != Protocol.UDP || peer.protocol() != Protocol.UDP || logical.port() != peer.port()) {
             throw new ValidateException("UDP validated peer must match the logical protocol and port");
         }
         final InetSocketAddress socket = socket(peer);
         if (socket.isUnresolved() || socket.getAddress() == null) {
             throw new ValidateException("UDP validated peer must be numeric");
         }
-        final java.net.InetAddress numeric = new AddressGuard(policy)
-                .checkTarget(logical, List.of(socket.getAddress()));
+        final InetAddress numeric = new AddressGuard(policy).checkTarget(logical, List.of(socket.getAddress()));
         return new Address(peer.scheme(), numeric.getHostAddress(), peer.port(), peer.path());
     }
 

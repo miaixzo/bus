@@ -27,6 +27,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.poi.hssf.eventusermodel.FormatTrackingHSSFListener;
 import org.apache.poi.hssf.record.CellValueRecordInterface;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.util.XMLHelper;
 import org.apache.poi.xssf.model.SharedStrings;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
@@ -362,7 +363,7 @@ public class ExcelSaxKit {
      * @return A {@link DateTime} object.
      */
     public static DateTime getDateValue(final double value) {
-        return DateKit.date(org.apache.poi.ss.usermodel.DateUtil.getJavaDate(value, false));
+        return DateKit.date(DateUtil.getJavaDate(value, false));
     }
 
     /**

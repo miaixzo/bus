@@ -59,8 +59,8 @@ public class LabelMapper {
     }
 
     /**
-     * Converts valid label items into a new insertion-ordered map. Null items and null or blank keys are skipped.
-     * Later duplicate keys replace earlier values without changing the key's encounter position.
+     * Converts valid label items into a new insertion-ordered map. Null items and null or blank keys are skipped. Later
+     * duplicate keys replace earlier values without changing the key's encounter position.
      *
      * @param labels label items, or null
      * @return mutable label map, or null when the input is null, empty, or contains no valid keys

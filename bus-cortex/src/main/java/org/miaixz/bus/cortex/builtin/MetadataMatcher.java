@@ -71,12 +71,13 @@ public class MetadataMatcher {
     }
 
     /**
-     * Evaluates one comparison against a label map. EQ and NEQ compare the first configured value;
-     * IN and NOTIN test membership. Null or empty comparison lists make EQ/IN false and NEQ/NOTIN true.
-     * A missing actual value makes IN false and NOTIN true.
+     * Evaluates one comparison against a label map. EQ and NEQ compare the first configured value; IN and NOTIN test
+     * membership. Null or empty comparison lists make EQ/IN false and NEQ/NOTIN true. A missing actual value makes IN
+     * false and NOTIN true.
      *
      * @param metadata label map, or null
-     * @param selector expression, or null; a non-null expression requires an operator and non-null first value for nonempty EQ/NEQ comparisons
+     * @param selector expression, or null; a non-null expression requires an operator and non-null first value for
+     *                 nonempty EQ/NEQ comparisons
      * @return false for a null map or expression; otherwise the comparison result
      * @throws NullPointerException if an evaluated expression has no operator or has a null first EQ/NEQ value
      */
@@ -95,11 +96,11 @@ public class MetadataMatcher {
     }
 
     /**
-     * Tests every effective constraint. An empty constraint set matches even a null label map;
-     * a nonempty set rejects null or empty metadata before evaluating selectors.
+     * Tests every effective constraint. An empty constraint set matches even a null label map; a nonempty set rejects
+     * null or empty metadata before evaluating selectors.
      *
-     * @param metadata label map, or null
-     * @param labels exact constraints, or null
+     * @param metadata  label map, or null
+     * @param labels    exact constraints, or null
      * @param selectors advanced constraints, or null
      * @return true when there are no constraints, otherwise whether all constraints match
      * @throws NullPointerException if an evaluated selector violates its comparison preconditions
@@ -117,8 +118,9 @@ public class MetadataMatcher {
 
     /**
      * Returns true if the asset labels satisfy all exact-label and advanced selector constraints.
-     * @param assets asset to check
-     * @param labels exact labels
+     *
+     * @param assets    asset to check
+     * @param labels    exact labels
      * @param selectors advanced selectors
      * @return false for a null asset; otherwise whether its labels satisfy all effective constraints
      */
@@ -127,14 +129,16 @@ public class MetadataMatcher {
     }
 
     /**
-     * Filters entries against all selectors, preserving matching entries in encounter order.
-     * When no selectors are supplied, returns the input list itself without copying or validating it.
+     * Filters entries against all selectors, preserving matching entries in encounter order. When no selectors are
+     * supplied, returns the input list itself without copying or validating it.
      *
-     * @param <T> asset type
-     * @param entries entries to filter; may be null only when no selectors are supplied
+     * @param <T>       asset type
+     * @param entries   entries to filter; may be null only when no selectors are supplied
      * @param selectors selector expressions, or null for no filtering
-     * @return the original list, possibly null, when selectors are absent or empty; otherwise a new mutable filtered list
-     * @throws NullPointerException if entries is null while filtering is required, or a selector violates its comparison preconditions
+     * @return the original list, possibly null, when selectors are absent or empty; otherwise a new mutable filtered
+     *         list
+     * @throws NullPointerException if entries is null while filtering is required, or a selector violates its
+     *                              comparison preconditions
      */
     public static <T extends Assets> List<T> filter(List<T> entries, List<Selector> selectors) {
         if (selectors == null || selectors.isEmpty()) {
@@ -147,12 +151,13 @@ public class MetadataMatcher {
     /**
      * Filters entries by exact labels and advanced selectors. With no effective constraints, returns the original list.
      *
-     * @param <T> asset type
-     * @param entries entries to filter; may be null only when no constraints are supplied
-     * @param labels exact label constraints, or null
+     * @param <T>       asset type
+     * @param entries   entries to filter; may be null only when no constraints are supplied
+     * @param labels    exact label constraints, or null
      * @param selectors advanced constraints, or null
      * @return the original list, possibly null, when no constraints exist; otherwise a new mutable filtered list
-     * @throws NullPointerException if entries is null while filtering is required, or a selector violates its comparison preconditions
+     * @throws NullPointerException if entries is null while filtering is required, or a selector violates its
+     *                              comparison preconditions
      */
     public static <T extends Assets> List<T> filter(
             List<T> entries,

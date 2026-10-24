@@ -22,6 +22,7 @@ package org.miaixz.bus.notify.nimble.generic;
 import java.io.File;
 import java.util.Properties;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -160,7 +161,7 @@ public class GenericNotice extends Notice {
      * The name of the class that implements the {@code javax.net.SocketFactory} interface. This class will be used to
      * create SMTP sockets.
      */
-    @lombok.Builder.Default
+    @Builder.Default
     private String socketFactoryClass = "javax.net.ssl.SSLSocketFactory";
 
     /**
@@ -173,7 +174,7 @@ public class GenericNotice extends Notice {
      * The specified port to connect to when using the specified socket factory. If not set, the default port will be
      * used.
      */
-    @lombok.Builder.Default
+    @Builder.Default
     private int socketFactoryPort = 465;
 
     /**

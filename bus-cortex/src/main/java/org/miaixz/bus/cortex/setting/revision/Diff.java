@@ -72,12 +72,13 @@ public final class Diff {
      * Compares one item's revisions. Protected contents are never passed to a decoder or exposed in the result. Their
      * immutable stored checksums determine whether a masked change exists.
      *
-     * @param before optional baseline immutable revision
-     * @param after optional target immutable revision
-     * @param decoder host decoder for unprotected immutable contents
+     * @param before      optional baseline immutable revision
+     * @param after       optional target immutable revision
+     * @param decoder     host decoder for unprotected immutable contents
      * @param secretPaths exact protected paths that must remain masked
      * @return immutable path differences using the shared scalar placeholder
-     * @throws IllegalArgumentException if item identity, revision ownership, protected checksums, or decoded input are invalid
+     * @throws IllegalArgumentException if item identity, revision ownership, protected checksums, or decoded input are
+     *                                  invalid
      */
     public static List<Diff> compare(
             Revision before,

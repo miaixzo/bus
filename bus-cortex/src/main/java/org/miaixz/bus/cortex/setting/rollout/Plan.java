@@ -84,16 +84,17 @@ public final class Plan {
      * Freezes exact revision identifiers, never dynamic LATEST lookups. A deletion must freeze its tombstone revision
      * rather than silently omit an item. Shared-source changes alone never activate consumers.
      *
-     * @param tenant tenant owning the publication
-     * @param baseline expected previously active version, or null
-     * @param version required server-generated numeric target version
-     * @param mode FORMAL or GRAY publication mode
-     * @param policy required approval policy identifier
-     * @param rule gray selector required only for GRAY publication
-     * @param previous previous application manifests, or null for an empty baseline
-     * @param selected complete replacement manifests for selected applications
+     * @param tenant     tenant owning the publication
+     * @param baseline   expected previously active version, or null
+     * @param version    required server-generated numeric target version
+     * @param mode       FORMAL or GRAY publication mode
+     * @param policy     required approval policy identifier
+     * @param rule       gray selector required only for GRAY publication
+     * @param previous   previous application manifests, or null for an empty baseline
+     * @param selected   complete replacement manifests for selected applications
      * @param references shared-reference policies to freeze into the plan
-     * @throws IllegalArgumentException if version, publication mode, selector, selected manifests, or reference policies are invalid
+     * @throws IllegalArgumentException if version, publication mode, selector, selected manifests, or reference
+     *                                  policies are invalid
      */
     public Plan(String tenant, String baseline, String version, String mode, String policy, GrayRule rule,
             Map<String, Map<String, String>> previous, Map<String, Map<String, String>> selected,
@@ -197,7 +198,7 @@ public final class Plan {
      * Requires a nonblank manifest value.
      *
      * @param value value to validate
-     * @param name semantic name used in the failure message
+     * @param name  semantic name used in the failure message
      * @throws IllegalArgumentException if a required coordinate is null or blank
      */
     private static void require(String value, String name) {
@@ -252,6 +253,7 @@ public final class Plan {
 
     /**
      * Serializes the canonical frozen input used for approval and execution checksums.
+     *
      * @return canonical JSON representation of all frozen plan inputs
      */
     public String toJson() {
@@ -357,8 +359,9 @@ public final class Plan {
 
     /**
      * Tests membership in the selected scope rather than the merged baseline.
-     * @param app selected application identifier
-     * @param item item identifier within that application
+     *
+     * @param app      selected application identifier
+     * @param item     item identifier within that application
      * @param revision exact immutable revision identifier
      * @return true when the selected application explicitly contains that item revision
      */

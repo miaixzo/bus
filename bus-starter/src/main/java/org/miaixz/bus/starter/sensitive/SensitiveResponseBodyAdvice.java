@@ -29,6 +29,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
@@ -52,8 +53,7 @@ import org.miaixz.bus.sensitive.magic.annotation.Sensitive;
  *
  * @author Kimi Liu
  */
-public class SensitiveResponseBodyAdvice extends BaseAdvice
-        implements org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice<Object> {
+public class SensitiveResponseBodyAdvice extends BaseAdvice implements ResponseBodyAdvice<Object> {
 
     /**
      * Sensitive-data rules applied before response serialization.

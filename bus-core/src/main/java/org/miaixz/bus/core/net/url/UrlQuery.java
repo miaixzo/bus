@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.core.net.url;
 
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -84,7 +85,7 @@ public class UrlQuery {
      * @param charset The charset for decoding the query string; if {@code null}, no decoding is performed.
      * @return A new {@link UrlQuery} instance.
      */
-    public static UrlQuery of(final String query, final java.nio.charset.Charset charset) {
+    public static UrlQuery of(final String query, final Charset charset) {
         return of(query, charset, true);
     }
 
@@ -96,10 +97,7 @@ public class UrlQuery {
      * @param autoRemovePath If {@code true}, automatically removes the path part before the first '?'.
      * @return A new {@link UrlQuery} instance.
      */
-    public static UrlQuery of(
-            final String query,
-            final java.nio.charset.Charset charset,
-            final boolean autoRemovePath) {
+    public static UrlQuery of(final String query, final Charset charset, final boolean autoRemovePath) {
         return of(query, charset, autoRemovePath, null);
     }
 
@@ -114,7 +112,7 @@ public class UrlQuery {
      */
     public static UrlQuery of(
             final String query,
-            final java.nio.charset.Charset charset,
+            final Charset charset,
             final boolean autoRemovePath,
             final EncodeMode encodeMode) {
         return of(encodeMode).parse(query, charset, autoRemovePath);
@@ -232,7 +230,7 @@ public class UrlQuery {
      * @param charset The charset for decoding; if {@code null}, no decoding is performed.
      * @return This {@link UrlQuery} instance for method chaining.
      */
-    public UrlQuery parse(final String query, final java.nio.charset.Charset charset) {
+    public UrlQuery parse(final String query, final Charset charset) {
         return parse(query, charset, true);
     }
 
@@ -244,7 +242,7 @@ public class UrlQuery {
      * @param autoRemovePath If {@code true}, automatically removes the path part before the first '?'.
      * @return This {@link UrlQuery} instance for method chaining.
      */
-    public UrlQuery parse(String query, final java.nio.charset.Charset charset, final boolean autoRemovePath) {
+    public UrlQuery parse(String query, final Charset charset, final boolean autoRemovePath) {
         if (StringKit.isBlank(query)) {
             return this;
         }
@@ -298,7 +296,7 @@ public class UrlQuery {
      * @param charset The charset for encoding; if {@code null}, no encoding is performed.
      * @return The URL query string.
      */
-    public String build(final java.nio.charset.Charset charset) {
+    public String build(final Charset charset) {
         switch (this.encodeMode) {
             case FORM_URL_ENCODED:
                 return build(ALL, ALL, charset);
@@ -324,10 +322,7 @@ public class UrlQuery {
      * @param charset    The charset for encoding; if {@code null}, no encoding is performed.
      * @return The URL query string.
      */
-    public String build(
-            final PercentCodec keyCoder,
-            final PercentCodec valueCoder,
-            final java.nio.charset.Charset charset) {
+    public String build(final PercentCodec keyCoder, final PercentCodec valueCoder, final Charset charset) {
         if (MapKit.isEmpty(this.query)) {
             return Normal.EMPTY;
         }
@@ -358,7 +353,7 @@ public class UrlQuery {
      * @param charset The charset for decoding; if {@code null}, no decoding is performed.
      * @return This {@link UrlQuery} instance for method chaining.
      */
-    private UrlQuery doParse(final String query, final java.nio.charset.Charset charset) {
+    private UrlQuery doParse(final String query, final Charset charset) {
         final int len = query.length();
         String name = null;
         int pos = 0; // Start position of the unprocessed string
@@ -406,7 +401,7 @@ public class UrlQuery {
      * @param value   The value; if null and the key is not null, it's treated as an empty string.
      * @param charset The charset for decoding.
      */
-    private void addParam(final String key, final String value, final java.nio.charset.Charset charset) {
+    private void addParam(final String key, final String value, final Charset charset) {
         final boolean isFormUrlEncoded = EncodeMode.FORM_URL_ENCODED == this.encodeMode;
         if (null != key) {
             final String actualKey = UrlDecoder.decode(key, charset, isFormUrlEncoded);

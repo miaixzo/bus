@@ -98,7 +98,8 @@ public class Callout {
 
     /**
      * Executes one synchronous GET request.
-     * @param url target URL
+     *
+     * @param url       target URL
      * @param timeoutMs timeout in milliseconds, clamped to at least 1
      * @return normalized response snapshot
      */
@@ -108,8 +109,9 @@ public class Callout {
 
     /**
      * Executes one synchronous JSON POST request.
-     * @param url target URL
-     * @param body request body
+     *
+     * @param url       target URL
+     * @param body      request body
      * @param timeoutMs timeout in milliseconds, clamped to at least 1
      * @return normalized response snapshot
      */
@@ -145,6 +147,7 @@ public class Callout {
 
     /**
      * Returns a shared HTTP client for the normalized timeout bucket.
+     *
      * @param timeoutMs requested timeout in milliseconds, clamped to at least 1
      * @return reusable HTTP client
      */

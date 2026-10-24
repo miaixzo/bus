@@ -57,7 +57,7 @@ public class JschKit {
      */
     public static Session openSession(final Connector connector) {
         final JSch jsch = new JSch();
-        final com.jcraft.jsch.Session session;
+        final Session session;
         try {
             session = jsch.getSession(connector.getUser(), connector.getHost(), connector.getPort());
             session.setTimeout((int) connector.getTimeout());

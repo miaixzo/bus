@@ -28,6 +28,7 @@ import java.util.Set;
 import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
+import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanNameGenerator;
@@ -197,8 +198,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
                 "Mapper scanner registration started: basePackageCount={}, annotationClass={}",
                 basePackage.size(),
                 annotationClass.getName());
-        Set<org.springframework.beans.factory.config.BeanDefinitionHolder> beanDefinitions = scanner
-                .doScan(ArrayKit.ofArray(basePackage, String.class));
+        Set<BeanDefinitionHolder> beanDefinitions = scanner.doScan(ArrayKit.ofArray(basePackage, String.class));
         Logger.info(
                 false,
                 "Starter",

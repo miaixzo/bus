@@ -334,7 +334,7 @@ public class Cortex {
      * Returns the registry matching the requested typed asset class.
      *
      * @param type concrete entry class
-     * @param <T> entry generic type
+     * @param <T>  entry generic type
      * @return registry responsible for the given asset class
      * @throws IllegalArgumentException if the requested type has no supported registry
      */
@@ -452,8 +452,8 @@ public class Cortex {
      * Queries entries from the registry matching the requested type.
      *
      * @param vector vector conditions
-     * @param <T> entry generic type
-     * @param type concrete entry class
+     * @param <T>    entry generic type
+     * @param type   concrete entry class
      * @return matching entries
      */
     public static <T extends Assets> List<T> query(Vector vector, Class<T> type) {

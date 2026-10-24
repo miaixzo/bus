@@ -21,7 +21,9 @@ package org.miaixz.bus.auth.source.protocol.saml.codec;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.*;
 
@@ -36,6 +38,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.*;
+import org.w3c.dom.Document;
 
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.source.protocol.saml.*;
@@ -125,7 +128,7 @@ public class MetadataCodec {
      * @param value    typed IdP role
      * @return role element
      */
-    private static Element writeIdentityProvider(final org.w3c.dom.Document document, final IdpSsoDescriptor value) {
+    private static Element writeIdentityProvider(final Document document, final IdpSsoDescriptor value) {
         final Element root = metadata(document, "IDPSSODescriptor");
         roleAttributes(
                 root,
@@ -178,7 +181,7 @@ public class MetadataCodec {
      * @param value    typed SP role
      * @return role element
      */
-    private static Element writeServiceProvider(final org.w3c.dom.Document document, final SpSsoDescriptor value) {
+    private static Element writeServiceProvider(final Document document, final SpSsoDescriptor value) {
         final Element root = metadata(document, "SPSSODescriptor");
         roleAttributes(
                 root,
@@ -244,7 +247,7 @@ public class MetadataCodec {
     private static void roleAttributes(
             final Element root,
             final Optional<String> id,
-            final Optional<java.time.Instant> validUntil,
+            final Optional<Instant> validUntil,
             final Optional<String> cacheDuration,
             final List<String> protocols,
             final Optional<String> errorUrl) {
@@ -262,7 +265,7 @@ public class MetadataCodec {
      * @param value    typed key descriptor
      * @return KeyDescriptor element
      */
-    private static Element writeKey(final org.w3c.dom.Document document, final KeyDescriptor value) {
+    private static Element writeKey(final Document document, final KeyDescriptor value) {
         final Element root = metadata(document, "KeyDescriptor");
         optional(root, "use", value.use().isPresent() ? value.use().getOrNull().value() : null);
         append(root, value.keyInfo().xml(), Saml.Namespaces.SIGNATURE, "KeyInfo", false);
@@ -290,7 +293,7 @@ public class MetadataCodec {
      * @return endpoint element
      */
     private static Element writeEndpoint(
-            final org.w3c.dom.Document document,
+            final Document document,
             final String localName,
             final SamlBinding binding,
             final String location,
@@ -476,7 +479,7 @@ public class MetadataCodec {
      * @param localName local element name
      * @return Metadata namespace element
      */
-    private static Element metadata(final org.w3c.dom.Document document, final String localName) {
+    private static Element metadata(final Document document, final String localName) {
         return document.createElementNS(Saml.Namespaces.METADATA, "md:" + localName);
     }
 
@@ -487,7 +490,7 @@ public class MetadataCodec {
      * @param localName local element name
      * @return XML Signature namespace element
      */
-    private static Element signature(final org.w3c.dom.Document document, final String localName) {
+    private static Element signature(final Document document, final String localName) {
         return document.createElementNS(Saml.Namespaces.SIGNATURE, "ds:" + localName);
     }
 
@@ -496,7 +499,7 @@ public class MetadataCodec {
      *
      * @return empty DOM document
      */
-    private static org.w3c.dom.Document document() {
+    private static Document document() {
         try {
             final DocumentBuilderFactory factory = factory();
             return factory.newDocumentBuilder().newDocument();
@@ -511,7 +514,7 @@ public class MetadataCodec {
      * @param xml complete XML bytes
      * @return namespace-aware DOM document
      */
-    private static org.w3c.dom.Document parseStatic(final byte[] xml) {
+    private static Document parseStatic(final byte[] xml) {
         try {
             return factory().newDocumentBuilder().parse(new ByteArrayInputStream(xml));
         } catch (Exception exception) {
@@ -669,7 +672,7 @@ public class MetadataCodec {
      * @param name    attribute name
      * @return optional instant
      */
-    private static Optional<java.time.Instant> instant(final Element element, final String name) {
+    private static Optional<Instant> instant(final Element element, final String name) {
         if (!element.hasAttribute(name))
             return Optional.empty();
         try {
@@ -893,7 +896,7 @@ public class MetadataCodec {
      */
     public SamlMessageCodec.Document<EntityDescriptor> decode(final byte[] xml) {
         final byte[] source = bounded(xml, "SAML Metadata XML");
-        final org.w3c.dom.Document document = parse(source);
+        final Document document = parse(source);
         final Element root = document.getDocumentElement();
         require(root, Saml.Namespaces.METADATA, "EntityDescriptor");
         final Set<String> ids = validateTree(root, 1);
@@ -909,7 +912,7 @@ public class MetadataCodec {
      */
     public byte[] encode(final EntityDescriptor descriptor) {
         final EntityDescriptor value = Assert.notNull(descriptor, "SAML EntityDescriptor must not be null");
-        final org.w3c.dom.Document document = document();
+        final Document document = document();
         final Element root = metadata(document, "EntityDescriptor");
         document.appendChild(root);
         attribute(root, "entityID", value.entityId());
@@ -949,12 +952,12 @@ public class MetadataCodec {
         if (value.empty()) {
             throw new ValidateException("SAML Metadata certificate chain must not be empty");
         }
-        final org.w3c.dom.Document document = document();
+        final Document document = document();
         final Element root = signature(document, "KeyInfo");
         document.appendChild(root);
         final Element data = signature(document, "X509Data");
         root.appendChild(data);
-        for (java.security.cert.Certificate certificate : value.certificates()) {
+        for (Certificate certificate : value.certificates()) {
             final Element item = signature(document, "X509Certificate");
             try {
                 item.setTextContent(Base64.getEncoder().encodeToString(certificate.getEncoded()));
@@ -1244,7 +1247,7 @@ public class MetadataCodec {
      * @param xml bounded source XML
      * @return parsed DOM document
      */
-    private org.w3c.dom.Document parse(final byte[] xml) {
+    private Document parse(final byte[] xml) {
         return parseStatic(xml);
     }
 

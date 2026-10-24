@@ -45,7 +45,7 @@ public class ActiveMQProvider extends JmsProvider {
      */
     public ActiveMQProvider() {
         // Check if the library is introduced when loading via SPI
-        Assert.notNull(org.apache.activemq.ActiveMQConnectionFactory.class);
+        Assert.notNull(ActiveMQConnectionFactory.class);
     }
 
     /**

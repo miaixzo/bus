@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.auth.source.vendor.wechat;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.FabricX.UrlBuilder;
 import org.miaixz.bus.auth.Identity.Evidence;
+import org.miaixz.bus.auth.guard.ReplayGuard;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
@@ -419,7 +421,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
             return;
         }
         final long number = exactLong(source, name);
-        target.put(name, new JsonValue.NumberValue(java.math.BigDecimal.valueOf(number)));
+        target.put(name, new JsonValue.NumberValue(BigDecimal.valueOf(number)));
     }
 
     /**
@@ -1396,7 +1398,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
             final Context context,
             final Timeout timeout) {
         final var rule = services.policies().require(Protocol.HTTPS);
-        return new org.miaixz.bus.auth.guard.ReplayGuard(services.replayCache()).register(
+        return new ReplayGuard(services.replayCache()).register(
                 spaceId,
                 Protocol.HTTPS,
                 WECHAT_AUTHORITY,

@@ -21,6 +21,8 @@ package org.miaixz.bus.extra.nlp.provider.word;
 
 import java.io.Serial;
 
+import org.apdplat.word.segmentation.Word;
+
 import org.miaixz.bus.extra.nlp.NLPWord;
 
 /**
@@ -38,7 +40,7 @@ public class WordWord implements NLPWord {
     /**
      * The underlying {@link org.apdplat.word.segmentation.Word} object from the Word library.
      */
-    private final org.apdplat.word.segmentation.Word word;
+    private final Word word;
 
     /**
      * Constructs a {@code WordWord} instance by wrapping a Word library's {@link org.apdplat.word.segmentation.Word}
@@ -46,7 +48,7 @@ public class WordWord implements NLPWord {
      *
      * @param word The {@link org.apdplat.word.segmentation.Word} object from Word word segmentation.
      */
-    public WordWord(final org.apdplat.word.segmentation.Word word) {
+    public WordWord(final Word word) {
         this.word = word;
     }
 

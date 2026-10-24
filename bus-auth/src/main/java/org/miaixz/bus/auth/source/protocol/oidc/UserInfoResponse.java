@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.auth.source.protocol.oidc;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.LinkedHashMap;
@@ -236,9 +237,7 @@ public record UserInfoResponse(Subject subject, Optional<Name> name, Optional<Ad
         }
         final Long updateTime = updatedAt.getOrNull();
         if (updateTime != null) {
-            values.put(
-                    OpenIdConnect.Claims.UPDATED_AT,
-                    new JsonValue.NumberValue(java.math.BigDecimal.valueOf(updateTime)));
+            values.put(OpenIdConnect.Claims.UPDATED_AT, new JsonValue.NumberValue(BigDecimal.valueOf(updateTime)));
         }
         return new JsonValue.ObjectValue(values);
     }

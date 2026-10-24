@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.core.io.buffer;
 
+import java.nio.ByteBuffer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -42,7 +43,7 @@ public class NioBufferAllocator implements AutoCloseable {
     /**
      * Idle reusable buffers.
      */
-    private final ConcurrentLinkedQueue<java.nio.ByteBuffer> idleBuffers = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<ByteBuffer> idleBuffers = new ConcurrentLinkedQueue<>();
 
     /**
      * Number of idle reusable buffers.
@@ -153,12 +154,12 @@ public class NioBufferAllocator implements AutoCloseable {
         }
         assertOpen();
         if (minCapacity > bufferSize) {
-            final java.nio.ByteBuffer buffer = newByteBuffer(minCapacity);
+            final ByteBuffer buffer = newByteBuffer(minCapacity);
             assertOpen();
             return new NioBuffer(null, buffer, false);
         }
 
-        java.nio.ByteBuffer buffer;
+        ByteBuffer buffer;
         while ((buffer = idleBuffers.poll()) != null) {
             idleCount.decrementAndGet();
             buffer.clear();
@@ -230,7 +231,7 @@ public class NioBufferAllocator implements AutoCloseable {
      *
      * @param buffer the buffer to release
      */
-    void release(java.nio.ByteBuffer buffer) {
+    void release(ByteBuffer buffer) {
         if (buffer == null || closed || buffer.capacity() != bufferSize || buffer.isDirect() != direct
                 || buffer.isReadOnly()) {
             return;
@@ -250,8 +251,8 @@ public class NioBufferAllocator implements AutoCloseable {
      * @param capacity the capacity to allocate
      * @return the allocated NIO buffer
      */
-    private java.nio.ByteBuffer newByteBuffer(int capacity) {
-        return direct ? java.nio.ByteBuffer.allocateDirect(capacity) : java.nio.ByteBuffer.allocate(capacity);
+    private ByteBuffer newByteBuffer(int capacity) {
+        return direct ? ByteBuffer.allocateDirect(capacity) : ByteBuffer.allocate(capacity);
     }
 
     /**

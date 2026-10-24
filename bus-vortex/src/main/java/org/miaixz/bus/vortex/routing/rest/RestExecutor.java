@@ -19,19 +19,11 @@
 */
 package org.miaixz.bus.vortex.routing.rest;
 
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.annotation.NonNull;
-import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.core.xyz.UrlKit;
-import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.*;
-import org.miaixz.bus.vortex.routing.Coordinator;
-import org.miaixz.bus.vortex.routing.StreamingRelay;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferLimitException;
 import org.springframework.core.io.buffer.PooledDataBuffer;
@@ -46,13 +38,23 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.NonNull;
+import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.UrlKit;
+import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.vortex.*;
+import org.miaixz.bus.vortex.routing.Coordinator;
+import org.miaixz.bus.vortex.routing.StreamingRelay;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * The core executor for executing RESTful HTTP requests to downstream services.
@@ -829,7 +831,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                                 path,
                                 delivery,
                                 dataBuffer.readableByteCount()))
-                .doOnDiscard(PooledDataBuffer.class, Octets::release);
+                        .doOnDiscard(PooledDataBuffer.class, Octets::release);
 
         bodyFlux = StreamingRelay.relay(bodyFlux, delivery);
 

@@ -23,6 +23,7 @@ import java.io.Serial;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.Logger;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -285,7 +286,7 @@ public class CommonsLoggingProvider extends AbstractProvider {
     @Override
     public Level getLevel() {
         // Try to check the underlying logging framework (e.g., Log4j or Logback)
-        if (logger instanceof org.apache.logging.log4j.Logger log4jLogger) { // Log4j 2.x
+        if (logger instanceof Logger log4jLogger) { // Log4j 2.x
             org.apache.logging.log4j.Level log4jLevel = log4jLogger.getLevel();
             if (log4jLevel != null) {
                 return switch (log4jLevel.getStandardLevel()) {

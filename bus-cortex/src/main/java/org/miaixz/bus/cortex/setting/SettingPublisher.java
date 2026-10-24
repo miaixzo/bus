@@ -96,12 +96,12 @@ public class SettingPublisher {
     /**
      * Creates a publisher with explicit retention and keying strategies.
      *
-     * @param entryStore current-state item store
+     * @param entryStore    current-state item store
      * @param revisionStore immutable revision store
-     * @param watchManager retained compatibility dependency; activation notifications are host-owned
-     * @param secretCodec sensitive-content codec
-     * @param maxRevisions maximum revisions retained per item
-     * @param keying retained compatibility key strategy
+     * @param watchManager  retained compatibility dependency; activation notifications are host-owned
+     * @param secretCodec   sensitive-content codec
+     * @param maxRevisions  maximum revisions retained per item
+     * @param keying        retained compatibility key strategy
      * @throws IllegalArgumentException if any required publisher dependency is absent
      */
     public SettingPublisher(StoreBackedItemStore entryStore, RevisionStore revisionStore, WatchManager watchManager,
@@ -154,7 +154,7 @@ public class SettingPublisher {
     /**
      * Builds, protects, persists, and retains one immutable draft revision.
      *
-     * @param entry item to stage
+     * @param entry  item to stage
      * @param source historical source revision, or {@code null}
      * @return stored current-state item
      * @throws IllegalArgumentException if a protected draft is not a materialized inline snapshot
@@ -283,7 +283,7 @@ public class SettingPublisher {
      * Copies immutable historical content into a new draft revision.
      *
      * @param coordinates item coordinates
-     * @param revision historical revision identifier
+     * @param revision    historical revision identifier
      * @return restored current-state item, or {@code null} when unavailable
      * @throws IllegalArgumentException if a deletion revision is used as restorable content
      */
@@ -345,10 +345,10 @@ public class SettingPublisher {
      * The host must atomically commit all selected pointers, version, rollout state, and outbox; never loop-save them.
      * Source snapshots and the current item must be loaded in that same transaction and protected by edition checks.
      *
-     * @param current transaction-reserved effective item
+     * @param current  transaction-reserved effective item
      * @param revision exact effective revision
-     * @param rollout approved publishing rollout
-     * @param plan frozen approval plan
+     * @param rollout  approved publishing rollout
+     * @param plan     frozen approval plan
      * @return detached pointer update for the host to commit atomically
      * @throws IllegalArgumentException if the rollout is not an approved plan in publishing state
      */
@@ -382,12 +382,12 @@ public class SettingPublisher {
      * Gray publication never approves source pointers. The host reserves source rows and persists all updates in the
      * same transaction as effective activation; this method neither saves rows nor resolves live relationships.
      *
-     * @param current reserved source item
-     * @param revision exact immutable source revision
+     * @param current   reserved source item
+     * @param revision  exact immutable source revision
      * @param effective selected effective item
-     * @param snapshot exact approved effective revision
-     * @param rollout approved publishing rollout
-     * @param plan immutable approval plan
+     * @param snapshot  exact approved effective revision
+     * @param rollout   approved publishing rollout
+     * @param plan      immutable approval plan
      * @return detached source pointer update, unchanged when an equal or newer source revision is already approved
      * @throws IllegalArgumentException if the publication is not formal
      */
@@ -410,12 +410,12 @@ public class SettingPublisher {
      * Prepares the same source approval when the host promotes an already approved gray release to stable. No new plan
      * or approval is introduced; the host must atomically commit the original promote operation.
      *
-     * @param current reserved source item
-     * @param revision exact immutable source revision
+     * @param current   reserved source item
+     * @param revision  exact immutable source revision
      * @param effective current effective item still owned by the original gray release
-     * @param snapshot approved effective revision
-     * @param rollout original published gray rollout
-     * @param plan original immutable gray approval plan
+     * @param snapshot  approved effective revision
+     * @param rollout   original published gray rollout
+     * @param plan      original immutable gray approval plan
      * @return detached monotonic source pointer update
      * @throws IllegalArgumentException if the source does not match its originally approved active gray target
      */
@@ -439,10 +439,10 @@ public class SettingPublisher {
     /**
      * Checks selected effective identity through the same frozen plan for ordinary activation and gray promotion.
      *
-     * @param current selected effective item
+     * @param current  selected effective item
      * @param revision exact effective revision
-     * @param rollout original approved rollout
-     * @param plan original immutable plan
+     * @param rollout  original approved rollout
+     * @param plan     original immutable plan
      * @throws IllegalArgumentException if the frozen plan is absent or does not select the exact application revision
      */
     private void requireSelected(Item current, Revision revision, Rollout rollout, Plan plan) {
@@ -463,13 +463,14 @@ public class SettingPublisher {
     /**
      * Applies the unique monotonic source-pointer algorithm after the caller's frozen effective approval check.
      *
-     * @param current reserved source item
-     * @param revision exact approved source revision
+     * @param current   reserved source item
+     * @param revision  exact approved source revision
      * @param effective selected effective owner
-     * @param snapshot exact approved effective snapshot
-     * @param rollout original approved release
+     * @param snapshot  exact approved effective snapshot
+     * @param rollout   original approved release
      * @return detached source pointer update
-     * @throws IllegalArgumentException if the approved effective snapshot or source baseline is unavailable or inconsistent
+     * @throws IllegalArgumentException if the approved effective snapshot or source baseline is unavailable or
+     *                                  inconsistent
      */
     private Item sourceActivation(Item current, Revision revision, Item effective, Revision snapshot, Rollout rollout) {
         if (current == null || revision == null || !Item.Kind.SOURCE.name().equals(current.getKind())

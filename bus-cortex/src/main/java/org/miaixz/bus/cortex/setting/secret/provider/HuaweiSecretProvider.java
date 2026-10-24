@@ -27,6 +27,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.xyz.HexKit;
@@ -169,7 +170,7 @@ public final class HuaweiSecretProvider implements SecretProvider {
         }
         String names = String.join(";", headers.keySet());
         String canonicalHeaders = headers.entrySet().stream().map(e -> e.getKey() + ":" + e.getValue().trim() + "\n")
-                .collect(java.util.stream.Collectors.joining());
+                .collect(Collectors.joining());
         // Input is a validated CSMS read path: no arbitrary query or pre-encoded user component.
         String path = uri.getRawPath().endsWith("/") ? uri.getRawPath() : uri.getRawPath() + "/";
         String canonical = "GET\n" + path + "\n\n" + canonicalHeaders + "\n" + names + "\n"

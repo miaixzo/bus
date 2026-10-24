@@ -201,7 +201,7 @@ public class ReleasePublisher {
      * @param rollout rollout containing the frozen, approved publication manifest
      * @return release record prepared from the verified rollout
      * @throws IllegalArgumentException if approved publication intent or authenticated creator is missing
-     * @throws IllegalStateException if the active baseline changed or the allocated version conflicts
+     * @throws IllegalStateException    if the active baseline changed or the allocated version conflicts
      */
     public Release preparePublication(Rollout rollout) {
         Plan plan = Plan.restore(rollout);

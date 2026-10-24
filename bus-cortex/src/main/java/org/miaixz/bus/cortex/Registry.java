@@ -39,7 +39,7 @@ public interface Registry<T extends Assets> {
     /**
      * Registers a runtime instance under an existing service definition.
      *
-     * @param service service definition owning the instance
+     * @param service  service definition owning the instance
      * @param instance runtime instance to register
      * @throws UnsupportedOperationException by default, unless runtime registration is implemented
      */
@@ -58,10 +58,10 @@ public interface Registry<T extends Assets> {
     /**
      * Deregisters a single runtime instance by fingerprint.
      *
-     * @param tenantId tenantId containing the instance
-     * @param app_id application identifier
-     * @param method service method name
-     * @param version service version
+     * @param tenantId    tenantId containing the instance
+     * @param app_id      application identifier
+     * @param method      service method name
+     * @param version     service version
      * @param fingerprint unique runtime instance fingerprint
      * @throws UnsupportedOperationException by default, unless runtime deregistration is implemented
      */

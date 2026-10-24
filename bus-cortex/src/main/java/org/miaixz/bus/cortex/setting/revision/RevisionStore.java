@@ -83,8 +83,8 @@ public interface RevisionStore {
      * Finds an immutable snapshot by identifier without crossing the tenant or item boundary.
      *
      * @param tenant_id mandatory tenant identifier
-     * @param item_id required item identifier
-     * @param id required immutable snapshot identifier
+     * @param item_id   required item identifier
+     * @param id        required immutable snapshot identifier
      * @return matching snapshot, or null when absent
      * @throws IllegalArgumentException if tenant, item, or revision identity is missing
      */

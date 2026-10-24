@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.bootstrap.ConfigurableBootstrapContext;
 import org.springframework.boot.logging.LoggerConfiguration;
 import org.springframework.boot.logging.LoggingSystem;
@@ -98,7 +99,7 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
      *
      * @param application Spring Boot application
      */
-    public SpringApplicationRunListener(org.springframework.boot.SpringApplication application) {
+    public SpringApplicationRunListener(SpringApplication application) {
         // Spring Boot requires this constructor signature for run-listener discovery.
         // No initialization required.
     }

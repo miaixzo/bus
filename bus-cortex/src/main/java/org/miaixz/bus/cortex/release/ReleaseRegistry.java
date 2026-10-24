@@ -208,7 +208,7 @@ public class ReleaseRegistry implements Registry<ReleaseAssets> {
     /**
      * Subscribes to version events when a watch manager is configured.
      *
-     * @param vector compatibility query vector
+     * @param vector   compatibility query vector
      * @param listener version event listener
      * @return watch identifier
      * @throws UnsupportedOperationException if no version-watch manager is configured

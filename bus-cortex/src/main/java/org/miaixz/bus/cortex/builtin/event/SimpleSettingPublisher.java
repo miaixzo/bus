@@ -66,6 +66,7 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
 
     /**
      * Publishes an overlay with TTL 0 passed to the cache backend; the backend defines the meaning of zero.
+     *
      * @param item tenant-qualified item and content
      */
     public void publish(Item item) {
@@ -73,7 +74,11 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
     }
 
     /**
-     * {@inheritDoc}
+     * Writes item content to the cache under its runtime overlay key. The TTL is passed unchanged to the cache backend,
+     * which defines expiration semantics.
+     *
+     * @param item  item supplying the overlay coordinates and content
+     * @param ttlMs cache lifetime in milliseconds, interpreted by the cache backend
      */
     @Override
     public void publish(Item item, long ttlMs) {
@@ -81,7 +86,10 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
     }
 
     /**
-     * {@inheritDoc}
+     * Reads cached content using the runtime overlay key derived from the supplied coordinates.
+     *
+     * @param coordinates item coordinates used by the configured key generator
+     * @return cached value converted with {@link Object#toString()}, or {@code null} when absent
      */
     @Override
     public String get(Item coordinates) {
@@ -90,7 +98,9 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
     }
 
     /**
-     * {@inheritDoc}
+     * Removes the cached runtime overlay associated with the supplied coordinates.
+     *
+     * @param coordinates item coordinates used by the configured key generator
      */
     @Override
     public void delete(Item coordinates) {

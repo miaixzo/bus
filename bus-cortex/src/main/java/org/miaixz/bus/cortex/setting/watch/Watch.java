@@ -95,8 +95,10 @@ public class Watch extends Tenant {
 
     /**
      * Derives application evidence for exactly one watch; transport delivery is not application success.
+     *
      * @param instance trusted runtime instance whose tenant, identifier and session must match this watch
-     * @return UNKNOWN for invalid evidence, FAILED for a recorded error, APPLIED for matching acknowledgments, otherwise PENDING
+     * @return UNKNOWN for invalid evidence, FAILED for a recorded error, APPLIED for matching acknowledgments,
+     *         otherwise PENDING
      */
     public Synchronization synchronization(Instance instance) {
         if (instance == null || getTenant_id() == null || !getTenant_id().equals(instance.getTenant_id())

@@ -126,7 +126,7 @@ public class SecretMasker {
      * Tests whether content requires management-response masking.
      *
      * @param encrypted persisted encryption flag
-     * @param type configuration category code
+     * @param type      configuration category code
      * @return {@code true} when the content is encrypted or secret
      */
     private boolean protectedContent(Integer encrypted, Integer type) {

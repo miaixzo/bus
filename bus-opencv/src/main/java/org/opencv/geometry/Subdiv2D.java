@@ -22,6 +22,7 @@ package org.opencv.geometry;
 import java.util.List;
 
 import org.opencv.core.*;
+import org.opencv.core.CleanableMat;
 import org.opencv.utils.Converters;
 
 // C++: class Subdiv2D
@@ -52,7 +53,7 @@ public class Subdiv2D {
     protected Subdiv2D(long addr) {
         nativeObj = addr;
         long nativeObjCopy = nativeObj;
-        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
+        CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
     /**
@@ -62,7 +63,7 @@ public class Subdiv2D {
     public Subdiv2D() {
         nativeObj = Subdiv2D_0();
         long nativeObjCopy = nativeObj;
-        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
+        CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
     /**
@@ -79,7 +80,7 @@ public class Subdiv2D {
     public Subdiv2D(Rect rect) {
         nativeObj = Subdiv2D_1(rect.x, rect.y, rect.width, rect.height);
         long nativeObjCopy = nativeObj;
-        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
+        CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
     //

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.setting.nimble.ini;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 import org.miaixz.bus.core.center.function.FunctionX;
@@ -28,7 +29,7 @@ import org.miaixz.bus.core.center.function.FunctionX;
  *
  * @author Kimi Liu
  */
-public interface IniElement extends CharSequence, java.io.Serializable {
+public interface IniElement extends CharSequence, Serializable {
 
     /**
      * this element's value. maybe a {@code toString} value like {@code comment}, a property's value like

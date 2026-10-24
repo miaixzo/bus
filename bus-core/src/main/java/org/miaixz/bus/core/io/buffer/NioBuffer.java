@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.core.io.buffer;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+
 /**
  * Represents a leased NIO byte buffer that can be returned to its owning allocator.
  *
@@ -34,7 +37,7 @@ public class NioBuffer implements AutoCloseable {
     /**
      * NIO buffer exposed by this lease.
      */
-    private final java.nio.ByteBuffer buffer;
+    private final ByteBuffer buffer;
 
     /**
      * Whether this lease should be returned to the allocator.
@@ -53,7 +56,7 @@ public class NioBuffer implements AutoCloseable {
      * @param buffer    the leased NIO buffer
      * @param reusable  whether the buffer should be returned to the allocator
      */
-    public NioBuffer(NioBufferAllocator allocator, java.nio.ByteBuffer buffer, boolean reusable) {
+    public NioBuffer(NioBufferAllocator allocator, ByteBuffer buffer, boolean reusable) {
         this.allocator = allocator;
         this.buffer = buffer;
         this.reusable = reusable;
@@ -65,7 +68,7 @@ public class NioBuffer implements AutoCloseable {
      * @return the leased NIO buffer
      * @throws IllegalStateException if this lease is already closed
      */
-    public java.nio.ByteBuffer buffer() {
+    public ByteBuffer buffer() {
         assertOpen();
         return buffer;
     }
@@ -226,7 +229,7 @@ public class NioBuffer implements AutoCloseable {
         buffer.limit(buffer.position() + byteCount);
         try {
             target.write(buffer);
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
             throw new IllegalStateException(e);
         } finally {
             buffer.limit(originalLimit);

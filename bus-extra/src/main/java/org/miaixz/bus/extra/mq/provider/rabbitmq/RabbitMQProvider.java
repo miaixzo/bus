@@ -58,7 +58,7 @@ public class RabbitMQProvider implements MQProvider, Closeable {
      */
     public RabbitMQProvider() {
         // Check if the library is introduced when loading via SPI
-        Assert.notNull(com.rabbitmq.client.Connection.class);
+        Assert.notNull(Connection.class);
     }
 
     /**

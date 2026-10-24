@@ -48,8 +48,8 @@ public class TcpProber implements Prober {
     }
 
     /**
-     * Stores a TCP timeout by clamping to at least 1 millisecond and then narrowing to int.
-     * There is no upper clamp; callers should supply a value no greater than Integer.MAX_VALUE to avoid narrowing overflow.
+     * Stores a TCP timeout by clamping to at least 1 millisecond and then narrowing to int. There is no upper clamp;
+     * callers should supply a value no greater than Integer.MAX_VALUE to avoid narrowing overflow.
      *
      * @param timeoutMs requested connect timeout in milliseconds
      */
@@ -70,8 +70,10 @@ public class TcpProber implements Prober {
 
     /**
      * Attempts a TCP socket connection to the instance's host and port.
+     *
      * @param instance non-null instance; an absent port defaults to 80, and supports is not called automatically
-     * @return healthy status on connection success; failed status for exceptions during socket creation, connection or close
+     * @return healthy status on connection success; failed status for exceptions during socket creation, connection or
+     *         close
      * @throws NullPointerException if instance is null before socket handling begins
      */
     @Override

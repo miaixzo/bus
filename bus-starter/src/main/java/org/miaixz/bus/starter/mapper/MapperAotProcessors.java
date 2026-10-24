@@ -40,6 +40,7 @@ import org.springframework.beans.factory.aot.BeanFactoryInitializationAotContrib
 import org.springframework.beans.factory.aot.BeanFactoryInitializationAotProcessor;
 import org.springframework.beans.factory.aot.BeanRegistrationExcludeFilter;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.RegisteredBean;
 import org.springframework.beans.factory.support.RootBeanDefinition;
@@ -332,8 +333,7 @@ public class MapperAotProcessors {
      *
      * @author Kimi Liu
      */
-    public static class MapperInterfaceStringToClassConverter
-            implements org.springframework.beans.factory.config.BeanFactoryPostProcessor {
+    public static class MapperInterfaceStringToClassConverter implements BeanFactoryPostProcessor {
 
         /**
          * Initializes the post-processor that resolves mapper interface class names before Bean creation.

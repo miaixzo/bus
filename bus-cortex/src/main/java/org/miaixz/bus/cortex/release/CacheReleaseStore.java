@@ -270,8 +270,9 @@ public class CacheReleaseStore implements ReleaseStore {
 
     /**
      * Reads the tenant-scoped current version pointer.
+     *
      * @param tenantId tenant owning the current pointer
-     * @param track release track to normalize and query
+     * @param track    release track to normalize and query
      * @return current version identifier, or null when absent
      */
     private String currentVersion(String tenantId, String track) {

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.auth.source.vendor.apple;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.security.PublicKey;
@@ -35,7 +36,9 @@ import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
+import org.miaixz.bus.auth.guard.AlgorithmGuard;
 import org.miaixz.bus.auth.guard.IssuerValidator;
+import org.miaixz.bus.auth.guard.TimeGuard;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
 import org.miaixz.bus.auth.shared.jose.*;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
@@ -211,8 +214,7 @@ public class AppleSourceAdapter implements VendorAdapter {
         this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         this.authorizationRequestEncoder = new AuthorizationRequestEncoder(
                 variant.targets().resolve(options).authorization().getOrNull());
-        this.clientSecretJws = new JwsService(new org.miaixz.bus.auth.guard.AlgorithmGuard(),
-                Set.of(JwaAlgorithm.ES256.name()));
+        this.clientSecretJws = new JwsService(new AlgorithmGuard(), Set.of(JwaAlgorithm.ES256.name()));
         this.tokenRequestEncoder = new TokenRequestEncoder();
         this.revocationRequestEncoder = new RevocationRequestEncoder();
         this.formCodec = new FormCodec();
@@ -221,14 +223,12 @@ public class AppleSourceAdapter implements VendorAdapter {
         this.jwkSetCodec = new JwkSetCodec();
         this.jwkSelector = new JwkSelector();
         this.issuerValidator = new IssuerValidator();
-        this.idTokenJws = new JwsService(new org.miaixz.bus.auth.guard.AlgorithmGuard(),
-                Set.of(JwaAlgorithm.RS256.name()));
-        final JweService dormantJwe = new JweService(new org.miaixz.bus.auth.guard.AlgorithmGuard(),
-                Set.of(JwaAlgorithm.RSA_OAEP_256.name()), Set.of(JwaAlgorithm.A256GCM.name()));
+        this.idTokenJws = new JwsService(new AlgorithmGuard(), Set.of(JwaAlgorithm.RS256.name()));
+        final JweService dormantJwe = new JweService(new AlgorithmGuard(), Set.of(JwaAlgorithm.RSA_OAEP_256.name()),
+                Set.of(JwaAlgorithm.A256GCM.name()));
         final IdTokenCodec idTokenCodec = new IdTokenCodec(new JwtVerifier(idTokenJws, dormantJwe));
         this.idTokenVerifier = new IdTokenVerifier(idTokenCodec, issuerValidator,
-                new org.miaixz.bus.auth.guard.TimeGuard(FabricX.clock(),
-                        services.policies().require(Protocol.OIDC).maximumClockSkew()));
+                new TimeGuard(FabricX.clock(), services.policies().require(Protocol.OIDC).maximumClockSkew()));
     }
 
     /**
@@ -369,7 +369,7 @@ public class AppleSourceAdapter implements VendorAdapter {
      * @return JSON numeric value
      */
     private static JsonValue.NumberValue number(final long value) {
-        return new JsonValue.NumberValue(java.math.BigDecimal.valueOf(value));
+        return new JsonValue.NumberValue(BigDecimal.valueOf(value));
     }
 
     /**

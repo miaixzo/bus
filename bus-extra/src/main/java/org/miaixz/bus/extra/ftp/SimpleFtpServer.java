@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.ftpserver.ConnectionConfig;
 import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.Authority;
+import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.Ftplet;
 import org.apache.ftpserver.ftplet.User;
 import org.apache.ftpserver.ftplet.UserManager;
@@ -154,7 +155,7 @@ public class SimpleFtpServer {
     public SimpleFtpServer addUser(final User user) {
         try {
             getUserManager().save(user);
-        } catch (final org.apache.ftpserver.ftplet.FtpException e) {
+        } catch (final FtpException e) {
             Logger.warn(
                     false,
                     "Extra",
@@ -195,7 +196,7 @@ public class SimpleFtpServer {
     public SimpleFtpServer delUser(final String userName) {
         try {
             getUserManager().delete(userName);
-        } catch (final org.apache.ftpserver.ftplet.FtpException e) {
+        } catch (final FtpException e) {
             Logger.warn(
                     false,
                     "Extra",
@@ -273,7 +274,7 @@ public class SimpleFtpServer {
         serverFactory.addListener("default", listenerFactory.createListener());
         try {
             serverFactory.createServer().start();
-        } catch (final org.apache.ftpserver.ftplet.FtpException e) {
+        } catch (final FtpException e) {
             Logger.warn(
                     false,
                     "Extra",

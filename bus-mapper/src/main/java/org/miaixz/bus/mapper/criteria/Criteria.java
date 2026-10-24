@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -54,7 +55,7 @@ public class Criteria<T> {
     /**
      * If true, only non-null value conditions are used; otherwise, all conditions are used.
      */
-    @lombok.Builder.Default
+    @Builder.Default
     private boolean useSelective = false;
 
     /**

@@ -36,6 +36,7 @@ import javax.xml.crypto.dsig.dom.DOMValidateContext;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -173,7 +174,7 @@ public class SamlSignatureValidator {
      * @param xml original document bytes
      * @return secure namespace-aware DOM
      */
-    private static org.w3c.dom.Document parse(final byte[] xml) {
+    private static Document parse(final byte[] xml) {
         try {
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             XXE.disableXXE(factory);
@@ -611,7 +612,7 @@ public class SamlSignatureValidator {
         if (expectedId == null || !ids.contains(expectedId)) {
             return completed(rejected("Signed SAML element requires a unique registered XML ID"));
         }
-        final org.w3c.dom.Document dom;
+        final Document dom;
         final Element target;
         final Element signature;
         try {

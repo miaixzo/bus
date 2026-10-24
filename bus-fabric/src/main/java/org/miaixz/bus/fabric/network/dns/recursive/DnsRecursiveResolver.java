@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -247,7 +248,7 @@ public class DnsRecursiveResolver {
     private static String addressLiteral(final DnsRecord record) {
         try {
             return InetAddress.getByAddress(record.wireData()).getHostAddress();
-        } catch (final java.net.UnknownHostException e) {
+        } catch (final UnknownHostException e) {
             throw new ValidateException("DNS referral glue address length is invalid", e);
         }
     }

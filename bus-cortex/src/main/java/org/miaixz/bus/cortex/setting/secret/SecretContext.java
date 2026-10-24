@@ -28,26 +28,29 @@ import org.miaixz.bus.core.lang.exception.CryptoException;
  * Caller-supplied invocation identity and absolute deadline. This context does not authenticate callers. Construct only
  * from trusted authentication data; persisted references must not supply identity. The context is immutable, but
  * deadline validity must be checked throughout an operation.
- * @param tenantId authenticated tenant identifier
- * @param appId authenticated application identifier
+ *
+ * @param tenantId  authenticated tenant identifier
+ * @param appId     authenticated application identifier
  * @param principal authenticated principal identifier used for authorization and cache isolation
  * @param requestId non-blank tracing identifier, never used as an authorization decision
- * @param purpose non-blank trusted purpose of the operation
- * @param deadline non-null absolute deadline; past instants are accepted here and rejected by checkDeadline
+ * @param purpose   non-blank trusted purpose of the operation
+ * @param deadline  non-null absolute deadline; past instants are accepted here and rejected by checkDeadline
  */
 public record SecretContext(String tenantId, String appId, String principal, String requestId, String purpose,
         Instant deadline) {
 
     /**
-     * Requires nonblank identity components and a non-null deadline. Deadline expiration is checked separately by checkDeadline.
-     * @param tenantId authenticated tenant identifier
-     * @param appId authenticated application identifier
+     * Requires nonblank identity components and a non-null deadline. Deadline expiration is checked separately by
+     * checkDeadline.
+     *
+     * @param tenantId  authenticated tenant identifier
+     * @param appId     authenticated application identifier
      * @param principal authenticated principal identifier used for authorization and cache isolation
      * @param requestId non-blank tracing identifier, never used as an authorization decision
-     * @param purpose non-blank trusted purpose of the operation
-     * @param deadline non-null absolute deadline; past instants are accepted here and rejected by checkDeadline
+     * @param purpose   non-blank trusted purpose of the operation
+     * @param deadline  non-null absolute deadline; past instants are accepted here and rejected by checkDeadline
      * @throws IllegalArgumentException if component values violate this record's constraints
-     * @throws NullPointerException if the deadline is null
+     * @throws NullPointerException     if the deadline is null
      */
     public SecretContext {
         if (tenantId == null || tenantId.isBlank() || appId == null || appId.isBlank() || principal == null

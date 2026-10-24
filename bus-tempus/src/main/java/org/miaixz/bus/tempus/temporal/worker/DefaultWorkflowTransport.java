@@ -21,6 +21,7 @@ package org.miaixz.bus.tempus.temporal.worker;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Proxy;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -157,7 +158,7 @@ public class DefaultWorkflowTransport implements WorkflowTransport {
     private static void configureDirectChannel(Object channelBuilder) {
         ClassLoader loader = channelBuilder.getClass().getClassLoader();
         Class<?> detectorType = ClassKit.forName(PROXY_DETECTOR, loader);
-        Object detector = java.lang.reflect.Proxy
+        Object detector = Proxy
                 .newProxyInstance(loader, new Class<?>[] { detectorType }, (proxy, method, arguments) -> null);
         MethodKit.invoke(channelBuilder, "proxyDetector", detector);
     }

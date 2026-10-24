@@ -21,6 +21,8 @@ package org.miaixz.bus.metrics.bridge;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.OptionalLong;
+import java.util.function.Supplier;
 
 import org.miaixz.bus.health.Collector;
 import org.miaixz.bus.logger.Logger;
@@ -209,7 +211,7 @@ public class HealthMetrics implements MetricBinder {
      * @param <T>      snapshot type
      * @return primed cache
      */
-    private <T> SnapshotCache<T> cache(Duration ttl, java.util.function.Supplier<T> supplier) {
+    private <T> SnapshotCache<T> cache(Duration ttl, Supplier<T> supplier) {
         SnapshotCache<T> cache = new SnapshotCache<>(ttl, supplier);
         if (cache.get().isEmpty()) {
             RuntimeException cause = cache.lastFailure()
@@ -226,7 +228,7 @@ public class HealthMetrics implements MetricBinder {
      * @param category fixed category name
      * @param supplier category binder supplier
      */
-    private void bindCategory(Provider provider, String category, java.util.function.Supplier<MetricBinder> supplier) {
+    private void bindCategory(Provider provider, String category, Supplier<MetricBinder> supplier) {
         try {
             add(provider, supplier.get());
         } catch (RuntimeException exception) {
@@ -324,7 +326,7 @@ public class HealthMetrics implements MetricBinder {
 
         @Override
         public PagingSnapshot paging() {
-            return new PagingSnapshot(0, 0, 0, java.util.OptionalLong.empty(), java.util.OptionalLong.empty());
+            return new PagingSnapshot(0, 0, 0, OptionalLong.empty(), OptionalLong.empty());
         }
 
         @Override

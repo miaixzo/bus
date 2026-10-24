@@ -202,8 +202,8 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     /**
      * Adds a watch subscription and returns its unique ID.
      *
-     * @param vector vector defining what to watch
-     * @param <T> watched type
+     * @param vector   vector defining what to watch
+     * @param <T>      watched type
      * @param listener listener to notify on change
      * @return watch identifier
      * @throws IllegalStateException if the manager is closed or the tenant watch limit has been reached
@@ -270,8 +270,8 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     /**
      * Notifies matching watch listeners about a value change.
      *
-     * @param key changed key
-     * @param <T> value type
+     * @param key      changed key
+     * @param <T>      value type
      * @param newValue new value
      */
     public <T> void notify(String key, T newValue) {
@@ -281,13 +281,13 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     /**
      * Notifies matching generic watch listeners with explicit event metadata.
      *
-     * @param key changed logical key
-     * @param <T> payload type
-     * @param newValue new payload value
-     * @param eventType logical event type
+     * @param key         changed logical key
+     * @param <T>         payload type
+     * @param newValue    new payload value
+     * @param eventType   logical event type
      * @param sequenceKey logical sequence stream key
-     * @param source event source component
-     * @param summary event summary
+     * @param source      event source component
+     * @param summary     event summary
      * @throws IllegalArgumentException if the notification does not carry a tenant identifier
      */
     public <T> void notifyTyped(
@@ -414,11 +414,11 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     /**
      * Notifies registry watch listeners about a committed registry mutation.
      *
-     * @param action registry mutation action
-     * @param <T> asset type
-     * @param asset current asset snapshot
-     * @param previousAsset previous asset snapshot
-     * @param instance current runtime instance snapshot
+     * @param action           registry mutation action
+     * @param <T>              asset type
+     * @param asset            current asset snapshot
+     * @param previousAsset    previous asset snapshot
+     * @param instance         current runtime instance snapshot
      * @param previousInstance previous runtime instance snapshot
      */
     public <T extends Assets> void notifyRegistry(
@@ -433,12 +433,12 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     /**
      * Notifies registry watch listeners with an explicit logical event type.
      *
-     * @param eventType logical event type override
-     * @param <T> asset type
-     * @param action registry mutation action
-     * @param asset current asset snapshot
-     * @param previousAsset previous asset snapshot
-     * @param instance current runtime instance snapshot
+     * @param eventType        logical event type override
+     * @param <T>              asset type
+     * @param action           registry mutation action
+     * @param asset            current asset snapshot
+     * @param previousAsset    previous asset snapshot
+     * @param instance         current runtime instance snapshot
      * @param previousInstance previous runtime instance snapshot
      */
     public <T extends Assets> void notifyRegistry(
@@ -672,13 +672,13 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     /**
      * Builds the base watch event envelope before added, removed, or updated payloads are attached.
      *
-     * @param watchId generated watch identifier
-     * @param <T> watched payload type
+     * @param watchId      generated watch identifier
+     * @param <T>          watched payload type
      * @param subscription receiving subscription
-     * @param eventType logical event type
-     * @param sequenceKey logical stream key used for ordered sequencing
-     * @param source event source component
-     * @param now event timestamp in epoch milliseconds
+     * @param eventType    logical event type
+     * @param sequenceKey  logical stream key used for ordered sequencing
+     * @param source       event source component
+     * @param now          event timestamp in epoch milliseconds
      * @return initialized watch event envelope
      */
     private <T> Watch<T> createEvent(
@@ -729,10 +729,10 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     /**
      * Dispatches one watch event asynchronously and records listener execution state.
      *
-     * @param watchId watch identifier
-     * @param <T> watched payload type
+     * @param watchId      watch identifier
+     * @param <T>          watched payload type
      * @param subscription watch subscription
-     * @param event emitted event
+     * @param event        emitted event
      */
     private <T> void dispatch(String watchId, WatchSubscription<T> subscription, Watch<T> event) {
         long now = DateKit.current();
@@ -778,11 +778,11 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     /**
      * Records one dropped event caused by subscription backlog overflow.
      *
-     * @param watchId watch identifier
-     * @param <T> watched payload type
+     * @param watchId      watch identifier
+     * @param <T>          watched payload type
      * @param subscription watch subscription
-     * @param event dropped event
-     * @param now current timestamp
+     * @param event        dropped event
+     * @param now          current timestamp
      */
     private <T> void handleOverflow(String watchId, WatchSubscription<T> subscription, Watch<T> event, long now) {
         String reason = "Watch backlog limit exceeded";
@@ -889,11 +889,11 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     /**
      * Attaches registry-domain payload lists using asset snapshots.
      *
-     * @param event watch event to fill
-     * @param <T> asset type
-     * @param action registry action
-     * @param eventType resolved event type
-     * @param asset current asset
+     * @param event         watch event to fill
+     * @param <T>           asset type
+     * @param action        registry action
+     * @param eventType     resolved event type
+     * @param asset         current asset
      * @param previousAsset previous asset
      */
     private <T extends Assets> void fillRegistryPayload(

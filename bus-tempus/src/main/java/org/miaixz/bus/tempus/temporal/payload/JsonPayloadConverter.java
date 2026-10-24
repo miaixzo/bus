@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.extra.json.JsonProvider;
 
 import io.temporal.common.converter.DataConverterException;
+import io.temporal.common.converter.PayloadConverter;
 
 /**
  * Creates Temporal's JSON payload converter while keeping service-client generated types out of the {@code bus.tempus}
@@ -114,10 +115,9 @@ public class JsonPayloadConverter implements InvocationHandler {
      *
      * @return Temporal payload converter
      */
-    public io.temporal.common.converter.PayloadConverter converter() {
-        Class<io.temporal.common.converter.PayloadConverter> contract = io.temporal.common.converter.PayloadConverter.class;
-        return (io.temporal.common.converter.PayloadConverter) Proxy
-                .newProxyInstance(contract.getClassLoader(), new Class<?>[] { contract }, this);
+    public PayloadConverter converter() {
+        Class<PayloadConverter> contract = PayloadConverter.class;
+        return (PayloadConverter) Proxy.newProxyInstance(contract.getClassLoader(), new Class<?>[] { contract }, this);
     }
 
     /**

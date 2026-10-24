@@ -26,6 +26,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.security.*;
+import java.security.Provider;
 import java.security.cert.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -611,8 +612,8 @@ public class Builder {
      *
      * @return Bouncy Castle provider
      */
-    private static java.security.Provider bouncyCastleProvider() {
-        java.security.Provider provider = Holder.getProvider();
+    private static Provider bouncyCastleProvider() {
+        Provider provider = Holder.getProvider();
         if (null != provider) {
             return provider;
         }

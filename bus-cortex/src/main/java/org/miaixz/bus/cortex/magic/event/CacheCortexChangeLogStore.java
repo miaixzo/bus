@@ -26,6 +26,7 @@ import org.miaixz.bus.core.center.date.Chrono;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.registry.RegistryIdentity;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -291,10 +292,10 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
     private CortexChangeRecord prepare(CortexChangeRecord record) {
         CortexChangeRecord prepared = record == null ? new CortexChangeRecord() : record;
         prepared.setTenant_id(
-                "registry".equals(prepared.getDomain()) ? RegistryIdentity
-                        .tenantId(org.miaixz.bus.cortex.Type.from(prepared.getResourceType()), prepared.getTenant_id())
+                "registry".equals(prepared.getDomain())
+                        ? RegistryIdentity.tenantId(Type.from(prepared.getResourceType()), prepared.getTenant_id())
                         : "bridge".equals(prepared.getDomain())
-                                ? RegistryIdentity.tenantId(org.miaixz.bus.cortex.Type.API, prepared.getTenant_id())
+                                ? RegistryIdentity.tenantId(Type.API, prepared.getTenant_id())
                                 : CortexIdentity.tenantId(prepared.getTenant_id()));
         long now = DateKit.current();
         if (prepared.getId() == null || prepared.getId().isBlank()) {

@@ -47,9 +47,12 @@ public class SettingGenerator implements Keying<SettingSpec> {
     }
 
     /**
-     * {@inheritDoc}
+     * Builds a purpose-specific key from normalized, length-prefixed setting coordinates.
      *
-     * @throws IllegalArgumentException if the purpose is unsupported, coordinates are invalid, or a historical revision is required but absent
+     * @param spec key specification, or {@code null}
+     * @return generated key, or {@code null} when the specification is {@code null}
+     * @throws IllegalArgumentException if the purpose is unsupported, coordinates are invalid, or a historical revision
+     *                                  is required but absent
      */
     @Override
     public String key(SettingSpec spec) {
@@ -74,7 +77,11 @@ public class SettingGenerator implements Keying<SettingSpec> {
     }
 
     /**
-     * {@inheritDoc}
+     * Builds the entry key prefix or historical revision prefix for normalized setting coordinates.
+     *
+     * @param spec prefix specification, or {@code null}; a revision value is not required
+     * @return entry or revision prefix, or {@code null} for a null specification or any other purpose
+     * @throws IllegalArgumentException if an entry or revision specification contains invalid coordinates
      */
     @Override
     public String prefix(SettingSpec spec) {
@@ -90,6 +97,7 @@ public class SettingGenerator implements Keying<SettingSpec> {
 
     /**
      * Length-prefixes segments to prevent collisions when values contain delimiters.
+     *
      * @param spec configuration key specification with tenant and ownership coordinates
      * @return length-prefixed canonical business identity
      */

@@ -20,6 +20,8 @@
 package org.miaixz.bus.metrics.nimble.prometheus;
 
 import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -36,12 +38,15 @@ import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.guard.CardinalityGuard;
 import org.miaixz.bus.metrics.guard.CardinalityViolation;
+import org.miaixz.bus.metrics.guard.MetricFamilyKey;
 import org.miaixz.bus.metrics.guard.MetricFamilyRegistry;
 import org.miaixz.bus.metrics.magic.TimerSnapshot;
 import org.miaixz.bus.metrics.nimble.*;
+import org.miaixz.bus.metrics.nimble.Gauge;
 import org.miaixz.bus.metrics.nimble.Timer;
 import org.miaixz.bus.metrics.nimble.indigenous.*;
 import org.miaixz.bus.metrics.observe.slo.SloTracker;
+import org.miaixz.bus.metrics.observe.tag.Attributes;
 import org.miaixz.bus.metrics.observe.tag.Tag;
 
 import io.prometheus.metrics.core.metrics.Counter;
@@ -90,7 +95,7 @@ public class PrometheusProvider implements Provider {
     /**
      * Callback gauge collectors indexed by canonical logical family.
      */
-    private final ConcurrentHashMap<org.miaixz.bus.metrics.guard.MetricFamilyKey.Logical, GaugeFamily> callbackGaugeFamilies = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<MetricFamilyKey.Logical, GaugeFamily> callbackGaugeFamilies = new ConcurrentHashMap<>();
 
     /**
      * Summary collectors indexed by normalized family identity.
@@ -124,7 +129,7 @@ public class PrometheusProvider implements Provider {
     /**
      * Active Bus gauges indexed by canonical series identity.
      */
-    private final ConcurrentHashMap<String, org.miaixz.bus.metrics.nimble.Gauge> activeGauges = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Gauge> activeGauges = new ConcurrentHashMap<>();
     /**
      * Active Bus timers indexed by canonical series identity.
      */
@@ -288,7 +293,7 @@ public class PrometheusProvider implements Provider {
      */
     private static Tag[] sortedTags(Tag[] tags) {
         Tag[] sorted = tags.clone();
-        java.util.Arrays.sort(sorted, java.util.Comparator.comparing(Tag::key));
+        Arrays.sort(sorted, Comparator.comparing(Tag::key));
         return sorted;
     }
 
@@ -313,10 +318,8 @@ public class PrometheusProvider implements Provider {
      * @param attributes series attributes
      * @return canonical series key
      */
-    private static String activeKey(
-            MetricDescriptor descriptor,
-            org.miaixz.bus.metrics.observe.tag.Attributes attributes) {
-        return org.miaixz.bus.metrics.guard.MetricFamilyKey.identity(descriptor).logical() + attributes.toString();
+    private static String activeKey(MetricDescriptor descriptor, Attributes attributes) {
+        return MetricFamilyKey.identity(descriptor).logical() + attributes.toString();
     }
 
     /**
@@ -372,7 +375,7 @@ public class PrometheusProvider implements Provider {
      * @return normalized family key
      */
     private String familyKey(String name, Tag[] tags) {
-        return prometheusName(name) + java.util.Arrays.toString(labelNames(tags));
+        return prometheusName(name) + Arrays.toString(labelNames(tags));
     }
 
     /**
@@ -403,11 +406,9 @@ public class PrometheusProvider implements Provider {
      * @param attributes proposed attributes
      * @return guarded attributes
      */
-    private org.miaixz.bus.metrics.observe.tag.Attributes guard(
-            MetricDescriptor descriptor,
-            org.miaixz.bus.metrics.observe.tag.Attributes attributes) {
+    private Attributes guard(MetricDescriptor descriptor, Attributes attributes) {
         descriptor.validateAttributes(attributes);
-        org.miaixz.bus.metrics.observe.tag.Attributes guarded = cardinalityGuard.enforce(descriptor.name(), attributes);
+        Attributes guarded = cardinalityGuard.enforce(descriptor.name(), attributes);
         descriptor.validateAttributes(guarded);
         return guarded;
     }
@@ -422,17 +423,14 @@ public class PrometheusProvider implements Provider {
     @Override
     public org.miaixz.bus.metrics.nimble.Counter counter(String name, Tag... tags) {
         Tag[] guarded = cardinalityGuard.enforce(name, tags);
-        org.miaixz.bus.metrics.observe.tag.Attributes attributes = org.miaixz.bus.metrics.observe.tag.Attributes
-                .fromTags(guarded);
+        Attributes attributes = Attributes.fromTags(guarded);
         return counter(MetricDescriptor.counter(name, attributes), attributes);
     }
 
     @Override
-    public org.miaixz.bus.metrics.nimble.Counter counter(
-            MetricDescriptor descriptor,
-            org.miaixz.bus.metrics.observe.tag.Attributes attributes) {
+    public org.miaixz.bus.metrics.nimble.Counter counter(MetricDescriptor descriptor, Attributes attributes) {
         validate(descriptor, InstrumentKind.COUNTER, NumberKind.LONG);
-        org.miaixz.bus.metrics.observe.tag.Attributes guarded = guard(descriptor, attributes);
+        Attributes guarded = guard(descriptor, attributes);
         String key = activeKey(descriptor, guarded);
         return activeCounters.computeIfAbsent(key, ignored -> {
             ensureOpen();
@@ -478,7 +476,7 @@ public class PrometheusProvider implements Provider {
     public Meter meter(String name, Tag... tags) {
         ensureOpen();
         Tag[] guarded = cardinalityGuard.enforce(name, tags);
-        String key = name + org.miaixz.bus.metrics.observe.tag.Attributes.fromTags(guarded);
+        String key = name + Attributes.fromTags(guarded);
         return meters.computeIfAbsent(key, ignored -> {
             org.miaixz.bus.metrics.nimble.Counter counter = counter(name, guarded);
             return new MeterAdapter(counter);
@@ -496,7 +494,7 @@ public class PrometheusProvider implements Provider {
     public RatePair ratePair(String name, Tag... tags) {
         ensureOpen();
         Tag[] guarded = cardinalityGuard.enforce(name, tags);
-        String key = name + org.miaixz.bus.metrics.observe.tag.Attributes.fromTags(guarded);
+        String key = name + Attributes.fromTags(guarded);
         return ratePairs.computeIfAbsent(key, ignored -> RatePair.create(this, name, guarded));
     }
 
@@ -510,36 +508,30 @@ public class PrometheusProvider implements Provider {
      * @return a Gauge backed by a Prometheus Gauge
      */
     @Override
-    public <T> org.miaixz.bus.metrics.nimble.Gauge gauge(String name, T stateObj, ToDoubleFunction<T> fn, Tag... tags) {
+    public <T> Gauge gauge(String name, T stateObj, ToDoubleFunction<T> fn, Tag... tags) {
         Tag[] guarded = cardinalityGuard.enforce(name, tags);
-        org.miaixz.bus.metrics.observe.tag.Attributes attributes = org.miaixz.bus.metrics.observe.tag.Attributes
-                .fromTags(guarded);
+        Attributes attributes = Attributes.fromTags(guarded);
         return gauge(MetricDescriptor.gauge(name, attributes), attributes, stateObj, fn);
     }
 
     @Override
-    public <T> org.miaixz.bus.metrics.nimble.Gauge gauge(
-            MetricDescriptor descriptor,
-            org.miaixz.bus.metrics.observe.tag.Attributes attributes,
-            T stateObj,
-            ToDoubleFunction<T> fn) {
+    public <T> Gauge gauge(MetricDescriptor descriptor, Attributes attributes, T stateObj, ToDoubleFunction<T> fn) {
         validate(descriptor, InstrumentKind.GAUGE, NumberKind.DOUBLE);
         Objects.requireNonNull(stateObj, "Gauge state must not be null");
         Objects.requireNonNull(fn, "Gauge function must not be null");
-        org.miaixz.bus.metrics.observe.tag.Attributes guarded = guard(descriptor, attributes);
+        Attributes guarded = guard(descriptor, attributes);
         String key = activeKey(descriptor, guarded);
         return activeGauges.computeIfAbsent(key, ignored -> {
             ensureOpen();
             track(descriptor);
-            org.miaixz.bus.metrics.guard.MetricFamilyKey.Logical logical = org.miaixz.bus.metrics.guard.MetricFamilyKey
-                    .identity(descriptor).logical();
+            MetricFamilyKey.Logical logical = MetricFamilyKey.identity(descriptor).logical();
             GaugeFamily family = callbackGaugeFamilies.computeIfAbsent(logical, unused -> {
                 GaugeFamily created = new GaugeFamily(descriptor);
                 registry.register(created);
                 ownedCollectors.add(created);
                 return created;
             });
-            org.miaixz.bus.metrics.nimble.Gauge result = () -> fn.applyAsDouble(stateObj);
+            Gauge result = () -> fn.applyAsDouble(stateObj);
             family.add(guarded, result);
             return result;
         });
@@ -555,15 +547,14 @@ public class PrometheusProvider implements Provider {
     @Override
     public Timer timer(String name, Tag... tags) {
         Tag[] guarded = cardinalityGuard.enforce(name, tags);
-        org.miaixz.bus.metrics.observe.tag.Attributes attributes = org.miaixz.bus.metrics.observe.tag.Attributes
-                .fromTags(guarded);
+        Attributes attributes = Attributes.fromTags(guarded);
         return timer(MetricDescriptor.timer(name, attributes), attributes);
     }
 
     @Override
-    public Timer timer(MetricDescriptor descriptor, org.miaixz.bus.metrics.observe.tag.Attributes attributes) {
+    public Timer timer(MetricDescriptor descriptor, Attributes attributes) {
         validate(descriptor, InstrumentKind.TIMER, NumberKind.DOUBLE);
-        org.miaixz.bus.metrics.observe.tag.Attributes guarded = guard(descriptor, attributes);
+        Attributes guarded = guard(descriptor, attributes);
         String key = activeKey(descriptor, guarded);
         return activeTimers.computeIfAbsent(key, ignored -> {
             ensureOpen();
@@ -655,17 +646,14 @@ public class PrometheusProvider implements Provider {
     @Override
     public org.miaixz.bus.metrics.nimble.Histogram histogram(String name, Tag... tags) {
         Tag[] guarded = cardinalityGuard.enforce(name, tags);
-        org.miaixz.bus.metrics.observe.tag.Attributes attributes = org.miaixz.bus.metrics.observe.tag.Attributes
-                .fromTags(guarded);
+        Attributes attributes = Attributes.fromTags(guarded);
         return histogram(MetricDescriptor.histogram(name, attributes), attributes);
     }
 
     @Override
-    public org.miaixz.bus.metrics.nimble.Histogram histogram(
-            MetricDescriptor descriptor,
-            org.miaixz.bus.metrics.observe.tag.Attributes attributes) {
+    public org.miaixz.bus.metrics.nimble.Histogram histogram(MetricDescriptor descriptor, Attributes attributes) {
         validate(descriptor, InstrumentKind.HISTOGRAM, NumberKind.DOUBLE);
-        org.miaixz.bus.metrics.observe.tag.Attributes guarded = guard(descriptor, attributes);
+        Attributes guarded = guard(descriptor, attributes);
         String key = activeKey(descriptor, guarded);
         return activeHistograms.computeIfAbsent(key, ignored -> {
             ensureOpen();
@@ -730,7 +718,7 @@ public class PrometheusProvider implements Provider {
     public LlmTimer llmTimer(String name, Tag... tags) {
         ensureOpen();
         Tag[] guarded = cardinalityGuard.enforce(name, tags);
-        String key = name + org.miaixz.bus.metrics.observe.tag.Attributes.fromTags(guarded);
+        String key = name + Attributes.fromTags(guarded);
         return llmTimers.computeIfAbsent(key, ignored -> new NativeLlmTimer(name, guarded, this));
     }
 
@@ -806,10 +794,10 @@ public class PrometheusProvider implements Provider {
      * @param attributes Bus attributes
      * @return Prometheus labels
      */
-    private Labels labels(org.miaixz.bus.metrics.observe.tag.Attributes attributes) {
+    private Labels labels(Attributes attributes) {
         List<String> names = new ArrayList<>(attributes.values().size());
         List<String> values = new ArrayList<>(attributes.values().size());
-        for (org.miaixz.bus.metrics.observe.tag.Attributes.Value<?> entry : attributes.values()) {
+        for (Attributes.Value<?> entry : attributes.values()) {
             names.add(entry.descriptor().key());
             values.add(String.valueOf(entry.value()));
         }
@@ -846,7 +834,7 @@ public class PrometheusProvider implements Provider {
      * Returns the provider-owned gauges.
      */
     @Override
-    public Iterable<org.miaixz.bus.metrics.nimble.Gauge> gauges() {
+    public Iterable<Gauge> gauges() {
         return List.copyOf(activeGauges.values());
     }
 
@@ -965,7 +953,7 @@ public class PrometheusProvider implements Provider {
         /**
          * Live gauge series indexed by attributes.
          */
-        private final ConcurrentHashMap<org.miaixz.bus.metrics.observe.tag.Attributes, org.miaixz.bus.metrics.nimble.Gauge> series = new ConcurrentHashMap<>();
+        private final ConcurrentHashMap<Attributes, Gauge> series = new ConcurrentHashMap<>();
 
         /**
          * Creates an empty callback family.
@@ -982,9 +970,7 @@ public class PrometheusProvider implements Provider {
          * @param attributes series attributes
          * @param gauge      live value supplier
          */
-        private void add(
-                org.miaixz.bus.metrics.observe.tag.Attributes attributes,
-                org.miaixz.bus.metrics.nimble.Gauge gauge) {
+        private void add(Attributes attributes, Gauge gauge) {
             series.putIfAbsent(attributes, gauge);
         }
 
@@ -1032,7 +1018,7 @@ public class PrometheusProvider implements Provider {
         /**
          * Attribute sets established during initialization.
          */
-        private volatile Set<org.miaixz.bus.metrics.observe.tag.Attributes> seeded = Set.of();
+        private volatile Set<Attributes> seeded = Set.of();
 
         /**
          * Creates an observable collector.
@@ -1089,7 +1075,7 @@ public class PrometheusProvider implements Provider {
          * @param allowed allowed resource identities, or {@code null} while seeding
          * @return populated measurement buffer
          */
-        private Measurement observe(Set<org.miaixz.bus.metrics.observe.tag.Attributes> allowed) {
+        private Measurement observe(Set<Attributes> allowed) {
             Measurement measurement = new Measurement(descriptor, allowed);
             callback.observe(measurement);
             return measurement;
@@ -1119,11 +1105,11 @@ public class PrometheusProvider implements Provider {
         /**
          * Seeded resource identities, or {@code null} while seeding.
          */
-        private final Set<org.miaixz.bus.metrics.observe.tag.Attributes> allowed;
+        private final Set<Attributes> allowed;
         /**
          * Values observed in the current callback, indexed by attributes.
          */
-        private final Map<org.miaixz.bus.metrics.observe.tag.Attributes, Number> values = new LinkedHashMap<>();
+        private final Map<Attributes, Number> values = new LinkedHashMap<>();
 
         /**
          * Creates an observable measurement buffer.
@@ -1131,13 +1117,13 @@ public class PrometheusProvider implements Provider {
          * @param descriptor family descriptor
          * @param allowed    seeded resource identities, or {@code null} while seeding
          */
-        private Measurement(MetricDescriptor descriptor, Set<org.miaixz.bus.metrics.observe.tag.Attributes> allowed) {
+        private Measurement(MetricDescriptor descriptor, Set<Attributes> allowed) {
             this.descriptor = descriptor;
             this.allowed = allowed;
         }
 
         @Override
-        public void recordLong(long value, org.miaixz.bus.metrics.observe.tag.Attributes attributes) {
+        public void recordLong(long value, Attributes attributes) {
             if (descriptor.numberKind() != NumberKind.LONG) {
                 diagnostics.collectionError("prometheus", "number_kind");
                 return;
@@ -1146,7 +1132,7 @@ public class PrometheusProvider implements Provider {
         }
 
         @Override
-        public void recordDouble(double value, org.miaixz.bus.metrics.observe.tag.Attributes attributes) {
+        public void recordDouble(double value, Attributes attributes) {
             if (descriptor.numberKind() != NumberKind.DOUBLE || !Double.isFinite(value)) {
                 diagnostics.collectionError("prometheus", "invalid_double");
                 return;
@@ -1160,7 +1146,7 @@ public class PrometheusProvider implements Provider {
          * @param attributes point attributes
          * @param value      numeric point value
          */
-        private void record(org.miaixz.bus.metrics.observe.tag.Attributes attributes, Number value) {
+        private void record(Attributes attributes, Number value) {
             try {
                 descriptor.validateAttributes(attributes);
                 if (allowed != null && !allowed.contains(attributes)) {

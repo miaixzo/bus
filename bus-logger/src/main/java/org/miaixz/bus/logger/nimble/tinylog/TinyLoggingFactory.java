@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.logger.nimble.tinylog;
 
+import org.tinylog.Logger;
+
 import org.miaixz.bus.logger.Provider;
 import org.miaixz.bus.logger.magic.AbstractFactory;
 
@@ -35,7 +37,7 @@ public class TinyLoggingFactory extends AbstractFactory {
      */
     public TinyLoggingFactory() {
         super("org.tinylog.Logger");
-        exists(org.tinylog.Logger.class);
+        exists(Logger.class);
     }
 
     /**

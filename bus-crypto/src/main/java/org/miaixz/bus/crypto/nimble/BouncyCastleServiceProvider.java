@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.crypto.nimble;
 
+import java.security.Provider;
 import java.security.Security;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -46,9 +47,8 @@ public class BouncyCastleServiceProvider implements BouncyCastleProvider {
      * @return Description inherited from parent class or interface.
      */
     @Override
-    public java.security.Provider create() {
-        java.security.Provider provider = Security
-                .getProvider(org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME);
+    public Provider create() {
+        Provider provider = Security.getProvider(org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME);
         if (null == provider) {
             provider = new org.bouncycastle.jce.provider.BouncyCastleProvider();
         }

@@ -32,6 +32,7 @@ import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
+import org.miaixz.bus.auth.guard.ReplayGuard;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
@@ -780,7 +781,7 @@ public class QqSourceAdapter implements VendorAdapter {
             final Context context,
             final Timeout timeout) {
         final var rule = services.policies().require(Protocol.HTTPS);
-        return new org.miaixz.bus.auth.guard.ReplayGuard(services.replayCache()).register(
+        return new ReplayGuard(services.replayCache()).register(
                 spaceId,
                 Protocol.HTTPS,
                 MINI_AUTHORITY,
