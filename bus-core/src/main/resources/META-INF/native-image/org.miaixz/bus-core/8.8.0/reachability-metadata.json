@@ -12096,6 +12096,12 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Format",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
       "type": "org.miaixz.bus.core.lang.EnumValue$Gradient",
       "methods": [
         {
