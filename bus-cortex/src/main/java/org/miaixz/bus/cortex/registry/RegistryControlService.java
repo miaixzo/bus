@@ -189,7 +189,7 @@ public class RegistryControlService {
     }
 
     /**
-     * Lists registry entries matching the query.
+     * Lists registry entries matching the query, applying pagination once across all selected registry types.
      *
      * @param query admin query
      * @return matching entries
@@ -205,7 +205,18 @@ public class RegistryControlService {
                 criteria.getId());
         List<Assets> result;
         if (criteria.getType() == null) {
-            result = snapshot(criteria);
+            RegistryQuery pagination = RegistryScopeMapping.query(criteria, Type.API);
+            int window = (int) Math.min((long) pagination.getOffset() + pagination.getLimit(), Integer.MAX_VALUE);
+            result = new ArrayList<>();
+            for (Type type : supportedTypes()) {
+                Vector filtered = sourceScope(criteria, type);
+                filtered.setOffset(0);
+                filtered.setLimit(window);
+                result.addAll(registry(type).refresh(filtered));
+            }
+            int from = Math.min(pagination.getOffset(), result.size());
+            int to = (int) Math.min((long) from + pagination.getLimit(), result.size());
+            result = new ArrayList<>(result.subList(from, to));
         } else {
             result = assets(registry(RegistryIdentity.type(criteria.getType())).refresh(criteria));
         }
@@ -666,6 +677,8 @@ public class RegistryControlService {
             vector.setVersion(query.getVersion());
             vector.setLabels(query.getLabels());
             vector.setSelectors(query.getSelectors());
+            vector.setState(query.getState());
+            vector.setIncludeDisabled(query.isIncludeDisabled());
             vector.setLimit(query.getLimit());
             vector.setOffset(query.getOffset());
         }
@@ -713,55 +726,6 @@ public class RegistryControlService {
     }
 
     /**
-     * Applies one batch entry.
-     *
-     * @param operation operation type
-     * @param entry     batch entry
-     * @param result    aggregate result
-     * @throws IllegalArgumentException if the operation type is absent
-     * @throws IllegalStateException    if an existing entry conflicts with the FAIL_FAST policy
-     */
-    private void applyBatchEntry(BatchOperation operation, Assets entry, BatchResult result) {
-        BatchOperation.OperationType operationType = operation.getOperationType();
-        if (operationType == null) {
-            throw new IllegalArgumentException("Batch operation type is required");
-        }
-        if (operation.isDryRun()) {
-            result.recordSkip();
-            result.getWarnings().add("Dry-run skipped mutation for " + entry.getId());
-            return;
-        }
-        switch (operationType) {
-            case DEREGISTER -> {
-                Assets existing = resolveExisting(entry);
-                if (existing == null) {
-                    result.recordSkip();
-                    return;
-                }
-                delete(RegistryIdentity.type(existing), existing.getTenant_id(), existing.getId());
-                result.recordDelete();
-            }
-            case REGISTER, UPDATE, UPSERT -> {
-                Assets existing = resolveExisting(entry);
-                if (existing != null && operation.getConflictPolicy() == BatchOperation.ConflictPolicy.FAIL_FAST) {
-                    throw new IllegalStateException("Conflict detected for " + existing.getId());
-                }
-                if (existing != null && operation.getConflictPolicy() == BatchOperation.ConflictPolicy.SKIP) {
-                    result.recordSkip();
-                    result.getWarnings().add("Skipped existing entry " + existing.getId());
-                    return;
-                }
-                upsert(entry);
-                if (existing == null) {
-                    result.recordInsert();
-                } else {
-                    result.recordUpdate();
-                }
-            }
-        }
-    }
-
-    /**
      * Resolves an existing asset using ID first, then method/version route identity.
      *
      * @param entry candidate asset
@@ -802,7 +766,7 @@ public class RegistryControlService {
     }
 
     /**
-     * Builds and normalizes one registry snapshot for impact analysis and administrative scans.
+     * Builds and normalizes one registry snapshot for impact analysis.
      *
      * @param scope snapshot scope
      * @return normalized snapshot
@@ -838,11 +802,11 @@ public class RegistryControlService {
     }
 
     /**
-     * Creates one type-specific scope used to resolve the source entry for impact analysis.
+     * Creates one type-specific scope preserving all caller criteria for listing and exact source resolution.
      *
      * @param scope base scope
      * @param type  target type
-     * @return type-specific source scope
+     * @return complete type-specific scope
      */
     private Vector sourceScope(Vector scope, Type type) {
         Vector filtered = vector(scope);

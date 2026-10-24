@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex.release;
 
+import java.io.Serial;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +42,9 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 public class ReleaseAssets extends Assets {
+
+    @Serial
+    private static final long serialVersionUID = 2536989565000L;
 
     /**
      * Version-specific metadata view.

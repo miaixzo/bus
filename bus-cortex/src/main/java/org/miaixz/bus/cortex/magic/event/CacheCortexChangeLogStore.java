@@ -164,19 +164,6 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
     }
 
     /**
-     * Claims pending records without domain filtering.
-     *
-     * @param limit       maximum records to claim
-     * @param owner       worker owner name
-     * @param leaseMillis claim lease duration in milliseconds
-     * @return claimed records
-     */
-    @Override
-    public synchronized List<CortexChangeRecord> claimPending(int limit, String owner, long leaseMillis) {
-        return claimPending(limit, owner, leaseMillis, null, null);
-    }
-
-    /**
      * Claims pending records for a domain and resource type.
      *
      * @param limit        maximum records to claim

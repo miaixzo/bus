@@ -22,8 +22,8 @@ package org.miaixz.bus.cortex.setting.rollout;
 import java.util.*;
 
 import org.miaixz.bus.core.data.id.ID;
-import org.miaixz.bus.cortex.release.Manifest;
 import org.miaixz.bus.cortex.release.Release;
+import org.miaixz.bus.cortex.release.ReleaseCodec;
 import org.miaixz.bus.cortex.release.ReleaseStore;
 import org.miaixz.bus.cortex.setting.SettingEnforcer;
 import org.miaixz.bus.cortex.setting.SettingStore;
@@ -108,7 +108,7 @@ public final class RolloutService {
         enforcer.requirePolicy(context, selection.policy());
         return store.saveDraft(
                 Rollout.builder().tenant_id(context.tenant()).id(ID.objectId()).title(title).description(description)
-                        .state(Rollout.State.DRAFT.name()).manifest(Plan.selection(selection)).build(),
+                        .status(Rollout.State.DRAFT.key()).manifest(Plan.selection(selection)).build(),
                 null);
     }
 
@@ -213,23 +213,28 @@ public final class RolloutService {
             throw new IllegalStateException("Baseline missing");
         Map<String, Plan.Definition> definitions = new TreeMap<>();
         Map<String, List<Plan.Binding>> graph = new TreeMap<>();
+        Map<Plan.Definition, String> definitionKeys = new IdentityHashMap<>();
         if (baseline != null) {
-            Manifest.Document previous = Manifest.decode(baseline);
+            ReleaseCodec.Document previous = ReleaseCodec.decode(baseline);
             Set<String> ids = new TreeSet<>();
             previous.applications().values().forEach(list -> list.forEach(b -> ids.add(b.source())));
             Map<String, Revision> snapshots = new TreeMap<>();
             for (Revision revision : revisions.findAll(context.tenant(), ids))
                 if (snapshots.put(revision.getId(), revision) != null)
                     throw new IllegalStateException("Duplicate snapshot");
-            Manifest.verify(baseline, snapshots);
+            ReleaseCodec.verify(baseline, snapshots);
+            Map<String, Plan.Definition> publishedDefinitions = new HashMap<>();
             previous.applications().forEach((app, bindings) -> {
                 if (selection.applications().contains(app))
                     return;
                 List<Plan.Binding> inherited = new ArrayList<>();
-                for (Manifest.Binding binding : bindings) {
-                    Plan.Definition definition = Manifest.definition(snapshots.get(binding.source()));
-                    definitions.put(definition.key(), definition);
-                    inherited.add(new Plan.Binding(definition.key(), binding.options(), null));
+                for (ReleaseCodec.Binding binding : bindings) {
+                    Plan.Definition definition = publishedDefinitions.computeIfAbsent(
+                            binding.source(),
+                            source -> ReleaseCodec.definition(snapshots.get(source)));
+                    String key = definitionKeys.computeIfAbsent(definition, Plan.Definition::key);
+                    definitions.put(key, definition);
+                    inherited.add(new Plan.Binding(key, binding.options(), null));
                 }
                 graph.put(app, inherited);
             });
@@ -252,8 +257,11 @@ public final class RolloutService {
             pins.put(revision.getId(), revision);
         if (!pins.keySet().equals(pinIds))
             throw new IllegalStateException("Pinned snapshot missing");
-        // Reuse verified plaintext only within this submission; every binding still validates its own overlay.
+        // Reuse verified definitions, digests and plaintext only within this submission; each binding retains its
+        // checks.
         Map<String, ItemCodec.Document> parsed = new HashMap<>();
+        Map<String, Plan.Definition> currentDefinitions = new HashMap<>();
+        Map<String, Plan.Definition> pinnedDefinitions = new HashMap<>();
         for (Reference relation : view.references()) {
             if (!context.tenant().equals(relation.getTenant_id())
                     || !selection.applications().contains(relation.getTarget_id())
@@ -266,19 +274,22 @@ public final class RolloutService {
                 continue;
             Plan.Definition definition;
             if (relation.getRevision_id() == null)
-                definition = Plan.Definition.of(item);
+                definition = currentDefinitions.computeIfAbsent(item.getId(), ignored -> Plan.Definition.of(item));
             else {
                 Revision pin = pins.get(relation.getRevision_id());
                 if (!context.tenant().equals(pin.getTenant_id()) || !item.getId().equals(pin.getItem_id())
                         || pin.getRelease_id() == null)
                     throw new IllegalStateException("Pinned source mismatch");
-                definition = Manifest.definition(pin);
+                definition = pinnedDefinitions.computeIfAbsent(pin.getId(), ignored -> ReleaseCodec.definition(pin));
             }
-            String key = definition.key();
-            parsed.computeIfAbsent(key, ignored -> editor.open(definition.item(context.tenant())));
+            String key = definitionKeys.computeIfAbsent(definition, Plan.Definition::key);
+            ItemCodec.Document document = parsed
+                    .computeIfAbsent(key, ignored -> editor.open(definition.item(context.tenant())));
+            ReferenceCodec.Options options = references.decode(relation);
+            if (editor.needsOverlayProtection(document, options.overlay()))
+                throw new IllegalStateException("Sensitive relationship overlay requires protected storage");
             definitions.put(key, definition);
-            graph.get(relation.getTarget_id())
-                    .add(new Plan.Binding(key, references.decode(relation), relation.getRevision_id()));
+            graph.get(relation.getTarget_id()).add(new Plan.Binding(key, options, relation.getRevision_id()));
         }
         Plan.Frozen frozen = new Plan.Frozen(view.readSet().baseline(), selection, definitions, graph);
         // Configuration aliases have independent namespaces; validate each frozen binding independently.
@@ -306,7 +317,7 @@ public final class RolloutService {
      */
     private Rollout draft(SettingEnforcer.Context context, String id, long edition) {
         Rollout value = find(context, id);
-        if (value == null || !Rollout.State.DRAFT.name().equals(value.getState())
+        if (value == null || !Objects.equals(Rollout.State.DRAFT.key(), value.getStatus())
                 || !Objects.equals(edition, value.getEdition()))
             throw new IllegalStateException("Only the current DRAFT may be edited");
         return value;

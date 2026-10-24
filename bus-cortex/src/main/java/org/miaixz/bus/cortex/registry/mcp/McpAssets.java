@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex.registry.mcp;
 
+import java.io.Serial;
 import java.util.*;
 
 import jakarta.persistence.Transient;
@@ -41,6 +42,9 @@ import org.miaixz.bus.logger.Logger;
  */
 @SuperBuilder
 public class McpAssets extends Assets {
+
+    @Serial
+    private static final long serialVersionUID = 2536980252000L;
 
     /**
      * MCP-specific metadata view.

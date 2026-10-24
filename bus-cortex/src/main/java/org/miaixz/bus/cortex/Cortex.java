@@ -41,8 +41,8 @@ import org.miaixz.bus.logger.Logger;
  *
  * <p>
  * Cortex is a convenience entrypoint, not the primary runtime container. Framework integration code is expected to
- * assemble the concrete registries and curator implementation first, then bind them into this facade for simplified
- * access.
+ * assemble the concrete registries and optional curator implementation first, then bind them into this facade for
+ * simplified access.
  *
  * @author Kimi Liu
  */
@@ -72,7 +72,7 @@ public class Cortex {
      * @param mcp     MCP registry implementation
      * @param prompt  prompt registry implementation
      * @param release release registry implementation
-     * @param curator curator implementation
+     * @param curator optional curator implementation
      * @return immutable runtime bundle
      */
     public static Runtime runtime(
@@ -82,8 +82,8 @@ public class Cortex {
             Registry<ReleaseAssets> release,
             Curator curator) {
         return new Runtime(Objects.requireNonNull(api, "api"), Objects.requireNonNull(mcp, "mcp"),
-                Objects.requireNonNull(prompt, "prompt"), Objects.requireNonNull(release, "release"),
-                Objects.requireNonNull(curator, "curator"), List.of());
+                Objects.requireNonNull(prompt, "prompt"), Objects.requireNonNull(release, "release"), curator,
+                List.of());
     }
 
     /**
@@ -93,7 +93,7 @@ public class Cortex {
      * @param mcp        MCP registry implementation
      * @param prompt     prompt registry implementation
      * @param release    release registry implementation
-     * @param curator    curator implementation
+     * @param curator    optional curator implementation
      * @param components extra lifecycle or diagnostics components bound to the runtime
      * @return immutable runtime bundle
      */
@@ -105,8 +105,8 @@ public class Cortex {
             Curator curator,
             Object... components) {
         return new Runtime(Objects.requireNonNull(api, "api"), Objects.requireNonNull(mcp, "mcp"),
-                Objects.requireNonNull(prompt, "prompt"), Objects.requireNonNull(release, "release"),
-                Objects.requireNonNull(curator, "curator"), components(components));
+                Objects.requireNonNull(prompt, "prompt"), Objects.requireNonNull(release, "release"), curator,
+                components(components));
     }
 
     /**
@@ -115,7 +115,7 @@ public class Cortex {
      * @param api     API registry implementation
      * @param mcp     MCP registry implementation
      * @param prompt  prompt registry implementation
-     * @param curator curator implementation
+     * @param curator optional curator implementation
      * @return immutable runtime bundle
      */
     public static Runtime runtime(
@@ -124,7 +124,7 @@ public class Cortex {
             Registry<PromptAssets> prompt,
             Curator curator) {
         return new Runtime(Objects.requireNonNull(api, "api"), Objects.requireNonNull(mcp, "mcp"),
-                Objects.requireNonNull(prompt, "prompt"), null, Objects.requireNonNull(curator, "curator"), List.of());
+                Objects.requireNonNull(prompt, "prompt"), null, curator, List.of());
     }
 
     /**
@@ -133,7 +133,7 @@ public class Cortex {
      * @param api        API registry implementation
      * @param mcp        MCP registry implementation
      * @param prompt     prompt registry implementation
-     * @param curator    curator implementation
+     * @param curator    optional curator implementation
      * @param components extra lifecycle or diagnostics components bound to the runtime
      * @return immutable runtime bundle
      */
@@ -144,8 +144,7 @@ public class Cortex {
             Curator curator,
             Object... components) {
         return new Runtime(Objects.requireNonNull(api, "api"), Objects.requireNonNull(mcp, "mcp"),
-                Objects.requireNonNull(prompt, "prompt"), null, Objects.requireNonNull(curator, "curator"),
-                components(components));
+                Objects.requireNonNull(prompt, "prompt"), null, curator, components(components));
     }
 
     /**
@@ -174,7 +173,7 @@ public class Cortex {
      * @param mcp     MCP registry implementation
      * @param prompt  prompt registry implementation
      * @param release release registry implementation
-     * @param curator curator implementation
+     * @param curator optional curator implementation
      */
     public static void init(
             Registry<ApiAssets> api,
@@ -191,7 +190,7 @@ public class Cortex {
      * @param api     API registry implementation
      * @param mcp     MCP registry implementation
      * @param prompt  prompt registry implementation
-     * @param curator curator implementation
+     * @param curator optional curator implementation
      */
     public static void init(
             Registry<ApiAssets> api,
@@ -225,7 +224,7 @@ public class Cortex {
      * @param mcp     MCP registry implementation
      * @param prompt  prompt registry implementation
      * @param release release registry implementation
-     * @param curator curator implementation
+     * @param curator optional curator implementation
      * @return lifecycle handle for the installed runtime
      */
     public static RuntimeHandle bind(
@@ -243,7 +242,7 @@ public class Cortex {
      * @param api     API registry implementation
      * @param mcp     MCP registry implementation
      * @param prompt  prompt registry implementation
-     * @param curator curator implementation
+     * @param curator optional curator implementation
      * @return lifecycle handle for the installed runtime
      */
     public static RuntimeHandle bind(
@@ -269,16 +268,18 @@ public class Cortex {
     public static void reset() {
         Logger.info(true, "Cortex", "Runtime reset requested: initialized={}", current != null);
         Runtime previous;
+        Runnable shutdown;
         synchronized (MONITOR) {
             previous = current;
             current = null;
+            shutdown = previous == null ? Callout.shutdownTask() : null;
         }
         if (previous != null) {
             previous.stopComponents();
             Logger.info(false, "Cortex", "Runtime reset completed: stoppedComponents={}", previous.components().size());
             return;
         }
-        Callout.shutdown();
+        shutdown.run();
         Logger.info(false, "Cortex", "Runtime reset completed: calloutShutdown=true");
     }
 
@@ -392,12 +393,16 @@ public class Cortex {
     }
 
     /**
-     * Returns the initialized curator component.
+     * Returns the configured curator component, rejecting configuration access in registry-only runtimes.
      *
-     * @return curator component
+     * @return configured curator component
+     * @throws IllegalStateException if the runtime has no curator
      */
     public static Curator curator() {
-        return requireRuntime().curator();
+        Curator curator = requireRuntime().curator();
+        if (curator == null)
+            throw new IllegalStateException("Curator is not configured");
+        return curator;
     }
 
     /**
@@ -649,7 +654,7 @@ public class Cortex {
          * @param mcp        MCP registry
          * @param prompt     prompt registry
          * @param release    release registry
-         * @param curator    curator facade
+         * @param curator    optional curator facade
          * @param components additional runtime-managed lifecycle components
          */
         public Runtime(Registry<ApiAssets> api, Registry<McpAssets> mcp, Registry<PromptAssets> prompt,
@@ -708,9 +713,9 @@ public class Cortex {
         }
 
         /**
-         * Returns the curator facade from this runtime snapshot.
+         * Returns the optional curator facade from this runtime snapshot.
          *
-         * @return curator facade
+         * @return curator facade, or null for registry-only runtimes
          */
         public Curator curator() {
             return curator;
@@ -750,16 +755,27 @@ public class Cortex {
         }
 
         /**
-         * Stops every runtime component once, then clears the static callout pool.
+         * Stops every runtime component once without holding the facade monitor. The shared callout pool is detached
+         * only while the facade has no owner; a later installed runtime retains ownership of the published pool.
+         * Detached clients are closed outside both the facade and pool monitors.
          */
         private void stopComponents() {
             if (!stopped.compareAndSet(false, true)) {
                 return;
             }
-            for (Object component : uniqueComponents()) {
-                stopQuietly(component);
+            try {
+                for (Object component : uniqueComponents()) {
+                    stopQuietly(component);
+                }
+            } finally {
+                Runnable shutdown;
+                synchronized (MONITOR) {
+                    shutdown = current == null ? Callout.shutdownTask() : null;
+                }
+                if (shutdown != null) {
+                    shutdown.run();
+                }
             }
-            Callout.shutdown();
         }
 
         /**

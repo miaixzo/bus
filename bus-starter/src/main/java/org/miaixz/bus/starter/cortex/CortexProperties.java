@@ -50,41 +50,6 @@ public class CortexProperties {
     private final boolean enabled;
 
     /**
-     * Cortex server address used by configuration and watch clients.
-     */
-    private final String serverAddr;
-
-    /**
-     * Logical tenantId that isolates Cortex data and watches.
-     */
-    private final String tenantId;
-
-    /**
-     * Whether this application registers itself with Cortex during startup.
-     */
-    private final boolean autoRegister;
-
-    /**
-     * Whether remote Cortex settings are loaded into the Spring environment.
-     */
-    private final boolean settingEnabled;
-
-    /**
-     * Whether embedded Cortex server integration is enabled.
-     */
-    private final boolean serverEnabled;
-
-    /**
-     * Remote configuration group queried by the settings client.
-     */
-    private final String settingGroup;
-
-    /**
-     * Remote configuration data identifier queried by the settings client.
-     */
-    private final String settingDataId;
-
-    /**
      * Maximum active watches permitted within one tenantId.
      */
     private final int maxWatchesPerTenant;
@@ -130,16 +95,9 @@ public class CortexProperties {
     private final Release release;
 
     /**
-     * Creates Cortex properties after validating limits for caching, watches, bridging, security, and history.
+     * Creates Cortex properties after validating cache expiry, watch limits and nested integration options.
      *
      * @param enabled             whether Cortex integration is enabled
-     * @param serverAddr          remote server address
-     * @param tenantId            client tenantId
-     * @param autoRegister        whether local APIs are registered automatically
-     * @param settingEnabled      whether setting integration is enabled
-     * @param serverEnabled       whether this application hosts Cortex server components
-     * @param settingGroup        default setting group
-     * @param settingDataId       default setting identifier
      * @param maxWatchesPerTenant watch registration limit per tenantId
      * @param watchExpire         watch registration expiry
      * @param cacheExpire         default Cortex cache expiry
@@ -150,14 +108,10 @@ public class CortexProperties {
      * @param audit               audit options
      * @param release             release-registry options
      */
-    public CortexProperties(@DefaultValue(Normal.FALSE) boolean enabled, @DefaultValue(Normal.EMPTY) String serverAddr,
-            @DefaultValue(Normal.EMPTY) String tenantId, @DefaultValue("true") boolean autoRegister,
-            @DefaultValue("true") boolean settingEnabled, @DefaultValue("false") boolean serverEnabled,
-            @DefaultValue("DEFAULT") String settingGroup, @DefaultValue(Normal.EMPTY) String settingDataId,
-            @DefaultValue("1000") int maxWatchesPerTenant, @DefaultValue("24h") Duration watchExpire,
-            @DefaultValue("1h") Duration cacheExpire, Options cache, @DefaultValue Watch watch,
-            @DefaultValue Bridge bridge, @DefaultValue Guard guard, @DefaultValue Audit audit,
-            @DefaultValue Release release) {
+    public CortexProperties(@DefaultValue(Normal.FALSE) boolean enabled, @DefaultValue("1000") int maxWatchesPerTenant,
+            @DefaultValue("24h") Duration watchExpire, @DefaultValue("1h") Duration cacheExpire, Options cache,
+            @DefaultValue Watch watch, @DefaultValue Bridge bridge, @DefaultValue Guard guard,
+            @DefaultValue Audit audit, @DefaultValue Release release) {
         if (maxWatchesPerTenant <= 0) {
             throw new IllegalArgumentException("Cortex watch limits must be greater than zero");
         }
@@ -166,13 +120,6 @@ public class CortexProperties {
             throw new IllegalArgumentException("Cortex expiry values must be greater than zero");
         }
         this.enabled = enabled;
-        this.serverAddr = serverAddr;
-        this.tenantId = tenantId;
-        this.autoRegister = autoRegister;
-        this.settingEnabled = settingEnabled;
-        this.serverEnabled = serverEnabled;
-        this.settingGroup = settingGroup;
-        this.settingDataId = settingDataId;
         this.maxWatchesPerTenant = maxWatchesPerTenant;
         this.watchExpire = watchExpire;
         this.cacheExpire = cacheExpire;
@@ -182,30 +129,6 @@ public class CortexProperties {
         this.guard = guard == null ? new Guard(true, new Token()) : guard;
         this.audit = audit == null ? new Audit(false) : audit;
         this.release = release == null ? new Release(false) : release;
-    }
-
-    /**
-     * Validates the server addr.
-     *
-     * @return required trimmed server address
-     */
-    public String requireServerAddr() {
-        if (StringKit.isBlank(serverAddr)) {
-            throw new IllegalStateException("bus.cortex.server-addr is required");
-        }
-        return serverAddr.trim();
-    }
-
-    /**
-     * Validates the tenantId.
-     *
-     * @return configured nonblank tenantId
-     */
-    public String requireTenant() {
-        if (StringKit.isBlank(tenantId)) {
-            throw new IllegalStateException("bus.cortex.tenant-id is required");
-        }
-        return tenantId.trim();
     }
 
     /**
@@ -240,9 +163,8 @@ public class CortexProperties {
      */
     @Override
     public String toString() {
-        return "CortexProperties[enabled=" + enabled + ", tenantId=" + tenantId + ", serverEnabled=" + serverEnabled
-                + ", maxWatchesPerTenant=" + maxWatchesPerTenant + ", watchExpire=" + watchExpire + ", cacheExpire="
-                + cacheExpire + ", guard=***]";
+        return "CortexProperties[enabled=" + enabled + ", maxWatchesPerTenant=" + maxWatchesPerTenant + ", watchExpire="
+                + watchExpire + ", cacheExpire=" + cacheExpire + ", guard=***]";
     }
 
     /**

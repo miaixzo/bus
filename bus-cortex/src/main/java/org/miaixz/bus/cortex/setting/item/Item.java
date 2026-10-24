@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex.setting.item;
 
+import java.io.Serial;
+
 import jakarta.persistence.Lob;
 
 import lombok.Getter;
@@ -38,15 +40,23 @@ import org.miaixz.bus.core.xyz.EnumKit;
 @SuperBuilder
 public class Item extends Tenant {
 
+    @Serial
+    private static final long serialVersionUID = 2538001219000L;
+
     /**
-     * Configuration category stored using the stable code from {@link Type}.
+     * name.
      */
-    private Integer type;
+    private String name;
 
     /**
      * Code identifying the current configuration definition.
      */
     private String code;
+
+    /**
+     * Configuration category stored using the stable code from {@link Type}.
+     */
+    private Integer type;
 
     /**
      * Current definition containing {@code value}, {@code default} and {@code desc} members; sensitive members must be

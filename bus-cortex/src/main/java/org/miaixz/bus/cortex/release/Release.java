@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex.release;
 
+import java.io.Serial;
+
 import jakarta.persistence.Lob;
 
 import lombok.Getter;
@@ -35,6 +37,9 @@ import org.miaixz.bus.cortex.Type;
 @Getter
 @Setter
 public class Release extends Nature {
+
+    @Serial
+    private static final long serialVersionUID = 2536986123000L;
 
     /**
      * Human-readable release title.

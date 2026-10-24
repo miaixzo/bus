@@ -21,8 +21,8 @@ package org.miaixz.bus.cortex.setting.rollout;
 
 import java.util.*;
 
-import org.miaixz.bus.cortex.release.Manifest;
 import org.miaixz.bus.cortex.release.Release;
+import org.miaixz.bus.cortex.release.ReleaseCodec;
 import org.miaixz.bus.cortex.setting.item.ItemCodec;
 import org.miaixz.bus.cortex.setting.reference.ReferenceCodec;
 import org.miaixz.bus.cortex.setting.revision.Revision;
@@ -54,22 +54,22 @@ public final class Diff {
     public static Result compare(
             Plan.Frozen candidate,
             Release baseline,
-            Manifest.Document published,
+            ReleaseCodec.Document published,
             Map<String, Revision> snapshots) {
         if (!Objects.equals(candidate.baseline(), baseline == null ? null : baseline.getId()))
             throw new IllegalArgumentException("Diff baseline mismatch");
         if (baseline != null) {
-            Manifest.Document verified = Manifest.verify(baseline, snapshots);
-            if (!Manifest.encode(verified).equals(Manifest.encode(published)))
-                throw new IllegalStateException("Diff manifest mismatch");
+            ReleaseCodec.Document verified = ReleaseCodec.verify(baseline, snapshots);
+            if (!ReleaseCodec.encode(verified).equals(ReleaseCodec.encode(published)))
+                throw new IllegalStateException("Diff release graph mismatch");
         } else if (published != null || !snapshots.isEmpty())
             throw new IllegalArgumentException("Initial diff cannot have historical state");
         Map<String, Map<String, String>> before = new TreeMap<>(), after = new TreeMap<>();
         if (published != null)
             published.applications().forEach((app, bindings) -> {
                 Map<String, String> values = new TreeMap<>();
-                for (Manifest.Binding binding : bindings) {
-                    Plan.Definition source = Manifest.definition(snapshots.get(binding.source()));
+                for (ReleaseCodec.Binding binding : bindings) {
+                    Plan.Definition source = ReleaseCodec.definition(snapshots.get(binding.source()));
                     String alias = binding.options().alias().isEmpty() ? source.code() : binding.options().alias();
                     if (values.put(alias, digest(source.key(), binding.options())) != null)
                         throw new IllegalStateException("Duplicate baseline alias");

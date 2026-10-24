@@ -31,8 +31,8 @@ import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.Vector;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
-import org.miaixz.bus.cortex.release.Manifest;
 import org.miaixz.bus.cortex.release.Release;
+import org.miaixz.bus.cortex.release.ReleaseCodec;
 import org.miaixz.bus.cortex.release.ReleaseStore;
 import org.miaixz.bus.cortex.setting.SettingEnforcer;
 import org.miaixz.bus.cortex.setting.curator.ItemEditor;
@@ -148,7 +148,9 @@ public final class ItemQueryService implements Curator {
     }
 
     /**
-     * Registers a published-change subscription; callback rechecks the captured trusted identity.
+     * Registers a published-change subscription; callback rechecks the captured trusted identity. Durable evidence
+     * records the source Item ID resolved from the selected publication, while transport retains the requested alias.
+     * An absent published source retains a transport-only subscription until notifications can resolve its content.
      *
      * @param query    application request
      * @param listener value callback
@@ -163,15 +165,27 @@ public final class ItemQueryService implements Curator {
         ItemQuery captured = ItemQuery.builder().tenant_id(query.getTenant_id()).app_id(query.getApp_id())
                 .id(query.getId()).code(query.getCode()).requestId(query.getRequestId()).build();
         Instance instance = enforcer.instance(context, captured.getApp_id());
+        String itemId = null;
+        if (instance != null) {
+            Release release = select(
+                    releases.current(context.tenant(), EnumValue.Track.STABLE.key()),
+                    releases.current(context.tenant(), EnumValue.Track.CANARY.key()),
+                    instance);
+            if (release != null) {
+                Loaded state = load(context, release);
+                ReleaseCodec.Binding binding = binding(state, captured);
+                if (binding != null)
+                    itemId = state.snapshots().get(binding.source()).getItem_id();
+            }
+        }
         String id = transport.add(
                 Vector.builder().tenant_id(context.tenant()).app_id(captured.getApp_id()).id(key(captured))
                         .type(Type.ITEM.key()).build(),
                 event -> listener.accept(read(context, List.of(captured)).get(key(captured))));
         try {
-            if (instance != null)
+            if (instance != null && itemId != null)
                 watches.save(
-                        Watch.builder().tenant_id(context.tenant()).id(id).instance_id(instance.getId())
-                                .item_id(captured.getId() == null ? captured.getCode() : captured.getId())
+                        Watch.builder().tenant_id(context.tenant()).id(id).instance_id(instance.getId()).item_id(itemId)
                                 .session(instance.getSession()).build());
             return id;
         } catch (RuntimeException failed) {
@@ -221,33 +235,13 @@ public final class ItemQueryService implements Curator {
                     canary = releases.current(context.tenant(), EnumValue.Track.CANARY.key());
                     tracks = true;
                 }
-                Release chosen = stable;
-                if (canary != null) {
-                    Manifest.Document gray = Manifest.decode(canary);
-                    if (gray.mode() != Plan.Mode.GRAY)
-                        throw new IllegalStateException("Canary manifest mode mismatch");
-                    if (runtime != null && matcher.matches(gray.rule(), runtime))
-                        chosen = canary;
-                }
-                selected.put(query.getApp_id(), chosen);
+                selected.put(query.getApp_id(), select(stable, canary, runtime));
             }
             Release release = selected.get(query.getApp_id());
             String value = null;
             if (release != null) {
                 Loaded state = loaded.computeIfAbsent(release.getId(), ignored -> load(context, release));
-                Manifest.Binding binding = null;
-                for (Manifest.Binding candidate : state.document().applications()
-                        .getOrDefault(query.getApp_id(), List.of())) {
-                    Revision snapshot = state.snapshots().get(candidate.source());
-                    String alias = candidate.options().alias().isEmpty() ? snapshot.getCode()
-                            : candidate.options().alias();
-                    if (query.getId() != null ? query.getId().equals(snapshot.getItem_id())
-                            : Objects.equals(query.getCode(), alias)) {
-                        if (binding != null)
-                            throw new IllegalArgumentException("Ambiguous published source; use an alias");
-                        binding = candidate;
-                    }
-                }
+                ReleaseCodec.Binding binding = binding(state, query);
                 if (binding != null) {
                     Revision snapshot = state.snapshots().get(binding.source());
                     enforcer.require(context, "deliver", "item", snapshot.getItem_id());
@@ -255,7 +249,7 @@ public final class ItemQueryService implements Curator {
                         enforcer.require(context, "deliver-secret", "item", snapshot.getItem_id());
                     ItemCodec.Document parsed = state.definitions().computeIfAbsent(
                             snapshot.getId(),
-                            ignored -> editor.open(Manifest.definition(snapshot).item(context.tenant())));
+                            ignored -> editor.open(ReleaseCodec.definition(snapshot).item(context.tenant())));
                     ReferenceCodec.Options options = binding.options();
                     ReferenceCodec.Options clear = new ReferenceCodec.Options(options.type(), options.alias(),
                             options.prefix(), options.override(), options.keys(),
@@ -277,6 +271,48 @@ public final class ItemQueryService implements Curator {
     }
 
     /**
+     * Selects the same published track for reads and subscription identity resolution.
+     *
+     * @param stable   current stable release or absent
+     * @param canary   current gray release or absent
+     * @param instance verified current instance or an authorized non-instance reader
+     * @return selected formal release or absent
+     */
+    private Release select(Release stable, Release canary, Instance instance) {
+        if (canary != null) {
+            ReleaseCodec.Document gray = ReleaseCodec.decode(canary);
+            if (gray.mode() != Plan.Mode.GRAY)
+                throw new IllegalStateException("Canary release mode mismatch");
+            if (instance != null && matcher.matches(gray.rule(), instance))
+                return canary;
+        }
+        return stable;
+    }
+
+    /**
+     * Resolves an exact source ID or application-local alias against the verified published graph.
+     *
+     * @param state verified graph and immutable snapshots
+     * @param query application-qualified source request
+     * @return exact published usage or absent
+     */
+    private ReleaseCodec.Binding binding(Loaded state, ItemQuery query) {
+        ReleaseCodec.Binding binding = null;
+        for (ReleaseCodec.Binding candidate : state.document().applications()
+                .getOrDefault(query.getApp_id(), List.of())) {
+            Revision snapshot = state.snapshots().get(candidate.source());
+            String alias = candidate.options().alias().isEmpty() ? snapshot.getCode() : candidate.options().alias();
+            if (query.getId() != null ? query.getId().equals(snapshot.getItem_id())
+                    : Objects.equals(query.getCode(), alias)) {
+                if (binding != null)
+                    throw new IllegalArgumentException("Ambiguous published source; use an alias");
+                binding = candidate;
+            }
+        }
+        return binding;
+    }
+
+    /**
      * Loads/verifies the exact complete immutable graph once.
      *
      * @param context trusted identity
@@ -286,14 +322,14 @@ public final class ItemQueryService implements Curator {
     private Loaded load(SettingEnforcer.Context context, Release release) {
         if (!context.tenant().equals(release.getTenant_id()) || !ReleaseStore.isServable(release.getStatus()))
             throw new IllegalStateException("Release not servable");
-        Manifest.Document document = Manifest.decode(release);
+        ReleaseCodec.Document document = ReleaseCodec.decode(release);
         Set<String> ids = new TreeSet<>();
         document.applications().values().forEach(list -> list.forEach(b -> ids.add(b.source())));
         Map<String, Revision> snapshots = new TreeMap<>();
         for (Revision revision : revisions.findAll(context.tenant(), ids))
             if (snapshots.put(revision.getId(), revision) != null)
                 throw new IllegalStateException("Duplicate published snapshot");
-        return new Loaded(Manifest.verify(release, snapshots), Map.copyOf(snapshots), new HashMap<>());
+        return new Loaded(ReleaseCodec.verify(release, snapshots), Map.copyOf(snapshots), new HashMap<>());
     }
 
     /**
@@ -329,7 +365,7 @@ public final class ItemQueryService implements Curator {
      * @param definitions authorized parsed definitions
      * @author Kimi Liu
      */
-    private record Loaded(Manifest.Document document, Map<String, Revision> snapshots,
+    private record Loaded(ReleaseCodec.Document document, Map<String, Revision> snapshots,
             Map<String, ItemCodec.Document> definitions) {
 
     }

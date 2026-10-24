@@ -1,498 +1,148 @@
-# 🧠 Bus Cortex: Unified Registry & Configuration Center
+# Bus Cortex
 
-<p align="center">
-<strong>Service Registry · Config Center · Health Probing · Tenant-Scoped Storage · bus Ecosystem Integration</strong>
-</p>
+Cortex provides service registration and discovery, and application-qualified delivery of published configuration. Registry and Setting retain separate business responsibilities while sharing entities and infrastructure.
 
------
+## Responsibility boundaries
 
-## 📖 Project Introduction
+| Area | Responsibility |
+| --- | --- |
+| Registry | Service definitions, route associations, instance discovery and health |
+| Item / ItemEditor / ItemService | Current configuration, sensitive protection, management reads and editing concurrency |
+| Reference | Application associations, aliases, overlays and pins to published Revisions |
+| Rollout / Approval | Publication selection, frozen approval material and workflow state |
+| Revision / Release | Immutable snapshots of successful publications, release records and publication transactions |
+| Delivery / Watch | Published reads, instance-session checks, subscriptions and delivery evidence |
+| Starter | Conditional assembly, dependency wiring and lifecycle binding |
 
-**Bus Cortex** is the registry and configuration center for the bus framework. It provides unified service registration,
-configuration management, health probing, and tenant-scoped business storage — all backed by a single `CacheX`
-storage abstraction (Memory / Redis / JDBC) with zero extra infrastructure.
+Saving an Item creates neither a version nor an edit history. Reference `revision_id` pins a successfully published snapshot; Item `edition` controls editing concurrency. Rollout drafts belong to the approval workflow.
 
-- **Unified Registry**: API / MCP / Prompt / Version — four registries behind one `Registry<T>` interface
-- **Service + Instance Model**: `ApiAssets` (definition) + `Instance` (runtime), following Nacos-style separation
-- **Configuration Center**: Versioned publish, gray release routing, `@ConfigChange` callback annotations
-- **Health Probing**: Pluggable `Prober` (HTTP / TCP / MCP Ping / Process PID), server-side active probing
-- **Tenant Boundary**: API definitions and API runtime instances are global; MCP and Prompt entries retain explicit tenant-scoped storage; route lookup coordinates are unchanged
-- **Security**: HMAC-SHA256 Token + RBAC (ADMIN / PROVIDER / CONSUMER), rate limiting, circuit breaking
-- **bus Ecosystem**: VortexBridge auto-syncs to bus-vortex; bus-metrics instrumentation built-in; bus-cache as the sole
-  storage dependency
-- **Three-Step Onboarding**: One dependency + one config line + one annotation
+`ItemCodec`, `ReferenceCodec` and `Plan` parse configuration content, relationship options and approval material respectively. `ReleaseCodec` encodes, decodes and verifies published graphs using protocol `services-release-v3`.
 
------
+## Spring Boot setup
 
-## ✨ Core Features
-
-### 🎯 Unified Registry Interface
-
-Four registry types, one consistent API:
-
-| Registry            | Asset Type               | Description                                                |
-|:--------------------|:-------------------------|:-----------------------------------------------------------|
-| **ApiRegistry**     | `ApiAssets` + `Instance` | HTTP / gRPC / MCP / WebSocket / LLM API services           |
-| **McpRegistry**     | `McpAssets`              | MCP tool/server definitions                                |
-| **PromptRegistry**  | `PromptAssets`           | Prompt template management                                 |
-| **ReleaseRegistry** | `ReleaseAssets`          | Service version lifecycle (ACTIVE / DEPRECATED / DISABLED) |
-
-```java
-// Type-safe static facade (same pattern as bus-metrics Metrics)
-Cortex.apiRegistry().
-
-register(service, instance);
-Cortex.
-
-mcpRegistry().
-
-register(mcpAssets);
-
-List<ApiAssets> services = Cortex.query(
-        Vector.newBuilder().tenant_id(tenantId).method("vortex.user.get").build(), ApiAssets.class);
-```
-
-### ⚡ Service + Instance Separation
-
-```
-ApiAssets (definition, route identity = type + app_id + method + version + verb)
-    └── Instance (runtime, unique by app_id + method + version + fingerprint)
-```
-
-**Instance Identity**: Multiple runtime instances may coexist for the same API definition. Runtime uniqueness is scoped
-by `app_id + method + version + fingerprint`.
-
-Same-fingerprint re-registration is treated as an **idempotent TTL refresh**, not a conflict.
-
-**Gateway Route Semantics**: `ApiAssets.normalizeMeta()` keeps its existing type-less, application-aware alias
-selection and writes that encoded ROUTE key from `RegistryGenerator` into metadata `key`. Registration and lookup
-use the same generator, in this order:
-
-1. `type:app_id:method:version:verb`
-2. `type:method:version:verb`
-3. `app_id:method:version:verb`
-4. `method:version:verb`
-
-`method` / `version` / `verb` are required runtime dimensions. Only `type` and `app_id` are optional;
-neither space nor tenant is encoded or validated for ROUTE keys. API ENTRY and API INSTANCE keys are global and normalize tenant metadata to null. MCP and Prompt ENTRY keys retain `tenant_id + type + id` and require an explicit tenant; their tenant fields are preserved.
-
-ROUTE: `route:v2:type=<type|*>:app=<length:appId|*>:method=<length:method>:version=<length:version>:verb=<verb>`.
-
-`Keying` is now a generic key-strategy interface. Registry/runtime routing uses `Keying<Keying.RegistrySpec>` with the
-built-in `RegistryGenerator`, while the setting domain uses `Keying<Keying.SettingSpec>` with the built-in
-`SettingGenerator`.
-
-### 🔧 Configuration Center
-
-| Capability            | Implementation                                                                                                   |
-|:----------------------|:-----------------------------------------------------------------------------------------------------------------|
-| **Versioned Publish** | `ConfigPublisher` with `Sequence` atomic version numbers (CacheX CAS, no clock drift)                            |
-| **Version Rollback**  | `DefaultConfig.rollback()` restores from `ConfigVersion` snapshots (retains last 10)                             |
-| **Gray Release**      | `GrayRouter` matches `GrayRule` (IP_LIST / IP_RANGE / PERCENTAGE / HEADER)                                       |
-| **Watch Callback**    | `@ConfigChange` annotation — pure Java, no Spring dependency                                                     |
-| **Push + Poll**       | Config changes: push via `ConfigPublisher.notify()`; Instance changes: poll via `HealthProbeScheduler` scan+diff |
-
-```java
-// Publish
-Cortex.publishConfig("app", "database.url", "jdbc:mysql://...");
-
-// Watch
-Cortex.config().watch("app", "database.url", newValue -> {
-    dataSource.setUrl(newValue);
-});
-
-// Gray release
-GrayRule rule = new GrayRule();
-rule.setType(GrayType.PERCENTAGE);
-rule.setPercentage(10);
-rule.setGrayContent("jdbc:mysql://canary/...");
-```
-
-### 🏥 Health Probing
-
-Server-side active probing with pluggable probers:
-
-| Prober            | Protocol                    | Use Case                |
-|:------------------|:----------------------------|:------------------------|
-| `HttpProber`      | HTTP GET/HEAD               | Standard web services   |
-| `TcpProber`       | TCP connect                 | Non-HTTP services       |
-| `McpPingProber`   | MCP JSON-RPC ping/pong      | MCP servers             |
-| `ProcessProber`   | Local PID check             | Same-host processes     |
-| `CompositeProber` | Aggregates multiple probers | Multi-protocol services |
-
-`HealthProbeScheduler` runs a scheduled thread pool (default parallelism = `min(32, instanceCount/10)`), probing all
-registered instances. Healthy instances get TTL refreshed; unhealthy instances expire naturally via CacheX TTL.
-
-### 🛡️ Security & Guard
-
-| Component             | Function                                                                              |
-|:----------------------|:--------------------------------------------------------------------------------------|
-| `AccessTokenStore`    | HMAC-SHA256 token issuance with CacheX-backed revocation                              |
-| `AccessTokenResolver` | Two-step validation: HMAC verify (anti-forgery) + CacheX blacklist check (revocation) |
-| `AccessGuard`         | RBAC enforcement (ADMIN / PROVIDER / CONSUMER)                                        |
-| `RateLimiter`         | Token bucket rate limiting (CacheX counters)                         |
-| `CircuitBreaker`      | State machine: CLOSED → OPEN → HALF_OPEN                                              |
-| `ParamValidator`      | Input validation (regex `^[a-zA-Z0-9._-]{1,128}$`) preventing CacheX key injection    |
-
-### 🌉 bus-vortex Integration (VortexBridge)
-
-Automatic async sync to bus-vortex API gateway:
-
-```
-ApiRegistry.register()
-    └── VortexBridge.onRegistered()
-        └── ApiAssetsConverter.convert(ApiAssets, Instance) → Assets
-            └── asyncQueue.offer(SyncEvent{REGISTER, asset})
-                └── SyncWorker POST → bus-vortex /registry/push
-```
-
-- Bounded queue (capacity 10,000) prevents OOM when bus-vortex is down
-- Exponential backoff retry with configurable max retries
-- Idempotent: same API produces same Assets ID, bus-vortex overwrites safely
-- Full sync endpoint for bus-vortex restart/reconnect recovery
-
-### 📊 bus-metrics Integration
-
-All operations instrumented via `Metrics` static facade:
-
-| Metric                             | Type    | Location                |
-|:-----------------------------------|:--------|:------------------------|
-| `cortex.registry.register.total`   | Counter | ApiRegistry.register    |
-| `cortex.registry.deregister.total` | Counter | ApiRegistry.deregister  |
-| `cortex.registry.instances.active` | Gauge   | HealthProbeScheduler    |
-| `cortex.config.publish.total`      | Counter | ConfigPublisher.publish |
-| `cortex.health.check.total`        | Counter | Prober implementations  |
-| `cortex.vortex.sync.total`         | Counter | VortexBridge.SyncWorker |
-| `cortex.security.token.issued`     | Counter | AccessTokenStore.issue  |
-| `cortex.registry.query.duration`   | Timer   | AbstractRegistry.query  |
-
------
-
-## 🚀 Quick Start
-
-### Step 1: Add Dependency
-
-```xml
-<dependency>
-    <groupId>org.miaixz</groupId>
-    <artifactId>bus-starter</artifactId>
-    <version>x.x.x</version>
-</dependency>
-```
-
-### Step 2: Configure
+Add `org.miaixz:bus-starter` at the same version as the other Bus modules in your project.
+Enable assembly with `org.miaixz.bus.starter.annotation.EnableCortex` or `bus.cortex.enabled=true`.
 
 ```yaml
 bus:
   cortex:
-    server-addr: 127.0.0.1:8766   # The only required field
+    enabled: true
+    max-watches-per-tenant: 1000
+    watch-expire: 24h
+    cache-expire: 1h
+    watch:
+      logging-enabled: false
+    bridge:
+      mode: pull-only
+      url: ""
+      max-retries: 3
+      source: ""
+    guard:
+      enabled: true
+    audit:
+      enabled: false
+    release:
+      enabled: false
 ```
 
-> **Tenant context**: MCP and Prompt operations use the existing trusted tenant context; API registration is global. In the snippets below,
-> `tenantId` is supplied by that context; no default tenant is introduced. Gateway API routes do not consume it.
+## Configuration properties
 
-### Step 3: Enable
+All properties below are under `bus.cortex`. Existing `cache` options select the cache backend.
 
-```java
-@SpringBootApplication
-@EnableCortex
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-}
-```
+| Property | Default | Purpose |
+| --- | --- | --- |
+| `enabled` | `false` | Enable Cortex assembly |
+| `max-watches-per-tenant` | `1000` | Positive per-tenant subscription limit |
+| `watch-expire` | `24h` | Positive subscription expiry |
+| `cache-expire` | `1h` | Positive local Cortex cache expiry |
+| `cache` | Optional | Bus cache backend options |
+| `watch.logging-enabled` | `false` | Register the watch logging listener |
+| `bridge.mode` | `pull-only` | Assemble VortexBridge for `push+pull` |
+| `bridge.url` | Empty | Required for `push+pull` mode |
+| `bridge.max-retries` | `3` | Positive bridge retry limit |
+| `bridge.source` | Empty | Bridge source marker |
+| `guard.enabled` | `true` | Assemble TokenGuard configuration and strategy |
+| `guard.token` | TokenGuardConfig defaults | Token transport pre-validation options |
+| `audit.enabled` | `false` | Assemble the audit logger |
+| `release.enabled` | `false` | Assemble the read-only release registry when ReleaseStore exists |
 
-On startup: auto-registration, `@ConfigValue` field injection, and configuration change callbacks are all activated
-automatically.
+## Host wiring and transactions
 
------
+Starter assembles setting services conditionally from host-provided Stores and Enforcer. Current-state operations use `ItemStore`, `ReferenceStore`, `SettingStore` and related services. Approval and publication use `RolloutStore`, `ApprovalStore`, `PublicationStore`, `ReleaseStore` and `RevisionStore`. Runtime delivery also requires `WatchStore` and `SettingEnforcer`. Each Bean's `ConditionalOnBean` declares its exact dependency set.
 
-## 📝 Usage Examples
+Host implementations enforce tenant isolation, authoritative instance reads and session checks, authorization, CAS and atomic commits. `SettingStore` commits current definitions and relationships together; `RolloutStore.submit` atomically validates the frozen read-set; `PublicationStore` commits successful snapshots and publication state.
 
-### 1. Programmatic API (Static Facade)
+The default `NoOpSecretCodec` rejects sensitive content. Hosts must provide real protection; there is no silent plaintext fallback. TokenGuard only pre-validates credential presence and transport; authentication, permission and license checks remain host responsibilities.
+
+Registry Beans can be injected directly. The static Cortex facade requires a bound Runtime. Starter creates registry-only Runtime when Curator is absent; configuration facade access then fails explicitly. RuntimeHandle releases the binding when the application context closes.
+
+## Current API examples
+
+These method fragments receive Registry, Curator and request arguments from the host. Tenant and application identities must come from trusted context.
 
 ```java
 import java.util.List;
-import org.miaixz.bus.cortex.Cortex;
 import org.miaixz.bus.cortex.Instance;
+import org.miaixz.bus.cortex.Registry;
+import org.miaixz.bus.cortex.Vector;
 import org.miaixz.bus.cortex.registry.api.ApiAssets;
 
-// Keep service coordinates independent of the shared process program version.
-ApiAssets service = ApiAssets.builder().id("orders.read-v1").app_id("order-service")
-        .method("orders.read").version("api-v1").protocol(1).verb(1).build();
-Instance instance = Instance.builder().tenant_id(tenantId).app_id("order-service")
-        .version("program-7").host("192.168.1.10").port(8080).weight(100).build();
-Cortex.apiRegistry().register(service, instance);
+List<ApiAssets> services(Registry<ApiAssets> registry) {
+    return registry.query(Vector.builder().app_id("orders").offset(0).limit(100).build());
+}
 
-// Query direct Instance snapshots through the existing service route context.
-List<Instance> instances = Cortex.apiRegistry()
-        .queryInstances(tenantId, "order-service", "orders.read", "api-v1");
-
-// Remove only this service registration, retaining the shared process.
-Cortex.apiRegistry().deregisterInstance(tenantId, "order-service", "orders.read", "api-v1", instance.getChecksum());
-```
-
-### 2. Configuration Management
-
-```java
-// Publish configuration
-Cortex.publishConfig("database", "datasource.url", "jdbc:mysql://prod:3306/app");
-
-// Read configuration (with gray release support)
-String url = Cortex.config().get("database", "datasource.url", clientIp);
-
-// Watch for changes
-Cortex.config().watch("database", "datasource.url", newValue -> {
-    log.info("Config changed: {}", newValue);
-    dataSource.setUrl(newValue);
-});
-
-// Rollback to a previous version
-Cortex.config().rollback("database", "datasource.url", 5L);
-```
-
-### 3. Spring Annotation-Driven
-
-```java
-@Service
-public class OrderService {
-
-    // Auto-injected from config center, hot-reloadable
-    @ConfigValue(group = "order", dataId = "max-retry")
-    private int maxRetry;
-
-    // Change callback
-    @ConfigChange(group = "order", dataId = "max-retry")
-    public void onMaxRetryChanged(ConfigChangeEvent event) {
-        log.info("max-retry changed from {} to {}", event.getOldValue(), event.getNewValue());
-    }
+List<Instance> instances(Registry<ApiAssets> registry) {
+    return registry.queryInstances(null, "orders", "orders.read", "v1");
 }
 ```
 
-### 4. Watch Service Changes
+API service routes use global scope; MCP and Prompt operations require an explicit tenant. Shared processes use the root `Instance` entity with `app_id` ownership. Registry maintains service associations; runtime instances are identified by `checksum`.
 
 ```java
-// Watch for instance changes
-String watchId = Cortex.apiRegistry().watch(
-                Vector.newBuilder().tenant_id(tenantId).method("vortex.user.get").build(),
-                (added, removed, updated) -> {
-                    log.info("Instances changed: +{} -{} ~{}", added.size(), removed.size(), updated.size());
-                }
-        );
+import org.miaixz.bus.cortex.Curator;
+import org.miaixz.bus.cortex.setting.item.ItemQuery;
 
-// Unsubscribe
-Cortex.
+String published(Curator curator, ItemQuery trustedQuery) {
+    return curator.get(trustedQuery);
+}
 
-apiRegistry().
+String subscribe(Curator curator, ItemQuery trustedQuery) {
+    return curator.watch(trustedQuery, value -> System.out.println("Published configuration changed"));
+}
 
-unwatch(watchId);
+void unsubscribe(Curator curator, String watchId) {
+    curator.unwatch(watchId);
+}
 ```
 
-### 5. MCP & Prompt Registry
+## Publication flow
 
-```java
-// Register MCP tool
-McpAssets mcp = new McpAssets();
-mcp.setTenant_id(tenantId);
-mcp.setToolName("code-search");
-mcp.setTransport("stdio");
-Cortex.mcpRegistry().register(mcp);
+1. Prepare current edits with ItemService and save definitions with References through SettingService.
+2. Create publication selection with RolloutService; submission validates the current read-set and freezes approval material.
+3. Record approval decisions with ApprovalService; submitted material cannot be edited arbitrarily.
+4. Publish approved material with ReleasePublisher; only successful publication creates Revision / Release data.
+5. Curator reads stable or matching gray published content, without consulting editable Items or live References.
 
-// Register prompt template
-PromptAssets prompt = new PromptAssets();
-prompt.setTenant_id(tenantId);
-prompt.setTemplate("Summarize the following: {{content}}");
-Cortex.promptRegistry().register(prompt);
-```
+Gray selection belongs to publication. Pins must refer to published Revisions. Rollback also requires an approved publication workflow.
 
------
+Rollout stores workflow state in inherited `status`: DRAFT=0, REVIEWING=1, APPROVED=2, REJECTED=3, PUBLISHING=4, FAILED=5, PUBLISHED=6. `Rollout.State` retains the transition rules.
 
-## ⚙️ Full Configuration Reference
+All Watch event types share a tenant-scoped sequence, preserving monotonic mixed subscriptions. Outbox implementations must filter domain/resourceType before acquiring leases; unfiltered convenience methods delegate to the same atomic operation.
 
-```yaml
-bus:
-  cache:
-    type: memory                    # memory | redis | jdbc
+## Packages
 
-  redis:                            # Required when cache.type=redis
-    host: 127.0.0.1
-    port: 6379
-    database: 0
-
-  cortex:
-    server-addr: bus-cortex:8766    # Required — K8s: use Service DNS name
-
-    vortex:
-      enabled: false                # Enable VortexBridge sync
-      sync-url: http://localhost:8080
-      sync-interval: 30000          # ms
-      max-retries: 3
-
-    security:
-      enabled: false
-      hmac-secret: ${CORTEX_HMAC_SECRET}  # Must use env var in production
-      token-expire-seconds: 86400
-
-    health-check:
-      interval-ms: 30000            # Probing interval
-      timeout-ms: 5000              # Per-instance probe timeout
-      max-retries: 3
-
-    audit:
-      enabled: false
-```
-
-### Configuration Properties
-
-| Property                                   | Type    | Default | Description                               |
-|:-------------------------------------------|:--------|:--------|:------------------------------------------|
-| `bus.cortex.server-addr`                   | String  | —       | **Required.** Registry center address     |
-| `bus.cortex.vortex.enabled`                | boolean | `false` | Enable bus-vortex sync                    |
-| `bus.cortex.vortex.sync-url`               | String  | —       | bus-vortex sync endpoint URL              |
-| `bus.cortex.vortex.sync-interval`          | long    | `30000` | Full sync interval (ms)                   |
-| `bus.cortex.vortex.max-retries`            | int     | `3`     | Max retry attempts                        |
-| `bus.cortex.security.enabled`              | boolean | `false` | Enable Token + RBAC                       |
-| `bus.cortex.security.hmac-secret`          | String  | —       | HMAC-SHA256 signing key                   |
-| `bus.cortex.security.token-expire-seconds` | long    | `86400` | Token TTL (recommend 3600 for production) |
-| `bus.cortex.health-check.interval-ms`      | long    | `30000` | Health probe interval                     |
-| `bus.cortex.health-check.timeout-ms`       | long    | `5000`  | Probe timeout per instance                |
-| `bus.cortex.health-check.max-retries`      | int     | `3`     | Probe retry count                         |
-| `bus.cortex.audit.enabled`                 | boolean | `false` | Enable operation audit logging            |
-
------
-
-## 🏗️ Architecture
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│                        Application Layer                      │
-│  Service A :8080    Service B :8081    Service C :8082        │
-└───────────────────────────┬──────────────────────────────────┘
-                            │ register / config
-                            ▼
-┌──────────────────────────────────────────────────────────────┐
-│                   bus-cortex (Registry + Config)              │
-│  ApiRegistry / McpRegistry / PromptRegistry / ReleaseRegistry │
-│  ConfigPublisher / ConfigWatcher / GrayRouter                 │
-│         │ CacheX                    │ VortexBridge            │
-│         ▼                           ▼                         │
-│  ┌─────────────┐          ┌──────────────────┐               │
-│  │  bus-cache  │          │   bus-vortex     │               │
-│  │  Memory /   │          │  API Gateway     │               │
-│  │  Redis /    │          │  Traffic Proxy   │               │
-│  │  JDBC       │          └──────────────────┘               │
-│  └─────────────┘                                              │
-│         │ Metrics                                             │
-│  ┌─────────────┐                                              │
-│  │ bus-metrics │ ← counter / timer / gauge instrumentation    │
-│  └─────────────┘                                              │
-│  bus-starter/cortex provides Spring Boot auto-configuration   │
-└──────────────────────────────────────────────────────────────┘
-```
-
-### Package Structure
-
-```
+```text
 org.miaixz.bus.cortex
-├── [root]         Core abstractions (Cortex, Assets, Species, Vector, Registry, Config)
-├── registry/      Registry implementations
-│   ├── api/       ApiAssets + Instance + ApiRegistry + probers
-│   ├── mcp/       McpAssets + McpRegistry + ProcessManager
-│   ├── prompt/    PromptAssets + PromptRegistry
-│   ├── release/   Release + ReleaseAssets + ReleaseRegistry (EnumValue.Phase / EnumValue.Track)
-│   ├── label/     Label + Selector + MetadataRouter
-│   ├── batch/     BatchOperation + BatchResult
-│   └── depend/    DependencyGraph + ImpactAnalysis
-├── config/        Configuration center (ConfigPublisher, ConfigWatcher, GrayRouter, DefaultConfig)
-├── bridge/        bus-vortex sync (VortexBridge, SyncEvent, ApiAssetsConverter)
-├── guard/         Security & protection (RateLimiter, CircuitBreaker, AccessTokenStore, AccessGuard)
-├── builtin/       Default implementations (CompositeProber, DefaultPublisher, DefaultNotifier)
-└── magic/         Utilities (IdGenerator, Sequence, Fingerprint, AuditLogger)
+├── Cortex / Registry / Curator / Nature / Assets / Instance
+├── registry/    api, mcp, prompt, routing, queries and batch operations
+├── setting/     item, curator, reference, rollout, approval, revision, delivery, watch, secret
+├── release/     Release, ReleaseCodec, ReleasePublisher, publication stores and read-only registry
+├── bridge/      Vortex integration
+├── guard/       authorization pre-validation
+├── health/      health probers
+├── builtin/     key generation, selectors and batch models
+└── magic/       identity, event, watch and runtime infrastructure
 ```
-
------
-
-## ☸️ Kubernetes Deployment
-
-### Single Cortex + N Services
-
-```yaml
-bus:
-  cortex:
-    server-addr: bus-cortex:8766   # K8s Service DNS
-```
-
-CacheX backend: Memory / Redis / JDBC all work.
-
-### Multiple Cortex Pods (HPA)
-
-**Must use Redis or JDBC** as CacheX backend — Memory cannot share uniqueness state across pods.
-
-| Storage | Uniqueness Mechanism       | Production Ready |
-|:--------|:---------------------------|:-----------------|
-| Memory  | JVM synchronized/CAS       | Development only |
-| JDBC    | UNIQUE constraint + upsert | Small scale      |
-| Redis   | `SETNX` / Lua CAS          | **Recommended**  |
-
-### Pod IP & Rolling Update
-
-```yaml
-# Inject Pod IP via Downward API
-env:
-  - name: POD_IP
-    valueFrom:
-      fieldRef:
-        fieldPath: status.podIP
-
-# Rolling update strategy (single active instance constraint)
-strategy:
-  type: RollingUpdate
-  rollingUpdate:
-    maxSurge: 0
-    maxUnavailable: 1
-```
-
-TTL recommended: `healthCheck.intervalMs × 3` (default 90s). HealthProbeScheduler refreshes TTL for healthy instances;
-unhealthy instances expire naturally.
-
-### PreStop Hook
-
-A forced Pod termination such as OOMKill or SIGKILL does not invoke `@PreDestroy`. Configure a PreStop hook so normal
-rolling termination has time to deregister the instance:
-
-```yaml
-lifecycle:
-  preStop:
-    exec:
-      command: ["/bin/sh", "-c", "sleep 3"]
-terminationGracePeriodSeconds: 30
-```
-
-The three cleanup safeguards are the PreStop hook, TTL expiration, and active probing by HealthProbeScheduler.
-
------
-
-## 🔄 Version Compatibility
-
-| Bus Cortex Version | Spring Boot Version | JDK Version |
-|:-------------------|:--------------------|:------------|
-| 8.x                | 3.x+                | 17+         |
-
------
-
-## 🔗 Related Documentation
-
-- [Bus Cache Documentation](../bus-cache/README.md)
-- [Bus Metrics Documentation](../bus-metrics/README.md)
-- [Bus Starter Guide](../bus-starter/README.md)
-- [Design Document (Chinese)](docs/design-v8.0.md)
-
------
-
-## 📄 License
-
-[Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## Secret management
 
@@ -511,7 +161,11 @@ Caching uses Bus `MemoryCache` directly. Inject an empty cache dedicated to this
 Lifecycle guards cover cached and uncached reads; close drains admitted reads and prevents them from returning secrets. Cache cleanup after a failed read is best effort, never waits for a busy resource, and cannot replace the original denial. Each HTTP attempt passes its capped ten-second deadline to both credential acquisition and transport; wrapped native timeouts fail immediately.
 
 ```java
-var cache = new org.miaixz.bus.cache.nimble.MemoryCache<String, SecretMaterial>(256, 60_000);
+import org.miaixz.bus.cache.nimble.MemoryCache;
+import org.miaixz.bus.cortex.setting.secret.SecretManager;
+import org.miaixz.bus.cortex.setting.secret.SecretMaterial;
+
+var cache = new MemoryCache<String, SecretMaterial>(256, 60_000);
 try (var manager = new SecretManager(accessPolicy, cache)) {
     manager.register(connection, provider);
     // Resolve using an authenticated SecretContext.
@@ -519,3 +173,7 @@ try (var manager = new SecretManager(accessPolicy, cache)) {
 ```
 
 Secret failures directly throw Bus `ForbiddenException` for denied access or `CryptoException` for other failures. Public exceptions contain fixed, sanitized text without backend messages, credentials, causes or custom error codes; callers must not parse exception messages. Cloud adapters decide response retries from HTTP status and native platform error fields. At most three attempts are made for throttling and temporary service failures (HTTP 429/500/502/503, or recognized Alibaba/AWS/Tencent transient codes). Recognized transport I/O failures can retry; timeouts, denied access, missing values, malformed successful responses, and credential-source failures fail immediately. Each attempt reacquires and closes its credentials.
+
+## License
+
+[Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)

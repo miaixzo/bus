@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex.setting.reference;
 
+import java.io.Serial;
+
 import jakarta.persistence.Lob;
 
 import lombok.Getter;
@@ -36,6 +38,9 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 @Setter
 @SuperBuilder
 public class Reference extends Tenant {
+
+    @Serial
+    private static final long serialVersionUID = 2538003660000L;
 
     /**
      * Identifier of the source configuration item.

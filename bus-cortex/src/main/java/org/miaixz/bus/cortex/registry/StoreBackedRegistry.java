@@ -195,7 +195,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     }
 
     /**
-     * Reloads a single entry by method and version when the durable store supports that lookup mode.
+     * Reloads a single entry by method and version, using the existing route cache when durable lookup is unavailable.
      *
      * @param tenantId tenantId containing the entry
      * @param app_id   application identifier
@@ -205,11 +205,13 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      */
     public T refreshByMethodVersion(String tenantId, String app_id, String method, String version) {
         String resolvedTenant = normalizeTenant(tenantId);
-        if (method == null || version == null || store == null) {
+        if (method == null || version == null) {
             return null;
         }
-        if (!storeSupports(Trait.ROUTE_QUERY)) {
-            capabilityFallback("refreshByMethodVersion", Trait.ROUTE_QUERY, "cache route scan");
+        if (store == null || !storeSupports(Trait.ROUTE_QUERY)) {
+            if (store != null) {
+                capabilityFallback("refreshByMethodVersion", Trait.ROUTE_QUERY, "cache route scan");
+            }
             T cached = findCachedByRoute(resolvedTenant, app_id, method, version);
             return cached == null ? null : normalizeEntry(cached);
         }

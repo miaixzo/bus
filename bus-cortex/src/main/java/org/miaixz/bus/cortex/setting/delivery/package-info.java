@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Exact formal Release manifests and immutable snapshots only. No reads of mutable Item, live Reference, workflow,
+ * Exact published release graphs and immutable snapshots only. No reads of mutable Item, live Reference, workflow,
  * process environment, external secret providers or temporary configuration caches.
  *
  * @author Kimi Liu

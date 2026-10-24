@@ -20,6 +20,7 @@
 package org.miaixz.bus.cortex.registry;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -153,7 +154,7 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
     }
 
     /**
-     * Queries entries matching the given criteria with offset/limit pagination.
+     * Queries entries matching the given criteria with offset/limit pagination ordered by stable asset identity.
      *
      * @param vector vector parameters including tenantId, id filter, offset and limit
      * @return paginated list of matching entries
@@ -187,6 +188,7 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
                 result.add(entry);
             }
         }
+        result.sort(Comparator.comparing(Assets::getId, Comparator.nullsFirst(String::compareTo)));
         int offset = query.getOffset();
         int limit = query.getLimit();
         int fromIdx = Math.min(offset, result.size());

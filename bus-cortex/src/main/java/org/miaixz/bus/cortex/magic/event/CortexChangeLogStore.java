@@ -76,10 +76,13 @@ public interface CortexChangeLogStore {
      * @param leaseMillis claim lease duration in milliseconds
      * @return claimed records
      */
-    List<CortexChangeRecord> claimPending(int limit, String owner, long leaseMillis);
+    default List<CortexChangeRecord> claimPending(int limit, String owner, long leaseMillis) {
+        return claimPending(limit, owner, leaseMillis, null, null);
+    }
 
     /**
-     * Claims pending records for delivery and filters them by domain and resource type.
+     * Atomically filters pending records by domain and resource type before acquiring delivery claims. Implementations
+     * must not acquire leases for nonmatching records; null filters select all corresponding values.
      *
      * @param limit        maximum records to claim
      * @param owner        worker owner
@@ -88,16 +91,12 @@ public interface CortexChangeLogStore {
      * @param resourceType optional resource type filter
      * @return claimed records
      */
-    default List<CortexChangeRecord> claimPending(
+    List<CortexChangeRecord> claimPending(
             int limit,
             String owner,
             long leaseMillis,
             String domain,
-            String resourceType) {
-        return claimPending(limit, owner, leaseMillis).stream()
-                .filter(record -> domain == null || domain.equals(record.getDomain()))
-                .filter(record -> resourceType == null || resourceType.equals(record.getResourceType())).toList();
-    }
+            String resourceType);
 
     /**
      * Moves one change-log record to dead letter state only while the supplied claim still owns the record.

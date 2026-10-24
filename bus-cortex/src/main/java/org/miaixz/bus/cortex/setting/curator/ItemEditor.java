@@ -562,11 +562,36 @@ public final class ItemEditor {
             return overlay;
         if (overlay.values().containsKey("$protected"))
             throw new IllegalArgumentException("Overlay protection is server-owned");
-        if (source.protection() != ItemCodec.Protection.NONE
-                || source.rules().values().stream().anyMatch(ItemCodec.Rule::sensitive))
+        if (needsOverlayProtection(source, overlay))
             return new JsonValue.ObjectValue(
                     Map.of("$protected", new JsonValue.StringValue(secrets.protect(ItemCodec.encode(overlay)))));
         return overlay;
+    }
+
+    /**
+     * Recognizes the complete server-owned overlay protection envelope without decrypting it.
+     *
+     * @param overlay relationship-local storage value
+     * @return whether exactly one nonblank protected value is present and a protecting codec is available
+     */
+    public boolean isProtectedOverlay(JsonValue.ObjectValue overlay) {
+        return overlay != null && overlay.values().size() == 1
+                && overlay.values().get("$protected") instanceof JsonValue.StringValue text && !text.value().isBlank()
+                && !(secrets instanceof NoOpSecretCodec);
+    }
+
+    /**
+     * Evaluates overlay storage against the selected definition's current or frozen sensitivity rules.
+     *
+     * @param source  already verified selected definition
+     * @param overlay relationship-local storage value
+     * @return whether a nonempty sensitive overlay is missing a valid protection envelope
+     */
+    public boolean needsOverlayProtection(ItemCodec.Document source, JsonValue.ObjectValue overlay) {
+        return overlay != null && !overlay.values().isEmpty()
+                && (source.protection() != ItemCodec.Protection.NONE
+                        || source.rules().values().stream().anyMatch(ItemCodec.Rule::sensitive))
+                && !isProtectedOverlay(overlay);
     }
 
     /**

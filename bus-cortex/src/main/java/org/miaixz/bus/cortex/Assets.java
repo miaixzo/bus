@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,9 @@ import org.miaixz.bus.cortex.builtin.LabelMapper;
 @Setter
 @SuperBuilder
 public class Assets extends Nature {
+
+    @Serial
+    private static final long serialVersionUID = 2536951816000L;
 
     /**
      * Application identifier bound to the asset within the current tenantId.

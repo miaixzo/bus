@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex.setting.rollout;
 
+import java.io.Serial;
+
 import jakarta.persistence.Lob;
 
 import lombok.Getter;
@@ -28,7 +30,8 @@ import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.basic.entity.Tenant;
 
 /**
- * Publication workflow selection or frozen approval material, concurrency state and exact execution receipt.
+ * Publication workflow selection or frozen approval material, concurrency state and exact execution receipt. The
+ * inherited status property stores the explicit code returned by {@link State#key()}.
  *
  * @author Kimi Liu
  */
@@ -37,20 +40,13 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 @SuperBuilder
 public class Rollout extends Tenant {
 
-    /**
-     * Publication workflow state defined by {@link State}.
-     */
-    private String state;
+    @Serial
+    private static final long serialVersionUID = 2538010532000L;
 
     /**
      * Display title of the publication workflow.
      */
     private String title;
-
-    /**
-     * Description of the publication workflow.
-     */
-    private String description;
 
     /**
      * Checksum of the candidate material, immutable after submission.
@@ -69,11 +65,6 @@ public class Rollout extends Tenant {
     private Long edition;
 
     /**
-     * Identifier of the exact publication event receipt, independent of the formal release version.
-     */
-    private String publication;
-
-    /**
      * Execution error message containing no sensitive values.
      */
     private String error;
@@ -82,6 +73,16 @@ public class Rollout extends Tenant {
      * Workflow completion time in epoch milliseconds.
      */
     private Long finished;
+
+    /**
+     * Identifier of the exact publication event receipt, independent of the formal release version.
+     */
+    private String publication;
+
+    /**
+     * Description of the publication workflow.
+     */
+    private String description;
 
     /**
      * Creates an empty publication workflow.
@@ -125,6 +126,23 @@ public class Rollout extends Tenant {
          * Formal release committed successfully in an atomic transaction.
          */
         PUBLISHED;
+
+        /**
+         * Returns the stable workflow code stored in the inherited status property.
+         *
+         * @return explicit workflow status code
+         */
+        public int key() {
+            return switch (this) {
+                case DRAFT -> 0;
+                case REVIEWING -> 1;
+                case APPROVED -> 2;
+                case REJECTED -> 3;
+                case PUBLISHING -> 4;
+                case FAILED -> 5;
+                case PUBLISHED -> 6;
+            };
+        }
 
         /**
          * Checks whether the state graph permits a transition. Services must still verify request identity for

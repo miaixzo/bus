@@ -189,13 +189,6 @@
           "name": "<init>",
           "parameterTypes": [
             "boolean",
-            "java.lang.String",
-            "java.lang.String",
-            "boolean",
-            "boolean",
-            "boolean",
-            "java.lang.String",
-            "java.lang.String",
             "int",
             "java.time.Duration",
             "java.time.Duration",

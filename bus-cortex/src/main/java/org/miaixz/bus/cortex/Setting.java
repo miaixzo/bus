@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex;
 
+import java.io.Serial;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -38,6 +40,9 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 public class Setting extends Nature {
+
+    @Serial
+    private static final long serialVersionUID = 2536961029000L;
 
     /**
      * Optional descriptive text shared by setting-domain resources.

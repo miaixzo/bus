@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex.setting.event;
 
+import java.io.Serial;
+
 import jakarta.persistence.Lob;
 
 import lombok.Getter;
@@ -36,6 +38,9 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 @Setter
 @SuperBuilder
 public class Event extends Tenant {
+
+    @Serial
+    private static final long serialVersionUID = 2536998889000L;
 
     /**
      * Identifier of the authenticated actor performing the operation.
@@ -73,16 +78,6 @@ public class Event extends Tenant {
     private String level;
 
     /**
-     * Operation occurrence time in epoch milliseconds.
-     */
-    private Long occurred;
-
-    /**
-     * Service receipt time in epoch milliseconds.
-     */
-    private Long received;
-
-    /**
      * Operation outcome or exact result identifier; successful publication records the release identifier.
      */
     private String result;
@@ -97,6 +92,16 @@ public class Event extends Tenant {
      */
     @Lob
     private String detail;
+
+    /**
+     * Operation occurrence time in epoch milliseconds.
+     */
+    private Long occurred;
+
+    /**
+     * Service receipt time in epoch milliseconds.
+     */
+    private Long received;
 
     /**
      * Creates an empty operation audit event.

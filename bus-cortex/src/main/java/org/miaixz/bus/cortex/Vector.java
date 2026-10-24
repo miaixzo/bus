@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,9 @@ import org.miaixz.bus.cortex.builtin.Selector;
 @Setter
 @SuperBuilder
 public class Vector extends Nature {
+
+    @Serial
+    private static final long serialVersionUID = 2536963380000L;
 
     /**
      * Application identifier bound to the queried asset or setting scope.
