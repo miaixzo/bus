@@ -245,6 +245,36 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
+     * Content formats shared by configuration, serialization and import/export APIs. This enumeration identifies
+     * formats only; parsing and rendering belong to their respective modules.
+     *
+     * @author Kimi Liu
+     */
+    enum Format {
+
+        /**
+         * Plain text or opaque string content.
+         */
+        TEXT,
+
+        /**
+         * JSON-encoded structured content.
+         */
+        JSON,
+
+        /**
+         * YAML-encoded structured content.
+         */
+        YAML,
+
+        /**
+         * Java properties style key-value content.
+         */
+        PROPERTIES
+
+    }
+
+    /**
      * Enumeration for gradient directions.
      *
      * @author Kimi Liu
