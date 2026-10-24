@@ -20,7 +20,9 @@
 package org.miaixz.bus.cortex.setting.curator;
 
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -84,7 +86,8 @@ public final class CacheRevisionStore implements RevisionStore {
     }
 
     /**
-     * Loads one authoritative batch; never issues per-record delegate reads.
+     * Reads protected cache entries and loads only misses in one authoritative batch; never issues per-record delegate
+     * reads.
      *
      * @param tenant tenant
      * @param ids    exact identities
@@ -92,15 +95,35 @@ public final class CacheRevisionStore implements RevisionStore {
      */
     @Override
     public List<Revision> findAll(String tenant, Set<String> ids) {
-        List<Revision> result = delegate.findAll(tenant, Set.copyOf(ids));
-        Set<String> seen = new HashSet<>();
-        for (Revision value : result) {
-            if (!ids.contains(value.getId()) || !seen.add(value.getId()))
-                throw new IllegalStateException("Unexpected store identity");
-            check(tenant, value.getId(), value);
-            put(tenant, value.getId(), value);
+        if (tenant == null || tenant.isBlank())
+            throw new IllegalArgumentException("Exact store identity required");
+        Set<String> requested = Set.copyOf(ids);
+        Map<String, Revision> result = new LinkedHashMap<>();
+        Set<String> missing = new HashSet<>(requested);
+        for (String id : requested) {
+            try {
+                Object raw = cache.read(key(tenant, id));
+                if (raw instanceof String json) {
+                    Revision value = JsonKit.toPojo(json, Revision.class);
+                    check(tenant, id, value);
+                    result.put(id, value);
+                    missing.remove(id);
+                }
+            } catch (RuntimeException unavailable) {
+                /* Invalid or unavailable cache entries remain authoritative batch misses. */
+            }
         }
-        return List.copyOf(result);
+        if (!missing.isEmpty()) {
+            Set<String> seen = new HashSet<>();
+            for (Revision value : delegate.findAll(tenant, Set.copyOf(missing))) {
+                if (!missing.contains(value.getId()) || !seen.add(value.getId()))
+                    throw new IllegalStateException("Unexpected store identity");
+                check(tenant, value.getId(), value);
+                result.put(value.getId(), value);
+                put(tenant, value.getId(), value);
+            }
+        }
+        return List.copyOf(result.values());
     }
 
     /**

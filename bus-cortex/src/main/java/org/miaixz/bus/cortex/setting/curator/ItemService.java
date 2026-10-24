@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.miaixz.bus.cortex.release.Manifest;
+import org.miaixz.bus.cortex.release.ReleaseCodec;
 import org.miaixz.bus.cortex.setting.SettingEnforcer;
 import org.miaixz.bus.cortex.setting.SettingStore;
 import org.miaixz.bus.cortex.setting.item.Item;
@@ -166,7 +166,8 @@ public final class ItemService {
             throw new IllegalArgumentException("Published source snapshot required");
         if (Integer.valueOf(1).equals(current.getEncrypted()) || Integer.valueOf(1).equals(revision.getEncrypted()))
             enforcer.require(context, "secret-edit", "item", item);
-        ItemEditor.Restoration restored = editor.restore(current, Manifest.definition(revision).item(context.tenant()));
+        ItemEditor.Restoration restored = editor
+                .restore(current, ReleaseCodec.definition(revision).item(context.tenant()));
         return new SettingStore.Change(item, restored.candidate(), edition, restored.actions(),
                 ItemCodec.ValidationLevel.FULL, null);
     }

@@ -1,493 +1,148 @@
-# 🧠 Bus Cortex：统一注册与配置中心
+# Bus Cortex
 
-<p align="center">
-<strong>服务注册 · 配置中心 · 健康探测 · 租户存储隔离 · bus 生态联动</strong>
-</p>
+Cortex 提供服务注册与发现，以及按应用投递已发布配置的能力。Registry 和 Setting 分别承担服务治理与配置发布职责，共享实体和基础设施，不相互代替业务流程。
 
------
+## 职责边界
 
-## 📖 项目介绍
+| 范围 | 职责 |
+| --- | --- |
+| Registry | 服务定义、路由关联、实例发现与健康状态 |
+| Item / ItemEditor / ItemService | 当前配置定义、敏感保护、管理读取与编辑并发校验 |
+| Reference | 应用关联、别名、覆盖规则、固定已发布 Revision |
+| Rollout / Approval | 发布选择、审批材料冻结与工作流状态 |
+| Revision / Release | 成功发布的不可变快照、发布记录及发布事务 |
+| Delivery / Watch | 已发布内容读取、实例会话校验、订阅与投递证据 |
+| Starter | 条件装配、依赖接线与生命周期绑定 |
 
-**Bus Cortex** 是 bus 框架的注册与配置中心模块。它提供统一的服务注册、配置管理、健康探测和业务存储的多租户隔离——所有数据通过单一
-`CacheX` 存储抽象（Memory / Redis / JDBC）读写，无需额外基础设施。
+保存 Item 不生成版本或修改历史。Reference 的 `revision_id` 仅用于固定成功发布的快照；Item 的 `edition` 用于编辑并发控制。Rollout 的草稿属于审批工作流。
 
-- **统一注册表**：API / MCP / Prompt / Version 四类注册表，统一 `Registry<T>` 接口
-- **服务+实例分离模型**：`ApiAssets`（服务定义）+ `Instance`（运行时实例），参考 Nacos 设计
-- **配置中心**：带版本号的发布、灰度路由、`@ConfigChange` 回调注解
-- **健康探测**：可插拔 `Prober`（HTTP / TCP / MCP Ping / 进程 PID），服务端主动探测
-- **租户边界**：API 定义及 API 运行实例全局；MCP、Prompt 条目保留显式租户存储隔离；路由查找坐标保持不变
-- **安全防护**：HMAC-SHA256 Token + RBAC（ADMIN / PROVIDER / CONSUMER），限流，熔断
-- **bus 生态联动**：VortexBridge 自动同步到 bus-vortex；内置 bus-metrics 埋点；bus-cache 是唯一存储依赖
-- **三步接入**：一个依赖 + 一行配置 + 一个注解
+`ItemCodec`、`ReferenceCodec`、`Plan` 分别解析配置内容、关联规则和审批材料；`ReleaseCodec` 编解码并验证已发布图，协议标识为 `services-release-v3`。
 
------
+## Spring Boot 接入
 
-## ✨ 核心特性
-
-### 🎯 统一注册表接口
-
-四种注册类型，一套统一 API：
-
-| 注册表              | 资产类型                 | 说明                                               |
-|:--------------------|:-------------------------|:---------------------------------------------------|
-| **ApiRegistry**     | `ApiAssets` + `Instance` | HTTP / gRPC / MCP / WebSocket / LLM API 服务       |
-| **McpRegistry**     | `McpAssets`              | MCP 工具/服务器定义                                |
-| **PromptRegistry**  | `PromptAssets`           | Prompt 模板管理                                    |
-| **ReleaseRegistry** | `ReleaseAssets`          | 服务版本生命周期（ACTIVE / DEPRECATED / DISABLED） |
-
-```java
-// 类型安全的静态 Facade（与 bus-metrics Metrics 模式一致）
-Cortex.apiRegistry().
-
-register(service, instance);
-Cortex.
-
-mcpRegistry().
-
-register(mcpAssets);
-
-List<ApiAssets> services = Cortex.query(
-        Vector.newBuilder().tenant_id(tenantId).method("vortex.user.get").build(), ApiAssets.class);
-```
-
-### ⚡ 服务与实例分离
-
-```
-ApiAssets（服务定义，路由坐标 = type + app_id + method + version + verb）
-    └── Instance（运行时实例，唯一性由 app_id + method + version + fingerprint 决定）
-```
-
-**实例标识规则**：同一 API 定义下允许存在多个运行时实例。运行时唯一性按
-`app_id + method + version + fingerprint` 约束。
-
-相同 fingerprint 重复注册视为 **幂等刷新 TTL**，不视为冲突。
-
-**网关路由语义**：`ApiAssets.normalizeMeta()` 保留原有不含 type、带可选 appId 的别名选择，
-将 `RegistryGenerator` 生成的对应编码 ROUTE 键写入元数据 `key`。注册和查询使用同一生成器，候选顺序为：
-
-1. `type:app_id:method:version:verb`
-2. `type:method:version:verb`
-3. `app_id:method:version:verb`
-4. `method:version:verb`
-
-其中 `method` / `version` / `verb` 为运行时必填维度，仅 `type`、`app_id` 可选。
-ROUTE 键不编码或校验 space/tenant。API ENTRY 与 API INSTANCE 保持全局并将租户元数据规范为 null；MCP、Prompt ENTRY 保留原 tenant_id + type + id 空间，要求显式租户且不清空归属。
-
-ROUTE: `route:v2:type=<type|*>:app=<length:appId|*>:method=<length:method>:version=<length:version>:verb=<verb>`.
-
-`Keying` 现在是泛型键策略接口。注册表与运行时路由使用 `Keying<Keying.RegistrySpec>`，内置实现为
-`RegistryGenerator`；setting 领域使用 `Keying<Keying.SettingSpec>`，内置实现为 `SettingGenerator`。
-
-### 🔧 配置中心
-
-| 能力                | 实现                                                                                           |
-|:--------------------|:-----------------------------------------------------------------------------------------------|
-| **带版本号发布**    | `ConfigPublisher` + `Sequence` 原子序列号（CacheX CAS，避免时钟回拨）                          |
-| **版本回滚**        | `DefaultConfig.rollback()` 从 `ConfigVersion` 快照还原（默认保留最近 10 个）                   |
-| **灰度发布**        | `GrayRouter` 匹配 `GrayRule`（IP_LIST / IP_RANGE / PERCENTAGE / HEADER）                       |
-| **变更回调**        | `@ConfigChange` 注解——纯 Java，无 Spring 依赖                                                  |
-| **推送+轮询双通路** | 配置变更：`ConfigPublisher.notify()` 直接推送；实例变更：`HealthProbeScheduler` 定时 scan+diff |
-
-```java
-// 发布配置
-Cortex.publishConfig("app", "database.url", "jdbc:mysql://...");
-
-// 订阅变更
-Cortex.config().watch("app", "database.url", newValue -> {
-    dataSource.setUrl(newValue);
-});
-
-// 灰度规则
-GrayRule rule = new GrayRule();
-rule.setType(GrayType.PERCENTAGE);
-rule.setPercentage(10);
-rule.setGrayContent("jdbc:mysql://canary/...");
-```
-
-### 🏥 健康探测
-
-服务端主动探测，可插拔探测器：
-
-| 探测器            | 协议                   | 适用场景      |
-|:------------------|:-----------------------|:--------------|
-| `HttpProber`      | HTTP GET/HEAD          | 标准 Web 服务 |
-| `TcpProber`       | TCP 连接               | 非 HTTP 服务  |
-| `McpPingProber`   | MCP JSON-RPC ping/pong | MCP 服务器    |
-| `ProcessProber`   | 本地 PID 存活检测      | 同机进程      |
-| `CompositeProber` | 聚合多个探测器         | 多协议服务    |
-
-`HealthProbeScheduler` 内置线程池（默认并发度 = `min(32, instanceCount/10)`），对所有已注册实例并发探测。健康实例续期
-TTL；不健康实例不续期，TTL 到期后由 CacheX 自动清理。
-
-### 🛡️ 安全与防护
-
-| 组件                  | 功能                                                             |
-|:----------------------|:-----------------------------------------------------------------|
-| `AccessTokenStore`    | HMAC-SHA256 签发 Token，CacheX 支持主动吊销                      |
-| `AccessTokenResolver` | 两步校验：HMAC 重新验签（防伪造）+ CacheX 黑名单检查（支持吊销） |
-| `AccessGuard`         | RBAC 权限校验（ADMIN / PROVIDER / CONSUMER）                     |
-| `RateLimiter`         | 令牌桶限流（CacheX 计数）                  |
-| `CircuitBreaker`      | 状态机：CLOSED → OPEN → HALF_OPEN                                |
-| `ParamValidator`      | 入参校验（正则 `^[a-zA-Z0-9._-]{1,128}$`），防 CacheX key 注入   |
-
-### 🌉 与 bus-vortex 联动（VortexBridge）
-
-自动异步同步到 bus-vortex API 网关：
-
-```
-ApiRegistry.register()
-    └── VortexBridge.onRegistered()
-        └── ApiAssetsConverter.convert(ApiAssets, Instance) → Assets
-            └── asyncQueue.offer(SyncEvent{REGISTER, asset})
-                └── SyncWorker POST → bus-vortex /registry/push
-```
-
-- 有界队列（容量 10,000），bus-vortex 宕机时防止 OOM
-- 指数退避重试，可配置最大重试次数
-- 幂等推送：同一 API 产生相同 Assets ID，bus-vortex 端安全覆盖
-- 支持全量同步接口，用于 bus-vortex 重启/重连恢复
-
-### 📊 与 bus-metrics 联动
-
-所有核心操作均通过 `Metrics` 静态门面埋点：
-
-| 指标名                             | 类型    | 埋点位置                |
-|:-----------------------------------|:--------|:------------------------|
-| `cortex.registry.register.total`   | Counter | ApiRegistry.register    |
-| `cortex.registry.deregister.total` | Counter | ApiRegistry.deregister  |
-| `cortex.registry.instances.active` | Gauge   | HealthProbeScheduler    |
-| `cortex.config.publish.total`      | Counter | ConfigPublisher.publish |
-| `cortex.health.check.total`        | Counter | Prober 各实现           |
-| `cortex.vortex.sync.total`         | Counter | VortexBridge.SyncWorker |
-| `cortex.security.token.issued`     | Counter | AccessTokenStore.issue  |
-| `cortex.registry.query.duration`   | Timer   | AbstractRegistry.query  |
-
------
-
-## 🚀 快速开始
-
-### 第一步：添加依赖
-
-```xml
-<dependency>
-    <groupId>org.miaixz</groupId>
-    <artifactId>bus-starter</artifactId>
-    <version>x.x.x</version>
-</dependency>
-```
-
-### 第二步：一行配置
+添加与项目其他 Bus 模块相同版本的 `org.miaixz:bus-starter` 依赖。
+使用 `org.miaixz.bus.starter.annotation.EnableCortex`，或配置 `bus.cortex.enabled=true` 启用装配。
 
 ```yaml
 bus:
   cortex:
-    server-addr: 127.0.0.1:8766   # 唯一必填项
+    enabled: true
+    max-watches-per-tenant: 1000
+    watch-expire: 24h
+    cache-expire: 1h
+    watch:
+      logging-enabled: false
+    bridge:
+      mode: pull-only
+      url: ""
+      max-retries: 3
+      source: ""
+    guard:
+      enabled: true
+    audit:
+      enabled: false
+    release:
+      enabled: false
 ```
 
-> **租户上下文**：MCP、Prompt 业务操作继续使用原有可信租户上下文，API 注册保持全局。以下片段中的 `tenantId` 由该上下文提供，
-> 不引入默认租户；网关 API 路由不消费该坐标。
+## 配置项
 
-### 第三步：启用注解
+以下属性均位于 `bus.cortex` 下；缓存后端选项通过现有 `cache` 属性绑定。
 
-```java
-@SpringBootApplication
-@EnableCortex
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-}
-```
+| 属性 | 默认值 | 作用 |
+| --- | --- | --- |
+| `enabled` | `false` | 启用 Cortex 装配 |
+| `max-watches-per-tenant` | `1000` | 每租户订阅上限，必须大于零 |
+| `watch-expire` | `24h` | 订阅过期时间，必须为正 |
+| `cache-expire` | `1h` | 本地 Cortex 缓存过期时间，必须为正 |
+| `cache` | 可选 | Bus 缓存后端选项 |
+| `watch.logging-enabled` | `false` | 注册订阅日志监听器 |
+| `bridge.mode` | `pull-only` | `push+pull` 时装配 VortexBridge |
+| `bridge.url` | 空 | `push+pull` 模式下必须非空 |
+| `bridge.max-retries` | `3` | 桥接重试上限，必须大于零 |
+| `bridge.source` | 空 | 桥接来源标记 |
+| `guard.enabled` | `true` | 装配 TokenGuard 配置和策略 |
+| `guard.token` | TokenGuardConfig 默认值 | Token 传输预校验选项 |
+| `audit.enabled` | `false` | 装配审计记录器 |
+| `release.enabled` | `false` | 存在 ReleaseStore 时装配只读发布 Registry |
 
-启用后自动完成：服务注册/注销、`@ConfigValue` 字段注入、配置变更回调。
+## 宿主接线与事务
 
------
+Starter 根据宿主提供的 Store 和 Enforcer 条件装配配置服务。当前定义读写需要 `ItemStore`、`ReferenceStore`、`SettingStore` 等；发布与审批需要 `RolloutStore`、`ApprovalStore`、`PublicationStore`、`ReleaseStore` 和 `RevisionStore`；运行时读取还需要 `WatchStore` 和 `SettingEnforcer`。具体组合以各 Bean 的 `ConditionalOnBean` 为准。
 
-## 📝 使用示例
+宿主实现负责租户隔离、权威实例读取和会话校验、授权、CAS 以及原子事务提交。`SettingStore` 原子保存当前定义和关联，`RolloutStore.submit` 原子校验冻结读集，`PublicationStore` 提交成功发布的快照及发布状态。
 
-### 1. 编程式 API（静态门面）
+默认 `NoOpSecretCodec` 拒绝敏感内容，宿主需要提供真实保护实现；不会静默降级为明文。TokenGuard 只做凭据存在性及传输预校验，认证、权限与许可证检查仍由宿主执行。
+
+Registry Bean 可以直接注入。静态 Cortex 门面需要绑定 Runtime；Starter 支持在没有 Curator 时创建 Registry-only Runtime；此时配置门面调用会明确报错。RuntimeHandle 在上下文关闭时释放绑定。
+
+## 当前 API 示例
+
+以下方法片段的 Registry、Curator 和请求参数均由宿主提供；请求的租户和应用身份必须来自可信上下文。
 
 ```java
 import java.util.List;
-import org.miaixz.bus.cortex.Cortex;
 import org.miaixz.bus.cortex.Instance;
+import org.miaixz.bus.cortex.Registry;
+import org.miaixz.bus.cortex.Vector;
 import org.miaixz.bus.cortex.registry.api.ApiAssets;
 
-// Keep service coordinates independent of the shared process program version.
-ApiAssets service = ApiAssets.builder().id("orders.read-v1").app_id("order-service")
-        .method("orders.read").version("api-v1").protocol(1).verb(1).build();
-Instance instance = Instance.builder().tenant_id(tenantId).app_id("order-service")
-        .version("program-7").host("192.168.1.10").port(8080).weight(100).build();
-Cortex.apiRegistry().register(service, instance);
+List<ApiAssets> services(Registry<ApiAssets> registry) {
+    return registry.query(Vector.builder().app_id("orders").offset(0).limit(100).build());
+}
 
-// Query direct Instance snapshots through the existing service route context.
-List<Instance> instances = Cortex.apiRegistry()
-        .queryInstances(tenantId, "order-service", "orders.read", "api-v1");
-
-// Remove only this service registration, retaining the shared process.
-Cortex.apiRegistry().deregisterInstance(tenantId, "order-service", "orders.read", "api-v1", instance.getChecksum());
-```
-
-### 2. 配置管理
-
-```java
-// 发布配置
-Cortex.publishConfig("database", "datasource.url", "jdbc:mysql://prod:3306/app");
-
-// 读取配置（支持灰度）
-String url = Cortex.config().get("database", "datasource.url", clientIp);
-
-// 订阅变更
-Cortex.config().watch("database", "datasource.url", newValue -> {
-    log.info("配置变更: {}", newValue);
-    dataSource.setUrl(newValue);
-});
-
-// 回滚到指定历史版本
-Cortex.config().rollback("database", "datasource.url", 5L);
-```
-
-### 3. Spring 注解驱动
-
-```java
-@Service
-public class OrderService {
-
-    // 自动从配置中心注入，支持热更新
-    @ConfigValue(group = "order", dataId = "max-retry")
-    private int maxRetry;
-
-    // 变更回调
-    @ConfigChange(group = "order", dataId = "max-retry")
-    public void onMaxRetryChanged(ConfigChangeEvent event) {
-        log.info("max-retry 从 {} 变更为 {}", event.getOldValue(), event.getNewValue());
-    }
+List<Instance> instances(Registry<ApiAssets> registry) {
+    return registry.queryInstances(null, "orders", "orders.read", "v1");
 }
 ```
 
-### 4. 订阅实例变更
+API 服务路由是全局范围；MCP 和 Prompt 操作必须提供明确的租户。共享进程统一使用根包的 `Instance`，通过 `app_id` 标识应用归属；服务关联由 Registry 维护，运行实例通过 `checksum` 标识。
 
 ```java
-// 订阅实例变化
-String watchId = Cortex.apiRegistry().watch(
-                Vector.newBuilder().tenant_id(tenantId).method("vortex.user.get").build(),
-                (added, removed, updated) -> {
-                    log.info("实例变更: 新增 {} 下线 {} 更新 {}",
-                            added.size(), removed.size(), updated.size());
-                }
-        );
+import org.miaixz.bus.cortex.Curator;
+import org.miaixz.bus.cortex.setting.item.ItemQuery;
 
-// 取消订阅
-Cortex.
+String published(Curator curator, ItemQuery trustedQuery) {
+    return curator.get(trustedQuery);
+}
 
-apiRegistry().
+String subscribe(Curator curator, ItemQuery trustedQuery) {
+    return curator.watch(trustedQuery, value -> System.out.println("Published configuration changed"));
+}
 
-unwatch(watchId);
+void unsubscribe(Curator curator, String watchId) {
+    curator.unwatch(watchId);
+}
 ```
 
-### 5. MCP 与 Prompt 注册
+## 发布链路
 
-```java
-// 注册 MCP 工具
-McpAssets mcp = new McpAssets();
-mcp.setTenant_id(tenantId);
-mcp.setToolName("code-search");
-mcp.setTransport("stdio");
-Cortex.mcpRegistry().register(mcp);
+1. 用 ItemService 准备当前配置修改，通过 SettingService 联合保存定义与 Reference。
+2. 用 RolloutService 创建发布选择；提交时校验当前读集，冻结审批材料。
+3. 用 ApprovalService 记录审批决定，已提交材料不得任意修改。
+4. 用 ReleasePublisher 执行批准后的发布；只有成功发布才产生 Revision / Release。
+5. Curator 读取正式或匹配灰度规则的已发布内容，不回读可编辑 Item 或实时 Reference。
 
-// 注册 Prompt 模板
-PromptAssets prompt = new PromptAssets();
-prompt.setTenant_id(tenantId);
-prompt.setTemplate("请总结以下内容：{{content}}");
-Cortex.promptRegistry().register(prompt);
-```
+灰度选择属于发布链路；固定引用必须指向已发布 Revision。回滚也通过已批准的发布工作流执行。
 
------
+Rollout 使用继承的 `status` 保存工作流状态：DRAFT=0、REVIEWING=1、APPROVED=2、REJECTED=3、PUBLISHING=4、FAILED=5、PUBLISHED=6。状态转移规则由 `Rollout.State` 保持。
 
-## ⚙️ 完整配置参考
+Watch 的所有事件类型共享租户内序号，混合订阅保持递增。Outbox 实现必须在领取租约之前按 domain/resourceType 过滤；无过滤领取通过接口默认方法调用同一个原子操作。
 
-```yaml
-bus:
-  cache:
-    type: memory                    # memory | redis | jdbc
+## 包结构
 
-  redis:                            # cache.type=redis 时必填
-    host: 127.0.0.1
-    port: 6379
-    database: 0
-
-  cortex:
-    server-addr: bus-cortex:8766    # 必填；K8s 中配置 Service DNS 名
-
-    vortex:
-      enabled: false                # 启用 VortexBridge 同步
-      sync-url: http://localhost:8080
-      sync-interval: 30000          # 全量同步间隔（ms）
-      max-retries: 3
-
-    security:
-      enabled: false
-      hmac-secret: ${CORTEX_HMAC_SECRET}  # 生产环境必须用环境变量注入
-      token-expire-seconds: 86400          # 生产建议 3600（1小时）
-
-    health-check:
-      interval-ms: 30000            # 探测间隔
-      timeout-ms: 5000              # 单实例探测超时
-      max-retries: 3
-
-    audit:
-      enabled: false
-```
-
-### 配置属性说明
-
-| 属性                                       | 类型    | 默认值  | 说明                          |
-|:-------------------------------------------|:--------|:--------|:------------------------------|
-| `bus.cortex.server-addr`                   | String  | —       | **必填**，注册中心地址        |
-| `bus.cortex.vortex.enabled`                | boolean | `false` | 启用 bus-vortex 同步          |
-| `bus.cortex.vortex.sync-url`               | String  | —       | bus-vortex 同步接口地址       |
-| `bus.cortex.vortex.sync-interval`          | long    | `30000` | 全量同步间隔（ms）            |
-| `bus.cortex.vortex.max-retries`            | int     | `3`     | 最大重试次数                  |
-| `bus.cortex.security.enabled`              | boolean | `false` | 启用 Token + RBAC             |
-| `bus.cortex.security.hmac-secret`          | String  | —       | HMAC-SHA256 签名密钥          |
-| `bus.cortex.security.token-expire-seconds` | long    | `86400` | Token 有效期（生产建议 3600） |
-| `bus.cortex.health-check.interval-ms`      | long    | `30000` | 健康探测间隔                  |
-| `bus.cortex.health-check.timeout-ms`       | long    | `5000`  | 单实例探测超时                |
-| `bus.cortex.health-check.max-retries`      | int     | `3`     | 探测重试次数                  |
-| `bus.cortex.audit.enabled`                 | boolean | `false` | 启用操作审计日志              |
-
------
-
-## 🏗️ 整体架构
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│                        应用服务层                              │
-│  Service A :8080    Service B :8081    Service C :8082        │
-└───────────────────────────┬──────────────────────────────────┘
-                            │ 注册/配置
-                            ▼
-┌──────────────────────────────────────────────────────────────┐
-│                   bus-cortex（注册表+配置中心）                   │
-│  ApiRegistry / McpRegistry / PromptRegistry / ReleaseRegistry │
-│  ConfigPublisher / ConfigWatcher / GrayRouter                 │
-│         │ CacheX                    │ VortexBridge            │
-│         ▼                           ▼                         │
-│  ┌─────────────┐          ┌──────────────────┐               │
-│  │  bus-cache  │          │   bus-vortex     │               │
-│  │  Memory /   │          │  API 网关 代理    │               │
-│  │  Redis /    │          └──────────────────┘               │
-│  │  JDBC       │                                              │
-│  └─────────────┘                                              │
-│         │ 指标埋点                                             │
-│  ┌─────────────┐                                              │
-│  │ bus-metrics │ ← counter / timer / gauge                    │
-│  └─────────────┘                                              │
-│  bus-starter/cortex 提供 Spring Boot 自动配置                  │
-└──────────────────────────────────────────────────────────────┘
-```
-
-### 包结构
-
-```
+```text
 org.miaixz.bus.cortex
-├── [根包]         核心抽象（Cortex, Assets, Species, Vector, Registry, Config）
-├── registry/      注册表实现
-│   ├── api/       ApiAssets + Instance + ApiRegistry + 探测器
-│   ├── mcp/       McpAssets + McpRegistry + ProcessManager
-│   ├── prompt/    PromptAssets + PromptRegistry
-│   ├── release/   Release + ReleaseAssets + ReleaseRegistry (EnumValue.Phase / EnumValue.Track)
-│   ├── label/     Label + Selector + MetadataRouter（标签路由）
-│   ├── batch/     BatchOperation + BatchResult（批量操作）
-│   └── depend/    DependencyGraph + ImpactAnalysis（依赖拓扑）
-├── config/        配置中心（ConfigPublisher, ConfigWatcher, GrayRouter, DefaultConfig）
-├── bridge/        bus-vortex 同步（VortexBridge, SyncEvent, ApiAssetsConverter）
-├── guard/         安全防护（RateLimiter, CircuitBreaker, AccessTokenStore, AccessGuard）
-├── builtin/       默认实现（CompositeProber, DefaultPublisher, DefaultNotifier）
-└── magic/         工具类（IdGenerator, Sequence, Fingerprint, AuditLogger）
+├── Cortex / Registry / Curator / Nature / Assets / Instance
+├── registry/    api, mcp, prompt, routing, queries and batch operations
+├── setting/     item, curator, reference, rollout, approval, revision, delivery, watch, secret
+├── release/     Release, ReleaseCodec, ReleasePublisher, publication stores and read-only registry
+├── bridge/      Vortex integration
+├── guard/       authorization pre-validation
+├── health/      health probers
+├── builtin/     key generation, selectors and batch models
+└── magic/       identity, event, watch and runtime infrastructure
 ```
-
------
-
-## ☸️ K8s 部署说明
-
-### 单 Cortex + N 服务实例
-
-```yaml
-bus:
-  cortex:
-    server-addr: bus-cortex:8766   # K8s Service DNS 名
-```
-
-CacheX 后端：Memory / Redis / JDBC 均可。
-
-### 多 Cortex Pod（HPA 扩容）
-
-**必须使用 Redis 或 JDBC** 作为 CacheX 后端——Memory 模式无法在多 Pod 间共享唯一性状态。
-
-| 存储   | 唯一性机制           | 生产可用      |
-|:-------|:---------------------|:--------------|
-| Memory | JVM synchronized/CAS | 仅限开发/测试 |
-| JDBC   | UNIQUE 约束 + upsert | 小规模生产    |
-| Redis  | `SETNX` / Lua CAS    | **推荐**      |
-
-### Pod IP 与滚动发布
-
-```yaml
-# 通过 Downward API 注入 Pod IP
-env:
-  - name: POD_IP
-    valueFrom:
-      fieldRef:
-        fieldPath: status.podIP
-
-# 滚动发布策略（单活动实例约束）
-strategy:
-  type: RollingUpdate
-  rollingUpdate:
-    maxSurge: 0         # 禁止新旧 Pod 同时存在
-    maxUnavailable: 1
-```
-
-TTL 建议：`healthCheck.intervalMs × 3`（默认 90s）。HealthProbeScheduler 为健康实例续期 TTL；不健康实例不续期，到期后由 CacheX
-自动清理。
-
-### PreStop Hook（防非优雅退出）
-
-K8s 强杀 Pod（OOMKill / SIGKILL）不触发 `@PreDestroy`。建议配置 PreStop：
-
-```yaml
-lifecycle:
-  preStop:
-    exec:
-      command: ["/bin/sh", "-c", "sleep 3"]
-terminationGracePeriodSeconds: 30
-```
-
-三道防线：PreStop Hook → TTL 过期 → HealthProbeScheduler 主动探测清理。
-
------
-
-## 🔄 版本兼容性
-
-| Bus Cortex 版本 | Spring Boot 版本 | JDK 版本 |
-|:----------------|:-----------------|:---------|
-| 8.x             | 3.x+             | 17+      |
-
------
-
-## 🔗 相关文档
-
-- [Bus Cache 文档](../bus-cache/README_CN.md)
-- [Bus Metrics 文档](../bus-metrics/README_CN.md)
-- [Bus Starter 指南](../bus-starter/README_CN.md)
-- [设计文档](docs/design-v8.0.md)
-
------
-
-## 📄 许可证
-
-[Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## 凭据管理
 
@@ -500,12 +155,16 @@ terminationGracePeriodSeconds: 30
 `SecretMaterial` 直接提供实际版本、获取时间、过期时间及连接 generation；
 `describe()` 返回不可变能力集合。payload 类型仅作为配置标签，不再拆分完整值缓存。
 
-缓存直接使用 Bus `MemoryCache`，不再提供 `setting.secret.cache`。注入的缓存必须为空、仅供此管理器使用，由管理器关闭；移除监听在替换、淘汰、过期和关闭时擦除缓存值。容量由 `MemoryCache` 配置，超过 8192 字符的值正常返回但不入缓存。
+缓存直接使用 Bus `MemoryCache`。注入的缓存必须为空、仅供此管理器使用，由管理器关闭；移除监听在替换、淘汰、过期和关闭时擦除缓存值。容量由 `MemoryCache` 配置，超过 8192 字符的值正常返回但不入缓存。
 
 读取的生命周期保护覆盖缓存和非缓存模式；关闭会等待已进入的读取完成并阻止其继续返回密钥。读取失败后的缓存清理为尽力执行，不等待忙碌资源，也不覆盖原始异常。每次 HTTP 尝试将最多十秒的 deadline 同时传给凭据来源和 HTTP 执行，包装后的原生超时同样立即失败。
 
 ```java
-var cache = new org.miaixz.bus.cache.nimble.MemoryCache<String, SecretMaterial>(256, 60_000);
+import org.miaixz.bus.cache.nimble.MemoryCache;
+import org.miaixz.bus.cortex.setting.secret.SecretManager;
+import org.miaixz.bus.cortex.setting.secret.SecretMaterial;
+
+var cache = new MemoryCache<String, SecretMaterial>(256, 60_000);
 try (var manager = new SecretManager(accessPolicy, cache)) {
     manager.register(connection, provider);
     // Resolve using an authenticated SecretContext.
@@ -513,3 +172,7 @@ try (var manager = new SecretManager(accessPolicy, cache)) {
 ```
 
 Secret 直接使用 Bus `ForbiddenException` 表示访问被拒绝，其他失败使用 `CryptoException`。对外异常仅包含固定的脱敏文本，不携带云端错误消息、凭据、原始 cause 或自定义错误码；调用方不要解析异常消息。云适配层根据 HTTP 状态和平台原生错误字段判断重试：限流或临时服务故障（HTTP 429/500/502/503，以及阿里云、AWS、腾讯云已识别的瞬态错误）最多尝试三次。可识别的传输 I/O 故障允许重试；超时、权限拒绝、资源不存在、成功响应格式错误和凭据来源失败立即返回。每次尝试重新获取并关闭凭据。
+
+## License
+
+[Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)

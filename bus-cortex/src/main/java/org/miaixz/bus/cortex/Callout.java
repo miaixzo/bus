@@ -123,13 +123,30 @@ public class Callout {
     }
 
     /**
-     * Cancels outstanding calls and clears all shared HTTP clients.
+     * Detaches the current shared HTTP clients and closes them without holding the pool monitor. Clients published
+     * after detachment belong to the next pool and are not closed by this operation.
      */
     public static void shutdown() {
-        Logger.info(true, "Cortex", "Callout shutdown requested: clientCount={}", CLIENTS.size());
-        CLIENTS.values().forEach(Client::closeQuietly);
-        CLIENTS.clear();
-        Logger.info(false, "Cortex", "Callout shutdown completed: clientCount={}", CLIENTS.size());
+        shutdownTask().run();
+    }
+
+    /**
+     * Detaches the currently published clients and returns their cleanup for execution outside lifecycle monitors.
+     * Acquisition and detachment share the pool monitor; HTTP requests and client closure do not hold that monitor.
+     *
+     * @return cleanup task for only the detached clients; the caller must execute it once
+     */
+    static Runnable shutdownTask() {
+        List<Client> clients;
+        synchronized (CLIENTS) {
+            clients = new ArrayList<>(CLIENTS.values());
+            CLIENTS.clear();
+        }
+        return () -> {
+            Logger.info(true, "Cortex", "Callout shutdown requested: clientCount={}", clients.size());
+            clients.forEach(Client::closeQuietly);
+            Logger.info(false, "Cortex", "Callout shutdown completed: clientCount={}", CLIENTS.size());
+        };
     }
 
     /**
@@ -149,14 +166,17 @@ public class Callout {
     }
 
     /**
-     * Returns a shared HTTP client for the normalized timeout bucket.
+     * Returns a shared HTTP client for the normalized timeout bucket, serialized with pool detachment. The caller
+     * performs its HTTP request after the pool monitor has been released.
      *
      * @param timeoutMs requested timeout in milliseconds, clamped to at least 1
      * @return reusable HTTP client
      */
     private static Client client(long timeoutMs) {
         long normalizedTimeout = Math.max(1L, timeoutMs);
-        return CLIENTS.computeIfAbsent(normalizedTimeout, Client::new);
+        synchronized (CLIENTS) {
+            return CLIENTS.computeIfAbsent(normalizedTimeout, Client::new);
+        }
     }
 
     /**

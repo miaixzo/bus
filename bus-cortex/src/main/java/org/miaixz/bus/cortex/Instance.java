@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex;
 
+import java.io.Serial;
 import java.util.Map;
 
 import lombok.Builder;
@@ -37,6 +38,9 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 @Setter
 @SuperBuilder
 public class Instance extends Tenant {
+
+    @Serial
+    private static final long serialVersionUID = 2536955156000L;
 
     /**
      * Application identifier to which the runtime instance belongs.

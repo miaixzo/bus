@@ -67,7 +67,7 @@ public final class SettingService {
     }
 
     /**
-     * Saves current content and explicit relationship changes atomically.
+     * Saves current definitions and relationships atomically, maintaining required overlay protection.
      *
      * @param context trusted identity
      * @param change  requested current-state edit
@@ -90,9 +90,12 @@ public final class SettingService {
         Item source = next == null ? expected : next;
         if (source == null)
             throw new IllegalArgumentException("Source not found");
-        SettingStore.RelationChange relations = change.relations() == null ? null
-                : new SettingStore.RelationChange(references.prepare(context, source, change.relations().next()),
-                        change.relations().expected());
+        SettingStore.RelationChange relations;
+        if (change.relations() != null)
+            relations = new SettingStore.RelationChange(references.prepare(context, source, change.relations().next()),
+                    change.relations().expected());
+        else
+            relations = next == null ? null : references.protectRetained(context, source);
         return store.commit(
                 context,
                 new SettingStore.Change(change.item(), next, change.expectedEdition(), Map.of(), change.validation(),

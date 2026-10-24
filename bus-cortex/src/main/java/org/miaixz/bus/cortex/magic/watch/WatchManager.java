@@ -30,7 +30,6 @@ import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.DateKit;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.Vector;
 import org.miaixz.bus.cortex.builtin.MetadataMatcher;
@@ -281,28 +280,21 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      * @param newValue new value
      */
     public <T> void notify(String key, T newValue) {
-        notifyTyped(key, newValue, "update", "watch:generic", "WatchManager", "Generic watch update");
+        notifyTyped(key, newValue, "update", "WatchManager", "Generic watch update");
     }
 
     /**
      * Notifies matching generic watch listeners with explicit event metadata.
      *
-     * @param key         changed logical key
-     * @param <T>         payload type
-     * @param newValue    new payload value
-     * @param eventType   logical event type
-     * @param sequenceKey logical sequence stream key
-     * @param source      event source component
-     * @param summary     event summary
+     * @param key       changed logical key
+     * @param <T>       payload type
+     * @param newValue  new payload value
+     * @param eventType logical event type
+     * @param source    event source component
+     * @param summary   event summary
      * @throws IllegalArgumentException if the notification does not carry a tenant identifier
      */
-    public <T> void notifyTyped(
-            String key,
-            T newValue,
-            String eventType,
-            String sequenceKey,
-            String source,
-            String summary) {
+    public <T> void notifyTyped(String key, T newValue, String eventType, String source, String summary) {
         if (closed) {
             return;
         }
@@ -338,11 +330,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             }
             event.setUpdated(newValue != null ? List.of(newValue) : List.of());
             event.setSummary(summary == null || summary.isBlank() ? "Generic watch update" : summary);
-            dispatch(
-                    item.getKey(),
-                    typed,
-                    event,
-                    sequenceKey == null || sequenceKey.isBlank() ? "watch:generic" : sequenceKey);
+            dispatch(item.getKey(), typed, event);
         }
     }
 
@@ -412,7 +400,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             event.setSummary(
                     summary == null || summary.isBlank() ? content == null ? "Setting removed" : "Setting updated"
                             : summary);
-            dispatch(item.getKey(), typed, event, "watch:setting");
+            dispatch(item.getKey(), typed, event);
         }
     }
 
@@ -466,8 +454,6 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
                 ? registryEventType(action, instance, previousInstance)
                 : eventType;
         Type assetType = Type.tryFromKey(asset.getType()).orElse(null);
-        String sequenceKey = "watch:registry:"
-                + (assetType == null ? Normal.UNKNOWN : StringKit.toLowerCase(assetType.name(), Locale.ROOT));
         String matchKey = registryWatchKey(asset, instance, previousInstance);
         for (Map.Entry<String, WatchSubscription<?>> item : entries.entrySet()) {
             Vector vector = item.getValue().getVector();
@@ -483,7 +469,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             event.setType(assetType);
             fillRegistryPayload(event, action, effectiveEventType, asset, previousAsset);
             event.setSummary(registrySummary(effectiveEventType));
-            dispatch(item.getKey(), typed, event, sequenceKey);
+            dispatch(item.getKey(), typed, event);
         }
     }
 
@@ -714,18 +700,18 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
 
     /**
      * Assigns ordering metadata and enqueues one completed event while holding only its subscription monitor. Listener
-     * callbacks, including global listeners, execute asynchronously outside that monitor. Dropped events still advance
-     * the emitted sequence so existing gap detection remains unchanged.
+     * callbacks, including global listeners, execute asynchronously outside that monitor. All event types share one
+     * tenant-scoped sequence, so mixed subscriptions cannot move backwards. Dropped events still advance the emitted
+     * sequence so existing gap detection remains unchanged.
      *
      * @param watchId      watch identifier
      * @param <T>          watched payload type
      * @param subscription watch subscription
      * @param event        emitted event
-     * @param sequenceKey  logical stream key used for ordered sequencing
      */
-    private <T> void dispatch(String watchId, WatchSubscription<T> subscription, Watch<T> event, String sequenceKey) {
+    private <T> void dispatch(String watchId, WatchSubscription<T> subscription, Watch<T> event) {
         synchronized (subscription) {
-            long sequence = nextSequence(partitionKey(subscription.getTenant_id()) + Symbol.COLON + sequenceKey);
+            long sequence = nextSequence(partitionKey(subscription.getTenant_id()) + ":watch");
             event.setPreviousSequence(subscription.getLastSequence());
             subscription.setLastSequence(sequence);
             event.setSequence(sequence);

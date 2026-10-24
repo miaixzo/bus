@@ -95,8 +95,8 @@ public final class ReleasePublisher {
         Rollout intent = rollouts.beginPublication(context, rollout, edition, current.getChecksum());
         if (intent.getPublication() == null || !context.tenant().equals(intent.getTenant_id())
                 || !rollout.equals(intent.getId()) || !Objects.equals(current.getChecksum(), intent.getChecksum())
-                || !(Rollout.State.PUBLISHING.name().equals(intent.getState())
-                        || Rollout.State.PUBLISHED.name().equals(intent.getState())))
+                || !(Objects.equals(Rollout.State.PUBLISHING.key(), intent.getStatus())
+                        || Objects.equals(Rollout.State.PUBLISHED.key(), intent.getStatus())))
             throw new IllegalStateException("Publication intent mismatch");
         try {
             return publications
@@ -128,22 +128,22 @@ public final class ReleasePublisher {
         Release target = releases.byId(context.tenant(), publishedRelease);
         if (target == null)
             throw new IllegalArgumentException("Published rollback target required");
-        Manifest.Document document = Manifest.decode(target);
+        ReleaseCodec.Document document = ReleaseCodec.decode(target);
         Set<String> ids = new TreeSet<>();
         document.applications().values().forEach(list -> list.forEach(b -> ids.add(b.source())));
         Map<String, Revision> snapshots = new TreeMap<>();
         for (Revision revision : revisions.findAll(context.tenant(), ids))
             snapshots.put(revision.getId(), revision);
-        Manifest.verify(target, snapshots);
+        ReleaseCodec.verify(target, snapshots);
         Rollout workflow = required(context, approvedRollout);
         Plan.Frozen frozen = Plan.frozen(workflow.getManifest());
         if (!frozen.applications().keySet().equals(document.applications().keySet()))
             throw new IllegalArgumentException("Approved rollback graph differs");
         for (var app : document.applications().entrySet()) {
             Set<String> expected = new TreeSet<>(), approved = new TreeSet<>();
-            for (Manifest.Binding binding : app.getValue())
+            for (ReleaseCodec.Binding binding : app.getValue())
                 expected.add(
-                        Manifest.definition(snapshots.get(binding.source())).key()
+                        ReleaseCodec.definition(snapshots.get(binding.source())).key()
                                 + ItemCodec.encode(ReferenceCodec.tree(binding.options())));
             for (Plan.Binding binding : frozen.applications().get(app.getKey()))
                 approved.add(binding.source() + ItemCodec.encode(ReferenceCodec.tree(binding.options())));

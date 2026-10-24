@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex.setting.watch;
 
+import java.io.Serial;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -37,10 +39,8 @@ import org.miaixz.bus.cortex.Status;
 @SuperBuilder
 public class Watch extends Tenant {
 
-    /**
-     * Runtime instance that owns the watch.
-     */
-    private String instance_id;
+    @Serial
+    private static final long serialVersionUID = 2538012983000L;
 
     /**
      * Configuration item observed by the watch.
@@ -48,9 +48,14 @@ public class Watch extends Tenant {
     private String item_id;
 
     /**
-     * Runtime session captured when the watch was established.
+     * Runtime instance that owns the watch.
      */
-    private String session;
+    private String instance_id;
+
+    /**
+     * Exact Release ID confirmed by the latest successful acknowledgement.
+     */
+    private String applied_id;
 
     /**
      * Exact Release ID currently authorized for this watch; item_id still identifies the source Item.
@@ -58,24 +63,14 @@ public class Watch extends Tenant {
     private String target_id;
 
     /**
+     * Runtime session captured when the watch was established.
+     */
+    private String session;
+
+    /**
      * Current authorized target generation.
      */
     private Long generation;
-
-    /**
-     * Highest generation with committed fetch evidence.
-     */
-    private Long fetched;
-
-    /**
-     * Highest successfully applied generation.
-     */
-    private Long applied;
-
-    /**
-     * Exact Release ID confirmed by the latest successful acknowledgement.
-     */
-    private String applied_id;
 
     /**
      * Database timestamp of the latest acknowledgement.
@@ -86,6 +81,16 @@ public class Watch extends Tenant {
      * Latest redacted application error.
      */
     private String error;
+
+    /**
+     * Highest generation with committed fetch evidence.
+     */
+    private Long fetched;
+
+    /**
+     * Highest successfully applied generation.
+     */
+    private Long applied;
 
     /**
      * Creates an empty runtime-watch entity.

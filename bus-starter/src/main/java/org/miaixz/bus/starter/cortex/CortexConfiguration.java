@@ -302,7 +302,7 @@ public class CortexConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(LoggingWatchListener.class)
-    @ConditionalOnProperty(prefix = "bus.cortex.watch", name = "enabled", havingValue = "true")
+    @ConditionalOnProperty(prefix = "bus.cortex.watch", name = "logging-enabled", havingValue = "true")
     public LoggingWatchListener loggingWatchListener(WatchManager watchManager) {
         LoggingWatchListener listener = new LoggingWatchListener();
         watchManager.addGlobalListener(listener);
@@ -693,23 +693,23 @@ public class CortexConfiguration {
      * @param mcpRegistry     MCP registry
      * @param promptRegistry  prompt registry
      * @param releaseRegistry optional release registry
-     * @param curator         curator facade
+     * @param curator         optional curator provider
      * @return Cortex runtime bundle
      */
     @Bean
-    @ConditionalOnBean(Curator.class)
     @ConditionalOnMissingBean(Cortex.Runtime.class)
     public Cortex.Runtime cortexRuntime(
             ApiRegistry apiRegistry,
             McpRegistry mcpRegistry,
             PromptRegistry promptRegistry,
             ObjectProvider<ReleaseRegistry> releaseRegistry,
-            Curator curator) {
+            ObjectProvider<Curator> curator) {
+        Curator optionalCurator = curator.getIfAvailable();
         ReleaseRegistry optionalReleaseRegistry = releaseRegistry.getIfAvailable();
         if (optionalReleaseRegistry != null) {
-            return Cortex.runtime(apiRegistry, mcpRegistry, promptRegistry, optionalReleaseRegistry, curator);
+            return Cortex.runtime(apiRegistry, mcpRegistry, promptRegistry, optionalReleaseRegistry, optionalCurator);
         }
-        return Cortex.runtime(apiRegistry, mcpRegistry, promptRegistry, curator);
+        return Cortex.runtime(apiRegistry, mcpRegistry, promptRegistry, optionalCurator);
     }
 
     /**

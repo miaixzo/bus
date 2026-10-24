@@ -218,7 +218,7 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
 
     /**
      * Reads shared processes associated with the requested service coordinates. Durable stores return current shared
-     * process snapshots; cache reads obtain routes from existing ApiAssets.
+     * process snapshots; cache reads scan every page of matching ApiAssets before collecting distinct processes.
      *
      * @param tenantId registry query context
      * @param app_id   optional application filter
@@ -247,34 +247,44 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
             return List.copyOf(result.values());
         }
         Vector vector = Vector.builder().type(Type.API.key()).app_id(app_id).method(method).version(version).build();
-        for (ApiAssets service : query(vector)) {
-            if (!matches(app_id, service.getApp_id()) || !matches(method, service.getMethod())
-                    || !matches(version, service.getVersion())) {
-                continue;
+        while (true) {
+            List<ApiAssets> services = query(vector);
+            if (services.isEmpty()) {
+                break;
             }
-            String prefix = keying.prefix(
-                    Keying.RegistrySpec
-                            .instance(null, service.getApp_id(), service.getMethod(), service.getVersion(), null));
-            Map<String, Object> raw = cacheX.scan(prefix);
-            if (raw == null) {
-                continue;
-            }
-            for (Map.Entry<String, Object> entry : raw.entrySet()) {
-                if (entry.getValue() instanceof String json) {
-                    Instance instance = JsonKit.toPojo(json, Instance.class);
-                    requireInstance(instance, service.getApp_id());
-                    String exact = keying.key(
-                            Keying.RegistrySpec.instance(
-                                    null,
-                                    service.getApp_id(),
-                                    service.getMethod(),
-                                    service.getVersion(),
-                                    instance.getChecksum()));
-                    if (exact.equals(entry.getKey())) {
-                        result.putIfAbsent(identity(instance), instance);
+            for (ApiAssets service : services) {
+                if (!matches(app_id, service.getApp_id()) || !matches(method, service.getMethod())
+                        || !matches(version, service.getVersion())) {
+                    continue;
+                }
+                String prefix = keying.prefix(
+                        Keying.RegistrySpec
+                                .instance(null, service.getApp_id(), service.getMethod(), service.getVersion(), null));
+                Map<String, Object> raw = cacheX.scan(prefix);
+                if (raw == null) {
+                    continue;
+                }
+                for (Map.Entry<String, Object> entry : raw.entrySet()) {
+                    if (entry.getValue() instanceof String json) {
+                        Instance instance = JsonKit.toPojo(json, Instance.class);
+                        requireInstance(instance, service.getApp_id());
+                        String exact = keying.key(
+                                Keying.RegistrySpec.instance(
+                                        null,
+                                        service.getApp_id(),
+                                        service.getMethod(),
+                                        service.getVersion(),
+                                        instance.getChecksum()));
+                        if (exact.equals(entry.getKey())) {
+                            result.putIfAbsent(identity(instance), instance);
+                        }
                     }
                 }
             }
+            if (services.size() < vector.getLimit()) {
+                break;
+            }
+            vector.setOffset(Math.addExact(vector.getOffset(), services.size()));
         }
         return List.copyOf(result.values());
     }

@@ -1207,13 +1207,13 @@
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.release.Manifest$Document",
+      "type": "org.miaixz.bus.cortex.release.ReleaseCodec$Document",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.release.Manifest$Binding",
+      "type": "org.miaixz.bus.cortex.release.ReleaseCodec$Binding",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true

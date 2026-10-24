@@ -28,7 +28,7 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 
 /**
- * Read-only compatibility adapter exposing version records through the legacy registry-shaped facade.
+ * Read-only registry view of published releases; mutations belong to publication workflow services.
  *
  * @author Kimi Liu
  */
@@ -194,25 +194,6 @@ public class ReleaseRegistry implements Registry<ReleaseAssets> {
         asset.setStatus(record.getStatus());
         asset.releasedAt(record.getPublished());
         return asset;
-    }
-
-    /**
-     * Finds a release by stable-track version first, then by any matching version or asset identifier.
-     *
-     * @param tenantId release tenantId
-     * @param id       release version or asset identifier
-     * @return matching release record or {@code null}
-     */
-    private Release findByVersionOrId(String tenantId, String id) {
-        if (id == null || id.isBlank()) {
-            return null;
-        }
-        Release stable = store.find(tenantId, id, EnumValue.Track.STABLE.key());
-        if (stable != null) {
-            return stable;
-        }
-        return store.list(tenantId, null).stream()
-                .filter(record -> id.equals(record.getVersion()) || id.equals(record.getId())).findFirst().orElse(null);
     }
 
 }

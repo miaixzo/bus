@@ -64,7 +64,7 @@ public class CacheReleaseStore implements ReleaseStore {
      * @return persisted release record
      */
     @Override
-    public Release save(Release record) {
+    public synchronized Release save(Release record) {
         Release prepared = normalize(record);
         cacheX.write(
                 key(prepared.getTenant_id(), prepared.getTrack(), prepared.getVersion()),
@@ -127,7 +127,7 @@ public class CacheReleaseStore implements ReleaseStore {
     }
 
     /**
-     * Deletes a release record from the cache.
+     * Deletes a release record and its identity index only when the index still targets the same version and track.
      *
      * @param tenantId release tenantId
      * @param version  release version
@@ -135,10 +135,16 @@ public class CacheReleaseStore implements ReleaseStore {
      * @return deleted release record or {@code null}
      */
     @Override
-    public Release delete(String tenantId, String version, String track) {
+    public synchronized Release delete(String tenantId, String version, String track) {
         String currentVersion = currentVersion(tenantId, track);
         Release existing = find(tenantId, version, track);
+        Release indexed = existing == null || existing.getId() == null ? null
+                : byId(CortexIdentity.tenantId(tenantId), existing.getId());
         cacheX.remove(key(tenantId, track, version));
+        if (indexed != null && Objects.equals(indexed.getVersion(), version)
+                && Objects.equals(EnumValue.Track.normalize(indexed.getTrack()), EnumValue.Track.normalize(track))) {
+            cacheX.remove(PREFIX + "identity:" + segment(indexed.getTenant_id()) + segment(indexed.getId()));
+        }
         if (Objects.equals(currentVersion, version)) {
             cacheX.remove(currentKey(tenantId, track));
         }

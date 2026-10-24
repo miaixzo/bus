@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex.setting.approval;
 
+import java.io.Serial;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -34,6 +36,9 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 @Setter
 @SuperBuilder
 public class Approval extends Tenant {
+
+    @Serial
+    private static final long serialVersionUID = 2536995338000L;
 
     /**
      * Identifier of the publication workflow under review.
