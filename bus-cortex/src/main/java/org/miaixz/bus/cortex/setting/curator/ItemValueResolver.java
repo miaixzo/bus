@@ -73,6 +73,7 @@ public class ItemValueResolver {
 
     /**
      * Resolves a previously selected immutable snapshot; this method never performs gray routing.
+     *
      * @param entry already selected snapshot, or null
      * @return resolved content, or null when no value is available
      */
@@ -85,17 +86,18 @@ public class ItemValueResolver {
      * validation; ordinary sources retain existing adapter and decryption behavior. This method does not perform gray
      * routing.
      *
-     * @param entry setting entry or already selected snapshot; null is handled as documented
+     * @param entry   setting entry or already selected snapshot; null is handled as documented
      * @param context authenticated caller identity and absolute request deadline; never populated from an untrusted
      *                reference
      * @return resolved string, configured fallback where applicable, or null when no value is available
      * @throws org.miaixz.bus.core.lang.exception.ForbiddenException if access is denied or the supplied credential
      *                                                               representation is not permitted
-     * @throws org.miaixz.bus.core.lang.exception.CryptoException if the deadline, lifecycle, backend or payload
+     * @throws org.miaixz.bus.core.lang.exception.CryptoException    if the deadline, lifecycle, backend or payload
      *                                                               checks fail; inspect the exception type;
      *                                                               diagnostics are deliberately sanitized
-     * @throws IllegalArgumentException if source metadata fails adapter validation
-     * @throws IllegalStateException if encrypted content requires a protecting codec but none is configured
+     * @throws IllegalArgumentException                              if source metadata fails adapter validation
+     * @throws IllegalStateException                                 if encrypted content requires a protecting codec
+     *                                                               but none is configured
      */
     public String resolve(Item entry, SecretContext context) {
         if (entry == null) {
@@ -129,7 +131,7 @@ public class ItemValueResolver {
      * @param entry setting entry requesting resolution
      * @return matching source adapter
      * @throws IllegalArgumentException if no adapter is registered for the source
-     * @throws IllegalStateException if the registered adapter cannot resolve the item
+     * @throws IllegalStateException    if the registered adapter cannot resolve the item
      */
     private ItemSourceAdapter adapter(Item entry) {
         String type = valueOrInline(entry.getSource());

@@ -57,7 +57,7 @@ public class ThymeleafProvider implements TemplateProvider {
      */
     public ThymeleafProvider() {
         // Check if the library is introduced when loading via SPI
-        Assert.notNull(org.thymeleaf.TemplateEngine.class);
+        Assert.notNull(TemplateEngine.class);
     }
 
     /**

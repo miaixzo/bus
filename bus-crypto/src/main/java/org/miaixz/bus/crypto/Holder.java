@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.crypto;
 
+import java.security.Provider;
+import java.security.Security;
+
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.crypto.nimble.BouncyCastleProvider;
 import org.miaixz.bus.logger.Logger;
@@ -48,7 +51,7 @@ public class Holder implements org.miaixz.bus.core.Holder {
      * The globally held {@link java.security.Provider} instance, initialized via SPI. If no custom provider is found or
      * configured, this might be {@code null}.
      */
-    private static final java.security.Provider provider = _createProvider();
+    private static final Provider provider = _createProvider();
 
     /**
      * Flag indicating whether to use the custom {@link java.security.Provider}. Defaults to {@code true}.
@@ -67,7 +70,7 @@ public class Holder implements org.miaixz.bus.core.Holder {
      *
      * @return The {@link java.security.Provider} instance, or {@code null} if not using a custom provider.
      */
-    public static java.security.Provider getProvider() {
+    public static Provider getProvider() {
         return useCustomProvider ? provider : null;
     }
 
@@ -90,8 +93,8 @@ public class Holder implements org.miaixz.bus.core.Holder {
      * @return A {@link java.security.Provider} instance if found and created, otherwise {@code null} (indicating that
      *         the JDK's default JCE providers will be used).
      */
-    private static java.security.Provider _createProvider() {
-        final java.security.Provider registered = java.security.Security.getProvider(BOUNCY_CASTLE_PROVIDER_NAME);
+    private static Provider _createProvider() {
+        final Provider registered = Security.getProvider(BOUNCY_CASTLE_PROVIDER_NAME);
         if (null != registered) {
             Logger.info(
                     false,
@@ -114,7 +117,7 @@ public class Holder implements org.miaixz.bus.core.Holder {
             return null;
         }
 
-        final java.security.Provider provider = factory.create();
+        final Provider provider = factory.create();
         Builder.addProvider(provider);
         Logger.info(
                 false,

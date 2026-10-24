@@ -204,13 +204,13 @@ public class DefaultRegistryBatchExecutor implements RegistryBatchExecutor {
     /**
      * Applies one normalized batch entry.
      *
-     * @param operation batch operation
-     * @param entry normalized registry asset
-     * @param result aggregate batch result
+     * @param operation  batch operation
+     * @param entry      normalized registry asset
+     * @param result     aggregate batch result
      * @param operations registry operations
-     * @param lookup optional preloaded lookup
+     * @param lookup     optional preloaded lookup
      * @throws IllegalArgumentException if the operation type is absent
-     * @throws IllegalStateException if an existing entry conflicts with the FAIL_FAST policy
+     * @throws IllegalStateException    if an existing entry conflicts with the FAIL_FAST policy
      */
     private void applyBatchEntry(
             BatchOperation operation,

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.tempus.temporal.workflow.publisher;
 
+import java.io.IOException;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -264,7 +266,7 @@ public class WorkflowPublisherManager implements Publisher {
                             || msg.contains("connection reset") || msg.contains("connection refused"))) {
                 return true;
             }
-            if (current instanceof java.io.IOException) {
+            if (current instanceof IOException) {
                 return true;
             }
             current = current.getCause();

@@ -20,6 +20,7 @@
 package org.miaixz.bus.core.io.source;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -85,7 +86,7 @@ public class ChannelSource implements Source {
         timeout.throwIfReached();
         Segment tail = sink.writableSegment(1);
         int maxToCopy = (int) Math.min(byteCount, Segment.SIZE - tail.limit);
-        java.nio.ByteBuffer target = java.nio.ByteBuffer.wrap(tail.data, tail.limit, maxToCopy);
+        ByteBuffer target = ByteBuffer.wrap(tail.data, tail.limit, maxToCopy);
         int bytesRead = channel.read(target);
         if (bytesRead == 0) {
             if (tail.pos == tail.limit) {

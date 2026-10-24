@@ -24,6 +24,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.ThreadMXBean;
 import java.util.List;
+import java.util.function.LongSupplier;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
@@ -117,7 +118,7 @@ public class JvmMetrics implements MetricBinder {
             Provider provider,
             String name,
             String unit,
-            java.util.function.LongSupplier supplier) {
+            LongSupplier supplier) {
         group.add(
                 provider.registerObservable(
                         descriptor(name, InstrumentKind.GAUGE, NumberKind.DOUBLE, unit, List.of()),

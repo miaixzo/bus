@@ -66,7 +66,7 @@ public class CacheRevisionStore implements RevisionStore {
      * Creates a store with an authoritative reference, release, gray, and watch reachability check. The host must
      * serialize reachability changes with pruning. This cache adapter is not a distributed transaction.
      *
-     * @param cacheX required revision cache
+     * @param cacheX            required revision cache
      * @param protectedRevision required predicate returning true for snapshots that must be retained
      * @throws IllegalArgumentException if the cache or revision-reachability policy is absent
      */
@@ -87,7 +87,7 @@ public class CacheRevisionStore implements RevisionStore {
      * @param revision revision to append
      * @return appended revision
      * @throws IllegalArgumentException if the revision or its coordinates are invalid
-     * @throws IllegalStateException if the immutable revision already exists
+     * @throws IllegalStateException    if the immutable revision already exists
      */
     @Override
     public Revision save(Revision revision) {
@@ -108,8 +108,8 @@ public class CacheRevisionStore implements RevisionStore {
      * Finds one revision by tenant, item, and revision number.
      *
      * @param tenant_id mandatory tenant identifier
-     * @param item_id item identifier
-     * @param revision item-scoped revision number
+     * @param item_id   item identifier
+     * @param revision  item-scoped revision number
      * @return matching revision, or {@code null} when absent
      * @throws IllegalStateException if cached data belongs to different revision coordinates
      */
@@ -135,7 +135,7 @@ public class CacheRevisionStore implements RevisionStore {
      * Lists revisions for one item in newest-first order.
      *
      * @param tenant_id mandatory tenant identifier
-     * @param item_id item identifier
+     * @param item_id   item identifier
      * @return immutable revisions
      * @throws IllegalStateException if indexed data belongs to different revision coordinates
      */
@@ -164,8 +164,8 @@ public class CacheRevisionStore implements RevisionStore {
     /**
      * Removes unreachable revisions beyond the newest-revision retention boundary.
      *
-     * @param tenant_id mandatory tenant identifier
-     * @param item_id item identifier
+     * @param tenant_id    mandatory tenant identifier
+     * @param item_id      item identifier
      * @param maxRevisions maximum number of newest revisions to retain
      * @throws IllegalArgumentException if maxRevisions is not positive
      */

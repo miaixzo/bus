@@ -54,7 +54,7 @@ public class BlobStringer implements FunctionX<Object, String> {
      * @return The String representation of the Blob.
      * @throws ConvertException if a {@link SQLException} occurs.
      */
-    private static String toString(final java.sql.Blob blob) {
+    private static String toString(final Blob blob) {
         InputStream in = null;
         try {
             in = blob.getBinaryStream();

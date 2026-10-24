@@ -21,6 +21,7 @@ package org.miaixz.bus.core.center.map;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -363,7 +364,7 @@ public class IntHashMap<V> implements Cloneable, Serializable {
      * @param s The {@link java.io.ObjectOutputStream} to write to.
      * @throws java.io.IOException if an I/O error occurs.
      */
-    private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
+    private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
 
         byte[] states = this.states;

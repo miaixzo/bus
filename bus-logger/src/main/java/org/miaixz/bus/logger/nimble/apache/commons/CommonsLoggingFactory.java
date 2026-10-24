@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.logger.nimble.apache.commons;
 
+import org.apache.commons.logging.LogFactory;
+
 import org.miaixz.bus.logger.Provider;
 import org.miaixz.bus.logger.magic.AbstractFactory;
 
@@ -36,7 +38,7 @@ public class CommonsLoggingFactory extends AbstractFactory {
      */
     public CommonsLoggingFactory() {
         super("org.apache.commons.logging.Log");
-        exists(org.apache.commons.logging.LogFactory.class);
+        exists(LogFactory.class);
     }
 
     /**

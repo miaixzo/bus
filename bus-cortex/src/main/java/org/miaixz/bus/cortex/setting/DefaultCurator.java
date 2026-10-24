@@ -73,7 +73,13 @@ public class DefaultCurator implements Curator {
     }
 
     /**
-     * {@inheritDoc}
+     * Resolves an authorized, visible item, consulting an available runtime overlay when requested. If no overlay is
+     * found, resolution delegates to the item curation service. A disallowed scope or missing visible item yields the
+     * prepared query's fallback value.
+     *
+     * @param query query to validate and prepare
+     * @return resolved content or the prepared query's fallback; {@code null} when preparation returns null
+     * @throws IllegalArgumentException if query validation rejects its tenant or ownership scope
      */
     @Override
     public String get(ItemQuery query) {
@@ -95,7 +101,11 @@ public class DefaultCurator implements Curator {
     }
 
     /**
-     * {@inheritDoc}
+     * Validates and authorizes an item, then delegates staging of its content to the item curation service. Staging
+     * does not activate the content for live delivery.
+     *
+     * @param item item containing the coordinates, metadata, and content to stage
+     * @throws IllegalArgumentException if item coordinates or business validation are invalid
      */
     @Override
     public void publish(Item item) {
@@ -103,7 +113,11 @@ public class DefaultCurator implements Curator {
     }
 
     /**
-     * {@inheritDoc}
+     * Authorizes a rollback and delegates staging of content from an immutable historical revision. The staged content
+     * requires activation before live delivery; an unavailable revision produces no result.
+     *
+     * @param coordinates item coordinates identifying the rollback target
+     * @param revision    historical revision identifier whose content is to be staged
      */
     @Override
     public void rollback(Item coordinates, String revision) {
@@ -111,7 +125,14 @@ public class DefaultCurator implements Curator {
     }
 
     /**
-     * {@inheritDoc}
+     * Authorizes a coordinate lookup and registers a configuration change subscription. The item need not exist at
+     * registration time. Added and updated values are forwarded individually; a removal event invokes the listener once
+     * with {@code null}.
+     *
+     * @param coordinates tenant-qualified item coordinates to observe
+     * @param listener    callback accepting changed content or {@code null} on removal; must not be null
+     * @return identifier assigned to the registered subscription
+     * @throws IllegalStateException if the watch manager is closed or a subscription limit is reached
      */
     @Override
     public String watch(Item coordinates, ConsumerX<String> listener) {
@@ -135,7 +156,11 @@ public class DefaultCurator implements Curator {
     }
 
     /**
-     * {@inheritDoc}
+     * Removes a configuration change subscription and releases its tenant subscription count. An unknown identifier has
+     * no effect.
+     *
+     * @param watch_id identifier returned when the subscription was registered
+     * @throws NullPointerException if {@code watch_id} is {@code null}
      */
     @Override
     public void unwatch(String watch_id) {

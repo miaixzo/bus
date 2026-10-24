@@ -32,6 +32,7 @@ import java.util.function.LongSupplier;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.magic.CacheExpire;
+import org.miaixz.bus.core.cache.CacheListener;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -57,7 +58,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
      * Optional ordinary-cache removal callback. It is configured before use and must not throw or reenter this cache.
      * Atomic mode deliberately excludes callbacks because take operations transfer value ownership to the caller.
      */
-    private org.miaixz.bus.core.cache.CacheListener<K, V> removalListener;
+    private CacheListener<K, V> removalListener;
 
     /**
      * Installs one synchronous removal listener before the cache is shared with readers or writers. The listener
@@ -67,9 +68,9 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
      * @param listener non-null callback; it must not throw, block indefinitely, or modify this cache
      * @return this cache for configuration chaining
      * @throws IllegalStateException if atomic mode is active or a listener has already been installed
-     * @throws NullPointerException if listener is null
+     * @throws NullPointerException  if listener is null
      */
-    public MemoryCache<K, V> setRemovalListener(org.miaixz.bus.core.cache.CacheListener<K, V> listener) {
+    public MemoryCache<K, V> setRemovalListener(CacheListener<K, V> listener) {
         if (atomicMode || removalListener != null) {
             throw new IllegalStateException("A removal listener requires an unconfigured ordinary cache");
         }
@@ -81,7 +82,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
      * Delivers a removed entry to its optional listener. Callers invoke this only after winning physical removal or
      * replacement, so a racing expiration or capacity sweep cannot notify for the same entry twice.
      *
-     * @param key removed entry key
+     * @param key   removed entry key
      * @param entry removed entry, or null when no mapping existed
      */
     private void removed(K key, Entry<V> entry) {
@@ -856,9 +857,10 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     /**
      * Cancels this instance's periodic maintenance task. For an ordinary cache without a removal listener, existing
      * values remain available. With a removal listener, current entries are removed and delivered to the listener;
-     * ordinary reads and writes remain permitted, so owners must exclude concurrent mutation during close. For an atomic cache, this method additionally waits for admitted
-     * atomic operations, marks the instance terminally closed, clears entries and counters, and causes later atomic
-     * operations to return failed stages. Repeated calls are safe.
+     * ordinary reads and writes remain permitted, so owners must exclude concurrent mutation during close. For an
+     * atomic cache, this method additionally waits for admitted atomic operations, marks the instance terminally
+     * closed, clears entries and counters, and causes later atomic operations to return failed stages. Repeated calls
+     * are safe.
      */
     @Override
     public void close() {

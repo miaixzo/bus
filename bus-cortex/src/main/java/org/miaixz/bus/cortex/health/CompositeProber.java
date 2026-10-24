@@ -40,19 +40,21 @@ public class CompositeProber implements Prober {
     /**
      * Stores the delegate list by reference; later caller changes affect subsequent probes.
      *
-     * @param checkers required ordered list; null delegate elements are skipped by check, but the list itself is not validated or copied
+     * @param checkers required ordered list; null delegate elements are skipped by check, but the list itself is not
+     *                 validated or copied
      */
     public CompositeProber(List<Prober> checkers) {
         this.checkers = checkers;
     }
 
     /**
-     * Runs supporting, non-null delegates in order and returns the first unhealthy result.
-     * No matching delegates, including an empty list, yields success with zero latency. Delegate exceptions are not caught.
+     * Runs supporting, non-null delegates in order and returns the first unhealthy result. No matching delegates,
+     * including an empty list, yields success with zero latency. Delegate exceptions are not caught.
      *
      * @param instance instance passed to each delegate's supports method
      * @return first unhealthy delegate result, otherwise success with the maximum observed latency
-     * @throws NullPointerException if the delegate list is null, a delegate returns null, or a delegate requires a non-null instance
+     * @throws NullPointerException if the delegate list is null, a delegate returns null, or a delegate requires a
+     *                              non-null instance
      */
     @Override
     public Status check(Instance instance) {

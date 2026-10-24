@@ -86,7 +86,8 @@ public class Reference extends Tenant {
      * Validates coordinates and prevents release membership from carrying reference-only options.
      *
      * @return this validated reference
-     * @throws IllegalArgumentException if coordinates or shared-reference policies are missing, unsupported, or inconsistent
+     * @throws IllegalArgumentException if coordinates or shared-reference policies are missing, unsupported, or
+     *                                  inconsistent
      */
     public Reference validate() {
         ItemNormalizer.requireTenant(getTenant_id());

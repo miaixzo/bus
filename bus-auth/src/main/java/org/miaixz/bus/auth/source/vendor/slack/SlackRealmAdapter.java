@@ -28,6 +28,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.shared.SecretLease;
@@ -132,7 +133,7 @@ public class SlackRealmAdapter implements VendorAdapter {
                 || this.variant.protocol() != Protocol.SCIM || !SlackManifest.ID.equals(this.options.vendor())
                 || !SlackManifest.SCIM.equals(this.options.variant()) || this.options.redirectUri().isPresent()
                 || !this.options.scopes().isEmpty()
-                || this.options.credential().type() != org.miaixz.bus.auth.Credential.Type.SHARED_SECRET) {
+                || this.options.credential().type() != Credential.Type.SHARED_SECRET) {
             throw new ValidateException("Slack realm adapter requires the frozen administrator SCIM Variant");
         }
         this.services.policies().require(this.variant.protocol());

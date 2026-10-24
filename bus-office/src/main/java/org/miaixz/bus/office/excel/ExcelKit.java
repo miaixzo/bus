@@ -27,6 +27,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+
 import org.miaixz.bus.core.lang.exception.DependencyException;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -1154,12 +1157,12 @@ public class ExcelKit {
         final CellEditor cellEditor = reader.getConfig().getCellEditor();
         for (int sheetIndex = 0; sheetIndex < sheetCount; sheetIndex++) {
             reader.setSheet(sheetIndex);
-            final org.apache.poi.ss.usermodel.Sheet sheet = reader.getSheet();
+            final Sheet sheet = reader.getSheet();
             final int firstRowNum = Math.max(0, sheet.getFirstRowNum());
             final int lastRowNum = sheet.getLastRowNum();
 
             for (int rowIndexInSheet = firstRowNum; rowIndexInSheet <= lastRowNum; rowIndexInSheet++) {
-                final org.apache.poi.ss.usermodel.Row poiRow = sheet.getRow(rowIndexInSheet);
+                final Row poiRow = sheet.getRow(rowIndexInSheet);
                 if (null == poiRow) {
                     // Keep global cursor aligned with SAX mode: missing rows are not emitted.
                     continue;

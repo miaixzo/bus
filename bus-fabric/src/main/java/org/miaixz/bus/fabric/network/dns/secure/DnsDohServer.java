@@ -22,6 +22,8 @@ package org.miaixz.bus.fabric.network.dns.secure;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.util.*;
@@ -161,7 +163,7 @@ public class DnsDohServer implements AutoCloseable, Lifecycle {
     /**
      * Bound TCP server socket.
      */
-    private final java.net.ServerSocket server;
+    private final ServerSocket server;
 
     /**
      * Endpoint activity flag shared by the accept and client loops.
@@ -199,7 +201,7 @@ public class DnsDohServer implements AutoCloseable, Lifecycle {
             throw new ValidateException("DNS-over-HTTPS resolver must not be null");
         }
         this.resolver = resolver;
-        this.server = new java.net.ServerSocket();
+        this.server = new ServerSocket();
         this.server.setReuseAddress(true);
         this.server.bind(address);
         this.active = new AtomicBoolean();
@@ -759,7 +761,7 @@ public class DnsDohServer implements AutoCloseable, Lifecycle {
     private void acceptLoop() {
         while (active.get()) {
             try {
-                final java.net.Socket socket = server.accept();
+                final Socket socket = server.accept();
                 clients.add(socket);
                 final Thread thread = ThreadKit
                         .newThread(() -> clientLoop(socket), "fabric-dns-doh-client-" + server.getLocalPort(), true);
@@ -778,8 +780,8 @@ public class DnsDohServer implements AutoCloseable, Lifecycle {
      *
      * @param socket accepted client socket
      */
-    private void clientLoop(final java.net.Socket socket) {
-        try (java.net.Socket current = socket;
+    private void clientLoop(final Socket socket) {
+        try (Socket current = socket;
                 PushbackInputStream input = new PushbackInputStream(new BufferedInputStream(current.getInputStream()),
                         HTTP2_PREFACE.length);
                 OutputStream output = new BufferedOutputStream(current.getOutputStream())) {

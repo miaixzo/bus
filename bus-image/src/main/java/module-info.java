@@ -17,6 +17,24 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+
+import java.nio.file.spi.FileTypeDetector;
+
+import javax.imageio.spi.ImageWriterSpi;
+
+import org.miaixz.bus.image.galaxy.data.ElementDictionary;
+import org.miaixz.bus.image.galaxy.io.GenozipFileDetector;
+import org.miaixz.bus.image.galaxy.io.ImageFileDetector;
+import org.miaixz.bus.image.nimble.opencv.NativeJ2kImageReaderSpi;
+import org.miaixz.bus.image.nimble.opencv.NativeJ2kImageWriterSpi;
+import org.miaixz.bus.image.nimble.opencv.NativeJLSImageReaderSpi;
+import org.miaixz.bus.image.nimble.opencv.NativeJLSImageWriterSpi;
+import org.miaixz.bus.image.nimble.opencv.NativeJPEGImageReaderSpi;
+import org.miaixz.bus.image.nimble.opencv.NativeJPEGImageWriterSpi;
+import org.miaixz.bus.image.nimble.opencv.NativeJXLImageReaderSpi;
+import org.miaixz.bus.image.nimble.opencv.NativeJXLImageWriterSpi;
+import org.miaixz.bus.image.nimble.reader.RLEImageioReaderSpi;
+
 /**
  * Module: {@code bus.image}
  *
@@ -411,21 +429,14 @@ module bus.image {
     exports org.miaixz.bus.image.nimble.stream;
     exports org.miaixz.bus.image.plugin;
 
-    uses org.miaixz.bus.image.galaxy.data.ElementDictionary;
+    uses ElementDictionary;
 
-    provides java.nio.file.spi.FileTypeDetector
-            with org.miaixz.bus.image.galaxy.io.GenozipFileDetector, org.miaixz.bus.image.galaxy.io.ImageFileDetector;
+    provides FileTypeDetector with GenozipFileDetector, ImageFileDetector;
 
-    provides javax.imageio.spi.ImageReaderSpi
-            with org.miaixz.bus.image.nimble.ImageReaderSpi, org.miaixz.bus.image.nimble.opencv.NativeJ2kImageReaderSpi,
-            org.miaixz.bus.image.nimble.opencv.NativeJLSImageReaderSpi,
-            org.miaixz.bus.image.nimble.opencv.NativeJPEGImageReaderSpi,
-            org.miaixz.bus.image.nimble.opencv.NativeJXLImageReaderSpi,
-            org.miaixz.bus.image.nimble.reader.RLEImageioReaderSpi;
+    provides javax.imageio.spi.ImageReaderSpi with org.miaixz.bus.image.nimble.ImageReaderSpi, NativeJ2kImageReaderSpi,
+            NativeJLSImageReaderSpi, NativeJPEGImageReaderSpi, NativeJXLImageReaderSpi, RLEImageioReaderSpi;
 
-    provides javax.imageio.spi.ImageWriterSpi with org.miaixz.bus.image.nimble.opencv.NativeJ2kImageWriterSpi,
-            org.miaixz.bus.image.nimble.opencv.NativeJLSImageWriterSpi,
-            org.miaixz.bus.image.nimble.opencv.NativeJPEGImageWriterSpi,
-            org.miaixz.bus.image.nimble.opencv.NativeJXLImageWriterSpi;
+    provides ImageWriterSpi
+            with NativeJ2kImageWriterSpi, NativeJLSImageWriterSpi, NativeJPEGImageWriterSpi, NativeJXLImageWriterSpi;
 
 }

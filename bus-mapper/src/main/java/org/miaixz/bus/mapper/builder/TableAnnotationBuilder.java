@@ -22,6 +22,7 @@ package org.miaixz.bus.mapper.builder;
 import java.util.Arrays;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -96,7 +97,7 @@ public class TableAnnotationBuilder implements TableSchemaBuilder {
             if (StringKit.isNotEmpty(table.comment())) {
                 tableMeta.comment(table.comment());
             }
-            for (jakarta.persistence.Index index : table.indexes()) {
+            for (Index index : table.indexes()) {
                 String[] columns = splitColumns(index.columnList());
                 if (columns.length == 0) {
                     continue;

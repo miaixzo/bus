@@ -52,8 +52,9 @@ public final class ItemMerger {
      * @param maximumDepth existing structural depth bound
      * @param maximumSteps existing node/work bound
      * @return immutable value, provenance, metadata and path-only findings
-     * @throws NullPointerException if input is null
-     * @throws IllegalArgumentException if structural bounds, schema-definition syntax or merge preconditions are invalid; ordinary validation findings are returned
+     * @throws NullPointerException     if input is null
+     * @throws IllegalArgumentException if structural bounds, schema-definition syntax or merge preconditions are
+     *                                  invalid; ordinary validation findings are returned
      */
     public static Result merge(Input input, int maximumDepth, long maximumSteps) {
         Objects.requireNonNull(input);
@@ -72,19 +73,21 @@ public final class ItemMerger {
     }
 
     /**
-     * Carries one plaintext source whose identity and revision semantics must already be authorized and resolved by its host service.
-     * @param item_id immutable source owner
+     * Carries one plaintext source whose identity and revision semantics must already be authorized and resolved by its
+     * host service.
+     *
+     * @param item_id     immutable source owner
      * @param revision_id host-supplied exact source revision; this constructor only checks that it is nonblank
-     * @param value parsed source value
-     * @param extension parsed source metadata, or null
-     * @param schema optional source schema
+     * @param value       parsed source value
+     * @param extension   parsed source metadata, or null
+     * @param schema      optional source schema
      * @author Kimi Liu
      */
     public record Source(String item_id, String revision_id, JsonValue value, JsonValue extension, JsonValue schema) {
 
         /**
-         * Requires nonblank source and revision identifiers and a non-null value. The host, not this constructor,
-         * must resolve and authorize immutable revision identity.
+         * Requires nonblank source and revision identifiers and a non-null value. The host, not this constructor, must
+         * resolve and authorize immutable revision identity.
          *
          * @param item_id     source owner
          * @param revision_id nonblank revision identifier supplied by the host
@@ -102,12 +105,13 @@ public final class ItemMerger {
 
     /**
      * Supplies the existing shared-reference options and the optional application override source.
-     * @param shared optional shared source
+     *
+     * @param shared      optional shared source
      * @param application optional application source
-     * @param overlay optional reference-local object overlay, in unprefixed source coordinates
-     * @param prefix optional root member name; trimmed, defaulted to empty, and limited to 255 code points
-     * @param override case-sensitive NONE, KEYS or ALL policy, defaulting to NONE
-     * @param keys non-root JSON Pointers, frozen as a sorted set; nonempty exactly when the mode is KEYS
+     * @param overlay     optional reference-local object overlay, in unprefixed source coordinates
+     * @param prefix      optional root member name; trimmed, defaulted to empty, and limited to 255 code points
+     * @param override    case-sensitive NONE, KEYS or ALL policy, defaulting to NONE
+     * @param keys        non-root JSON Pointers, frozen as a sorted set; nonempty exactly when the mode is KEYS
      * @author Kimi Liu
      */
     public record Input(Source shared, Source application, JsonValue.ObjectValue overlay, String prefix,
@@ -121,9 +125,11 @@ public final class ItemMerger {
          * @param overlay     optional object overlay
          * @param prefix      root member name, trimmed and limited to 255 code points; null becomes empty
          * @param override    case-sensitive NONE, KEYS or ALL; null becomes NONE
-         * @param keys        frozen sorted non-root JSON Pointers; null becomes empty, and the set must be nonempty exactly for KEYS
-         * @throws IllegalArgumentException if both sources are absent, options or pointers are invalid, or shared-only options lack a shared source
-         * @throws NullPointerException if keys contains a null element
+         * @param keys        frozen sorted non-root JSON Pointers; null becomes empty, and the set must be nonempty
+         *                    exactly for KEYS
+         * @throws IllegalArgumentException if both sources are absent, options or pointers are invalid, or shared-only
+         *                                  options lack a shared source
+         * @throws NullPointerException     if keys contains a null element
          */
         public Input {
             if (shared == null && application == null)

@@ -64,7 +64,8 @@ public final class SecretSourceAdapter implements ItemSourceAdapter {
     }
 
     /**
-     * Recognizes the trimmed, case-insensitive SECRET source without validating the descriptor or checking authorization.
+     * Recognizes the trimmed, case-insensitive SECRET source without validating the descriptor or checking
+     * authorization.
      *
      * @param entry item to inspect, or null
      * @return true only when entry is non-null and its source discriminator is SECRET
@@ -75,11 +76,12 @@ public final class SecretSourceAdapter implements ItemSourceAdapter {
     }
 
     /**
-     * Checks the reference-only SECRET restrictions and parses the descriptor without backend access.
-     * Unchecked contract failures, including a null entry, are converted to false.
+     * Checks the reference-only SECRET restrictions and parses the descriptor without backend access. Unchecked
+     * contract failures, including a null entry, are converted to false.
      *
      * @param entry item to validate, or null
-     * @return true only for a SECRET item with protected category, no inline content, no enabled encryption and a valid descriptor
+     * @return true only for a SECRET item with protected category, no inline content, no enabled encryption and a valid
+     *         descriptor
      */
     @Override
     public boolean validate(Item entry) {
@@ -107,12 +109,14 @@ public final class SecretSourceAdapter implements ItemSourceAdapter {
      * Requires matching tenant and, when present on the item, application identity before resolving the reference.
      * Returned material and temporary character copies are closed or erased; the returned Java string cannot be erased.
      *
-     * @param entry non-null reference-only SECRET item
+     * @param entry   non-null reference-only SECRET item
      * @param context non-null trusted identity and absolute deadline
      * @return resolved runtime value as a Java string
-     * @throws NullPointerException if entry or context is null
-     * @throws org.miaixz.bus.core.lang.exception.ForbiddenException if tenant/application identity or the manager's access policy denies access
-     * @throws org.miaixz.bus.core.lang.exception.CryptoException if descriptor, deadline, lifecycle, backend or payload validation fails
+     * @throws NullPointerException                                  if entry or context is null
+     * @throws org.miaixz.bus.core.lang.exception.ForbiddenException if tenant/application identity or the manager's
+     *                                                               access policy denies access
+     * @throws org.miaixz.bus.core.lang.exception.CryptoException    if descriptor, deadline, lifecycle, backend or
+     *                                                               payload validation fails
      */
     @Override
     public String resolve(Item entry, SecretContext context) {

@@ -22,6 +22,8 @@ package org.miaixz.bus.extra.nlp.provider.word;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apdplat.word.segmentation.Word;
+
 import org.miaixz.bus.extra.nlp.NLPResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
 
@@ -38,7 +40,7 @@ public class WordResult implements NLPResult {
     /**
      * The iterator over the Word library's {@link org.apdplat.word.segmentation.Word} objects.
      */
-    private final Iterator<org.apdplat.word.segmentation.Word> wordIter;
+    private final Iterator<Word> wordIter;
 
     /**
      * Constructs a {@code WordResult} instance by wrapping a list of segmentation results from the Word library.
@@ -46,7 +48,7 @@ public class WordResult implements NLPResult {
      * @param result A {@link List} of {@link org.apdplat.word.segmentation.Word} objects obtained from Word
      *               segmentation.
      */
-    public WordResult(final List<org.apdplat.word.segmentation.Word> result) {
+    public WordResult(final List<Word> result) {
         this.wordIter = result.iterator();
     }
 

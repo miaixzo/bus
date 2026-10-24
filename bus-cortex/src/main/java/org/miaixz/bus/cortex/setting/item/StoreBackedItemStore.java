@@ -67,10 +67,10 @@ public class StoreBackedItemStore {
     /**
      * Creates a read-through item store with an explicit key strategy.
      *
-     * @param cacheX item cache
-     * @param store durable item store
+     * @param cacheX         item cache
+     * @param store          durable item store
      * @param referenceStore relationship store
-     * @param keying setting-domain key strategy
+     * @param keying         setting-domain key strategy
      * @throws IllegalArgumentException if the cache, persistent item store, or reference store is absent
      */
     public StoreBackedItemStore(CacheX<String, Object> cacheX, ItemStore store, ReferenceStore referenceStore,
@@ -118,7 +118,7 @@ public class StoreBackedItemStore {
      * Deletes and evicts one tenant-owned item by identifier.
      *
      * @param tenant_id tenant identifier
-     * @param id item identifier
+     * @param id        item identifier
      * @return deleted item, or {@code null} when absent
      * @throws IllegalStateException if the store returns an item belonging to another tenant
      */
@@ -159,6 +159,7 @@ public class StoreBackedItemStore {
     /**
      * Queries application-owned items and referenced shared items. Persistent implementations must filter by tenant and
      * retain shared candidates when filtering by application.
+     *
      * @param query tenant-qualified item query, or null
      * @return matching visible detached items, or an empty list
      */
@@ -271,7 +272,8 @@ public class StoreBackedItemStore {
 
     /**
      * Checks ownership for application items and reference-based visibility for shared items.
-     * @param item item with valid tenant and ownership coordinates
+     *
+     * @param item   item with valid tenant and ownership coordinates
      * @param app_id requesting application; null or blank leaves application filtering unrestricted
      * @return true when ownership or an active shared reference allows visibility
      */

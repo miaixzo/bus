@@ -62,6 +62,7 @@ public final class ItemNormalizer {
     /**
      * Validates persisted setting restrictions and parses its backend reference. SECRET items cannot contain inline
      * plaintext, encrypted payloads or a category other than Item.Type.SECRET. This method performs no backend access.
+     *
      * @param item reference-only SECRET item
      * @return validated backend reference retaining the existing JSON descriptor format
      * @throws CryptoException if item restrictions or descriptor validation fail
@@ -236,6 +237,7 @@ public final class ItemNormalizer {
 
     /**
      * Encodes an identity segment without delimiter ambiguity.
+     *
      * @param value nullable coordinate segment
      * @return dash for null, otherwise length-prefixed text
      */

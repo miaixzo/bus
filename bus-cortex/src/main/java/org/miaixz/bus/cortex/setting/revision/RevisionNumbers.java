@@ -37,8 +37,8 @@ public class RevisionNumbers {
     }
 
     /**
-     * Increments the parsed revision using signed-long arithmetic, starting at 1 for null or empty input.
-     * This method does not detect overflow: Long.MAX_VALUE wraps to Long.MIN_VALUE.
+     * Increments the parsed revision using signed-long arithmetic, starting at 1 for null or empty input. This method
+     * does not detect overflow: Long.MAX_VALUE wraps to Long.MIN_VALUE.
      *
      * @param current signed-long revision text, or null or empty to start at 1
      * @return incremented revision in decimal form
@@ -50,8 +50,8 @@ public class RevisionNumbers {
     }
 
     /**
-     * Parses a signed-long revision after trimming. Only Java null or the empty string denotes absence;
-     * whitespace-only text is invalid. Signed and negative values are accepted within the long range.
+     * Parses a signed-long revision after trimming. Only Java null or the empty string denotes absence; whitespace-only
+     * text is invalid. Signed and negative values are accepted within the long range.
      *
      * @param revision revision text, possibly null or empty
      * @return parsed revision, or null only for null or empty input
@@ -78,6 +78,7 @@ public class RevisionNumbers {
 
     /**
      * Converts one revision text to a required numeric value.
+     *
      * @param revision required revision text; surrounding whitespace is trimmed, but whitespace-only input is invalid
      * @return numeric revision
      * @throws IllegalArgumentException if the revision is absent or not a signed-long integer
@@ -102,6 +103,7 @@ public class RevisionNumbers {
 
     /**
      * Converts one revision text to a sortable numeric key.
+     *
      * @param revision revision text
      * @return parsed signed-long value, with null or empty input mapped to zero
      * @throws IllegalArgumentException if nonempty input, after trimming, is not a signed-long integer

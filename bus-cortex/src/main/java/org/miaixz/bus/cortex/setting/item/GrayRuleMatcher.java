@@ -70,7 +70,8 @@ public class GrayRuleMatcher {
 
     /**
      * Matches only trusted instance identity; request headers and user identity cannot select client configurations.
-     * @param rule gray selector to validate and match
+     *
+     * @param rule     gray selector to validate and match
      * @param instance trusted instance identity and labels
      * @return true when the validated rule matches the instance context
      */
@@ -90,6 +91,7 @@ public class GrayRuleMatcher {
 
     /**
      * Validates an ordered IPv4 selector without normalizing invalid ranges.
+     *
      * @param range IPv4 start and end addresses separated by a hyphen
      * @return true when both addresses are valid and the end is not before the start
      */

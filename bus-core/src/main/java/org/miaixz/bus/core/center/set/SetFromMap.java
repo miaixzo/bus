@@ -280,7 +280,7 @@ public class SetFromMap<E> extends AbstractSet<E> implements Serializable {
      * @throws IOException            if an I/O error occurs during deserialization.
      * @throws ClassNotFoundException if the class of a serialized object could not be found.
      */
-    private void readObject(final java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
         set = map.keySet();
     }

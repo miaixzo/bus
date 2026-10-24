@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -432,7 +433,7 @@ public class BigExcelReader implements AutoCloseable {
                     final long rowIndex,
                     final int cellIndex,
                     final Object value,
-                    final org.apache.poi.ss.usermodel.CellStyle xssfCellStyle) {
+                    final CellStyle xssfCellStyle) {
                 if (null != rowHandler) {
                     rowHandler.handleCell(sheetIndex, rowIndex, cellIndex, value, xssfCellStyle);
                 }

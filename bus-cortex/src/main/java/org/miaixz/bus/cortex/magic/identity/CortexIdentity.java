@@ -62,7 +62,7 @@ public class CortexIdentity {
      * Rejects a payload outside the explicitly selected tenant.
      *
      * @param expected tenant required by the caller
-     * @param actual tenant carried by the returned or supplied entity
+     * @param actual   tenant carried by the returned or supplied entity
      * @throws IllegalArgumentException if tenant identifiers are missing or do not match
      */
     public static void requireTenant(String expected, String actual) {

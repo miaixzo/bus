@@ -19,6 +19,7 @@
 */
 package org.opencv.imgproc;
 
+import org.opencv.core.CleanableMat;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
 
@@ -44,7 +45,7 @@ public class FontFace {
     protected FontFace(long addr) {
         nativeObj = addr;
         long nativeObjCopy = nativeObj;
-        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
+        CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
     /**
@@ -53,7 +54,7 @@ public class FontFace {
     public FontFace() {
         nativeObj = FontFace_0();
         long nativeObjCopy = nativeObj;
-        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
+        CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
     /**
@@ -65,7 +66,7 @@ public class FontFace {
     public FontFace(String fontPathOrName) {
         nativeObj = FontFace_1(fontPathOrName);
         long nativeObjCopy = nativeObj;
-        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
+        CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
     //

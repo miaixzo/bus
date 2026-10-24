@@ -19,6 +19,8 @@
 */
 package org.opencv.geometry;
 
+import org.opencv.core.CleanableMat;
+
 // C++: class MSTEdge
 
 /**
@@ -41,7 +43,7 @@ public class MSTEdge {
     protected MSTEdge(long addr) {
         nativeObj = addr;
         long nativeObjCopy = nativeObj;
-        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
+        CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
     // internal usage only

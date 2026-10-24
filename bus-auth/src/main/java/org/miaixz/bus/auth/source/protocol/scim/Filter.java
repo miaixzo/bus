@@ -20,6 +20,7 @@
 package org.miaixz.bus.auth.source.protocol.scim;
 
 import java.math.BigDecimal;
+import java.net.URI;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
@@ -313,7 +314,7 @@ public interface Filter {
          */
         private static void validateSchema(final String value) {
             try {
-                if (!java.net.URI.create(Assert.notBlank(value, "SCIM attribute path schema URI must not be blank"))
+                if (!URI.create(Assert.notBlank(value, "SCIM attribute path schema URI must not be blank"))
                         .isAbsolute()) {
                     throw new ValidateException("SCIM attribute path schema URI must be absolute");
                 }

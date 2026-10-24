@@ -32,8 +32,8 @@ import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 import org.miaixz.bus.crypto.Builder;
 
 /**
- * Persisted configuration snapshot whose stored content is append-only.
- * The entity remains mutable for serialization and construction; publication is represented by item pointers and a frozen rollout.
+ * Persisted configuration snapshot whose stored content is append-only. The entity remains mutable for serialization
+ * and construction; publication is represented by item pointers and a frozen rollout.
  *
  * @author Kimi Liu
  */
@@ -154,7 +154,8 @@ public class Revision extends Tenant {
     private String description;
 
     /**
-     * Creates an empty snapshot entity for construction or deserialization; persistence must enforce append-only storage.
+     * Creates an empty snapshot entity for construction or deserialization; persistence must enforce append-only
+     * storage.
      */
     public Revision() {
         // No initialization required.
@@ -175,7 +176,8 @@ public class Revision extends Tenant {
     }
 
     /**
-     * Resolves the configuration category using the snapshot protocol. Legacy SECRET source or exposure maps to the protected category.
+     * Resolves the configuration category using the snapshot protocol. Legacy SECRET source or exposure maps to the
+     * protected category.
      *
      * @param revision non-null snapshot to inspect
      * @return stable configuration category code
@@ -229,7 +231,8 @@ public class Revision extends Tenant {
     }
 
     /**
-     * Computes the protocol-specific content checksum. Current snapshots use the item normalizer; legacy snapshots retain their historical field order and separator.
+     * Computes the protocol-specific content checksum. Current snapshots use the item normalizer; legacy snapshots
+     * retain their historical field order and separator.
      *
      * @param revision non-null snapshot to checksum
      * @return SHA-256 checksum of the protocol-specific semantic content

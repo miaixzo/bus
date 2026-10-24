@@ -34,6 +34,7 @@ import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.Prober;
 import org.miaixz.bus.cortex.Status;
+import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.health.HttpProber;
 import org.miaixz.bus.cortex.health.TcpProber;
 import org.miaixz.bus.cortex.magic.runtime.CortexDiagnostics;
@@ -138,7 +139,7 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
     public HealthProbeScheduler(ApiRegistry apiRegistry, WatchManager watchManager, String tenantId, long intervalMs,
             long timeoutMs) {
         this.apiRegistry = apiRegistry;
-        this.tenantId = RegistryIdentity.tenantId(org.miaixz.bus.cortex.Type.API, tenantId);
+        this.tenantId = RegistryIdentity.tenantId(Type.API, tenantId);
         this.watchManager = watchManager;
         this.intervalMs = intervalMs;
         this.timeoutMs = timeoutMs;

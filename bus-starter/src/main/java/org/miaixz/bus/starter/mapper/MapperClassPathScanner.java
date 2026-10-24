@@ -96,7 +96,7 @@ public class MapperClassPathScanner extends ClassPathBeanDefinitionScanner {
     /**
      * The factory bean used to create mapper instances.
      */
-    private Class<? extends org.mybatis.spring.mapper.MapperFactoryBean> mapperFactoryBeanClass = MapperFactoryBean.class;
+    private Class<? extends MapperFactoryBean> mapperFactoryBeanClass = MapperFactoryBean.class;
 
     /**
      * Constructs a new MapperClassPathScanner.
@@ -393,8 +393,7 @@ public class MapperClassPathScanner extends ClassPathBeanDefinitionScanner {
      *
      * @param mapperFactoryBeanClass The MapperFactoryBean class.
      */
-    public void setMapperFactoryBeanClass(
-            Class<? extends org.mybatis.spring.mapper.MapperFactoryBean> mapperFactoryBeanClass) {
+    public void setMapperFactoryBeanClass(Class<? extends MapperFactoryBean> mapperFactoryBeanClass) {
         this.mapperFactoryBeanClass = mapperFactoryBeanClass != null ? mapperFactoryBeanClass : MapperFactoryBean.class;
     }
 

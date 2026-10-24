@@ -35,6 +35,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -290,7 +291,7 @@ public class SamlDecryptionService {
      * @param xml complete encrypted XML bytes
      * @return namespace-aware DOM document
      */
-    private static org.w3c.dom.Document parse(final byte[] xml) {
+    private static Document parse(final byte[] xml) {
         try {
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             XXE.disableXXE(factory);

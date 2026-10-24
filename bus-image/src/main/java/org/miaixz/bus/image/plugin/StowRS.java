@@ -26,6 +26,7 @@ import java.nio.channels.SeekableByteChannel;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -945,7 +946,7 @@ public class StowRS {
      */
     SSLContext sslContext() throws GeneralSecurityException {
         SSLContext ctx = SSLContext.getInstance("TLS");
-        ctx.init(null, trustManagers(), new java.security.SecureRandom());
+        ctx.init(null, trustManagers(), new SecureRandom());
         return ctx;
     }
 

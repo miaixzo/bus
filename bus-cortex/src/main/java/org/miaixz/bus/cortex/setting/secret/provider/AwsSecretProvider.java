@@ -27,6 +27,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.xyz.HexKit;
@@ -177,7 +178,7 @@ public final class AwsSecretProvider implements SecretProvider {
         }
         String names = String.join(";", headers.keySet());
         String canonicalHeaders = headers.entrySet().stream().map(e -> e.getKey() + ":" + e.getValue().trim() + "\n")
-                .collect(java.util.stream.Collectors.joining());
+                .collect(Collectors.joining());
         String canonical = "POST\n/\n\n" + canonicalHeaders + "\n" + names + "\n" + CloudProtocol.hash(payload);
         String scope = date + "/" + region + "/secretsmanager/aws4_request";
         String toSign = "AWS4-HMAC-SHA256\n" + timestamp + "\n" + scope + "\n"

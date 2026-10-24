@@ -20,6 +20,7 @@
 package org.miaixz.bus.core.lang;
 
 import java.awt.*;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -986,7 +987,7 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          * @return normalized release track key
          */
         public static String normalize(String track) {
-            return track == null || track.isBlank() ? STABLE.key : track.trim().toLowerCase(java.util.Locale.ROOT);
+            return track == null || track.isBlank() ? STABLE.key : track.trim().toLowerCase(Locale.ROOT);
         }
 
         /**

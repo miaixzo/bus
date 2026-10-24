@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.time.Instant;
@@ -1762,9 +1763,9 @@ public class DateKit extends Calendar {
          * @param date The date.
          * @return The {@link java.sql.Time}.
          */
-        public static java.sql.Time time(final Date date) {
+        public static Time time(final Date date) {
             Assert.notNull(date);
-            return new java.sql.Time(date.getTime());
+            return new Time(date.getTime());
         }
 
         /**
@@ -1779,8 +1780,8 @@ public class DateKit extends Calendar {
             if (java.sql.Date.class == targetClass) {
                 return (T) new java.sql.Date(mills);
             }
-            if (java.sql.Time.class == targetClass) {
-                return (T) new java.sql.Time(mills);
+            if (Time.class == targetClass) {
+                return (T) new Time(mills);
             }
             if (Timestamp.class == targetClass) {
                 return (T) new Timestamp(mills);

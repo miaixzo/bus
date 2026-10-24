@@ -23,6 +23,7 @@ import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.common.MixAll;
+import org.apache.rocketmq.common.message.Message;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.MQueueException;
@@ -64,7 +65,7 @@ public class RocketMQProvider implements MQProvider {
      */
     public RocketMQProvider() {
         // Check if the library is introduced when loading via SPI
-        Assert.notNull(org.apache.rocketmq.common.message.Message.class);
+        Assert.notNull(Message.class);
         this.producerGroup = MixAll.DEFAULT_PRODUCER_GROUP;
         this.consumerGroup = MixAll.DEFAULT_CONSUMER_GROUP;
     }

@@ -142,7 +142,7 @@ public final class AzureSecretProvider implements SecretProvider {
     /**
      * Validates one Azure secret name or version component before adding it to the request path.
      *
-     * @param value secret name or version component to validate
+     * @param value   secret name or version component to validate
      * @param maximum maximum permitted component length
      * @return validated alphanumeric/hyphen component
      * @throws org.miaixz.bus.core.lang.exception.CryptoException if the documented validation, expiration or lifecycle

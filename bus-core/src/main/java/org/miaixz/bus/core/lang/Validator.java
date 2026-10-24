@@ -21,6 +21,7 @@ package org.miaixz.bus.core.lang;
 
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.Date;
 import java.util.regex.Matcher;
 
@@ -942,7 +943,7 @@ public class Validator {
             return false;
         }
         try {
-            java.net.URI.create(value.toString()).toURL();
+            URI.create(value.toString()).toURL();
         } catch (final MalformedURLException | IllegalArgumentException e) {
             return false;
         }

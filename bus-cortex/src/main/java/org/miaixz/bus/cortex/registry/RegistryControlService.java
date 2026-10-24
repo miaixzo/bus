@@ -265,8 +265,8 @@ public class RegistryControlService {
     /**
      * Creates or updates one registry entry using an optional pre-resolved snapshot.
      *
-     * @param asset entry to upsert
-     * @param existing existing snapshot or {@code null}
+     * @param asset       entry to upsert
+     * @param existing    existing snapshot or {@code null}
      * @param preResolved whether the snapshot was resolved by the batch resolver
      * @return stored entry snapshot
      * @throws IllegalArgumentException if the resolved asset type has no supported admin registry
@@ -329,10 +329,10 @@ public class RegistryControlService {
     /**
      * Deletes one registry entry using an optional pre-resolved snapshot.
      *
-     * @param type target type
-     * @param tenantId target tenantId
-     * @param id entry identifier
-     * @param existing existing snapshot or {@code null}
+     * @param type        target type
+     * @param tenantId    target tenantId
+     * @param id          entry identifier
+     * @param existing    existing snapshot or {@code null}
      * @param preResolved whether the snapshot was resolved by the batch resolver
      * @throws IllegalArgumentException if the requested type has no supported admin registry
      */
@@ -715,10 +715,10 @@ public class RegistryControlService {
      * Applies one batch entry.
      *
      * @param operation operation type
-     * @param entry batch entry
-     * @param result aggregate result
+     * @param entry     batch entry
+     * @param result    aggregate result
      * @throws IllegalArgumentException if the operation type is absent
-     * @throws IllegalStateException if an existing entry conflicts with the FAIL_FAST policy
+     * @throws IllegalStateException    if an existing entry conflicts with the FAIL_FAST policy
      */
     private void applyBatchEntry(BatchOperation operation, Assets entry, BatchResult result) {
         BatchOperation.OperationType operationType = operation.getOperationType();
@@ -882,7 +882,7 @@ public class RegistryControlService {
      * Resolves the first non-null result produced while scanning all supported types.
      *
      * @param criteria base criteria
-     * @param <T> resolved value type
+     * @param <T>      resolved value type
      * @param resolver type-specific resolver
      * @return first non-null result or {@code null}
      */

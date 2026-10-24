@@ -35,6 +35,7 @@ import org.miaixz.bus.extra.json.JsonWriteOptions;
 import org.miaixz.bus.logger.Logger;
 
 import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.JsonNode;
@@ -538,7 +539,7 @@ public class JacksonProvider extends AbstractJsonProvider {
         @Override
         public void serializeAsProperty(
                 Object source,
-                tools.jackson.core.JsonGenerator output,
+                JsonGenerator output,
                 SerializationContext context,
                 PropertyWriter property) throws Exception {
             Object value;

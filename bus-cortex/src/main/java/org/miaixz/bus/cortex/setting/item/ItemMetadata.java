@@ -507,11 +507,12 @@ public final class ItemMetadata {
 
     /**
      * Describes one exact key without duplicating its value or inferring a type.
-     * @param sensitive whether values at this exact pointer require protection
+     *
+     * @param sensitive   whether values at this exact pointer require protection
      * @param description optional provider description preserved as JSON
-     * @param comment optional provider-owned operational note preserved as JSON
-     * @param override optional human description override; Java null means absent and JSON null is explicit
-     * @param schema optional additional schema rooted at this key's value
+     * @param comment     optional provider-owned operational note preserved as JSON
+     * @param override    optional human description override; Java null means absent and JSON null is explicit
+     * @param schema      optional additional schema rooted at this key's value
      * @author Kimi Liu
      */
     public record Key(boolean sensitive, JsonValue description, JsonValue comment, JsonValue override,
@@ -520,10 +521,10 @@ public final class ItemMetadata {
         /**
          * Creates key metadata without a human description override.
          *
-         * @param sensitive whether values at this pointer require protection
+         * @param sensitive   whether values at this pointer require protection
          * @param description optional provider description preserved as JSON
-         * @param comment optional provider operational note preserved as JSON
-         * @param schema optional object or boolean JSON Schema
+         * @param comment     optional provider operational note preserved as JSON
+         * @param schema      optional object or boolean JSON Schema
          * @throws IllegalArgumentException if the supplied schema has an unsupported JSON type
          */
         public Key(boolean sensitive, JsonValue description, JsonValue comment, JsonValue schema) {
@@ -533,10 +534,10 @@ public final class ItemMetadata {
         /**
          * Wraps non-null description and comment text as JSON strings, leaving null values absent.
          *
-         * @param sensitive whether values at this pointer require protection
+         * @param sensitive   whether values at this pointer require protection
          * @param description optional provider description text
-         * @param comment optional provider operational note text
-         * @param schema optional object or boolean JSON Schema
+         * @param comment     optional provider operational note text
+         * @param schema      optional object or boolean JSON Schema
          * @throws IllegalArgumentException if the supplied schema has an unsupported JSON type
          */
         public Key(boolean sensitive, String description, String comment, JsonValue schema) {
@@ -547,9 +548,9 @@ public final class ItemMetadata {
         /**
          * Creates key metadata from description text without a comment or human override.
          *
-         * @param sensitive whether values at this pointer require protection
+         * @param sensitive   whether values at this pointer require protection
          * @param description optional provider description text
-         * @param schema optional object or boolean JSON Schema
+         * @param schema      optional object or boolean JSON Schema
          * @throws IllegalArgumentException if the supplied schema has an unsupported JSON type
          */
         public Key(boolean sensitive, String description, JsonValue schema) {
@@ -557,13 +558,14 @@ public final class ItemMetadata {
         }
 
         /**
-         * Checks only that schema is an object or boolean, without validating schema contents or rewriting description, comment, or override values.
+         * Checks only that schema is an object or boolean, without validating schema contents or rewriting description,
+         * comment, or override values.
          *
-         * @param sensitive whether values at this pointer require protection
+         * @param sensitive   whether values at this pointer require protection
          * @param description optional provider description preserved as JSON
-         * @param comment optional provider operational note preserved as JSON
-         * @param override optional human description override; Java null means absent and JSON null is explicit
-         * @param schema optional object or boolean JSON Schema
+         * @param comment     optional provider operational note preserved as JSON
+         * @param override    optional human description override; Java null means absent and JSON null is explicit
+         * @param schema      optional object or boolean JSON Schema
          * @throws IllegalArgumentException if the supplied schema is neither an object nor a boolean
          */
         public Key {
@@ -574,6 +576,7 @@ public final class ItemMetadata {
 
         /**
          * Returns an explicit human override, including JSON null, or the provider description.
+         *
          * @return explicit human override, including JSON null, or the provider description when no override exists
          */
         public JsonValue explanation() {

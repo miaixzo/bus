@@ -29,9 +29,11 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.FabricX.UrlBuilder;
+import org.miaixz.bus.auth.guard.AlgorithmGuard;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
 import org.miaixz.bus.auth.shared.jose.JoseHeader;
 import org.miaixz.bus.auth.shared.jose.JwaAlgorithm;
@@ -162,7 +164,7 @@ public class OktaRealmAdapter implements VendorAdapter {
                 || !OktaManifest.ID.equals(this.variant.platform()) || this.variant.protocol() != Protocol.HTTPS
                 || !OktaManifest.ID.equals(this.options.vendor())
                 || !OktaManifest.MANAGEMENT.equals(this.options.variant()) || this.options.redirectUri().isPresent()
-                || this.options.credential().type() != org.miaixz.bus.auth.Credential.Type.PRIVATE_KEY
+                || this.options.credential().type() != Credential.Type.PRIVATE_KEY
                 || !this.variant.defaultScopes().equals(this.options.scopes())) {
             throw new ValidateException("Okta realm adapter requires the frozen management HTTPS Variant");
         }
@@ -173,8 +175,7 @@ public class OktaRealmAdapter implements VendorAdapter {
             throw new ValidateException("Okta management manifest has an invalid management target set");
         }
         this.accessCache = new MemoryCache<>(FabricX.clock()::millis);
-        this.jwsService = new JwsService(new org.miaixz.bus.auth.guard.AlgorithmGuard(),
-                Set.of(JwaAlgorithm.RS256.name()));
+        this.jwsService = new JwsService(new AlgorithmGuard(), Set.of(JwaAlgorithm.RS256.name()));
     }
 
     /**

@@ -26,6 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Supplier;
 
+import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.cortex.setting.secret.SecretContext;
 import org.miaixz.bus.cortex.setting.secret.SecretMaterial;
@@ -66,7 +67,7 @@ public final class AliyunSecretProvider implements SecretProvider {
     /**
      * Generator of a new Aliyun signature nonce on every actual attempt.
      */
-    private final java.util.function.Supplier<String> nonce;
+    private final Supplier<String> nonce;
 
     /**
      * Creates a connection-bound AliyunSecretProvider. The provider borrows its Fabric runtime and obtains fresh
@@ -102,7 +103,7 @@ public final class AliyunSecretProvider implements SecretProvider {
      * @throws IllegalArgumentException if configuration values violate the documented constraints
      */
     public AliyunSecretProvider(String region, URI endpoint, long generation, CloudCredentials.Source credentials,
-            Context fabricContext, Clock clock, java.util.function.Supplier<String> nonce) {
+            Context fabricContext, Clock clock, Supplier<String> nonce) {
         this(region, endpoint, generation, credentials, CloudProtocol.http(fabricContext), clock, nonce);
     }
 
@@ -138,7 +139,7 @@ public final class AliyunSecretProvider implements SecretProvider {
      * @throws IllegalArgumentException if configuration values violate the documented constraints
      */
     AliyunSecretProvider(String region, URI endpoint, long generation, CloudCredentials.Source credentials,
-            Supplier<HttpX.Builder> http, Clock clock, java.util.function.Supplier<String> nonce) {
+            Supplier<HttpX.Builder> http, Clock clock, Supplier<String> nonce) {
         if (region == null || !region.matches("[a-z0-9-]+") || generation < 0) {
             throw new IllegalArgumentException("Invalid Alibaba connection");
         }
@@ -162,7 +163,7 @@ public final class AliyunSecretProvider implements SecretProvider {
     static String signature(Map<String, String> parameters, CloudCredentials identity) {
         byte[] key = identity.signingKey("", "&");
         try {
-            return org.miaixz.bus.core.codec.binary.Base64.encode(
+            return Base64.encode(
                     CloudProtocol.hmac(
                             "HmacSHA1",
                             key,

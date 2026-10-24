@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.dns.record.DnsRecord;
+import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
 
 /**
  * Decoded DNS response produced from a wire-format upstream or recursive reply.
@@ -321,7 +322,7 @@ public class DnsDecodedResponse {
     private long negativeCacheTtlSeconds() {
         long ttlSeconds = Long.MAX_VALUE;
         for (final DnsRecord record : authorities) {
-            if (record.typeCode() == org.miaixz.bus.fabric.network.dns.record.DnsRecordType.SOA.code()) {
+            if (record.typeCode() == DnsRecordType.SOA.code()) {
                 ttlSeconds = Math.min(ttlSeconds, soaNegativeTtl(record));
             } else {
                 ttlSeconds = Math.min(ttlSeconds, record.ttl());

@@ -57,7 +57,7 @@ public interface ReferenceStore {
      * when switching to LATEST.
      *
      * @param reference replacement relationship policy
-     * @param expected previous relationship used for the atomic tuple and edition comparison
+     * @param expected  previous relationship used for the atomic tuple and edition comparison
      * @return updated relationship
      * @throws UnsupportedOperationException by default; the host must implement an atomic relationship-policy update
      */

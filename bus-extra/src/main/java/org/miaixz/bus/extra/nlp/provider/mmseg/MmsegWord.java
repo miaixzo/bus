@@ -21,6 +21,8 @@ package org.miaixz.bus.extra.nlp.provider.mmseg;
 
 import java.io.Serial;
 
+import com.chenlb.mmseg4j.Word;
+
 import org.miaixz.bus.extra.nlp.NLPWord;
 
 /**
@@ -37,14 +39,14 @@ public class MmsegWord implements NLPWord {
     /**
      * The underlying mmseg4j {@link com.chenlb.mmseg4j.Word} object.
      */
-    private final com.chenlb.mmseg4j.Word word;
+    private final Word word;
 
     /**
      * Constructs a {@code MmsegWord} instance by wrapping an mmseg4j {@link com.chenlb.mmseg4j.Word}.
      *
      * @param word The {@link com.chenlb.mmseg4j.Word} object from mmseg4j word segmentation.
      */
-    public MmsegWord(final com.chenlb.mmseg4j.Word word) {
+    public MmsegWord(final Word word) {
         this.word = word;
     }
 

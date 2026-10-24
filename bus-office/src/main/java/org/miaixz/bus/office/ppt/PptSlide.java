@@ -21,6 +21,7 @@ package org.miaixz.bus.office.ppt;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,7 +130,7 @@ public class PptSlide {
      * @return A {@link PptShape} wrapping the created picture shape.
      */
     public PptShape addPicture(
-            final java.io.File picFile,
+            final File picFile,
             final double x,
             final double y,
             final double width,

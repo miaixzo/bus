@@ -51,6 +51,7 @@ public class McpPingProber implements Prober {
 
     /**
      * Creates an MCP ping prober with an explicit timeout.
+     *
      * @param timeoutMs timeout in milliseconds, clamped to at least 1
      */
     public McpPingProber(long timeoutMs) {
@@ -69,9 +70,9 @@ public class McpPingProber implements Prober {
     }
 
     /**
-     * Posts the fixed JSON-RPC ping body to http://host:port/mcp, using port 80 when unspecified.
-     * Success requires no reported call error, a 2xx HTTP status, and a response body containing the literal substring result;
-     * the body is not parsed as a JSON-RPC response.
+     * Posts the fixed JSON-RPC ping body to http://host:port/mcp, using port 80 when unspecified. Success requires no
+     * reported call error, a 2xx HTTP status, and a response body containing the literal substring result; the body is
+     * not parsed as a JSON-RPC response.
      *
      * @param instance non-null instance with the host to probe
      * @return healthy status only when all three checks pass; otherwise a failed status

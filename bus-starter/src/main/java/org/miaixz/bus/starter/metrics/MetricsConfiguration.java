@@ -31,11 +31,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.util.ClassUtils;
 
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Collector;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Metrics;
 import org.miaixz.bus.metrics.Provider;
+import org.miaixz.bus.metrics.bridge.CortexExporter;
+import org.miaixz.bus.metrics.bridge.HealthMetrics;
 import org.miaixz.bus.metrics.builtin.CacheMetricsAdapter;
+import org.miaixz.bus.metrics.builtin.HostMetricsOptions;
+import org.miaixz.bus.metrics.builtin.JvmMetrics;
 import org.miaixz.bus.metrics.guard.CardinalityGuard;
 import org.miaixz.bus.metrics.guard.CardinalityPolicy;
 import org.miaixz.bus.metrics.guard.ProviderLease;
@@ -409,8 +414,8 @@ public class MetricsConfiguration {
          * Creates and binds one closeable JVM binder after the provider lease exists.
          */
         @Bean(destroyMethod = "close")
-        org.miaixz.bus.metrics.builtin.JvmMetrics jvmMetrics(ProviderLease lease) {
-            org.miaixz.bus.metrics.builtin.JvmMetrics binder = new org.miaixz.bus.metrics.builtin.JvmMetrics();
+        JvmMetrics jvmMetrics(ProviderLease lease) {
+            JvmMetrics binder = new JvmMetrics();
             binder.bind(lease.provider());
             return binder;
         }
@@ -430,24 +435,20 @@ public class MetricsConfiguration {
          * @param host structured host properties
          * @return host binder options
          */
-        private static org.miaixz.bus.metrics.builtin.HostMetricsOptions hostOptions(MetricsProperties.Host host) {
+        private static HostMetricsOptions hostOptions(MetricsProperties.Host host) {
             MetricsProperties.Categories categories = host.categories();
-            return new org.miaixz.bus.metrics.builtin.HostMetricsOptions(host.required(), "OTEL_1_44", host.cacheTtl(),
+            return new HostMetricsOptions(host.required(), "OTEL_1_44", host.cacheTtl(),
                     host.process().stateCountsCacheTtl(),
-                    new org.miaixz.bus.metrics.builtin.HostMetricsOptions.Categories(categories.general(),
-                            categories.cpu(), categories.memory(), categories.paging(), categories.disk(),
-                            categories.filesystem(), categories.network(), categories.process(),
-                            categories.container()),
-                    new org.miaixz.bus.metrics.builtin.HostMetricsOptions.Cpu(host.cpu().maxLogicalCpus()),
-                    new org.miaixz.bus.metrics.builtin.HostMetricsOptions.Process(host.process().currentOnly(),
-                            host.process().stateCounts()),
-                    new org.miaixz.bus.metrics.builtin.HostMetricsOptions.Disk(host.disk().includeVirtual(),
-                            host.disk().maxDevices()),
-                    new org.miaixz.bus.metrics.builtin.HostMetricsOptions.FileSystem(host.filesystem().localOnly(),
+                    new HostMetricsOptions.Categories(categories.general(), categories.cpu(), categories.memory(),
+                            categories.paging(), categories.disk(), categories.filesystem(), categories.network(),
+                            categories.process(), categories.container()),
+                    new HostMetricsOptions.Cpu(host.cpu().maxLogicalCpus()),
+                    new HostMetricsOptions.Process(host.process().currentOnly(), host.process().stateCounts()),
+                    new HostMetricsOptions.Disk(host.disk().includeVirtual(), host.disk().maxDevices()),
+                    new HostMetricsOptions.FileSystem(host.filesystem().localOnly(),
                             host.filesystem().mountpointMode().toUpperCase(), host.filesystem().maxFilesystems()),
-                    new org.miaixz.bus.metrics.builtin.HostMetricsOptions.Network(host.network().includeLoopback(),
-                            host.network().includeVirtual(), host.network().connections(),
-                            host.network().maxInterfaces()));
+                    new HostMetricsOptions.Network(host.network().includeLoopback(), host.network().includeVirtual(),
+                            host.network().connections(), host.network().maxInterfaces()));
         }
 
         /**
@@ -455,17 +456,16 @@ public class MetricsConfiguration {
          */
         @Bean(destroyMethod = "close")
         @ConditionalOnExpression("${bus.metrics.host.enabled:true}")
-        org.miaixz.bus.metrics.bridge.HealthMetrics hostMetrics(
+        HealthMetrics hostMetrics(
                 MetricsProperties properties,
                 HostMetricsAvailability availability,
                 ProviderLease lease) {
             if (!availability.available()) {
                 throw new IllegalStateException(availability.reason());
             }
-            org.miaixz.bus.metrics.builtin.HostMetricsOptions options = hostOptions(properties.getHost());
+            HostMetricsOptions options = hostOptions(properties.getHost());
             try {
-                org.miaixz.bus.metrics.bridge.HealthMetrics binder = new org.miaixz.bus.metrics.bridge.HealthMetrics(
-                        new org.miaixz.bus.health.Collector(), options);
+                HealthMetrics binder = new HealthMetrics(new org.miaixz.bus.health.Collector(), options);
                 binder.bind(lease.provider());
                 return binder;
             } catch (RuntimeException | LinkageError exception) {
@@ -478,8 +478,7 @@ public class MetricsConfiguration {
                         exception,
                         "Optional host metrics disabled after Collector initialization failure: {}",
                         exception.getMessage());
-                org.miaixz.bus.metrics.bridge.HealthMetrics disabled = org.miaixz.bus.metrics.bridge.HealthMetrics
-                        .disabled();
+                HealthMetrics disabled = HealthMetrics.disabled();
                 disabled.bind(lease.provider());
                 return disabled;
             }
@@ -518,18 +517,18 @@ public class MetricsConfiguration {
          */
         @Bean(destroyMethod = "close")
         @ConditionalOnProperty(prefix = GeniusBuilder.METRICS + ".cortex", name = "enabled", havingValue = "true")
-        org.miaixz.bus.metrics.bridge.CortexExporter metricsCortexExporter(
+        CortexExporter metricsCortexExporter(
                 MetricsProperties properties,
                 ProviderLease lease,
-                ObjectProvider<org.miaixz.bus.cache.CacheX> stores) {
-            List<org.miaixz.bus.cache.CacheX> instances = stores.orderedStream().toList();
+                ObjectProvider<CacheX> stores) {
+            List<CacheX> instances = stores.orderedStream().toList();
             if (instances.size() != 1) {
                 throw new IllegalStateException(
                         "Cortex metrics export requires exactly one CacheX bean; found " + instances.size());
             }
             MetricsProperties.Cortex settings = properties.getCortex();
-            org.miaixz.bus.metrics.bridge.CortexExporter exporter = new org.miaixz.bus.metrics.bridge.CortexExporter(
-                    lease.provider(), instances.get(0), settings.space(), settings.serviceId(), settings.interval());
+            CortexExporter exporter = new CortexExporter(lease.provider(), instances.get(0), settings.space(),
+                    settings.serviceId(), settings.interval());
             exporter.start();
             return exporter;
         }

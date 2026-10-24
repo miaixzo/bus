@@ -68,7 +68,8 @@ public class GuardDecision {
      * @param allowed whether the request is allowed
      * @param code    machine-readable code
      * @param message human-readable message
-     * @param details details copied into an unmodifiable map; null becomes empty, and referenced values are not deep-copied
+     * @param details details copied into an unmodifiable map; null becomes empty, and referenced values are not
+     *                deep-copied
      * @throws NullPointerException if a non-null details map contains a null key or value
      */
     public GuardDecision(boolean allowed, String code, String message, Map<String, Object> details) {

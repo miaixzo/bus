@@ -21,6 +21,7 @@ package org.miaixz.bus.extra.nlp.provider.ansj;
 
 import java.util.Iterator;
 
+import org.ansj.domain.Result;
 import org.ansj.domain.Term;
 
 import org.miaixz.bus.extra.nlp.NLPResult;
@@ -46,7 +47,7 @@ public class AnsjResult implements NLPResult {
      *
      * @param ansjResult The {@link org.ansj.domain.Result} object obtained from Ansj word segmentation.
      */
-    public AnsjResult(final org.ansj.domain.Result ansjResult) {
+    public AnsjResult(final Result ansjResult) {
         this.result = ansjResult.iterator();
     }
 

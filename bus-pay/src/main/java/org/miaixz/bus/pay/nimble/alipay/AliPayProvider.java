@@ -20,6 +20,7 @@
 package org.miaixz.bus.pay.nimble.alipay;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
@@ -996,7 +997,7 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
      * @return the application authorization URL
      * @throws java.io.UnsupportedEncodingException if encoding is not supported
      */
-    public String getOauth2Url(String appId, String redirectUri) throws java.io.UnsupportedEncodingException {
+    public String getOauth2Url(String appId, String redirectUri) throws UnsupportedEncodingException {
         return new StringBuffer().append("https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id=").append(appId)
                 .append("&redirect_uri=").append(URLEncoder.encode(redirectUri, Charset.UTF_8)).toString();
     }

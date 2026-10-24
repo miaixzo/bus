@@ -20,6 +20,7 @@
 package org.miaixz.bus.core.data.id;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.nio.ByteOrder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -93,7 +94,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @author Kimi Liu
  */
-public class UUID implements java.io.Serializable, Comparable<UUID> {
+public class UUID implements Serializable, Comparable<UUID> {
 
     @Serial
     private static final long serialVersionUID = 2852276107807L;

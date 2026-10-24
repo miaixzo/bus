@@ -20,6 +20,7 @@
 package org.miaixz.bus.office.ppt;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -219,7 +220,7 @@ public class PptWriter implements Closeable {
             final Color color,
             final TextParagraph.TextAlign align) {
         final XSLFTextBox textBox = slide.createTextBox();
-        textBox.setAnchor(new java.awt.geom.Rectangle2D.Double(x, y, width, height));
+        textBox.setAnchor(new Rectangle2D.Double(x, y, width, height));
         final XSLFTextParagraph paragraph = textBox.addNewTextParagraph();
         if (null != align) {
             paragraph.setTextAlign(align);
@@ -289,7 +290,7 @@ public class PptWriter implements Closeable {
         try {
             final XSLFPictureData pictureData = this.ppt.addPicture(data, picType);
             final XSLFPictureShape pic = slide.createPicture(pictureData);
-            pic.setAnchor(new java.awt.geom.Rectangle2D.Double(x, y, width, height));
+            pic.setAnchor(new Rectangle2D.Double(x, y, width, height));
         } catch (final Exception e) {
             throw new InternalException(e);
         }
@@ -320,7 +321,7 @@ public class PptWriter implements Closeable {
         final int numRows = data.length;
         final int numCols = data[0].length;
         final XSLFTable table = slide.createTable(numRows, numCols);
-        table.setAnchor(new java.awt.geom.Rectangle2D.Double(x, y, width, height));
+        table.setAnchor(new Rectangle2D.Double(x, y, width, height));
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols && col < data[row].length; col++) {
                 table.getCell(row, col).setText(data[row][col]);
@@ -346,7 +347,7 @@ public class PptWriter implements Closeable {
             final double width,
             final double height) {
         final XSLFAutoShape shape = slide.createAutoShape();
-        shape.setAnchor(new java.awt.geom.Rectangle2D.Double(x, y, width, height));
+        shape.setAnchor(new Rectangle2D.Double(x, y, width, height));
         return shape;
     }
 

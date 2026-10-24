@@ -360,19 +360,19 @@ public enum Algorithm {
         /**
          * Encryption mode.
          */
-        ENCRYPT(javax.crypto.Cipher.ENCRYPT_MODE),
+        ENCRYPT(Cipher.ENCRYPT_MODE),
         /**
          * Decryption mode.
          */
-        DECRYPT(javax.crypto.Cipher.DECRYPT_MODE),
+        DECRYPT(Cipher.DECRYPT_MODE),
         /**
          * Key wrapping mode.
          */
-        WRAP(javax.crypto.Cipher.WRAP_MODE),
+        WRAP(Cipher.WRAP_MODE),
         /**
          * Key unwrapping mode.
          */
-        UNWRAP(javax.crypto.Cipher.UNWRAP_MODE);
+        UNWRAP(Cipher.UNWRAP_MODE);
 
         /**
          * The integer value representing the cipher operation type.

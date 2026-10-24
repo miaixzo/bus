@@ -19,7 +19,9 @@
 */
 package org.miaixz.bus.cortex.setting.secret;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.miaixz.bus.core.lang.exception.CryptoException;
@@ -41,19 +43,19 @@ public record SecretReference(String connectionId, String resource, String versi
      * Validates the record components before publishing this immutable value.
      *
      * @param connectionId non-null connectionId component
-     * @param resource logical backend resource name before URL encoding
-     * @param version immutable backend version; null selects the current version
-     * @param field optional top-level JSON string field; null requests the complete value
+     * @param resource     logical backend resource name before URL encoding
+     * @param version      immutable backend version; null selects the current version
+     * @param field        optional top-level JSON string field; null requests the complete value
      * @param expectedType non-null logical payload classification, without automatic conversion
      * @throws IllegalArgumentException if component values violate this record's constraints
-     * @throws NullPointerException if expectedType is null
+     * @throws NullPointerException     if expectedType is null
      */
     public SecretReference {
         if (connectionId == null || connectionId.isBlank() || resource == null || resource.isBlank()
                 || field != null && field.isBlank() || version != null && version.isBlank()) {
             throw new IllegalArgumentException("Invalid secret reference");
         }
-        java.util.Objects.requireNonNull(expectedType, "expectedType");
+        Objects.requireNonNull(expectedType, "expectedType");
     }
 
     /**
@@ -66,8 +68,7 @@ public record SecretReference(String connectionId, String resource, String versi
      */
     public static SecretReference parse(String json) {
         try {
-            Object parsed = JsonKit
-                    .toJavaValue(JsonKit.readValue(json.getBytes(java.nio.charset.StandardCharsets.UTF_8), 16, true));
+            Object parsed = JsonKit.toJavaValue(JsonKit.readValue(json.getBytes(StandardCharsets.UTF_8), 16, true));
             if (!(parsed instanceof Map<?, ?> spec)
                     || !Set.of("connectionId", "resource", "selector", "field", "expectedType")
                             .containsAll(spec.keySet())

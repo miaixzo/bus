@@ -28,6 +28,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
@@ -650,7 +651,7 @@ public class MicrometerProvider implements Provider {
             MetricDescriptor descriptor,
             Attributes attributes,
             ConcurrentHashMap<String, ActiveMetric<T>> values,
-            java.util.function.Supplier<Created<T>> creator) {
+            Supplier<Created<T>> creator) {
         ensureOpen();
         return values.computeIfAbsent(activeKey(descriptor, attributes), ignored -> {
             MetricFamilyRegistry.Lease lease = familyRegistry.acquire(descriptor);

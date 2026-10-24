@@ -198,7 +198,7 @@ public class RegistryRefreshService {
      * Resolves the first non-null result produced while scanning all supported types.
      *
      * @param criteria base criteria
-     * @param <T> resolved value type
+     * @param <T>      resolved value type
      * @param resolver type-specific resolver
      * @return first non-null result or {@code null}
      */

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.auth.source.protocol.oidc.codec;
 
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -524,9 +525,8 @@ public class UserInfoCodec {
         put(members, OpenIdConnect.Claims.ZONE_INFO, response.zoneInfo());
         put(members, OpenIdConnect.Claims.LOCALE, response.locale());
         response.updatedAt().ifPresent(
-                value -> members.put(
-                        OpenIdConnect.Claims.UPDATED_AT,
-                        new JsonValue.NumberValue(java.math.BigDecimal.valueOf(value))));
+                value -> members
+                        .put(OpenIdConnect.Claims.UPDATED_AT, new JsonValue.NumberValue(BigDecimal.valueOf(value))));
         response.extensions().values().forEach((name, value) -> {
             if (standardClaim(name)) {
                 throw new ValidateException("OpenID Connect UserInfo extension duplicates a standard claim");
