@@ -19,53 +19,62 @@
 */
 package org.miaixz.bus.cortex.setting;
 
+import java.util.Objects;
+
+import org.miaixz.bus.core.lang.exception.ForbiddenException;
 import org.miaixz.bus.cortex.guard.GuardContext;
 import org.miaixz.bus.cortex.guard.GuardDecision;
 import org.miaixz.bus.cortex.guard.GuardStrategy;
 
 /**
- * Adapts the setting relation enforcer into the shared Cortex guard chain.
+ * Bridges the shared guard to mandatory authenticated setting policy only.
  *
  * @author Kimi Liu
  */
-public class SettingEnforcerGuardStrategy implements GuardStrategy {
+public final class SettingEnforcerStrategy implements GuardStrategy {
 
     /**
-     * Setting relation enforcer used to validate tenant and application scope.
+     * Mandatory setting policy.
      */
     private final SettingEnforcer enforcer;
 
     /**
-     * Creates a guard strategy from the setting relation enforcer.
+     * Creates the authorization bridge.
      *
-     * @param enforcer setting relation enforcer
+     * @param enforcer trusted host policy
      */
-    public SettingEnforcerGuardStrategy(SettingEnforcer enforcer) {
-        this.enforcer = enforcer;
+    public SettingEnforcerStrategy(SettingEnforcer enforcer) {
+        this.enforcer = Objects.requireNonNull(enforcer);
     }
 
     /**
-     * Returns whether this strategy supports the supplied guard context.
+     * Selects setting resources only.
      *
-     * @param context guard context
-     * @return {@code true} for setting-domain contexts
+     * @param context guard input
+     * @return whether supported
      */
     @Override
     public boolean supports(GuardContext context) {
-        return enforcer != null && context != null && "setting".equalsIgnoreCase(context.getDomain());
+        return context != null && "setting".equalsIgnoreCase(context.getDomain());
     }
 
     /**
-     * Evaluates setting relation policy for the supplied context.
+     * Evaluates exact trusted tenant/resource permissions.
      *
-     * @param context guard context
-     * @return guard decision
+     * @param context guard input
+     * @return permission decision
      */
     @Override
     public GuardDecision evaluate(GuardContext context) {
-        return enforcer.allows(context.getTenant_id(), context.getApp_id(), (String) context.getAttribute("scope"))
-                ? GuardDecision.allow()
-                : GuardDecision.deny("SETTING_SCOPE_DENIED", "Setting scope is not allowed");
+        SettingEnforcer.Context trusted = enforcer.current();
+        if (!supports(context) || !trusted.tenant().equals(context.getTenant_id()))
+            return GuardDecision.deny("SETTING_SCOPE_DENIED", "Setting tenant mismatch");
+        try {
+            enforcer.require(trusted, context.getAction(), context.getResourceType(), context.getResourceId());
+            return GuardDecision.allow();
+        } catch (SecurityException | ForbiddenException denied) {
+            return GuardDecision.deny("SETTING_SCOPE_DENIED", "Setting permission denied");
+        }
     }
 
 }

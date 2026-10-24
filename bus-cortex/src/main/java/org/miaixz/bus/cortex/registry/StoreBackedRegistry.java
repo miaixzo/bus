@@ -246,11 +246,11 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      * @return refreshed entries
      */
     public List<T> refresh(Vector vector) {
-        RegistryRefreshScope scope = RegistryScopeMapping.refresh(vector, registryType, "refresh");
-        Vector criteria = RegistryScopeMapping.toVector(scope);
+        RegistryQuery query = RegistryScopeMapping.query(vector, registryType);
+        Vector criteria = RegistryScopeMapping.toVector(query);
         if (criteria.getId() != null) {
             T single = refresh(criteria.getTenant_id(), criteria.getId());
-            return single == null ? List.of() : List.of(single);
+            return single == null || query.getOffset() > 0 || !matches(single, query) ? List.of() : List.of(single);
         }
         if (store == null || !storeSupports(Trait.QUERY)) {
             if (store != null) {
@@ -258,7 +258,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
             }
             return super.query(criteria);
         }
-        List<T> entries = store.query(registryType, criteria);
+        List<T> entries = store.query(registryType, query);
         if (entries == null || entries.isEmpty()) {
             return List.of();
         }
@@ -274,30 +274,68 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     }
 
     /**
-     * Rebuilds cached entries for the given scope by evicting current cache state and reloading from the durable store.
+     * Rebuilds every cached entry matching the supplied asset filters. Pagination limits the returned page rather than
+     * truncating the rebuilt scope. Durable reads and identity validation finish before committed cache replacement.
      *
-     * @param vector query criteria
-     * @return reloaded entries
+     * @param vector query criteria, including the requested result page
+     * @return the requested page of reloaded entries
      */
     public List<T> rebuild(Vector vector) {
-        RegistryRefreshScope scope = RegistryScopeMapping.refresh(vector, registryType, "rebuild");
-        Vector criteria = RegistryScopeMapping.toVector(scope);
+        RegistryQuery query = RegistryScopeMapping.query(vector, registryType);
+        Vector criteria = RegistryScopeMapping.toVector(query);
         if (store == null || !storeSupports(Trait.DURABLE) || !storeSupports(Trait.QUERY)) {
             if (store != null) {
                 capabilityFallback("rebuild", Trait.DURABLE, "cache query");
             }
             return super.query(criteria);
         }
-        if (criteria.getId() != null) {
-            evict(criteria.getTenant_id(), criteria.getId());
-            return refresh(criteria);
+        RegistryQuery pageQuery = RegistryScopeMapping.query(criteria, registryType);
+        pageQuery.setOffset(0);
+        pageQuery.setLimit(Normal._100);
+        List<T> entries = new ArrayList<>();
+        while (true) {
+            List<T> page = store.query(registryType, pageQuery);
+            if (page == null || page.isEmpty()) {
+                break;
+            }
+            for (T entry : page) {
+                RegistryIdentity.requireTenant(registryType, query.getTenant_id(), entry.getTenant_id());
+                T prepared = normalizeEntry(entry);
+                if (matches(prepared, query)) {
+                    entries.add(prepared);
+                }
+            }
+            if (page.size() < pageQuery.getLimit()) {
+                break;
+            }
+            pageQuery.setOffset(Math.addExact(pageQuery.getOffset(), page.size()));
         }
-        String prefix = keying.prefix(Keying.RegistrySpec.entry(criteria.getTenant_id(), registryType, null));
+        String prefix = keying.prefix(Keying.RegistrySpec.entry(query.getTenant_id(), registryType, null));
         Map<String, Object> current = cacheX.scan(prefix);
-        if (current != null && !current.isEmpty()) {
-            afterCommit(() -> cacheX.remove(current.keySet().toArray(String[]::new)));
+        List<String> staleKeys = new ArrayList<>();
+        if (current != null) {
+            for (Map.Entry<String, Object> cached : current.entrySet()) {
+                T entry = deserialize(cached.getValue());
+                if (entry != null) {
+                    RegistryIdentity.requireTenant(registryType, query.getTenant_id(), entry.getTenant_id());
+                    RegistryIdentity.normalize(entry, registryType);
+                    if (matches(entry, query)) {
+                        staleKeys.add(cached.getKey());
+                    }
+                }
+            }
         }
-        return refresh(criteria);
+        afterCommit(() -> {
+            if (!staleKeys.isEmpty()) {
+                cacheX.remove(staleKeys.toArray(String[]::new));
+            }
+            for (T entry : entries) {
+                super.register(entry);
+            }
+        });
+        int from = Math.min(query.getOffset(), entries.size());
+        int to = (int) Math.min((long) from + query.getLimit(), entries.size());
+        return new ArrayList<>(entries.subList(from, to));
     }
 
     /**
@@ -442,6 +480,12 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
             return;
         }
         T prepared = normalizeEntry(entry);
+        if (instance != null && instance.getApp_id() == null) {
+            instance.setApp_id(prepared.getApp_id());
+        }
+        if (instance != null && !Objects.equals(instance.getApp_id(), prepared.getApp_id())) {
+            throw new IllegalArgumentException("Instance application does not match service ownership");
+        }
         T existing = loadExisting(prepared);
         persistEntry(prepared, instance, existing);
         publishChange(
@@ -501,8 +545,8 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      * @param action           mutation action
      * @param entry            changed entry
      * @param previousEntry    previous entry snapshot before the mutation
-     * @param instance         runtime instance when applicable
-     * @param previousInstance previous runtime instance snapshot before the mutation
+     * @param instance         service relationship when applicable
+     * @param previousInstance previous service relationship before the mutation
      */
     protected void publishChange(
             RegistryChange.Action action,
@@ -526,9 +570,9 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
             event.setPreviousAsset(previousEntry);
             event.setInstance(instance);
             event.setPreviousInstance(previousInstance);
-            event.setFingerprint(
-                    instance != null ? instance.getFingerprint()
-                            : previousInstance != null ? previousInstance.getFingerprint() : null);
+            event.setChecksum(
+                    instance != null ? instance.getChecksum()
+                            : previousInstance != null ? previousInstance.getChecksum() : null);
             event.setEventType(registryEventType(action, instance, previousInstance));
             event.setChangeSet(changeSet(entry, previousEntry, instance, previousInstance));
             long now = DateKit.current();
@@ -582,7 +626,8 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         record.setSequence(event.getSequence());
         record.setIdempotencyKey(
                 "registry:" + event.getType() + Symbol.COLON + event.getTenant_id() + Symbol.COLON + event.getId()
-                        + Symbol.COLON + record.getAction() + Symbol.COLON + registryOutboxResource(event));
+                        + Symbol.COLON + record.getAction() + Symbol.COLON + registryOutboxResource(event)
+                        + Symbol.COLON + event.getSequence());
         changeLogStore.append(record);
     }
 
@@ -594,7 +639,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      */
     private String registryOutboxAction(RegistryChange<T> event) {
         if (event.getEventType() != null && event.getEventType().startsWith("registry-instance-")) {
-            return event.getEventType().substring("registry-".length());
+            return StringKit.removePrefix(event.getEventType(), "registry-");
         }
         return event.getAction() == null ? null : StringKit.toLowerCase(event.getAction().name(), Locale.ROOT);
     }
@@ -606,8 +651,8 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      * @return resource identifier
      */
     private String registryOutboxResource(RegistryChange<T> event) {
-        if (event.getFingerprint() != null) {
-            return "instance:" + event.getFingerprint();
+        if (event.getChecksum() != null) {
+            return "instance:" + event.getChecksum();
         }
         if (event.getId() != null) {
             return event.getId();
@@ -617,7 +662,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
                     + (event.getMethod() == null ? Normal.EMPTY : event.getMethod()) + Symbol.COLON
                     + (event.getVersion() == null ? Normal.EMPTY : event.getVersion());
         }
-        return "unknown";
+        return Normal.UNKNOWN;
     }
 
     /**
@@ -649,10 +694,10 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     }
 
     /**
-     * Persists one entry through the compatibility path used by registry subclasses.
+     * Persists a service definition and optional process relationship.
      *
      * @param prepared normalized entry
-     * @param instance optional runtime instance
+     * @param instance optional service relationship containing a shared process
      */
     protected void persistEntry(T prepared, Instance instance) {
         persistEntry(prepared, instance, loadExisting(prepared));
@@ -662,7 +707,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      * Persists the entry to durable state and refreshes the local cache projection.
      *
      * @param prepared normalized entry
-     * @param instance optional runtime instance
+     * @param instance optional service relationship containing a shared process
      * @param existing existing snapshot or {@code null}
      */
     protected void persistEntry(T prepared, Instance instance, T existing) {
@@ -710,8 +755,8 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      *
      * @param entry            current entry
      * @param previousEntry    previous entry
-     * @param instance         current instance
-     * @param previousInstance previous instance
+     * @param instance         current service relationship
+     * @param previousInstance previous service relationship
      * @return change set
      */
     protected Map<String, Object> changeSet(T entry, T previousEntry, Instance instance, Instance previousInstance) {
@@ -730,10 +775,10 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
             changeSet.put("previousModified", previousEntry.getModified());
         }
         if (instance != null) {
-            changeSet.put("fingerprint", instance.getFingerprint());
+            changeSet.put("checksum", instance.getChecksum());
         }
         if (previousInstance != null) {
-            changeSet.put("previousFingerprint", previousInstance.getFingerprint());
+            changeSet.put("previousChecksum", previousInstance.getChecksum());
         }
         return changeSet;
     }
@@ -742,8 +787,8 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      * Resolves the watch event type for a registry mutation.
      *
      * @param action           registry action
-     * @param instance         current instance
-     * @param previousInstance previous instance
+     * @param instance         current service relationship
+     * @param previousInstance previous service relationship
      * @return watch event type
      */
     private String registryEventType(RegistryChange.Action action, Instance instance, Instance previousInstance) {

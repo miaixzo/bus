@@ -17,38 +17,36 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.setting.delivery;
+package org.miaixz.bus.cortex.release;
 
-import org.miaixz.bus.cortex.setting.item.Item;
+import org.miaixz.bus.cortex.setting.SettingEnforcer;
 
 /**
- * Minimal publisher contract for tenant-qualified runtime configuration overlays.
+ * Host atomic publication boundary; no partial or cache-only emulation is permitted.
  *
  * @author Kimi Liu
  */
-public interface RuntimeItemOverlayPublisher {
+public interface PublicationStore {
 
     /**
-     * Publishes a runtime-only overlay using the item's coordinates and content.
+     * In one entity transaction rechecks authorization, approved frozen input, exact intent, workflow edition, app
+     * eligibility and active baselines; allocates the unique server version; inserts all snapshots, self-contained
+     * Release, active track pointer, workflow completion, receipt result and durable outbox. Failure rolls back all
+     * visible writes; identical receipt returns the original Release. Must never reload mutable Item or Reference for
+     * approved content.
      *
-     * @param item  item coordinates and overlay content
-     * @param ttlMs time-to-live in milliseconds
+     * @param context         authenticated tenant, actor and idempotent request identity
+     * @param rollout         exact approved workflow identifier
+     * @param expectedEdition expected workflow concurrency counter
+     * @param receipt         exact claimed publication receipt identifier
+     * @param frozenChecksum  checksum of the approved frozen plan
+     * @return original or newly committed formal release
      */
-    void publish(Item item, long ttlMs);
-
-    /**
-     * Reads a runtime-only overlay.
-     *
-     * @param coordinates tenant-qualified item coordinates
-     * @return overlay content, or {@code null} when absent
-     */
-    String get(Item coordinates);
-
-    /**
-     * Deletes a runtime-only overlay.
-     *
-     * @param coordinates tenant-qualified item coordinates
-     */
-    void delete(Item coordinates);
+    Release commit(
+            SettingEnforcer.Context context,
+            String rollout,
+            long expectedEdition,
+            String receipt,
+            String frozenChecksum);
 
 }

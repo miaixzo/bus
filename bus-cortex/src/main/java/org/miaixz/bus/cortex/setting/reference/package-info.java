@@ -17,33 +17,10 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.setting.item;
-
 /**
- * Payload formats supported by setting entries.
+ * The sole current Item-to-App relationship model and usage-option parser. Ownership and consumption live here;
+ * published content uses frozen copies of these options.
  *
  * @author Kimi Liu
  */
-public enum ItemFormat {
-
-    /**
-     * Plain text or opaque string content.
-     */
-    TEXT,
-
-    /**
-     * JSON-encoded structured content.
-     */
-    JSON,
-
-    /**
-     * YAML-encoded structured content.
-     */
-    YAML,
-
-    /**
-     * Java properties style key-value content.
-     */
-    PROPERTIES
-
-}
+package org.miaixz.bus.cortex.setting.reference;

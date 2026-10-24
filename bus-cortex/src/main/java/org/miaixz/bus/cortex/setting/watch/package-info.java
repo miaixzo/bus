@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Persistent runtime-watch entities and durable store contracts for configuration-center implementations.
+ * Session-bound configuration target generations and application acknowledgements. Notification delivery does not prove
+ * application success.
  *
  * @author Kimi Liu
  */

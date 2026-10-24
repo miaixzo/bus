@@ -19,55 +19,94 @@
 */
 package org.miaixz.bus.cortex.setting;
 
-import org.miaixz.bus.cortex.setting.item.Item;
-import org.miaixz.bus.cortex.setting.item.ItemQuery;
-import org.miaixz.bus.cortex.setting.item.ItemScope;
+import java.util.List;
+
+import org.miaixz.bus.cortex.Instance;
+import org.miaixz.bus.cortex.setting.approval.Approval;
+import org.miaixz.bus.cortex.setting.rollout.Plan;
 
 /**
- * Business validation contract for configuration tenants, applications, and ownership scopes.
+ * Mandatory host authentication and authorization; no permissive defaults.
+ *
+ * @author Kimi Liu
  */
 public interface SettingEnforcer {
 
     /**
-     * Validates or normalizes an item before it is staged.
+     * Returns the authenticated invocation identity, never request-supplied authorization.
      *
-     * @param entry item supplied by the caller
-     * @return validated item
+     * @return trusted context
      */
-    default Item validateItem(Item entry) {
-        return entry;
-    }
+    Context current();
 
     /**
-     * Validates or normalizes a configuration query.
+     * Loads and verifies the current authoritative instance for the authenticated invocation. The host derives the
+     * instance identifier and claimed session from trusted authentication evidence, reads its current entity and
+     * verifies the tenant, requested application, exact session and active heartbeat lease before returning it.
+     * Request-supplied instance fields and previously authenticated snapshots are not authoritative.
+     * <p>
+     * Each call must recheck the current session, including calls made by subscription callbacks with a captured
+     * context. An absent, retired, replaced or expired instance session must be rejected rather than treated as a
+     * non-instance reader. Instance creation, renewal, replacement and deletion remain host responsibilities.
      *
-     * @param query query supplied by the caller
-     * @return validated query
+     * @param context authenticated identity, including when captured for a subscription
+     * @param app     authorized application
+     * @return the current verified instance, or {@code null} only for an authorized non-instance reader
+     * @throws SecurityException if the instance identity, tenant, application, session or lease is invalid
      */
-    default ItemQuery validateQuery(ItemQuery query) {
-        return query;
-    }
+    Instance instance(Context context, String app);
 
     /**
-     * Validates or normalizes a configuration scope.
+     * Requires permission for the exact tenant resource.
      *
-     * @param scope scope supplied by the caller
-     * @return validated scope
+     * @param context  trusted identity
+     * @param action   requested operation
+     * @param resource domain type
+     * @param id       exact resource
      */
-    default ItemScope validateScope(ItemScope scope) {
-        return scope;
-    }
+    void require(Context context, String action, String resource, String id);
 
     /**
-     * Checks access to an application and ownership scope within the specified tenant.
+     * Rejects unregistered approval policies.
      *
-     * @param tenant_id tenant identifier of the configuration scope
-     * @param app_id    application identifier, when scoped to an application
-     * @param scope     configuration ownership scope
-     * @return true by default; implementations may deny the scope
+     * @param context trusted identity
+     * @param policy  registered policy
      */
-    default boolean allows(String tenant_id, String app_id, String scope) {
-        return true;
+    void requirePolicy(Context context, String policy);
+
+    /**
+     * Evaluates the existing host approval policy.
+     *
+     * @param context   trusted identity
+     * @param plan      frozen input
+     * @param decisions immutable evidence
+     * @return whether required approval stages are complete
+     */
+    boolean approvalComplete(Context context, Plan.Frozen plan, List<Approval> decisions);
+
+    /**
+     * Authenticated invocation coordinates.
+     *
+     * @param tenant  authenticated tenant
+     * @param actor   authenticated principal
+     * @param request idempotency identity
+     * @author Kimi Liu
+     */
+    record Context(String tenant, String actor, String request) {
+
+        /**
+         * Requires complete authenticated coordinates.
+         *
+         * @param tenant  tenant
+         * @param actor   principal
+         * @param request request identity
+         */
+        public Context {
+            if (tenant == null || tenant.isBlank() || actor == null || actor.isBlank() || request == null
+                    || request.isBlank())
+                throw new IllegalArgumentException("Authenticated setting context required");
+        }
+
     }
 
 }

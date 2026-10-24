@@ -21,6 +21,9 @@ package org.miaixz.bus.cortex.magic.event;
 
 import java.util.List;
 
+import org.miaixz.bus.core.center.date.Chrono;
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Reliable change-log store used by registry, setting, and version mutation paths.
  *
@@ -29,29 +32,31 @@ import java.util.List;
 public interface CortexChangeLogStore {
 
     /**
-     * Appends one change-log record.
+     * Appends one event without changing a previously persisted event or its delivery state. Repeating the same
+     * idempotency key must preserve the original record; conflicting event content must be rejected.
      *
      * @param record change-log record
      * @return persisted change-log record
+     * @throws IllegalArgumentException if an idempotency key or record identifier is reused for a different event
      */
     CortexChangeRecord append(CortexChangeRecord record);
 
     /**
-     * Marks a change-log record as delivered.
+     * Marks a change-log record as delivered only while the supplied claim still owns the record.
      *
-     * @param id change-log record identifier
-     * @return updated record or {@code null}
+     * @param claim unmodified snapshot returned by {@code claimPending}
+     * @return updated record, or {@code null} when the record is absent or the claim no longer matches
      */
-    CortexChangeRecord markDelivered(String id);
+    CortexChangeRecord markDelivered(CortexChangeRecord claim);
 
     /**
-     * Marks a change-log record as failed.
+     * Marks a change-log record as failed only while the supplied claim still owns the record.
      *
-     * @param id    change-log record identifier
+     * @param claim unmodified snapshot returned by {@code claimPending}
      * @param error failure message
-     * @return updated record or {@code null}
+     * @return updated record, or {@code null} when the record is absent or the claim no longer matches
      */
-    CortexChangeRecord markFailed(String id, String error);
+    CortexChangeRecord markFailed(CortexChangeRecord claim, String error);
 
     /**
      * Claims pending records with the default owner and lease.
@@ -60,7 +65,7 @@ public interface CortexChangeLogStore {
      * @return claimed records
      */
     default List<CortexChangeRecord> claimPending(int limit) {
-        return claimPending(limit, "cortex", 30000L);
+        return claimPending(limit, "cortex", Normal._30 * Chrono.SECOND.getMillis());
     }
 
     /**
@@ -95,12 +100,12 @@ public interface CortexChangeLogStore {
     }
 
     /**
-     * Moves one change-log record to dead letter state.
+     * Moves one change-log record to dead letter state only while the supplied claim still owns the record.
      *
-     * @param id    change-log record identifier
+     * @param claim unmodified snapshot returned by {@code claimPending}
      * @param error terminal failure message
-     * @return updated record or {@code null}
+     * @return updated record, or {@code null} when the record is absent or the claim no longer matches
      */
-    CortexChangeRecord deadLetter(String id, String error);
+    CortexChangeRecord deadLetter(CortexChangeRecord claim, String error);
 
 }

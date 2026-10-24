@@ -25,6 +25,8 @@ import java.util.Set;
  * Read-only backend SPI bound to one connection identity. Implementations validate remote versions and expirations and
  * return independently owned complete payloads; authorization and JSON-field extraction remain in SecretManager. Shared
  * implementations and credential sources must tolerate concurrent reads.
+ *
+ * @author Kimi Liu
  */
 public interface SecretProvider {
 
@@ -60,6 +62,8 @@ public interface SecretProvider {
 
     /**
      * Capabilities advertised and enforced by each backend.
+     *
+     * @author Kimi Liu
      */
     public enum Capability {
         /**
@@ -71,6 +75,7 @@ public interface SecretProvider {
          * Reads an explicitly selected immutable backend version.
          */
         READ_VERSION
+
     }
 
 }

@@ -19,69 +19,41 @@
 */
 package org.miaixz.bus.cortex;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
-import org.miaixz.bus.cortex.builtin.SettingGenerator;
-import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemQuery;
 
 /**
- * Consumer contract for tenant-scoped configuration content and subscriptions.
+ * Application-facing published configuration reads and authorized subscriptions.
+ *
+ * @author Kimi Liu
  */
 public interface Curator {
 
     /**
-     * Resolves configuration for a tenant-qualified query.
+     * Reads exact published content; never consults editable or temporary configuration.
      *
-     * @param query configuration query
-     * @return resolved value or the query fallback
+     * @param query tenant-qualified application configuration request
+     * @return encoded published configuration, or null for authorized absence
      */
     String get(ItemQuery query);
 
     /**
-     * Stages a configuration item for publication.
+     * Resolves the supplied application queries through the grouped immutable-release path.
      *
-     * @param item item to stage
+     * @param queries tenant-qualified application configuration requests
+     * @return the grouped released values for the supplied queries
      */
-    void publish(Item item);
+    Map<String, String> batchGet(List<ItemQuery> queries);
 
     /**
-     * Stages a historical revision as the next item revision.
+     * Returns a caller fallback only when the authorized lookup has no value.
      *
-     * @param coordinates item coordinates
-     * @param revision    historical revision identifier
-     */
-    void rollback(Item coordinates, String revision);
-
-    /**
-     * Resolves multiple queries while preserving their input order.
-     *
-     * @param queries configuration queries
-     * @return map keyed by canonical exported item key
-     */
-    default Map<String, String> batchGet(List<ItemQuery> queries) {
-        Map<String, String> result = new LinkedHashMap<>();
-        if (queries != null) {
-            for (ItemQuery query : queries) {
-                if (query != null) {
-                    result.put(
-                            SettingGenerator.INSTANCE.key(Keying.SettingSpec.export(query.coordinates())),
-                            get(query));
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Resolves a query and substitutes a caller-provided fallback when no value exists.
-     *
-     * @param query    configuration query
-     * @param fallback fallback returned for a missing value
-     * @return resolved value or {@code fallback}
+     * @param query    tenant-qualified application configuration request
+     * @param fallback caller-supplied value for an authorized lookup with no result
+     * @return published configuration when present, otherwise the supplied fallback
      */
     default String getOrDefault(ItemQuery query, String fallback) {
         String value = get(query);
@@ -89,18 +61,18 @@ public interface Curator {
     }
 
     /**
-     * Subscribes to changes for one configuration coordinate.
+     * Authorizes an application subscription and registers its tenant-scoped transport callback.
      *
-     * @param coordinates item coordinates
-     * @param listener    value-change listener
-     * @return watch identifier used to cancel the subscription
+     * @param query    tenant-qualified application configuration request
+     * @param listener subscription callback for this application
+     * @return identifier of the registered transport subscription
      */
-    String watch(Item coordinates, ConsumerX<String> listener);
+    String watch(ItemQuery query, ConsumerX<String> listener);
 
     /**
-     * Cancels a configuration subscription.
+     * Removes the exact subscription identifier.
      *
-     * @param watch_id watch identifier returned by {@link #watch(Item, ConsumerX)}
+     * @param watch_id exact subscription identifier
      */
     void unwatch(String watch_id);
 

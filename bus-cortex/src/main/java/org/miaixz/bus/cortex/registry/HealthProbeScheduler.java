@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex.registry;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -29,12 +30,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.miaixz.bus.core.center.date.Chrono;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.DateKit;
-import org.miaixz.bus.cortex.Instance;
-import org.miaixz.bus.cortex.Prober;
-import org.miaixz.bus.cortex.Status;
-import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.core.xyz.ThreadKit;
+import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.health.HttpProber;
 import org.miaixz.bus.cortex.health.TcpProber;
 import org.miaixz.bus.cortex.magic.runtime.CortexDiagnostics;
@@ -63,7 +63,7 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
     private final WatchManager watchManager;
 
     /**
-     * Explicit tenant monitored by this scheduler.
+     * Canonical registry tenant; API probing uses global identity.
      */
     private final String tenantId;
 
@@ -113,7 +113,7 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
     private final AtomicLong probeCount = new AtomicLong();
 
     /**
-     * Number of failed instance probe attempts.
+     * Number of failed probe cycles or instance probe attempts.
      */
     private final AtomicLong failureCount = new AtomicLong();
 
@@ -145,11 +145,8 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
         this.timeoutMs = timeoutMs;
         this.httpProber = new HttpProber(timeoutMs);
         this.tcpProber = new TcpProber(timeoutMs);
-        this.executor = Executors.newSingleThreadScheduledExecutor(r -> {
-            Thread t = new Thread(r, "cortex-health-prober");
-            t.setDaemon(true);
-            return t;
-        });
+        this.executor = Executors
+                .newSingleThreadScheduledExecutor(r -> ThreadKit.newThread(r, "cortex-health-prober", true));
         this.workers = Executors.newVirtualThreadPerTaskExecutor();
     }
 
@@ -224,54 +221,91 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
     }
 
     /**
-     * Probes all registered instances and publishes their latest health state.
+     * Probes every page of registered services and isolates cycle failures from future scheduled executions.
      */
     private void probe() {
-        if (!started.get()) {
+        if (!isRunning()) {
             return;
         }
         lastProbeAt = DateKit.current();
         probeCount.incrementAndGet();
-        List<Instance> instances = apiRegistry.queryInstances(tenantId, null, null, null);
-        if (instances == null || instances.isEmpty()) {
-            return;
-        }
-        for (Instance instance : instances) {
-            workers.execute(() -> probeInstance(instance, httpProber, tcpProber));
+        try {
+            Map<List<String>, Map<ApiAssets, Instance>> processes = new LinkedHashMap<>();
+            Vector vector = Vector.builder().type(Type.API.key()).build();
+            while (isRunning()) {
+                List<ApiAssets> services = apiRegistry.query(vector);
+                if (services.isEmpty()) {
+                    break;
+                }
+                for (ApiAssets service : services) {
+                    if (!isRunning()) {
+                        return;
+                    }
+                    for (Instance instance : apiRegistry
+                            .queryInstances(tenantId, service.getApp_id(), service.getMethod(), service.getVersion())) {
+                        List<String> identity = List.of(
+                                Objects.toString(instance.getTenant_id(), ""),
+                                instance.getApp_id(),
+                                instance.getChecksum());
+                        processes.computeIfAbsent(identity, ignored -> new LinkedHashMap<>()).put(service, instance);
+                    }
+                }
+                if (services.size() < vector.getLimit()) {
+                    break;
+                }
+                vector.setOffset(Math.addExact(vector.getOffset(), services.size()));
+            }
+            for (Map<ApiAssets, Instance> registrations : processes.values()) {
+                if (!isRunning()) {
+                    return;
+                }
+                workers.execute(() -> probeInstance(registrations, httpProber, tcpProber));
+            }
+        } catch (Exception e) {
+            if (!isRunning()) {
+                return;
+            }
+            failureCount.incrementAndGet();
+            lastError = e.getMessage();
+            Logger.warn(false, "Cortex", e, "Health probe cycle failed: {}", e.getMessage());
         }
     }
 
     /**
      * Probes one runtime instance, updates its health state, and republishes the refreshed snapshot when needed.
      *
-     * @param instance   runtime instance
-     * @param httpProber HTTP prober
-     * @param tcpProber  TCP prober
+     * @param registrations existing service definitions and runtime snapshots for one shared process
+     * @param httpProber    HTTP prober
+     * @param tcpProber     TCP prober
      */
-    private void probeInstance(Instance instance, Prober httpProber, Prober tcpProber) {
+    private void probeInstance(Map<ApiAssets, Instance> registrations, Prober httpProber, Prober tcpProber) {
+        Instance sample = registrations.values().iterator().next();
         try {
-            Prober prober = Protocol.TCP.name.equalsIgnoreCase(instance.getScheme()) ? tcpProber : httpProber;
-            Status result = prober.check(instance);
+            Prober prober = Protocol.TCP.name.equalsIgnoreCase(sample.getScheme()) ? tcpProber : httpProber;
+            Status result = prober.check(sample);
             String newState = result.isHealthy() ? "UP" : "DOWN";
             Integer newHealthy = result.isHealthy() ? 1 : 0;
-            instance.setLastProbeAt(DateKit.current());
-            instance.setLastStatus(result);
-            instance.setHealthSource(result.getSource());
-            if (Objects.equals(instance.getState(), newState) && Objects.equals(instance.getHealthy(), newHealthy)) {
-                return;
-            }
-            instance.setState(newState);
-            instance.setHealthy(newHealthy);
-            instance.setStateChangedAt(DateKit.current());
-            ApiAssets service = apiRegistry.refreshByMethodVersion(
-                    instance.getTenant_id(),
-                    instance.getApp_id(),
-                    instance.getMethod(),
-                    instance.getVersion());
-            if (service != null) {
-                apiRegistry.register(service, instance);
-            } else if (watchManager != null) {
-                watchManager.notify("instance:" + instance.getFingerprint(), instance);
+            for (Map.Entry<ApiAssets, Instance> registration : registrations.entrySet()) {
+                Instance instance = registration.getValue();
+                instance.setLastProbeAt(DateKit.current());
+                instance.setLastStatus(result);
+                instance.setHealthSource(result.getSource());
+                if (Objects.equals(instance.getState(), newState)
+                        && Objects.equals(instance.getHealthy(), newHealthy)) {
+                    continue;
+                }
+                instance.setState(newState);
+                instance.setHealthy(newHealthy);
+                instance.setStateChangedAt(DateKit.current());
+                ApiAssets expected = registration.getKey();
+                ApiAssets service = apiRegistry.refreshByMethodVersion(
+                        instance.getTenant_id(),
+                        instance.getApp_id(),
+                        expected.getMethod(),
+                        expected.getVersion());
+                if (service != null) {
+                    apiRegistry.register(service, instance);
+                }
             }
         } catch (Exception e) {
             failureCount.incrementAndGet();
@@ -279,11 +313,10 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
             Logger.warn(
                     false,
                     "Cortex",
-                    "Health probe failed for {}/{}@{}:{}: {}",
-                    instance.getMethod(),
-                    instance.getVersion(),
-                    instance.getHost(),
-                    instance.getPort(),
+                    "Health probe failed for {}@{}:{}: {}",
+                    sample.getApp_id(),
+                    sample.getHost(),
+                    sample.getPort(),
                     e.getMessage());
         }
     }
@@ -296,7 +329,8 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
      */
     private void awaitTermination(ExecutorService executorService, String name) {
         try {
-            if (!executorService.awaitTermination(Math.max(timeoutMs, 1000L), TimeUnit.MILLISECONDS)) {
+            if (!executorService
+                    .awaitTermination(Math.max(timeoutMs, Chrono.SECOND.getMillis()), TimeUnit.MILLISECONDS)) {
                 Logger.warn(false, "Cortex", "Health timed out while stopping {}", name);
             }
         } catch (InterruptedException e) {

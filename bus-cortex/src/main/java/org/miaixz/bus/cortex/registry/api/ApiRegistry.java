@@ -19,20 +19,20 @@
 */
 package org.miaixz.bus.cortex.registry.api;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
-import org.miaixz.bus.cortex.magic.identity.Fingerprint;
+import org.miaixz.bus.cortex.magic.identity.Checksum;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.cortex.registry.RegistryChange;
-import org.miaixz.bus.cortex.registry.RegistryIdentity;
 import org.miaixz.bus.cortex.registry.RegistryStore;
 import org.miaixz.bus.cortex.registry.StoreBackedRegistry;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -145,10 +145,11 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
     }
 
     /**
-     * Registers both a service definition and one runtime instance.
+     * Registers a shared process with the exact service definition supplied by the caller. Service method and service
+     * version stay on the definition and never overwrite process fields.
      *
-     * @param service  service definition to register
-     * @param instance runtime instance associated with the service
+     * @param service  exact service definition
+     * @param instance shared application process
      */
     @Override
     public void register(ApiAssets service, Instance instance) {
@@ -157,19 +158,31 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
             return;
         }
         ApiAssets prepared = normalizeService(service, instance);
-        String resolvedTenant = prepared.getTenant_id();
-        String appId = prepared.getApp_id();
-        String fingerprint = ensureFingerprint(instance);
-        String method = prepared.getMethod();
-        String version = prepared.getVersion();
-        Instance previous = findInstance(resolvedTenant, appId, method, version, fingerprint);
-        fillInstanceIdentity(prepared, instance);
-
-        long ttl = prepared.getTtl() > 0 ? prepared.getTtl() : 3600_000L;
-        String instKey = keying.key(Keying.RegistrySpec.instance(resolvedTenant, appId, method, version, fingerprint));
-        afterCommit(() -> cacheX.write(instKey, JsonKit.toJsonString(instance), ttl));
+        String checksum = ensureChecksum(instance);
+        Instance previous = null;
+        for (Instance known : queryInstances(null, prepared.getApp_id(), null, null)) {
+            if (checksum.equals(known.getChecksum()) && Objects.equals(instance.getTenant_id(), known.getTenant_id())) {
+                if (instance.getId() == null) {
+                    instance.setId(known.getId());
+                } else if (known.getId() != null && !instance.getId().equals(known.getId())) {
+                    throw new IllegalArgumentException("Process identity conflicts with an existing registration");
+                }
+            }
+        }
+        previous = findInstance(prepared.getApp_id(), prepared.getMethod(), prepared.getVersion(), checksum);
+        if (instance.getId() == null) {
+            instance.setId(ID.objectId());
+        }
+        if (instance.getWeight() == null || instance.getWeight() < 0) {
+            throw new IllegalArgumentException("Runtime routing weight must be non-negative");
+        }
+        String key = keying.key(
+                Keying.RegistrySpec
+                        .instance(null, prepared.getApp_id(), prepared.getMethod(), prepared.getVersion(), checksum));
         ApiAssets existing = loadExisting(prepared);
         persistEntry(prepared, instance, existing);
+        long ttl = prepared.getTtl() > 0 ? prepared.getTtl() : 3600_000L;
+        afterCommit(() -> cacheX.write(key, JsonKit.toJsonString(instance), ttl));
         publishChange(
                 existing == null ? RegistryChange.Action.REGISTER : RegistryChange.Action.UPDATE,
                 prepared,
@@ -179,89 +192,97 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
     }
 
     /**
-     * Removes a specific runtime instance from the registry.
+     * Removes only the selected service registration, leaving the common process and other registrations intact.
      *
-     * @param tenantId    service tenantId
-     * @param app_id      application identifier
-     * @param method      service method identifier
-     * @param version     service version
-     * @param fingerprint instance fingerprint
+     * @param tenantId registry query context
+     * @param app_id   owning application
+     * @param method   service method
+     * @param version  service version
+     * @param checksum process checksum
      */
     @Override
-    public void deregisterInstance(String tenantId, String app_id, String method, String version, String fingerprint) {
-        String resolvedTenant = normalizeTenant(tenantId);
-        String instKey = keying.key(Keying.RegistrySpec.instance(resolvedTenant, app_id, method, version, fingerprint));
-        ApiAssets service = findServiceByRoute(resolvedTenant, app_id, method, version);
-        Instance current = findInstance(resolvedTenant, app_id, method, version, fingerprint);
+    public void deregisterInstance(String tenantId, String app_id, String method, String version, String checksum) {
+        Instance current = findInstance(app_id, method, version, checksum);
+        ApiAssets service = findServiceByRoute(app_id, method, version);
         if (store != null && storeSupports(Trait.DURABLE) && storeSupports(Trait.INSTANCES)) {
-            store.deleteInstance(registryType, resolvedTenant, app_id, method, version, fingerprint);
+            store.deleteInstance(registryType, normalizeTenant(tenantId), app_id, method, version, checksum);
         } else if (store != null) {
             capabilityFallback("deleteInstance", Trait.INSTANCES, "cache remove");
         }
-        afterCommit(() -> cacheX.remove(instKey));
-        if (current != null) {
-            ApiAssets prepared = normalizeService(
-                    service == null ? synthesizeService(resolvedTenant, app_id, method, version, current) : service,
-                    current);
-            publishChange(RegistryChange.Action.DEREGISTER, prepared, prepared, null, current);
+        String key = keying.key(Keying.RegistrySpec.instance(null, app_id, method, version, checksum));
+        afterCommit(() -> cacheX.remove(key));
+        if (current != null && service != null) {
+            publishChange(RegistryChange.Action.DEREGISTER, service, service, null, current);
         }
     }
 
     /**
-     * Queries runtime instances matching the given criteria.
+     * Reads shared processes associated with the requested service coordinates. Durable stores return current shared
+     * process snapshots; cache reads obtain routes from existing ApiAssets.
      *
-     * @param tenantId required target tenant identifier
-     * @param app_id   application identifier filter (null matches all)
-     * @param method   service method filter (null matches all)
-     * @param version  service version filter (null matches all)
-     * @return list of matching instances
+     * @param tenantId registry query context
+     * @param app_id   optional application filter
+     * @param method   optional service method
+     * @param version  optional service version
+     * @return distinct runtime process snapshots matching the selected services
      */
     @Override
     public List<Instance> queryInstances(String tenantId, String app_id, String method, String version) {
-        String resolvedTenant = normalizeTenant(tenantId);
+        Map<List<String>, Instance> result = new LinkedHashMap<>();
         if (store != null && storeSupports(Trait.INSTANCES)) {
-            List<Instance> persisted = store.queryInstances(registryType, resolvedTenant, app_id, method, version);
-            for (Instance instance : persisted) {
-                instance.setTenant_id(RegistryIdentity.tenantId(Type.API, instance.getTenant_id()));
+            for (Instance instance : store
+                    .queryInstances(registryType, normalizeTenant(tenantId), app_id, method, version)) {
+                requireInstance(instance, app_id);
+                result.put(identity(instance), instance);
+                if (app_id != null && method != null && version != null) {
+                    String key = keying
+                            .key(Keying.RegistrySpec.instance(null, app_id, method, version, instance.getChecksum()));
+                    afterCommit(
+                            () -> cacheX.write(
+                                    key,
+                                    JsonKit.toJsonString(instance),
+                                    Builder.DEFAULT_HEALTH_INTERVAL_MS * 120));
+                }
             }
-            if (!persisted.isEmpty()) {
-                warmInstanceCache(resolvedTenant, app_id, method, version, persisted);
-                return persisted;
+            return List.copyOf(result.values());
+        }
+        Vector vector = Vector.builder().type(Type.API.key()).app_id(app_id).method(method).version(version).build();
+        for (ApiAssets service : query(vector)) {
+            if (!matches(app_id, service.getApp_id()) || !matches(method, service.getMethod())
+                    || !matches(version, service.getVersion())) {
+                continue;
             }
-        } else if (store != null) {
-            capabilityFallback("queryInstances", Trait.INSTANCES, "cache scan");
-        }
-        String prefix;
-        if (app_id == null) {
-            prefix = keying.prefix(Keying.RegistrySpec.instance(resolvedTenant, null, null, null, null));
-        } else if (method == null) {
-            prefix = keying.prefix(Keying.RegistrySpec.instance(resolvedTenant, app_id, null, null, null));
-        } else if (version == null) {
-            prefix = keying.prefix(Keying.RegistrySpec.instance(resolvedTenant, app_id, method, null, null));
-        } else {
-            prefix = keying.prefix(Keying.RegistrySpec.instance(resolvedTenant, app_id, method, version, null));
-        }
-        Map<String, Object> raw = cacheX.scan(prefix);
-        List<Instance> result = new ArrayList<>();
-        for (Map.Entry<String, Object> item : raw.entrySet()) {
-            Object value = item.getValue();
-            if (value instanceof String s) {
-                Instance inst = JsonKit.toPojo(s, Instance.class);
-                if (inst != null && resolvedTenant.equals(inst.getTenant_id())
-                        && (app_id == null || app_id.equals(inst.getApp_id()))
-                        && (method == null || method.equals(inst.getMethod()))
-                        && (version == null || version.equals(inst.getVersion()))) {
-                    result.add(inst);
+            String prefix = keying.prefix(
+                    Keying.RegistrySpec
+                            .instance(null, service.getApp_id(), service.getMethod(), service.getVersion(), null));
+            Map<String, Object> raw = cacheX.scan(prefix);
+            if (raw == null) {
+                continue;
+            }
+            for (Map.Entry<String, Object> entry : raw.entrySet()) {
+                if (entry.getValue() instanceof String json) {
+                    Instance instance = JsonKit.toPojo(json, Instance.class);
+                    requireInstance(instance, service.getApp_id());
+                    String exact = keying.key(
+                            Keying.RegistrySpec.instance(
+                                    null,
+                                    service.getApp_id(),
+                                    service.getMethod(),
+                                    service.getVersion(),
+                                    instance.getChecksum()));
+                    if (exact.equals(entry.getKey())) {
+                        result.putIfAbsent(identity(instance), instance);
+                    }
                 }
             }
         }
-        return result;
+        return List.copyOf(result.values());
     }
 
     /**
-     * Returns whether this registry persists and queries runtime service instances in addition to service definitions.
+     * Reports runtime registration support.
      *
-     * @return {@code true} because API registry supports runtime instance management
+     * @return true
      */
     @Override
     public boolean supportsInstances() {
@@ -269,187 +290,117 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
     }
 
     /**
-     * Applies API-registry defaults shared by service registration and instance refresh.
+     * Normalizes the service and fills missing application ownership without changing process version or tenant.
      *
-     * @param service  API service definition
-     * @param instance optional runtime instance
+     * @param service  exact service definition
+     * @param instance optional shared process
      * @return normalized service definition
      */
     private ApiAssets normalizeService(ApiAssets service, Instance instance) {
         ApiAssets prepared = normalizeEntry(service);
         prepared.normalizeMeta(keying);
-        if (instance == null) {
-            return prepared;
-        }
-        if (instance.getLease() == null) {
-            instance.setLease(prepared.meta().getLease());
-        }
-        if (StringKit.isEmpty(instance.getApp_id())) {
-            instance.setApp_id(prepared.getApp_id());
+        if (instance != null) {
+            if (StringKit.isEmpty(instance.getApp_id())) {
+                instance.setApp_id(prepared.getApp_id());
+            }
+            if (StringKit.isEmpty(instance.getApp_id()) || !Objects.equals(instance.getApp_id(), prepared.getApp_id())
+                    || StringKit.isEmpty(prepared.getId()) || StringKit.isEmpty(prepared.getMethod())
+                    || StringKit.isEmpty(prepared.getVersion())) {
+                throw new IllegalArgumentException("Exact service and owning application process are required");
+            }
+            if (instance.getLease() == null) {
+                instance.setLease(prepared.meta().getLease());
+            }
         }
         return prepared;
     }
 
     /**
-     * Ensures that one runtime instance has a stable fingerprint derived from host and port when absent.
+     * Ensures the process checksum using the shared host and port checksum utility.
      *
-     * @param instance runtime instance
-     * @return ensured fingerprint
-     * @throws IllegalArgumentException if a missing fingerprint cannot be derived because host or port is absent
+     * @param instance shared process
+     * @return stable process checksum
      */
-    private String ensureFingerprint(Instance instance) {
-        if (StringKit.isNotEmpty(instance.getFingerprint())) {
-            return instance.getFingerprint();
+    private String ensureChecksum(Instance instance) {
+        if (StringKit.isEmpty(instance.getChecksum())) {
+            if (instance.getHost() == null || instance.getPort() == null) {
+                throw new IllegalArgumentException("Instance host and port are required when checksum is blank");
+            }
+            instance.setChecksum(Checksum.of(instance.getHost(), instance.getPort()));
         }
-        if (instance.getHost() == null || instance.getPort() == null) {
-            throw new IllegalArgumentException("Instance host and port are required when fingerprint is blank");
-        }
-        String fingerprint = Fingerprint.of(instance.getHost(), instance.getPort());
-        instance.setFingerprint(fingerprint);
-        return fingerprint;
+        return instance.getChecksum();
     }
 
     /**
-     * Fills missing runtime-instance identity fields from the owning service.
+     * Finds an exact process within a service registration context.
      *
-     * @param service  API service definition
-     * @param instance runtime instance
+     * @param app      owning application
+     * @param method   service method
+     * @param version  service version
+     * @param checksum process checksum
+     * @return runtime snapshot, or null when absent
      */
-    private void fillInstanceIdentity(ApiAssets service, Instance instance) {
-        instance.setTenant_id(RegistryIdentity.tenantId(Type.API, instance.getTenant_id()));
-        if (StringKit.isEmpty(instance.getApp_id())) {
-            instance.setApp_id(service.getApp_id());
-        }
-        if (StringKit.isEmpty(instance.getServiceId())) {
-            instance.setServiceId(service.getId());
-        }
-        if (StringKit.isEmpty(instance.getMethod())) {
-            instance.setMethod(service.getMethod());
-        }
-        if (StringKit.isEmpty(instance.getVersion())) {
-            instance.setVersion(service.getVersion());
-        }
-    }
-
-    /**
-     * Finds a runtime instance by route identity and fingerprint.
-     *
-     * @param tenantId    tenantId
-     * @param app_id      application identifier
-     * @param method      method name
-     * @param version     service version
-     * @param fingerprint runtime instance fingerprint
-     * @return matching runtime instance or {@code null}
-     */
-    private Instance findInstance(String tenantId, String app_id, String method, String version, String fingerprint) {
-        if (StringKit.isEmpty(fingerprint)) {
+    private Instance findInstance(String app, String method, String version, String checksum) {
+        if (StringKit.isEmpty(checksum)) {
             return null;
         }
-        return queryInstances(tenantId, app_id, method, version).stream()
-                .filter(item -> fingerprint.equals(item.getFingerprint())).findFirst().orElse(null);
+        return queryInstances(null, app, method, version).stream()
+                .filter(instance -> checksum.equals(instance.getChecksum())).findFirst().orElse(null);
     }
 
     /**
-     * Finds a service definition by route identity.
+     * Finds the existing service definition without synthesizing a service identifier from a process.
      *
-     * @param tenantId tenantId
-     * @param app_id   application identifier
-     * @param method   method name
-     * @param version  service version
-     * @return matching service definition or {@code null}
+     * @param app     application identifier
+     * @param method  service method
+     * @param version service version
+     * @return service definition, or null when absent
      */
-    private ApiAssets findServiceByRoute(String tenantId, String app_id, String method, String version) {
+    private ApiAssets findServiceByRoute(String app, String method, String version) {
         if (store != null && storeSupports(Trait.ROUTE_QUERY)) {
-            ApiAssets persisted = store.findByMethodVersion(registryType, tenantId, app_id, method, version);
-            if (persisted != null) {
-                return persisted;
-            }
-        } else if (store != null) {
-            capabilityFallback("findServiceByRoute", Trait.ROUTE_QUERY, "cache route scan");
+            return store.findByMethodVersion(registryType, null, app, method, version);
         }
-        Map<String, Object> raw = cacheX.scan(keying.prefix(Keying.RegistrySpec.entry(tenantId, registryType, null)));
-        if (raw == null || raw.isEmpty()) {
-            return null;
-        }
-        for (Object value : raw.values()) {
-            ApiAssets asset = deserialize(value);
-            if (asset != null && equals(app_id, asset.getApp_id()) && equals(method, asset.getMethod())
-                    && equals(version, asset.getVersion())) {
-                return asset;
-            }
-        }
-        return null;
+        List<ApiAssets> services = query(
+                Vector.builder().type(Type.API.key()).app_id(app).method(method).version(version).build());
+        return services.stream()
+                .filter(
+                        service -> matches(app, service.getApp_id()) && matches(method, service.getMethod())
+                                && matches(version, service.getVersion()))
+                .findFirst().orElse(null);
     }
 
     /**
-     * Builds a synthetic service definition from a runtime instance.
+     * Tests an optional route filter.
      *
-     * @param tenantId tenantId
-     * @param app_id   application identifier
-     * @param method   method name
-     * @param version  service version
-     * @param instance runtime instance
-     * @return synthetic service definition
+     * @param expected optional filter
+     * @param actual   actual coordinate
+     * @return whether the coordinate matches
      */
-    private ApiAssets synthesizeService(
-            String tenantId,
-            String app_id,
-            String method,
-            String version,
-            Instance instance) {
-        ApiAssets service = new ApiAssets();
-        service.setTenant_id(tenantId);
-        service.setApp_id(app_id);
-        service.setMethod(method);
-        service.setVersion(version);
-        service.setId(
-                StringKit.isNotEmpty(instance.getServiceId()) ? instance.getServiceId()
-                        : method + Symbol.COLON + version);
-        service.setType(Type.API.key());
-        return service;
-    }
-
-    /**
-     * Returns whether a route value matches an optional expectation.
-     *
-     * @param expected expected value, or {@code null} to match any value
-     * @param actual   actual value
-     * @return {@code true} when the value matches
-     */
-    private boolean equals(String expected, String actual) {
+    private boolean matches(String expected, String actual) {
         return expected == null || expected.equals(actual);
     }
 
     /**
-     * Warms the runtime-instance cache projection after durable reads.
+     * Validates a shared process snapshot and its application ownership.
      *
-     * @param tenantId  tenantId override
-     * @param app_id    application identifier override
-     * @param method    method override
-     * @param version   version override
-     * @param instances runtime instances to cache
+     * @param instance returned shared process
+     * @param app      optional expected application
      */
-    private void warmInstanceCache(
-            String tenantId,
-            String app_id,
-            String method,
-            String version,
-            List<Instance> instances) {
-        for (Instance instance : instances) {
-            if (instance == null || instance.getFingerprint() == null) {
-                continue;
-            }
-            String instTenant = tenantId != null ? tenantId : instance.getTenant_id();
-            String instAppId = app_id != null ? app_id : instance.getApp_id();
-            String instMethod = method != null ? method : instance.getMethod();
-            String instVersion = version != null ? version : instance.getVersion();
-            String instKey = keying.key(
-                    Keying.RegistrySpec
-                            .instance(instTenant, instAppId, instMethod, instVersion, instance.getFingerprint()));
-            afterCommit(
-                    () -> cacheX
-                            .write(instKey, JsonKit.toJsonString(instance), Builder.DEFAULT_HEALTH_INTERVAL_MS * 120));
+    private void requireInstance(Instance instance, String app) {
+        if (instance == null || StringKit.isEmpty(instance.getId()) || StringKit.isEmpty(instance.getApp_id())
+                || StringKit.isEmpty(instance.getChecksum()) || !matches(app, instance.getApp_id())) {
+            throw new IllegalStateException("Invalid shared process snapshot");
         }
+    }
+
+    /**
+     * Returns exact process identity coordinates for deduplication across service registrations.
+     *
+     * @param instance validated shared process
+     * @return tenant, application and checksum coordinates
+     */
+    private List<String> identity(Instance instance) {
+        return List.of(Objects.toString(instance.getTenant_id(), ""), instance.getApp_id(), instance.getChecksum());
     }
 
 }

@@ -17,43 +17,45 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.setting.curator;
+package org.miaixz.bus.cortex.setting.approval;
 
-import org.miaixz.bus.cortex.setting.item.Item;
+import java.util.List;
+
+import org.miaixz.bus.cortex.setting.SettingEnforcer;
+import org.miaixz.bus.cortex.setting.rollout.Rollout;
 
 /**
- * Inline resolver that returns the stored content directly.
+ * Approval evidence and workflow decision share one host entity transaction.
  *
  * @author Kimi Liu
  */
-public class InlineSourceAdapter implements ItemSourceAdapter {
+public interface ApprovalStore {
 
     /**
-     * Creates an inline setting adapter.
-     */
-    public InlineSourceAdapter() {
-        // No initialization required.
-    }
-
-    /**
-     * Returns the logical source handled by the inline adapter.
+     * Reads immutable approval evidence for the workflow.
      *
-     * @return source
+     * @param tenant  exact tenant identifier
+     * @param rollout publication workflow identifier
+     * @return immutable decisions recorded for the workflow
      */
-    @Override
-    public String source() {
-        return "INLINE";
-    }
+    List<Approval> query(String tenant, String rollout);
 
     /**
-     * Resolves the effective value by returning the inline content directly.
+     * Atomically rechecks reviewer, stage, policy, edition and frozen checksum, writes the decision and advances
+     * REVIEWING to the correct next state; identical request is idempotent.
      *
-     * @param entry setting entry to resolve
-     * @return inline content or {@code null}
+     * @param context        authenticated reviewer and request identity
+     * @param rollout        exact workflow identifier
+     * @param edition        expected workflow concurrency counter
+     * @param frozenChecksum checksum of the reviewed frozen plan
+     * @param decision       policy-stage decision to record
+     * @return workflow state resulting from the decision
      */
-    @Override
-    public String resolve(Item entry) {
-        return entry == null ? null : entry.getContent();
-    }
+    Rollout decide(
+            SettingEnforcer.Context context,
+            String rollout,
+            long edition,
+            String frozenChecksum,
+            Approval decision);
 
 }

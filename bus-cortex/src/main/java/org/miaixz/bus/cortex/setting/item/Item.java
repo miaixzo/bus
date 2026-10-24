@@ -26,9 +26,10 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.basic.entity.Tenant;
+import org.miaixz.bus.core.xyz.EnumKit;
 
 /**
- * Current state of one setting item.
+ * Current editable configuration definition; application relationships and publication state belong elsewhere.
  *
  * @author Kimi Liu
  */
@@ -38,340 +39,180 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 public class Item extends Tenant {
 
     /**
-     * Owning application identifier; required for application items and absent for shared items.
-     */
-    private String app_id;
-    /**
-     * Current stable revision identifier.
-     */
-    private String stable_id;
-    /**
-     * Latest pending revision, including staged deletion; never a runtime-delivery pointer.
-     */
-    private String draft_id;
-    /**
-     * Current gray revision identifier.
-     */
-    private String gray_id;
-    /**
-     * Active gray rollout identifier.
-     */
-    private String rollout_id;
-    /**
-     * Configuration category from org.miaixz.bus.cortex.setting.item.Item.Type; unrelated to the Cortex resource
-     * category.
+     * Configuration category stored using the stable code from {@link Type}.
      */
     private Integer type;
+
     /**
-     * Ownership scope: SHARED for tenant-wide items or APPLICATION for application-owned items.
-     */
-    private String scope;
-    /**
-     * Persisted item kind.
-     */
-    private String kind;
-    /**
-     * Stable setting code.
+     * Code identifying the current configuration definition.
      */
     private String code;
 
     /**
-     * Editable source content.
+     * Current definition containing {@code value}, {@code default} and {@code desc} members; sensitive members must be
+     * protected.
      */
     @Lob
     private String content;
-    /**
-     * Content format.
-     */
-    private String format;
-    /**
-     * Content source type.
-     */
-    private String source;
 
     /**
-     * Whole-content JSON Schema, independent from external source parameters.
+     * Delivery and export format; the definition body is always canonical JSON.
+     */
+    private String format;
+
+    /**
+     * JSON Schema used to validate the complete effective configuration.
      */
     @Lob
     private String schema;
+
     /**
-     * Encrypted-content flag.
+     * Storage protection flag; protection is mandatory for {@link Type#SECRET}.
      */
     private Integer encrypted;
+
     /**
-     * Labels stored as text.
+     * Optimistic concurrency counter for the current definition, independent of publication versions.
      */
-    @Lob
-    private String labels;
+    private Long edition;
+
     /**
-     * External source descriptor.
-     */
-    @Lob
-    private String descriptor;
-    /**
-     * Digest of immutable item coordinates.
-     */
-    private String fingerprint;
-    /**
-     * Source extension stored as text.
+     * Validated definition rules and protection metadata.
      */
     @Lob
     private String extension;
+
     /**
-     * Semantic content checksum.
+     * Checksum of the canonical protected definition.
      */
     private String checksum;
+
     /**
-     * Optimistic editing edition.
-     */
-    private Long edition;
-    /**
-     * Runtime delivery generation.
-     */
-    private Long generation;
-    /**
-     * Optional item description.
+     * Description of the complete configuration.
      */
     private String description;
 
     /**
-     * Creates an empty setting item.
+     * Creates an empty configuration definition.
      */
     public Item() {
         // No initialization required.
     }
 
     /**
-     * Supported configuration ownership scopes.
+     * Configuration categories, independent of Cortex resource categories.
      *
      * @author Kimi Liu
-     */
-    public enum Scope {
-        /**
-         * Configuration shared within a tenant.
-         */
-        SHARED,
-        /**
-         * Configuration maintained by one application.
-         */
-        APPLICATION
-    }
-
-    /**
-     * Configuration content kind.
-     */
-    public enum Kind {
-        /**
-         * User-authored source configuration.
-         */
-        SOURCE,
-        /**
-         * Materialized effective configuration.
-         */
-        EFFECTIVE
-    }
-
-    /**
-     * Supported content editing modes.
-     *
-     * @author Kimi Liu
-     */
-    public enum Editor {
-        /**
-         * Source-text editing mode.
-         */
-        SOURCE,
-        /**
-         * Structured key-value editing mode.
-         */
-        KEY_VALUE
-    }
-
-    /**
-     * Supported protected-value mutations.
-     *
-     * @author Kimi Liu
-     */
-    public enum SecretAction {
-        /**
-         * Keeps the existing protected value.
-         */
-        KEEP,
-        /**
-         * Replaces the existing protected value.
-         */
-        REPLACE,
-        /**
-         * Deletes the existing protected value.
-         */
-        DELETE
-    }
-
-    /**
-     * Supported validation depths.
-     *
-     * @author Kimi Liu
-     */
-    public enum ValidationLevel {
-        /**
-         * Performs syntax validation only.
-         */
-        SYNTAX,
-        /**
-         * Performs syntax and business validation.
-         */
-        FULL
-    }
-
-    /**
-     * Stable persisted configuration categories.
      */
     public enum Type {
 
         /**
-         * Ordinary configuration content, stored with category code {@code 1}.
+         * Ordinary configuration values.
          */
         CONFIG_MAP(1),
-
         /**
-         * Protected configuration content, stored with category code {@code 2}.
+         * Sensitive configuration values requiring storage protection.
          */
         SECRET(2);
 
         /**
-         * Stable numeric code stored in configuration records.
+         * Stable persistence code.
          */
         private final int key;
 
         /**
-         * Creates an enum value with its stable storage code.
+         * Creates an enum value with its stable persistence code.
          *
-         * @param key persisted numeric code
+         * @param key stable persistence code
          */
         Type(int key) {
             this.key = key;
         }
 
         /**
-         * Resolves a configuration category from its stable numeric code.
+         * Resolves a supported persistence code without fallback.
          *
-         * @param key persisted numeric code
+         * @param key persistence code to resolve
          * @return matching enum value
          * @throws IllegalArgumentException if the code is null or unsupported
          */
         public static Type of(Integer key) {
-            for (Type value : values())
-                if (key != null && value.key == key)
-                    return value;
-            throw new IllegalArgumentException("Unsupported configuration type");
+            Type value = EnumKit.getBy(Type.class, candidate -> key != null && candidate.key == key);
+            if (value == null) {
+                throw new IllegalArgumentException("Unsupported Type code");
+            }
+            return value;
         }
 
         /**
-         * Returns the stable storage code.
+         * Returns the stable persistence code.
          *
-         * @return persisted numeric code
+         * @return stable persistence code
          */
         public int key() {
             return key;
         }
+
     }
 
     /**
-     * Stable persisted lifecycle states for configuration items.
+     * Current definition states, independent of publication workflow states.
+     *
+     * @author Kimi Liu
      */
     public enum Status {
 
         /**
-         * Logically deleted item ({@code -1}).
+         * Deleted current definition.
          */
         DELETED(-1),
-
         /**
-         * Disabled item ({@code 0}).
+         * Disabled current definition.
          */
         DISABLED(0),
-
         /**
-         * Draft item not yet published ({@code 10}).
+         * Active current definition.
          */
-        UNPUBLISHED(10),
+        ACTIVE(1);
 
         /**
-         * Published item ({@code 20}).
-         */
-        PUBLISHED(20),
-
-        /**
-         * Item with staged changes ({@code 30}).
-         */
-        CHANGED(30),
-
-        /**
-         * Item participating in a gray publication ({@code 40}).
-         */
-        GRAY(40),
-
-        /**
-         * Archived item ({@code 50}).
-         */
-        ARCHIVED(50);
-
-        /**
-         * Stable numeric code stored in configuration records.
+         * Stable persistence code.
          */
         private final int key;
 
         /**
-         * Creates an enum value with its stable storage code.
+         * Creates an enum value with its stable persistence code.
          *
-         * @param key persisted numeric code
+         * @param key stable persistence code
          */
         Status(int key) {
             this.key = key;
         }
 
         /**
-         * Resolves a configuration lifecycle state from its stable numeric code.
+         * Resolves a supported persistence code without fallback.
          *
-         * @param key persisted numeric code
+         * @param key persistence code to resolve
          * @return matching enum value
          * @throws IllegalArgumentException if the code is null or unsupported
          */
         public static Status of(Integer key) {
-            for (Status value : values())
-                if (key != null && value.key == key)
-                    return value;
-            throw new IllegalArgumentException("Unsupported configuration status");
+            Status value = EnumKit.getBy(Status.class, candidate -> key != null && candidate.key == key);
+            if (value == null) {
+                throw new IllegalArgumentException("Unsupported Status code");
+            }
+            return value;
         }
 
         /**
-         * Returns the stable storage code.
+         * Returns the stable persistence code.
          *
-         * @return persisted numeric code
+         * @return stable persistence code
          */
         public int key() {
             return key;
         }
-    }
 
-    /**
-     * Supported content-resolution sources for configuration items.
-     */
-    public enum Source {
-        /**
-         * Content supplied directly by the item.
-         */
-        INLINE,
-
-        /**
-         * Content resolved from the configured environment source.
-         */
-        ENV,
-
-        /**
-         * Content resolved through an authorized external Secret provider.
-         */
-        SECRET
     }
 
 }

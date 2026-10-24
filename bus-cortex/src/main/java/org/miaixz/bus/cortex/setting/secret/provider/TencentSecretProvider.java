@@ -20,7 +20,6 @@
 package org.miaixz.bus.cortex.setting.secret.provider;
 
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -28,10 +27,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.exception.ForbiddenException;
 import org.miaixz.bus.core.lang.exception.UncheckedException;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.HexKit;
+import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.cortex.setting.secret.SecretContext;
 import org.miaixz.bus.cortex.setting.secret.SecretMaterial;
 import org.miaixz.bus.cortex.setting.secret.SecretProvider;
@@ -42,6 +48,8 @@ import org.miaixz.bus.fabric.protocol.http.HttpX;
 
 /**
  * Direct Tencent Cloud SSM GetSecretValue with TC3 signing, including HTTP-200 business errors.
+ *
+ * @author Kimi Liu
  */
 public final class TencentSecretProvider implements SecretProvider {
 
@@ -139,7 +147,7 @@ public final class TencentSecretProvider implements SecretProvider {
      */
     TencentSecretProvider(String region, URI endpoint, long generation, CloudCredentials.Source credentials,
             Supplier<HttpX.Builder> http, Clock clock) {
-        if (region == null || !region.matches("[a-z0-9-]+") || generation < 0) {
+        if (region == null || !PatternKit.isMatch(Pattern.get("[a-z0-9-]+", 0), region) || generation < 0) {
             throw new IllegalArgumentException("Invalid Tencent connection");
         }
         this.region = region;
@@ -162,7 +170,7 @@ public final class TencentSecretProvider implements SecretProvider {
             throw new CryptoException("Secret backend is unavailable");
         }
         if (response.containsKey("Error")) {
-            throw error(200, body);
+            throw error(Http.Status.OK, body);
         }
         return response;
     }
@@ -178,7 +186,7 @@ public final class TencentSecretProvider implements SecretProvider {
     private static boolean retryable(int status, Map<?, ?> body) {
         Map<?, ?> response = body.get("Response") instanceof Map<?, ?> nested ? nested : body;
         Map<?, ?> error = response.get("Error") instanceof Map<?, ?> nested ? nested : response;
-        String code = error.get("Code") instanceof String text ? text : "";
+        String code = error.get("Code") instanceof String text ? text : Normal.EMPTY;
         if (!code.isEmpty()) {
             return code.startsWith("RequestLimitExceeded") || code.startsWith("LimitExceeded")
                     || code.startsWith("InternalError");
@@ -197,7 +205,7 @@ public final class TencentSecretProvider implements SecretProvider {
     private static UncheckedException error(int status, Map<?, ?> body) {
         Map<?, ?> response = body.get("Response") instanceof Map<?, ?> nested ? nested : body;
         Map<?, ?> error = response.get("Error") instanceof Map<?, ?> nested ? nested : response;
-        String code = error.get("Code") instanceof String text ? text : "";
+        String code = error.get("Code") instanceof String text ? text : Normal.EMPTY;
         if (code.startsWith("AuthFailure") || code.startsWith("UnauthorizedOperation")
                 || code.startsWith("OperationDenied") || code.equals("ResourceUnavailable.ResourceDisabled")) {
             return new ForbiddenException("Secret access denied");
@@ -238,17 +246,17 @@ public final class TencentSecretProvider implements SecretProvider {
         String timestamp = Long.toString(instant.getEpochSecond());
         String names = "content-type;host;x-tc-action";
         String canonical = "POST\n/\n\ncontent-type:application/json; charset=utf-8\nhost:"
-                + CloudProtocol.host(endpoint) + "\nx-tc-action:getsecretvalue\n\n" + names + "\n"
+                + CloudProtocol.host(endpoint) + "\nx-tc-action:getsecretvalue\n\n" + names + Symbol.LF
                 + CloudProtocol.hash(payload);
         String scope = date + "/ssm/tc3_request";
-        String toSign = "TC3-HMAC-SHA256\n" + timestamp + "\n" + scope + "\n"
-                + CloudProtocol.hash(canonical.getBytes(StandardCharsets.UTF_8));
-        byte[] initial = identity.signingKey("TC3", ""), day = null, service = null, key = null;
+        String toSign = "TC3-HMAC-SHA256\n" + timestamp + Symbol.LF + scope + Symbol.LF
+                + CloudProtocol.hash(canonical.getBytes(Charset.UTF_8));
+        byte[] initial = identity.signingKey("TC3", Normal.EMPTY), day = null, service = null, key = null;
         try {
-            day = CloudProtocol.hmac("HmacSHA256", initial, date);
-            service = CloudProtocol.hmac("HmacSHA256", day, "ssm");
-            key = CloudProtocol.hmac("HmacSHA256", service, "tc3_request");
-            String signature = HexKit.encodeString(CloudProtocol.hmac("HmacSHA256", key, toSign));
+            day = CloudProtocol.hmac(Algorithm.HMACSHA256, initial, date);
+            service = CloudProtocol.hmac(Algorithm.HMACSHA256, day, "ssm");
+            key = CloudProtocol.hmac(Algorithm.HMACSHA256, service, "tc3_request");
+            String signature = HexKit.encodeString(CloudProtocol.hmac(Algorithm.HMACSHA256, key, toSign));
             Map<String, String> headers = new TreeMap<>();
             headers.put("content-type", "application/json; charset=utf-8");
             headers.put("host", CloudProtocol.host(endpoint));
@@ -261,8 +269,8 @@ public final class TencentSecretProvider implements SecretProvider {
             }
             headers.put(
                     "authorization",
-                    "TC3-HMAC-SHA256 Credential=" + identity.accessKeyId() + "/" + scope + ", SignedHeaders=" + names
-                            + ", Signature=" + signature);
+                    "TC3-HMAC-SHA256 Credential=" + identity.accessKeyId() + Symbol.SLASH + scope + ", SignedHeaders="
+                            + names + ", Signature=" + signature);
             return headers;
         } finally {
             for (byte[] bytes : new byte[][] { initial, day, service, key }) {
@@ -356,8 +364,7 @@ public final class TencentSecretProvider implements SecretProvider {
      *                                                               diagnostics are deliberately sanitized
      */
     private HttpX.Builder request(String name, String version, SecretContext context) {
-        byte[] body = JsonKit.toJsonString(Map.of("SecretName", name, "VersionId", version))
-                .getBytes(StandardCharsets.UTF_8);
+        byte[] body = JsonKit.toJsonString(Map.of("SecretName", name, "VersionId", version)).getBytes(Charset.UTF_8);
         try (CloudCredentials identity = credentials.acquire(context)) {
             Map<String, String> headers = sign(endpoint, region, body, identity, clock.instant());
             HttpX.Builder request = http.get().to(endpoint.toString()).post().body(body);

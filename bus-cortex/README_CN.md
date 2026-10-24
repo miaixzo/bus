@@ -208,74 +208,24 @@ public class Application {
 ### 1. 编程式 API（静态门面）
 
 ```java
+import java.util.List;
 import org.miaixz.bus.cortex.Cortex;
-import org.miaixz.bus.cortex.Vector;
+import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.registry.api.ApiAssets;
-import org.miaixz.bus.cortex.registry.api.Instance;
 
-// 注册服务 + 实例
-ApiAssets service = new ApiAssets();
-service.
+// Keep service coordinates independent of the shared process program version.
+ApiAssets service = ApiAssets.builder().id("orders.read-v1").app_id("order-service")
+        .method("orders.read").version("api-v1").protocol(1).verb(1).build();
+Instance instance = Instance.builder().tenant_id(tenantId).app_id("order-service")
+        .version("program-7").host("192.168.1.10").port(8080).weight(100).build();
+Cortex.apiRegistry().register(service, instance);
 
-        setTenant_id(tenantId);
-service.
+// Query direct Instance snapshots through the existing service route context.
+List<Instance> instances = Cortex.apiRegistry()
+        .queryInstances(tenantId, "order-service", "orders.read", "api-v1");
 
-        setApp_id("order-service");
-service.
-
-        setMethod("vortex.user.get");
-service.
-
-        setVersion("v1.0.0");
-service.
-
-        setPath("/v2/api");
-service.
-
-        setProtocol(1);  // 1=HTTP
-service.
-
-        setVerb(1);      // 1=GET
-
-        Instance instance = new Instance();
-instance.
-
-        setTenant_id(tenantId);
-instance.
-
-        setApp_id("order-service");
-instance.
-
-        setMethod("vortex.user.get");
-instance.
-
-        setVersion("v1.0.0");
-instance.
-
-        setHost("192.168.1.10");
-instance.
-
-        setPort(8080);
-instance.
-
-        setWeight(100);
-
-Cortex.
-
-        apiRegistry().
-
-        register(service, instance);
-
-        // 查询 API 定义
-        List<ApiAssets> results = Cortex.query(
-                Vector.newBuilder().tenant_id(tenantId).method("vortex.user.get").build(),
-                ApiAssets.class
-        );
-
-// 注销
-Cortex.
-
-        deregister(tenantId,"vortex.user.get:v1.0.0");
+// Remove only this service registration, retaining the shared process.
+Cortex.apiRegistry().deregisterInstance(tenantId, "order-service", "orders.read", "api-v1", instance.getChecksum());
 ```
 
 ### 2. 配置管理

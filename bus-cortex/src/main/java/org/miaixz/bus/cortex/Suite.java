@@ -23,6 +23,8 @@ import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Immutable value object describing store traits with enum-backed keys.
  *
@@ -123,7 +125,7 @@ public class Suite {
             return this;
         }
         throw new UnsupportedOperationException("Store trait required: domain=" + value(domain) + ", store="
-                + value(store) + ", trait=" + (trait == null ? "null" : trait.key()));
+                + value(store) + ", trait=" + (trait == null ? Normal.NULL : trait.key()));
     }
 
     /**
@@ -133,7 +135,7 @@ public class Suite {
      * @return normalized value or {@code unknown}
      */
     private String value(String value) {
-        return value == null || value.isBlank() ? "unknown" : value;
+        return value == null || value.isBlank() ? Normal.UNKNOWN : value;
     }
 
     /**

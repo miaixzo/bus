@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex.magic.identity;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Common Cortex identity normalization shared by registry, setting, watch, and guard code.
  *
@@ -55,7 +57,7 @@ public class CortexIdentity {
      */
     public static String tenantKey(String tenantId) {
         String value = tenantId(tenantId);
-        return value.length() + ":" + value;
+        return value.length() + Symbol.COLON + value;
     }
 
     /**

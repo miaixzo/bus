@@ -20,12 +20,10 @@
 package org.miaixz.bus.cortex.release;
 
 import java.util.List;
+import java.util.Objects;
 
-import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.cortex.*;
-import org.miaixz.bus.cortex.guard.CortexGuard;
-import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
 import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 
@@ -42,102 +40,19 @@ public class ReleaseRegistry implements Registry<ReleaseAssets> {
     private final ReleaseStore store;
 
     /**
-     * Version publishing workflow facade.
-     */
-    private final ReleasePublisher publisher;
-
-    /**
      * Optional shared watch manager.
      */
     private final WatchManager watchManager;
 
     /**
-     * Creates a version registry without watch or change-log integration.
+     * Creates a read-only formal version registry; configuration commands use workflow services.
      *
-     * @param store durable version store
-     */
-    public ReleaseRegistry(ReleaseStore store) {
-        this(store, null);
-    }
-
-    /**
-     * Creates a version registry with optional watch integration.
-     *
-     * @param store        durable version store
-     * @param watchManager optional watch manager
+     * @param store        authoritative formal versions
+     * @param watchManager notification transport
      */
     public ReleaseRegistry(ReleaseStore store, WatchManager watchManager) {
-        this(store, watchManager, null, null);
-    }
-
-    /**
-     * Creates a version registry with watch and change-log integration.
-     *
-     * @param store          durable version store
-     * @param watchManager   optional watch manager
-     * @param changeLogStore optional change-log store
-     */
-    public ReleaseRegistry(ReleaseStore store, WatchManager watchManager, CortexChangeLogStore changeLogStore) {
-        this(store, watchManager, changeLogStore, null);
-    }
-
-    /**
-     * Creates a version registry with watch and guard integration.
-     *
-     * @param store        durable version store
-     * @param watchManager optional watch manager
-     * @param cortexGuard  optional Cortex guard
-     */
-    public ReleaseRegistry(ReleaseStore store, WatchManager watchManager, CortexGuard cortexGuard) {
-        this(store, watchManager, null, cortexGuard);
-    }
-
-    /**
-     * Creates a version registry with optional watch, change-log, and guard integration.
-     *
-     * @param store          durable version store
-     * @param watchManager   optional watch manager
-     * @param changeLogStore optional change-log store
-     * @param cortexGuard    optional Cortex guard
-     */
-    public ReleaseRegistry(ReleaseStore store, WatchManager watchManager, CortexChangeLogStore changeLogStore,
-            CortexGuard cortexGuard) {
-        this.store = store;
-        this.publisher = new ReleasePublisher(store, changeLogStore, cortexGuard, watchManager);
+        this.store = Objects.requireNonNull(store);
         this.watchManager = watchManager;
-    }
-
-    /**
-     * Creates a version registry backed by a cache store unless a store is supplied.
-     *
-     * @param cacheX       cache facade used for fallback persistence
-     * @param watchManager optional watch manager
-     * @param store        optional dedicated version store
-     */
-    public ReleaseRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, ReleaseStore store) {
-        this(cacheX, watchManager, store, null);
-    }
-
-    /**
-     * Creates a version registry backed by a cache store unless a guarded store is supplied.
-     *
-     * @param cacheX       cache facade used for fallback persistence
-     * @param watchManager optional watch manager
-     * @param store        optional dedicated version store
-     * @param cortexGuard  optional Cortex guard
-     */
-    public ReleaseRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, ReleaseStore store,
-            CortexGuard cortexGuard) {
-        this(store == null ? new CacheReleaseStore(cacheX) : store, watchManager, cortexGuard);
-    }
-
-    /**
-     * Returns the version publishing workflow facade.
-     *
-     * @return version publisher
-     */
-    public ReleasePublisher publisher() {
-        return publisher;
     }
 
     /**
@@ -150,7 +65,7 @@ public class ReleaseRegistry implements Registry<ReleaseAssets> {
     }
 
     /**
-     * Rejects direct version publication through the compatibility registry.
+     * Rejects direct version publication through the read-only registry.
      * <p>
      * Platform versions must be published through an approved rollout and atomically activated by the durable host.
      * </p>
@@ -177,25 +92,21 @@ public class ReleaseRegistry implements Registry<ReleaseAssets> {
     }
 
     /**
-     * Deletes a version asset by version or identifier.
+     * Rejects physical deletion of formal release history.
      *
-     * @param tenantId version tenantId
-     * @param id       version identifier
+     * @param tenantId owning tenant
+     * @param id       formal version identity
+     * @throws IllegalStateException formal releases are immutable
      */
     @Override
     public void deregister(String tenantId, String id) {
-        Release target = findByVersionOrId(CortexIdentity.tenantId(tenantId), id);
-        if (target == null) {
-            publisher.delete(tenantId, EnumValue.Track.STABLE.key(), id);
-            return;
-        }
-        publisher.delete(target.getTenant_id(), target.getTrack(), target.getVersion());
+        throw new IllegalStateException("Formal release history cannot be deleted through the registry");
     }
 
     /**
      * Queries version assets for a tenantId and optional track.
      *
-     * @param vector compatibility query vector
+     * @param vector shared query vector
      * @return matching version assets
      */
     @Override
@@ -208,7 +119,7 @@ public class ReleaseRegistry implements Registry<ReleaseAssets> {
     /**
      * Subscribes to version events when a watch manager is configured.
      *
-     * @param vector   compatibility query vector
+     * @param vector   shared query vector
      * @param listener version event listener
      * @return watch identifier
      * @throws UnsupportedOperationException if no version-watch manager is configured

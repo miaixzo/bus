@@ -19,10 +19,11 @@
 */
 package org.miaixz.bus.cortex.setting.secret.provider;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Arrays;
 
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.exception.ForbiddenException;
 import org.miaixz.bus.cortex.setting.secret.SecretContext;
@@ -31,6 +32,8 @@ import org.miaixz.bus.cortex.setting.secret.SecretContext;
  * Owns one request attempt's signing identity or standalone access token. Public factories copy character input; close
  * and credential access synchronize on this instance. Sources must return fresh instances, never shared credentials.
  * Temporary header strings and JCA copies cannot be reliably erased.
+ *
+ * @author Kimi Liu
  */
 public final class CloudCredentials implements AutoCloseable {
 
@@ -216,7 +219,7 @@ public final class CloudCredentials implements AutoCloseable {
      */
     synchronized byte[] signingKey(String prefix, String suffix) {
         requireKind(true);
-        return (prefix + new String(secret) + suffix).getBytes(StandardCharsets.UTF_8);
+        return (prefix + new String(secret) + suffix).getBytes(Charset.UTF_8);
     }
 
     /**
@@ -226,7 +229,7 @@ public final class CloudCredentials implements AutoCloseable {
     @Override
     public synchronized void close() {
         if (secret != null) {
-            Arrays.fill(secret, '\0');
+            Arrays.fill(secret, Symbol.C_NUL);
             secret = null;
         }
         token = null;
@@ -246,6 +249,8 @@ public final class CloudCredentials implements AutoCloseable {
      * Supplies externally bootstrapped credentials without implicit discovery or fallback accounts. Each acquire must
      * honor the absolute deadline and transfer a fresh instance to the provider. Implementations shared by providers
      * must support concurrent calls.
+     *
+     * @author Kimi Liu
      */
     @FunctionalInterface
     public interface Source {

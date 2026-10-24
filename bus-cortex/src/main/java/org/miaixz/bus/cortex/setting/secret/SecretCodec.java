@@ -36,14 +36,13 @@ public interface SecretCodec {
     }
 
     /**
-     * Reports support for a source or protection mode without remote resolution. The default implementation accepts
-     * every input.
+     * Reports support only for encrypted storage; it does not describe configuration sources.
      *
-     * @param mode source or protection marker, such as encrypted; the default also accepts null
-     * @return true by default; overrides may restrict supported modes
+     * @param mode storage-protection marker
+     * @return whether encrypted storage is supported
      */
     default boolean supports(String mode) {
-        return true;
+        return "encrypted".equals(mode);
     }
 
     /**

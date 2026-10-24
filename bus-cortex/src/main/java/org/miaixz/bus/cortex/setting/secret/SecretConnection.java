@@ -31,6 +31,7 @@ import java.util.List;
  * @param generation      non-negative connection configuration generation attached to returned materials
  * @param allowedPrefixes non-empty immutable copy of permitted resource prefixes; matching is literal startsWith
  * @param enabled         whether this connection may be resolved
+ * @author Kimi Liu
  */
 public record SecretConnection(String tenantId, String id, String provider, long generation,
         List<String> allowedPrefixes, boolean enabled) {

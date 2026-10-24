@@ -17,42 +17,35 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.setting.item;
+package org.miaixz.bus.cortex.setting.event;
 
-import org.miaixz.bus.cortex.Listener;
-import org.miaixz.bus.cortex.Watch;
-import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.cortex.setting.SettingEnforcer;
 
 /**
- * Listener that logs setting watch events.
+ * Value-free audit and command receipts; formal success is committed by PublicationStore.
  *
  * @author Kimi Liu
  */
-public class ItemWatcher implements Listener<Watch<String>> {
+public interface EventStore {
 
     /**
-     * Creates an ItemWatcher.
-     */
-    public ItemWatcher() {
-        // No initialization required.
-    }
-
-    /**
-     * Logs each value carried by a setting watch event.
+     * Looks up tenant/actor/resource/resourceId/action/request identity; mismatched checksum is a conflict.
      *
-     * @param event setting watch event to log
+     * @param context    authenticated tenant, actor and request identity
+     * @param resource   target resource category
+     * @param resourceId exact target resource identifier
+     * @param action     operation name
+     * @return matching receipt, or null if absent
      */
-    @Override
-    public void onEvent(Watch<String> event) {
-        for (String item : event.getAdded()) {
-            Logger.info(false, "Cortex", "Setting added: {}", item);
-        }
-        for (String item : event.getRemoved()) {
-            Logger.info(false, "Cortex", "Setting removed: {}", item);
-        }
-        for (String item : event.getUpdated()) {
-            Logger.info(false, "Cortex", "Setting updated: {}", item);
-        }
-    }
+    Event findReceipt(SettingEnforcer.Context context, String resource, String resourceId, String action);
+
+    /**
+     * Appends an authenticated, value-free audit record; must reject externally forged publication success.
+     *
+     * @param context authenticated actor and request identity
+     * @param event   value-free audit record to append
+     * @return persisted audit record
+     */
+    Event append(SettingEnforcer.Context context, Event event);
 
 }

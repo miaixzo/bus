@@ -20,7 +20,10 @@
 package org.miaixz.bus.starter.cortex;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -46,12 +49,12 @@ import org.miaixz.bus.cortex.bridge.VortexBridge;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.builtin.event.LoggingWatchListener;
-import org.miaixz.bus.cortex.builtin.event.SimpleSettingPublisher;
 import org.miaixz.bus.cortex.guard.CortexGuard;
 import org.miaixz.bus.cortex.guard.GuardStrategy;
 import org.miaixz.bus.cortex.guard.token.TokenGuardConfig;
 import org.miaixz.bus.cortex.guard.token.TokenGuardStrategy;
 import org.miaixz.bus.cortex.magic.AuditLogger;
+import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.cortex.registry.*;
 import org.miaixz.bus.cortex.registry.api.ApiAssets;
@@ -63,23 +66,33 @@ import org.miaixz.bus.cortex.registry.mcp.McpRegistryStore;
 import org.miaixz.bus.cortex.registry.prompt.PromptAssets;
 import org.miaixz.bus.cortex.registry.prompt.PromptRegistry;
 import org.miaixz.bus.cortex.registry.prompt.PromptRegistryStore;
+import org.miaixz.bus.cortex.release.PublicationStore;
+import org.miaixz.bus.cortex.release.ReleasePublisher;
 import org.miaixz.bus.cortex.release.ReleaseRegistry;
 import org.miaixz.bus.cortex.release.ReleaseStore;
-import org.miaixz.bus.cortex.setting.DefaultCurator;
 import org.miaixz.bus.cortex.setting.SettingEnforcer;
-import org.miaixz.bus.cortex.setting.SettingEnforcerGuardStrategy;
-import org.miaixz.bus.cortex.setting.SettingPublisher;
-import org.miaixz.bus.cortex.setting.curator.*;
+import org.miaixz.bus.cortex.setting.SettingEnforcerStrategy;
+import org.miaixz.bus.cortex.setting.SettingService;
+import org.miaixz.bus.cortex.setting.SettingStore;
+import org.miaixz.bus.cortex.setting.approval.ApprovalService;
+import org.miaixz.bus.cortex.setting.approval.ApprovalStore;
+import org.miaixz.bus.cortex.setting.curator.ItemEditor;
+import org.miaixz.bus.cortex.setting.curator.ItemService;
 import org.miaixz.bus.cortex.setting.delivery.ItemExportService;
 import org.miaixz.bus.cortex.setting.delivery.ItemQueryService;
-import org.miaixz.bus.cortex.setting.delivery.RuntimeItemOverlayService;
+import org.miaixz.bus.cortex.setting.item.ItemCodec;
 import org.miaixz.bus.cortex.setting.item.ItemStore;
-import org.miaixz.bus.cortex.setting.item.StoreBackedItemStore;
+import org.miaixz.bus.cortex.setting.reference.ReferenceCodec;
+import org.miaixz.bus.cortex.setting.reference.ReferenceService;
 import org.miaixz.bus.cortex.setting.reference.ReferenceStore;
 import org.miaixz.bus.cortex.setting.revision.RevisionStore;
+import org.miaixz.bus.cortex.setting.rollout.GrayRuleMatcher;
+import org.miaixz.bus.cortex.setting.rollout.RolloutService;
+import org.miaixz.bus.cortex.setting.rollout.RolloutStore;
 import org.miaixz.bus.cortex.setting.secret.NoOpSecretCodec;
 import org.miaixz.bus.cortex.setting.secret.SecretCodec;
 import org.miaixz.bus.cortex.setting.secret.SecretMasker;
+import org.miaixz.bus.cortex.setting.watch.WatchStore;
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableCortex;
@@ -113,15 +126,6 @@ public class CortexConfiguration {
      */
     public CortexConfiguration(CortexProperties properties) {
         this.properties = properties;
-    }
-
-    /**
-     * Creates the default setting source adapters used by the starter.
-     *
-     * @return ordered setting source adapters
-     */
-    private static List<ItemSourceAdapter> settingSourceAdapters() {
-        return List.of(new InlineSourceAdapter(), new EnvSourceAdapter());
     }
 
     /**
@@ -260,9 +264,9 @@ public class CortexConfiguration {
      */
     @Bean
     @ConditionalOnBean(SettingEnforcer.class)
-    @ConditionalOnMissingBean(SettingEnforcerGuardStrategy.class)
-    public SettingEnforcerGuardStrategy settingEnforcerGuardStrategy(SettingEnforcer settingEnforcer) {
-        return new SettingEnforcerGuardStrategy(settingEnforcer);
+    @ConditionalOnMissingBean(SettingEnforcerStrategy.class)
+    public SettingEnforcerStrategy settingEnforcerGuardStrategy(SettingEnforcer settingEnforcer) {
+        return new SettingEnforcerStrategy(settingEnforcer);
     }
 
     /**
@@ -313,6 +317,7 @@ public class CortexConfiguration {
      * @param storeProvider       optional registry store provider
      * @param sharedStoreProvider optional shared registry store provider
      * @param syncListeners       post-commit API listeners
+     * @param changeLogStore      optional host-owned registry outbox
      * @param keyingProvider      optional registry keying provider
      * @return API registry
      */
@@ -324,12 +329,13 @@ public class CortexConfiguration {
             ObjectProvider<ApiRegistryStore> storeProvider,
             ObjectProvider<RegistryStore<Assets>> sharedStoreProvider,
             List<Listener<RegistryChange<ApiAssets>>> syncListeners,
+            ObjectProvider<CortexChangeLogStore> changeLogStore,
             @Qualifier("registryKeying") ObjectProvider<Keying<Keying.RegistrySpec>> keyingProvider) {
         RegistryStore<ApiAssets> store = storeProvider.getIfAvailable();
         if (store == null) {
             store = typedStore(sharedStoreProvider.getIfAvailable(), ApiAssets.class);
         }
-        return new ApiRegistry(cache(cache), watchManager, store, syncListeners,
+        return new ApiRegistry(cache(cache), watchManager, store, syncListeners, changeLogStore.getIfAvailable(),
                 keyingProvider.getIfAvailable(() -> RegistryGenerator.INSTANCE));
     }
 
@@ -386,43 +392,43 @@ public class CortexConfiguration {
     }
 
     /**
-     * Creates the release registry backed by cache and, when available, a dedicated durable release store.
+     * Exposes read-only formal release records from the authoritative host store.
      *
-     * @param cache                shared cache abstraction
-     * @param watchManager         watch manager
-     * @param releaseStoreProvider optional release store provider
-     * @param cortexGuard          optional Cortex guard provider
-     * @return release registry
+     * @param releaseStore authoritative formal releases
+     * @param watchManager notification transport
+     * @return read-only release registry
      */
     @Bean("releaseRegistry")
+    @ConditionalOnBean(ReleaseStore.class)
     @ConditionalOnMissingBean(ReleaseRegistry.class)
     @ConditionalOnProperty(prefix = "bus.cortex.release", name = "enabled", havingValue = "true")
-    public ReleaseRegistry releaseRegistry(
-            @Qualifier("cortexCache") CacheX cache,
-            WatchManager watchManager,
-            ObjectProvider<ReleaseStore> releaseStoreProvider,
-            ObjectProvider<CortexGuard> cortexGuard) {
-        return new ReleaseRegistry(cache(cache), watchManager, releaseStoreProvider.getIfAvailable(),
-                cortexGuard.getIfAvailable());
+    public ReleaseRegistry releaseRegistry(ReleaseStore releaseStore, WatchManager watchManager) {
+        return new ReleaseRegistry(releaseStore, watchManager);
     }
 
     /**
      * Creates the registry refresh service for control-plane cache maintenance.
      *
-     * @param runtime grouped Cortex runtime bundle
+     * @param apiRegistry    API registry
+     * @param mcpRegistry    MCP registry
+     * @param promptRegistry prompt registry
      * @return registry refresh service
      */
     @Bean
     @ConditionalOnMissingBean(RegistryRefreshService.class)
-    public RegistryRefreshService registryRefreshService(Cortex.Runtime runtime) {
-        return new RegistryRefreshService((ApiRegistry) runtime.api(), (McpRegistry) runtime.mcp(),
-                (PromptRegistry) runtime.prompt());
+    public RegistryRefreshService registryRefreshService(
+            ApiRegistry apiRegistry,
+            McpRegistry mcpRegistry,
+            PromptRegistry promptRegistry) {
+        return new RegistryRefreshService(apiRegistry, mcpRegistry, promptRegistry);
     }
 
     /**
      * Creates the registry admin service for control-plane queries and updates.
      *
-     * @param runtime        grouped Cortex runtime bundle
+     * @param apiRegistry    API registry
+     * @param mcpRegistry    MCP registry
+     * @param promptRegistry prompt registry
      * @param cortexGuard    optional Cortex guard provider
      * @param keyingProvider registry keying provider
      * @param batchExecutors external batch executors
@@ -432,177 +438,252 @@ public class CortexConfiguration {
     @Bean
     @ConditionalOnMissingBean(RegistryControlService.class)
     public RegistryControlService registryAdminService(
-            Cortex.Runtime runtime,
+            ApiRegistry apiRegistry,
+            McpRegistry mcpRegistry,
+            PromptRegistry promptRegistry,
             ObjectProvider<CortexGuard> cortexGuard,
             @Qualifier("registryKeying") ObjectProvider<Keying<Keying.RegistrySpec>> keyingProvider,
             ObjectProvider<RegistryBatchExecutor> batchExecutors,
             ObjectProvider<RegistryBatchResolver> batchResolvers) {
-        return new RegistryControlService((ApiRegistry) runtime.api(), (McpRegistry) runtime.mcp(),
-                (PromptRegistry) runtime.prompt(), cortexGuard.getIfAvailable(),
+        return new RegistryControlService(apiRegistry, mcpRegistry, promptRegistry, cortexGuard.getIfAvailable(),
                 keyingProvider.getIfAvailable(() -> RegistryGenerator.INSTANCE),
                 batchExecutors.orderedStream().toList(), batchResolvers.orderedStream().toList());
     }
 
     /**
-     * Creates the remote Vortex bridge listener when push+pull mode is enabled.
+     * Creates the remote Vortex bridge listener when push-and-pull mode is enabled.
      *
+     * @param changeLogStore optional host-owned delivery outbox
      * @return bridge listener
      */
-    @Bean(name = "cortexBinding", destroyMethod = "close")
+    @Bean(name = "vortexBridge", destroyMethod = "close")
     @ConditionalOnMissingBean(VortexBridge.class)
     @ConditionalOnProperty(prefix = "bus.cortex.bridge", name = "mode", havingValue = "push+pull")
-    public VortexBridge vortexBridge() {
+    public VortexBridge vortexBridge(ObjectProvider<CortexChangeLogStore> changeLogStore) {
         CortexProperties.Bridge bridge = properties.getBridge();
-        String syncUrl = bridge.requireUrl();
-        int maxRetries = bridge.requireMaxRetries();
         String source = bridge.resolveSource();
-        if (StringKit.isEmpty(source)) {
-            return new VortexBridge(syncUrl, maxRetries);
-        }
-        return new VortexBridge(syncUrl, maxRetries, source);
+        return new VortexBridge(bridge.requireUrl(), bridge.requireMaxRetries(),
+                StringKit.isEmpty(source) ? "cortex" : source, Builder.DEFAULT_HEALTH_TIMEOUT_MS,
+                changeLogStore.getIfAvailable());
     }
 
     /**
-     * Creates the store-backed current-state setting coordinator.
+     * Creates the shared bounded definition parser without owning configuration persistence.
      *
-     * @param cache                  shared cache abstraction
-     * @param storeProvider          optional durable current-state store
-     * @param referenceStoreProvider optional durable relationship store
-     * @param keyingProvider         optional setting keying provider
-     * @return store-backed current-state setting coordinator
+     * @return definition parser
      */
     @Bean
-    @ConditionalOnMissingBean(StoreBackedItemStore.class)
-    public StoreBackedItemStore storeBackedSettingStore(
-            @Qualifier("cortexCache") CacheX cache,
-            ObjectProvider<ItemStore> storeProvider,
-            ObjectProvider<ReferenceStore> referenceStoreProvider,
-            @Qualifier("settingKeying") ObjectProvider<Keying<Keying.SettingSpec>> keyingProvider) {
-        ItemStore store = storeProvider.getIfAvailable();
-        ReferenceStore referenceStore = referenceStoreProvider.getIfAvailable();
-        if (store == null && properties.isServerEnabled() && properties.isSettingEnabled()) {
-            throw new IllegalStateException(
-                    "A production SettingStore is required when bus.cortex.server-enabled=true");
-        }
-        if (referenceStore == null && properties.isServerEnabled() && properties.isSettingEnabled()) {
-            throw new IllegalStateException(
-                    "A production ReferenceStore is required when bus.cortex.server-enabled=true");
-        }
-        return new StoreBackedItemStore(cache(cache), store, referenceStore,
-                keyingProvider.getIfAvailable(() -> SettingGenerator.INSTANCE));
+    @ConditionalOnMissingBean(ItemCodec.class)
+    public ItemCodec itemCodec() {
+        return new ItemCodec(64, 100000);
     }
 
     /**
-     * Creates the default {@code setting.revision} store when the host application does not provide persistent history
-     * storage.
+     * Creates the bounded relationship-option parser.
      *
-     * @param cache shared cache abstraction
-     * @return cache-backed {@code setting.revision} store
+     * @return relationship parser
      */
     @Bean
-    @ConditionalOnMissingBean(RevisionStore.class)
-    public RevisionStore revisionStore(@Qualifier("cortexCache") CacheX cache) {
-        return new CacheRevisionStore(cache(cache));
+    @ConditionalOnMissingBean(ReferenceCodec.class)
+    public ReferenceCodec referenceCodec() {
+        return new ReferenceCodec(64, 100000);
     }
 
     /**
-     * Creates the curator application service.
+     * Creates current-definition protection and safe-view preparation.
      *
-     * @param settingStore    current-state setting store
-     * @param revisionStore   revision history store
-     * @param watchManager    watch manager
-     * @param secretCodec     secret codec
-     * @param settingEnforcer optional setting relation enforcer provider
-     * @param cortexGuard     optional Cortex guard provider
-     * @param keyingProvider  optional setting keying provider
-     * @return curator application service
+     * @param codec   shared definition parser
+     * @param secrets host-overridable storage protection
+     * @param masker  safe value projector
+     * @return definition editor
      */
     @Bean
-    @ConditionalOnMissingBean(ItemCuratorService.class)
-    public ItemCuratorService settingCuratorService(
-            StoreBackedItemStore settingStore,
-            RevisionStore revisionStore,
-            WatchManager watchManager,
-            SecretCodec secretCodec,
-            ObjectProvider<SettingEnforcer> settingEnforcer,
-            ObjectProvider<CortexGuard> cortexGuard,
-            @Qualifier("settingKeying") ObjectProvider<Keying<Keying.SettingSpec>> keyingProvider) {
-        if (revisionStore instanceof CacheRevisionStore && properties.isServerEnabled()
-                && properties.isSettingEnabled()) {
-            throw new IllegalStateException(
-                    "A production RevisionStore is required when bus.cortex.server-enabled=true");
-        }
-        ItemValueResolver resolver = new ItemValueResolver(settingSourceAdapters(), secretCodec);
-        Keying<Keying.SettingSpec> settingKeying = keyingProvider.getIfAvailable(() -> SettingGenerator.INSTANCE);
-        SettingPublisher settingPublisher = new SettingPublisher(settingStore, revisionStore, watchManager, secretCodec,
-                properties.requireMaxSettingVersions(), settingKeying);
-        return new ItemCuratorService(settingStore, revisionStore, resolver, settingPublisher, null,
-                settingEnforcer.getIfAvailable(), cortexGuard.getIfAvailable(), settingKeying);
+    @ConditionalOnMissingBean(ItemEditor.class)
+    public ItemEditor itemEditor(ItemCodec codec, SecretCodec secrets, SecretMasker masker) {
+        return new ItemEditor(codec, secrets, masker);
     }
 
     /**
-     * Creates the lightweight runtime overlay service backed by the shared cache.
+     * Assembles current definition management using authoritative host stores and permissions.
      *
-     * @param cache          shared cache abstraction
-     * @param watchManager   watch manager
-     * @param keyingProvider optional setting keying provider
-     * @return runtime overlay service
+     * @param items     current definitions
+     * @param revisions exact published snapshots
+     * @param editor    definition preparation
+     * @param enforcer  host authentication and permissions
+     * @return current definition service
      */
     @Bean
-    @ConditionalOnMissingBean(RuntimeItemOverlayService.class)
-    public RuntimeItemOverlayService runtimeSettingOverlayService(
-            @Qualifier("cortexCache") CacheX cache,
-            WatchManager watchManager,
-            @Qualifier("settingKeying") ObjectProvider<Keying<Keying.SettingSpec>> keyingProvider) {
-        Keying<Keying.SettingSpec> settingKeying = keyingProvider.getIfAvailable(() -> SettingGenerator.INSTANCE);
-        return new RuntimeItemOverlayService(new SimpleSettingPublisher(cache(cache), settingKeying), watchManager,
-                settingKeying);
+    @ConditionalOnBean({ ItemStore.class, RevisionStore.class, SettingEnforcer.class })
+    @ConditionalOnMissingBean(ItemService.class)
+    public ItemService itemService(
+            ItemStore items,
+            RevisionStore revisions,
+            ItemEditor editor,
+            SettingEnforcer enforcer) {
+        return new ItemService(items, revisions, editor, enforcer);
     }
 
     /**
-     * Exposes the consumer-facing curator interface.
+     * Assembles explicit application relationship management without duplicate policy storage.
      *
-     * @param settingCuratorService        curator application service
-     * @param watchManager                 watch manager
-     * @param runtimeSettingOverlayService runtime overlay service
-     * @return default curator implementation
+     * @param references current relationships
+     * @param revisions  exact published pins
+     * @param codec      relationship parser
+     * @param editor     sensitive overlay preparation
+     * @param enforcer   host authentication and permissions
+     * @return relationship service
      */
     @Bean
-    @ConditionalOnMissingBean(Curator.class)
-    public Curator curator(
-            ItemCuratorService settingCuratorService,
-            WatchManager watchManager,
-            RuntimeItemOverlayService runtimeSettingOverlayService) {
-        return new DefaultCurator(settingCuratorService, watchManager, runtimeSettingOverlayService);
+    @ConditionalOnBean({ ReferenceStore.class, RevisionStore.class, SettingEnforcer.class })
+    @ConditionalOnMissingBean(ReferenceService.class)
+    public ReferenceService referenceService(
+            ReferenceStore references,
+            RevisionStore revisions,
+            ReferenceCodec codec,
+            ItemEditor editor,
+            SettingEnforcer enforcer) {
+        return new ReferenceService(references, revisions, codec, editor, enforcer);
     }
 
     /**
-     * Creates the consumer-facing setting query service.
+     * Assembles the joint current-definition and relationship transaction boundary.
      *
-     * @param settingCuratorService        curator application service
-     * @param secretMasker                 secret masker
-     * @param runtimeSettingOverlayService runtime overlay service
-     * @return setting query service
+     * @param items      current definition preparation
+     * @param references relationship preparation
+     * @param store      host-owned atomic current-state transaction
+     * @param enforcer   host permissions
+     * @return current-state coordinator
      */
     @Bean
-    @ConditionalOnMissingBean(ItemQueryService.class)
+    @ConditionalOnBean({ ItemService.class, ReferenceService.class, SettingStore.class, SettingEnforcer.class })
+    @ConditionalOnMissingBean(SettingService.class)
+    public SettingService settingService(
+            ItemService items,
+            ReferenceService references,
+            SettingStore store,
+            SettingEnforcer enforcer) {
+        return new SettingService(items, references, store, enforcer);
+    }
+
+    /**
+     * Assembles immutable approval evidence using the host policy authority.
+     *
+     * @param store    approval evidence
+     * @param enforcer host approval policy
+     * @return approval service
+     */
+    @Bean
+    @ConditionalOnBean({ ApprovalStore.class, SettingEnforcer.class })
+    @ConditionalOnMissingBean(ApprovalService.class)
+    public ApprovalService approvalService(ApprovalStore store, SettingEnforcer enforcer) {
+        return new ApprovalService(store, enforcer);
+    }
+
+    /**
+     * Assembles governed rollout management from current definitions and published baselines.
+     *
+     * @param store      rollout workflow authority
+     * @param settings   current definition and relationship graph
+     * @param releases   formal release baselines
+     * @param revisions  exact published snapshots
+     * @param editor     definition verification
+     * @param references relationship parser
+     * @param enforcer   host permissions and policy
+     * @return rollout service
+     */
+    @Bean
+    @ConditionalOnBean({ RolloutStore.class, SettingStore.class, ReleaseStore.class, RevisionStore.class,
+            SettingEnforcer.class })
+    @ConditionalOnMissingBean(RolloutService.class)
+    public RolloutService rolloutService(
+            RolloutStore store,
+            SettingStore settings,
+            ReleaseStore releases,
+            RevisionStore revisions,
+            ItemEditor editor,
+            ReferenceCodec references,
+            SettingEnforcer enforcer) {
+        return new RolloutService(store, settings, releases, revisions, editor, references, enforcer);
+    }
+
+    /**
+     * Assembles approved publication through the existing atomic host boundary.
+     *
+     * @param publications atomic formal-publication authority
+     * @param rollouts     approved rollout inputs
+     * @param enforcer     host policy authority
+     * @param releases     formal releases
+     * @param revisions    exact published snapshots
+     * @return formal release publisher
+     */
+    @Bean
+    @ConditionalOnBean({ PublicationStore.class, RolloutStore.class, ReleaseStore.class, RevisionStore.class,
+            SettingEnforcer.class })
+    @ConditionalOnMissingBean(ReleasePublisher.class)
+    public ReleasePublisher releasePublisher(
+            PublicationStore publications,
+            RolloutStore rollouts,
+            SettingEnforcer enforcer,
+            ReleaseStore releases,
+            RevisionStore revisions) {
+        return new ReleasePublisher(publications, rollouts, enforcer, releases, revisions);
+    }
+
+    /**
+     * Creates the stateless selector for authenticated application processes.
+     *
+     * @return gray selector
+     */
+    @Bean
+    @ConditionalOnMissingBean(GrayRuleMatcher.class)
+    public GrayRuleMatcher grayRuleMatcher() {
+        return new GrayRuleMatcher();
+    }
+
+    /**
+     * Assembles published-only delivery, which directly implements the consumer-facing curator contract.
+     *
+     * @param releases  formal delivery authority
+     * @param revisions immutable published snapshots
+     * @param editor    authorized content protection
+     * @param codec     definition parser and renderer
+     * @param matcher   authenticated instance selector
+     * @param watches   host-owned subscription evidence
+     * @param transport notification transport
+     * @param enforcer  authoritative authentication, session validation and permissions
+     * @return published-only curator service
+     */
+    @Bean
+    @ConditionalOnBean({ ReleaseStore.class, RevisionStore.class, WatchStore.class, SettingEnforcer.class })
+    @ConditionalOnMissingBean({ ItemQueryService.class, Curator.class })
     public ItemQueryService settingQueryService(
-            ItemCuratorService settingCuratorService,
-            SecretMasker secretMasker,
-            RuntimeItemOverlayService runtimeSettingOverlayService) {
-        return new ItemQueryService(settingCuratorService, secretMasker, runtimeSettingOverlayService);
+            ReleaseStore releases,
+            RevisionStore revisions,
+            ItemEditor editor,
+            ItemCodec codec,
+            GrayRuleMatcher matcher,
+            WatchStore watches,
+            WatchManager transport,
+            SettingEnforcer enforcer) {
+        return new ItemQueryService(releases, revisions, editor, codec, matcher, watches, transport, enforcer);
     }
 
     /**
-     * Creates the setting export service.
+     * Assembles separate current-view and published-content export boundaries.
      *
-     * @param settingCuratorService curator application service
+     * @param items     current definition views
+     * @param published published-only query service
+     * @param enforcer  host export permissions
      * @return setting export service
      */
     @Bean
+    @ConditionalOnBean({ ItemService.class, ItemQueryService.class, SettingEnforcer.class })
     @ConditionalOnMissingBean(ItemExportService.class)
-    public ItemExportService settingExportService(ItemCuratorService settingCuratorService) {
-        return new ItemExportService(settingCuratorService);
+    public ItemExportService settingExportService(
+            ItemService items,
+            ItemQueryService published,
+            SettingEnforcer enforcer) {
+        return new ItemExportService(items, published, enforcer);
     }
 
     /**
@@ -616,6 +697,7 @@ public class CortexConfiguration {
      * @return Cortex runtime bundle
      */
     @Bean
+    @ConditionalOnBean(Curator.class)
     @ConditionalOnMissingBean(Cortex.Runtime.class)
     public Cortex.Runtime cortexRuntime(
             ApiRegistry apiRegistry,
@@ -628,6 +710,19 @@ public class CortexConfiguration {
             return Cortex.runtime(apiRegistry, mcpRegistry, promptRegistry, optionalReleaseRegistry, curator);
         }
         return Cortex.runtime(apiRegistry, mcpRegistry, promptRegistry, curator);
+    }
+
+    /**
+     * Binds the assembled runtime through its canonical lifecycle handle.
+     *
+     * @param runtime exact Spring-managed runtime assembly
+     * @return handle that releases this binding when the application context closes
+     */
+    @Bean(destroyMethod = "close")
+    @ConditionalOnBean(Cortex.Runtime.class)
+    @ConditionalOnMissingBean(Cortex.RuntimeHandle.class)
+    public Cortex.RuntimeHandle cortexRuntimeHandle(Cortex.Runtime runtime) {
+        return Cortex.bind(runtime);
     }
 
     /**
@@ -735,6 +830,16 @@ public class CortexConfiguration {
         }
 
         /**
+         * Preserves the host transaction boundary for cache and event effects.
+         *
+         * @param action effect to execute after a successful host commit
+         */
+        @Override
+        public void afterCommit(Runnable action) {
+            delegate.afterCommit(action);
+        }
+
+        /**
          * Persists one typed registry entry through the shared durable store.
          *
          * @param entry typed registry entry
@@ -742,6 +847,17 @@ public class CortexConfiguration {
         @Override
         public void save(T entry) {
             delegate.save(entry);
+        }
+
+        /**
+         * Saves the entry using the current snapshot already resolved by the mutation coordinator.
+         *
+         * @param entry    replacement registry entry
+         * @param existing existing snapshot, or null when absent
+         */
+        @Override
+        public void save(T entry, T existing) {
+            delegate.save(entry, existing);
         }
 
         /**
@@ -781,13 +897,27 @@ public class CortexConfiguration {
         }
 
         /**
-         * Deletes one runtime instance snapshot from the shared durable store.
+         * Deletes the entry using the snapshot already resolved by the mutation coordinator.
          *
-         * @param type        asset type
-         * @param tenantId    logical registry tenantId
-         * @param method      method name
-         * @param version     version identifier
-         * @param fingerprint instance fingerprint
+         * @param type     registry type
+         * @param tenantId storage tenant for MCP and prompt entries
+         * @param id       exact entry identity
+         * @param existing current entry snapshot
+         */
+        @Override
+        public void delete(Type type, String tenantId, String id, T existing) {
+            delegate.delete(type, tenantId, id, existing);
+        }
+
+        /**
+         * Deletes one service relationship without deleting its shared runtime process.
+         *
+         * @param type     asset type
+         * @param tenantId logical registry tenantId
+         * @param app_id   owning application identifier
+         * @param method   method name
+         * @param version  version identifier
+         * @param checksum process checksum
          */
         @Override
         public void deleteInstance(
@@ -796,8 +926,8 @@ public class CortexConfiguration {
                 String app_id,
                 String method,
                 String version,
-                String fingerprint) {
-            delegate.deleteInstance(type, tenantId, app_id, method, version, fingerprint);
+                String checksum) {
+            delegate.deleteInstance(type, tenantId, app_id, method, version, checksum);
         }
 
         /**
@@ -818,6 +948,7 @@ public class CortexConfiguration {
          *
          * @param type     asset type
          * @param tenantId logical registry tenantId
+         * @param app_id   owning application identifier
          * @param method   method name
          * @param version  version identifier
          * @return typed asset, or {@code null} when absent or incompatible
@@ -828,23 +959,77 @@ public class CortexConfiguration {
         }
 
         /**
-         * Queries registry entries and converts each returned asset to the expected typed view.
+         * Preserves the host batch route lookup and converts existing entries to the requested subtype.
          *
-         * @param type   asset type
-         * @param vector route selector
-         * @return typed assets that can be converted successfully
+         * @param registryType registry type
+         * @param routes       exact route identities
+         * @return typed entries keyed by the original routes
          */
         @Override
-        public List<T> query(Type type, Vector vector) {
-            List<Assets> assets = delegate.query(type, vector);
+        public Map<RegistryRouteKey, T> findByRoutes(Type registryType, Collection<RegistryRouteKey> routes) {
+            Map<RegistryRouteKey, Assets> found = delegate.findByRoutes(registryType, routes);
+            if (found == null || found.isEmpty()) {
+                return Map.of();
+            }
+            Map<RegistryRouteKey, T> result = new LinkedHashMap<>();
+            found.forEach((route, asset) -> result.put(route, typed(asset)));
+            return result;
+        }
+
+        /**
+         * Forwards the original public query without changing its asset constraints or pagination.
+         *
+         * @param registryType registry type
+         * @param vector       complete public selector
+         * @return typed matching assets
+         */
+        @Override
+        public List<T> query(Type registryType, Vector vector) {
+            return typed(delegate.query(registryType, vector));
+        }
+
+        /**
+         * Preserves a host override of the typed query contract instead of falling back to a different overload.
+         *
+         * @param registryType registry type
+         * @param query        complete registry selector
+         * @return typed matching assets
+         */
+        @Override
+        public List<T> query(Type registryType, RegistryQuery query) {
+            return typed(delegate.query(registryType, query));
+        }
+
+        /**
+         * Preserves the host route-query implementation.
+         *
+         * @param registryType registry type
+         * @param tenantId     storage tenant for MCP and prompt entries
+         * @param app_id       owning application identifier
+         * @param method       service method
+         * @param version      service version
+         * @return typed matching assets
+         */
+        @Override
+        public List<T> queryByRoute(Type registryType, String tenantId, String app_id, String method, String version) {
+            return typed(delegate.queryByRoute(registryType, tenantId, app_id, method, version));
+        }
+
+        /**
+         * Converts an existing host query result without additional reads.
+         *
+         * @param assets host query results, or null
+         * @return converted entries in their existing order
+         */
+        private List<T> typed(List<Assets> assets) {
             if (assets == null || assets.isEmpty()) {
                 return List.of();
             }
             List<T> result = new ArrayList<>(assets.size());
             for (Assets asset : assets) {
-                T typed = typed(asset);
-                if (typed != null) {
-                    result.add(typed);
+                T converted = typed(asset);
+                if (converted != null) {
+                    result.add(converted);
                 }
             }
             return result;
@@ -855,6 +1040,7 @@ public class CortexConfiguration {
          *
          * @param type     asset type
          * @param tenantId logical registry tenantId
+         * @param app_id   owning application identifier
          * @param method   method name
          * @param version  version identifier
          * @return matching runtime instances

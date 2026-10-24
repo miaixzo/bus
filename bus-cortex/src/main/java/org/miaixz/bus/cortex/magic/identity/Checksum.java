@@ -17,9 +17,37 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.cortex.magic.identity;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.CryptoException;
+import org.miaixz.bus.crypto.Builder;
+
 /**
- * Configuration client instances and persistence contracts organized by tenant and application.
+ * Generates stable instance identifiers.
  *
  * @author Kimi Liu
  */
-package org.miaixz.bus.cortex.setting.instance;
+public final class Checksum {
+
+    /**
+     * Prevents instantiation of this static utility.
+     */
+    private Checksum() {
+        // No initialization required.
+    }
+
+    /**
+     * Generates a 32-char hex checksum from host and port.
+     *
+     * @param host instance host
+     * @param port instance port
+     * @return 32-character hex string
+     * @throws CryptoException if the SHA-256 digest cannot be computed
+     */
+    public static String of(String host, int port) {
+        return Builder.sha256(host + Symbol.COLON + port).substring(0, Normal._32);
+    }
+
+}

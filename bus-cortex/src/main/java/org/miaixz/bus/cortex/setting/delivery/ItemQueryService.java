@@ -19,177 +19,319 @@
 */
 package org.miaixz.bus.cortex.setting.delivery;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.lang.EnumValue.Format;
+import org.miaixz.bus.cortex.Curator;
+import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.Keying.SettingSpec;
+import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.cortex.Vector;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
-import org.miaixz.bus.cortex.setting.curator.ItemCuratorService;
-import org.miaixz.bus.cortex.setting.item.Item;
-import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
+import org.miaixz.bus.cortex.magic.watch.WatchManager;
+import org.miaixz.bus.cortex.release.Manifest;
+import org.miaixz.bus.cortex.release.Release;
+import org.miaixz.bus.cortex.release.ReleaseStore;
+import org.miaixz.bus.cortex.setting.SettingEnforcer;
+import org.miaixz.bus.cortex.setting.curator.ItemEditor;
+import org.miaixz.bus.cortex.setting.item.ItemCodec;
+import org.miaixz.bus.cortex.setting.item.ItemMerger;
 import org.miaixz.bus.cortex.setting.item.ItemQuery;
-import org.miaixz.bus.cortex.setting.secret.SecretMasker;
+import org.miaixz.bus.cortex.setting.reference.ReferenceCodec;
+import org.miaixz.bus.cortex.setting.revision.Revision;
+import org.miaixz.bus.cortex.setting.revision.RevisionStore;
+import org.miaixz.bus.cortex.setting.rollout.GrayRuleMatcher;
+import org.miaixz.bus.cortex.setting.rollout.Plan;
+import org.miaixz.bus.cortex.setting.watch.Watch;
+import org.miaixz.bus.cortex.setting.watch.WatchStore;
 
 /**
- * Consumer-facing query service for resolved setting values.
+ * Published-only reads: exact Release graph plus exact immutable snapshots, never current Item/Reference/workflow
+ * stores.
  *
  * @author Kimi Liu
  */
-public class ItemQueryService {
+public final class ItemQueryService implements Curator {
 
     /**
-     * Curator application service used for read operations.
+     * Formal release authority.
      */
-    private final ItemCuratorService settingCuratorService;
-
+    private final ReleaseStore releases;
     /**
-     * Secret masker used for management-safe inspection payloads.
+     * Immutable published snapshots.
      */
-    private final SecretMasker secretMasker;
-
+    private final RevisionStore revisions;
     /**
-     * Optional runtime overlay service consulted before durable setting resolution.
+     * Authorized protection handling.
      */
-    private final RuntimeItemOverlayService runtimeSettingOverlayService;
+    private final ItemEditor editor;
+    /**
+     * Sole definition parser/renderer.
+     */
+    private final ItemCodec codec;
+    /**
+     * Trusted-instance gray selector.
+     */
+    private final GrayRuleMatcher matcher;
+    /**
+     * Durable subscription evidence.
+     */
+    private final WatchStore watches;
+    /**
+     * Notification transport, not a publication authority.
+     */
+    private final WatchManager transport;
+    /**
+     * Mandatory authentication, authorization and current instance session verification.
+     */
+    private final SettingEnforcer enforcer;
 
     /**
-     * Creates an ItemQueryService.
+     * Creates governed delivery.
      *
-     * @param settingCuratorService curator application service
-     * @param secretMasker          secret masker
+     * @param releases  formal versions
+     * @param revisions exact snapshots
+     * @param editor    protection
+     * @param codec     parser
+     * @param matcher   gray selection
+     * @param watches   durable subscriptions
+     * @param transport notifications
+     * @param enforcer  policy and authoritative instance session verification
      */
-    public ItemQueryService(ItemCuratorService settingCuratorService, SecretMasker secretMasker) {
-        this(settingCuratorService, secretMasker, null);
+    public ItemQueryService(ReleaseStore releases, RevisionStore revisions, ItemEditor editor, ItemCodec codec,
+            GrayRuleMatcher matcher, WatchStore watches, WatchManager transport, SettingEnforcer enforcer) {
+        this.releases = Objects.requireNonNull(releases);
+        this.revisions = Objects.requireNonNull(revisions);
+        this.editor = Objects.requireNonNull(editor);
+        this.codec = Objects.requireNonNull(codec);
+        this.matcher = Objects.requireNonNull(matcher);
+        this.watches = Objects.requireNonNull(watches);
+        this.transport = Objects.requireNonNull(transport);
+        this.enforcer = Objects.requireNonNull(enforcer);
     }
 
     /**
-     * Creates an ItemQueryService with runtime overlay support.
+     * Reads exact authorized published content.
      *
-     * @param settingCuratorService        curator application service
-     * @param secretMasker                 secret masker
-     * @param runtimeSettingOverlayService runtime overlay service
+     * @param query application-qualified request
+     * @return encoded content or genuinely absent
      */
-    public ItemQueryService(ItemCuratorService settingCuratorService, SecretMasker secretMasker,
-            RuntimeItemOverlayService runtimeSettingOverlayService) {
-        this.settingCuratorService = settingCuratorService;
-        this.secretMasker = secretMasker;
-        this.runtimeSettingOverlayService = runtimeSettingOverlayService;
+    @Override
+    public String get(ItemQuery query) {
+        return read(enforcer.current(), List.of(query)).get(key(query));
     }
 
     /**
-     * Resolves one setting value for an external consumer.
+     * Groups lookups by selected formal release and loads each exact snapshot set once.
      *
-     * @param query query filter
-     * @return resolved value or {@code null}
+     * @param queries application-qualified requests
+     * @return application-qualified values, including null absence
      */
-    public String resolve(ItemQuery query) {
-        query = settingCuratorService == null ? query : settingCuratorService.prepare(query);
-        if (query == null) {
-            return null;
-        }
-        if (settingCuratorService != null && !settingCuratorService.allows(query)) {
-            return query.getFallbackValue();
-        }
-        String overlay = runtimeOverlay(query, true);
-        if (overlay != null) {
-            return overlay;
-        }
-        return settingCuratorService.resolve(query, Item.Type.CONFIG_MAP);
+    @Override
+    public Map<String, String> batchGet(List<ItemQuery> queries) {
+        return read(enforcer.current(), queries);
     }
 
     /**
-     * Resolves a batch of setting values using one shared scope.
+     * Applies fallback only to genuine authorized absence.
      *
-     * @param queries setting queries
-     * @return resolved values keyed by logical query key
+     * @param query    application request
+     * @param fallback caller fallback
+     * @return published content or fallback
      */
-    public Map<String, String> batchResolve(List<ItemQuery> queries) {
+    @Override
+    public String getOrDefault(ItemQuery query, String fallback) {
+        String value = get(query);
+        return value == null ? fallback : value;
+    }
+
+    /**
+     * Registers a published-change subscription; callback rechecks the captured trusted identity.
+     *
+     * @param query    application request
+     * @param listener value callback
+     * @return exact transport subscription
+     */
+    @Override
+    public String watch(ItemQuery query, ConsumerX<String> listener) {
+        SettingEnforcer.Context context = enforcer.current();
+        validate(context, query);
+        enforcer.require(context, "subscribe", "app", query.getApp_id());
+        Objects.requireNonNull(listener);
+        ItemQuery captured = ItemQuery.builder().tenant_id(query.getTenant_id()).app_id(query.getApp_id())
+                .id(query.getId()).code(query.getCode()).requestId(query.getRequestId()).build();
+        Instance instance = enforcer.instance(context, captured.getApp_id());
+        String id = transport.add(
+                Vector.builder().tenant_id(context.tenant()).app_id(captured.getApp_id()).id(key(captured))
+                        .type(Type.ITEM.key()).build(),
+                event -> listener.accept(read(context, List.of(captured)).get(key(captured))));
+        try {
+            if (instance != null)
+                watches.save(
+                        Watch.builder().tenant_id(context.tenant()).id(id).instance_id(instance.getId())
+                                .item_id(captured.getId() == null ? captured.getCode() : captured.getId())
+                                .session(instance.getSession()).build());
+            return id;
+        } catch (RuntimeException failed) {
+            transport.remove(id);
+            throw failed;
+        }
+    }
+
+    /**
+     * Removes only an authorized exact subscription.
+     *
+     * @param watch_id transport identity
+     */
+    @Override
+    public void unwatch(String watch_id) {
+        SettingEnforcer.Context context = enforcer.current();
+        enforcer.require(context, "unsubscribe", "watch", watch_id);
+        var entry = transport.entries().get(watch_id);
+        if (entry != null && !context.tenant().equals(entry.getTenant_id()))
+            throw new SecurityException("Watch tenant mismatch");
+        if (watches.find(context.tenant(), watch_id) != null)
+            watches.delete(context.tenant(), watch_id);
+        transport.remove(watch_id);
+    }
+
+    /**
+     * Resolves a batch with invocation-local parsed state only.
+     *
+     * @param context captured authenticated identity
+     * @param queries requested aliases
+     * @return qualified values
+     */
+    private Map<String, String> read(SettingEnforcer.Context context, List<ItemQuery> queries) {
+        if (queries.size() > 1000)
+            throw new IllegalArgumentException("Delivery batch too large");
         Map<String, String> result = new LinkedHashMap<>();
-        if (queries == null) {
-            return result;
-        }
+        Map<String, Release> selected = new HashMap<>();
+        Map<String, Loaded> loaded = new HashMap<>();
+        Release stable = null, canary = null;
+        boolean tracks = false;
         for (ItemQuery query : queries) {
-            if (query == null) {
-                continue;
+            validate(context, query);
+            if (!selected.containsKey(query.getApp_id())) {
+                Instance runtime = enforcer.instance(context, query.getApp_id());
+                if (!tracks) {
+                    stable = releases.current(context.tenant(), EnumValue.Track.STABLE.key());
+                    canary = releases.current(context.tenant(), EnumValue.Track.CANARY.key());
+                    tracks = true;
+                }
+                Release chosen = stable;
+                if (canary != null) {
+                    Manifest.Document gray = Manifest.decode(canary);
+                    if (gray.mode() != Plan.Mode.GRAY)
+                        throw new IllegalStateException("Canary manifest mode mismatch");
+                    if (runtime != null && matcher.matches(gray.rule(), runtime))
+                        chosen = canary;
+                }
+                selected.put(query.getApp_id(), chosen);
             }
-            result.put(SettingGenerator.INSTANCE.key(SettingSpec.export(query.coordinates())), resolve(query));
+            Release release = selected.get(query.getApp_id());
+            String value = null;
+            if (release != null) {
+                Loaded state = loaded.computeIfAbsent(release.getId(), ignored -> load(context, release));
+                Manifest.Binding binding = null;
+                for (Manifest.Binding candidate : state.document().applications()
+                        .getOrDefault(query.getApp_id(), List.of())) {
+                    Revision snapshot = state.snapshots().get(candidate.source());
+                    String alias = candidate.options().alias().isEmpty() ? snapshot.getCode()
+                            : candidate.options().alias();
+                    if (query.getId() != null ? query.getId().equals(snapshot.getItem_id())
+                            : Objects.equals(query.getCode(), alias)) {
+                        if (binding != null)
+                            throw new IllegalArgumentException("Ambiguous published source; use an alias");
+                        binding = candidate;
+                    }
+                }
+                if (binding != null) {
+                    Revision snapshot = state.snapshots().get(binding.source());
+                    enforcer.require(context, "deliver", "item", snapshot.getItem_id());
+                    if (Integer.valueOf(1).equals(snapshot.getEncrypted()))
+                        enforcer.require(context, "deliver-secret", "item", snapshot.getItem_id());
+                    ItemCodec.Document parsed = state.definitions().computeIfAbsent(
+                            snapshot.getId(),
+                            ignored -> editor.open(Manifest.definition(snapshot).item(context.tenant())));
+                    ReferenceCodec.Options options = binding.options();
+                    ReferenceCodec.Options clear = new ReferenceCodec.Options(options.type(), options.alias(),
+                            options.prefix(), options.override(), options.keys(),
+                            editor.openOverlay(options.overlay()));
+                    ItemMerger.Result merged = ItemMerger.merge(
+                            List.of(new ItemMerger.Source(snapshot.getId(), parsed)),
+                            List.of(clear),
+                            64,
+                            100000);
+                    value = codec.format(merged.value(), Format.valueOf(snapshot.getFormat()));
+                }
+            }
+            String key = key(query);
+            if (result.containsKey(key))
+                throw new IllegalArgumentException("Duplicate delivery request identity");
+            result.put(key, value);
         }
-        return result;
+        return Collections.unmodifiableMap(result);
     }
 
     /**
-     * Returns a management-safe snapshot of one entry for inspection APIs.
+     * Loads/verifies the exact complete immutable graph once.
      *
-     * @param query query filter
-     * @return masked entry or {@code null}
+     * @param context trusted identity
+     * @param release selected formal record
+     * @return invocation-local source set
      */
-    public Item inspect(ItemQuery query) {
-        query = settingCuratorService == null ? query : settingCuratorService.prepare(query);
-        if (query == null) {
-            return null;
-        }
-        if (settingCuratorService != null && !settingCuratorService.allows(query)) {
-            return null;
-        }
-        return secretMasker.mask(settingCuratorService.find(query));
+    private Loaded load(SettingEnforcer.Context context, Release release) {
+        if (!context.tenant().equals(release.getTenant_id()) || !ReleaseStore.isServable(release.getStatus()))
+            throw new IllegalStateException("Release not servable");
+        Manifest.Document document = Manifest.decode(release);
+        Set<String> ids = new TreeSet<>();
+        document.applications().values().forEach(list -> list.forEach(b -> ids.add(b.source())));
+        Map<String, Revision> snapshots = new TreeMap<>();
+        for (Revision revision : revisions.findAll(context.tenant(), ids))
+            if (snapshots.put(revision.getId(), revision) != null)
+                throw new IllegalStateException("Duplicate published snapshot");
+        return new Loaded(Manifest.verify(release, snapshots), Map.copyOf(snapshots), new HashMap<>());
     }
 
     /**
-     * Returns one overlay-aware management snapshot.
+     * Rejects management/foreign request coordinates before any lookup.
      *
-     * @param query query filter
-     * @return overlay and masked durable content
+     * @param context trusted identity
+     * @param query   application request
      */
-    public Map<String, Object> overlayView(ItemQuery query) {
-        Map<String, Object> result = new LinkedHashMap<>();
-        Item entry = inspect(query);
-        String overlay = entry == null ? null : runtimeOverlay(query, false);
-        if (entry != null && (ItemNormalizer.isEncryptedFlagEnabled(entry.getEncrypted())
-                || Integer.valueOf(Item.Type.SECRET.key()).equals(entry.getType()))) {
-            overlay = secretMasker.mask(overlay);
-        }
-        boolean overlayPresent = overlay != null;
-        boolean durablePresent = entry != null;
-        String effectiveSource = overlayPresent && (query == null || query.isPreferOverlay()) ? "runtime-overlay"
-                : durablePresent ? "durable-setting" : "none";
-        result.put("entry", entry);
-        result.put("overlay", overlay);
-        String preview = entry == null ? null : settingCuratorService.preview(query);
-        if (entry != null && (ItemNormalizer.isEncryptedFlagEnabled(entry.getEncrypted())
-                || Integer.valueOf(Item.Type.SECRET.key()).equals(entry.getType()))) {
-            preview = secretMasker.mask(preview);
-        }
-        result.put("preview", preview);
-        result.put("overlayPresent", overlayPresent);
-        result.put("durablePresent", durablePresent);
-        result.put("effectiveSource", effectiveSource);
-        result.put("effectiveValue", resolve(query));
-        result.put("resolvedFrom", effectiveSource);
-        result.put("watchKey", query == null ? null : settingCuratorService.watchKey(query.coordinates()));
-        result.put("previewSource", durablePresent ? "durable-setting" : "none");
-        return result;
+    private void validate(SettingEnforcer.Context context, ItemQuery query) {
+        if (query == null || !context.tenant().equals(query.getTenant_id()) || query.getApp_id() == null
+                || query.getApp_id().isBlank() || query.isIncludeDeleted() || query.getOffset() != 0
+                || (query.getId() == null || query.getId().isBlank())
+                        && (query.getCode() == null || query.getCode().isBlank()))
+            throw new IllegalArgumentException("Exact runtime application query required");
+        enforcer.require(context, "deliver", "app", query.getApp_id());
     }
 
     /**
-     * Resolves one runtime overlay when configured.
+     * Uses existing application-qualified identity encoding.
      *
-     * @param query             query filter
-     * @param respectPreference whether the query's overlay preference flag should be honored
-     * @return runtime overlay, or {@code null} when absent
+     * @param query exact request
+     * @return qualified key
      */
-    private String runtimeOverlay(ItemQuery query, boolean respectPreference) {
-        if (query == null || runtimeSettingOverlayService == null || settingCuratorService == null) {
-            return null;
-        }
-        if (respectPreference && !query.isPreferOverlay()) {
-            return null;
-        }
-        Item item = settingCuratorService.find(query);
-        if (item == null || respectPreference && !Integer.valueOf(Item.Type.CONFIG_MAP.key()).equals(item.getType())) {
-            return null;
-        }
-        return runtimeSettingOverlayService.resolveRuntimeOverlay(query.coordinates());
+    private String key(ItemQuery query) {
+        return SettingGenerator.INSTANCE.key(SettingSpec.export(query));
+    }
+
+    /**
+     * Invocation-local parsed formal state; never cached globally.
+     *
+     * @param document    verified graph
+     * @param snapshots   exact snapshots
+     * @param definitions authorized parsed definitions
+     * @author Kimi Liu
+     */
+    private record Loaded(Manifest.Document document, Map<String, Revision> snapshots,
+            Map<String, ItemCodec.Document> definitions) {
+
     }
 
 }

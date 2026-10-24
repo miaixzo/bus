@@ -26,11 +26,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.miaixz.bus.core.center.date.Chrono;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
 import org.miaixz.bus.cortex.magic.event.CortexChangeRecord;
@@ -187,8 +189,7 @@ public class VortexBridge
         this.timeoutMs = Math.max(timeoutMs, 1L);
         this.changeLogStore = changeLogStore;
         this.outboxOwner = "vortex-bridge-" + Integer.toHexString(System.identityHashCode(this));
-        this.workerThread = new Thread(this::run, "cortex-vortex-bridge");
-        this.workerThread.setDaemon(true);
+        this.workerThread = ThreadKit.newThread(this::run, "cortex-vortex-bridge", true);
         this.workerThread.start();
     }
 
@@ -214,9 +215,6 @@ public class VortexBridge
                 event.getVersion());
         event.setTenant_id(RegistryIdentity.tenantId(Type.API, event.getTenant_id()));
         RegistryIdentity.normalize(event.getAsset(), RegistryIdentity.type(event.getAsset()));
-        if (event.getInstance() != null) {
-            event.getInstance().setTenant_id(RegistryIdentity.tenantId(Type.API, event.getInstance().getTenant_id()));
-        }
         RegistryChange<Assets> transportEvent = new RegistryChange<>();
         transportEvent.setAction(event.getAction());
         transportEvent.setTenant_id(event.getTenant_id());
@@ -224,11 +222,13 @@ public class VortexBridge
         transportEvent.setId(event.getId());
         transportEvent.setMethod(event.getMethod());
         transportEvent.setVersion(event.getVersion());
-        transportEvent.setFingerprint(event.getFingerprint());
+        transportEvent.setChecksum(event.getChecksum());
         transportEvent.setSource(source);
         transportEvent.setSequence(event.getSequence());
         transportEvent.setInstance(event.getInstance());
-        transportEvent.setAsset(toGatewayAsset(event.getAsset(), event.getInstance()));
+        transportEvent.setPreviousInstance(event.getPreviousInstance());
+        Instance runtime = event.getInstance() != null ? event.getInstance() : event.getPreviousInstance();
+        transportEvent.setAsset(toGatewayAsset(event.getAsset(), runtime));
         if (changeLogStore != null) {
             try {
                 changeLogStore.append(toOutboxRecord(transportEvent));
@@ -316,14 +316,15 @@ public class VortexBridge
     private void run() {
         while (running || !queue.isEmpty()) {
             try {
-                if (drainOutbox()) {
-                    continue;
+                boolean drained = false;
+                try {
+                    drained = drainOutbox();
+                } catch (Exception failure) {
+                    lastError = failure.getMessage();
+                    Logger.warn(false, "Cortex", "Bridge outbox polling failed: {}", failure.getMessage());
                 }
-                RegistryChange<Assets> event = queue.poll(1, TimeUnit.SECONDS);
-                if (event == null) {
-                    continue;
-                }
-                if (changeLogStore != null) {
+                RegistryChange<Assets> event = drained ? queue.poll() : queue.poll(1, TimeUnit.SECONDS);
+                if (event == null || event.getAction() == null) {
                     continue;
                 }
                 deliverQueued(event);
@@ -420,7 +421,7 @@ public class VortexBridge
                         event.getId(),
                         attempt,
                         result.error());
-                TimeUnit.MILLISECONDS.sleep(Math.min(1000L, 100L * attempt));
+                TimeUnit.MILLISECONDS.sleep(Math.min(Chrono.SECOND.getMillis(), 100L * attempt));
             }
         }
     }
@@ -434,7 +435,11 @@ public class VortexBridge
         DeliveryResult result = deliverJson(record.getPayload());
         if (result.success()) {
             deliveredCount.incrementAndGet();
-            changeLogStore.markDelivered(record.getId());
+            CortexChangeRecord updated = changeLogStore.markDelivered(record);
+            if (updated == null) {
+                Logger.warn(false, "Cortex", "Bridge outbox claim no longer current: recordId={}", record.getId());
+                return;
+            }
             Logger.debug(
                     false,
                     "Cortex",
@@ -445,9 +450,11 @@ public class VortexBridge
         }
         failedAttemptCount.incrementAndGet();
         lastError = result.error();
-        CortexChangeRecord updated = result.retryable() ? changeLogStore.markFailed(record.getId(), result.error())
-                : changeLogStore.deadLetter(record.getId(), result.error());
-        if (updated != null && updated.getStatus() == CortexChangeStatus.DEAD) {
+        CortexChangeRecord updated = result.retryable() ? changeLogStore.markFailed(record, result.error())
+                : changeLogStore.deadLetter(record, result.error());
+        if (updated == null) {
+            Logger.warn(false, "Cortex", "Bridge outbox claim no longer current: recordId={}", record.getId());
+        } else if (updated.getStatus() == CortexChangeStatus.DEAD) {
             deadCount.incrementAndGet();
             droppedCount.incrementAndGet();
             Logger.warn(
@@ -633,7 +640,7 @@ public class VortexBridge
      * Converts one API service change payload into the gateway-facing asset snapshot.
      *
      * @param service  API service definition
-     * @param instance optional runtime instance
+     * @param instance optional service relationship containing a shared process
      * @return gateway-facing asset snapshot
      */
     private Assets toGatewayAsset(ApiAssets service, Instance instance) {
@@ -675,7 +682,7 @@ public class VortexBridge
         record.setSequence(event.getSequence());
         record.setIdempotencyKey(
                 "vortex:" + event.getTenant_id() + Symbol.COLON + record.getAction() + Symbol.COLON
-                        + record.getResourceId());
+                        + record.getResourceId() + Symbol.COLON + event.getSequence());
         return record;
     }
 
@@ -686,8 +693,8 @@ public class VortexBridge
      * @return resource identifier
      */
     private String resourceId(RegistryChange<Assets> event) {
-        if (event.getFingerprint() != null) {
-            return "instance:" + event.getFingerprint();
+        if (event.getChecksum() != null) {
+            return "instance:" + event.getChecksum();
         }
         if (event.getId() != null) {
             return event.getId();
@@ -699,10 +706,11 @@ public class VortexBridge
     /**
      * Wakes the worker after a reliable outbox append.
      *
-     * @param event registry change event used as a wakeup marker
+     * @param event appended registry change used only for wakeup diagnostics
      */
     private void signalWorker(RegistryChange<Assets> event) {
-        if (!queue.offer(event)) {
+        // Real queued deliveries always have an action; an empty envelope only wakes outbox polling.
+        if (!queue.offer(new RegistryChange<>())) {
             Logger.warn(
                     false,
                     "Cortex",
