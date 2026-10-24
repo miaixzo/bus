@@ -37,7 +37,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class Note implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852265960807L;
+    private static final long serialVersionUID = 2550895000001L;
 
     /**
      * The attachment value.

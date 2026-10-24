@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.ref.Ref;
 public class WeakCache<K, V> extends TimedCache<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852232505330L;
+    private static final long serialVersionUID = 2535633306695L;
 
     /**
      * Constructs a weak-referenced cache with a specified timeout.

@@ -46,7 +46,7 @@ import org.miaixz.bus.logger.Logger;
 public class Digester extends SimpleWrapper<MessageDigest> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852288992512L;
+    private static final long serialVersionUID = 2539223513632L;
 
     /**
      * The salt value used in the digest process.

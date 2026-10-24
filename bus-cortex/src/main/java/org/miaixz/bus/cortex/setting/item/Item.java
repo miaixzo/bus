@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.EnumKit;
 public class Item extends Tenant {
 
     @Serial
-    private static final long serialVersionUID = 2538001219000L;
+    private static final long serialVersionUID = 2558909106509L;
 
     /**
      * name.

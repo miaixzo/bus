@@ -39,7 +39,7 @@ import org.miaixz.bus.extra.image.ImageKit;
 public class ShearProvider extends AbstractProvider {
 
     @Serial
-    private static final long serialVersionUID = 2852292037090L;
+    private static final long serialVersionUID = 2553982150001L;
 
     /**
      * Constructor.

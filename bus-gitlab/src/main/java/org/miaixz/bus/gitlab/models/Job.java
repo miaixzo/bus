@@ -34,7 +34,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Job implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852259736306L;
+    private static final long serialVersionUID = 2550802250001L;
 
     /**
      * The id value.

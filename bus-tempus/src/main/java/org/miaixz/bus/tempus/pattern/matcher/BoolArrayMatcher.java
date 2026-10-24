@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.tempus.pattern.matcher;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,6 +34,9 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  */
 public class BoolArrayMatcher implements PartMatcher {
+
+    @Serial
+    private static final long serialVersionUID = 2558309501325L;
 
     /**
      * The minimum value defined in the cron expression for this part.

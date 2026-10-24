@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class TreeBuilder<E> implements Builder<MapTree<E>> {
 
     @Serial
-    private static final long serialVersionUID = 2852250515557L;
+    private static final long serialVersionUID = 2538383251501L;
 
     /**
      * A map storing nodes by their ID for efficient lookup during tree construction.

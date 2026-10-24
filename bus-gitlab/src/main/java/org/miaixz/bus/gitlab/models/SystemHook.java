@@ -34,7 +34,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class SystemHook implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852281631008L;
+    private static final long serialVersionUID = 2551226263303L;
 
     /**
      * The id value.
@@ -457,7 +457,7 @@ public class SystemHook implements Serializable {
     public static class UrlVariable implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852281710398L;
+        private static final long serialVersionUID = 2551229515051L;
 
         /**
          * The key value.

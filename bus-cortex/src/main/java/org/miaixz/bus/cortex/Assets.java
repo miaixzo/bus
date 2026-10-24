@@ -50,7 +50,7 @@ import org.miaixz.bus.cortex.builtin.LabelMapper;
 public class Assets extends Nature {
 
     @Serial
-    private static final long serialVersionUID = 2536951816000L;
+    private static final long serialVersionUID = 2558861502065L;
 
     /**
      * Application identifier bound to the asset within the current tenantId.

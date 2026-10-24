@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.DateKit;
 public class Between implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852233282300L;
+    private static final long serialVersionUID = 2535636500001L;
 
     /**
      * The beginning date of the interval.

@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Link implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852260700263L;
+    private static final long serialVersionUID = 2550828161892L;
 
     /**
      * The id value.

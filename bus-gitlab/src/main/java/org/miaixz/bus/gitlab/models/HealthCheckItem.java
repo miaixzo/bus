@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class HealthCheckItem implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852256751978L;
+    private static final long serialVersionUID = 2550633563501L;
 
     /**
      * The status value.

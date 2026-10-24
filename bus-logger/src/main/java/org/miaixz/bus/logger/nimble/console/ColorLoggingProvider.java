@@ -37,7 +37,7 @@ import org.miaixz.bus.logger.Level;
 public class ColorLoggingProvider extends NormalLoggingProvider {
 
     @Serial
-    private static final long serialVersionUID = 2852286792515L;
+    private static final long serialVersionUID = 2538926858309L;
 
     /**
      * The color code for the class name in the console output.

@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class BeanException extends InternalException {
 
     @Serial
-    private static final long serialVersionUID = 2852252098698L;
+    private static final long serialVersionUID = 2536665000001L;
 
     /**
      * Constructs a new BeanException with the specified cause.

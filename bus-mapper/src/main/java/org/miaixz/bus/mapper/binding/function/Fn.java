@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.mapper.binding.function;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -190,6 +191,9 @@ public interface Fn<T, R> extends FunctionX<T, R>, Serializable {
      */
     class FnType<T, R> implements Fn<T, R> {
 
+        @Serial
+        private static final long serialVersionUID = 2551582252606L;
+
         /**
          * The original method reference.
          */
@@ -258,6 +262,9 @@ public interface Fn<T, R> extends FunctionX<T, R>, Serializable {
      * @author Kimi Liu
      */
     class FnName<T, R> implements Fn<T, R> {
+
+        @Serial
+        private static final long serialVersionUID = 2551585505001L;
 
         /**
          * The entity class type.

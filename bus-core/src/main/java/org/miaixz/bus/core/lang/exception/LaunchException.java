@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class LaunchException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852260999681L;
+    private static final long serialVersionUID = 2536820061185L;
 
     /**
      * Constructs a new LaunchException with no detail message.

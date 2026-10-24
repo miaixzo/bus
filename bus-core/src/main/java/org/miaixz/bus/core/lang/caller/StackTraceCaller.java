@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.CallerKit;
 public class StackTraceCaller implements Caller, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852251293153L;
+    private static final long serialVersionUID = 2536653203053L;
 
     /**
      * Retains declaring classes directly so caller resolution does not require loading stack-trace class names.

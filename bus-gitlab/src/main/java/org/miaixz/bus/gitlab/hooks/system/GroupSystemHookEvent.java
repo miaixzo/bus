@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class GroupSystemHookEvent extends AbstractSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852292752260L;
+    private static final long serialVersionUID = 2539582251051L;
 
     /**
      * The group create event value.

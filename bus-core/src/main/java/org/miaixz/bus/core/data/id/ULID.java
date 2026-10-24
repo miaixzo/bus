@@ -58,7 +58,7 @@ import org.miaixz.bus.core.xyz.RandomKit;
 public class ULID implements Comparable<ULID>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852275998965L;
+    private static final long serialVersionUID = 2536382152501L;
 
     /**
      * Timestamp component mask

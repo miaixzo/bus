@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.Charset;
 public class TemplateConfig implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852288273095L;
+    private static final long serialVersionUID = 2555080001322L;
 
     /**
      * Default template configuration instance. Uses UTF-8 encoding and {@link ResourceMode#STRING} as the default

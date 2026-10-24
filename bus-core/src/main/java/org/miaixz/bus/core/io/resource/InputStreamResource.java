@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class InputStreamResource implements Resource, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852231716055L;
+    private static final long serialVersionUID = 2536596862526L;
 
     /**
      * The underlying {@link InputStream}.

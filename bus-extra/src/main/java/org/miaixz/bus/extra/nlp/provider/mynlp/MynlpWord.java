@@ -34,7 +34,7 @@ import org.miaixz.bus.extra.nlp.NLPWord;
 public class MynlpWord implements NLPWord {
 
     @Serial
-    private static final long serialVersionUID = 2852286667336L;
+    private static final long serialVersionUID = 2555065001581L;
 
     /**
      * The underlying Mynlp {@link WordTerm} object.

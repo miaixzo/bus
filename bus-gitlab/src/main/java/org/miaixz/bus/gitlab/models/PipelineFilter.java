@@ -39,7 +39,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class PipelineFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852269565389L;
+    private static final long serialVersionUID = 2551039102651L;
 
     /**
      * pipelines, one of: running, pending, finished, branches, tags

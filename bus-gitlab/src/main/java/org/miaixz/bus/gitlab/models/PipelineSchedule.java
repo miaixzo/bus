@@ -34,7 +34,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class PipelineSchedule implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852269813738L;
+    private static final long serialVersionUID = 2551050000001L;
 
     /**
      * The id value.

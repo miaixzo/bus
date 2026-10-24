@@ -32,7 +32,7 @@ import java.net.URL;
 public class URIConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852272395520L;
+    private static final long serialVersionUID = 2536319610816L;
 
     /**
      * Constructs a new URIConverter instance.

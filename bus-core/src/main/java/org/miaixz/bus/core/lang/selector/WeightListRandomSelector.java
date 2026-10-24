@@ -53,7 +53,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class WeightListRandomSelector<E> implements Selector<E>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852278633171L;
+    private static final long serialVersionUID = 2538092113892L;
 
     /**
      * The pool of weighted random elements.

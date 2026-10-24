@@ -54,7 +54,7 @@ import org.miaixz.bus.logger.Logger;
 public class Crypto extends AbstractCrypto<Crypto> {
 
     @Serial
-    private static final long serialVersionUID = 2852288768007L;
+    private static final long serialVersionUID = 2539220250001L;
 
     /**
      * The {@link Cipher} responsible for performing encryption or decryption operations.

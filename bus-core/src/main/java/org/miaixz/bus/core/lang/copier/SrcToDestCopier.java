@@ -36,7 +36,7 @@ import org.miaixz.bus.core.center.function.PredicateX;
 public abstract class SrcToDestCopier<T, C extends SrcToDestCopier<T, C>> implements Copier<T>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852251585211L;
+    private static final long serialVersionUID = 2536656365281L;
 
     /**
      * The source object from which data will be copied.

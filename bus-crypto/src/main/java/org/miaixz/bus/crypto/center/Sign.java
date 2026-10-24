@@ -49,7 +49,7 @@ import org.miaixz.bus.logger.Logger;
 public class Sign extends Asymmetric<Sign> {
 
     @Serial
-    private static final long serialVersionUID = 2852290831738L;
+    private static final long serialVersionUID = 2539290800001L;
 
     /**
      * The {@link Signature} object used for signing and verification.

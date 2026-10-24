@@ -20,6 +20,7 @@
 package org.miaixz.bus.shade.screw.engine;
 
 import java.io.*;
+import java.io.Serial;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -44,6 +45,9 @@ import freemarker.template.TemplateException;
  * @author Kimi Liu
  */
 public class FreemarkerEngine extends AbstractEngine {
+
+    @Serial
+    private static final long serialVersionUID = 2552890152501L;
 
     /**
      * The Freemarker configuration instance.

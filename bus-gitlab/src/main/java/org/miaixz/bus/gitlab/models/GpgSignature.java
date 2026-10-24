@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class GpgSignature implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852255356008L;
+    private static final long serialVersionUID = 2550608162561L;
 
     /**
      * The gpg key id value.

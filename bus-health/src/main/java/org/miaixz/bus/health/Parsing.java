@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.health;
 
+import java.io.Serial;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -399,6 +400,9 @@ public class Parsing {
         Matcher matcher = HERTZ_PATTERN.matcher(hertz.trim());
         if (matcher.find()) {
             Map<String, Long> map = new HashMap<>() {
+
+                @Serial
+                private static final long serialVersionUID = 2555612350001L;
 
                 {
                     put("Hz", 1L);

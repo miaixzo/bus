@@ -34,7 +34,7 @@ import org.miaixz.bus.extra.nlp.NLPWord;
 public class MmsegWord implements NLPWord {
 
     @Serial
-    private static final long serialVersionUID = 2852286361503L;
+    private static final long serialVersionUID = 2555062162118L;
 
     /**
      * The underlying mmseg4j {@link com.chenlb.mmseg4j.Word} object.

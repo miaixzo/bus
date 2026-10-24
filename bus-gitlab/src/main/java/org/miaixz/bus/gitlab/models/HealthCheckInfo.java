@@ -39,7 +39,7 @@ import tools.jackson.databind.annotation.JsonDeserialize;
 public class HealthCheckInfo implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852256691706L;
+    private static final long serialVersionUID = 2550631311681L;
 
     /**
      * The db check value.

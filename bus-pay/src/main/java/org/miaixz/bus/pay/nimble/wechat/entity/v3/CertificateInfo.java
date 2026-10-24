@@ -37,7 +37,7 @@ import lombok.experimental.SuperBuilder;
 public class CertificateInfo implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852258391088L;
+    private static final long serialVersionUID = 2560088661951L;
 
     /**
      * The serial number of the certificate.

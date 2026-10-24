@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.SetKit;
 public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852231905670L;
+    private static final long serialVersionUID = 2535518000001L;
 
     /**
      * The mutual exclusion lock. This is necessary for caches like those based on LinkedHashMap, where the get method

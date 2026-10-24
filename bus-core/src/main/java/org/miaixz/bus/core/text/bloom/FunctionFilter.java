@@ -39,7 +39,7 @@ import org.miaixz.bus.core.lang.Assert;
 public class FunctionFilter extends AbstractFilter {
 
     @Serial
-    private static final long serialVersionUID = 2852235578011L;
+    private static final long serialVersionUID = 2538182051685L;
 
     /**
      * The list of hash functions used by this filter.

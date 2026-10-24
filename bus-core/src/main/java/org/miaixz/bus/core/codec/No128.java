@@ -36,7 +36,7 @@ import java.util.Objects;
 public class No128 extends Number implements Comparable<No128> {
 
     @Serial
-    private static final long serialVersionUID = 2852280901728L;
+    private static final long serialVersionUID = 2536083150001L;
 
     /**
      * The Most Significant Bit (MSB) of the 128-bit number, occupying 64 bits (8 bytes).

@@ -34,7 +34,7 @@ import java.util.Objects;
 public class TreeNode<T> implements Node<T> {
 
     @Serial
-    private static final long serialVersionUID = 2852250559730L;
+    private static final long serialVersionUID = 2538385502801L;
 
     /**
      * The unique identifier of the node.

@@ -60,7 +60,7 @@ import org.miaixz.bus.setting.nimble.props.Props;
 public class Setting extends AbstractSetting implements Map<String, String> {
 
     @Serial
-    private static final long serialVersionUID = 2852263091176L;
+    private static final long serialVersionUID = 2552500000001L;
 
     /**
      * The default character set (UTF-8).
@@ -247,7 +247,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
         this.watchMonitor = WatchKit.ofModify(resource.getUrl(), new DelayWatcher(new SimpleWatcher() {
 
             @Serial
-            private static final long serialVersionUID = 2852560512835L;
+            private static final long serialVersionUID = 2552502252501L;
 
             @Override
             public void onModify(final WatchEvent<?> event, final WatchKey key) {

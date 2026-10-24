@@ -38,7 +38,7 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 public class Approval extends Tenant {
 
     @Serial
-    private static final long serialVersionUID = 2536995338000L;
+    private static final long serialVersionUID = 2558902800001L;
 
     /**
      * Identifier of the publication workflow under review.

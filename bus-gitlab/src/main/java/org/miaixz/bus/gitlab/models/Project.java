@@ -46,7 +46,7 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class Project implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852270183312L;
+    private static final long serialVersionUID = 2551055500001L;
 
     /**
      * The shared with groups value.

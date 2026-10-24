@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.Normal;
 public class ConcurrentLinkedHashSet<E> extends SetFromMap<E> {
 
     @Serial
-    private static final long serialVersionUID = 2852280151086L;
+    private static final long serialVersionUID = 2536063056819L;
 
     /**
      * Constructs a new, empty {@code ConcurrentLinkedHashSet} with a default maximum weighted capacity (64). The

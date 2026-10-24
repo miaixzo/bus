@@ -51,7 +51,7 @@ import org.miaixz.bus.logger.Logger;
 public class Connection implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852260616932L;
+    private static final long serialVersionUID = 2556218961053L;
 
     /**
      * The no timeout value.

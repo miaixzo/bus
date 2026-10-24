@@ -42,7 +42,7 @@ import org.miaixz.bus.image.metric.net.ApplicationEntity;
 public class TransferCapability implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852261961377L;
+    private static final long serialVersionUID = 2556238251838L;
 
     /**
      * The ae value.

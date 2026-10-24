@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.tempus.pattern.matcher;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -27,6 +29,9 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  */
 public class AlwaysTrueMatcher implements PartMatcher {
+
+    @Serial
+    private static final long serialVersionUID = 2558306219219L;
 
     /**
      * Singleton instance.

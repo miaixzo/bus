@@ -52,7 +52,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Images implements Flushable, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852293153163L;
+    private static final long serialVersionUID = 2555002155001L;
 
     /**
      * The source image.

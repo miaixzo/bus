@@ -226,7 +226,7 @@ public class CGetForward implements AutoCloseable {
         class AbortException extends IllegalStateException {
 
             @Serial
-            private static final long serialVersionUID = 2852291915160L;
+            private static final long serialVersionUID = 2556505312989L;
 
             /**
              * Constructs a new AbortException.

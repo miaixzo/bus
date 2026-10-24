@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.HashKit;
 public class ConsistentHash<T> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852259219707L;
+    private static final long serialVersionUID = 2536131105001L;
 
     /**
      * The number of virtual replicas for each physical node.

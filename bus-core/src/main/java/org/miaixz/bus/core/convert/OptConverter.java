@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Optional;
 public class OptConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852269671795L;
+    private static final long serialVersionUID = 2536268808651L;
 
     /**
      * Constructs a new OptConverter instance.

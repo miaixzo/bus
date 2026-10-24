@@ -40,7 +40,7 @@ import lombok.experimental.SuperBuilder;
 public class Result<T> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852291039338L;
+    private static final long serialVersionUID = 2535309912232L;
 
     /**
      * The total number of records.

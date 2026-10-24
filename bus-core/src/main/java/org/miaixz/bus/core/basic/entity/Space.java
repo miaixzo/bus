@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.core.basic.entity;
 
+import java.io.Serial;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -32,6 +34,9 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 public class Space extends Tenant {
+
+    @Serial
+    private static final long serialVersionUID = 2535312065001L;
 
     /**
      * Unique identifier of the logical space that owns the current entity.

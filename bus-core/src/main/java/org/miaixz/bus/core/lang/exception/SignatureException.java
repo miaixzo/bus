@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class SignatureException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852263991233L;
+    private static final long serialVersionUID = 2536885000001L;
 
     /**
      * Constructs a new SignatureException with no detail message.

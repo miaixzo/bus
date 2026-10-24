@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class DeploymentEvent extends AbstractEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852230222355L;
+    private static final long serialVersionUID = 2550090103521L;
 
     /**
      * The x gitlab event value.

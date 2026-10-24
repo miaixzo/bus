@@ -32,7 +32,7 @@ import java.util.TimeZone;
 public class SimpleDatePrinter implements DatePrinter, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852258036368L;
+    private static final long serialVersionUID = 2535691252569L;
 
     /**
      * The date format pattern.

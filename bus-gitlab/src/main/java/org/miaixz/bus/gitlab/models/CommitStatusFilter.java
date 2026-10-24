@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class CommitStatusFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852250336272L;
+    private static final long serialVersionUID = 2550283051896L;
 
     /**
      * The ref value.

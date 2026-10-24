@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class LdapGroupLink implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852260326318L;
+    private static final long serialVersionUID = 2550819521029L;
 
     /**
      * The cn value.

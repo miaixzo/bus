@@ -38,7 +38,7 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class Iteration implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852259131760L;
+    private static final long serialVersionUID = 2550699151501L;
 
     /**
      * The id value.

@@ -40,7 +40,7 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 public class Event extends Tenant {
 
     @Serial
-    private static final long serialVersionUID = 2536998889000L;
+    private static final long serialVersionUID = 2558905952518L;
 
     /**
      * Identifier of the authenticated actor performing the operation.

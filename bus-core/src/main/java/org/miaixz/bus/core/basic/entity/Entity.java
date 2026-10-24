@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.FieldKit;
 public class Entity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852290719680L;
+    private static final long serialVersionUID = 2535301255001L;
 
     /**
      * The primary key of the data.

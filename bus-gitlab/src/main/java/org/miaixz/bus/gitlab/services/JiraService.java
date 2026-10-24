@@ -34,7 +34,7 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
 public class JiraService extends NotificationService {
 
     @Serial
-    private static final long serialVersionUID = 2852285168011L;
+    private static final long serialVersionUID = 2551308802281L;
 
     /**
      * The url prop value.

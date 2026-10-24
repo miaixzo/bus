@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.mapper.feature.visible;
 
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -52,6 +53,9 @@ import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
  * @author Kimi Liu
  */
 public class VisibleHandler<T> extends ScopedProviderHandler<T, VisibleConfig, VisibleProvider> {
+
+    @Serial
+    private static final long serialVersionUID = 2551622665001L;
 
     /**
      * Default constructor (uses default configuration).

@@ -20,6 +20,7 @@
 package org.miaixz.bus.setting.nimble.ini;
 
 import java.io.*;
+import java.io.Serial;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -40,6 +41,9 @@ import org.miaixz.bus.setting.nimble.props.Props;
  * @author Kimi Liu
  */
 public class IniSetting extends ArrayList<IniElement> {
+
+    @Serial
+    private static final long serialVersionUID = 2552538261351L;
 
     /**
      * Constructs an empty list with an initial capacity of ten.

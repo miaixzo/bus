@@ -20,6 +20,7 @@
 package org.miaixz.bus.core.convert.stringer;
 
 import java.io.Reader;
+import java.io.Serial;
 import java.sql.Clob;
 import java.sql.SQLException;
 
@@ -33,6 +34,9 @@ import org.miaixz.bus.core.xyz.IoKit;
  * @author Kimi Liu
  */
 public class ClobStringer implements FunctionX<Object, String> {
+
+    @Serial
+    private static final long serialVersionUID = 2536355505001L;
 
     /**
      * Singleton instance.

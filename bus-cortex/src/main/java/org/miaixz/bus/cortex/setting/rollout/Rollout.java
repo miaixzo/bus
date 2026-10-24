@@ -41,7 +41,7 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 public class Rollout extends Tenant {
 
     @Serial
-    private static final long serialVersionUID = 2538010532000L;
+    private static final long serialVersionUID = 2558926680001L;
 
     /**
      * Display title of the publication workflow.

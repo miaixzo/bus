@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Symbol;
 public class HL7Exception extends Exception {
 
     @Serial
-    private static final long serialVersionUID = 2852263939653L;
+    private static final long serialVersionUID = 2556260812066L;
 
     /**
      * The aa value.

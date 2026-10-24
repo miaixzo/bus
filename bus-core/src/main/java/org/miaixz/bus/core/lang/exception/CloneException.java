@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class CloneException extends InternalException {
 
     @Serial
-    private static final long serialVersionUID = 2852252361660L;
+    private static final long serialVersionUID = 2536681303552L;
 
     /**
      * Constructs a new CloneException with no detail message.

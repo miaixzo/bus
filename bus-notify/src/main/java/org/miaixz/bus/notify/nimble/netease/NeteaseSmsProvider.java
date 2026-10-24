@@ -37,7 +37,7 @@ import org.miaixz.bus.notify.Context;
 public class NeteaseSmsProvider extends NeteaseProvider<NeteaseNotice, Context> {
 
     @Serial
-    private static final long serialVersionUID = -202510031219L;
+    private static final long serialVersionUID = 2559800001138L;
 
     /**
      * Constructs a {@code NeteaseSmsProvider} with the given context.

@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class SocketException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852265392096L;
+    private static final long serialVersionUID = 2536888251815L;
 
     /**
      * Constructs a new SocketException with no detail message.

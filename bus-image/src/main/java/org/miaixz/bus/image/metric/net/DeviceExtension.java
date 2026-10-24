@@ -33,7 +33,7 @@ import org.miaixz.bus.image.metric.Connection;
 public class DeviceExtension implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852270575131L;
+    private static final long serialVersionUID = 2556300500001L;
 
     /**
      * The device value.

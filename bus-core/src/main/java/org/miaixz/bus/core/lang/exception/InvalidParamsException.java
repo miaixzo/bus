@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class InvalidParamsException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852257718269L;
+    private static final long serialVersionUID = 2536813500001L;
 
     /**
      * Constructs a new InvalidParamsException with no detail message.

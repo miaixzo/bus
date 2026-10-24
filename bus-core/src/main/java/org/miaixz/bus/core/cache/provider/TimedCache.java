@@ -47,7 +47,7 @@ import org.miaixz.bus.core.lang.thread.lock.NoLock;
 public class TimedCache<K, V> extends LockedCache<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852232272208L;
+    private static final long serialVersionUID = 2535628803639L;
 
     /**
      * The scheduled task for the pruning job.

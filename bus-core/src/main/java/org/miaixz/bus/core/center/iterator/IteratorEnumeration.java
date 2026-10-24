@@ -35,7 +35,7 @@ import java.util.NoSuchElementException;
 public class IteratorEnumeration<E> implements Enumeration<E>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852266956805L;
+    private static final long serialVersionUID = 2535805311611L;
 
     /**
      * The underlying {@link Iterator} being adapted.

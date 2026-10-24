@@ -36,7 +36,7 @@ import org.miaixz.bus.gitlab.models.Constants.StateEvent;
 public class MergeRequestParams implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852263591065L;
+    private static final long serialVersionUID = 2550880000001L;
 
     /**
      * The source branch value.

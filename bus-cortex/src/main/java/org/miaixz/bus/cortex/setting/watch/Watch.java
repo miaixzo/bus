@@ -40,7 +40,7 @@ import org.miaixz.bus.cortex.Status;
 public class Watch extends Tenant {
 
     @Serial
-    private static final long serialVersionUID = 2538012983000L;
+    private static final long serialVersionUID = 2558929921288L;
 
     /**
      * Configuration item observed by the watch.

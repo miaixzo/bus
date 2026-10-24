@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class JWTException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852257851297L;
+    private static final long serialVersionUID = 2536816800001L;
 
     /**
      * Constructs a new JWTException with no detail message.

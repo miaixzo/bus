@@ -35,7 +35,7 @@ import org.miaixz.bus.extra.ssh.Connector;
 public class FtpConfig implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852292979822L;
+    private static final long serialVersionUID = 2553993800001L;
 
     /**
      * Connection information, including host, port, username, and password. This object is typically used to establish

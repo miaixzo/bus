@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Discussion implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852251836760L;
+    private static final long serialVersionUID = 2550328000001L;
 
     /**
      * The id value.

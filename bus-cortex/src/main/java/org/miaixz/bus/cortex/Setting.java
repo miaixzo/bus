@@ -42,7 +42,7 @@ import lombok.experimental.SuperBuilder;
 public class Setting extends Nature {
 
     @Serial
-    private static final long serialVersionUID = 2536961029000L;
+    private static final long serialVersionUID = 2558880001923L;
 
     /**
      * Optional descriptive text shared by setting-domain resources.

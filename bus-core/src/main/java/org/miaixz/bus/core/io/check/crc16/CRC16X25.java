@@ -31,7 +31,7 @@ import java.io.Serial;
 public class CRC16X25 extends CRC16Checksum {
 
     @Serial
-    private static final long serialVersionUID = 2852283680070L;
+    private static final long serialVersionUID = 2536528150001L;
 
     /**
      * The polynomial used in the CRC16-X25 calculation. It is the bit-reversed form of 0x1021.

@@ -19,8 +19,9 @@
 */
 package org.miaixz.bus.setting.nimble.ini;
 
-import org.miaixz.bus.core.center.function.FunctionX;
+import java.io.Serial;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
@@ -29,6 +30,9 @@ import org.miaixz.bus.core.lang.Symbol;
  * @author Kimi Liu
  */
 public abstract class AbstractElement implements IniElement {
+
+    @Serial
+    private static final long serialVersionUID = 2552526316501L;
 
     /**
      * value of comment text.

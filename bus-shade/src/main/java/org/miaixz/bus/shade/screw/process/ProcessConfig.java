@@ -38,7 +38,7 @@ import lombok.experimental.SuperBuilder;
 public class ProcessConfig implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2830692518360L;
+    private static final long serialVersionUID = 2552918250001L;
 
     /**
      * A list of table names to ignore during processing.

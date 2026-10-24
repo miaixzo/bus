@@ -44,7 +44,7 @@ import org.miaixz.bus.logger.Logger;
 public class McpAssets extends Assets {
 
     @Serial
-    private static final long serialVersionUID = 2536980252000L;
+    private static final long serialVersionUID = 2558888800001L;
 
     /**
      * MCP-specific metadata view.

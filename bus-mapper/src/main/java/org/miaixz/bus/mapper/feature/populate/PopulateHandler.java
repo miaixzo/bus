@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.mapper.feature.populate;
 
+import java.io.Serial;
 import java.util.Properties;
 
 import org.apache.ibatis.executor.Executor;
@@ -58,6 +59,9 @@ import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
  * @author Kimi Liu
  */
 public class PopulateHandler<T> extends ScopedProviderHandler<T, PopulateConfig, PopulateProvider> {
+
+    @Serial
+    private static final long serialVersionUID = 2551618161086L;
 
     /**
      * Default constructor (uses default configuration).

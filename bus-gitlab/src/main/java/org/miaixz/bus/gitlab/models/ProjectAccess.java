@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ProjectAccess implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852270701671L;
+    private static final long serialVersionUID = 2551058800001L;
 
     /**
      * The access level value.

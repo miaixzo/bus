@@ -48,7 +48,7 @@ import org.miaixz.bus.core.xyz.SetKit;
 public class Dictionary extends CustomKeyMap<String, Object> implements TypeGetter<String> {
 
     @Serial
-    private static final long serialVersionUID = 2852273032017L;
+    private static final long serialVersionUID = 2535833208118L;
 
     /**
      * Flag indicating whether keys in this dictionary are case-insensitive.

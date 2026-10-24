@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Normal;
 public class SecureRandom extends java.security.SecureRandom {
 
     @Serial
-    private static final long serialVersionUID = 2860519382650L;
+    private static final long serialVersionUID = 2552823500001L;
 
     /**
      * The byte array containing the seed data for random number generation.

@@ -38,7 +38,7 @@ import org.miaixz.bus.logger.magic.AbstractProvider;
 public class NormalLoggingProvider extends AbstractProvider {
 
     @Serial
-    private static final long serialVersionUID = 2852287011503L;
+    private static final long serialVersionUID = 2538930009501L;
 
     /**
      * The current logging level.

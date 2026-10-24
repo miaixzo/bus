@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class TimeoutException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852266380577L;
+    private static final long serialVersionUID = 2536906951681L;
 
     /**
      * Constructs a new TimeoutException with no detail message.

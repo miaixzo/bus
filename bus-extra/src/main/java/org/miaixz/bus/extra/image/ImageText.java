@@ -33,7 +33,7 @@ import java.util.Objects;
 public class ImageText implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852293077169L;
+    private static final long serialVersionUID = 2555000001322L;
 
     /**
      * The text content.

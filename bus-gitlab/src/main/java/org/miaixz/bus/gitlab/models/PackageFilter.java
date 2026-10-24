@@ -34,7 +34,7 @@ import org.miaixz.bus.gitlab.models.Constants.SortOrder;
 public class PackageFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852268635108L;
+    private static final long serialVersionUID = 2550925000001L;
 
     /**
      * The exclude subgroups value.

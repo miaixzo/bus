@@ -21,6 +21,7 @@ package org.miaixz.bus.core.io.file;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.io.Serial;
 import java.nio.charset.Charset;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
@@ -38,6 +39,9 @@ import org.miaixz.bus.core.xyz.FileKit;
  * @author Kimi Liu
  */
 public class LineWatcher extends SimpleWatcher implements Runnable {
+
+    @Serial
+    private static final long serialVersionUID = 2536565221888L;
 
     /**
      * The {@link RandomAccessFile} instance used to read the file content.

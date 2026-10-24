@@ -491,7 +491,7 @@ public class StringBuilderPool {
     public static class PoolConfig implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2810328965018L;
+        private static final long serialVersionUID = 2538139320069L;
 
         /**
          * The threshold for the small pool. Requests for size up to this value use the small pool.
@@ -695,7 +695,7 @@ public class StringBuilderPool {
     public static class PoolStats implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2821568390215L;
+        private static final long serialVersionUID = 2538151561569L;
 
         /**
          * Count of acquisitions from the small pool tier (default capacity: 64).

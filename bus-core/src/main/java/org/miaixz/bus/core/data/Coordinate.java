@@ -253,7 +253,7 @@ public class Coordinate {
     public static class Point implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852275287953L;
+        private static final long serialVersionUID = 2536358666138L;
 
         /**
          * The longitude.

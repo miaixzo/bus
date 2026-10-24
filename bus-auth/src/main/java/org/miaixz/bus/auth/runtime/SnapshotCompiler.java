@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.auth.runtime;
 
+import java.io.Serial;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -283,6 +284,9 @@ final class SnapshotCompiler {
      * @author Kimi Liu
      */
     static final class CompilationFailure extends RuntimeException {
+
+        @Serial
+        private static final long serialVersionUID = 2558602268598L;
 
         /**
          * Blueprint kind that failed compilation.

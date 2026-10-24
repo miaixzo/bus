@@ -97,7 +97,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class UUID implements Serializable, Comparable<UUID> {
 
     @Serial
-    private static final long serialVersionUID = 2852276107807L;
+    private static final long serialVersionUID = 2536385500001L;
 
     /**
      * The last UUIDv7 millisecond timestamp and 12-bit sequence packed as a monotonic value.

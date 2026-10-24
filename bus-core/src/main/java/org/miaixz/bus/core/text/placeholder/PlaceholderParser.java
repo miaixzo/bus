@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.core.text.placeholder;
 
+import java.io.Serial;
 import java.util.Objects;
 
 import org.miaixz.bus.core.center.function.UnaryOperatorX;
@@ -36,6 +37,9 @@ import org.miaixz.bus.core.text.CharsValidator;
  * @author Kimi Liu
  */
 public class PlaceholderParser implements UnaryOperatorX<String> {
+
+    @Serial
+    private static final long serialVersionUID = 2538318980001L;
 
     /**
      * The processor function that handles the extracted placeholder expression. This function takes the content within

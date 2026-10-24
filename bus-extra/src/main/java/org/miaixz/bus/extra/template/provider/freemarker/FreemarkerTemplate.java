@@ -39,7 +39,7 @@ import freemarker.template.TemplateException;
 public class FreemarkerTemplate implements Template, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852288838528L;
+    private static final long serialVersionUID = 2555085000001L;
 
     /**
      * The raw FreeMarker template object.

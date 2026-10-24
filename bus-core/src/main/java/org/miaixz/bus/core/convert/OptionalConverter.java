@@ -30,7 +30,7 @@ import java.util.Optional;
 public class OptionalConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852269912870L;
+    private static final long serialVersionUID = 2536280000001L;
 
     /**
      * Constructs a new OptionalConverter instance.

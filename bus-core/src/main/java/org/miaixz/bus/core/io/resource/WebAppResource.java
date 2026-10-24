@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.FileKit;
 public class WebAppResource extends FileResource {
 
     @Serial
-    private static final long serialVersionUID = 2852232920252L;
+    private static final long serialVersionUID = 2536612980001L;
 
     /**
      * Constructs a {@code WebAppResource} with a path relative to the Web root.

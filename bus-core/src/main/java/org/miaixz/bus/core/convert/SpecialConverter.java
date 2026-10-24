@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public class SpecialConverter extends ConverterWithRoot implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852271836876L;
+    private static final long serialVersionUID = 2536302500001L;
 
     /**
      * Set of type converters. This set does not add new values after initialization, so it is thread-safe for singleton

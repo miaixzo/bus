@@ -275,7 +275,7 @@ public abstract class AuthCache<V> {
     public record Envelope(int version, String purpose, String valueType, Object value) implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2898166305821L;
+        private static final long serialVersionUID = 2558593800001L;
 
     }
 

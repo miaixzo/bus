@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class Mac implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852290282995L;
+    private static final long serialVersionUID = 2539268555001L;
 
     /**
      * The Mac engine.

@@ -41,7 +41,7 @@ import org.miaixz.bus.crypto.builtin.asymmetric.Crypto;
 public class ECIES extends Crypto {
 
     @Serial
-    private static final long serialVersionUID = 2852289857959L;
+    private static final long serialVersionUID = 2539238250001L;
 
     /**
      * Constructs an ECIES encryptor/decryptor, generating a new private-public key pair. Uses the default ECIES

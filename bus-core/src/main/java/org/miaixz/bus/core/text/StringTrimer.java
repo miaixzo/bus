@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class StringTrimer implements UnaryOperatorX<CharSequence>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852235152928L;
+    private static final long serialVersionUID = 2538163302851L;
 
     /**
      * Trimmer instance to remove leading and trailing blank characters.

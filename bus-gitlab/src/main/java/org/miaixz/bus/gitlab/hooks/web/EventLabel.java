@@ -37,7 +37,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class EventLabel implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852231062892L;
+    private static final long serialVersionUID = 2550092255001L;
 
     /**
      * The id value.

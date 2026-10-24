@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public abstract class CRC16Checksum implements Checksum, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852278688761L;
+    private static final long serialVersionUID = 2536510805001L;
 
     /**
      * The current CRC16 checksum value.

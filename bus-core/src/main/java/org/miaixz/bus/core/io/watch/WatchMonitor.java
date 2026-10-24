@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class WatchMonitor extends Thread implements Closeable, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852236557339L;
+    private static final long serialVersionUID = 2536619293501L;
 
     /**
      * The wrapper around the {@link java.nio.file.WatchService} that handles the actual watching mechanism.

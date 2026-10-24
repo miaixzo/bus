@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class WikiPageEvent extends AbstractEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852233220608L;
+    private static final long serialVersionUID = 2550120190801L;
 
     /**
      * The x gitlab event value.

@@ -52,7 +52,7 @@ import org.miaixz.bus.logger.Logger;
 public class ApiAssets extends Assets {
 
     @Serial
-    private static final long serialVersionUID = 2536966911000L;
+    private static final long serialVersionUID = 2558885501596L;
 
     /**
      * Default service lease duration used when API metadata does not define one.

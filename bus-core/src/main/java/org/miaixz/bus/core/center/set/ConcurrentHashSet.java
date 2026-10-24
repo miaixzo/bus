@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConcurrentHashSet<E> extends SetFromMap<E> {
 
     @Serial
-    private static final long serialVersionUID = 2852280065806L;
+    private static final long serialVersionUID = 2536060805001L;
 
     /**
      * Constructs a new, empty {@code ConcurrentHashSet} with a default initial capacity (16) and load factor (0.75).

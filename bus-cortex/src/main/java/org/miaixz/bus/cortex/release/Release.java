@@ -39,7 +39,7 @@ import org.miaixz.bus.cortex.Type;
 public class Release extends Nature {
 
     @Serial
-    private static final long serialVersionUID = 2536986123000L;
+    private static final long serialVersionUID = 2558895000001L;
 
     /**
      * Human-readable release title.

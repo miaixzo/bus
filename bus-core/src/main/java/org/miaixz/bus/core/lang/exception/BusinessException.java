@@ -34,7 +34,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class BusinessException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852252217177L;
+    private static final long serialVersionUID = 2536669151915L;
 
     /**
      * Constructs a new BusinessException with no detail message.

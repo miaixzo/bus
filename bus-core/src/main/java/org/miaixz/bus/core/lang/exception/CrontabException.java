@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class CrontabException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852252787255L;
+    private static final long serialVersionUID = 2536690053162L;
 
     /**
      * Constructs a new CrontabException with no detail message.

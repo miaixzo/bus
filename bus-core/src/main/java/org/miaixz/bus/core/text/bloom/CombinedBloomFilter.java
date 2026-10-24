@@ -31,7 +31,7 @@ import java.io.Serial;
 public class CombinedBloomFilter implements BloomFilter {
 
     @Serial
-    private static final long serialVersionUID = 2852235531853L;
+    private static final long serialVersionUID = 2538169800001L;
 
     /**
      * The array of underlying Bloom filters.

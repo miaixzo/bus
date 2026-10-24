@@ -36,7 +36,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class NotificationSettings implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852266179825L;
+    private static final long serialVersionUID = 2550898152395L;
 
     /**
      * The level value.
@@ -212,7 +212,7 @@ public class NotificationSettings implements Serializable {
     public static class Events implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852266282729L;
+        private static final long serialVersionUID = 2550910305001L;
 
         /**
          * The new note value.

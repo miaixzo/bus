@@ -42,7 +42,7 @@ import java.util.LinkedHashMap;
 public class FIFOCache<K, V> extends LockedCache<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852231588982L;
+    private static final long serialVersionUID = 2535508655001L;
 
     /**
      * Constructs a FIFO cache with a specified capacity and no default timeout.

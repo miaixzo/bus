@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class DuplicateException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852251888013L;
+    private static final long serialVersionUID = 2536802151501L;
 
     /**
      * Constructs a new DuplicateException with no detail message.

@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Symbol;
 public class AAbort extends IOException {
 
     @Serial
-    private static final long serialVersionUID = 2852275517117L;
+    private static final long serialVersionUID = 2556319105801L;
 
     /**
      * The ul serive user value.

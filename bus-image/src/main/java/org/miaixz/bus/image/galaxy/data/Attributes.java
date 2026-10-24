@@ -49,7 +49,7 @@ import org.miaixz.bus.logger.Logger;
 public class Attributes implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852260209995L;
+    private static final long serialVersionUID = 2556180001128L;
 
     /**
      * Coercion mode constant

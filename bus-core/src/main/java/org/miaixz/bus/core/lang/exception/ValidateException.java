@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class ValidateException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852266872969L;
+    private static final long serialVersionUID = 2536915000001L;
 
     /**
      * Constructs a new ValidateException with no detail message.

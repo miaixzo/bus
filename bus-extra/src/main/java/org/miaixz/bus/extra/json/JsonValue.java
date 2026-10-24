@@ -147,7 +147,7 @@ public interface JsonValue extends Serializable {
     class NullValue implements JsonValue {
 
         @Serial
-        private static final long serialVersionUID = 2852291720260L;
+        private static final long serialVersionUID = 2555008251255L;
 
         /**
          * Shared immutable JSON null instance.

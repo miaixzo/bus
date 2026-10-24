@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class SamlGroupLink implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852280791389L;
+    private static final long serialVersionUID = 2551200151218L;
 
     /**
      * The name value.

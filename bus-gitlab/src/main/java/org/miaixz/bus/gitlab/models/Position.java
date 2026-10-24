@@ -36,7 +36,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class Position implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852270036770L;
+    private static final long serialVersionUID = 2551052250001L;
 
     /**
      * The base sha value.

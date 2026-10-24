@@ -21,6 +21,7 @@ package org.miaixz.bus.core.io.buffer;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serial;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
@@ -35,6 +36,9 @@ import org.miaixz.bus.core.xyz.IoKit;
  * @author Kimi Liu
  */
 public class ByteBuffer extends ByteString {
+
+    @Serial
+    private static final long serialVersionUID = 2536395000001L;
 
     /**
      * An array of byte arrays, where each inner array is a segment of the buffer. This field is transient because its

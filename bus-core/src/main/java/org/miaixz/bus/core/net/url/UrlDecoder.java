@@ -51,7 +51,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class UrlDecoder implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852231876163L;
+    private static final long serialVersionUID = 2538133015636L;
 
     /**
      * Constructs a new UrlDecoder instance.

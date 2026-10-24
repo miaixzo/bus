@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.image.metric.net;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,9 @@ import org.miaixz.bus.image.metric.Connection;
  * @author Kimi Liu
  */
 public class ApplicationEntityInfo implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 2556298152801L;
 
     /**
      * The conns value.

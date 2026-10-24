@@ -35,7 +35,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ProjectFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852271736070L;
+    private static final long serialVersionUID = 2551085500001L;
 
     /**
      * The archived value.

@@ -35,7 +35,7 @@ import org.miaixz.bus.pay.magic.Callback;
 public class AccessToken implements Serializable, Callback {
 
     @Serial
-    private static final long serialVersionUID = 2852293096397L;
+    private static final long serialVersionUID = 2560082261962L;
 
     /**
      * The access token.

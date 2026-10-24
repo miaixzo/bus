@@ -47,7 +47,7 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
         implements MultipleValueMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852276903237L;
+    private static final long serialVersionUID = 2535912555001L;
 
     /**
      * The default initial capacity for the collections created to hold multiple values.

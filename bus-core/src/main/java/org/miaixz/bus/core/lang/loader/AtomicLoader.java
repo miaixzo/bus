@@ -44,7 +44,7 @@ import org.miaixz.bus.core.Loader;
 public abstract class AtomicLoader<T> implements Loader<T>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852267211560L;
+    private static final long serialVersionUID = 2536921500001L;
 
     /**
      * The atomic reference holding the lazily loaded object.
