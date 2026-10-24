@@ -37,8 +37,17 @@ public final class ItemNormalizer {
      */
     public static final String INLINE_SOURCE = "INLINE";
 
-    /** Source discriminator for reference-only backend Secret settings. */
+    /**
+     * Source discriminator for reference-only backend Secret settings.
+     */
     public static final String SECRET_SOURCE = "SECRET";
+
+    /**
+     * Prevents utility-class instantiation.
+     */
+    private ItemNormalizer() {
+        // No initialization required.
+    }
 
     /**
      * Recognizes a reference-only SECRET item without resolving its backend.
@@ -46,32 +55,24 @@ public final class ItemNormalizer {
      * @param item item to inspect, or null
      * @return true for a trimmed, case-insensitive SECRET source
      */
-    public static boolean isSecret(Item item) {
+    public static boolean isSecretReference(Item item) {
         return item != null && SECRET_SOURCE.equalsIgnoreCase(item.getSource() == null ? "" : item.getSource().trim());
     }
 
     /**
      * Validates persisted setting restrictions and parses its backend reference. SECRET items cannot contain inline
-     * plaintext, encrypted payloads or a non-secret exposure. This method performs no backend access.
-     *
+     * plaintext, encrypted payloads or a category other than Item.Type.SECRET. This method performs no backend access.
      * @param item reference-only SECRET item
      * @return validated backend reference retaining the existing JSON descriptor format
-     * @throws org.miaixz.bus.core.lang.exception.CryptoException if item restrictions or descriptor validation fail
+     * @throws CryptoException if item restrictions or descriptor validation fail
      */
     public static SecretReference secretReference(Item item) {
-        if (!isSecret(item) || !"SECRET".equals(item.getExposure())
+        if (!isSecretReference(item) || !Integer.valueOf(Item.Type.SECRET.key()).equals(item.getType())
                 || item.getEncrypted() != null && item.getEncrypted() != 0 || item.getContent() != null
-                || item.getPayload() != null || item.getSpec() == null) {
+                || item.getDescriptor() == null) {
             throw new CryptoException("Invalid secret reference");
         }
-        return SecretReference.parse(item.getSpec());
-    }
-
-    /**
-     * Prevents utility-class instantiation.
-     */
-    private ItemNormalizer() {
-        // No initialization required.
+        return SecretReference.parse(item.getDescriptor());
     }
 
     /**
@@ -94,19 +95,17 @@ public final class ItemNormalizer {
         if (StringKit.isEmpty(prepared.getFormat())) {
             prepared.setFormat(ItemFormat.TEXT.name());
         }
-        if (StringKit.isEmpty(prepared.getEditor())) {
-            prepared.setEditor(Item.Editor.SOURCE.name());
-        }
-        if (StringKit.isEmpty(prepared.getExposure())) {
-            prepared.setExposure(ItemExposure.INTERNAL.name());
-        }
-        if (prepared.getState() != null) {
-            Item.State.valueOf(prepared.getState());
-        }
+        if (prepared.getType() == null)
+            prepared.setType(Item.Type.CONFIG_MAP.key());
+        Item.Type.of(prepared.getType());
+        if (prepared.getStatus() == null)
+            prepared.setStatus(Item.Status.UNPUBLISHED.key());
+        Item.Status.of(prepared.getStatus());
+        Item.Source.valueOf(prepared.getSource());
         if (prepared.getEncrypted() == null) {
             prepared.setEncrypted(0);
         }
-        if (ItemNormalizer.isSecret(prepared)) {
+        if (ItemNormalizer.isSecretReference(prepared)) {
             ItemNormalizer.secretReference(prepared);
         }
         if (prepared.getEdition() == null) {
@@ -156,12 +155,11 @@ public final class ItemNormalizer {
                 String.join(
                         "\u001f",
                         value(entry.getContent()),
-                        value(entry.getPayload()),
+                        value(entry.getType()),
                         value(entry.getFormat()),
-                        value(entry.getEditor()),
                         value(entry.getSource()),
-                        value(entry.getSpec()),
-                        value(entry.getExposure()),
+                        value(entry.getDescriptor()),
+                        value(entry.getSchema()),
                         value(entry.getEncrypted()),
                         value(entry.getLabels()),
                         value(entry.getExtension())));
@@ -172,6 +170,7 @@ public final class ItemNormalizer {
      *
      * @param item item coordinates
      * @return normalized item coordinates
+     * @throws IllegalArgumentException if tenant, code, ownership scope, application, or kind coordinates are invalid
      */
     public static Item coordinates(Item item) {
         if (item == null) {
@@ -207,6 +206,7 @@ public final class ItemNormalizer {
      * Validates the global tenant identifier.
      *
      * @param tenant_id tenant identifier
+     * @throws IllegalArgumentException if the tenant identifier is null or blank
      */
     public static void requireTenant(String tenant_id) {
         if (tenant_id == null || tenant_id.isBlank()) {
@@ -236,6 +236,8 @@ public final class ItemNormalizer {
 
     /**
      * Encodes an identity segment without delimiter ambiguity.
+     * @param value nullable coordinate segment
+     * @return dash for null, otherwise length-prefixed text
      */
     private static String segment(String value) {
         return value == null ? "-" : value.length() + "#" + value;

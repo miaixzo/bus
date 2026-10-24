@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.cortex.magic.event;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.center.date.Chrono;
@@ -113,6 +109,7 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
      *
      * @param record outbox record
      * @return persisted outbox record
+     * @throws IllegalArgumentException if the outbox record domain or scope does not match the storage request
      */
     @Override
     public synchronized CortexChangeRecord append(CortexChangeRecord record) {

@@ -60,6 +60,10 @@ public interface SettingEnforcer {
 
     /**
      * Checks access to an application and ownership scope within the specified tenant.
+     * @param tenant_id tenant identifier of the configuration scope
+     * @param app_id application identifier, when scoped to an application
+     * @param scope configuration ownership scope
+     * @return true by default; implementations may deny the scope
      */
     default boolean allows(String tenant_id, String app_id, String scope) {
         return true;

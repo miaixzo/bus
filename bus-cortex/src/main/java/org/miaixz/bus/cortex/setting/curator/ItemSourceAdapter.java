@@ -78,7 +78,7 @@ public interface ItemSourceAdapter {
      * @throws IllegalStateException if a SECRET source has not explicitly implemented protected resolution
      */
     default String resolve(Item entry, SecretContext context) {
-        if (ItemNormalizer.isSecret(entry)) {
+        if (ItemNormalizer.isSecretReference(entry)) {
             throw new IllegalStateException("SECRET requires the protected source adapter");
         }
         return resolve(entry);

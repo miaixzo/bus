@@ -22,7 +22,7 @@ package org.miaixz.bus.cortex.setting.revision;
 import java.util.*;
 import java.util.function.Function;
 
-import org.miaixz.bus.cortex.setting.item.ItemExposure;
+import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 import org.miaixz.bus.cortex.setting.secret.SecretMasker;
 import org.miaixz.bus.extra.json.JsonSchema;
@@ -35,26 +35,6 @@ import org.miaixz.bus.extra.json.JsonSchema;
  * @author Kimi Liu
  */
 public final class Diff {
-
-    /**
-     * Describes how one normalized configuration path changed.
-     *
-     * @author Kimi Liu
-     */
-    public enum Type {
-        /**
-         * Path exists only in the target revision.
-         */
-        ADD,
-        /**
-         * Path exists in both revisions with different values.
-         */
-        MODIFY,
-        /**
-         * Path exists only in the baseline revision.
-         */
-        DELETE
-    }
 
     /**
      * Escaped JSON Pointer path of the changed value.
@@ -89,50 +69,15 @@ public final class Diff {
     }
 
     /**
-     * Returns the escaped JSON Pointer path.
-     *
-     * @return escaped JSON Pointer path
-     */
-    public String getKey() {
-        return key;
-    }
-
-    /**
-     * Returns the change type.
-     *
-     * @return change type
-     */
-    public Type getType() {
-        return type;
-    }
-
-    /**
-     * Returns the baseline value, possibly redacted.
-     *
-     * @return baseline value, possibly redacted
-     */
-    public Object getBefore() {
-        return before;
-    }
-
-    /**
-     * Returns the target value, possibly redacted.
-     *
-     * @return target value, possibly redacted
-     */
-    public Object getAfter() {
-        return after;
-    }
-
-    /**
      * Compares one item's revisions. Protected contents are never passed to a decoder or exposed in the result. Their
      * immutable stored checksums determine whether a masked change exists.
      *
-     * @param before      optional baseline immutable revision
-     * @param after       optional target immutable revision
-     * @param decoder     host decoder for unprotected immutable contents
+     * @param before optional baseline immutable revision
+     * @param after optional target immutable revision
+     * @param decoder host decoder for unprotected immutable contents
      * @param secretPaths exact protected paths that must remain masked
      * @return immutable path differences using the shared scalar placeholder
+     * @throws IllegalArgumentException if item identity, revision ownership, protected checksums, or decoded input are invalid
      */
     public static List<Diff> compare(
             Revision before,
@@ -177,6 +122,7 @@ public final class Diff {
      *
      * @param values decoded values
      * @return non-null decoded map
+     * @throws IllegalArgumentException if the host decoder returns null instead of a value map
      */
     private static Map<String, ?> decoded(Map<String, ?> values) {
         if (values == null) {
@@ -203,7 +149,7 @@ public final class Diff {
      */
     private static boolean protectedContent(Revision revision) {
         return revision != null && (ItemNormalizer.isEncryptedFlagEnabled(revision.getEncrypted())
-                || ItemExposure.SECRET.name().equals(revision.getExposure()));
+                || Integer.valueOf(Item.Type.SECRET.key()).equals(Revision.category(revision)));
     }
 
     /**
@@ -267,6 +213,62 @@ public final class Diff {
         } else {
             result.put(path, value instanceof Map<?, ?> ? Map.of() : value instanceof List<?> ? List.of() : value);
         }
+    }
+
+    /**
+     * Returns the escaped JSON Pointer path.
+     *
+     * @return escaped JSON Pointer path
+     */
+    public String getKey() {
+        return key;
+    }
+
+    /**
+     * Returns the change type.
+     *
+     * @return change type
+     */
+    public Type getType() {
+        return type;
+    }
+
+    /**
+     * Returns the baseline value, possibly redacted.
+     *
+     * @return baseline value, possibly redacted
+     */
+    public Object getBefore() {
+        return before;
+    }
+
+    /**
+     * Returns the target value, possibly redacted.
+     *
+     * @return target value, possibly redacted
+     */
+    public Object getAfter() {
+        return after;
+    }
+
+    /**
+     * Describes how one normalized configuration path changed.
+     *
+     * @author Kimi Liu
+     */
+    public enum Type {
+        /**
+         * Path exists only in the target revision.
+         */
+        ADD,
+        /**
+         * Path exists in both revisions with different values.
+         */
+        MODIFY,
+        /**
+         * Path exists only in the baseline revision.
+         */
+        DELETE
     }
 
 }

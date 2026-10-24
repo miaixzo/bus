@@ -28,8 +28,8 @@ import org.miaixz.bus.cortex.setting.delivery.RuntimeItemOverlayPublisher;
 import org.miaixz.bus.cortex.setting.item.Item;
 
 /**
- * Cache-backed runtime publisher without revision history. Use {@link SettingPublisher} for revision-tracked
- * publication.
+ * Cache-backed runtime overlay publisher without revision history. Use {@link SettingPublisher} for revision-tracked
+ * draft staging; durable activation belongs to the approved publication workflow.
  *
  * @author Kimi Liu
  */
@@ -65,25 +65,33 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
     }
 
     /**
-     * Publishes an overlay using the cache's default lifetime.
-     *
+     * Publishes an overlay with TTL 0 passed to the cache backend; the backend defines the meaning of zero.
      * @param item tenant-qualified item and content
      */
     public void publish(Item item) {
         publish(item, 0L);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void publish(Item item, long ttlMs) {
         cacheX.write(keying.key(SettingSpec.overlay(item)), item.getContent(), ttlMs);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String get(Item coordinates) {
         Object value = cacheX.read(keying.key(SettingSpec.overlay(coordinates)));
         return value == null ? null : value.toString();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void delete(Item coordinates) {
         cacheX.remove(keying.key(SettingSpec.overlay(coordinates)));

@@ -41,7 +41,7 @@ public class ProcessProber implements Prober {
      * Returns whether this prober can check the supplied instance through its process ID.
      *
      * @param instance candidate instance
-     * @return {@code true} when process probing is supported
+     * @return true when instance and PID are non-null; PID positivity is not checked here
      */
     @Override
     public boolean supports(Instance instance) {
@@ -49,10 +49,13 @@ public class ProcessProber implements Prober {
     }
 
     /**
-     * Checks whether the process identified by the instance's PID is alive.
+     * Checks whether ProcessHandle.of reports a process for the instance PID; it does not separately call isAlive.
+     * Numeric PID validation and lookup behavior belong to the running JVM; this prober does not validate the PID.
+     * Unchecked failures from process lookup propagate unchanged.
      *
-     * @param instance instance whose {@code pid} field is checked
-     * @return healthy result if process is running, fail result otherwise
+     * @param instance non-null instance; a null PID produces a failed status
+     * @return healthy status when a process handle exists; failed status for an absent PID or handle
+     * @throws NullPointerException if instance is null
      */
     @Override
     public Status check(Instance instance) {

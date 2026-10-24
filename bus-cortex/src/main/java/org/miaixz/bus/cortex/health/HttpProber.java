@@ -46,8 +46,7 @@ public class HttpProber implements Prober {
 
     /**
      * Creates an HTTP prober with an explicit timeout.
-     *
-     * @param timeoutMs timeout in milliseconds
+     * @param timeoutMs timeout in milliseconds, clamped to at least 1
      */
     public HttpProber(long timeoutMs) {
         this.timeoutMs = Math.max(1L, timeoutMs);
@@ -57,7 +56,7 @@ public class HttpProber implements Prober {
      * Returns whether this prober can probe the supplied instance through HTTP.
      *
      * @param instance candidate instance
-     * @return {@code true} when HTTP probing is supported
+     * @return true for a non-null instance and host whose scheme is not TCP, compared case-insensitively; endpoint validity is not checked
      */
     @Override
     public boolean supports(Instance instance) {
@@ -66,10 +65,12 @@ public class HttpProber implements Prober {
     }
 
     /**
-     * Performs an HTTP GET request to the instance's health endpoint.
+     * Performs a GET using the instance scheme, host, port and health path. An absent scheme defaults to HTTP,
+     * an absent port to 80 even for HTTPS, and an absent health path to /health. No separate supports check is performed.
      *
-     * @param instance instance to probe
-     * @return healthy result with latency on success, fail result on error
+     * @param instance non-null instance defining the health endpoint
+     * @return healthy status for a 2xx response without a reported call error; failed status for other responses or reported transport failures
+     * @throws NullPointerException if instance is null
      */
     @Override
     public Status check(Instance instance) {

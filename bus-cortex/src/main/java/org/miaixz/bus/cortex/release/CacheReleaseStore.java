@@ -74,6 +74,10 @@ public class CacheReleaseStore implements ReleaseStore {
 
     /**
      * Atomically inserts within this shared cache object; distributed hosts must supply a transactional store.
+     *
+     * @param record tenant-qualified release record to insert
+     * @return newly persisted release record
+     * @throws IllegalStateException if the tenant, track, and version already identify a stored release
      */
     @Override
     public Release create(Release record) {
@@ -252,6 +256,10 @@ public class CacheReleaseStore implements ReleaseStore {
 
     /**
      * Encodes one required coordinate without delimiter collisions.
+     *
+     * @param value required nonblank version coordinate
+     * @return length-prefixed coordinate
+     * @throws IllegalArgumentException if the coordinate is null or blank
      */
     private String segment(String value) {
         if (value == null || value.isBlank()) {
@@ -262,6 +270,9 @@ public class CacheReleaseStore implements ReleaseStore {
 
     /**
      * Reads the tenant-scoped current version pointer.
+     * @param tenantId tenant owning the current pointer
+     * @param track release track to normalize and query
+     * @return current version identifier, or null when absent
      */
     private String currentVersion(String tenantId, String track) {
         Object value = cacheX.read(currentKey(tenantId, track));

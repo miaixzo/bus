@@ -67,6 +67,7 @@ final class CloudProtocol {
      *
      * @param context caller-owned Fabric runtime with all replay and persistence policies explicitly disabled
      * @return factory for fresh native Fabric builders
+     * @throws IllegalArgumentException if the Fabric runtime permits replay, redirects, retries, or persistence of secret traffic
      */
     static java.util.function.Supplier<HttpX.Builder> http(Context context) {
         Objects.requireNonNull(context, "Fabric context");
@@ -178,6 +179,7 @@ final class CloudProtocol {
      *
      * @param uri complete backend request URI
      * @return normalized HTTPS root
+     * @throws IllegalArgumentException if the endpoint is not a fixed HTTPS root with a valid host and no embedded identity
      */
     static URI endpoint(URI uri) {
         if (uri == null || !"https".equalsIgnoreCase(uri.getScheme()) || uri.getHost() == null
@@ -197,8 +199,7 @@ final class CloudProtocol {
      * Checks an outgoing request URI for HTTPS safety and encoded or decoded traversal segments before any network I/O.
      *
      * @param uri complete backend request URI
-     * @throws org.miaixz.bus.core.lang.exception.CryptoException if the documented validation, expiration or lifecycle
-     *                                                            constraint fails
+     * @throws IllegalArgumentException if the URI is not a safe absolute HTTPS request URI
      */
     static void requestUri(URI uri) {
         if (uri == null || !"https".equalsIgnoreCase(uri.getScheme()) || uri.getHost() == null
@@ -214,10 +215,9 @@ final class CloudProtocol {
      * Accepts only an exact integral JSON number within signed-long range; fractional, overflowing or non-numeric
      * values are rejected.
      *
-     * @param value input value whose interpretation is described by this operation
+     * @param value backend JSON numeric value requiring exact signed-long conversion
      * @return validated integral value
-     * @throws org.miaixz.bus.core.lang.exception.CryptoException if the documented validation, expiration or lifecycle
-     *                                                            constraint fails
+     * @throws org.miaixz.bus.core.lang.exception.CryptoException if the value is non-numeric, fractional, or outside the signed-long range
      */
     static long integer(Object value) {
         try {
@@ -234,10 +234,9 @@ final class CloudProtocol {
      * Parses a backend epoch-seconds timestamp with exact integer validation. Malformed or unrepresentable times are
      * rejected.
      *
-     * @param value input value whose interpretation is described by this operation
+     * @param value optional backend epoch-seconds value
      * @return absolute UTC expiration instant, or null when the backend omitted it
-     * @throws org.miaixz.bus.core.lang.exception.CryptoException if the documented validation, expiration or lifecycle
-     *                                                            constraint fails
+     * @throws org.miaixz.bus.core.lang.exception.CryptoException if the timestamp is non-integral or cannot be represented as an instant
      */
     static Instant epoch(Object value) {
         if (value == null) {
@@ -301,9 +300,10 @@ final class CloudProtocol {
      * failures are replaced with a safe category.
      *
      * @param algorithm JCA HMAC algorithm name selected by the cloud signing protocol
-     * @param key       field name or cache key to look up
-     * @param input     string encoded as UTF-8 before authentication
+     * @param key field name or cache key to look up
+     * @param input string encoded as UTF-8 before authentication
      * @return new HMAC result bytes owned by the caller
+     * @throws CryptoException if the requested HMAC cannot be initialized or computed
      */
     static byte[] hmac(String algorithm, byte[] key, String input) {
         try {
@@ -320,6 +320,7 @@ final class CloudProtocol {
      *
      * @param bytes input bytes; the caller retains ownership
      * @return lowercase SHA-256 digest
+     * @throws CryptoException if the SHA-256 digest cannot be computed
      */
     static String hash(byte[] bytes) {
         try {
@@ -336,6 +337,7 @@ final class CloudProtocol {
      * @param context authenticated caller identity and absolute request deadline; never populated from an untrusted
      *                reference
      * @return remaining attempt timeout
+     * @throws CryptoException if the invocation deadline has been reached
      */
     static Duration timeout(SecretContext context) {
         context.checkDeadline();
@@ -352,8 +354,7 @@ final class CloudProtocol {
      *
      * @param bytes input bytes; the caller retains ownership
      * @return neutral JSON object map
-     * @throws org.miaixz.bus.core.lang.exception.CryptoException if the documented validation, expiration or lifecycle
-     *                                                            constraint fails
+     * @throws org.miaixz.bus.core.lang.exception.CryptoException if parsing fails, exceeds its depth bound, or does not produce an object
      */
     static Map<?, ?> object(byte[] bytes) {
         try {
@@ -374,8 +375,7 @@ final class CloudProtocol {
      * @param map decoded JSON object
      * @param key field name or cache key to look up
      * @return string field value
-     * @throws org.miaixz.bus.core.lang.exception.CryptoException if the documented validation, expiration or lifecycle
-     *                                                            constraint fails
+     * @throws org.miaixz.bus.core.lang.exception.CryptoException if the selected property is absent, null, or not a string
      */
     static String required(Map<?, ?> map, String key) {
         if (map.get(key) instanceof String value) {
@@ -388,8 +388,8 @@ final class CloudProtocol {
      * Copies a complete backend value into an owned character container with the actual immutable version, generation
      * and optional backend expiration. Temporary input characters are erased.
      *
-     * @param value      input value whose interpretation is described by this operation
-     * @param version    fixed immutable version; required only in VERSION mode
+     * @param value complete backend plaintext to copy into owned storage
+     * @param version required nonblank immutable version actually returned by the backend
      * @param generation non-negative connection configuration generation attached to returned materials
      * @return caller-owned material
      */
@@ -401,11 +401,12 @@ final class CloudProtocol {
      * Copies a complete backend value into an owned character container with the actual immutable version, generation
      * and optional backend expiration. Temporary input characters are erased.
      *
-     * @param value      input value whose interpretation is described by this operation
-     * @param version    fixed immutable version; required only in VERSION mode
+     * @param value complete backend plaintext to copy into owned storage
+     * @param version required nonblank immutable version actually returned by the backend
      * @param generation non-negative connection configuration generation attached to returned materials
-     * @param expiresAt  absolute backend or identity expiration; null means unknown, not unlimited validity
+     * @param expiresAt absolute backend or identity expiration; null means unknown, not unlimited validity
      * @return caller-owned material
+     * @throws CryptoException if the backend version is blank or material metadata is invalid
      */
     static SecretMaterial material(String value, String version, long generation, Instant expiresAt) {
         if (version.isBlank()) {

@@ -41,6 +41,9 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 @SuperBuilder
 public class Nature extends Tenant {
 
+    /**
+     * Serialization version for Cortex domain entities.
+     */
     @Serial
     private static final long serialVersionUID = 2852290719700L;
 

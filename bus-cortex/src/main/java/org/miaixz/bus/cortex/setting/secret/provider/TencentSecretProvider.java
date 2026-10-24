@@ -155,6 +155,7 @@ public final class TencentSecretProvider implements SecretProvider {
      *
      * @param body decoded backend JSON object; raw error messages must not escape this boundary
      * @return validated response envelope
+     * @throws CryptoException if the response lacks a valid Tencent response envelope
      */
     private static Map<?, ?> response(Map<?, ?> body) {
         if (!(body.get("Response") instanceof Map<?, ?> response)) {

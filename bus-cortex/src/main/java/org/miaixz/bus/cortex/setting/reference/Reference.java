@@ -44,10 +44,17 @@ public class Reference extends Tenant {
      * Source resource identifier: a shared item for ITEM_APP, or a rollout for ROLLOUT_APP and ROLLOUT_ITEM.
      */
     private String source_id;
+
     /**
      * Target resource identifier: an application for ITEM_APP and ROLLOUT_APP, or an item for ROLLOUT_ITEM.
      */
     private String target_id;
+
+    /**
+     * Immutable revision identifier required for FIXED references.
+     */
+    private String revision_id;
+
     /**
      * Relationship type name from {@link Type}.
      */
@@ -59,36 +66,27 @@ public class Reference extends Tenant {
     private String alias;
 
     /**
-     * Follow policy for ITEM_APP; absent values mean LATEST.
-     */
-    private String strategy;
-
-    /**
-     * Immutable revision identifier required for FIXED references.
-     */
-    private String revision_id;
-
-    /**
      * Monotonic relationship edition used for compare-and-set updates.
      */
     private Long edition;
 
     /**
-     * Supported shared-reference follow policies.
+     * Follow policy for ITEM_APP; absent values mean LATEST.
      */
-    public enum Strategy {
-        /**
-         * Follow the latest published revision of the shared item.
-         */
-        LATEST,
-        /**
-         * Remain pinned to an explicit immutable revision.
-         */
-        FIXED
+    private String strategy;
+
+    /**
+     * Creates an empty relationship.
+     */
+    public Reference() {
+        // No initialization required.
     }
 
     /**
      * Validates coordinates and prevents release membership from carrying reference-only options.
+     *
+     * @return this validated reference
+     * @throws IllegalArgumentException if coordinates or shared-reference policies are missing, unsupported, or inconsistent
      */
     public Reference validate() {
         ItemNormalizer.requireTenant(getTenant_id());
@@ -114,10 +112,17 @@ public class Reference extends Tenant {
     }
 
     /**
-     * Creates an empty relationship.
+     * Supported shared-reference follow policies.
      */
-    public Reference() {
-        // No initialization required.
+    public enum Strategy {
+        /**
+         * Follow the latest published revision of the shared item.
+         */
+        LATEST,
+        /**
+         * Remain pinned to an explicit immutable revision.
+         */
+        FIXED
     }
 
     /**

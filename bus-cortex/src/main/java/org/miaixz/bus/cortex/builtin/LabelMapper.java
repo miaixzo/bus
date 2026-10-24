@@ -39,10 +39,10 @@ public class LabelMapper {
     }
 
     /**
-     * Converts runtime labels into management-facing label items.
+     * Converts runtime labels into new management-facing label objects.
      *
-     * @param labels runtime labels
-     * @return label items preserving encounter order
+     * @param labels label map, or null
+     * @return a mutable list in map encounter order, or an immutable empty list for null or empty input
      */
     public static List<Label> toLabels(Map<String, String> labels) {
         if (labels == null || labels.isEmpty()) {
@@ -59,10 +59,11 @@ public class LabelMapper {
     }
 
     /**
-     * Converts management-facing label items into runtime labels.
+     * Converts valid label items into a new insertion-ordered map. Null items and null or blank keys are skipped.
+     * Later duplicate keys replace earlier values without changing the key's encounter position.
      *
-     * @param labels label items
-     * @return runtime label map preserving encounter order
+     * @param labels label items, or null
+     * @return mutable label map, or null when the input is null, empty, or contains no valid keys
      */
     public static Map<String, String> toMap(List<Label> labels) {
         if (labels == null || labels.isEmpty()) {

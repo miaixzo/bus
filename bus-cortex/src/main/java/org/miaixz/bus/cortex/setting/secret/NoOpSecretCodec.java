@@ -27,7 +27,7 @@ package org.miaixz.bus.cortex.setting.secret;
 public class NoOpSecretCodec implements SecretCodec {
 
     /**
-     * Creates NoOpSecretCodec with explicitly bound collaborators. Dependencies are not discovered implicitly.
+     * Creates a stateless pass-through codec; it does not provide encryption or protection.
      */
     public NoOpSecretCodec() {
         // No initialization required.
@@ -44,10 +44,10 @@ public class NoOpSecretCodec implements SecretCodec {
     }
 
     /**
-     * Tests whether the supplied source or protection mode is supported without performing any remote resolution.
+     * Rejects only the encrypted protection marker, compared case-insensitively.
      *
-     * @param mode non-null version selection mode
-     * @return true when the input is supported
+     * @param mode source or protection marker, possibly null
+     * @return false for encrypted in any letter case; true for all other values, including null
      */
     @Override
     public boolean supports(String mode) {

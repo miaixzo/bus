@@ -578,6 +578,8 @@ public class VortexBridge
 
     /**
      * Validates that the bridge is still started.
+     *
+     * @throws IllegalStateException if the bridge was permanently stopped
      */
     @Override
     public void start() {

@@ -39,6 +39,18 @@ public class SettingGenerator implements Keying<SettingSpec> {
      */
     public static final String SETTING_REVISION_SEQUENCE_SEGMENT = "setting:item:";
 
+    /**
+     * Creates a stateless generator using the standard configuration key layout.
+     */
+    public SettingGenerator() {
+        // No initialization required.
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws IllegalArgumentException if the purpose is unsupported, coordinates are invalid, or a historical revision is required but absent
+     */
     @Override
     public String key(SettingSpec spec) {
         if (spec == null) {
@@ -61,6 +73,9 @@ public class SettingGenerator implements Keying<SettingSpec> {
         };
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String prefix(SettingSpec spec) {
         if (spec == null) {
@@ -75,6 +90,8 @@ public class SettingGenerator implements Keying<SettingSpec> {
 
     /**
      * Length-prefixes segments to prevent collisions when values contain delimiters.
+     * @param spec configuration key specification with tenant and ownership coordinates
+     * @return length-prefixed canonical business identity
      */
     private String identity(SettingSpec spec) {
         Item item = Item.builder().tenant_id(spec.tenant_id()).scope(spec.scope()).app_id(spec.app_id())

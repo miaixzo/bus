@@ -320,6 +320,7 @@ public enum Type {
      * Returns the cache-key segment used by registry and current version storage.
      *
      * @return cache-key segment
+     * @throws IllegalStateException if this is a setting-domain type without a registry cache segment
      */
     public String segment() {
         return switch (this) {

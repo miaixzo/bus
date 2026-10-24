@@ -45,25 +45,53 @@ public final class ItemMerger {
     }
 
     /**
-     * Carries one plaintext source whose identity has already been authorized by its host service.
+     * Applies explicit defaults, shared content, authorized overlay, and application content in that order.
+     * Equal-priority defaults must agree. Objects recurse; arrays and scalars replace atomically.
      *
-     * @param item_id     immutable source owner
-     * @param revision_id exact source revision, never a dynamic LATEST marker
-     * @param value       parsed source value
-     * @param extension   parsed source metadata, or null
-     * @param schema      optional source schema
+     * @param input        exact source snapshots and normalized reference options
+     * @param maximumDepth existing structural depth bound
+     * @param maximumSteps existing node/work bound
+     * @return immutable value, provenance, metadata and path-only findings
+     * @throws NullPointerException if input is null
+     * @throws IllegalArgumentException if structural bounds, schema-definition syntax or merge preconditions are invalid; ordinary validation findings are returned
+     */
+    public static Result merge(Input input, int maximumDepth, long maximumSteps) {
+        Objects.requireNonNull(input);
+        Merge merge = new Merge(input, maximumDepth, maximumSteps);
+        return merge.materialize();
+    }
+
+    /**
+     * Creates a fixed error without including source values or identities.
+     *
+     * @param rule fixed contract failure code
+     * @return sanitized failure
+     */
+    private static IllegalArgumentException invalid(String rule) {
+        return new IllegalArgumentException("Invalid configuration merge: " + rule);
+    }
+
+    /**
+     * Carries one plaintext source whose identity and revision semantics must already be authorized and resolved by its host service.
+     * @param item_id immutable source owner
+     * @param revision_id host-supplied exact source revision; this constructor only checks that it is nonblank
+     * @param value parsed source value
+     * @param extension parsed source metadata, or null
+     * @param schema optional source schema
      * @author Kimi Liu
      */
     public record Source(String item_id, String revision_id, JsonValue value, JsonValue extension, JsonValue schema) {
 
         /**
-         * Requires exact identities and a materialized value.
+         * Requires nonblank source and revision identifiers and a non-null value. The host, not this constructor,
+         * must resolve and authorize immutable revision identity.
          *
          * @param item_id     source owner
-         * @param revision_id exact revision
+         * @param revision_id nonblank revision identifier supplied by the host
          * @param value       materialized plaintext
          * @param extension   optional source metadata
          * @param schema      optional source schema
+         * @throws IllegalArgumentException if either identifier is null or blank, or value is null
          */
         public Source {
             if (item_id == null || item_id.isBlank() || revision_id == null || revision_id.isBlank() || value == null) {
@@ -74,13 +102,12 @@ public final class ItemMerger {
 
     /**
      * Supplies the existing shared-reference options and the optional application override source.
-     *
-     * @param shared      optional shared source
+     * @param shared optional shared source
      * @param application optional application source
-     * @param overlay     optional reference-local object overlay, in unprefixed source coordinates
-     * @param prefix      optional literal root member name
-     * @param override    existing NONE, KEYS or ALL policy
-     * @param keys        exact non-root source pointers allowed by KEYS
+     * @param overlay optional reference-local object overlay, in unprefixed source coordinates
+     * @param prefix optional root member name; trimmed, defaulted to empty, and limited to 255 code points
+     * @param override case-sensitive NONE, KEYS or ALL policy, defaulting to NONE
+     * @param keys non-root JSON Pointers, frozen as a sorted set; nonempty exactly when the mode is KEYS
      * @author Kimi Liu
      */
     public record Input(Source shared, Source application, JsonValue.ObjectValue overlay, String prefix,
@@ -92,9 +119,11 @@ public final class ItemMerger {
          * @param shared      optional shared source
          * @param application optional application source
          * @param overlay     optional object overlay
-         * @param prefix      literal root member name
-         * @param override    existing override mode
-         * @param keys        exact allowed collision paths
+         * @param prefix      root member name, trimmed and limited to 255 code points; null becomes empty
+         * @param override    case-sensitive NONE, KEYS or ALL; null becomes NONE
+         * @param keys        frozen sorted non-root JSON Pointers; null becomes empty, and the set must be nonempty exactly for KEYS
+         * @throws IllegalArgumentException if both sources are absent, options or pointers are invalid, or shared-only options lack a shared source
+         * @throws NullPointerException if keys contains a null element
          */
         public Input {
             if (shared == null && application == null)
@@ -157,21 +186,6 @@ public final class ItemMerger {
     }
 
     /**
-     * Applies explicit defaults, shared content, authorized overlay, and application content in that order.
-     * Equal-priority defaults must agree. Objects recurse; arrays and scalars replace atomically.
-     *
-     * @param input        exact source snapshots and normalized reference options
-     * @param maximumDepth existing structural depth bound
-     * @param maximumSteps existing node/work bound
-     * @return immutable value, provenance, metadata and path-only findings
-     */
-    public static Result merge(Input input, int maximumDepth, long maximumSteps) {
-        Objects.requireNonNull(input);
-        Merge merge = new Merge(input, maximumDepth, maximumSteps);
-        return merge.materialize();
-    }
-
-    /**
      * Holds invocation-local counters and projections only; no process-global merge state is retained.
      *
      * @author Kimi Liu
@@ -190,10 +204,6 @@ public final class ItemMerger {
          * Existing work budget.
          */
         private final long maximumSteps;
-        /**
-         * Number of recursive merge and origin operations performed.
-         */
-        private long steps;
         /**
          * Exact source revisions selected by the host.
          */
@@ -218,6 +228,10 @@ public final class ItemMerger {
          * Literal prefix encoded as a canonical pointer.
          */
         private final String prefix;
+        /**
+         * Number of recursive merge and origin operations performed.
+         */
+        private long steps;
 
         /**
          * Validates every input tree through the existing shared bounds implementation.
@@ -307,7 +321,10 @@ public final class ItemMerger {
                     parent = parent.substring(0, parent.lastIndexOf('/'));
                     if (keys.containsKey(parent) && keys.get(parent).sensitive()) {
                         ItemMetadata.Key key = entry.getValue();
-                        keys.put(entry.getKey(), new ItemMetadata.Key(false, key.description(), key.schema()));
+                        keys.put(
+                                entry.getKey(),
+                                new ItemMetadata.Key(false, key.description(), key.comment(), key.override(),
+                                        key.schema()));
                         break;
                     }
                 }
@@ -494,8 +511,9 @@ public final class ItemMerger {
                     keys.put(
                             path,
                             new ItemMetadata.Key(previous.sensitive() || next.sensitive(),
-                                    next.description().isEmpty() ? previous.description() : next.description(),
-                                    schema));
+                                    next.description() == null ? previous.description() : next.description(),
+                                    next.comment() == null ? previous.comment() : next.comment(),
+                                    next.override() == null ? previous.override() : next.override(), schema));
                 }
             }
         }
@@ -568,16 +586,6 @@ public final class ItemMerger {
             if (depth > maximumDepth || ++steps > maximumSteps)
                 throw invalid("budget");
         }
-    }
-
-    /**
-     * Creates a fixed error without including source values or identities.
-     *
-     * @param rule fixed contract failure code
-     * @return sanitized failure
-     */
-    private static IllegalArgumentException invalid(String rule) {
-        return new IllegalArgumentException("Invalid configuration merge: " + rule);
     }
 
 }

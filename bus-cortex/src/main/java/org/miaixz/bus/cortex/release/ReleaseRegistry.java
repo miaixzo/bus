@@ -156,6 +156,7 @@ public class ReleaseRegistry implements Registry<ReleaseAssets> {
      * </p>
      *
      * @param entry ignored version asset
+     * @throws UnsupportedOperationException always; direct publication must use an approved rollout
      */
     @Override
     public void register(ReleaseAssets entry) {
@@ -164,10 +165,11 @@ public class ReleaseRegistry implements Registry<ReleaseAssets> {
     }
 
     /**
-     * Registers a version asset and ignores runtime-instance data.
+     * Rejects direct version publication through the runtime-registration overload.
      *
-     * @param service  version asset
+     * @param service  ignored version asset
      * @param instance ignored runtime instance
+     * @throws UnsupportedOperationException always; direct publication must use an approved rollout
      */
     @Override
     public void register(ReleaseAssets service, Instance instance) {
@@ -206,9 +208,10 @@ public class ReleaseRegistry implements Registry<ReleaseAssets> {
     /**
      * Subscribes to version events when a watch manager is configured.
      *
-     * @param vector   compatibility query vector
+     * @param vector compatibility query vector
      * @param listener version event listener
      * @return watch identifier
+     * @throws UnsupportedOperationException if no version-watch manager is configured
      */
     @Override
     public String watch(Vector vector, Listener<Watch<ReleaseAssets>> listener) {
