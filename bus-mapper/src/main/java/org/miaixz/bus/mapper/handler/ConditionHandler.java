@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.mapper.handler;
 
+import java.io.Serial;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
@@ -53,6 +54,9 @@ import org.miaixz.bus.mapper.parsing.SqlSource;
  * @author Kimi Liu
  */
 public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implements MapperHandler<T> {
+
+    @Serial
+    private static final long serialVersionUID = 2551625908001L;
 
     /**
      * Cache of database-specific configuration values.

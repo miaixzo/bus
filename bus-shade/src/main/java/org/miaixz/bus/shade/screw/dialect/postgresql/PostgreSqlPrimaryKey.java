@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.shade.screw.dialect.postgresql;
 
+import java.io.Serial;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,6 +35,9 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 @Getter
 @Setter
 public class PostgreSqlPrimaryKey implements PrimaryKey {
+
+    @Serial
+    private static final long serialVersionUID = 2552856302398L;
 
     /**
      * The name of the primary key constraint.

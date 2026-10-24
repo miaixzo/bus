@@ -32,7 +32,7 @@ import org.miaixz.bus.image.UID;
 public class NoPresentationException extends IOException {
 
     @Serial
-    private static final long serialVersionUID = 2852273099158L;
+    private static final long serialVersionUID = 2556302801013L;
 
     /**
      * Creates a new instance.

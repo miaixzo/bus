@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.RandomKit;
 public class RandomSelector<T> extends ArrayList<T> implements Selector<T> {
 
     @Serial
-    private static final long serialVersionUID = 2852277695036L;
+    private static final long serialVersionUID = 2538089961931L;
 
     /**
      * Constructs an empty {@code RandomSelector}.

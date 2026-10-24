@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.shade.screw.process;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,9 @@ import org.miaixz.bus.shade.screw.metadata.*;
  * @author Kimi Liu
  */
 public abstract class AbstractProcess implements Process {
+
+    @Serial
+    private static final long serialVersionUID = 2552911102135L;
 
     /**
      * Configuration object.

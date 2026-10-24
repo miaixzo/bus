@@ -39,7 +39,7 @@ import java.util.Arrays;
 public class IntHashMap<V> implements Cloneable, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852273966013L;
+    private static final long serialVersionUID = 2535853152366L;
 
     /**
      * The default initial capacity of the hash map.

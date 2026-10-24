@@ -31,7 +31,7 @@ import org.miaixz.bus.core.data.id.UUID;
 public class UUIDConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852272763653L;
+    private static final long serialVersionUID = 2536335021816L;
 
     /**
      * Constructs a new UUIDConverter instance.

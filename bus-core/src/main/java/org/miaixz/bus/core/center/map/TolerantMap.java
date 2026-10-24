@@ -44,7 +44,7 @@ import java.util.Objects;
 public class TolerantMap<K, V> extends MapWrapper<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852276071699L;
+    private static final long serialVersionUID = 2535868162068L;
 
     /**
      * The default value to return when a key is not found in the map.

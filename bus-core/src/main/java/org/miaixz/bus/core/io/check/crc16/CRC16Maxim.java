@@ -31,7 +31,7 @@ import java.io.Serial;
 public class CRC16Maxim extends CRC16Checksum {
 
     @Serial
-    private static final long serialVersionUID = 2852279557397L;
+    private static final long serialVersionUID = 2536519500001L;
 
     /**
      * The polynomial used in the CRC16-MAXIM calculation. It is the bit-reversed form of 0x8005.

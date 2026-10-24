@@ -48,7 +48,7 @@ public abstract class ReferenceConcurrentMap<K, V>
         implements ConcurrentMap<K, V>, Iterable<Map.Entry<K, V>>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852269377051L;
+    private static final long serialVersionUID = 2535929800001L;
 
     /**
      * The underlying {@link ConcurrentMap} that stores the wrapped keys and values.

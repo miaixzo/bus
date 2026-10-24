@@ -31,7 +31,7 @@ import java.io.Serial;
 public class CRC16DNP extends CRC16Checksum {
 
     @Serial
-    private static final long serialVersionUID = 2852278821990L;
+    private static final long serialVersionUID = 2536512958001L;
 
     /**
      * The polynomial used in the CRC16-DNP calculation. It is the bit-reversed form of 0x3D65.

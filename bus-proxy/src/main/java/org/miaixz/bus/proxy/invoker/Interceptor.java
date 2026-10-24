@@ -32,7 +32,7 @@ import org.miaixz.bus.proxy.Aspect;
 public class Interceptor implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852259600626L;
+    private static final long serialVersionUID = 2552188000001L;
 
     /**
      * The original object being proxied.

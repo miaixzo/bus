@@ -37,7 +37,7 @@ import org.miaixz.bus.logger.Logger;
 public class Duration implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852252100196L;
+    private static final long serialVersionUID = 2550333305001L;
 
     /**
      * The time units value.

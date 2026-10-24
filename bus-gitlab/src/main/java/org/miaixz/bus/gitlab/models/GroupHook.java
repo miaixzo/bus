@@ -31,7 +31,7 @@ import java.util.Date;
 public class GroupHook implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852256215172L;
+    private static final long serialVersionUID = 2550619961205L;
 
     /**
      * The id value.

@@ -36,7 +36,7 @@ import org.miaixz.bus.logger.magic.AbstractProvider;
 public class JdkLoggingProvider extends AbstractProvider {
 
     @Serial
-    private static final long serialVersionUID = 2852287167223L;
+    private static final long serialVersionUID = 2538935000001L;
 
     /**
      * The underlying {@link java.util.logging.Logger} instance.

@@ -34,7 +34,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ErrorTrackingClientKey implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2826910583269L;
+    private static final long serialVersionUID = 2550365800001L;
 
     /**
      * The id value.

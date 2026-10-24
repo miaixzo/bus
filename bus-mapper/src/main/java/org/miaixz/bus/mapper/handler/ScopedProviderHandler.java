@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.mapper.handler;
 
+import java.io.Serial;
 import java.util.Properties;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -37,6 +38,9 @@ import org.miaixz.bus.mapper.Args;
  * @author Kimi Liu
  */
 public abstract class ScopedProviderHandler<T, C, P> extends ConditionHandler<T, C> {
+
+    @Serial
+    private static final long serialVersionUID = 2551629069501L;
 
     /**
      * Default configuration resolved during plugin initialization.

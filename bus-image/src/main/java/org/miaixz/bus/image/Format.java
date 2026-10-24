@@ -63,7 +63,7 @@ import org.miaixz.bus.image.galaxy.data.DatePrecision;
 public class Format extends java.text.Format {
 
     @Serial
-    private static final long serialVersionUID = 2852253785600L;
+    private static final long serialVersionUID = 2556153151128L;
 
     /**
      * Characters for a custom base-32 encoding used in MD5 hashing.
@@ -1750,6 +1750,9 @@ public class Format extends java.text.Format {
      * @author Kimi Liu
      */
     private class Slice implements UnaryOperatorX<String> {
+
+        @Serial
+        private static final long serialVersionUID = 2556156302826L;
 
         /**
          * The starting index of the slice.

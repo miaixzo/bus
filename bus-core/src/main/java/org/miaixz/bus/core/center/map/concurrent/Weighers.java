@@ -390,7 +390,7 @@ public class Weighers {
     static final class EntryWeigherView<K, V> implements EntryWeigher<K, V>, Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852276671792L;
+        private static final long serialVersionUID = 2535910311386L;
 
         /**
          * Value weigher adapted to the entry-weigher contract.

@@ -45,7 +45,7 @@ import org.miaixz.bus.core.xyz.*;
 public class StrictBeanDesc extends AbstractBeanDesc {
 
     @Serial
-    private static final long serialVersionUID = 2852227769103L;
+    private static final long serialVersionUID = 2535336850001L;
 
     /**
      * Whether to ignore case when matching methods and fields.

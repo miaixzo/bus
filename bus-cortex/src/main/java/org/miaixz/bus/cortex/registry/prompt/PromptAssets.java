@@ -44,7 +44,7 @@ import org.miaixz.bus.logger.Logger;
 public class PromptAssets extends Assets {
 
     @Serial
-    private static final long serialVersionUID = 2536982692000L;
+    private static final long serialVersionUID = 2558890951562L;
 
     /**
      * Prompt-specific metadata view.

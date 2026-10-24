@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class IllegalPathException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852255810269L;
+    private static final long serialVersionUID = 2536809151293L;
 
     /**
      * Constructs a new IllegalPathException with no detail message.

@@ -38,7 +38,7 @@ import org.miaixz.bus.gitlab.support.ISO8601;
 public class DeploymentFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852251252095L;
+    private static final long serialVersionUID = 2550316328831L;
 
     /**
      * Return deployments ordered by either one of id, iid, created_at, updated_at or ref fields. Default is id.

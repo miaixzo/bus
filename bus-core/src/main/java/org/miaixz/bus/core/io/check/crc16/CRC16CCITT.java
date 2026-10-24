@@ -31,7 +31,7 @@ import java.io.Serial;
 public class CRC16CCITT extends CRC16Checksum {
 
     @Serial
-    private static final long serialVersionUID = 2852278296375L;
+    private static final long serialVersionUID = 2536505500001L;
 
     /**
      * The polynomial used in the CRC16-CCITT calculation. It is the bit-reversed form of 0x1021.

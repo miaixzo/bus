@@ -38,7 +38,7 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class Group extends AbstractGroup<Group> {
 
     @Serial
-    private static final long serialVersionUID = 2852255907217L;
+    private static final long serialVersionUID = 2550611305001L;
 
     /**
      * The path value.

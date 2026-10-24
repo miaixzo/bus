@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class MapperException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852261235220L;
+    private static final long serialVersionUID = 2536828150001L;
 
     /**
      * Constructs a new MapperException with no detail message.

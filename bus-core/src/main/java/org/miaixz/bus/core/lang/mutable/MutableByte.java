@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.CompareKit;
 public class MutableByte extends Number implements Comparable<MutableByte>, Mutable<Number> {
 
     @Serial
-    private static final long serialVersionUID = 2852269751287L;
+    private static final long serialVersionUID = 2538008801521L;
 
     /**
      * The mutable value.

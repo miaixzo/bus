@@ -48,7 +48,7 @@ import org.miaixz.bus.core.lang.pool.Poolable;
 public class PartitionPool<T> implements ObjectPool<T> {
 
     @Serial
-    private static final long serialVersionUID = 2852272813570L;
+    private static final long serialVersionUID = 2538052023801L;
 
     /**
      * The configuration settings for this object pool partition.

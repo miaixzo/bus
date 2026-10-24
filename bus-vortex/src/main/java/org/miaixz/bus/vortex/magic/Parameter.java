@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.vortex.magic;
 
+import java.io.Serial;
 import java.lang.reflect.Array;
 import java.util.*;
 
@@ -307,6 +308,9 @@ public class Parameter extends AbstractMap<String, Object> {
                     public Entry<String, Object> next() {
                         String key = iterator.next();
                         return new SimpleEntry<>(key, values.get(key)) {
+
+                            @Serial
+                            private static final long serialVersionUID = 2560612500001L;
 
                             /**
                              * Replaces the backing value using the original parameter sanitization rules.

@@ -50,7 +50,7 @@ import org.miaixz.bus.cortex.builtin.Selector;
 public class Vector extends Nature {
 
     @Serial
-    private static final long serialVersionUID = 2536963380000L;
+    private static final long serialVersionUID = 2558882153228L;
 
     /**
      * Application identifier bound to the queried asset or setting scope.

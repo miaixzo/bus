@@ -79,7 +79,7 @@ import org.miaixz.bus.core.xyz.RuntimeKit;
 public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852268251008L;
+    private static final long serialVersionUID = 2535885800001L;
 
     /**
      * The number of CPUs.
@@ -1286,6 +1286,9 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     static final class Node<K, V> extends AtomicReference<WeightedValue<V>> implements Linked<Node<K, V>> {
 
+        @Serial
+        private static final long serialVersionUID = 2535888961801L;
+
         /**
          * Immutable map key.
          */
@@ -1376,7 +1379,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     static final class BoundedEntryWeigher<K, V> implements EntryWeigher<K, V>, Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2853159653136L;;
+        private static final long serialVersionUID = 2535891203266L;;
 
         /**
          * Delegate entry weigher whose result is range-checked.
@@ -1432,7 +1435,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     static final class SerializationProxy<K, V> implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2853159653136L;;
+        private static final long serialVersionUID = 2535895000001L;;
 
         /**
          * Entry-weighing strategy restored with the map.
@@ -2188,7 +2191,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     final class WriteThroughEntry extends SimpleEntry<K, V> {
 
         @Serial
-        private static final long serialVersionUID = 2852276319333L;
+        private static final long serialVersionUID = 2535898150001L;
 
         /**
          * Creates an entry view backed by a map node.

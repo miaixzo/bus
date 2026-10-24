@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public class CollectionConverter implements MatcherConverter, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852266827800L;
+    private static final long serialVersionUID = 2536225000001L;
 
     /**
      * Singleton instance.

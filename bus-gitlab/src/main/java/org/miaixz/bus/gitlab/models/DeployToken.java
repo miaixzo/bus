@@ -34,7 +34,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class DeployToken implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852251025919L;
+    private static final long serialVersionUID = 2550308681153L;
 
     /**
      * The id value.

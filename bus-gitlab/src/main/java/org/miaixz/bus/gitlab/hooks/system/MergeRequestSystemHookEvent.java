@@ -31,7 +31,7 @@ import org.miaixz.bus.gitlab.hooks.web.MergeRequestEvent;
 public class MergeRequestSystemHookEvent extends MergeRequestEvent implements SystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852292895308L;
+    private static final long serialVersionUID = 2539588151181L;
 
     /**
      * The x gitlab event value.

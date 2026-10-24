@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class AuditEvent implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852237793818L;
+    private static final long serialVersionUID = 2550205860052L;
 
     /**
      * The id value.

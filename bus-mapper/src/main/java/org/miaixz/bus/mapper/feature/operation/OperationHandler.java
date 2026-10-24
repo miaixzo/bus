@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.mapper.feature.operation;
 
+import java.io.Serial;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
@@ -52,6 +53,9 @@ import org.miaixz.bus.mapper.handler.MapperHandler;
 @Getter
 @Setter
 public class OperationHandler<T> extends AbstractSqlHandler implements MapperHandler<T> {
+
+    @Serial
+    private static final long serialVersionUID = 2551592961238L;
 
     /**
      * Pattern to detect WHERE clause in SQL statements (case-insensitive)

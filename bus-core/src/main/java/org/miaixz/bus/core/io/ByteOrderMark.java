@@ -47,7 +47,7 @@ public record ByteOrderMark(String charsetName, byte... bytes)
         implements PredicateX<byte[]>, Comparable<ByteOrderMark>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852276768599L;
+    private static final long serialVersionUID = 2536388800001L;
 
     /**
      * UTF-8 BOM.

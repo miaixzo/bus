@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.mapper.feature.tenant;
 
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -77,6 +78,9 @@ import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
  * @author Kimi Liu
  */
 public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, TenantProvider> {
+
+    @Serial
+    private static final long serialVersionUID = 2551620502501L;
 
     /**
      * Default constructor (uses default configuration).

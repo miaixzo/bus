@@ -47,7 +47,7 @@ import org.miaixz.bus.core.center.function.SupplierX;
 public class FunctionMap<K, V> extends TransMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852273919816L;
+    private static final long serialVersionUID = 2535850000001L;
 
     /**
      * The function used to transform keys.

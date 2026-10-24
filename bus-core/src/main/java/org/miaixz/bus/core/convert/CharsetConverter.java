@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Charset;
 public class CharsetConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852266502058L;
+    private static final long serialVersionUID = 2536219105111L;
 
     /**
      * Creates a new {@code CharsetConverter} instance.

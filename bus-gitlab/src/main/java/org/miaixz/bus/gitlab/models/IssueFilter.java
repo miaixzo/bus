@@ -46,7 +46,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class IssueFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852257636989L;
+    private static final long serialVersionUID = 2550663655151L;
 
     /**
      * Return only the issues having the given iid.

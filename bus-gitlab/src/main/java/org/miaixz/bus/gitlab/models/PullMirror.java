@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class PullMirror implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852260153907L;
+    private static final long serialVersionUID = 2551135808808L;
 
     /**
      * Pull mirror identifier.

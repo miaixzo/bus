@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class PushEvent extends AbstractPushEvent implements Event {
 
     @Serial
-    private static final long serialVersionUID = 2852233073088L;
+    private static final long serialVersionUID = 2550111626081L;
 
     /**
      * The x gitlab event value.

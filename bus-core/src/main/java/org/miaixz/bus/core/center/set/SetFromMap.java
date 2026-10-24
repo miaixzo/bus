@@ -38,7 +38,7 @@ import java.util.stream.Stream;
 public class SetFromMap<E> extends AbstractSet<E> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852280238812L;
+    private static final long serialVersionUID = 2536066218628L;
 
     /**
      * The backing map. The values in this map are always {@link Boolean#TRUE}.

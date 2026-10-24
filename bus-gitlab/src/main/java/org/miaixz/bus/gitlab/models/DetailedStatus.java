@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class DetailedStatus implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852251323553L;
+    private static final long serialVersionUID = 2550319500001L;
 
     /**
      * The icon value.

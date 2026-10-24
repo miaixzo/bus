@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class MutableObject<T> implements Mutable<T>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852270938613L;
+    private static final long serialVersionUID = 2538025903556L;
 
     /**
      * The mutable value.

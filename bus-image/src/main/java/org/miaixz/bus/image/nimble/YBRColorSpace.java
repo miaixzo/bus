@@ -30,7 +30,7 @@ import java.io.Serial;
 public class YBRColorSpace extends ColorSpace {
 
     @Serial
-    private static final long serialVersionUID = 2852287982516L;
+    private static final long serialVersionUID = 2556332661221L;
 
     /**
      * The cs rgb value.

@@ -75,7 +75,7 @@ import java.util.List;
 public class Page<T> extends ArrayList<T> {
 
     @Serial
-    private static final long serialVersionUID = 2852289758798L;
+    private static final long serialVersionUID = 2551596213501L;
 
     /**
      * The pagination request information.

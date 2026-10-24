@@ -38,7 +38,7 @@ import org.miaixz.bus.gitlab.support.ISO8601;
 public class IssuesStatisticsFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852258815223L;
+    private static final long serialVersionUID = 2550695000001L;
 
     /**
      * The labels value.

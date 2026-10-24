@@ -176,7 +176,7 @@ public class FileType {
     public static final Map<String, String> FILE_TYPE = new ConcurrentSkipListMap<>() {
 
         @Serial
-        private static final long serialVersionUID = 2891865203091L;
+        private static final long serialVersionUID = 2536556669561L;
 
         /**
          * Image formats.

@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 public class Base85Codec implements Encoder<byte[], byte[]>, Decoder<byte[], byte[]>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852283255072L;
+    private static final long serialVersionUID = 2536100815651L;
 
     /**
      * The shared Base85 codec instance.

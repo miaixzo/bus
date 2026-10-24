@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.core.lang.range;
 
+import java.io.Serial;
+
 /**
  * Represents an infinitely large upper bound, effectively meaning there is no upper limit. This class implements the
  * {@link Bound} interface for comparable types.
@@ -27,6 +29,9 @@ package org.miaixz.bus.core.lang.range;
  * @author Kimi Liu
  */
 public class NoneUpperBound<T extends Comparable<? super T>> implements Bound<T> {
+
+    @Serial
+    private static final long serialVersionUID = 2538066001228L;
 
     /**
      * Singleton instance for an infinitely large upper bound.

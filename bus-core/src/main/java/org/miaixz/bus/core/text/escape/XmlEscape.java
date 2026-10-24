@@ -45,7 +45,7 @@ import org.miaixz.bus.core.text.replacer.ReplacerChain;
 public class XmlEscape extends ReplacerChain {
 
     @Serial
-    private static final long serialVersionUID = 2852236260780L;
+    private static final long serialVersionUID = 2538195808001L;
 
     /**
      * Lookup table for XML escape characters. This array defines the mapping from special characters to their XML

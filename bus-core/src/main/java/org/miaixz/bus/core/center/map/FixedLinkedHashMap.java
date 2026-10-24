@@ -40,7 +40,7 @@ import org.miaixz.bus.core.center.function.ConsumerX;
 public class FixedLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852273311867L;
+    private static final long serialVersionUID = 2535836359801L;
 
     /**
      * The maximum capacity of the map. When the size exceeds this, the eldest entry is removed.

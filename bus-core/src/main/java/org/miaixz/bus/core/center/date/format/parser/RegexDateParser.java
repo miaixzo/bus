@@ -47,7 +47,7 @@ import org.miaixz.bus.core.xyz.*;
 public class RegexDateParser implements DateParser, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852256787361L;
+    private static final long serialVersionUID = 2535668161501L;
 
     /**
      * An array of multipliers for parsing nanoseconds of varying lengths.

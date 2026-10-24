@@ -40,7 +40,7 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 public class Reference extends Tenant {
 
     @Serial
-    private static final long serialVersionUID = 2538003660000L;
+    private static final long serialVersionUID = 2558921258328L;
 
     /**
      * Identifier of the source configuration item.

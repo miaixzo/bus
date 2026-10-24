@@ -49,7 +49,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class SSLContextBuilder implements Builder<SSLContext> {
 
     @Serial
-    private static final long serialVersionUID = 2852230919781L;
+    private static final long serialVersionUID = 2538128612266L;
 
     /**
      * The SSL protocol to use.

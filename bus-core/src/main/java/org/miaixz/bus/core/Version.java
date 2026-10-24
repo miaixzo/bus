@@ -51,7 +51,7 @@ import org.miaixz.bus.core.xyz.CompareKit;
 public class Version implements Comparable<Version>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852290508230L;
+    private static final long serialVersionUID = 2535292800001L;
 
     /**
      * The current version of the bus-core library.

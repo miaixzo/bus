@@ -38,7 +38,7 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 public class ChaCha20 extends Crypto {
 
     @Serial
-    private static final long serialVersionUID = 2852289670832L;
+    private static final long serialVersionUID = 2539230959262L;
 
     /**
      * Constructor.

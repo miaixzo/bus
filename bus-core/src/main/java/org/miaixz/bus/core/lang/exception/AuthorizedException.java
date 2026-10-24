@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class AuthorizedException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852252036370L;
+    private static final long serialVersionUID = 2536661800001L;
 
     /**
      * Constructs a new AuthorizedException with no detail message.

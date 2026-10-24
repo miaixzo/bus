@@ -36,7 +36,7 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class ProjectFetches implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852271365267L;
+    private static final long serialVersionUID = 2551068261251L;
 
     /**
      * The fetches value.
@@ -89,7 +89,7 @@ public class ProjectFetches implements Serializable {
     public static class DateCount implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852271507886L;
+        private static final long serialVersionUID = 2551080000001L;
 
         /**
          * The count value.
@@ -159,7 +159,7 @@ public class ProjectFetches implements Serializable {
     public static class Fetches implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852271590601L;
+        private static final long serialVersionUID = 2551082252981L;
 
         /**
          * The total value.

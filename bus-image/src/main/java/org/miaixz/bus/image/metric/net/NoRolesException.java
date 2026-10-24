@@ -33,7 +33,7 @@ import org.miaixz.bus.image.metric.TransferCapability;
 public class NoRolesException extends IOException {
 
     @Serial
-    private static final long serialVersionUID = 2852273231891L;
+    private static final long serialVersionUID = 2556305952802L;
 
     /**
      * Creates a new instance.

@@ -34,7 +34,7 @@ import java.util.Map;
 public abstract class CustomKeyMap<K, V> extends TransMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852272718897L;
+    private static final long serialVersionUID = 2535831056501L;
 
     /**
      * Constructs a {@code CustomKeyMap} that wraps a pre-existing empty map. It is crucial that the provided map is

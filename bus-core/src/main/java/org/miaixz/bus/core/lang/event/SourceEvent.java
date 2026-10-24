@@ -31,7 +31,7 @@ import java.util.EventObject;
 public class SourceEvent extends EventObject implements Event {
 
     @Serial
-    private static final long serialVersionUID = 2852251732571L;
+    private static final long serialVersionUID = 2536659506801L;
 
     /**
      * Constructs a new {@code SourceEvent} with the specified event source.

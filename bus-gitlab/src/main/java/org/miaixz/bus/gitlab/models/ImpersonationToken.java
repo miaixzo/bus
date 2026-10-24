@@ -40,7 +40,7 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class ImpersonationToken implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852257073750L;
+    private static final long serialVersionUID = 2550639966868L;
 
     /**
      * The description value.

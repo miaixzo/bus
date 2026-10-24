@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Member extends AbstractUser<Member> {
 
     @Serial
-    private static final long serialVersionUID = 2852261708829L;
+    private static final long serialVersionUID = 2550838980001L;
 
     /**
      * The access level value.

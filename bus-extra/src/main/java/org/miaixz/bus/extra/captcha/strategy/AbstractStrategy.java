@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Normal;
 public abstract class AbstractStrategy implements CodeStrategy {
 
     @Serial
-    private static final long serialVersionUID = 2852292099713L;
+    private static final long serialVersionUID = 2553985000001L;
 
     /**
      * The base character set from which to randomly select characters for the CAPTCHA string.

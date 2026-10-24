@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class ProtocolException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852263285797L;
+    private static final long serialVersionUID = 2536868161281L;
 
     /**
      * Constructs a new ProtocolException with no detail message.

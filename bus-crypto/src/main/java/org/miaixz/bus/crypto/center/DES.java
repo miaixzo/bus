@@ -39,7 +39,7 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 public class DES extends Crypto {
 
     @Serial
-    private static final long serialVersionUID = 2852289795980L;
+    private static final long serialVersionUID = 2539235000001L;
 
     /**
      * Constructs a DES encryptor/decryptor with default settings: DES/ECB/PKCS5Padding. A random key is generated.

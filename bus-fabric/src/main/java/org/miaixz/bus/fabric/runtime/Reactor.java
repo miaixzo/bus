@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric.runtime;
 
+import java.io.Serial;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -254,6 +255,9 @@ public class Reactor implements AutoCloseable {
      * @author Kimi Liu
      */
     public static class Builder implements org.miaixz.bus.core.Builder<Reactor> {
+
+        @Serial
+        private static final long serialVersionUID = 2555350000001L;
 
         /**
          * Clock candidate.

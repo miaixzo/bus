@@ -38,7 +38,7 @@ import org.miaixz.bus.core.center.function.SupplierX;
 public abstract class TransMap<K, V> extends MapWrapper<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852276161213L;
+    private static final long serialVersionUID = 2535880303653L;
 
     /**
      * Constructs a {@code TransMap} using a map factory to create the underlying map instance. The factory should

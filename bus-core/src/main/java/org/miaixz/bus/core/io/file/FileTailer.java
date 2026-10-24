@@ -47,7 +47,7 @@ import org.miaixz.bus.core.xyz.WatchKit;
 public class FileTailer implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852227513936L;
+    private static final long serialVersionUID = 2536539102682L;
 
     /**
      * A predefined line handler that prints each line to the console.
@@ -218,7 +218,7 @@ public class FileTailer implements Serializable {
             fileWatchMonitor.setWatcher(new SimpleWatcher() {
 
                 @Serial
-                private static final long serialVersionUID = 2852571830580L;
+                private static final long serialVersionUID = 2536551265001L;
 
                 /**
                  * Ondelete method.
@@ -330,7 +330,7 @@ public class FileTailer implements Serializable {
     public static class ConsoleLineHandler implements ConsumerX<String> {
 
         @Serial
-        private static final long serialVersionUID = 2852227591586L;
+        private static final long serialVersionUID = 2536553506051L;
 
         /**
          * Constructs a new ConsoleLineHandler.

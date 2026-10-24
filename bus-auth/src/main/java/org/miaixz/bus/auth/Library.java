@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.auth;
 
+import java.io.Serial;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -44,6 +46,9 @@ import org.miaixz.bus.core.lang.Enumers;
 @Setter
 @SuperBuilder
 public class Library extends Space {
+
+    @Serial
+    private static final long serialVersionUID = 2558585000001L;
 
     /**
      * Project-managed space-local application code. Format and uniqueness policies belong to the external management

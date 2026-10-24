@@ -40,7 +40,7 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 public class Instance extends Tenant {
 
     @Serial
-    private static final long serialVersionUID = 2536955156000L;
+    private static final long serialVersionUID = 2558865000001L;
 
     /**
      * Application identifier to which the runtime instance belongs.

@@ -40,7 +40,7 @@ import tools.jackson.databind.node.*;
 public class ApplicationSettings implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852235962768L;
+    private static final long serialVersionUID = 2550162532962L;
 
     /**
      * The id value.

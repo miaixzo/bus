@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class RepositoryFileResponse implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852280392820L;
+    private static final long serialVersionUID = 2551188501265L;
 
     /**
      * The file path value.

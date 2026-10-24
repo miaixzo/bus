@@ -77,7 +77,7 @@ import org.miaixz.bus.tempus.pattern.CronPattern;
 public class Scheduler implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852287508206L;
+    private static final long serialVersionUID = 2558280000001L;
 
     /**
      * Scheduled task configuration.

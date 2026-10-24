@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.crypto;
 
+import java.io.Serial;
 import java.security.Provider;
 import java.security.Security;
 
@@ -41,6 +42,9 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 public class Holder implements org.miaixz.bus.core.Holder {
+
+    @Serial
+    private static final long serialVersionUID = 2539209201638L;
 
     /**
      * Standard Bouncy Castle provider name.

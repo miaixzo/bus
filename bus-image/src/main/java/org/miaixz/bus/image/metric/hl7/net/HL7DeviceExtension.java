@@ -38,7 +38,7 @@ import org.miaixz.bus.image.metric.net.DeviceExtension;
 public class HL7DeviceExtension extends DeviceExtension {
 
     @Serial
-    private static final long serialVersionUID = 2852267701967L;
+    private static final long serialVersionUID = 2556286500001L;
 
     static {
         Connection.registerTCPProtocolHandler(Connection.Protocol.HL7, HL7ProtocolHandler.INSTANCE);

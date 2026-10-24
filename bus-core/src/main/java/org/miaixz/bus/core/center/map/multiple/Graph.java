@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.CollKit;
 public class Graph<T> extends SetValueMap<T, T> {
 
     @Serial
-    private static final long serialVersionUID = 2852277389299L;
+    private static final long serialVersionUID = 2535921119682L;
 
     /**
      * Creates a new {@code Graph} instance.

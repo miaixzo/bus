@@ -31,7 +31,7 @@ import java.time.temporal.TemporalAmount;
 public class DurationConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852268197775L;
+    private static final long serialVersionUID = 2536235803553L;
 
     /**
      * Creates a new {@code DurationConverter} instance.

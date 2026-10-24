@@ -50,7 +50,7 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 public class Fragments extends ArrayList<Object> implements Value {
 
     @Serial
-    private static final long serialVersionUID = 2852262835172L;
+    private static final long serialVersionUID = 2556203962351L;
 
     /**
      * The vr value.

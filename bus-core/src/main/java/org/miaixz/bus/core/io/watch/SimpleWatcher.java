@@ -33,7 +33,7 @@ import java.nio.file.WatchKey;
 public class SimpleWatcher implements Watcher, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852236259796L;
+    private static final long serialVersionUID = 2536616131815L;
 
     /**
      * Constructs a new simple watcher.

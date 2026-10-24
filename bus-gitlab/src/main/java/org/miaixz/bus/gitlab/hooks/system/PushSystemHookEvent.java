@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class PushSystemHookEvent extends AbstractPushEvent implements SystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852227399553L;
+    private static final long serialVersionUID = 2550000000001L;
 
     /**
      * The push event value.

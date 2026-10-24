@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Markdown implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852260951898L;
+    private static final long serialVersionUID = 2550832566232L;
 
     /**
      * The html value.

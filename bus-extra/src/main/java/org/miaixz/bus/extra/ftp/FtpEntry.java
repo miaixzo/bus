@@ -31,7 +31,7 @@ import java.io.Serializable;
 public class FtpEntry implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852292980088L;
+    private static final long serialVersionUID = 2553996952515L;
 
     /**
      * The remote entry name.

@@ -40,7 +40,7 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 public class Revision extends Tenant {
 
     @Serial
-    private static final long serialVersionUID = 2538008101000L;
+    private static final long serialVersionUID = 2558923509355L;
 
     /**
      * Identifier of the formal release that first persisted this snapshot.

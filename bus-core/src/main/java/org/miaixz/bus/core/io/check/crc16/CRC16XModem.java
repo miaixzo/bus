@@ -31,7 +31,7 @@ import java.io.Serial;
 public class CRC16XModem extends CRC16Checksum {
 
     @Serial
-    private static final long serialVersionUID = 2852285115000L;
+    private static final long serialVersionUID = 2536530500001L;
 
     /**
      * The polynomial used in the CRC16-XModem calculation (0x1021). This corresponds to bits at positions 0, 5, and 12.

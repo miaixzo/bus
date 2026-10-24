@@ -31,7 +31,7 @@ import java.time.temporal.TemporalAmount;
 public class PeriodConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852270870935L;
+    private static final long serialVersionUID = 2536288553361L;
 
     /**
      * Constructs a new PeriodConverter instance.

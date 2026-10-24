@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.setting.nimble.ini;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
@@ -34,6 +35,9 @@ import org.miaixz.bus.core.lang.Symbol;
  * @author Kimi Liu
  */
 public class IniSectionService extends AbstractElement implements IniSection {
+
+    @Serial
+    private static final long serialVersionUID = 2552535000001L;
 
     /**
      * list of properties, or empty

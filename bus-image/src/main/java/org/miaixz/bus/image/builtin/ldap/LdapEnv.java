@@ -32,7 +32,7 @@ import javax.naming.Context;
 public class LdapEnv extends Hashtable<String, Object> {
 
     @Serial
-    private static final long serialVersionUID = 2852257380532L;
+    private static final long serialVersionUID = 2556163952501L;
 
     /**
      * Creates a new instance.

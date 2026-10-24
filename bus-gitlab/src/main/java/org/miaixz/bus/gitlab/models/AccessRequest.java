@@ -30,7 +30,7 @@ import java.util.Date;
 public class AccessRequest extends AbstractUser<AccessRequest> {
 
     @Serial
-    private static final long serialVersionUID = 2852235619209L;
+    private static final long serialVersionUID = 2550153966225L;
 
     /**
      * The requested at value.

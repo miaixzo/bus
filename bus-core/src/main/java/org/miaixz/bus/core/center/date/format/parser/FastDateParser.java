@@ -50,7 +50,7 @@ import org.miaixz.bus.core.xyz.ZoneKit;
 public class FastDateParser extends SimpleDatePrinter implements PositionDateParser {
 
     @Serial
-    private static final long serialVersionUID = 2852256079661L;
+    private static final long serialVersionUID = 2535658800001L;
 
     /**
      * Locale for Japanese Imperial calendar.

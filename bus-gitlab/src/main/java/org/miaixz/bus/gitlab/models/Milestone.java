@@ -35,7 +35,7 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class Milestone implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852265609811L;
+    private static final long serialVersionUID = 2550888556635L;
 
     /**
      * The created at value.

@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.annotation.Logical;
 public class Audit extends Entity {
 
     @Serial
-    private static final long serialVersionUID = 2852290719630L;
+    private static final long serialVersionUID = 2535295951883L;
 
     /**
      * Logical data status:

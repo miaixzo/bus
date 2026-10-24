@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicLongArray;
 public class AtomicLongArrayConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852265081792L;
+    private static final long serialVersionUID = 2536188800001L;
 
     /**
      * Creates a new {@code AtomicLongArrayConverter} instance.

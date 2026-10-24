@@ -31,7 +31,7 @@ import java.util.ArrayList;
 public class IncrementSelector<T> extends ArrayList<T> implements Selector<T> {
 
     @Serial
-    private static final long serialVersionUID = 2852277613270L;
+    private static final long serialVersionUID = 2538086810591L;
 
     /**
      * Index position

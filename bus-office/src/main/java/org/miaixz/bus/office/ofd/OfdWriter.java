@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class OfdWriter implements Serializable, Closeable {
 
     @Serial
-    private static final long serialVersionUID = 2852287375522L;
+    private static final long serialVersionUID = 2551928153111L;
 
     /**
      * The OFD document instance.

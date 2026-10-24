@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class MQueueException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852261235221L;
+    private static final long serialVersionUID = 2536825000001L;
 
     /**
      * Constructs a new MQueueException with no detail message.

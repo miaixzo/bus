@@ -35,7 +35,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class MergeRequestEvent extends AbstractEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852232811512L;
+    private static final long serialVersionUID = 2550103080001L;
 
     /**
      * The x gitlab event value.

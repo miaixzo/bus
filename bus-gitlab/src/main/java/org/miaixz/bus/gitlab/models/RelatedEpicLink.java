@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class RelatedEpicLink implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852279222688L;
+    private static final long serialVersionUID = 2551160805001L;
 
     /**
      * The id value.

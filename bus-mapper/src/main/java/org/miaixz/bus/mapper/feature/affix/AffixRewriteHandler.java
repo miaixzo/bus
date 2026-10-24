@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.mapper.feature.affix;
 
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -49,6 +50,9 @@ import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
  * @author Kimi Liu
  */
 public class AffixRewriteHandler extends ScopedProviderHandler<Object, AffixRuleConfig, AffixValueProvider> {
+
+    @Serial
+    private static final long serialVersionUID = 2551588656901L;
 
     /**
      * Creates an affix rewrite handler that resolves its rules from runtime properties or context.

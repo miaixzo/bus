@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class StringRangeReplacer extends StringReplacer {
 
     @Serial
-    private static final long serialVersionUID = 2852239629301L;
+    private static final long serialVersionUID = 2538350000001L;
 
     /**
      * The inclusive starting index of the character range to be replaced.

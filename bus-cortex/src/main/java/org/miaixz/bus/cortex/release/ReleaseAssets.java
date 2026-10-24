@@ -44,7 +44,7 @@ import org.miaixz.bus.logger.Logger;
 public class ReleaseAssets extends Assets {
 
     @Serial
-    private static final long serialVersionUID = 2536989565000L;
+    private static final long serialVersionUID = 2558898151162L;
 
     /**
      * Version-specific metadata view.

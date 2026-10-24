@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.BooleanKit;
 public class BooleanConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852265810501L;
+    private static final long serialVersionUID = 2536198150001L;
 
     /**
      * Singleton instance.

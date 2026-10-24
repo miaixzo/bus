@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.RuntimeKit;
 public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue<E> {
 
     @Serial
-    private static final long serialVersionUID = 2852279836896L;
+    private static final long serialVersionUID = 2536055500001L;
 
     /**
      * Constructor.
@@ -89,6 +89,9 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
      * @author Kimi Liu
      */
     private static class MemoryChecker<E> implements PredicateX<E> {
+
+        @Serial
+        private static final long serialVersionUID = 2536058651932L;
 
         /**
          * The minimum amount of free memory required before accepting a new element.

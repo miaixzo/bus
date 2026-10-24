@@ -39,7 +39,7 @@ import org.miaixz.bus.logger.Logger;
 public class CommitAction implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852239693533L;
+    private static final long serialVersionUID = 2550260051501L;
 
     /**
      * The action value.

@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class WordTree extends HashMap<Character, WordTree> {
 
     @Serial
-    private static final long serialVersionUID = 2852235672251L;
+    private static final long serialVersionUID = 2538185000001L;
 
     /**
      * A set of characters that mark the end of a word at this node.

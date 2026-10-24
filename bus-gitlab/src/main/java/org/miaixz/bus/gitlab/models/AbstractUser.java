@@ -42,7 +42,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public abstract class AbstractUser<U extends AbstractUser<U>> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852235350570L;
+    private static final long serialVersionUID = 2550139562563L;
 
     /**
      * The avatar url value.

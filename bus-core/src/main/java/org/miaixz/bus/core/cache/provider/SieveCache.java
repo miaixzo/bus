@@ -48,7 +48,7 @@ import org.miaixz.bus.core.lang.mutable.MutableObject;
 public class SieveCache<K, V> extends LockedCache<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852232053892L;
+    private static final long serialVersionUID = 2535622500001L;
 
     /**
      * The head node of the doubly linked list.
@@ -308,7 +308,7 @@ public class SieveCache<K, V> extends LockedCache<K, V> {
     private static class SieveCacheObject<K, V> extends CacheObject<K, V> {
 
         @Serial
-        private static final long serialVersionUID = 2852232053891L;
+        private static final long serialVersionUID = 2535625652181L;
 
         /**
          * Indicates if the node has been accessed recently.

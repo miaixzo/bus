@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.MapKit;
 public class BiMap<K, V> extends MapWrapper<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852268325561L;
+    private static final long serialVersionUID = 2535812966621L;
 
     /**
      * The inverse map, where values from the original map are keys and keys are values. This is lazily initialized when

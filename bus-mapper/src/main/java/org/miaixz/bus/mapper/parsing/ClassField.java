@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.mapper.parsing;
 
+import java.io.Serial;
+
 import lombok.Getter;
 
 import org.miaixz.bus.core.center.function.PredicateX;
@@ -31,6 +33,9 @@ import org.miaixz.bus.core.center.function.PredicateX;
  */
 @Getter
 public class ClassField implements PredicateX<ColumnMeta> {
+
+    @Serial
+    private static final long serialVersionUID = 2551633380001L;
 
     /**
      * The entity class.

@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class ProjectApprovalsConfig implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852271099830L;
+    private static final long serialVersionUID = 2551065000001L;
 
     /**
      * The approvals before merge value.

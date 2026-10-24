@@ -38,7 +38,7 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 public class App extends Tenant {
 
     @Serial
-    private static final long serialVersionUID = 2536992006000L;
+    private static final long serialVersionUID = 2558900500001L;
 
     /**
      * Stable application code.

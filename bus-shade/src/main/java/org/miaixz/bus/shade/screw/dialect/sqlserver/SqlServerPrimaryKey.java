@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.shade.screw.dialect.sqlserver;
 
+import java.io.Serial;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,6 +35,9 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 @Getter
 @Setter
 public class SqlServerPrimaryKey implements PrimaryKey {
+
+    @Serial
+    private static final long serialVersionUID = 2552868553992L;
 
     /**
      * The name of the table.

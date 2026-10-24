@@ -45,7 +45,7 @@ import tools.jackson.databind.node.ObjectNode;
 public class Todo implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852282035620L;
+    private static final long serialVersionUID = 2551250233392L;
 
     /**
      * The id value.

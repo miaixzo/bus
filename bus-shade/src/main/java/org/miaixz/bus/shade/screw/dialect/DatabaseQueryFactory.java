@@ -43,7 +43,7 @@ import org.miaixz.bus.logger.Logger;
 public class DatabaseQueryFactory implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2893120568319L;
+    private static final long serialVersionUID = 2552832055501L;
 
     /**
      * The JDBC data source used to determine the database type and create the query instance.

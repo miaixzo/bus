@@ -29,7 +29,7 @@ import java.io.Serial;
 public class CRC16Ansi extends CRC16Checksum {
 
     @Serial
-    private static final long serialVersionUID = 2852278118286L;
+    private static final long serialVersionUID = 2536502151501L;
 
     /**
      * The polynomial used in the CRC16-ANSI calculation.

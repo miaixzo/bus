@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class DiffRef implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852251659905L;
+    private static final long serialVersionUID = 2550323912081L;
 
     /**
      * The base sha value.

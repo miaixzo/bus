@@ -43,7 +43,7 @@ import org.miaixz.bus.tempus.pattern.CronPattern;
 public abstract class Repertoire implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852287269608L;
+    private static final long serialVersionUID = 2558268001935L;
 
     /**
      * Default initial capacity for the task table.

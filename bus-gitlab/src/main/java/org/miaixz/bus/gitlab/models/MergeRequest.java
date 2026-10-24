@@ -37,7 +37,7 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class MergeRequest implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852262182510L;
+    private static final long serialVersionUID = 2550852151898L;
 
     /**
      * The allow collaboration value.

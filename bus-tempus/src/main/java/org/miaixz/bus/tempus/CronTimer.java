@@ -35,7 +35,7 @@ import org.miaixz.bus.logger.Logger;
 public class CronTimer extends Thread implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852286896673L;
+    private static final long serialVersionUID = 2558259201882L;
 
     /**
      * Timer unit in milliseconds for a second.

@@ -49,7 +49,7 @@ import org.miaixz.bus.core.lang.exception.DateException;
 public class FormatBuilder extends Format implements PositionDateParser, FormatPrinter {
 
     @Serial
-    private static final long serialVersionUID = 2852255307380L;
+    private static final long serialVersionUID = 2535653252885L;
 
     /**
      * Cache of formatters keyed by pattern, time zone, and locale.

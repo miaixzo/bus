@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.auth;
 
+import java.io.Serial;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -50,6 +52,9 @@ import org.miaixz.bus.core.basic.entity.Tracer;
 @Setter
 @SuperBuilder
 public class Source extends Tracer {
+
+    @Serial
+    private static final long serialVersionUID = 2558591500001L;
 
     /**
      * Required non-blank identifier of the owning Provider. The referenced Provider must exist; when this Source is

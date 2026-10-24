@@ -20,6 +20,7 @@
 package org.miaixz.bus.extra.image;
 
 import java.awt.*;
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,6 +46,9 @@ import org.miaixz.bus.core.lang.Assert;
  * @author Kimi Liu
  */
 public class RenderHintsBuilder implements Builder<RenderingHints> {
+
+    @Serial
+    private static final long serialVersionUID = 2555005000001L;
 
     /**
      * The map of rendering hints.

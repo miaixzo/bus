@@ -20,6 +20,7 @@
 package org.miaixz.bus.core.convert.stringer;
 
 import java.io.InputStream;
+import java.io.Serial;
 import java.sql.Blob;
 import java.sql.SQLException;
 
@@ -34,6 +35,9 @@ import org.miaixz.bus.core.xyz.IoKit;
  * @author Kimi Liu
  */
 public class BlobStringer implements FunctionX<Object, String> {
+
+    @Serial
+    private static final long serialVersionUID = 2536352262651L;
 
     /**
      * Singleton instance.

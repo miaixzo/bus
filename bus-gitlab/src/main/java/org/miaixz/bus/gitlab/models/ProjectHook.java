@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ProjectHook implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852273671982L;
+    private static final long serialVersionUID = 2551103056801L;
 
     /**
      * The build events value.

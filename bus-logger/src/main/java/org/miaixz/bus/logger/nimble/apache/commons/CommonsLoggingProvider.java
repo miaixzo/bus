@@ -38,7 +38,7 @@ import org.miaixz.bus.logger.magic.AbstractProvider;
 public class CommonsLoggingProvider extends AbstractProvider {
 
     @Serial
-    private static final long serialVersionUID = 2852286531003L;
+    private static final long serialVersionUID = 2538921355001L;
 
     /**
      * The underlying Apache Commons Logging logger instance.

@@ -34,7 +34,7 @@ import org.miaixz.bus.extra.nlp.NLPWord;
 public class JiebaWord implements NLPWord {
 
     @Serial
-    private static final long serialVersionUID = 2852286255273L;
+    private static final long serialVersionUID = 2555050000001L;
 
     /**
      * The underlying Jieba {@link SegToken} object.

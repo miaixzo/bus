@@ -32,7 +32,7 @@ import org.miaixz.bus.image.nimble.codec.ImageReaderFactory;
 public class ImageReaderExtension extends DeviceExtension {
 
     @Serial
-    private static final long serialVersionUID = 2852289507228L;
+    private static final long serialVersionUID = 2556365566281L;
 
     /**
      * The factory value.

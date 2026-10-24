@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.Symbol;
 public class Arrangement implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852281592361L;
+    private static final long serialVersionUID = 2538116896501L;
 
     /**
      * The source data array used for generating arrangements.

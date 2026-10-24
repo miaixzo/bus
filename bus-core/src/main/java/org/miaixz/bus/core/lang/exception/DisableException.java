@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class DisableException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852253391291L;
+    private static final long serialVersionUID = 2536800000001L;
 
     /**
      * Constructs a new DisableException with no detail message.

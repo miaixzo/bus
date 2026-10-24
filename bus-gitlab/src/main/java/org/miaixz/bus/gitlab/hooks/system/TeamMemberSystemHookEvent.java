@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class TeamMemberSystemHookEvent extends AbstractSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852229806158L;
+    private static final long serialVersionUID = 2550069280001L;
 
     /**
      * The new team member event value.

@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.DateKit;
 public class Expression implements Serializable, Cloneable {
 
     @Serial
-    private static final long serialVersionUID = 2852287029125L;
+    private static final long serialVersionUID = 2558262501185L;
 
     /**
      * The maximum year value for cron expressions. Set to the current year plus 100.

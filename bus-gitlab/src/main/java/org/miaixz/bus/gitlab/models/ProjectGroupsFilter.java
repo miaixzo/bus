@@ -31,7 +31,7 @@ import java.util.List;
 public class ProjectGroupsFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852273582153L;
+    private static final long serialVersionUID = 2551100805001L;
 
     /**
      * The search value.

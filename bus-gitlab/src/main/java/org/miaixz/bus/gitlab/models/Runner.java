@@ -37,7 +37,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class Runner implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852280665555L;
+    private static final long serialVersionUID = 2551193051599L;
 
     /**
      * The id value.

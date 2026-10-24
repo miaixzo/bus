@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ContainerExpirationPolicy implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852250662811L;
+    private static final long serialVersionUID = 2550289356566L;
 
     /**
      * The cadence value.

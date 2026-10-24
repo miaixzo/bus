@@ -56,7 +56,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class TemporalAccessorConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852272056385L;
+    private static final long serialVersionUID = 2536311065001L;
 
     /**
      * Singleton instance

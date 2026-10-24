@@ -47,7 +47,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public class KBeanConverter implements MatcherConverter, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852268927129L;
+    private static final long serialVersionUID = 2536258000001L;
 
     /**
      * Singleton instance

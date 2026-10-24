@@ -34,7 +34,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class WorkItemEvent extends AbstractEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852233532039L;
+    private static final long serialVersionUID = 2550122332801L;
 
     /**
      * The x gitlab event value.

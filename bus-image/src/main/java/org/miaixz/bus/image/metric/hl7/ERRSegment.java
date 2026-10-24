@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.image.metric.hl7;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
@@ -27,6 +29,9 @@ import org.miaixz.bus.core.lang.Symbol;
  * @author Kimi Liu
  */
 public class ERRSegment extends HL7Segment {
+
+    @Serial
+    private static final long serialVersionUID = 2556258650001L;
 
     /**
      * The segment sequence error value.

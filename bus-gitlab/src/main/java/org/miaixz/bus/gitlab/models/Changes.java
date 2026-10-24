@@ -35,7 +35,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Changes implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852238919699L;
+    private static final long serialVersionUID = 2550239212199L;
 
     /**
      * The a mode value.

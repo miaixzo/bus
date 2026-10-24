@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Assert;
 public class HttpResource implements Resource, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852231136075L;
+    private static final long serialVersionUID = 2536593611501L;
 
     /**
      * The wrapped resource.

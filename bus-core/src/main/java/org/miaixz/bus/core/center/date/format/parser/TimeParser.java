@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class TimeParser implements PredicateDateParser, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852257133063L;
+    private static final long serialVersionUID = 2535682800001L;
 
     /**
      * Singleton instance of {@code TimeParser}.

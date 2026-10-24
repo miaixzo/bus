@@ -31,7 +31,7 @@ import java.util.Date;
 public class Trigger implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852282359329L;
+    private static final long serialVersionUID = 2551261039292L;
 
     /**
      * The id value.
