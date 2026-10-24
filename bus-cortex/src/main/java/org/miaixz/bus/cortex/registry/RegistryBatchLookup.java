@@ -40,6 +40,11 @@ public record RegistryBatchLookup(Map<RegistryRouteKey, Assets> existingByRoute,
 
     /**
      * Normalizes null collections to immutable empty collections.
+     * @param existingByRoute existing assets keyed by route
+     * @param missingRoutes routes known to be missing
+     * @param authoritativeByRoute whether route lookup is authoritative for missing routes
+     * @param skipMethodVersionFallback whether method/version fallback should be skipped
+     * @param warnings lookup warnings
      */
     public RegistryBatchLookup {
         existingByRoute = existingByRoute == null ? Map.of() : Map.copyOf(existingByRoute);

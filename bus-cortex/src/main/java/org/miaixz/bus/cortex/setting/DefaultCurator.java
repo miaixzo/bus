@@ -72,6 +72,9 @@ public class DefaultCurator implements Curator {
         this.runtimeSettingOverlayService = runtimeSettingOverlayService;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String get(ItemQuery query) {
         ItemQuery prepared = settingCuratorService.prepare(query);
@@ -91,16 +94,25 @@ public class DefaultCurator implements Curator {
         return settingCuratorService.resolve(prepared);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void publish(Item item) {
         settingCuratorService.publish(item);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void rollback(Item coordinates, String revision) {
         settingCuratorService.rollback(coordinates, revision);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String watch(Item coordinates, ConsumerX<String> listener) {
         settingCuratorService.find(coordinates);
@@ -122,6 +134,9 @@ public class DefaultCurator implements Curator {
         return watchManager.add(vector, callback);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void unwatch(String watch_id) {
         watchManager.remove(watch_id);

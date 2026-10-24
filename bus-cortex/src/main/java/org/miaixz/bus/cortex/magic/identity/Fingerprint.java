@@ -48,6 +48,7 @@ public class Fingerprint {
      * @param host instance host
      * @param port instance port
      * @return 32-character hex string
+     * @throws RuntimeException if the SHA-256 algorithm is unavailable
      */
     public static String of(String host, int port) {
         String input = host + Symbol.COLON + port;

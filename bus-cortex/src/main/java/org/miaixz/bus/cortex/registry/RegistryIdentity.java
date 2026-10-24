@@ -109,9 +109,9 @@ public class RegistryIdentity {
     /**
      * Normalizes API to global identity while retaining explicit MCP and Prompt storage tenants.
      *
-     * @param asset        asset to normalize
+     * @param asset asset to normalize
+     * @param <T> concrete asset type
      * @param fallbackType type used when the asset does not define one
-     * @param <T>          concrete asset type
      * @return the same asset instance after normalization
      */
     public static <T extends Assets> T normalize(T asset, Type fallbackType) {

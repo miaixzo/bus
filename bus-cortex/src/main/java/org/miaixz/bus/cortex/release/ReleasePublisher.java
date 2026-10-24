@@ -45,68 +45,45 @@ import org.miaixz.bus.extra.json.JsonKit;
 public class ReleasePublisher {
 
     /**
-     * Process-local monotonic clock; persistent stores must additionally enforce tenant/track/version uniqueness.
-     */
-    private static final AtomicLong RELEASE_CLOCK = new AtomicLong();
-
-    /**
-     * Generates a version from the server clock; callers cannot choose a version through this operation.
-     *
-     * @param clock server-owned clock
-     * @return monotonically generated release version
-     */
-    private static String generateVersion(Clock clock) {
-        Objects.requireNonNull(clock, "Server clock");
-        long instant = RELEASE_CLOCK.updateAndGet(previous -> Math.max(clock.millis(), previous + 1));
-        return DateTimeFormatter.ofPattern("'v'uuuu.MM.dd.HHmmss.SSS").withZone(clock.getZone())
-                .format(Instant.ofEpochMilli(instant));
-    }
-
-    /**
      * Change event emitted when a release draft is saved.
      */
     public static final String RELEASE_DRAFT_EVENT = "release-draft";
-
     /**
      * Change event emitted when a release is published.
      */
     public static final String RELEASE_PUBLISH_EVENT = "release-publish";
-
     /**
      * Change event emitted when a release is rolled back to a prior version.
      */
     public static final String RELEASE_ROLLBACK_EVENT = "release-rollback";
-
     /**
      * Change event emitted when a release is deprecated.
      */
     public static final String RELEASE_DEPRECATE_EVENT = "release-deprecate";
-
     /**
      * Change event emitted when a release is deleted.
      */
     public static final String RELEASE_DELETE_EVENT = "release-delete";
-
     /**
      * Watch source identifier used for version-domain notifications.
      */
     public static final String RELEASE_SOURCE = "release-center";
-
+    /**
+     * Process-local monotonic clock; persistent stores must additionally enforce tenant/track/version uniqueness.
+     */
+    private static final AtomicLong RELEASE_CLOCK = new AtomicLong();
     /**
      * Durable version store.
      */
     private final ReleaseStore store;
-
     /**
      * Optional change-log store used for publication events.
      */
     private final CortexChangeLogStore changeLogStore;
-
     /**
      * Optional guard used to enforce version-domain policy.
      */
     private final CortexGuard cortexGuard;
-
     /**
      * Optional watch manager used to publish version notifications.
      */
@@ -170,8 +147,25 @@ public class ReleasePublisher {
     }
 
     /**
+     * Generates a version from the server clock; callers cannot choose a version through this operation.
+     *
+     * @param clock server-owned clock
+     * @return monotonically generated release version
+     */
+    private static String generateVersion(Clock clock) {
+        Objects.requireNonNull(clock, "Server clock");
+        long instant = RELEASE_CLOCK.updateAndGet(previous -> Math.max(clock.millis(), previous + 1));
+        return DateTimeFormatter.ofPattern("'v'uuuu.MM.dd.HHmmss.SSS").withZone(clock.getZone())
+                .format(Instant.ofEpochMilli(instant));
+    }
+
+    /**
      * Creates a server-versioned release draft. The supplied creator must be the authenticated operator, and the host
      * must not expose caller-controlled creator or version fields.
+     *
+     * @param record tenant-qualified release record to validate and insert
+     * @return persisted release record
+     * @throws IllegalArgumentException if a new draft supplies a version rather than using the host allocator
      */
     public Release create(Release record) {
         if (record == null || record.getVersion() != null) {
@@ -203,6 +197,11 @@ public class ReleasePublisher {
     /**
      * Prepares the platform version for a frozen approved batch, without changing the active version. The host must
      * atomically persist it with selected application pointers and its durable notification outbox.
+     *
+     * @param rollout rollout containing the frozen, approved publication manifest
+     * @return release record prepared from the verified rollout
+     * @throws IllegalArgumentException if approved publication intent or authenticated creator is missing
+     * @throws IllegalStateException if the active baseline changed or the allocated version conflicts
      */
     public Release preparePublication(Rollout rollout) {
         Plan plan = Plan.restore(rollout);

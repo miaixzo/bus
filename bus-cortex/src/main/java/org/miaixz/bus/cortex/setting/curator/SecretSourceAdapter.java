@@ -26,7 +26,10 @@ import org.miaixz.bus.core.lang.exception.ForbiddenException;
 import org.miaixz.bus.core.lang.exception.UncheckedException;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
-import org.miaixz.bus.cortex.setting.secret.*;
+import org.miaixz.bus.cortex.setting.secret.SecretContext;
+import org.miaixz.bus.cortex.setting.secret.SecretManager;
+import org.miaixz.bus.cortex.setting.secret.SecretMasker;
+import org.miaixz.bus.cortex.setting.secret.SecretMaterial;
 
 /**
  * Connects the existing setting-source SPI to trusted SecretManager reads. The context-free overload always denies
@@ -41,11 +44,10 @@ public final class SecretSourceAdapter implements ItemSourceAdapter {
     private final SecretManager manager;
 
     /**
-     * Creates SecretSourceAdapter with explicitly bound collaborators. Dependencies are not discovered implicitly.
+     * Creates an adapter borrowing the explicitly supplied manager; this adapter does not close it.
      *
-     * @param manager input manager used by this operation
-     * @throws NullPointerException     if a required collaborator or required component is null
-     * @throws IllegalArgumentException if configuration values violate the documented constraints
+     * @param manager required authorized Secret manager
+     * @throws NullPointerException if manager is null
      */
     public SecretSourceAdapter(SecretManager manager) {
         this.manager = Objects.requireNonNull(manager);
@@ -62,21 +64,22 @@ public final class SecretSourceAdapter implements ItemSourceAdapter {
     }
 
     /**
-     * Tests whether the supplied source or protection mode is supported without performing any remote resolution.
+     * Recognizes the trimmed, case-insensitive SECRET source without validating the descriptor or checking authorization.
      *
-     * @param entry setting entry or already selected snapshot; null is handled as documented
-     * @return true when the input is supported
+     * @param entry item to inspect, or null
+     * @return true only when entry is non-null and its source discriminator is SECRET
      */
     @Override
     public boolean supports(Item entry) {
-        return ItemNormalizer.isSecret(entry);
+        return ItemNormalizer.isSecretReference(entry);
     }
 
     /**
-     * Validates only the reference descriptor and does not acquire credentials or contact a cloud service.
+     * Checks the reference-only SECRET restrictions and parses the descriptor without backend access.
+     * Unchecked contract failures, including a null entry, are converted to false.
      *
-     * @param entry setting entry or already selected snapshot; null is handled as documented
-     * @return true if the SECRET descriptor can be parsed
+     * @param entry item to validate, or null
+     * @return true only for a SECRET item with protected category, no inline content, no enabled encryption and a valid descriptor
      */
     @Override
     public boolean validate(Item entry) {
@@ -89,15 +92,11 @@ public final class SecretSourceAdapter implements ItemSourceAdapter {
     }
 
     /**
-     * Rejects access without an authenticated context.
+     * Rejects every context-free resolution request, without reading the entry or contacting a backend.
      *
-     * @param entry setting entry or already selected snapshot; null is handled as documented
-     * @return no value; this overload always denies access
-     * @throws org.miaixz.bus.core.lang.exception.ForbiddenException if access is denied or the supplied credential
-     *                                                               representation is not permitted
-     * @throws org.miaixz.bus.core.lang.exception.CryptoException    if the deadline, lifecycle, backend or payload
-     *                                                               checks fail; inspect the exception type;
-     *                                                               diagnostics are deliberately sanitized
+     * @param entry ignored item, possibly null
+     * @return never returns normally
+     * @throws org.miaixz.bus.core.lang.exception.ForbiddenException always, because authenticated context is required
      */
     @Override
     public String resolve(Item entry) {
@@ -105,18 +104,15 @@ public final class SecretSourceAdapter implements ItemSourceAdapter {
     }
 
     /**
-     * Checks tenant/application identity, parses the reference and resolves through SecretManager. Temporary character
-     * copies are erased; the returned Java string cannot be erased.
+     * Requires matching tenant and, when present on the item, application identity before resolving the reference.
+     * Returned material and temporary character copies are closed or erased; the returned Java string cannot be erased.
      *
-     * @param entry   setting entry or already selected snapshot; null is handled as documented
-     * @param context authenticated caller identity and absolute request deadline; never populated from an untrusted
-     *                reference
-     * @return runtime value as a Java string
-     * @throws org.miaixz.bus.core.lang.exception.ForbiddenException if access is denied or the supplied credential
-     *                                                               representation is not permitted
-     * @throws org.miaixz.bus.core.lang.exception.CryptoException    if the deadline, lifecycle, backend or payload
-     *                                                               checks fail; inspect the exception type;
-     *                                                               diagnostics are deliberately sanitized
+     * @param entry non-null reference-only SECRET item
+     * @param context non-null trusted identity and absolute deadline
+     * @return resolved runtime value as a Java string
+     * @throws NullPointerException if entry or context is null
+     * @throws org.miaixz.bus.core.lang.exception.ForbiddenException if tenant/application identity or the manager's access policy denies access
+     * @throws org.miaixz.bus.core.lang.exception.CryptoException if descriptor, deadline, lifecycle, backend or payload validation fails
      */
     @Override
     public String resolve(Item entry, SecretContext context) {
@@ -136,10 +132,10 @@ public final class SecretSourceAdapter implements ItemSourceAdapter {
     }
 
     /**
-     * Returns the fixed management-safe mask for SECRET entries, without resolving the backend value.
+     * Returns the fixed management mask without inspecting the item or contacting a backend.
      *
-     * @param entry setting entry or already selected snapshot; null is handled as documented
-     * @return management-safe preview
+     * @param entry ignored item, possibly null or not a SECRET item
+     * @return the shared four-character mask
      */
     @Override
     public String preview(Item entry) {

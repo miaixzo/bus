@@ -405,8 +405,7 @@ public final class SecretManager implements AutoCloseable {
     /**
      * Rejects new operations after the manager lifecycle has been closed.
      *
-     * @throws org.miaixz.bus.core.lang.exception.CryptoException if the documented validation, expiration or lifecycle
-     *                                                            constraint fails
+     * @throws org.miaixz.bus.core.lang.exception.CryptoException if the manager has been closed
      */
     private void ensureOpen() {
         if (closed) {
@@ -618,7 +617,8 @@ public final class SecretManager implements AutoCloseable {
      * late binding after validation.
      *
      * @param connection immutable routing and resource-prefix restrictions
-     * @param provider   provider instance whose type must match the connection
+     * @param provider provider instance whose type must match the connection
+     * @throws CryptoException if connection registration conflicts with existing configuration or lifecycle
      */
     public void register(SecretConnection connection, SecretProvider provider) {
         Binding binding = new Binding(connection, provider);
@@ -635,8 +635,9 @@ public final class SecretManager implements AutoCloseable {
      * to avoid revealing their existence.
      *
      * @param tenantId authenticated tenant identifier
-     * @param id       connection identifier scoped to the tenant
+     * @param id connection identifier scoped to the tenant
      * @return enabled immutable connection/provider binding
+     * @throws ForbiddenException if no enabled binding exists for the tenant and connection
      */
     private Binding requireBinding(String tenantId, String id) {
         Binding binding = bindings.get(new ConnectionKey(tenantId, id));
@@ -689,9 +690,10 @@ public final class SecretManager implements AutoCloseable {
 
         /**
          * Validates the record components before publishing this immutable value.
-         *
+         * @param connection immutable routing configuration and prefix restrictions
+         * @param provider provider instance whose type must match the connection
          * @throws IllegalArgumentException if component values violate this record's constraints
-         * @throws NullPointerException     if a required component or collection is null
+         * @throws NullPointerException if a required component or collection is null
          */
         public Binding {
             Objects.requireNonNull(connection);

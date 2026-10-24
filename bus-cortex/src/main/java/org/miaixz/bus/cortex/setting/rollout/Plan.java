@@ -83,6 +83,17 @@ public final class Plan {
     /**
      * Freezes exact revision identifiers, never dynamic LATEST lookups. A deletion must freeze its tombstone revision
      * rather than silently omit an item. Shared-source changes alone never activate consumers.
+     *
+     * @param tenant tenant owning the publication
+     * @param baseline expected previously active version, or null
+     * @param version required server-generated numeric target version
+     * @param mode FORMAL or GRAY publication mode
+     * @param policy required approval policy identifier
+     * @param rule gray selector required only for GRAY publication
+     * @param previous previous application manifests, or null for an empty baseline
+     * @param selected complete replacement manifests for selected applications
+     * @param references shared-reference policies to freeze into the plan
+     * @throws IllegalArgumentException if version, publication mode, selector, selected manifests, or reference policies are invalid
      */
     public Plan(String tenant, String baseline, String version, String mode, String policy, GrayRule rule,
             Map<String, Map<String, String>> previous, Map<String, Map<String, String>> selected,
@@ -162,6 +173,7 @@ public final class Plan {
      *
      * @param input mutable application manifest
      * @return immutable, deterministically ordered manifest
+     * @throws IllegalArgumentException if an application manifest is null or has invalid coordinates
      */
     private static Map<String, Map<String, String>> freeze(Map<String, Map<String, String>> input) {
         Map<String, Map<String, String>> result = new TreeMap<>();
@@ -185,7 +197,8 @@ public final class Plan {
      * Requires a nonblank manifest value.
      *
      * @param value value to validate
-     * @param name  semantic name used in the failure message
+     * @param name semantic name used in the failure message
+     * @throws IllegalArgumentException if a required coordinate is null or blank
      */
     private static void require(String value, String name) {
         if (value == null || value.isBlank()) {
@@ -204,66 +217,11 @@ public final class Plan {
     }
 
     /**
-     * Serializes the canonical frozen input used for approval and execution checksums.
-     */
-    public String toJson() {
-        Map<String, Object> value = new LinkedHashMap<>();
-        value.put("tenant_id", tenant);
-        value.put("baseline", baseline);
-        value.put("version", version);
-        value.put("mode", mode);
-        value.put("policy", policy);
-        value.put("rule", rule);
-        value.put("references", references);
-        value.put("selected", selected);
-        value.put("applications", applications);
-        return JsonKit.toJsonString(value);
-    }
-
-    /**
-     * @return tenant identifier
-     */
-    public String getTenant_id() {
-        return tenant;
-    }
-
-    /**
-     * @return baseline version
-     */
-    public String getBaseline() {
-        return baseline;
-    }
-
-    /**
-     * @return target version
-     */
-    public String getVersion() {
-        return version;
-    }
-
-    /**
-     * @return canonical plan checksum
-     */
-    public String getChecksum() {
-        return checksum;
-    }
-
-    /**
-     * @return complete immutable application manifest
-     */
-    public Map<String, Map<String, String>> getApplications() {
-        return applications;
-    }
-
-    /**
-     * @return immutable selected-application manifest
-     */
-    public Map<String, Map<String, String>> getSelected() {
-        return selected;
-    }
-
-    /**
      * Rebuilds a frozen plan after restart and rejects corrupted or re-serialized approval inputs.
+     *
+     * @param rollout persisted rollout carrying the canonical manifest and checksum
+     * @return reconstructed plan verified against the rollout
+     * @throws IllegalArgumentException if the stored manifest, checksum, or reconstructed plan is invalid
      */
     @SuppressWarnings("unchecked")
     public static Plan restore(Rollout rollout) {
@@ -293,7 +251,82 @@ public final class Plan {
     }
 
     /**
+     * Serializes the canonical frozen input used for approval and execution checksums.
+     * @return canonical JSON representation of all frozen plan inputs
+     */
+    public String toJson() {
+        Map<String, Object> value = new LinkedHashMap<>();
+        value.put("tenant_id", tenant);
+        value.put("baseline", baseline);
+        value.put("version", version);
+        value.put("mode", mode);
+        value.put("policy", policy);
+        value.put("rule", rule);
+        value.put("references", references);
+        value.put("selected", selected);
+        value.put("applications", applications);
+        return JsonKit.toJsonString(value);
+    }
+
+    /**
+     * Returns the tenant that owns this plan.
+     *
+     * @return tenant identifier
+     */
+    public String getTenant_id() {
+        return tenant;
+    }
+
+    /**
+     * Returns the expected baseline version.
+     *
+     * @return baseline version
+     */
+    public String getBaseline() {
+        return baseline;
+    }
+
+    /**
+     * Returns the target version allocated for this plan.
+     *
+     * @return target version
+     */
+    public String getVersion() {
+        return version;
+    }
+
+    /**
+     * Returns the checksum of the canonical frozen plan.
+     *
+     * @return canonical plan checksum
+     */
+    public String getChecksum() {
+        return checksum;
+    }
+
+    /**
+     * Returns the complete immutable application manifest.
+     *
+     * @return complete immutable application manifest
+     */
+    public Map<String, Map<String, String>> getApplications() {
+        return applications;
+    }
+
+    /**
+     * Returns the immutable manifests of explicitly selected applications.
+     *
+     * @return immutable selected-application manifest
+     */
+    public Map<String, Map<String, String>> getSelected() {
+        return selected;
+    }
+
+    /**
      * Rejects mutation, stale approval, or a publication under another tenant.
+     *
+     * @param rollout rollout whose tenant, manifest, policy and checksum must match this plan
+     * @throws IllegalArgumentException if the rollout no longer matches this frozen plan
      */
     public void verify(Rollout rollout) {
         if (rollout == null || !tenant.equals(rollout.getTenant_id()) || !checksum.equals(rollout.getChecksum())
@@ -305,6 +338,9 @@ public final class Plan {
 
     /**
      * Freezes only an editable draft; the host persists this result with an edition compare-and-set.
+     *
+     * @param rollout tenant-owned draft to populate with the frozen plan and mark REVIEWING
+     * @throws IllegalArgumentException if the rollout is not a draft owned by this tenant
      */
     public void submit(Rollout rollout) {
         if (rollout == null || !tenant.equals(rollout.getTenant_id())
@@ -321,6 +357,10 @@ public final class Plan {
 
     /**
      * Tests membership in the selected scope rather than the merged baseline.
+     * @param app selected application identifier
+     * @param item item identifier within that application
+     * @param revision exact immutable revision identifier
+     * @return true when the selected application explicitly contains that item revision
      */
     public boolean includes(String app, String item, String revision) {
         return app != null && revision != null && revision.equals(selected.getOrDefault(app, Map.of()).get(item));

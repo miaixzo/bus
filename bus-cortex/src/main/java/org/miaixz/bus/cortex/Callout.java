@@ -98,9 +98,8 @@ public class Callout {
 
     /**
      * Executes one synchronous GET request.
-     *
-     * @param url       target URL
-     * @param timeoutMs timeout in milliseconds
+     * @param url target URL
+     * @param timeoutMs timeout in milliseconds, clamped to at least 1
      * @return normalized response snapshot
      */
     public static Response get(String url, long timeoutMs) {
@@ -109,10 +108,9 @@ public class Callout {
 
     /**
      * Executes one synchronous JSON POST request.
-     *
-     * @param url       target URL
-     * @param body      request body
-     * @param timeoutMs timeout in milliseconds
+     * @param url target URL
+     * @param body request body
+     * @param timeoutMs timeout in milliseconds, clamped to at least 1
      * @return normalized response snapshot
      */
     public static Response postJson(String url, String body, long timeoutMs) {
@@ -147,8 +145,7 @@ public class Callout {
 
     /**
      * Returns a shared HTTP client for the normalized timeout bucket.
-     *
-     * @param timeoutMs requested timeout in milliseconds
+     * @param timeoutMs requested timeout in milliseconds, clamped to at least 1
      * @return reusable HTTP client
      */
     private static Client client(long timeoutMs) {
@@ -193,6 +190,7 @@ public class Callout {
      *
      * @param payload response payload
      * @return decoded text
+     * @throws ConvertException if the response bytes are not valid UTF-8
      */
     private static String decodeText(Payload payload) {
         byte[] bytes = payload == null ? Normal.EMPTY_BYTE_ARRAY : payload.bytes();

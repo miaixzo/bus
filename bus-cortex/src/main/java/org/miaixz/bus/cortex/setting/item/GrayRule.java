@@ -86,7 +86,17 @@ public class GrayRule {
     private String labelValue;
 
     /**
+     * Creates an empty gray-release rule.
+     */
+    public GrayRule() {
+        // No initialization required.
+    }
+
+    /**
      * Validates selectors supported by configuration-instance delivery, not end-user HTTP routing.
+     *
+     * @return this validated rule
+     * @throws IllegalArgumentException if the selector type or its required values are invalid
      */
     public GrayRule validate() {
         if (type == null) {
@@ -105,13 +115,6 @@ public class GrayRule {
             throw new IllegalArgumentException("Invalid configuration-instance gray selector");
         }
         return this;
-    }
-
-    /**
-     * Creates an empty gray-release rule.
-     */
-    public GrayRule() {
-        // No initialization required.
     }
 
     /**

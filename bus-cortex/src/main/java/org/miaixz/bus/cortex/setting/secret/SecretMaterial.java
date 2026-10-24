@@ -55,14 +55,13 @@ public final class SecretMaterial implements AutoCloseable {
 
     /**
      * Copies a backend value and records its immutable version and lifetime in this same owned object.
-     *
-     * @param material             character input copied into owned storage; caller must wipe its input separately
-     * @param resolvedVersion      non-blank immutable backend version
-     * @param fetchedAt            non-null backend fetch time
-     * @param expiresAt            absolute backend expiration, or null when unknown
+     * @param material character input copied into owned storage; caller must wipe its input separately
+     * @param resolvedVersion non-blank immutable backend version
+     * @param fetchedAt non-null backend fetch time
+     * @param expiresAt absolute backend expiration, or null when unknown
      * @param connectionGeneration non-negative connection configuration generation
-     * @throws NullPointerException     if material or fetchedAt is null
-     * @throws IllegalArgumentException if version is blank or generation is negative
+     * @throws NullPointerException if material or fetchedAt is null
+     * @throws IllegalArgumentException if resolvedVersion is null or blank, or generation is negative
      */
     public SecretMaterial(char[] material, String resolvedVersion, Instant fetchedAt, Instant expiresAt,
             long connectionGeneration) {
@@ -117,8 +116,7 @@ public final class SecretMaterial implements AutoCloseable {
      * is rejected.
      *
      * @return independent character array owned by the caller
-     * @throws org.miaixz.bus.core.lang.exception.CryptoException if the documented validation, expiration or lifecycle
-     *                                                            constraint fails
+     * @throws org.miaixz.bus.core.lang.exception.CryptoException if the material is closed or its backend expiration has been reached
      */
     public synchronized char[] copy() {
         if (material == null) {

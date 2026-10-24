@@ -55,6 +55,11 @@ public interface ReferenceStore {
      * Stages reference-policy changes using an atomic tenant/tuple/edition comparison. The host generates a pending
      * effective revision; active application snapshots remain unchanged. Null values may deliberately clear a fixed pin
      * when switching to LATEST.
+     *
+     * @param reference replacement relationship policy
+     * @param expected previous relationship used for the atomic tuple and edition comparison
+     * @return updated relationship
+     * @throws UnsupportedOperationException by default; the host must implement an atomic relationship-policy update
      */
     default Reference update(Reference reference, Reference expected) {
         throw new UnsupportedOperationException("Atomic reference-policy update is not implemented");

@@ -23,6 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.exception.CryptoException;
+import org.miaixz.bus.core.lang.exception.ForbiddenException;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Keying.SettingSpec;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
@@ -31,7 +33,6 @@ import org.miaixz.bus.cortex.guard.GuardContext;
 import org.miaixz.bus.cortex.setting.SettingEnforcer;
 import org.miaixz.bus.cortex.setting.SettingPublisher;
 import org.miaixz.bus.cortex.setting.item.*;
-import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 import org.miaixz.bus.cortex.setting.revision.Revision;
 import org.miaixz.bus.cortex.setting.revision.RevisionStore;
 import org.miaixz.bus.cortex.setting.rollout.Plan;
@@ -98,14 +99,15 @@ public class ItemCuratorService {
     /**
      * Creates an item curator with rollout, business, authorization, and keying integrations.
      *
-     * @param entryStore    current-state item store
+     * @param entryStore current-state item store
      * @param revisionStore immutable revision store
-     * @param resolver      published-value resolver
-     * @param publisher     revision publisher
-     * @param rolloutStore  rollout store, or {@code null} when gray delivery is disabled
-     * @param enforcer      business-rule enforcer, or {@code null}
-     * @param cortexGuard   authorization guard, or {@code null}
-     * @param keying        key strategy, or {@code null} for the default strategy
+     * @param resolver published-value resolver
+     * @param publisher revision publisher
+     * @param rolloutStore rollout store, or {@code null} when gray delivery is disabled
+     * @param enforcer business-rule enforcer, or {@code null}
+     * @param cortexGuard authorization guard, or {@code null}
+     * @param keying key strategy, or {@code null} for the default strategy
+     * @throws IllegalArgumentException if a required curation dependency is absent
      */
     public ItemCuratorService(StoreBackedItemStore entryStore, RevisionStore revisionStore, ItemValueResolver resolver,
             SettingPublisher publisher, RolloutStore rolloutStore, SettingEnforcer enforcer, CortexGuard cortexGuard,
@@ -169,6 +171,8 @@ public class ItemCuratorService {
 
     /**
      * Applies read authorization before looking up exact business coordinates.
+     * @param coordinates tenant-qualified business coordinates to authorize
+     * @return matching item, or null when absent
      */
     public Item find(Item coordinates) {
         requireAllowed("read", coordinates);
@@ -177,6 +181,8 @@ public class ItemCuratorService {
 
     /**
      * Resolves exact coordinates and enforces application-reference visibility before returning an item.
+     * @param query tenant-qualified query to normalize and authorize
+     * @return matching visible item, or null when unavailable
      */
     public Item find(ItemQuery query) {
         ItemQuery prepared = prepare(query);
@@ -219,31 +225,29 @@ public class ItemCuratorService {
     }
 
     /**
-     * Resolves a published item only when its exposure matches the requested class.
+     * Resolves a published item only when its configuration category matches the requested type.
      *
-     * @param query    item query
-     * @param exposure required exposure, or {@code null} for any exposure
-     * @return resolved value, query fallback, or {@code null} for an exposure mismatch
+     * @param query item query
+     * @param type expected configuration category
+     * @return resolved value, query fallback, or {@code null} for an category mismatch
      */
-    public String resolve(ItemQuery query, ItemExposure exposure) {
-        return resolve(query, exposure, null);
+    public String resolve(ItemQuery query, Item.Type type) {
+        return resolve(query, type, null);
     }
 
     /**
-     * Resolves a published item under existing configuration access/exposure rules, passing trusted context to SECRET
+     * Resolves a published item under configuration access and category rules, passing trusted context to SECRET
      * resolution. Missing or inaccessible query results retain existing fallback behavior.
      *
-     * @param query    setting query evaluated against the existing access and publication rules
-     * @param exposure optional required exposure; null accepts any exposure allowed by the existing query rules
-     * @param context  authenticated caller identity and absolute request deadline; never populated from an untrusted
-     *                 reference
+     * @param query setting query evaluated against the existing access and publication rules
+     * @param type expected configuration category
+     * @param context authenticated caller identity and absolute request deadline; never populated from an untrusted
+     *                reference
      * @return resolved string, configured fallback where applicable, or null when no value is available
-     * @throws org.miaixz.bus.core.lang.exception.ForbiddenException if access is denied or the supplied credential
-     *                                                               representation is not permitted
-     * @throws org.miaixz.bus.core.lang.exception.CryptoException    if the deadline, lifecycle, backend or payload
-     *                                                               checks fail; inspect the stable error code
+     * @throws ForbiddenException if access is denied or the supplied credential representation is not permitted
+     * @throws CryptoException if deadline, lifecycle, backend or payload checks fail; diagnostics are sanitized
      */
-    public String resolve(ItemQuery query, ItemExposure exposure, SecretContext context) {
+    public String resolve(ItemQuery query, Item.Type type, SecretContext context) {
         ItemQuery prepared = prepare(query);
         if (prepared == null || !allows(prepared)) {
             return prepared == null ? null : prepared.getFallbackValue();
@@ -259,7 +263,7 @@ public class ItemCuratorService {
         if (item == null) {
             return prepared.getFallbackValue();
         }
-        if (exposure != null && !exposure.name().equals(item.getExposure())) {
+        if (type != null && !Integer.valueOf(type.key()).equals(item.getType())) {
             return null;
         }
         String value = resolver.resolve(item, context);
@@ -277,13 +281,13 @@ public class ItemCuratorService {
     }
 
     /**
-     * Exports published values whose exposure matches the requested class.
+     * Exports published values whose configuration category matches the requested type.
      *
-     * @param scope    export scope
-     * @param exposure required exposure, or {@code null} for any exposure
+     * @param scope export scope
+     * @param type expected configuration category
      * @return canonical keys mapped to resolved values
      */
-    public Map<String, String> export(ItemScope scope, ItemExposure exposure) {
+    public Map<String, String> export(ItemScope scope, Item.Type type) {
         ItemScope prepared = prepare(scope);
         if (prepared == null || !allows(prepared.getTenant_id(), prepared.getApp_id(), prepared.getScope())) {
             return Map.of();
@@ -295,8 +299,8 @@ public class ItemCuratorService {
                 continue;
             }
             Item active = published(item, null);
-            if (active != null && !ItemNormalizer.isSecret(active)
-                    && (exposure == null || exposure.name().equals(active.getExposure()))) {
+            if (active != null && !ItemNormalizer.isSecretReference(active)
+                    && (type == null || Integer.valueOf(type.key()).equals(active.getType()))) {
                 result.put(keying.key(SettingSpec.export(item)), resolver.resolve(active));
             }
         }
@@ -463,6 +467,12 @@ public class ItemCuratorService {
 
     /**
      * Resolves only immutable active snapshots; draft content never reaches runtime reads.
+     *
+     * @param item current item carrying stable and gray revision pointers
+     * @param context trusted gray-selection context, or null to use the stable pointer
+     * @return detached active snapshot, or null when no active revision is available
+     * @throws IllegalArgumentException if the gray context belongs to another tenant
+     * @throws IllegalStateException if the frozen gray publication or its active snapshot is missing or inconsistent
      */
     private Item published(Item item, GrayRequestContext context) {
         String id = item.getStable_id();
@@ -503,8 +513,8 @@ public class ItemCuratorService {
         }
         Item active = Item.builder().id(item.getId()).tenant_id(item.getTenant_id()).scope(item.getScope())
                 .app_id(item.getApp_id()).kind(item.getKind()).code(item.getCode()).content(snapshot.getContent())
-                .format(snapshot.getFormat()).editor(snapshot.getEditor()).payload(snapshot.getPayload())
-                .source(snapshot.getSource()).spec(snapshot.getSpec()).exposure(snapshot.getExposure())
+                .type(Revision.category(snapshot)).format(snapshot.getFormat()).source(snapshot.getSource())
+                .descriptor(Revision.descriptor(snapshot)).schema(Revision.schema(snapshot))
                 .encrypted(snapshot.getEncrypted()).labels(snapshot.getLabels()).extension(snapshot.getExtension())
                 .checksum(snapshot.getChecksum()).build();
         return active;
@@ -529,11 +539,12 @@ public class ItemCuratorService {
     /**
      * Enforces business-scope and guard authorization for an action.
      *
-     * @param action     action name
-     * @param tenant_id  tenant identifier
-     * @param app_id     application identifier
-     * @param scope      ownership scope
+     * @param action action name
+     * @param tenant_id tenant identifier
+     * @param app_id application identifier
+     * @param scope ownership scope
      * @param resourceId canonical resource identifier
+     * @throws IllegalArgumentException if the configuration scope is denied
      */
     private void requireAllowed(String action, String tenant_id, String app_id, String scope, String resourceId) {
         if (!allows(tenant_id, app_id, scope)) {

@@ -57,7 +57,7 @@ public class EnvSourceAdapter implements ItemSourceAdapter {
         if (!ItemSourceAdapter.super.validate(entry) || entry == null) {
             return false;
         }
-        return StringKit.isNotEmpty(entry.getSpec()) || StringKit.isNotEmpty(entry.getContent());
+        return StringKit.isNotEmpty(entry.getDescriptor()) || StringKit.isNotEmpty(entry.getContent());
     }
 
     /**
@@ -71,7 +71,7 @@ public class EnvSourceAdapter implements ItemSourceAdapter {
         if (entry == null) {
             return null;
         }
-        String key = StringKit.isNotEmpty(entry.getSpec()) ? entry.getSpec() : entry.getContent();
+        String key = StringKit.isNotEmpty(entry.getDescriptor()) ? entry.getDescriptor() : entry.getContent();
         if (StringKit.isEmpty(key)) {
             return null;
         }

@@ -23,7 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.miaixz.bus.cortex.setting.curator.ItemCuratorService;
-import org.miaixz.bus.cortex.setting.item.ItemExposure;
+import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemFormat;
 import org.miaixz.bus.cortex.setting.item.ItemScope;
 
@@ -57,7 +57,7 @@ public class ItemExportService {
     public Map<String, String> export(ItemScope scope) {
         ItemScope prepared = scope == null ? new ItemScope() : scope;
         prepared = settingCuratorService == null ? prepared : settingCuratorService.prepare(prepared);
-        return settingCuratorService.export(prepared, ItemExposure.PUBLIC);
+        return settingCuratorService.export(prepared, Item.Type.CONFIG_MAP);
     }
 
     /**

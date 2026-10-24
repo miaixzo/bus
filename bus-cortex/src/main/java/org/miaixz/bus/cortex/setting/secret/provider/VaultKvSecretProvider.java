@@ -152,7 +152,7 @@ public final class VaultKvSecretProvider implements SecretProvider {
      * Validates and percent-encodes each Vault logical path segment, rejecting traversal, empty segments, pre-encoding
      * and control characters.
      *
-     * @param value input value whose interpretation is described by this operation
+     * @param value unencoded Vault logical resource path
      * @return encoded path preserving legitimate hierarchy separators
      * @throws org.miaixz.bus.core.lang.exception.CryptoException if the documented validation, expiration or lifecycle
      *                                                            constraint fails
@@ -176,7 +176,7 @@ public final class VaultKvSecretProvider implements SecretProvider {
     /**
      * Validates a positive immutable Vault version and rejects aliases or malformed numeric values.
      *
-     * @param value input value whose interpretation is described by this operation
+     * @param value immutable backend version text
      * @return validated numeric version text
      * @throws org.miaixz.bus.core.lang.exception.CryptoException if the documented validation, expiration or lifecycle
      *                                                            constraint fails

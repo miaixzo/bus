@@ -245,8 +245,8 @@ public class MetadataCodec {
      * Converts one metadata value into the requested enum constant.
      *
      * @param value metadata value
-     * @param type  target enum type
-     * @param <E>   enum type
+     * @param <E> enum type
+     * @param type target enum type
      * @return enum constant or {@code null}
      */
     public static <E extends Enum<E>> E enumValue(Object value, Class<E> type) {

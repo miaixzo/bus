@@ -39,8 +39,14 @@ public record SecretConnection(String tenantId, String id, String provider, long
      * Validates the record components before publishing this immutable value. Supplied collections are defensively
      * copied.
      *
+     * @param tenantId authenticated tenant identifier
+     * @param id connection identifier scoped to the tenant
+     * @param provider non-blank provider type identifier, matched against the registered provider
+     * @param generation non-negative connection configuration generation attached to returned materials
+     * @param allowedPrefixes non-empty immutable copy of permitted resource prefixes; matching is literal startsWith
+     * @param enabled whether this connection may be resolved
      * @throws IllegalArgumentException if component values violate this record's constraints
-     * @throws NullPointerException     if a required component or collection is null
+     * @throws NullPointerException if the prefix collection or one of its elements is null
      */
     public SecretConnection {
         if (tenantId == null || tenantId.isBlank() || id == null || id.isBlank() || provider == null

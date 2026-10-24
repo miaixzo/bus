@@ -27,7 +27,6 @@ import org.miaixz.bus.cortex.Keying.SettingSpec;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.setting.curator.ItemCuratorService;
 import org.miaixz.bus.cortex.setting.item.Item;
-import org.miaixz.bus.cortex.setting.item.ItemExposure;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 import org.miaixz.bus.cortex.setting.item.ItemQuery;
 import org.miaixz.bus.cortex.setting.secret.SecretMasker;
@@ -96,7 +95,7 @@ public class ItemQueryService {
         if (overlay != null) {
             return overlay;
         }
-        return settingCuratorService.resolve(query, ItemExposure.PUBLIC);
+        return settingCuratorService.resolve(query, Item.Type.CONFIG_MAP);
     }
 
     /**
@@ -147,7 +146,7 @@ public class ItemQueryService {
         Item entry = inspect(query);
         String overlay = entry == null ? null : runtimeOverlay(query, false);
         if (entry != null && (ItemNormalizer.isEncryptedFlagEnabled(entry.getEncrypted())
-                || ItemExposure.SECRET.name().equals(entry.getExposure()))) {
+                || Integer.valueOf(Item.Type.SECRET.key()).equals(entry.getType()))) {
             overlay = secretMasker.mask(overlay);
         }
         boolean overlayPresent = overlay != null;
@@ -158,7 +157,7 @@ public class ItemQueryService {
         result.put("overlay", overlay);
         String preview = entry == null ? null : settingCuratorService.preview(query);
         if (entry != null && (ItemNormalizer.isEncryptedFlagEnabled(entry.getEncrypted())
-                || ItemExposure.SECRET.name().equals(entry.getExposure()))) {
+                || Integer.valueOf(Item.Type.SECRET.key()).equals(entry.getType()))) {
             preview = secretMasker.mask(preview);
         }
         result.put("preview", preview);
@@ -187,7 +186,7 @@ public class ItemQueryService {
             return null;
         }
         Item item = settingCuratorService.find(query);
-        if (item == null || respectPreference && !ItemExposure.PUBLIC.name().equals(item.getExposure())) {
+        if (item == null || respectPreference && !Integer.valueOf(Item.Type.CONFIG_MAP.key()).equals(item.getType())) {
             return null;
         }
         return runtimeSettingOverlayService.resolveRuntimeOverlay(query.coordinates());

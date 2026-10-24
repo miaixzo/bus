@@ -50,7 +50,8 @@ public interface Keying<S> {
      * Builds the strongest or primary key represented by the supplied specification.
      *
      * @param spec key specification
-     * @return primary key or {@code null} when the specification is incomplete
+     * @return generated key, or {@code null} when this strategy supports an absent or incomplete specification
+     * @throws IllegalArgumentException if the specification violates this strategy's coordinate or purpose constraints
      */
     String key(S spec);
 

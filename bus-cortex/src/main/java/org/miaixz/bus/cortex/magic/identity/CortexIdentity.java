@@ -38,6 +38,7 @@ public class CortexIdentity {
      *
      * @param tenantId raw tenantId value
      * @return canonical tenantId value
+     * @throws IllegalArgumentException if the tenant identifier is null or blank
      */
     public static String tenantId(String tenantId) {
         if (tenantId == null || tenantId.isBlank()) {
@@ -59,6 +60,10 @@ public class CortexIdentity {
 
     /**
      * Rejects a payload outside the explicitly selected tenant.
+     *
+     * @param expected tenant required by the caller
+     * @param actual tenant carried by the returned or supplied entity
+     * @throws IllegalArgumentException if tenant identifiers are missing or do not match
      */
     public static void requireTenant(String expected, String actual) {
         if (!tenantId(expected).equals(tenantId(actual))) {

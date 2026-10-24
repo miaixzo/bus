@@ -21,7 +21,6 @@ package org.miaixz.bus.cortex.setting.secret;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.setting.item.Item;
-import org.miaixz.bus.cortex.setting.item.ItemExposure;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 import org.miaixz.bus.cortex.setting.revision.Revision;
 
@@ -39,7 +38,7 @@ public class SecretMasker {
     public static final String MASK = Symbol.STAR + Symbol.STAR + Symbol.STAR + Symbol.STAR;
 
     /**
-     * Creates SecretMasker with explicitly bound collaborators. Dependencies are not discovered implicitly.
+     * Creates a stateless masker using the shared fixed placeholder.
      */
     public SecretMasker() {
         // No initialization required.
@@ -70,19 +69,18 @@ public class SecretMasker {
         }
         Item copy = Item.builder().id(entry.getId()).tenant_id(entry.getTenant_id()).scope(entry.getScope())
                 .app_id(entry.getApp_id()).stable_id(entry.getStable_id()).gray_id(entry.getGray_id())
-                .draft_id(entry.getDraft_id()).state(entry.getState()).rollout_id(entry.getRollout_id())
+                .draft_id(entry.getDraft_id()).type(entry.getType()).rollout_id(entry.getRollout_id())
                 .kind(entry.getKind()).code(entry.getCode()).fingerprint(entry.getFingerprint())
-                .content(entry.getContent()).format(entry.getFormat()).editor(entry.getEditor())
-                .source(entry.getSource()).spec(entry.getSpec()).exposure(entry.getExposure())
-                .encrypted(entry.getEncrypted()).payload(entry.getPayload()).labels(entry.getLabels())
-                .extension(entry.getExtension()).checksum(entry.getChecksum()).edition(entry.getEdition())
-                .generation(entry.getGeneration()).description(entry.getDescription()).status(entry.getStatus())
-                .creator(entry.getCreator()).created(entry.getCreated()).modifier(entry.getModifier())
-                .modified(entry.getModified()).build();
-        if (ItemNormalizer.isSecret(entry) || protectedContent(entry.getEncrypted(), entry.getExposure())) {
+                .content(entry.getContent()).format(entry.getFormat()).source(entry.getSource())
+                .descriptor(entry.getDescriptor()).schema(entry.getSchema()).encrypted(entry.getEncrypted())
+                .labels(entry.getLabels()).extension(entry.getExtension()).checksum(entry.getChecksum())
+                .edition(entry.getEdition()).generation(entry.getGeneration()).description(entry.getDescription())
+                .status(entry.getStatus()).creator(entry.getCreator()).created(entry.getCreated())
+                .modifier(entry.getModifier()).modified(entry.getModified()).build();
+        if (ItemNormalizer.isSecretReference(entry) || protectedContent(entry.getEncrypted(), entry.getType())) {
             copy.setContent(mask(entry.getContent()));
-            copy.setPayload(mask(entry.getPayload()));
-            copy.setSpec(mask(entry.getSpec()));
+            copy.setDescriptor(mask(entry.getDescriptor()));
+            copy.setSchema(mask(entry.getSchema()));
             copy.setExtension(mask(entry.getExtension()));
         }
         return copy;
@@ -101,17 +99,20 @@ public class SecretMasker {
         Revision copy = Revision.builder().id(revision.getId()).tenant_id(revision.getTenant_id())
                 .item_id(revision.getItem_id()).rollout_id(revision.getRollout_id()).source_id(revision.getSource_id())
                 .revision(revision.getRevision()).edition(revision.getEdition()).generation(revision.getGeneration())
-                .content(revision.getContent()).format(revision.getFormat()).editor(revision.getEditor())
-                .payload(revision.getPayload()).source(revision.getSource()).spec(revision.getSpec())
-                .exposure(revision.getExposure()).encrypted(revision.getEncrypted()).labels(revision.getLabels())
-                .extension(revision.getExtension()).checksum(revision.getChecksum()).operation(revision.getOperation())
-                .reference(revision.getReference()).secrets(revision.getSecrets())
+                .protocol(revision.getProtocol()).type(revision.getType()).descriptor(revision.getDescriptor())
+                .schema(revision.getSchema()).content(revision.getContent()).format(revision.getFormat())
+                .editor(revision.getEditor()).payload(revision.getPayload()).source(revision.getSource())
+                .spec(revision.getSpec()).exposure(revision.getExposure()).encrypted(revision.getEncrypted())
+                .labels(revision.getLabels()).extension(revision.getExtension()).checksum(revision.getChecksum())
+                .operation(revision.getOperation()).reference(revision.getReference()).secrets(revision.getSecrets())
                 .description(revision.getDescription()).status(revision.getStatus()).creator(revision.getCreator())
                 .created(revision.getCreated()).modifier(revision.getModifier()).modified(revision.getModified())
                 .build();
         if ("SECRET".equalsIgnoreCase(revision.getSource() == null ? "" : revision.getSource().trim())
-                || protectedContent(revision.getEncrypted(), revision.getExposure())) {
+                || protectedContent(revision.getEncrypted(), Revision.category(revision))) {
             copy.setContent(mask(revision.getContent()));
+            copy.setDescriptor(mask(revision.getDescriptor()));
+            copy.setSchema(mask(revision.getSchema()));
             copy.setPayload(mask(revision.getPayload()));
             copy.setSpec(mask(revision.getSpec()));
             copy.setExtension(mask(revision.getExtension()));
@@ -125,11 +126,11 @@ public class SecretMasker {
      * Tests whether content requires management-response masking.
      *
      * @param encrypted persisted encryption flag
-     * @param exposure  persisted exposure policy
+     * @param type configuration category code
      * @return {@code true} when the content is encrypted or secret
      */
-    private boolean protectedContent(Integer encrypted, String exposure) {
-        return ItemNormalizer.isEncryptedFlagEnabled(encrypted) || ItemExposure.SECRET.name().equals(exposure);
+    private boolean protectedContent(Integer encrypted, Integer type) {
+        return ItemNormalizer.isEncryptedFlagEnabled(encrypted) || Integer.valueOf(Item.Type.SECRET.key()).equals(type);
     }
 
 }

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex.setting.item;
 
+import jakarta.persistence.Lob;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -43,16 +45,10 @@ public class Item extends Tenant {
      * Current stable revision identifier.
      */
     private String stable_id;
-
     /**
      * Latest pending revision, including staged deletion; never a runtime-delivery pointer.
      */
     private String draft_id;
-
-    /**
-     * Configuration lifecycle from State, independent from the inherited persistence status.
-     */
-    private String state;
     /**
      * Current gray revision identifier.
      */
@@ -61,6 +57,11 @@ public class Item extends Tenant {
      * Active gray rollout identifier.
      */
     private String rollout_id;
+    /**
+     * Configuration category from org.miaixz.bus.cortex.setting.item.Item.Type; unrelated to the Cortex resource
+     * category.
+     */
+    private Integer type;
     /**
      * Ownership scope: SHARED for tenant-wide items or APPLICATION for application-owned items.
      */
@@ -73,49 +74,48 @@ public class Item extends Tenant {
      * Stable setting code.
      */
     private String code;
-    /**
-     * Digest of immutable item coordinates.
-     */
-    private String fingerprint;
+
     /**
      * Editable source content.
      */
+    @Lob
     private String content;
     /**
      * Content format.
      */
     private String format;
     /**
-     * Editing mode.
-     */
-    private String editor;
-    /**
      * Content source type.
      */
     private String source;
+
     /**
-     * External source descriptor.
+     * Whole-content JSON Schema, independent from external source parameters.
      */
-    private String spec;
-    /**
-     * Delivery exposure policy.
-     */
-    private String exposure;
+    @Lob
+    private String schema;
     /**
      * Encrypted-content flag.
      */
     private Integer encrypted;
     /**
-     * Structured editor payload stored as text.
-     */
-    private String payload;
-    /**
      * Labels stored as text.
      */
+    @Lob
     private String labels;
+    /**
+     * External source descriptor.
+     */
+    @Lob
+    private String descriptor;
+    /**
+     * Digest of immutable item coordinates.
+     */
+    private String fingerprint;
     /**
      * Source extension stored as text.
      */
+    @Lob
     private String extension;
     /**
      * Semantic content checksum.
@@ -188,34 +188,6 @@ public class Item extends Tenant {
     }
 
     /**
-     * User-facing item states.
-     *
-     * @author Kimi Liu
-     */
-    public enum State {
-        /**
-         * Item has never been published.
-         */
-        UNPUBLISHED,
-        /**
-         * Item matches its stable published revision.
-         */
-        PUBLISHED,
-        /**
-         * Item contains unpublished changes.
-         */
-        CHANGED,
-        /**
-         * Item has an active gray revision.
-         */
-        GRAY,
-        /**
-         * Item is archived.
-         */
-        ARCHIVED
-    }
-
-    /**
      * Supported protected-value mutations.
      *
      * @author Kimi Liu
@@ -249,6 +221,157 @@ public class Item extends Tenant {
          * Performs syntax and business validation.
          */
         FULL
+    }
+
+    /**
+     * Stable persisted configuration categories.
+     */
+    public enum Type {
+
+        /**
+         * Ordinary configuration content, stored with category code {@code 1}.
+         */
+        CONFIG_MAP(1),
+
+        /**
+         * Protected configuration content, stored with category code {@code 2}.
+         */
+        SECRET(2);
+
+        /**
+         * Stable numeric code stored in configuration records.
+         */
+        private final int key;
+
+        /**
+         * Creates an enum value with its stable storage code.
+         *
+         * @param key persisted numeric code
+         */
+        Type(int key) {
+            this.key = key;
+        }
+
+        /**
+         * Resolves a configuration category from its stable numeric code.
+         *
+         * @param key persisted numeric code
+         * @return matching enum value
+         * @throws IllegalArgumentException if the code is null or unsupported
+         */
+        public static Type of(Integer key) {
+            for (Type value : values())
+                if (key != null && value.key == key)
+                    return value;
+            throw new IllegalArgumentException("Unsupported configuration type");
+        }
+
+        /**
+         * Returns the stable storage code.
+         *
+         * @return persisted numeric code
+         */
+        public int key() {
+            return key;
+        }
+    }
+
+    /**
+     * Stable persisted lifecycle states for configuration items.
+     */
+    public enum Status {
+
+        /**
+         * Logically deleted item ({@code -1}).
+         */
+        DELETED(-1),
+
+        /**
+         * Disabled item ({@code 0}).
+         */
+        DISABLED(0),
+
+        /**
+         * Draft item not yet published ({@code 10}).
+         */
+        UNPUBLISHED(10),
+
+        /**
+         * Published item ({@code 20}).
+         */
+        PUBLISHED(20),
+
+        /**
+         * Item with staged changes ({@code 30}).
+         */
+        CHANGED(30),
+
+        /**
+         * Item participating in a gray publication ({@code 40}).
+         */
+        GRAY(40),
+
+        /**
+         * Archived item ({@code 50}).
+         */
+        ARCHIVED(50);
+
+        /**
+         * Stable numeric code stored in configuration records.
+         */
+        private final int key;
+
+        /**
+         * Creates an enum value with its stable storage code.
+         *
+         * @param key persisted numeric code
+         */
+        Status(int key) {
+            this.key = key;
+        }
+
+        /**
+         * Resolves a configuration lifecycle state from its stable numeric code.
+         *
+         * @param key persisted numeric code
+         * @return matching enum value
+         * @throws IllegalArgumentException if the code is null or unsupported
+         */
+        public static Status of(Integer key) {
+            for (Status value : values())
+                if (key != null && value.key == key)
+                    return value;
+            throw new IllegalArgumentException("Unsupported configuration status");
+        }
+
+        /**
+         * Returns the stable storage code.
+         *
+         * @return persisted numeric code
+         */
+        public int key() {
+            return key;
+        }
+    }
+
+    /**
+     * Supported content-resolution sources for configuration items.
+     */
+    public enum Source {
+        /**
+         * Content supplied directly by the item.
+         */
+        INLINE,
+
+        /**
+         * Content resolved from the configured environment source.
+         */
+        ENV,
+
+        /**
+         * Content resolved through an authorized external Secret provider.
+         */
+        SECRET
     }
 
 }

@@ -132,18 +132,18 @@ public class Vector extends Nature {
     }
 
     /**
-     * Returns immutable label criteria.
+     * Returns an unmodifiable view of the current label criteria; changes to the backing map remain visible.
      *
-     * @return immutable labels map
+     * @return unmodifiable label-map view, or an empty map
      */
     public Map<String, String> labelView() {
         return labels == null ? Collections.emptyMap() : Collections.unmodifiableMap(labels);
     }
 
     /**
-     * Returns immutable advanced selector criteria.
+     * Returns an unmodifiable snapshot of the selector list; selector objects are not copied.
      *
-     * @return immutable selector list
+     * @return unmodifiable selector-list snapshot, or an empty list
      */
     public List<Selector> selectorView() {
         return selectors == null ? List.of() : List.copyOf(selectors);

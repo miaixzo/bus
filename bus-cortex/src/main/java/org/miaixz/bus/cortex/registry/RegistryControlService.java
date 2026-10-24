@@ -265,10 +265,11 @@ public class RegistryControlService {
     /**
      * Creates or updates one registry entry using an optional pre-resolved snapshot.
      *
-     * @param asset       entry to upsert
-     * @param existing    existing snapshot or {@code null}
+     * @param asset entry to upsert
+     * @param existing existing snapshot or {@code null}
      * @param preResolved whether the snapshot was resolved by the batch resolver
      * @return stored entry snapshot
+     * @throws IllegalArgumentException if the resolved asset type has no supported admin registry
      */
     private Assets upsert(Assets asset, Assets existing, boolean preResolved) {
         if (asset == null) {
@@ -328,11 +329,12 @@ public class RegistryControlService {
     /**
      * Deletes one registry entry using an optional pre-resolved snapshot.
      *
-     * @param type        target type
-     * @param tenantId    target tenantId
-     * @param id          entry identifier
-     * @param existing    existing snapshot or {@code null}
+     * @param type target type
+     * @param tenantId target tenantId
+     * @param id entry identifier
+     * @param existing existing snapshot or {@code null}
      * @param preResolved whether the snapshot was resolved by the batch resolver
+     * @throws IllegalArgumentException if the requested type has no supported admin registry
      */
     private void delete(Type type, String tenantId, String id, Assets existing, boolean preResolved) {
         Logger.info(
@@ -713,8 +715,10 @@ public class RegistryControlService {
      * Applies one batch entry.
      *
      * @param operation operation type
-     * @param entry     batch entry
-     * @param result    aggregate result
+     * @param entry batch entry
+     * @param result aggregate result
+     * @throws IllegalArgumentException if the operation type is absent
+     * @throws IllegalStateException if an existing entry conflicts with the FAIL_FAST policy
      */
     private void applyBatchEntry(BatchOperation operation, Assets entry, BatchResult result) {
         BatchOperation.OperationType operationType = operation.getOperationType();
@@ -878,8 +882,8 @@ public class RegistryControlService {
      * Resolves the first non-null result produced while scanning all supported types.
      *
      * @param criteria base criteria
+     * @param <T> resolved value type
      * @param resolver type-specific resolver
-     * @param <T>      resolved value type
      * @return first non-null result or {@code null}
      */
     private <T> T firstAcrossTypes(Vector criteria, FunctionX<Vector, T> resolver) {
@@ -1243,6 +1247,7 @@ public class RegistryControlService {
      *
      * @param type target registry type
      * @return matching concrete registry
+     * @throws IllegalArgumentException if the type has no supported admin registry
      */
     private StoreBackedRegistry<? extends Assets> registry(Type type) {
         Type effective = type == null ? Type.API : type;
@@ -1260,6 +1265,13 @@ public class RegistryControlService {
      * @author Kimi Liu
      */
     private class ControlRegistryBatchOperations implements RegistryBatchOperations {
+
+        /**
+         * Creates batch operations bound to the enclosing control service.
+         */
+        private ControlRegistryBatchOperations() {
+            // The enclosing instance supplies all registry collaborators.
+        }
 
         /**
          * Returns the shared registry key strategy.

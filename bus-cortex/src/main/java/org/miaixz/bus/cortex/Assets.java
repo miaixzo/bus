@@ -242,7 +242,7 @@ public class Assets extends Nature {
     /**
      * Returns the effective retry count.
      *
-     * @return positive retry count
+     * @return non-negative retry count; zero disables retries
      */
     public int retryCount() {
         return retries == null || retries < 0 ? 0 : retries;
@@ -299,9 +299,9 @@ public class Assets extends Nature {
     }
 
     /**
-     * Returns an immutable label view for routing and filtering code paths.
+     * Returns an unmodifiable view of the current label map; changes to the backing map remain visible.
      *
-     * @return immutable label map
+     * @return unmodifiable label-map view, or an empty map
      */
     public Map<String, String> labelView() {
         return labels == null ? Collections.emptyMap() : Collections.unmodifiableMap(labels);

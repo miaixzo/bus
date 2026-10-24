@@ -36,10 +36,10 @@ public interface SecretCodec {
     }
 
     /**
-     * Tests whether the supplied source or protection mode is supported without performing any remote resolution.
+     * Reports support for a source or protection mode without remote resolution. The default implementation accepts every input.
      *
-     * @param mode non-null version selection mode
-     * @return true when the input is supported
+     * @param mode source or protection marker, such as encrypted; the default also accepts null
+     * @return true by default; overrides may restrict supported modes
      */
     default boolean supports(String mode) {
         return true;
@@ -47,10 +47,10 @@ public interface SecretCodec {
 
     /**
      * Rejects no-op or unsupported encryption before accepting protected storage. Non-null plaintext must produce
-     * non-empty ciphertext different from the input.
-     *
+     * nonblank ciphertext different from the input.
      * @param plaintext plaintext to protect; null remains null when protection is supported
      * @return protected representation, or null for a null input
+     * @throws IllegalStateException if the codec is no-op or does not support encrypted storage, or non-null input produces null, blank, or unchanged ciphertext
      */
     default String protect(String plaintext) {
         if (this instanceof NoOpSecretCodec || !supports("encrypted")) {

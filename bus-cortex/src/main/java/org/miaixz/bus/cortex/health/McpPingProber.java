@@ -51,8 +51,7 @@ public class McpPingProber implements Prober {
 
     /**
      * Creates an MCP ping prober with an explicit timeout.
-     *
-     * @param timeoutMs timeout in milliseconds
+     * @param timeoutMs timeout in milliseconds, clamped to at least 1
      */
     public McpPingProber(long timeoutMs) {
         this.timeoutMs = Math.max(1L, timeoutMs);
@@ -62,7 +61,7 @@ public class McpPingProber implements Prober {
      * Returns whether this prober can issue an MCP ping to the supplied instance.
      *
      * @param instance candidate instance
-     * @return {@code true} when MCP probing is supported
+     * @return true when the instance and host are non-null; blank hosts and protocol support are not validated
      */
     @Override
     public boolean supports(Instance instance) {
@@ -70,10 +69,13 @@ public class McpPingProber implements Prober {
     }
 
     /**
-     * Sends a JSON-RPC ping to the instance's MCP endpoint.
+     * Posts the fixed JSON-RPC ping body to http://host:port/mcp, using port 80 when unspecified.
+     * Success requires no reported call error, a 2xx HTTP status, and a response body containing the literal substring result;
+     * the body is not parsed as a JSON-RPC response.
      *
-     * @param instance instance to probe
-     * @return healthy result with latency if a response is received, fail result otherwise
+     * @param instance non-null instance with the host to probe
+     * @return healthy status only when all three checks pass; otherwise a failed status
+     * @throws NullPointerException if instance is null
      */
     @Override
     public Status check(Instance instance) {

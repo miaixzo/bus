@@ -41,25 +41,25 @@ public final class ItemMetadata {
      */
     public static final String FORMAT = "services-extension-v1";
     /**
+     * Fixed immutable provenance and protection whitelist shared by framework checks and host input handling. Opaque
+     * management fields remain the host's responsibility and are reconstructed from validated state.
+     */
+    public static final Set<String> RESERVED = Set.of("sources", "references", "protection");
+    /**
+     * Compatibility alias for the existing whole-source masker's fixed placeholder. Protected replacement checks never
+     * treat this safe-view marker as a new secret value.
+     */
+    public static final String MASK = SecretMasker.MASK;
+    /**
      * Fixed protocol members, including framework provenance, protection and opaque host management metadata. Accepting
      * management here does not validate its fields, identity or trustworthiness.
      */
     private static final Set<String> SERVICES = Set
             .of("management", "keys", "defaults", "sources", "references", "protection");
     /**
-     * Fixed immutable provenance and protection whitelist shared by framework checks and host input handling. Opaque
-     * management fields remain the host's responsibility and are reconstructed from validated state.
-     */
-    public static final Set<String> RESERVED = Set.of("sources", "references", "protection");
-    /**
      * Only supported editable attributes on one key.
      */
-    private static final Set<String> ATTRIBUTES = Set.of("sensitive", "description", "schema");
-    /**
-     * Compatibility alias for the existing whole-source masker's fixed placeholder. Protected replacement checks never
-     * treat this safe-view marker as a new secret value.
-     */
-    public static final String MASK = SecretMasker.MASK;
+    private static final Set<String> ATTRIBUTES = Set.of("sensitive", "description", "comment", "override", "schema");
 
     /**
      * Prevents instantiation of the shared metadata contract.
@@ -69,51 +69,53 @@ public final class ItemMetadata {
     }
 
     /**
-     * Describes one exact key without duplicating its value or inferring a type.
+     * Reads canonical key metadata and validates its schemas before source values are evaluated. Protected
+     * ancestor/descendant pairs are rejected so one edit never ambiguously targets two secret owners.
      *
-     * @param sensitive   whether values at this exact pointer require protection
-     * @param description optional plain description, normalized to an empty string
-     * @param schema      optional additional schema rooted at this key's value
-     * @author Kimi Liu
+     * @param extension    parsed plaintext extension
+     * @param maximumDepth existing parser/evaluation depth bound
+     * @param maximumSteps existing node/work bound
+     * @return immutable metadata sorted by canonical JSON Pointer
      */
-    public record Key(boolean sensitive, String description, JsonValue schema) {
-
-        /**
-         * Normalizes an optional description while retaining the exact immutable schema.
-         *
-         * @param sensitive   whether the key is protected
-         * @param description optional description, limited to the existing scalar bound
-         * @param schema      optional additional schema
-         */
-        public Key {
-            description = description == null ? "" : description;
-            if (description.codePointCount(0, description.length()) > 255)
-                throw invalid("description");
-            if (schema != null && !(schema instanceof JsonValue.ObjectValue)
-                    && !(schema instanceof JsonValue.BooleanValue))
-                throw invalid("schema");
+    public static Map<String, Key> keys(JsonValue extension, int maximumDepth, long maximumSteps) {
+        if (extension != null)
+            JsonSchema.validate(new JsonValue.BooleanValue(true), extension, maximumDepth, maximumSteps);
+        JsonValue source = services(extension).get("keys");
+        if (source == null)
+            return Map.of();
+        if (!(source instanceof JsonValue.ObjectValue object))
+            throw invalid("keys");
+        Map<String, Key> result = new TreeMap<>();
+        for (var entry : object.values().entrySet()) {
+            path(entry.getKey());
+            if (!(entry.getValue() instanceof JsonValue.ObjectValue attributes)
+                    || !ATTRIBUTES.containsAll(attributes.values().keySet()))
+                throw invalid("keyAttributes");
+            JsonValue flag = attributes.values().get("sensitive");
+            if (flag != null && !(flag instanceof JsonValue.BooleanValue))
+                throw invalid("sensitive");
+            JsonValue description = attributes.values().get("description");
+            JsonValue comment = attributes.values().get("comment");
+            JsonValue override = attributes.values().get("override");
+            JsonValue schema = attributes.values().get("schema");
+            if (schema != null)
+                JsonSchema.requireSchema(schema, maximumDepth, maximumSteps);
+            result.put(
+                    entry.getKey(),
+                    new Key(flag instanceof JsonValue.BooleanValue value && value.value(), description, comment,
+                            override, schema));
         }
-    }
-
-    /**
-     * Returns an immutable protected edit and its matching key metadata.
-     *
-     * @param value edited source tree
-     * @param keys  key metadata after explicit protected deletions
-     * @author Kimi Liu
-     */
-    public record Edit(JsonValue value, Map<String, Key> keys) {
-
-        /**
-         * Freezes the returned metadata instead of retaining a caller's mutable map.
-         *
-         * @param value immutable edited source
-         * @param keys  matching key metadata
-         */
-        public Edit {
-            value = Objects.requireNonNull(value);
-            keys = Collections.unmodifiableMap(new TreeMap<>(Objects.requireNonNull(keys)));
+        for (var entry : result.entrySet()) {
+            if (!entry.getValue().sensitive())
+                continue;
+            String parent = entry.getKey();
+            while (parent.lastIndexOf('/') > 0) {
+                parent = parent.substring(0, parent.lastIndexOf('/'));
+                if (result.containsKey(parent) && result.get(parent).sensitive())
+                    throw invalid("overlappingProtection");
+            }
         }
+        return Collections.unmodifiableMap(result);
     }
 
     /**
@@ -158,72 +160,6 @@ public final class ItemMetadata {
     }
 
     /**
-     * Reads canonical key metadata and validates its schemas before source values are evaluated. Protected
-     * ancestor/descendant pairs are rejected so one edit never ambiguously targets two secret owners.
-     *
-     * @param extension    parsed plaintext extension
-     * @param maximumDepth existing parser/evaluation depth bound
-     * @param maximumSteps existing node/work bound
-     * @return immutable metadata sorted by canonical JSON Pointer
-     */
-    public static Map<String, Key> keys(JsonValue extension, int maximumDepth, long maximumSteps) {
-        if (extension != null)
-            JsonSchema.validate(new JsonValue.BooleanValue(true), extension, maximumDepth, maximumSteps);
-        JsonValue source = services(extension).get("keys");
-        if (source == null)
-            return Map.of();
-        if (!(source instanceof JsonValue.ObjectValue object))
-            throw invalid("keys");
-        Map<String, Key> result = new TreeMap<>();
-        for (var entry : object.values().entrySet()) {
-            path(entry.getKey());
-            if (!(entry.getValue() instanceof JsonValue.ObjectValue attributes)
-                    || !ATTRIBUTES.containsAll(attributes.values().keySet()))
-                throw invalid("keyAttributes");
-            JsonValue flag = attributes.values().get("sensitive");
-            if (flag != null && !(flag instanceof JsonValue.BooleanValue))
-                throw invalid("sensitive");
-            JsonValue description = attributes.values().get("description");
-            if (description != null && (!(description instanceof JsonValue.StringValue text)
-                    || text.value().codePointCount(0, text.value().length()) > 255))
-                throw invalid("description");
-            JsonValue schema = attributes.values().get("schema");
-            if (schema != null)
-                JsonSchema.requireSchema(schema, maximumDepth, maximumSteps);
-            result.put(
-                    entry.getKey(),
-                    new Key(flag instanceof JsonValue.BooleanValue value && value.value(),
-                            description instanceof JsonValue.StringValue value ? value.value() : "", schema));
-        }
-        for (var entry : result.entrySet()) {
-            if (!entry.getValue().sensitive())
-                continue;
-            String parent = entry.getKey();
-            while (parent.lastIndexOf('/') > 0) {
-                parent = parent.substring(0, parent.lastIndexOf('/'));
-                if (result.containsKey(parent) && result.get(parent).sensitive())
-                    throw invalid("overlappingProtection");
-            }
-        }
-        return Collections.unmodifiableMap(result);
-    }
-
-    /**
-     * Reads only the explicit platform-default layer; absent metadata supplies an empty object.
-     *
-     * @param extension parsed plaintext extension
-     * @return explicit default object without environment lookups or schema default insertion
-     */
-    public static JsonValue.ObjectValue defaults(JsonValue extension) {
-        JsonValue defaults = services(extension).get("defaults");
-        if (defaults == null)
-            return new JsonValue.ObjectValue(Map.of());
-        if (!(defaults instanceof JsonValue.ObjectValue object))
-            throw invalid("defaults");
-        return object;
-    }
-
-    /**
      * Writes the same key vocabulary into a detached extension without changing host-owned fields.
      *
      * @param extension parsed plaintext extension, or null
@@ -240,7 +176,12 @@ public final class ItemMetadata {
             Key key = Objects.requireNonNull(entry.getValue());
             Map<String, JsonValue> fields = new TreeMap<>();
             fields.put("sensitive", new JsonValue.BooleanValue(key.sensitive()));
-            fields.put("description", new JsonValue.StringValue(key.description()));
+            if (key.description() != null)
+                fields.put("description", key.description());
+            if (key.comment() != null)
+                fields.put("comment", key.comment());
+            if (key.override() != null)
+                fields.put("override", key.override());
             if (key.schema() != null)
                 fields.put("schema", key.schema());
             encoded.put(entry.getKey(), new JsonValue.ObjectValue(fields));
@@ -249,6 +190,21 @@ public final class ItemMetadata {
         root.put("format", new JsonValue.StringValue(FORMAT));
         root.put("services", new JsonValue.ObjectValue(services));
         return new JsonValue.ObjectValue(root);
+    }
+
+    /**
+     * Reads only the explicit platform-default layer; absent metadata supplies an empty object.
+     *
+     * @param extension parsed plaintext extension
+     * @return explicit default object without environment lookups or schema default insertion
+     */
+    public static JsonValue.ObjectValue defaults(JsonValue extension) {
+        JsonValue defaults = services(extension).get("defaults");
+        if (defaults == null)
+            return new JsonValue.ObjectValue(Map.of());
+        if (!(defaults instanceof JsonValue.ObjectValue object))
+            throw invalid("defaults");
+        return object;
     }
 
     /**
@@ -526,6 +482,103 @@ public final class ItemMetadata {
      */
     private static IllegalArgumentException invalid(String code) {
         return new IllegalArgumentException("Invalid item key metadata: " + code);
+    }
+
+    /**
+     * Returns an immutable protected edit and its matching key metadata.
+     *
+     * @param value edited source tree
+     * @param keys  key metadata after explicit protected deletions
+     * @author Kimi Liu
+     */
+    public record Edit(JsonValue value, Map<String, Key> keys) {
+
+        /**
+         * Freezes the returned metadata instead of retaining a caller's mutable map.
+         *
+         * @param value immutable edited source
+         * @param keys  matching key metadata
+         */
+        public Edit {
+            value = Objects.requireNonNull(value);
+            keys = Collections.unmodifiableMap(new TreeMap<>(Objects.requireNonNull(keys)));
+        }
+    }
+
+    /**
+     * Describes one exact key without duplicating its value or inferring a type.
+     * @param sensitive whether values at this exact pointer require protection
+     * @param description optional provider description preserved as JSON
+     * @param comment optional provider-owned operational note preserved as JSON
+     * @param override optional human description override; Java null means absent and JSON null is explicit
+     * @param schema optional additional schema rooted at this key's value
+     * @author Kimi Liu
+     */
+    public record Key(boolean sensitive, JsonValue description, JsonValue comment, JsonValue override,
+            JsonValue schema) {
+
+        /**
+         * Creates key metadata without a human description override.
+         *
+         * @param sensitive whether values at this pointer require protection
+         * @param description optional provider description preserved as JSON
+         * @param comment optional provider operational note preserved as JSON
+         * @param schema optional object or boolean JSON Schema
+         * @throws IllegalArgumentException if the supplied schema has an unsupported JSON type
+         */
+        public Key(boolean sensitive, JsonValue description, JsonValue comment, JsonValue schema) {
+            this(sensitive, description, comment, null, schema);
+        }
+
+        /**
+         * Wraps non-null description and comment text as JSON strings, leaving null values absent.
+         *
+         * @param sensitive whether values at this pointer require protection
+         * @param description optional provider description text
+         * @param comment optional provider operational note text
+         * @param schema optional object or boolean JSON Schema
+         * @throws IllegalArgumentException if the supplied schema has an unsupported JSON type
+         */
+        public Key(boolean sensitive, String description, String comment, JsonValue schema) {
+            this(sensitive, description == null ? null : new JsonValue.StringValue(description),
+                    comment == null ? null : new JsonValue.StringValue(comment), null, schema);
+        }
+
+        /**
+         * Creates key metadata from description text without a comment or human override.
+         *
+         * @param sensitive whether values at this pointer require protection
+         * @param description optional provider description text
+         * @param schema optional object or boolean JSON Schema
+         * @throws IllegalArgumentException if the supplied schema has an unsupported JSON type
+         */
+        public Key(boolean sensitive, String description, JsonValue schema) {
+            this(sensitive, description, null, schema);
+        }
+
+        /**
+         * Checks only that schema is an object or boolean, without validating schema contents or rewriting description, comment, or override values.
+         *
+         * @param sensitive whether values at this pointer require protection
+         * @param description optional provider description preserved as JSON
+         * @param comment optional provider operational note preserved as JSON
+         * @param override optional human description override; Java null means absent and JSON null is explicit
+         * @param schema optional object or boolean JSON Schema
+         * @throws IllegalArgumentException if the supplied schema is neither an object nor a boolean
+         */
+        public Key {
+            if (schema != null && !(schema instanceof JsonValue.ObjectValue)
+                    && !(schema instanceof JsonValue.BooleanValue))
+                throw invalid("schema");
+        }
+
+        /**
+         * Returns an explicit human override, including JSON null, or the provider description.
+         * @return explicit human override, including JSON null, or the provider description when no override exists
+         */
+        public JsonValue explanation() {
+            return override == null ? description : override;
+        }
     }
 
 }

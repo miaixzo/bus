@@ -96,12 +96,13 @@ public class SettingPublisher {
     /**
      * Creates a publisher with explicit retention and keying strategies.
      *
-     * @param entryStore    current-state item store
+     * @param entryStore current-state item store
      * @param revisionStore immutable revision store
-     * @param watchManager  retained compatibility dependency; activation notifications are host-owned
-     * @param secretCodec   sensitive-content codec
-     * @param maxRevisions  maximum revisions retained per item
-     * @param keying        retained compatibility key strategy
+     * @param watchManager retained compatibility dependency; activation notifications are host-owned
+     * @param secretCodec sensitive-content codec
+     * @param maxRevisions maximum revisions retained per item
+     * @param keying retained compatibility key strategy
+     * @throws IllegalArgumentException if any required publisher dependency is absent
      */
     public SettingPublisher(StoreBackedItemStore entryStore, RevisionStore revisionStore, WatchManager watchManager,
             SecretCodec secretCodec, int maxRevisions, Keying<SettingSpec> keying) {
@@ -153,9 +154,10 @@ public class SettingPublisher {
     /**
      * Builds, protects, persists, and retains one immutable draft revision.
      *
-     * @param entry  item to stage
+     * @param entry item to stage
      * @param source historical source revision, or {@code null}
      * @return stored current-state item
+     * @throws IllegalArgumentException if a protected draft is not a materialized inline snapshot
      */
     private Item stage(Item entry, Revision source) {
         Item prepared = ItemNormalizer.normalize(copy(entry));
@@ -164,7 +166,8 @@ public class SettingPublisher {
         Revision latest = current == null ? null : revisionStore.latest(current.getTenant_id(), current.getId());
         Revision draft = current == null || current.getDraft_id() == null ? null
                 : revisionStore.identity(current.getTenant_id(), current.getId(), current.getDraft_id());
-        if (source == null && current != null && draft != null
+        if (source == null && current != null && draft != null && current.getStatus() != null && current.getStatus() > 0
+                && current.getStatus() != Item.Status.ARCHIVED.key()
                 && Revision.Operation.UPSERT.name().equals(draft.getOperation()) && current.getChecksum() != null
                 && sameDraft(current, prepared)) {
             return current;
@@ -182,10 +185,9 @@ public class SettingPublisher {
         String revisionNo = RevisionNumbers.next(latest == null ? null : latest.getRevision());
         prepared.setEdition(next(current == null ? null : current.getEdition()));
         prepared.setGeneration(current == null || current.getGeneration() == null ? 0L : current.getGeneration());
-        prepared.setState(
-                current == null || current.getStable_id() == null ? Item.State.UNPUBLISHED.name()
-                        : Item.State.CHANGED.name());
-        prepared.setStatus(current == null ? 1 : current.getStatus());
+        prepared.setStatus(
+                current == null || current.getStable_id() == null ? Item.Status.UNPUBLISHED.key()
+                        : Item.Status.CHANGED.key());
         Map<String, JsonValue> metadata = source == null ? metadata(prepared.getExtension()) : Map.of();
         String reference = source == null ? freeze(metadata, "sources", "references") : source.getReference();
         String secrets = source == null ? freeze(metadata, "protection", "keys") : source.getSecrets();
@@ -194,8 +196,8 @@ public class SettingPublisher {
                 throw new IllegalArgumentException("Protected drafts require an inline materialized snapshot");
             }
             prepared.setContent(secretCodec.protect(prepared.getContent()));
-            prepared.setPayload(secretCodec.protect(prepared.getPayload()));
-            prepared.setSpec(secretCodec.protect(prepared.getSpec()));
+            prepared.setDescriptor(secretCodec.protect(prepared.getDescriptor()));
+            prepared.setSchema(secretCodec.protect(prepared.getSchema()));
             prepared.setExtension(secretCodec.protect(prepared.getExtension()));
             if (source == null) {
                 reference = reference == null ? null : secretCodec.protect(reference);
@@ -242,7 +244,7 @@ public class SettingPublisher {
         }
         Item staged = copy(current);
         staged.setEdition(next(current.getEdition()));
-        staged.setState(current.getStable_id() == null ? Item.State.UNPUBLISHED.name() : Item.State.CHANGED.name());
+        staged.setStatus(current.getStable_id() == null ? Item.Status.UNPUBLISHED.key() : Item.Status.CHANGED.key());
         Revision latest = revisionStore.latest(current.getTenant_id(), current.getId());
         Revision tombstone = snapshot(
                 staged,
@@ -281,8 +283,9 @@ public class SettingPublisher {
      * Copies immutable historical content into a new draft revision.
      *
      * @param coordinates item coordinates
-     * @param revision    historical revision identifier
+     * @param revision historical revision identifier
      * @return restored current-state item, or {@code null} when unavailable
+     * @throws IllegalArgumentException if a deletion revision is used as restorable content
      */
     private Item restore(Item coordinates, String revision) {
         Item current = entryStore.find(coordinates);
@@ -299,18 +302,17 @@ public class SettingPublisher {
         // Use a fresh item so failed publication cannot mutate a cached current state.
         Item restored = Item.builder().id(current.getId()).tenant_id(current.getTenant_id()).scope(current.getScope())
                 .app_id(current.getApp_id()).kind(current.getKind()).code(current.getCode())
-                .rollout_id(current.getRollout_id()).editor(source.getEditor()).payload(source.getPayload())
-                .status(current.getStatus()).creator(current.getCreator()).created(current.getCreated())
-                .modifier(current.getModifier()).modified(current.getModified()).build();
+                .rollout_id(current.getRollout_id()).type(Revision.category(source)).status(current.getStatus())
+                .creator(current.getCreator()).created(current.getCreated()).modifier(current.getModifier())
+                .modified(current.getModified()).build();
         restored.setContent(
                 ItemNormalizer.isEncryptedFlagEnabled(source.getEncrypted()) && source.getContent() != null
                         ? secretCodec.decrypt(source.getContent())
                         : source.getContent());
-        restored.setPayload(decode(source.getPayload(), source.getEncrypted()));
         restored.setFormat(source.getFormat());
         restored.setSource(source.getSource());
-        restored.setSpec(decode(source.getSpec(), source.getEncrypted()));
-        restored.setExposure(source.getExposure());
+        restored.setDescriptor(decode(Revision.descriptor(source), source.getEncrypted()));
+        restored.setSchema(decode(Revision.schema(source), source.getEncrypted()));
         restored.setEncrypted(source.getEncrypted());
         restored.setLabels(source.getLabels());
         restored.setExtension(decode(source.getExtension(), source.getEncrypted()));
@@ -330,12 +332,12 @@ public class SettingPublisher {
     private Revision snapshot(Item item, String revisionNo, String source_id, Revision.Operation operation) {
         return Revision.builder().id(ID.objectId()).tenant_id(item.getTenant_id()).item_id(item.getId())
                 .rollout_id(item.getRollout_id()).source_id(source_id).revision(revisionNo).edition(item.getEdition())
-                .generation(item.getGeneration()).content(item.getContent()).format(item.getFormat())
-                .editor(item.getEditor()).payload(item.getPayload()).source(item.getSource()).spec(item.getSpec())
-                .exposure(item.getExposure()).encrypted(item.getEncrypted()).labels(item.getLabels())
-                .extension(item.getExtension()).checksum(item.getChecksum()).operation(operation.name())
-                .description(item.getDescription()).status(item.getStatus()).creator(item.getCreator())
-                .created(item.getCreated()).modifier(item.getModifier()).modified(item.getModified()).build();
+                .generation(item.getGeneration()).content(item.getContent()).format(item.getFormat()).protocol(2)
+                .type(item.getType()).source(item.getSource()).descriptor(item.getDescriptor()).schema(item.getSchema())
+                .encrypted(item.getEncrypted()).labels(item.getLabels()).extension(item.getExtension())
+                .checksum(item.getChecksum()).operation(operation.name()).description(item.getDescription())
+                .status(item.getStatus()).creator(item.getCreator()).created(item.getCreated())
+                .modifier(item.getModifier()).modified(item.getModified()).build();
     }
 
     /**
@@ -343,11 +345,12 @@ public class SettingPublisher {
      * The host must atomically commit all selected pointers, version, rollout state, and outbox; never loop-save them.
      * Source snapshots and the current item must be loaded in that same transaction and protected by edition checks.
      *
-     * @param current  transaction-reserved effective item
+     * @param current transaction-reserved effective item
      * @param revision exact effective revision
-     * @param rollout  approved publishing rollout
-     * @param plan     frozen approval plan
+     * @param rollout approved publishing rollout
+     * @param plan frozen approval plan
      * @return detached pointer update for the host to commit atomically
+     * @throws IllegalArgumentException if the rollout is not an approved plan in publishing state
      */
     public Item prepareActivation(Item current, Revision revision, Rollout rollout, Plan plan) {
         requireSelected(current, revision, rollout, plan);
@@ -360,16 +363,16 @@ public class SettingPublisher {
         activated.setRollout_id(rollout.getId());
         if (Rollout.Mode.GRAY.name().equals(rollout.getMode())) {
             activated.setGray_id(revision.getId());
-            activated.setState(Item.State.GRAY.name());
+            activated.setStatus(Item.Status.GRAY.key());
         } else {
             activated.setStable_id(revision.getId());
             activated.setGray_id(null);
             boolean pending = current.getDraft_id() != null && !current.getDraft_id().equals(revision.getId());
-            activated.setState(
-                    pending ? Item.State.CHANGED.name()
+            activated.setStatus(
+                    pending ? Item.Status.CHANGED.key()
                             : Revision.Operation.DELETE.name().equals(revision.getOperation())
-                                    ? Item.State.ARCHIVED.name()
-                                    : Item.State.PUBLISHED.name());
+                                    ? Item.Status.ARCHIVED.key()
+                                    : Item.Status.PUBLISHED.key());
         }
         return activated;
     }
@@ -379,13 +382,14 @@ public class SettingPublisher {
      * Gray publication never approves source pointers. The host reserves source rows and persists all updates in the
      * same transaction as effective activation; this method neither saves rows nor resolves live relationships.
      *
-     * @param current   reserved source item
-     * @param revision  exact immutable source revision
+     * @param current reserved source item
+     * @param revision exact immutable source revision
      * @param effective selected effective item
-     * @param snapshot  exact approved effective revision
-     * @param rollout   approved publishing rollout
-     * @param plan      immutable approval plan
+     * @param snapshot exact approved effective revision
+     * @param rollout approved publishing rollout
+     * @param plan immutable approval plan
      * @return detached source pointer update, unchanged when an equal or newer source revision is already approved
+     * @throws IllegalArgumentException if the publication is not formal
      */
     public Item prepareSourceActivation(
             Item current,
@@ -406,13 +410,14 @@ public class SettingPublisher {
      * Prepares the same source approval when the host promotes an already approved gray release to stable. No new plan
      * or approval is introduced; the host must atomically commit the original promote operation.
      *
-     * @param current   reserved source item
-     * @param revision  exact immutable source revision
+     * @param current reserved source item
+     * @param revision exact immutable source revision
      * @param effective current effective item still owned by the original gray release
-     * @param snapshot  approved effective revision
-     * @param rollout   original published gray rollout
-     * @param plan      original immutable gray approval plan
+     * @param snapshot approved effective revision
+     * @param rollout original published gray rollout
+     * @param plan original immutable gray approval plan
      * @return detached monotonic source pointer update
+     * @throws IllegalArgumentException if the source does not match its originally approved active gray target
      */
     public Item prepareSourcePromotion(
             Item current,
@@ -434,10 +439,11 @@ public class SettingPublisher {
     /**
      * Checks selected effective identity through the same frozen plan for ordinary activation and gray promotion.
      *
-     * @param current  selected effective item
+     * @param current selected effective item
      * @param revision exact effective revision
-     * @param rollout  original approved rollout
-     * @param plan     original immutable plan
+     * @param rollout original approved rollout
+     * @param plan original immutable plan
+     * @throws IllegalArgumentException if the frozen plan is absent or does not select the exact application revision
      */
     private void requireSelected(Item current, Revision revision, Rollout rollout, Plan plan) {
         if (plan == null)
@@ -457,12 +463,13 @@ public class SettingPublisher {
     /**
      * Applies the unique monotonic source-pointer algorithm after the caller's frozen effective approval check.
      *
-     * @param current   reserved source item
-     * @param revision  exact approved source revision
+     * @param current reserved source item
+     * @param revision exact approved source revision
      * @param effective selected effective owner
-     * @param snapshot  exact approved effective snapshot
-     * @param rollout   original approved release
+     * @param snapshot exact approved effective snapshot
+     * @param rollout original approved release
      * @return detached source pointer update
+     * @throws IllegalArgumentException if the approved effective snapshot or source baseline is unavailable or inconsistent
      */
     private Item sourceActivation(Item current, Revision revision, Item effective, Revision snapshot, Rollout rollout) {
         if (current == null || revision == null || !Item.Kind.SOURCE.name().equals(current.getKind())
@@ -500,9 +507,9 @@ public class SettingPublisher {
         activated.setRollout_id(rollout.getId());
         activated.setGeneration(next(current.getGeneration()));
         activated.setEdition(next(current.getEdition()));
-        activated.setState(
-                Objects.equals(current.getDraft_id(), revision.getId()) ? Item.State.PUBLISHED.name()
-                        : Item.State.CHANGED.name());
+        activated.setStatus(
+                Objects.equals(current.getDraft_id(), revision.getId()) ? Item.Status.PUBLISHED.key()
+                        : Item.Status.CHANGED.key());
         return activated;
     }
 
@@ -516,8 +523,8 @@ public class SettingPublisher {
     private boolean sameDraft(Item current, Item prepared) {
         Item plaintext = copy(current);
         plaintext.setContent(decode(current.getContent(), current.getEncrypted()));
-        plaintext.setPayload(decode(current.getPayload(), current.getEncrypted()));
-        plaintext.setSpec(decode(current.getSpec(), current.getEncrypted()));
+        plaintext.setDescriptor(decode(current.getDescriptor(), current.getEncrypted()));
+        plaintext.setSchema(decode(current.getSchema(), current.getEncrypted()));
         plaintext.setExtension(decode(current.getExtension(), current.getEncrypted()));
         return Objects.equals(ItemNormalizer.checksum(plaintext), prepared.getChecksum());
     }
@@ -575,6 +582,7 @@ public class SettingPublisher {
      *
      * @param item item to copy
      * @return detached copy
+     * @throws IllegalArgumentException if the item is null
      */
     private Item copy(Item item) {
         if (item == null) {

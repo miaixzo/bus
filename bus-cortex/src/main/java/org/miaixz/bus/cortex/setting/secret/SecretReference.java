@@ -40,8 +40,13 @@ public record SecretReference(String connectionId, String resource, String versi
     /**
      * Validates the record components before publishing this immutable value.
      *
+     * @param connectionId non-null connectionId component
+     * @param resource logical backend resource name before URL encoding
+     * @param version immutable backend version; null selects the current version
+     * @param field optional top-level JSON string field; null requests the complete value
+     * @param expectedType non-null logical payload classification, without automatic conversion
      * @throws IllegalArgumentException if component values violate this record's constraints
-     * @throws NullPointerException     if a required component or collection is null
+     * @throws NullPointerException if expectedType is null
      */
     public SecretReference {
         if (connectionId == null || connectionId.isBlank() || resource == null || resource.isBlank()

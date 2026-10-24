@@ -334,8 +334,9 @@ public class Cortex {
      * Returns the registry matching the requested typed asset class.
      *
      * @param type concrete entry class
-     * @param <T>  entry generic type
+     * @param <T> entry generic type
      * @return registry responsible for the given asset class
+     * @throws IllegalArgumentException if the requested type has no supported registry
      */
     public static <T extends Assets> Registry<T> registry(Class<T> type) {
         if (ApiAssets.class.isAssignableFrom(type)) {
@@ -355,6 +356,7 @@ public class Cortex {
      *
      * @param type registry type
      * @return matching registry
+     * @throws IllegalArgumentException if the requested type has no supported registry
      */
     public static Registry<? extends Assets> registry(Type type) {
         Type effective = type == null ? Type.API : type;
@@ -371,6 +373,7 @@ public class Cortex {
      *
      * @param type registry type, must be one of API/MCP/PROMPT
      * @return matching registry
+     * @throws IllegalArgumentException if the type is null or not API, MCP, or PROMPT
      */
     public static Registry<? extends Assets> registryOrThrow(Type type) {
         if (type == null) {
@@ -395,7 +398,7 @@ public class Cortex {
     }
 
     /**
-     * Registers a single assets through its matching registry.
+     * Registers a single asset through its matching registry.
      *
      * @param assets assets to persist
      */
@@ -449,8 +452,8 @@ public class Cortex {
      * Queries entries from the registry matching the requested type.
      *
      * @param vector vector conditions
-     * @param type   concrete entry class
-     * @param <T>    entry generic type
+     * @param <T> entry generic type
+     * @param type concrete entry class
      * @return matching entries
      */
     public static <T extends Assets> List<T> query(Vector vector, Class<T> type) {
@@ -477,7 +480,7 @@ public class Cortex {
      * Returns current setting content for tenant-qualified item coordinates.
      *
      * @param query tenant-qualified item query
-     * @return published setting content, or {@code null} if absent
+     * @return content resolved by the curator, including an opted-in runtime overlay or query fallback when applicable
      */
     public static String get(ItemQuery query) {
         String content = curator().get(query);
@@ -492,9 +495,9 @@ public class Cortex {
     }
 
     /**
-     * Publishes setting content through the configured curator.
+     * Stages setting content through the configured curator; activation belongs to the approved publication workflow.
      *
-     * @param item tenant-qualified item and content to publish
+     * @param item tenant-qualified item and content to stage
      */
     public static void publish(Item item) {
         curator().publish(item);
@@ -510,6 +513,7 @@ public class Cortex {
      * Installs the given runtime snapshot into the static facade.
      *
      * @param next runtime bundle to expose through {@code Cortex}
+     * @throws IllegalStateException if different components are already bound
      */
     private static void install(Runtime next) {
         synchronized (MONITOR) {

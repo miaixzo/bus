@@ -295,6 +295,7 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
      *
      * @param instance runtime instance
      * @return ensured fingerprint
+     * @throws IllegalArgumentException if a missing fingerprint cannot be derived because host or port is absent
      */
     private String ensureFingerprint(Instance instance) {
         if (StringKit.isNotEmpty(instance.getFingerprint())) {

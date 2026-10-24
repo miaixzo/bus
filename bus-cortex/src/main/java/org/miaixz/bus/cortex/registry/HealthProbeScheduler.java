@@ -154,6 +154,8 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
 
     /**
      * Starts the periodic health probe scheduler.
+     *
+     * @throws IllegalStateException if the scheduler has already been stopped
      */
     @Override
     public void start() {
