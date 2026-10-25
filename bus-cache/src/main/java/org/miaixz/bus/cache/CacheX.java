@@ -350,6 +350,25 @@ public interface CacheX<K, V> extends AutoCloseable {
     }
 
     /**
+     * Atomically compares and writes a value only while an additional entry still equals its captured value. A null
+     * expected value requires an absent or expired target and performs create-only insertion. Both comparisons and the
+     * replacement must share one backend atomic boundary; implementations must not emulate this contract with separate
+     * reads. A null guard key omits the additional comparison.
+     *
+     * @param key        replacement key
+     * @param expected   expected current value, or null to require absence
+     * @param update     replacement value
+     * @param ttlMillis  positive replacement lifetime in milliseconds
+     * @param guardKey   additional key to compare, or null without an additional condition
+     * @param guardValue expected non-null value when a guard key is supplied
+     * @return stage containing whether all conditions matched and replacement occurred
+     */
+    default CompletionStage<Boolean> replace(K key, V expected, V update, long ttlMillis, K guardKey, V guardValue) {
+        return CompletableFuture.failedFuture(
+                new UnsupportedOperationException("Guarded atomic replace is not supported by this cache"));
+    }
+
+    /**
      * Atomically removes one unexpired value.
      *
      * @param key cache key
