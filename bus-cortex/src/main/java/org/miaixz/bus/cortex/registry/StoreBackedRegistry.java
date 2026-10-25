@@ -542,6 +542,18 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     }
 
     /**
+     * Runs event publication at the domain-specific freshness boundary. Definition-only registries publish directly.
+     *
+     * @param entry    captured definition
+     * @param instance optional captured runtime association
+     * @param previous retired runtime when publishing a removal, or null
+     * @param action   event construction and dispatch
+     */
+    protected void publishCurrent(T entry, Instance instance, Instance previous, Runnable action) {
+        action.run();
+    }
+
+    /**
      * Emits a post-commit change event.
      *
      * @param action           mutation action
@@ -559,7 +571,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         if (entry == null) {
             return;
         }
-        afterCommit(() -> {
+        afterCommit(() -> publishCurrent(entry, instance, previousInstance, () -> {
             RegistryChange<T> event = new RegistryChange<>();
             event.setAction(action);
             event.setType(registryType);
@@ -606,7 +618,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
                 }
             }
             publishWatchChange(event);
-        });
+        }));
     }
 
     /**
@@ -818,9 +830,8 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      * @return {@code true} when health state changed
      */
     private boolean healthChanged(Instance current, Instance previous) {
-        return !Objects.equals(current.getState(), previous.getState())
-                || !Objects.equals(current.getHealthy(), previous.getHealthy())
-                || !Objects.equals(current.getHealthSource(), previous.getHealthSource());
+        return !Objects.equals(current.getStatus(), previous.getStatus())
+                || !Objects.equals(current.healthView().getOrigin(), previous.healthView().getOrigin());
     }
 
     /**

@@ -151,6 +151,12 @@
       "allDeclaredConstructors": true
     },
     {
+      "type": "org.miaixz.bus.cortex.health.HealthInfo",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
       "type": "org.miaixz.bus.cortex.Instance$InstanceBuilder",
       "allDeclaredMethods": true,
       "allDeclaredFields": true,
@@ -416,12 +422,6 @@
     },
     {
       "type": "org.miaixz.bus.cortex.health.McpPingProber",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.health.ProcessProber",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
@@ -899,12 +899,6 @@
       "allPublicMethods": true
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.SettingEnforcerStrategy",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
       "type": "org.miaixz.bus.cortex.Status",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
@@ -1219,7 +1213,7 @@
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.SettingEnforcer$Context",
+      "type": "org.miaixz.bus.cortex.setting.SettingProvider$Context",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
@@ -1265,6 +1259,10 @@
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.SettingProvider",
+      "allDeclaredMethods": true
     }
   ],
   "resources": []

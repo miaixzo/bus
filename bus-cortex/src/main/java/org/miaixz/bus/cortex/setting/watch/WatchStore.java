@@ -81,14 +81,14 @@ public interface WatchStore {
     /**
      * Atomically compares session, target and generation; advances the generation only when the target changes.
      *
-     * @param next     desired authorized target state
+     * @param next     desired target state
      * @param expected complete expected state for compare-and-set
      * @return committed target state
      */
     Watch target(Watch next, Watch expected);
 
     /**
-     * Compares the current authorized session, target and generation; rejects stale acknowledgements.
+     * Compares the current session, target and generation; rejects stale acknowledgements.
      *
      * @param acknowledgement runtime application evidence for the expected target
      * @param expected        complete expected state for compare-and-set

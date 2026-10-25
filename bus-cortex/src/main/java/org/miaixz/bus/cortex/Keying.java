@@ -114,6 +114,7 @@ public interface Keying<S> {
          * @param appId    application identity
          * @param method   registry method identity
          * @param version  registered service version
+         * @param verb     HTTP verb discriminator, or null when enumerating all verbs
          * @param checksum stable runtime instance checksum
          * @return service relationship key specification
          */
@@ -122,8 +123,9 @@ public interface Keying<S> {
                 String appId,
                 String method,
                 String version,
+                Integer verb,
                 String checksum) {
-            return new RegistrySpec(INSTANCE, tenantId, null, appId, null, method, version, null, checksum);
+            return new RegistrySpec(INSTANCE, tenantId, null, appId, null, method, version, verb, checksum);
         }
 
         /**

@@ -26,7 +26,7 @@ import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.cortex.setting.item.ItemQuery;
 
 /**
- * Application-facing published configuration reads and authorized subscriptions.
+ * Application-facing published configuration reads and tenant-scoped subscriptions with optional host access checks.
  *
  * @author Kimi Liu
  */
@@ -36,7 +36,7 @@ public interface Curator {
      * Reads exact published content; never consults editable or temporary configuration.
      *
      * @param query tenant-qualified application configuration request
-     * @return encoded published configuration, or null for authorized absence
+     * @return encoded published configuration, or null when absent
      */
     String get(ItemQuery query);
 
@@ -49,7 +49,7 @@ public interface Curator {
     Map<String, String> batchGet(List<ItemQuery> queries);
 
     /**
-     * Returns a caller fallback only when the authorized lookup has no value.
+     * Returns a caller fallback only when the published lookup has no value.
      *
      * @param query    tenant-qualified application configuration request
      * @param fallback caller-supplied value for an authorized lookup with no result
@@ -61,7 +61,7 @@ public interface Curator {
     }
 
     /**
-     * Authorizes an application subscription and registers its tenant-scoped transport callback.
+     * Registers an application subscription and its tenant-scoped callback, applying any enabled host access policy.
      *
      * @param query    tenant-qualified application configuration request
      * @param listener subscription callback for this application

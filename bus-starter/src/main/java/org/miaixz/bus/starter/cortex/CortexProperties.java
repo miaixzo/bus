@@ -80,7 +80,7 @@ public class CortexProperties {
     private final Bridge bridge;
 
     /**
-     * Request authorization settings for Cortex operations.
+     * Optional host access checks for Cortex operations; disabling them preserves business validation.
      */
     private final Guard guard;
 
@@ -257,6 +257,17 @@ public class CortexProperties {
      * @author Kimi Liu
      */
     public record Guard(@DefaultValue("true") boolean enabled, @DefaultValue Token token) {
+
+        /**
+         * Binds the canonical guard options even when the convenience constructor is present.
+         *
+         * @param enabled whether optional access checks are enabled
+         * @param token   credential pre-validation options, or null to use defaults
+         */
+        @ConstructorBinding
+        public Guard {
+            token = token == null ? new Token() : token;
+        }
 
         /**
          * Creates guard defaults.

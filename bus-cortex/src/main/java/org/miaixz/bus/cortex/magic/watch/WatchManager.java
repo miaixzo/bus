@@ -624,8 +624,8 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
                     && (vector.getId() == null || Objects.equals(vector.getId(), instance.getId())
                             || Objects.equals(vector.getId(), instance.getChecksum()))
                     && vector.getMethod() == null && vector.getVersion() == null
-                    && (vector.getState() == null || Objects.equals(vector.getState(), instance.getState()))
-                    && MetadataMatcher.matches(instance.getLabels(), vector.getLabels(), vector.getSelectors());
+                    && (vector.getStatus() == null || Objects.equals(vector.getStatus(), instance.getStatus()))
+                    && MetadataMatcher.matches(instance.labelView(), vector.getLabels(), vector.getSelectors());
         }
         if (WatchProjection.runtime(value)) {
             return WatchProjection.permits(vector, value)
@@ -794,7 +794,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
         copy.setVersion(vector.getVersion());
         copy.setLabels(vector.getLabels() == null ? null : new LinkedHashMap<>(vector.getLabels()));
         copy.setSelectors(vector.getSelectors() == null ? null : new ArrayList<>(vector.getSelectors()));
-        copy.setState(vector.getState());
+        copy.setStatus(vector.getStatus());
         copy.setPurpose(vector.getPurpose());
         copy.setWatch(vector.isWatch());
         copy.setRefresh(vector.isRefresh());
@@ -868,7 +868,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
                         || Objects.equals(vector.getId(), instance.getChecksum()))
                 && (vector.getMethod() == null || Objects.equals(vector.getMethod(), asset.getMethod()))
                 && (vector.getVersion() == null || Objects.equals(vector.getVersion(), asset.getVersion()))
-                && (vector.getState() == null || Objects.equals(vector.getState(), instance.getState()))
+                && (vector.getStatus() == null || Objects.equals(vector.getStatus(), instance.getStatus()))
                 && MetadataMatcher.matches(asset, vector.getLabels(), vector.getSelectors());
     }
 

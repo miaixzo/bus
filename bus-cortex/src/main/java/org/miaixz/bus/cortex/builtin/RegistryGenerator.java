@@ -154,6 +154,8 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
                         String version = spec.versionPart();
                         if (version != null) {
                             builder.append(segment(version)).append(Symbol.COLON);
+                            if (spec.verbPart() != null)
+                                builder.append(spec.verbPart()).append(Symbol.COLON);
                         }
                     }
                 }

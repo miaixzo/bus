@@ -2871,17 +2871,6 @@
         {
           "name": "get",
           "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.String",
             "org.miaixz.bus.cortex.Type",
             "java.lang.String",
             "java.lang.String",
@@ -2891,7 +2880,6 @@
         {
           "name": "get",
           "parameterTypes": [
-            "java.lang.String",
             "org.miaixz.bus.cortex.Type",
             "java.lang.String",
             "java.lang.String",

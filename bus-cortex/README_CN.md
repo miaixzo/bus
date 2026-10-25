@@ -61,16 +61,18 @@ bus:
 | `bridge.url` | 空 | `push+pull` 模式下必须非空 |
 | `bridge.max-retries` | `3` | 桥接重试上限，必须大于零 |
 | `bridge.source` | 空 | 桥接来源标记 |
-| `guard.enabled` | `true` | 装配 TokenGuard 配置和策略 |
+| `guard.enabled` | `true` | 启用可选访问检查及 TokenGuard 预检 |
 | `guard.token` | TokenGuardConfig 默认值 | Token 传输预校验选项 |
 | `audit.enabled` | `false` | 装配审计记录器 |
 | `release.enabled` | `false` | 存在 ReleaseStore 时装配只读发布 Registry |
 
 ## 宿主接线与事务
 
-Starter 根据宿主提供的 Store 和 Enforcer 条件装配配置服务。当前定义读写需要 `ItemStore`、`ReferenceStore`、`SettingStore` 等；发布与审批需要 `RolloutStore`、`ApprovalStore`、`PublicationStore`、`ReleaseStore` 和 `RevisionStore`；运行时读取还需要 `WatchStore` 和 `SettingEnforcer`。具体组合以各 Bean 的 `ConditionalOnBean` 为准。
+Starter 根据宿主提供的 Store 条件装配配置服务。当前定义读写需要 `ItemStore`、`ReferenceStore`、`SettingStore` 等；发布与审批需要 `RolloutStore`、`ApprovalStore`、`PublicationStore`、`ReleaseStore` 和 `RevisionStore`；运行时读取还需要 `WatchStore` 和 `SettingProvider`。具体组合以各 Bean 的 `ConditionalOnBean` 为准。
 
-宿主实现负责租户隔离、权威实例读取和会话校验、授权、CAS 以及原子事务提交。`SettingStore` 原子保存当前定义和关联，`RolloutStore.submit` 原子校验冻结读集，`PublicationStore` 提交成功发布的快照及发布状态。
+网关已完成访问控制时，可设置 `bus.cortex.guard.enabled=false`，跳过 Registry 和 Setting 的可选访问检查，包括宿主提供的 Guard。租户匹配、edition、审批状态、冻结摘要、发布回执和敏感保护仍然执行。开启时由宿主 `GuardStrategy` 提供权限决定；Cortex 不认证用户或凭据。普通读取无需操作人和请求编号；幂等写入需要请求编号，审批留痕还需要操作人。
+
+宿主实现负责租户数据范围、当前实例与会话一致性、CAS 和原子事务。`SettingProvider` 只提供调用坐标和当前实例数据，不执行身份认证；审批策略有效性由 `ApprovalStore` 检查。`SettingStore` 原子保存当前定义及关系，`RolloutStore.submit` 原子校验冻结读集，`PublicationStore` 原子提交正式发布。
 
 默认 `NoOpSecretCodec` 拒绝敏感内容，宿主需要提供真实保护实现；不会静默降级为明文。TokenGuard 只做凭据存在性及传输预校验，认证、权限与许可证检查仍由宿主执行。
 
@@ -97,6 +99,21 @@ List<Instance> instances(Registry<ApiAssets> registry) {
 ```
 
 API 服务路由是全局范围；MCP 和 Prompt 操作必须提供明确的租户。共享进程统一使用根包的 `Instance`，通过 `app_id` 标识应用归属；服务关联由 Registry 维护，运行实例通过 `checksum` 标识。
+
+`Instance` 仅使用继承的整数 `status`：DELETED=-1、DISABLED=0、UP=1、DOWN=2、UNKNOWN=3、STARTING=4、MAINTENANCE=5。`modified` 是继承的普通修改时间，单位为毫秒。`health` JSON 文本统一保存 `scheme`、`path`、`time`（最近探测时间）、`origin`、`session`、`beat`、`lease`，不再保留对应的顶层字段。会话过期与实例是否可达分别判断；注册边界补齐 UNKNOWN，探测不会覆盖禁用、删除及维护状态。
+
+`health`、`labels`、`metadata` 均保存 JSON 对象文本。labels 成员必须是字符串，metadata 可包含嵌套值；通过 `labelView()`、`metadataView()` 解析，不持久化 Map，不保留旧字段别名。程序 `version` 不参与 host/port 校验码计算。
+
+健康信息由独立共享类 `org.miaixz.bus.cortex.health.HealthInfo` 表达，通过 `HealthInfo.parse(String)` 和 `toJson()` 统一完成严格解析、校验和序列化，仍以 `@Lob String health` 持久化。`healthView()` 返回独立、已校验的完整快照；调用方只修改负责的属性，再通过 `health(HealthInfo)` 校验并序列化完整对象，null 表示清空成员。共享类只描述七个既有属性，不承担 ORM 映射或执行职责，不保留健康 Map、字符串取值方法或补丁接口。探测器维护 time、origin，宿主管理 session、beat、lease；客户端上报的检查配置不会覆盖服务端观察值。建立或替换会话时清空旧探测观察，并保留本次提供的检查配置。Watch 和投递证据保留自己的 session 坐标，与 health.session 比较。Lattice 使用已有 edition 保护健康信息写入；健康变化事件只比较 status 和 health.origin，不直接比较整段 JSON。
+
+探测按进程、会话及生效的协议、主机、端口和 HTTP 路径分组；等价默认配置共用检查，不同目标分别探测。结果通过 `RegistryStore.updateHealth` 更新现有观察，不调用普通注册。宿主原子校验未变化的服务定义和运行时行，提交后才更新缓存和发送事件；过期、停用、注销或替换的注册拒绝旧结果。`ApiAssets` 不再管理或注入心跳与租期默认值，正常保存元数据时清除其旧 `beat`、`lease` 键并保留其他扩展。
+
+纯缓存探测要求后端支持条件替换。Starter 默认 Caffeine、其 MemoryCache 回退及单节点 Redis 已支持该操作；Hybrid 将原子比较交给主缓存，协调本地镜像变更，并在完成时根据主缓存当前值修复镜像。镜像键只负责枚举候选项，读取和扫描返回值始终来自主缓存。完整原子缓存能力标记保持原义，不支持的后端不降级为先读后写。
+
+探测写回在一次后端联合条件替换中比较捕获的服务定义和实例值。API 运行时缓存分区包含已有 verb 坐标；精确服务采样先保留各关联快照，再按有效目标分组，公共进程查询仍按进程身份去重。持久化运行时查询不再回填缓存，注册和探测的提交后回调只失效相应运行时投影。共享 Store 与类型适配 Store 使用同一提交、回滚边界，单条关联写回失败不跳过同组其他关联。Lattice 在宿主上下文刷新后启动调度并在关闭时释放；仅使用 Starter 的客户端不自动启动探测。
+
+
+
 
 ```java
 import org.miaixz.bus.cortex.Curator;

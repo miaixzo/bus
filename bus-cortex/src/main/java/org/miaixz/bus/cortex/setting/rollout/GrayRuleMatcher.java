@@ -29,7 +29,7 @@ import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.crypto.Builder;
 
 /**
- * Stateless selector consuming authenticated instance data only.
+ * Stateless selector consuming current process data.
  *
  * @author Kimi Liu
  */
@@ -46,7 +46,7 @@ public final class GrayRuleMatcher {
      * Matches only a verified instance.
      *
      * @param rule     frozen selector
-     * @param instance authenticated instance
+     * @param instance current process data
      * @return match
      */
     public boolean matches(GrayRule rule, Instance instance) {
@@ -60,7 +60,7 @@ public final class GrayRuleMatcher {
                     .intValue() < rule.getPercentage();
             case TENANT -> rule.getTenant().equals(instance.getTenant_id());
             case LABEL -> {
-                Map<String, String> labels = instance.getLabels() == null ? Map.of() : instance.getLabels();
+                Map<String, String> labels = instance.labelView();
                 yield rule.getLabelValue().equals(labels.get(rule.getLabelKey()));
             }
         };

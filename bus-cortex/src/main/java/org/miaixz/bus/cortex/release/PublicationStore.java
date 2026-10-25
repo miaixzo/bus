@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.cortex.release;
 
-import org.miaixz.bus.cortex.setting.SettingEnforcer;
+import org.miaixz.bus.cortex.setting.SettingProvider;
 
 /**
  * Host atomic publication boundary; no partial or cache-only emulation is permitted.
@@ -29,13 +29,13 @@ import org.miaixz.bus.cortex.setting.SettingEnforcer;
 public interface PublicationStore {
 
     /**
-     * In one entity transaction rechecks authorization, approved frozen input, exact intent, workflow edition, app
-     * eligibility and active baselines; allocates the unique server version; inserts all snapshots, self-contained
-     * Release, active track pointer, workflow completion, receipt result and durable outbox. Failure rolls back all
-     * visible writes; identical receipt returns the original Release. Must never reload mutable Item or Reference for
-     * approved content.
+     * In one entity transaction rechecks approved frozen input, exact intent, workflow edition, app eligibility and
+     * active baselines; allocates the unique server version; inserts all snapshots, self-contained Release, active
+     * track pointer, workflow completion, receipt result and durable outbox. Failure rolls back all visible writes;
+     * identical receipt returns the original Release. Access checks, when enabled, are delegated to the host guard.
+     * Must never reload mutable Item or Reference for approved content.
      *
-     * @param context         authenticated tenant, actor and idempotent request identity
+     * @param context         operation-scoped tenant, actor and idempotent request identity
      * @param rollout         exact approved workflow identifier
      * @param expectedEdition expected workflow concurrency counter
      * @param receipt         exact claimed publication receipt identifier
@@ -43,7 +43,7 @@ public interface PublicationStore {
      * @return original or newly committed formal release
      */
     Release commit(
-            SettingEnforcer.Context context,
+            SettingProvider.Context context,
             String rollout,
             long expectedEdition,
             String receipt,

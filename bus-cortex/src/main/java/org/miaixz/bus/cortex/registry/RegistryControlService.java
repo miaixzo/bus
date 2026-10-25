@@ -677,7 +677,7 @@ public class RegistryControlService {
             vector.setVersion(query.getVersion());
             vector.setLabels(query.getLabels());
             vector.setSelectors(query.getSelectors());
-            vector.setState(query.getState());
+            vector.setStatus(query.getStatus());
             vector.setIncludeDisabled(query.isIncludeDisabled());
             vector.setLimit(query.getLimit());
             vector.setOffset(query.getOffset());

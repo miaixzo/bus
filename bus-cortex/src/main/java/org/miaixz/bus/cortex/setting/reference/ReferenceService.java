@@ -22,8 +22,9 @@ package org.miaixz.bus.cortex.setting.reference;
 import java.util.*;
 
 import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.cortex.guard.CortexGuard;
 import org.miaixz.bus.cortex.release.ReleaseCodec;
-import org.miaixz.bus.cortex.setting.SettingEnforcer;
+import org.miaixz.bus.cortex.setting.SettingProvider;
 import org.miaixz.bus.cortex.setting.SettingStore;
 import org.miaixz.bus.cortex.setting.curator.ItemEditor;
 import org.miaixz.bus.cortex.setting.item.Item;
@@ -56,9 +57,9 @@ public final class ReferenceService {
      */
     private final ItemEditor editor;
     /**
-     * Mandatory permissions.
+     * Optional host access policy.
      */
-    private final SettingEnforcer enforcer;
+    private final CortexGuard guard;
 
     /**
      * Creates relationship management.
@@ -67,64 +68,64 @@ public final class ReferenceService {
      * @param revisions exact published pins
      * @param codec     option parser
      * @param editor    overlay protection
-     * @param enforcer  permissions
+     * @param guard     optional host access policy
      */
     public ReferenceService(ReferenceStore store, RevisionStore revisions, ReferenceCodec codec, ItemEditor editor,
-            SettingEnforcer enforcer) {
+            CortexGuard guard) {
         this.store = Objects.requireNonNull(store);
         this.revisions = Objects.requireNonNull(revisions);
         this.codec = Objects.requireNonNull(codec);
         this.editor = Objects.requireNonNull(editor);
-        this.enforcer = Objects.requireNonNull(enforcer);
+        this.guard = guard;
     }
 
     /**
      * Reads current source relations.
      *
-     * @param context trusted identity
+     * @param context operation coordinates
      * @param item    source
      * @return current relations
      */
-    public List<Reference> byItem(SettingEnforcer.Context context, String item) {
-        enforcer.require(context, "read", "reference", item);
+    public List<Reference> byItem(SettingProvider.Context context, String item) {
+        context.check(guard, "read", "reference", item);
         return List.copyOf(store.byItem(context.tenant(), item));
     }
 
     /**
      * Reads current application relations.
      *
-     * @param context trusted identity
+     * @param context operation coordinates
      * @param app     application
      * @return current relations
      */
-    public List<Reference> byApp(SettingEnforcer.Context context, String app) {
-        enforcer.require(context, "read", "app", app);
+    public List<Reference> byApp(SettingProvider.Context context, String app) {
+        context.check(guard, "read", "app", app);
         return List.copyOf(store.byApp(context.tenant(), app));
     }
 
     /**
      * Counts distinct target apps in one batch.
      *
-     * @param context trusted identity
+     * @param context operation coordinates
      * @param items   source set
      * @return counts
      */
-    public Map<String, Long> countByItem(SettingEnforcer.Context context, Set<String> items) {
+    public Map<String, Long> countByItem(SettingProvider.Context context, Set<String> items) {
         for (String id : items)
-            enforcer.require(context, "read", "item", id);
+            context.check(guard, "read", "item", id);
         return Map.copyOf(store.countByItem(context.tenant(), Set.copyOf(items)));
     }
 
     /**
      * Counts distinct current sources in one batch.
      *
-     * @param context trusted identity
+     * @param context operation coordinates
      * @param apps    app set
      * @return counts
      */
-    public Map<String, Long> countByApp(SettingEnforcer.Context context, Set<String> apps) {
+    public Map<String, Long> countByApp(SettingProvider.Context context, Set<String> apps) {
         for (String id : apps)
-            enforcer.require(context, "read", "app", id);
+            context.check(guard, "read", "app", id);
         return Map.copyOf(store.countByApp(context.tenant(), Set.copyOf(apps)));
     }
 
@@ -132,13 +133,16 @@ public final class ReferenceService {
      * Validates complete desired relationships and protects nonempty overlays according to the selected current or
      * fixed definition, including unchanged plaintext overlays whose sensitivity requires protection.
      *
-     * @param context    trusted identity
+     * @param context    operation coordinates
      * @param source     protected source
      * @param candidates complete desired relation set
      * @return normalized protected relations
      */
-    public List<Reference> prepare(SettingEnforcer.Context context, Item source, List<Reference> candidates) {
-        enforcer.require(context, "associate", "item", source.getId());
+    public List<Reference> prepare(SettingProvider.Context context, Item source, List<Reference> candidates) {
+        if (source == null || !context.tenant().equals(source.getTenant_id()) || source.getId() == null
+                || source.getId().isBlank())
+            throw new IllegalArgumentException("Invalid source coordinates");
+        context.check(guard, "associate", "item", source.getId());
         Map<String, Reference> existing = new HashMap<>();
         for (Reference r : store.byItem(context.tenant(), source.getId()))
             existing.put(r.getId(), r);
@@ -150,11 +154,14 @@ public final class ReferenceService {
      * read-set. Already protected or empty overlays require neither decryption nor additional relationship
      * authorization.
      *
-     * @param context authenticated current-state edit identity
+     * @param context current-state operation coordinates
      * @param source  prepared protected definition
      * @return exact protected relationship replacement, or null when no overlay requires a change
      */
-    public SettingStore.RelationChange protectRetained(SettingEnforcer.Context context, Item source) {
+    public SettingStore.RelationChange protectRetained(SettingProvider.Context context, Item source) {
+        if (source == null || !context.tenant().equals(source.getTenant_id()) || source.getId() == null
+                || source.getId().isBlank())
+            throw new IllegalArgumentException("Invalid source coordinates");
         List<Reference> retained = store.byItem(context.tenant(), source.getId());
         Map<String, Reference> existing = new HashMap<>();
         Map<String, Long> expected = new HashMap<>();
@@ -182,7 +189,7 @@ public final class ReferenceService {
     /**
      * Shares relationship validation while authorizing retained-overlay maintenance only when protection changes.
      *
-     * @param context    authenticated operation identity
+     * @param context    operation coordinates
      * @param source     prepared current source
      * @param candidates desired complete relationship set
      * @param existing   exact previously read relationships
@@ -190,7 +197,7 @@ public final class ReferenceService {
      * @return normalized protected relationships
      */
     private List<Reference> prepare(
-            SettingEnforcer.Context context,
+            SettingProvider.Context context,
             Item source,
             List<Reference> candidates,
             Map<String, Reference> existing,
@@ -215,7 +222,7 @@ public final class ReferenceService {
                     || next.getTarget_id() == null || next.getTarget_id().isBlank())
                 throw new IllegalArgumentException("Invalid relationship coordinates");
             if (!retained)
-                enforcer.require(context, "associate", "app", next.getTarget_id());
+                context.check(guard, "associate", "app", next.getTarget_id());
             if (next.getId() == null)
                 next.setId(ID.objectId());
             if (!recordIds.add(next.getId()))
@@ -245,10 +252,10 @@ public final class ReferenceService {
                     }
                     if (changed || editor.needsOverlayProtection(document, usage.overlay())) {
                         if (retained) {
-                            enforcer.require(context, "associate", "item", source.getId());
-                            enforcer.require(context, "associate", "app", next.getTarget_id());
+                            context.check(guard, "associate", "item", source.getId());
+                            context.check(guard, "associate", "app", next.getTarget_id());
                         }
-                        enforcer.require(context, "secret-edit", "reference", next.getId());
+                        context.check(guard, "secret-edit", "reference", next.getId());
                         usage = new ReferenceCodec.Options(usage.type(), usage.alias(), usage.prefix(),
                                 usage.override(), usage.keys(), editor.protectOverlay(document, usage.overlay()));
                     }
