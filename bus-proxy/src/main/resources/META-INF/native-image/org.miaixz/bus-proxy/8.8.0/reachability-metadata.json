@@ -208,6 +208,20 @@
           ]
         },
         {
+          "name": "intercept",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.reflect.Method",
+            "java.lang.Object[]",
+            "org.springframework.cglib.proxy.MethodProxy"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Object",
+      "methods": [
+        {
           "name": "equals",
           "parameterTypes": [
             "java.lang.Object"
@@ -218,21 +232,8 @@
           "parameterTypes": []
         },
         {
-          "name": "getTarget",
-          "parameterTypes": []
-        },
-        {
           "name": "hashCode",
           "parameterTypes": []
-        },
-        {
-          "name": "intercept",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.reflect.Method",
-            "java.lang.Object[]",
-            "org.springframework.cglib.proxy.MethodProxy"
-          ]
         },
         {
           "name": "notify",
@@ -248,7 +249,10 @@
         },
         {
           "name": "wait",
-          "parameterTypes": []
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
         },
         {
           "name": "wait",
@@ -258,10 +262,7 @@
         },
         {
           "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
+          "parameterTypes": []
         }
       ]
     }

@@ -258,10 +258,6 @@
           "parameterTypes": []
         },
         {
-          "name": "get",
-          "parameterTypes": []
-        },
-        {
           "name": "process",
           "parameterTypes": [
             "java.lang.Object",
@@ -307,10 +303,6 @@
           "parameterTypes": []
         },
         {
-          "name": "get",
-          "parameterTypes": []
-        },
-        {
           "name": "process",
           "parameterTypes": [
             "java.lang.Object",
@@ -333,10 +325,6 @@
         },
         {
           "name": "clears",
-          "parameterTypes": []
-        },
-        {
-          "name": "get",
           "parameterTypes": []
         },
         {

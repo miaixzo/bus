@@ -3121,16 +3121,15 @@
           ]
         },
         {
-          "name": "register",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.miaixz.bus.crypto.Provider"
-          ]
-        },
-        {
           "name": "require",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "register",
+          "parameterTypes": [
+            "org.miaixz.bus.crypto.Provider"
           ]
         }
       ]

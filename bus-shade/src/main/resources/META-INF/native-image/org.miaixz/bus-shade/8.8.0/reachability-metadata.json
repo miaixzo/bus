@@ -1156,24 +1156,6 @@
           ]
         },
         {
-          "name": "clearAssertionStatus",
-          "parameterTypes": []
-        },
-        {
-          "name": "clearCache",
-          "parameterTypes": []
-        },
-        {
-          "name": "close",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "findClass",
           "parameterTypes": [
             "java.lang.String"
@@ -1189,162 +1171,6 @@
           "name": "findResources",
           "parameterTypes": [
             "java.lang.String"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDefinedPackage",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getDefinedPackages",
-          "parameterTypes": []
-        },
-        {
-          "name": "getName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getParent",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPlatformClassLoader",
-          "parameterTypes": []
-        },
-        {
-          "name": "getResource",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getResourceAsStream",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getResources",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getSystemClassLoader",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSystemResource",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getSystemResourceAsStream",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getSystemResources",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getUnnamedModule",
-          "parameterTypes": []
-        },
-        {
-          "name": "getURLs",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isRegisteredAsParallelCapable",
-          "parameterTypes": []
-        },
-        {
-          "name": "loadClass",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "newInstance",
-          "parameterTypes": [
-            "java.net.URL[]"
-          ]
-        },
-        {
-          "name": "newInstance",
-          "parameterTypes": [
-            "java.net.URL[]",
-            "java.lang.ClassLoader"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "resources",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setClassAssertionStatus",
-          "parameterTypes": [
-            "java.lang.String",
-            "boolean"
-          ]
-        },
-        {
-          "name": "setDefaultAssertionStatus",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setPackageAssertionStatus",
-          "parameterTypes": [
-            "java.lang.String",
-            "boolean"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -1371,207 +1197,17 @@
           ]
         },
         {
-          "name": "asIterator",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
           "name": "hasMoreElements",
           "parameterTypes": []
         },
         {
           "name": "nextElement",
           "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.shade.safety.boot.BootJarArchiveEntry",
-      "fields": [
-        {
-          "name": "CENATT"
-        },
-        {
-          "name": "CENATX"
-        },
-        {
-          "name": "CENCOM"
-        },
-        {
-          "name": "CENCRC"
-        },
-        {
-          "name": "CENDSK"
-        },
-        {
-          "name": "CENEXT"
-        },
-        {
-          "name": "CENFLG"
-        },
-        {
-          "name": "CENHDR"
-        },
-        {
-          "name": "CENHOW"
-        },
-        {
-          "name": "CENLEN"
-        },
-        {
-          "name": "CENNAM"
-        },
-        {
-          "name": "CENOFF"
-        },
-        {
-          "name": "CENSIG"
-        },
-        {
-          "name": "CENSIZ"
-        },
-        {
-          "name": "CENTIM"
-        },
-        {
-          "name": "CENVEM"
-        },
-        {
-          "name": "CENVER"
-        },
-        {
-          "name": "CRC_UNKNOWN"
-        },
-        {
-          "name": "DEFLATED"
-        },
-        {
-          "name": "ENDCOM"
-        },
-        {
-          "name": "ENDHDR"
-        },
-        {
-          "name": "ENDOFF"
-        },
-        {
-          "name": "ENDSIG"
-        },
-        {
-          "name": "ENDSIZ"
-        },
-        {
-          "name": "ENDSUB"
-        },
-        {
-          "name": "ENDTOT"
-        },
-        {
-          "name": "EXTCRC"
-        },
-        {
-          "name": "EXTHDR"
-        },
-        {
-          "name": "EXTLEN"
-        },
-        {
-          "name": "EXTSIG"
-        },
-        {
-          "name": "EXTSIZ"
-        },
-        {
-          "name": "LOCCRC"
-        },
-        {
-          "name": "LOCEXT"
-        },
-        {
-          "name": "LOCFLG"
-        },
-        {
-          "name": "LOCHDR"
-        },
-        {
-          "name": "LOCHOW"
-        },
-        {
-          "name": "LOCLEN"
-        },
-        {
-          "name": "LOCNAM"
-        },
-        {
-          "name": "LOCSIG"
-        },
-        {
-          "name": "LOCSIZ"
-        },
-        {
-          "name": "LOCTIM"
-        },
-        {
-          "name": "LOCVER"
-        },
-        {
-          "name": "OFFSET_UNKNOWN"
-        },
-        {
-          "name": "PLATFORM_FAT"
-        },
-        {
-          "name": "PLATFORM_UNIX"
-        },
-        {
-          "name": "SIZE_UNKNOWN"
-        },
-        {
-          "name": "STORED"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
@@ -1580,365 +1216,8 @@
           ]
         },
         {
-          "name": "addAsFirstExtraField",
-          "parameterTypes": [
-            "org.apache.commons.compress.archivers.zip.ZipExtraField"
-          ]
-        },
-        {
-          "name": "addExtraField",
-          "parameterTypes": [
-            "org.apache.commons.compress.archivers.zip.ZipExtraField"
-          ]
-        },
-        {
-          "name": "clone",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getCentralDirectoryExtra",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCertificates",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getComment",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCommentSource",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCompressedSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCrc",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCreationTime",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDataOffset",
-          "parameterTypes": []
-        },
-        {
-          "name": "getExternalAttributes",
-          "parameterTypes": []
-        },
-        {
-          "name": "getExtra",
-          "parameterTypes": []
-        },
-        {
-          "name": "getExtraField",
-          "parameterTypes": [
-            "org.apache.commons.compress.archivers.zip.ZipShort"
-          ]
-        },
-        {
-          "name": "getExtraFields",
-          "parameterTypes": []
-        },
-        {
-          "name": "getExtraFields",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "getExtraFields",
-          "parameterTypes": [
-            "org.apache.commons.compress.archivers.zip.ExtraFieldParsingBehavior"
-          ]
-        },
-        {
-          "name": "getGeneralPurposeBit",
-          "parameterTypes": []
-        },
-        {
-          "name": "getInternalAttributes",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLastAccessTime",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLastModifiedDate",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLastModifiedTime",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLocalFileDataExtra",
-          "parameterTypes": []
-        },
-        {
-          "name": "getManifestAttributes",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMethod",
-          "parameterTypes": []
-        },
-        {
           "name": "getName",
           "parameterTypes": []
-        },
-        {
-          "name": "getNameSource",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPlatform",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRawFlag",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRawName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTime",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTimeLocal",
-          "parameterTypes": []
-        },
-        {
-          "name": "getUnixMode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getUnparseableExtraFieldData",
-          "parameterTypes": []
-        },
-        {
-          "name": "getVersionMadeBy",
-          "parameterTypes": []
-        },
-        {
-          "name": "getVersionRequired",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isDirectory",
-          "parameterTypes": []
-        },
-        {
-          "name": "isStreamContiguous",
-          "parameterTypes": []
-        },
-        {
-          "name": "isUnixSymlink",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "removeExtraField",
-          "parameterTypes": [
-            "org.apache.commons.compress.archivers.zip.ZipShort"
-          ]
-        },
-        {
-          "name": "removeUnparseableExtraFieldData",
-          "parameterTypes": []
-        },
-        {
-          "name": "setAlignment",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setCentralDirectoryExtra",
-          "parameterTypes": [
-            "byte[]"
-          ]
-        },
-        {
-          "name": "setComment",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setCommentSource",
-          "parameterTypes": [
-            "org.apache.commons.compress.archivers.zip.ZipArchiveEntry$CommentSource"
-          ]
-        },
-        {
-          "name": "setCompressedSize",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setCrc",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setCreationTime",
-          "parameterTypes": [
-            "java.nio.file.attribute.FileTime"
-          ]
-        },
-        {
-          "name": "setExternalAttributes",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setExtra",
-          "parameterTypes": [
-            "byte[]"
-          ]
-        },
-        {
-          "name": "setExtraFields",
-          "parameterTypes": [
-            "org.apache.commons.compress.archivers.zip.ZipExtraField[]"
-          ]
-        },
-        {
-          "name": "setGeneralPurposeBit",
-          "parameterTypes": [
-            "org.apache.commons.compress.archivers.zip.GeneralPurposeBit"
-          ]
-        },
-        {
-          "name": "setInternalAttributes",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setLastAccessTime",
-          "parameterTypes": [
-            "java.nio.file.attribute.FileTime"
-          ]
-        },
-        {
-          "name": "setLastModifiedTime",
-          "parameterTypes": [
-            "java.nio.file.attribute.FileTime"
-          ]
-        },
-        {
-          "name": "setMethod",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setNameSource",
-          "parameterTypes": [
-            "org.apache.commons.compress.archivers.zip.ZipArchiveEntry$NameSource"
-          ]
-        },
-        {
-          "name": "setRawFlag",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setSize",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setTime",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setTimeLocal",
-          "parameterTypes": [
-            "java.time.LocalDateTime"
-          ]
-        },
-        {
-          "name": "setUnixMode",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setVersionMadeBy",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setVersionRequired",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
@@ -1957,20 +1236,6 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
           "name": "launch",
           "parameterTypes": []
         },
@@ -1979,35 +1244,6 @@
           "parameterTypes": [
             "java.lang.String[]"
           ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
@@ -2015,28 +1251,7 @@
       "type": "org.miaixz.bus.shade.safety.boot.BootPropertiesLauncher",
       "fields": [
         {
-          "name": "ARGS"
-        },
-        {
-          "name": "CONFIG_LOCATION"
-        },
-        {
-          "name": "CONFIG_NAME"
-        },
-        {
-          "name": "HOME"
-        },
-        {
           "name": "launcher"
-        },
-        {
-          "name": "MAIN"
-        },
-        {
-          "name": "PATH"
-        },
-        {
-          "name": "SET_SYSTEM_PROPERTIES"
         }
       ],
       "methods": [
@@ -2047,20 +1262,6 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
           "name": "launch",
           "parameterTypes": []
         },
@@ -2068,41 +1269,6 @@
           "name": "main",
           "parameterTypes": [
             "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toCamelCase",
-          "parameterTypes": [
-            "java.lang.CharSequence"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -2389,56 +1555,9 @@
           ]
         },
         {
-          "name": "clearCache",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
           "name": "openConnection",
           "parameterTypes": [
             "java.net.URL"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -2458,20 +1577,6 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
           "name": "launch",
           "parameterTypes": []
         },
@@ -2479,35 +1584,6 @@
           "name": "main",
           "parameterTypes": [
             "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -9072,6 +8148,767 @@
         },
         {
           "name": "self",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "java.lang.ClassLoader",
+      "condition": {
+        "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
+      },
+      "methods": [
+        {
+          "name": "clearAssertionStatus",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDefinedPackage",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getDefinedPackages",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getParent",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPlatformClassLoader",
+          "parameterTypes": []
+        },
+        {
+          "name": "getResource",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getResources",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getSystemClassLoader",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSystemResource",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getSystemResourceAsStream",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getSystemResources",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getUnnamedModule",
+          "parameterTypes": []
+        },
+        {
+          "name": "isRegisteredAsParallelCapable",
+          "parameterTypes": []
+        },
+        {
+          "name": "loadClass",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "resources",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setClassAssertionStatus",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "setDefaultAssertionStatus",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setPackageAssertionStatus",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Object",
+      "methods": [
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "java.net.URLClassLoader",
+      "condition": {
+        "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
+      },
+      "methods": [
+        {
+          "name": "getResourceAsStream",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getURLs",
+          "parameterTypes": []
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": [
+            "java.net.URL[]",
+            "java.lang.ClassLoader"
+          ]
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": [
+            "java.net.URL[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.util.Enumeration",
+      "condition": {
+        "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
+      },
+      "methods": [
+        {
+          "name": "asIterator",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "java.util.zip.ZipConstants",
+      "fields": [
+        {
+          "name": "CENATT"
+        },
+        {
+          "name": "CENATX"
+        },
+        {
+          "name": "CENCOM"
+        },
+        {
+          "name": "CENCRC"
+        },
+        {
+          "name": "CENDSK"
+        },
+        {
+          "name": "CENEXT"
+        },
+        {
+          "name": "CENFLG"
+        },
+        {
+          "name": "CENHDR"
+        },
+        {
+          "name": "CENHOW"
+        },
+        {
+          "name": "CENLEN"
+        },
+        {
+          "name": "CENNAM"
+        },
+        {
+          "name": "CENOFF"
+        },
+        {
+          "name": "CENSIG"
+        },
+        {
+          "name": "CENSIZ"
+        },
+        {
+          "name": "CENTIM"
+        },
+        {
+          "name": "CENVEM"
+        },
+        {
+          "name": "CENVER"
+        },
+        {
+          "name": "ENDCOM"
+        },
+        {
+          "name": "ENDHDR"
+        },
+        {
+          "name": "ENDOFF"
+        },
+        {
+          "name": "ENDSIG"
+        },
+        {
+          "name": "ENDSIZ"
+        },
+        {
+          "name": "ENDSUB"
+        },
+        {
+          "name": "ENDTOT"
+        },
+        {
+          "name": "EXTCRC"
+        },
+        {
+          "name": "EXTHDR"
+        },
+        {
+          "name": "EXTLEN"
+        },
+        {
+          "name": "EXTSIG"
+        },
+        {
+          "name": "EXTSIZ"
+        },
+        {
+          "name": "LOCCRC"
+        },
+        {
+          "name": "LOCEXT"
+        },
+        {
+          "name": "LOCFLG"
+        },
+        {
+          "name": "LOCHDR"
+        },
+        {
+          "name": "LOCHOW"
+        },
+        {
+          "name": "LOCLEN"
+        },
+        {
+          "name": "LOCNAM"
+        },
+        {
+          "name": "LOCSIG"
+        },
+        {
+          "name": "LOCSIZ"
+        },
+        {
+          "name": "LOCTIM"
+        },
+        {
+          "name": "LOCVER"
+        }
+      ]
+    },
+    {
+      "type": "java.util.zip.ZipEntry",
+      "fields": [
+        {
+          "name": "DEFLATED"
+        },
+        {
+          "name": "STORED"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getComment",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCompressedSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCrc",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreationTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExtra",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLastAccessTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLastModifiedTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTimeLocal",
+          "parameterTypes": []
+        },
+        {
+          "name": "setComment",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setCompressedSize",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setCrc",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setCreationTime",
+          "parameterTypes": [
+            "java.nio.file.attribute.FileTime"
+          ]
+        },
+        {
+          "name": "setLastAccessTime",
+          "parameterTypes": [
+            "java.nio.file.attribute.FileTime"
+          ]
+        },
+        {
+          "name": "setLastModifiedTime",
+          "parameterTypes": [
+            "java.nio.file.attribute.FileTime"
+          ]
+        },
+        {
+          "name": "setTime",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setTimeLocal",
+          "parameterTypes": [
+            "java.time.LocalDateTime"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.commons.compress.archivers.ArchiveEntry",
+      "fields": [
+        {
+          "name": "SIZE_UNKNOWN"
+        }
+      ]
+    },
+    {
+      "type": "org.apache.commons.compress.archivers.EntryStreamOffsets",
+      "fields": [
+        {
+          "name": "OFFSET_UNKNOWN"
+        }
+      ]
+    },
+    {
+      "type": "org.apache.commons.compress.archivers.jar.JarArchiveEntry",
+      "methods": [
+        {
+          "name": "getCertificates",
+          "parameterTypes": []
+        },
+        {
+          "name": "getManifestAttributes",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.commons.compress.archivers.zip.ZipArchiveEntry",
+      "fields": [
+        {
+          "name": "CRC_UNKNOWN"
+        },
+        {
+          "name": "PLATFORM_FAT"
+        },
+        {
+          "name": "PLATFORM_UNIX"
+        }
+      ],
+      "methods": [
+        {
+          "name": "addAsFirstExtraField",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ZipExtraField"
+          ]
+        },
+        {
+          "name": "addExtraField",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ZipExtraField"
+          ]
+        },
+        {
+          "name": "clone",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getCentralDirectoryExtra",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCommentSource",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDataOffset",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExternalAttributes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExtraField",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ZipShort"
+          ]
+        },
+        {
+          "name": "getExtraFields",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "getExtraFields",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ExtraFieldParsingBehavior"
+          ]
+        },
+        {
+          "name": "getExtraFields",
+          "parameterTypes": []
+        },
+        {
+          "name": "getGeneralPurposeBit",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInternalAttributes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLastModifiedDate",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLocalFileDataExtra",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMethod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNameSource",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPlatform",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRawFlag",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRawName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUnixMode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUnparseableExtraFieldData",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVersionMadeBy",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVersionRequired",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isDirectory",
+          "parameterTypes": []
+        },
+        {
+          "name": "isStreamContiguous",
+          "parameterTypes": []
+        },
+        {
+          "name": "isUnixSymlink",
+          "parameterTypes": []
+        },
+        {
+          "name": "removeExtraField",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ZipShort"
+          ]
+        },
+        {
+          "name": "removeUnparseableExtraFieldData",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAlignment",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setCentralDirectoryExtra",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "setCommentSource",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ZipArchiveEntry$CommentSource"
+          ]
+        },
+        {
+          "name": "setExternalAttributes",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setExtra",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "setExtraFields",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ZipExtraField[]"
+          ]
+        },
+        {
+          "name": "setGeneralPurposeBit",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.GeneralPurposeBit"
+          ]
+        },
+        {
+          "name": "setInternalAttributes",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setMethod",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setNameSource",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ZipArchiveEntry$NameSource"
+          ]
+        },
+        {
+          "name": "setRawFlag",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setSize",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setUnixMode",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setVersionMadeBy",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setVersionRequired",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.springframework.boot.loader.launch.PropertiesLauncher",
+      "fields": [
+        {
+          "name": "ARGS"
+        },
+        {
+          "name": "CONFIG_LOCATION"
+        },
+        {
+          "name": "CONFIG_NAME"
+        },
+        {
+          "name": "HOME"
+        },
+        {
+          "name": "MAIN"
+        },
+        {
+          "name": "PATH"
+        },
+        {
+          "name": "SET_SYSTEM_PROPERTIES"
+        }
+      ],
+      "methods": [
+        {
+          "name": "toCamelCase",
+          "parameterTypes": [
+            "java.lang.CharSequence"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.springframework.boot.loader.net.protocol.jar.Handler",
+      "methods": [
+        {
+          "name": "clearCache",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.springframework.boot.loader.net.protocol.jar.JarUrlClassLoader",
+      "condition": {
+        "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
+      },
+      "methods": [
+        {
+          "name": "clearCache",
+          "parameterTypes": []
+        },
+        {
+          "name": "close",
           "parameterTypes": []
         }
       ]

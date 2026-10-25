@@ -463,12 +463,6 @@
           ]
         },
         {
-          "name": "apply",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "equals",
           "parameterTypes": [
             "java.lang.Object"
@@ -494,12 +488,6 @@
           "parameterTypes": [
             "org.miaixz.bus.mapper.binding.function.Fn",
             "java.lang.Class"
-          ]
-        },
-        {
-          "name": "apply",
-          "parameterTypes": [
-            "java.lang.Object"
           ]
         },
         {
@@ -1181,70 +1169,11 @@
           "parameterTypes": []
         },
         {
-          "name": "createParameterHandler",
-          "parameterTypes": [
-            "org.apache.ibatis.mapping.MappedStatement",
-            "java.lang.Object",
-            "org.apache.ibatis.mapping.BoundSql"
-          ]
-        },
-        {
           "name": "createSqlSource",
           "parameterTypes": [
             "org.apache.ibatis.session.Configuration",
             "java.lang.String",
             "java.lang.Class"
-          ]
-        },
-        {
-          "name": "createSqlSource",
-          "parameterTypes": [
-            "org.apache.ibatis.session.Configuration",
-            "org.apache.ibatis.parsing.XNode",
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -4536,35 +4465,13 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "genId",
           "parameterTypes": [
             "java.lang.Object"
           ]
         },
         {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
           "name": "getConcurrency",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
           "parameterTypes": []
         },
         {
@@ -4590,27 +4497,6 @@
             "java.sql.Statement",
             "java.lang.Object"
           ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
@@ -4633,52 +4519,9 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "getBoundSql",
           "parameterTypes": [
             "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -5234,52 +5077,9 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "getBoundSql",
           "parameterTypes": [
             "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -5317,41 +5117,8 @@
           ]
         },
         {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
           "name": "hashCode",
           "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
@@ -7878,22 +7645,7 @@
       "type": "org.miaixz.bus.mapper.handler.MybatisInterceptor",
       "fields": [
         {
-          "name": "DEFAULT_REFLECTOR_FACTORY"
-        },
-        {
-          "name": "DELEGATE_BOUNDSQL"
-        },
-        {
-          "name": "DELEGATE_BOUNDSQL_SQL"
-        },
-        {
-          "name": "DELEGATE_MAPPEDSTATEMENT"
-        },
-        {
           "name": "handlerRegistry"
-        },
-        {
-          "name": "MAPPEDSTATEMENT"
         },
         {
           "name": "MULTIPLE_SPACES_PATTERN"
@@ -7914,12 +7666,6 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "format",
           "parameterTypes": [
             "org.apache.ibatis.session.Configuration",
@@ -7927,18 +7673,8 @@
           ]
         },
         {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
           "name": "getHandlers",
           "parameterTypes": []
-        },
-        {
-          "name": "getMetaObject",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
         },
         {
           "name": "getParameterValue",
@@ -7962,10 +7698,6 @@
             "java.lang.Object[]",
             "org.apache.ibatis.plugin.Invocation"
           ]
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
         },
         {
           "name": "initialBoundSql",
@@ -8011,26 +7743,6 @@
           ]
         },
         {
-          "name": "mapperBoundSql",
-          "parameterTypes": [
-            "org.apache.ibatis.mapping.BoundSql"
-          ]
-        },
-        {
-          "name": "mapperStatementHandler",
-          "parameterTypes": [
-            "org.apache.ibatis.executor.statement.StatementHandler"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
           "name": "plugin",
           "parameterTypes": [
             "java.lang.Object"
@@ -8058,13 +7770,6 @@
           ]
         },
         {
-          "name": "setAdditionalParameter",
-          "parameterTypes": [
-            "org.apache.ibatis.mapping.BoundSql",
-            "java.util.Map"
-          ]
-        },
-        {
           "name": "setHandlers",
           "parameterTypes": [
             "java.util.List"
@@ -8074,27 +7779,6 @@
           "name": "setProperties",
           "parameterTypes": [
             "java.util.Properties"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -8343,12 +8027,6 @@
         {
           "name": "getField",
           "parameterTypes": []
-        },
-        {
-          "name": "test",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
         }
       ]
     },
@@ -8831,12 +8509,6 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "getActualSql",
           "parameterTypes": []
         },
@@ -8855,10 +8527,6 @@
           "parameterTypes": []
         },
         {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
           "name": "getConfiguration",
           "parameterTypes": []
         },
@@ -8868,10 +8536,6 @@
         },
         {
           "name": "getSqlSource",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
           "parameterTypes": []
         },
         {
@@ -8889,37 +8553,8 @@
           ]
         },
         {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
           "name": "resolveDialect",
           "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
@@ -8960,41 +8595,8 @@
           ]
         },
         {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
           "name": "hashCode",
           "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
@@ -9172,49 +8774,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
@@ -9223,20 +8782,6 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
           "parameterTypes": []
         },
         {
@@ -9266,35 +8811,6 @@
             "org.apache.ibatis.builder.annotation.ProviderContext",
             "java.util.List"
           ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
@@ -9318,36 +8834,10 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
           "name": "selectByCondition",
           "parameterTypes": [
             "org.apache.ibatis.builder.annotation.ProviderContext"
           ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
         },
         {
           "name": "updateByCondition",
@@ -9365,23 +8855,6 @@
           "name": "updateByConditionSetValues",
           "parameterTypes": [
             "org.apache.ibatis.builder.annotation.ProviderContext"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -9412,24 +8885,10 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "existsWithPrimaryKey",
           "parameterTypes": [
             "org.apache.ibatis.builder.annotation.ProviderContext"
           ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
         },
         {
           "name": "insert",
@@ -9454,14 +8913,6 @@
           "parameterTypes": [
             "org.apache.ibatis.builder.annotation.ProviderContext"
           ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
         },
         {
           "name": "select",
@@ -9494,10 +8945,6 @@
           ]
         },
         {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
           "name": "unsupported",
           "parameterTypes": [
             "org.apache.ibatis.builder.annotation.ProviderContext"
@@ -9514,23 +8961,6 @@
           "parameterTypes": [
             "org.apache.ibatis.builder.annotation.ProviderContext"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
@@ -9542,36 +8972,10 @@
           "parameterTypes": []
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
           "name": "selectColumns",
           "parameterTypes": [
             "org.apache.ibatis.builder.annotation.ProviderContext"
           ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
         },
         {
           "name": "updateByPrimaryKeySelectiveWithForceFields",
@@ -9584,23 +8988,6 @@
           "parameterTypes": [
             "org.apache.ibatis.builder.annotation.ProviderContext"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
@@ -9612,37 +8999,11 @@
           "parameterTypes": []
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
           "name": "insertList",
           "parameterTypes": [
             "org.apache.ibatis.builder.annotation.ProviderContext",
             "java.util.List"
           ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
         },
         {
           "name": "updateList",
@@ -9656,23 +9017,6 @@
           "parameterTypes": [
             "org.apache.ibatis.builder.annotation.ProviderContext",
             "java.util.List"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -9709,28 +9053,6 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
           "name": "select",
           "parameterTypes": [
             "org.apache.ibatis.builder.annotation.ProviderContext"
@@ -9759,10 +9081,6 @@
           "parameterTypes": [
             "org.apache.ibatis.builder.annotation.ProviderContext"
           ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
         },
         {
           "name": "updateByCondition",
@@ -9798,23 +9116,6 @@
           "name": "updateByPrimaryKeySelectiveWithForceFields",
           "parameterTypes": [
             "org.apache.ibatis.builder.annotation.ProviderContext"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -10973,6 +10274,144 @@
           "name": "setVisibleProvider",
           "parameterTypes": [
             "org.miaixz.bus.mapper.feature.visible.VisibleProvider"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Object",
+      "methods": [
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.scripting.xmltags.XMLLanguageDriver",
+      "methods": [
+        {
+          "name": "createParameterHandler",
+          "parameterTypes": [
+            "org.apache.ibatis.mapping.MappedStatement",
+            "java.lang.Object",
+            "org.apache.ibatis.mapping.BoundSql"
+          ]
+        },
+        {
+          "name": "createSqlSource",
+          "parameterTypes": [
+            "org.apache.ibatis.session.Configuration",
+            "org.apache.ibatis.parsing.XNode",
+            "java.lang.Class"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.function.FunctionX",
+      "methods": [
+        {
+          "name": "apply",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.function.PredicateX",
+      "methods": [
+        {
+          "name": "test",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.handler.AbstractSqlHandler",
+      "fields": [
+        {
+          "name": "DEFAULT_REFLECTOR_FACTORY"
+        },
+        {
+          "name": "DELEGATE_BOUNDSQL"
+        },
+        {
+          "name": "DELEGATE_BOUNDSQL_SQL"
+        },
+        {
+          "name": "DELEGATE_MAPPEDSTATEMENT"
+        },
+        {
+          "name": "MAPPEDSTATEMENT"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getMetaObject",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "mapperBoundSql",
+          "parameterTypes": [
+            "org.apache.ibatis.mapping.BoundSql"
+          ]
+        },
+        {
+          "name": "mapperStatementHandler",
+          "parameterTypes": [
+            "org.apache.ibatis.executor.statement.StatementHandler"
+          ]
+        },
+        {
+          "name": "setAdditionalParameter",
+          "parameterTypes": [
+            "org.apache.ibatis.mapping.BoundSql",
+            "java.util.Map"
           ]
         }
       ]
