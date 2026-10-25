@@ -124,6 +124,10 @@ public class EntitySchemaInitializer {
                         if (table == source) {
                             table = copyTable(source);
                         }
+                        // Scope metadata discovery and DDL to the same schema used by this connection.
+                        if (table.schema() == null || table.schema().isBlank()) {
+                            table.schema(connection.getSchema());
+                        }
                         table.columns(new ColumnOrderResolver().resolve(table, config.auditColumnsLast()));
                         locks.add(SchemaInitializationLock.acquire(dataSource, table));
                         locks.add(operations.acquireSchemaInitializationLock(connection, table));

@@ -199,6 +199,12 @@ public final class ItemEditor {
                 if (rule.sensitive() && !rules.containsKey(path))
                     throw new IllegalArgumentException("Sensitive rule cannot be implicitly removed");
             });
+        if (whole)
+            properties.keySet().forEach(name -> {
+                String path = name.isEmpty() || name.startsWith("/") ? name : JsonSchema.pointer("", name);
+                var rule = rules.get(path);
+                rules.put(path, new ItemCodec.Rule(JsonSchema.tokens(path), true, rule == null ? null : rule.schema()));
+            });
         ItemCodec.Document plain = new ItemCodec.Document(properties, rules, incoming.schema(), incoming.management(),
                 ItemCodec.Protection.NONE);
         codec.validate(plain, Objects.requireNonNull(level));
@@ -208,15 +214,15 @@ public final class ItemEditor {
                 && Objects.equals(next.getFormat(), expected.getFormat())
                 && Objects.equals(next.getCode(), expected.getCode())
                 && Objects.equals(next.getDescription(), expected.getDescription())
-                && Objects.equals(next.getEncrypted(), expected.getEncrypted()))
+                && Objects.equals(next.getEncrypted(), expected.getEncrypted())
+                && (expected.getEncrypted() != 1 || protection(expected) == ItemCodec.Protection.VALUES))
             return copy(expected);
-        boolean partial = !whole && rules.values().stream().anyMatch(ItemCodec.Rule::sensitive);
-        next.setEncrypted(whole || partial ? 1 : 0);
+        boolean partial = whole || rules.values().stream().anyMatch(ItemCodec.Rule::sensitive);
+        next.setEncrypted(partial ? 1 : 0);
         ItemCodec.Document marked = new ItemCodec.Document(properties, rules, plain.schema(), plain.management(),
-                whole ? ItemCodec.Protection.WHOLE : partial ? ItemCodec.Protection.KEYS : ItemCodec.Protection.NONE);
+                partial ? ItemCodec.Protection.VALUES : ItemCodec.Protection.NONE);
         next.setContent(
-                whole ? secrets.protect(codec.content(plain))
-                        : codec.content(
+                codec.content(
                                 partial ? crypt(
                                         marked,
                                         true,
@@ -229,10 +235,8 @@ public final class ItemEditor {
                                                         expected.getExtension())
                                                 : null)
                                         : plain));
-        next.setSchema(
-                (whole || partial) ? secrets.protect(ItemCodec.encode(plain.schema()))
-                        : ItemCodec.encode(plain.schema()));
-        next.setExtension(whole ? secrets.protect(codec.extension(marked)) : codec.extension(marked));
+        next.setSchema(ItemCodec.encode(plain.schema()));
+        next.setExtension(codec.extension(marked));
         next.setChecksum(codec.checksum(next));
         return next;
     }
@@ -329,7 +333,8 @@ public final class ItemEditor {
         ItemCodec.Document parsed = codec.decode(
                 keys ? stored.getContent() : secrets.decrypt(stored.getContent()),
                 stored.getFormat(),
-                stored.getSchema() == null ? null : secrets.decrypt(stored.getSchema()),
+                stored.getSchema() == null ? null
+                        : protection(stored) == ItemCodec.Protection.VALUES ? stored.getSchema() : secrets.decrypt(stored.getSchema()),
                 keys ? stored.getExtension() : secrets.decrypt(stored.getExtension()));
         return keys ? crypt(parsed, false, null, null) : parsed;
     }
@@ -341,7 +346,63 @@ public final class ItemEditor {
      * @return masked definition
      */
     public ItemCodec.Document view(Item stored) {
+        if (Integer.valueOf(1).equals(stored.getEncrypted()) && keyMode(stored)) {
+            if (stored.getChecksum() == null || !stored.getChecksum().equals(codec.checksum(stored)))
+                throw new IllegalStateException("Definition checksum mismatch");
+            return masker.mask(codec.decode(stored.getContent(), stored.getFormat(),
+                    protection(stored) == ItemCodec.Protection.VALUES ? stored.getSchema() : null, stored.getExtension()));
+        }
         return masker.mask(open(stored));
+    }
+
+    /**
+     * Reveals only the requested value cell, leaving every unrelated protected member unopened.
+     *
+     * @param stored protected definition
+     * @param pointer exact business-value pointer
+     * @return selected plaintext value
+     */
+    public JsonValue reveal(Item stored, String pointer) {
+        if (stored.getChecksum() == null || !stored.getChecksum().equals(codec.checksum(stored)))
+            throw new IllegalStateException("Definition checksum mismatch");
+        if (Integer.valueOf(1).equals(stored.getEncrypted()) && !keyMode(stored))
+            throw new IllegalStateException("Legacy whole protection requires conversion before per-value revelation");
+        if (Integer.valueOf(1).equals(stored.getEncrypted()) && secrets instanceof NoOpSecretCodec)
+            throw new IllegalStateException("Protecting codec required");
+        var document = codec.decode(stored.getContent(), stored.getFormat(),
+                Integer.valueOf(1).equals(stored.getEncrypted()) && protection(stored) != ItemCodec.Protection.VALUES ? null : stored.getSchema(),
+                stored.getExtension());
+        if (pointer == null || pointer.isEmpty() && (document.properties().size() != 1 || !document.properties().containsKey(""))
+                || !pointer.isEmpty() && (!pointer.startsWith("/") || JsonSchema.tokens(pointer).isEmpty()))
+            throw new IllegalArgumentException("Exact value cell required");
+        var values = document.values();
+        var ancestors = document.rules().entrySet().stream().filter(e -> e.getValue().sensitive() && ancestor(e.getKey(), pointer))
+                .map(Map.Entry::getKey).sorted(Comparator.comparingInt(String::length)).toList();
+        if (Integer.valueOf(1).equals(stored.getEncrypted()) && !ancestors.isEmpty()) {
+            String path = ancestors.getFirst();
+            var value = ItemCodec.at(values, path);
+            if (!(value instanceof JsonValue.StringValue text))
+                throw new IllegalStateException("Invalid protected member");
+            return ItemCodec.at(ItemCodec.tree(secrets.decrypt(text.value())), pointer.substring(path.length()));
+        }
+        JsonValue selected = ItemCodec.at(values, pointer);
+        if (selected == null)
+            throw new IllegalArgumentException("Unknown stored property");
+        Set<String> opened = new HashSet<>();
+        for (String path : document.rules().entrySet().stream().filter(e -> e.getValue().sensitive() && ancestor(pointer, e.getKey()))
+                .map(Map.Entry::getKey).sorted(Comparator.comparingInt(String::length)).toList()) {
+            if (!Integer.valueOf(1).equals(stored.getEncrypted()) || opened.stream().anyMatch(parent -> ancestor(parent, path)))
+                continue;
+            String relative = path.substring(pointer.length());
+            var value = ItemCodec.at(selected, relative);
+            if (value == null)
+                continue;
+            if (!(value instanceof JsonValue.StringValue text))
+                throw new IllegalStateException("Invalid protected member");
+            selected = ItemCodec.write(selected, relative, ItemCodec.tree(secrets.decrypt(text.value())), false);
+            opened.add(path);
+        }
+        return selected;
     }
 
     /**
@@ -471,12 +532,27 @@ public final class ItemEditor {
      * @return whether keys are individually protected
      */
     private boolean keyMode(Item item) {
+        return protection(item) == ItemCodec.Protection.KEYS || protection(item) == ItemCodec.Protection.VALUES;
+    }
+
+    /**
+     * Reads the explicit storage marker without opening any protected value.
+     *
+     * @param item stored definition
+     * @return storage layout; legacy opaque definitions retain WHOLE
+     */
+    public ItemCodec.Protection protection(Item item) {
+        if (!Integer.valueOf(1).equals(item.getEncrypted()))
+            return ItemCodec.Protection.NONE;
         if (item.getExtension() == null || !item.getExtension().stripLeading().startsWith("{"))
-            return false;
+            return ItemCodec.Protection.WHOLE;
         JsonValue raw = ItemCodec.tree(item.getExtension());
-        return raw instanceof JsonValue.ObjectValue root
+        if (raw instanceof JsonValue.ObjectValue root
                 && root.values().get("services") instanceof JsonValue.ObjectValue services
-                && new JsonValue.StringValue("KEYS").equals(services.values().get("protection"));
+                && services.values().get("protection") instanceof JsonValue.StringValue mode
+                && Set.of("KEYS", "VALUES").contains(mode.value()))
+            return ItemCodec.Protection.valueOf(mode.value());
+        return ItemCodec.Protection.WHOLE;
     }
 
     /**
