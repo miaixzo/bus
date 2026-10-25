@@ -61,16 +61,18 @@ All properties below are under `bus.cortex`. Existing `cache` options select the
 | `bridge.url` | Empty | Required for `push+pull` mode |
 | `bridge.max-retries` | `3` | Positive bridge retry limit |
 | `bridge.source` | Empty | Bridge source marker |
-| `guard.enabled` | `true` | Assemble TokenGuard configuration and strategy |
+| `guard.enabled` | `true` | Enable optional Cortex access checks and TokenGuard pre-validation |
 | `guard.token` | TokenGuardConfig defaults | Token transport pre-validation options |
 | `audit.enabled` | `false` | Assemble the audit logger |
 | `release.enabled` | `false` | Assemble the read-only release registry when ReleaseStore exists |
 
 ## Host wiring and transactions
 
-Starter assembles setting services conditionally from host-provided Stores and Enforcer. Current-state operations use `ItemStore`, `ReferenceStore`, `SettingStore` and related services. Approval and publication use `RolloutStore`, `ApprovalStore`, `PublicationStore`, `ReleaseStore` and `RevisionStore`. Runtime delivery also requires `WatchStore` and `SettingEnforcer`. Each Bean's `ConditionalOnBean` declares its exact dependency set.
+Starter assembles setting services conditionally from host-provided Stores. Current-state operations use `ItemStore`, `ReferenceStore`, `SettingStore` and related services. Approval and publication use `RolloutStore`, `ApprovalStore`, `PublicationStore`, `ReleaseStore` and `RevisionStore`. Runtime delivery also requires `WatchStore` and `SettingProvider`. Each Bean's `ConditionalOnBean` declares its exact dependency set.
 
-Host implementations enforce tenant isolation, authoritative instance reads and session checks, authorization, CAS and atomic commits. `SettingStore` commits current definitions and relationships together; `RolloutStore.submit` atomically validates the frozen read-set; `PublicationStore` commits successful snapshots and publication state.
+`SettingProvider` supplies invocation coordinates and current process data without authenticating callers. Host implementations enforce tenant isolation, process-session consistency, CAS and atomic commits. Approval policy validation belongs to `ApprovalStore`. `SettingStore` commits current definitions and relationships together; `RolloutStore.submit` atomically validates the frozen read-set; `PublicationStore` commits successful snapshots and publication state.
+
+Set `bus.cortex.guard.enabled=false` when an upstream gateway handles access policy. This bypasses optional guard checks for both registry and setting services, including host-supplied guards; it never bypasses tenant matching, edition checks, approval state, frozen checksums, receipt idempotency or secret protection. With guards enabled, host `GuardStrategy` implementations supply access decisions; Cortex does not authenticate accounts or credentials. Reads need no audit actor or request; idempotent mutations require a request, and approval evidence also requires an actor.
 
 The default `NoOpSecretCodec` rejects sensitive content. Hosts must provide real protection; there is no silent plaintext fallback. TokenGuard only pre-validates credential presence and transport; authentication, permission and license checks remain host responsibilities.
 
@@ -78,7 +80,7 @@ Registry Beans can be injected directly. The static Cortex facade requires a bou
 
 ## Current API examples
 
-These method fragments receive Registry, Curator and request arguments from the host. Tenant and application identities must come from trusted context.
+These method fragments receive Registry, Curator and request arguments from the host. Tenant and application coordinates identify data scope; authentication is a host responsibility.
 
 ```java
 import java.util.List;
@@ -97,6 +99,21 @@ List<Instance> instances(Registry<ApiAssets> registry) {
 ```
 
 API service routes use global scope; MCP and Prompt operations require an explicit tenant. Shared processes use the root `Instance` entity with `app_id` ownership. Registry maintains service associations; runtime instances are identified by `checksum`.
+
+`Instance` uses the inherited integer `status` only: DELETED=-1, DISABLED=0, UP=1, DOWN=2, UNKNOWN=3, STARTING=4, MAINTENANCE=5. `modified` is the inherited general modification time in epoch milliseconds. The `health` JSON text stores `scheme`, `path`, `time` (the most recent probe time), `origin`, `session`, `beat`, and `lease`; these are not separate instance fields. Session expiry is independent of reachability. New registrations default to UNKNOWN at the registration boundary; active probes do not override disabled, retired, or maintenance instances.
+
+`health`, `labels`, and `metadata` are JSON object **text**, suitable for persistence. Labels require string values; metadata may contain nested values. `labelView()` and `metadataView()` parse these attributes without persistent Map fields or compatibility aliases. Program `version` does not participate in the host/port checksum.
+
+`org.miaixz.bus.cortex.health.HealthInfo` is the shared typed value of the seven-member health JSON document and owns its strict parsing, validation and serialization through `HealthInfo.parse(String)` and `toJson()`. `Instance.healthView()` returns a detached validated snapshot; callers change their own members and pass the complete value to `health(HealthInfo)`. Null members clear values. Persistence remains `@Lob String health`; the shared value has no ORM mapping or execution responsibilities. There is no health Map, string-key getter or patch API. Probers own `time` and `origin`; the host owns `session`, `beat`, and `lease`. Client reports may supply check configuration but cannot overwrite server observations. Session establishment or replacement clears old probe observations while retaining the supplied check configuration. Watch and delivery evidence keep their own session coordinate and compare it with `health.session`. Lattice fences health writes using the existing edition; health-change events compare status and `health.origin`, not the entire JSON text.
+
+Probe cycles group registrations by process/session and the effective protocol, host, port and HTTP path. Equivalent defaults share I/O; different targets are checked separately. Results update existing observations through `RegistryStore.updateHealth`, never normal registration. The host atomically fences the unchanged service and runtime row and publishes cache/event effects only after commit. Stale, disabled, removed or replaced registrations reject the result. `ApiAssets` no longer owns or supplies heartbeat/lease defaults; normal metadata saves remove its old `beat` and `lease` keys while retaining unrelated extensions.
+
+Cache-only probing requires backend conditional replacement. The default Starter Caffeine backend and its MemoryCache fallback support it, as does the single-node Redis backend; Hybrid delegates the primary comparison, coordinates local mirror mutations and reconciles completions from the current primary value. Mirror keys only enumerate candidates; reads and scan values always come from the primary. The complete atomic-cache capability flag keeps its existing meaning, and unsupported backends do not fall back to read-then-write.
+
+Probe writes compare the captured service definition and runtime value in one guarded backend replacement. API runtime cache partitions include the existing verb coordinate. Exact-service sampling retains distinct association snapshots before grouping effective targets, while the public process query still deduplicates process identities. Durable runtime reads do not warm caches, and durable registration/probe callbacks only invalidate their runtime projection. Shared and typed host stores use the same commit/rollback callback boundary; one association failure does not skip its peers. Lattice owns the scheduler lifecycle after its context refresh; Starter clients alone do not start a probe scheduler.
+
+
+
 
 ```java
 import org.miaixz.bus.cortex.Curator;

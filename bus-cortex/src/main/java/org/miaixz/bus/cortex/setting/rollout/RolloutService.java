@@ -22,11 +22,13 @@ package org.miaixz.bus.cortex.setting.rollout;
 import java.util.*;
 
 import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.cortex.guard.CortexGuard;
 import org.miaixz.bus.cortex.release.Release;
 import org.miaixz.bus.cortex.release.ReleaseCodec;
 import org.miaixz.bus.cortex.release.ReleaseStore;
-import org.miaixz.bus.cortex.setting.SettingEnforcer;
+import org.miaixz.bus.cortex.setting.SettingProvider;
 import org.miaixz.bus.cortex.setting.SettingStore;
+import org.miaixz.bus.cortex.setting.approval.ApprovalStore;
 import org.miaixz.bus.cortex.setting.curator.ItemEditor;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemCodec;
@@ -60,7 +62,7 @@ public final class RolloutService {
      */
     private final RevisionStore revisions;
     /**
-     * Source integrity and authorized decryption.
+     * Source integrity and protected content decoding.
      */
     private final ItemEditor editor;
     /**
@@ -68,9 +70,13 @@ public final class RolloutService {
      */
     private final ReferenceCodec references;
     /**
-     * Mandatory host policy.
+     * Host approval policy registry, independent of access checks.
      */
-    private final SettingEnforcer enforcer;
+    private final ApprovalStore approvals;
+    /**
+     * Optional host access policy.
+     */
+    private final CortexGuard guard;
 
     /**
      * Creates workflow management.
@@ -81,31 +87,34 @@ public final class RolloutService {
      * @param revisions  exact snapshots
      * @param editor     source verification
      * @param references option parser
-     * @param enforcer   policy
+     * @param approvals  approval policy registry
+     * @param guard      optional host access policy
      */
     public RolloutService(RolloutStore store, SettingStore settings, ReleaseStore releases, RevisionStore revisions,
-            ItemEditor editor, ReferenceCodec references, SettingEnforcer enforcer) {
+            ItemEditor editor, ReferenceCodec references, ApprovalStore approvals, CortexGuard guard) {
         this.store = Objects.requireNonNull(store);
         this.settings = Objects.requireNonNull(settings);
         this.releases = Objects.requireNonNull(releases);
         this.revisions = Objects.requireNonNull(revisions);
         this.editor = Objects.requireNonNull(editor);
         this.references = Objects.requireNonNull(references);
-        this.enforcer = Objects.requireNonNull(enforcer);
+        this.approvals = Objects.requireNonNull(approvals);
+        this.guard = guard;
     }
 
     /**
      * Creates only workflow input.
      *
-     * @param context     trusted identity
+     * @param context     operation coordinates
      * @param title       name
      * @param description purpose
      * @param selection   explicit apps
      * @return draft
      */
-    public Rollout create(SettingEnforcer.Context context, String title, String description, Plan.Selection selection) {
-        enforcer.require(context, "create", "rollout", null);
-        enforcer.requirePolicy(context, selection.policy());
+    public Rollout create(SettingProvider.Context context, String title, String description, Plan.Selection selection) {
+        context.requireRequest();
+        context.check(guard, "create", "rollout", null);
+        approvals.validatePolicy(context, selection.policy());
         return store.saveDraft(
                 Rollout.builder().tenant_id(context.tenant()).id(ID.objectId()).title(title).description(description)
                         .status(Rollout.State.DRAFT.key()).manifest(Plan.selection(selection)).build(),
@@ -115,7 +124,7 @@ public final class RolloutService {
     /**
      * Updates only an editable draft.
      *
-     * @param context     trusted identity
+     * @param context     operation coordinates
      * @param rollout     workflow
      * @param edition     expected CAS
      * @param title       name
@@ -124,15 +133,16 @@ public final class RolloutService {
      * @return draft
      */
     public Rollout update(
-            SettingEnforcer.Context context,
+            SettingProvider.Context context,
             String rollout,
             long edition,
             String title,
             String description,
             Plan.Selection selection) {
-        enforcer.require(context, "edit", "rollout", rollout);
+        context.requireRequest();
+        context.check(guard, "edit", "rollout", rollout);
         Rollout next = draft(context, rollout, edition);
-        enforcer.requirePolicy(context, selection.policy());
+        approvals.validatePolicy(context, selection.policy());
         next.setTitle(title);
         next.setDescription(description);
         next.setManifest(Plan.selection(selection));
@@ -143,12 +153,13 @@ public final class RolloutService {
     /**
      * Deletes only a draft; Store must repeat state/CAS checks atomically.
      *
-     * @param context trusted identity
+     * @param context operation coordinates
      * @param rollout workflow
      * @param edition expected CAS
      */
-    public void delete(SettingEnforcer.Context context, String rollout, long edition) {
-        enforcer.require(context, "delete", "rollout", rollout);
+    public void delete(SettingProvider.Context context, String rollout, long edition) {
+        context.requireRequest();
+        context.check(guard, "delete", "rollout", rollout);
         draft(context, rollout, edition);
         store.deleteDraft(context.tenant(), rollout, edition);
     }
@@ -156,12 +167,12 @@ public final class RolloutService {
     /**
      * Finds an exact workflow.
      *
-     * @param context trusted identity
+     * @param context operation coordinates
      * @param rollout workflow
      * @return detached workflow
      */
-    public Rollout find(SettingEnforcer.Context context, String rollout) {
-        enforcer.require(context, "read", "rollout", rollout);
+    public Rollout find(SettingProvider.Context context, String rollout) {
+        context.check(guard, "read", "rollout", rollout);
         Rollout value = store.find(context.tenant(), rollout);
         if (value != null && (!context.tenant().equals(value.getTenant_id()) || !rollout.equals(value.getId())))
             throw new IllegalStateException("Workflow identity mismatch");
@@ -171,13 +182,13 @@ public final class RolloutService {
     /**
      * Queries workflow management state.
      *
-     * @param context trusted identity
+     * @param context operation coordinates
      * @param offset  page offset
      * @param limit   page size
      * @return workflows
      */
-    public List<Rollout> query(SettingEnforcer.Context context, int offset, int limit) {
-        enforcer.require(context, "read", "rollout", null);
+    public List<Rollout> query(SettingProvider.Context context, int offset, int limit) {
+        context.check(guard, "read", "rollout", null);
         if (offset < 0 || limit < 1 || limit > 1000)
             throw new IllegalArgumentException("Invalid workflow page");
         return List.copyOf(store.query(context.tenant(), offset, limit));
@@ -186,18 +197,19 @@ public final class RolloutService {
     /**
      * Freezes consistent current definitions/relationships and exact approved baseline.
      *
-     * @param context trusted identity
+     * @param context operation coordinates
      * @param rollout draft identity
      * @param edition expected CAS
      * @return immutable review input
      */
-    public Rollout submit(SettingEnforcer.Context context, String rollout, long edition) {
-        enforcer.require(context, "submit", "rollout", rollout);
+    public Rollout submit(SettingProvider.Context context, String rollout, long edition) {
+        context.requireRequest();
+        context.check(guard, "submit", "rollout", rollout);
         Rollout draft = draft(context, rollout, edition);
         Plan.Selection selection = Plan.selection(draft.getManifest());
-        enforcer.requirePolicy(context, selection.policy());
+        approvals.validatePolicy(context, selection.policy());
         for (String app : selection.applications())
-            enforcer.require(context, "publish", "app", app);
+            context.check(guard, "publish", "app", app);
         SettingStore.View view = settings.read(context.tenant(), selection.applications());
         Set<String> apps = new HashSet<>();
         view.apps().forEach(app -> {
@@ -310,12 +322,12 @@ public final class RolloutService {
     /**
      * Requires exact editable draft state before preparation.
      *
-     * @param context trusted identity
+     * @param context operation coordinates
      * @param id      workflow
      * @param edition expected CAS
      * @return detached draft
      */
-    private Rollout draft(SettingEnforcer.Context context, String id, long edition) {
+    private Rollout draft(SettingProvider.Context context, String id, long edition) {
         Rollout value = find(context, id);
         if (value == null || !Objects.equals(Rollout.State.DRAFT.key(), value.getStatus())
                 || !Objects.equals(edition, value.getEdition()))

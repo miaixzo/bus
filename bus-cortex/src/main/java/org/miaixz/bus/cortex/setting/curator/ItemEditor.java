@@ -105,7 +105,7 @@ public final class ItemEditor {
     }
 
     /**
-     * Prepares an authorized edit without assigning edition or persisting.
+     * Prepares an explicit edit without assigning edition or persisting.
      *
      * @param expected  current protected item
      * @param candidate explicit edited definition
@@ -313,7 +313,7 @@ public final class ItemEditor {
     }
 
     /**
-     * Reveals a verified protected definition for an already authorized operation.
+     * Reveals a verified protected definition for the requested operation.
      *
      * @param stored protected item
      * @return invocation-local plaintext definition

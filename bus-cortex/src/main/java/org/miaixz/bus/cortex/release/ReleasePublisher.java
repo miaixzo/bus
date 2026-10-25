@@ -21,7 +21,8 @@ package org.miaixz.bus.cortex.release;
 
 import java.util.*;
 
-import org.miaixz.bus.cortex.setting.SettingEnforcer;
+import org.miaixz.bus.cortex.guard.CortexGuard;
+import org.miaixz.bus.cortex.setting.SettingProvider;
 import org.miaixz.bus.cortex.setting.item.ItemCodec;
 import org.miaixz.bus.cortex.setting.reference.ReferenceCodec;
 import org.miaixz.bus.cortex.setting.revision.Revision;
@@ -46,9 +47,9 @@ public final class ReleasePublisher {
      */
     private final RolloutStore rollouts;
     /**
-     * Mandatory authorization.
+     * Optional host access policy.
      */
-    private final SettingEnforcer enforcer;
+    private final CortexGuard guard;
     /**
      * Exact historical release reads for rollback verification.
      */
@@ -63,15 +64,15 @@ public final class ReleasePublisher {
      *
      * @param publications final atomic commit
      * @param rollouts     workflow intents
-     * @param enforcer     permissions
+     * @param guard        optional host access policy
      * @param releases     formal releases
      * @param revisions    exact snapshots
      */
-    public ReleasePublisher(PublicationStore publications, RolloutStore rollouts, SettingEnforcer enforcer,
+    public ReleasePublisher(PublicationStore publications, RolloutStore rollouts, CortexGuard guard,
             ReleaseStore releases, RevisionStore revisions) {
         this.publications = Objects.requireNonNull(publications);
         this.rollouts = Objects.requireNonNull(rollouts);
-        this.enforcer = Objects.requireNonNull(enforcer);
+        this.guard = guard;
         this.releases = Objects.requireNonNull(releases);
         this.revisions = Objects.requireNonNull(revisions);
     }
@@ -79,19 +80,20 @@ public final class ReleasePublisher {
     /**
      * Publishes exactly approved frozen input.
      *
-     * @param context trusted identity/idempotency
+     * @param context operation coordinates/idempotency
      * @param rollout workflow
      * @param edition expected CAS
      * @return exact committed formal release
      */
-    public Release publish(SettingEnforcer.Context context, String rollout, long edition) {
-        enforcer.require(context, "publish", "rollout", rollout);
+    public Release publish(SettingProvider.Context context, String rollout, long edition) {
+        context.requireRequest();
+        context.check(guard, "publish", "rollout", rollout);
         Rollout current = required(context, rollout);
         Plan.Frozen frozen = Plan.frozen(current.getManifest());
         if (!Objects.equals(current.getChecksum(), Plan.checksum(frozen)))
             throw new IllegalStateException("Approved input checksum mismatch");
         for (String app : frozen.selection().applications())
-            enforcer.require(context, "publish", "app", app);
+            context.check(guard, "publish", "app", app);
         Rollout intent = rollouts.beginPublication(context, rollout, edition, current.getChecksum());
         if (intent.getPublication() == null || !context.tenant().equals(intent.getTenant_id())
                 || !rollout.equals(intent.getId()) || !Objects.equals(current.getChecksum(), intent.getChecksum())
@@ -118,13 +120,13 @@ public final class ReleasePublisher {
     /**
      * Re-publishes exact historical content only through a separately approved workflow.
      *
-     * @param context          trusted identity
+     * @param context          operation coordinates
      * @param publishedRelease exact historical release
      * @param approvedRollout  separately approved frozen input
      * @return new formal release
      */
-    public Release rollback(SettingEnforcer.Context context, String publishedRelease, String approvedRollout) {
-        enforcer.require(context, "rollback", "release", publishedRelease);
+    public Release rollback(SettingProvider.Context context, String publishedRelease, String approvedRollout) {
+        context.check(guard, "rollback", "release", publishedRelease);
         Release target = releases.byId(context.tenant(), publishedRelease);
         if (target == null)
             throw new IllegalArgumentException("Published rollback target required");
@@ -156,11 +158,11 @@ public final class ReleasePublisher {
     /**
      * Resolves an exact tenant-qualified workflow.
      *
-     * @param context trusted identity
+     * @param context operation coordinates
      * @param id      workflow
      * @return workflow
      */
-    private Rollout required(SettingEnforcer.Context context, String id) {
+    private Rollout required(SettingProvider.Context context, String id) {
         Rollout value = rollouts.find(context.tenant(), id);
         if (value == null || !id.equals(value.getId()) || !context.tenant().equals(value.getTenant_id()))
             throw new IllegalArgumentException("Workflow not found");

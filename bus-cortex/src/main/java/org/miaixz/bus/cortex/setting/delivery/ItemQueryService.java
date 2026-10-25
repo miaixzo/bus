@@ -30,11 +30,12 @@ import org.miaixz.bus.cortex.Keying.SettingSpec;
 import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.Vector;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
+import org.miaixz.bus.cortex.guard.CortexGuard;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.cortex.release.Release;
 import org.miaixz.bus.cortex.release.ReleaseCodec;
 import org.miaixz.bus.cortex.release.ReleaseStore;
-import org.miaixz.bus.cortex.setting.SettingEnforcer;
+import org.miaixz.bus.cortex.setting.SettingProvider;
 import org.miaixz.bus.cortex.setting.curator.ItemEditor;
 import org.miaixz.bus.cortex.setting.item.ItemCodec;
 import org.miaixz.bus.cortex.setting.item.ItemMerger;
@@ -64,7 +65,7 @@ public final class ItemQueryService implements Curator {
      */
     private final RevisionStore revisions;
     /**
-     * Authorized protection handling.
+     * Protected content handling.
      */
     private final ItemEditor editor;
     /**
@@ -72,7 +73,7 @@ public final class ItemQueryService implements Curator {
      */
     private final ItemCodec codec;
     /**
-     * Trusted-instance gray selector.
+     * Current-process gray selector.
      */
     private final GrayRuleMatcher matcher;
     /**
@@ -84,9 +85,13 @@ public final class ItemQueryService implements Curator {
      */
     private final WatchManager transport;
     /**
-     * Mandatory authentication, authorization and current instance session verification.
+     * Invocation and current process data, independent of authentication.
      */
-    private final SettingEnforcer enforcer;
+    private final SettingProvider provider;
+    /**
+     * Optional host access policy, independent of invocation and process data.
+     */
+    private final CortexGuard guard;
 
     /**
      * Creates governed delivery.
@@ -98,10 +103,12 @@ public final class ItemQueryService implements Curator {
      * @param matcher   gray selection
      * @param watches   durable subscriptions
      * @param transport notifications
-     * @param enforcer  policy and authoritative instance session verification
+     * @param provider  invocation and current process data
+     * @param guard     optional host access policy
      */
     public ItemQueryService(ReleaseStore releases, RevisionStore revisions, ItemEditor editor, ItemCodec codec,
-            GrayRuleMatcher matcher, WatchStore watches, WatchManager transport, SettingEnforcer enforcer) {
+            GrayRuleMatcher matcher, WatchStore watches, WatchManager transport, SettingProvider provider,
+            CortexGuard guard) {
         this.releases = Objects.requireNonNull(releases);
         this.revisions = Objects.requireNonNull(revisions);
         this.editor = Objects.requireNonNull(editor);
@@ -109,18 +116,30 @@ public final class ItemQueryService implements Curator {
         this.matcher = Objects.requireNonNull(matcher);
         this.watches = Objects.requireNonNull(watches);
         this.transport = Objects.requireNonNull(transport);
-        this.enforcer = Objects.requireNonNull(enforcer);
+        this.provider = Objects.requireNonNull(provider);
+        this.guard = guard;
     }
 
     /**
-     * Reads exact authorized published content.
+     * Reads exact published content.
      *
      * @param query application-qualified request
      * @return encoded content or genuinely absent
      */
     @Override
     public String get(ItemQuery query) {
-        return read(enforcer.current(), List.of(query)).get(key(query));
+        return get(provider.current(), query);
+    }
+
+    /**
+     * Reads published content for explicit operation coordinates without requiring an ambient login context.
+     *
+     * @param context operation coordinates
+     * @param query   application-qualified request
+     * @return encoded published content, or null when absent
+     */
+    public String get(SettingProvider.Context context, ItemQuery query) {
+        return read(context, List.of(query), null).get(key(query));
     }
 
     /**
@@ -131,11 +150,11 @@ public final class ItemQueryService implements Curator {
      */
     @Override
     public Map<String, String> batchGet(List<ItemQuery> queries) {
-        return read(enforcer.current(), queries);
+        return read(provider.current(), queries, null);
     }
 
     /**
-     * Applies fallback only to genuine authorized absence.
+     * Applies fallback only to genuine absence.
      *
      * @param query    application request
      * @param fallback caller fallback
@@ -148,7 +167,7 @@ public final class ItemQueryService implements Curator {
     }
 
     /**
-     * Registers a published-change subscription; callback rechecks the captured trusted identity. Durable evidence
+     * Registers a published-change subscription; callback rechecks the captured operation coordinates. Durable evidence
      * records the source Item ID resolved from the selected publication, while transport retains the requested alias.
      * An absent published source retains a transport-only subscription until notifications can resolve its content.
      *
@@ -158,13 +177,13 @@ public final class ItemQueryService implements Curator {
      */
     @Override
     public String watch(ItemQuery query, ConsumerX<String> listener) {
-        SettingEnforcer.Context context = enforcer.current();
+        SettingProvider.Context context = provider.current();
         validate(context, query);
-        enforcer.require(context, "subscribe", "app", query.getApp_id());
+        context.check(guard, "subscribe", "app", query.getApp_id());
         Objects.requireNonNull(listener);
         ItemQuery captured = ItemQuery.builder().tenant_id(query.getTenant_id()).app_id(query.getApp_id())
                 .id(query.getId()).code(query.getCode()).requestId(query.getRequestId()).build();
-        Instance instance = enforcer.instance(context, captured.getApp_id());
+        Instance instance = instance(context, captured.getApp_id());
         String itemId = null;
         if (instance != null) {
             Release release = select(
@@ -178,15 +197,17 @@ public final class ItemQueryService implements Curator {
                     itemId = state.snapshots().get(binding.source()).getItem_id();
             }
         }
+        Instance expected = instance == null ? null
+                : Instance.builder().id(instance.getId()).health(instance.getHealth()).build();
         String id = transport.add(
                 Vector.builder().tenant_id(context.tenant()).app_id(captured.getApp_id()).id(key(captured))
                         .type(Type.ITEM.key()).build(),
-                event -> listener.accept(read(context, List.of(captured)).get(key(captured))));
+                event -> listener.accept(read(context, List.of(captured), expected).get(key(captured))));
         try {
             if (instance != null && itemId != null)
                 watches.save(
                         Watch.builder().tenant_id(context.tenant()).id(id).instance_id(instance.getId()).item_id(itemId)
-                                .session(instance.getSession()).build());
+                                .session(instance.healthView().getSession()).build());
             return id;
         } catch (RuntimeException failed) {
             transport.remove(id);
@@ -195,17 +216,17 @@ public final class ItemQueryService implements Curator {
     }
 
     /**
-     * Removes only an authorized exact subscription.
+     * Removes only an tenant-qualified exact subscription.
      *
      * @param watch_id transport identity
      */
     @Override
     public void unwatch(String watch_id) {
-        SettingEnforcer.Context context = enforcer.current();
-        enforcer.require(context, "unsubscribe", "watch", watch_id);
+        SettingProvider.Context context = provider.current();
+        context.check(guard, "unsubscribe", "watch", watch_id);
         var entry = transport.entries().get(watch_id);
         if (entry != null && !context.tenant().equals(entry.getTenant_id()))
-            throw new SecurityException("Watch tenant mismatch");
+            throw new IllegalArgumentException("Watch tenant mismatch");
         if (watches.find(context.tenant(), watch_id) != null)
             watches.delete(context.tenant(), watch_id);
         transport.remove(watch_id);
@@ -214,11 +235,12 @@ public final class ItemQueryService implements Curator {
     /**
      * Resolves a batch with invocation-local parsed state only.
      *
-     * @param context captured authenticated identity
-     * @param queries requested aliases
+     * @param context  captured operation coordinates
+     * @param queries  requested aliases
+     * @param expected original process session for a bound subscription, or null for an ordinary read
      * @return qualified values
      */
-    private Map<String, String> read(SettingEnforcer.Context context, List<ItemQuery> queries) {
+    private Map<String, String> read(SettingProvider.Context context, List<ItemQuery> queries, Instance expected) {
         if (queries.size() > 1000)
             throw new IllegalArgumentException("Delivery batch too large");
         Map<String, String> result = new LinkedHashMap<>();
@@ -229,7 +251,10 @@ public final class ItemQueryService implements Curator {
         for (ItemQuery query : queries) {
             validate(context, query);
             if (!selected.containsKey(query.getApp_id())) {
-                Instance runtime = enforcer.instance(context, query.getApp_id());
+                Instance runtime = instance(context, query.getApp_id());
+                if (expected != null && (runtime == null || !expected.getId().equals(runtime.getId())
+                        || !expected.healthView().getSession().equals(runtime.healthView().getSession())))
+                    throw new IllegalStateException("Subscription process session changed");
                 if (!tracks) {
                     stable = releases.current(context.tenant(), EnumValue.Track.STABLE.key());
                     canary = releases.current(context.tenant(), EnumValue.Track.CANARY.key());
@@ -244,9 +269,9 @@ public final class ItemQueryService implements Curator {
                 ReleaseCodec.Binding binding = binding(state, query);
                 if (binding != null) {
                     Revision snapshot = state.snapshots().get(binding.source());
-                    enforcer.require(context, "deliver", "item", snapshot.getItem_id());
+                    context.check(guard, "deliver", "item", snapshot.getItem_id());
                     if (Integer.valueOf(1).equals(snapshot.getEncrypted()))
-                        enforcer.require(context, "deliver-secret", "item", snapshot.getItem_id());
+                        context.check(guard, "deliver-secret", "item", snapshot.getItem_id());
                     ItemCodec.Document parsed = state.definitions().computeIfAbsent(
                             snapshot.getId(),
                             ignored -> editor.open(ReleaseCodec.definition(snapshot).item(context.tenant())));
@@ -271,11 +296,28 @@ public final class ItemQueryService implements Curator {
     }
 
     /**
+     * Reads current process coordinates for selection and subscription evidence. This checks data scope and the current
+     * heartbeat lease; credentials and principal-to-process access belong to the host guard. The provider must not
+     * return retired sessions as active process data.
+     *
+     * @param context invocation coordinates
+     * @param app     requested application
+     * @return current process, or null for a process-free read
+     */
+    private Instance instance(SettingProvider.Context context, String app) {
+        Instance value = provider.instance(context, app);
+        if (value != null && (!context.tenant().equals(value.getTenant_id()) || !app.equals(value.getApp_id())
+                || value.getId() == null || value.getId().isBlank() || !value.isOnline(System.currentTimeMillis())))
+            throw new IllegalStateException("Current process coordinates mismatch");
+        return value;
+    }
+
+    /**
      * Selects the same published track for reads and subscription identity resolution.
      *
      * @param stable   current stable release or absent
      * @param canary   current gray release or absent
-     * @param instance verified current instance or an authorized non-instance reader
+     * @param instance current process or a process-free reader
      * @return selected formal release or absent
      */
     private Release select(Release stable, Release canary, Instance instance) {
@@ -315,11 +357,11 @@ public final class ItemQueryService implements Curator {
     /**
      * Loads/verifies the exact complete immutable graph once.
      *
-     * @param context trusted identity
+     * @param context operation coordinates
      * @param release selected formal record
      * @return invocation-local source set
      */
-    private Loaded load(SettingEnforcer.Context context, Release release) {
+    private Loaded load(SettingProvider.Context context, Release release) {
         if (!context.tenant().equals(release.getTenant_id()) || !ReleaseStore.isServable(release.getStatus()))
             throw new IllegalStateException("Release not servable");
         ReleaseCodec.Document document = ReleaseCodec.decode(release);
@@ -335,16 +377,16 @@ public final class ItemQueryService implements Curator {
     /**
      * Rejects management/foreign request coordinates before any lookup.
      *
-     * @param context trusted identity
+     * @param context operation coordinates
      * @param query   application request
      */
-    private void validate(SettingEnforcer.Context context, ItemQuery query) {
+    private void validate(SettingProvider.Context context, ItemQuery query) {
         if (query == null || !context.tenant().equals(query.getTenant_id()) || query.getApp_id() == null
                 || query.getApp_id().isBlank() || query.isIncludeDeleted() || query.getOffset() != 0
                 || (query.getId() == null || query.getId().isBlank())
                         && (query.getCode() == null || query.getCode().isBlank()))
             throw new IllegalArgumentException("Exact runtime application query required");
-        enforcer.require(context, "deliver", "app", query.getApp_id());
+        context.check(guard, "deliver", "app", query.getApp_id());
     }
 
     /**
@@ -362,7 +404,7 @@ public final class ItemQueryService implements Curator {
      *
      * @param document    verified graph
      * @param snapshots   exact snapshots
-     * @param definitions authorized parsed definitions
+     * @param definitions parsed protected definitions
      * @author Kimi Liu
      */
     private record Loaded(ReleaseCodec.Document document, Map<String, Revision> snapshots,

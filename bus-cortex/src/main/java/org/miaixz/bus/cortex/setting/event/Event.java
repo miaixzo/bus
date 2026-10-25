@@ -30,7 +30,7 @@ import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.basic.entity.Tenant;
 
 /**
- * Value-free authenticated operation audit and exact idempotency receipt.
+ * Value-free operation audit and exact idempotency receipt.
  *
  * @author Kimi Liu
  */
@@ -43,7 +43,7 @@ public class Event extends Tenant {
     private static final long serialVersionUID = 2558905952518L;
 
     /**
-     * Identifier of the authenticated actor performing the operation.
+     * Audit actor supplied for the operation.
      */
     private String actor_id;
 

@@ -42,21 +42,21 @@ public interface SettingStore {
      * Atomically validates identity, tenant, CAS, complete relation membership and target/pin constraints, then commits
      * already protected input. Only definition changes advance Item.edition.
      *
-     * @param context authenticated operation identity
+     * @param context operation coordinates
      * @param change  protected definition and relationship changes with concurrency expectations
      * @return detached committed current state
      */
-    Result commit(SettingEnforcer.Context context, Change change);
+    Result commit(SettingProvider.Context context, Change change);
 
     /**
      * Deletes current definition and relationships atomically; must preserve all formal Release/Revision data.
      *
-     * @param context            authenticated operation identity
+     * @param context            operation coordinates
      * @param item               exact current item identifier
      * @param edition            expected definition concurrency counter
      * @param expectedReferences complete expected relationship identifier-to-edition map
      */
-    void delete(SettingEnforcer.Context context, String item, long edition, Map<String, Long> expectedReferences);
+    void delete(SettingProvider.Context context, String item, long edition, Map<String, Long> expectedReferences);
 
     /**
      * Reads a consistent source graph and complete concurrency read-set for the requested applications.

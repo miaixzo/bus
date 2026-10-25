@@ -22,7 +22,8 @@ package org.miaixz.bus.cortex.setting.approval;
 import java.util.List;
 import java.util.Objects;
 
-import org.miaixz.bus.cortex.setting.SettingEnforcer;
+import org.miaixz.bus.cortex.guard.CortexGuard;
+import org.miaixz.bus.cortex.setting.SettingProvider;
 import org.miaixz.bus.cortex.setting.rollout.Rollout;
 
 /**
@@ -37,37 +38,37 @@ public final class ApprovalService {
      */
     private final ApprovalStore store;
     /**
-     * Mandatory host policy.
+     * Optional host access policy.
      */
-    private final SettingEnforcer enforcer;
+    private final CortexGuard guard;
 
     /**
      * Creates approval handling.
      *
-     * @param store    atomic decisions
-     * @param enforcer authorization
+     * @param store atomic decisions
+     * @param guard optional host access policy
      */
-    public ApprovalService(ApprovalStore store, SettingEnforcer enforcer) {
+    public ApprovalService(ApprovalStore store, CortexGuard guard) {
         this.store = Objects.requireNonNull(store);
-        this.enforcer = Objects.requireNonNull(enforcer);
+        this.guard = guard;
     }
 
     /**
      * Reads authorized approval evidence.
      *
-     * @param context trusted identity
+     * @param context operation coordinates
      * @param rollout workflow
      * @return immutable evidence
      */
-    public List<Approval> query(SettingEnforcer.Context context, String rollout) {
-        enforcer.require(context, "read", "approval", rollout);
+    public List<Approval> query(SettingProvider.Context context, String rollout) {
+        context.check(guard, "read", "approval", rollout);
         return List.copyOf(store.query(context.tenant(), rollout));
     }
 
     /**
      * Applies a decision only to the frozen checksum; host transaction repeats policy/state checks.
      *
-     * @param context        trusted identity
+     * @param context        operation coordinates
      * @param rollout        workflow
      * @param edition        expected CAS
      * @param frozenChecksum reviewed digest
@@ -78,7 +79,7 @@ public final class ApprovalService {
      * @return resulting workflow
      */
     public Rollout decide(
-            SettingEnforcer.Context context,
+            SettingProvider.Context context,
             String rollout,
             long edition,
             String frozenChecksum,
@@ -86,7 +87,9 @@ public final class ApprovalService {
             String decision,
             String recipient,
             String comment) {
-        enforcer.require(context, "approve", "rollout", rollout);
+        context.requireRequest();
+        context.requireActor();
+        context.check(guard, "approve", "rollout", rollout);
         if (frozenChecksum == null || stage == null || decision == null)
             throw new IllegalArgumentException("Exact approval input required");
         Approval evidence = Approval.builder().tenant_id(context.tenant()).rollout_id(rollout).target_id(recipient)

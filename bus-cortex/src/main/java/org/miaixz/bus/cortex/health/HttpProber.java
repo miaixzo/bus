@@ -64,12 +64,13 @@ public class HttpProber implements Prober {
     @Override
     public boolean supports(Instance instance) {
         return instance != null && instance.getHost() != null
-                && !Protocol.TCP.name.equalsIgnoreCase(instance.getScheme());
+                && !Protocol.TCP.name.equalsIgnoreCase(instance.healthView().getScheme());
     }
 
     /**
-     * Performs a GET using the instance scheme, host, port and health path. An absent scheme defaults to HTTP, an
-     * absent port to 80 even for HTTPS, and an absent health path to /health. No separate supports check is performed.
+     * Performs a GET using the instance host and port together with health.scheme and health.path. An absent scheme
+     * defaults to HTTP, an absent port to 80 even for HTTPS, and an absent health path to /health. No separate supports
+     * check is performed.
      *
      * @param instance non-null instance defining the health endpoint
      * @return healthy status for a 2xx response without a reported call error; failed status for other responses or
@@ -78,10 +79,11 @@ public class HttpProber implements Prober {
      */
     @Override
     public Status check(Instance instance) {
-        String scheme = instance.getScheme() != null ? instance.getScheme() : Protocol.HTTP.name;
+        var health = instance.healthView();
+        String scheme = health.getScheme() != null ? health.getScheme() : Protocol.HTTP.name;
         String host = instance.getHost();
         int port = instance.getPort() != null ? instance.getPort() : Port._80.getPort();
-        String path = instance.getHealthPath() != null ? instance.getHealthPath() : Symbol.SLASH + "health";
+        String path = health.getPath() != null ? health.getPath() : Symbol.SLASH + "health";
         String url = scheme + Symbol.COLON + Symbol.FORWARDSLASH + host + Symbol.COLON + port + path;
         long start = DateKit.current();
         Logger.debug(

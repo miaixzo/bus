@@ -21,7 +21,7 @@ package org.miaixz.bus.cortex.setting.approval;
 
 import java.util.List;
 
-import org.miaixz.bus.cortex.setting.SettingEnforcer;
+import org.miaixz.bus.cortex.setting.SettingProvider;
 import org.miaixz.bus.cortex.setting.rollout.Rollout;
 
 /**
@@ -30,6 +30,14 @@ import org.miaixz.bus.cortex.setting.rollout.Rollout;
  * @author Kimi Liu
  */
 public interface ApprovalStore {
+
+    /**
+     * Rejects an unknown or unsupported workflow policy independently of caller authentication.
+     *
+     * @param context operation coordinates
+     * @param policy  selected approval policy
+     */
+    void validatePolicy(SettingProvider.Context context, String policy);
 
     /**
      * Reads immutable approval evidence for the workflow.
@@ -41,10 +49,10 @@ public interface ApprovalStore {
     List<Approval> query(String tenant, String rollout);
 
     /**
-     * Atomically rechecks reviewer, stage, policy, edition and frozen checksum, writes the decision and advances
+     * Atomically rechecks audit actor, stage, policy, edition and frozen checksum, writes the decision and advances
      * REVIEWING to the correct next state; identical request is idempotent.
      *
-     * @param context        authenticated reviewer and request identity
+     * @param context        operation-scoped reviewer and request identity
      * @param rollout        exact workflow identifier
      * @param edition        expected workflow concurrency counter
      * @param frozenChecksum checksum of the reviewed frozen plan
@@ -52,7 +60,7 @@ public interface ApprovalStore {
      * @return workflow state resulting from the decision
      */
     Rollout decide(
-            SettingEnforcer.Context context,
+            SettingProvider.Context context,
             String rollout,
             long edition,
             String frozenChecksum,

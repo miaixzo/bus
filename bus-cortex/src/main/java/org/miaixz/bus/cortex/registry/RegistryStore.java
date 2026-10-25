@@ -81,14 +81,48 @@ public interface RegistryStore<T extends Assets> {
 
     /**
      * Atomically saves a service and its instance to the shared process store. The host must preserve the existing
-     * process identity and authenticated session; registry writes must not replace them with service coordinates. The
-     * host owns authoritative process persistence and session maintenance. Assign or reuse its exact process identifier
-     * in the supplied snapshot before returning so committed projections expose that same identity.
+     * process identity and current session; registry writes must not replace them with service coordinates. The host
+     * owns authoritative process persistence and session maintenance. Assign or reuse its exact process identifier in
+     * the supplied snapshot before returning so committed projections expose that same identity.
      *
      * @param entry    registry entry
      * @param instance shared process snapshot associated with the supplied service
      */
     void save(T entry, Instance instance);
+
+    /**
+     * Atomically updates only the observation of an existing runtime registration. The service definition and expected
+     * instance must still match within the host transaction; stale, removed, disabled or replaced snapshots return
+     * null. Implementations must not delegate to ordinary registration, recreate rows, or publish side effects.
+     *
+     * @param service     exact service snapshot captured before probing
+     * @param expected    exact runtime snapshot captured before probing
+     * @param observation completed probe result
+     * @param started     probe start in epoch milliseconds
+     * @param finished    probe completion in epoch milliseconds
+     * @return updated runtime snapshot, or null when the observation is stale
+     */
+    Instance updateHealth(T service, Instance expected, Status observation, long started, long finished);
+
+    /**
+     * Publishes a committed runtime snapshot only while its exact definition and association remain authoritative.
+     * Hosts must exclude a concurrent replacement through the action and discard stale snapshots without dispatch.
+     *
+     * @param entry    exact captured definition
+     * @param instance exact captured runtime association
+     * @param previous retired runtime when publishing a removal, or null
+     * @param action   event construction and dispatch after the originating transaction committed
+     */
+    void publish(T entry, Instance instance, Instance previous, Runnable action);
+
+    /**
+     * Reads runtime registrations for one complete service identity, including its verb. Implementations retain every
+     * association snapshot and perform no cache writes or process-level deduplication.
+     *
+     * @param service exact service definition
+     * @return current runtime association snapshots for the supplied service
+     */
+    List<Instance> queryInstances(T service);
 
     /**
      * Deletes an entry by type, tenantId and ID.

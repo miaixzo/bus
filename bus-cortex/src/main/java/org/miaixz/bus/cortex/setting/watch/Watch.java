@@ -58,7 +58,7 @@ public class Watch extends Tenant {
     private String applied_id;
 
     /**
-     * Exact Release ID currently authorized for this watch; item_id still identifies the source Item.
+     * Exact Release ID currently selected for this watch; item_id still identifies the source Item.
      */
     private String target_id;
 
@@ -68,7 +68,7 @@ public class Watch extends Tenant {
     private String session;
 
     /**
-     * Current authorized target generation.
+     * Current selected target generation.
      */
     private Long generation;
 
@@ -109,8 +109,8 @@ public class Watch extends Tenant {
     public Status.Apply synchronization(Instance instance) {
         if (instance == null || getTenant_id() == null || !getTenant_id().equals(instance.getTenant_id())
                 || instance_id == null || !instance_id.equals(instance.getId()) || session == null
-                || !session.equals(instance.getSession()) || generation == null || generation < 1 || target_id == null
-                || target_id.isBlank()) {
+                || !session.equals(instance.healthView().getSession()) || generation == null || generation < 1
+                || target_id == null || target_id.isBlank()) {
             return Status.Apply.UNKNOWN;
         }
         if (error != null && !error.isBlank()) {

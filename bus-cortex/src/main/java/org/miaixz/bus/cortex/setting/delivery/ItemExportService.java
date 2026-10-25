@@ -21,13 +21,14 @@ package org.miaixz.bus.cortex.setting.delivery;
 
 import java.util.Objects;
 
-import org.miaixz.bus.cortex.setting.SettingEnforcer;
+import org.miaixz.bus.cortex.guard.CortexGuard;
+import org.miaixz.bus.cortex.setting.SettingProvider;
 import org.miaixz.bus.cortex.setting.curator.ItemService;
 import org.miaixz.bus.cortex.setting.item.ItemCodec;
 import org.miaixz.bus.cortex.setting.item.ItemQuery;
 
 /**
- * Explicit safe current-definition export versus authorized published-value export.
+ * Explicit safe current-definition export and published-value export with optional host access checks.
  *
  * @author Kimi Liu
  */
@@ -42,48 +43,46 @@ public final class ItemExportService {
      */
     private final ItemQueryService published;
     /**
-     * Mandatory export permissions.
+     * Optional host export policy.
      */
-    private final SettingEnforcer enforcer;
+    private final CortexGuard guard;
 
     /**
      * Creates explicit export boundaries.
      *
      * @param items     current views
      * @param published formal content
-     * @param enforcer  permissions
+     * @param guard     optional host access policy
      */
-    public ItemExportService(ItemService items, ItemQueryService published, SettingEnforcer enforcer) {
+    public ItemExportService(ItemService items, ItemQueryService published, CortexGuard guard) {
         this.items = Objects.requireNonNull(items);
         this.published = Objects.requireNonNull(published);
-        this.enforcer = Objects.requireNonNull(enforcer);
+        this.guard = guard;
     }
 
     /**
      * Exports masked current definition; never ciphertext internals.
      *
-     * @param context trusted identity
+     * @param context operation coordinates
      * @param item    exact source
      * @return safe canonical definition or absent
      */
-    public String current(SettingEnforcer.Context context, String item) {
-        enforcer.require(context, "export", "item", item);
+    public String current(SettingProvider.Context context, String item) {
+        context.check(guard, "export", "item", item);
         ItemCodec.Document view = items.view(context, item);
         return view == null ? null : new ItemCodec(64, 100000).content(view);
     }
 
     /**
-     * Exports published values only with explicit sensitive-export authorization.
+     * Exports published values with optional host sensitive-export policy.
      *
-     * @param context trusted identity
+     * @param context operation coordinates
      * @param query   exact application request
      * @return published business values
      */
-    public String published(SettingEnforcer.Context context, ItemQuery query) {
-        if (!context.equals(enforcer.current()))
-            throw new SecurityException("Export identity mismatch");
-        enforcer.require(context, "export-sensitive", "app", query.getApp_id());
-        return published.get(query);
+    public String published(SettingProvider.Context context, ItemQuery query) {
+        context.check(guard, "export-sensitive", "app", query.getApp_id());
+        return published.get(context, query);
     }
 
 }

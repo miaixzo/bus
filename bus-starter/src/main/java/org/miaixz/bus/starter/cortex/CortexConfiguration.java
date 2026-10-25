@@ -70,8 +70,7 @@ import org.miaixz.bus.cortex.release.PublicationStore;
 import org.miaixz.bus.cortex.release.ReleasePublisher;
 import org.miaixz.bus.cortex.release.ReleaseRegistry;
 import org.miaixz.bus.cortex.release.ReleaseStore;
-import org.miaixz.bus.cortex.setting.SettingEnforcer;
-import org.miaixz.bus.cortex.setting.SettingEnforcerStrategy;
+import org.miaixz.bus.cortex.setting.SettingProvider;
 import org.miaixz.bus.cortex.setting.SettingService;
 import org.miaixz.bus.cortex.setting.SettingStore;
 import org.miaixz.bus.cortex.setting.approval.ApprovalService;
@@ -136,6 +135,17 @@ public class CortexConfiguration {
      */
     private static CacheX<String, Object> cache(CacheX cache) {
         return (CacheX<String, Object>) cache;
+    }
+
+    /**
+     * Resolves host access policy only when guard checks are enabled. Disabling the switch also bypasses a
+     * host-provided guard for Cortex services; persistence and workflow checks are unaffected.
+     *
+     * @param guards optional host guard provider
+     * @return enabled guard, or null when checks are disabled or no guard exists
+     */
+    private CortexGuard guard(ObjectProvider<CortexGuard> guards) {
+        return properties.getGuard().enabled() ? guards.getIfAvailable() : null;
     }
 
     /**
@@ -257,19 +267,6 @@ public class CortexConfiguration {
     }
 
     /**
-     * Adapts an application-provided setting enforcer into the shared guard chain.
-     *
-     * @param settingEnforcer setting relation enforcer
-     * @return setting guard strategy
-     */
-    @Bean
-    @ConditionalOnBean(SettingEnforcer.class)
-    @ConditionalOnMissingBean(SettingEnforcerStrategy.class)
-    public SettingEnforcerStrategy settingEnforcerGuardStrategy(SettingEnforcer settingEnforcer) {
-        return new SettingEnforcerStrategy(settingEnforcer);
-    }
-
-    /**
      * Creates the shared Cortex guard used by registry, setting, and version mutation paths.
      *
      * @param strategies guard strategies discovered from the application context
@@ -277,6 +274,7 @@ public class CortexConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(CortexGuard.class)
+    @ConditionalOnProperty(prefix = "bus.cortex.guard", name = "enabled", havingValue = "true", matchIfMissing = true)
     public CortexGuard cortexGuard(List<GuardStrategy> strategies) {
         return new CortexGuard(strategies);
     }
@@ -445,7 +443,7 @@ public class CortexConfiguration {
             @Qualifier("registryKeying") ObjectProvider<Keying<Keying.RegistrySpec>> keyingProvider,
             ObjectProvider<RegistryBatchExecutor> batchExecutors,
             ObjectProvider<RegistryBatchResolver> batchResolvers) {
-        return new RegistryControlService(apiRegistry, mcpRegistry, promptRegistry, cortexGuard.getIfAvailable(),
+        return new RegistryControlService(apiRegistry, mcpRegistry, promptRegistry, guard(cortexGuard),
                 keyingProvider.getIfAvailable(() -> RegistryGenerator.INSTANCE),
                 batchExecutors.orderedStream().toList(), batchResolvers.orderedStream().toList());
     }
@@ -504,23 +502,23 @@ public class CortexConfiguration {
     }
 
     /**
-     * Assembles current definition management using authoritative host stores and permissions.
+     * Assembles current definition management using host stores and optional access policy.
      *
      * @param items     current definitions
      * @param revisions exact published snapshots
      * @param editor    definition preparation
-     * @param enforcer  host authentication and permissions
+     * @param guards    optional host access policy provider
      * @return current definition service
      */
     @Bean
-    @ConditionalOnBean({ ItemStore.class, RevisionStore.class, SettingEnforcer.class })
+    @ConditionalOnBean({ ItemStore.class, RevisionStore.class })
     @ConditionalOnMissingBean(ItemService.class)
     public ItemService itemService(
             ItemStore items,
             RevisionStore revisions,
             ItemEditor editor,
-            SettingEnforcer enforcer) {
-        return new ItemService(items, revisions, editor, enforcer);
+            ObjectProvider<CortexGuard> guards) {
+        return new ItemService(items, revisions, editor, guard(guards));
     }
 
     /**
@@ -530,19 +528,19 @@ public class CortexConfiguration {
      * @param revisions  exact published pins
      * @param codec      relationship parser
      * @param editor     sensitive overlay preparation
-     * @param enforcer   host authentication and permissions
+     * @param guards     optional host access policy provider
      * @return relationship service
      */
     @Bean
-    @ConditionalOnBean({ ReferenceStore.class, RevisionStore.class, SettingEnforcer.class })
+    @ConditionalOnBean({ ReferenceStore.class, RevisionStore.class })
     @ConditionalOnMissingBean(ReferenceService.class)
     public ReferenceService referenceService(
             ReferenceStore references,
             RevisionStore revisions,
             ReferenceCodec codec,
             ItemEditor editor,
-            SettingEnforcer enforcer) {
-        return new ReferenceService(references, revisions, codec, editor, enforcer);
+            ObjectProvider<CortexGuard> guards) {
+        return new ReferenceService(references, revisions, codec, editor, guard(guards));
     }
 
     /**
@@ -551,32 +549,32 @@ public class CortexConfiguration {
      * @param items      current definition preparation
      * @param references relationship preparation
      * @param store      host-owned atomic current-state transaction
-     * @param enforcer   host permissions
+     * @param guards     optional host access policy provider
      * @return current-state coordinator
      */
     @Bean
-    @ConditionalOnBean({ ItemService.class, ReferenceService.class, SettingStore.class, SettingEnforcer.class })
+    @ConditionalOnBean({ ItemService.class, ReferenceService.class, SettingStore.class })
     @ConditionalOnMissingBean(SettingService.class)
     public SettingService settingService(
             ItemService items,
             ReferenceService references,
             SettingStore store,
-            SettingEnforcer enforcer) {
-        return new SettingService(items, references, store, enforcer);
+            ObjectProvider<CortexGuard> guards) {
+        return new SettingService(items, references, store, guard(guards));
     }
 
     /**
-     * Assembles immutable approval evidence using the host policy authority.
+     * Assembles immutable approval evidence using the optional host access policy provider.
      *
-     * @param store    approval evidence
-     * @param enforcer host approval policy
+     * @param store  approval evidence
+     * @param guards optional host access policy provider
      * @return approval service
      */
     @Bean
-    @ConditionalOnBean({ ApprovalStore.class, SettingEnforcer.class })
+    @ConditionalOnBean(ApprovalStore.class)
     @ConditionalOnMissingBean(ApprovalService.class)
-    public ApprovalService approvalService(ApprovalStore store, SettingEnforcer enforcer) {
-        return new ApprovalService(store, enforcer);
+    public ApprovalService approvalService(ApprovalStore store, ObjectProvider<CortexGuard> guards) {
+        return new ApprovalService(store, guard(guards));
     }
 
     /**
@@ -588,12 +586,13 @@ public class CortexConfiguration {
      * @param revisions  exact published snapshots
      * @param editor     definition verification
      * @param references relationship parser
-     * @param enforcer   host permissions and policy
+     * @param approvals  approval policy registry
+     * @param guards     optional host access policy provider
      * @return rollout service
      */
     @Bean
     @ConditionalOnBean({ RolloutStore.class, SettingStore.class, ReleaseStore.class, RevisionStore.class,
-            SettingEnforcer.class })
+            ApprovalStore.class })
     @ConditionalOnMissingBean(RolloutService.class)
     public RolloutService rolloutService(
             RolloutStore store,
@@ -602,8 +601,9 @@ public class CortexConfiguration {
             RevisionStore revisions,
             ItemEditor editor,
             ReferenceCodec references,
-            SettingEnforcer enforcer) {
-        return new RolloutService(store, settings, releases, revisions, editor, references, enforcer);
+            ApprovalStore approvals,
+            ObjectProvider<CortexGuard> guards) {
+        return new RolloutService(store, settings, releases, revisions, editor, references, approvals, guard(guards));
     }
 
     /**
@@ -611,26 +611,25 @@ public class CortexConfiguration {
      *
      * @param publications atomic formal-publication authority
      * @param rollouts     approved rollout inputs
-     * @param enforcer     host policy authority
+     * @param guards       optional host access policy provider
      * @param releases     formal releases
      * @param revisions    exact published snapshots
      * @return formal release publisher
      */
     @Bean
-    @ConditionalOnBean({ PublicationStore.class, RolloutStore.class, ReleaseStore.class, RevisionStore.class,
-            SettingEnforcer.class })
+    @ConditionalOnBean({ PublicationStore.class, RolloutStore.class, ReleaseStore.class, RevisionStore.class })
     @ConditionalOnMissingBean(ReleasePublisher.class)
     public ReleasePublisher releasePublisher(
             PublicationStore publications,
             RolloutStore rollouts,
-            SettingEnforcer enforcer,
+            ObjectProvider<CortexGuard> guards,
             ReleaseStore releases,
             RevisionStore revisions) {
-        return new ReleasePublisher(publications, rollouts, enforcer, releases, revisions);
+        return new ReleasePublisher(publications, rollouts, guard(guards), releases, revisions);
     }
 
     /**
-     * Creates the stateless selector for authenticated application processes.
+     * Creates the stateless selector for application processes.
      *
      * @return gray selector
      */
@@ -645,16 +644,17 @@ public class CortexConfiguration {
      *
      * @param releases  formal delivery authority
      * @param revisions immutable published snapshots
-     * @param editor    authorized content protection
+     * @param editor    protected content handling
      * @param codec     definition parser and renderer
-     * @param matcher   authenticated instance selector
+     * @param matcher   current process selector
      * @param watches   host-owned subscription evidence
      * @param transport notification transport
-     * @param enforcer  authoritative authentication, session validation and permissions
+     * @param provider  invocation and current process data
+     * @param guards    optional host access policy provider
      * @return published-only curator service
      */
     @Bean
-    @ConditionalOnBean({ ReleaseStore.class, RevisionStore.class, WatchStore.class, SettingEnforcer.class })
+    @ConditionalOnBean({ ReleaseStore.class, RevisionStore.class, WatchStore.class, SettingProvider.class })
     @ConditionalOnMissingBean({ ItemQueryService.class, Curator.class })
     public ItemQueryService settingQueryService(
             ReleaseStore releases,
@@ -664,8 +664,10 @@ public class CortexConfiguration {
             GrayRuleMatcher matcher,
             WatchStore watches,
             WatchManager transport,
-            SettingEnforcer enforcer) {
-        return new ItemQueryService(releases, revisions, editor, codec, matcher, watches, transport, enforcer);
+            SettingProvider provider,
+            ObjectProvider<CortexGuard> guards) {
+        return new ItemQueryService(releases, revisions, editor, codec, matcher, watches, transport, provider,
+                guard(guards));
     }
 
     /**
@@ -673,17 +675,17 @@ public class CortexConfiguration {
      *
      * @param items     current definition views
      * @param published published-only query service
-     * @param enforcer  host export permissions
+     * @param guards    optional host access policy provider
      * @return setting export service
      */
     @Bean
-    @ConditionalOnBean({ ItemService.class, ItemQueryService.class, SettingEnforcer.class })
+    @ConditionalOnBean({ ItemService.class, ItemQueryService.class })
     @ConditionalOnMissingBean(ItemExportService.class)
     public ItemExportService settingExportService(
             ItemService items,
             ItemQueryService published,
-            SettingEnforcer enforcer) {
-        return new ItemExportService(items, published, enforcer);
+            ObjectProvider<CortexGuard> guards) {
+        return new ItemExportService(items, published, guard(guards));
     }
 
     /**
@@ -882,6 +884,30 @@ public class CortexConfiguration {
         @Override
         public void save(T entry, Instance instance) {
             delegate.save(entry, instance);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Instance updateHealth(T entry, Instance expected, Status observation, long started, long finished) {
+            return delegate.updateHealth(entry, expected, observation, started, finished);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void publish(T entry, Instance instance, Instance previous, Runnable action) {
+            delegate.publish(entry, instance, previous, action);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public List<Instance> queryInstances(T entry) {
+            return delegate.queryInstances(entry);
         }
 
         /**

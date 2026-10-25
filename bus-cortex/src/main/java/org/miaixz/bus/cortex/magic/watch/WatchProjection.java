@@ -61,7 +61,7 @@ final class WatchProjection {
         return Objects.equals(vector.getType(), Type.WATCH.getKey())
                 && (vector.getTenant_id() == null || Objects.equals(vector.getTenant_id(), watch.getTenant_id()))
                 && vector.getApp_id() == null && vector.getMethod() == null && vector.getVersion() == null
-                && vector.getState() == null && (vector.getLabels() == null || vector.getLabels().isEmpty())
+                && vector.getStatus() == null && (vector.getLabels() == null || vector.getLabels().isEmpty())
                 && (vector.getSelectors() == null || vector.getSelectors().isEmpty());
     }
 

@@ -21,7 +21,7 @@ package org.miaixz.bus.cortex.setting.rollout;
 
 import java.util.List;
 
-import org.miaixz.bus.cortex.setting.SettingEnforcer;
+import org.miaixz.bus.cortex.setting.SettingProvider;
 
 /**
  * Atomic workflow persistence; host entity transactions enforce state and read-set invariants.
@@ -71,7 +71,7 @@ public interface RolloutStore {
      * Atomically rechecks complete Item/Reference/App memberships, editions, application states and active baselines;
      * freezes the plan and transitions DRAFT to REVIEWING.
      *
-     * @param context  authenticated submitter and request identity
+     * @param context  operation-scoped submitter and request identity
      * @param rollout  exact draft workflow identifier
      * @param edition  expected workflow concurrency counter
      * @param frozen   protected candidate plan to freeze for approval
@@ -79,7 +79,7 @@ public interface RolloutStore {
      * @return workflow containing the frozen plan in the REVIEWING state
      */
     Rollout submit(
-            SettingEnforcer.Context context,
+            SettingProvider.Context context,
             String rollout,
             long edition,
             Plan.Frozen frozen,
@@ -89,23 +89,23 @@ public interface RolloutStore {
      * Atomically verifies approvals and identical intent, claims or reuses the exact publication receipt and enters
      * PUBLISHING. Same request returns the original intent/result; different input conflicts.
      *
-     * @param context        authenticated publisher and idempotent request identity
+     * @param context        operation-scoped publisher and idempotent request identity
      * @param rollout        exact approved workflow identifier
      * @param edition        expected workflow concurrency counter
      * @param frozenChecksum checksum of the approved frozen plan
      * @return workflow bound to the exact claimed or reused publication receipt
      */
-    Rollout beginPublication(SettingEnforcer.Context context, String rollout, long edition, String frozenChecksum);
+    Rollout beginPublication(SettingProvider.Context context, String rollout, long edition, String frozenChecksum);
 
     /**
      * Records failure only for the matching unfinished receipt; cannot overwrite a successful publication.
      *
-     * @param context   authenticated publisher and request identity
+     * @param context   operation-scoped publisher and request identity
      * @param rollout   exact workflow identifier
      * @param receipt   exact unfinished publication receipt identifier
      * @param safeError failure description containing no sensitive values
      * @return workflow after recording the matching publication failure
      */
-    Rollout failPublication(SettingEnforcer.Context context, String rollout, String receipt, String safeError);
+    Rollout failPublication(SettingProvider.Context context, String rollout, String receipt, String safeError);
 
 }

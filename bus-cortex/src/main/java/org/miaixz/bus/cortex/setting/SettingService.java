@@ -22,6 +22,7 @@ package org.miaixz.bus.cortex.setting;
 import java.util.Map;
 import java.util.Objects;
 
+import org.miaixz.bus.cortex.guard.CortexGuard;
 import org.miaixz.bus.cortex.setting.curator.ItemService;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.reference.ReferenceService;
@@ -42,13 +43,13 @@ public final class SettingService {
      */
     private final ReferenceService references;
     /**
-     * Mandatory host joint transaction.
+     * Host joint transaction.
      */
     private final SettingStore store;
     /**
-     * Mandatory permissions.
+     * Optional host access policy.
      */
-    private final SettingEnforcer enforcer;
+    private final CortexGuard guard;
 
     /**
      * Creates current management orchestration.
@@ -56,25 +57,25 @@ public final class SettingService {
      * @param items      definition preparation
      * @param references relation preparation
      * @param store      atomic host boundary
-     * @param enforcer   permissions
+     * @param guard      optional host access policy
      */
-    public SettingService(ItemService items, ReferenceService references, SettingStore store,
-            SettingEnforcer enforcer) {
+    public SettingService(ItemService items, ReferenceService references, SettingStore store, CortexGuard guard) {
         this.items = Objects.requireNonNull(items);
         this.references = Objects.requireNonNull(references);
         this.store = Objects.requireNonNull(store);
-        this.enforcer = Objects.requireNonNull(enforcer);
+        this.guard = guard;
     }
 
     /**
      * Saves current definitions and relationships atomically, maintaining required overlay protection.
      *
-     * @param context trusted identity
+     * @param context operation coordinates
      * @param change  requested current-state edit
      * @return committed detached state
      */
-    public SettingStore.Result save(SettingEnforcer.Context context, SettingStore.Change change) {
-        enforcer.require(context, "save", "item", change.item());
+    public SettingStore.Result save(SettingProvider.Context context, SettingStore.Change change) {
+        context.requireRequest();
+        context.check(guard, "save", "item", change.item());
         Item expected = items.find(context, change.item());
         if (expected == null ? change.expectedEdition() != null
                 : !Objects.equals(expected.getEdition(), change.expectedEdition()))
@@ -105,17 +106,18 @@ public final class SettingService {
     /**
      * Deletes only current state and its relations.
      *
-     * @param context            trusted identity
+     * @param context            operation coordinates
      * @param item               exact source
      * @param edition            expected CAS
      * @param expectedReferences complete relationship editions
      */
     public void delete(
-            SettingEnforcer.Context context,
+            SettingProvider.Context context,
             String item,
             long edition,
             Map<String, Long> expectedReferences) {
-        enforcer.require(context, "delete", "item", item);
+        context.requireRequest();
+        context.check(guard, "delete", "item", item);
         store.delete(context, item, edition, Map.copyOf(expectedReferences));
     }
 

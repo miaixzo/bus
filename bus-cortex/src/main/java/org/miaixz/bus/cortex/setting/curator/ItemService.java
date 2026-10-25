@@ -23,8 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.miaixz.bus.cortex.guard.CortexGuard;
 import org.miaixz.bus.cortex.release.ReleaseCodec;
-import org.miaixz.bus.cortex.setting.SettingEnforcer;
+import org.miaixz.bus.cortex.setting.SettingProvider;
 import org.miaixz.bus.cortex.setting.SettingStore;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemCodec;
@@ -53,9 +54,9 @@ public final class ItemService {
      */
     private final ItemEditor editor;
     /**
-     * Mandatory authorization.
+     * Optional host access policy.
      */
-    private final SettingEnforcer enforcer;
+    private final CortexGuard guard;
 
     /**
      * Creates management preparation.
@@ -63,24 +64,24 @@ public final class ItemService {
      * @param store     current state
      * @param revisions published content
      * @param editor    sensitive editor
-     * @param enforcer  permissions
+     * @param guard     optional host access policy
      */
-    public ItemService(ItemStore store, RevisionStore revisions, ItemEditor editor, SettingEnforcer enforcer) {
+    public ItemService(ItemStore store, RevisionStore revisions, ItemEditor editor, CortexGuard guard) {
         this.store = Objects.requireNonNull(store);
         this.revisions = Objects.requireNonNull(revisions);
         this.editor = Objects.requireNonNull(editor);
-        this.enforcer = Objects.requireNonNull(enforcer);
+        this.guard = guard;
     }
 
     /**
      * Finds exact protected current state for internal management orchestration.
      *
-     * @param context trusted identity
+     * @param context operation coordinates
      * @param item    exact source
      * @return protected entity or absent
      */
-    public Item find(SettingEnforcer.Context context, String item) {
-        enforcer.require(context, "read", "item", item);
+    public Item find(SettingProvider.Context context, String item) {
+        context.check(guard, "read", "item", item);
         Item found = store.find(context.tenant(), item);
         if (found != null && (!context.tenant().equals(found.getTenant_id()) || !item.equals(found.getId())))
             throw new IllegalStateException("Source identity mismatch");
@@ -90,12 +91,12 @@ public final class ItemService {
     /**
      * Queries bounded current management state.
      *
-     * @param context trusted identity
+     * @param context operation coordinates
      * @param scope   page and filters
      * @return protected current entities
      */
-    public List<Item> query(SettingEnforcer.Context context, ItemScope scope) {
-        enforcer.require(context, "read", "item", scope.getId());
+    public List<Item> query(SettingProvider.Context context, ItemScope scope) {
+        context.check(guard, "read", "item", scope.getId());
         if (!context.tenant().equals(scope.getTenant_id()) || scope.getLimit() < 1 || scope.getLimit() > 1000
                 || scope.getOffset() < 0)
             throw new IllegalArgumentException("Invalid management scope");
@@ -109,11 +110,11 @@ public final class ItemService {
     /**
      * Returns a safe already-parsed management projection.
      *
-     * @param context trusted identity
+     * @param context operation coordinates
      * @param item    exact source
      * @return safe definition or absent
      */
-    public ItemCodec.Document view(SettingEnforcer.Context context, String item) {
+    public ItemCodec.Document view(SettingProvider.Context context, String item) {
         Item value = find(context, item);
         return value == null ? null : editor.view(value);
     }
@@ -121,7 +122,7 @@ public final class ItemService {
     /**
      * Prepares only current configuration data.
      *
-     * @param context   trusted identity
+     * @param context   operation coordinates
      * @param expected  current state
      * @param candidate edit
      * @param actions   exact sensitive intent
@@ -129,34 +130,34 @@ public final class ItemService {
      * @return protected candidate
      */
     public Item prepare(
-            SettingEnforcer.Context context,
+            SettingProvider.Context context,
             Item expected,
             Item candidate,
             Map<String, ItemEditor.SecretAction> actions,
             ItemCodec.ValidationLevel level) {
-        enforcer.require(context, "save", "item", candidate.getId());
+        context.check(guard, "save", "item", candidate.getId());
         if (!context.tenant().equals(candidate.getTenant_id()))
             throw new IllegalArgumentException("Tenant mismatch");
         if (actions != null && !actions.isEmpty())
-            enforcer.require(context, "secret-edit", "item", candidate.getId());
+            context.check(guard, "secret-edit", "item", candidate.getId());
         return editor.prepare(expected, candidate, actions, level);
     }
 
     /**
      * Prepares current state from exact published content; caller commits through SettingService.
      *
-     * @param context           trusted identity
+     * @param context           operation coordinates
      * @param item              exact current source
      * @param edition           expected editing CAS
      * @param publishedRevision exact published snapshot
      * @return uncommitted current-state edit for submission through SettingService.save
      */
     public SettingStore.Change restore(
-            SettingEnforcer.Context context,
+            SettingProvider.Context context,
             String item,
             long edition,
             String publishedRevision) {
-        enforcer.require(context, "restore", "item", item);
+        context.check(guard, "restore", "item", item);
         Item current = find(context, item);
         if (current == null || !Objects.equals(current.getEdition(), edition))
             throw new IllegalStateException("Current edition changed");
@@ -165,7 +166,7 @@ public final class ItemService {
                 || revision.getRelease_id() == null)
             throw new IllegalArgumentException("Published source snapshot required");
         if (Integer.valueOf(1).equals(current.getEncrypted()) || Integer.valueOf(1).equals(revision.getEncrypted()))
-            enforcer.require(context, "secret-edit", "item", item);
+            context.check(guard, "secret-edit", "item", item);
         ItemEditor.Restoration restored = editor
                 .restore(current, ReleaseCodec.definition(revision).item(context.tenant()));
         return new SettingStore.Change(item, restored.candidate(), edition, restored.actions(),

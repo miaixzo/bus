@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.cortex.setting.event;
 
-import org.miaixz.bus.cortex.setting.SettingEnforcer;
+import org.miaixz.bus.cortex.setting.SettingProvider;
 
 /**
  * Value-free audit and command receipts; formal success is committed by PublicationStore.
@@ -31,21 +31,21 @@ public interface EventStore {
     /**
      * Looks up tenant/actor/resource/resourceId/action/request identity; mismatched checksum is a conflict.
      *
-     * @param context    authenticated tenant, actor and request identity
+     * @param context    operation-scoped tenant, actor and request identity
      * @param resource   target resource category
      * @param resourceId exact target resource identifier
      * @param action     operation name
      * @return matching receipt, or null if absent
      */
-    Event findReceipt(SettingEnforcer.Context context, String resource, String resourceId, String action);
+    Event findReceipt(SettingProvider.Context context, String resource, String resourceId, String action);
 
     /**
-     * Appends an authenticated, value-free audit record; must reject externally forged publication success.
+     * Appends an operation-scoped, value-free audit record; must reject externally forged publication success.
      *
-     * @param context authenticated actor and request identity
+     * @param context operation-scoped actor and request identity
      * @param event   value-free audit record to append
      * @return persisted audit record
      */
-    Event append(SettingEnforcer.Context context, Event event);
+    Event append(SettingProvider.Context context, Event event);
 
 }

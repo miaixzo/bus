@@ -78,11 +78,6 @@ public class Vector extends Nature {
     private List<Selector> selectors;
 
     /**
-     * Instance state selector.
-     */
-    private String state;
-
-    /**
      * Optional logical purpose such as query, watch, rebuild or export.
      */
     private String purpose;
@@ -279,13 +274,13 @@ public class Vector extends Nature {
         }
 
         /**
-         * Sets state vector.
+         * Sets the desired instance status.
          *
-         * @param state instance state
+         * @param status inherited instance status
          * @return current builder
          */
-        public Builder state(String state) {
-            vector.setState(state);
+        public Builder status(Integer status) {
+            vector.setStatus(status);
             return this;
         }
 
