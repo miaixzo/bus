@@ -1130,12 +1130,6 @@
           ]
         },
         {
-          "name": "test",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "toString",
           "parameterTypes": []
         }
@@ -1163,12 +1157,6 @@
           "name": "nextAfter",
           "parameterTypes": [
             "int"
-          ]
-        },
-        {
-          "name": "test",
-          "parameterTypes": [
-            "java.lang.Object"
           ]
         },
         {
@@ -1333,51 +1321,6 @@
         {
           "name": "$SwitchMap$org$miaixz$bus$tempus$pattern$Part"
         }
-      ],
-      "methods": [
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
       ]
     },
     {
@@ -1393,12 +1336,6 @@
           "name": "nextAfter",
           "parameterTypes": [
             "int"
-          ]
-        },
-        {
-          "name": "test",
-          "parameterTypes": [
-            "java.lang.Object"
           ]
         },
         {
@@ -1473,51 +1410,6 @@
       "fields": [
         {
           "name": "$SwitchMap$org$miaixz$bus$tempus$pattern$Part"
-        }
-      ],
-      "methods": [
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
@@ -1952,79 +1844,12 @@
           "parameterTypes": []
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "fromData",
-          "parameterTypes": [
-            "io.temporal.api.common.v1.Payload",
-            "java.lang.Class",
-            "java.lang.reflect.Type"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getEncodingType",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
           "name": "preferredAdapter",
           "parameterTypes": []
         },
         {
           "name": "resolveAdapter",
           "parameterTypes": []
-        },
-        {
-          "name": "toData",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        },
-        {
-          "name": "withContext",
-          "parameterTypes": [
-            "io.temporal.payload.context.SerializationContext"
-          ]
         }
       ]
     },
@@ -2046,12 +1871,6 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "fromBytes",
           "parameterTypes": [
             "byte[]",
@@ -2060,50 +1879,13 @@
           ]
         },
         {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
           "name": "name",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
           "parameterTypes": []
         },
         {
           "name": "toBytes",
           "parameterTypes": [
             "java.lang.Object"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -2122,49 +1904,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
@@ -2172,33 +1911,7 @@
       "type": "org.miaixz.bus.tempus.temporal.payload.PayloadConverter",
       "condition": {
         "typeReached": "io.temporal.common.converter.PayloadConverter"
-      },
-      "methods": [
-        {
-          "name": "fromData",
-          "parameterTypes": [
-            "io.temporal.api.common.v1.Payload",
-            "java.lang.Class",
-            "java.lang.reflect.Type"
-          ]
-        },
-        {
-          "name": "getEncodingType",
-          "parameterTypes": []
-        },
-        {
-          "name": "toData",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "withContext",
-          "parameterTypes": [
-            "io.temporal.payload.context.SerializationContext"
-          ]
-        }
-      ]
+      }
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.worker.CachingWorkflowConnector",
@@ -3537,6 +3250,97 @@
         {
           "name": "getOverflowWheel",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.common.converter.PayloadConverter",
+      "condition": {
+        "typeReached": "io.temporal.common.converter.PayloadConverter"
+      },
+      "methods": [
+        {
+          "name": "fromData",
+          "parameterTypes": [
+            "io.temporal.api.common.v1.Payload",
+            "java.lang.Class",
+            "java.lang.reflect.Type"
+          ]
+        },
+        {
+          "name": "getEncodingType",
+          "parameterTypes": []
+        },
+        {
+          "name": "toData",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "withContext",
+          "parameterTypes": [
+            "io.temporal.payload.context.SerializationContext"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Object",
+      "methods": [
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.function.PredicateX",
+      "methods": [
+        {
+          "name": "test",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
         }
       ]
     }

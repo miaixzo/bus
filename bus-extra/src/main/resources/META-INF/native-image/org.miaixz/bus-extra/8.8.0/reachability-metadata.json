@@ -4561,29 +4561,7 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
           "name": "getPasswordAuthentication",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
           "parameterTypes": []
         },
         {
@@ -4592,39 +4570,12 @@
             "java.lang.String",
             "java.lang.String"
           ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.extra.mail.SMTPMessage",
       "fields": [
-        {
-          "name": "ATTACHMENT"
-        },
-        {
-          "name": "INLINE"
-        },
         {
           "name": "mailAccount"
         },
@@ -4672,25 +4623,6 @@
           ]
         },
         {
-          "name": "addFrom",
-          "parameterTypes": [
-            "jakarta.mail.Address[]"
-          ]
-        },
-        {
-          "name": "addHeader",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "addHeaderLine",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "addImage",
           "parameterTypes": [
             "java.lang.String",
@@ -4709,27 +4641,6 @@
           "parameterTypes": [
             "java.lang.String",
             "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "addRecipient",
-          "parameterTypes": [
-            "jakarta.mail.Message$RecipientType",
-            "jakarta.mail.Address"
-          ]
-        },
-        {
-          "name": "addRecipients",
-          "parameterTypes": [
-            "jakarta.mail.Message$RecipientType",
-            "jakarta.mail.Address[]"
-          ]
-        },
-        {
-          "name": "addRecipients",
-          "parameterTypes": [
-            "jakarta.mail.Message$RecipientType",
             "java.lang.String"
           ]
         },
@@ -4753,206 +4664,7 @@
           "parameterTypes": []
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getAllHeaderLines",
-          "parameterTypes": []
-        },
-        {
-          "name": "getAllHeaders",
-          "parameterTypes": []
-        },
-        {
-          "name": "getAllRecipients",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getContent",
-          "parameterTypes": []
-        },
-        {
-          "name": "getContentID",
-          "parameterTypes": []
-        },
-        {
-          "name": "getContentLanguage",
-          "parameterTypes": []
-        },
-        {
-          "name": "getContentMD5",
-          "parameterTypes": []
-        },
-        {
-          "name": "getContentType",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDataHandler",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDescription",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDisposition",
-          "parameterTypes": []
-        },
-        {
-          "name": "getEncoding",
-          "parameterTypes": []
-        },
-        {
-          "name": "getFileName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getFlags",
-          "parameterTypes": []
-        },
-        {
-          "name": "getFolder",
-          "parameterTypes": []
-        },
-        {
-          "name": "getFrom",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHeader",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getHeader",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getInputStream",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLineCount",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMatchingHeaderLines",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "getMatchingHeaders",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "getMessageID",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMessageNumber",
-          "parameterTypes": []
-        },
-        {
-          "name": "getNonMatchingHeaderLines",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "getNonMatchingHeaders",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "getRawInputStream",
-          "parameterTypes": []
-        },
-        {
-          "name": "getReceivedDate",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRecipients",
-          "parameterTypes": [
-            "jakarta.mail.Message$RecipientType"
-          ]
-        },
-        {
-          "name": "getReplyTo",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSender",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSentDate",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSession",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSubject",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
           "name": "init",
-          "parameterTypes": []
-        },
-        {
-          "name": "isExpunged",
-          "parameterTypes": []
-        },
-        {
-          "name": "isMimeType",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "isSet",
-          "parameterTypes": [
-            "jakarta.mail.Flags$Flag"
-          ]
-        },
-        {
-          "name": "match",
-          "parameterTypes": [
-            "jakarta.mail.search.SearchTerm"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
           "parameterTypes": []
         },
         {
@@ -4962,29 +4674,6 @@
             "boolean",
             "java.io.PrintStream"
           ]
-        },
-        {
-          "name": "removeHeader",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "reply",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "reply",
-          "parameterTypes": [
-            "boolean",
-            "boolean"
-          ]
-        },
-        {
-          "name": "saveChanges",
-          "parameterTypes": []
         },
         {
           "name": "send",
@@ -5005,128 +4694,8 @@
         {
           "name": "setContent",
           "parameterTypes": [
-            "jakarta.mail.Multipart"
-          ]
-        },
-        {
-          "name": "setContent",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setContent",
-          "parameterTypes": [
             "java.lang.String",
             "boolean"
-          ]
-        },
-        {
-          "name": "setContentID",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setContentLanguage",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "setContentMD5",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setDataHandler",
-          "parameterTypes": [
-            "jakarta.activation.DataHandler"
-          ]
-        },
-        {
-          "name": "setDescription",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setDescription",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setDisposition",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setFileName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setFlag",
-          "parameterTypes": [
-            "jakarta.mail.Flags$Flag",
-            "boolean"
-          ]
-        },
-        {
-          "name": "setFlags",
-          "parameterTypes": [
-            "jakarta.mail.Flags",
-            "boolean"
-          ]
-        },
-        {
-          "name": "setFrom",
-          "parameterTypes": []
-        },
-        {
-          "name": "setFrom",
-          "parameterTypes": [
-            "jakarta.mail.Address"
-          ]
-        },
-        {
-          "name": "setFrom",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setHeader",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setRecipient",
-          "parameterTypes": [
-            "jakarta.mail.Message$RecipientType",
-            "jakarta.mail.Address"
-          ]
-        },
-        {
-          "name": "setRecipients",
-          "parameterTypes": [
-            "jakarta.mail.Message$RecipientType",
-            "jakarta.mail.Address[]"
-          ]
-        },
-        {
-          "name": "setRecipients",
-          "parameterTypes": [
-            "jakarta.mail.Message$RecipientType",
-            "java.lang.String"
           ]
         },
         {
@@ -5143,58 +4712,6 @@
           ]
         },
         {
-          "name": "setReplyTo",
-          "parameterTypes": [
-            "jakarta.mail.Address[]"
-          ]
-        },
-        {
-          "name": "setSender",
-          "parameterTypes": [
-            "jakarta.mail.Address"
-          ]
-        },
-        {
-          "name": "setSentDate",
-          "parameterTypes": [
-            "java.util.Date"
-          ]
-        },
-        {
-          "name": "setSubject",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setSubject",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setText",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setText",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setText",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "setTitle",
           "parameterTypes": [
             "java.lang.String"
@@ -5203,40 +4720,6 @@
         {
           "name": "setTos",
           "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        },
-        {
-          "name": "writeTo",
-          "parameterTypes": [
-            "java.io.OutputStream"
-          ]
-        },
-        {
-          "name": "writeTo",
-          "parameterTypes": [
-            "java.io.OutputStream",
             "java.lang.String[]"
           ]
         }
@@ -6067,20 +5550,6 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHeight",
-          "parameterTypes": []
-        },
-        {
           "name": "getMatrix",
           "parameterTypes": []
         },
@@ -6092,18 +5561,6 @@
           ]
         },
         {
-          "name": "getWidth",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "invert",
-          "parameterTypes": []
-        },
-        {
           "name": "isCropSupported",
           "parameterTypes": []
         },
@@ -6112,41 +5569,8 @@
           "parameterTypes": []
         },
         {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
           "name": "rotateCounterClockwise",
           "parameterTypes": []
-        },
-        {
-          "name": "rotateCounterClockwise45",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
@@ -6428,20 +5852,10 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "findTemplateSource",
           "parameterTypes": [
             "java.lang.String"
           ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
         },
         {
           "name": "getLastModified",
@@ -6454,39 +5868,6 @@
           "parameterTypes": [
             "java.lang.Object",
             "java.lang.String"
-          ]
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -6695,6 +6076,525 @@
             "java.util.Map",
             "java.io.Writer"
           ]
+        }
+      ]
+    },
+    {
+      "type": "com.google.zxing.LuminanceSource",
+      "methods": [
+        {
+          "name": "getHeight",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWidth",
+          "parameterTypes": []
+        },
+        {
+          "name": "invert",
+          "parameterTypes": []
+        },
+        {
+          "name": "rotateCounterClockwise45",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "jakarta.mail.Message",
+      "methods": [
+        {
+          "name": "addRecipient",
+          "parameterTypes": [
+            "jakarta.mail.Message$RecipientType",
+            "jakarta.mail.Address"
+          ]
+        },
+        {
+          "name": "getFolder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMessageNumber",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSession",
+          "parameterTypes": []
+        },
+        {
+          "name": "isExpunged",
+          "parameterTypes": []
+        },
+        {
+          "name": "match",
+          "parameterTypes": [
+            "jakarta.mail.search.SearchTerm"
+          ]
+        },
+        {
+          "name": "setFlag",
+          "parameterTypes": [
+            "jakarta.mail.Flags$Flag",
+            "boolean"
+          ]
+        },
+        {
+          "name": "setRecipient",
+          "parameterTypes": [
+            "jakarta.mail.Message$RecipientType",
+            "jakarta.mail.Address"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "jakarta.mail.Part",
+      "fields": [
+        {
+          "name": "ATTACHMENT"
+        },
+        {
+          "name": "INLINE"
+        }
+      ]
+    },
+    {
+      "type": "jakarta.mail.internet.MimeMessage",
+      "methods": [
+        {
+          "name": "addFrom",
+          "parameterTypes": [
+            "jakarta.mail.Address[]"
+          ]
+        },
+        {
+          "name": "addHeader",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "addHeaderLine",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "addRecipients",
+          "parameterTypes": [
+            "jakarta.mail.Message$RecipientType",
+            "jakarta.mail.Address[]"
+          ]
+        },
+        {
+          "name": "addRecipients",
+          "parameterTypes": [
+            "jakarta.mail.Message$RecipientType",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getAllHeaderLines",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAllHeaders",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAllRecipients",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContent",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContentID",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContentLanguage",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContentMD5",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContentType",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDataHandler",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDescription",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDisposition",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEncoding",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFileName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFlags",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFrom",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHeader",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getHeader",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getInputStream",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLineCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMatchingHeaderLines",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "getMatchingHeaders",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "getMessageID",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNonMatchingHeaderLines",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "getNonMatchingHeaders",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "getRawInputStream",
+          "parameterTypes": []
+        },
+        {
+          "name": "getReceivedDate",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRecipients",
+          "parameterTypes": [
+            "jakarta.mail.Message$RecipientType"
+          ]
+        },
+        {
+          "name": "getReplyTo",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSender",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSentDate",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSubject",
+          "parameterTypes": []
+        },
+        {
+          "name": "isMimeType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isSet",
+          "parameterTypes": [
+            "jakarta.mail.Flags$Flag"
+          ]
+        },
+        {
+          "name": "removeHeader",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "reply",
+          "parameterTypes": [
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "reply",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "saveChanges",
+          "parameterTypes": []
+        },
+        {
+          "name": "setContent",
+          "parameterTypes": [
+            "jakarta.mail.Multipart"
+          ]
+        },
+        {
+          "name": "setContent",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setContentID",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setContentLanguage",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setContentMD5",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setDataHandler",
+          "parameterTypes": [
+            "jakarta.activation.DataHandler"
+          ]
+        },
+        {
+          "name": "setDescription",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setDescription",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setDisposition",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setFileName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setFlags",
+          "parameterTypes": [
+            "jakarta.mail.Flags",
+            "boolean"
+          ]
+        },
+        {
+          "name": "setFrom",
+          "parameterTypes": [
+            "jakarta.mail.Address"
+          ]
+        },
+        {
+          "name": "setFrom",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setFrom",
+          "parameterTypes": []
+        },
+        {
+          "name": "setHeader",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setRecipients",
+          "parameterTypes": [
+            "jakarta.mail.Message$RecipientType",
+            "jakarta.mail.Address[]"
+          ]
+        },
+        {
+          "name": "setRecipients",
+          "parameterTypes": [
+            "jakarta.mail.Message$RecipientType",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setReplyTo",
+          "parameterTypes": [
+            "jakarta.mail.Address[]"
+          ]
+        },
+        {
+          "name": "setSender",
+          "parameterTypes": [
+            "jakarta.mail.Address"
+          ]
+        },
+        {
+          "name": "setSentDate",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setSubject",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSubject",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setText",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setText",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setText",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "java.io.OutputStream",
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "java.io.OutputStream"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Object",
+      "methods": [
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
         }
       ]
     }
