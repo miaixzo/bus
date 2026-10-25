@@ -655,6 +655,10 @@ public final class ItemCodec {
          */
         KEYS,
         /**
+         * Only sensitive value/default members are encrypted; all definition metadata remains readable.
+         */
+        VALUES,
+        /**
          * Whole protected definition.
          */
         WHOLE
