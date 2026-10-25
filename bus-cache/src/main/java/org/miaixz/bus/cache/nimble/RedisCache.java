@@ -424,7 +424,8 @@ public class RedisCache<K, V> implements CacheX<K, V>, AutoCloseable {
     }
 
     /**
-     * Atomically replaces a serialized value when it equals the expected serialized value.
+     * Atomically replaces a serialized value when it equals the expected serialized value. Runs synchronously when no
+     * executor is configured; the complete asynchronous atomic contract still requires a caller-owned executor.
      *
      * @param key       cache key
      * @param expected  expected cache value
@@ -434,21 +435,44 @@ public class RedisCache<K, V> implements CacheX<K, V>, AutoCloseable {
      */
     @Override
     public CompletionStage<Boolean> replace(K key, V expected, V update, long ttlMillis) {
-        if (executor == null) {
-            return CacheX.super.replace(key, expected, update, ttlMillis);
-        }
+        Objects.requireNonNull(expected, "expected");
+        return replace(key, expected, update, ttlMillis, null, null);
+    }
+
+    /**
+     * Checks the optional guard and current serialized value and writes the entry in one Redis command. Ordinary
+     * instances execute synchronously; configured atomic instances retain their caller-owned executor and lifecycle.
+     *
+     * @param key        replacement key
+     * @param expected   expected current value, or null to require absence
+     * @param update     replacement value
+     * @param ttlMillis  positive replacement lifetime in milliseconds
+     * @param guardKey   additional key, or null for a single-entry comparison
+     * @param guardValue expected non-null guard value when guardKey is supplied
+     * @return stage containing whether all conditions matched
+     */
+    @Override
+    public CompletionStage<Boolean> replace(K key, V expected, V update, long ttlMillis, K guardKey, V guardValue) {
         requirePositiveTtl(ttlMillis);
         byte[] keyBytes = keyBytes(key);
-        byte[] expectedBytes = serializer.serialize(copyValue(Objects.requireNonNull(expected, "expected")));
+        byte[] expectedBytes = expected == null ? new byte[0] : serializer.serialize(copyValue(expected));
         byte[] updateBytes = serializer.serialize(copyValue(Objects.requireNonNull(update, "update")));
         byte[] ttlBytes = Long.toString(ttlMillis).getBytes(Charset.US_ASCII);
+        List<byte[]> keys = guardKey == null ? List.of(keyBytes) : List.of(keyBytes, keyBytes(guardKey));
+        List<byte[]> arguments = guardKey == null ? List.of(expectedBytes, updateBytes, ttlBytes)
+                : List.of(
+                        expectedBytes,
+                        updateBytes,
+                        ttlBytes,
+                        serializer.serialize(copyValue(Objects.requireNonNull(guardValue, "guardValue"))));
         return submit(() -> {
             try (Jedis client = jedisPool.getResource()) {
-                byte[] script = ("if redis.call('GET', KEYS[1]) == ARGV[1] then "
+                byte[] script = ("if #KEYS == 2 and redis.call('GET', KEYS[2]) ~= ARGV[4] then return 0 end; "
+                        + (expected == null ? "if redis.call('EXISTS', KEYS[1]) == 0 then "
+                                : "if redis.call('GET', KEYS[1]) == ARGV[1] then ")
                         + "redis.call('SET', KEYS[1], ARGV[2], 'PX', ARGV[3]); return 1 else return 0 end")
                                 .getBytes(Charset.UTF_8);
-                Object result = client.eval(script, List.of(keyBytes), List.of(expectedBytes, updateBytes, ttlBytes));
-                return Long.valueOf(1L).equals(result);
+                return Long.valueOf(1L).equals(client.eval(script, keys, arguments));
             }
         });
     }
@@ -516,7 +540,8 @@ public class RedisCache<K, V> implements CacheX<K, V>, AutoCloseable {
     }
 
     /**
-     * Submits one blocking Redis operation after atomic lifecycle admission.
+     * Executes one blocking Redis operation after lifecycle admission, using the caller-owned executor when present.
+     * Conditional replacement also uses this path synchronously for ordinary cache instances.
      *
      * @param command blocking Redis command
      * @param <T>     result type
@@ -531,7 +556,7 @@ public class RedisCache<K, V> implements CacheX<K, V>, AutoCloseable {
             inFlight++;
         }
         try {
-            executor.execute(() -> {
+            Runnable operation = () -> {
                 T value = null;
                 Throwable failure = null;
                 try {
@@ -545,7 +570,11 @@ public class RedisCache<K, V> implements CacheX<K, V>, AutoCloseable {
                 } else {
                     result.completeExceptionally(failure);
                 }
-            });
+            };
+            if (executor == null)
+                operation.run();
+            else
+                executor.execute(operation);
         } catch (Throwable failure) {
             finishOperation();
             result.completeExceptionally(failure);

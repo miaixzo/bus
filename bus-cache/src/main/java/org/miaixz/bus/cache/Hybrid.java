@@ -22,12 +22,14 @@ package org.miaixz.bus.cache;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.logger.Logger;
 
 /**
  * Cache wrapper that preserves scan, counter and renew semantics when the primary backend does not provide them
- * directly.
+ * directly, while delegating conditional replacement to the primary backend.
  *
  * @author Kimi Liu
  */
@@ -89,76 +91,36 @@ public class Hybrid implements CacheX<String, Object> {
     }
 
     /**
-     * Reads one value from the primary backend and falls back to the mirror when needed.
+     * Reads the authoritative primary value; mirror entries never resurrect missing primary values.
      *
      * @param key cache key
      * @return cached value or {@code null}
      */
     @Override
     public Object read(String key) {
-        Object value = cache.read(key);
-        if (value != null || mirror == null) {
-            return value;
-        }
-        Logger.debug(true, "Cache", "Hybrid cache fallback read started: mode=single, keyPresent={}", key != null);
-        Object fallback = mirror.read(key);
-        Logger.debug(
-                false,
-                "Cache",
-                "Hybrid cache fallback read completed: mode=single, keyPresent={}, hit={}",
-                key != null,
-                fallback != null);
-        return fallback;
+        return cache.read(key);
     }
 
     /**
-     * Reads multiple values from the primary backend and fills any misses from the mirror.
+     * Reads authoritative values from the primary backend without filling misses from stale mirror payloads.
      *
      * @param keys cache keys
      * @return cached values
      */
     @Override
     public Map<String, Object> read(Collection<String> keys) {
-        Map<String, Object> values = cache.read(keys);
-        if (mirror == null || values.size() == keys.size()) {
-            return values;
-        }
-        Logger.debug(
-                true,
-                "Cache",
-                "Hybrid cache fallback read started: mode=batch, keyCount={}, primaryHitCount={}",
-                keys.size(),
-                values.size());
-        Map<String, Object> fallback = mirror.read(keys);
-        if (fallback.isEmpty()) {
-            Logger.debug(
-                    false,
-                    "Cache",
-                    "Hybrid cache fallback read completed: mode=batch, keyCount={}, primaryHitCount={}, fallbackHitCount=0",
-                    keys.size(),
-                    values.size());
-            return values;
-        }
-        fallback.putAll(values);
-        Logger.debug(
-                false,
-                "Cache",
-                "Hybrid cache fallback read completed: mode=batch, keyCount={}, primaryHitCount={}, resultCount={}",
-                keys.size(),
-                values.size(),
-                fallback.size());
-        return fallback;
+        return cache.read(keys);
     }
 
     /**
-     * Returns whether the key exists in either the primary backend or the mirror.
+     * Returns whether the primary backend has a live value for the key.
      *
      * @param key cache key
      * @return {@code true} when the key exists
      */
     @Override
     public boolean containsKey(String key) {
-        return cache.containsKey(key) || mirror != null && mirror.containsKey(key);
+        return cache.read(key) != null;
     }
 
     /**
@@ -170,9 +132,67 @@ public class Hybrid implements CacheX<String, Object> {
      */
     @Override
     public void write(String key, Object value, long expire) {
-        cache.write(key, value, expire);
-        if (mirror != null) {
-            mirror.write(key, value, expire);
+        synchronized (cache) {
+            cache.write(key, value, expire);
+            if (mirror != null) {
+                mirror.write(key, value, expire);
+            }
+        }
+    }
+
+    /**
+     * Replaces the primary mapping conditionally and reconciles its mirror from the authoritative current value.
+     *
+     * @param key       cache key
+     * @param expected  expected current value
+     * @param update    replacement value
+     * @param ttlMillis positive replacement lifetime in milliseconds
+     * @return stage containing whether the primary value was replaced
+     */
+    @Override
+    public CompletionStage<Boolean> replace(String key, Object expected, Object update, long ttlMillis) {
+        Objects.requireNonNull(expected, "expected");
+        return replace(key, expected, update, ttlMillis, null, null);
+    }
+
+    /**
+     * Delegates both comparisons to one primary backend operation. Completion shares the local mirror mutation boundary
+     * with ordinary writes and removals. Rejected commands never change mirror expiration; a delayed success mirrors
+     * only its own still-current value. Unsupported primary operations remain unsupported; a mirror never substitutes
+     * for backend atomicity.
+     *
+     * @param key        replacement key
+     * @param expected   expected current value, or null to require absence
+     * @param update     replacement value
+     * @param ttlMillis  positive replacement lifetime in milliseconds
+     * @param guardKey   additional key, or null for a single-entry comparison
+     * @param guardValue expected guard value when guardKey is supplied
+     * @return stage containing whether the primary accepted the replacement
+     */
+    @Override
+    public CompletionStage<Boolean> replace(
+            String key,
+            Object expected,
+            Object update,
+            long ttlMillis,
+            String guardKey,
+            Object guardValue) {
+        synchronized (cache) {
+            CompletionStage<Boolean> result = guardKey == null && expected != null
+                    ? cache.replace(key, expected, update, ttlMillis)
+                    : cache.replace(key, expected, update, ttlMillis, guardKey, guardValue);
+            return result.thenApply(replaced -> {
+                if (replaced && mirror != null) {
+                    synchronized (cache) {
+                        Object current = cache.read(key);
+                        if (current == null)
+                            mirror.remove(key);
+                        else if (Objects.deepEquals(current, update))
+                            mirror.write(key, current, ttlMillis);
+                    }
+                }
+                return replaced;
+            });
         }
     }
 
@@ -184,9 +204,11 @@ public class Hybrid implements CacheX<String, Object> {
      */
     @Override
     public void write(Map<String, Object> map, long expire) {
-        cache.write(map, expire);
-        if (mirror != null) {
-            mirror.write(map, expire);
+        synchronized (cache) {
+            cache.write(map, expire);
+            if (mirror != null) {
+                mirror.write(map, expire);
+            }
         }
     }
 
@@ -197,9 +219,11 @@ public class Hybrid implements CacheX<String, Object> {
      */
     @Override
     public void remove(String... keys) {
-        cache.remove(keys);
-        if (mirror != null) {
-            mirror.remove(keys);
+        synchronized (cache) {
+            cache.remove(keys);
+            if (mirror != null) {
+                mirror.remove(keys);
+            }
         }
     }
 
@@ -208,14 +232,16 @@ public class Hybrid implements CacheX<String, Object> {
      */
     @Override
     public void clear() {
-        cache.clear();
-        if (mirror != null) {
-            mirror.clear();
+        synchronized (cache) {
+            cache.clear();
+            if (mirror != null) {
+                mirror.clear();
+            }
         }
     }
 
     /**
-     * Scans entries from the primary backend when supported, otherwise from the mirror.
+     * Scans the primary backend when supported; otherwise uses mirror keys to read current primary values.
      *
      * @param prefix cache key prefix
      * @return matching entries
@@ -229,7 +255,10 @@ public class Hybrid implements CacheX<String, Object> {
                 primaryScan,
                 mirror != null,
                 prefix != null);
-        Map<String, Object> result = primaryScan ? cache.scan(prefix) : mirror == null ? Map.of() : mirror.scan(prefix);
+        Map<String, Object> result;
+        synchronized (cache) {
+            result = primaryScan ? cache.scan(prefix) : mirror == null ? Map.of() : cache.read(mirror.keys(prefix));
+        }
         Logger.debug(
                 false,
                 "Cache",
@@ -242,7 +271,7 @@ public class Hybrid implements CacheX<String, Object> {
     }
 
     /**
-     * Returns keys from the primary backend when supported, otherwise from the mirror.
+     * Returns current primary keys, using the mirror only to enumerate candidates when primary scanning is absent.
      *
      * @param prefix cache key prefix
      * @return matching keys
@@ -256,7 +285,7 @@ public class Hybrid implements CacheX<String, Object> {
                 primaryScan,
                 mirror != null,
                 prefix != null);
-        List<String> result = primaryScan ? cache.keys(prefix) : mirror == null ? List.of() : mirror.keys(prefix);
+        List<String> result = primaryScan ? cache.keys(prefix) : List.copyOf(scan(prefix).keySet());
         Logger.debug(
                 false,
                 "Cache",
@@ -298,19 +327,21 @@ public class Hybrid implements CacheX<String, Object> {
      */
     @Override
     public boolean renew(String key, long expire) {
-        boolean renewed = cache.renew(key, expire);
-        boolean mirrorRenewed = mirror != null && mirror.renew(key, expire);
-        boolean result = mirrorRenewed || renewed;
-        Logger.debug(
-                false,
-                "Cache",
-                "Hybrid cache ttl renewed: keyPresent={}, expireMs={}, primaryRenewed={}, mirrorRenewed={}, renewed={}",
-                key != null,
-                expire,
-                renewed,
-                mirrorRenewed,
-                result);
-        return result;
+        synchronized (cache) {
+            boolean renewed = cache.renew(key, expire);
+            boolean mirrorRenewed = mirror != null && mirror.renew(key, expire);
+            boolean result = mirrorRenewed || renewed;
+            Logger.debug(
+                    false,
+                    "Cache",
+                    "Hybrid cache ttl renewed: keyPresent={}, expireMs={}, primaryRenewed={}, mirrorRenewed={}, renewed={}",
+                    key != null,
+                    expire,
+                    renewed,
+                    mirrorRenewed,
+                    result);
+            return result;
+        }
     }
 
 }

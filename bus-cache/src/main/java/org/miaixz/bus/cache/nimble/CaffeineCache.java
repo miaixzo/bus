@@ -19,10 +19,9 @@
 */
 package org.miaixz.bus.cache.nimble;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 
 import com.github.benmanes.caffeine.cache.Cache;
@@ -128,6 +127,34 @@ public class CaffeineCache<K, V> implements CacheX<K, V> {
     }
 
     /**
+     * Enumerates live primary entries directly, without relying on an independently expired mirror index.
+     *
+     * @param prefix non-null key prefix
+     * @return current matching values
+     */
+    @Override
+    public Map<K, V> scan(K prefix) {
+        String text = Objects.requireNonNull(prefix, "prefix").toString();
+        Map<K, V> result = new LinkedHashMap<>();
+        cache.asMap().forEach((key, value) -> {
+            if (key.toString().startsWith(text))
+                result.put(key, value);
+        });
+        return result;
+    }
+
+    /**
+     * Enumerates current primary keys using the same live-entry view as prefix scans.
+     *
+     * @param prefix non-null key prefix
+     * @return matching keys
+     */
+    @Override
+    public List<K> keys(K prefix) {
+        return List.copyOf(scan(prefix).keySet());
+    }
+
+    /**
      * Writes a key-value pair to the cache.
      * <p>
      * <strong>Note:</strong> This implementation ignores the {@code expire} parameter. The expiration policy is
@@ -140,7 +167,59 @@ public class CaffeineCache<K, V> implements CacheX<K, V> {
      */
     @Override
     public void write(K key, V value, long expire) {
-        this.cache.put(key, value);
+        synchronized (cache) {
+            this.cache.put(key, value);
+        }
+    }
+
+    /**
+     * Atomically replaces an existing unexpired mapping when its value equals the expected value. As with ordinary
+     * writes, expiration follows the cache-wide policy configured at construction; the positive per-call TTL is
+     * validated but does not override that policy. This does not enable the complete atomic entry contract.
+     *
+     * @param key       non-null cache key
+     * @param expected  non-null expected current value
+     * @param update    non-null replacement value
+     * @param ttlMillis positive requested lifetime in milliseconds
+     * @return completed stage containing whether the mapping was replaced
+     * @throws NullPointerException     when key, expected, or update is null
+     * @throws IllegalArgumentException when ttlMillis is not positive
+     */
+    @Override
+    public CompletionStage<Boolean> replace(K key, V expected, V update, long ttlMillis) {
+        Objects.requireNonNull(expected, "expected");
+        return replace(key, expected, update, ttlMillis, null, null);
+    }
+
+    /**
+     * Checks an optional guard and compares or creates a mapping under the same native-cache monitor used by wrapper
+     * writes, removals and clearing. Expiration retains the configured cache-wide policy.
+     *
+     * @param key        non-null replacement key
+     * @param expected   expected current value, or null to require absence
+     * @param update     non-null replacement value
+     * @param ttlMillis  positive requested lifetime in milliseconds
+     * @param guardKey   additional key, or null for a single-entry comparison
+     * @param guardValue expected non-null guard value when guardKey is supplied
+     * @return completed stage containing whether replacement occurred
+     * @throws NullPointerException     when a required key or value is null
+     * @throws IllegalArgumentException when ttlMillis is not positive
+     */
+    @Override
+    public CompletionStage<Boolean> replace(K key, V expected, V update, long ttlMillis, K guardKey, V guardValue) {
+        if (ttlMillis <= 0L)
+            throw new IllegalArgumentException("ttlMillis must be greater than zero");
+        Objects.requireNonNull(key, "key");
+        Objects.requireNonNull(update, "update");
+        if (guardKey != null)
+            Objects.requireNonNull(guardValue, "guardValue");
+        synchronized (cache) {
+            if (guardKey != null && !Objects.equals(cache.getIfPresent(guardKey), guardValue))
+                return CompletableFuture.completedFuture(false);
+            return CompletableFuture.completedFuture(
+                    expected == null ? cache.asMap().putIfAbsent(key, update) == null
+                            : cache.asMap().replace(key, expected, update));
+        }
     }
 
     /**
@@ -155,7 +234,9 @@ public class CaffeineCache<K, V> implements CacheX<K, V> {
      */
     @Override
     public void write(Map<K, V> keyValueMap, long expire) {
-        this.cache.putAll(keyValueMap);
+        synchronized (cache) {
+            this.cache.putAll(keyValueMap);
+        }
     }
 
     /**
@@ -165,7 +246,9 @@ public class CaffeineCache<K, V> implements CacheX<K, V> {
      */
     @Override
     public void remove(K... keys) {
-        this.cache.invalidateAll(Arrays.asList(keys));
+        synchronized (cache) {
+            this.cache.invalidateAll(Arrays.asList(keys));
+        }
     }
 
     /**
@@ -176,8 +259,10 @@ public class CaffeineCache<K, V> implements CacheX<K, V> {
      */
     @Override
     public void clear() {
-        this.cache.invalidateAll();
-        this.cache.cleanUp();
+        synchronized (cache) {
+            this.cache.invalidateAll();
+            this.cache.cleanUp();
+        }
     }
 
     /**

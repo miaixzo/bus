@@ -1206,6 +1206,26 @@
       "type": "org.miaixz.bus.cache.Hybrid",
       "methods": [
         {
+          "name": "replace",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object",
+            "java.lang.Object",
+            "long",
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "replace",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object",
+            "java.lang.Object",
+            "long"
+          ]
+        },
+        {
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.cache.CacheX"
@@ -1702,8 +1722,56 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.cache.nimble.CaffeineCache",
+      "methods": [
+        {
+          "name": "replace",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object",
+            "java.lang.Object",
+            "long",
+            "java.lang.Object",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "replace",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object",
+            "java.lang.Object",
+            "long"
+          ]
+        },
+        {
+          "parameterTypes": [
+            "java.lang.Object"
+          ],
+          "name": "keys"
+        },
+        {
+          "parameterTypes": [
+            "java.lang.Object"
+          ],
+          "name": "scan"
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.cache.nimble.MemoryCache",
       "methods": [
+        {
+          "name": "replace",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object",
+            "java.lang.Object",
+            "long",
+            "java.lang.Object",
+            "java.lang.Object"
+          ]
+        },
         {
           "name": "<init>",
           "parameterTypes": []
@@ -1973,6 +2041,26 @@
     {
       "type": "org.miaixz.bus.cache.nimble.RedisCache",
       "methods": [
+        {
+          "name": "replace",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object",
+            "java.lang.Object",
+            "long",
+            "java.lang.Object",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "replace",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object",
+            "java.lang.Object",
+            "long"
+          ]
+        },
         {
           "name": "clear",
           "parameterTypes": []
